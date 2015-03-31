@@ -118,7 +118,8 @@ DIST_COMMON = $(srcdir)/Makefile_insert \
 	$(srcdir)/ui/widget/Makefile_insert \
 	$(srcdir)/util/Makefile_insert $(srcdir)/trace/Makefile_insert \
 	$(srcdir)/2geom/Makefile_insert \
-	$(srcdir)/libdepixelize/Makefile_insert $(srcdir)/Makefile.in \
+	$(srcdir)/libdepixelize/Makefile_insert \
+	$(srcdir)/artivity/Makefile_insert $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(srcdir)/check-header-compile.in \
 	$(top_srcdir)/build-aux/depcomp \
 	$(am__libinkdbusinclude_HEADERS_DIST) \
@@ -1274,7 +1275,8 @@ am__cxxtests_SOURCES_DIST = cxxtests.cpp $(srcdir)/MultiPrinter.h \
 	trace/potrace/progress.h trace/potrace/render.cpp \
 	trace/potrace/render.h trace/potrace/trace.cpp \
 	trace/potrace/trace.h trace/potrace/inkscape-potrace.cpp \
-	trace/potrace/inkscape-potrace.h winmain.cpp registrytool.cpp \
+	trace/potrace/inkscape-potrace.h artivity/artivity-log.h \
+	artivity/artivity-log.cpp winmain.cpp registrytool.cpp \
 	registrytool.h
 am__objects_1 =
 @WITH_DBUS_TRUE@am__objects_2 = extension/dbus/dbus-init.$(OBJEXT) \
@@ -1753,7 +1755,8 @@ am__objects_7 = attributes.$(OBJEXT) attribute-rel-svg.$(OBJEXT) \
 	trace/potrace/greymap.$(OBJEXT) \
 	trace/potrace/potracelib.$(OBJEXT) \
 	trace/potrace/render.$(OBJEXT) trace/potrace/trace.$(OBJEXT) \
-	trace/potrace/inkscape-potrace.$(OBJEXT)
+	trace/potrace/inkscape-potrace.$(OBJEXT) \
+	artivity/artivity-log.$(OBJEXT)
 @PLATFORM_WIN32_TRUE@am__objects_8 = winmain.$(OBJEXT) \
 @PLATFORM_WIN32_TRUE@	registrytool.$(OBJEXT)
 am_cxxtests_OBJECTS = cxxtests.$(OBJEXT) $(am__objects_1) \
@@ -2515,7 +2518,8 @@ am__inkscape_SOURCES_DIST = main.cpp util/find-last-if.h \
 	trace/potrace/progress.h trace/potrace/render.cpp \
 	trace/potrace/render.h trace/potrace/trace.cpp \
 	trace/potrace/trace.h trace/potrace/inkscape-potrace.cpp \
-	trace/potrace/inkscape-potrace.h winmain.cpp registrytool.cpp \
+	trace/potrace/inkscape-potrace.h artivity/artivity-log.h \
+	artivity/artivity-log.cpp winmain.cpp registrytool.cpp \
 	registrytool.h
 am_inkscape_OBJECTS = main.$(OBJEXT) $(am__objects_7) $(am__objects_8)
 inkscape_OBJECTS = $(am_inkscape_OBJECTS)
@@ -3271,7 +3275,8 @@ am__inkview_SOURCES_DIST = inkview.cpp util/find-last-if.h \
 	trace/potrace/progress.h trace/potrace/render.cpp \
 	trace/potrace/render.h trace/potrace/trace.cpp \
 	trace/potrace/trace.h trace/potrace/inkscape-potrace.cpp \
-	trace/potrace/inkscape-potrace.h winmain.cpp registrytool.cpp \
+	trace/potrace/inkscape-potrace.h artivity/artivity-log.h \
+	artivity/artivity-log.cpp winmain.cpp registrytool.cpp \
 	registrytool.h
 am_inkview_OBJECTS = inkview.$(OBJEXT) $(am__objects_7) \
 	$(am__objects_8)
@@ -4492,7 +4497,8 @@ ink_common_sources = util/find-last-if.h util/longest-common-suffix.h \
 	trace/potrace/progress.h trace/potrace/render.cpp \
 	trace/potrace/render.h trace/potrace/trace.cpp \
 	trace/potrace/trace.h trace/potrace/inkscape-potrace.cpp \
-	trace/potrace/inkscape-potrace.h
+	trace/potrace/inkscape-potrace.h artivity/artivity-log.h \
+	artivity/artivity-log.cpp
 # Add Inkscape-only sources here.
 
 # ################################################
@@ -5049,7 +5055,7 @@ all: $(BUILT_SOURCES)
 
 .SUFFIXES:
 .SUFFIXES: .c .cpp .lo .log .o .obj .test .test$(EXEEXT) .trs
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(srcdir)/Makefile_insert $(srcdir)/dialogs/Makefile_insert $(srcdir)/display/Makefile_insert $(srcdir)/extension/Makefile_insert $(srcdir)/extension/dbus/Makefile_insert $(srcdir)/extension/implementation/Makefile_insert $(srcdir)/extension/internal/Makefile_insert $(srcdir)/filters/Makefile_insert $(srcdir)/helper/Makefile_insert $(srcdir)/io/Makefile_insert $(srcdir)/libcroco/Makefile_insert $(srcdir)/libgdl/Makefile_insert $(srcdir)/libnrtype/Makefile_insert $(srcdir)/libavoid/Makefile_insert $(srcdir)/livarot/Makefile_insert $(srcdir)/live_effects/Makefile_insert $(srcdir)/live_effects/parameter/Makefile_insert $(srcdir)/libvpsc/Makefile_insert $(srcdir)/libcola/Makefile_insert $(srcdir)/libuemf/Makefile_insert $(srcdir)/svg/Makefile_insert $(srcdir)/widgets/Makefile_insert $(srcdir)/debug/Makefile_insert $(srcdir)/xml/Makefile_insert $(srcdir)/ui/Makefile_insert $(srcdir)/ui/cache/Makefile_insert $(srcdir)/ui/dialog/Makefile_insert $(srcdir)/ui/tool/Makefile_insert $(srcdir)/ui/tools/Makefile_insert $(srcdir)/ui/view/Makefile_insert $(srcdir)/ui/widget/Makefile_insert $(srcdir)/util/Makefile_insert $(srcdir)/trace/Makefile_insert $(srcdir)/2geom/Makefile_insert $(srcdir)/libdepixelize/Makefile_insert $(am__configure_deps)
+$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(srcdir)/Makefile_insert $(srcdir)/dialogs/Makefile_insert $(srcdir)/display/Makefile_insert $(srcdir)/extension/Makefile_insert $(srcdir)/extension/dbus/Makefile_insert $(srcdir)/extension/implementation/Makefile_insert $(srcdir)/extension/internal/Makefile_insert $(srcdir)/filters/Makefile_insert $(srcdir)/helper/Makefile_insert $(srcdir)/io/Makefile_insert $(srcdir)/libcroco/Makefile_insert $(srcdir)/libgdl/Makefile_insert $(srcdir)/libnrtype/Makefile_insert $(srcdir)/libavoid/Makefile_insert $(srcdir)/livarot/Makefile_insert $(srcdir)/live_effects/Makefile_insert $(srcdir)/live_effects/parameter/Makefile_insert $(srcdir)/libvpsc/Makefile_insert $(srcdir)/libcola/Makefile_insert $(srcdir)/libuemf/Makefile_insert $(srcdir)/svg/Makefile_insert $(srcdir)/widgets/Makefile_insert $(srcdir)/debug/Makefile_insert $(srcdir)/xml/Makefile_insert $(srcdir)/ui/Makefile_insert $(srcdir)/ui/cache/Makefile_insert $(srcdir)/ui/dialog/Makefile_insert $(srcdir)/ui/tool/Makefile_insert $(srcdir)/ui/tools/Makefile_insert $(srcdir)/ui/view/Makefile_insert $(srcdir)/ui/widget/Makefile_insert $(srcdir)/util/Makefile_insert $(srcdir)/trace/Makefile_insert $(srcdir)/2geom/Makefile_insert $(srcdir)/libdepixelize/Makefile_insert $(srcdir)/artivity/Makefile_insert $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -5070,7 +5076,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(srcdir)/Makefile_insert $(srcdir)/dialogs/Makefile_insert $(srcdir)/display/Makefile_insert $(srcdir)/extension/Makefile_insert $(srcdir)/extension/dbus/Makefile_insert $(srcdir)/extension/implementation/Makefile_insert $(srcdir)/extension/internal/Makefile_insert $(srcdir)/filters/Makefile_insert $(srcdir)/helper/Makefile_insert $(srcdir)/io/Makefile_insert $(srcdir)/libcroco/Makefile_insert $(srcdir)/libgdl/Makefile_insert $(srcdir)/libnrtype/Makefile_insert $(srcdir)/libavoid/Makefile_insert $(srcdir)/livarot/Makefile_insert $(srcdir)/live_effects/Makefile_insert $(srcdir)/live_effects/parameter/Makefile_insert $(srcdir)/libvpsc/Makefile_insert $(srcdir)/libcola/Makefile_insert $(srcdir)/libuemf/Makefile_insert $(srcdir)/svg/Makefile_insert $(srcdir)/widgets/Makefile_insert $(srcdir)/debug/Makefile_insert $(srcdir)/xml/Makefile_insert $(srcdir)/ui/Makefile_insert $(srcdir)/ui/cache/Makefile_insert $(srcdir)/ui/dialog/Makefile_insert $(srcdir)/ui/tool/Makefile_insert $(srcdir)/ui/tools/Makefile_insert $(srcdir)/ui/view/Makefile_insert $(srcdir)/ui/widget/Makefile_insert $(srcdir)/util/Makefile_insert $(srcdir)/trace/Makefile_insert $(srcdir)/2geom/Makefile_insert $(srcdir)/libdepixelize/Makefile_insert:
+$(srcdir)/Makefile_insert $(srcdir)/dialogs/Makefile_insert $(srcdir)/display/Makefile_insert $(srcdir)/extension/Makefile_insert $(srcdir)/extension/dbus/Makefile_insert $(srcdir)/extension/implementation/Makefile_insert $(srcdir)/extension/internal/Makefile_insert $(srcdir)/filters/Makefile_insert $(srcdir)/helper/Makefile_insert $(srcdir)/io/Makefile_insert $(srcdir)/libcroco/Makefile_insert $(srcdir)/libgdl/Makefile_insert $(srcdir)/libnrtype/Makefile_insert $(srcdir)/libavoid/Makefile_insert $(srcdir)/livarot/Makefile_insert $(srcdir)/live_effects/Makefile_insert $(srcdir)/live_effects/parameter/Makefile_insert $(srcdir)/libvpsc/Makefile_insert $(srcdir)/libcola/Makefile_insert $(srcdir)/libuemf/Makefile_insert $(srcdir)/svg/Makefile_insert $(srcdir)/widgets/Makefile_insert $(srcdir)/debug/Makefile_insert $(srcdir)/xml/Makefile_insert $(srcdir)/ui/Makefile_insert $(srcdir)/ui/cache/Makefile_insert $(srcdir)/ui/dialog/Makefile_insert $(srcdir)/ui/tool/Makefile_insert $(srcdir)/ui/tools/Makefile_insert $(srcdir)/ui/view/Makefile_insert $(srcdir)/ui/widget/Makefile_insert $(srcdir)/util/Makefile_insert $(srcdir)/trace/Makefile_insert $(srcdir)/2geom/Makefile_insert $(srcdir)/libdepixelize/Makefile_insert $(srcdir)/artivity/Makefile_insert:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -6882,6 +6888,14 @@ trace/potrace/trace.$(OBJEXT): trace/potrace/$(am__dirstamp) \
 trace/potrace/inkscape-potrace.$(OBJEXT):  \
 	trace/potrace/$(am__dirstamp) \
 	trace/potrace/$(DEPDIR)/$(am__dirstamp)
+artivity/$(am__dirstamp):
+	@$(MKDIR_P) artivity
+	@: > artivity/$(am__dirstamp)
+artivity/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) artivity/$(DEPDIR)
+	@: > artivity/$(DEPDIR)/$(am__dirstamp)
+artivity/artivity-log.$(OBJEXT): artivity/$(am__dirstamp) \
+	artivity/$(DEPDIR)/$(am__dirstamp)
 
 cxxtests$(EXEEXT): $(cxxtests_OBJECTS) $(cxxtests_DEPENDENCIES) $(EXTRA_cxxtests_DEPENDENCIES) 
 	@rm -f cxxtests$(EXEEXT)
@@ -6899,6 +6913,7 @@ mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f 2geom/*.$(OBJEXT)
 	-rm -f 2geom/numeric/*.$(OBJEXT)
+	-rm -f artivity/*.$(OBJEXT)
 	-rm -f debug/*.$(OBJEXT)
 	-rm -f dialogs/*.$(OBJEXT)
 	-rm -f display/*.$(OBJEXT)
@@ -7176,6 +7191,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@2geom/$(DEPDIR)/transforms.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@2geom/$(DEPDIR)/utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@2geom/numeric/$(DEPDIR)/matrix.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@artivity/$(DEPDIR)/artivity-log.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@debug/$(DEPDIR)/demangle.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@debug/$(DEPDIR)/gdk-event-latency-tracker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@debug/$(DEPDIR)/heap.Po@am__quote@
@@ -8425,6 +8441,8 @@ distclean-generic:
 	-rm -f 2geom/$(am__dirstamp)
 	-rm -f 2geom/numeric/$(DEPDIR)/$(am__dirstamp)
 	-rm -f 2geom/numeric/$(am__dirstamp)
+	-rm -f artivity/$(DEPDIR)/$(am__dirstamp)
+	-rm -f artivity/$(am__dirstamp)
 	-rm -f debug/$(DEPDIR)/$(am__dirstamp)
 	-rm -f debug/$(am__dirstamp)
 	-rm -f dialogs/$(DEPDIR)/$(am__dirstamp)
@@ -8518,7 +8536,7 @@ clean-am: clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
 	mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR) 2geom/$(DEPDIR) 2geom/numeric/$(DEPDIR) debug/$(DEPDIR) dialogs/$(DEPDIR) display/$(DEPDIR) extension/$(DEPDIR) extension/dbus/$(DEPDIR) extension/dbus/wrapper/$(DEPDIR) extension/implementation/$(DEPDIR) extension/internal/$(DEPDIR) extension/internal/bitmap/$(DEPDIR) extension/internal/filter/$(DEPDIR) extension/internal/pdfinput/$(DEPDIR) extension/param/$(DEPDIR) filters/$(DEPDIR) helper/$(DEPDIR) io/$(DEPDIR) libavoid/$(DEPDIR) libcola/$(DEPDIR) libcroco/$(DEPDIR) libdepixelize/$(DEPDIR) libgdl/$(DEPDIR) libnrtype/$(DEPDIR) libuemf/$(DEPDIR) libvpsc/$(DEPDIR) libvpsc/pairingheap/$(DEPDIR) livarot/$(DEPDIR) live_effects/$(DEPDIR) live_effects/parameter/$(DEPDIR) svg/$(DEPDIR) trace/$(DEPDIR) trace/potrace/$(DEPDIR) ui/$(DEPDIR) ui/cache/$(DEPDIR) ui/dialog/$(DEPDIR) ui/tool/$(DEPDIR) ui/tools/$(DEPDIR) ui/view/$(DEPDIR) ui/widget/$(DEPDIR) util/$(DEPDIR) widgets/$(DEPDIR) xml/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) 2geom/$(DEPDIR) 2geom/numeric/$(DEPDIR) artivity/$(DEPDIR) debug/$(DEPDIR) dialogs/$(DEPDIR) display/$(DEPDIR) extension/$(DEPDIR) extension/dbus/$(DEPDIR) extension/dbus/wrapper/$(DEPDIR) extension/implementation/$(DEPDIR) extension/internal/$(DEPDIR) extension/internal/bitmap/$(DEPDIR) extension/internal/filter/$(DEPDIR) extension/internal/pdfinput/$(DEPDIR) extension/param/$(DEPDIR) filters/$(DEPDIR) helper/$(DEPDIR) io/$(DEPDIR) libavoid/$(DEPDIR) libcola/$(DEPDIR) libcroco/$(DEPDIR) libdepixelize/$(DEPDIR) libgdl/$(DEPDIR) libnrtype/$(DEPDIR) libuemf/$(DEPDIR) libvpsc/$(DEPDIR) libvpsc/pairingheap/$(DEPDIR) livarot/$(DEPDIR) live_effects/$(DEPDIR) live_effects/parameter/$(DEPDIR) svg/$(DEPDIR) trace/$(DEPDIR) trace/potrace/$(DEPDIR) ui/$(DEPDIR) ui/cache/$(DEPDIR) ui/dialog/$(DEPDIR) ui/tool/$(DEPDIR) ui/tools/$(DEPDIR) ui/view/$(DEPDIR) ui/widget/$(DEPDIR) util/$(DEPDIR) widgets/$(DEPDIR) xml/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-local distclean-tags
@@ -8565,7 +8583,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR) 2geom/$(DEPDIR) 2geom/numeric/$(DEPDIR) debug/$(DEPDIR) dialogs/$(DEPDIR) display/$(DEPDIR) extension/$(DEPDIR) extension/dbus/$(DEPDIR) extension/dbus/wrapper/$(DEPDIR) extension/implementation/$(DEPDIR) extension/internal/$(DEPDIR) extension/internal/bitmap/$(DEPDIR) extension/internal/filter/$(DEPDIR) extension/internal/pdfinput/$(DEPDIR) extension/param/$(DEPDIR) filters/$(DEPDIR) helper/$(DEPDIR) io/$(DEPDIR) libavoid/$(DEPDIR) libcola/$(DEPDIR) libcroco/$(DEPDIR) libdepixelize/$(DEPDIR) libgdl/$(DEPDIR) libnrtype/$(DEPDIR) libuemf/$(DEPDIR) libvpsc/$(DEPDIR) libvpsc/pairingheap/$(DEPDIR) livarot/$(DEPDIR) live_effects/$(DEPDIR) live_effects/parameter/$(DEPDIR) svg/$(DEPDIR) trace/$(DEPDIR) trace/potrace/$(DEPDIR) ui/$(DEPDIR) ui/cache/$(DEPDIR) ui/dialog/$(DEPDIR) ui/tool/$(DEPDIR) ui/tools/$(DEPDIR) ui/view/$(DEPDIR) ui/widget/$(DEPDIR) util/$(DEPDIR) widgets/$(DEPDIR) xml/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) 2geom/$(DEPDIR) 2geom/numeric/$(DEPDIR) artivity/$(DEPDIR) debug/$(DEPDIR) dialogs/$(DEPDIR) display/$(DEPDIR) extension/$(DEPDIR) extension/dbus/$(DEPDIR) extension/dbus/wrapper/$(DEPDIR) extension/implementation/$(DEPDIR) extension/internal/$(DEPDIR) extension/internal/bitmap/$(DEPDIR) extension/internal/filter/$(DEPDIR) extension/internal/pdfinput/$(DEPDIR) extension/param/$(DEPDIR) filters/$(DEPDIR) helper/$(DEPDIR) io/$(DEPDIR) libavoid/$(DEPDIR) libcola/$(DEPDIR) libcroco/$(DEPDIR) libdepixelize/$(DEPDIR) libgdl/$(DEPDIR) libnrtype/$(DEPDIR) libuemf/$(DEPDIR) libvpsc/$(DEPDIR) libvpsc/pairingheap/$(DEPDIR) livarot/$(DEPDIR) live_effects/$(DEPDIR) live_effects/parameter/$(DEPDIR) svg/$(DEPDIR) trace/$(DEPDIR) trace/potrace/$(DEPDIR) ui/$(DEPDIR) ui/cache/$(DEPDIR) ui/dialog/$(DEPDIR) ui/tool/$(DEPDIR) ui/tools/$(DEPDIR) ui/view/$(DEPDIR) ui/widget/$(DEPDIR) util/$(DEPDIR) widgets/$(DEPDIR) xml/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

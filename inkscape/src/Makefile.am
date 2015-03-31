@@ -139,6 +139,7 @@ include util/Makefile_insert
 include trace/Makefile_insert
 include 2geom/Makefile_insert
 include libdepixelize/Makefile_insert
+include artivity/Makefile_insert
 
 # Extra files not mentioned as sources to include in the source tarball
 EXTRA_DIST +=	\
