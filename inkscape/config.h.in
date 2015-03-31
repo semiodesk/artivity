@@ -1,0 +1,367 @@
+/* config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
+/* Use binreloc thread support? */
+#undef BR_PTHREADS
+
+/* Use AutoPackage? */
+#undef ENABLE_BINRELOC
+
+/* Description */
+#undef ENABLE_NLS
+
+/* Build with OSX .app data dir paths? */
+#undef ENABLE_OSX_APP_LOCATIONS
+
+/* Translation domain used */
+#undef GETTEXT_PACKAGE
+
+/* Use aspell for built-in spellchecker */
+#undef HAVE_ASPELL
+
+/* Define to 1 if you have the `bind_textdomain_codeset' function. */
+#undef HAVE_BIND_TEXTDOMAIN_CODESET
+
+/* Define to 1 if you have the <boost/concept_check.hpp> header file. */
+#undef HAVE_BOOST_CONCEPT_CHECK_HPP
+
+/* Boost unordered_set (Boost >= 1.36) */
+#undef HAVE_BOOST_UNORDERED_SET
+
+/* Whether the Cairo PDF backend is available */
+#undef HAVE_CAIRO_PDF
+
+/* define to 1 if Carbon is available */
+#undef HAVE_CARBON
+
+/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#undef HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#undef HAVE_CFPREFERENCESCOPYAPPVALUE
+
+/* Define if the GNU dcgettext() function is already present or preinstalled.
+   */
+#undef HAVE_DCGETTEXT
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define to 1 if you have the `ecvt' function. */
+#undef HAVE_ECVT
+
+/* Use libexif */
+#undef HAVE_EXIF
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* Define to 1 if you have the `floor' function. */
+#undef HAVE_FLOOR
+
+/* Define to 1 if you have the `fpsetmask' function. */
+#undef HAVE_FPSETMASK
+
+/* Define if the GNU gettext() function is already present or preinstalled. */
+#undef HAVE_GETTEXT
+
+/* Define to 1 if you have the `gettimeofday' function. */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define to 1 if you have the <glibmm/threads.h> header file. */
+#undef HAVE_GLIBMM_THREADS_H
+
+/* Define to 1 if you have the `gtk_window_fullscreen' function. */
+#undef HAVE_GTK_WINDOW_FULLSCREEN
+
+/* Define to 1 if you have the `gtk_window_set_default_icon_from_file'
+   function. */
+#undef HAVE_GTK_WINDOW_SET_DEFAULT_ICON_FROM_FILE
+
+/* Define if you have the iconv() function and it works. */
+#undef HAVE_ICONV
+
+/* Define to 1 if you have the <ieeefp.h> header file. */
+#undef HAVE_IEEEFP_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Use libjpeg */
+#undef HAVE_JPEG
+
+/* Define to 1 if you have the <libintl.h> header file. */
+#undef HAVE_LIBINTL_H
+
+/* define to 1 if you have lcms version 1.x */
+#undef HAVE_LIBLCMS1
+
+/* define to 1 if you have lcms version 2.x */
+#undef HAVE_LIBLCMS2
+
+/* Define to 1 if you have the `m' library (-lm). */
+#undef HAVE_LIBM
+
+/* Define to 1 if you have the `mallinfo' function. */
+#undef HAVE_MALLINFO
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#undef HAVE_MALLOC_H
+
+/* Define to 1 if you have the `memmove' function. */
+#undef HAVE_MEMMOVE
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the `memset' function. */
+#undef HAVE_MEMSET
+
+/* Define to 1 if you have the `mkdir' function. */
+#undef HAVE_MKDIR
+
+/* Has working native unordered_set */
+#undef HAVE_NATIVE_UNORDERED_SET
+
+/* Use OpenMP */
+#undef HAVE_OPENMP
+
+/* Use libpoppler for direct PDF import */
+#undef HAVE_POPPLER
+
+/* Use libpoppler-cairo for rendering PDF preview */
+#undef HAVE_POPPLER_CAIRO
+
+/* Use libpoppler-glib and Cairo-SVG for PDF import */
+#undef HAVE_POPPLER_GLIB
+
+/* Define to 1 if you have the `pow' function. */
+#undef HAVE_POW
+
+/* Define to 1 if you have the `sqrt' function. */
+#undef HAVE_SQRT
+
+/* Define to 1 if `stat' has the bug that it succeeds when given the
+   zero-length file name argument. */
+#undef HAVE_STAT_EMPTY_STRING_BUG
+
+/* Define to 1 if you have the <stddef.h> header file. */
+#undef HAVE_STDDEF_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the `strftime' function. */
+#undef HAVE_STRFTIME
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strncasecmp' function. */
+#undef HAVE_STRNCASECMP
+
+/* Define to 1 if you have the `strpbrk' function. */
+#undef HAVE_STRPBRK
+
+/* Define to 1 if you have the `strrchr' function. */
+#undef HAVE_STRRCHR
+
+/* Define to 1 if you have the `strspn' function. */
+#undef HAVE_STRSPN
+
+/* Define to 1 if you have the `strstr' function. */
+#undef HAVE_STRSTR
+
+/* Define to 1 if you have the `strtoul' function. */
+#undef HAVE_STRTOUL
+
+/* Define to 1 if `fordblks' is a member of `struct mallinfo'. */
+#undef HAVE_STRUCT_MALLINFO_FORDBLKS
+
+/* Define to 1 if `fsmblks' is a member of `struct mallinfo'. */
+#undef HAVE_STRUCT_MALLINFO_FSMBLKS
+
+/* Define to 1 if `hblkhd' is a member of `struct mallinfo'. */
+#undef HAVE_STRUCT_MALLINFO_HBLKHD
+
+/* Define to 1 if `uordblks' is a member of `struct mallinfo'. */
+#undef HAVE_STRUCT_MALLINFO_UORDBLKS
+
+/* Define to 1 if `usmblks' is a member of `struct mallinfo'. */
+#undef HAVE_STRUCT_MALLINFO_USMBLKS
+
+/* Define to 1 if you have the <sys/filio.h> header file. */
+#undef HAVE_SYS_FILIO_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Has working standard TR1 unordered_set */
+#undef HAVE_TR1_UNORDERED_SET
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the <zlib.h> header file. */
+#undef HAVE_ZLIB_H
+
+/* Base data directory */
+#undef INKSCAPE_DATADIR
+
+/* Define to 1 if `lstat' dereferences a symlink specified with a trailing
+   slash. */
+#undef LSTAT_FOLLOWS_SLASHED_SYMLINK
+
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Locatization directory */
+#undef PACKAGE_LOCALE_DIR
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Use even newer color space API from Poppler >= 0.26.0 */
+#undef POPPLER_EVEN_NEWER_COLOR_SPACE_API
+
+/* Use even newer new color space API from Poppler >= 0.29.0 */
+#undef POPPLER_EVEN_NEWER_NEW_COLOR_SPACE_API
+
+/* Use color space API from Poppler >= 0.12.2 */
+#undef POPPLER_NEW_COLOR_SPACE_API
+
+/* Use new error API from Poppler >= 0.20.0 */
+#undef POPPLER_NEW_ERRORAPI
+
+/* Use GfxFont from Poppler >= 0.8.3 */
+#undef POPPLER_NEW_GFXFONT
+
+/* GfxPatch no longer uses GfxColor in >= 0.15.1 */
+#undef POPPLER_NEW_GFXPATCH
+
+/* Define to 1 if the `S_IS*' macros in <sys/stat.h> do not work properly. */
+#undef STAT_MACROS_BROKEN
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
+#undef TIME_WITH_SYS_TIME
+
+/* Define to 1 if your <sys/time.h> declares `struct tm'. */
+#undef TM_IN_SYS_TIME
+
+/* Version number of package */
+#undef VERSION
+
+/* Build in dbus */
+#undef WITH_DBUS
+
+/* Build with external GDL */
+#undef WITH_EXT_GDL
+
+/* Build with Gdl 3.6 or higher */
+#undef WITH_GDL_3_6
+
+/* Build with Glibmm 2.32 or higher */
+#undef WITH_GLIBMM_2_32
+
+/* Use gnome vfs file load functionality */
+#undef WITH_GNOME_VFS
+
+/* Build with Gtkmm 3.0.x or higher */
+#undef WITH_GTKMM_3_0
+
+/* Build with Gtkmm 3.10.x or higher */
+#undef WITH_GTKMM_3_10
+
+/* enable gtk spelling widget */
+#undef WITH_GTKSPELL
+
+/* Image Magick++ support for bitmap effects */
+#undef WITH_IMAGE_MAGICK
+
+/* enable openoffice files (SVG jars) */
+#undef WITH_INKJAR
+
+/* Build in libcdr */
+#undef WITH_LIBCDR
+
+/* Build using libcdr 0.0.x */
+#undef WITH_LIBCDR00
+
+/* Build using libcdr 0.1.x */
+#undef WITH_LIBCDR01
+
+/* Build in libvisio */
+#undef WITH_LIBVISIO
+
+/* Build using libvisio 0.0.x */
+#undef WITH_LIBVISIO00
+
+/* Build using libvisio 0.1.x */
+#undef WITH_LIBVISIO01
+
+/* Build in libwpg */
+#undef WITH_LIBWPG
+
+/* Build using libwpg 0.2.x */
+#undef WITH_LIBWPG02
+
+/* Build using libwpg 0.3.x */
+#undef WITH_LIBWPG03
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
+
+/* Define to `int' if <sys/types.h> does not define. */
+#undef mode_t
+
+
+
+
+
