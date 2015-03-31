@@ -54,6 +54,7 @@
 #include "document.h"
 #include "document-undo.h"
 #include "event-log.h"
+#include "artivity/artivity-log.h"
 #include "helper/action-context.h"
 #include "interface.h"
 #include "inkscape-private.h"
@@ -1559,9 +1560,18 @@ SPDesktop::setDocument (SPDocument *doc)
 		event_log = 0;
 	}
 
+	if (artivity_log) {
+		doc->removeUndoObserver(*artivity_log);
+		delete artivity_log;
+		artivity_log = 0;
+	}
+	
     /* setup EventLog */
     event_log = new Inkscape::EventLog(doc);
     doc->addUndoObserver(*event_log);
+
+	artivity_log = new Inkscape::ArtivityLog(doc);
+	doc->addUndoObserver(*artivity_log);
 
     _commit_connection.disconnect();
     _commit_connection = doc->connectCommit(sigc::mem_fun(*this, &SPDesktop::updateNow));
