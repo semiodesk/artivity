@@ -30,7 +30,7 @@ namespace Inkscape
 
 		ZeitgeistLog* _log;
 
-		std::vector<ZeitgeistEvent*>* _queue;
+		std::vector<ZeitgeistSubject*>* _queue;
 			
 	public:
 			
@@ -43,8 +43,9 @@ namespace Inkscape
 		void notifyUndoCommitEvent(Event* log);
 		void notifyClearUndoEvent();
 		void notifyClearRedoEvent();
-		ZeitgeistEvent* createEvent();
 	};
+
+	static void zeitgeist_complete(GObject *source_object, GAsyncResult *res, gpointer user_data);
 }
 
 #endif // SEEN_INKSCAPE_ARTIVITY_OBSERVER_H
