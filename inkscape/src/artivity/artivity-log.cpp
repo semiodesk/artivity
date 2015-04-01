@@ -16,8 +16,9 @@ namespace Inkscape
 	ArtivityLog::ArtivityLog(SPDocument* doc) : UndoStackObserver(), _doc(doc)
 	{
 		g_message("ArtivityLog(SPDocument*) called; doc=%p", doc);
-		
-		_queue = new std::vector<ZeitgeistEvent*>();
+
+		_log = zeitgeist_log_new();
+		_queue = new std::vector<ZeitgeistSubject*>();
 	}
 	
 	void
@@ -39,26 +40,55 @@ namespace Inkscape
 
 		if(_doc == NULL) return;
 
+		const char* xml = "";
+		
 		// Create an event without an origin and push it into the queue.
-		ZeitgeistEvent* event = createEvent();
+		ZeitgeistSubject* subject = zeitgeist_subject_new_full(
+          NULL,
+		  ZEITGEIST_ZG_MODIFY_EVENT,
+          ZEITGEIST_ZG_USER_ACTIVITY,
+          "image/svg+xml",
+          NULL,
+          xml,
+          "net");
+		
+		_queue->push_back(subject);
 
-		_queue->push_back(event);
+		if(!zeitgeist_log_is_connected(_log)) return;
+		
+		g_message("notifyUndoCommitEvent(Event*) queued subject; subject=%p", subject);
 
 		// Determine if the document has been saved..
 		const gchar* uri = _doc->getURI();
 
 		if(uri == NULL) return;	
 
+		uri = g_strconcat("file:/", uri, NULL);
+		
+		g_message("notifyUndoCommitEvent(Event*) uri=%s", uri);
+		
 		// ..if so, push all events in the queue into Zeitgeist.
 		while(!_queue->empty())
-		{
-			ZeitgeistEvent* event = _queue->back();
+		{					
+			ZeitgeistSubject* s = _queue->back();
+			zeitgeist_subject_set_uri(s, uri);
+			zeitgeist_subject_set_current_uri(s, uri);
+			zeitgeist_subject_set_origin(s, uri);
 
-			// TODO: Set the origin of species..
+			g_message("notifyUndoCommitEvent(Event*): uri=%s", zeitgeist_subject_get_uri(s));
+
+			ZeitgeistEvent* event = zeitgeist_event_new_full(
+    			ZEITGEIST_ZG_MODIFY_EVENT,
+  				ZEITGEIST_ZG_USER_ACTIVITY,
+    			"application://inkscape.desktop",
+    			s,
+				NULL);
 			
-			// TODO: Add to zeitgeist log..
+			zeitgeist_log_insert_events(_log, NULL, zeitgeist_complete, NULL, event, NULL);
 			
 			_queue->pop_back();
+
+			g_message("notifyUndoCommitEvent(Event*): logged event; queue.size(): %d", _queue->size());
 		}
 	}
 
@@ -74,10 +104,10 @@ namespace Inkscape
 		g_message("notifyClearRedoEvent(Event*) called");
 	}
 
-	ZeitgeistEvent*
-	ArtivityLog::createEvent()
+	static void
+	zeitgeist_complete(GObject *source_object, GAsyncResult *res, gpointer user_data)
 	{
-		return NULL;
+		g_message("zeitgeist_complete(..) called");
 	}
 }
 
