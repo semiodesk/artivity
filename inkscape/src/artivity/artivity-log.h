@@ -13,6 +13,7 @@
 
 #include "undo-stack-observer.h"
 #include "document.h"
+#include <zeitgeist.h>
 
 namespace Inkscape
 {
@@ -26,10 +27,14 @@ namespace Inkscape
 	private:
 			
 		SPDocument* _doc;
+
+		ZeitgeistLog* _log;
+
+		std::vector<ZeitgeistEvent*>* _queue;
 			
 	public:
 			
-		ArtivityLog(SPDocument* doc) : UndoStackObserver(), _doc(doc) {}
+		ArtivityLog(SPDocument* doc);
 			
 		virtual ~ArtivityLog() { }
 
@@ -38,7 +43,7 @@ namespace Inkscape
 		void notifyUndoCommitEvent(Event* log);
 		void notifyClearUndoEvent();
 		void notifyClearRedoEvent();
-
+		ZeitgeistEvent* createEvent();
 	};
 }
 
