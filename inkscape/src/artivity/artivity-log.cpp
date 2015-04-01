@@ -13,44 +13,71 @@
 
 namespace Inkscape
 {
+	ArtivityLog::ArtivityLog(SPDocument* doc) : UndoStackObserver(), _doc(doc)
+	{
+		g_message("ArtivityLog(SPDocument*) called; doc=%p", doc);
+		
+		_queue = new std::vector<ZeitgeistEvent*>();
+	}
+	
 	void
 	ArtivityLog::notifyUndoEvent(Event* log)
 	{
-		g_message("notifyUndoEvent(SPDocumentUndo::undo) called; log=%p\n", log->event);
+		g_message("notifyUndoEvent(Event*) called; log=%p", log->event);
 	}
 
 	void
 	ArtivityLog::notifyRedoEvent(Event* log)
 	{
-		g_message("notifyRedoEvent(SPDocumentUndo::redo) called; log=%p\n", log->event);
+		g_message("notifyRedoEvent(Event*) called; log=%p", log->event);
 	}
 
 	void
 	ArtivityLog::notifyUndoCommitEvent(Event* log)
 	{
-		g_message("notifyUndoCommitEvent(SPDocumentUndo::maybe_done) called; log=%p\n", log->event);
+		g_message("notifyUndoCommitEvent(Event*) called; log=%p", log->event);
 
-		// The log was not initialized properly..
 		if(_doc == NULL) return;
-		
+
+		// Create an event without an origin and push it into the queue.
+		ZeitgeistEvent* event = createEvent();
+
+		_queue->push_back(event);
+
+		// Determine if the document has been saved..
 		const gchar* uri = _doc->getURI();
 
-		// The document has not yet been saved..
-		if(uri == NULL) return;
-		
-		g_message("   %s\n", uri);
+		if(uri == NULL) return;	
+
+		// ..if so, push all events in the queue into Zeitgeist.
+		while(!_queue->empty())
+		{
+			ZeitgeistEvent* event = _queue->back();
+
+			// TODO: Set the origin of species..
+			
+			// TODO: Add to zeitgeist log..
+			
+			_queue->pop_back();
+		}
 	}
 
 	void
 	ArtivityLog::notifyClearUndoEvent()
 	{
-		g_message("notifyClearUndoEvent(sp_document_clear_undo) called");
+		g_message("notifyClearUndoEvent(Event*) called");
 	}
 
 	void
 	ArtivityLog::notifyClearRedoEvent()
 	{
-		g_message("notifyClearRedoEvent(sp_document_clear_redo) called");
+		g_message("notifyClearRedoEvent(Event*) called");
+	}
+
+	ZeitgeistEvent*
+	ArtivityLog::createEvent()
+	{
+		return NULL;
 	}
 }
 

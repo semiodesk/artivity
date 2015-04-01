@@ -1768,7 +1768,7 @@ am__DEPENDENCIES_2 = $(noinst_LIBRARIES) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 cxxtests_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am__inkscape_SOURCES_DIST = main.cpp util/find-last-if.h \
 	util/longest-common-suffix.h remove-last.h attributes.cpp \
@@ -3797,6 +3797,14 @@ AUTOMAKE_OPTIONS = 1.7 subdir-objects
 # Use this only for libraries that are really standalone, rather than for
 # source tree subdirectories.
 @WITH_EXT_GDL_FALSE@internal_GDL = libgdl/libgdl.a
+ZEITGEIST_LIBS = \
+	-lzeitgeist-1.0 \
+	-lgobject-2.0 \
+	-lglib-2.0
+
+ZEITGEIST_CFLAGS = \
+	-I /usr/include/zeitgeist-1.0
+
 noinst_LIBRARIES = \
 	libcroco/libcroco.a		\
 	libavoid/libavoid.a		\
@@ -3825,7 +3833,8 @@ all_libs = \
 	$(DBUS_LIBS)		\
 	$(GDL_LIBS)             \
 	$(IMAGEMAGICK_LIBS)     \
-	$(X11_LIBS)
+	$(X11_LIBS) \
+	$(ZEITGEIST_LIBS)
 
 
 # Add sources common for Inkscape and Inkview to this variable.
@@ -4555,7 +4564,8 @@ AM_CPPFLAGS = \
 	-DPOTRACE=\"potrace\"	\
 	$(INKSCAPE_CFLAGS) \
 	$(WIN32_CFLAGS) \
-	$(X11_CFLAGS)
+	$(X11_CFLAGS) \
+	$(ZEITGEIST_CFLAGS)
 
 CXXTEST_TEMPLATE = $(srcdir)/cxxtest-template.tpl
 CXXTESTGENFLAGS = --root --have-eh --template=$(CXXTEST_TEMPLATE)

@@ -21,6 +21,13 @@ if !WITH_EXT_GDL
 internal_GDL = libgdl/libgdl.a
 endif
 
+ZEITGEIST_LIBS = \
+	-lzeitgeist-1.0 \
+	-lgobject-2.0 \
+	-lglib-2.0
+
+ZEITGEIST_CFLAGS = \
+	-I /usr/include/zeitgeist-1.0
 
 noinst_LIBRARIES =	\
 	libcroco/libcroco.a		\
@@ -50,7 +57,8 @@ all_libs =			\
 	$(DBUS_LIBS)		\
 	$(GDL_LIBS)             \
 	$(IMAGEMAGICK_LIBS)     \
-	$(X11_LIBS)
+	$(X11_LIBS) \
+	$(ZEITGEIST_LIBS)
 
 # Add sources common for Inkscape and Inkview to this variable.
 ink_common_sources =
@@ -83,7 +91,8 @@ AM_CPPFLAGS =	\
 	-DPOTRACE=\"potrace\"	\
 	$(INKSCAPE_CFLAGS) \
 	$(WIN32_CFLAGS) \
-	$(X11_CFLAGS)
+	$(X11_CFLAGS) \
+	$(ZEITGEIST_CFLAGS)
 
 CXXTEST_TEMPLATE = $(srcdir)/cxxtest-template.tpl
 CXXTESTGENFLAGS = --root --have-eh --template=$(CXXTEST_TEMPLATE)
