@@ -38,14 +38,26 @@ namespace Inkscape
 			
 		virtual ~ArtivityLog() { }
 
-		void notifyUndoEvent(Event* log);
-		void notifyRedoEvent(Event* log);
-		void notifyUndoCommitEvent(Event* log);
+		void notifyUndoEvent(Event* e);
+			
+		void notifyRedoEvent(Event* e);
+			
+		void notifyUndoCommitEvent(Event* e);
+			
 		void notifyClearUndoEvent();
+			
 		void notifyClearRedoEvent();
+
+		void logEvent(Event* e, const gchar* source);
+			
+		ZeitgeistSubject* newSubject(Event* e);
+			
+		void logSubject(Event* e, ZeitgeistSubject* s, const gchar* subjectUri, const gchar* originUri);
+			
+		GByteArray* getEventPayload(Event* e);
 	};
 
-	static void zeitgeist_complete(GObject *source_object, GAsyncResult *res, gpointer user_data);
+	static void logSubjectComplete(GObject* source, GAsyncResult* result, gpointer userData);
 }
 
 #endif // SEEN_INKSCAPE_ARTIVITY_OBSERVER_H
