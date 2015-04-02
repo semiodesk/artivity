@@ -25,35 +25,35 @@ namespace Inkscape
 	class ArtivityLog : public UndoStackObserver
 	{
 	private:
-			
+		
 		SPDocument* _doc;
-
+		
 		ZeitgeistLog* _log;
-
+		
 		std::vector<ZeitgeistSubject*>* _queue;
-			
+		
 	public:
-			
+		
 		ArtivityLog(SPDocument* doc);
-			
-		virtual ~ArtivityLog() { }
-
+		
+		virtual ~ArtivityLog() {}
+		
 		void notifyUndoEvent(Event* e);
-			
+		
 		void notifyRedoEvent(Event* e);
-			
+		
 		void notifyUndoCommitEvent(Event* e);
-			
+		
 		void notifyClearUndoEvent();
-			
+		
 		void notifyClearRedoEvent();
-
+		
 		void logEvent(Event* e, const gchar* source);
-			
+		
 		ZeitgeistSubject* newSubject(Event* e);
-			
+		
 		void logSubject(Event* e, ZeitgeistSubject* s, const gchar* subjectUri, const gchar* originUri);
-			
+		
 		GByteArray* getEventPayload(Event* e);
 	};
 
