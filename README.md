@@ -15,12 +15,12 @@ The repository currently contains the following modules:
 
 Currently there are no prebuild binaries or setup tools, sorry. Anyone interested in trying the modified Inkscape version needs to do the following:
 
-1. Check out the source code in the repository
+1. Check out the source code
 2. Compile and run Inkscape
 3. Start artivity-explorer.py
 
 For testing the browser extension, proceed as follows:
 
-1. Check out the source doe in the repository
+1. Check out the source code
 2. Add the custom chrome extension from the folder 'artivitiy-extension-chrome'
 3. Start the REST deamon 'artivity-deamon.py'
