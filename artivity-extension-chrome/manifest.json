@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+
+  "name": "Artivity",
+  "description": "This extension tracks the webpages you visit in the Zeigeist log.",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [{
+      "matches" : ["*://*/*"],
+      "js": ["content.js"],
+      "run_at" : "document_end"
+  }],
+
+  "permissions": [
+    "activeTab",
+    "https://ajax.googleapis.com/"
+  ]
+}
