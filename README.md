@@ -4,6 +4,8 @@ Artivity is a project funded by JISC which aims to produce a toolkit for capturi
 
 ### summary ###
 
+The repository currently contains the following modules:
+
 * Modified version of Inkscape which pushes undo/redo events to Zeitgeist (inkscape)
 * Simple GUI for viewing the undo/redo events for Inkscape drawings (artivity-explorer)
 * Browser extension for Google Chrome (artivity-extension-chrome)
