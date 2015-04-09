@@ -12,6 +12,7 @@ from logging import getLogger
 
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
+from werkzeug.exceptions import abort
 
 import json
 

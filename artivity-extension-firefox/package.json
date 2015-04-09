@@ -1,0 +1,9 @@
+{
+  "name": "artivity",
+  "title": "Artivity",
+  "id": "jid1-1BXmXMTUuyzP8g",
+  "description": "This extension tracks the webpages you visit in the Zeigeist log.",
+  "author": "Sebastian Faubel <sebastian@semiodesk.com>",
+  "license": "GPL 3.0",
+  "version": "1.0"
+}
