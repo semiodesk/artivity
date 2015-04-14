@@ -9,14 +9,15 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="100.0625"
-   height="102.875"
-   id="svg3036"
+   width="62.765854mm"
+   height="67.548195mm"
+   viewBox="0 0 222.39869 239.344"
+   id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="Neues Dokument 2">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="artivity-icon.svg">
   <defs
-     id="defs3038" />
+     id="defs4" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -24,23 +25,31 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="108.36288"
-     inkscape:cy="36.228589"
+     inkscape:zoom="0.7071068"
+     inkscape:cx="-52.308908"
+     inkscape:cy="237.10061"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     fit-margin-bottom="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4149"
+       originx="-308.64635"
+       originy="-385.69216" />
+  </sodipodi:namedview>
   <metadata
-     id="metadata3041">
+     id="metadata7">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -52,14 +61,17 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Ebene 1"
+     inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-344.125,-326.6875)">
+     transform="translate(-308.64636,-427.32604)">
     <path
-       style="fill:#ff6600;fill-opacity:1;stroke:none"
-       d="m 344.125,326.6875 0,102.875 10.0625,0 c 0.93953,-1.90585 1.91818,-4.00107 2.90625,-6.34375 l 41.1875,-96.34375 3,0 40.75,97.375 c 0.73493,1.75359 1.45164,3.36601 2.15625,4.84375 l 0,-102.40625 -100.0625,0 z m 50.96875,27.03125 -20.40625,47.3125 40.25,0 -19.84375,-47.3125 z m -23.0625,53.6875 -7.9375,18.5 c -0.56981,1.32397 -1.06485,2.52747 -1.46875,3.65625 l 63.84375,0 c -0.52989,-1.58515 -1.20444,-3.34873 -2.03125,-5.3125 l -7.09375,-16.84375 -45.3125,0 z"
-       id="rect3930"
-       inkscape:connector-curvature="0" />
+       style="fill:#252525;fill-opacity:1;fill-rule:evenodd;stroke:#252525;stroke-width:0.85181952px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 113.63281 0.42578125 C 32.815322 0.42578125 1.5078125 79.718517 1.5078125 98.367188 C 1.5078125 122.08027 40.914062 111.39069 40.914062 136.70898 C 40.914062 159.55794 0.42578125 171.71653 0.42578125 191.59375 C 0.42578125 197.92077 12.720949 238.91797 83.542969 238.91797 C 164.6422 238.91797 221.97266 181.07007 221.97266 108.95703 C 221.97266 75.163471 202.14861 0.42578125 113.63281 0.42578125 z M 122.50586 72.6875 C 140.26677 72.6875 161.64453 76.647821 161.64453 98.025391 L 161.64453 144.41406 C 161.64453 152.51928 162.50885 160.62409 164.74805 164.24414 L 139.91992 164.24414 C 139.05477 161.48585 138.36978 158.54758 138.19336 155.62305 C 130.43759 163.72489 119.05543 166.65625 108.19531 166.65625 C 91.299553 166.65625 77.849609 158.20579 77.849609 139.92578 C 77.849609 119.75264 93.019653 114.92359 108.19531 112.85742 C 123.19116 110.61482 137.16211 111.13508 137.16211 101.13672 C 137.16211 90.612489 129.9183 89.058594 121.30078 89.058594 C 111.99115 89.058594 105.95305 92.854996 105.08789 102.50391 L 80.601562 102.50391 C 81.987714 79.583782 102.50862 72.6875 122.50586 72.6875 z M 137.16211 120.62109 C 133.02299 124.24452 124.40202 124.41408 116.8125 125.79492 C 109.22975 127.34539 102.33203 129.92612 102.33203 138.89648 C 102.33203 148.0297 109.40323 150.27539 117.33203 150.27539 C 136.47379 150.27539 137.16211 135.09653 137.16211 129.75977 L 137.16211 120.62109 z "
+       transform="translate(308.64636,427.32604)"
+       id="path5079"
+       inkscape:export-filename="/home/sebastian/Projects/Artivity/artivity-extension-chrome/icon.png"
+       inkscape:export-xdpi="7.520556"
+       inkscape:export-ydpi="7.520556" />
   </g>
 </svg>

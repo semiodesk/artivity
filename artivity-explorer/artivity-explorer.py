@@ -16,7 +16,7 @@ class ArtivityJournal(gtk.Window):
 		self.init_log_view()
 
 	def init_log(self):
-		eventType = [Event.new_for_values(subject_uri='file:///home/sebastian/test.svg', subject_interpretation=Interpretation.VISUAL)]
+		eventType = [Event.new_for_values(subject_interpretation=Interpretation.VISUAL)]
 
 		self.log = ZeitgeistClient()
 		self.log.install_monitor(TimeRange.always(), eventType, self.on_log_event_inserted, self.on_log_event_deleted)
@@ -30,11 +30,11 @@ class ArtivityJournal(gtk.Window):
 		column1.set_resizable(True)
 		column1.set_sort_column_id(0)
 
-		column2 = gtk.TreeViewColumn('Actor', gtk.CellRendererText(), text=1)
+		column2 = gtk.TreeViewColumn('Subject', gtk.CellRendererText(), text=3)
     		column2.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-		column2.set_min_width(220)
+		column2.set_min_width(400)
 		column2.set_resizable(True)
-		column2.set_sort_column_id(1)
+		column2.set_sort_column_id(3)
 
 		column3 = gtk.TreeViewColumn('Event', gtk.CellRendererText(), text=2)
     		column3.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
@@ -42,24 +42,18 @@ class ArtivityJournal(gtk.Window):
 		column3.set_resizable(True)
 		column3.set_sort_column_id(2)
 
-		column4 = gtk.TreeViewColumn('Subject', gtk.CellRendererText(), text=3)
+		renderer4 = gtk.CellRendererText()
+		renderer4.wrap_width = 400
+		renderer4.wrap_mode = gtk.WRAP_WORD
+
+		column4 = gtk.TreeViewColumn('Data', renderer4, text=4)
     		column4.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-		column4.set_min_width(400)
+		column4.set_min_width(75)
+		column4.set_fixed_width(400)
 		column4.set_resizable(True)
-		column4.set_sort_column_id(3)
+		column4.set_sort_column_id(4)
 
-		renderer6 = gtk.CellRendererText()
-		renderer6.wrap_width = 400
-		renderer6.wrap_mode = gtk.WRAP_WORD
-
-		column5 = gtk.TreeViewColumn('Data', renderer6, text=4)
-    		column5.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-		column5.set_min_width(75)
-		column5.set_fixed_width(400)
-		column5.set_resizable(True)
-		column5.set_sort_column_id(4)
-
-		column6 = gtk.TreeViewColumn()
+		column5 = gtk.TreeViewColumn()
 
 		self.logView = gtk.TreeView()
 		self.logView.set_model(self.logModel)
@@ -68,7 +62,6 @@ class ArtivityJournal(gtk.Window):
 		self.logView.append_column(column3)
 		self.logView.append_column(column4)
 		self.logView.append_column(column5)
-		self.logView.append_column(column6)
 
 		self.logScroller = gtk.ScrolledWindow()
 		self.logScroller.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
