@@ -25,6 +25,10 @@ cp -v artivity-apid/artivity-apid.desktop $AUTOSTART_DIR
 
 echo
 echo ">>> Installing browser extensions.."
+echo
+echo "NOTE: Please drag & drop the browser extension files into your"
+echo "favourite browser to enable the browser extensions."
+
 nautilus --no-desktop browser-packages &
 
 echo
