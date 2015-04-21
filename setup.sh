@@ -2,7 +2,7 @@
 
 echo "ARTIVITY SETUP, Version 1.0"
 
-if ! echo "import werkzeug1" | python 2> /dev/null ; then
+if ! echo "import werkzeug" | python 2> /dev/null ; then
  echo
  echo "Error: Please install python werkzeug library before running this setup."
  exit -1
