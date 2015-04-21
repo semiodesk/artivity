@@ -2,6 +2,12 @@
 
 echo "ARTIVITY SETUP, Version 1.0"
 
+if ! echo "import werkzeug1" | python 2> /dev/null ; then
+ echo
+ echo "Error: Please install python werkzeug library before running this setup."
+ exit -1
+fi
+
 echo
 echo ">>> Installing Artivity REST API deamon.."
 
