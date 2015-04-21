@@ -77,8 +77,6 @@ class HttpServer:
 
 		param = json.loads(request.data)
 
-		self.log.info(param)
-
 		if not param or not 'actor' in param:
 			abort(400)
 
@@ -89,7 +87,5 @@ class HttpServer:
 
 		if 'enabled' in param:
 			self.actors[actor] = param['enabled']
-
-		self.log.info(self.actors[actor])
 
 		return Response(json.dumps(self.actors[actor]))
