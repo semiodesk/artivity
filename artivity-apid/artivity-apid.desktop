@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=~/.local/bin/artivity-apid
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=Artivity Browser API
+Name=Artivity Browser API
+Comment[en_US]=Track your art related browsing activities.
+Comment=Track your art related browsing activities.

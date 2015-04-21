@@ -1,0 +1,10 @@
+syntax: glob
+*.swp
+*.o
+*.gmo
+*.Po
+*~
+.dirstamp
+*.anjuta*
+*.cache*
+Debug
