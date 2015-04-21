@@ -25,7 +25,7 @@ def init_logging():
 if __name__ == '__main__':
 	init_logging()
 
-	write_pidfile_or_die('~/.artivityd.pid', logging.getLogger(_URI))
+	write_pidfile_or_die('~/.artivity-apid.pid', logging.getLogger(_URI))
 
 	print("%s v%s\n" % (_NAME, _VERSION))
 
