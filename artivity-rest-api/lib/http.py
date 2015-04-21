@@ -20,6 +20,8 @@ class HttpServer:
 	"""A simple HTTP Server providing a REST API for communication 
 	with the Zeitgeist engine via D-Bus"""
 
+	actors = {}
+
 	def __init__(self, uri, name, zeitgeist):
 		"""Create a new instance of the class."""
 
@@ -37,8 +39,10 @@ class HttpServer:
 	def dispatch_request(self, request):
 		"""Calls the functions corresponding to the requested path."""
 
-		if(request.path == "/artivity/1.0/activities"):
-			self.create_activity(request)
+		if request.path == "/artivity/1.0/activities":
+			return self.create_activity(request)
+		elif request.path == "/artivity/1.0/status":
+			return self.get_status(request)
 
 		return Response()
 
@@ -60,3 +64,32 @@ class HttpServer:
 		self.log.info(url)
 
 		self.zeitgeist.log_website_access(actor, url, title);
+
+		return Response()
+
+	def get_status(self, request):
+		"""Handles a request to get the current logging status for a given actor."""
+
+		self.log.info(request.data)
+
+		if not request.data:
+			abort(400)	
+
+		param = json.loads(request.data)
+
+		self.log.info(param)
+
+		if not param or not 'actor' in param:
+			abort(400)
+
+		actor = param['actor']	
+
+		if not actor in self.actors:
+			self.actors[actor] = False
+
+		if 'enabled' in param:
+			self.actors[actor] = param['enabled']
+
+		self.log.info(self.actors[actor])
+
+		return Response(json.dumps(self.actors[actor]))

@@ -5,5 +5,8 @@
   "description": "This extension tracks the webpages you visit in the Zeigeist log.",
   "author": "Sebastian Faubel <sebastian@semiodesk.com>",
   "license": "GPL 3.0",
-  "version": "1.0"
+  "version": "1.0",
+  "permissions": {
+    "cross-domain-content": ["http://localhost:8272/"]
+  }
 }
