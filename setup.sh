@@ -3,7 +3,7 @@
 echo "ARTIVITY SETUP, Version 1.0"
 
 echo
-echo ">>> Installing Artivity REST API deamon for browser extensions.."
+echo ">>> Installing Artivity REST API deamon.."
 
 LOCAL_BIN_DIR=$HOME/.local/bin/
 
@@ -11,6 +11,8 @@ LOCAL_BIN_DIR=$HOME/.local/bin/
 
 cp -vR artivity-apid/artivity-apid $LOCAL_BIN_DIR
 cp -vR artivity-apid/lib $LOCAL_BIN_DIR
+
+nohup $LOCAL_BIN_DIR/artivity-apid > /dev/null &
 
 echo
 echo ">>> Installing autostart scripts for GNOME shell.."
@@ -22,7 +24,8 @@ AUTOSTART_DIR=$HOME/.config/autostart/
 cp -v artivity-apid/artivity-apid.desktop $AUTOSTART_DIR
 
 echo
-gnome-session-properties
+echo ">>> Installing browser extensions.."
+nautilus --no-desktop browser-packages &
 
 echo
 echo "Done. Please restart your desktop session to complete the installation.. :)"
