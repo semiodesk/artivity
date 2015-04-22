@@ -76,7 +76,7 @@ namespace Inkscape
 		
 		_queue->push_back(subject);
 
-		g_message("%s: Queued subject=%p", source, subject);
+		g_message("%s: Queued subject=%p desc=%s", source, subject, e->description.data());
 		
 		if(!zeitgeist_log_is_connected(_log))
 		{

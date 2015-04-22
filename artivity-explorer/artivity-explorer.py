@@ -9,11 +9,52 @@ from zeitgeist.datamodel import *
 
 class ArtivityJournal(gtk.Window):
 
+	vbox = None;
+
 	def __init__(self):
 		gtk.Window.__init__(self)
+		
+		self.set_title("Artivity Explorer")
+
+		self.init_menubar()
 
 		self.init_log()
 		self.init_log_view()
+
+		self.connect("delete-event", gtk.main_quit)
+		self.show_all()
+
+	def init_menubar(self):
+		mb = gtk.MenuBar();
+
+		filemenu = gtk.Menu()
+        	filemenuItem = gtk.MenuItem("File")
+	        filemenuItem.set_submenu(filemenu)
+       
+        	exit = gtk.MenuItem("Exit")
+	        exit.connect("activate", gtk.main_quit)
+        	filemenu.append(exit)
+
+	        mb.append(filemenuItem)
+
+
+		querymenu = gtk.Menu()
+		querymenuItem = gtk.MenuItem("Query")
+		querymenuItem.set_submenu(querymenu)
+		
+		timespan = gtk.MenuItem("Select File")
+		timespan.connect("activate", self.set_file)
+		querymenu.append(timespan)
+
+		mb.append(querymenuItem)
+
+
+        	self.vbox = gtk.VBox(False, 2)
+	        self.vbox.pack_start(mb, False, False, 0)
+
+        	self.add(self.vbox)	
+
+		
 
 	def init_log(self):
 		eventType = [Event.new_for_values(subject_interpretation=Interpretation.VISUAL)]
@@ -62,12 +103,13 @@ class ArtivityJournal(gtk.Window):
 		self.logView.append_column(column3)
 		self.logView.append_column(column4)
 		self.logView.append_column(column5)
+		self.logView.connect("row-activated", self.cell_clicked)
 
 		self.logScroller = gtk.ScrolledWindow()
 		self.logScroller.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 		self.logScroller.add(self.logView)
 
-		self.add(self.logScroller)
+		self.vbox.pack_start(self.logScroller, True, True, 0 )
 
 	def on_log_event_inserted(self, time_range, events):
 		# insert into journal
@@ -89,10 +131,34 @@ class ArtivityJournal(gtk.Window):
 		# remove events from journal
 		print event_ids
 
-window = ArtivityJournal()
-window.resize(1350, 500)
-window.connect("delete-event", gtk.main_quit)
-window.show_all()
+	def on_events_received(self, events):
+		self.on_log_event_inserted(None, events)
 
-gtk.gdk.threads_init()
-gtk.main()
+	def cell_clicked(self, treeview, path, column):
+		print self.logModel[path[0]][4]
+
+
+	def load_events(self, filename):
+		filename = "file://"+filename
+		subj = Subject.new_for_values(uri=filename)
+		template = Event.new_for_values(subjects=[subj])
+		self.log.find_events_for_template(template, self.on_events_received)
+	
+
+	def get_artivity_files(self):
+		chooser = gtk.FileChooserDialog(title=None, action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+		response = chooser.run()
+		if( response == gtk.RESPONSE_OK ):
+			self.load_events(chooser.get_filename())	
+		chooser.destroy()
+
+	def set_file(self, thing):
+		self.get_artivity_files()
+
+
+if( __name__ == "__main__" ):
+	window = ArtivityJournal()
+	window.resize(1350, 500)
+
+	gtk.gdk.threads_init()
+	gtk.main()
