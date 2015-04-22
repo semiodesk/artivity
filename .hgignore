@@ -1,6 +1,7 @@
 syntax: glob
 *.pyc
 *.swp
+*.swo
 *.o
 *.gmo
 *.Po
