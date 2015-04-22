@@ -6,13 +6,17 @@
 //                                                                                                                     
 // Distributed under the GNU GPL version 3.
 
-var url = document.URL;
-var title = document.title;
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+     var url = request.url;
+     var title = request.title;
 
-// Do not track secure connections.
-if(url.indexOf('http') === 0)
-{
-  console.log(">>> [", url, ",", title, "]");
+     if(url.indexOf('http') === 0) {
+        var params = {title: title, url: url, actor: "application://chromium-browser.desktop"}
 
-  chrome.runtime.sendMessage({url: url, title: title});
-}
+        var request = new XMLHttpRequest();
+        request.open("POST", 'http://localhost:8272/artivity/1.0/activities', true);
+        request.setRequestHeader("Content-type", "text/plain");
+        request.send(JSON.stringify(params));
+     }
+});
