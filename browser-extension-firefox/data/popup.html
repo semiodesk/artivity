@@ -1,75 +1,28 @@
 <!doctype html>
 <html>
-  <head>
-    <style>
+<head>
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/popup.css" type="text/css">
+</head>
 
-      body {
-	background: white url('watermark.png') bottom right no-repeat;
-        font-family: "Arial", "Helvetica", sans-serif;
-	font-size: 1em;
-	min-width: 300px;
-        height: 150px;
-        padding: 0;
-	margin: 0;
-      }
+<body>
+  <img id="watermark" src="watermark.png" name="watermark">
 
-      h4 {
-        text-transform: uppercase;
-	color: #747474;
-        font-size: 0.8em;
-        font-weight: normal;
-        margin: 10px 0 0 0;
-      }
+  <div id="body">
+	 <div id="warning-box">
+		<i class="fa fa-exclamation-circle"></i> No connection to Artivity service.
+	 </div>
+    <div id="settings-box">
+      <h4>Artivity Settings</h4>
 
-      #header {
-        background: black;
-	color: white;
-	padding: 10px;
-	text-align: center;
-      }
-
-      #body {
-        padding: 0 10px;
-      }
-
-      #subtitle, #footer {
-	color: #747474;
-      }
-
-      #settings {
-	margin: 10px 0;
-        padding: 0;
-        list-style: none;
-        border-top: 1px dotted #c8c8c8;
-      }
-
-      #settings li {
-	padding: 15px;
-        border-bottom: 1px dotted #c8c8c8;
-      }
-
-      #footer {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-	padding: 10px 0;
-	font-size: 0.8em;
-	text-align: center;
-      }
-    </style>
-
-    <script src="popup.js"></script>
-  </head>
-  <body>
-    <div id="body">
-       <h4>Artivity Settings</h4>
-
-       <ul id="settings">
-          <li><input id="enabledBox" type="checkbox"> Capture browsing history</li>
-       </ul>
+      <ul id="settings-list">
+        <li><input id="settings-option-enabled" type="checkbox"> Capture browsing history</li>
+      </ul>
     </div>
+  </div>
 
-    <div id="footer">Copyright &copy; 2015, University of the Arts, London</div>
-  </body>
+  <div id="footer">
+    Copyright &copy; 2015, University of the Arts, London
+  </div>
+</body>
 </html>
-
