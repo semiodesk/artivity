@@ -88,4 +88,6 @@ class HttpServer:
 		if 'enabled' in param:
 			self.actors[actor] = param['enabled']
 
+		self.log.info(self.actors[actor])
+
 		return Response(json.dumps(self.actors[actor]))

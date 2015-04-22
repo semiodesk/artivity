@@ -4,11 +4,14 @@ _URI = "http://arts.ac.uk/artivity/1.0/artivityd"
 _NAME = "Artivity REST API Deamon"
 _VERSION = "1.0"
 _PORT = 8272
+_PIDFILE = "~/.artivity-apid.pid"
 
 from lib.zeitgeist import ZeitgeistProxy
 from lib.http import HttpServer
 from lib.pid import write_pidfile_or_die
+from lib.pid import delete_pidfile
 
+import signal
 import logging
 
 def init_logging():
@@ -22,10 +25,18 @@ def init_logging():
 	logger.setLevel(logging.DEBUG)
 	logger.addHandler(console)
 
+def handle_sigterm(signal, frame):
+	logger = logging.getLogger(_URI)
+	logger.info("SIGTERM received. Shutting down.")
+
+	delete_pidfile(_PIDFILE, logger)
+
 if __name__ == '__main__':
 	init_logging()
 
-	write_pidfile_or_die('~/.artivity-apid.pid', logging.getLogger(_URI))
+	write_pidfile_or_die(_PIDFILE, logging.getLogger(_URI))
+
+	signal.signal(signal.SIGTERM, handle_sigterm)
 
 	print("%s v%s\n" % (_NAME, _VERSION))
 

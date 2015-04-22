@@ -1,4 +1,5 @@
 import os
+import sys
 
 def pid_is_running(pid):
     try:
@@ -12,7 +13,7 @@ def pid_is_running(pid):
 
 def write_pidfile_or_die(pidfile, log):
 
-    if(pidfile.startswith('~')):
+    if pidfile.startswith('~'):
 	pidfile = pidfile.replace('~', os.path.expanduser('~'))
 
     if os.path.exists(pidfile):
@@ -28,3 +29,14 @@ def write_pidfile_or_die(pidfile, log):
     open(pidfile, 'w+').write(str(os.getpid()))
 
     return pidfile
+
+def delete_pidfile(pidfile, log):
+
+    if pidfile.startswith('~'):
+	pidfile = pidfile.replace('~', os.path.expanduser('~'))
+
+    if os.path.exists(pidfile):
+	log.info("Deleting pid file of current process..")
+	os.remove(pidfile)
+
+    sys.exit(0)

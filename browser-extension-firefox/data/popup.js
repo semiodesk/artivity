@@ -8,12 +8,31 @@
 
 function onRequestError() {
   console.log("<<<", this.status);
+
+  var warningBox = document.getElementById('warning-box');
+  warningBox.style.visibility = "visible";
+  warningBox.style.display = 'block';
+
+  var settingsBox = document.getElementById('settings-box');
+  settingsBox.style.opacity = '0.5';
+
+  var enabledBox = document.getElementById('settings-option-enabled');
+  enabledBox.checked = false;
+
+  self.postMessage(this.response);
 }
 
 function onRequestResponse() {
   console.log("<<<", this.response);
 
-  var enabledBox = document.getElementById('enabledBox');
+  var warningBox = document.getElementById('warning-box');
+  warningBox.style.visibility = "collapse";
+  warningBox.style.display = 'none';
+
+  var settingsBox = document.getElementById('settings-box');
+  settingsBox.style.opacity = '1.0';
+
+  var enabledBox = document.getElementById('settings-option-enabled');
 
   if(this.response == true || this.response == false) {
      enabledBox.checked = this.response;
@@ -41,7 +60,7 @@ function sendRequest(callback, errorCallback, params) {
 // Initialize the value of the checkbox.
 sendRequest(onRequestResponse, onRequestError, {});
 
-document.getElementById('enabledBox').onchange = function() {
+document.getElementById('settings-option-enabled').onchange = function() {
   // NOTE: Setting the new value from the response ensures that the value 
   // of the checkbox reflects the value in the Artivity deamon in case of errors.
   sendRequest(onRequestResponse, onRequestError, {'enabled' : this.checked});
