@@ -14,6 +14,11 @@
 #include "undo-stack-observer.h"
 #include "document.h"
 #include <zeitgeist.h>
+#include "event.h"
+#include "xml/event.h"
+#include "xml/node.h"
+#include "xml/attribute-record.h"
+
 
 namespace Inkscape
 {
@@ -55,6 +60,8 @@ namespace Inkscape
 		void logSubject(Event* e, ZeitgeistSubject* s, const gchar* subjectUri, const gchar* originUri);
 		
 		GByteArray* getEventPayload(Event* e);
+
+		void handleEvent(Inkscape::XML::Event* event);
 	};
 
 	static void logSubjectComplete(GObject* source, GAsyncResult* result, gpointer userData);
