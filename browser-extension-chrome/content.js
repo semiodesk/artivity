@@ -10,7 +10,7 @@ var url = document.URL;
 var title = document.title;
 
 // Do not track secure connections.
-if(url.indexOf('https') !== 0 && url.indexOf('http') === 0)
+if(url.indexOf('http') === 0)
 {
   console.log(">>> [", url, ",", title, "]");
 
