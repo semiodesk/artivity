@@ -9,10 +9,6 @@
  */
 
 #include "artivity/artivity-log.h"
-#include "event.h"
-#include "xml/event.h"
-#include "xml/node.h"
-#include "xml/attribute-record.h"
 
 namespace Inkscape
 {
@@ -159,14 +155,66 @@ namespace Inkscape
 			g_error("logSubject: Failed to create Zeitgeist event.");
 		}
 	}
+
+	void ArtivityLog::handleEvent(Inkscape::XML::Event* event)
+	{
+
+		Inkscape::XML::EventAdd* eventAdd = dynamic_cast<Inkscape::XML::EventAdd*>(event);
+		if( eventAdd != NULL)
+		{
+			g_message("Event Add");
+			return;
+		}
+
+
+		Inkscape::XML::EventDel* eventDel = dynamic_cast<Inkscape::XML::EventDel*>(event);
+		if( eventDel != NULL)
+		{
+			g_message("Event Del");
+			return;
+		}
+
+
+		Inkscape::XML::EventChgAttr* eventAttr = dynamic_cast<Inkscape::XML::EventChgAttr*>(event);
+		if( eventAttr != NULL)
+		{
+			g_message("Change attribute");
+			const gchar* attributeName = g_quark_to_string(eventAttr->key);
+			g_message("Attribute: %s Old %s New %s", attributeName, eventAttr->oldval, eventAttr->newval);
+			return;
+		}
+
+		Inkscape::XML::EventChgContent* eventContent = dynamic_cast<Inkscape::XML::EventChgContent*>(event);
+		if( eventContent != NULL)
+		{
+			g_message("Change content");
+			g_message("Old %s New %s", eventContent->oldval, eventContent->newval);
+			return;
+		}
+
+		Inkscape::XML::EventChgOrder* eventOrder = dynamic_cast<Inkscape::XML::EventChgOrder*>(event);
+		if( eventOrder != NULL)
+		{
+			g_message("Change order");
+			return;
+		}
+
+	}
 	
 	GByteArray*
 	ArtivityLog::getEventPayload(Event* e)
 	{
 		GString* xml = g_string_new("");
-		
 		Node* node = e->event->repr;
 
+		Inkscape::XML::Event* event = e->event;
+		do
+		{
+		handleEvent(event);
+		event = event->next;
+		} while(event != NULL );
+		
+		
 		g_string_append_printf(xml, "<%s", node->name());
 
 		NodeType nodeType = node->type();
