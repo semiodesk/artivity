@@ -13,7 +13,8 @@ var data = require('sdk/self').data;
 var panel = require('sdk/panel').Panel({
   contentURL: data.url('popup.html'),
   contentScriptFile: data.url('popup.js'),
-  height: 160,
+  width: 350,
+  height: 200,
   onHide: onPanelHide
 });
 
