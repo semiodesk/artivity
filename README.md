@@ -22,7 +22,7 @@ There are prebuild binaries for [Ubuntu 14.04 LTS GNOME](http://cdimage.ubuntu.c
 ```
 #!bash
 
-sudo add-apt-repository ppa:faubulous/Artivity
+sudo add-apt-repository ppa:faubulous/artivity
 sudo apt-get update
 ```
 
