@@ -3,7 +3,7 @@
 
   "name": "Artivity",
   "description": "This extension captures the webpages you visit in the Zeigeist log.",
-  "version": "1.0",
+  "version": "1.0.0",
 
   "icons": { "16": "icon16.png",
            "48": "icon48.png",
