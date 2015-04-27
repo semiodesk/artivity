@@ -8,13 +8,13 @@ This repository currently contains the following modules:
 
 * **inkscape**: Modified version of Inkscape which pushes undo/redo events to Zeitgeist
 * **artivity-explorer**: Simple GUI for viewing the undo/redo events for Inkscape drawings
-* **artivity-extenion-firefox**: Browser extension for web browsers which are based on Mozilla Firefox
-* **artivity-extenion-chromium**: Browser extension for web browsers which are based on Google Chrome
+* **artivity-extension-firefox**: Browser extension for web browsers which are based on Mozilla Firefox
+* **artivity-extension-chromium**: Browser extension for web browsers which are based on Google Chrome
 * **artivity-apid**: OS daemon which provides a REST API for pushing events from a browser extension into Zeitgeist
 
 ### Installing ###
 
-There are prebuild binaries for [Ubuntu 14.04 LTS GNOME](http://cdimage.ubuntu.com/ubuntu-gnome/releases/14.04/release/) or [Ubuntu 14.04 LTS](http://www.ubuntu.com/), which are provided via a so called ['Personal Package Archive'](http://wiki.ubuntuusers.de/Launchpad/PPA). With this repository you will receive updates and new features via Ubuntu's updating mechanism as soon as they're published. If you want to try the current release, please follow these steps:
+There are prebuild binaries for [Ubuntu 14.04 LTS GNOME](http://cdimage.ubuntu.com/ubuntu-gnome/releases/14.04/release/) or [Ubuntu 14.04 LTS](http://www.ubuntu.com/), which are provided via a so called [Personal Package Archive](http://wiki.ubuntuusers.de/Launchpad/PPA). With this repository you will receive updates and new features via Ubuntu's updating mechanism as soon as they're published. If you want to try the current release, please follow these steps:
 
 1) Download [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/) and install it on your computer or in a virtual machine such as [Virtualbox](https://www.virtualbox.org).
 
