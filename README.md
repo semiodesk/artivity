@@ -14,18 +14,28 @@ This repository currently contains the following modules:
 
 ### Installing ###
 
-There are prebuild binaries for [Ubuntu 14.04 LTS](http://www.ubuntu.com/), which are provided via a so called ['Personal Package Archive'](http://wiki.ubuntuusers.de/Launchpad/PPA). If you want to try the current release, please follow these steps:
+There are prebuild binaries for [Ubuntu 14.04 LTS](http://www.ubuntu.com/), which are provided via a so called ['Personal Package Archive'](http://wiki.ubuntuusers.de/Launchpad/PPA). With this repository you will receive updates and new features via Ubuntu's updating mechanism as soon as they're published. If you want to try the current release, please follow these steps:
 
-1. Download [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/) and install it on your computer or in a virtual machine, such as [Virtualbox](https://www.virtualbox.org).
-2. Enable the Artivity PPA by pasting the following commands in a terminal:
-	sudo add-apt-repository ppa:faubulous/Artivity
-   and
-	sudo apt-get update
-3. Install the Artivity desktop packages with this command:
-	sudo apt-get install artivity-desktop
-4. Enable the Zeitgeist browser event logging feature with the following command:
-	artivity-setup
-   A dialog box will appear. Simply check the 'Enable tacking your web browsing history in Activity Journal' to enable the browser support daemon for your user.
-5. Click on the Artivity icon in Mozilla Firefox and check the 'Capture browsing history' box.
+1) Download [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/) and install it on your computer or in a virtual machine, such as [Virtualbox](https://www.virtualbox.org).
+- Enable the [Artivity PPA](https://launchpad.net/~faubulous/+archive/ubuntu/artivity) by pasting the following commands in a terminal:
+```
+#!bash
 
-Now you're set up to use the Artivity event logging features. You will also receive updates and new features via the system's updating mechanism as soon as they're published. Enjoy!
+sudo add-apt-repository ppa:faubulous/Artivity
+sudo apt-get update
+```
+
+2) Install the Artivity desktop packages with this command:
+```
+#!bash
+
+sudo apt-get install artivity-desktop
+```
+
+3) Enable the Zeitgeist browser event logging feature with the following command:
+```
+#!bash
+
+artivity-setup
+```
+4) Click on the Artivity icon in Mozilla Firefox and check the 'Capture browsing history' box.
