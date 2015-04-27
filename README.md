@@ -16,8 +16,9 @@ This repository currently contains the following modules:
 
 There are prebuild binaries for [Ubuntu 14.04 LTS GNOME](http://cdimage.ubuntu.com/ubuntu-gnome/releases/14.04/release/) or [Ubuntu 14.04 LTS](http://www.ubuntu.com/), which are provided via a so called ['Personal Package Archive'](http://wiki.ubuntuusers.de/Launchpad/PPA). With this repository you will receive updates and new features via Ubuntu's updating mechanism as soon as they're published. If you want to try the current release, please follow these steps:
 
-1) Download [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/) and install it on your computer or in a virtual machine, such as [Virtualbox](https://www.virtualbox.org).
-- Enable the [Artivity PPA](https://launchpad.net/~faubulous/+archive/ubuntu/artivity) by pasting the following commands in a terminal:
+1) Download [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/) and install it on your computer or in a virtual machine such as [Virtualbox](https://www.virtualbox.org).
+
+2) Enable the [Artivity PPA](https://launchpad.net/~faubulous/+archive/ubuntu/artivity) by pasting the following commands in a terminal:
 ```
 #!bash
 
@@ -25,17 +26,17 @@ sudo add-apt-repository ppa:faubulous/Artivity
 sudo apt-get update
 ```
 
-2) Install the Artivity desktop packages with this command:
+3) Install the Artivity desktop packages with this command:
 ```
 #!bash
 
 sudo apt-get install artivity-desktop
 ```
 
-3) Enable the Zeitgeist browser event logging feature with the following command:
+4) Enable the Zeitgeist browser event logging feature with the following command:
 ```
 #!bash
 
 artivity-setup
 ```
-4) Click on the Artivity icon in Mozilla Firefox and check the 'Capture browsing history' box.
+5) Click on the Artivity icon in Mozilla Firefox and check the 'Capture browsing history' box.
