@@ -27,6 +27,14 @@ namespace Inkscape
 	 * SPDocumentUndo::undo, SPDocumentUndo::redo, SPDocumentUndo::maybe_done.
 	 *
 	 */
+
+	enum UndoType{
+	    Do, 
+	    Undo, 
+	    Redo,
+	    UndoCommit 
+	};
+
 	class ArtivityLog : public UndoStackObserver
 	{
 	private:
@@ -53,15 +61,15 @@ namespace Inkscape
 		
 		void notifyClearRedoEvent();
 		
-		void logEvent(Event* e, const gchar* source);
+		void logEvent(Event* e, UndoType type );
 		
 		ZeitgeistSubject* newSubject(Event* e);
 		
-		void logSubject(Event* e, ZeitgeistSubject* s, const gchar* subjectUri, const gchar* originUri);
+		void logSubject(Event* e, ZeitgeistSubject* s, const gchar* subjectUri, const gchar* originUri, UndoType type);
 		
-		GByteArray* getEventPayload(Event* e);
+		GByteArray* getEventPayload(Event* e, UndoType type);
 
-		void handleEvent(Inkscape::XML::Event* event);
+		GString* handleEvent(Inkscape::XML::Event* event);
 	};
 
 	static void logSubjectComplete(GObject* source, GAsyncResult* result, gpointer userData);
