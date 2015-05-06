@@ -7,6 +7,9 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.mimetypes import *
 from zeitgeist.datamodel import *
 
+import os, time
+from stat import ST_ATIME, ST_MTIME, ST_CTIME
+
 class ArtivityJournal(Gtk.Window):
 
 	def __init__(self):
@@ -17,6 +20,7 @@ class ArtivityJournal(Gtk.Window):
 		self.init_headerbar()
 		self.init_log()
 		self.init_log_view()
+		self.init_stats_view()
 		self.init_layout()
 
 		self.connect("delete-event", Gtk.main_quit)
@@ -38,6 +42,8 @@ class ArtivityJournal(Gtk.Window):
 		self.set_titlebar(self.headerbar)
 
 	def on_file_selected(self, param):
+		self.update_stats_view()
+
 		self.load_events(self.open_button.get_filename())	
 
 	def init_layout(self):
@@ -46,7 +52,7 @@ class ArtivityJournal(Gtk.Window):
 		self.stack.set_transition_duration(500)
 
 		self.stack.add_titled(self.log_scroller, "log", "Protocol")
-		self.stack.add_titled(Gtk.Box(), "stats", "Statistics")
+		self.stack.add_titled(self.stats_box, "stats", "Statistics")
 
 		self.stack_switcher = Gtk.StackSwitcher()
 		self.stack_switcher.set_stack(self.stack)
@@ -57,6 +63,62 @@ class ArtivityJournal(Gtk.Window):
 		self.layout_root.pack_start(self.stack, True, True, 0)
 
 		self.add(self.layout_root)
+
+	def init_stats_view(self):
+		self.file_label = Gtk.Label()
+		self.file_label.set_halign(Gtk.Align.START)
+		self.file_label.set_markup("<b>File:</b>")
+
+		self.file_name = Gtk.Label()
+
+		self.file_created_label = Gtk.Label()
+		self.file_created_label.set_halign(Gtk.Align.START)
+		self.file_created_label.set_markup("<b>Created:</b>")
+
+		self.file_created = Gtk.Label()
+
+		self.file_modified_label = Gtk.Label()
+		self.file_modified_label.set_halign(Gtk.Align.START)
+		self.file_modified_label.set_markup("<b>Last modified:</b>")
+
+		self.file_modified = Gtk.Label()
+
+		self.file_accessed_label = Gtk.Label()
+		self.file_accessed_label.set_halign(Gtk.Align.START)
+		self.file_accessed_label.set_markup("<b>Last accessed:</b>")
+
+		self.file_accessed = Gtk.Label()
+
+		self.stats_view = Gtk.Grid()
+		self.stats_view.set_column_spacing(7)
+		self.stats_view.set_row_spacing(7)
+
+		self.stats_view.add(self.file_label)
+		self.stats_view.attach(self.file_name, 1, 0, 6, 1)
+		self.stats_view.attach(self.file_created_label, 0, 1, 1, 1)
+		self.stats_view.attach(self.file_created, 1, 1, 1, 1)
+		self.stats_view.attach(self.file_modified_label, 0, 2, 1, 1)
+		self.stats_view.attach(self.file_modified, 1, 2, 1, 1)
+		self.stats_view.attach(self.file_accessed_label, 0, 3, 1, 1)
+		self.stats_view.attach(self.file_accessed, 1, 3, 1, 1)
+
+		self.stats_box = Gtk.Box()
+		self.stats_box.pack_start(self.stats_view, True, True, 14)
+
+	def update_stats_view(self):
+		filename = self.open_button.get_filename()
+
+		try:
+			stat = os.stat(filename)
+
+			timeformat = "%d %b %Y %H:%M:%S"
+
+			self.file_name.set_text(filename)
+			self.file_created.set_text(time.strftime(timeformat, time.localtime(stat[ST_CTIME])))
+			self.file_modified.set_text(time.strftime(timeformat, time.localtime(stat[ST_MTIME])))
+			self.file_accessed.set_text(time.strftime(timeformat, time.localtime(stat[ST_ATIME])))
+		except IOError:
+			print "Error: Failed to get information about", filename
 		
 	def init_log(self):
 		event_type = [Event.new_for_values(subject_interpretation=Interpretation.VISUAL)]
