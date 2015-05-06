@@ -7,6 +7,10 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.mimetypes import *
 from zeitgeist.datamodel import *
 
+from lib.stats import EditingStatistics
+from lib.stats import CompositionStatistics
+from lib.stats import ColourStatistics
+
 import os, time
 from stat import ST_ATIME, ST_MTIME, ST_CTIME
 
@@ -20,7 +24,7 @@ class ArtivityJournal(Gtk.Window):
 		self.init_headerbar()
 		self.init_log()
 		self.init_log_view()
-		self.init_stats_view()
+		self.init_stats()
 		self.init_layout()
 
 		self.connect("delete-event", Gtk.main_quit)
@@ -42,72 +46,151 @@ class ArtivityJournal(Gtk.Window):
 		self.set_titlebar(self.headerbar)
 
 	def on_file_selected(self, param):
-		self.update_stats_view()
+		self.filename = self.open_button.get_filename()
 
-		self.load_events(self.open_button.get_filename())	
+		self.update_stats(self.filename)
+		self.load_events(self.filename)	
 
 	def init_layout(self):
 		self.stack = Gtk.Stack()
 		self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
 		self.stack.set_transition_duration(500)
 
-		self.stack.add_titled(self.log_scroller, "log", "Protocol")
 		self.stack.add_titled(self.stats_box, "stats", "Statistics")
+		self.stack.add_titled(self.log_scroller, "log", "Protocol")
 
 		self.stack_switcher = Gtk.StackSwitcher()
 		self.stack_switcher.set_stack(self.stack)
 		self.stack_switcher.props.halign = Gtk.Align.CENTER
 
 		self.layout_root = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=7)
+		self.layout_root.set_halign(Gtk.Align.FILL)
 		self.layout_root.pack_start(self.stack_switcher, False, True, 7)
 		self.layout_root.pack_start(self.stack, True, True, 0)
 
 		self.add(self.layout_root)
 
-	def init_stats_view(self):
-		self.file_label = Gtk.Label()
-		self.file_label.set_halign(Gtk.Align.START)
-		self.file_label.set_markup("<b>File:</b>")
+	def init_stats(self):
+		grid = Gtk.Grid()
+		grid.set_halign(Gtk.Align.FILL)
+		grid.set_row_spacing(30)
+		grid.set_column_spacing(30)
+		grid.set_orientation(Gtk.Orientation.VERTICAL)
+		grid.attach(self.get_file_info_widget(), 0, 0, 3, 1)	
+		grid.attach(self.get_file_editing_widget(), 0, 1, 1, 1)
+		grid.attach(self.get_file_composition_widget(), 1, 1, 1, 1)
+		grid.attach(self.get_file_colour_widget(), 2, 1, 1, 1)
+
+		self.stats_box = Gtk.Box()
+		self.stats_box.pack_start(grid, True, True, 14)
+
+	def get_file_info_widget(self):
+		file_label = Gtk.Label()
+		file_label.set_halign(Gtk.Align.START)
+		file_label.set_markup("<b>File:</b>")
 
 		self.file_name = Gtk.Label()
 
-		self.file_created_label = Gtk.Label()
-		self.file_created_label.set_halign(Gtk.Align.START)
-		self.file_created_label.set_markup("<b>Created:</b>")
+		file_created_label = Gtk.Label()
+		file_created_label.set_halign(Gtk.Align.START)
+		file_created_label.set_markup("<b>Created:</b>")
 
 		self.file_created = Gtk.Label()
 
-		self.file_modified_label = Gtk.Label()
-		self.file_modified_label.set_halign(Gtk.Align.START)
-		self.file_modified_label.set_markup("<b>Last modified:</b>")
+		file_modified_label = Gtk.Label()
+		file_modified_label.set_halign(Gtk.Align.START)
+		file_modified_label.set_markup("<b>Last modified:</b>")
 
 		self.file_modified = Gtk.Label()
 
-		self.file_accessed_label = Gtk.Label()
-		self.file_accessed_label.set_halign(Gtk.Align.START)
-		self.file_accessed_label.set_markup("<b>Last accessed:</b>")
+		file_accessed_label = Gtk.Label()
+		file_accessed_label.set_halign(Gtk.Align.START)
+		file_accessed_label.set_markup("<b>Last accessed:</b>")
 
 		self.file_accessed = Gtk.Label()
 
-		self.stats_view = Gtk.Grid()
-		self.stats_view.set_column_spacing(7)
-		self.stats_view.set_row_spacing(7)
+		grid = Gtk.Grid()
+		grid.set_column_spacing(7)
+		grid.set_row_spacing(7)
 
-		self.stats_view.add(self.file_label)
-		self.stats_view.attach(self.file_name, 1, 0, 6, 1)
-		self.stats_view.attach(self.file_created_label, 0, 1, 1, 1)
-		self.stats_view.attach(self.file_created, 1, 1, 1, 1)
-		self.stats_view.attach(self.file_modified_label, 0, 2, 1, 1)
-		self.stats_view.attach(self.file_modified, 1, 2, 1, 1)
-		self.stats_view.attach(self.file_accessed_label, 0, 3, 1, 1)
-		self.stats_view.attach(self.file_accessed, 1, 3, 1, 1)
+		grid.add(file_label)
+		grid.attach(self.file_name, 1, 0, 6, 1)
+		grid.attach(file_created_label, 0, 1, 1, 1)
+		grid.attach(self.file_created, 1, 1, 1, 1)
+		grid.attach(file_modified_label, 0, 2, 1, 1)
+		grid.attach(self.file_modified, 1, 2, 1, 1)
+		grid.attach(file_accessed_label, 0, 3, 1, 1)
+		grid.attach(self.file_accessed, 1, 3, 1, 1)
 
-		self.stats_box = Gtk.Box()
-		self.stats_box.pack_start(self.stats_view, True, True, 14)
+		return grid
 
-	def update_stats_view(self):
-		filename = self.open_button.get_filename()
+	def get_file_editing_widget(self):
+		self.editing_store = Gtk.ListStore(str, str)
 
+		label = Gtk.Label()
+		label.set_halign(Gtk.Align.START)
+		label.set_markup("<b>EDITING</b>")
+
+		col0 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
+		col0.set_expand(True)
+		col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=1)
+
+		view = Gtk.TreeView(self.editing_store)
+		view.append_column(col0)
+		view.append_column(col1)
+
+		box = Gtk.Box(spacing=7)
+		box.set_orientation(Gtk.Orientation.VERTICAL)
+		box.pack_start(label, False, True, 0)
+		box.pack_start(view, True, True, 0)
+
+		return box;
+
+	def get_file_composition_widget(self):
+		self.composition_store = Gtk.ListStore(str, str)
+
+		label = Gtk.Label()
+		label.set_halign(Gtk.Align.START)
+		label.set_markup("<b>COMPOSITION</b>")
+
+		col0 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
+		col0.set_expand(True)
+		col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=1)
+
+		view = Gtk.TreeView(self.composition_store)
+		view.append_column(col0)
+		view.append_column(col1)
+
+		box = Gtk.Box(spacing=7)
+		box.set_orientation(Gtk.Orientation.VERTICAL)
+		box.pack_start(label, False, True, 0)
+		box.pack_start(view, True, True, 0)
+
+		return box;
+
+	def get_file_colour_widget(self):
+		self.colour_store = Gtk.ListStore(str, str)
+
+		label = Gtk.Label()
+		label.set_halign(Gtk.Align.START)
+		label.set_markup("<b>COLOUR</b>")
+
+		col0 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
+		col0.set_expand(True)
+		col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=1)
+
+		view = Gtk.TreeView(self.colour_store)
+		view.append_column(col0)
+		view.append_column(col1)
+
+		box = Gtk.Box(spacing=7)
+		box.set_orientation(Gtk.Orientation.VERTICAL)
+		box.pack_start(label, False, True, 0)
+		box.pack_start(view, True, True, 0)
+
+		return box;
+
+	def update_stats(self, filename):
 		try:
 			stat = os.stat(filename)
 
@@ -119,6 +202,31 @@ class ArtivityJournal(Gtk.Window):
 			self.file_accessed.set_text(time.strftime(timeformat, time.localtime(stat[ST_ATIME])))
 		except IOError:
 			print "Error: Failed to get information about", filename
+
+		stats = EditingStatistics(self.log, filename)
+
+		self.editing_store.clear()
+		self.editing_store.append(["Cycles:", stats.get_cycle_count()])
+		self.editing_store.append(["Steps:", stats.get_do_count()])
+		self.editing_store.append(["  Undos:", stats.get_undo_count()])
+		self.editing_store.append(["  Redos:", stats.get_redo_count()])
+		self.editing_store.append(["Confidence:", stats.get_confidence()])
+
+		stats = CompositionStatistics(self.log, filename)
+		
+		self.composition_store.clear()
+		self.composition_store.append(["Layers:", stats.get_layer_count()])
+		self.composition_store.append(["Groups:", stats.get_group_count()])
+		self.composition_store.append(["Objects:", stats.get_object_count()])
+		self.composition_store.append(["  Masked:", stats.get_object_masked_count()])
+		self.composition_store.append(["  Clipped:", stats.get_object_clipped_count()])
+		self.composition_store.append(["  Copied:", stats.get_object_copied_count()])
+		self.composition_store.append(["  Duplicated:", stats.get_object_duplicated_count()])
+
+		stats = ColourStatistics(self.log, filename)
+
+		self.colour_store.append(["Colours:", stats.get_colour_count()])
+		self.colour_store.append(["Palette:", stats.get_colour_palette()])
 		
 	def init_log(self):
 		event_type = [Event.new_for_values(subject_interpretation=Interpretation.VISUAL)]
