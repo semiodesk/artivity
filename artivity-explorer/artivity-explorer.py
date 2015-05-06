@@ -17,6 +17,7 @@ class ArtivityJournal(Gtk.Window):
 		self.init_headerbar()
 		self.init_log()
 		self.init_log_view()
+		self.init_layout()
 
 		self.connect("delete-event", Gtk.main_quit)
 		self.show_all()
@@ -38,15 +39,33 @@ class ArtivityJournal(Gtk.Window):
 
 	def on_file_selected(self, param):
 		self.load_events(self.open_button.get_filename())	
+
+	def init_layout(self):
+		self.stack = Gtk.Stack()
+		self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+		self.stack.set_transition_duration(500)
+
+		self.stack.add_titled(self.log_scroller, "log", "Protocol")
+		self.stack.add_titled(Gtk.Box(), "stats", "Statistics")
+
+		self.stack_switcher = Gtk.StackSwitcher()
+		self.stack_switcher.set_stack(self.stack)
+		self.stack_switcher.props.halign = Gtk.Align.CENTER
+
+		self.layout_root = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=7)
+		self.layout_root.pack_start(self.stack_switcher, False, True, 7)
+		self.layout_root.pack_start(self.stack, True, True, 0)
+
+		self.add(self.layout_root)
 		
 	def init_log(self):
-		eventType = [Event.new_for_values(subject_interpretation=Interpretation.VISUAL)]
+		event_type = [Event.new_for_values(subject_interpretation=Interpretation.VISUAL)]
 
 		self.log = ZeitgeistClient()
-		self.log.install_monitor(TimeRange.always(), eventType, self.on_log_event_inserted, self.on_log_event_deleted)
+		self.log.install_monitor(TimeRange.always(), event_type, self.on_log_event_inserted, self.on_log_event_deleted)
 
 	def init_log_view(self):
-		self.logModel = Gtk.ListStore(str, str, str, str, str);
+		self.log_model = Gtk.ListStore(str, str, str, str, str);
 
 		column1 = Gtk.TreeViewColumn('Time', Gtk.CellRendererText(), text=0)
 		column1.set_min_width(150)
@@ -69,18 +88,16 @@ class ArtivityJournal(Gtk.Window):
 
 		column5 = Gtk.TreeViewColumn()
 
-		self.logView = Gtk.TreeView()
-		self.logView.set_model(self.logModel)
-		self.logView.append_column(column1)
-		self.logView.append_column(column3)
-		self.logView.append_column(column4)
-		self.logView.append_column(column5)
-		self.logView.connect("row-activated", self.on_cell_clicked)
+		self.log_view = Gtk.TreeView()
+		self.log_view.set_model(self.log_model)
+		self.log_view.append_column(column1)
+		self.log_view.append_column(column3)
+		self.log_view.append_column(column4)
+		self.log_view.append_column(column5)
+		self.log_view.connect("row-activated", self.on_cell_clicked)
 
-		self.logScroller = Gtk.ScrolledWindow()
-		self.logScroller.add(self.logView)
-
-		self.add(self.logScroller)
+		self.log_scroller = Gtk.ScrolledWindow()
+		self.log_scroller.add(self.log_view)
 
 	def on_log_event_inserted(self, time_range, events):
 		# insert into journal
@@ -91,9 +108,9 @@ class ArtivityJournal(Gtk.Window):
 			subject = e.subjects[0].uri
 			payload = ''.join([chr(c) for c in e.payload])
 
-			self.logModel.append([time, actor, type, subject, payload])
+			self.log_model.append([time, actor, type, subject, payload])
 			
-		self.logView.set_model(self.logModel)
+		self.log_view.set_model(self.log_model)
 
 	def abbreviate(self, uri):
 		return uri.replace("http://www.zeitgeist-project.com/ontologies/2010/01/27/zg#", "zg:")
@@ -106,7 +123,7 @@ class ArtivityJournal(Gtk.Window):
 		self.on_log_event_inserted(None, events)
 
 	def on_cell_clicked(self, treeview, path, column):
-		print self.logModel[path[0]][4]
+		print self.log_model[path[0]][4]
 
 	def load_events(self, filename):
 		filename = "file://"+filename
