@@ -40,3 +40,12 @@ sudo apt-get install artivity-desktop
 artivity-setup
 ```
 5) Click on the Artivity icon in Mozilla Firefox and check the 'Capture browsing history' box.
+
+### Compiling ###
+Currently, only the customized build of Inkscape requires compilation. Please refer to the [Inkscape Wiki](http://wiki.inkscape.org/wiki/index.php/Compiling_Inkscape) for detailed instructions on how to compile it. Since Inkscape has a quite large code base it is highly recommended to use a byte code caching solution such as [ccache](https://ccache.samba.org).
+
+Most of the tools developed for the Artivity project are written in Python and do not require compilation. We currently depend on the following Python libraries:
+
+* [Zeitgeist](http://bloc.eurion.net/archives/2012/zeitgeist-python-api-tutorial/)
+* [Werkzeug](http://werkzeug.pocoo.org)
+* [PyGObject (Gtk+ 3)](https://wiki.gnome.org/action/show/Projects/PyGObject)
