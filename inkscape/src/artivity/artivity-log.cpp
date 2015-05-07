@@ -10,6 +10,19 @@
 
 #include "artivity/artivity-log.h"
 
+namespace art
+{
+	const char* BeginEditingEvent = "http://purl.org/ontologies/art/1.0/terms#BeginEditingEvent";
+	
+	const char* EndEditingEvent = "http://purl.org/ontologies/art/1.0/terms#EndEditingEvent";
+	
+	const char* EditEvent = "http://purl.org/ontologies/art/1.0/terms#EditEvent";
+	
+	const char* UndoEvent = "http://purl.org/ontologies/art/1.0/terms#UndoEvent";
+	
+	const char* RedoEvent = "http://purl.org/ontologies/art/1.0/terms#RedoEvent";
+}
+
 namespace Inkscape
 {
 	using namespace std;
@@ -24,31 +37,46 @@ namespace Inkscape
 		g_message("ArtivityLog(SPDocument*) called; doc=%p", doc);
 
 		_log = zeitgeist_log_new();
-		_queue = new std::vector<ZeitgeistSubject*>();
+		_queue = new std::vector<EventRecord>();
+
+		ZeitgeistSubject* subject = newSubject();
+		
+		_queue->push_back({ subject, art::BeginEditingEvent, NULL });
+
+		processEventQueue();
+	}
+
+	ArtivityLog::~ArtivityLog()
+	{
+		g_message("~ArtivityLog() called;");
 	}
 	
 	void
 	ArtivityLog::notifyUndoEvent(Event* e)
 	{
-		logEvent(e, Undo);
+		logEvent(e, art::UndoEvent);
 	}
 
 	void
 	ArtivityLog::notifyRedoEvent(Event* e)
 	{
-		logEvent(e, Redo);
+		logEvent(e, art::RedoEvent);
 	}
 
 	void
 	ArtivityLog::notifyUndoCommitEvent(Event* e)
 	{
-		logEvent(e, UndoCommit);
+		logEvent(e, art::EditEvent);
 	}
 
 	void
 	ArtivityLog::notifyClearUndoEvent()
 	{
-		g_message("notifyClearUndoEvent() called");
+		ZeitgeistSubject* subject = newSubject();
+		
+		_queue->push_back({ subject, art::EndEditingEvent, NULL });
+
+		processEventQueue();
 	}
 
 	void
@@ -58,26 +86,31 @@ namespace Inkscape
 	}
 
 	void
-	ArtivityLog::logEvent(Event* e, UndoType type)
+	ArtivityLog::logEvent(Event* e, const char* typeUri)
 	{
-		if(_doc == NULL)
-		{
-			g_error("%s: _doc is NULL", type );
-			return;
-		}
-
 		// NOTE: The current document may have not been saved yet. Therefore,
 		// we create an event without a URI and push it into the queue.
-		ZeitgeistSubject* subject = newSubject(e);
+		ZeitgeistSubject* subject = newSubject();
 		
-		_queue->push_back(subject);
+		_queue->push_back({ subject, typeUri, e });
 
 		g_message("Queued subject=%p desc=%s", subject, e->description.data());
 		
+		processEventQueue();
+	}
+
+	void
+	ArtivityLog::processEventQueue()
+	{
+		if(_doc == NULL)
+		{
+			g_error("processEventQueue: _doc is NULL");
+			return;
+		}
+		
 		if(!zeitgeist_log_is_connected(_log))
 		{
-			g_warning("No connection to Zeitgeist log. Cannot empty queue.");
-			return;
+			g_warning("processEventQueue: No connection to Zeitgeist log.");
 		}
 
 		const gchar* uri = _doc->getURI();
@@ -93,19 +126,19 @@ namespace Inkscape
 		
 		// We got a saved document. Now we can empty the event queue.
 		while(!_queue->empty())
-		{					
-			ZeitgeistSubject* s = _queue->back();
+		{
+			EventRecord r = _queue->back();
 			
-			logSubject(e, s, uri, uri, type);
+			logSubject(r.subject, r.eventType, r.event, uri, uri);
 
 			_queue->pop_back();
 			
-			g_message("Logged subject; Queue size=%d", _queue->size());
+			g_message("processEventQueue: Logged subject; Queue size=%lu", _queue->size());
 		}
 	}
 	
 	ZeitgeistSubject*
-	ArtivityLog::newSubject(Event* e)
+	ArtivityLog::newSubject()
 	{		
 		return zeitgeist_subject_new_full(
           NULL,
@@ -115,7 +148,7 @@ namespace Inkscape
 	}
 	
 	void
-	ArtivityLog::logSubject(Event* e, ZeitgeistSubject* s, const gchar* subjectUri, const gchar* originUri, UndoType type)
+	ArtivityLog::logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri)
 	{
 		if(_doc == NULL)
 		{
@@ -135,16 +168,22 @@ namespace Inkscape
 		}
 		
 		ZeitgeistEvent* event = zeitgeist_event_new_full(
-			ZEITGEIST_ZG_MODIFY_EVENT,
+			typeUri,
 			ZEITGEIST_ZG_USER_ACTIVITY,
 			"application://inkscape.desktop", s, NULL);
 		
 		if(event != NULL)
 		{
-			GByteArray* data = getEventPayload(e, type);
-			
-			zeitgeist_event_set_payload(event, data);
+			if(e != NULL)
+			{
+				GByteArray* data = getEventPayload(e);
 
+				if(data != NULL)
+				{
+					zeitgeist_event_set_payload(event, data);
+				}
+			}
+			
 			zeitgeist_log_insert_events_no_reply(_log, event, NULL);
 
 			// TODO: Free data, xml and event in completed event handler.
@@ -156,105 +195,150 @@ namespace Inkscape
 		}
 	}
 
-	GString* 
-	ArtivityLog::handleEvent(Inkscape::XML::Event* event)
-	{
-
-		GString* xml = g_string_new("");
-		Inkscape::XML::EventAdd* eventAdd = dynamic_cast<Inkscape::XML::EventAdd*>(event);
-		if( eventAdd != NULL)
-		{
-			g_string_append_printf(xml, "<artsvg:addEvent>%s</artsvg:addEvent>", eventAdd->child->name());
-		}
-
-
-		Inkscape::XML::EventDel* eventDel = dynamic_cast<Inkscape::XML::EventDel*>(event);
-		if( eventDel != NULL)
-		{
-			g_string_append_printf(xml, "<artsvg:delEvent>%s</artsvg:delEvent>", eventDel->child->name());
-		}
-
-
-		Inkscape::XML::EventChgAttr* eventAttr = dynamic_cast<Inkscape::XML::EventChgAttr*>(event);
-		if( eventAttr != NULL)
-		{
-			const gchar* attributeName = g_quark_to_string(eventAttr->key);
-
-			g_string_append_printf(xml, "<artsvg:changeAttribute key=%s ", attributeName );
-			if( eventAttr->oldval.pointer() != NULL )
-			{
-				g_string_append_printf(xml, "old=%s ", eventAttr->oldval);
-			}
-			if( eventAttr->newval.pointer() != NULL )
-			{
-				g_string_append_printf(xml, "new=%s ", eventAttr->newval);
-			}
-			g_string_append_printf(xml, "/>");
-		}
-
-		Inkscape::XML::EventChgContent* eventContent = dynamic_cast<Inkscape::XML::EventChgContent*>(event);
-		if( eventContent != NULL)
-		{
-			g_string_append_printf(xml, "<artsvg:changeContent");
-			if( eventContent->oldval.pointer() != NULL )
-			{
-				g_string_append_printf(xml, "old=%s ", eventContent->oldval);
-			}
-			if( eventAttr->newval.pointer() != NULL )
-			{
-				g_string_append_printf(xml, "new=%s ", eventContent->newval);
-			}
-			g_string_append_printf(xml, "/>");
-		}
-
-		Inkscape::XML::EventChgOrder* eventOrder = dynamic_cast<Inkscape::XML::EventChgOrder*>(event);
-		if( eventOrder != NULL)
-		{
-			g_message("Change order. node %s ", eventOrder->child->content());
-		}
-		return xml;
-	}
-	
-	GByteArray*
-	ArtivityLog::getEventPayload(Event* e, UndoType type)
-	{
-		GString* xml = g_string_new("<");
-		Node* node = e->event->repr;
-
-		const char* eventType;
-
-		if( type == Do )
-			eventType = "art:do";
-		else if( type == Undo )
-			eventType = "art:undo";
-		else if( type == Redo )
-			eventType = "art:redo";
-
-		g_string_append_printf(xml, "%s>", eventType );
-
-		Inkscape::XML::Event* event = e->event;
-		do
-		{
-			g_string_append_printf(xml, "%s", handleEvent(event)->str);
-			event = event->next;
-		} while(event != NULL );
-		
-		
-		g_string_append_printf(xml,"</%s>", eventType);
-
-		g_message("getEventPayload: Type=%u ; Data=%s", e->type, xml->str);
-
-		GByteArray* result = g_byte_array_new_take((guint8*)xml->str, xml->len);
-		
-		return result;
-	}
-
 	static void
 	logSubjectComplete(GObject* source, GAsyncResult* result, gpointer userData)
 	{
 		g_message("logSubjectComplete() called");
 
 		// TODO: Free event and subject here, if necessary.
+	}
+	
+	GByteArray*
+	ArtivityLog::getEventPayload(Event* e)
+	{
+		if(e == NULL) return NULL;
+
+		if(e->event == NULL)
+		{
+			g_warning("getEventPayload: e->event was NULL");
+			return NULL;
+		}
+		
+		GString* xml = g_string_new("");
+		
+		Inkscape::XML::Event* event = e->event;
+		
+		do
+		{
+			g_string_append_printf(xml, "%s", serializeEvent(event)->str);
+			
+			event = event->next;
+		}
+		while(event != NULL);
+		
+		//g_message("getEventPayload: Data=%s", xml->str);
+
+		GByteArray* result = g_byte_array_new_take((guint8*)xml->str, xml->len);
+		
+		return result;
+	}
+
+	GString* 
+	ArtivityLog::serializeEvent(Inkscape::XML::Event* event)
+	{
+		GString* xml = g_string_new("");
+		
+		if(is<Inkscape::XML::EventAdd*>(event))
+		{
+			Inkscape::XML::EventAdd* e = as<Inkscape::XML::EventAdd*>(event);
+
+			if(e->child != NULL)
+			{
+				const gchar* name = e->child->name();
+				
+				g_string_append_printf(xml, "<artsvg:addEvent>%s</artsvg:addEvent>", name);
+			}
+			else
+			{
+				g_warning("handleEvent: e->child of Inkscape::XML::EventAdd* was NULL.");
+			}
+		}
+		else if(is<Inkscape::XML::EventDel*>(event))
+		{
+			Inkscape::XML::EventDel* e = as<Inkscape::XML::EventDel*>(event);
+
+			if(e->child != NULL)
+			{
+				const gchar* name = e->child->name();
+				
+				g_string_append_printf(xml, "<artsvg:delEvent>%s</artsvg:delEvent>", name);
+			}
+			else
+			{
+				g_warning("handleEvent: e->child of Inkscape::XML::EventDel* was NULL.");
+			}
+		}
+		else if(is<Inkscape::XML::EventChgAttr*>(event))
+		{
+			Inkscape::XML::EventChgAttr* e = as<Inkscape::XML::EventChgAttr*>(event);
+			
+			const gchar* attributeName = g_quark_to_string(e->key);
+
+			g_string_append_printf(xml, "<artsvg:changeAttribute key=\"%s\" ", attributeName);
+			
+			if(e->oldval.pointer() != NULL)
+			{
+				g_string_append_printf(xml, "old=\"%s\" ", e->oldval);
+			}
+			
+			if(e->newval.pointer() != NULL)
+			{
+				g_string_append_printf(xml, "new=\"%s\" ", e->newval);
+			}
+			
+			g_string_append_printf(xml, "/>");
+		}
+		else if(is<Inkscape::XML::EventChgContent*>(event))
+		{
+			Inkscape::XML::EventChgContent* e = as<Inkscape::XML::EventChgContent*>(event);
+			
+			g_string_append_printf(xml, "<artsvg:changeContent");
+			
+			if(e->oldval.pointer() != NULL)
+			{
+				g_string_append_printf(xml, "old=\"%s\" ", e->oldval);
+			}
+			
+			if(e->newval.pointer() != NULL)
+			{
+				g_string_append_printf(xml, "new=\"%s\" ", e->newval);
+			}
+			
+			g_string_append_printf(xml, "/>");
+		}
+		else if(is<Inkscape::XML::EventChgOrder*>(event))
+		{
+			Inkscape::XML::EventChgOrder* e = as<Inkscape::XML::EventChgOrder*>(event);
+
+			if(e->child != NULL)
+			{
+				const gchar* content = e->child->content();
+				
+				g_message("Change order. node %s ", content);
+			}
+			else
+			{
+				g_warning("handleEvent: e->child of Inkscape::XML::EventChgOrder* was NULL.");
+			}
+		}
+		else
+		{
+			g_warning("handleEvent: Handled unknown event type.");
+		}
+		
+		return xml;
+	}
+
+	template<class TEvent> bool
+	ArtivityLog::is(Inkscape::XML::Event* event)
+	{
+		return dynamic_cast<TEvent>(event) != NULL;
+	}
+
+	template<class TEvent> TEvent
+	ArtivityLog::as(Inkscape::XML::Event* event)
+	{
+		return dynamic_cast<TEvent>(event);
 	}
 }
 

@@ -14,6 +14,9 @@ from lib.pid import delete_pidfile
 import signal
 import logging
 
+httpd = None
+zeitgeist = None
+
 def init_logging():
 	formatter = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
 
@@ -28,6 +31,8 @@ def init_logging():
 def handle_sigterm(signal, frame):
 	logger = logging.getLogger(_URI)
 	logger.info("SIGTERM received. Shutting down.")
+
+	httpd.shutdown()
 
 	delete_pidfile(_PIDFILE, logger)
 
