@@ -53,7 +53,7 @@ class ArtivityJournal(Gtk.Window):
 
 	def init_layout(self):
 		self.stack = Gtk.Stack()
-		self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+		self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_UP_DOWN)
 		self.stack.set_transition_duration(500)
 
 		self.stack.add_titled(self.stats_box, "stats", "Statistics")
@@ -283,7 +283,9 @@ class ArtivityJournal(Gtk.Window):
 		self.log_view.set_model(self.log_model)
 
 	def abbreviate(self, uri):
-		return uri.replace("http://www.zeitgeist-project.com/ontologies/2010/01/27/zg#", "zg:")
+		u = uri.replace("http://www.zeitgeist-project.com/ontologies/2010/01/27/zg#", "zg:")
+		u = u.replace("http://purl.org/ontologies/art/1.0/terms#", "art:")
+		return u;
 
 	def on_log_event_deleted(self, time_range, event_ids):
 		# remove events from journal
