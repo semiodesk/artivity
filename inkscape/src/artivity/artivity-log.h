@@ -19,7 +19,6 @@
 #include "xml/node.h"
 #include "xml/attribute-record.h"
 
-
 namespace Inkscape
 {
 	/**
@@ -28,13 +27,15 @@ namespace Inkscape
 	 *
 	 */
 
-	enum UndoType{
-	    Do, 
-	    Undo, 
-	    Redo,
-	    UndoCommit 
-	};
+	struct EventRecord
+	{
+		ZeitgeistSubject* subject;
+		
+		const char* eventType;
 
+		Event* event;
+	};
+	
 	class ArtivityLog : public UndoStackObserver
 	{
 	private:
@@ -43,13 +44,31 @@ namespace Inkscape
 		
 		ZeitgeistLog* _log;
 		
-		std::vector<ZeitgeistSubject*>* _queue;
+		std::vector<EventRecord>* _queue;
+
+		template<class TEvent> bool is(Inkscape::XML::Event* event);
+			
+		template<class TEvent> TEvent as(Inkscape::XML::Event* event);
+
+	protected:
+			
+		ZeitgeistSubject* newSubject();
+
+		void logEvent(Event* e, const char* typeUri);
 		
+		void logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri);
+
+		void processEventQueue();
+		
+		GByteArray* getEventPayload(Event* e);
+
+		GString* serializeEvent(Inkscape::XML::Event* event);
+
 	public:
 		
 		ArtivityLog(SPDocument* doc);
 		
-		virtual ~ArtivityLog() {}
+		virtual ~ArtivityLog();
 		
 		void notifyUndoEvent(Event* e);
 		
@@ -60,16 +79,6 @@ namespace Inkscape
 		void notifyClearUndoEvent();
 		
 		void notifyClearRedoEvent();
-		
-		void logEvent(Event* e, UndoType type );
-		
-		ZeitgeistSubject* newSubject(Event* e);
-		
-		void logSubject(Event* e, ZeitgeistSubject* s, const gchar* subjectUri, const gchar* originUri, UndoType type);
-		
-		GByteArray* getEventPayload(Event* e, UndoType type);
-
-		GString* handleEvent(Inkscape::XML::Event* event);
 	};
 
 	static void logSubjectComplete(GObject* source, GAsyncResult* result, gpointer userData);
