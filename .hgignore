@@ -1,4 +1,9 @@
 syntax: glob
+*.1
+*.in
+*.plist
+*.pot
+*.spec
 *.pyc
 *.swp
 *.swo
@@ -11,3 +16,4 @@ syntax: glob
 *.cache*
 Debug
 inkscape/build/*
+configure

@@ -14,6 +14,8 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
 from werkzeug.exceptions import abort
 
+from lib.config import load_actors, save_actors
+
 import json
 
 class HttpServer:
@@ -30,10 +32,17 @@ class HttpServer:
 		self.name = name
 		self.zeitgeist = zeitgeist
 
+		self.actors = load_actors(self.log)
+
 	def run(self, host, port):
 		self.log.info("Starting HTTP server for REST API..")
 
 		run_simple(host, port, self.dispatch_request)
+
+	def shutdown(self):
+		self.log.info("Shutting down HTTP server for REST API..")
+
+		save_actors(self.log, self.actors)
 
 	@Request.application
 	def dispatch_request(self, request):
