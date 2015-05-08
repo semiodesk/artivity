@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/artivity-explorer
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=false
+Name[en_US]=Artivity Explorer
+Name=Artivity Explorer
+Comment[en_US]=View data captured during the creation process of graphics files.
+Comment=View data captured during the creation process of graphics files.
