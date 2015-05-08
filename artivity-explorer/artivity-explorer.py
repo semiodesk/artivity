@@ -133,7 +133,7 @@ class ArtivityJournal(Gtk.Window):
 
 		col0 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
 		col0.set_expand(True)
-		col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=1)
+		col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(xalign=1.0), text=1)
 
 		view = Gtk.TreeView(self.editing_store)
 		view.append_column(col0)
@@ -203,14 +203,8 @@ class ArtivityJournal(Gtk.Window):
 		except IOError:
 			print "Error: Failed to get information about", filename
 
-		stats = EditingStatistics(self.log, filename)
-
-		self.editing_store.clear()
-		self.editing_store.append(["Cycles:", stats.get_cycle_count()])
-		self.editing_store.append(["Steps:", stats.get_do_count()])
-		self.editing_store.append(["  Undos:", stats.get_undo_count()])
-		self.editing_store.append(["  Redos:", stats.get_redo_count()])
-		self.editing_store.append(["Confidence:", stats.get_confidence()])
+		stats = EditingStatistics(self.log, filename, self.update_editing_stats)
+		stats.update()
 
 		stats = CompositionStatistics(self.log, filename)
 		
@@ -225,9 +219,18 @@ class ArtivityJournal(Gtk.Window):
 
 		stats = ColourStatistics(self.log, filename)
 
+		self.colour_store.clear()
 		self.colour_store.append(["Colours:", stats.get_colour_count()])
 		self.colour_store.append(["Palette:", stats.get_colour_palette()])
-		
+
+	def update_editing_stats(self, stats):
+		self.editing_store.clear()
+		self.editing_store.append(["Cycles:", str(stats.begin_edit_count)])
+		self.editing_store.append(["Steps:", str(stats.edit_count)])
+		self.editing_store.append(["  Undos:", str(stats.undo_count)])
+		self.editing_store.append(["  Redos:", str(stats.redo_count)])
+		self.editing_store.append(["Confidence:", str(round(stats.confidence, 3))])
+	
 	def init_log(self):
 		event_type = [Event.new_for_values(subject_interpretation=Interpretation.VISUAL)]
 
@@ -235,7 +238,10 @@ class ArtivityJournal(Gtk.Window):
 		self.log.install_monitor(TimeRange.always(), event_type, self.on_log_event_inserted, self.on_log_event_deleted)
 
 	def init_log_view(self):
-		self.log_model = Gtk.ListStore(str, str, str, str, str);
+		self.log_store = Gtk.ListStore(str, str, str, str, str);
+
+		log_model = Gtk.TreeModelSort(model=self.log_store)
+		log_model.set_sort_column_id(0, Gtk.SortType.DESCENDING)
 
 		column1 = Gtk.TreeViewColumn('Time', Gtk.CellRendererText(), text=0)
 		column1.set_min_width(150)
@@ -256,18 +262,20 @@ class ArtivityJournal(Gtk.Window):
 		column4.set_resizable(True)
 		column4.set_sort_column_id(4)
 
-		column5 = Gtk.TreeViewColumn()
-
 		self.log_view = Gtk.TreeView()
-		self.log_view.set_model(self.log_model)
+		self.log_view.set_model(log_model)
 		self.log_view.append_column(column1)
 		self.log_view.append_column(column3)
 		self.log_view.append_column(column4)
-		self.log_view.append_column(column5)
 		self.log_view.connect("row-activated", self.on_cell_clicked)
+		self.log_view.connect("size-allocate", self.on_log_view_size_allocate)
 
 		self.log_scroller = Gtk.ScrolledWindow()
 		self.log_scroller.add(self.log_view)
+
+	def on_log_view_size_allocate(self, widget, event, data=None):
+		adjustment = self.log_scroller.get_vadjustment()
+		adjustment.set_value(adjustment.get_lower())
 
 	def on_log_event_inserted(self, time_range, events):
 		# insert into journal
@@ -278,9 +286,9 @@ class ArtivityJournal(Gtk.Window):
 			subject = e.subjects[0].uri
 			payload = ''.join([chr(c) for c in e.payload])
 
-			self.log_model.append([time, actor, type, subject, payload])
+			self.log_store.append([time, actor, type, subject, payload])
 			
-		self.log_view.set_model(self.log_model)
+		self.update_stats(self.filename)
 
 	def abbreviate(self, uri):
 		u = uri.replace("http://www.zeitgeist-project.com/ontologies/2010/01/27/zg#", "zg:")
@@ -295,13 +303,13 @@ class ArtivityJournal(Gtk.Window):
 		self.on_log_event_inserted(None, events)
 
 	def on_cell_clicked(self, treeview, path, column):
-		print self.log_model[path[0]][4]
+		print self.log_store[path[0]][4]
 
 	def load_events(self, filename):
 		filename = "file://"+filename
 		subj = Subject.new_for_values(uri=filename)
 		template = Event.new_for_values(subjects=[subj])
-		self.log.find_events_for_template(template, self.on_events_received)
+		self.log.find_events_for_template(template, self.on_events_received, num_events=10000)
 	
 if( __name__ == "__main__" ):
 	window = ArtivityJournal()
