@@ -7,7 +7,7 @@ dist:
 	chmod 755 artivity-apid
 	chmod 755 artivity-setup
 
-	tar cvzf artivity-apid-1.0.2.tar.gz artivity-apid artivity-apid.desktop artivity-setup artivity.png Makefile COPYING
+	tar cvzf artivity-apid-1.0.3.tar.gz artivity-apid artivity-apid.desktop artivity-setup artivity.png Makefile COPYING
 
 	rm artivity-apid.zip
 	rm artivity-apid

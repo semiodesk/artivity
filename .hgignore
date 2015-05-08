@@ -17,3 +17,5 @@ syntax: glob
 Debug
 inkscape/build/*
 configure
+Makefile
+makefile
