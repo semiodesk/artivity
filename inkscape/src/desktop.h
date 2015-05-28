@@ -144,7 +144,7 @@ public:
     Inkscape::UI::Tools::ToolBase            *event_context;
     Inkscape::LayerManager    *layer_manager;
     Inkscape::EventLog        *event_log;
-	Inkscape::ArtivityLog     *artivity_log;
+    Inkscape::ArtivityLog     *artivity_log;
     DocumentInterface *dbus_document_interface;
     Inkscape::Display::TemporaryItemList *temporary_item_list;
     Inkscape::Display::SnapIndicator *snapindicator;

@@ -1570,8 +1570,8 @@ SPDesktop::setDocument (SPDocument *doc)
     event_log = new Inkscape::EventLog(doc);
     doc->addUndoObserver(*event_log);
 
-	artivity_log = new Inkscape::ArtivityLog(doc);
-	doc->addUndoObserver(*artivity_log);
+    artivity_log = new Inkscape::ArtivityLog(doc, this);
+    doc->addUndoObserver(*artivity_log);
 
     _commit_connection.disconnect();
     _commit_connection = doc->connectCommit(sigc::mem_fun(*this, &SPDesktop::updateNow));
