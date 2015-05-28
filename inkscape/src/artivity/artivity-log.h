@@ -12,6 +12,7 @@
 #define SEEN_INKSCAPE_ARTIVITY_OBSERVER_H
 
 #include "undo-stack-observer.h"
+#include "desktop.h"
 #include "document.h"
 #include <zeitgeist.h>
 #include "event.h"
@@ -19,69 +20,75 @@
 #include "xml/node.h"
 #include "xml/attribute-record.h"
 
+
+class SPDesktop;
+
 namespace Inkscape
 {
-	/**
-	 * Inkscape::ArtivityObserver - observer for tracing calls to
-	 * SPDocumentUndo::undo, SPDocumentUndo::redo, SPDocumentUndo::maybe_done.
-	 *
-	 */
+    /**
+     * Inkscape::ArtivityObserver - observer for tracing calls to
+     * SPDocumentUndo::undo, SPDocumentUndo::redo, SPDocumentUndo::maybe_done.
+     *
+     */
 
-	struct EventRecord
-	{
-		ZeitgeistSubject* subject;
-		
-		const char* eventType;
+    struct EventRecord
+    {
+        ZeitgeistSubject* subject;
+        
+        const char* eventType;
 
-		Event* event;
-	};
-	
-	class ArtivityLog : public UndoStackObserver
-	{
-	private:
-		
-		SPDocument* _doc;
-		
-		ZeitgeistLog* _log;
-		
-		std::vector<EventRecord>* _queue;
+        Event* event;
+    };
+    
+    class ArtivityLog : public UndoStackObserver
+    {
+    private:
+        
+        SPDocument* _doc;
 
-		template<class TEvent> bool is(Inkscape::XML::Event* event);
-			
-		template<class TEvent> TEvent as(Inkscape::XML::Event* event);
+        SPDesktop* _desktop;
+        
+        ZeitgeistLog* _log;
+        
+        std::vector<EventRecord>* _queue;
 
-	protected:
-			
-		ZeitgeistSubject* newSubject();
+        template<class TEvent> bool is(Inkscape::XML::Event* event);
+            
+        template<class TEvent> TEvent as(Inkscape::XML::Event* event);
+   
 
-		void logEvent(Event* e, const char* typeUri);
-		
-		void logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri);
+    protected:
+            
+        ZeitgeistSubject* newSubject();
 
-		void processEventQueue();
-		
-		GByteArray* getEventPayload(Event* e);
+        void logEvent(Event* e, const char* typeUri);
+        
+        void logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri);
 
-		GString* serializeEvent(Inkscape::XML::Event* event);
+        void processEventQueue();
+        
+        GByteArray* getEventPayload(Event* e);
 
-	public:
-		
-		ArtivityLog(SPDocument* doc);
-		
-		virtual ~ArtivityLog();
-		
-		void notifyUndoEvent(Event* e);
-		
-		void notifyRedoEvent(Event* e);
-		
-		void notifyUndoCommitEvent(Event* e);
-		
-		void notifyClearUndoEvent();
-		
-		void notifyClearRedoEvent();
-	};
+        GString* serializeEvent(Inkscape::XML::Event* event);
 
-	static void logSubjectComplete(GObject* source, GAsyncResult* result, gpointer userData);
+    public:
+        
+        ArtivityLog(SPDocument* doc, SPDesktop* desktop);
+        
+        virtual ~ArtivityLog();
+        
+        void notifyUndoEvent(Event* e);
+        
+        void notifyRedoEvent(Event* e);
+        
+        void notifyUndoCommitEvent(Event* e);
+        
+        void notifyClearUndoEvent();
+        
+        void notifyClearRedoEvent();
+    };
+
+    static void logSubjectComplete(GObject* source, GAsyncResult* result, gpointer userData);
 }
 
 #endif // SEEN_INKSCAPE_ARTIVITY_OBSERVER_H
