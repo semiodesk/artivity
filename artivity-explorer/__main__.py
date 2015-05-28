@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 from gi.repository import Gtk
+from gi.repository import Gdk
 from datetime import datetime
 
 from zeitgeist.client import ZeitgeistClient
@@ -29,6 +30,15 @@ class ArtivityJournal(Gtk.Window):
 
 		self.connect("delete-event", Gtk.main_quit)
 		self.show_all()
+
+	def init_dark_theme(self):
+		screen = Gdk.Screen.get_default()
+
+		css = Gtk.CssProvider()
+		css.load_from_path("/usr/share/themes/Adwaita/gtk-3.0/gtk-dark.css")
+
+		context = self.get_style_context()
+		context.add_provider_for_screen(screen, css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
 	def init_headerbar(self):
 		self.open_button = Gtk.FileChooserButton()
