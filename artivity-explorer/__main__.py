@@ -11,6 +11,7 @@ from zeitgeist.datamodel import *
 from lib.stats import EditingStatistics
 from lib.stats import CompositionStatistics
 from lib.stats import ColourStatistics
+import csv
 
 import os, time
 from stat import ST_ATIME, ST_MTIME, ST_CTIME
@@ -45,8 +46,8 @@ class ArtivityJournal(Gtk.Window):
 		self.open_button.connect("file-set", self.on_file_selected)
 		
 		self.export_button = Gtk.Button(label="Export")
-		self.export_button.set_sensitive(False)
-
+		self.export_button.connect("clicked", self.on_export_clicked)
+			
 		self.headerbar = Gtk.HeaderBar()
 		self.headerbar.set_show_close_button(True)
 		self.headerbar.props.title = self.get_title() 
@@ -320,6 +321,13 @@ class ArtivityJournal(Gtk.Window):
 		subj = Subject.new_for_values(uri=filename)
 		template = Event.new_for_values(subjects=[subj])
 		self.log.find_events_for_template(template, self.on_events_received, num_events=10000)
+
+	def on_export_clicked(self, event):
+		with open('export.csv', 'wb') as csvfile:
+			writer = csv.writer(csvfile, delimiter=";")
+			for x in self.log_store:
+				writer.writerow([x[0], x[1], x[2], x[3], x[4]])	
+
 	
 if( __name__ == "__main__" ):
 	window = ArtivityJournal()
