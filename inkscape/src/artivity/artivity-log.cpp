@@ -36,7 +36,7 @@ namespace Inkscape
     {
         _desktop= desktop;
 
-        g_message("ArtivityLog(SPDocument*) called; doc=%p", doc);
+        g_message("ArtivityLog(SPDocument*, SPDesktop*) called; doc=%p", doc);
 
         _log = zeitgeist_log_new();
         _queue = new std::vector<EventRecord>();
