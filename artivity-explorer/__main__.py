@@ -64,8 +64,10 @@ class ArtivityJournal(Gtk.Window):
 
 	def init_layout(self):
 		self.stack = Gtk.Stack()
-		self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_UP_DOWN)
-		self.stack.set_transition_duration(500)
+
+		# NOTE: Deactivated transitions due to problems with some graphics drivers.
+		#self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_UP_DOWN)
+		#self.stack.set_transition_duration(500)
 
 		self.stack.add_titled(self.stats_box, "stats", "Statistics")
 		self.stack.add_titled(self.log_scroller, "log", "Protocol")
@@ -144,7 +146,9 @@ class ArtivityJournal(Gtk.Window):
 
 		col0 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
 		col0.set_expand(True)
+		col0.set_min_width(150)
 		col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(xalign=1.0), text=1)
+		col1.set_min_width(50)
 
 		view = Gtk.TreeView(self.editing_store)
 		view.append_column(col0)
@@ -166,7 +170,9 @@ class ArtivityJournal(Gtk.Window):
 
 		col0 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
 		col0.set_expand(True)
-		col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=1)
+		col0.set_min_width(150)
+		col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(xalign=1.0), text=1)
+		col1.set_min_width(50)
 
 		view = Gtk.TreeView(self.composition_store)
 		view.append_column(col0)
@@ -188,16 +194,21 @@ class ArtivityJournal(Gtk.Window):
 
 		col0 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
 		col0.set_expand(True)
-		col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=1)
+		col0.set_min_width(150)
+		col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(xalign=1.0), text=1)
+		col1.set_min_width(50)
 
 		view = Gtk.TreeView(self.colour_store)
 		view.append_column(col0)
 		view.append_column(col1)
 
+		self.colour_grid = Gtk.Grid()
+
 		box = Gtk.Box(spacing=7)
 		box.set_orientation(Gtk.Orientation.VERTICAL)
 		box.pack_start(label, False, True, 0)
 		box.pack_start(view, True, True, 0)
+		box.pack_start(self.colour_grid, True, True, 0)
 
 		return box;
 
@@ -217,22 +228,52 @@ class ArtivityJournal(Gtk.Window):
 		stats = EditingStatistics(self.log, filename, self.update_editing_stats)
 		stats.update()
 
-		stats = CompositionStatistics(self.log, filename)
+		stats = CompositionStatistics()
+		stats.parse(filename)
 		
 		self.composition_store.clear()
 		self.composition_store.append(["Layers:", stats.get_layer_count()])
 		self.composition_store.append(["Groups:", stats.get_group_count()])
-		self.composition_store.append(["Objects:", stats.get_object_count()])
-		self.composition_store.append(["  Masked:", stats.get_object_masked_count()])
-		self.composition_store.append(["  Clipped:", stats.get_object_clipped_count()])
-		self.composition_store.append(["  Copied:", stats.get_object_copied_count()])
-		self.composition_store.append(["  Duplicated:", stats.get_object_duplicated_count()])
-
-		stats = ColourStatistics(self.log, filename)
+		self.composition_store.append(["Objects:", stats.get_element_count()])
+		self.composition_store.append(["  Masked:", stats.get_element_masked_count()])
+		self.composition_store.append(["  Clipped:", stats.get_element_clipped_count()])
+		self.composition_store.append(["  Copied:", stats.get_element_copied_count()])
+		self.composition_store.append(["  Duplicated:", stats.get_element_duplicated_count()])
 
 		self.colour_store.clear()
 		self.colour_store.append(["Colours:", stats.get_colour_count()])
-		self.colour_store.append(["Palette:", stats.get_colour_palette()])
+
+		# Clear the current palette items
+		for button in self.colour_grid.get_children():
+			self.colour_grid.remove(button)
+
+		# Display the swatches in a tabular fashion
+		row = 0
+		col = 0
+
+		for colour in stats.get_colour_palette():
+			swatch = self.get_colour_swatch(colour)
+
+			self.colour_grid.attach(swatch, col, row, 1, 1)
+
+			col += 1
+
+			if col == 4:
+				row += 1
+
+			col %= 4
+
+		self.colour_grid.show_all()
+
+	def get_colour_swatch(self, colour):
+		c = Gdk.color_parse(colour)
+		rgba = Gdk.RGBA.from_color(c)
+
+		button = Gtk.ColorButton()
+		button.set_size_request(24, 24)
+		button.set_rgba(rgba)
+
+		return button
 
 	def update_editing_stats(self, stats):
 		self.editing_store.clear()
@@ -317,7 +358,7 @@ class ArtivityJournal(Gtk.Window):
 		print self.log_store[path[0]][4]
 
 	def load_events(self, filename):
-		filename = "file://"+filename
+		filename = "file://" + filename
 		subj = Subject.new_for_values(uri=filename)
 		template = Event.new_for_values(subjects=[subj])
 		self.log.find_events_for_template(template, self.on_events_received, num_events=10000)
