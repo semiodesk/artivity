@@ -25,25 +25,33 @@ class EditingStatistics:
 
 	confidence = 0.0;
 
-	def __init__(self, zeitgeist, filename, on_property_changed):
-		filename = "file://" + filename
-
-		self.subject = Subject.new_for_values(uri=filename)
+	def __init__(self, zeitgeist, uris, on_property_changed):
+		self.uris = uris 
 		self.zeitgeist = zeitgeist
 		self.raise_property_changed = on_property_changed
 
+	def get_templates(self, subjects, interpretation):
+		templates = []
+
+		for uri in self.uris:
+			subject = Subject.new_for_values(uri=uri)
+
+			templates.append(Event.new_for_values(subjects=[subject], interpretation=interpretation))
+
+		return templates
+
 	def update(self):
-		begin_edit = Event.new_for_values(interpretation=art.BeginEditingEvent, subjects=[self.subject])
-		self.zeitgeist.find_event_ids_for_templates([begin_edit], self.on_begin_edit_ids_received, num_events=0)
+		begin_edit = self.get_templates(self.uris, art.BeginEditingEvent)
+		self.zeitgeist.find_event_ids_for_templates(begin_edit, self.on_begin_edit_ids_received, num_events=0)
 
-		edit = Event.new_for_values(interpretation=art.EditEvent, subjects=[self.subject])
-		self.zeitgeist.find_event_ids_for_templates([edit], self.on_edit_ids_received, num_events=0)
+		edit = self.get_templates(self.uris, art.EditEvent)
+		self.zeitgeist.find_event_ids_for_templates(edit, self.on_edit_ids_received, num_events=0)
 
-		undo = Event.new_for_values(interpretation=art.UndoEvent, subjects=[self.subject])
-		self.zeitgeist.find_event_ids_for_templates([undo], self.on_undo_ids_received, num_events=0)
+		undo = self.get_templates(self.uris, art.UndoEvent)
+		self.zeitgeist.find_event_ids_for_templates(undo, self.on_undo_ids_received, num_events=0)
 
-		redo = Event.new_for_values(interpretation=art.RedoEvent, subjects=[self.subject])
-		self.zeitgeist.find_event_ids_for_templates([redo], self.on_redo_ids_received, num_events=0)
+		redo = self.get_templates(self.uris, art.RedoEvent)
+		self.zeitgeist.find_event_ids_for_templates(redo, self.on_redo_ids_received, num_events=0)
 
 	def on_begin_edit_ids_received(self, ids):
 		self.begin_edit_count = len(ids)
