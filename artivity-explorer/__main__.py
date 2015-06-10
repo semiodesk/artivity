@@ -21,6 +21,7 @@ class ArtivityJournal(Gtk.Window):
 	def __init__(self):
 		Gtk.Window.__init__(self)
 		
+		self.subject_uris = set()
 		self.set_title("Artivity Explorer")
 
 		self.init_headerbar()
@@ -225,7 +226,7 @@ class ArtivityJournal(Gtk.Window):
 		except IOError:
 			print "Error: Failed to get information about", filename
 
-		stats = EditingStatistics(self.log, filename, self.update_editing_stats)
+		stats = EditingStatistics(self.log, self.subject_uris, self.update_editing_stats)
 		stats.update()
 
 		stats = CompositionStatistics()
@@ -351,17 +352,56 @@ class ArtivityJournal(Gtk.Window):
 		# remove events from journal
 		print event_ids
 
-	def on_events_received(self, events):
-		self.on_log_event_inserted(None, events)
-
 	def on_cell_clicked(self, treeview, path, column):
 		print self.log_store[path[0]][4]
 
 	def load_events(self, filename):
-		filename = "file://" + filename
-		subj = Subject.new_for_values(uri=filename)
-		template = Event.new_for_values(subjects=[subj])
-		self.log.find_events_for_template(template, self.on_events_received, num_events=10000)
+		# Names the file may have previously been given.
+		uri = "file://" + filename
+
+		self.subject_uris.clear()
+		self.subject_uris.add(uri)
+
+		self.get_subject_move_events([uri])
+	
+	def get_subject_move_events(self, uris):
+		templates = []
+
+		for u in uris:
+			subject = Subject.new_for_values(current_uri = u)
+
+			templates.append(Event.new_for_values(subjects=[subject], interpretation=Interpretation.MOVE_EVENT))
+
+		self.log.find_events_for_templates(templates, self.on_subjects_received, num_events=1000)
+
+	def on_subjects_received(self, events):
+		if len(events) == 0:
+			self.on_subjects_resolved()
+		else:
+			uris = set()
+
+			for e in events:
+				u = str(e.subjects[0].uri)
+
+				if not u in self.subject_uris:
+					uris.add(u)
+
+				self.subject_uris.add(u)
+
+			self.get_subject_move_events(uris)
+
+	def on_subjects_resolved(self):
+		templates = []
+
+		for u in self.subject_uris:
+			subject = Subject.new_for_values(uri=u)
+
+			templates.append(Event.new_for_values(subjects=[subject]))
+
+		self.log.find_events_for_templates(templates, self.on_events_received, num_events=10000)
+
+	def on_events_received(self, events):
+		self.on_log_event_inserted(None, events)
 
 	def on_export_clicked(self, event):
 		with open('export.csv', 'wb') as csvfile:
