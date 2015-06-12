@@ -6,7 +6,7 @@ dist:
 
 	chmod 755 artivity-explorer
 
-	tar cvzf artivity-explorer-1.0.5.tar.gz artivity-explorer artivity-explorer.desktop icon32.png icon64.png icon128.png Makefile COPYING
+	tar cvzf artivity-explorer-1.0.6.tar.gz artivity-explorer artivity-explorer.desktop icon32.png icon64.png icon128.png Makefile COPYING
 
 	rm artivity-explorer.zip
 	rm artivity-explorer
