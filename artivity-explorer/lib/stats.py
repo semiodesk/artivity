@@ -2,10 +2,6 @@
 
 from xml.dom import minidom
 
-from ontology import art
-
-from zeitgeist.datamodel import *
-
 class EditingStatistics:
     """
     Helper class for calculating the editing statistics of a file.
@@ -154,13 +150,11 @@ class CompositionStatistics:
     def get_colour_palette(self):
         return self.palette
 
-
 def getattr(node, name):
     if name in node.attributes.keys():
         return node.attributes[name].value
     else:
         return None
-
 
 def hasattr(node, name):
     return name in node.attributes.keys()

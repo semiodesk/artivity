@@ -1,33 +1,68 @@
 #! /usr/bin/python
 
-from gi.repository import Gdk, Gtk, GObject
+from gi.repository import Gio, Gdk, Gtk, GObject, GdkPixbuf
 from datetime import datetime, timedelta
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import *
 
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
+from matplotlib.font_manager import FontProperties
+from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
+
+from lib.widgets.fileinfo import FileInfoWidget
+from lib.widgets.editing import FileEditingWidget
+from lib.widgets.composition import FileCompositionWidget
+from lib.widgets.colour import FileColourWidget
 
 from lib.stats import EditingStatistics
 from lib.stats import CompositionStatistics
 from lib.file import FileTracker, FileEventLoader
-from lib.ontology import abbreviate
+from lib.ontology import zg, art, abbreviate
 
-import csv, os, time
-from stat import ST_ATIME, ST_MTIME, ST_CTIME
+import csv, sys
 
 class ArtivityJournal(Gtk.Window):
+    """
+    TODO
+    """
+
     def __init__(self):
         Gtk.Window.__init__(self)
 
-        self.subject_uris = set()
         self.set_title("Artivity Explorer")
 
+        self.__filename = None
+        self.__fileinfo = FileInfoWidget()
+        self.__editinfo = FileEditingWidget()
+        self.__compositioninfo = FileCompositionWidget()
+        self.__colourinfo = FileColourWidget()
+
+        self.__actor_palette = {
+           'application://inkscape.desktop': '#f02cab',
+           'application://chromium-browser.desktop': '#00ccff',
+           'application://firefox.desktop': '#00ccff',
+           'application://opera.desktop': '#00ccff',
+           'application://nautilus.desktop': '#ee7101',
+           'application://eog.desktop': '#ee7101'}
+
+        self.__action_icons = {
+            art.BeginEditingEvent: '/usr/share/icons/Artivity/16x16/editing_begin.png',
+            art.EndEditingEvent: '/usr/share/icons/Artivity/16x16/editing_end.png',
+            art.EditEvent: '/usr/share/icons/Artivity/16x16/edit.png',
+            art.UndoEvent: '/usr/share/icons/Artivity/16x16/undo.png',
+            zg.AccessEvent: '/usr/share/icons/Artivity/16x16/surf.png',
+            zg.MoveEvent: '/usr/share/icons/Artivity/16x16/move.png'}
+
+        self.event_loader = None
+        self.subject_tracker = None
+        self.subject_uris = set()
+        self.selected_session = 0
+
         self.__init_header()
-        self.__init_stats()
-        self.__init_log()
+        self.__init_log_monitor()
         self.__init_log_view()
+        self.__init_log_histogram()
         self.__init_layout()
 
         self.connect("delete-event", Gtk.main_quit)
@@ -58,50 +93,45 @@ class ArtivityJournal(Gtk.Window):
         self.set_titlebar(self.headerbar)
 
     def __init_layout(self):
-        self.stack = Gtk.Stack()
+        sidebar = Gtk.VBox()
+        sidebar.set_hexpand(True)
+        sidebar.set_vexpand(False)
+        sidebar.set_size_request(200, 500)
+        sidebar.pack_start(self.__editinfo, False, False, 14)
+        sidebar.pack_start(self.__compositioninfo, False, False, 0)
+        sidebar.pack_start(self.__colourinfo, False, False, 14)
 
-        self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_UP_DOWN)
-        self.stack.set_transition_duration(500)
+        alignment = Gtk.Alignment()
+        alignment.align = 0
+        alignment.set_padding(0, 0, 14, 14)
+        alignment.add(sidebar)
 
-        self.stack.add_titled(self.stats_page, "stats", "Statistics")
-        self.stack.add_titled(self.log_page, "log", "Protocol")
+        paned = Gtk.HPaned()
+        paned.pack1(alignment, False, False)
+        paned.pack2(self.log_page, True, True)
 
-        self.stack_switcher = Gtk.StackSwitcher()
-        self.stack_switcher.set_stack(self.stack)
-        self.stack_switcher.props.halign = Gtk.Align.CENTER
-
-        self.layout_root = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=7)
-        self.layout_root.set_halign(Gtk.Align.FILL)
-        self.layout_root.pack_start(self.stack_switcher, False, True, 7)
-        self.layout_root.pack_start(self.stack, True, True, 0)
+        self.layout_root = Gtk.VBox()
+        self.layout_root.pack_start(paned, True, True, 0)
+        self.layout_root.pack_start(Gtk.VSeparator(), False, False, 0)
+        self.layout_root.pack_start(self.__fileinfo, False, False, 7)
 
         self.add(self.layout_root)
 
-    def __init_stats(self):
-        grid = Gtk.Grid()
-        grid.set_halign(Gtk.Align.FILL)
-        grid.set_row_spacing(30)
-        grid.set_column_spacing(30)
-        grid.set_orientation(Gtk.Orientation.VERTICAL)
-        grid.attach(self.get_file_info_widget(), 0, 0, 3, 1)
-        grid.attach(self.get_file_editing_widget(), 0, 1, 1, 1)
-        grid.attach(self.get_file_composition_widget(), 1, 1, 1, 1)
-        grid.attach(self.get_file_colour_widget(), 2, 1, 1, 1)
-
-        self.stats_page = Gtk.Box()
-        self.stats_page.pack_start(grid, True, True, 14)
-
-    def __init_log(self):
+    def __init_log_monitor(self):
         event_type = [Event.new_for_values(subject_interpretation=Interpretation.VISUAL)]
 
         self.log = ZeitgeistClient()
         self.log.install_monitor(TimeRange.always(), event_type, self.on_log_event_inserted, self.on_log_event_deleted)
 
     def __init_log_view(self):
-        self.log_store = Gtk.ListStore(str, str, str, str, str);
+        self.log_store = Gtk.ListStore(str, str, str, str, str, str, GdkPixbuf.Pixbuf)
 
         log_model = Gtk.TreeModelSort(model=self.log_store)
-        #log_model.set_sort_column_id(0, Gtk.SortType.DESCENDING)
+
+        column0 = Gtk.TreeViewColumn('', Gtk.CellRendererText(), cell_background=5)
+        column0.set_min_width(3)
+        column0.set_max_width(3)
+        column0.set_resizable(False)
 
         column1 = Gtk.TreeViewColumn('Time', Gtk.CellRendererText(), text=0)
         column1.set_min_width(150)
@@ -122,12 +152,23 @@ class ArtivityJournal(Gtk.Window):
         column4.set_resizable(True)
         column4.set_sort_column_id(4)
 
+        column5 = Gtk.TreeViewColumn('', Gtk.CellRendererPixbuf(), pixbuf=6)
+        column5.set_min_width(30)
+        column5.set_max_width(30)
+        column5.set_resizable(False)
+
         self.log_view = Gtk.TreeView()
         self.log_view.set_model(log_model)
+        self.log_view.set_vexpand(True)
         self.log_view.append_column(column1)
-        self.log_view.append_column(column3)
+        self.log_view.append_column(column0)
+        self.log_view.append_column(column5)
+        #self.log_view.append_column(column3)
         self.log_view.append_column(column4)
-        self.log_view.connect("size-allocate", self.on_log_view_size_allocate)
+        self.log_view.connect('size-allocate', self.on_log_view_size_allocate)
+        self.log_view.connect('row-activated', self.on_log_view_row_clicked)
+
+        self.log_view_range = None
 
         self.log_histbox = Gtk.VBox()
         self.log_histbox.set_size_request(800, 150)
@@ -135,198 +176,70 @@ class ArtivityJournal(Gtk.Window):
         self.log_scroller = Gtk.ScrolledWindow()
         self.log_scroller.add(self.log_view)
 
-        self.log_page = Gtk.VBox()
-        self.log_page.pack_start(self.log_histbox, False, False, 0)
-        self.log_page.pack_start(self.log_scroller, True, True, 0)
+        cycle_list = Gtk.TreeView()
+        cycle_list.set_size_request(200, 0)
 
-    def get_file_info_widget(self):
-        file_label = Gtk.Label()
-        file_label.set_halign(Gtk.Align.START)
-        file_label.set_markup("<b>File:</b>")
+        cycle_view = Gtk.VBox()
+        cycle_view.pack_start(self.log_histbox, False, False, 0)
+        cycle_view.pack_start(self.log_scroller, True, True, 0)
 
-        self.file_name = Gtk.Label()
+        self.log_page = Gtk.HBox()
+        self.log_page.set_hexpand(True)
+        self.log_page.set_vexpand(True)
+        self.log_page.pack_start(Gtk.VSeparator(), False, False, 0)
+        self.log_page.pack_start(cycle_view, True, True, 0)
 
-        file_created_label = Gtk.Label()
-        file_created_label.set_halign(Gtk.Align.START)
-        file_created_label.set_markup("<b>Created:</b>")
+    def __init_log_histogram(self):
+        self.log_figure = Figure(dpi=72, facecolor='#444444')
+        self.log_figure.subplots_adjust(left=0.035, right=1.0, bottom=0.07, top=0.95)
+        self.log_figure_data = dict()
 
-        self.file_created = Gtk.Label()
+        self.log_canvas = FigureCanvas(self.log_figure)
+        self.log_canvas.set_size_request(300, 350)
 
-        file_modified_label = Gtk.Label()
-        file_modified_label.set_halign(Gtk.Align.START)
-        file_modified_label.set_markup("<b>Last modified:</b>")
-
-        self.file_modified = Gtk.Label()
-
-        file_accessed_label = Gtk.Label()
-        file_accessed_label.set_halign(Gtk.Align.START)
-        file_accessed_label.set_markup("<b>Last accessed:</b>")
-
-        self.file_accessed = Gtk.Label()
-
-        grid = Gtk.Grid()
-        grid.set_column_spacing(7)
-        grid.set_row_spacing(7)
-
-        grid.add(file_label)
-        grid.attach(self.file_name, 1, 0, 6, 1)
-        grid.attach(file_created_label, 0, 1, 1, 1)
-        grid.attach(self.file_created, 1, 1, 1, 1)
-        grid.attach(file_modified_label, 0, 2, 1, 1)
-        grid.attach(self.file_modified, 1, 2, 1, 1)
-        grid.attach(file_accessed_label, 0, 3, 1, 1)
-        grid.attach(self.file_accessed, 1, 3, 1, 1)
-
-        return grid
-
-    def get_file_editing_widget(self):
-        self.editing_store = Gtk.ListStore(str, str)
-
-        label = Gtk.Label()
-        label.set_halign(Gtk.Align.START)
-        label.set_markup("<b>EDITING</b>")
-
-        col0 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
-        col0.set_expand(True)
-        col0.set_min_width(150)
-        col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(xalign=1.0), text=1)
-        col1.set_min_width(50)
-
-        view = Gtk.TreeView(self.editing_store)
-        view.append_column(col0)
-        view.append_column(col1)
-
-        box = Gtk.Box(spacing=7)
-        box.set_orientation(Gtk.Orientation.VERTICAL)
-        box.pack_start(label, False, True, 0)
-        box.pack_start(view, True, True, 0)
-
-        return box;
-
-    def get_file_composition_widget(self):
-        self.composition_store = Gtk.ListStore(str, str)
-
-        label = Gtk.Label()
-        label.set_halign(Gtk.Align.START)
-        label.set_markup("<b>COMPOSITION</b>")
-
-        col0 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
-        col0.set_expand(True)
-        col0.set_min_width(150)
-        col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(xalign=1.0), text=1)
-        col1.set_min_width(50)
-
-        view = Gtk.TreeView(self.composition_store)
-        view.append_column(col0)
-        view.append_column(col1)
-
-        box = Gtk.Box(spacing=7)
-        box.set_orientation(Gtk.Orientation.VERTICAL)
-        box.pack_start(label, False, True, 0)
-        box.pack_start(view, True, True, 0)
-
-        return box;
-
-    def get_file_colour_widget(self):
-        self.colour_store = Gtk.ListStore(str, str)
-
-        label = Gtk.Label()
-        label.set_halign(Gtk.Align.START)
-        label.set_markup("<b>COLOUR</b>")
-
-        col0 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
-        col0.set_expand(True)
-        col0.set_min_width(150)
-        col1 = Gtk.TreeViewColumn("", Gtk.CellRendererText(xalign=1.0), text=1)
-        col1.set_min_width(50)
-
-        view = Gtk.TreeView(self.colour_store)
-        view.append_column(col0)
-        view.append_column(col1)
-
-        self.colour_grid = Gtk.Grid()
-
-        box = Gtk.Box(spacing=7)
-        box.set_orientation(Gtk.Orientation.VERTICAL)
-        box.pack_start(label, False, True, 0)
-        box.pack_start(view, True, True, 0)
-        box.pack_start(self.colour_grid, True, True, 0)
-
-        return box;
+        self.log_histbox.add(self.log_canvas)
+        self.log_histbox.show_all()
 
     def update_stats(self, filename):
-        try:
-            stat = os.stat(filename)
-
-            file_modified = time.localtime(stat[ST_MTIME])
-            file_created = time.localtime(stat[ST_CTIME])
-            file_accessed = time.localtime(stat[ST_ATIME])
-
-            timeformat = "%d %b %Y %H:%M:%S"
-
-            self.file_name.set_text(filename)
-            self.file_created.set_text(time.strftime(timeformat, file_created))
-            self.file_modified.set_text(time.strftime(timeformat, file_modified))
-            self.file_accessed.set_text(time.strftime(timeformat, file_accessed))
-        except IOError:
-            print "Error: Failed to get information about", filename
-
-        self.update_histogram()
-
-        stats = EditingStatistics(self.log, self.subject_uris, self.update_editing_stats)
-        stats.update()
-
         stats = CompositionStatistics()
         stats.parse(filename)
 
-        self.composition_store.clear()
-        self.composition_store.append(["Layers:", stats.get_layer_count()])
-        self.composition_store.append(["Groups:", stats.get_group_count()])
-        self.composition_store.append(["Objects:", stats.get_element_count()])
-        self.composition_store.append(["  Masked:", stats.get_element_masked_count()])
-        self.composition_store.append(["  Clipped:", stats.get_element_clipped_count()])
-        self.composition_store.append(["  Copied:", stats.get_element_copied_count()])
-        self.composition_store.append(["  Duplicated:", stats.get_element_duplicated_count()])
+        self.__compositioninfo.update(stats)
+        self.__colourinfo.update(stats)
 
-        self.colour_store.clear()
-        self.colour_store.append(["Colours:", stats.get_colour_count()])
+        stats = EditingStatistics()
+        stats.calculate(self.log_store)
 
-        # Clear the current palette items
-        for button in self.colour_grid.get_children():
-            self.colour_grid.remove(button)
-
-        # Display the swatches in a tabular fashion
-        row = 0
-        col = 0
-
-        for colour in stats.get_colour_palette():
-            swatch = self.get_colour_swatch(colour)
-
-            self.colour_grid.attach(swatch, col, row, 1, 1)
-
-            col += 1
-
-            if col == 4:
-                row += 1
-
-            col %= 4
-
-        self.colour_grid.show_all()
+        self.update_histogram()
 
     def update_histogram(self):
-        if len(self.log_store):
+        print
+        print "update_histogram():", len(self.log_store)
+
+        if len(self.log_store) > 0:
             timeformat = "%Y-%m-%d %H:%M:%S"
 
             begin_time = datetime.strptime(self.log_store[len(self.log_store) - 1][0], timeformat)
             begin_time -= timedelta(seconds=begin_time.second)
 
-            x = []
-            y = []
+            maxv = 0
+
+            # Build the data rows for the diagrams from the data in the log store.
+            self.log_figure_data = dict()
 
             for row in self.log_store:
+                actor = row[1]
+
+                x, y = [], []
+
+                if actor in self.log_figure_data.keys():
+                    x, y = self.log_figure_data[actor]
+
                 d = datetime.strptime(row[0], timeformat)
                 d -= timedelta(seconds=d.second)
                 v = int((d - begin_time).total_seconds() / 60)
+
+                maxv = max(maxv, v)
 
                 if len(x) == 0:
                     x.insert(0, v)
@@ -348,55 +261,144 @@ class ArtivityJournal(Gtk.Window):
                     x.insert(0, v)
                     y.insert(0, 1)
 
-            fig = Figure(dpi=96, facecolor='white')
+                self.log_figure_data[actor] = (x, y)
 
-            a = fig.add_subplot(111)
-            a.bar(x, y, facecolor='green', edgecolor='green')
-            a.axis('off')
+            # Prepend and append 0s to the values so that the lines in the diagram start and end at 0.
+            for actor in self.log_figure_data.keys():
+                x, y = self.log_figure_data[actor]
 
-            canvas = FigureCanvas(fig)
-            canvas.set_size_request(self.get_size()[0], 100)
+                x.insert(0, x[0] - 1)
+                x.append(x[len(x) - 1] + 1)
+                y.insert(0, 0)
+                y.append(0)
 
-            for child in self.log_histbox.get_children():
-                self.log_histbox.remove(child)
+            # Prepend and append 0s to the values so that the lines in the diagram start and end at 0.
+            for actor in self.log_figure_data.keys():
+                x, y = self.log_figure_data[actor]
 
-            self.log_histbox.add(canvas)
-            self.log_histbox.show_all()
+                x.insert(0, x[0] - 1)
+                x.append(x[len(x) - 1] + 1)
+                y.insert(0, 0)
+                y.append(0)
 
-    def update_editing_stats(self, stats):
-        self.editing_store.clear()
-        self.editing_store.append(["Cycles:", str(stats.begin_edit_count)])
-        self.editing_store.append(["Steps:", str(stats.edit_count)])
-        self.editing_store.append(["  Undos:", str(stats.undo_count)])
-        self.editing_store.append(["  Redos:", str(stats.redo_count)])
-        self.editing_store.append(["Confidence:", str(round(stats.confidence, 3))])
+            a = self.log_figure.add_subplot(111, axisbg='#444444')
+            a.set_title('ACTIVITIES / MIN', horizontalalignment='left', y=1.06)
+            a.title.set_color('white')
+            a.grid(True)
+            a.yaxis.grid(color='#999999')
+            a.yaxis.label.set_color('white')
+            a.tick_params(axis='y', colors='#eeeeee')
+            a.xaxis.grid(color='#999999')
+            a.xaxis.label.set_color('white')
+            a.tick_params(axis='x', colors='#eeeeee')
+            a.spines['top'].set_visible(False)
+            a.spines['right'].set_visible(False)
+            a.spines['bottom'].set_visible(False)
+            a.spines['left'].set_visible(False)
+            a.set_xlim([maxv * -0.05, maxv * 1.1])
+            #a.set_xlabel('min')
+            #a.set_ylabel('Activities')
 
-    def get_colour_swatch(self, colour):
-        c = Gdk.color_parse(colour)
-        rgba = Gdk.RGBA.from_color(c)
+            # Draw the editing cycles
+            i = 0
 
-        button = Gtk.ColorButton()
-        button.set_size_request(24, 24)
-        button.set_rgba(rgba)
+            for cycle in self.event_loader.editing_sessions:
+                pink = '#f02cab'
 
-        return button
+                # Only set the label for the first plot.
+                if i > 0:
+                    a.axvspan(cycle[0], cycle[1], facecolor=pink, edgecolor=pink, alpha=0.3)
+                else:
+                    a.axvspan(cycle[0], cycle[1], facecolor=pink, edgecolor=pink, alpha=0.3, label='Editing Session')
+
+                i += 1
+
+            # Plot the data
+            for actor in self.log_figure_data.keys():
+                x, y = self.log_figure_data[actor]
+                label = self.get_display_name(actor)
+                colour = self.get_colour(actor)
+
+                #offset = transforms.ScaledTranslation(i * (4 / 72), 0, self.log_figure.dpi_scale_trans)
+                #transform = a.transData + offset
+
+                a.vlines(x, [0], y, lw=3, edgecolor=colour, alpha=0.75, label=label)
+
+            # Add the legend to the plot _after_ all subplots have been made.
+            font = FontProperties()
+            font.set_size(12)
+
+            # Bounding box of the axis.
+            b = a.get_position()
+
+            # Set the figure size.
+            a.set_position([b.x0, b.y0 + b.height * 0.15, b.width, b.height * .75])
+
+            # Add the legend at the bottom of the plot.
+            l = a.legend(ncol=10, loc='upper left', borderaxespad=0, bbox_to_anchor=(0, -.16), framealpha=0, prop=font)
+
+            for t in l.get_texts():
+                t.set_color('white')
+        else:
+            self.log_figure.clear()
+
+        self.log_canvas.draw()
+
+    def get_display_name(self, actor):
+        app_info = Gio.DesktopAppInfo.new(actor.replace("application://", ""))
+
+        return app_info.get_display_name()
+
+    def get_colour(self, actor):
+        if actor in self.__actor_palette:
+            return self.__actor_palette[actor]
+
+        return '#eeeeee'
+
+    def get_pixbuf(self, interpretation):
+        if interpretation in self.__action_icons:
+            icon = Gtk.Image()
+            icon.set_from_file(self.__action_icons[interpretation])
+
+            return icon.get_pixbuf()
+
+        return None
 
     def on_log_view_size_allocate(self, widget, event, data=None):
         adjustment = self.log_scroller.get_vadjustment()
         adjustment.set_value(adjustment.get_lower())
+
+    def on_log_view_row_clicked(self, widget, path, column):
+        iter = self.log_store.get_iter(path)
+
+        value = self.log_store.get_value(iter, 3)
+
+        if value.startswith('http'):
+            import webbrowser
+
+            webbrowser.open(value)
 
     def on_log_event_inserted(self, time_range, events):
         self.log_view.freeze_child_notify()
         self.log_view.set_model(None)
 
         for e in events:
+            # Modify events correspond with editing cycles which are already tracked..
+            if e.interpretation == zg.ModifyEvent:
+                continue
+
             time = datetime.fromtimestamp(int(e.timestamp) / 1e3).strftime("%Y-%m-%d %H:%M:%S")
             actor = e.actor
-            type = abbreviate(e.interpretation)
             subject = e.subjects[0].uri
+            type = abbreviate(e.interpretation)
             payload = ''.join([chr(c) for c in e.payload])
 
-            self.log_store.append([time, actor, type, subject, payload])
+            if e.interpretation == zg.MoveEvent:
+                payload = e.subjects[0].uri + u' \u2192 ' + e.subjects[0].current_uri
+            elif payload == '':
+                payload = subject
+
+            self.log_store.append([time, actor, type, subject, payload, self.get_colour(actor), self.get_pixbuf(e.interpretation)])
 
         self.log_view.set_model(self.log_store)
         self.log_view.thaw_child_notify()
@@ -404,33 +406,36 @@ class ArtivityJournal(Gtk.Window):
         stats = EditingStatistics()
         stats.calculate(self.log_store)
 
-        self.update_editing_stats(stats)
+        self.__editinfo.update(stats)
 
     def on_log_event_deleted(self, time_range, event_ids):
         # remove events from journal
         print event_ids
 
     def on_file_selected(self, param):
-        self.filename = self.open_button.get_filename()
+        self.__filename = self.open_button.get_filename()
 
-        #self.update_stats(self.filename)
+        self.__fileinfo.set_file(self.__filename)
+
         self.log_store.clear()
-        self.load_file_events(self.filename)
+
+        self.update_stats(self.__filename)
+
+        self.load_file_events(self.__filename)
 
     def load_file_events(self, filename):
-        tracker = FileTracker(self.log, self.on_file_uris_resolved)
-        tracker.get_file_uris(filename)
+        self.subject_tracker = FileTracker(self.log, self.on_file_uris_resolved)
+        self.subject_tracker.get_file_uris(filename)
 
     def on_file_uris_resolved(self, tracker):
-        loader = FileEventLoader(self.log, tracker.uris, self.on_file_events_received, self.on_file_events_loaded)
-        loader.load_events()
+        self.event_loader = FileEventLoader(self.log, tracker.uris, self.on_file_events_received, self.on_file_events_loaded)
+        self.event_loader.load_events()
 
     def on_file_events_received(self, events):
         self.on_log_event_inserted(None, events)
 
     def on_file_events_loaded(self):
-        #self.update_histogram()
-        return
+        self.update_histogram()
 
     def on_export_clicked(self, event):
         with open('export.csv', 'wb') as csvfile:

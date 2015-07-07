@@ -3,12 +3,13 @@ body {
  font-size: 1em;
  padding: 0 0 40px 0; /* Bottom padding ensures that the footer message does not overlap with the content. */
  margin: 0;
- background: white;
+ background: #222;
+ color: #ddd;
 }
 
 h4 {
  text-transform: uppercase;
- color: #747474;
+ color: #858585;
  font-size: 0.8em;
  font-weight: normal;
  margin: 10px 0 0 0;
@@ -29,7 +30,7 @@ h4 {
  text-align: center;
  padding: 10px;
  margin: 10px 0 20px 0;
- border: 1px dotted #ffa5a5;
+ border: 1px solid #ffa5a5;
  border-radius: 5px;
 }
 
@@ -38,6 +39,7 @@ h4 {
  position: absolute;
  bottom: 0;
  right: 0;
+ opacity: 0.1;
 }
 
 #body {
@@ -45,26 +47,24 @@ h4 {
 }
 
 #subtitle, #footer {
- color: #747474;
+ color: #858585;
 }
 
 #settings-list {
  margin: 10px 0;
  padding: 0;
  list-style: none;
- border-top: 1px dotted #c8c8c8;
 }
 
 #settings-list li {
  padding: 15px;
- border-bottom: 1px dotted #c8c8c8;
 }
 
 #footer {
  position: absolute;
  bottom: 0;
- width: 100%;
+ left: 10px;
  padding: 10px 0;
  font-size: 0.8em;
- text-align: center;
+ text-align: left;
 }
