@@ -42,8 +42,10 @@ namespace Inkscape
         _queue = new std::vector<EventRecord>();
 
         ZeitgeistSubject* subject = newSubject();
-        
-        _queue->push_back({ subject, art::BeginEditingEvent, NULL });
+
+        gint64 timestamp = (gint64)(time(NULL) * 1000);
+
+        _queue->insert(_queue->begin(), { subject, art::BeginEditingEvent, NULL, timestamp});
 
         processEventQueue();
     }
@@ -75,8 +77,10 @@ namespace Inkscape
     ArtivityLog::notifyClearUndoEvent()
     {
         ZeitgeistSubject* subject = newSubject();
-        
-        _queue->push_back({ subject, art::EndEditingEvent, NULL });
+
+        gint64 timestamp = (gint64)(time(NULL) * 1000);
+
+        _queue->insert(_queue->begin(), { subject, art::EndEditingEvent, NULL, timestamp});
 
         processEventQueue();
     }
@@ -93,8 +97,10 @@ namespace Inkscape
         // NOTE: The current document may have not been saved yet. Therefore,
         // we create an event without a URI and push it into the queue.
         ZeitgeistSubject* subject = newSubject();
-        
-        _queue->push_back({ subject, typeUri, e });
+
+        gint64 timestamp = (gint64)(time(NULL) * 1000);
+
+        _queue->insert(_queue->begin(), { subject, typeUri, e, timestamp});
 
         g_message("Queued subject=%p desc=%s", subject, e->description.data());
         
@@ -131,7 +137,7 @@ namespace Inkscape
         {
             EventRecord r = _queue->back();
             
-            logSubject(r.subject, r.eventType, r.event, uri, uri);
+            logSubject(r.subject, r.eventType, r.event, uri, uri, r.timestamp);
 
             _queue->pop_back();
             
@@ -150,7 +156,7 @@ namespace Inkscape
     }
     
     void
-    ArtivityLog::logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri)
+    ArtivityLog::logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri, gint64 timestamp)
     {
         if(_doc == NULL)
         {
@@ -173,6 +179,9 @@ namespace Inkscape
             typeUri,
             ZEITGEIST_ZG_USER_ACTIVITY,
             "application://inkscape.desktop", s, NULL);
+
+        zeitgeist_event_set_timestamp(event, timestamp);
+
         
         if(event != NULL)
         {
@@ -234,8 +243,6 @@ namespace Inkscape
         }
         while(event != NULL);
 
- 
-        
         //g_message("getEventPayload: Data=%s", xml->str);
 
         GByteArray* result = g_byte_array_new_take((guint8*)xml->str, xml->len);
