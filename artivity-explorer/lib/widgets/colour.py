@@ -43,8 +43,6 @@ class FileColourWidget(Gtk.VBox):
         self.pack_start(palette, True, True, 7)
 
     def update(self, stats):
-        self.__colours_box.set_text(stats.get_layer_count())
-
         # Clear the current palette items
         for swatch in self.__palette_grid.get_children():
             self.__palette_grid.remove(swatch)
@@ -52,6 +50,8 @@ class FileColourWidget(Gtk.VBox):
         # Display the swatches in a tabular fashion
         row = 0
         col = 0
+
+        n = 0
 
         for colour in stats.get_colour_palette():
             swatch = self.__get_swatch(colour)
@@ -65,7 +65,11 @@ class FileColourWidget(Gtk.VBox):
 
             col %= 4
 
+            n += 1
+
         self.__palette_grid.show_all()
+
+        self.__colours_box.set_text(str(n))
 
     def __get_swatch(self, colour):
         c = Gdk.color_parse(colour)
