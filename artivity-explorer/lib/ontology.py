@@ -1,5 +1,13 @@
 #! /usr/bin/python
 
+class app:
+    Inkscape = "application://inkscape.desktop"
+    Chromium = "application://chromium-browser.desktop"
+    Firefox = "application://firefox.desktop"
+    Opera = "application://opera.desktop"
+    Nautilus = "application://nautilus.desktop"
+    EyeOfGnome = "application://eog.desktop"
+
 class art:
     BeginEditingEvent = "http://purl.org/ontologies/art/1.0/terms#BeginEditingEvent"
     EndEditingEvent = "http://purl.org/ontologies/art/1.0/terms#EndEditingEvent"
