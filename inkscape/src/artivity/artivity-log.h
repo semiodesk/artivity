@@ -19,7 +19,7 @@
 #include "xml/event.h"
 #include "xml/node.h"
 #include "xml/attribute-record.h"
-
+#include <ctime>
 
 class SPDesktop;
 
@@ -38,6 +38,8 @@ namespace Inkscape
         const char* eventType;
 
         Event* event;
+
+        gint64 timestamp;
     };
     
     class ArtivityLog : public UndoStackObserver
@@ -63,7 +65,7 @@ namespace Inkscape
 
         void logEvent(Event* e, const char* typeUri);
         
-        void logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri);
+        void logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri, gint64 timestamp);
 
         void processEventQueue();
         
