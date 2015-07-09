@@ -18,7 +18,7 @@ from lib.widgets.colour import FileColourWidget
 from lib.stats import EditingStatistics
 from lib.stats import CompositionStatistics
 from lib.file import FileTracker, FileEventLoader
-from lib.ontology import zg, art, abbreviate
+from lib.ontology import abbreviate, app, art, zg
 
 import csv, sys
 
@@ -39,20 +39,36 @@ class ArtivityJournal(Gtk.Window):
         self.__colourinfo = FileColourWidget()
 
         self.__actor_palette = {
-           'application://inkscape.desktop': '#f02cab',
-           'application://chromium-browser.desktop': '#00ccff',
-           'application://firefox.desktop': '#00ccff',
-           'application://opera.desktop': '#00ccff',
-           'application://nautilus.desktop': '#ee7101',
-           'application://eog.desktop': '#ee7101'}
+           app.Inkscape: '#f02cab',
+           app.Chromium: '#00ccff',
+           app.Firefox: '#00ccff',
+           app.Opera: '#00ccff',
+           app.Nautilus: '#ee7101',
+           app.EyeOfGnome: '#ee7101'}
 
-        self.__action_icons = {
-            art.BeginEditingEvent: '/usr/share/icons/Artivity/16x16/editing_begin.png',
-            art.EndEditingEvent: '/usr/share/icons/Artivity/16x16/editing_end.png',
-            art.EditEvent: '/usr/share/icons/Artivity/16x16/edit.png',
-            art.UndoEvent: '/usr/share/icons/Artivity/16x16/undo.png',
-            zg.AccessEvent: '/usr/share/icons/Artivity/16x16/surf.png',
-            zg.MoveEvent: '/usr/share/icons/Artivity/16x16/move.png'}
+        self.__activity_icons = {
+            app.Inkscape: {
+                zg.AccessEvent: '/usr/share/icons/Artivity/16x16/save.png',
+                art.BeginEditingEvent: '/usr/share/icons/Artivity/16x16/editing_begin.png',
+                art.EndEditingEvent: '/usr/share/icons/Artivity/16x16/editing_end.png',
+                art.EditEvent: '/usr/share/icons/Artivity/16x16/edit.png',
+                art.UndoEvent: '/usr/share/icons/Artivity/16x16/undo.png',
+            },
+            app.Chromium: {
+                zg.AccessEvent: '/usr/share/icons/Artivity/16x16/globe.png'
+            },
+            app.Firefox: {
+                zg.AccessEvent: '/usr/share/icons/Artivity/16x16/globe.png'
+            },
+            app.Opera: {
+                zg.AccessEvent: '/usr/share/icons/Artivity/16x16/globe.png'
+            },
+            app.Nautilus: {
+                zg.MoveEvent: '/usr/share/icons/Artivity/16x16/move.png'
+            },
+            app.EyeOfGnome: {
+                zg.AccessEvent: '/usr/share/icons/Artivity/16x16/eye.png'
+            }}
 
         self.event_loader = None
         self.subject_tracker = None
@@ -129,8 +145,8 @@ class ArtivityJournal(Gtk.Window):
         log_model = Gtk.TreeModelSort(model=self.log_store)
 
         column0 = Gtk.TreeViewColumn('', Gtk.CellRendererText(), cell_background=5)
-        column0.set_min_width(3)
-        column0.set_max_width(3)
+        column0.set_min_width(4)
+        column0.set_max_width(4)
         column0.set_resizable(False)
 
         column1 = Gtk.TreeViewColumn('Time', Gtk.CellRendererText(), text=0)
@@ -160,8 +176,8 @@ class ArtivityJournal(Gtk.Window):
         self.log_view = Gtk.TreeView()
         self.log_view.set_model(log_model)
         self.log_view.set_vexpand(True)
-        self.log_view.append_column(column1)
         self.log_view.append_column(column0)
+        self.log_view.append_column(column1)
         self.log_view.append_column(column5)
         #self.log_view.append_column(column3)
         self.log_view.append_column(column4)
@@ -355,12 +371,15 @@ class ArtivityJournal(Gtk.Window):
 
         return '#eeeeee'
 
-    def get_pixbuf(self, interpretation):
-        if interpretation in self.__action_icons:
-            icon = Gtk.Image()
-            icon.set_from_file(self.__action_icons[interpretation])
+    def get_pixbuf(self, actor, interpretation):
+        if actor in self.__activity_icons:
+            icons = self.__activity_icons[actor]
 
-            return icon.get_pixbuf()
+            if interpretation in icons:
+                icon = Gtk.Image()
+                icon.set_from_file(icons[interpretation])
+
+                return icon.get_pixbuf()
 
         return None
 
@@ -398,7 +417,7 @@ class ArtivityJournal(Gtk.Window):
             elif payload == '':
                 payload = subject
 
-            self.log_store.append([time, actor, type, subject, payload, self.get_colour(actor), self.get_pixbuf(e.interpretation)])
+            self.log_store.append([time, actor, type, subject, payload, self.get_colour(actor), self.get_pixbuf(actor, e.interpretation)])
 
         self.log_view.set_model(self.log_store)
         self.log_view.thaw_child_notify()

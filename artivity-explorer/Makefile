@@ -20,6 +20,14 @@ install:
 	install -D -m 644 res/composition.png $(DESTDIR)/usr/share/icons/Artivity/16x16/composition.png
 	install -D -m 644 res/editing.png $(DESTDIR)/usr/share/icons/Artivity/16x16/editing.png
 	install -D -m 644 res/colour.png $(DESTDIR)/usr/share/icons/Artivity/16x16/colour.png
+	install -D -m 644 res/composition.png $(DESTDIR)/usr/share/icons/Artivity/16x16/edit.png
+	install -D -m 644 res/editing.png $(DESTDIR)/usr/share/icons/Artivity/16x16/editing_begin.png
+	install -D -m 644 res/colour.png $(DESTDIR)/usr/share/icons/Artivity/16x16/editing_end.png
+	install -D -m 644 res/composition.png $(DESTDIR)/usr/share/icons/Artivity/16x16/eye.png
+	install -D -m 644 res/editing.png $(DESTDIR)/usr/share/icons/Artivity/16x16/globe.png
+	install -D -m 644 res/colour.png $(DESTDIR)/usr/share/icons/Artivity/16x16/move.png
+	install -D -m 644 res/composition.png $(DESTDIR)/usr/share/icons/Artivity/16x16/save.png
+	install -D -m 644 res/editing.png $(DESTDIR)/usr/share/icons/Artivity/16x16/undo.png
 
 uninstall:
 	rm $(DESTDIR)/usr/bin/artivity-explorer
@@ -30,3 +38,11 @@ uninstall:
 	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/composition.png
 	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/editing.png
 	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/colour.png
+	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/edit.png
+	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/editing_begin.png
+	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/editing_end.png
+	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/eye.png
+	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/globe.png
+	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/move.png
+	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/save.png
+	rm $(DESTDIR)/usr/share/icons/Artivity/16x16/undo.png
