@@ -20,7 +20,7 @@ from lib.stats import CompositionStatistics
 from lib.file import FileTracker, FileEventLoader
 from lib.ontology import abbreviate, app, art, zg
 
-import csv, sys
+import csv, re
 
 class ArtivityJournal(Gtk.Window):
     """
@@ -140,13 +140,13 @@ class ArtivityJournal(Gtk.Window):
         self.log.install_monitor(TimeRange.always(), event_type, self.on_log_event_inserted, self.on_log_event_deleted)
 
     def __init_log_view(self):
-        self.log_store = Gtk.ListStore(str, str, str, str, str, str, GdkPixbuf.Pixbuf)
+        self.log_store = Gtk.ListStore(str, str, str, str, str, str, GdkPixbuf.Pixbuf, str, int)
 
         log_model = Gtk.TreeModelSort(model=self.log_store)
 
         column0 = Gtk.TreeViewColumn('', Gtk.CellRendererText(), cell_background=5)
         column0.set_min_width(4)
-        column0.set_max_width(4)
+        column0.set_fixed_width(4)
         column0.set_resizable(False)
 
         column1 = Gtk.TreeViewColumn('Time', Gtk.CellRendererText(), text=0)
@@ -154,24 +154,26 @@ class ArtivityJournal(Gtk.Window):
         column1.set_resizable(True)
         column1.set_sort_column_id(0)
 
-        column3 = Gtk.TreeViewColumn('Event', Gtk.CellRendererText(), text=2)
-        column3.set_min_width(150)
-        column3.set_resizable(True)
-        column3.set_sort_column_id(2)
-
         renderer4 = Gtk.CellRendererText()
         renderer4.wrap_width = 400
 
         column4 = Gtk.TreeViewColumn('Data', renderer4, text=4)
-        column4.set_min_width(75)
-        column4.set_fixed_width(400)
+        column4.set_min_width(300)
+        column4.set_fixed_width(600)
+        column4.set_expand(True)
         column4.set_resizable(True)
         column4.set_sort_column_id(4)
 
+        self.__expandcolumn = column4
+
         column5 = Gtk.TreeViewColumn('', Gtk.CellRendererPixbuf(), pixbuf=6)
         column5.set_min_width(30)
-        column5.set_max_width(30)
         column5.set_resizable(False)
+
+        column6 = Gtk.TreeViewColumn('Zoom', Gtk.CellRendererText(), text=7)
+        column6.set_min_width(100)
+        column6.set_resizable(False)
+        column6.set_sort_column_id(7)
 
         self.log_view = Gtk.TreeView()
         self.log_view.set_model(log_model)
@@ -179,10 +181,11 @@ class ArtivityJournal(Gtk.Window):
         self.log_view.append_column(column0)
         self.log_view.append_column(column1)
         self.log_view.append_column(column5)
-        #self.log_view.append_column(column3)
         self.log_view.append_column(column4)
+        self.log_view.append_column(column6)
         self.log_view.connect('size-allocate', self.on_log_view_size_allocate)
         self.log_view.connect('row-activated', self.on_log_view_row_clicked)
+        self.log_view.connect('key_press_event', self.on_log_view_key_pressed)
 
         self.log_view_range = None
 
@@ -297,6 +300,8 @@ class ArtivityJournal(Gtk.Window):
                 y.insert(0, 0)
                 y.append(0)
 
+            self.log_figure.clear()
+
             a = self.log_figure.add_subplot(111, axisbg='#444444')
             a.set_title('ACTIVITIES / MIN', horizontalalignment='left', y=1.06)
             a.title.set_color('white')
@@ -383,6 +388,22 @@ class ArtivityJournal(Gtk.Window):
 
         return None
 
+    def on_log_view_key_pressed(self, widget, event):
+        # 0xFFFF is the delete key
+        # See: https://git.gnome.org/browse/gtk+/plain/gdk/gdkkeysyms.h
+        if event.keyval == 65535:
+            selection = self.log_view.get_selection()
+
+            model, iter = selection.get_selected()
+
+            id = model[iter][8]
+
+            if id > 0:
+                self.log.delete_events([id])
+                self.log_store.remove(iter)
+
+                self.update_histogram()
+
     def on_log_view_size_allocate(self, widget, event, data=None):
         adjustment = self.log_scroller.get_vadjustment()
         adjustment.set_value(adjustment.get_lower())
@@ -406,18 +427,31 @@ class ArtivityJournal(Gtk.Window):
             if e.interpretation == zg.ModifyEvent:
                 continue
 
+            id = e.id
             time = datetime.fromtimestamp(int(e.timestamp) / 1e3).strftime("%Y-%m-%d %H:%M:%S")
             actor = e.actor
             subject = e.subjects[0].uri
             type = abbreviate(e.interpretation)
             payload = ''.join([chr(c) for c in e.payload])
 
+            zoom = self.__get_zoom(payload)
+
             if e.interpretation == zg.MoveEvent:
                 payload = e.subjects[0].uri + u' \u2192 ' + e.subjects[0].current_uri
+            elif e.interpretation == art.EditEvent:
+                payload = 'Edit ' + self.__get_display_string(payload)
+            elif e.interpretation == art.UndoEvent:
+                payload = 'Undo'
+            elif e.interpretation == art.RedoEvent:
+                payload = 'Redo'
+            elif e.interpretation == art.BeginEditingEvent:
+                payload = 'Open file'
+            elif e.interpretation == art.EndEditingEvent:
+                payload = 'Close file'
             elif payload == '':
                 payload = subject
 
-            self.log_store.append([time, actor, type, subject, payload, self.get_colour(actor), self.get_pixbuf(actor, e.interpretation)])
+            self.log_store.append([time, actor, type, subject, payload, self.get_colour(actor), self.get_pixbuf(actor, e.interpretation), zoom, id])
 
         self.log_view.set_model(self.log_store)
         self.log_view.thaw_child_notify()
@@ -426,6 +460,32 @@ class ArtivityJournal(Gtk.Window):
         stats.calculate(self.log_store)
 
         self.__editinfo.update(stats)
+
+        self.update_histogram()
+
+    def __get_zoom(self, payload):
+        if payload is None or payload == '':
+            return ''
+
+        match = re.match('.*zoom=\"([0-9]+(,[0-9]+)*)\"', payload)
+
+        if match:
+            z = match.group(1).replace(',','.')
+
+            return '{0:.0f}%'.format(float(z) * 100)
+        else:
+            return ''
+
+    def __get_display_string(self, payload):
+        if payload is None or payload == '':
+            return ''
+
+        matches = re.findall('<artsvg:change.*?>', payload)
+
+        if len(matches) > 0:
+            return ''.join(matches)
+        else:
+            return ''
 
     def on_log_event_deleted(self, time_range, event_ids):
         # remove events from journal
@@ -464,6 +524,6 @@ class ArtivityJournal(Gtk.Window):
 
 if __name__ == "__main__":
     window = ArtivityJournal()
-    window.resize(1000, 700)
+    window.resize(1200, 700)
 
     Gtk.main()
