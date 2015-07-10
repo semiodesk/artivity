@@ -1,3 +1,5 @@
+version=1.1.3
+
 all:
 
 dist:
@@ -6,7 +8,7 @@ dist:
 
 	chmod 755 artivity-explorer
 
-	tar cvzf artivity-explorer-1.1.1.tar.gz artivity-explorer artivity-explorer.desktop res/icon32.png res/icon64.png res/icon128.png res/colour.png res/composition.png res/editing.png Makefile COPYING
+	tar cvzf artivity-explorer-$(version).tar.gz artivity-explorer artivity-explorer.desktop res/*.png Makefile COPYING
 
 	rm artivity-explorer.zip
 	rm artivity-explorer
@@ -20,14 +22,14 @@ install:
 	install -D -m 644 res/composition.png $(DESTDIR)/usr/share/icons/Artivity/16x16/composition.png
 	install -D -m 644 res/editing.png $(DESTDIR)/usr/share/icons/Artivity/16x16/editing.png
 	install -D -m 644 res/colour.png $(DESTDIR)/usr/share/icons/Artivity/16x16/colour.png
-	install -D -m 644 res/composition.png $(DESTDIR)/usr/share/icons/Artivity/16x16/edit.png
-	install -D -m 644 res/editing.png $(DESTDIR)/usr/share/icons/Artivity/16x16/editing_begin.png
-	install -D -m 644 res/colour.png $(DESTDIR)/usr/share/icons/Artivity/16x16/editing_end.png
-	install -D -m 644 res/composition.png $(DESTDIR)/usr/share/icons/Artivity/16x16/eye.png
-	install -D -m 644 res/editing.png $(DESTDIR)/usr/share/icons/Artivity/16x16/globe.png
-	install -D -m 644 res/colour.png $(DESTDIR)/usr/share/icons/Artivity/16x16/move.png
-	install -D -m 644 res/composition.png $(DESTDIR)/usr/share/icons/Artivity/16x16/save.png
-	install -D -m 644 res/editing.png $(DESTDIR)/usr/share/icons/Artivity/16x16/undo.png
+	install -D -m 644 res/edit.png $(DESTDIR)/usr/share/icons/Artivity/16x16/edit.png
+	install -D -m 644 res/editing_begin.png $(DESTDIR)/usr/share/icons/Artivity/16x16/editing_begin.png
+	install -D -m 644 res/editing_end.png $(DESTDIR)/usr/share/icons/Artivity/16x16/editing_end.png
+	install -D -m 644 res/eye.png $(DESTDIR)/usr/share/icons/Artivity/16x16/eye.png
+	install -D -m 644 res/globe.png $(DESTDIR)/usr/share/icons/Artivity/16x16/globe.png
+	install -D -m 644 res/move.png $(DESTDIR)/usr/share/icons/Artivity/16x16/move.png
+	install -D -m 644 res/save.png $(DESTDIR)/usr/share/icons/Artivity/16x16/save.png
+	install -D -m 644 res/undo.png $(DESTDIR)/usr/share/icons/Artivity/16x16/undo.png
 
 uninstall:
 	rm $(DESTDIR)/usr/bin/artivity-explorer
