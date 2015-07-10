@@ -420,7 +420,7 @@ class ArtivityJournal(Gtk.Window):
 
     def on_log_event_inserted(self, time_range, events):
         self.log_view.freeze_child_notify()
-        self.log_view.set_model(None)
+        #self.log_view.set_model(None)
 
         for e in events:
             # Modify events correspond with editing cycles which are already tracked..
@@ -451,9 +451,14 @@ class ArtivityJournal(Gtk.Window):
             elif payload == '':
                 payload = subject
 
-            self.log_store.append([time, actor, type, subject, payload, self.get_colour(actor), self.get_pixbuf(actor, e.interpretation), zoom, id])
+            row = [time, actor, type, subject, payload, self.get_colour(actor), self.get_pixbuf(actor, e.interpretation), zoom, id]
 
-        self.log_view.set_model(self.log_store)
+            if not self.event_loader.completed:
+                self.log_store.append(row)
+            else:
+                self.log_store.insert(0, row)
+
+        #self.log_view.set_model(self.log_store)
         self.log_view.thaw_child_notify()
 
         stats = EditingStatistics()

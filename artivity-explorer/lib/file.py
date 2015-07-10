@@ -6,7 +6,7 @@ from ontology import art
 
 from zeitgeist.datamodel import *
 
-import math
+import sys
 
 class FileTracker:
     """
@@ -67,6 +67,7 @@ class FileEventLoader:
         self.page_size= page_size
         self.on_received_handler = on_received_handler
         self.on_completed_handler = on_completed_handler
+        self.completed = False
         self.uris = uris
         self.templates = []
         self.editing_sessions = []
@@ -121,9 +122,9 @@ class FileEventLoader:
             templates.append(Event.new_for_values(subjects=[subject], interpretation=art.EndEditingEvent))
             templates.append(Event.new_for_values(subjects=[subject], interpretation=art.BeginEditingEvent))
 
-        self.zeitgeist.find_events_for_templates(templates, self.on_editing_cycles_received)
+        self.zeitgeist.find_events_for_templates(templates, self.on_editing_sessions_received)
 
-    def on_editing_cycles_received(self, events):
+    def on_editing_sessions_received(self, events):
         """
         Stores the editing cycles in format (begin (min), duration (sec)).
 
@@ -151,8 +152,15 @@ class FileEventLoader:
                 begin = None
 
         if end is not None and begin is None:
+            # A session without a begin is strange. We take the timestamp of the first event as begin.
             x = 0
             y = (end - self.first_event) / 60000
+
+            self.editing_sessions.insert(0, (x, y))
+        elif begin is not None and end is None:
+            # Session without end event is interpreted as an ongoing session..
+            x = int(e.timestamp)
+            y = sys.maxint
 
             self.editing_sessions.insert(0, (x, y))
 
@@ -207,15 +215,24 @@ class FileEventLoader:
             print 'FileEventLoader: Done.'
             print 'FileEventLoader: Elapsed time: %ss' % self.timer.total_seconds
 
+            self.completed = True
             self.on_completed_handler()
 
     def __filter_websites(self, events):
         for e in events:
             t = (int(e.timestamp) - self.first_event) / 60000
 
+            if self.completed:
+                if e.interpretation == art.EndEditingEvent:
+                    # Close an opened session..
+                    self.editing_sessions[len(self.editing_sessions) - 1][1] = int(e.timestamp)
+                elif e.interpretation == art.BeginEditingEvent:
+                    # Open a new session..
+                    self.editing_sessions.insert(0, (int(e.timestamp, sys.maxint)))
+
             if e.subjects[0].interpretation != Interpretation.WEBSITE:
                 yield e
             else:
                 for c in self.editing_sessions:
-                    if c[0] <= t and t <= c[1]:
+                    if c[0] <= t <= c[1]:
                         yield e
