@@ -1,12 +1,14 @@
 #! /usr/bin/python
 
+from gi.repository import Gtk
+
 from timer import Timer
 
 from ontology import art
 
 from zeitgeist.datamodel import *
 
-import sys
+import sys, math
 
 class FileTracker:
     """
@@ -65,6 +67,7 @@ class FileEventLoader:
         self.timer = Timer()
         self.zeitgeist = zeitgeist
         self.page_size= page_size
+        self.page_size_max = page_size
         self.on_received_handler = on_received_handler
         self.on_completed_handler = on_completed_handler
         self.completed = False
@@ -134,16 +137,16 @@ class FileEventLoader:
         end = None
         begin = None
 
-        for e in events:
-            if e.interpretation == art.EndEditingEvent:
-                end = int(e.timestamp)
-            elif e.interpretation == art.BeginEditingEvent:
+        E = sorted(events, key=lambda event: int(event.timestamp))
+
+        for e in E:
+            if begin is None and e.interpretation == art.BeginEditingEvent:
                 begin = int(e.timestamp)
+            elif end is None and e.interpretation == art.EndEditingEvent:
+                end = int(e.timestamp)
 
-                if end is None:
-                    end = self.last_edit_event
-
-                x = (begin - self.first_event) / 60000 + 1
+            if begin is not None and end is not None:
+                x = (begin - self.first_event) / 60000
                 y = (end - begin) / 60000
 
                 self.editing_sessions.append((x, x + y))
@@ -151,13 +154,7 @@ class FileEventLoader:
                 end = None
                 begin = None
 
-        if end is not None and begin is None:
-            # A session without a begin is strange. We take the timestamp of the first event as begin.
-            x = 0
-            y = (end - self.first_event) / 60000
-
-            self.editing_sessions.insert(0, (x, y))
-        elif begin is not None and end is None:
+        if begin is not None and end is None:
             # Session without end event is interpreted as an ongoing session..
             x = int(e.timestamp)
             y = sys.maxint
@@ -176,22 +173,34 @@ class FileEventLoader:
         self.last_event = int(events[0].timestamp)
 
     def on_last_edit_event_received(self, events):
+        self.last_edit_event = events[0]
+
         # Load the editing cycles when the entire time range is known.
         self.load_editing_sessions()
 
         zeitgeist = self.zeitgeist
         templates = self.templates
         handler = self.__on_events_received
-        range = TimeRange(self.first_event, self.last_event)
         limit = self.page_size
         type = ResultType.MostRecentEvents
 
-        zeitgeist.find_events_for_templates(templates, handler, result_type=type, timerange=range, num_events=limit)
+        # Save the time range to reproduce the query in case of errors..
+        self.timerange = TimeRange(self.first_event, self.last_event)
+
+        zeitgeist.find_events_for_templates(templates, handler, result_type=type, timerange=self.timerange, num_events=limit)
 
     def __on_events_received(self, events):
         print 'FileEventLoader:', len(events), 'received.'
 
         if not len(events):
+            if self.on_completed_handler:
+                self.timer.stop()
+                print 'FileEventLoader: Done.'
+                print 'FileEventLoader: Elapsed time: %ss' % self.timer.total_seconds
+
+                self.completed = True
+                self.on_completed_handler()
+
             return
 
         filtered_events = list(self.__filter_websites(events))
@@ -199,24 +208,40 @@ class FileEventLoader:
         if len(filtered_events) > 0 and self.on_received_handler:
             self.on_received_handler(filtered_events)
 
-        last = int(events[len(events) - 1].timestamp) + 1;
+        last = int(events[len(events) - 1].timestamp)
 
-        if len(events) == self.page_size:
-            zeitgeist = self.zeitgeist
-            templates = self.templates
-            handler = self.__on_events_received
-            range = TimeRange(self.first_event, last - 1)
-            limit = self.page_size
-            type = ResultType.MostRecentEvents
+        if self.page_size < self.page_size_max:
+            self.page_size = min(self.page_size_max, self.page_size * 2)
 
-            zeitgeist.find_events_for_templates(templates, handler, result_type=type, timerange=range, num_events=limit)
-        elif self.on_completed_handler:
-            self.timer.stop()
-            print 'FileEventLoader: Done.'
-            print 'FileEventLoader: Elapsed time: %ss' % self.timer.total_seconds
+        zeitgeist = self.zeitgeist
+        templates = self.templates
+        handler = self.__on_events_received
+        limit = self.page_size
+        type = ResultType.MostRecentEvents
 
-            self.completed = True
-            self.on_completed_handler()
+        # Save the time range to reproduce the query in case of errors..
+        self.timerange = TimeRange(self.first_event, last - 1)
+
+        zeitgeist.find_events_for_templates(templates, handler, result_type=type, timerange=self.timerange, num_events=limit, error_handler=self.__on_error)
+
+    def __on_error(self, exception):
+        if self.page_size == 1:
+            # We cannot load a single event, it's time to give up.
+            dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, exception)
+            dialog.run()
+            dialog.destroy()
+
+            return
+
+        zeitgeist = self.zeitgeist
+        templates = self.templates
+        handler = self.__on_events_received
+        type = ResultType.MostRecentEvents
+
+        self.page_size = math.ceil(self.page_size / 2)
+
+        # Re-try the query with a single number of events (in case the query exceeded its size limit of 4mb)
+        zeitgeist.find_events_for_templates(templates, handler, result_type=type, timerange=self.timerange, num_events=self.page_size, error_handler=self.__on_error)
 
     def __filter_websites(self, events):
         for e in events:

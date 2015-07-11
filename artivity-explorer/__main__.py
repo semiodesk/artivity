@@ -134,7 +134,8 @@ class ArtivityJournal(Gtk.Window):
         self.add(self.layout_root)
 
     def __init_log_monitor(self):
-        event_type = [Event.new_for_values(subject_interpretation=Interpretation.VISUAL)]
+        event_type = [Event.new_for_values(subject_interpretation=Interpretation.VISUAL),
+                      Event.new_for_values(subject_interpretation=Interpretation.WEBSITE)]
 
         self.log = ZeitgeistClient()
         self.log.install_monitor(TimeRange.always(), event_type, self.on_log_event_inserted, self.on_log_event_deleted)
@@ -419,8 +420,21 @@ class ArtivityJournal(Gtk.Window):
             webbrowser.open(value)
 
     def on_log_event_inserted(self, time_range, events):
+        if len(events) == 0:
+            return
+
+        # If we are in live update mode..
+        if self.event_loader.completed:
+            session_count = len(self.event_loader.editing_sessions)
+            session_end = self.event_loader.editing_sessions[session_count - 1][1]
+
+            e = events[0]
+
+            # Ignore all events which are outside of editing sessions.
+            if session_end < int(e.timestamp):
+                return
+
         self.log_view.freeze_child_notify()
-        #self.log_view.set_model(None)
 
         for e in events:
             # Modify events correspond with editing cycles which are already tracked..
@@ -458,7 +472,6 @@ class ArtivityJournal(Gtk.Window):
             else:
                 self.log_store.insert(0, row)
 
-        #self.log_view.set_model(self.log_store)
         self.log_view.thaw_child_notify()
 
         stats = EditingStatistics()
@@ -466,7 +479,8 @@ class ArtivityJournal(Gtk.Window):
 
         self.__editinfo.update(stats)
 
-        self.update_histogram()
+        if self.event_loader.completed:
+            self.update_histogram()
 
     def __get_zoom(self, payload):
         if payload is None or payload == '':
