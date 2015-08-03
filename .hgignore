@@ -20,3 +20,5 @@ inkscape/build/*
 configure
 Makefile
 makefile
+packages/*
+*.csproj.user
