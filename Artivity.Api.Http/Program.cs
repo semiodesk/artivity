@@ -9,6 +9,7 @@ namespace Artivity.Api.Http
 
 		public static void Main(string[] args)
 		{
+
 			HostConfiguration config = new HostConfiguration();
 			config.UrlReservations.CreateAutomatically = true;
 
