@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{823D4E87-D4D8-4D08-98AE-EAD625579E1A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ArtivityExplorer</RootNamespace>
+    <AssemblyName>ArtivityExplorer</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <StartupObject>ArtivityExplorer.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Controls\ActivitiesChart.cs" />
+    <Compile Include="Controls\ActivitiesLog.cs" />
+    <Compile Include="Controls\MainMenu.cs" />
+    <Compile Include="Controls\MainWindow.cs" />
+    <Compile Include="Controls\StatsPanel.cs" />
+    <Compile Include="Controls\StatusBar.cs" />
+    <Compile Include="Controls\Widgets\ColourBox.cs" />
+    <Compile Include="Controls\Widgets\ColourWidget.cs" />
+    <Compile Include="Controls\Widgets\CompositionWidget.cs" />
+    <Compile Include="Extensions\ColorExtensions.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Parsers\SvgStats.cs" />
+    <Compile Include="Parsers\SvgStatsParser.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <EmbeddedResource Include="Resources\Colour.png">
+      <LogicalName>colour</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Xwt.Gtk">
+      <HintPath>References\Xwt.Gtk.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt.Gtk.Windows">
+      <HintPath>References\Xwt.Gtk.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="Xwt">
+      <HintPath>References\Xwt.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>References\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Xwt">
+      <HintPath>References\OxyPlot.Xwt.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\Widgets\EditingWidget.cs">
+      <LogicalName>colour</LogicalName>
+    </Compile>
+    <EmbeddedResource Include="Resources\Composition.png">
+      <LogicalName>composition</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Edit.png">
+      <LogicalName>edit</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Icon.png">
+      <LogicalName>icon</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
