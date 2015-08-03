@@ -1,0 +1,12 @@
+﻿<Properties StartupItem="ArtivityExplorer\ArtivityExplorer.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ArtivityExplorer\Controls\StatsPanel.cs">
+    <Files>
+      <File FileName="ArtivityExplorer\Controls\StatsPanel.cs" Line="14" Column="60" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
