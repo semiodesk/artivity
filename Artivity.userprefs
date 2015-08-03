@@ -1,8 +1,9 @@
-﻿<Properties StartupItem="ArtivityExplorer\ArtivityExplorer.csproj">
+﻿<Properties StartupItem="ArtivityExplorer\Artivity.Explorer.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ArtivityExplorer\Controls\StatsPanel.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ArtivityApi\Program.cs">
     <Files>
-      <File FileName="ArtivityExplorer\Controls\StatsPanel.cs" Line="14" Column="60" />
+      <File FileName="ArtivityExplorer\Controls\StatsPanel.cs" Line="22" Column="29" />
+      <File FileName="ArtivityApi\Program.cs" Line="8" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
