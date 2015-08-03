@@ -22,3 +22,4 @@ Makefile
 makefile
 packages/*
 *.csproj.user
+*.suo

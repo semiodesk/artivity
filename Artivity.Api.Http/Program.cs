@@ -9,6 +9,8 @@ namespace Artivity.Api.Http
 
 		public static void Main(string[] args)
 		{
+            Artivity.Model.SemiodeskDiscovery.Discover();
+
 
 			HostConfiguration config = new HostConfiguration();
 			config.UrlReservations.CreateAutomatically = true;
