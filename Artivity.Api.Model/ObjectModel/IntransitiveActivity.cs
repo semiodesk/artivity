@@ -8,34 +8,22 @@ using System.Threading.Tasks;
 namespace Artivity.Model
 {
     [RdfClass(AS2.IntransitiveActivity)]
-    public class IntransitiveActivity : Object
+    public class IntransitiveActivity : Activity
     {
+		#region Members
+		
+		public new Resource Origin
+		{
+			get { throw new NotSupportedException(); }
+			set { throw new NotSupportedException(); }
+		}
+
+		#endregion
+
         #region Constructor
-        public IntransitiveActivity(Uri uri)
-            : base(uri)
-        { }
-        #endregion
 
-        #region Members
-        [RdfProperty(AS2.actor)]
-        public Resource Actor { get; set; }
-
-        [RdfProperty(AS2.target)]
-        public Resource Target { get; set; }
-
-        [RdfProperty(AS2.result)]
-        public Resource Result { get; set; }
-
-        [RdfProperty(AS2.origin)]
-        public Resource Origin { get; set; }
-
-        [RdfProperty(AS2.origin)]
-        public Resource Instrument { get; set; }
-
-        [RdfProperty(AS2.priority)]
-        public float Priority { get; set; }
+        public IntransitiveActivity(Uri uri) : base(uri) {}
 
         #endregion
-
     }
 }

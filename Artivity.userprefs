@@ -1,11 +1,6 @@
 ﻿<Properties StartupItem="Artivity.Api.Http\Artivity.Api.Http.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Artivity.Api.Http\Program.cs">
-    <Files>
-      <File FileName="Artivity.Api.Http\Program.cs" Line="14" Column="5" />
-      <File FileName="Artivity.Api.Http\Modules\MainModule.cs" Line="7" Column="3" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

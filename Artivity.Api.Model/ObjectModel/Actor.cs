@@ -10,15 +10,10 @@ namespace Artivity.Model
     [RdfClass(AS2.Actor)]
     public class Actor : Object
     {
-        #region Constructor
-        public Actor(Uri uri)
-            : base(uri)
-        {}
-        #endregion
+        #region Constructors
 
-        #region Members
+        public Actor(Uri uri) : base(uri) {}
 
         #endregion
-
     }
 }

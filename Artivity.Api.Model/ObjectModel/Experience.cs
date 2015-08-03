@@ -10,12 +10,10 @@ namespace Artivity.Model.ObjectModel
     [RdfClass(AS2.Experience)]
     public class Experience : Activity
     {
-        #region Constructor
-        public Experience(Uri uri)
-            : base(uri)
-        {}
+        #region Constructors
+
+        public Experience(Uri uri) : base(uri) {}
+
         #endregion
-
-
     }
 }
