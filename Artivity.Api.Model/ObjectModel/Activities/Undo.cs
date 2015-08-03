@@ -3,12 +3,12 @@ using System;
 
 namespace Artivity.Model
 {
-	[RdfClass(AS2.Create)]
-	public class Create : Activity
+	[RdfClass(AS2.Undo)]
+	public class Undo : Activity
 	{
 		#region Constructors
 
-		public Create(Uri uri) : base(uri) {}
+		public Undo(Uri uri) : base(uri) {}
 
 		#endregion
 	}

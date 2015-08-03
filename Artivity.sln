@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Explorer", "Artivi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Api.Http", "Artivity.Api.Http\Artivity.Api.Http.csproj", "{18E3ACB7-2958-43C7-B201-EA31F542F22C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Model", "Artivity.Api.Model\Artivity.Model.csproj", "{AF97FB55-09C8-4775-81F6-F1F97C2DB468}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Api.Model", "Artivity.Api.Model\Artivity.Api.Model.csproj", "{AF97FB55-09C8-4775-81F6-F1F97C2DB468}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +24,7 @@ Global
 		{18E3ACB7-2958-43C7-B201-EA31F542F22C}.Debug|x86.ActiveCfg = Debug|x86
 		{18E3ACB7-2958-43C7-B201-EA31F542F22C}.Debug|x86.Build.0 = Debug|x86
 		{18E3ACB7-2958-43C7-B201-EA31F542F22C}.Release|Any CPU.ActiveCfg = Release|x86
+		{18E3ACB7-2958-43C7-B201-EA31F542F22C}.Release|Any CPU.Build.0 = Release|x86
 		{18E3ACB7-2958-43C7-B201-EA31F542F22C}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{18E3ACB7-2958-43C7-B201-EA31F542F22C}.Release|Mixed Platforms.Build.0 = Release|x86
 		{18E3ACB7-2958-43C7-B201-EA31F542F22C}.Release|x86.ActiveCfg = Release|x86
@@ -40,16 +41,20 @@ Global
 		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Release|x86.ActiveCfg = Release|x86
 		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Release|x86.Build.0 = Release|x86
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Debug|x86.Build.0 = Debug|Any CPU
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Release|x86.ActiveCfg = Release|Any CPU
+		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Artivity.Explorer\Artivity.Explorer.csproj
+		StartupItem = Artivity.Api.Http\Artivity.Api.Http.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

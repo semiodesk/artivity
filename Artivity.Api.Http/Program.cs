@@ -9,9 +9,7 @@ namespace Artivity.Api.Http
 
 		public static void Main(string[] args)
 		{
-
-			HostConfiguration config = new HostConfiguration();
-			config.UrlReservations.CreateAutomatically = true;
+            Artivity.Model.SemiodeskDiscovery.Discover();
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + Port)))
 			{
