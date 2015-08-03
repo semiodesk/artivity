@@ -32,7 +32,7 @@ namespace Artivity.Model
         [RdfProperty(AS2.origin)]
         public Resource Origin { get; set; }
 
-        [RdfProperty(AS2.origin)]
+        [RdfProperty(AS2.instrument)]
         public Resource Instrument { get; set; }
 
         [RdfProperty(AS2.priority)]

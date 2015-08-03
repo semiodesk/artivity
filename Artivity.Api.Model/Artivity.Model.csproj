@@ -69,6 +69,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObjectModel\Person.cs" />
+    <Compile Include="ObjectModel\Application.cs" />
+    <Compile Include="ObjectModel\Content.cs" />
+    <Compile Include="ObjectModel\Page.cs" />
+    <Compile Include="ObjectModel\Document.cs" />
     <Compile Include="ObjectModel\Experience.cs" />
     <Compile Include="ObjectModel\Link.cs" />
     <Compile Include="ObjectModel\Actor.cs" />
