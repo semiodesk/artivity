@@ -101,6 +101,11 @@ namespace Artivity.Api.Http
                 return HttpStatusCode.BadRequest;
             }
 
+            if(!_actors.ContainsKey(p.actor) || !_actors[p.actor])
+            {
+                return HttpStatusCode.Locked;
+            }
+
 			DateTime now = DateTime.Now;
 
 			Console.WriteLine("[{0}] {1}#{2}: {3}", now, p.actor, p.tab, p.url);
