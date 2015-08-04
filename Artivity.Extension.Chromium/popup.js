@@ -53,7 +53,7 @@ function onRequestResponse() {
 function sendRequest(type, callback, errorCallback, params) {
   var url = 'http://localhost:8272/artivity/1.0/status';
 
-  params['actor'] = 'application://chromium.desktop';
+  params['actor'] = 'application://chromium-browser.desktop';
   
   if(type === 'GET') {
       url += formatParams(params);
