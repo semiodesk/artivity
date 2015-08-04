@@ -13,8 +13,10 @@ chrome.runtime.onMessage.addListener(
 
      if(url.indexOf('http') === 0) {
 		var tabId;
-		if( sender && sender.tab && sender.tab.id)
+         
+		if(sender && sender.tab && sender.tab.id) {
 			tabId = sender.tab.id;
+        }
 		
         var params = {title: title, url: url, actor: "application://chromium-browser.desktop", tab: tabId}
 

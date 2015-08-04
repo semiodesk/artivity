@@ -6,6 +6,10 @@
 //                                                                                                                     
 // Distributed under the GNU GPL version 3.  
 
+function formatParams(params) {
+  return "?" + Object.keys(params).map(function(key){ return key + "=" + params[key] }).join("&");
+}
+
 function onRequestError() {
   console.log("<<<", this.status);
 
@@ -19,7 +23,7 @@ function onRequestError() {
   var enabledBox = document.getElementById('settings-option-enabled');
   enabledBox.checked = false;
 
-  self.postMessage(this.response);
+  chrome.browserAction.setIcon({path: 'icon-disabled.png'});
 }
 
 function onRequestResponse() {
@@ -33,35 +37,50 @@ function onRequestResponse() {
   settingsBox.style.opacity = '1.0';
 
   var enabledBox = document.getElementById('settings-option-enabled');
-
-  if(this.response == true || this.response == false) {
-     enabledBox.checked = this.response;
+    
+  if(this.response != 'null' && this.response.enabled != 'null') {
+     enabledBox.checked = this.response.enabled;
   }
 
-  self.postMessage(this.response);
+  if(enabledBox.checked) {
+    chrome.browserAction.setIcon({path: 'icon-enabled.png'});
+  }
+  else {
+    chrome.browserAction.setIcon({path: 'icon-disabled.png'});
+  }
 }
 
-function sendRequest(callback, errorCallback, params) {
+function sendRequest(type, callback, errorCallback, params) {
   var url = 'http://localhost:8272/artivity/1.0/status';
 
-  params['actor'] = 'application://firefox.desktop';
+  params['actor'] = 'application://chromium.desktop';
+  
+  if(type === 'GET') {
+      url += formatParams(params);
+  }
 
   console.log(">>>", url);
-
+    
   var request = new XMLHttpRequest();
-  request.open('POST', url, true);
-  request.setRequestHeader("Content-type", "text/plain");
+  request.open(type, url, true);
+  request.setRequestHeader("Content-type", "application/json");
   request.responseType = 'json';
   request.onload = callback;
   request.onerror = errorCallback;
-  request.send(JSON.stringify(params));
+    
+  if(type == 'POST') {
+    request.send(JSON.stringify(params));
+  }
+  else {
+    request.send();
+  }
 }
 
 // Initialize the value of the checkbox.
-sendRequest(onRequestResponse, onRequestError, {});
+sendRequest('GET', onRequestResponse, onRequestError, {});
 
 document.getElementById('settings-option-enabled').onchange = function() {
   // NOTE: Setting the new value from the response ensures that the value 
   // of the checkbox reflects the value in the Artivity deamon in case of errors.
-  sendRequest(onRequestResponse, onRequestError, {'enabled' : this.checked});
+  sendRequest('POST', onRequestResponse, onRequestError, {'enabled' : this.checked});
 };
