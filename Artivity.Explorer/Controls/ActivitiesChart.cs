@@ -49,6 +49,7 @@ namespace ArtivityExplorer.Controls
 			edits.Title = "Inkscape Vector Illustrator";
 			edits.Color = OxyColor.FromRgb(237, 44, 169);
 			edits.StrokeThickness = 2;
+            edits.MarkerSize = 4;
 
 			for (int i = 0; i < 100; i++)
             {
@@ -72,7 +73,7 @@ namespace ArtivityExplorer.Controls
 				TextColor = OxyColors.LightGray,
 				TicklineColor = OxyColors.LightGray,
 				MajorTickSize = 1,
-				MajorGridlineThickness = 1,
+				MajorGridlineThickness = 0,
 				MajorGridlineStyle = LineStyle.Dot,
 				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66),
 				MinorTickSize = 60,
@@ -89,6 +90,8 @@ namespace ArtivityExplorer.Controls
 				FontSize = 9,
 				TextColor = OxyColors.LightGray,
 				TicklineColor = OxyColors.LightGray,
+                MajorTickSize = 10,
+                MajorStep = 20,
 				MajorGridlineStyle = LineStyle.Dot,
 				MajorGridlineThickness = 1.0,
 				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66)
@@ -98,9 +101,9 @@ namespace ArtivityExplorer.Controls
             model.Title = "ACTIVITIES / MIN";
             model.TitleFontSize = 9;
             model.TitleFontWeight = 0.5;
-            model.TitleColor = OxyColors.LightGray;
+            model.TitleColor = OxyColors.White;
             model.PlotAreaBorderColor = OxyColor.FromRgb(88, 88, 88);
-            model.PlotAreaBorderThickness = new OxyThickness(1, 0, 0, 1);
+            model.PlotAreaBorderThickness = new OxyThickness(0, 0, 0, 1);
             model.Axes.Add(x);
             model.Axes.Add(y);
 			model.Series.Add(browsing);
@@ -109,11 +112,12 @@ namespace ArtivityExplorer.Controls
 
             model.LegendOrientation = LegendOrientation.Horizontal;
             model.LegendPlacement = LegendPlacement.Outside;
-            model.LegendPosition = LegendPosition.TopRight;
+            model.LegendPosition = LegendPosition.BottomRight;
             model.LegendBackground = OxyColors.Transparent;
             model.LegendBorder = OxyColors.Transparent;
+            model.LegendMargin = 0;
             model.LegendFontSize = 9;
-            model.LegendTextColor = OxyColors.White;
+            model.LegendTextColor = OxyColors.LightGray;
 
             Model = model;
         }
