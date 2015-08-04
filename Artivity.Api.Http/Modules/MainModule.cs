@@ -1,11 +1,12 @@
+using Artivity.Model.ObjectModel;
+using Artivity.Api.Http.Parameters;
+using Semiodesk.Trinity;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Collections.Generic;
 using Nancy;
 using Nancy.ModelBinding;
-using Semiodesk.Trinity;
-using Artivity.Model.ObjectModel;
-using System.Diagnostics;
 
 namespace Artivity.Api.Http
 {
@@ -13,11 +14,11 @@ namespace Artivity.Api.Http
 	{
 		#region Members
 
-        IStore _store;
+        private IModel _activities;
 
-        IModel _browserHistory;
+        private static Dictionary<string, bool> _actors = new Dictionary<string, bool>();
 
-        Dictionary<string, Application> _instruments = new Dictionary<string, Application>();
+        private static Dictionary<string, Application> _instruments = new Dictionary<string, Application>();
 
 		#endregion
 
@@ -25,12 +26,21 @@ namespace Artivity.Api.Http
 
 		public MainModule()
 		{
-            InitializeModel();
-
             Post["/artivity/1.0/activities"] = parameters => 
             {
-                var b = this.Bind<SimpleActivity>();
-                return AddActivity(b); 
+                InitializeModel();
+
+                return AddActivity(this.Bind<ActivityParameters>()); 
+            };
+
+            Get["/artivity/1.0/status"] = parameters =>
+            {
+                return GetStatus(this.Bind<ActorParameters>());
+            };
+
+            Post["/artivity/1.0/status"] = parameters =>
+            {
+                return SetStatus(this.Bind<ActorParameters>());
             };
 		}
 
@@ -40,39 +50,76 @@ namespace Artivity.Api.Http
 
 		private void InitializeModel()
 		{
-			_store = StoreFactory.CreateStoreFromConfiguration("virt0");
+			IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
 			Uri browserHistory = new Uri("http://semiodesk.com/artivity/browserHistory/");
 
-			if (_store.ContainsModel(browserHistory))
+			if (store.ContainsModel(browserHistory))
 			{
-				_browserHistory = _store.GetModel(browserHistory);
+				_activities = store.GetModel(browserHistory);
 			}
 			else
 			{
-				_browserHistory = _store.CreateModel(browserHistory);
+				_activities = store.CreateModel(browserHistory);
 			}
 		}
 
-		protected HttpStatusCode AddActivity(SimpleActivity activity)
+        protected HttpStatusCode AddActivity(ActivityParameters p)
         {
+            if (string.IsNullOrEmpty(p.actor)
+                || string.IsNullOrEmpty(p.title)
+                || string.IsNullOrEmpty(p.url)
+                || !Uri.IsWellFormedUriString(p.url, UriKind.Absolute))
+            {
+                return HttpStatusCode.BadRequest;
+            }
+
 			DateTime now = DateTime.Now;
 
-			Console.WriteLine("{0}: {1}#{2}: {3}", now, activity.actor, activity.tab, activity.url);
+			Console.WriteLine("{0}: {1}#{2}: {3}", now, p.actor, p.tab, p.url);
 
-			Page page = _browserHistory.CreateResource<Page>();
-			page.DisplayName = activity.title;
-			page.Urls.Add(new Resource(activity.url));
+			Page page = _activities.CreateResource<Page>();
+			page.DisplayName = p.title;
+			page.Urls.Add(new Resource(p.url));
 			page.Commit();
 
-            View view = _browserHistory.CreateResource<View>();
-            view.Instrument = GetInstrument(activity.actor);
+            View view = _activities.CreateResource<View>();
+            view.Instrument = GetInstrument(p.actor);
             view.Object = page;
             view.StartTime = now;
             view.EndTime = now;
             view.Commit();
 
             return HttpStatusCode.OK;
+        }
+
+        protected Response GetStatus(ActorParameters p)
+        {
+            ActorParameters result = new ActorParameters() { actor = p.actor, enabled = false };
+
+            if(p.actor != null && _actors.ContainsKey(p.actor))
+            {
+                result.enabled = _actors[p.actor];
+            }
+
+            return Response.AsJson(result);
+        }
+
+        protected Response SetStatus(ActorParameters p)
+        {
+            if (p.actor == null) return HttpStatusCode.BadRequest;
+
+            if (p.enabled != null)
+            {
+                _actors[p.actor] = Convert.ToBoolean(p.enabled);
+            }
+            else if(_actors.ContainsKey(p.actor))
+            {
+                p.enabled = _actors[p.actor];
+            }
+
+            // We return the request so that the plugin can set the server's enabled status.
+            return Response.AsJson(p);
         }
 
         private Application GetInstrument(string actorId)
@@ -86,13 +133,13 @@ namespace Artivity.Api.Http
 
             Application instrument;
 
-            if (_browserHistory.ContainsResource(actorUri))
+            if (_activities.ContainsResource(actorUri))
             {
-                instrument = _browserHistory.GetResource<Application>(actorUri);
+                instrument = _activities.GetResource<Application>(actorUri);
             }
 			else
 			{
-				instrument = _browserHistory.CreateResource<Application>(actorUri);
+				instrument = _activities.CreateResource<Application>(actorUri);
 				instrument.Commit();
 			}
 
@@ -103,13 +150,5 @@ namespace Artivity.Api.Http
 
 		#endregion
 	}
-
-    public class SimpleActivity
-    {
-        public string title { get; set; }
-        public string url { get; set; }
-        public string actor { get; set; }
-        public string tab { get; set; }
-    }
 }
 
