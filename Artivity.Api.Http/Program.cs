@@ -18,6 +18,8 @@ namespace Artivity.Api.Http
 				Console.WriteLine("Artivity HTTP REST API, Version 1.1");
 				Console.WriteLine();
 				Console.WriteLine("Listening on port {0}..", Port);
+                Console.WriteLine();
+                Console.WriteLine("Press any key to quit.", Port);
 
 				Console.ReadLine();
 			}
