@@ -1,6 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Generator: sebastian
-// Date: 8/3/2015 4:01:17 PM
+// Date: 04.08.2015 11:35:51
 
 using System;
 using System.Collections.Generic;
@@ -3761,9 +3760,9 @@ public class prov : Ontology
 
     ///<summary>
     ///
-    ///<see cref="file://media/sebastian/Daten/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"/>
+    ///<see cref="file:///D:/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"/>
     ///</summary>
-    public static readonly Resource prov_ttl = new Resource(new Uri("file://media/sebastian/Daten/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"));    
+    public static readonly Resource prov_ttl = new Resource(new Uri("file:///D:/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"));    
 
     ///<summary>
     ///
@@ -4909,9 +4908,9 @@ public static class PROV
 
     ///<summary>
     ///
-    ///<see cref="file://media/sebastian/Daten/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"/>
+    ///<see cref="file:///D:/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"/>
     ///</summary>
-    public const string prov_ttl = "file://media/sebastian/Daten/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#";
+    public const string prov_ttl = "file:///D:/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#";
 
     ///<summary>
     ///
