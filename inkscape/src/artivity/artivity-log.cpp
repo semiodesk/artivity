@@ -47,6 +47,26 @@ namespace Inkscape
 
         _queue->insert(_queue->begin(), { subject, art::BeginEditingEvent, NULL, timestamp});
 
+        CURL *curl;
+        CURLcode res;
+        
+        struct curl_slist *headers = NULL; // init to NULL is important 
+        headers = curl_slist_append(headers, "Accept: application/json");
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+        headers = curl_slist_append(headers, "charsets: utf-8");
+
+        curl = curl_easy_init();
+        
+        if (curl) {
+            curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8272/artivity/1.0/activities");
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"actor\":\"application://inkscape.desktop\", \"title\":\"Inkscape\", \"url\":\"file:xyz.svg\"}");
+            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+            res = curl_easy_perform(curl);
+
+            // always cleanup
+            curl_easy_cleanup(curl);
+        }
+  
         processEventQueue();
     }
 

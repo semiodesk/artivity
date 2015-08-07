@@ -11,6 +11,9 @@
 #ifndef SEEN_INKSCAPE_ARTIVITY_OBSERVER_H
 #define SEEN_INKSCAPE_ARTIVITY_OBSERVER_H
 
+#define CURL_STATICLIB 1
+
+#include <curl/curl.h>
 #include "undo-stack-observer.h"
 #include "desktop.h"
 #include "document.h"
