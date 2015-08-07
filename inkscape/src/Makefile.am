@@ -29,6 +29,9 @@ ZEITGEIST_LIBS = \
 ZEITGEIST_CFLAGS = \
 	-I /usr/include/zeitgeist-1.0
 
+CURL_LIBS = \
+	-lcurl
+
 noinst_LIBRARIES =	\
 	libcroco/libcroco.a		\
 	libavoid/libavoid.a		\
@@ -58,7 +61,8 @@ all_libs =			\
 	$(GDL_LIBS)             \
 	$(IMAGEMAGICK_LIBS)     \
 	$(X11_LIBS) \
-	$(ZEITGEIST_LIBS)
+	$(ZEITGEIST_LIBS) \
+	$(CURL_LIBS)
 
 # Add sources common for Inkscape and Inkview to this variable.
 ink_common_sources =

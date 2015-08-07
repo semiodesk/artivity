@@ -39,6 +39,7 @@ BuildRequires:  pango-devel
 BuildRequires:  perl-XML-Parser
 BuildRequires:  pkgconfig
 BuildRequires:  python-devel
+BuildRequires:  libcurl3-dev 
 Requires(post):   desktop-file-utils
 Requires(postun): desktop-file-utils
 

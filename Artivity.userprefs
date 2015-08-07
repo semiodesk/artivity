@@ -1,11 +1,6 @@
 ﻿<Properties StartupItem="Artivity.Api.Http\Artivity.Api.Http.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="d:\Projects\Artivity\Artivity.Api.Http\Program.cs">
-    <Files>
-      <File FileName="Artivity.Api.Model\obj\Debug\Ontologies.g.cs" Line="1" Column="1" />
-      <File FileName="d:\Projects\Artivity\Artivity.Api.Http\Program.cs" Line="6" Column="19" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
