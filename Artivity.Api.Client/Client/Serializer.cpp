@@ -61,9 +61,10 @@ namespace artivity
         }
         
         string Serializer::toString(const time_t* value)
-        {                   
-            char buf[sizeof "0000-00-00T00:00:00Z"];
-            strftime(buf, sizeof buf, "%FT%TZ", gmtime(value));
+        {
+            char buf[21];
+            
+            strftime(buf, 21, "%Y-%m-%dT%H:%M:%SZ", gmtime(value));
             
             return string(buf);
         }
@@ -104,11 +105,13 @@ namespace artivity
                     }
                     else if(x.LiteralType != NULL)
                     {
+                        out << "\"" << x.LiteralValue << "\"";
+                        
                         XsdTypeMapIterator it = TYPE_MAP.find(x.LiteralType);
                         
                         if(it != TYPE_MAP.end())
                         {
-                            out << "\"" << x.LiteralValue << "\"^^" << it->second;
+                            out << "^^" << it->second;
                         }
                     }
                     

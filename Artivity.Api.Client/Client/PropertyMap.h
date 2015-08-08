@@ -42,10 +42,12 @@ namespace artivity
                 PropertyIterator it = begin();
                                 
                 while(it != end())
-                {                                        
-                    PropertyValue x = it->second;
+                {
+                    string p = it->first;
+                    string value = it->second.LiteralValue;
+                    const char* type = it->second.LiteralType;
                     
-                    if(x.LiteralType == typeInfo.name() && x.LiteralValue == literalValue)
+                    if(p == property && value == literalValue && type == typeInfo.name())
                     {
                         break;
                     }
