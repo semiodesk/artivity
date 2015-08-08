@@ -21,6 +21,13 @@ namespace artivity
 
         Activity::~Activity() {}
         
+        bool Activity::isValid()
+        {
+            // TODO: Check if type, actor, object and time is set.
+            // See: http://www.w3.org/TR/activitystreams-core/#example-1
+            return true;
+        }
+        
         void Activity::setDisplayName(string name)
         {
             _displayName = name;
@@ -31,18 +38,6 @@ namespace artivity
         string Activity::getDisplayName()
         {
             return _displayName;
-        }
-        
-        void Activity::setUrl(const char* url)
-        {
-            _url = url;
-            
-            setValue(as::url, url);
-        }
-        
-        const char* Activity::getUrl()
-        {
-            return _url;
         }
         
         void Activity::setTime(time_t time)

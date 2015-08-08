@@ -21,6 +21,13 @@
     <File Name="Activity.h"/>
     <File Name="Activity.cpp"/>
     <File Name="Serializer.cpp"/>
+    <VirtualDirectory Name="Activities">
+      <File Name="Activities/Undo.h"/>
+      <File Name="Activities/View.h"/>
+      <File Name="Activities/Create.h"/>
+      <File Name="Activities/Delete.h"/>
+      <File Name="Activities/Update.h"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -110,4 +117,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>
