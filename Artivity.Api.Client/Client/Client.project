@@ -27,6 +27,8 @@
       <File Name="Activities/Create.h"/>
       <File Name="Activities/Delete.h"/>
       <File Name="Activities/Update.h"/>
+      <File Name="Activities/Add.h"/>
+      <File Name="Activities/Remove.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
   <Settings Type="Executable">

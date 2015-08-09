@@ -8,36 +8,33 @@ using namespace std;
 
 namespace artivity
 {
-    namespace client
+    class Resource;
+    
+    class PropertyValue
     {
-        class Resource;
+    public:
+        const Resource* Value;
         
-        class PropertyValue
+        string LiteralValue;
+        
+        const char* LiteralType;
+        
+        PropertyValue(const Resource& resource)
         {
-        public:
-            const Resource* Value;
-            
-            string LiteralValue;
-            
-            const char* LiteralType;
-            
-            PropertyValue(const Resource& resource)
-            {
-                Value = &resource;
-                LiteralValue = "";
-                LiteralType = NULL;
-            }
-            
-            PropertyValue(string value, const type_info& literalType)
-            {
-                Value = NULL;
-                LiteralValue = value;
-                LiteralType = literalType.name();
-            }
-            
-            ~PropertyValue() {}
-        };
-    }
+            Value = &resource;
+            LiteralValue = "";
+            LiteralType = NULL;
+        }
+        
+        PropertyValue(string value, const type_info& literalType)
+        {
+            Value = NULL;
+            LiteralValue = value;
+            LiteralType = literalType.name();
+        }
+        
+        ~PropertyValue() {}
+    };
 }
 
 #endif // PROPERTYVALUE_H

@@ -9,8 +9,7 @@
 #include "Ontologies/as.h"
 #include "Ontologies/rdf.h"
 
-using namespace artivity::client;
-using namespace artivity::client::ontologies;
+using namespace artivity;
 
 int main(int argc, char **argv)
 {

@@ -5,21 +5,16 @@
 #include "../Ontologies/as.h"
 #include "../Activity.h"
 
-using namespace artivity::client::ontologies;
-
 namespace artivity
 {
-    namespace client
+    class Undo : public Activity
     {
-        class Undo : public Activity
+    public:
+        Undo(const char* uriref) : Activity(uriref)
         {
-        public:
-            Undo(const char* uriref) : Activity(uriref)
-            {
-                setValue(rdf::_type, as::Undo);
-            }
-        };
-    }
+            setValue(rdf::_type, as::Undo);
+        }
+    };
 }
 
 #endif // UNDO_H

@@ -5,15 +5,9 @@
 
 namespace artivity
 {
-    namespace client
+    namespace rdf
     {
-        namespace ontologies
-        {
-            namespace rdf
-            {
-                static const Property _type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-            }
-        }
+        static const Property _type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
     }
 }
 

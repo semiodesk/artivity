@@ -8,82 +8,79 @@
 
 namespace artivity
 {
-    namespace client
+    ActivityLog::ActivityLog() {}
+
+    ActivityLog::~ActivityLog() {}
+    
+    bool ActivityLog::isConnected()
+    {            
+        return true;
+    }
+    
+    void ActivityLog::setInstrument(Resource& instrument)
     {
-        ActivityLog::ActivityLog() {}
-
-        ActivityLog::~ActivityLog() {}
+        ActivityLogIterator it = begin();
         
-        bool ActivityLog::isConnected()
-        {            
-            return true;
-        }
-        
-        void ActivityLog::setInstrument(Resource& instrument)
+        while(it != end())
         {
-            ActivityLogIterator it = begin();
+            it->setInstrument(instrument);
             
-            while(it != end())
-            {
-                it->setInstrument(instrument);
-                
-                it++;
-            }
+            it++;
+        }
+    }
+    
+    void ActivityLog::setTarget(Resource& target)
+    {
+        ActivityLogIterator it = begin();
+        
+        while(it != end())
+        {
+            it->setTarget(target);
+            
+            it++;
+        }
+    }
+    
+    void ActivityLog::transmit()
+    {
+        // TODO: Send the N3 serialized content to http://localhost:8272/artivitiy/1.0/model
+        
+        /*
+        CURL *curl;
+        
+        struct curl_slist *headers = NULL; // init to NULL is important 
+        headers = curl_slist_append(headers, "Accept: text/n3");
+        headers = curl_slist_append(headers, "Content-Type: text/n3");
+        headers = curl_slist_append(headers, "charsets: utf-8");
+
+        curl = curl_easy_init();
+        
+        if (!curl) return;
+        
+        curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8272/artivity/1.0/model");
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"title\":\"Photoshop\"}");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        res = curl_easy_perform(curl);
+
+        / always cleanup /
+        curl_easy_cleanup(curl);
+        */
+        
+        cout << ">>> OPEN: http://localhost:8272/artivity/1.0/model; Method: POST" << endl;
+        cout << ">>> SEND:" << endl;
+        
+        stringstream content;
+        
+        ActivityLogIterator it = begin();
+        
+        while(it != end())
+        {
+            Serializer::serialize(content, *it, N3);
+            
+            it++;
         }
         
-        void ActivityLog::setTarget(Resource& target)
-        {
-            ActivityLogIterator it = begin();
-            
-            while(it != end())
-            {
-                it->setTarget(target);
-                
-                it++;
-            }
-        }
-        
-        void ActivityLog::transmit()
-        {
-            // TODO: Send the N3 serialized content to http://localhost:8272/artivitiy/1.0/model
-            
-            /*
-            CURL *curl;
-            
-            struct curl_slist *headers = NULL; // init to NULL is important 
-            headers = curl_slist_append(headers, "Accept: text/n3");
-            headers = curl_slist_append(headers, "Content-Type: text/n3");
-            headers = curl_slist_append(headers, "charsets: utf-8");
-
-            curl = curl_easy_init();
-            
-            if (!curl) return;
-            
-            curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8272/artivity/1.0/model");
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"title\":\"Photoshop\"}");
-            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-            res = curl_easy_perform(curl);
-
-            / always cleanup /
-            curl_easy_cleanup(curl);
-            */
-            
-            cout << ">>> OPEN: http://localhost:8272/artivity/1.0/model; Method: POST" << endl;
-            cout << ">>> SEND:" << endl;
-            
-            stringstream content;
-            
-            ActivityLogIterator it = begin();
-            
-            while(it != end())
-            {
-                Serializer::serialize(content, *it, N3);
-                
-                it++;
-            }
-            
-            cout << content.str() << ">>> DONE." << endl;
-        }
+        cout << content.str() << ">>> DONE." << endl;
     }
 }
 

@@ -5,21 +5,16 @@
 #include "../Ontologies/as.h"
 #include "../Activity.h"
 
-using namespace artivity::client::ontologies;
-
 namespace artivity
 {
-    namespace client
+    class Create : public Activity
     {
-        class Create : public Activity
+    public:
+        Create(const char* uriref) : Activity(uriref)
         {
-        public:
-            Create(const char* uriref) : Activity(uriref)
-            {
-                setValue(rdf::_type, as::Create);
-            }
-        };
-    }
+            setValue(rdf::_type, as::Create);
+        }
+    };
 }
 
 #endif // CREATE_H
