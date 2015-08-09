@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     time_t now;
     time(&now);
      
-    Activity a0 = Create("http://localhost:8890/artivity/1.0/activities#0");
+    Create a0 = "http://localhost:8890/artivity/1.0/activities#0";
     a0.setDisplayName("Creating an SVG file..");
     a0.setTime(now);
     
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     
     time(&now);
         
-    Activity a1 = Update("http://localhost:8890/artivity/1.0/activities#1");
+    Update a1 = "http://localhost:8890/artivity/1.0/activities#1";
     a1.setDisplayName("Updating the file..");
     a1.setTime(now);
     
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     
     time(&now);
         
-    Activity a2 = Update("http://localhost:8890/artivity/1.0/activities#2");
+    Update a2 = "http://localhost:8890/artivity/1.0/activities#2";
     a2.setDisplayName("Updating the file..");
     a2.setTime(now);
     
@@ -45,8 +45,8 @@ int main(int argc, char **argv)
     
     if(log.isConnected())
     {
-        Resource instrument = Resource("application://inkscape.desktop");
-        Resource target = Resource("file://example.svg");
+        Resource instrument = "application://inkscape.desktop";
+        Resource target = "file://example.svg";
         
         log.setInstrument(instrument);
         log.setTarget(target);
