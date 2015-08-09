@@ -8,113 +8,110 @@ using namespace std;
 
 namespace artivity
 {
-    namespace client
+    typedef multimap<string, PropertyValue>::iterator PropertyIterator;
+    
+    class PropertyMap : public multimap<string, PropertyValue>
     {
-        typedef multimap<string, PropertyValue>::iterator PropertyIterator;
+    public:
+        PropertyMap() {}
+        ~PropertyMap() {}
         
-        class PropertyMap : public multimap<string, PropertyValue>
+        PropertyIterator findProperty(string property, const Resource& resource)
         {
-        public:
-            PropertyMap() {}
-            ~PropertyMap() {}
-            
-            PropertyIterator findProperty(string property, const Resource& resource)
+            PropertyIterator it = begin();
+        
+            while(it != end())
             {
-                PropertyIterator it = begin();
-            
-                while(it != end())
+                PropertyValue x = it->second;
+                
+                if(x.Value == &resource)
                 {
-                    PropertyValue x = it->second;
-                    
-                    if(x.Value == &resource)
-                    {
-                        break;
-                    }
-                    
-                    it++;
+                    break;
                 }
                 
-                return it;
+                it++;
             }
             
-            PropertyIterator findProperty(string property, string literalValue, const type_info& typeInfo)
-            {                                    
-                PropertyIterator it = begin();
-                                
-                while(it != end())
+            return it;
+        }
+        
+        PropertyIterator findProperty(string property, string literalValue, const type_info& typeInfo)
+        {                                    
+            PropertyIterator it = begin();
+                            
+            while(it != end())
+            {
+                string p = it->first;
+                string value = it->second.LiteralValue;
+                const char* type = it->second.LiteralType;
+                
+                if(p == property && value == literalValue && type == typeInfo.name())
                 {
-                    string p = it->first;
-                    string value = it->second.LiteralValue;
-                    const char* type = it->second.LiteralType;
-                    
-                    if(p == property && value == literalValue && type == typeInfo.name())
-                    {
-                        break;
-                    }
-                    
-                    it++;
+                    break;
                 }
-                                
-                return it;
-            }
-            
-            bool hasProperty(string property, const Resource& resource)
-            {
-                return findProperty(property, resource) != end();
-            }
-            
-            bool hasProperty(string property, string literalValue, const type_info& typeInfo)
-            {
-                return findProperty(property, literalValue, typeInfo) != end();
-            }
-            
-            void addProperty(string property, const Resource& resource)
-            {
-                if(hasProperty(property, resource)) return;
                 
-                insert(pair<string, PropertyValue>(property, PropertyValue(resource)));
+                it++;
             }
+                            
+            return it;
+        }
+        
+        bool hasProperty(string property, const Resource& resource)
+        {
+            return findProperty(property, resource) != end();
+        }
+        
+        bool hasProperty(string property, string literalValue, const type_info& typeInfo)
+        {
+            return findProperty(property, literalValue, typeInfo) != end();
+        }
+        
+        void addProperty(string property, const Resource& resource)
+        {
+            if(hasProperty(property, resource)) return;
             
-            void addProperty(string property, string literalValue, const type_info& typeInfo)
-            {
-                if(hasProperty(property, literalValue, typeInfo)) return;
-                
-                insert(pair<string, PropertyValue>(property, PropertyValue(literalValue, typeInfo)));
-            }
+            insert(pair<string, PropertyValue>(property, PropertyValue(resource)));
+        }
+        
+        void addProperty(string property, string literalValue, const type_info& typeInfo)
+        {
+            if(hasProperty(property, literalValue, typeInfo)) return;
             
-            void removeProperty(string property, const Resource& resource)
-            {
-                PropertyIterator it = findProperty(property, resource);
-                
-                if(it == end()) return;
-                
-                erase(it);
-            }
+            insert(pair<string, PropertyValue>(property, PropertyValue(literalValue, typeInfo)));
+        }
+        
+        void removeProperty(string property, const Resource& resource)
+        {
+            PropertyIterator it = findProperty(property, resource);
             
-            void removeProperty(string property, string literalValue, const type_info& typeInfo)
-            {
-                PropertyIterator it = findProperty(property, literalValue, typeInfo);
-                
-                if(it == end()) return;
-                
-                erase(it);
-            }
+            if(it == end()) return;
             
-            void setProperty(string property, const Resource& resource)
-            {
-                erase(property);
-                
-                addProperty(property, resource);
-            }
+            erase(it);
+        }
+        
+        void removeProperty(string property, string literalValue, const type_info& typeInfo)
+        {
+            PropertyIterator it = findProperty(property, literalValue, typeInfo);
             
-            void setProperty(string property, string literalValue, const type_info& typeInfo)
-            {
-                erase(property);
-                
-                addProperty(property, literalValue, typeInfo);
-            }
-        };
-    }
+            if(it == end()) return;
+            
+            erase(it);
+        }
+        
+        void setProperty(string property, const Resource& resource)
+        {
+            erase(property);
+            
+            addProperty(property, resource);
+        }
+        
+        void setProperty(string property, string literalValue, const type_info& typeInfo)
+        {
+            erase(property);
+            
+            addProperty(property, literalValue, typeInfo);
+        }
+    };
 }
 
 #endif // PROPERTYMAP_H
