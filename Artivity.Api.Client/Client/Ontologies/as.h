@@ -3,30 +3,32 @@
 
 #include "../Property.h"
 
+#define ART(label) "http://www.w3.org/ns/activitystreams#"label;
+
 namespace artivity
 {
     namespace as
     {
-        static const Resource Activity = "http://www.w3.org/ns/activitystreams#Activity";
-        static const Resource Create = "http://www.w3.org/ns/activitystreams#Create";
-        static const Resource Delete = "http://www.w3.org/ns/activitystreams#Delete";
-        static const Resource Update = "http://www.w3.org/ns/activitystreams#Update";
-        static const Resource Undo = "http://www.w3.org/ns/activitystreams#Undo";
-        static const Resource View = "http://www.w3.org/ns/activitystreams#View";
-        static const Resource Remove = "http://www.w3.org/ns/activitystreams#Remove";
-        static const Resource Add = "http://www.w3.org/ns/activitystreams#Add";
+        static const Resource Activity = ART("Activity")
+        static const Resource Create = ART("Create")
+        static const Resource Delete = ART("Delete")
+        static const Resource Update = ART("Update")
+        static const Resource Undo = ART("Undo")
+        static const Resource View = ART("View")
+        static const Resource Remove = ART("Remove")
+        static const Resource Add = ART("Add")
         
-        static const Property actor = "http://www.w3.org/ns/activitystreams#actor";
-        static const Property author = "http://www.w3.org/ns/activitystreams#author";
-        static const Property generator = "http://www.w3.org/ns/activitystreams#generator";
-        static const Property instrument = "http://www.w3.org/ns/activitystreams#instrument";
-        static const Property target = "http://www.w3.org/ns/activitystreams#target";
-        static const Property object = "http://www.w3.org/ns/activitystreams#object";
-        static const Property displayName = "http://www.w3.org/ns/activitystreams#displayName";
-        static const Property endTime = "http://www.w3.org/ns/activitystreams#endTime";
-        static const Property startTime = "http://www.w3.org/ns/activitystreams#startTime";
-        static const Property updateTime = "http://www.w3.org/ns/activitystreams#updateTime";
-        static const Property url = "http://www.w3.org/ns/activitystreams#url";
+        static const Property actor = ART("actor");
+        static const Property author = ART("author");
+        static const Property generator = ART("generator");
+        static const Property instrument = ART("instrument");
+        static const Property target = ART("target");
+        static const Property object = ART("object");
+        static const Property displayName = ART("displayName");
+        static const Property endTime = ART("endTime");
+        static const Property startTime = ART("startTime");
+        static const Property updateTime = ART("updateTime");
+        static const Property url = ART("url");
     }
 }
 
