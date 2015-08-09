@@ -4,15 +4,17 @@
 #include "../Resource.h"
 #include "../Property.h"
 
+#define XSD(label) "http://www.w3.org/2001/XMLSchema#"label;
+
 namespace artivity
 {
     namespace xsd
     {
-        static const Resource _int = "http://www.w3.org/2001/XMLSchema#int";
-        static const Resource _long = "http://www.w3.org/2001/XMLSchema#long";
-        static const Resource _float = "http://www.w3.org/2001/XMLSchema#float";
-        static const Resource _double = "http://www.w3.org/2001/XMLSchema#double";
-        static const Resource dateTime = "http://www.w3.org/2001/XMLSchema#dateTime";
+        static const Resource _int = XSD("int");
+        static const Resource _long = XSD("long");
+        static const Resource _float = XSD("float");
+        static const Resource _double = XSD("double");
+        static const Resource dateTime = XSD("dateTime");
     }
 }
 
