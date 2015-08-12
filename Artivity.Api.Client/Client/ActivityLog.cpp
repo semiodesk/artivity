@@ -1,9 +1,7 @@
 #include "ActivityLog.h"
 #include "Serializer.h"
 
-#define CURL_STATICLIB 1
-
-//#include <curl/curl.h>
+#include <curl/curl.h>
 #include <string>
 
 namespace artivity
@@ -45,7 +43,7 @@ namespace artivity
     {
         // TODO: Send the N3 serialized content to http://localhost:8272/artivitiy/1.0/model
         
-        /*
+        
         CURL *curl;
         
         struct curl_slist *headers = NULL; // init to NULL is important 
@@ -58,21 +56,9 @@ namespace artivity
         if (!curl) return;
         
         curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8272/artivity/1.0/model");
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"title\":\"Photoshop\"}");
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-        res = curl_easy_perform(curl);
-
-        / always cleanup /
-        curl_easy_cleanup(curl);
-        */
-        
-        cout << ">>> OPEN: http://localhost:8272/artivity/1.0/model; Method: POST" << endl;
-        cout << ">>> SEND:" << endl;
-        
-        stringstream content;
         
         ActivityLogIterator it = begin();
-        
+        stringstream content;
         while(it != end())
         {
             Serializer::serialize(content, *it, N3);
@@ -80,7 +66,19 @@ namespace artivity
             it++;
         }
         
-        cout << content.str() << ">>> DONE." << endl;
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, content.str());
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+         cout << ">>> OPEN: http://localhost:8272/artivity/1.0/model; Method: POST" << endl;
+        cout << ">>> SEND:" << endl;
+        cout << content.str() << endl;
+        
+        CURLcode res = curl_easy_perform(curl);
+        cout << res << endl;
+        // always cleanup
+        curl_easy_cleanup(curl);
+        
+        
+        cout << ">>> DONE." << endl;
     }
 }
 
