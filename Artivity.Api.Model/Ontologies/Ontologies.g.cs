@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 08.08.2015 13:35:31
+// Date: 10.08.2015 15:41:34
 
 using System;
 using System.Collections.Generic;
@@ -3760,9 +3760,9 @@ public class prov : Ontology
 
     ///<summary>
     ///
-    ///<see cref="file:///D:/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"/>
+    ///<see cref="file:///D:/Projects/Artivitiy/Artivity.Api.Model/Ontologies/prov.ttl#"/>
     ///</summary>
-    public static readonly Resource prov_ttl = new Resource(new Uri("file:///D:/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"));    
+    public static readonly Resource prov_ttl = new Resource(new Uri("file:///D:/Projects/Artivitiy/Artivity.Api.Model/Ontologies/prov.ttl#"));    
 
     ///<summary>
     ///
@@ -4908,9 +4908,9 @@ public static class PROV
 
     ///<summary>
     ///
-    ///<see cref="file:///D:/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"/>
+    ///<see cref="file:///D:/Projects/Artivitiy/Artivity.Api.Model/Ontologies/prov.ttl#"/>
     ///</summary>
-    public const string prov_ttl = "file:///D:/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#";
+    public const string prov_ttl = "file:///D:/Projects/Artivitiy/Artivity.Api.Model/Ontologies/prov.ttl#";
 
     ///<summary>
     ///
