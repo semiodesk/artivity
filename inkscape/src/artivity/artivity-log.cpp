@@ -35,38 +35,19 @@ namespace Inkscape
     ArtivityLog::ArtivityLog(SPDocument* doc, SPDesktop* desktop) : UndoStackObserver(), _doc(doc)
     {
         _desktop= desktop;
+	
+	_log = artivity::ActivityLog();
+	artivity::Resource instrument = artivity::Resource("application://inkscape.desktop");
+	_log.setInstrument(instrument);
 
         g_message("ArtivityLog(SPDocument*, SPDesktop*) called; doc=%p", doc);
 
-        _log = zeitgeist_log_new();
         _queue = new std::vector<EventRecord>();
-
-        ZeitgeistSubject* subject = newSubject();
 
         gint64 timestamp = (gint64)(time(NULL) * 1000);
 
-        _queue->insert(_queue->begin(), { subject, art::BeginEditingEvent, NULL, timestamp});
+        //_queue->insert(_queue->begin(), { subject, art::BeginEditingEvent, NULL, timestamp});
 
-        CURL *curl;
-        CURLcode res;
-        
-        struct curl_slist *headers = NULL; // init to NULL is important 
-        headers = curl_slist_append(headers, "Accept: application/json");
-        headers = curl_slist_append(headers, "Content-Type: application/json");
-        headers = curl_slist_append(headers, "charsets: utf-8");
-
-        curl = curl_easy_init();
-        
-        if (curl) {
-            curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8272/artivity/1.0/activities");
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"actor\":\"application://inkscape.desktop\", \"title\":\"Inkscape\", \"url\":\"file:xyz.svg\"}");
-            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-            res = curl_easy_perform(curl);
-
-            // always cleanup
-            curl_easy_cleanup(curl);
-        }
-  
         processEventQueue();
     }
 
@@ -78,7 +59,8 @@ namespace Inkscape
     void
     ArtivityLog::notifyUndoEvent(Event* e)
     {
-        logEvent(e, art::UndoEvent);
+	//Undo undo = "
+        //logEvent(e, art::UndoEvent);
     }
 
     void
@@ -96,11 +78,11 @@ namespace Inkscape
     void
     ArtivityLog::notifyClearUndoEvent()
     {
-        ZeitgeistSubject* subject = newSubject();
+        //ZeitgeistSubject* subject = newSubject();
 
-        gint64 timestamp = (gint64)(time(NULL) * 1000);
+        //gint64 timestamp = (gint64)(time(NULL) * 1000);
 
-        _queue->insert(_queue->begin(), { subject, art::EndEditingEvent, NULL, timestamp});
+        //_queue->insert(_queue->begin(), { subject, art::EndEditingEvent, NULL, timestamp});
 
         processEventQueue();
     }
@@ -112,17 +94,33 @@ namespace Inkscape
     }
 
     void
+    ArtivityLog::logEvent(Event* e, artivity::Activity activity)
+    {
+        // NOTE: The current document may have not been saved yet. Therefore,
+        // we create an event without a URI and push it into the queue.
+        //ZeitgeistSubject* subject = newSubject();
+
+        gint64 timestamp = (gint64)(time(NULL) * 1000);
+
+       // _queue->insert(_queue->begin(), { subject, typeUri, e, timestamp});
+
+       // g_message("Queued subject=%p desc=%s", subject, e->description.data());
+        
+        processEventQueue();
+    }
+
+    void
     ArtivityLog::logEvent(Event* e, const char* typeUri)
     {
         // NOTE: The current document may have not been saved yet. Therefore,
         // we create an event without a URI and push it into the queue.
-        ZeitgeistSubject* subject = newSubject();
+        //ZeitgeistSubject* subject = newSubject();
 
         gint64 timestamp = (gint64)(time(NULL) * 1000);
 
-        _queue->insert(_queue->begin(), { subject, typeUri, e, timestamp});
+       // _queue->insert(_queue->begin(), { subject, typeUri, e, timestamp});
 
-        g_message("Queued subject=%p desc=%s", subject, e->description.data());
+       // g_message("Queued subject=%p desc=%s", subject, e->description.data());
         
         processEventQueue();
     }
@@ -136,9 +134,9 @@ namespace Inkscape
             return;
         }
         
-        if(!zeitgeist_log_is_connected(_log))
+        //if(!zeitgeist_log_is_connected(_log))
         {
-            g_warning("processEventQueue: No connection to Zeitgeist log.");
+        //    g_warning("processEventQueue: No connection to Zeitgeist log.");
         }
 
         const gchar* uri = _doc->getURI();
@@ -155,16 +153,17 @@ namespace Inkscape
         // We got a saved document. Now we can empty the event queue.
         while(!_queue->empty())
         {
-            EventRecord r = _queue->back();
+           // EventRecord r = _queue->back();
             
-            logSubject(r.subject, r.eventType, r.event, uri, uri, r.timestamp);
+          //  logSubject(r.subject, r.eventType, r.event, uri, uri, r.timestamp);
 
             _queue->pop_back();
             
             g_message("processEventQueue: Logged subject; Queue size=%lu", _queue->size());
         }
     }
-    
+   
+/* 
     ZeitgeistSubject*
     ArtivityLog::newSubject()
     {       
@@ -174,7 +173,9 @@ namespace Inkscape
           ZEITGEIST_NFO_FILE_DATA_OBJECT,
           "image/svg+xml", NULL, "", "net");
     }
-    
+  */
+
+/*  
     void
     ArtivityLog::logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri, gint64 timestamp)
     {
@@ -225,15 +226,8 @@ namespace Inkscape
             g_error("logSubject: Failed to create Zeitgeist event.");
         }
     }
-
-    static void
-    logSubjectComplete(GObject* source, GAsyncResult* result, gpointer userData)
-    {
-        g_message("logSubjectComplete() called");
-
-        // TODO: Free event and subject here, if necessary.
-    }
-    
+*/
+   
     GByteArray*
     ArtivityLog::getEventPayload(Event* e)
     {
