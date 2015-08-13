@@ -66,7 +66,7 @@ namespace artivity
             it++;
         }
         
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, content.str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, content.str().c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
          cout << ">>> OPEN: http://localhost:8272/artivity/1.0/model; Method: POST" << endl;
         cout << ">>> SEND:" << endl;

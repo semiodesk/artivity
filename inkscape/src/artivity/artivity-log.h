@@ -11,18 +11,15 @@
 #ifndef SEEN_INKSCAPE_ARTIVITY_OBSERVER_H
 #define SEEN_INKSCAPE_ARTIVITY_OBSERVER_H
 
-#define CURL_STATICLIB 1
-
-#include <curl/curl.h>
 #include "undo-stack-observer.h"
 #include "desktop.h"
 #include "document.h"
-#include <zeitgeist.h>
 #include "event.h"
 #include "xml/event.h"
 #include "xml/node.h"
 #include "xml/attribute-record.h"
 #include <ctime>
+#include "ActivityLog.h"
 
 class SPDesktop;
 
@@ -36,8 +33,6 @@ namespace Inkscape
 
     struct EventRecord
     {
-        ZeitgeistSubject* subject;
-        
         const char* eventType;
 
         Event* event;
@@ -52,8 +47,8 @@ namespace Inkscape
         SPDocument* _doc;
 
         SPDesktop* _desktop;
-        
-        ZeitgeistLog* _log;
+
+	artivity::ActivityLog _log;	
         
         std::vector<EventRecord>* _queue;
 
@@ -64,12 +59,10 @@ namespace Inkscape
 
     protected:
             
-        ZeitgeistSubject* newSubject();
-
         void logEvent(Event* e, const char* typeUri);
-        
-        void logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri, gint64 timestamp);
 
+	void logEvent(Event* e, artivity::Activity activity);
+        
         void processEventQueue();
         
         GByteArray* getEventPayload(Event* e);
@@ -93,7 +86,6 @@ namespace Inkscape
         void notifyClearRedoEvent();
     };
 
-    static void logSubjectComplete(GObject* source, GAsyncResult* result, gpointer userData);
 }
 
 #endif // SEEN_INKSCAPE_ARTIVITY_OBSERVER_H

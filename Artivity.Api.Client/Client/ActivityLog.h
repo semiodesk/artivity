@@ -3,7 +3,17 @@
 
 #include <deque>
 
+#include "Resource.h"
 #include "Activity.h"
+#include "Activities/Create.h"
+#include "Activities/Update.h"
+#include "Activities/Delete.h"
+#include "Activities/Undo.h"
+#include "Activities/View.h"
+#include "Activities/Add.h"
+
+#include "Ontologies/as.h"
+#include "Ontologies/rdf.h"
 
 using namespace std;
 

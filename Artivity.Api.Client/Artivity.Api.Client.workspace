@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Workspace Name="Artivity.Api.Client" Database="">
+<CodeLite_Workspace Name="Artivity.Api.Client" Database="" SWTLW="No">
   <Project Name="Client" Path="Client/Client.project" Active="Yes"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
-      <Project Name="Client" ConfigName="Debug"/>
+      <Project Name="Client" ConfigName="Debug_Linux_dynamic"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Project Name="Client" ConfigName="Release"/>

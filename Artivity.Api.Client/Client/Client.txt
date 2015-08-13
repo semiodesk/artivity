@@ -1,1 +1,1 @@
-./Debug/main.cpp.o ./Debug/Resource.cpp.o ./Debug/ActivityLog.cpp.o ./Debug/Activity.cpp.o ./Debug/Serializer.cpp.o   
+./Debug/main.cpp.o ./Debug/Resource.cpp.o ./Debug/ActivityLog.cpp.o ./Debug/Activity.cpp.o ./Debug/Serializer.cpp.o
