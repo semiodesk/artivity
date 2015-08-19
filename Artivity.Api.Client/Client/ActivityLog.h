@@ -15,6 +15,8 @@
 #include "Ontologies/as.h"
 #include "Ontologies/rdf.h"
 
+#include <curl/curl.h>
+
 using namespace std;
 
 namespace artivity

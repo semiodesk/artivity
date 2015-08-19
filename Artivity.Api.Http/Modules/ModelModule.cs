@@ -55,9 +55,11 @@ namespace Artivity.Api.Http
 		{
             Post["/artivity/1.0/model"] = parameters => 
             {
-                InitializeModel();
+                //InitializeModel();
 
-                
+				string body = this.Request.Body.ReadAsString();
+				Console.WriteLine(string.Format("Received: Headers {0} \nBody {1} ", Request.Headers.ContentLength, Request.Body.Length));
+				Console.WriteLine(body);
 
                 return "";
                 //return AddActivity(this.Bind<ActivityParameters>()); 
