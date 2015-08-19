@@ -665,6 +665,12 @@ USE_IMAGE_MAGICK_FALSE
 USE_IMAGE_MAGICK_TRUE
 IMAGEMAGICK_LIBS
 IMAGEMAGICK_CFLAGS
+USE_ARTIVITY_FALSE
+USE_ARTIVITY_TRUE
+ARTIVITY_LIBS
+LIBARTIVITY_PREFIX
+LTLIBARTIVITY
+LIBARTIVITY
 WITH_DBUS_FALSE
 WITH_DBUS_TRUE
 DBUSSERVICEDIR
@@ -951,6 +957,8 @@ enable_visio
 enable_cdr
 enable_localinstall
 enable_dbusapi
+enable_artivity
+with_libartivity_prefix
 enable_gtk3_experimental
 enable_binreloc
 enable_osxapp
@@ -1675,6 +1683,7 @@ Optional Features:
   --enable-localinstall   install system files in the local path (for
                           distcheck)
   --enable-dbusapi        compile with support for DBus interface
+  --enable-artivity       compile with support for Artivity
   --enable-gtk3-experimental
                           enable compilation with GTK+3 (EXPERIMENTAL!)
   --enable-binreloc       compile with binary relocation support
@@ -1695,6 +1704,8 @@ Optional Packages:
   --without-libintl-prefix     don't search for libintl in includedir and libdir
   --with-gnome-vfs        use gnome vfs for loading files
   --without-inkjar        disable openoffice files (SVG jars)
+  --with-libartivity-prefix[=DIR]  search for libartivity in DIR/include and DIR/lib
+  --without-libartivity-prefix     don't search for libartivity in includedir and libdir
 
 Some influential environment variables:
   CC          C compiler command
@@ -20344,7 +20355,7 @@ else
 fi
 
 if test "x$jpeg_ok" = "xyes"; then
-   LIBS="-ljpeg $LIBS"
+LIBS="-ljpeg $LIBS"
 
 $as_echo "#define HAVE_JPEG 1" >>confdefs.h
 
@@ -22551,6 +22562,565 @@ else
 fi
 
 
+# Check whether --enable-artivity was given.
+if test "${enable_artivity+set}" = set; then :
+  enableval=$enable_artivity; enable_artivity=$enableval
+else
+  enable_artivity=no
+fi
+
+
+with_artivity="no"
+if test "x$enable_artivity" = "xyes"; then
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lartivity" >&5
+$as_echo_n "checking for main in -lartivity... " >&6; }
+if ${ac_cv_lib_artivity_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lartivity  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_artivity_main=yes
+else
+  ac_cv_lib_artivity_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_artivity_main" >&5
+$as_echo "$ac_cv_lib_artivity_main" >&6; }
+if test "x$ac_cv_lib_artivity_main" = xyes; then :
+  with_artivity=yes
+else
+  with_artivity=no
+fi
+
+	if test "x$with_artivity" = "xyes"; then
+
+$as_echo "#define WITH_ARTIVITY 1" >>confdefs.h
+
+
+
+
+
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking how to link with libartivity" >&5
+$as_echo_n "checking how to link with libartivity... " >&6; }
+if ${ac_cv_libartivity_libs+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+
+
+
+
+    use_additional=yes
+
+  acl_save_prefix="$prefix"
+  prefix="$acl_final_prefix"
+  acl_save_exec_prefix="$exec_prefix"
+  exec_prefix="$acl_final_exec_prefix"
+
+    eval additional_includedir=\"$includedir\"
+    eval additional_libdir=\"$libdir\"
+
+  exec_prefix="$acl_save_exec_prefix"
+  prefix="$acl_save_prefix"
+
+
+# Check whether --with-libartivity-prefix was given.
+if test "${with_libartivity_prefix+set}" = set; then :
+  withval=$with_libartivity_prefix;
+    if test "X$withval" = "Xno"; then
+      use_additional=no
+    else
+      if test "X$withval" = "X"; then
+
+  acl_save_prefix="$prefix"
+  prefix="$acl_final_prefix"
+  acl_save_exec_prefix="$exec_prefix"
+  exec_prefix="$acl_final_exec_prefix"
+
+          eval additional_includedir=\"$includedir\"
+          eval additional_libdir=\"$libdir\"
+
+  exec_prefix="$acl_save_exec_prefix"
+  prefix="$acl_save_prefix"
+
+      else
+        additional_includedir="$withval/include"
+        additional_libdir="$withval/$acl_libdirstem"
+      fi
+    fi
+
+fi
+
+      LIBARTIVITY=
+  LTLIBARTIVITY=
+  INCARTIVITY=
+  LIBARTIVITY_PREFIX=
+  rpathdirs=
+  ltrpathdirs=
+  names_already_handled=
+  names_next_round='artivity '
+  while test -n "$names_next_round"; do
+    names_this_round="$names_next_round"
+    names_next_round=
+    for name in $names_this_round; do
+      already_handled=
+      for n in $names_already_handled; do
+        if test "$n" = "$name"; then
+          already_handled=yes
+          break
+        fi
+      done
+      if test -z "$already_handled"; then
+        names_already_handled="$names_already_handled $name"
+                        uppername=`echo "$name" | sed -e 'y|abcdefghijklmnopqrstuvwxyz./-|ABCDEFGHIJKLMNOPQRSTUVWXYZ___|'`
+        eval value=\"\$HAVE_LIB$uppername\"
+        if test -n "$value"; then
+          if test "$value" = yes; then
+            eval value=\"\$LIB$uppername\"
+            test -z "$value" || LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }$value"
+            eval value=\"\$LTLIB$uppername\"
+            test -z "$value" || LTLIBARTIVITY="${LTLIBARTIVITY}${LTLIBARTIVITY:+ }$value"
+          else
+                                    :
+          fi
+        else
+                              found_dir=
+          found_la=
+          found_so=
+          found_a=
+          eval libname=\"$acl_libname_spec\"    # typically: libname=lib$name
+          if test -n "$acl_shlibext"; then
+            shrext=".$acl_shlibext"             # typically: shrext=.so
+          else
+            shrext=
+          fi
+          if test $use_additional = yes; then
+            dir="$additional_libdir"
+                                    if test -n "$acl_shlibext"; then
+              if test -f "$dir/$libname$shrext"; then
+                found_dir="$dir"
+                found_so="$dir/$libname$shrext"
+              else
+                if test "$acl_library_names_spec" = '$libname$shrext$versuffix'; then
+                  ver=`(cd "$dir" && \
+                        for f in "$libname$shrext".*; do echo "$f"; done \
+                        | sed -e "s,^$libname$shrext\\\\.,," \
+                        | sort -t '.' -n -r -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 \
+                        | sed 1q ) 2>/dev/null`
+                  if test -n "$ver" && test -f "$dir/$libname$shrext.$ver"; then
+                    found_dir="$dir"
+                    found_so="$dir/$libname$shrext.$ver"
+                  fi
+                else
+                  eval library_names=\"$acl_library_names_spec\"
+                  for f in $library_names; do
+                    if test -f "$dir/$f"; then
+                      found_dir="$dir"
+                      found_so="$dir/$f"
+                      break
+                    fi
+                  done
+                fi
+              fi
+            fi
+                        if test "X$found_dir" = "X"; then
+              if test -f "$dir/$libname.$acl_libext"; then
+                found_dir="$dir"
+                found_a="$dir/$libname.$acl_libext"
+              fi
+            fi
+            if test "X$found_dir" != "X"; then
+              if test -f "$dir/$libname.la"; then
+                found_la="$dir/$libname.la"
+              fi
+            fi
+          fi
+          if test "X$found_dir" = "X"; then
+            for x in $LDFLAGS $LTLIBARTIVITY; do
+
+  acl_save_prefix="$prefix"
+  prefix="$acl_final_prefix"
+  acl_save_exec_prefix="$exec_prefix"
+  exec_prefix="$acl_final_exec_prefix"
+  eval x=\"$x\"
+  exec_prefix="$acl_save_exec_prefix"
+  prefix="$acl_save_prefix"
+
+              case "$x" in
+                -L*)
+                  dir=`echo "X$x" | sed -e 's/^X-L//'`
+                                    if test -n "$acl_shlibext"; then
+                    if test -f "$dir/$libname$shrext"; then
+                      found_dir="$dir"
+                      found_so="$dir/$libname$shrext"
+                    else
+                      if test "$acl_library_names_spec" = '$libname$shrext$versuffix'; then
+                        ver=`(cd "$dir" && \
+                              for f in "$libname$shrext".*; do echo "$f"; done \
+                              | sed -e "s,^$libname$shrext\\\\.,," \
+                              | sort -t '.' -n -r -k1,1 -k2,2 -k3,3 -k4,4 -k5,5 \
+                              | sed 1q ) 2>/dev/null`
+                        if test -n "$ver" && test -f "$dir/$libname$shrext.$ver"; then
+                          found_dir="$dir"
+                          found_so="$dir/$libname$shrext.$ver"
+                        fi
+                      else
+                        eval library_names=\"$acl_library_names_spec\"
+                        for f in $library_names; do
+                          if test -f "$dir/$f"; then
+                            found_dir="$dir"
+                            found_so="$dir/$f"
+                            break
+                          fi
+                        done
+                      fi
+                    fi
+                  fi
+                                    if test "X$found_dir" = "X"; then
+                    if test -f "$dir/$libname.$acl_libext"; then
+                      found_dir="$dir"
+                      found_a="$dir/$libname.$acl_libext"
+                    fi
+                  fi
+                  if test "X$found_dir" != "X"; then
+                    if test -f "$dir/$libname.la"; then
+                      found_la="$dir/$libname.la"
+                    fi
+                  fi
+                  ;;
+              esac
+              if test "X$found_dir" != "X"; then
+                break
+              fi
+            done
+          fi
+          if test "X$found_dir" != "X"; then
+                        LTLIBARTIVITY="${LTLIBARTIVITY}${LTLIBARTIVITY:+ }-L$found_dir -l$name"
+            if test "X$found_so" != "X"; then
+                                                        if test "$enable_rpath" = no || test "X$found_dir" = "X/usr/$acl_libdirstem"; then
+                                LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }$found_so"
+              else
+                                                                                haveit=
+                for x in $ltrpathdirs; do
+                  if test "X$x" = "X$found_dir"; then
+                    haveit=yes
+                    break
+                  fi
+                done
+                if test -z "$haveit"; then
+                  ltrpathdirs="$ltrpathdirs $found_dir"
+                fi
+                                if test "$acl_hardcode_direct" = yes; then
+                                                      LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }$found_so"
+                else
+                  if test -n "$acl_hardcode_libdir_flag_spec" && test "$acl_hardcode_minus_L" = no; then
+                                                            LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }$found_so"
+                                                            haveit=
+                    for x in $rpathdirs; do
+                      if test "X$x" = "X$found_dir"; then
+                        haveit=yes
+                        break
+                      fi
+                    done
+                    if test -z "$haveit"; then
+                      rpathdirs="$rpathdirs $found_dir"
+                    fi
+                  else
+                                                                                haveit=
+                    for x in $LDFLAGS $LIBARTIVITY; do
+
+  acl_save_prefix="$prefix"
+  prefix="$acl_final_prefix"
+  acl_save_exec_prefix="$exec_prefix"
+  exec_prefix="$acl_final_exec_prefix"
+  eval x=\"$x\"
+  exec_prefix="$acl_save_exec_prefix"
+  prefix="$acl_save_prefix"
+
+                      if test "X$x" = "X-L$found_dir"; then
+                        haveit=yes
+                        break
+                      fi
+                    done
+                    if test -z "$haveit"; then
+                      LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }-L$found_dir"
+                    fi
+                    if test "$acl_hardcode_minus_L" != no; then
+                                                                                        LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }$found_so"
+                    else
+                                                                                                                                                                                LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }-l$name"
+                    fi
+                  fi
+                fi
+              fi
+            else
+              if test "X$found_a" != "X"; then
+                                LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }$found_a"
+              else
+                                                LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }-L$found_dir -l$name"
+              fi
+            fi
+                        additional_includedir=
+            case "$found_dir" in
+              */$acl_libdirstem | */$acl_libdirstem/)
+                basedir=`echo "X$found_dir" | sed -e 's,^X,,' -e "s,/$acl_libdirstem/"'*$,,'`
+                LIBARTIVITY_PREFIX="$basedir"
+                additional_includedir="$basedir/include"
+                ;;
+            esac
+            if test "X$additional_includedir" != "X"; then
+                                                                                                                if test "X$additional_includedir" != "X/usr/include"; then
+                haveit=
+                if test "X$additional_includedir" = "X/usr/local/include"; then
+                  if test -n "$GCC"; then
+                    case $host_os in
+                      linux* | gnu* | k*bsd*-gnu) haveit=yes;;
+                    esac
+                  fi
+                fi
+                if test -z "$haveit"; then
+                  for x in $CPPFLAGS $INCARTIVITY; do
+
+  acl_save_prefix="$prefix"
+  prefix="$acl_final_prefix"
+  acl_save_exec_prefix="$exec_prefix"
+  exec_prefix="$acl_final_exec_prefix"
+  eval x=\"$x\"
+  exec_prefix="$acl_save_exec_prefix"
+  prefix="$acl_save_prefix"
+
+                    if test "X$x" = "X-I$additional_includedir"; then
+                      haveit=yes
+                      break
+                    fi
+                  done
+                  if test -z "$haveit"; then
+                    if test -d "$additional_includedir"; then
+                                            INCARTIVITY="${INCARTIVITY}${INCARTIVITY:+ }-I$additional_includedir"
+                    fi
+                  fi
+                fi
+              fi
+            fi
+                        if test -n "$found_la"; then
+                                                        save_libdir="$libdir"
+              case "$found_la" in
+                */* | *\\*) . "$found_la" ;;
+                *) . "./$found_la" ;;
+              esac
+              libdir="$save_libdir"
+                            for dep in $dependency_libs; do
+                case "$dep" in
+                  -L*)
+                    additional_libdir=`echo "X$dep" | sed -e 's/^X-L//'`
+                                                                                                                                                                if test "X$additional_libdir" != "X/usr/$acl_libdirstem"; then
+                      haveit=
+                      if test "X$additional_libdir" = "X/usr/local/$acl_libdirstem"; then
+                        if test -n "$GCC"; then
+                          case $host_os in
+                            linux* | gnu* | k*bsd*-gnu) haveit=yes;;
+                          esac
+                        fi
+                      fi
+                      if test -z "$haveit"; then
+                        haveit=
+                        for x in $LDFLAGS $LIBARTIVITY; do
+
+  acl_save_prefix="$prefix"
+  prefix="$acl_final_prefix"
+  acl_save_exec_prefix="$exec_prefix"
+  exec_prefix="$acl_final_exec_prefix"
+  eval x=\"$x\"
+  exec_prefix="$acl_save_exec_prefix"
+  prefix="$acl_save_prefix"
+
+                          if test "X$x" = "X-L$additional_libdir"; then
+                            haveit=yes
+                            break
+                          fi
+                        done
+                        if test -z "$haveit"; then
+                          if test -d "$additional_libdir"; then
+                                                        LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }-L$additional_libdir"
+                          fi
+                        fi
+                        haveit=
+                        for x in $LDFLAGS $LTLIBARTIVITY; do
+
+  acl_save_prefix="$prefix"
+  prefix="$acl_final_prefix"
+  acl_save_exec_prefix="$exec_prefix"
+  exec_prefix="$acl_final_exec_prefix"
+  eval x=\"$x\"
+  exec_prefix="$acl_save_exec_prefix"
+  prefix="$acl_save_prefix"
+
+                          if test "X$x" = "X-L$additional_libdir"; then
+                            haveit=yes
+                            break
+                          fi
+                        done
+                        if test -z "$haveit"; then
+                          if test -d "$additional_libdir"; then
+                                                        LTLIBARTIVITY="${LTLIBARTIVITY}${LTLIBARTIVITY:+ }-L$additional_libdir"
+                          fi
+                        fi
+                      fi
+                    fi
+                    ;;
+                  -R*)
+                    dir=`echo "X$dep" | sed -e 's/^X-R//'`
+                    if test "$enable_rpath" != no; then
+                                                                  haveit=
+                      for x in $rpathdirs; do
+                        if test "X$x" = "X$dir"; then
+                          haveit=yes
+                          break
+                        fi
+                      done
+                      if test -z "$haveit"; then
+                        rpathdirs="$rpathdirs $dir"
+                      fi
+                                                                  haveit=
+                      for x in $ltrpathdirs; do
+                        if test "X$x" = "X$dir"; then
+                          haveit=yes
+                          break
+                        fi
+                      done
+                      if test -z "$haveit"; then
+                        ltrpathdirs="$ltrpathdirs $dir"
+                      fi
+                    fi
+                    ;;
+                  -l*)
+                                        names_next_round="$names_next_round "`echo "X$dep" | sed -e 's/^X-l//'`
+                    ;;
+                  *.la)
+                                                                                names_next_round="$names_next_round "`echo "X$dep" | sed -e 's,^X.*/,,' -e 's,^lib,,' -e 's,\.la$,,'`
+                    ;;
+                  *)
+                                        LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }$dep"
+                    LTLIBARTIVITY="${LTLIBARTIVITY}${LTLIBARTIVITY:+ }$dep"
+                    ;;
+                esac
+              done
+            fi
+          else
+                                                            LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }-l$name"
+            LTLIBARTIVITY="${LTLIBARTIVITY}${LTLIBARTIVITY:+ }-l$name"
+          fi
+        fi
+      fi
+    done
+  done
+  if test "X$rpathdirs" != "X"; then
+    if test -n "$acl_hardcode_libdir_separator"; then
+                        alldirs=
+      for found_dir in $rpathdirs; do
+        alldirs="${alldirs}${alldirs:+$acl_hardcode_libdir_separator}$found_dir"
+      done
+            acl_save_libdir="$libdir"
+      libdir="$alldirs"
+      eval flag=\"$acl_hardcode_libdir_flag_spec\"
+      libdir="$acl_save_libdir"
+      LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }$flag"
+    else
+            for found_dir in $rpathdirs; do
+        acl_save_libdir="$libdir"
+        libdir="$found_dir"
+        eval flag=\"$acl_hardcode_libdir_flag_spec\"
+        libdir="$acl_save_libdir"
+        LIBARTIVITY="${LIBARTIVITY}${LIBARTIVITY:+ }$flag"
+      done
+    fi
+  fi
+  if test "X$ltrpathdirs" != "X"; then
+            for found_dir in $ltrpathdirs; do
+      LTLIBARTIVITY="${LTLIBARTIVITY}${LTLIBARTIVITY:+ }-R$found_dir"
+    done
+  fi
+
+    ac_cv_libartivity_libs="$LIBARTIVITY"
+    ac_cv_libartivity_ltlibs="$LTLIBARTIVITY"
+    ac_cv_libartivity_cppflags="$INCARTIVITY"
+    ac_cv_libartivity_prefix="$LIBARTIVITY_PREFIX"
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_libartivity_libs" >&5
+$as_echo "$ac_cv_libartivity_libs" >&6; }
+  LIBARTIVITY="$ac_cv_libartivity_libs"
+  LTLIBARTIVITY="$ac_cv_libartivity_ltlibs"
+  INCARTIVITY="$ac_cv_libartivity_cppflags"
+  LIBARTIVITY_PREFIX="$ac_cv_libartivity_prefix"
+
+  for element in $INCARTIVITY; do
+    haveit=
+    for x in $CPPFLAGS; do
+
+  acl_save_prefix="$prefix"
+  prefix="$acl_final_prefix"
+  acl_save_exec_prefix="$exec_prefix"
+  exec_prefix="$acl_final_exec_prefix"
+  eval x=\"$x\"
+  exec_prefix="$acl_save_exec_prefix"
+  prefix="$acl_save_prefix"
+
+      if test "X$x" = "X$element"; then
+        haveit=yes
+        break
+      fi
+    done
+    if test -z "$haveit"; then
+      CPPFLAGS="${CPPFLAGS}${CPPFLAGS:+ }$element"
+    fi
+  done
+
+
+
+
+      HAVE_LIBARTIVITY=yes
+
+
+
+	    ARTIVITY_LIBS=$LIBARTIVITY
+
+	else
+
+$as_echo "#define WITH_ARTIVITY 0" >>confdefs.h
+
+	    { $as_echo "$as_me:${as_lineno-$LINENO}: checking Artivity not found, activity tracking will be disabled" >&5
+$as_echo_n "checking Artivity not found, activity tracking will be disabled... " >&6; }
+	fi
+fi
+ if test "x$with_artivity" = "xyes"; then
+  USE_ARTIVITY_TRUE=
+  USE_ARTIVITY_FALSE='#'
+else
+  USE_ARTIVITY_TRUE='#'
+  USE_ARTIVITY_FALSE=
+fi
+
+
+
+
 
 
 pkg_failed=no
@@ -23844,6 +24414,7 @@ else
 $as_echo_n "checking Aspell not found, spell checker will be disabled... " >&6; }
 fi
 
+
 sp_save_LIBS=$LIBS
 LIBS="$LIBS $INKSCAPE_LIBS"
 for ac_func in bind_textdomain_codeset
@@ -24961,6 +25532,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${WITH_DBUS_TRUE}" && test -z "${WITH_DBUS_FALSE}"; then
   as_fn_error $? "conditional \"WITH_DBUS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${USE_ARTIVITY_TRUE}" && test -z "${USE_ARTIVITY_FALSE}"; then
+  as_fn_error $? "conditional \"USE_ARTIVITY\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${USE_IMAGE_MAGICK_TRUE}" && test -z "${USE_IMAGE_MAGICK_FALSE}"; then
@@ -27697,6 +28272,7 @@ Configuration:
         Use relocation support:   ${enable_binreloc}
         Enable LittleCms:         ${enable_lcms}
         Enable DBUS:              ${with_dbus}
+	Enable Artivity:	  ${with_artivity}
         Enable Poppler-Cairo:     ${enable_poppler_cairo}
         ImageMagick Magick++:     ${magick_ok}
         Libwpg:                   ${with_libwpg}

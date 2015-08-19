@@ -19,7 +19,7 @@
 #include "xml/node.h"
 #include "xml/attribute-record.h"
 #include <ctime>
-#include "ActivityLog.h"
+#include <artivity-client/ActivityLog.h>
 
 class SPDesktop;
 
@@ -55,6 +55,9 @@ namespace Inkscape
         template<class TEvent> bool is(Inkscape::XML::Event* event);
             
         template<class TEvent> TEvent as(Inkscape::XML::Event* event);
+        
+        artivity::Resource* _resource = NULL;
+        artivity::Resource* _instrument = NULL;
    
 
     protected:
@@ -68,6 +71,9 @@ namespace Inkscape
         GByteArray* getEventPayload(Event* e);
 
         GString* serializeEvent(Inkscape::XML::Event* event);
+
+        std::string gen_random(size_t len);
+
 
     public:
         

@@ -255,8 +255,8 @@ dnl Check for libjpeg
 dnl ******************************
 AC_CHECK_LIB(jpeg, jpeg_CreateDecompress, [AC_CHECK_HEADER(jpeglib.h, jpeg_ok=yes, jpeg_ok=no)], jpeg_ok=no)
 if test "x$jpeg_ok" = "xyes"; then
-   LIBS="-ljpeg $LIBS"
-   AC_DEFINE(HAVE_JPEG, 1, [Use libjpeg])
+LIBS="-ljpeg $LIBS"
+AC_DEFINE(HAVE_JPEG, 1, [Use libjpeg])
 fi
 
 dnl This check is to get a FIONREAD definition on Solaris 8
@@ -677,6 +677,29 @@ AC_SUBST(DBUS_CFLAGS)
 AM_CONDITIONAL(WITH_DBUS, test "x$with_dbus" = "xyes")
 
 dnl ******************************
+dnl Check for libartivity
+dnl ******************************
+AC_ARG_ENABLE(artivity,
+       AS_HELP_STRING([--enable-artivity], [compile with support for Artivity]),
+       enable_artivity=$enableval,enable_artivity=no)
+
+with_artivity="no"
+if test "x$enable_artivity" = "xyes"; then
+	AC_CHECK_LIB(artivity, main, with_artivity=yes, with_artivity=no)
+	if test "x$with_artivity" = "xyes"; then
+	    AC_DEFINE(WITH_ARTIVITY,1,[Build with Artivity])
+	    AC_LIB_LINKFLAGS([artivity])
+	    AC_SUBST(ARTIVITY_LIBS, $LIBARTIVITY)
+	else
+	    AC_DEFINE(WITH_ARTIVITY,0,[Do not build with Artivity])
+	    AC_MSG_CHECKING([Artivity not found, activity tracking will be disabled])
+	fi
+fi
+AM_CONDITIONAL(USE_ARTIVITY, test "x$with_artivity" = "xyes")
+
+
+
+dnl ******************************
 dnl Check for ImageMagick Magick++ 
 dnl ******************************
 
@@ -941,6 +964,7 @@ else
 	AC_MSG_CHECKING([Aspell not found, spell checker will be disabled])
 fi
 
+
 dnl Check for bind_textdomain_codeset, including -lintl if GLib brings it in.
 sp_save_LIBS=$LIBS
 LIBS="$LIBS $INKSCAPE_LIBS"
@@ -1204,6 +1228,7 @@ Configuration:
         Use relocation support:   ${enable_binreloc}
         Enable LittleCms:         ${enable_lcms}
         Enable DBUS:              ${with_dbus} 
+	Enable Artivity:	  ${with_artivity}
         Enable Poppler-Cairo:     ${enable_poppler_cairo}
         ImageMagick Magick++:     ${magick_ok}
         Libwpg:                   ${with_libwpg}

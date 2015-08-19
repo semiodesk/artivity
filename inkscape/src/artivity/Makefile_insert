@@ -1,5 +1,9 @@
 ## Makefile.am fragment sourced by src/Makefile.am.
 
+if USE_ARTIVITY
+
 ink_common_sources +=	\
 	artivity/artivity-log.h	\
 	artivity/artivity-log.cpp
+
+endif

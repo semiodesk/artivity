@@ -285,6 +285,10 @@ DIST_COMMON = $(srcdir)/Makefile_insert \
 @WITH_EXT_GDL_TRUE@	libgdl/libgdlmarshal.c		\
 @WITH_EXT_GDL_TRUE@	libgdl/gdl.h		
 
+@USE_ARTIVITY_TRUE@am__append_10 = \
+@USE_ARTIVITY_TRUE@	artivity/artivity-log.h	\
+@USE_ARTIVITY_TRUE@	artivity/artivity-log.cpp
+
 check_PROGRAMS = cxxtests$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -1324,7 +1328,8 @@ am__objects_1 =
 @USE_IMAGE_MAGICK_TRUE@	extension/internal/bitmap/threshold.$(OBJEXT) \
 @USE_IMAGE_MAGICK_TRUE@	extension/internal/bitmap/unsharpmask.$(OBJEXT) \
 @USE_IMAGE_MAGICK_TRUE@	extension/internal/bitmap/wave.$(OBJEXT)
-am__objects_7 = attributes.$(OBJEXT) attribute-rel-svg.$(OBJEXT) \
+@USE_ARTIVITY_TRUE@am__objects_7 = artivity/artivity-log.$(OBJEXT)
+am__objects_8 = attributes.$(OBJEXT) attribute-rel-svg.$(OBJEXT) \
 	attribute-rel-css.$(OBJEXT) attribute-rel-util.$(OBJEXT) \
 	axis-manip.$(OBJEXT) box3d.$(OBJEXT) box3d-side.$(OBJEXT) \
 	color.$(OBJEXT) color-profile.$(OBJEXT) \
@@ -1755,12 +1760,11 @@ am__objects_7 = attributes.$(OBJEXT) attribute-rel-svg.$(OBJEXT) \
 	trace/potrace/greymap.$(OBJEXT) \
 	trace/potrace/potracelib.$(OBJEXT) \
 	trace/potrace/render.$(OBJEXT) trace/potrace/trace.$(OBJEXT) \
-	trace/potrace/inkscape-potrace.$(OBJEXT) \
-	artivity/artivity-log.$(OBJEXT)
-@PLATFORM_WIN32_TRUE@am__objects_8 = winmain.$(OBJEXT) \
+	trace/potrace/inkscape-potrace.$(OBJEXT) $(am__objects_7)
+@PLATFORM_WIN32_TRUE@am__objects_9 = winmain.$(OBJEXT) \
 @PLATFORM_WIN32_TRUE@	registrytool.$(OBJEXT)
 am_cxxtests_OBJECTS = cxxtests.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_7) $(am__objects_8)
+	$(am__objects_8) $(am__objects_9)
 cxxtests_OBJECTS = $(am_cxxtests_OBJECTS)
 am__DEPENDENCIES_2 = $(noinst_LIBRARIES) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -2521,7 +2525,7 @@ am__inkscape_SOURCES_DIST = main.cpp util/find-last-if.h \
 	trace/potrace/inkscape-potrace.h artivity/artivity-log.h \
 	artivity/artivity-log.cpp winmain.cpp registrytool.cpp \
 	registrytool.h
-am_inkscape_OBJECTS = main.$(OBJEXT) $(am__objects_7) $(am__objects_8)
+am_inkscape_OBJECTS = main.$(OBJEXT) $(am__objects_8) $(am__objects_9)
 inkscape_OBJECTS = $(am_inkscape_OBJECTS)
 inkscape_DEPENDENCIES = $(am__DEPENDENCIES_2)
 inkscape_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -3278,8 +3282,8 @@ am__inkview_SOURCES_DIST = inkview.cpp util/find-last-if.h \
 	trace/potrace/inkscape-potrace.h artivity/artivity-log.h \
 	artivity/artivity-log.cpp winmain.cpp registrytool.cpp \
 	registrytool.h
-am_inkview_OBJECTS = inkview.$(OBJEXT) $(am__objects_7) \
-	$(am__objects_8)
+am_inkview_OBJECTS = inkview.$(OBJEXT) $(am__objects_8) \
+	$(am__objects_9)
 inkview_OBJECTS = $(am_inkview_OBJECTS)
 inkview_DEPENDENCIES = $(am__DEPENDENCIES_2)
 inkview_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -3564,6 +3568,7 @@ ALL_LINGUAS = @ALL_LINGUAS@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
+ARTIVITY_LIBS = @ARTIVITY_LIBS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -3647,6 +3652,8 @@ LCMS_CFLAGS = @LCMS_CFLAGS@
 LCMS_LIBS = @LCMS_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LIBARTIVITY = @LIBARTIVITY@
+LIBARTIVITY_PREFIX = @LIBARTIVITY_PREFIX@
 LIBCDR00_CFLAGS = @LIBCDR00_CFLAGS@
 LIBCDR00_LIBS = @LIBCDR00_LIBS@
 LIBCDR01_CFLAGS = @LIBCDR01_CFLAGS@
@@ -3672,6 +3679,7 @@ LIBWPG_CFLAGS = @LIBWPG_CFLAGS@
 LIBWPG_LIBS = @LIBWPG_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
+LTLIBARTIVITY = @LTLIBARTIVITY@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
@@ -3797,14 +3805,6 @@ AUTOMAKE_OPTIONS = 1.7 subdir-objects
 # Use this only for libraries that are really standalone, rather than for
 # source tree subdirectories.
 @WITH_EXT_GDL_FALSE@internal_GDL = libgdl/libgdl.a
-ARTIVITY_LIBS= \
-	-L${top_builddir}/../Artivity.Api.Client/Client/Debug\
-	-lartivity\
-	-lcurl 
-
-ARTIVITY_CFLAGS = \
-	-I${top_builddir}/../Artivity.Api.Client/Client/Debug/include
-
 noinst_LIBRARIES = \
 	libcroco/libcroco.a		\
 	libavoid/libavoid.a		\
@@ -3834,7 +3834,7 @@ all_libs = \
 	$(GDL_LIBS)             \
 	$(IMAGEMAGICK_LIBS)     \
 	$(X11_LIBS) \
-	$(ARTIVITY_LIBS)
+	$(ARTIVITY_LIBS) 
 
 
 # Add sources common for Inkscape and Inkview to this variable.
@@ -4506,8 +4506,7 @@ ink_common_sources = util/find-last-if.h util/longest-common-suffix.h \
 	trace/potrace/progress.h trace/potrace/render.cpp \
 	trace/potrace/render.h trace/potrace/trace.cpp \
 	trace/potrace/trace.h trace/potrace/inkscape-potrace.cpp \
-	trace/potrace/inkscape-potrace.h artivity/artivity-log.h \
-	artivity/artivity-log.cpp
+	trace/potrace/inkscape-potrace.h $(am__append_10)
 # Add Inkscape-only sources here.
 
 # ################################################
@@ -4564,8 +4563,7 @@ AM_CPPFLAGS = \
 	-DPOTRACE=\"potrace\"	\
 	$(INKSCAPE_CFLAGS) \
 	$(WIN32_CFLAGS) \
-	$(X11_CFLAGS) \
-	$(ARTIVITY_CFLAGS)
+	$(X11_CFLAGS) 
 
 CXXTEST_TEMPLATE = $(srcdir)/cxxtest-template.tpl
 CXXTESTGENFLAGS = --root --have-eh --template=$(CXXTEST_TEMPLATE)
@@ -5074,9 +5072,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(srcdir)/Makefile_insert $(srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign src/Makefile
+	  $(AUTOMAKE) --gnu src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

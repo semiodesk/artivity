@@ -35,16 +35,13 @@ namespace Inkscape
     ArtivityLog::ArtivityLog(SPDocument* doc, SPDesktop* desktop) : UndoStackObserver(), _doc(doc)
     {
         _desktop= desktop;
-	
-	_log = artivity::ActivityLog();
-	artivity::Resource instrument = artivity::Resource("application://inkscape.desktop");
-	_log.setInstrument(instrument);
+
+        _log = artivity::ActivityLog();
+        _instrument = new artivity::Resource("application://inkscape.desktop");
 
         g_message("ArtivityLog(SPDocument*, SPDesktop*) called; doc=%p", doc);
 
         _queue = new std::vector<EventRecord>();
-
-        gint64 timestamp = (gint64)(time(NULL) * 1000);
 
         //_queue->insert(_queue->begin(), { subject, art::BeginEditingEvent, NULL, timestamp});
 
@@ -54,13 +51,30 @@ namespace Inkscape
     ArtivityLog::~ArtivityLog()
     {
         g_message("~ArtivityLog() called;");
+        if( _resource != NULL )
+            delete _resource;
+        if(_instrument != NULL)
+            delete _instrument;
+    }
+    
+    std::string random_string( size_t length )
+    {
+       static const char alphanum[] =
+        "0123456789"
+        "abcdefghijklmnopqrstuvwxyz"; 
+        std::string str = std::string();
+	for( size_t i = 0; i < length; ++i)
+        {
+            str += alphanum[rand() % (sizeof(alphanum) -1)];
+        } 
+       return str;
     }
     
     void
     ArtivityLog::notifyUndoEvent(Event* e)
     {
-	//Undo undo = "
-        //logEvent(e, art::UndoEvent);
+	artivity::Undo undo = artivity::Undo(std::string("http://semiodesk.com/artivity/"+random_string(5)).c_str());
+        logEvent(e, undo);
     }
 
     void
@@ -72,7 +86,13 @@ namespace Inkscape
     void
     ArtivityLog::notifyUndoCommitEvent(Event* e)
     {
-        logEvent(e, art::EditEvent);
+        string uri = std::string  ("http://semiodesk.com/artivity/");
+        uri.append(random_string(5));
+        artivity::Update update = artivity::Update(uri.c_str());
+        logEvent(e, update);
+
+	//artivity::Update update = 
+        //logEvent(e, art::EditEvent);
     }
 
     void
@@ -96,16 +116,17 @@ namespace Inkscape
     void
     ArtivityLog::logEvent(Event* e, artivity::Activity activity)
     {
-        // NOTE: The current document may have not been saved yet. Therefore,
-        // we create an event without a URI and push it into the queue.
-        //ZeitgeistSubject* subject = newSubject();
 
-        gint64 timestamp = (gint64)(time(NULL) * 1000);
+        time_t now;
+        time(&now);
 
-       // _queue->insert(_queue->begin(), { subject, typeUri, e, timestamp});
-
-       // g_message("Queued subject=%p desc=%s", subject, e->description.data());
+        activity.setTime(now);
+        activity.setInstrument(*_instrument);
         
+        if( _resource != NULL)
+            activity.setTarget(*_resource);
+
+        _log.push_back(activity);
         processEventQueue();
     }
 
@@ -116,7 +137,6 @@ namespace Inkscape
         // we create an event without a URI and push it into the queue.
         //ZeitgeistSubject* subject = newSubject();
 
-        gint64 timestamp = (gint64)(time(NULL) * 1000);
 
        // _queue->insert(_queue->begin(), { subject, typeUri, e, timestamp});
 
@@ -148,19 +168,15 @@ namespace Inkscape
             return;
         }
 
-        uri = g_strconcat("file://", uri, NULL);
-        
-        // We got a saved document. Now we can empty the event queue.
-        while(!_queue->empty())
-        {
-           // EventRecord r = _queue->back();
-            
-          //  logSubject(r.subject, r.eventType, r.event, uri, uri, r.timestamp);
+	if( _resource == NULL)
+	{
+            uri = g_strconcat("file://", uri, NULL);
 
-            _queue->pop_back();
-            
-            g_message("processEventQueue: Logged subject; Queue size=%lu", _queue->size());
-        }
+            _resource = new artivity::Resource(uri);
+            _log.setTarget(*_resource);
+            g_message("Target set!");
+	}
+    	_log.transmit();    
     }
    
 /* 

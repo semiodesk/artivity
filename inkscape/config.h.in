@@ -289,6 +289,9 @@
 /* Version number of package */
 #undef VERSION
 
+/* Do not build with Artivity */
+#undef WITH_ARTIVITY
+
 /* Build in dbus */
 #undef WITH_DBUS
 
