@@ -17,9 +17,10 @@
 #include "Activities/Close.h"
 #include "Activities/Save.h"
 
+#include "Ontologies/rdf.h"
 #include "Ontologies/as.h"
 #include "Ontologies/art.h"
-#include "Ontologies/rdf.h"
+#include "Ontologies/svg.h"
 
 #include <curl/curl.h>
 

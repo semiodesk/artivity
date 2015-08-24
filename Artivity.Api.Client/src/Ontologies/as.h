@@ -9,14 +9,15 @@ namespace artivity
 {
     namespace as
     {
-        static const Resource Activity = AS("Activity")
-        static const Resource Create = AS("Create")
-        static const Resource Delete = AS("Delete")
-        static const Resource Update = AS("Update")
-        static const Resource Undo = AS("Undo")
-        static const Resource View = AS("View")
-        static const Resource Add = AS("Add")
-        static const Resource Remove = AS("Remove")
+        static const Resource Activity = AS("Activity");
+        static const Resource Create = AS("Create");
+        static const Resource Delete = AS("Delete");
+        static const Resource Update = AS("Update");
+        static const Resource Undo = AS("Undo");
+        static const Resource Redo = AS("Redo")
+        static const Resource View = AS("View");
+        static const Resource Add = AS("Add");
+        static const Resource Remove = AS("Remove");
         
         static const Property actor = AS("actor");
         static const Property author = AS("author");
