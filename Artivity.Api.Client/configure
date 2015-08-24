@@ -631,7 +631,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_unique_file="Client"
+ac_unique_file="src"
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
@@ -11488,7 +11488,7 @@ CC="$lt_save_CC"
 
 
 
-ac_config_files="$ac_config_files Makefile Client/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile"
 
 
 ac_ext=cpp
@@ -16248,7 +16248,7 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "Client/Makefile") CONFIG_FILES="$CONFIG_FILES Client/Makefile" ;;
+    "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
