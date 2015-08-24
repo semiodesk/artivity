@@ -61,10 +61,16 @@ namespace Inkscape
         std::vector<artivity::Resource*> _resourcePointers = std::vector<artivity::Resource*>();
    
     protected:
-            
+           
+        void logEvent(const artivity::Resource& type, Event* e);
+ 
         void logEvent(artivity::Activity* activity, Event* e);
         
-        void annotatePayload(artivity::Activity* activity, Event* e);
+        void setEventType(artivity::Activity* activity, Event* e);
+        
+        void setEventViewport(artivity::Activity* activity);
+        
+        void setObject(artivity::Activity* activity, Event* e);
                 
         void processEventQueue();
         
