@@ -2,6 +2,7 @@
 #define ACTIVITYLOG_H
 
 #include <deque>
+#include <vector>
 
 #include "Resource.h"
 #include "Activity.h"
@@ -25,6 +26,9 @@ namespace artivity
     
     class ActivityLog : public deque<Activity>
     {
+    protected:
+        std::vector<Resource*> annotations;
+        
     public:
         ActivityLog();
         ~ActivityLog();
@@ -40,6 +44,8 @@ namespace artivity
         
         // Send all items in the queue to the Artivity server.
         void transmit();
+        
+        void addAnnotation(Resource* resource);
     };
 }
 

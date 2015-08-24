@@ -73,22 +73,33 @@ namespace Inkscape
     void
     ArtivityLog::notifyUndoEvent(Event* e)
     {
-	artivity::Undo undo = artivity::Undo(std::string("http://semiodesk.com/artivity/"+random_string(5)).c_str());
+        string uri = getUri();
+       artivity::Undo* undo = new artivity::Undo(uri.c_str());
+       _resourcePointers.push_back(undo);
         logEvent(e, undo);
     }
 
     void
     ArtivityLog::notifyRedoEvent(Event* e)
     {
-        logEvent(e, art::RedoEvent);
+        string uri = getUri();
+       artivity::Undo* undo = new artivity::Undo(uri.c_str());
+       _resourcePointers.push_back(undo);
+        logEvent(e, undo);
+    }
+    
+    std::string
+    ArtivityLog::getUri()
+    {
+        return std::string("http://semiodesk.com/artivity/"+random_string(10));
     }
 
     void
     ArtivityLog::notifyUndoCommitEvent(Event* e)
     {
-        string uri = std::string  ("http://semiodesk.com/artivity/");
-        uri.append(random_string(5));
-        artivity::Update update = artivity::Update(uri.c_str());
+        string uri = getUri();
+        artivity::Update* update = new artivity::Update(uri.c_str());
+        _resourcePointers.push_back(update);
         logEvent(e, update);
 
 	//artivity::Update update = 
@@ -114,19 +125,21 @@ namespace Inkscape
     }
 
     void
-    ArtivityLog::logEvent(Event* e, artivity::Activity activity)
+    ArtivityLog::logEvent(Event* e, artivity::Activity* activity)
     {
 
         time_t now;
         time(&now);
 
-        activity.setTime(now);
-        activity.setInstrument(*_instrument);
+        activity->setTime(now);
+        activity->setInstrument(*_instrument);
         
         if( _resource != NULL)
-            activity.setTarget(*_resource);
+            activity->setTarget(*_resource);
+            
+        annotatePayload(e, activity);
 
-        _log.push_back(activity);
+        _log.push_back(*activity);
         processEventQueue();
     }
 
@@ -168,17 +181,29 @@ namespace Inkscape
             return;
         }
 
-	if( _resource == NULL)
-	{
+        if( _resource == NULL)
+        {
             uri = g_strconcat("file://", uri, NULL);
 
             _resource = new artivity::Resource(uri);
             _log.setTarget(*_resource);
             g_message("Target set!");
-	}
-    	_log.transmit();    
+        }
+        _log.transmit();    
+        clearPointers();
     }
+
    
+    void
+    ArtivityLog::clearPointers()
+    {
+        std::vector<artivity::Resource*>::iterator iter, end;
+        for(iter = _resourcePointers.begin(), end = _resourcePointers.end() ; iter != end; ++iter) 
+        {
+            delete (*iter);
+        }
+        _resourcePointers.clear();
+    }
 /* 
     ZeitgeistSubject*
     ArtivityLog::newSubject()
@@ -244,6 +269,30 @@ namespace Inkscape
     }
 */
    
+   void ArtivityLog::annotatePayload(Event* e, artivity::Activity* activity)
+   {
+        if( e == NULL)
+            return;
+            
+        if( e->event == NULL)
+        {
+            return;
+        }
+        
+        Geom::Rect vbox = _desktop->get_display_area();
+        
+        string uri = getUri();
+        artivity::Resource* viewbox = new artivity::Resource(uri.c_str());
+        viewbox->addProperty(artivity::rdf::_type, artsvg::Viewbox);
+        viewbox->addProperty(artsvg::left, vbox.left());
+        viewbox->addProperty(artsvg::right, vbox.right());
+        viewbox->addProperty(artsvg::top, vbox.top());
+        viewbox->addProperty(artsvg::bottom, vbox.bottom());
+        activity->addProperty(artsvg::hasViewbox, *viewbox);
+        _log.addAnnotation(viewbox);
+        
+   }
+   
     GByteArray*
     ArtivityLog::getEventPayload(Event* e)
     {
@@ -262,7 +311,6 @@ namespace Inkscape
         // Bottom and top are switched
         g_string_append_printf(xml, "<artsvg:viewbox left=\"%f\" top=\"%f\"  right=\"%f\" bottom=\"%f\" />", viewbox.left(), viewbox.bottom(), viewbox.right(), viewbox.top());
 
-        
         Inkscape::XML::Event* event = e->event;
         
         do
@@ -279,6 +327,8 @@ namespace Inkscape
         
         return result;
     }
+    
+    
 
     GString* 
     ArtivityLog::serializeEvent(Inkscape::XML::Event* event)
