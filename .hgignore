@@ -17,7 +17,6 @@ syntax: glob
 .idea
 Debug
 inkscape/build/*
-configure
 Makefile
 makefile
 packages/*
