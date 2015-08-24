@@ -7,10 +7,18 @@ namespace artivity
 {
     ActivityLog::ActivityLog() 
     {
+        annotations = std::vector<Resource*>();
     }
 
     ActivityLog::~ActivityLog() 
     {
+        vector<Resource*>::iterator anoIt = annotations.begin();
+        while(anoIt != annotations.end() )
+        {
+            delete *anoIt;
+            anoIt++;
+        }
+        
     }
     
     bool ActivityLog::isConnected()
@@ -42,6 +50,11 @@ namespace artivity
         }
     }
     
+    void ActivityLog::addAnnotation(Resource* resource)
+    {
+        annotations.push_back(resource);
+    }
+    
     void ActivityLog::transmit()
     {
         // TODO: Send the N3 serialized content to http://localhost:8272/artivitiy/1.0/model
@@ -66,6 +79,16 @@ namespace artivity
             
             it++;
         }
+        
+        vector<Resource*>::iterator anoIt = annotations.begin();
+        while(anoIt != annotations.end() )
+        {
+            Serializer::serialize(content, **anoIt, N3);
+            delete *anoIt;
+            anoIt++;
+        }
+        
+        annotations.clear();
         
         const string contentString = content.str();
         
