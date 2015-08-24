@@ -1,1 +1,1 @@
-SUBDIRS = Client
+SUBDIRS = src

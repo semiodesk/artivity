@@ -5,10 +5,10 @@ AM_INIT_AUTOMAKE
 LT_PREREQ([2.2])
 LT_INIT([dlopen])
 
-AC_CONFIG_SRCDIR([Client])
+AC_CONFIG_SRCDIR([src])
 
 AC_CONFIG_FILES([Makefile
-                 Client/Makefile])
+                 src/Makefile])
 
 AC_PROG_CXX
 AC_PROG_INSTALL

@@ -45,7 +45,6 @@
     <Compile Include="ObjectModel\IntransitiveActivity.cs" />
     <Compile Include="ObjectModel\Object.cs" />
     <Compile Include="Ontologies\Ontologies.g.cs" />
-    <Compile Include="Ontologies\Ontologies.i.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObjectModel\Activities\View.cs" />
     <Compile Include="ObjectModel\Activities\Update.cs" />
@@ -54,15 +53,16 @@
     <Compile Include="ObjectModel\Activities\Undo.cs" />
     <Compile Include="ObjectModel\Activities\Remove.cs" />
     <Compile Include="ObjectModel\Activities\Add.cs" />
+    <Compile Include="OntologyDiscovery.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Ontologies\owl.n3" />
     <None Include="Ontologies\prov.ttl" />
     <None Include="Ontologies\as2.ttl" />
+    <None Include="packages.config" />
+    <None Include="Ontologies\owl.n3" />
     <None Include="Ontologies\rdf.rdf" />
     <None Include="Ontologies\rdfs.n3" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="dotNetRDF">
@@ -78,15 +78,15 @@
     <Reference Include="OpenLink.Data.Virtuoso">
       <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.8.3533\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
     </Reference>
-    <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.87\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="VDS.Common">
       <HintPath>..\packages\VDS.Common.1.5.0\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.79\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -104,4 +104,5 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.87\build\net40\Semiodesk.Trinity.Modelling.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Semiodesk.Trinity.Modelling.0.9.87\build\net40\Semiodesk.Trinity.Modelling.targets'))" />
   </Target>
+  <Import Project="../packages/Semiodesk.Trinity.Modelling.0.9.79/build/net40/Semiodesk.Trinity.Modelling.targets" Condition="Exists('../packages/Semiodesk.Trinity.Modelling.0.9.79/build/net40/Semiodesk.Trinity.Modelling.targets')" />
 </Project>
