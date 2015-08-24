@@ -10,6 +10,11 @@ namespace artivity
     class Remove : public Activity
     {
     public:
+        Remove() : Activity()
+        {
+            setValue(rdf::_type, as::Remove);
+        }
+        
         Remove(const char* uriref) : Activity(uriref)
         {
             setValue(rdf::_type, as::Remove);

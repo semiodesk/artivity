@@ -24,6 +24,7 @@ namespace artivity
     public:                    
         string Uri;
         
+        Resource(string uriref);
         Resource(const char* uriref);
         ~Resource() {}
 

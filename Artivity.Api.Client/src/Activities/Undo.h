@@ -10,6 +10,11 @@ namespace artivity
     class Undo : public Activity
     {
     public:
+        Undo() : Activity()
+        {
+            setValue(rdf::_type, as::Undo);
+        }
+        
         Undo(const char* uriref) : Activity(uriref)
         {
             setValue(rdf::_type, as::Undo);

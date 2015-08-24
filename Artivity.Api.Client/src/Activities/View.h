@@ -10,6 +10,11 @@ namespace artivity
     class View : public Activity
     {
     public:
+        View() : Activity()
+        {
+            setValue(rdf::_type, as::View);
+        }
+        
         View(const char* uriref) : Activity(uriref)
         {
             setValue(rdf::_type, as::View);

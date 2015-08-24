@@ -10,6 +10,11 @@ namespace artivity
     class Create : public Activity
     {
     public:
+        Create() : Activity()
+        {
+            setValue(rdf::_type, as::Create);
+        }
+        
         Create(const char* uriref) : Activity(uriref)
         {
             setValue(rdf::_type, as::Create);

@@ -6,6 +6,13 @@
 
 namespace artivity
 {
+    Resource::Resource(string uriref)
+    {
+        Uri = uriref;
+                    
+        Properties = PropertyMap();
+    }
+    
     Resource::Resource(const char* uriref)
     {
         Uri = string(uriref);
