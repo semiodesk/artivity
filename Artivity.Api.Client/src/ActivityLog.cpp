@@ -13,12 +13,12 @@ namespace artivity
     ActivityLog::~ActivityLog() 
     {
         vector<Resource*>::iterator anoIt = annotations.begin();
+        
         while(anoIt != annotations.end() )
         {
             delete *anoIt;
             anoIt++;
         }
-        
     }
     
     bool ActivityLog::isConnected()
@@ -57,56 +57,64 @@ namespace artivity
     
     void ActivityLog::transmit()
     {
-        // TODO: Send the N3 serialized content to http://localhost:8272/artivitiy/1.0/model
+        CURL* curl = curl_easy_init();
 
+        if (!curl)
+        {
+            cout << ">>> ERROR: Failed to initialize CURL." << endl << flush;
+            
+            return;
+        }
+        
         struct curl_slist *headers = NULL; // init to NULL is important 
         headers = curl_slist_append(headers, "Accept: text/n3");
         headers = curl_slist_append(headers, "Content-Type: text/n3");
         headers = curl_slist_append(headers, "charsets: utf-8");
-
-    	CURL* curl = curl_easy_init();
-
-        if (!curl) return;
         
         curl_easy_reset(curl);
         curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8272/artivity/1.0/model");
         
+        stringstream stream;
+        
         ActivityLogIterator it = begin();
-        stringstream content;
+        
         while(it != end())
         {
-            Serializer::serialize(content, *it, N3);
+            Serializer::serialize(stream, *it, N3);
             
             it++;
         }
         
         vector<Resource*>::iterator anoIt = annotations.begin();
+        
         while(anoIt != annotations.end() )
         {
-            Serializer::serialize(content, **anoIt, N3);
+            Serializer::serialize(stream, **anoIt, N3);
+            
             delete *anoIt;
             anoIt++;
         }
         
         annotations.clear();
         
-        const string contentString = content.str();
+        string content = stream.str();
         
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, contentString.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, content.c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-         cout << ">>> OPEN: http://localhost:8272/artivity/1.0/model; Method: POST" << endl;
-        cout << ">>> SEND:" << endl;
-        cout << contentString << endl;
         
-        CURLcode res = curl_easy_perform(curl);
-        cout << res << endl;
+        cout << endl;
+        cout << ">>> OPEN: http://localhost:8272/artivity/1.0/model; Method: POST" << endl;
+        cout << content << endl;
+        
+        curl_easy_perform(curl);
+        
         // always cleanup
-        if( curl )
+        if(curl)
+        {
             curl_easy_cleanup(curl);
+        }
+        
         clear();
-        
-        cout << ">>> DONE." << endl;
-        
     }
 }
 

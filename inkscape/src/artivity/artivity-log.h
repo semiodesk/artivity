@@ -20,7 +20,6 @@
 #include "xml/attribute-record.h"
 #include <ctime>
 #include <artivity-client/ActivityLog.h>
-#include "artsvg.h"
 
 class SPDesktop;
 
@@ -50,34 +49,28 @@ namespace Inkscape
         SPDesktop* _desktop;
 
         artivity::ActivityLog _log;	
-        
-        std::vector<EventRecord>* _queue;
 
         template<class TEvent> bool is(Inkscape::XML::Event* event);
             
         template<class TEvent> TEvent as(Inkscape::XML::Event* event);
         
-        artivity::Resource* _resource = NULL;
+        artivity::Resource* _target = NULL;
+        
         artivity::Resource* _instrument = NULL;
         
         std::vector<artivity::Resource*> _resourcePointers = std::vector<artivity::Resource*>();
    
-
     protected:
             
-        void logEvent(Event* e, const char* typeUri);
-
-        void logEvent(Event* e, artivity::Activity* activity);
+        void logEvent(artivity::Activity* activity, Event* e);
         
+        void annotatePayload(artivity::Activity* activity, Event* e);
+                
         void processEventQueue();
         
         GByteArray* getEventPayload(Event* e);
 
         GString* serializeEvent(Inkscape::XML::Event* event);
-
-        std::string gen_random(size_t len);
-        
-        void annotatePayload(Event* e, artivity::Activity* activity);
 
         void clearPointers();
 
@@ -96,8 +89,6 @@ namespace Inkscape
         void notifyClearUndoEvent();
         
         void notifyClearRedoEvent();
-        
-        std::string getUri();
     };
 
 }

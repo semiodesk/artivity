@@ -108,7 +108,7 @@ namespace Artivity.Api.Http
 
 			DateTime now = DateTime.Now;
 
-			Console.WriteLine("[{0}] {1}#{2}: {3}", now, p.actor, p.tab, p.url);
+			Console.WriteLine(">>> [{0}] {1}#{2}: {3}", now, p.actor, p.tab, p.url);
 
 			Page page = _activities.CreateResource<Page>();
 			page.DisplayName = p.title;

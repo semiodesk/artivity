@@ -34,6 +34,9 @@ using System.Threading;
 using System.Collections.Generic;
 using Nancy;
 using Nancy.ModelBinding;
+using System.Text;
+using System.IO;
+using Nancy.IO;
 
 namespace Artivity.Api.Http
 {
@@ -55,27 +58,43 @@ namespace Artivity.Api.Http
 		{
             Post["/artivity/1.0/model"] = parameters => 
             {
-                //InitializeModel();
+				HttpStatusCode result = HttpStatusCode.InternalServerError;
 
-				string body = this.Request.Body.ReadAsString();
-				Console.WriteLine(string.Format("Received: Headers {0} \nBody {1} ", Request.Headers.ContentLength, Request.Body.Length));
+				string modelUri = "http://localhost:8890/artivity/1.0/activities";
+
+				InitializeModel(modelUri);
+
+				if(_activities == null)
+				{
+					Console.WriteLine("ERROR: Could not establish connection to model <{0}>", modelUri);
+
+					return result;
+				}
+
+				string body = ToString(this.Request.Body);
+
+				result = _activities.Read(ToStream(body), RdfSerializationFormat.N3) ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
+
+				Console.WriteLine("");
+				Console.WriteLine(">>> HTTP Header:");
+				Console.WriteLine(Request.Headers);
+				Console.WriteLine(">>> HTTP Body:");
 				Console.WriteLine(body);
+				Console.WriteLine(string.Format("<<< HTTP Status: {0}", result));
 
-                return "";
-                //return AddActivity(this.Bind<ActivityParameters>()); 
+				return result;
             };
-
 		}
 
 		#endregion
 
 		#region Methods
 
-		private void InitializeModel()
+		private void InitializeModel(string uri)
 		{
 			IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
-			Uri activities = new Uri("http://semiodesk.com/artivity/activities/");
+			Uri activities = new Uri(uri);
 
 			if (store.ContainsModel(activities))
 			{
@@ -87,10 +106,26 @@ namespace Artivity.Api.Http
 			}
 		}
 
-        private void ReadN3(string content)
-        {
+		private Stream ToStream(string str)
+		{
+			MemoryStream stream = new MemoryStream();
 
-        }
+			StreamWriter writer = new StreamWriter(stream);
+			writer.Write(str);
+			writer.Flush();
+			stream.Position = 0;
+
+			return stream;
+		}
+
+		private string ToString(RequestStream stream)
+		{
+			using (var reader = new StreamReader(stream))
+			{
+				return reader.ReadToEnd();
+			}
+		}
+
 		#endregion
 	}
 }

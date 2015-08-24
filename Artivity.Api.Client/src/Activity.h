@@ -26,7 +26,8 @@ namespace artivity
                                 
         Resource* _target;
 
-    public:        
+    public:
+        Activity();
         Activity(const char* uriref);
         ~Activity();
         
