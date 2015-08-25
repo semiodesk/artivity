@@ -10,6 +10,11 @@ namespace artivity
     class Update : public Activity
     {
     public:
+        Update() : Activity()
+        {
+            setValue(rdf::_type, as::Update);
+        }
+        
         Update(const char* uriref) : Activity(uriref)
         {
             setValue(rdf::_type, as::Update);
