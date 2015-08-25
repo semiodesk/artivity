@@ -255,16 +255,27 @@ namespace Inkscape
             GString* toValue = g_string_new("");
             g_string_append_printf(toValue, "%s", x->newval);
             
-            activity->setValue(rdf::_type, as::Update);
+            const char* from = fromValue->str;
+            const char* to = toValue->str;
+            
+            activity->setValue(rdf::_type, art::UpdateAttribute);
             activity->setValue(art::attribute, attribute);
-            activity->setValue(art::fromValue, fromValue->str);
-            activity->setValue(art::toValue, toValue->str);
+            activity->setValue(art::fromValue, from);
+            activity->setValue(art::toValue, to);
         }
         else if(is<Inkscape::XML::EventChgContent*>(e->event))
         {
             Inkscape::XML::EventChgContent* x = as<Inkscape::XML::EventChgContent*>(e->event);
                         
-            activity->setValue(rdf::_type, as::Update);
+            GString* fromValue = g_string_new("");
+            g_string_append_printf(fromValue, "%s", x->oldval);
+            
+            GString* toValue = g_string_new("");
+            g_string_append_printf(toValue, "%s", x->newval);
+            
+            activity->setValue(rdf::_type, art::UpdateContent);
+            activity->setValue(art::fromValue, fromValue->str);
+            activity->setValue(art::toValue, toValue->str);
         }
         else if(is<Inkscape::XML::EventChgOrder*>(e->event))
         {
@@ -291,7 +302,7 @@ namespace Inkscape
         
         if(id != NULL)
         {
-            shape->setValue(svg::id, n->attribute("id"));
+            shape->setValue(svg::id, id);
         }
         
         activity->setValue(as::object, *shape);
@@ -439,6 +450,71 @@ namespace Inkscape
     ArtivityLog::as(Inkscape::XML::Event* event)
     {
         return dynamic_cast<TEvent>(event);
+    }
+    
+    AttributeRecordIterator
+    ArtivityLog::getChangedAttributes(const char* a, const char* b)
+    {       
+        map<string, pair<string, string>> attributes = map<string, pair<string, string>>();
+        
+        string buffer = "";
+        string key = "";
+
+        int i = 0;
+        
+        while(i < strlen(a))
+        {
+            char c = a[i];
+            
+            if(c == ':')
+            {
+                key = buffer;
+                buffer = "";
+            }
+            else if(c == ';')
+            {
+                attributes[key] = make_pair(buffer, "");
+                buffer = "";
+            }
+            else
+            {
+                buffer += c;
+            }
+            
+            i++;
+        }
+        
+        buffer = "";
+        key = "";
+        i = 0;
+        
+        while(i < strlen(b))
+        {
+            char c = b[i];
+            
+            if(c == ':')
+            {
+                key = buffer;
+                buffer = "";
+            }
+            else if(c == ';')
+            {
+                AttributeRecordIterator it = attributes.find(key);
+                
+                if(it != attributes.end() && attributes[key] == buffer)
+                {
+                    attributes.erase(it);
+                }
+
+                buffer = "";
+            }
+            else
+            {
+                buffer += c;
+            }
+            
+            i++;
+        }
     }
 }
 
