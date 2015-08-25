@@ -452,15 +452,14 @@ namespace Inkscape
         return dynamic_cast<TEvent>(event);
     }
     
-    AttributeRecordIterator
+    AttributeValueMap*
     ArtivityLog::getChangedAttributes(const char* a, const char* b)
     {       
-        map<string, pair<string, string>> attributes = map<string, pair<string, string>>();
+        AttributeValueMap* attributes = new AttributeValueMap();
         
         string buffer = "";
         string key = "";
-
-        int i = 0;
+        unsigned int i = 0;
         
         while(i < strlen(a))
         {
@@ -473,7 +472,10 @@ namespace Inkscape
             }
             else if(c == ';')
             {
-                attributes[key] = make_pair(buffer, "");
+                ValueRecord r = ValueRecord();
+                r.oldval = buffer;
+                
+                attributes->operator[](key) = r;
                 buffer = "";
             }
             else
@@ -499,11 +501,28 @@ namespace Inkscape
             }
             else if(c == ';')
             {
-                AttributeRecordIterator it = attributes.find(key);
+                AttributeValueIterator it = attributes->find(key);
                 
-                if(it != attributes.end() && attributes[key] == buffer)
+                if(it != attributes->end())
                 {
-                    attributes.erase(it);
+                    ValueRecord r = attributes->operator[](key);
+                    
+                    if(r.oldval == buffer)
+                    {
+                        attributes->erase(it);
+                    }
+                    else
+                    {
+                        r.newval = buffer;
+                    }
+                }
+                else
+                {
+                    ValueRecord r = ValueRecord();
+                    r.oldval = "";
+                    r.newval = buffer;
+                    
+                    attributes->operator[](key) = r;
                 }
 
                 buffer = "";
@@ -515,6 +534,8 @@ namespace Inkscape
             
             i++;
         }
+        
+        return attributes;
     }
 }
 
