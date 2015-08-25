@@ -1,12 +1,14 @@
+include_directories( ${KOMAIN_INCLUDES} ${KOTEXT_INCLUDES} )
 
-set(kritabigbrother_PART_SRCS
+set(kritaartivity_PART_SRCS
         artivity.cc
+        log.cc
    )
 
-kde4_add_plugin(kritaartivity ${kritabigbrother_PART_SRCS})
+kde4_add_plugin(kritaartivity ${kritaartivity_PART_SRCS})
 
 
-target_link_libraries(kritaartivity kritaui artivity)
+target_link_libraries(kritaartivity komain kritaui artivity)
 
 install(TARGETS kritaartivity DESTINATION ${PLUGIN_INSTALL_DIR})
 
