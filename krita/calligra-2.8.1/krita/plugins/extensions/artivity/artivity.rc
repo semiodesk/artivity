@@ -3,8 +3,8 @@
 <MenuBar>
   <Menu name="Tools">
     <Menu name="Artivity"><text>Artivity</text>
-      <Action name="Recording_Start_Recording_Macro"/>
-      <Action name="Recording_Stop_Recording_Macro"/>
+      <Action name="Start_Artivity"><text>Start</text></Action>
+      <Action name="Stop_Artivity"><text>Stop</text></Action>
     </Menu>
   </Menu>
 </MenuBar>

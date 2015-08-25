@@ -40,14 +40,8 @@
 #include <kis_types.h>
 #include <kis_view2.h>
 #include <KoPattern.h>
-#include <recorder/kis_action_recorder.h>
-#include <recorder/kis_macro.h>
-#include <recorder/kis_macro_player.h>
-#include <recorder/kis_play_info.h>
-#include <recorder/kis_recorded_action_factory_registry.h>
-#include <recorder/kis_recorded_action.h>
-#include <recorder/kis_recorded_action_load_context.h>
-#include <recorder/kis_recorded_action_save_context.h>
+#include <recorder/kis_recorded_action_save_context.h> 
+
 
 #include <QDesktopServices>
 #include <QApplication>
@@ -56,45 +50,36 @@
 K_PLUGIN_FACTORY(ArtivityPluginFactory, registerPlugin<ArtivityPlugin>();)
 K_EXPORT_PLUGIN(ArtivityPluginFactory("krita"))
 
-class RecordedActionSaveContext : public KisRecordedActionSaveContext {
-    public:
-        virtual void saveGradient(const KoAbstractGradient* ) {}
+
+class RecordedActionSaveContext : public KisRecordedActionSaveContext 
+{                     
+    public: 
+        virtual void saveGradient(const KoAbstractGradient* ) {} 
         virtual void savePattern(const KoPattern* ) {}
-};
+}; 
 
-class RecordedActionLoadContext : public KisRecordedActionLoadContext {
-    public:
-        virtual KoAbstractGradient* gradient(const QString& name) const
-        {
-            return KoResourceServerProvider::instance()->gradientServer()->resourceByName(name);
-        }
-        virtual KoPattern* pattern(const QString& name) const
-        {
-            return KoResourceServerProvider::instance()->patternServer()->resourceByName(name);
-        }
-};
-
+   
 ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
         : KisViewPlugin(parent, "kritaplugins/artivity.rc")
-        , m_recorder(0)
 {
-	_log = artivity::ActivityLog();
-    if (parent->inherits("KisView2")) {
+    _currentIdx = 0;
+    _log = artivity::ActivityLog();
+    if (parent->inherits("KisView2")) 
+    {
         m_view = (KisView2*) parent;
 
-
-
-        //KisAction* action = 0;
+        _canvas = m_view->canvasBase();
+        _undoStack = _canvas->shapeController()->resourceManager()->undoStack();
 
         // Start recording action
-        m_startRecordingMacroAction = new KisAction(koIcon("media-record"), i18n("Start Artivity"), this);
-        addAction("Recording_Start_Recording_Macro", m_startRecordingMacroAction);
-        connect(m_startRecordingMacroAction, SIGNAL(triggered()), this, SLOT(slotStartRecordingMacro()));
+        m_startRecordingMacroAction = new KisAction(koIcon("media-record"), i18n("Start"), this);
+        addAction("Start_Artivity", m_startRecordingMacroAction);
+        connect(m_startRecordingMacroAction, SIGNAL(triggered()), this, SLOT(StartArtivity()));
 
         // Save recorded action
-        m_stopRecordingMacroAction  = new KisAction(koIcon("media-playback-stop"), i18n("Stop Artivity"), this);
-        addAction("Recording_Stop_Recording_Macro", m_stopRecordingMacroAction);
-        connect(m_stopRecordingMacroAction, SIGNAL(triggered()), this, SLOT(slotStopRecordingMacro()));
+        m_stopRecordingMacroAction  = new KisAction(koIcon("media-playback-stop"), i18n("Stop"), this);
+        addAction("Stop_Artivity", m_stopRecordingMacroAction);
+        connect(m_stopRecordingMacroAction, SIGNAL(triggered()), this, SLOT(StopArtivity()));
         m_stopRecordingMacroAction->setEnabled(false);
     }
 }
@@ -102,114 +87,57 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
 ArtivityPlugin::~ArtivityPlugin()
 {
     m_view = 0;
-    delete m_recorder;
-}
-
-void ArtivityPlugin::slotSave()
-{
-    saveMacro(m_view->image()->actionRecorder(), KUrl());
-}
-
-void ArtivityPlugin::slotOpenPlay()
-{
 }
 
 
-void ArtivityPlugin::slotOpenEdit()
+void ArtivityPlugin::StartArtivity()
+{
+    connect(m_view->image()->actionRecorder(), SIGNAL(addedAction(const KisRecordedAction&)), 
+        this, SLOT(addedAction(const KisRecordedAction&)));
+
+    connect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
+}
+
+void ArtivityPlugin::StopArtivity()
 {
 }
 
-void ArtivityPlugin::slotStartRecordingMacro()
+void ArtivityPlugin::addedAction(const KisRecordedAction& action)
 {
-    std::cout << "Test" << std::endl;
-    _log.transmit();
-    dbgPlugins << "Start recording macro";
-    if (m_recorder) return;
-    // Alternate actions
-    m_startRecordingMacroAction->setEnabled(false);
-    m_stopRecordingMacroAction->setEnabled(true);
+    std::cout << "Action: " << action.name().toUtf8().constData() << std::endl;
+    
+    QDomDocument doc;
+    QDomElement e = doc.createElement("RecordedActions");
+    RecordedActionSaveContext context;
+    action.toXML(doc, e, &context);
+    doc.appendChild(e);
 
-    // Create recorder
-    m_recorder = new KisMacro();
-    connect(m_view->image()->actionRecorder(), SIGNAL(addedAction(const KisRecordedAction&)),
-            m_recorder, SLOT(addAction(const KisRecordedAction&)));
+    //std::cout << "Content: " << doc.toString().toUtf8().constData() << std::endl;
+
+
+
+    //std::cout << action.toXML() << std::endl;
 }
 
-void ArtivityPlugin::slotStopRecordingMacro()
+void ArtivityPlugin::indexChanged(int idx)
 {
-    dbgPlugins << "Stop recording macro";
-    if (!m_recorder) return;
-    // Alternate actions
-    m_startRecordingMacroAction->setEnabled(true);
-    m_stopRecordingMacroAction->setEnabled(false);
-    // Save the macro
-    saveMacro(m_recorder, KUrl());
-    // Delete recorder
-    delete m_recorder;
-    m_recorder = 0;
-}
-
-KisMacro* ArtivityPlugin::openMacro(KUrl* url)
-{
-
-    Q_UNUSED(url);
-    QStringList mimeFilter;
-    mimeFilter << "*.krarec|Recorded actions (*.krarec)";
-
-    QString filename = KoFileDialogHelper::getOpenFileName(m_view,
-                                                           i18n("Open Macro"),
-                                                           QDesktopServices::storageLocation(QDesktopServices::PicturesLocation),
-                                                           mimeFilter,
-                                                           "",
-                                                           "OpenDocument");
-    RecordedActionLoadContext loadContext;
-
-    if (!filename.isNull()) {
-        QDomDocument doc;
-        QFile f(filename);
-        if (f.exists()) {
-            dbgPlugins << f.open(QIODevice::ReadOnly);
-            QString err;
-            int line, col;
-            if (!doc.setContent(&f, &err, &line, &col)) {
-                // TODO error message
-                dbgPlugins << err << " line = " << line << " col = " << col;
-                f.close();
-                return 0;
-            }
-            f.close();
-            QDomElement docElem = doc.documentElement();
-            if (!docElem.isNull() && docElem.tagName() == "RecordedActions") {
-                dbgPlugins << "Load the macro";
-                KisMacro* m = new KisMacro();
-                m->fromXML(docElem, &loadContext);
-                return m;
-            } else {
-                // TODO error message
-            }
-        } else {
-            dbgPlugins << "Unexistant file : " << filename;
-        }
+    if( idx < _currentIdx )
+    {
+        std::cout << "Undo " << _currentIdx - idx << " events" << std::endl;
+    }else if( idx < _undoStack->count() )
+    {
+        std::cout << "Redo " << idx - _currentIdx << " events" << std::endl;
     }
-    return 0;
+    const KUndo2Command* currentCommand = _undoStack->command(idx-1);
+     _currentIdx = idx;
+
+     if( dynamic_cast<const KisLayerCommand*>(currentCommand) == NULL )
+     {
+         std::cout << "Layer command" << std::endl;
+     }
 }
 
-void ArtivityPlugin::saveMacro(const KisMacro* macro, const KUrl& url)
-{
-    QString filename = QFileDialog::getSaveFileName(m_view, i18n("Save Macro"), url.url(), "*.krarec|Recorded actions (*.krarec)");
-    if (!filename.isNull()) {
-        QDomDocument doc;
-        QDomElement e = doc.createElement("RecordedActions");
-        RecordedActionSaveContext context;
-        macro->toXML(doc, e, &context);
 
-        doc.appendChild(e);
-        QFile f(filename);
-        f.open(QIODevice::WriteOnly);
-        QTextStream stream(&f);
-        doc.save(stream, 2);
-        f.close();
-    }
-}
+
 
 #include "artivity.moc"
