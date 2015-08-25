@@ -15,6 +15,8 @@ AC_PROG_INSTALL
 
 AC_CHECK_LIB(curl, curl_easy_perform)
 
+AC_CONFIG_FILES([libartivity.pc])
+
 
 AC_OUTPUT
 

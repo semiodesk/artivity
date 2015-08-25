@@ -78,10 +78,13 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
         : KisViewPlugin(parent, "kritaplugins/artivity.rc")
         , m_recorder(0)
 {
+	_log = artivity::ActivityLog();
     if (parent->inherits("KisView2")) {
         m_view = (KisView2*) parent;
 
-        KisAction* action = 0;
+
+
+        //KisAction* action = 0;
 
         // Start recording action
         m_startRecordingMacroAction = new KisAction(koIcon("media-record"), i18n("Start Artivity"), this);
@@ -118,6 +121,8 @@ void ArtivityPlugin::slotOpenEdit()
 
 void ArtivityPlugin::slotStartRecordingMacro()
 {
+    std::cout << "Test" << std::endl;
+    _log.transmit();
     dbgPlugins << "Start recording macro";
     if (m_recorder) return;
     // Alternate actions
