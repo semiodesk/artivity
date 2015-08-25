@@ -32,3 +32,4 @@ packages/*
 *.userprefs
 */po/*
 *.a
+*.la
