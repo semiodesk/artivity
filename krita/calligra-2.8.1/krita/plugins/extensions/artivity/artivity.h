@@ -1,26 +1,18 @@
-/*
- *  Copyright (c) 2007 Cyrille Berger (cberger@cberger.net)
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU Lesser General Public License as published by
- *  the Free Software Foundation; version 2 of the License.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
-
-#ifndef _BIGBROTHER_H_
-#define _BIGBROTHER_H_
+#ifndef _ARTIVITY_H_
+#define _ARTIVITY_H_
 
 #include <QVariant>
 #include <kis_view_plugin.h>
 #include <artivity-client/ActivityLog.h>
+#include <kundo2stack.h>
+#include <KoShapeController.h>
+#include <kis_canvas2.h>
+#include <KoDocumentResourceManager.h>
+#include <kis_action.h>
+#include <recorder/kis_recorded_action.h>
+#include <recorder/kis_action_recorder.h>
+
+#include <commands/kis_layer_command.h>
 
 
 class KisAction;
@@ -35,25 +27,26 @@ public:
     ArtivityPlugin(QObject *parent, const QVariantList &);
     virtual ~ArtivityPlugin();
 
+
 private slots:
+    void StartArtivity();
+    void StopArtivity();
 
-    void slotSave();
-    void slotOpenPlay();
-    void slotOpenEdit();
-    void slotStartRecordingMacro();
-    void slotStopRecordingMacro();
+    void addedAction(const KisRecordedAction& action);
+    void indexChanged(int idx); 
 
 private:
-    void saveMacro(const KisMacro* macro, const KUrl& url);
-    KisMacro* openMacro(KUrl* url = 0);
+
+    int _currentIdx;
     artivity::ActivityLog _log;	
-private:
-
     KisView2 * m_view;
-    KisMacro * m_recorder;
+    KisCanvas2* _canvas;
+    KUndo2Stack* _undoStack;
+
     KisAction* m_startRecordingMacroAction;
     KisAction* m_stopRecordingMacroAction;
 
+
 };
 
-#endif // bigbrotherPlugin_H
+#endif // artivityPlugin_H
