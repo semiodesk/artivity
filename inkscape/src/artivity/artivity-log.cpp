@@ -255,13 +255,16 @@ namespace Inkscape
             GString* toValue = g_string_new("");
             g_string_append_printf(toValue, "%s", x->newval);
             
-            const char* from = fromValue->str;
-            const char* to = toValue->str;
+            AttributeValueMap* values = getChangedAttributes(x->oldval, x->newval);
             
-            activity->setValue(rdf::_type, art::UpdateAttribute);
+            cout << values->size() << endl;
+            
+            delete values;
+            
+            activity->setValue(rdf::_type, as::Update);
             activity->setValue(art::attribute, attribute);
-            activity->setValue(art::fromValue, from);
-            activity->setValue(art::toValue, to);
+            activity->setValue(art::fromValue, fromValue->str);
+            activity->setValue(art::toValue, toValue->str);
         }
         else if(is<Inkscape::XML::EventChgContent*>(e->event))
         {
@@ -273,7 +276,7 @@ namespace Inkscape
             GString* toValue = g_string_new("");
             g_string_append_printf(toValue, "%s", x->newval);
             
-            activity->setValue(rdf::_type, art::UpdateContent);
+            activity->setValue(rdf::_type, as::Update);
             activity->setValue(art::fromValue, fromValue->str);
             activity->setValue(art::toValue, toValue->str);
         }
