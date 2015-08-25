@@ -20,6 +20,7 @@
 
 #include <QVariant>
 #include <kis_view_plugin.h>
+#include <artivity-client/ActivityLog.h>
 
 
 class KisAction;
@@ -45,6 +46,7 @@ private slots:
 private:
     void saveMacro(const KisMacro* macro, const KUrl& url);
     KisMacro* openMacro(KUrl* url = 0);
+    artivity::ActivityLog _log;	
 private:
 
     KisView2 * m_view;
