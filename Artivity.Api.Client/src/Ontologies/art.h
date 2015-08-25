@@ -12,8 +12,6 @@ namespace artivity
         static const Resource Open = ART("Open");
         static const Resource Close = ART("Close");
         static const Resource Save = ART("Save");
-        static const Resource UpdateAttribute = ART("UpdateAttribute");
-        static const Resource UpdateContent = ART("UpdateContent");
         
         static const Resource Viewbox = ART("Viewbox");
         static const Property viewbox = ART("viewbox");
@@ -23,9 +21,15 @@ namespace artivity
         static const Property bottom = ART("bottom");
         static const Property zoomFactor = ART("zoomFactor");
         
-        static const Property attribute = ART("attribute");
         static const Property fromValue = ART("fromValue");
         static const Property toValue = ART("toValue");
+        
+        static const Property modifiedContent = ART("modifiedContent");
+        static const Resource ContentModification = ART("ContentModification");
+        
+        static const Property modifiedAttribute = ART("modifiedAttribute");
+        static const Resource AttributeModification = ART("AttributeModification");
+        static const Property attributeName = ART("attributeName");
     }
 }
 
