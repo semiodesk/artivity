@@ -40,6 +40,15 @@ namespace Inkscape
         gint64 timestamp;
     };
     
+    struct AttributeRecord
+    {
+        string name;
+        string oldval;
+        string newval;
+    };
+    
+    typedef map<string, AttributeRecord>::iterator AttributeRecordIterator;
+    
     class ArtivityLog : public UndoStackObserver
     {
     private:
@@ -74,12 +83,14 @@ namespace Inkscape
                 
         void processEventQueue();
         
+        AttributeRecordIterator getChangedAttributes(const char* a, const char* b);
+        
         GByteArray* getEventPayload(Event* e);
 
         GString* serializeEvent(Inkscape::XML::Event* event);
 
         void clearPointers();
-
+    
     public:
         
         ArtivityLog(SPDocument* doc, SPDesktop* desktop);
