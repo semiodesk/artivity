@@ -40,14 +40,15 @@ namespace Inkscape
         gint64 timestamp;
     };
     
-    struct AttributeRecord
+    struct ValueRecord
     {
-        string name;
         string oldval;
         string newval;
     };
     
-    typedef map<string, AttributeRecord>::iterator AttributeRecordIterator;
+    typedef map<string, ValueRecord> AttributeValueMap;
+    
+    typedef map<string, ValueRecord>::iterator AttributeValueIterator;
     
     class ArtivityLog : public UndoStackObserver
     {
@@ -83,7 +84,7 @@ namespace Inkscape
                 
         void processEventQueue();
         
-        AttributeRecordIterator getChangedAttributes(const char* a, const char* b);
+        AttributeValueMap* getChangedAttributes(const char* a, const char* b);
         
         GByteArray* getEventPayload(Event* e);
 
