@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Artivity" Database="" SWTLW="No">
   <Project Name="inkscape" Path="inkscape/inkscape.project" Active="Yes"/>
+  <Project Name="client" Path="Artivity.Api.Client/client.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Project Name="inkscape" ConfigName="Debug"/>
+      <Project Name="client" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Project Name="inkscape" ConfigName="Release"/>
+      <Project Name="client" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

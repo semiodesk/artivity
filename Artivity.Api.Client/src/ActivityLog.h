@@ -4,6 +4,7 @@
 #include <deque>
 #include <vector>
 
+#include "UriGenerator.h"
 #include "Resource.h"
 #include "Activity.h"
 #include "Activities/Create.h"
@@ -12,9 +13,14 @@
 #include "Activities/Undo.h"
 #include "Activities/View.h"
 #include "Activities/Add.h"
+#include "Activities/Open.h"
+#include "Activities/Close.h"
+#include "Activities/Save.h"
 
-#include "Ontologies/as.h"
 #include "Ontologies/rdf.h"
+#include "Ontologies/as.h"
+#include "Ontologies/art.h"
+#include "Ontologies/svg.h"
 
 #include <curl/curl.h>
 

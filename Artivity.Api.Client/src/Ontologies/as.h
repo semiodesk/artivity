@@ -3,32 +3,33 @@
 
 #include "../Property.h"
 
-#define ART(label) "http://www.w3.org/ns/activitystreams#"label;
+#define AS(label) "http://www.w3.org/ns/activitystreams#"label;
 
 namespace artivity
 {
     namespace as
     {
-        static const Resource Activity = ART("Activity")
-        static const Resource Create = ART("Create")
-        static const Resource Delete = ART("Delete")
-        static const Resource Update = ART("Update")
-        static const Resource Undo = ART("Undo")
-        static const Resource View = ART("View")
-        static const Resource Remove = ART("Remove")
-        static const Resource Add = ART("Add")
+        static const Resource Activity = AS("Activity");
+        static const Resource Create = AS("Create");
+        static const Resource Delete = AS("Delete");
+        static const Resource Update = AS("Update");
+        static const Resource Undo = AS("Undo");
+        static const Resource Redo = AS("Redo")
+        static const Resource View = AS("View");
+        static const Resource Add = AS("Add");
+        static const Resource Remove = AS("Remove");
         
-        static const Property actor = ART("actor");
-        static const Property author = ART("author");
-        static const Property generator = ART("generator");
-        static const Property instrument = ART("instrument");
-        static const Property target = ART("target");
-        static const Property object = ART("object");
-        static const Property displayName = ART("displayName");
-        static const Property endTime = ART("endTime");
-        static const Property startTime = ART("startTime");
-        static const Property updateTime = ART("updateTime");
-        static const Property url = ART("url");
+        static const Property actor = AS("actor");
+        static const Property author = AS("author");
+        static const Property generator = AS("generator");
+        static const Property instrument = AS("instrument");
+        static const Property target = AS("target");
+        static const Property object = AS("object");
+        static const Property displayName = AS("displayName");
+        static const Property endTime = AS("endTime");
+        static const Property startTime = AS("startTime");
+        static const Property updateTime = AS("updateTime");
+        static const Property url = AS("url");
     }
 }
 

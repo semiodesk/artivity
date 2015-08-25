@@ -2,9 +2,20 @@
 
 #include "Ontologies/as.h"
 #include "Ontologies/rdf.h"
+#include "UriGenerator.h"
 
 namespace artivity
 {
+    Activity::Activity() : Resource(UriGenerator::getUri())
+    {
+        _actor = NULL;
+        _instrument = NULL;
+        _target = NULL;
+        _object = NULL;
+        
+        setValue(rdf::_type, as::Activity);
+    }
+    
     Activity::Activity(const char* uriref) : Resource(uriref)
     {
         _actor = NULL;
