@@ -9,9 +9,9 @@ namespace artivity
 {
     namespace art
     {
-        static const Resource Open = ART("Open");
-        static const Resource Close = ART("Close");
-        static const Resource Save = ART("Save");
+        static const Resource OpenFile = ART("OpenFile");
+        static const Resource CloseFile = ART("CloseFile");
+        static const Resource SaveFile = ART("SaveFile");
         
         static const Resource Viewbox = ART("Viewbox");
         static const Property viewbox = ART("viewbox");
@@ -21,13 +21,13 @@ namespace artivity
         static const Property bottom = ART("bottom");
         static const Property zoomFactor = ART("zoomFactor");
         
+        static const Resource Modification = ART("Modification");
+        static const Property modification = ART("modification");
         static const Property fromValue = ART("fromValue");
         static const Property toValue = ART("toValue");
         
-        static const Property modifiedContent = ART("modifiedContent");
         static const Resource ContentModification = ART("ContentModification");
         
-        static const Property modifiedAttribute = ART("modifiedAttribute");
         static const Resource AttributeModification = ART("AttributeModification");
         static const Property attributeName = ART("attributeName");
     }

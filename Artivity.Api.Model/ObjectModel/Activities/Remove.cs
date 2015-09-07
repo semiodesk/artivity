@@ -3,7 +3,7 @@ using System;
 
 namespace Artivity.Model.ObjectModel
 {
-	[RdfClass(AS2.Remove)]
+	[RdfClass(ART.Remove)]
 	public class Remove : Activity
 	{
 		#region Constructors

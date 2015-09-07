@@ -3,24 +3,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Artivity.Model.ObjectModel
 {
-    [RdfClass(PROV.Person)]
-    public class Person : Resource
+    [RdfClass(PROV.Association)]
+    public class SoftwareAssociation : Association
     {
 		#region Members
 
-		string GivenName { get; set; }
-
-		string EmailAddress { get; set; }
+		[RdfProperty(ART.hadViewbox)]
+		public Viewbox Viewbox { get; set; }
 
 		#endregion
 
         #region Constructor
 
-        public Person(Uri uri) : base(uri) {}
+		public SoftwareAssociation(Uri uri) : base(uri) {}
 
         #endregion
     }

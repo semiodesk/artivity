@@ -1,9 +1,9 @@
 using Semiodesk.Trinity;
 using System;
 
-namespace Artivity.Model
+namespace Artivity.Model.ObjectModel
 {
-	[RdfClass(AS2.Create)]
+	[RdfClass(ART.Create)]
 	public class Create : Activity
 	{
 		#region Constructors

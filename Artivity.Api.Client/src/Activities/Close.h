@@ -7,17 +7,17 @@
 
 namespace artivity
 {
-    class Close : public Activity
+    class CloseFile : public Activity
     {
     public:
-        Close() : Activity()
+        CloseFile() : Activity()
         {
-            setValue(rdf::_type, art::Close);
+            setValue(rdf::_type, art::CloseFile);
         }
         
-        Close(const char* uriref) : Activity(uriref)
+        CloseFile(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, art::Close);
+            setValue(rdf::_type, art::CloseFile);
         }
     };
 }

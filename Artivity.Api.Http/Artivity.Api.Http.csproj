@@ -62,14 +62,17 @@
     <Reference Include="Semiodesk.Trinity">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.91\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Modules\ModelModule.cs" />
     <Compile Include="Parameters\ActivityParameters.cs" />
-    <Compile Include="Parameters\ActorParameters.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Modules\BrowserModule.cs" />
+    <Compile Include="Modules\ModuleBase.cs" />
+    <Compile Include="Parameters\AgentParameters.cs" />
+    <Compile Include="Modules\WebModule.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

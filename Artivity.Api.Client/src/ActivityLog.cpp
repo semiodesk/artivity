@@ -92,6 +92,7 @@ namespace artivity
             Serializer::serialize(stream, **anoIt, N3);
             
             delete *anoIt;
+            
             anoIt++;
         }
         

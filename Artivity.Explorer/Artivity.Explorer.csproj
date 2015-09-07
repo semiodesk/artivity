@@ -49,12 +49,14 @@
     <Compile Include="Program.cs" />
     <Compile Include="Parsers\SvgStats.cs" />
     <Compile Include="Parsers\SvgStatsParser.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <EmbeddedResource Include="Resources\Colour.png">
       <LogicalName>colour</LogicalName>
     </EmbeddedResource>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xwt.Gtk">
@@ -75,6 +77,28 @@
     <Reference Include="OxyPlot.Xwt">
       <HintPath>References\OxyPlot.Xwt.dll</HintPath>
     </Reference>
+    <Reference Include="VDS.Common">
+      <HintPath>..\packages\VDS.Common.1.5.0\lib\net40-client\VDS.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="dotNetRDF">
+      <HintPath>..\packages\dotNetRDF.1.0.8.3533\lib\net40\dotNetRDF.dll</HintPath>
+    </Reference>
+    <Reference Include="dotNetRDF.Data.Virtuoso">
+      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.8.3533\lib\net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenLink.Data.Virtuoso">
+      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.8.3533\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.91\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Widgets\EditingWidget.cs">
@@ -89,5 +113,14 @@
     <EmbeddedResource Include="Resources\Icon.png">
       <LogicalName>icon</LogicalName>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Artivity.Api.Model\Artivity.Api.Model.csproj">
+      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
+      <Name>Artivity.Api.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logging\" />
   </ItemGroup>
 </Project>

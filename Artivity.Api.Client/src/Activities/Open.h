@@ -7,17 +7,17 @@
 
 namespace artivity
 {
-    class Open : public Activity
+    class OpenFile : public Activity
     {
     public:
-        Open() : Activity()
+        OpenFile() : Activity()
         {
-            setValue(rdf::_type, art::Open);
+            setValue(rdf::_type, art::OpenFile);
         }
         
-        Open(const char* uriref) : Activity(uriref)
+        OpenFile(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, art::Open);
+            setValue(rdf::_type, art::OpenFile);
         }
     };
 }

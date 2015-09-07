@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Model
+namespace Artivity.Model.ObjectModel
 {
-    [RdfClass(AS2.Actor)]
-    public class Actor : Object
+    [RdfClass(NFO.VectorImage)]
+    public class VectorImage : Document
     {
         #region Constructors
 
-        public Actor(Uri uri) : base(uri) {}
+		public VectorImage(Uri uri) : base(uri) {}
 
         #endregion
     }

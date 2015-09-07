@@ -18,10 +18,10 @@ chrome.runtime.onMessage.addListener(
 			tabId = sender.tab.id;
         }
 		
-        var params = {title: title, url: url, actor: "application://chromium-browser.desktop", tab: tabId}
+        var params = {title: title, url: url, agent: "application://chromium-browser.desktop", tab: tabId}
 
         var request = new XMLHttpRequest();
-        request.open("POST", 'http://localhost:8272/artivity/1.0/activities', true);
+        request.open("POST", 'http://localhost:8272/artivity/1.0/activities/web/', true);
         request.setRequestHeader("Content-type", "application/json");
         request.send(JSON.stringify(params));
      }

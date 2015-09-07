@@ -16,7 +16,7 @@ namespace artivity
     }
     
     string Serializer::toString(const char* value)
-    {           
+    {
         return string(value);
     }
     
@@ -90,17 +90,17 @@ namespace artivity
                 }
                 
                 string property = it->first;
-                
+                                    
                 out << " <" << property << "> " << flush;
                 
                 PropertyValue x = it->second;
                 
                 if(x.Value != NULL)
-                {                        
+                {                         
                     out << "<" << x.Value->Uri << ">";
                 }
                 else if(x.LiteralType != NULL)
-                {
+                {                    
                     out << "\"" << x.LiteralValue << "\"";
                     
                     XsdTypeMapIterator it = TYPE_MAP.find(x.LiteralType);
