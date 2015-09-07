@@ -1,9 +1,9 @@
 using Semiodesk.Trinity;
 using System;
 
-namespace Artivity.Model
+namespace Artivity.Model.ObjectModel
 {
-	[RdfClass(AS2.Delete)]
+	[RdfClass(ART.Delete)]
 	public class Delete : Activity
 	{
 		#region Constructors

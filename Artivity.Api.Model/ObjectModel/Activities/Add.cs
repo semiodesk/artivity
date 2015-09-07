@@ -3,7 +3,7 @@ using System;
 
 namespace Artivity.Model.ObjectModel
 {
-	[RdfClass(AS2.Add)]
+	[RdfClass(ART.Add)]
 	public class Add : Activity
 	{
 		#region Constructors

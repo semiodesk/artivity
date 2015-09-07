@@ -27,14 +27,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Artivity.Api.Http.Parameters
 {
-    public class ActorParameters
+    public class AgentParameters
     {
-        public string actor { get; set; }
+        public string agent { get; set; }
         public bool? enabled { get; set; }
     }
 }

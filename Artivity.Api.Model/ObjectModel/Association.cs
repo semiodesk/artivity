@@ -1,26 +1,27 @@
 ﻿using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Artivity.Model.ObjectModel
 {
-    [RdfClass(PROV.Person)]
-    public class Person : Resource
+    [RdfClass(PROV.Association)]
+	public class Association : Resource
     {
 		#region Members
 
-		string GivenName { get; set; }
+		[RdfProperty(PROV.agent)]
+		public Agent Agent { get; set; }
 
-		string EmailAddress { get; set; }
+		[RdfProperty(PROV.hadRole)]
+		public Role Role { get; set; }
 
 		#endregion
 
         #region Constructor
 
-        public Person(Uri uri) : base(uri) {}
+		public Association(Uri uri) : base(uri) {}
 
         #endregion
     }

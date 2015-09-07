@@ -3,12 +3,12 @@ using System;
 
 namespace Artivity.Model.ObjectModel
 {
-	[RdfClass(ART.Update)]
-	public class Update : Activity
+	[RdfClass(ART.Redo)]
+	public class Redo : Activity
 	{
 		#region Constructors
 
-		public Update(Uri uri) : base(uri) {}
+		public Redo(Uri uri) : base(uri) {}
 
 		#endregion
 	}

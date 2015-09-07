@@ -3,15 +3,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Artivity.Model.ObjectModel
 {
-    [RdfClass(AS2.Application)]
-    public class Application : Actor
+    [RdfClass(PROV.Agent)]
+    public class Agent : Resource
     {
+		#region Members
+
+		[RdfProperty(RDFS.label)]
+		string Label { get; set; }
+
+		#endregion
+
         #region Constructors
 
-        public Application(Uri uri) : base(uri) {}
+		public Agent(Uri uri) : base(uri) {}
 
         #endregion
     }

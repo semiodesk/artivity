@@ -1,14 +1,15 @@
 using Semiodesk.Trinity;
 using System;
+using System.Text;
 
 namespace Artivity.Model.ObjectModel
 {
-	[RdfClass(ART.Update)]
-	public class Update : Activity
+	[RdfClass(PROV.Role)]
+	public class Role : Agent
 	{
 		#region Constructors
 
-		public Update(Uri uri) : base(uri) {}
+		public Role(Uri uri) : base(uri) {}
 
 		#endregion
 	}

@@ -1,17 +1,16 @@
 ﻿using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Artivity.Model.ObjectModel
 {
-    [RdfClass(AS2.Page)]
-    public class Page : Object
+    [RdfClass(PROV.SoftwareAgent)]
+    public class SoftwareAgent : Agent
     {
-        #region Constructor
+        #region Constructors
 
-        public Page(Uri uri) : base(uri) {}
+		public SoftwareAgent(Uri uri) : base(uri) {}
 
         #endregion
     }

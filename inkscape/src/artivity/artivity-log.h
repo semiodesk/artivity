@@ -25,12 +25,6 @@ class SPDesktop;
 
 namespace Inkscape
 {
-    /**
-     * Inkscape::ArtivityObserver - observer for tracing calls to
-     * SPDocumentUndo::undo, SPDocumentUndo::redo, SPDocumentUndo::maybe_done.
-     *
-     */
-
     struct EventRecord
     {
         const char* eventType;
@@ -46,11 +40,16 @@ namespace Inkscape
         string newval;
     };
     
-    typedef map<string, ValueRecord> AttributeValueMap;
+    typedef map<string, ValueRecord*> AttributeValueMap;
     
-    typedef map<string, ValueRecord>::iterator AttributeValueIterator;
-    
-    class ArtivityLog : public UndoStackObserver
+    typedef map<string, ValueRecord*>::iterator AttributeValueIterator;
+ 
+    /**
+     * Inkscape::ArtivityObserver - observer for tracing calls to
+     * SPDocumentUndo::undo, SPDocumentUndo::redo, SPDocumentUndo::maybe_done.
+     *
+     */   
+    class ArtivityLog : public UndoStackObserver, public sigc::trackable
     {
     private:
         
@@ -68,7 +67,7 @@ namespace Inkscape
         
         artivity::Resource* _instrument = NULL;
         
-        std::vector<artivity::Resource*> _resourcePointers = std::vector<artivity::Resource*>();
+        std::vector<artivity::Resource*> _resourcePointers;
    
     protected:
            
@@ -76,15 +75,15 @@ namespace Inkscape
  
         void logEvent(artivity::Activity* activity, Event* e);
         
-        void setEventType(artivity::Activity* activity, Event* e);
+        void setType(artivity::Activity* activity, Event* e);
         
-        void setEventViewport(artivity::Activity* activity);
+        void setViewport(artivity::Activity* activity);
         
         void setObject(artivity::Activity* activity, Event* e);
                 
         void processEventQueue();
         
-        AttributeValueMap* getChangedAttributes(const char* a, const char* b);
+        AttributeValueMap* getChangedAttributes(string a, string b);
         
         GByteArray* getEventPayload(Event* e);
 
@@ -108,7 +107,6 @@ namespace Inkscape
         
         void notifyClearRedoEvent();
     };
-
 }
 
 #endif // SEEN_INKSCAPE_ARTIVITY_OBSERVER_H

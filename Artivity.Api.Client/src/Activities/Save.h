@@ -7,17 +7,17 @@
 
 namespace artivity
 {
-    class Save : public Activity
+    class SaveFile : public Activity
     {
     public:
-        Save() : Activity()
+        SaveFile() : Activity()
         {
-            setValue(rdf::_type, art::Save);
+            setValue(rdf::_type, art::SaveFile);
         }
         
-        Save(const char* uriref) : Activity(uriref)
+        SaveFile(char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, art::Save);
+            setValue(rdf::_type, art::SaveFile);
         }
     };
 }

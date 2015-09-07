@@ -1,37 +1,33 @@
 ﻿using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Model
+namespace Artivity.Model.ObjectModel
 {
-    [RdfClass(AS2.Activity)]
-    public class Activity : Object
+    [RdfClass(PROV.Activity)]
+    public class Activity : Resource
     {
 		#region Members
 
-		[RdfProperty(AS2.actor)]
-		public Resource Actor { get; set; }
+		[RdfProperty(PROV.qualifiedAssociation)]
+		public List<Association> Associations { get; private set; }
 
-		[RdfProperty(AS2._object)]
-		public Resource Object { get; set; }
+		[RdfProperty(PROV.used)]
+		public List<Resource> UsedEntities { get; private set; }
 
-		[RdfProperty(AS2.target)]
-		public Resource Target { get; set; }
+		[RdfProperty(PROV.invalidated)]
+		public List<Resource> InvalidatedEntities { get; set; }
 
-		[RdfProperty(AS2.result)]
-		public Resource Result { get; set; }
+		[RdfProperty(PROV.generated)]
+		public List<Resource> GeneratedEntitiies { get; set; }
 
-		[RdfProperty(AS2.origin)]
-		public Resource Origin { get; set; }
+		[RdfProperty(PROV.startedAtTime)]
+		public DateTime StartTime { get; set; }
 
-		[RdfProperty(AS2.instrument)]
-		public Resource Instrument { get; set; }
-
-		[RdfProperty(AS2.priority)]
-		public float Priority { get; set; }
+		[RdfProperty(PROV.endedAtTime)]
+		public DateTime EndTime { get; set; }
 
 		#endregion
 

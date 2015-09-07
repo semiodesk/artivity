@@ -6,16 +6,17 @@ using System.Text;
 
 namespace Artivity.Model.ObjectModel
 {
-    [RdfClass(AS2.Document)]
-    public class Document : Object
+    [RdfClass(NFO.Document)]
+    public class Document : Entity
     {
+		#region Members
+
+		#endregion
+
         #region Constructor
-        public Document(Uri uri)
-            : base(uri)
-        {
-        }
+
+        public Document(Uri uri) : base(uri) {}
+
         #endregion
-
-
     }
 }

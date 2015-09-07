@@ -1,9 +1,9 @@
 using Semiodesk.Trinity;
 using System;
 
-namespace Artivity.Model
+namespace Artivity.Model.ObjectModel
 {
-	[RdfClass(AS2.Undo)]
+	[RdfClass(ART.Undo)]
 	public class Undo : Activity
 	{
 		#region Constructors

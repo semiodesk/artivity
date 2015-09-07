@@ -37,50 +37,35 @@ using Nancy.ModelBinding;
 using System.Text;
 using System.IO;
 using Nancy.IO;
+using VDS.RDF;
+using Semiodesk.Trinity.Store;
 
 namespace Artivity.Api.Http
 {
-	public class ModelModule : NancyModule
+	public class ModelModule : ModuleBase
 	{
-		#region Members
-
-        private IModel _activities;
-
-        private static Dictionary<string, bool> _actors = new Dictionary<string, bool>();
-
-        private static Dictionary<string, Application> _instruments = new Dictionary<string, Application>();
-
-		#endregion
-
 		#region Constructors
 
         public ModelModule()
 		{
-            Post["/artivity/1.0/model"] = parameters => 
+            Post["/artivity/1.0/activities/"] = parameters => 
             {
-				HttpStatusCode result = HttpStatusCode.InternalServerError;
+				HttpStatusCode result = HttpStatusCode.OK;
 
-				string modelUri = "http://localhost:8890/artivity/1.0/activities";
+				IModel model = GetModel("http://localhost:8890/artivity/1.0/activities/");
 
-				InitializeModel(modelUri);
-
-				if(_activities == null)
+				if(model == null)
 				{
-					Console.WriteLine("ERROR: Could not establish connection to model <{0}>", modelUri);
+					Console.WriteLine("ERROR: Could not establish connection to model <{0}>", model.Uri);
 
 					return result;
 				}
 
 				string body = ToString(this.Request.Body);
 
-				result = _activities.Read(ToStream(body), RdfSerializationFormat.N3) ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
+				AddResources(model, ToStream(body));
 
-				Console.WriteLine("");
-				Console.WriteLine(">>> HTTP Header:");
-				Console.WriteLine(Request.Headers);
-				Console.WriteLine(">>> HTTP Body:");
-				Console.WriteLine(body);
-				Console.WriteLine(string.Format("<<< HTTP Status: {0}", result));
+				LogRequest("/artivity/1.0/activities/", "POST", body, result);
 
 				return result;
             };
@@ -90,19 +75,31 @@ namespace Artivity.Api.Http
 
 		#region Methods
 
-		private void InitializeModel(string uri)
+		private void AddResources(IModel model, Stream stream)
 		{
-			IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+			string connectionString = "Server=localhost:1111;uid=dba;pwd=dba;Charset=utf-8";
 
-			Uri activities = new Uri(uri);
+			using (TextReader reader = new StreamReader(stream))
+			{
+				try
+				{
+					using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
+					{
+						using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
+						{
+							IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
+							parser.Load(graph, reader);
 
-			if (store.ContainsModel(activities))
-			{
-				_activities = store.GetModel(activities);
-			}
-			else
-			{
-				_activities = store.CreateModel(activities);
+							graph.BaseUri = model.Uri;
+
+							m.UpdateGraph(model.Uri, graph.Triples, new List<Triple>());
+						}
+					}
+				}
+				catch(Exception e)
+				{
+					Console.WriteLine(e);
+				}
 			}
 		}
 
