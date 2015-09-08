@@ -51,7 +51,7 @@ function onRequestResponse() {
 }
 
 function sendRequest(type, callback, errorCallback, params) {
-  var url = 'http://localhost:8272/artivity/1.0/activities/web/status/';
+  var url = 'http://localhost:8272/artivity/1.0/agents/status/';
 
   params['agent'] = 'application://chromium-browser.desktop';
   
