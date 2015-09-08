@@ -1,5 +1,6 @@
 ﻿using Semiodesk.Trinity;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Artivity.Model.ObjectModel
 		public List<Resource> InvalidatedEntities { get; set; }
 
 		[RdfProperty(PROV.generated)]
-		public List<Resource> GeneratedEntitiies { get; set; }
+		public List<Resource> GeneratedEntities { get; set; }
 
 		[RdfProperty(PROV.startedAtTime)]
 		public DateTime StartTime { get; set; }
@@ -36,5 +37,14 @@ namespace Artivity.Model.ObjectModel
         public Activity(Uri uri) : base(uri) {}
 
         #endregion
+
+		#region Methods
+
+		public IEnumerable<SoftwareAgent> GetAssociatedSoftwareAgents()
+		{
+			return Associations.Select(a => a.Agent).OfType<SoftwareAgent>();
+		}
+
+		#endregion
     }
 }

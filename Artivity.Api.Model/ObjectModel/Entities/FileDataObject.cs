@@ -4,7 +4,7 @@ using Semiodesk.Trinity;
 namespace Artivity.Model.ObjectModel
 {
 	[RdfClass(NFO.FileDataObject)]
-	public class File : Entity
+	public class FileDataObject : Entity
 	{
 		#region Members
 
@@ -30,7 +30,7 @@ namespace Artivity.Model.ObjectModel
 
 		#region Constructors
 
-		public File(Uri uri) : base(uri) {}
+		public FileDataObject(Uri uri) : base(uri) {}
 
 		#endregion
 	}

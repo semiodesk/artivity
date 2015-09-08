@@ -18,6 +18,8 @@ namespace ArtivityExplorer.Controls
 
         public static readonly Command QuitCommand = new Command("Quit");
 
+		public static readonly Command PreferencesCommand = new Command("Preferences");
+
         #endregion
 
         #region Constructors
@@ -51,6 +53,15 @@ namespace ArtivityExplorer.Controls
 
             Items.Add(fileMenu);
 
+			MenuItem preferencesItem = new MenuItem(PreferencesCommand);
+			preferencesItem.Clicked += OnPreferencesClicked;
+
+			MenuItem editMenu = new MenuItem("Edit");
+			editMenu.SubMenu = new Menu();
+			editMenu.SubMenu.Items.Add(preferencesItem);
+
+			Items.Add(editMenu);
+
             MenuItem aboutItem = new MenuItem();
             aboutItem.Clicked += OnAboutClicked;
 
@@ -81,6 +92,10 @@ namespace ArtivityExplorer.Controls
         {
             Application.Exit();
         }
+
+		private void OnPreferencesClicked(object sender, EventArgs e)
+		{
+		}
 
         private void OnAboutClicked(object sender, EventArgs e)
         {

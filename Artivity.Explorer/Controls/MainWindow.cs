@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Semiodesk.Trinity;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using Xwt;
 using Artivity.Model;
+using Artivity.Model.ObjectModel;
 using ArtivityExplorer.Parsers;
-using Semiodesk.Trinity;
 
 namespace ArtivityExplorer.Controls
 {
@@ -42,7 +43,7 @@ namespace ArtivityExplorer.Controls
         {
 			if (_model == null)
 			{
-				Error("Model not initialized.");
+				LogError("Model not initialized.");
 			}
 
 			_log = new ActivitiesLog(_model);
@@ -114,14 +115,13 @@ namespace ArtivityExplorer.Controls
 
 			if (firstTime == DateTime.MinValue || lastTime == DateTime.MinValue)
 			{
-				Info(string.Format("Did not find any events for file: {0}", file));
-				return;
+				LogInfo(string.Format("Did not find any events for file: {0}", file)); return;
 			}
 
 			ResourceQuery query = new ResourceQuery();
-			query.Where(rdf.type, as2.Activity);
-			query.Where(as2.startTime).GreaterOrEqual(firstTime);
-			query.Where(as2.startTime).LessOrEqual(lastTime);
+			query.Where(rdf.type, prov.Activity);
+			query.Where(prov.startedAtTime).GreaterOrEqual(firstTime);
+			query.Where(prov.startedAtTime).LessOrEqual(lastTime);
 
 			List<Activity> activities = _model.GetResources<Activity>(query, true).OrderByDescending(a => a.StartTime).ToList();
 
@@ -136,18 +136,45 @@ namespace ArtivityExplorer.Controls
 					node.SetValue(_log.TypeField, ToDisplayString(activity.GetTypes().First().Uri));
 				}
 
-				if (activity.Object != null && activity.Object.HasProperty(rdf.type))
+				if (activity.Associations.OfType<SoftwareAssociation>().Any())
 				{
-					Resource t = activity.Object.GetValue(rdf.type) as Resource;
+					SoftwareAssociation association = activity.Associations.OfType<SoftwareAssociation>().First();
 
-					node.SetValue(_log.TargetField, ToDisplayString(t.Uri));
+					if (association.Viewbox != null)
+					{
+						node.SetValue(_log.ZoomField, Math.Round(association.Viewbox.ZoomFactor * 100, 0) + "%");
+					}
 				}
 
-				if (activity.Viewbox != null)
+				if (activity.InvalidatedEntities.OfType<FileDataObject>().Any())
 				{
-					node.SetValue(_log.ZoomField, Math.Round(activity.Viewbox.ZoomFactor * 100, 0) + "%");
+					FileDataObject f = activity.InvalidatedEntities.OfType<FileDataObject>().First();
+
+					node.SetValue(_log.ModificationFromField, f.RevisedValue.ToString());
 				}
 
+				if (activity.GeneratedEntities.OfType<FileDataObject>().Any())
+				{
+					FileDataObject f = activity.GeneratedEntities.OfType<FileDataObject>().First();
+
+					node.SetValue(_log.ModificationToField, f.RevisedValue.ToString());
+
+					if (f.RevisedLocation is XmlAttribute)
+					{
+						XmlAttribute a = f.RevisedLocation as XmlAttribute;
+
+						node.SetValue(_log.TargetField, a.LocalName);
+					}
+				}
+
+				if (activity.UsedEntities.OfType<WebDataObject>().Any())
+				{
+					WebDataObject w = activity.GeneratedEntities.OfType<WebDataObject>().First();
+
+					node.SetValue(_log.TargetField, w.Uri.OriginalString);
+				}
+
+				/* TODO: Node type not supported yet. Add to modelling.
 				if (activity.Modifications.Any())
 				{
 					Modification m = activity.Modifications.First();
@@ -155,10 +182,9 @@ namespace ArtivityExplorer.Controls
 					string toValue = m.ToValue != null ? m.ToValue.ToString() : "";
 
 					node.SetValue(_log.ModificationTypeField, ToDisplayString(m.GetTypes().FirstOrDefault().Uri));
-					node.SetValue(_log.ModificationFromField, fromValue);
-					node.SetValue(_log.ModificationToField, toValue);
 				}
-			}
+				*/
+}
 
 			_chart.Update(activities);
 		}
@@ -212,14 +238,14 @@ namespace ArtivityExplorer.Controls
             Application.Exit();
         }
 
-		private void Info(string msg)
+		private void LogInfo(string msg)
 		{
-			Console.WriteLine("[{0}] INFO: {1}", DateTime.Now, msg);
+			Console.WriteLine("[{0}] Info: {1}", DateTime.Now, msg);
 		}
 
-		private void Error(string msg)
+		private void LogError(string msg)
 		{
-			Console.WriteLine("[{0}] ERROR: {1}", DateTime.Now, msg);
+			Console.WriteLine("[{0}] Error: {1}", DateTime.Now, msg);
 		}
 
         #endregion

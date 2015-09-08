@@ -98,6 +98,7 @@
     <Reference Include="Semiodesk.Trinity">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.91\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
