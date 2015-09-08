@@ -60,6 +60,7 @@
     <Compile Include="ObjectModel\Activities\Redo.cs" />
     <Compile Include="ObjectModel\Role.cs" />
     <Compile Include="ObjectModel\Entities\WebDataObject.cs" />
+    <Compile Include="Models.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Ontologies\prov.ttl" />

@@ -87,3 +87,8 @@ art:zoomFactor a rdf:Property ;
     rdfs:domain art:Viewport ;
     rdfs:range xsd:double .
     
+art:isCaptureEnabled a rdf:Property ;
+    rdfs:label "isCaptureEnabled" ;
+    rdfs:domain prov:SoftwareAgent ;
+    rdfs:range xsd:boolean .
+    

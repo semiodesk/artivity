@@ -41,33 +41,51 @@ namespace Artivity.Api.Http
 
 		#region Methods
 
-		protected IModel GetModel(string uri)
+		protected IModel GetModel(Uri uri)
 		{
 			IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
-			Uri model = new Uri(uri);
-
-			if (store.ContainsModel(model))
+			if (store.ContainsModel(uri))
 			{
-				return store.GetModel(model);
+				return store.GetModel(uri);
 			}
 			else
 			{
-				return store.CreateModel(model);
+				return store.CreateModel(uri);
 			}
 		}
 
-		protected void LogRequest(string route, string method, string content, HttpStatusCode result)
+		protected HttpStatusCode LogInfo(HttpStatusCode status, string msg, params object[] p)
 		{
-			Console.WriteLine("");
-			Console.WriteLine(">>> Request: {0}; Method: {1}; Result: {2}", route, method, result);
-			Console.WriteLine(content);
+			Console.WriteLine("[{0}] Info: ", status, msg, p);
+
+			return status;
 		}
 
-		protected void LogError(Exception e)
+		protected HttpStatusCode LogRequest(HttpStatusCode status, string route, string method, string content)
 		{
-			Console.WriteLine("");
-			Console.WriteLine("ERROR: {0}: {1}", e.GetType(), e.Message);
+			Console.WriteLine("[{0}] {2} {1}", status, route, method);
+
+			if (!string.IsNullOrEmpty(content))
+			{
+				Console.WriteLine(content);
+			}
+
+			return status;
+		}
+
+		protected HttpStatusCode LogError(HttpStatusCode status, Exception e)
+		{
+			Console.WriteLine("[{0}] Error: {1}: {2}", status, e.GetType(), e.Message);
+
+			return status;
+		}
+
+		protected HttpStatusCode LogError(HttpStatusCode status, string msg, params object[] p)
+		{
+			Console.WriteLine("[{0}] Error: ", status, msg, p);
+
+			return status;
 		}
 
 		#endregion

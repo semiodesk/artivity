@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 9/7/2015 5:33:12 PM
+// Date: 9/8/2015 11:37:24 AM
 
 using System;
 using System.Collections.Generic;
@@ -6815,7 +6815,13 @@ public class art : Ontology
     ///
     ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
     ///</summary>
-    public static readonly Property zoomFactor = new Property(new Uri("http://semiodesk.com/artivity/1.0/zoomFactor"));
+    public static readonly Property zoomFactor = new Property(new Uri("http://semiodesk.com/artivity/1.0/zoomFactor"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
+    ///</summary>
+    public static readonly Property isCaptureEnabled = new Property(new Uri("http://semiodesk.com/artivity/1.0/isCaptureEnabled"));
 }
 ///<summary>
 ///
@@ -6948,5 +6954,11 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
     ///</summary>
     public const string zoomFactor = "http://semiodesk.com/artivity/1.0/zoomFactor";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
+    ///</summary>
+    public const string isCaptureEnabled = "http://semiodesk.com/artivity/1.0/isCaptureEnabled";
 }
 }
