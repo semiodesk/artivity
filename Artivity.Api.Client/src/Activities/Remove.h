@@ -2,7 +2,7 @@
 #define REMOVE_H
 
 #include "../Ontologies/rdf.h"
-#include "../Ontologies/as.h"
+#include "../Ontologies/art.h"
 #include "../Activity.h"
 
 namespace artivity
@@ -12,12 +12,12 @@ namespace artivity
     public:
         Remove() : Activity()
         {
-            setValue(rdf::_type, as::Remove);
+            setValue(rdf::_type, art::Remove);
         }
         
         Remove(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, as::Remove);
+            setValue(rdf::_type, art::Remove);
         }
     };
 }

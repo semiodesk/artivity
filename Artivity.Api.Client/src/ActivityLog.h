@@ -18,7 +18,7 @@
 #include "Activities/Save.h"
 
 #include "Ontologies/rdf.h"
-#include "Ontologies/as.h"
+#include "Ontologies/prov.h"
 #include "Ontologies/art.h"
 #include "Ontologies/svg.h"
 
@@ -42,11 +42,8 @@ namespace artivity
         // Indicates if there is a connection to the Artivity HTTP API.
         bool isConnected();
         
-        // Set an instrument on all activites in the queue.
-        void setInstrument(Resource& instrument);
-        
         // Set a target on all activites in the queue.
-        void setTarget(Resource& object);
+        void setGeneratedEntity(Entity* entity);
         
         // Send all items in the queue to the Artivity server.
         void transmit();

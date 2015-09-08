@@ -19,7 +19,13 @@
 #include "xml/node.h"
 #include "xml/attribute-record.h"
 #include <ctime>
+
+// TODO: Create artivity.h
 #include <artivity-client/ActivityLog.h>
+#include <artivity-client/SoftwareAgent.h>
+#include <artivity-client/SoftwareAssociation.h>
+#include <artivity-client/Viewbox.h>
+#include <artivity-client/Entities/FileDataObject.h>
 
 class SPDesktop;
 
@@ -63,9 +69,9 @@ namespace Inkscape
             
         template<class TEvent> TEvent as(Inkscape::XML::Event* event);
         
-        artivity::Resource* _target = NULL;
+        artivity::SoftwareAgent* _agent = NULL;
         
-        artivity::Resource* _instrument = NULL;
+        artivity::FileDataObject* _entity = NULL;
         
         std::vector<artivity::Resource*> _resourcePointers;
    
@@ -77,12 +83,16 @@ namespace Inkscape
         
         void setType(artivity::Activity* activity, Event* e);
         
-        void setViewport(artivity::Activity* activity);
-        
         void setObject(artivity::Activity* activity, Event* e);
-                
+        
         void processEventQueue();
         
+        artivity::SoftwareAgent* getSoftwareAgent();
+        
+        artivity::SoftwareAssociation* getSoftwareAssociation();
+        
+        artivity::Viewbox* getViewbox();
+                
         AttributeValueMap* getChangedAttributes(string a, string b);
         
         GByteArray* getEventPayload(Event* e);

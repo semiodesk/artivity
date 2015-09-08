@@ -2,7 +2,7 @@
 #define DELETE_H
 
 #include "../Ontologies/rdf.h"
-#include "../Ontologies/as.h"
+#include "../Ontologies/art.h"
 #include "../Activity.h"
 
 namespace artivity
@@ -12,12 +12,12 @@ namespace artivity
     public:
         Delete() : Activity()
         {
-            setValue(rdf::_type, as::Delete);
+            setValue(rdf::_type, art::Delete);
         }
         
         Delete(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, as::Delete);
+            setValue(rdf::_type, art::Delete);
         }
     };
 }

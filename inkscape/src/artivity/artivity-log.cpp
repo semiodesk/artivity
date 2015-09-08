@@ -25,40 +25,40 @@ namespace Inkscape
         _desktop = desktop;
 
         _log = ActivityLog();
-        _instrument = new Resource("application://inkscape.desktop");
+        _agent = new SoftwareAgent("application://inkscape.desktop");
         _resourcePointers = std::vector<artivity::Resource*>();
 
         cout << "ArtivityLog(SPDocument*, SPDesktop*) called; doc=" << doc << endl << flush;
         
-        logEvent(art::OpenFile, NULL);
+        logEvent(art::Open, NULL);
     }
 
     ArtivityLog::~ArtivityLog()
     {
         cout << "~ArtivityLog() called;" << endl << flush;
         
-        logEvent(art::CloseFile, NULL);
+        logEvent(art::Close, NULL);
                 
-        if(_target != NULL) delete _target;
-        if(_instrument != NULL) delete _instrument;
+        if(_agent != NULL) delete _agent;
+        if(_entity != NULL) delete _entity;
     }
     
     void
     ArtivityLog::notifyUndoEvent(Event* e)
     {
-        logEvent(as::Undo, e);
+        logEvent(art::Undo, e);
     }
 
     void
     ArtivityLog::notifyRedoEvent(Event* e)
     {        
-        logEvent(as::Redo, e);
+        logEvent(art::Redo, e);
     }
 
     void
     ArtivityLog::notifyUndoCommitEvent(Event* e)
     {        
-        logEvent(as::Update, e);
+        logEvent(art::Update, e);
     }
 
     void
@@ -84,25 +84,20 @@ namespace Inkscape
     void
     ArtivityLog::logEvent(Activity* activity, Event* e)
     {
-        time_t now;
+        SoftwareAssociation* agent = getSoftwareAssociation();
         
+        if(agent == NULL) return;
+        
+        time_t now;
         time(&now);
 
         activity->setTime(now);
-        activity->setInstrument(*_instrument);
-        
-        if(_target != NULL)
-        {
-            activity->setTarget(*_target);
-        }
-            
-        setViewport(activity);
+        activity->addAssociation(agent);
         setType(activity, e);
-        setObject(activity, e);
+        //setObject(activity, e);
 
-        _resourcePointers.push_back(activity);
-        
         _log.push_back(*activity);
+        _resourcePointers.push_back(activity);
         
         processEventQueue();
     }
@@ -130,10 +125,10 @@ namespace Inkscape
 
         string uri = "file://" + string(_doc->getURI());
         
-        if(_target == NULL)
+        if(_entity == NULL)
         {
-            _target = new Resource(uri);
-            _log.setTarget(*_target);
+            _entity = new FileDataObject(uri.c_str());
+            _log.setGeneratedEntity(_entity);
         }
         
         _log.transmit();
@@ -154,24 +149,47 @@ namespace Inkscape
         _resourcePointers.clear();
     }
    
-    void
-    ArtivityLog::setViewport(Activity* activity)
+    SoftwareAgent*
+    ArtivityLog::getSoftwareAgent()
+    {
+        return _agent;
+    }
+    
+    SoftwareAssociation*
+    ArtivityLog::getSoftwareAssociation()
+    {
+        Viewbox* viewbox = getViewbox();
+        
+        if(viewbox == NULL) return NULL;
+        
+        _log.addAnnotation(viewbox);
+        //_resourcePointers.push_back(viewbox);
+                
+        SoftwareAssociation* association = new SoftwareAssociation();
+        association->setAgent(_agent);
+        association->setViewbox(viewbox);
+        
+        _log.addAnnotation(association);
+        //_resourcePointers.push_back(association);
+        
+        return association;
+    }
+   
+    Viewbox*
+    ArtivityLog::getViewbox()
     {        
-        if(_desktop == NULL) return;
+        if(_desktop == NULL) return NULL;
        
         Geom::Rect vbox = _desktop->get_display_area();
 
-        Resource* viewbox = new Resource(UriGenerator::getUri());
-        viewbox->addProperty(rdf::_type, art::Viewbox);
-        viewbox->addProperty(art::left, vbox.left());
-        viewbox->addProperty(art::right, vbox.right());
-        viewbox->addProperty(art::top, vbox.top());
-        viewbox->addProperty(art::bottom, vbox.bottom());
-        viewbox->addProperty(art::zoomFactor, _desktop->current_zoom());
-
-        activity->addProperty(art::viewbox, *viewbox);
+        Viewbox* viewbox = new Viewbox();
+        viewbox->setLeft(vbox.left());
+        viewbox->setRight(vbox.right());
+        viewbox->setTop(vbox.top());
+        viewbox->setBottom(vbox.bottom());
+        viewbox->setZoomFactor(_desktop->current_zoom());
             
-        _log.addAnnotation(viewbox);
+        return viewbox;
     }
    
     void
@@ -180,19 +198,20 @@ namespace Inkscape
         if(e == NULL || e->event == NULL)
             return;
             
-        if(activity->hasProperty(rdf::_type, as::Undo) || activity->hasProperty(rdf::_type, as::Redo))
+        if(activity->hasProperty(rdf::_type, art::Undo) || activity->hasProperty(rdf::_type, art::Redo))
             return;
         
         if(is<Inkscape::XML::EventAdd*>(e->event))
         {
-            activity->setValue(rdf::_type, as::Add);
+            activity->setValue(rdf::_type, art::Add);
         }
         else if(is<Inkscape::XML::EventDel*>(e->event))
         {
-            activity->setValue(rdf::_type, as::Delete);
+            activity->setValue(rdf::_type, art::Delete);
         }
         else if(is<Inkscape::XML::EventChgAttr*>(e->event))
         {
+            /*
             Inkscape::XML::EventChgAttr* x = as<Inkscape::XML::EventChgAttr*>(e->event);
             
             string oldval = string(x->oldval);
@@ -223,9 +242,11 @@ namespace Inkscape
             }
             
             delete values;
+            */
         }
         else if(is<Inkscape::XML::EventChgContent*>(e->event))
         {
+            /*
             Inkscape::XML::EventChgContent* x = as<Inkscape::XML::EventChgContent*>(e->event);
                         
             const char* oldval = string(x->oldval).c_str();
@@ -239,18 +260,20 @@ namespace Inkscape
             activity->setValue(art::modification, *m);
             
             _log.addAnnotation(m);
+            */
         }
         else if(is<Inkscape::XML::EventChgOrder*>(e->event))
         {
             //Inkscape::XML::EventChgOrder* x = as<Inkscape::XML::EventChgOrder*>(e->event);
             
-            activity->setValue(rdf::_type, as::Update);
+            activity->setValue(rdf::_type, art::Update);
         }
     }
     
     void
     ArtivityLog::setObject(Activity* activity, Event* e)
     {
+        /*
         if(e == NULL || e->event == NULL || e->event->repr == NULL || !e->event->repr->attribute("id"))
             return;
         
@@ -268,6 +291,7 @@ namespace Inkscape
         activity->setValue(as::object, *shape);
         
         _log.addAnnotation(shape);
+        */
     }
 
     AttributeValueMap*

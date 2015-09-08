@@ -1,50 +1,44 @@
 #include "Activity.h"
-
-#include "Ontologies/as.h"
+#include "Ontologies/prov.h"
 #include "Ontologies/rdf.h"
 #include "UriGenerator.h"
+#include <algorithm>
 
 namespace artivity
 {
     Activity::Activity() : Resource(UriGenerator::getUri())
     {
-        _actor = NULL;
-        _instrument = NULL;
-        _target = NULL;
-        _object = NULL;
+        _associations = new list<Association*>();
+        _usedEntities = new list<Entity*>();
+        _invalidatedEntities = new list<Entity*>();
+        _generatedEntities = new list<Entity*>();
         
-        setValue(rdf::_type, as::Activity);
+        setValue(rdf::_type, prov::Activity);
     }
     
     Activity::Activity(const char* uriref) : Resource(uriref)
     {
-        _actor = NULL;
-        _instrument = NULL;
-        _target = NULL;
-        _object = NULL;
+        _associations = new list<Association*>();
+        _usedEntities = new list<Entity*>();
+        _invalidatedEntities = new list<Entity*>();
+        _generatedEntities = new list<Entity*>();
         
-        setValue(rdf::_type, as::Activity);
+        setValue(rdf::_type, prov::Activity);
     }
 
-    Activity::~Activity() {}
+    Activity::~Activity()
+    {
+        delete _associations;
+        delete _usedEntities;
+        delete _invalidatedEntities;
+        delete _generatedEntities;
+    }
     
     bool Activity::isValid()
     {
         // TODO: Check if type, actor, object and time is set.
         // See: http://www.w3.org/TR/activitystreams-core/#example-1
         return true;
-    }
-    
-    void Activity::setDisplayName(string name)
-    {
-        _displayName = name;
-        
-        setValue(as::displayName, name.c_str());
-    }
-    
-    string Activity::getDisplayName()
-    {
-        return _displayName;
     }
     
     void Activity::setTime(time_t time)
@@ -62,7 +56,7 @@ namespace artivity
     {
         _endTime = time;
         
-        setValue(as::endTime, &time);
+        setValue(prov::endedAtTime, &time);
     }
     
     time_t Activity::getEndTime()
@@ -74,7 +68,7 @@ namespace artivity
     {
         _startTime = time;
         
-        setValue(as::startTime, &time);
+        setValue(prov::endedAtTime, &time);
     }
     
     time_t Activity::getStartTime()
@@ -82,64 +76,64 @@ namespace artivity
         return _startTime;
     }
     
-    void Activity::setUpdateTime(time_t time)
+    list<Association*> Activity::getAssociations()
     {
-        _updateTime = time;
-        
-        setValue(as::updateTime, &time);
+        return *_associations;
     }
     
-    time_t Activity::getUpdateTime()
+    void Activity::addAssociation(Association* association)
     {
-        return _updateTime;
+        _associations->push_back(association);
     }
     
-    void Activity::setActor(Resource& actor)
-    {
-        _actor = &actor;
-        
-        setValue(as::actor, actor);
+    void Activity::removeAssociation(Association* association)
+    {        
+        _associations->remove(association);
     }
     
-    Resource* Activity::getActor()
+    list<Entity*> Activity::getUsedEntities()
     {
-        return _actor;
+        return *_usedEntities;
     }
     
-    void Activity::setInstrument(Resource& instrument)
+    void Activity::addUsedEntity(Entity* entity)
     {
-        _instrument = &instrument;
-        
-        setValue(as::instrument, instrument);
+        _usedEntities->push_back(entity);
     }
     
-    Resource* Activity::getInstrument()
-    {
-        return _instrument;
+    void Activity::removeUsedEntity(Entity* entity)
+    {        
+        _usedEntities->remove(entity);
     }
     
-    void Activity::setObject(Resource& object)
+    list<Entity*> Activity::getInvalidatedEntities()
     {
-        _object = &object;
-        
-        setValue(as::object, object);
+        return *_invalidatedEntities;
     }
     
-    Resource* Activity::getObject()
+    void Activity::addInvalidatedEntity(Entity* entity)
     {
-        return _object;
+        _invalidatedEntities->push_back(entity);
     }
     
-    void Activity::setTarget(Resource& target)
-    {
-        _target = &target;
-        
-        setValue(as::target, target);
+    void Activity::removeInvalidatedEntity(Entity* entity)
+    {       
+        _invalidatedEntities->remove(entity);
     }
     
-    Resource* Activity::getTarget()
+    list<Entity*> Activity::getGeneratedEntities()
     {
-        return _target;
+        return *_generatedEntities;
+    }
+    
+    void Activity::addGeneratedEntity(Entity* entity)
+    {
+        _generatedEntities->push_back(entity);
+    }
+    
+    void Activity::removeGeneratedEntity(Entity* entity)
+    {        
+        _generatedEntities->remove(entity);
     }
 }
 

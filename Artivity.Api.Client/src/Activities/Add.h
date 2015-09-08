@@ -2,7 +2,7 @@
 #define ADD_H
 
 #include "../Ontologies/rdf.h"
-#include "../Ontologies/as.h"
+#include "../Ontologies/art.h"
 #include "../Activity.h"
 
 namespace artivity
@@ -12,12 +12,12 @@ namespace artivity
     public:
         Add() : Activity()
         {
-            setValue(rdf::_type, as::Add);
+            setValue(rdf::_type, art::Add);
         }
         
         Add(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, as::Add);
+            setValue(rdf::_type, art::Add);
         }
     };
 }
