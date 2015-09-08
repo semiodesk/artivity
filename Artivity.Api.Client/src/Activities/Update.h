@@ -2,7 +2,7 @@
 #define UPDATE_H
 
 #include "../Ontologies/rdf.h"
-#include "../Ontologies/as.h"
+#include "../Ontologies/art.h"
 #include "../Activity.h"
 
 namespace artivity
@@ -12,12 +12,12 @@ namespace artivity
     public:
         Update() : Activity()
         {
-            setValue(rdf::_type, as::Update);
+            setValue(rdf::_type, art::Update);
         }
         
         Update(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, as::Update);
+            setValue(rdf::_type, art::Update);
         }
     };
 }

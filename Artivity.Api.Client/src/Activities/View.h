@@ -2,7 +2,7 @@
 #define VIEW_H
 
 #include "../Ontologies/rdf.h"
-#include "../Ontologies/as.h"
+#include "../Ontologies/art.h"
 #include "../Activity.h"
 
 namespace artivity
@@ -12,12 +12,12 @@ namespace artivity
     public:
         View() : Activity()
         {
-            setValue(rdf::_type, as::View);
+            setValue(rdf::_type, art::View);
         }
         
         View(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, as::View);
+            setValue(rdf::_type, art::View);
         }
     };
 }

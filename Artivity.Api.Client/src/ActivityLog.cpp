@@ -26,25 +26,13 @@ namespace artivity
         return true;
     }
     
-    void ActivityLog::setInstrument(Resource& instrument)
+    void ActivityLog::setGeneratedEntity(Entity* entity)
     {
         ActivityLogIterator it = begin();
         
         while(it != end())
         {
-            it->setInstrument(instrument);
-            
-            it++;
-        }
-    }
-    
-    void ActivityLog::setTarget(Resource& target)
-    {
-        ActivityLogIterator it = begin();
-        
-        while(it != end())
-        {
-            it->setTarget(target);
+            it->addGeneratedEntity(entity);
             
             it++;
         }

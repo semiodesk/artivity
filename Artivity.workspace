@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Artivity" Database="" SWTLW="No">
-  <Project Name="inkscape" Path="inkscape/inkscape.project" Active="No"/>
-  <Project Name="client" Path="Artivity.Api.Client/client.project" Active="Yes"/>
+  <Project Name="inkscape" Path="inkscape/inkscape.project" Active="Yes"/>
+  <Project Name="client" Path="Artivity.Api.Client/client.project" Active="No"/>
   <Project Name="extension-chrome" Path="Artivity.Extension.Chromium/chromium.project" Active="No"/>
   <Project Name="firefox" Path="Artivity.Extension.Firefox/firefox.project" Active="No"/>
   <Project Name="firefox" Path="Artivity.Extension.Firefox/firefox.project" Active="No"/>

@@ -26,7 +26,7 @@ namespace artivity
         
         Resource(string uriref);
         Resource(const char* uriref);
-        ~Resource() {}
+        virtual ~Resource() {}
 
         bool hasProperty(const Property& property, const Resource& value);
         bool hasProperty(const Property& property, const time_t* value);

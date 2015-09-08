@@ -12,12 +12,12 @@ namespace artivity
     public:
         CloseFile() : Activity()
         {
-            setValue(rdf::_type, art::CloseFile);
+            setValue(rdf::_type, art::Close);
         }
         
         CloseFile(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, art::CloseFile);
+            setValue(rdf::_type, art::Close);
         }
     };
 }
