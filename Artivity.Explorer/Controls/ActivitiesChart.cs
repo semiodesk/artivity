@@ -44,8 +44,26 @@ namespace ArtivityExplorer.Controls
 		
 			double max = 1;
 
-			series.Add(CreateSeries("application://inkscape.desktop", activities.Where(a => a.Actor != null && a.Actor.Uri.ToString() == "application://inkscape.desktop"), ref max));
-			series.Add(CreateSeries("application://chromium-browser.desktop", activities.Where(a => a.Actor != null && a.Actor.Uri.ToString() == "application://chromium-browser.desktop"), ref max));
+			Dictionary<Uri, List<Activity>> agents = new Dictionary<Uri, List<Activity>>();
+
+			foreach (Activity activity in activities)
+			{
+				SoftwareAgent agent = activity.GetAssociatedSoftwareAgents().FirstOrDefault();
+
+				if (agent == null) continue;
+
+				if (!agents.ContainsKey(agent.Uri))
+				{
+					agents[agent.Uri] = new List<Activity>();
+				}
+
+				agents[agent.Uri].Add(activity);
+			}
+
+			foreach (KeyValuePair<Uri, List<Activity>> item in agents)
+			{
+				series.Add(CreateSeries(item.Key.AbsoluteUri, item.Value, ref max));
+			}
 
 			DateTimeAxis x = new DateTimeAxis()
 			{
