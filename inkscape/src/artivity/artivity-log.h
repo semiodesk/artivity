@@ -20,12 +20,7 @@
 #include "xml/attribute-record.h"
 #include <ctime>
 
-// TODO: Create artivity.h
-#include <artivity-client/ActivityLog.h>
-#include <artivity-client/SoftwareAgent.h>
-#include <artivity-client/SoftwareAssociation.h>
-#include <artivity-client/Viewbox.h>
-#include <artivity-client/Entities/FileDataObject.h>
+#include <artivity-client/artivity.h>
 
 class SPDesktop;
 
@@ -72,8 +67,6 @@ namespace Inkscape
         artivity::SoftwareAgent* _agent = NULL;
         
         artivity::FileDataObject* _entity = NULL;
-        
-        std::vector<artivity::Resource*> _resourcePointers;
    
     protected:
            
@@ -86,20 +79,12 @@ namespace Inkscape
         void setObject(artivity::Activity* activity, Event* e);
         
         void processEventQueue();
-        
-        artivity::SoftwareAgent* getSoftwareAgent();
-        
-        artivity::SoftwareAssociation* getSoftwareAssociation();
-        
-        artivity::Viewbox* getViewbox();
                 
         AttributeValueMap* getChangedAttributes(string a, string b);
         
         GByteArray* getEventPayload(Event* e);
 
         GString* serializeEvent(Inkscape::XML::Event* event);
-
-        void clearPointers();
     
     public:
         

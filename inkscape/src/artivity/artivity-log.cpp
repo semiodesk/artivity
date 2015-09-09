@@ -26,7 +26,6 @@ namespace Inkscape
 
         _log = ActivityLog();
         _agent = new SoftwareAgent("application://inkscape.desktop");
-        _resourcePointers = std::vector<artivity::Resource*>();
 
         cout << "ArtivityLog(SPDocument*, SPDesktop*) called; doc=" << doc << endl << flush;
         
@@ -84,101 +83,10 @@ namespace Inkscape
     void
     ArtivityLog::logEvent(Activity* activity, Event* e)
     {
-        SoftwareAssociation* agent = getSoftwareAssociation();
-        
-        if(agent == NULL) return;
-        
+        if(_desktop == NULL) return;
+                
         time_t now;
         time(&now);
-
-        activity->setTime(now);
-        activity->addAssociation(agent);
-        setType(activity, e);
-        //setObject(activity, e);
-
-        _log.push_back(*activity);
-        _resourcePointers.push_back(activity);
-        
-        processEventQueue();
-    }
-
-    void
-    ArtivityLog::processEventQueue()
-    {
-        if(_doc == NULL)
-        {
-            g_error("processEventQueue: _doc is NULL");
-            return;
-        }
-        
-        //if(!zeitgeist_log_is_connected(_log))
-        //{
-        //    g_warning("processEventQueue: No connection to Zeitgeist log.");
-        //}
-
-        if(_doc->getURI() == NULL)
-        {
-            // The document is not yet persisted. Therefore we keep our events
-            // in the queue until we have a valid file system path.
-            return;
-        }
-
-        string uri = "file://" + string(_doc->getURI());
-        
-        if(_entity == NULL)
-        {
-            _entity = new FileDataObject(uri.c_str());
-            _log.setGeneratedEntity(_entity);
-        }
-        
-        _log.transmit();
-    
-        clearPointers();
-    }
-
-    void
-    ArtivityLog::clearPointers()
-    {
-        vector<Resource*>::iterator iter, end;
-        
-        for(iter = _resourcePointers.begin(), end = _resourcePointers.end() ; iter != end; ++iter) 
-        {
-            delete (*iter);
-        }
-        
-        _resourcePointers.clear();
-    }
-   
-    SoftwareAgent*
-    ArtivityLog::getSoftwareAgent()
-    {
-        return _agent;
-    }
-    
-    SoftwareAssociation*
-    ArtivityLog::getSoftwareAssociation()
-    {
-        Viewbox* viewbox = getViewbox();
-        
-        if(viewbox == NULL) return NULL;
-        
-        _log.addAnnotation(viewbox);
-        //_resourcePointers.push_back(viewbox);
-                
-        SoftwareAssociation* association = new SoftwareAssociation();
-        association->setAgent(_agent);
-        association->setViewbox(viewbox);
-        
-        _log.addAnnotation(association);
-        //_resourcePointers.push_back(association);
-        
-        return association;
-    }
-   
-    Viewbox*
-    ArtivityLog::getViewbox()
-    {        
-        if(_desktop == NULL) return NULL;
        
         Geom::Rect vbox = _desktop->get_display_area();
 
@@ -188,8 +96,91 @@ namespace Inkscape
         viewbox->setTop(vbox.top());
         viewbox->setBottom(vbox.bottom());
         viewbox->setZoomFactor(_desktop->current_zoom());
+                        
+        SoftwareAssociation* software = new SoftwareAssociation();
+        software->setAgent(_agent);
+        software->setViewbox(viewbox);
+
+        activity->setTime(&now);
+        activity->addAssociation(software);
+        
+        setType(activity, e);
+        //setObject(activity, e);
+
+        _log.push_back(activity);
+        _log.addResource(software);
+        _log.addResource(viewbox);
+        
+        processEventQueue();
+    }
+
+    void
+    ArtivityLog::processEventQueue()
+    {
+        if(_log.empty() || !_log.isConnected()) return;
+        
+        if(_doc == NULL)
+        {
+            g_error("processEventQueue: _doc is NULL");
+            return;
+        }
+
+        if(_doc->getURI() == NULL)
+        {
+            // The document is not yet persisted. Therefore we keep our events
+            // in the queue until we have a valid file system path.
+            return;
+        }
+        
+        string uri = "file://" + string(_doc->getURI());
+        
+        if(_entity == NULL)
+        {
+            _entity = new FileDataObject(uri.c_str());
+        }
+        
+        ActivityLogIterator it = _log.begin();
+        
+        while(it != _log.end())
+        {
+            Activity* activity = *it;
             
-        return viewbox;
+            activity->addUsedEntity(_entity);
+                            
+            if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
+            {
+                stringstream generatedUri;
+                generatedUri << uri << "#" << UriGenerator::getRandomId(10);
+                            
+                FileDataObject* generated = new FileDataObject(generatedUri.str().c_str());
+                generated->addProperty(rdf::_type, prov::Collection);
+                generated->addProperty(prov::generatedAtTime, activity->getTime());
+                generated->addGenericEntity(_entity);
+                generated->setUrl(uri.c_str());
+                generated->setLastModificationTime(activity->getTime());
+                
+                activity->addGeneratedEntity(generated);
+                
+                _log.addResource(generated);
+                
+                stringstream invalidatedUri;
+                invalidatedUri << uri << "#" << UriGenerator::getRandomId(10);
+                
+                FileDataObject* invalidated = new FileDataObject(invalidatedUri.str().c_str());
+                invalidated->addProperty(rdf::_type, prov::Collection);
+                invalidated->addProperty(prov::invalidatedAtTime, activity->getTime());
+                invalidated->addGenericEntity(_entity);
+                invalidated->setUrl(uri.c_str());
+                
+                activity->addInvalidatedEntity(invalidated);
+                
+                _log.addResource(invalidated);
+            }
+            
+            it++;
+        }
+        
+        _log.transmit();
     }
    
     void

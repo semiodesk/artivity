@@ -1,8 +1,8 @@
 #ifndef CLOSE_H
 #define CLOSE_H
 
-#include "../Ontologies/rdf.h"
-#include "../Ontologies/art.h"
+#include "../../Ontologies/rdf.h"
+#include "../../Ontologies/art.h"
 #include "../Activity.h"
 
 namespace artivity

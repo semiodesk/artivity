@@ -3,6 +3,7 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
 @prefix art: <http://semiodesk.com/artivity/1.0/> .
 
 <http://semiodesk.com/artivity/1.0/> a owl:Ontology .
@@ -92,3 +93,5 @@ art:isCaptureEnabled a rdf:Property ;
     rdfs:domain prov:SoftwareAgent ;
     rdfs:range xsd:boolean .
     
+nfo:FileDataObject rdfs:subClassOf prov:Entity.
+nfo:WebDataObject rdfs:subClassOf prov:Entity.

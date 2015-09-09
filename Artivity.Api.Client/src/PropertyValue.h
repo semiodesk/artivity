@@ -19,21 +19,21 @@ namespace artivity
         
         const char* LiteralType;
         
-        PropertyValue(const Resource& resource)
+        PropertyValue(const Resource* resource)
         {
-            Value = &resource;
-            LiteralValue = "";
+            Value = resource;
+            LiteralValue = string();
             LiteralType = NULL;
         }
         
-        PropertyValue(string value, const type_info& literalType)
+        PropertyValue(const string& value, const type_info& literalType)
         {
             Value = NULL;
-            LiteralValue = value;
+            LiteralValue = string(value);
             LiteralType = literalType.name();
         }
         
-        ~PropertyValue() {}
+        virtual ~PropertyValue() {}
     };
 }
 
