@@ -8,7 +8,7 @@ using namespace std;
 
 namespace artivity
 {
-    typedef multimap<string, PropertyValue>::iterator PropertyIterator;
+    typedef multimap<string, PropertyValue>::iterator PropertyMapIterator;
     
     class PropertyMap : public multimap<string, PropertyValue>
     {
@@ -16,18 +16,15 @@ namespace artivity
         PropertyMap() {}
         ~PropertyMap() {}
         
-        PropertyIterator findProperty(string property, const Resource& resource)
+        PropertyMapIterator findProperty(const string& property, const Resource* resource)
         {
-            PropertyIterator it = begin();
+            PropertyMapIterator it = begin();
         
             while(it != end())
             {
                 PropertyValue x = it->second;
                 
-                if(x.Value == &resource)
-                {
-                    break;
-                }
+                if(x.Value == resource) break;
                 
                 it++;
             }
@@ -35,9 +32,9 @@ namespace artivity
             return it;
         }
         
-        PropertyIterator findProperty(string property, string literalValue, const type_info& typeInfo)
+        PropertyMapIterator findProperty(const string& property, string literalValue, const type_info& typeInfo)
         {                                    
-            PropertyIterator it = begin();
+            PropertyMapIterator it = begin();
                             
             while(it != end())
             {
@@ -56,56 +53,56 @@ namespace artivity
             return it;
         }
         
-        bool hasProperty(string property, const Resource& resource)
+        bool hasProperty(const string& property, const Resource* resource)
         {
             return findProperty(property, resource) != end();
         }
         
-        bool hasProperty(string property, string literalValue, const type_info& typeInfo)
+        bool hasProperty(const string& property, string literalValue, const type_info& typeInfo)
         {
             return findProperty(property, literalValue, typeInfo) != end();
         }
         
-        void addProperty(string property, const Resource& resource)
+        void addProperty(const string& property, const Resource* resource)
         {
             if(hasProperty(property, resource)) return;
             
             insert(pair<string, PropertyValue>(property, PropertyValue(resource)));
         }
         
-        void addProperty(string property, string literalValue, const type_info& typeInfo)
+        void addProperty(const string& property, string literalValue, const type_info& typeInfo)
         {
             if(hasProperty(property, literalValue, typeInfo)) return;
             
             insert(pair<string, PropertyValue>(property, PropertyValue(literalValue, typeInfo)));
         }
         
-        void removeProperty(string property, const Resource& resource)
+        void removeProperty(const string& property, const Resource* resource)
         {
-            PropertyIterator it = findProperty(property, resource);
+            PropertyMapIterator it = findProperty(property, resource);
             
             if(it == end()) return;
             
             erase(it);
         }
         
-        void removeProperty(string property, string literalValue, const type_info& typeInfo)
+        void removeProperty(const string& property, string literalValue, const type_info& typeInfo)
         {
-            PropertyIterator it = findProperty(property, literalValue, typeInfo);
+            PropertyMapIterator it = findProperty(property, literalValue, typeInfo);
             
             if(it == end()) return;
             
             erase(it);
         }
         
-        void setProperty(string property, const Resource& resource)
+        void setProperty(const string& property, const Resource* resource)
         {
             erase(property);
             
             addProperty(property, resource);
         }
         
-        void setProperty(string property, string literalValue, const type_info& typeInfo)
+        void setProperty(const string& property, string literalValue, const type_info& typeInfo)
         {
             erase(property);
             

@@ -48,7 +48,6 @@
     <Compile Include="ObjectModel\Agent.cs" />
     <Compile Include="ObjectModel\Association.cs" />
     <Compile Include="ObjectModel\SoftwareAssociation.cs" />
-    <Compile Include="ObjectModel\Entities\Entity.cs" />
     <Compile Include="ObjectModel\Entities\XmlAttribute.cs" />
     <Compile Include="ObjectModel\Entities\XmlElement.cs" />
     <Compile Include="ObjectModel\Entities\FileDataObject.cs" />
@@ -61,6 +60,7 @@
     <Compile Include="ObjectModel\Role.cs" />
     <Compile Include="ObjectModel\Entities\WebDataObject.cs" />
     <Compile Include="Models.cs" />
+    <Compile Include="ObjectModel\Entity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Ontologies\prov.ttl" />

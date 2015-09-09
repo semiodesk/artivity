@@ -28,6 +28,9 @@ namespace artivity
         Resource(const char* uriref);
         virtual ~Resource() {}
 
+        bool is(const Resource& type);
+
+        bool hasProperty(const Property& property, const Resource* value);
         bool hasProperty(const Property& property, const Resource& value);
         bool hasProperty(const Property& property, const time_t* value);
         bool hasProperty(const Property& property, const char* value);
@@ -36,6 +39,7 @@ namespace artivity
         bool hasProperty(const Property& property, float value);
         bool hasProperty(const Property& property, double value);
         
+        void addProperty(const Property& property, const Resource* value);
         void addProperty(const Property& property, const Resource& value);
         void addProperty(const Property& property, const time_t* value);
         void addProperty(const Property& property, const char* value);
@@ -43,7 +47,8 @@ namespace artivity
         void addProperty(const Property& property, long value);
         void addProperty(const Property& property, float value);
         void addProperty(const Property& property, double value);
-        
+
+        void removeProperty(const Property& property, const Resource* value);        
         void removeProperty(const Property& property, const Resource& value);
         void removeProperty(const Property& property, const time_t* value);
         void removeProperty(const Property& property, const char* value);
@@ -51,7 +56,8 @@ namespace artivity
         void removeProperty(const Property& property, long value);
         void removeProperty(const Property& property, float value);
         void removeProperty(const Property& property, double value);
-        
+
+        void setValue(const Property& property, const Resource* value);        
         void setValue(const Property& property, const Resource& value);
         void setValue(const Property& property, const time_t* value);
         void setValue(const Property& property, const char* value);

@@ -17,10 +17,8 @@ namespace artivity
         
         static string getUri()
         {
-            return string("http://semiodesk.com/artivity/1.0/id/" + getRandomId(10));
+            return string("http://semiodesk.com/id/" + getRandomId(10));
         }
-        
-    private:
     
         static string getRandomId(size_t length)
         {

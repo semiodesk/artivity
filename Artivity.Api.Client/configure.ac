@@ -1,7 +1,7 @@
 
 AC_PREREQ([2.61])
 AC_INIT([Artivity Client], [0.8], [hello@semiodesk.com])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 LT_PREREQ([2.2])
 LT_INIT([dlopen])
 

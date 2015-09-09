@@ -80,7 +80,7 @@ namespace artivity
         {               
             out << resource;
             
-            PropertyIterator it = resource.Properties.begin();
+            PropertyMapIterator it = resource.Properties.begin();
             
             while(it != resource.Properties.end())
             {
