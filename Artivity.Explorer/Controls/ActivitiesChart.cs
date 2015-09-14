@@ -26,7 +26,7 @@ namespace ArtivityExplorer.Controls
 
         public ActivitiesChart()
         {
-			BackgroundColor = new Color(0, 0, 0);
+			BackgroundColor = Color.FromBytes(49, 55, 57);
             MinHeight = 200;
             Margin = 0;
 

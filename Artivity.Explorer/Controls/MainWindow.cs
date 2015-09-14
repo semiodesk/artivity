@@ -58,6 +58,7 @@ namespace ArtivityExplorer.Controls
 
             // Initialize the widget layout.
             HBox content = new HBox();
+			content.Spacing = 0;
             content.PackStart(_statsPanel);
             content.PackStart( _log, true);
 
