@@ -1,13 +1,6 @@
 #include <iostream>
 
-#include "Activity.h"
-#include "ActivityLog.h"
-
-#include "Activities/Create.h"
-#include "Activities/Update.h"
-
-#include "Ontologies/as.h"
-#include "Ontologies/rdf.h"
+#include "artivity.h"
 
 using namespace artivity;
 
@@ -21,36 +14,30 @@ int main(int argc, char **argv)
     time_t now;
     time(&now);
      
-    Create a0 = "http://localhost:8890/artivity/1.0/activities#0";
-    a0.setDisplayName("Creating an SVG file..");
-    a0.setTime(now);
+    Create* a0 = new Create();
+    a0->setTime(&now);
     
     log.push_back(a0);
     
     time(&now);
         
-    Update a1 = "http://localhost:8890/artivity/1.0/activities#1";
-    a1.setDisplayName("Updating the file..");
-    a1.setTime(now);
+    Update* a1 = new Update();
+    a1->setTime(&now);
     
     log.push_back(a1);
     
     time(&now);
         
-    Update a2 = "http://localhost:8890/artivity/1.0/activities#2";
-    a2.setDisplayName("Updating the file..");
-    a2.setTime(now);
+    Update* a2 = new Update();
+    a2->setTime(&now);
     
     log.push_back(a2);
     
     if(log.isConnected())
     {
-        Resource instrument = "application://inkscape.desktop";
-        Resource target = "file://example.svg";
+        FileDataObject* file = new FileDataObject("file://example.svg");
         
-        log.setInstrument(instrument);
-        log.setTarget(target);
-        
+        log.setGeneratedEntity(file);
         log.transmit();
     }
     

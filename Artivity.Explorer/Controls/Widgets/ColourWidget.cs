@@ -33,7 +33,7 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeComponent()
         {
-            Color color = Color.FromName("Black");
+			Color color = Color.FromBytes(49, 55, 57);
 
 			ImageView icon = new ImageView(BitmapImage.FromResource("colour"));
 

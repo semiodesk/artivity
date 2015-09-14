@@ -398,6 +398,18 @@ void SPDesktop::destroy()
 
     delete _guides_message_context;
     _guides_message_context = NULL;
+    
+    if (event_log) {
+		doc()->removeUndoObserver(*event_log);
+		delete event_log;
+		event_log = NULL;
+	}
+
+	if (artivity_log) {
+		doc()->removeUndoObserver(*artivity_log);
+		delete artivity_log;
+		artivity_log = NULL;
+	}
 }
 
 SPDesktop::~SPDesktop()
@@ -1557,13 +1569,13 @@ SPDesktop::setDocument (SPDocument *doc)
 	if (event_log) {
 		doc->removeUndoObserver(*event_log);
 		delete event_log;
-		event_log = 0;
+		event_log = NULL;
 	}
 
 	if (artivity_log) {
 		doc->removeUndoObserver(*artivity_log);
 		delete artivity_log;
-		artivity_log = 0;
+		artivity_log = NULL;
 	}
 	
     /* setup EventLog */

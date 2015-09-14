@@ -38,7 +38,7 @@ function onRequestResponse() {
 
   var enabledBox = document.getElementById('settings-option-enabled');
     
-  if(this.response != 'null' && this.response.enabled != 'null') {
+  if(this.response !== null && this.response.enabled !== null) {
      enabledBox.checked = this.response.enabled;
   }
 
@@ -51,9 +51,9 @@ function onRequestResponse() {
 }
 
 function sendRequest(type, callback, errorCallback, params) {
-  var url = 'http://localhost:8272/artivity/1.0/status';
+  var url = 'http://localhost:8272/artivity/1.0/agents/status/';
 
-  params['actor'] = 'application://chromium-browser.desktop';
+  params['agent'] = 'application://chromium-browser.desktop';
   
   if(type === 'GET') {
       url += formatParams(params);

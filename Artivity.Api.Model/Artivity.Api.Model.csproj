@@ -35,34 +35,44 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ObjectModel\Person.cs" />
-    <Compile Include="ObjectModel\Application.cs" />
-    <Compile Include="ObjectModel\Content.cs" />
-    <Compile Include="ObjectModel\Page.cs" />
-    <Compile Include="ObjectModel\Document.cs" />
-    <Compile Include="ObjectModel\Experience.cs" />
-    <Compile Include="ObjectModel\Actor.cs" />
     <Compile Include="ObjectModel\Activity.cs" />
-    <Compile Include="ObjectModel\IntransitiveActivity.cs" />
-    <Compile Include="ObjectModel\Object.cs" />
     <Compile Include="Ontologies\Ontologies.g.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObjectModel\Activities\View.cs" />
     <Compile Include="ObjectModel\Activities\Update.cs" />
-    <Compile Include="ObjectModel\Activities\Create.cs" />
-    <Compile Include="ObjectModel\Activities\Delete.cs" />
     <Compile Include="ObjectModel\Activities\Undo.cs" />
-    <Compile Include="ObjectModel\Activities\Remove.cs" />
     <Compile Include="ObjectModel\Activities\Add.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />
+    <Compile Include="ObjectModel\Viewbox.cs" />
+    <Compile Include="ObjectModel\SoftwareAgent.cs" />
+    <Compile Include="ObjectModel\Agent.cs" />
+    <Compile Include="ObjectModel\Association.cs" />
+    <Compile Include="ObjectModel\SoftwareAssociation.cs" />
+    <Compile Include="ObjectModel\Entities\XmlAttribute.cs" />
+    <Compile Include="ObjectModel\Entities\XmlElement.cs" />
+    <Compile Include="ObjectModel\Entities\FileDataObject.cs" />
+    <Compile Include="ObjectModel\Activities\Close.cs" />
+    <Compile Include="ObjectModel\Activities\Open.cs" />
+    <Compile Include="ObjectModel\Activities\Remove.cs" />
+    <Compile Include="ObjectModel\Activities\Delete.cs" />
+    <Compile Include="ObjectModel\Activities\Create.cs" />
+    <Compile Include="ObjectModel\Activities\Redo.cs" />
+    <Compile Include="ObjectModel\Role.cs" />
+    <Compile Include="ObjectModel\Entities\WebDataObject.cs" />
+    <Compile Include="Models.cs" />
+    <Compile Include="ObjectModel\Entity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="Ontologies\prov.ttl" />
-    <None Include="Ontologies\as2.ttl" />
     <None Include="packages.config" />
     <None Include="Ontologies\owl.n3" />
     <None Include="Ontologies\rdf.rdf" />
     <None Include="Ontologies\rdfs.n3" />
+    <None Include="Ontologies\art.ttl" />
+    <None Include="app.config" />
+    <None Include="Ontologies\nfo.rdf" />
+    <None Include="Ontologies\xml.rdf" />
+    <None Include="Ontologies\nie.rdf" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="dotNetRDF">
@@ -88,6 +98,7 @@
     <Reference Include="Semiodesk.Trinity">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.91\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -97,12 +108,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Import Project="..\packages\Semiodesk.Trinity.Modelling.0.9.87\build\net40\Semiodesk.Trinity.Modelling.targets" Condition="Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.87\build\net40\Semiodesk.Trinity.Modelling.targets')" />
+  <Import Project="../packages/Semiodesk.Trinity.Modelling.0.9.91/build/net40/Semiodesk.Trinity.Modelling.targets" Condition="Exists('../packages/Semiodesk.Trinity.Modelling.0.9.91/build/net40/Semiodesk.Trinity.Modelling.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.87\build\net40\Semiodesk.Trinity.Modelling.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Semiodesk.Trinity.Modelling.0.9.87\build\net40\Semiodesk.Trinity.Modelling.targets'))" />
   </Target>
-  <Import Project="../packages/Semiodesk.Trinity.Modelling.0.9.91/build/net40/Semiodesk.Trinity.Modelling.targets" Condition="Exists('../packages/Semiodesk.Trinity.Modelling.0.9.91/build/net40/Semiodesk.Trinity.Modelling.targets')" />
+  <ItemGroup>
+    <Folder Include="ObjectModel\Entities\" />
+  </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 10.08.2015 15:41:34
+// Date: 9/8/2015 11:37:24 AM
 
 using System;
 using System.Collections.Generic;
@@ -1477,1638 +1477,6 @@ public static class OWL
 ///
 ///
 ///</summary>
-public class as2 : Ontology
-{
-    public static readonly Uri Namespace = new Uri("http://www.w3.org/ns/activitystreams#");
-    public static Uri GetNamespace() { return Namespace; }
-    
-    public static readonly string Prefix = "as2";
-    public static string GetPrefix() { return Prefix; }     
-
-    ///<summary>
-    ///Extended Activity Streams 2.0 Vocabulary
-    ///<see cref="http://www.w3.org/ns/activitystreams#"/>
-    ///</summary>
-    public static readonly Resource activitystreams = new Resource(new Uri("http://www.w3.org/ns/activitystreams#"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"/>
-    ///</summary>
-    public static readonly Resource langString = new Resource(new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/2001/XMLSchema#duration"/>
-    ///</summary>
-    public static readonly Resource duration = new Resource(new Uri("http://www.w3.org/2001/XMLSchema#duration"));    
-
-    ///<summary>
-    ///Subproperty of as:attributedTo that identifies the primary actor
-    ///<see cref="http://www.w3.org/ns/activitystreams#actor"/>
-    ///</summary>
-    public static readonly Property actor = new Property(new Uri("http://www.w3.org/ns/activitystreams#actor"));    
-
-    ///<summary>
-    ///Identifies an entity to which an object is attributed
-    ///<see cref="http://www.w3.org/ns/activitystreams#attributedTo"/>
-    ///</summary>
-    public static readonly Property attributedTo = new Property(new Uri("http://www.w3.org/ns/activitystreams#attributedTo"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#attachment"/>
-    ///</summary>
-    public static readonly Property attachment = new Property(new Uri("http://www.w3.org/ns/activitystreams#attachment"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#attachments"/>
-    ///</summary>
-    public static readonly Property attachments = new Property(new Uri("http://www.w3.org/ns/activitystreams#attachments"));    
-
-    ///<summary>
-    ///Identifies the author of an object. Deprecated. Use as:attributedTo instead
-    ///<see cref="http://www.w3.org/ns/activitystreams#author"/>
-    ///</summary>
-    public static readonly Property author = new Property(new Uri("http://www.w3.org/ns/activitystreams#author"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#bcc"/>
-    ///</summary>
-    public static readonly Property bcc = new Property(new Uri("http://www.w3.org/ns/activitystreams#bcc"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#bto"/>
-    ///</summary>
-    public static readonly Property bto = new Property(new Uri("http://www.w3.org/ns/activitystreams#bto"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#cc"/>
-    ///</summary>
-    public static readonly Property cc = new Property(new Uri("http://www.w3.org/ns/activitystreams#cc"));    
-
-    ///<summary>
-    ///Specifies the context within which an object exists or an activity was performed
-    ///<see cref="http://www.w3.org/ns/activitystreams#context"/>
-    ///</summary>
-    public static readonly Property context = new Property(new Uri("http://www.w3.org/ns/activitystreams#context"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#current"/>
-    ///</summary>
-    public static readonly Property current = new Property(new Uri("http://www.w3.org/ns/activitystreams#current"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#first"/>
-    ///</summary>
-    public static readonly Property first = new Property(new Uri("http://www.w3.org/ns/activitystreams#first"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#generator"/>
-    ///</summary>
-    public static readonly Property generator = new Property(new Uri("http://www.w3.org/ns/activitystreams#generator"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#icon"/>
-    ///</summary>
-    public static readonly Property icon = new Property(new Uri("http://www.w3.org/ns/activitystreams#icon"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#image"/>
-    ///</summary>
-    public static readonly Property image = new Property(new Uri("http://www.w3.org/ns/activitystreams#image"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#inReplyTo"/>
-    ///</summary>
-    public static readonly Property inReplyTo = new Property(new Uri("http://www.w3.org/ns/activitystreams#inReplyTo"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#items"/>
-    ///</summary>
-    public static readonly Property items = new Property(new Uri("http://www.w3.org/ns/activitystreams#items"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#last"/>
-    ///</summary>
-    public static readonly Property last = new Property(new Uri("http://www.w3.org/ns/activitystreams#last"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#location"/>
-    ///</summary>
-    public static readonly Property location = new Property(new Uri("http://www.w3.org/ns/activitystreams#location"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#next"/>
-    ///</summary>
-    public static readonly Property next = new Property(new Uri("http://www.w3.org/ns/activitystreams#next"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#object"/>
-    ///</summary>
-    public static readonly Property _object = new Property(new Uri("http://www.w3.org/ns/activitystreams#object"));    
-
-    ///<summary>
-    ///Describes a possible exclusive answer or option for a question.
-    ///<see cref="http://www.w3.org/ns/activitystreams#oneOf"/>
-    ///</summary>
-    public static readonly Property oneOf = new Property(new Uri("http://www.w3.org/ns/activitystreams#oneOf"));    
-
-    ///<summary>
-    ///Describes a possible inclusive answer or option for a question.
-    ///<see cref="http://www.w3.org/ns/activitystreams#anyOf"/>
-    ///</summary>
-    public static readonly Property anyOf = new Property(new Uri("http://www.w3.org/ns/activitystreams#anyOf"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#prev"/>
-    ///</summary>
-    public static readonly Property prev = new Property(new Uri("http://www.w3.org/ns/activitystreams#prev"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#preview"/>
-    ///</summary>
-    public static readonly Property preview = new Property(new Uri("http://www.w3.org/ns/activitystreams#preview"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#provider"/>
-    ///</summary>
-    public static readonly Property provider = new Property(new Uri("http://www.w3.org/ns/activitystreams#provider"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#replies"/>
-    ///</summary>
-    public static readonly Property replies = new Property(new Uri("http://www.w3.org/ns/activitystreams#replies"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#result"/>
-    ///</summary>
-    public static readonly Property result = new Property(new Uri("http://www.w3.org/ns/activitystreams#result"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#scope"/>
-    ///</summary>
-    public static readonly Property scope = new Property(new Uri("http://www.w3.org/ns/activitystreams#scope"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#self"/>
-    ///</summary>
-    public static readonly Property self = new Property(new Uri("http://www.w3.org/ns/activitystreams#self"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#tag"/>
-    ///</summary>
-    public static readonly Property tag = new Property(new Uri("http://www.w3.org/ns/activitystreams#tag"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#tags"/>
-    ///</summary>
-    public static readonly Property tags = new Property(new Uri("http://www.w3.org/ns/activitystreams#tags"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#target"/>
-    ///</summary>
-    public static readonly Property target = new Property(new Uri("http://www.w3.org/ns/activitystreams#target"));    
-
-    ///<summary>
-    ///For certain activities, specifies the entity from which the action is directed.
-    ///<see cref="http://www.w3.org/ns/activitystreams#origin"/>
-    ///</summary>
-    public static readonly Property origin = new Property(new Uri("http://www.w3.org/ns/activitystreams#origin"));    
-
-    ///<summary>
-    ///Indentifies an object used (or to be used) to complete an activity
-    ///<see cref="http://www.w3.org/ns/activitystreams#instrument"/>
-    ///</summary>
-    public static readonly Property instrument = new Property(new Uri("http://www.w3.org/ns/activitystreams#instrument"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#to"/>
-    ///</summary>
-    public static readonly Property to = new Property(new Uri("http://www.w3.org/ns/activitystreams#to"));    
-
-    ///<summary>
-    ///Specifies a link to a specific representation of the Object
-    ///<see cref="http://www.w3.org/ns/activitystreams#url"/>
-    ///</summary>
-    public static readonly Property url = new Property(new Uri("http://www.w3.org/ns/activitystreams#url"));    
-
-    ///<summary>
-    ///On a Relationship object, identifies the subject. e.g. when saying "John is connected to Sally", 'subject' refers to 'John'
-    ///<see cref="http://www.w3.org/ns/activitystreams#subject"/>
-    ///</summary>
-    public static readonly Property subject = new Property(new Uri("http://www.w3.org/ns/activitystreams#subject"));    
-
-    ///<summary>
-    ///On a Relationship object, describes the type of relationship
-    ///<see cref="http://www.w3.org/ns/activitystreams#relationship"/>
-    ///</summary>
-    public static readonly Property relationship = new Property(new Uri("http://www.w3.org/ns/activitystreams#relationship"));    
-
-    ///<summary>
-    ///On a Profile object, describes the object described by the profile
-    ///<see cref="http://www.w3.org/ns/activitystreams#describes"/>
-    ///</summary>
-    public static readonly Property describes = new Property(new Uri("http://www.w3.org/ns/activitystreams#describes"));    
-
-    ///<summary>
-    ///Specifies the accuracy around the point established by the longitude and latitude
-    ///<see cref="http://www.w3.org/ns/activitystreams#accuracy"/>
-    ///</summary>
-    public static readonly Property accuracy = new Property(new Uri("http://www.w3.org/ns/activitystreams#accuracy"));    
-
-    ///<summary>
-    ///An alternative, domain specific alias for an object
-    ///<see cref="http://www.w3.org/ns/activitystreams#alias"/>
-    ///</summary>
-    public static readonly Property alias = new Property(new Uri("http://www.w3.org/ns/activitystreams#alias"));    
-
-    ///<summary>
-    ///The altitude of a place
-    ///<see cref="http://www.w3.org/ns/activitystreams#altitude"/>
-    ///</summary>
-    public static readonly Property altitude = new Property(new Uri("http://www.w3.org/ns/activitystreams#altitude"));    
-
-    ///<summary>
-    ///The content of the object.
-    ///<see cref="http://www.w3.org/ns/activitystreams#content"/>
-    ///</summary>
-    public static readonly Property content = new Property(new Uri("http://www.w3.org/ns/activitystreams#content"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#displayName"/>
-    ///</summary>
-    public static readonly Property displayName = new Property(new Uri("http://www.w3.org/ns/activitystreams#displayName"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#downstreamDuplicates"/>
-    ///</summary>
-    public static readonly Property downstreamDuplicates = new Property(new Uri("http://www.w3.org/ns/activitystreams#downstreamDuplicates"));    
-
-    ///<summary>
-    ///The duration of the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#duration"/>
-    ///</summary>
-    public static readonly Property duration_0 = new Property(new Uri("http://www.w3.org/ns/activitystreams#duration"));    
-
-    ///<summary>
-    ///The ending time of the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#endTime"/>
-    ///</summary>
-    public static readonly Property endTime = new Property(new Uri("http://www.w3.org/ns/activitystreams#endTime"));    
-
-    ///<summary>
-    ///The display height expressed as device independent pixels
-    ///<see cref="http://www.w3.org/ns/activitystreams#height"/>
-    ///</summary>
-    public static readonly Property height = new Property(new Uri("http://www.w3.org/ns/activitystreams#height"));    
-
-    ///<summary>
-    ///The target URI of the Link
-    ///<see cref="http://www.w3.org/ns/activitystreams#href"/>
-    ///</summary>
-    public static readonly Property href = new Property(new Uri("http://www.w3.org/ns/activitystreams#href"));    
-
-    ///<summary>
-    ///A hint about the language of the referenced resource
-    ///<see cref="http://www.w3.org/ns/activitystreams#hreflang"/>
-    ///</summary>
-    public static readonly Property hreflang = new Property(new Uri("http://www.w3.org/ns/activitystreams#hreflang"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#id"/>
-    ///</summary>
-    public static readonly Property id = new Property(new Uri("http://www.w3.org/ns/activitystreams#id"));    
-
-    ///<summary>
-    ///The maximum number of items per page in a logical Collection
-    ///<see cref="http://www.w3.org/ns/activitystreams#itemsPerPage"/>
-    ///</summary>
-    public static readonly Property itemsPerPage = new Property(new Uri("http://www.w3.org/ns/activitystreams#itemsPerPage"));    
-
-    ///<summary>
-    ///The latitude
-    ///<see cref="http://www.w3.org/ns/activitystreams#latitude"/>
-    ///</summary>
-    public static readonly Property latitude = new Property(new Uri("http://www.w3.org/ns/activitystreams#latitude"));    
-
-    ///<summary>
-    ///The longitude
-    ///<see cref="http://www.w3.org/ns/activitystreams#longitude"/>
-    ///</summary>
-    public static readonly Property longitude = new Property(new Uri("http://www.w3.org/ns/activitystreams#longitude"));    
-
-    ///<summary>
-    ///The MIME Media Type
-    ///<see cref="http://www.w3.org/ns/activitystreams#mediaType"/>
-    ///</summary>
-    public static readonly Property mediaType = new Property(new Uri("http://www.w3.org/ns/activitystreams#mediaType"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#objectType"/>
-    ///</summary>
-    public static readonly Property objectType = new Property(new Uri("http://www.w3.org/ns/activitystreams#objectType"));    
-
-    ///<summary>
-    ///Specifies the relative priority of the Activity
-    ///<see cref="http://www.w3.org/ns/activitystreams#priority"/>
-    ///</summary>
-    public static readonly Property priority = new Property(new Uri("http://www.w3.org/ns/activitystreams#priority"));    
-
-    ///<summary>
-    ///Specifies the date and time the object was published
-    ///<see cref="http://www.w3.org/ns/activitystreams#published"/>
-    ///</summary>
-    public static readonly Property published = new Property(new Uri("http://www.w3.org/ns/activitystreams#published"));    
-
-    ///<summary>
-    ///Specifies a radius around the point established by the longitude and latitude
-    ///<see cref="http://www.w3.org/ns/activitystreams#radius"/>
-    ///</summary>
-    public static readonly Property radius = new Property(new Uri("http://www.w3.org/ns/activitystreams#radius"));    
-
-    ///<summary>
-    ///A numeric rating (>= 0.0, <= 5.0) for the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#rating"/>
-    ///</summary>
-    public static readonly Property rating = new Property(new Uri("http://www.w3.org/ns/activitystreams#rating"));    
-
-    ///<summary>
-    ///The RFC 5988 or HTML5 Link Relation associated with the Link
-    ///<see cref="http://www.w3.org/ns/activitystreams#rel"/>
-    ///</summary>
-    public static readonly Property rel = new Property(new Uri("http://www.w3.org/ns/activitystreams#rel"));    
-
-    ///<summary>
-    ///In a strictly ordered logical collection, specifies the index position of the first item in the items list
-    ///<see cref="http://www.w3.org/ns/activitystreams#startIndex"/>
-    ///</summary>
-    public static readonly Property startIndex = new Property(new Uri("http://www.w3.org/ns/activitystreams#startIndex"));    
-
-    ///<summary>
-    ///The starting time of the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#startTime"/>
-    ///</summary>
-    public static readonly Property startTime = new Property(new Uri("http://www.w3.org/ns/activitystreams#startTime"));    
-
-    ///<summary>
-    ///A short summary of the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#summary"/>
-    ///</summary>
-    public static readonly Property summary = new Property(new Uri("http://www.w3.org/ns/activitystreams#summary"));    
-
-    ///<summary>
-    ///The title of the object, HTML markup is permitted.
-    ///<see cref="http://www.w3.org/ns/activitystreams#title"/>
-    ///</summary>
-    public static readonly Property title = new Property(new Uri("http://www.w3.org/ns/activitystreams#title"));    
-
-    ///<summary>
-    ///The total number of items in a logical collection
-    ///<see cref="http://www.w3.org/ns/activitystreams#totalItems"/>
-    ///</summary>
-    public static readonly Property totalItems = new Property(new Uri("http://www.w3.org/ns/activitystreams#totalItems"));    
-
-    ///<summary>
-    ///Identifies the unit of measurement used by the radius, altitude and accuracy properties. The value can be expressed either as one of a set of predefined units or as a well-known common URI that identifies units.
-    ///<see cref="http://www.w3.org/ns/activitystreams#units"/>
-    ///</summary>
-    public static readonly Property units = new Property(new Uri("http://www.w3.org/ns/activitystreams#units"));    
-
-    ///<summary>
-    ///Specifies when the object was last updated
-    ///<see cref="http://www.w3.org/ns/activitystreams#updated"/>
-    ///</summary>
-    public static readonly Property updated = new Property(new Uri("http://www.w3.org/ns/activitystreams#updated"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#upstreamDuplicates"/>
-    ///</summary>
-    public static readonly Property upstreamDuplicates = new Property(new Uri("http://www.w3.org/ns/activitystreams#upstreamDuplicates"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#verb"/>
-    ///</summary>
-    public static readonly Property verb = new Property(new Uri("http://www.w3.org/ns/activitystreams#verb"));    
-
-    ///<summary>
-    ///Specifies the preferred display width of the content, expressed in terms of device independent pixels.
-    ///<see cref="http://www.w3.org/ns/activitystreams#width"/>
-    ///</summary>
-    public static readonly Property width = new Property(new Uri("http://www.w3.org/ns/activitystreams#width"));    
-
-    ///<summary>
-    ///Actor accepts the Object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Accept"/>
-    ///</summary>
-    public static readonly Class Accept = new Class(new Uri("http://www.w3.org/ns/activitystreams#Accept"));    
-
-    ///<summary>
-    ///An Object representing some form of Action that has been taken
-    ///<see cref="http://www.w3.org/ns/activitystreams#Activity"/>
-    ///</summary>
-    public static readonly Class Activity = new Class(new Uri("http://www.w3.org/ns/activitystreams#Activity"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#Block"/>
-    ///</summary>
-    public static readonly Class Block = new Class(new Uri("http://www.w3.org/ns/activitystreams#Block"));    
-
-    ///<summary>
-    ///An Activity that has no direct object
-    ///<see cref="http://www.w3.org/ns/activitystreams#IntransitiveActivity"/>
-    ///</summary>
-    public static readonly Class IntransitiveActivity = new Class(new Uri("http://www.w3.org/ns/activitystreams#IntransitiveActivity"));    
-
-    ///<summary>
-    ///Any entity that can do something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Actor"/>
-    ///</summary>
-    public static readonly Class Actor = new Class(new Uri("http://www.w3.org/ns/activitystreams#Actor"));    
-
-    ///<summary>
-    ///To Add an Object or Link to Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Add"/>
-    ///</summary>
-    public static readonly Class Add = new Class(new Uri("http://www.w3.org/ns/activitystreams#Add"));    
-
-    ///<summary>
-    ///An Album.. typically a collection of photos
-    ///<see cref="http://www.w3.org/ns/activitystreams#Album"/>
-    ///</summary>
-    public static readonly Class Album = new Class(new Uri("http://www.w3.org/ns/activitystreams#Album"));    
-
-    ///<summary>
-    ///Actor announces the object to the target
-    ///<see cref="http://www.w3.org/ns/activitystreams#Announce"/>
-    ///</summary>
-    public static readonly Class Announce = new Class(new Uri("http://www.w3.org/ns/activitystreams#Announce"));    
-
-    ///<summary>
-    ///Represents a software application of any sort
-    ///<see cref="http://www.w3.org/ns/activitystreams#Application"/>
-    ///</summary>
-    public static readonly Class Application = new Class(new Uri("http://www.w3.org/ns/activitystreams#Application"));    
-
-    ///<summary>
-    ///To Arrive Somewhere (can be used, for instance, to indicate that a particular entity is currently located somewhere, e.g. a "check-in")
-    ///<see cref="http://www.w3.org/ns/activitystreams#Arrive"/>
-    ///</summary>
-    public static readonly Class Arrive = new Class(new Uri("http://www.w3.org/ns/activitystreams#Arrive"));    
-
-    ///<summary>
-    ///A written work. Typically several paragraphs long. For example, a blog post or a news article.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Article"/>
-    ///</summary>
-    public static readonly Class Article = new Class(new Uri("http://www.w3.org/ns/activitystreams#Article"));    
-
-    ///<summary>
-    ///An audio file
-    ///<see cref="http://www.w3.org/ns/activitystreams#Audio"/>
-    ///</summary>
-    public static readonly Class Audio = new Class(new Uri("http://www.w3.org/ns/activitystreams#Audio"));    
-
-    ///<summary>
-    ///An ordered or unordered collection of Objects or Links
-    ///<see cref="http://www.w3.org/ns/activitystreams#Collection"/>
-    ///</summary>
-    public static readonly Class Collection = new Class(new Uri("http://www.w3.org/ns/activitystreams#Collection"));    
-
-    ///<summary>
-    ///Represents a Social Graph relationship between two Individuals (indicated by the 'a' and 'b' properties)
-    ///<see cref="http://www.w3.org/ns/activitystreams#Relationship"/>
-    ///</summary>
-    public static readonly Class Relationship = new Class(new Uri("http://www.w3.org/ns/activitystreams#Relationship"));    
-
-    ///<summary>
-    ///An Object that has content
-    ///<see cref="http://www.w3.org/ns/activitystreams#Content"/>
-    ///</summary>
-    public static readonly Class Content = new Class(new Uri("http://www.w3.org/ns/activitystreams#Content"));    
-
-    ///<summary>
-    ///To Create Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Create"/>
-    ///</summary>
-    public static readonly Class Create = new Class(new Uri("http://www.w3.org/ns/activitystreams#Create"));    
-
-    ///<summary>
-    ///To Delete Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Delete"/>
-    ///</summary>
-    public static readonly Class Delete = new Class(new Uri("http://www.w3.org/ns/activitystreams#Delete"));    
-
-    ///<summary>
-    ///The actor dislikes the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Dislike"/>
-    ///</summary>
-    public static readonly Class Dislike = new Class(new Uri("http://www.w3.org/ns/activitystreams#Dislike"));    
-
-    ///<summary>
-    ///Represents a digital document/file of any sort
-    ///<see cref="http://www.w3.org/ns/activitystreams#Document"/>
-    ///</summary>
-    public static readonly Class Document = new Class(new Uri("http://www.w3.org/ns/activitystreams#Document"));    
-
-    ///<summary>
-    ///An Event of any kind
-    ///<see cref="http://www.w3.org/ns/activitystreams#Event"/>
-    ///</summary>
-    public static readonly Class Event = new Class(new Uri("http://www.w3.org/ns/activitystreams#Event"));    
-
-    ///<summary>
-    ///To flag something (e.g. flag as inappropriate, flag as spam, etc)
-    ///<see cref="http://www.w3.org/ns/activitystreams#Flag"/>
-    ///</summary>
-    public static readonly Class Flag = new Class(new Uri("http://www.w3.org/ns/activitystreams#Flag"));    
-
-    ///<summary>
-    ///Typically, a collection of files
-    ///<see cref="http://www.w3.org/ns/activitystreams#Folder"/>
-    ///</summary>
-    public static readonly Class Folder = new Class(new Uri("http://www.w3.org/ns/activitystreams#Folder"));    
-
-    ///<summary>
-    ///To Express Interest in Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Follow"/>
-    ///</summary>
-    public static readonly Class Follow = new Class(new Uri("http://www.w3.org/ns/activitystreams#Follow"));    
-
-    ///<summary>
-    ///A Group of any kind.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Group"/>
-    ///</summary>
-    public static readonly Class Group = new Class(new Uri("http://www.w3.org/ns/activitystreams#Group"));    
-
-    ///<summary>
-    ///Actor is ignoring the Object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Ignore"/>
-    ///</summary>
-    public static readonly Class Ignore = new Class(new Uri("http://www.w3.org/ns/activitystreams#Ignore"));    
-
-    ///<summary>
-    ///An Image file
-    ///<see cref="http://www.w3.org/ns/activitystreams#Image"/>
-    ///</summary>
-    public static readonly Class Image = new Class(new Uri("http://www.w3.org/ns/activitystreams#Image"));    
-
-    ///<summary>
-    ///To invite someone or something to something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Invite"/>
-    ///</summary>
-    public static readonly Class Invite = new Class(new Uri("http://www.w3.org/ns/activitystreams#Invite"));    
-
-    ///<summary>
-    ///To Join Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Join"/>
-    ///</summary>
-    public static readonly Class Join = new Class(new Uri("http://www.w3.org/ns/activitystreams#Join"));    
-
-    ///<summary>
-    ///To Leave Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Leave"/>
-    ///</summary>
-    public static readonly Class Leave = new Class(new Uri("http://www.w3.org/ns/activitystreams#Leave"));    
-
-    ///<summary>
-    ///To Like Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Like"/>
-    ///</summary>
-    public static readonly Class Like = new Class(new Uri("http://www.w3.org/ns/activitystreams#Like"));    
-
-    ///<summary>
-    ///The actor experienced the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Experience"/>
-    ///</summary>
-    public static readonly Class Experience = new Class(new Uri("http://www.w3.org/ns/activitystreams#Experience"));    
-
-    ///<summary>
-    ///The actor viewed the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#View"/>
-    ///</summary>
-    public static readonly Class View = new Class(new Uri("http://www.w3.org/ns/activitystreams#View"));    
-
-    ///<summary>
-    ///The actor listened to the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Listen"/>
-    ///</summary>
-    public static readonly Class Listen = new Class(new Uri("http://www.w3.org/ns/activitystreams#Listen"));    
-
-    ///<summary>
-    ///The actor read the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Read"/>
-    ///</summary>
-    public static readonly Class Read = new Class(new Uri("http://www.w3.org/ns/activitystreams#Read"));    
-
-    ///<summary>
-    ///The actor is moving the object. The target specifies where the object is moving to. The origin specifies where the object is moving from.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Move"/>
-    ///</summary>
-    public static readonly Class Move = new Class(new Uri("http://www.w3.org/ns/activitystreams#Move"));    
-
-    ///<summary>
-    ///The actor is traveling to the target. The origin specifies where the actor is traveling from.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Travel"/>
-    ///</summary>
-    public static readonly Class Travel = new Class(new Uri("http://www.w3.org/ns/activitystreams#Travel"));    
-
-    ///<summary>
-    ///Represents a qualified reference to another resource. Patterned after the RFC5988 Web Linking Model
-    ///<see cref="http://www.w3.org/ns/activitystreams#Link"/>
-    ///</summary>
-    public static readonly Class Link = new Class(new Uri("http://www.w3.org/ns/activitystreams#Link"));    
-
-    ///<summary>
-    ///A specialized Link that represents an @mention
-    ///<see cref="http://www.w3.org/ns/activitystreams#Mention"/>
-    ///</summary>
-    public static readonly Class Mention = new Class(new Uri("http://www.w3.org/ns/activitystreams#Mention"));    
-
-    ///<summary>
-    ///A Short note, typically less than a single paragraph. A "tweet" is an example, or a "status update"
-    ///<see cref="http://www.w3.org/ns/activitystreams#Note"/>
-    ///</summary>
-    public static readonly Class Note = new Class(new Uri("http://www.w3.org/ns/activitystreams#Note"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#Object"/>
-    ///</summary>
-    public static readonly Class Object = new Class(new Uri("http://www.w3.org/ns/activitystreams#Object"));    
-
-    ///<summary>
-    ///To Offer something to someone or something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Offer"/>
-    ///</summary>
-    public static readonly Class Offer = new Class(new Uri("http://www.w3.org/ns/activitystreams#Offer"));    
-
-    ///<summary>
-    ///A variation of Collection in which items are strictly ordered
-    ///<see cref="http://www.w3.org/ns/activitystreams#OrderedCollection"/>
-    ///</summary>
-    public static readonly Class OrderedCollection = new Class(new Uri("http://www.w3.org/ns/activitystreams#OrderedCollection"));    
-
-    ///<summary>
-    ///A rdf:List variant for Objects and Links
-    ///<see cref="http://www.w3.org/ns/activitystreams#OrderedItems"/>
-    ///</summary>
-    public static readonly Class OrderedItems = new Class(new Uri("http://www.w3.org/ns/activitystreams#OrderedItems"));    
-
-    ///<summary>
-    ///A Web Page
-    ///<see cref="http://www.w3.org/ns/activitystreams#Page"/>
-    ///</summary>
-    public static readonly Class Page = new Class(new Uri("http://www.w3.org/ns/activitystreams#Page"));    
-
-    ///<summary>
-    ///A Person
-    ///<see cref="http://www.w3.org/ns/activitystreams#Person"/>
-    ///</summary>
-    public static readonly Class Person = new Class(new Uri("http://www.w3.org/ns/activitystreams#Person"));    
-
-    ///<summary>
-    ///An Organization
-    ///<see cref="http://www.w3.org/ns/activitystreams#Organization"/>
-    ///</summary>
-    public static readonly Class Organization = new Class(new Uri("http://www.w3.org/ns/activitystreams#Organization"));    
-
-    ///<summary>
-    ///A Profile Document
-    ///<see cref="http://www.w3.org/ns/activitystreams#Profile"/>
-    ///</summary>
-    public static readonly Class Profile = new Class(new Uri("http://www.w3.org/ns/activitystreams#Profile"));    
-
-    ///<summary>
-    ///A physical or logical location
-    ///<see cref="http://www.w3.org/ns/activitystreams#Place"/>
-    ///</summary>
-    public static readonly Class Place = new Class(new Uri("http://www.w3.org/ns/activitystreams#Place"));    
-
-    ///<summary>
-    ///Any form of short or long running process
-    ///<see cref="http://www.w3.org/ns/activitystreams#Process"/>
-    ///</summary>
-    public static readonly Class Process = new Class(new Uri("http://www.w3.org/ns/activitystreams#Process"));    
-
-    ///<summary>
-    ///A question of any sort.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Question"/>
-    ///</summary>
-    public static readonly Class Question = new Class(new Uri("http://www.w3.org/ns/activitystreams#Question"));    
-
-    ///<summary>
-    ///Actor rejects the Object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Reject"/>
-    ///</summary>
-    public static readonly Class Reject = new Class(new Uri("http://www.w3.org/ns/activitystreams#Reject"));    
-
-    ///<summary>
-    ///To Remove Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Remove"/>
-    ///</summary>
-    public static readonly Class Remove = new Class(new Uri("http://www.w3.org/ns/activitystreams#Remove"));    
-
-    ///<summary>
-    ///A service provided by some entity
-    ///<see cref="http://www.w3.org/ns/activitystreams#Service"/>
-    ///</summary>
-    public static readonly Class Service = new Class(new Uri("http://www.w3.org/ns/activitystreams#Service"));    
-
-    ///<summary>
-    ///An ordered collection of content sharing a common purpose or characteristic
-    ///<see cref="http://www.w3.org/ns/activitystreams#Story"/>
-    ///</summary>
-    public static readonly Class Story = new Class(new Uri("http://www.w3.org/ns/activitystreams#Story"));    
-
-    ///<summary>
-    ///Actor tentatively accepts the Object
-    ///<see cref="http://www.w3.org/ns/activitystreams#TentativeAccept"/>
-    ///</summary>
-    public static readonly Class TentativeAccept = new Class(new Uri("http://www.w3.org/ns/activitystreams#TentativeAccept"));    
-
-    ///<summary>
-    ///Actor tentatively rejects the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#TentativeReject"/>
-    ///</summary>
-    public static readonly Class TentativeReject = new Class(new Uri("http://www.w3.org/ns/activitystreams#TentativeReject"));    
-
-    ///<summary>
-    ///To Undo Something. This would typically be used to indicate that a previous Activity has been undone.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Undo"/>
-    ///</summary>
-    public static readonly Class Undo = new Class(new Uri("http://www.w3.org/ns/activitystreams#Undo"));    
-
-    ///<summary>
-    ///To Update/Modify Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Update"/>
-    ///</summary>
-    public static readonly Class Update = new Class(new Uri("http://www.w3.org/ns/activitystreams#Update"));    
-
-    ///<summary>
-    ///A Video document of any kind.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Video"/>
-    ///</summary>
-    public static readonly Class Video = new Class(new Uri("http://www.w3.org/ns/activitystreams#Video"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
-    ///</summary>
-    public static readonly Resource nil = new Resource(new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"));
-}
-///<summary>
-///
-///
-///</summary>
-public static class AS2
-{
-    public static readonly Uri Namespace = new Uri("http://www.w3.org/ns/activitystreams#");
-    public static Uri GetNamespace() { return Namespace; }
-    
-    public static readonly string Prefix = "AS2";
-    public static string GetPrefix() { return Prefix; } 
-
-    ///<summary>
-    ///Extended Activity Streams 2.0 Vocabulary
-    ///<see cref="http://www.w3.org/ns/activitystreams#"/>
-    ///</summary>
-    public const string activitystreams = "http://www.w3.org/ns/activitystreams#";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"/>
-    ///</summary>
-    public const string langString = "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/2001/XMLSchema#duration"/>
-    ///</summary>
-    public const string duration = "http://www.w3.org/2001/XMLSchema#duration";
-
-    ///<summary>
-    ///Subproperty of as:attributedTo that identifies the primary actor
-    ///<see cref="http://www.w3.org/ns/activitystreams#actor"/>
-    ///</summary>
-    public const string actor = "http://www.w3.org/ns/activitystreams#actor";
-
-    ///<summary>
-    ///Identifies an entity to which an object is attributed
-    ///<see cref="http://www.w3.org/ns/activitystreams#attributedTo"/>
-    ///</summary>
-    public const string attributedTo = "http://www.w3.org/ns/activitystreams#attributedTo";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#attachment"/>
-    ///</summary>
-    public const string attachment = "http://www.w3.org/ns/activitystreams#attachment";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#attachments"/>
-    ///</summary>
-    public const string attachments = "http://www.w3.org/ns/activitystreams#attachments";
-
-    ///<summary>
-    ///Identifies the author of an object. Deprecated. Use as:attributedTo instead
-    ///<see cref="http://www.w3.org/ns/activitystreams#author"/>
-    ///</summary>
-    public const string author = "http://www.w3.org/ns/activitystreams#author";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#bcc"/>
-    ///</summary>
-    public const string bcc = "http://www.w3.org/ns/activitystreams#bcc";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#bto"/>
-    ///</summary>
-    public const string bto = "http://www.w3.org/ns/activitystreams#bto";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#cc"/>
-    ///</summary>
-    public const string cc = "http://www.w3.org/ns/activitystreams#cc";
-
-    ///<summary>
-    ///Specifies the context within which an object exists or an activity was performed
-    ///<see cref="http://www.w3.org/ns/activitystreams#context"/>
-    ///</summary>
-    public const string context = "http://www.w3.org/ns/activitystreams#context";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#current"/>
-    ///</summary>
-    public const string current = "http://www.w3.org/ns/activitystreams#current";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#first"/>
-    ///</summary>
-    public const string first = "http://www.w3.org/ns/activitystreams#first";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#generator"/>
-    ///</summary>
-    public const string generator = "http://www.w3.org/ns/activitystreams#generator";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#icon"/>
-    ///</summary>
-    public const string icon = "http://www.w3.org/ns/activitystreams#icon";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#image"/>
-    ///</summary>
-    public const string image = "http://www.w3.org/ns/activitystreams#image";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#inReplyTo"/>
-    ///</summary>
-    public const string inReplyTo = "http://www.w3.org/ns/activitystreams#inReplyTo";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#items"/>
-    ///</summary>
-    public const string items = "http://www.w3.org/ns/activitystreams#items";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#last"/>
-    ///</summary>
-    public const string last = "http://www.w3.org/ns/activitystreams#last";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#location"/>
-    ///</summary>
-    public const string location = "http://www.w3.org/ns/activitystreams#location";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#next"/>
-    ///</summary>
-    public const string next = "http://www.w3.org/ns/activitystreams#next";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#object"/>
-    ///</summary>
-    public const string _object = "http://www.w3.org/ns/activitystreams#object";
-
-    ///<summary>
-    ///Describes a possible exclusive answer or option for a question.
-    ///<see cref="http://www.w3.org/ns/activitystreams#oneOf"/>
-    ///</summary>
-    public const string oneOf = "http://www.w3.org/ns/activitystreams#oneOf";
-
-    ///<summary>
-    ///Describes a possible inclusive answer or option for a question.
-    ///<see cref="http://www.w3.org/ns/activitystreams#anyOf"/>
-    ///</summary>
-    public const string anyOf = "http://www.w3.org/ns/activitystreams#anyOf";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#prev"/>
-    ///</summary>
-    public const string prev = "http://www.w3.org/ns/activitystreams#prev";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#preview"/>
-    ///</summary>
-    public const string preview = "http://www.w3.org/ns/activitystreams#preview";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#provider"/>
-    ///</summary>
-    public const string provider = "http://www.w3.org/ns/activitystreams#provider";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#replies"/>
-    ///</summary>
-    public const string replies = "http://www.w3.org/ns/activitystreams#replies";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#result"/>
-    ///</summary>
-    public const string result = "http://www.w3.org/ns/activitystreams#result";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#scope"/>
-    ///</summary>
-    public const string scope = "http://www.w3.org/ns/activitystreams#scope";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#self"/>
-    ///</summary>
-    public const string self = "http://www.w3.org/ns/activitystreams#self";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#tag"/>
-    ///</summary>
-    public const string tag = "http://www.w3.org/ns/activitystreams#tag";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#tags"/>
-    ///</summary>
-    public const string tags = "http://www.w3.org/ns/activitystreams#tags";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#target"/>
-    ///</summary>
-    public const string target = "http://www.w3.org/ns/activitystreams#target";
-
-    ///<summary>
-    ///For certain activities, specifies the entity from which the action is directed.
-    ///<see cref="http://www.w3.org/ns/activitystreams#origin"/>
-    ///</summary>
-    public const string origin = "http://www.w3.org/ns/activitystreams#origin";
-
-    ///<summary>
-    ///Indentifies an object used (or to be used) to complete an activity
-    ///<see cref="http://www.w3.org/ns/activitystreams#instrument"/>
-    ///</summary>
-    public const string instrument = "http://www.w3.org/ns/activitystreams#instrument";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#to"/>
-    ///</summary>
-    public const string to = "http://www.w3.org/ns/activitystreams#to";
-
-    ///<summary>
-    ///Specifies a link to a specific representation of the Object
-    ///<see cref="http://www.w3.org/ns/activitystreams#url"/>
-    ///</summary>
-    public const string url = "http://www.w3.org/ns/activitystreams#url";
-
-    ///<summary>
-    ///On a Relationship object, identifies the subject. e.g. when saying "John is connected to Sally", 'subject' refers to 'John'
-    ///<see cref="http://www.w3.org/ns/activitystreams#subject"/>
-    ///</summary>
-    public const string subject = "http://www.w3.org/ns/activitystreams#subject";
-
-    ///<summary>
-    ///On a Relationship object, describes the type of relationship
-    ///<see cref="http://www.w3.org/ns/activitystreams#relationship"/>
-    ///</summary>
-    public const string relationship = "http://www.w3.org/ns/activitystreams#relationship";
-
-    ///<summary>
-    ///On a Profile object, describes the object described by the profile
-    ///<see cref="http://www.w3.org/ns/activitystreams#describes"/>
-    ///</summary>
-    public const string describes = "http://www.w3.org/ns/activitystreams#describes";
-
-    ///<summary>
-    ///Specifies the accuracy around the point established by the longitude and latitude
-    ///<see cref="http://www.w3.org/ns/activitystreams#accuracy"/>
-    ///</summary>
-    public const string accuracy = "http://www.w3.org/ns/activitystreams#accuracy";
-
-    ///<summary>
-    ///An alternative, domain specific alias for an object
-    ///<see cref="http://www.w3.org/ns/activitystreams#alias"/>
-    ///</summary>
-    public const string alias = "http://www.w3.org/ns/activitystreams#alias";
-
-    ///<summary>
-    ///The altitude of a place
-    ///<see cref="http://www.w3.org/ns/activitystreams#altitude"/>
-    ///</summary>
-    public const string altitude = "http://www.w3.org/ns/activitystreams#altitude";
-
-    ///<summary>
-    ///The content of the object.
-    ///<see cref="http://www.w3.org/ns/activitystreams#content"/>
-    ///</summary>
-    public const string content = "http://www.w3.org/ns/activitystreams#content";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#displayName"/>
-    ///</summary>
-    public const string displayName = "http://www.w3.org/ns/activitystreams#displayName";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#downstreamDuplicates"/>
-    ///</summary>
-    public const string downstreamDuplicates = "http://www.w3.org/ns/activitystreams#downstreamDuplicates";
-
-    ///<summary>
-    ///The duration of the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#duration"/>
-    ///</summary>
-    public const string duration_0 = "http://www.w3.org/ns/activitystreams#duration";
-
-    ///<summary>
-    ///The ending time of the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#endTime"/>
-    ///</summary>
-    public const string endTime = "http://www.w3.org/ns/activitystreams#endTime";
-
-    ///<summary>
-    ///The display height expressed as device independent pixels
-    ///<see cref="http://www.w3.org/ns/activitystreams#height"/>
-    ///</summary>
-    public const string height = "http://www.w3.org/ns/activitystreams#height";
-
-    ///<summary>
-    ///The target URI of the Link
-    ///<see cref="http://www.w3.org/ns/activitystreams#href"/>
-    ///</summary>
-    public const string href = "http://www.w3.org/ns/activitystreams#href";
-
-    ///<summary>
-    ///A hint about the language of the referenced resource
-    ///<see cref="http://www.w3.org/ns/activitystreams#hreflang"/>
-    ///</summary>
-    public const string hreflang = "http://www.w3.org/ns/activitystreams#hreflang";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#id"/>
-    ///</summary>
-    public const string id = "http://www.w3.org/ns/activitystreams#id";
-
-    ///<summary>
-    ///The maximum number of items per page in a logical Collection
-    ///<see cref="http://www.w3.org/ns/activitystreams#itemsPerPage"/>
-    ///</summary>
-    public const string itemsPerPage = "http://www.w3.org/ns/activitystreams#itemsPerPage";
-
-    ///<summary>
-    ///The latitude
-    ///<see cref="http://www.w3.org/ns/activitystreams#latitude"/>
-    ///</summary>
-    public const string latitude = "http://www.w3.org/ns/activitystreams#latitude";
-
-    ///<summary>
-    ///The longitude
-    ///<see cref="http://www.w3.org/ns/activitystreams#longitude"/>
-    ///</summary>
-    public const string longitude = "http://www.w3.org/ns/activitystreams#longitude";
-
-    ///<summary>
-    ///The MIME Media Type
-    ///<see cref="http://www.w3.org/ns/activitystreams#mediaType"/>
-    ///</summary>
-    public const string mediaType = "http://www.w3.org/ns/activitystreams#mediaType";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#objectType"/>
-    ///</summary>
-    public const string objectType = "http://www.w3.org/ns/activitystreams#objectType";
-
-    ///<summary>
-    ///Specifies the relative priority of the Activity
-    ///<see cref="http://www.w3.org/ns/activitystreams#priority"/>
-    ///</summary>
-    public const string priority = "http://www.w3.org/ns/activitystreams#priority";
-
-    ///<summary>
-    ///Specifies the date and time the object was published
-    ///<see cref="http://www.w3.org/ns/activitystreams#published"/>
-    ///</summary>
-    public const string published = "http://www.w3.org/ns/activitystreams#published";
-
-    ///<summary>
-    ///Specifies a radius around the point established by the longitude and latitude
-    ///<see cref="http://www.w3.org/ns/activitystreams#radius"/>
-    ///</summary>
-    public const string radius = "http://www.w3.org/ns/activitystreams#radius";
-
-    ///<summary>
-    ///A numeric rating (>= 0.0, <= 5.0) for the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#rating"/>
-    ///</summary>
-    public const string rating = "http://www.w3.org/ns/activitystreams#rating";
-
-    ///<summary>
-    ///The RFC 5988 or HTML5 Link Relation associated with the Link
-    ///<see cref="http://www.w3.org/ns/activitystreams#rel"/>
-    ///</summary>
-    public const string rel = "http://www.w3.org/ns/activitystreams#rel";
-
-    ///<summary>
-    ///In a strictly ordered logical collection, specifies the index position of the first item in the items list
-    ///<see cref="http://www.w3.org/ns/activitystreams#startIndex"/>
-    ///</summary>
-    public const string startIndex = "http://www.w3.org/ns/activitystreams#startIndex";
-
-    ///<summary>
-    ///The starting time of the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#startTime"/>
-    ///</summary>
-    public const string startTime = "http://www.w3.org/ns/activitystreams#startTime";
-
-    ///<summary>
-    ///A short summary of the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#summary"/>
-    ///</summary>
-    public const string summary = "http://www.w3.org/ns/activitystreams#summary";
-
-    ///<summary>
-    ///The title of the object, HTML markup is permitted.
-    ///<see cref="http://www.w3.org/ns/activitystreams#title"/>
-    ///</summary>
-    public const string title = "http://www.w3.org/ns/activitystreams#title";
-
-    ///<summary>
-    ///The total number of items in a logical collection
-    ///<see cref="http://www.w3.org/ns/activitystreams#totalItems"/>
-    ///</summary>
-    public const string totalItems = "http://www.w3.org/ns/activitystreams#totalItems";
-
-    ///<summary>
-    ///Identifies the unit of measurement used by the radius, altitude and accuracy properties. The value can be expressed either as one of a set of predefined units or as a well-known common URI that identifies units.
-    ///<see cref="http://www.w3.org/ns/activitystreams#units"/>
-    ///</summary>
-    public const string units = "http://www.w3.org/ns/activitystreams#units";
-
-    ///<summary>
-    ///Specifies when the object was last updated
-    ///<see cref="http://www.w3.org/ns/activitystreams#updated"/>
-    ///</summary>
-    public const string updated = "http://www.w3.org/ns/activitystreams#updated";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#upstreamDuplicates"/>
-    ///</summary>
-    public const string upstreamDuplicates = "http://www.w3.org/ns/activitystreams#upstreamDuplicates";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#verb"/>
-    ///</summary>
-    public const string verb = "http://www.w3.org/ns/activitystreams#verb";
-
-    ///<summary>
-    ///Specifies the preferred display width of the content, expressed in terms of device independent pixels.
-    ///<see cref="http://www.w3.org/ns/activitystreams#width"/>
-    ///</summary>
-    public const string width = "http://www.w3.org/ns/activitystreams#width";
-
-    ///<summary>
-    ///Actor accepts the Object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Accept"/>
-    ///</summary>
-    public const string Accept = "http://www.w3.org/ns/activitystreams#Accept";
-
-    ///<summary>
-    ///An Object representing some form of Action that has been taken
-    ///<see cref="http://www.w3.org/ns/activitystreams#Activity"/>
-    ///</summary>
-    public const string Activity = "http://www.w3.org/ns/activitystreams#Activity";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#Block"/>
-    ///</summary>
-    public const string Block = "http://www.w3.org/ns/activitystreams#Block";
-
-    ///<summary>
-    ///An Activity that has no direct object
-    ///<see cref="http://www.w3.org/ns/activitystreams#IntransitiveActivity"/>
-    ///</summary>
-    public const string IntransitiveActivity = "http://www.w3.org/ns/activitystreams#IntransitiveActivity";
-
-    ///<summary>
-    ///Any entity that can do something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Actor"/>
-    ///</summary>
-    public const string Actor = "http://www.w3.org/ns/activitystreams#Actor";
-
-    ///<summary>
-    ///To Add an Object or Link to Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Add"/>
-    ///</summary>
-    public const string Add = "http://www.w3.org/ns/activitystreams#Add";
-
-    ///<summary>
-    ///An Album.. typically a collection of photos
-    ///<see cref="http://www.w3.org/ns/activitystreams#Album"/>
-    ///</summary>
-    public const string Album = "http://www.w3.org/ns/activitystreams#Album";
-
-    ///<summary>
-    ///Actor announces the object to the target
-    ///<see cref="http://www.w3.org/ns/activitystreams#Announce"/>
-    ///</summary>
-    public const string Announce = "http://www.w3.org/ns/activitystreams#Announce";
-
-    ///<summary>
-    ///Represents a software application of any sort
-    ///<see cref="http://www.w3.org/ns/activitystreams#Application"/>
-    ///</summary>
-    public const string Application = "http://www.w3.org/ns/activitystreams#Application";
-
-    ///<summary>
-    ///To Arrive Somewhere (can be used, for instance, to indicate that a particular entity is currently located somewhere, e.g. a "check-in")
-    ///<see cref="http://www.w3.org/ns/activitystreams#Arrive"/>
-    ///</summary>
-    public const string Arrive = "http://www.w3.org/ns/activitystreams#Arrive";
-
-    ///<summary>
-    ///A written work. Typically several paragraphs long. For example, a blog post or a news article.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Article"/>
-    ///</summary>
-    public const string Article = "http://www.w3.org/ns/activitystreams#Article";
-
-    ///<summary>
-    ///An audio file
-    ///<see cref="http://www.w3.org/ns/activitystreams#Audio"/>
-    ///</summary>
-    public const string Audio = "http://www.w3.org/ns/activitystreams#Audio";
-
-    ///<summary>
-    ///An ordered or unordered collection of Objects or Links
-    ///<see cref="http://www.w3.org/ns/activitystreams#Collection"/>
-    ///</summary>
-    public const string Collection = "http://www.w3.org/ns/activitystreams#Collection";
-
-    ///<summary>
-    ///Represents a Social Graph relationship between two Individuals (indicated by the 'a' and 'b' properties)
-    ///<see cref="http://www.w3.org/ns/activitystreams#Relationship"/>
-    ///</summary>
-    public const string Relationship = "http://www.w3.org/ns/activitystreams#Relationship";
-
-    ///<summary>
-    ///An Object that has content
-    ///<see cref="http://www.w3.org/ns/activitystreams#Content"/>
-    ///</summary>
-    public const string Content = "http://www.w3.org/ns/activitystreams#Content";
-
-    ///<summary>
-    ///To Create Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Create"/>
-    ///</summary>
-    public const string Create = "http://www.w3.org/ns/activitystreams#Create";
-
-    ///<summary>
-    ///To Delete Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Delete"/>
-    ///</summary>
-    public const string Delete = "http://www.w3.org/ns/activitystreams#Delete";
-
-    ///<summary>
-    ///The actor dislikes the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Dislike"/>
-    ///</summary>
-    public const string Dislike = "http://www.w3.org/ns/activitystreams#Dislike";
-
-    ///<summary>
-    ///Represents a digital document/file of any sort
-    ///<see cref="http://www.w3.org/ns/activitystreams#Document"/>
-    ///</summary>
-    public const string Document = "http://www.w3.org/ns/activitystreams#Document";
-
-    ///<summary>
-    ///An Event of any kind
-    ///<see cref="http://www.w3.org/ns/activitystreams#Event"/>
-    ///</summary>
-    public const string Event = "http://www.w3.org/ns/activitystreams#Event";
-
-    ///<summary>
-    ///To flag something (e.g. flag as inappropriate, flag as spam, etc)
-    ///<see cref="http://www.w3.org/ns/activitystreams#Flag"/>
-    ///</summary>
-    public const string Flag = "http://www.w3.org/ns/activitystreams#Flag";
-
-    ///<summary>
-    ///Typically, a collection of files
-    ///<see cref="http://www.w3.org/ns/activitystreams#Folder"/>
-    ///</summary>
-    public const string Folder = "http://www.w3.org/ns/activitystreams#Folder";
-
-    ///<summary>
-    ///To Express Interest in Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Follow"/>
-    ///</summary>
-    public const string Follow = "http://www.w3.org/ns/activitystreams#Follow";
-
-    ///<summary>
-    ///A Group of any kind.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Group"/>
-    ///</summary>
-    public const string Group = "http://www.w3.org/ns/activitystreams#Group";
-
-    ///<summary>
-    ///Actor is ignoring the Object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Ignore"/>
-    ///</summary>
-    public const string Ignore = "http://www.w3.org/ns/activitystreams#Ignore";
-
-    ///<summary>
-    ///An Image file
-    ///<see cref="http://www.w3.org/ns/activitystreams#Image"/>
-    ///</summary>
-    public const string Image = "http://www.w3.org/ns/activitystreams#Image";
-
-    ///<summary>
-    ///To invite someone or something to something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Invite"/>
-    ///</summary>
-    public const string Invite = "http://www.w3.org/ns/activitystreams#Invite";
-
-    ///<summary>
-    ///To Join Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Join"/>
-    ///</summary>
-    public const string Join = "http://www.w3.org/ns/activitystreams#Join";
-
-    ///<summary>
-    ///To Leave Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Leave"/>
-    ///</summary>
-    public const string Leave = "http://www.w3.org/ns/activitystreams#Leave";
-
-    ///<summary>
-    ///To Like Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Like"/>
-    ///</summary>
-    public const string Like = "http://www.w3.org/ns/activitystreams#Like";
-
-    ///<summary>
-    ///The actor experienced the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Experience"/>
-    ///</summary>
-    public const string Experience = "http://www.w3.org/ns/activitystreams#Experience";
-
-    ///<summary>
-    ///The actor viewed the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#View"/>
-    ///</summary>
-    public const string View = "http://www.w3.org/ns/activitystreams#View";
-
-    ///<summary>
-    ///The actor listened to the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Listen"/>
-    ///</summary>
-    public const string Listen = "http://www.w3.org/ns/activitystreams#Listen";
-
-    ///<summary>
-    ///The actor read the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Read"/>
-    ///</summary>
-    public const string Read = "http://www.w3.org/ns/activitystreams#Read";
-
-    ///<summary>
-    ///The actor is moving the object. The target specifies where the object is moving to. The origin specifies where the object is moving from.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Move"/>
-    ///</summary>
-    public const string Move = "http://www.w3.org/ns/activitystreams#Move";
-
-    ///<summary>
-    ///The actor is traveling to the target. The origin specifies where the actor is traveling from.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Travel"/>
-    ///</summary>
-    public const string Travel = "http://www.w3.org/ns/activitystreams#Travel";
-
-    ///<summary>
-    ///Represents a qualified reference to another resource. Patterned after the RFC5988 Web Linking Model
-    ///<see cref="http://www.w3.org/ns/activitystreams#Link"/>
-    ///</summary>
-    public const string Link = "http://www.w3.org/ns/activitystreams#Link";
-
-    ///<summary>
-    ///A specialized Link that represents an @mention
-    ///<see cref="http://www.w3.org/ns/activitystreams#Mention"/>
-    ///</summary>
-    public const string Mention = "http://www.w3.org/ns/activitystreams#Mention";
-
-    ///<summary>
-    ///A Short note, typically less than a single paragraph. A "tweet" is an example, or a "status update"
-    ///<see cref="http://www.w3.org/ns/activitystreams#Note"/>
-    ///</summary>
-    public const string Note = "http://www.w3.org/ns/activitystreams#Note";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/ns/activitystreams#Object"/>
-    ///</summary>
-    public const string Object = "http://www.w3.org/ns/activitystreams#Object";
-
-    ///<summary>
-    ///To Offer something to someone or something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Offer"/>
-    ///</summary>
-    public const string Offer = "http://www.w3.org/ns/activitystreams#Offer";
-
-    ///<summary>
-    ///A variation of Collection in which items are strictly ordered
-    ///<see cref="http://www.w3.org/ns/activitystreams#OrderedCollection"/>
-    ///</summary>
-    public const string OrderedCollection = "http://www.w3.org/ns/activitystreams#OrderedCollection";
-
-    ///<summary>
-    ///A rdf:List variant for Objects and Links
-    ///<see cref="http://www.w3.org/ns/activitystreams#OrderedItems"/>
-    ///</summary>
-    public const string OrderedItems = "http://www.w3.org/ns/activitystreams#OrderedItems";
-
-    ///<summary>
-    ///A Web Page
-    ///<see cref="http://www.w3.org/ns/activitystreams#Page"/>
-    ///</summary>
-    public const string Page = "http://www.w3.org/ns/activitystreams#Page";
-
-    ///<summary>
-    ///A Person
-    ///<see cref="http://www.w3.org/ns/activitystreams#Person"/>
-    ///</summary>
-    public const string Person = "http://www.w3.org/ns/activitystreams#Person";
-
-    ///<summary>
-    ///An Organization
-    ///<see cref="http://www.w3.org/ns/activitystreams#Organization"/>
-    ///</summary>
-    public const string Organization = "http://www.w3.org/ns/activitystreams#Organization";
-
-    ///<summary>
-    ///A Profile Document
-    ///<see cref="http://www.w3.org/ns/activitystreams#Profile"/>
-    ///</summary>
-    public const string Profile = "http://www.w3.org/ns/activitystreams#Profile";
-
-    ///<summary>
-    ///A physical or logical location
-    ///<see cref="http://www.w3.org/ns/activitystreams#Place"/>
-    ///</summary>
-    public const string Place = "http://www.w3.org/ns/activitystreams#Place";
-
-    ///<summary>
-    ///Any form of short or long running process
-    ///<see cref="http://www.w3.org/ns/activitystreams#Process"/>
-    ///</summary>
-    public const string Process = "http://www.w3.org/ns/activitystreams#Process";
-
-    ///<summary>
-    ///A question of any sort.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Question"/>
-    ///</summary>
-    public const string Question = "http://www.w3.org/ns/activitystreams#Question";
-
-    ///<summary>
-    ///Actor rejects the Object
-    ///<see cref="http://www.w3.org/ns/activitystreams#Reject"/>
-    ///</summary>
-    public const string Reject = "http://www.w3.org/ns/activitystreams#Reject";
-
-    ///<summary>
-    ///To Remove Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Remove"/>
-    ///</summary>
-    public const string Remove = "http://www.w3.org/ns/activitystreams#Remove";
-
-    ///<summary>
-    ///A service provided by some entity
-    ///<see cref="http://www.w3.org/ns/activitystreams#Service"/>
-    ///</summary>
-    public const string Service = "http://www.w3.org/ns/activitystreams#Service";
-
-    ///<summary>
-    ///An ordered collection of content sharing a common purpose or characteristic
-    ///<see cref="http://www.w3.org/ns/activitystreams#Story"/>
-    ///</summary>
-    public const string Story = "http://www.w3.org/ns/activitystreams#Story";
-
-    ///<summary>
-    ///Actor tentatively accepts the Object
-    ///<see cref="http://www.w3.org/ns/activitystreams#TentativeAccept"/>
-    ///</summary>
-    public const string TentativeAccept = "http://www.w3.org/ns/activitystreams#TentativeAccept";
-
-    ///<summary>
-    ///Actor tentatively rejects the object
-    ///<see cref="http://www.w3.org/ns/activitystreams#TentativeReject"/>
-    ///</summary>
-    public const string TentativeReject = "http://www.w3.org/ns/activitystreams#TentativeReject";
-
-    ///<summary>
-    ///To Undo Something. This would typically be used to indicate that a previous Activity has been undone.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Undo"/>
-    ///</summary>
-    public const string Undo = "http://www.w3.org/ns/activitystreams#Undo";
-
-    ///<summary>
-    ///To Update/Modify Something
-    ///<see cref="http://www.w3.org/ns/activitystreams#Update"/>
-    ///</summary>
-    public const string Update = "http://www.w3.org/ns/activitystreams#Update";
-
-    ///<summary>
-    ///A Video document of any kind.
-    ///<see cref="http://www.w3.org/ns/activitystreams#Video"/>
-    ///</summary>
-    public const string Video = "http://www.w3.org/ns/activitystreams#Video";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
-    ///</summary>
-    public const string nil = "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil";
-}
-///<summary>
-///
-///
-///</summary>
 public class prov : Ontology
 {
     public static readonly Uri Namespace = new Uri("http://www.w3.org/ns/prov#");
@@ -3760,9 +2128,9 @@ public class prov : Ontology
 
     ///<summary>
     ///
-    ///<see cref="file:///D:/Projects/Artivitiy/Artivity.Api.Model/Ontologies/prov.ttl#"/>
+    ///<see cref="file://home/sebastian/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"/>
     ///</summary>
-    public static readonly Resource prov_ttl = new Resource(new Uri("file:///D:/Projects/Artivitiy/Artivity.Api.Model/Ontologies/prov.ttl#"));    
+    public static readonly Resource prov_ttl = new Resource(new Uri("file://home/sebastian/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"));    
 
     ///<summary>
     ///
@@ -4908,9 +3276,9 @@ public static class PROV
 
     ///<summary>
     ///
-    ///<see cref="file:///D:/Projects/Artivitiy/Artivity.Api.Model/Ontologies/prov.ttl#"/>
+    ///<see cref="file://home/sebastian/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#"/>
     ///</summary>
-    public const string prov_ttl = "file:///D:/Projects/Artivitiy/Artivity.Api.Model/Ontologies/prov.ttl#";
+    public const string prov_ttl = "file://home/sebastian/Projects/Artivity/Artivity.Api.Model/Ontologies/prov.ttl#";
 
     ///<summary>
     ///
@@ -5400,5 +3768,3197 @@ public static class PROV
     ///<see cref="http://www.w3.org/ns/prov#mentionOf"/>
     ///</summary>
     public const string mentionOf = "http://www.w3.org/ns/prov#mentionOf";
+}
+///<summary>
+///RDF schema for the XML Infoset
+///
+///</summary>
+public class xml : Ontology
+{
+    public static readonly Uri Namespace = new Uri("http://www.w3.org/2001/04/infoset#");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "xml";
+    public static string GetPrefix() { return Prefix; }     
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#"/>
+    ///</summary>
+    public static readonly Resource infoset = new Resource(new Uri("http://www.w3.org/2001/04/infoset#"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#AttributeType"/>
+    ///</summary>
+    public static readonly Class AttributeType = new Class(new Uri("http://www.w3.org/2001/04/infoset#AttributeType"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Boolean"/>
+    ///</summary>
+    public static readonly Class Boolean = new Class(new Uri("http://www.w3.org/2001/04/infoset#Boolean"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Standalone"/>
+    ///</summary>
+    public static readonly Class Standalone = new Class(new Uri("http://www.w3.org/2001/04/infoset#Standalone"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Unknown"/>
+    ///</summary>
+    public static readonly Class Unknown = new Class(new Uri("http://www.w3.org/2001/04/infoset#Unknown"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#NoValue"/>
+    ///</summary>
+    public static readonly Class NoValue = new Class(new Uri("http://www.w3.org/2001/04/infoset#NoValue"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Literal"/>
+    ///</summary>
+    public static readonly Class Literal = new Class(new Uri("http://www.w3.org/2001/04/infoset#Literal"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Integer"/>
+    ///</summary>
+    public static readonly Class Integer = new Class(new Uri("http://www.w3.org/2001/04/infoset#Integer"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#InfoItem"/>
+    ///</summary>
+    public static readonly Class InfoItem = new Class(new Uri("http://www.w3.org/2001/04/infoset#InfoItem"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Document"/>
+    ///</summary>
+    public static readonly Class Document = new Class(new Uri("http://www.w3.org/2001/04/infoset#Document"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Element"/>
+    ///</summary>
+    public static readonly Class Element = new Class(new Uri("http://www.w3.org/2001/04/infoset#Element"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Attribute"/>
+    ///</summary>
+    public static readonly Class Attribute = new Class(new Uri("http://www.w3.org/2001/04/infoset#Attribute"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#ProcessingInstruction"/>
+    ///</summary>
+    public static readonly Class ProcessingInstruction = new Class(new Uri("http://www.w3.org/2001/04/infoset#ProcessingInstruction"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Character"/>
+    ///</summary>
+    public static readonly Class Character = new Class(new Uri("http://www.w3.org/2001/04/infoset#Character"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#UnexpandedEntityReference"/>
+    ///</summary>
+    public static readonly Class UnexpandedEntityReference = new Class(new Uri("http://www.w3.org/2001/04/infoset#UnexpandedEntityReference"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Comment"/>
+    ///</summary>
+    public static readonly Class Comment = new Class(new Uri("http://www.w3.org/2001/04/infoset#Comment"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#DocumentTypeDeclaration"/>
+    ///</summary>
+    public static readonly Class DocumentTypeDeclaration = new Class(new Uri("http://www.w3.org/2001/04/infoset#DocumentTypeDeclaration"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#UnparsedEntity"/>
+    ///</summary>
+    public static readonly Class UnparsedEntity = new Class(new Uri("http://www.w3.org/2001/04/infoset#UnparsedEntity"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Notation"/>
+    ///</summary>
+    public static readonly Class Notation = new Class(new Uri("http://www.w3.org/2001/04/infoset#Notation"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#InfoItemSet"/>
+    ///</summary>
+    public static readonly Class InfoItemSet = new Class(new Uri("http://www.w3.org/2001/04/infoset#InfoItemSet"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#AttributeSet"/>
+    ///</summary>
+    public static readonly Class AttributeSet = new Class(new Uri("http://www.w3.org/2001/04/infoset#AttributeSet"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#UnparsedEntitySet"/>
+    ///</summary>
+    public static readonly Class UnparsedEntitySet = new Class(new Uri("http://www.w3.org/2001/04/infoset#UnparsedEntitySet"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#NamespaceSet"/>
+    ///</summary>
+    public static readonly Class NamespaceSet = new Class(new Uri("http://www.w3.org/2001/04/infoset#NamespaceSet"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#NotationSet"/>
+    ///</summary>
+    public static readonly Class NotationSet = new Class(new Uri("http://www.w3.org/2001/04/infoset#NotationSet"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#InfoItemSeq"/>
+    ///</summary>
+    public static readonly Class InfoItemSeq = new Class(new Uri("http://www.w3.org/2001/04/infoset#InfoItemSeq"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#References"/>
+    ///</summary>
+    public static readonly Class References = new Class(new Uri("http://www.w3.org/2001/04/infoset#References"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#allDeclarationsProcessed"/>
+    ///</summary>
+    public static readonly Resource allDeclarationsProcessed = new Resource(new Uri("http://www.w3.org/2001/04/infoset#allDeclarationsProcessed"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#attributes"/>
+    ///</summary>
+    public static readonly Resource attributes = new Resource(new Uri("http://www.w3.org/2001/04/infoset#attributes"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#attributeType"/>
+    ///</summary>
+    public static readonly Resource attributeType = new Resource(new Uri("http://www.w3.org/2001/04/infoset#attributeType"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#baseURI"/>
+    ///</summary>
+    public static readonly Resource baseURI = new Resource(new Uri("http://www.w3.org/2001/04/infoset#baseURI"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#characterCode"/>
+    ///</summary>
+    public static readonly Resource characterCode = new Resource(new Uri("http://www.w3.org/2001/04/infoset#characterCode"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#characterEncodingScheme"/>
+    ///</summary>
+    public static readonly Resource characterEncodingScheme = new Resource(new Uri("http://www.w3.org/2001/04/infoset#characterEncodingScheme"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#children"/>
+    ///</summary>
+    public static readonly Resource children = new Resource(new Uri("http://www.w3.org/2001/04/infoset#children"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#content"/>
+    ///</summary>
+    public static readonly Resource content = new Resource(new Uri("http://www.w3.org/2001/04/infoset#content"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#namespaceAttributes"/>
+    ///</summary>
+    public static readonly Resource namespaceAttributes = new Resource(new Uri("http://www.w3.org/2001/04/infoset#namespaceAttributes"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#declarationBaseURI"/>
+    ///</summary>
+    public static readonly Resource declarationBaseURI = new Resource(new Uri("http://www.w3.org/2001/04/infoset#declarationBaseURI"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#documentElement"/>
+    ///</summary>
+    public static readonly Resource documentElement = new Resource(new Uri("http://www.w3.org/2001/04/infoset#documentElement"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#elementContentWhitespace"/>
+    ///</summary>
+    public static readonly Resource elementContentWhitespace = new Resource(new Uri("http://www.w3.org/2001/04/infoset#elementContentWhitespace"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#unparsedEntities"/>
+    ///</summary>
+    public static readonly Resource unparsedEntities = new Resource(new Uri("http://www.w3.org/2001/04/infoset#unparsedEntities"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#inScopeNamespaces"/>
+    ///</summary>
+    public static readonly Resource inScopeNamespaces = new Resource(new Uri("http://www.w3.org/2001/04/infoset#inScopeNamespaces"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#localName"/>
+    ///</summary>
+    public static readonly Resource localName = new Resource(new Uri("http://www.w3.org/2001/04/infoset#localName"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#name"/>
+    ///</summary>
+    public static readonly Resource name = new Resource(new Uri("http://www.w3.org/2001/04/infoset#name"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#namespaceName"/>
+    ///</summary>
+    public static readonly Resource namespaceName = new Resource(new Uri("http://www.w3.org/2001/04/infoset#namespaceName"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#normalizedValue"/>
+    ///</summary>
+    public static readonly Resource normalizedValue = new Resource(new Uri("http://www.w3.org/2001/04/infoset#normalizedValue"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#notation"/>
+    ///</summary>
+    public static readonly Resource notation = new Resource(new Uri("http://www.w3.org/2001/04/infoset#notation"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#notationName"/>
+    ///</summary>
+    public static readonly Resource notationName = new Resource(new Uri("http://www.w3.org/2001/04/infoset#notationName"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#notations"/>
+    ///</summary>
+    public static readonly Resource notations = new Resource(new Uri("http://www.w3.org/2001/04/infoset#notations"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#ownerElement"/>
+    ///</summary>
+    public static readonly Resource ownerElement = new Resource(new Uri("http://www.w3.org/2001/04/infoset#ownerElement"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#parent"/>
+    ///</summary>
+    public static readonly Resource parent = new Resource(new Uri("http://www.w3.org/2001/04/infoset#parent"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#prefix"/>
+    ///</summary>
+    public static readonly Resource prefix = new Resource(new Uri("http://www.w3.org/2001/04/infoset#prefix"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#publicIdentifier"/>
+    ///</summary>
+    public static readonly Resource publicIdentifier = new Resource(new Uri("http://www.w3.org/2001/04/infoset#publicIdentifier"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#references"/>
+    ///</summary>
+    public static readonly Resource references = new Resource(new Uri("http://www.w3.org/2001/04/infoset#references"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#specified"/>
+    ///</summary>
+    public static readonly Resource specified = new Resource(new Uri("http://www.w3.org/2001/04/infoset#specified"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#standalone"/>
+    ///</summary>
+    public static readonly Resource standalone = new Resource(new Uri("http://www.w3.org/2001/04/infoset#standalone"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#systemIdentifier"/>
+    ///</summary>
+    public static readonly Resource systemIdentifier = new Resource(new Uri("http://www.w3.org/2001/04/infoset#systemIdentifier"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#target"/>
+    ///</summary>
+    public static readonly Resource target = new Resource(new Uri("http://www.w3.org/2001/04/infoset#target"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#version"/>
+    ///</summary>
+    public static readonly Resource version = new Resource(new Uri("http://www.w3.org/2001/04/infoset#version"));
+}
+///<summary>
+///RDF schema for the XML Infoset
+///
+///</summary>
+public static class XML
+{
+    public static readonly Uri Namespace = new Uri("http://www.w3.org/2001/04/infoset#");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "XML";
+    public static string GetPrefix() { return Prefix; } 
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#"/>
+    ///</summary>
+    public const string infoset = "http://www.w3.org/2001/04/infoset#";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#AttributeType"/>
+    ///</summary>
+    public const string AttributeType = "http://www.w3.org/2001/04/infoset#AttributeType";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Boolean"/>
+    ///</summary>
+    public const string Boolean = "http://www.w3.org/2001/04/infoset#Boolean";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Standalone"/>
+    ///</summary>
+    public const string Standalone = "http://www.w3.org/2001/04/infoset#Standalone";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Unknown"/>
+    ///</summary>
+    public const string Unknown = "http://www.w3.org/2001/04/infoset#Unknown";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#NoValue"/>
+    ///</summary>
+    public const string NoValue = "http://www.w3.org/2001/04/infoset#NoValue";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Literal"/>
+    ///</summary>
+    public const string Literal = "http://www.w3.org/2001/04/infoset#Literal";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Integer"/>
+    ///</summary>
+    public const string Integer = "http://www.w3.org/2001/04/infoset#Integer";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#InfoItem"/>
+    ///</summary>
+    public const string InfoItem = "http://www.w3.org/2001/04/infoset#InfoItem";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Document"/>
+    ///</summary>
+    public const string Document = "http://www.w3.org/2001/04/infoset#Document";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Element"/>
+    ///</summary>
+    public const string Element = "http://www.w3.org/2001/04/infoset#Element";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Attribute"/>
+    ///</summary>
+    public const string Attribute = "http://www.w3.org/2001/04/infoset#Attribute";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#ProcessingInstruction"/>
+    ///</summary>
+    public const string ProcessingInstruction = "http://www.w3.org/2001/04/infoset#ProcessingInstruction";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Character"/>
+    ///</summary>
+    public const string Character = "http://www.w3.org/2001/04/infoset#Character";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#UnexpandedEntityReference"/>
+    ///</summary>
+    public const string UnexpandedEntityReference = "http://www.w3.org/2001/04/infoset#UnexpandedEntityReference";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Comment"/>
+    ///</summary>
+    public const string Comment = "http://www.w3.org/2001/04/infoset#Comment";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#DocumentTypeDeclaration"/>
+    ///</summary>
+    public const string DocumentTypeDeclaration = "http://www.w3.org/2001/04/infoset#DocumentTypeDeclaration";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#UnparsedEntity"/>
+    ///</summary>
+    public const string UnparsedEntity = "http://www.w3.org/2001/04/infoset#UnparsedEntity";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#Notation"/>
+    ///</summary>
+    public const string Notation = "http://www.w3.org/2001/04/infoset#Notation";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#InfoItemSet"/>
+    ///</summary>
+    public const string InfoItemSet = "http://www.w3.org/2001/04/infoset#InfoItemSet";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#AttributeSet"/>
+    ///</summary>
+    public const string AttributeSet = "http://www.w3.org/2001/04/infoset#AttributeSet";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#UnparsedEntitySet"/>
+    ///</summary>
+    public const string UnparsedEntitySet = "http://www.w3.org/2001/04/infoset#UnparsedEntitySet";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#NamespaceSet"/>
+    ///</summary>
+    public const string NamespaceSet = "http://www.w3.org/2001/04/infoset#NamespaceSet";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#NotationSet"/>
+    ///</summary>
+    public const string NotationSet = "http://www.w3.org/2001/04/infoset#NotationSet";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#InfoItemSeq"/>
+    ///</summary>
+    public const string InfoItemSeq = "http://www.w3.org/2001/04/infoset#InfoItemSeq";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#References"/>
+    ///</summary>
+    public const string References = "http://www.w3.org/2001/04/infoset#References";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#allDeclarationsProcessed"/>
+    ///</summary>
+    public const string allDeclarationsProcessed = "http://www.w3.org/2001/04/infoset#allDeclarationsProcessed";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#attributes"/>
+    ///</summary>
+    public const string attributes = "http://www.w3.org/2001/04/infoset#attributes";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#attributeType"/>
+    ///</summary>
+    public const string attributeType = "http://www.w3.org/2001/04/infoset#attributeType";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#baseURI"/>
+    ///</summary>
+    public const string baseURI = "http://www.w3.org/2001/04/infoset#baseURI";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#characterCode"/>
+    ///</summary>
+    public const string characterCode = "http://www.w3.org/2001/04/infoset#characterCode";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#characterEncodingScheme"/>
+    ///</summary>
+    public const string characterEncodingScheme = "http://www.w3.org/2001/04/infoset#characterEncodingScheme";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#children"/>
+    ///</summary>
+    public const string children = "http://www.w3.org/2001/04/infoset#children";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#content"/>
+    ///</summary>
+    public const string content = "http://www.w3.org/2001/04/infoset#content";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#namespaceAttributes"/>
+    ///</summary>
+    public const string namespaceAttributes = "http://www.w3.org/2001/04/infoset#namespaceAttributes";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#declarationBaseURI"/>
+    ///</summary>
+    public const string declarationBaseURI = "http://www.w3.org/2001/04/infoset#declarationBaseURI";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#documentElement"/>
+    ///</summary>
+    public const string documentElement = "http://www.w3.org/2001/04/infoset#documentElement";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#elementContentWhitespace"/>
+    ///</summary>
+    public const string elementContentWhitespace = "http://www.w3.org/2001/04/infoset#elementContentWhitespace";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#unparsedEntities"/>
+    ///</summary>
+    public const string unparsedEntities = "http://www.w3.org/2001/04/infoset#unparsedEntities";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#inScopeNamespaces"/>
+    ///</summary>
+    public const string inScopeNamespaces = "http://www.w3.org/2001/04/infoset#inScopeNamespaces";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#localName"/>
+    ///</summary>
+    public const string localName = "http://www.w3.org/2001/04/infoset#localName";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#name"/>
+    ///</summary>
+    public const string name = "http://www.w3.org/2001/04/infoset#name";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#namespaceName"/>
+    ///</summary>
+    public const string namespaceName = "http://www.w3.org/2001/04/infoset#namespaceName";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#normalizedValue"/>
+    ///</summary>
+    public const string normalizedValue = "http://www.w3.org/2001/04/infoset#normalizedValue";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#notation"/>
+    ///</summary>
+    public const string notation = "http://www.w3.org/2001/04/infoset#notation";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#notationName"/>
+    ///</summary>
+    public const string notationName = "http://www.w3.org/2001/04/infoset#notationName";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#notations"/>
+    ///</summary>
+    public const string notations = "http://www.w3.org/2001/04/infoset#notations";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#ownerElement"/>
+    ///</summary>
+    public const string ownerElement = "http://www.w3.org/2001/04/infoset#ownerElement";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#parent"/>
+    ///</summary>
+    public const string parent = "http://www.w3.org/2001/04/infoset#parent";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#prefix"/>
+    ///</summary>
+    public const string prefix = "http://www.w3.org/2001/04/infoset#prefix";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#publicIdentifier"/>
+    ///</summary>
+    public const string publicIdentifier = "http://www.w3.org/2001/04/infoset#publicIdentifier";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#references"/>
+    ///</summary>
+    public const string references = "http://www.w3.org/2001/04/infoset#references";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#specified"/>
+    ///</summary>
+    public const string specified = "http://www.w3.org/2001/04/infoset#specified";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#standalone"/>
+    ///</summary>
+    public const string standalone = "http://www.w3.org/2001/04/infoset#standalone";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#systemIdentifier"/>
+    ///</summary>
+    public const string systemIdentifier = "http://www.w3.org/2001/04/infoset#systemIdentifier";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#target"/>
+    ///</summary>
+    public const string target = "http://www.w3.org/2001/04/infoset#target";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/2001/04/infoset#version"/>
+    ///</summary>
+    public const string version = "http://www.w3.org/2001/04/infoset#version";
+}
+///<summary>
+///NEPOMUK Information Element Core Ontology
+///
+///</summary>
+public class nie : Ontology
+{
+    public static readonly Uri Namespace = new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "nie";
+    public static string GetPrefix() { return Prefix; }     
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    ///</summary>
+    public static readonly Resource _22_rdf_syntax_ns = new Resource(new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));    
+
+    ///<summary>
+    ///Characterset in which the content of the InformationElement was created. Example: ISO-8859-1, UTF-8. One of the registered character sets at http://www.iana.org/assignments/character-sets. This characterSet is used to interpret any textual parts of the content. If more than one characterSet is used within one data object, use more specific properties.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#characterSet"/>
+    ///</summary>
+    public static readonly Property characterSet = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#characterSet"));    
+
+    ///<summary>
+    ///A unit of content the user works with. This is a superclass for all interpretations of a DataObject.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#InformationElement"/>
+    ///</summary>
+    public static readonly Class InformationElement = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#InformationElement"));    
+
+    ///<summary>
+    ///DataObjects extracted from a single data source are organized into a containment tree. This property links the root of that tree with the datasource it has been extracted from
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#rootElementOf"/>
+    ///</summary>
+    public static readonly Property rootElementOf = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#rootElementOf"));    
+
+    ///<summary>
+    ///A superclass for all entities from which DataObjects can be extracted. Each entity represents a native application or some other system that manages information that may be of interest to the user of the Semantic Desktop. Subclasses may include FileSystems, Mailboxes, Calendars, websites etc. The exact choice of subclasses and their properties is considered application-specific. Each data extraction application is supposed to provide it's own DataSource ontology. Such an ontology should contain supported data source types coupled with properties necessary for the application to gain access to the data sources.  (paths, urls, passwords  etc...)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataSource"/>
+    ///</summary>
+    public static readonly Class DataSource = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataSource"));    
+
+    ///<summary>
+    ///A point or period of time associated with an event in the lifecycle of an Information Element. A common superproperty for all date-related properties of InformationElements in the NIE Framework.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#informationElementDate"/>
+    ///</summary>
+    public static readonly Property informationElementDate = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#informationElementDate"));    
+
+    ///<summary>
+    ///A common superproperty for all properties that point at legal information about an Information Element
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#legal"/>
+    ///</summary>
+    public static readonly Property legal = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#legal"));    
+
+    ///<summary>
+    ///Links the information element with the DataObject it is stored in.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isStoredAs"/>
+    ///</summary>
+    public static readonly Property isStoredAs = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isStoredAs"));    
+
+    ///<summary>
+    ///A unit of data that is created, annotated and processed on the user desktop. It represents a native structure the user works with. The usage of the term 'native' is important. It means that a DataObject can be directly mapped to a data structure maintained by a native application. This may be a file, a set of files or a part of a file. The granularity depends on the user. This class is not intended to be instantiated by itself. Use more specific subclasses.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataObject"/>
+    ///</summary>
+    public static readonly Class DataObject = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataObject"));    
+
+    ///<summary>
+    ///Links the DataObject with the InformationElement it is interpreted as.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#interpretedAs"/>
+    ///</summary>
+    public static readonly Property interpretedAs = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#interpretedAs"));    
+
+    ///<summary>
+    ///Language the InformationElement is expressed in. This property applies to the data object in its entirety. If the data object is divisible into parts expressed in multiple languages - more specific properties should be used. Users are encouraged to use the two-letter code specified in the RFC 3066
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#language"/>
+    ///</summary>
+    public static readonly Property language = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#language"));    
+
+    ///<summary>
+    ///Content copyright
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#copyright"/>
+    ///</summary>
+    public static readonly Property copyright = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#copyright"));    
+
+    ///<summary>
+    ///Date the DataObject was changed in any way.  Note that this date refers to the modification of the DataObject itself (i.e. the physical representation). Compare with nie:contentModified.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#modified"/>
+    ///</summary>
+    public static readonly Property modified = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#modified"));    
+
+    ///<summary>
+    ///Date of creation of the DataObject. Note that this date refers to the creation of the DataObject itself (i.e. the physical representation). Compare with nie:contentCreated.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#created"/>
+    ///</summary>
+    public static readonly Property created = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#created"));    
+
+    ///<summary>
+    ///Last modification date of the DataObject. Note that this date refers to the modification of the DataObject itself (i.e. the physical representation). Compare with nie:contentLastModified.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#lastModified"/>
+    ///</summary>
+    public static readonly Property lastModified = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#lastModified"));    
+
+    ///<summary>
+    ///The mime type of the resource, if available. Example: "text/plain". See http://www.iana.org/assignments/media-types/. This property applies to data objects that can be described with one mime type. In cases where the object as a whole has one mime type, while it's parts have other mime types, or there is no mime type that can be applied to the object as a whole, but some parts of the content have mime types - use more specific properties.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#mimeType"/>
+    ///</summary>
+    public static readonly Property mimeType = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#mimeType"));    
+
+    ///<summary>
+    ///The current version of the given data object. Exact semantics is unspecified at this level. Use more specific subproperties if needed.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#version"/>
+    ///</summary>
+    public static readonly Property version = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#version"));    
+
+    ///<summary>
+    ///A linking relation. A piece of content links/mentions a piece of data
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#links"/>
+    ///</summary>
+    public static readonly Property links = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#links"));    
+
+    ///<summary>
+    ///A common superproperty for all relations between a piece of content and other pieces of data (which may be interpreted as other pieces of content).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#relatedTo"/>
+    ///</summary>
+    public static readonly Property relatedTo = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#relatedTo"));    
+
+    ///<summary>
+    ///Software used to "generate" the contents. E.g. a word processor name.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#generator"/>
+    ///</summary>
+    public static readonly Property generator = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#generator"));    
+
+    ///<summary>
+    ///Generic property used to express containment relationships between DataObjects. NIE extensions are encouraged to provide more specific subproperties of this one. It is advisable for actual instances of DataObjects to use those specific subproperties. Note to the developers: Please be aware of the distinction between containment relation and provenance. The isPartOf relation models physical containment, a nie:DataObject (e.g. an nfo:Attachment) is a 'physical' part of an nie:InformationElement (a nmo:Message). Also, please note the difference between physical containment (isPartOf) and logical containment (isLogicalPartOf) the former has more strict meaning. They may occur independently of each other.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isPartOf"/>
+    ///</summary>
+    public static readonly Property isPartOf = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isPartOf"));    
+
+    ///<summary>
+    ///Generic property used to express 'physical' containment relationships between DataObjects. NIE extensions are encouraged to provide more specific subproperties of this one. It is advisable for actual instances of DataObjects to use those specific subproperties. Note to the developers: Please be aware of the distinction between containment relation and provenance. The hasPart relation models physical containment, an InformationElement (a nmo:Message) can have a 'physical' part (an nfo:Attachment).  Also, please note the difference between physical containment (hasPart) and logical containment (hasLogicalPart) the former has more strict meaning. They may occur independently of each other.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#hasPart"/>
+    ///</summary>
+    public static readonly Property hasPart = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#hasPart"));    
+
+    ///<summary>
+    ///A disclaimer
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#disclaimer"/>
+    ///</summary>
+    public static readonly Property disclaimer = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#disclaimer"));    
+
+    ///<summary>
+    ///A common superproperty for all settings used by the generating software. This may include compression settings, algorithms, autosave, interlaced/non-interlaced etc. Note that this property has no range specified and therefore should not be used directly. Always use more specific properties.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#generatorOption"/>
+    ///</summary>
+    public static readonly Property generatorOption = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#generatorOption"));    
+
+    ///<summary>
+    ///A textual description of the resource. This property may be used for any metadata fields that provide some meta-information or comment about a resource in the form of a passage of text. This property is not to be confused with nie:plainTextContent. Use more specific subproperties wherever possible.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description"/>
+    ///</summary>
+    public static readonly Property description = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description"));    
+
+    ///<summary>
+    ///The date of the content creation. This may not necessarily be equal to the date when the DataObject (i.e. the physical representation) itself was created. Compare with nie:created property.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated"/>
+    ///</summary>
+    public static readonly Property contentCreated = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated"));    
+
+    ///<summary>
+    ///The date of a modification of the original content (not its corresponding DataObject or local copy). Compare with nie:modified.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentModified"/>
+    ///</summary>
+    public static readonly Property contentModified = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentModified"));    
+
+    ///<summary>
+    ///Name given to an InformationElement
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title"/>
+    ///</summary>
+    public static readonly Property title = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title"));    
+
+    ///<summary>
+    ///Date when information about this data object was retrieved (for the first time) or last refreshed from the data source. This property is important for metadata extraction applications that don't receive any notifications of changes in the data source and have to poll it regularly. This may lead to information becoming out of date. In these cases this property may be used to determine the age of data, which is an important element of it's dependability. 
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#lastRefreshed"/>
+    ///</summary>
+    public static readonly Property lastRefreshed = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#lastRefreshed"));    
+
+    ///<summary>
+    ///Marks the provenance of a DataObject, what source does a data object come from.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#dataSource"/>
+    ///</summary>
+    public static readonly Property dataSource = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#dataSource"));    
+
+    ///<summary>
+    ///Dependency relation. A piece of content depends on another piece of data in order to be properly understood/used/interpreted.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#depends"/>
+    ///</summary>
+    public static readonly Property depends = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#depends"));    
+
+    ///<summary>
+    ///The date of the last modification of the original content (not its corresponding DataObject or local copy). Compare with nie:lastModified.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentLastModified"/>
+    ///</summary>
+    public static readonly Property contentLastModified = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentLastModified"));    
+
+    ///<summary>
+    ///Adapted DublinCore: The topic of the content of the resource, as keyword. No sentences here. Recommended best practice is to select a value from a controlled vocabulary or formal classification scheme. 
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#keyword"/>
+    ///</summary>
+    public static readonly Property keyword = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#keyword"));    
+
+    ///<summary>
+    ///Generic property used to express 'logical' containment relationships between DataObjects. NIE extensions are encouraged to provide more specific subproperties of this one. It is advisable for actual instances of InformationElement to use those specific subproperties. Note the difference between 'physical' containment (isPartOf) and logical containment (isLogicalPartOf)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isLogicalPartOf"/>
+    ///</summary>
+    public static readonly Property isLogicalPartOf = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isLogicalPartOf"));    
+
+    ///<summary>
+    ///Generic property used to express 'logical' containment relationships between InformationElements. NIE extensions are encouraged to provide more specific subproperties of this one. It is advisable for actual instances of InformationElement to use those specific subproperties. Note the difference between 'physical' containment (hasPart) and logical containment (hasLogicalPart)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#hasLogicalPart"/>
+    ///</summary>
+    public static readonly Property hasLogicalPart = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#hasLogicalPart"));    
+
+    ///<summary>
+    ///An unambiguous reference to the InformationElement within a given context. Recommended best practice is to identify the resource by means of a string conforming to a formal identification system.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#identifier"/>
+    ///</summary>
+    public static readonly Property identifier = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#identifier"));    
+
+    ///<summary>
+    ///Plain-text representation of the content of a InformationElement with all markup removed. The main purpose of this property is full-text indexing and search. Its exact content is considered application-specific. The user can make no assumptions about what is and what is not contained within. Applications should use more specific properties wherever possible.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent"/>
+    ///</summary>
+    public static readonly Property plainTextContent = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent"));    
+
+    ///<summary>
+    ///The HTML content of an information element. This property can be used to store text including formatting in a generic fashion.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#htmlContent"/>
+    ///</summary>
+    public static readonly Property htmlContent = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#htmlContent"));    
+
+    ///<summary>
+    ///A user comment about an InformationElement.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment"/>
+    ///</summary>
+    public static readonly Property comment = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment"));    
+
+    ///<summary>
+    ///The size of the content. This property can be used whenever the size of the content of an InformationElement differs from the size of the DataObject. (e.g. because of compression, encoding, encryption or any other representation issues). The contentSize in expressed in bytes.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentSize"/>
+    ///</summary>
+    public static readonly Property contentSize = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentSize"));    
+
+    ///<summary>
+    ///Terms and intellectual property rights licensing conditions.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#license"/>
+    ///</summary>
+    public static readonly Property license = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#license"));    
+
+    ///<summary>
+    ///An overall topic of the content of a InformationElement
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#subject"/>
+    ///</summary>
+    public static readonly Property subject = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#subject"));    
+
+    ///<summary>
+    ///Connects the data object with the graph that contains information about it. Deprecated in favor of a more generic nao:isDataGraphFor.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#coreGraph"/>
+    ///</summary>
+    public static readonly Property coreGraph = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#coreGraph"));    
+
+    ///<summary>
+    ///The type of the license. Possible values for this field may include "GPL", "BSD", "Creative Commons" etc.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#licenseType"/>
+    ///</summary>
+    public static readonly Property licenseType = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#licenseType"));    
+
+    ///<summary>
+    ///The overall size of the data object in bytes. That means the space taken by the DataObject in its container, and not the size of the content that is of interest to the user. For cases where the content size is different (e.g. in compressed files the content is larger, in messages the content excludes headings and is smaller) use more specific properties, not necessarily subproperties of this one.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#byteSize"/>
+    ///</summary>
+    public static readonly Property byteSize = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#byteSize"));    
+
+    ///<summary>
+    ///URL of a DataObject. It points to the location of the object. A typial usage is FileDataObject. In cases where creating a simple file:// or http:// URL for a file is difficult (e.g. for files inside compressed archives) the applications are encouraged to use conventions defined by Apache Commons VFS Project at http://jakarta.apache.org/  commons/ vfs/ filesystems.html.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url"/>
+    ///</summary>
+    public static readonly Property url = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url"));    
+
+    ///<summary>
+    ///Represents the sum of all information that has been obtained from a data source. Each data source has its own personal information graph. When a data source is deleted, the graph becomes redundant and should also be deleted. If two or more items in two or more data source graphs are determined to be equivalent, they are integrated at the PIMO level, and the integrated representation plus the links to the original items are stored in the pimo:PersonalInformationModel graph.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataSourceGraph"/>
+    ///</summary>
+    public static readonly Resource DataSourceGraph = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataSourceGraph"));    
+
+    ///<summary>
+    ///Represents a number of applicable modes for a data source.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#sourceMode"/>
+    ///</summary>
+    public static readonly Property sourceMode = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#sourceMode"));    
+
+    ///<summary>
+    ///Representation for a standard set of device/application/service modes, corresponding to various sets of modes that are either inbuilt in a device (e.g. inbuilt phone modes such as silent, loud, general, vibrate, etc.) or available for applications and online services (e.g. IM system modes such as busy, available, invisible, etc.)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#Mode"/>
+    ///</summary>
+    public static readonly Class Mode = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#Mode"));
+}
+///<summary>
+///NEPOMUK Information Element Core Ontology
+///
+///</summary>
+public static class NIE
+{
+    public static readonly Uri Namespace = new Uri("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "NIE";
+    public static string GetPrefix() { return Prefix; } 
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    ///</summary>
+    public const string _22_rdf_syntax_ns = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+
+    ///<summary>
+    ///Characterset in which the content of the InformationElement was created. Example: ISO-8859-1, UTF-8. One of the registered character sets at http://www.iana.org/assignments/character-sets. This characterSet is used to interpret any textual parts of the content. If more than one characterSet is used within one data object, use more specific properties.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#characterSet"/>
+    ///</summary>
+    public const string characterSet = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#characterSet";
+
+    ///<summary>
+    ///A unit of content the user works with. This is a superclass for all interpretations of a DataObject.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#InformationElement"/>
+    ///</summary>
+    public const string InformationElement = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#InformationElement";
+
+    ///<summary>
+    ///DataObjects extracted from a single data source are organized into a containment tree. This property links the root of that tree with the datasource it has been extracted from
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#rootElementOf"/>
+    ///</summary>
+    public const string rootElementOf = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#rootElementOf";
+
+    ///<summary>
+    ///A superclass for all entities from which DataObjects can be extracted. Each entity represents a native application or some other system that manages information that may be of interest to the user of the Semantic Desktop. Subclasses may include FileSystems, Mailboxes, Calendars, websites etc. The exact choice of subclasses and their properties is considered application-specific. Each data extraction application is supposed to provide it's own DataSource ontology. Such an ontology should contain supported data source types coupled with properties necessary for the application to gain access to the data sources.  (paths, urls, passwords  etc...)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataSource"/>
+    ///</summary>
+    public const string DataSource = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataSource";
+
+    ///<summary>
+    ///A point or period of time associated with an event in the lifecycle of an Information Element. A common superproperty for all date-related properties of InformationElements in the NIE Framework.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#informationElementDate"/>
+    ///</summary>
+    public const string informationElementDate = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#informationElementDate";
+
+    ///<summary>
+    ///A common superproperty for all properties that point at legal information about an Information Element
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#legal"/>
+    ///</summary>
+    public const string legal = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#legal";
+
+    ///<summary>
+    ///Links the information element with the DataObject it is stored in.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isStoredAs"/>
+    ///</summary>
+    public const string isStoredAs = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isStoredAs";
+
+    ///<summary>
+    ///A unit of data that is created, annotated and processed on the user desktop. It represents a native structure the user works with. The usage of the term 'native' is important. It means that a DataObject can be directly mapped to a data structure maintained by a native application. This may be a file, a set of files or a part of a file. The granularity depends on the user. This class is not intended to be instantiated by itself. Use more specific subclasses.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataObject"/>
+    ///</summary>
+    public const string DataObject = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataObject";
+
+    ///<summary>
+    ///Links the DataObject with the InformationElement it is interpreted as.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#interpretedAs"/>
+    ///</summary>
+    public const string interpretedAs = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#interpretedAs";
+
+    ///<summary>
+    ///Language the InformationElement is expressed in. This property applies to the data object in its entirety. If the data object is divisible into parts expressed in multiple languages - more specific properties should be used. Users are encouraged to use the two-letter code specified in the RFC 3066
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#language"/>
+    ///</summary>
+    public const string language = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#language";
+
+    ///<summary>
+    ///Content copyright
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#copyright"/>
+    ///</summary>
+    public const string copyright = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#copyright";
+
+    ///<summary>
+    ///Date the DataObject was changed in any way.  Note that this date refers to the modification of the DataObject itself (i.e. the physical representation). Compare with nie:contentModified.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#modified"/>
+    ///</summary>
+    public const string modified = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#modified";
+
+    ///<summary>
+    ///Date of creation of the DataObject. Note that this date refers to the creation of the DataObject itself (i.e. the physical representation). Compare with nie:contentCreated.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#created"/>
+    ///</summary>
+    public const string created = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#created";
+
+    ///<summary>
+    ///Last modification date of the DataObject. Note that this date refers to the modification of the DataObject itself (i.e. the physical representation). Compare with nie:contentLastModified.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#lastModified"/>
+    ///</summary>
+    public const string lastModified = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#lastModified";
+
+    ///<summary>
+    ///The mime type of the resource, if available. Example: "text/plain". See http://www.iana.org/assignments/media-types/. This property applies to data objects that can be described with one mime type. In cases where the object as a whole has one mime type, while it's parts have other mime types, or there is no mime type that can be applied to the object as a whole, but some parts of the content have mime types - use more specific properties.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#mimeType"/>
+    ///</summary>
+    public const string mimeType = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#mimeType";
+
+    ///<summary>
+    ///The current version of the given data object. Exact semantics is unspecified at this level. Use more specific subproperties if needed.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#version"/>
+    ///</summary>
+    public const string version = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#version";
+
+    ///<summary>
+    ///A linking relation. A piece of content links/mentions a piece of data
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#links"/>
+    ///</summary>
+    public const string links = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#links";
+
+    ///<summary>
+    ///A common superproperty for all relations between a piece of content and other pieces of data (which may be interpreted as other pieces of content).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#relatedTo"/>
+    ///</summary>
+    public const string relatedTo = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#relatedTo";
+
+    ///<summary>
+    ///Software used to "generate" the contents. E.g. a word processor name.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#generator"/>
+    ///</summary>
+    public const string generator = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#generator";
+
+    ///<summary>
+    ///Generic property used to express containment relationships between DataObjects. NIE extensions are encouraged to provide more specific subproperties of this one. It is advisable for actual instances of DataObjects to use those specific subproperties. Note to the developers: Please be aware of the distinction between containment relation and provenance. The isPartOf relation models physical containment, a nie:DataObject (e.g. an nfo:Attachment) is a 'physical' part of an nie:InformationElement (a nmo:Message). Also, please note the difference between physical containment (isPartOf) and logical containment (isLogicalPartOf) the former has more strict meaning. They may occur independently of each other.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isPartOf"/>
+    ///</summary>
+    public const string isPartOf = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isPartOf";
+
+    ///<summary>
+    ///Generic property used to express 'physical' containment relationships between DataObjects. NIE extensions are encouraged to provide more specific subproperties of this one. It is advisable for actual instances of DataObjects to use those specific subproperties. Note to the developers: Please be aware of the distinction between containment relation and provenance. The hasPart relation models physical containment, an InformationElement (a nmo:Message) can have a 'physical' part (an nfo:Attachment).  Also, please note the difference between physical containment (hasPart) and logical containment (hasLogicalPart) the former has more strict meaning. They may occur independently of each other.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#hasPart"/>
+    ///</summary>
+    public const string hasPart = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#hasPart";
+
+    ///<summary>
+    ///A disclaimer
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#disclaimer"/>
+    ///</summary>
+    public const string disclaimer = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#disclaimer";
+
+    ///<summary>
+    ///A common superproperty for all settings used by the generating software. This may include compression settings, algorithms, autosave, interlaced/non-interlaced etc. Note that this property has no range specified and therefore should not be used directly. Always use more specific properties.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#generatorOption"/>
+    ///</summary>
+    public const string generatorOption = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#generatorOption";
+
+    ///<summary>
+    ///A textual description of the resource. This property may be used for any metadata fields that provide some meta-information or comment about a resource in the form of a passage of text. This property is not to be confused with nie:plainTextContent. Use more specific subproperties wherever possible.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description"/>
+    ///</summary>
+    public const string description = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description";
+
+    ///<summary>
+    ///The date of the content creation. This may not necessarily be equal to the date when the DataObject (i.e. the physical representation) itself was created. Compare with nie:created property.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated"/>
+    ///</summary>
+    public const string contentCreated = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated";
+
+    ///<summary>
+    ///The date of a modification of the original content (not its corresponding DataObject or local copy). Compare with nie:modified.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentModified"/>
+    ///</summary>
+    public const string contentModified = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentModified";
+
+    ///<summary>
+    ///Name given to an InformationElement
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title"/>
+    ///</summary>
+    public const string title = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title";
+
+    ///<summary>
+    ///Date when information about this data object was retrieved (for the first time) or last refreshed from the data source. This property is important for metadata extraction applications that don't receive any notifications of changes in the data source and have to poll it regularly. This may lead to information becoming out of date. In these cases this property may be used to determine the age of data, which is an important element of it's dependability. 
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#lastRefreshed"/>
+    ///</summary>
+    public const string lastRefreshed = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#lastRefreshed";
+
+    ///<summary>
+    ///Marks the provenance of a DataObject, what source does a data object come from.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#dataSource"/>
+    ///</summary>
+    public const string dataSource = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#dataSource";
+
+    ///<summary>
+    ///Dependency relation. A piece of content depends on another piece of data in order to be properly understood/used/interpreted.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#depends"/>
+    ///</summary>
+    public const string depends = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#depends";
+
+    ///<summary>
+    ///The date of the last modification of the original content (not its corresponding DataObject or local copy). Compare with nie:lastModified.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentLastModified"/>
+    ///</summary>
+    public const string contentLastModified = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentLastModified";
+
+    ///<summary>
+    ///Adapted DublinCore: The topic of the content of the resource, as keyword. No sentences here. Recommended best practice is to select a value from a controlled vocabulary or formal classification scheme. 
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#keyword"/>
+    ///</summary>
+    public const string keyword = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#keyword";
+
+    ///<summary>
+    ///Generic property used to express 'logical' containment relationships between DataObjects. NIE extensions are encouraged to provide more specific subproperties of this one. It is advisable for actual instances of InformationElement to use those specific subproperties. Note the difference between 'physical' containment (isPartOf) and logical containment (isLogicalPartOf)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isLogicalPartOf"/>
+    ///</summary>
+    public const string isLogicalPartOf = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isLogicalPartOf";
+
+    ///<summary>
+    ///Generic property used to express 'logical' containment relationships between InformationElements. NIE extensions are encouraged to provide more specific subproperties of this one. It is advisable for actual instances of InformationElement to use those specific subproperties. Note the difference between 'physical' containment (hasPart) and logical containment (hasLogicalPart)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#hasLogicalPart"/>
+    ///</summary>
+    public const string hasLogicalPart = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#hasLogicalPart";
+
+    ///<summary>
+    ///An unambiguous reference to the InformationElement within a given context. Recommended best practice is to identify the resource by means of a string conforming to a formal identification system.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#identifier"/>
+    ///</summary>
+    public const string identifier = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#identifier";
+
+    ///<summary>
+    ///Plain-text representation of the content of a InformationElement with all markup removed. The main purpose of this property is full-text indexing and search. Its exact content is considered application-specific. The user can make no assumptions about what is and what is not contained within. Applications should use more specific properties wherever possible.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent"/>
+    ///</summary>
+    public const string plainTextContent = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent";
+
+    ///<summary>
+    ///The HTML content of an information element. This property can be used to store text including formatting in a generic fashion.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#htmlContent"/>
+    ///</summary>
+    public const string htmlContent = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#htmlContent";
+
+    ///<summary>
+    ///A user comment about an InformationElement.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment"/>
+    ///</summary>
+    public const string comment = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment";
+
+    ///<summary>
+    ///The size of the content. This property can be used whenever the size of the content of an InformationElement differs from the size of the DataObject. (e.g. because of compression, encoding, encryption or any other representation issues). The contentSize in expressed in bytes.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentSize"/>
+    ///</summary>
+    public const string contentSize = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentSize";
+
+    ///<summary>
+    ///Terms and intellectual property rights licensing conditions.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#license"/>
+    ///</summary>
+    public const string license = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#license";
+
+    ///<summary>
+    ///An overall topic of the content of a InformationElement
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#subject"/>
+    ///</summary>
+    public const string subject = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#subject";
+
+    ///<summary>
+    ///Connects the data object with the graph that contains information about it. Deprecated in favor of a more generic nao:isDataGraphFor.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#coreGraph"/>
+    ///</summary>
+    public const string coreGraph = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#coreGraph";
+
+    ///<summary>
+    ///The type of the license. Possible values for this field may include "GPL", "BSD", "Creative Commons" etc.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#licenseType"/>
+    ///</summary>
+    public const string licenseType = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#licenseType";
+
+    ///<summary>
+    ///The overall size of the data object in bytes. That means the space taken by the DataObject in its container, and not the size of the content that is of interest to the user. For cases where the content size is different (e.g. in compressed files the content is larger, in messages the content excludes headings and is smaller) use more specific properties, not necessarily subproperties of this one.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#byteSize"/>
+    ///</summary>
+    public const string byteSize = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#byteSize";
+
+    ///<summary>
+    ///URL of a DataObject. It points to the location of the object. A typial usage is FileDataObject. In cases where creating a simple file:// or http:// URL for a file is difficult (e.g. for files inside compressed archives) the applications are encouraged to use conventions defined by Apache Commons VFS Project at http://jakarta.apache.org/  commons/ vfs/ filesystems.html.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url"/>
+    ///</summary>
+    public const string url = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#url";
+
+    ///<summary>
+    ///Represents the sum of all information that has been obtained from a data source. Each data source has its own personal information graph. When a data source is deleted, the graph becomes redundant and should also be deleted. If two or more items in two or more data source graphs are determined to be equivalent, they are integrated at the PIMO level, and the integrated representation plus the links to the original items are stored in the pimo:PersonalInformationModel graph.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataSourceGraph"/>
+    ///</summary>
+    public const string DataSourceGraph = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#DataSourceGraph";
+
+    ///<summary>
+    ///Represents a number of applicable modes for a data source.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#sourceMode"/>
+    ///</summary>
+    public const string sourceMode = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#sourceMode";
+
+    ///<summary>
+    ///Representation for a standard set of device/application/service modes, corresponding to various sets of modes that are either inbuilt in a device (e.g. inbuilt phone modes such as silent, loud, general, vibrate, etc.) or available for applications and online services (e.g. IM system modes such as busy, available, invisible, etc.)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/01/19/nie#Mode"/>
+    ///</summary>
+    public const string Mode = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#Mode";
+}
+///<summary>
+///NEPOMUK File Ontology (NFO)
+///
+///</summary>
+public class nfo : Ontology
+{
+    public static readonly Uri Namespace = new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "nfo";
+    public static string GetPrefix() { return Prefix; }     
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    ///</summary>
+    public static readonly Resource _22_rdf_syntax_ns = new Resource(new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));    
+
+    ///<summary>
+    ///Horizontal resolution of an image (if printed). Expressed in DPI.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#horizontalResolution"/>
+    ///</summary>
+    public static readonly Property horizontalResolution = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#horizontalResolution"));    
+
+    ///<summary>
+    ///A file containing an image.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image"/>
+    ///</summary>
+    public static readonly Class Image = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image"));    
+
+    ///<summary>
+    ///The amount of audio samples per second.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sampleRate"/>
+    ///</summary>
+    public static readonly Property sampleRate = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sampleRate"));    
+
+    ///<summary>
+    ///A file containing audio content
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Audio"/>
+    ///</summary>
+    public static readonly Class Audio = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Audio"));    
+
+    ///<summary>
+    ///A piece of media content. This class may be used to express complex media containers with many streams of various media content (both aural and visual).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Media"/>
+    ///</summary>
+    public static readonly Class Media = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Media"));    
+
+    ///<summary>
+    ///A common superproperty for all properties specifying the media rate. Examples of subproperties may include frameRate for video and sampleRate for audio. This property is expressed in units per second.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#rate"/>
+    ///</summary>
+    public static readonly Property rate = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#rate"));    
+
+    ///<summary>
+    ///A partition on a hard disk
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#HardDiskPartition"/>
+    ///</summary>
+    public static readonly Class HardDiskPartition = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#HardDiskPartition"));    
+
+    ///<summary>
+    ///Name of the file, together with the extension
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileName"/>
+    ///</summary>
+    public static readonly Property fileName = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileName"));    
+
+    ///<summary>
+    ///A resource containing a finite sequence of bytes with arbitrary information, that is available to a computer program and is usually based on some kind of durable storage. A file is durable in the sense that it remains available for programs to use after the current program has finished.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject"/>
+    ///</summary>
+    public static readonly Class FileDataObject = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject"));    
+
+    ///<summary>
+    ///A stream of multimedia content, usually contained within a media container such as a movie (containing both audio and video) or a DVD (possibly containing many streams of audio and video). Most common interpretations for such a DataObject include Audio and Video.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaStream"/>
+    ///</summary>
+    public static readonly Class MediaStream = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaStream"));    
+
+    ///<summary>
+    ///A Presentation made by some presentation software (Corel Presentations, OpenOffice Impress, MS Powerpoint etc.)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Presentation"/>
+    ///</summary>
+    public static readonly Class Presentation = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Presentation"));    
+
+    ///<summary>
+    ///A generic document. A common superclass for all documents on the desktop.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Document"/>
+    ///</summary>
+    public static readonly Class Document = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Document"));    
+
+    ///<summary>
+    ///Name of the algorithm used to compute the hash value. Examples might include CRC32, MD5, SHA, TTH etc.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hashAlgorithm"/>
+    ///</summary>
+    public static readonly Property hashAlgorithm = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hashAlgorithm"));    
+
+    ///<summary>
+    ///A fingerprint of the file, generated by some hashing function.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileHash"/>
+    ///</summary>
+    public static readonly Class FileHash = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileHash"));    
+
+    ///<summary>
+    ///The amount of character in comments i.e. characters ignored by the compiler/interpreter.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#commentCharacterCount"/>
+    ///</summary>
+    public static readonly Property commentCharacterCount = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#commentCharacterCount"));    
+
+    ///<summary>
+    ///Code in a compilable or interpreted programming language.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SourceCode"/>
+    ///</summary>
+    public static readonly Class SourceCode = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SourceCode"));    
+
+    ///<summary>
+    ///A file containing plain text (ASCII, Unicode or other encodings). Examples may include TXT, HTML, XML, program source code etc.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PlainTextDocument"/>
+    ///</summary>
+    public static readonly Class PlainTextDocument = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PlainTextDocument"));    
+
+    ///<summary>
+    ///A text document
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#TextDocument"/>
+    ///</summary>
+    public static readonly Class TextDocument = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#TextDocument"));    
+
+    ///<summary>
+    ///The foundry, the organization that created the font.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#foundry"/>
+    ///</summary>
+    public static readonly Property foundry = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#foundry"));    
+
+    ///<summary>
+    ///A font.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Font"/>
+    ///</summary>
+    public static readonly Class Font = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Font"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#losslessCompressionType"/>
+    ///</summary>
+    public static readonly Resource losslessCompressionType = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#losslessCompressionType"));    
+
+    ///<summary>
+    ///Number of side channels
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sideChannels"/>
+    ///</summary>
+    public static readonly Property sideChannels = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sideChannels"));    
+
+    ///<summary>
+    ///Number of channels. This property is to be used directly if no detailed information is necessary. Otherwise use more detailed subproperties.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#channels"/>
+    ///</summary>
+    public static readonly Property channels = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#channels"));    
+
+    ///<summary>
+    ///True if the image is interlaced, false if not.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#interlaceMode"/>
+    ///</summary>
+    public static readonly Property interlaceMode = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#interlaceMode"));    
+
+    ///<summary>
+    ///File containing visual content.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Visual"/>
+    ///</summary>
+    public static readonly Class Visual = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Visual"));    
+
+    ///<summary>
+    ///Visual content width in pixels.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width"/>
+    ///</summary>
+    public static readonly Property width = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width"));    
+
+    ///<summary>
+    ///The amount of frames in a video sequence.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frameCount"/>
+    ///</summary>
+    public static readonly Property frameCount = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frameCount"));    
+
+    ///<summary>
+    ///A video file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Video"/>
+    ///</summary>
+    public static readonly Class Video = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Video"));    
+
+    ///<summary>
+    ///A common superproperty for all properties signifying the amount of atomic media data units. Examples of subproperties may include sampleCount and frameCount.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#count"/>
+    ///</summary>
+    public static readonly Property count = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#count"));    
+
+    ///<summary>
+    ///A filesystem. Examples of filesystems include hard disk partitions, removable media, but also images thereof stored in files such as ISO.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Filesystem"/>
+    ///</summary>
+    public static readonly Class Filesystem = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Filesystem"));    
+
+    ///<summary>
+    ///A superclass for all entities, whose primary purpose is to serve as containers for other data object. They usually don't have any "meaning" by themselves. Examples include folders, archives and optical disc images.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#DataContainer"/>
+    ///</summary>
+    public static readonly Class DataContainer = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#DataContainer"));    
+
+    ///<summary>
+    ///Type of filesystem such as ext3 and ntfs.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#filesystemType"/>
+    ///</summary>
+    public static readonly Property filesystemType = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#filesystemType"));    
+
+    ///<summary>
+    ///Total storage space of the filesystem, which can be different from nie:contentSize because the latter includes filesystem format overhead.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#totalSpace"/>
+    ///</summary>
+    public static readonly Property totalSpace = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#totalSpace"));    
+
+    ///<summary>
+    ///Unoccupied storage space of the filesystem.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#freeSpace"/>
+    ///</summary>
+    public static readonly Property freeSpace = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#freeSpace"));    
+
+    ///<summary>
+    ///Occupied storage space of the filesystem.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#occupiedSpace"/>
+    ///</summary>
+    public static readonly Property occupiedSpace = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#occupiedSpace"));    
+
+    ///<summary>
+    ///Universally unique identifier of the filesystem. In the future, this property may have its parent changed to a more generic class.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#uuid"/>
+    ///</summary>
+    public static readonly Property uuid = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#uuid"));    
+
+    ///<summary>
+    ///A name of a function/method defined in the given source code file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesFunction"/>
+    ///</summary>
+    public static readonly Property definesFunction = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesFunction"));    
+
+    ///<summary>
+    ///A string containing the permissions of a file. A feature common in many UNIX-like operating systems.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#permissions"/>
+    ///</summary>
+    public static readonly Property permissions = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#permissions"));    
+
+    ///<summary>
+    ///The amount of lines in a text document
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lineCount"/>
+    ///</summary>
+    public static readonly Property lineCount = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lineCount"));    
+
+    ///<summary>
+    ///A DataObject representing a piece of software. Examples of interpretations of a SoftwareItem include an Application and an OperatingSystem.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SoftwareItem"/>
+    ///</summary>
+    public static readonly Class SoftwareItem = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SoftwareItem"));    
+
+    ///<summary>
+    ///The amount of words in a text document.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#wordCount"/>
+    ///</summary>
+    public static readonly Property wordCount = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#wordCount"));    
+
+    ///<summary>
+    ///The address of the linked object. Usually a web URI.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bookmarks"/>
+    ///</summary>
+    public static readonly Property bookmarks = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bookmarks"));    
+
+    ///<summary>
+    ///A bookmark of a webbrowser. Use nie:title for the name/label, nie:contentCreated to represent the date when the user added the bookmark, and nie:contentLastModified for modifications. nfo:bookmarks to store the link.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Bookmark"/>
+    ///</summary>
+    public static readonly Class Bookmark = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Bookmark"));    
+
+    ///<summary>
+    ///Character position of the bookmark.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#characterPosition"/>
+    ///</summary>
+    public static readonly Property characterPosition = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#characterPosition"));    
+
+    ///<summary>
+    ///Page linked by the bookmark.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#pageNumber"/>
+    ///</summary>
+    public static readonly Property pageNumber = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#pageNumber"));    
+
+    ///<summary>
+    ///Stream position of the bookmark, suitable for e.g. audio books. Expressed in milliseconds
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#streamPosition"/>
+    ///</summary>
+    public static readonly Property streamPosition = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#streamPosition"));    
+
+    ///<summary>
+    ///An address specifying a remote host and port. Such an address can be interpreted in many ways (examples of such interpretations include mailboxes, websites, remote calendars or filesystems), depending on an interpretation, various kinds of data may be extracted from such an address.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RemotePortAddress"/>
+    ///</summary>
+    public static readonly Class RemotePortAddress = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RemotePortAddress"));    
+
+    ///<summary>
+    ///A file attached to another data object. Many data formats allow for attachments: emails, vcards, ical events, id3 and exif...
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Attachment"/>
+    ///</summary>
+    public static readonly Class Attachment = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Attachment"));    
+
+    ///<summary>
+    ///A file embedded in another data object. There are many ways in which a file may be embedded in another one. Use this class directly only in cases if none of the subclasses gives a better description of your case.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#EmbeddedFileDataObject"/>
+    ///</summary>
+    public static readonly Class EmbeddedFileDataObject = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#EmbeddedFileDataObject"));    
+
+    ///<summary>
+    ///The amount of characters in the document.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#characterCount"/>
+    ///</summary>
+    public static readonly Property characterCount = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#characterCount"));    
+
+    ///<summary>
+    ///Time when the file was last accessed.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileLastAccessed"/>
+    ///</summary>
+    public static readonly Property fileLastAccessed = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileLastAccessed"));    
+
+    ///<summary>
+    ///States that a piece of software supercedes another piece of software.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#supercedes"/>
+    ///</summary>
+    public static readonly Property supercedes = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#supercedes"));    
+
+    ///<summary>
+    ///A piece of software. Examples may include applications and the operating system. This interpretation most commonly applies to SoftwareItems.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Software"/>
+    ///</summary>
+    public static readonly Class Software = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Software"));    
+
+    ///<summary>
+    ///Indicates the name of the programming language this source code file is written in. Examples might include 'C', 'C++', 'Java' etc.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#programmingLanguage"/>
+    ///</summary>
+    public static readonly Property programmingLanguage = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#programmingLanguage"));    
+
+    ///<summary>
+    ///An application
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Application"/>
+    ///</summary>
+    public static readonly Class Application = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Application"));    
+
+    ///<summary>
+    ///The amount of samples in an audio clip.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sampleCount"/>
+    ///</summary>
+    public static readonly Property sampleCount = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sampleCount"));    
+
+    ///<summary>
+    ///Visual content height in pixels.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height"/>
+    ///</summary>
+    public static readonly Property height = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height"));    
+
+    ///<summary>
+    ///Number of front channels.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frontChannels"/>
+    ///</summary>
+    public static readonly Property frontChannels = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frontChannels"));    
+
+    ///<summary>
+    ///An image of a filesystem. Instances of this class may include CD images, DVD images or hard disk partition images created by various pieces of software (e.g. Norton Ghost). Deprecated in favor of nfo:Filesystem.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FilesystemImage"/>
+    ///</summary>
+    public static readonly Class FilesystemImage = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FilesystemImage"));    
+
+    ///<summary>
+    ///Number of rear channels.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#rearChannels"/>
+    ///</summary>
+    public static readonly Property rearChannels = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#rearChannels"));    
+
+    ///<summary>
+    ///Amount of bits in each audio sample.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitsPerSample"/>
+    ///</summary>
+    public static readonly Property bitsPerSample = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitsPerSample"));    
+
+    ///<summary>
+    ///A common superproperty for all properties signifying the amount of bits for an atomic unit of data. Examples of subproperties may include bitsPerSample and bitsPerPixel
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitDepth"/>
+    ///</summary>
+    public static readonly Property bitDepth = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitDepth"));    
+
+    ///<summary>
+    ///A HTML document, may contain links to other files.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#HtmlDocument"/>
+    ///</summary>
+    public static readonly Class HtmlDocument = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#HtmlDocument"));    
+
+    ///<summary>
+    ///Duration of a media piece.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#duration"/>
+    ///</summary>
+    public static readonly Property duration = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#duration"));    
+
+    ///<summary>
+    ///Number of Low Frequency Expansion (subwoofer) channels.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lfeChannels"/>
+    ///</summary>
+    public static readonly Property lfeChannels = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lfeChannels"));    
+
+    ///<summary>
+    ///Connects a media container with a single media stream contained within.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasMediaStream"/>
+    ///</summary>
+    public static readonly Property hasMediaStream = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasMediaStream"));    
+
+    ///<summary>
+    ///A spreadsheet, created by a spreadsheet application. Examples might include Gnumeric, OpenOffice Calc or MS Excel.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Spreadsheet"/>
+    ///</summary>
+    public static readonly Class Spreadsheet = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Spreadsheet"));    
+
+    ///<summary>
+    ///States if a given resource is password-protected.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#isPasswordProtected"/>
+    ///</summary>
+    public static readonly Property isPasswordProtected = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#isPasswordProtected"));    
+
+    ///<summary>
+    ///A file entity inside an archive.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#ArchiveItem"/>
+    ///</summary>
+    public static readonly Class ArchiveItem = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#ArchiveItem"));    
+
+    ///<summary>
+    ///The actual value of the hash.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hashValue"/>
+    ///</summary>
+    public static readonly Property hashValue = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hashValue"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encryptedStatus"/>
+    ///</summary>
+    public static readonly Resource encryptedStatus = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encryptedStatus"));    
+
+    ///<summary>
+    ///Uncompressed size of the content of a compressed file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#uncompressedSize"/>
+    ///</summary>
+    public static readonly Property uncompressedSize = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#uncompressedSize"));    
+
+    ///<summary>
+    ///A compressed file. May contain other files or folder inside. 
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Archive"/>
+    ///</summary>
+    public static readonly Class Archive = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Archive"));    
+
+    ///<summary>
+    ///The date and time of the deletion.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#deletionDate"/>
+    ///</summary>
+    public static readonly Property deletionDate = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#deletionDate"));    
+
+    ///<summary>
+    ///A file entity that has been deleted from the original source. Usually such entities are stored within various kinds of 'Trash' or 'Recycle Bin' folders.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#DeletedResource"/>
+    ///</summary>
+    public static readonly Class DeletedResource = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#DeletedResource"));    
+
+    ///<summary>
+    ///A MindMap, created by a mind-mapping utility. Examples might include FreeMind or mind mapper.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MindMap"/>
+    ///</summary>
+    public static readonly Class MindMap = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MindMap"));    
+
+    ///<summary>
+    ///A service published by a piece of software, either by an operating system or an application. Examples of such services may include calendar, addressbook and mailbox managed by a PIM application. This category is introduced to distinguish between data available directly from the applications (Via some Interprocess Communication Mechanisms) and data available from files on a disk. In either case both DataObjects would receive a similar interpretation (e.g. a Mailbox) and wouldn't differ on the content level.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SoftwareService"/>
+    ///</summary>
+    public static readonly Class SoftwareService = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SoftwareService"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#decryptedStatus"/>
+    ///</summary>
+    public static readonly Resource decryptedStatus = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#decryptedStatus"));    
+
+    ///<summary>
+    ///The original location of the deleted resource.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#originalLocation"/>
+    ///</summary>
+    public static readonly Property originalLocation = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#originalLocation"));    
+
+    ///<summary>
+    ///A website, usually a container for remote resources, that may be interpreted as HTMLDocuments, images or other types of content.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Website"/>
+    ///</summary>
+    public static readonly Class Website = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Website"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#VectorImage"/>
+    ///</summary>
+    public static readonly Class VectorImage = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#VectorImage"));    
+
+    ///<summary>
+    ///A Cursor.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Cursor"/>
+    ///</summary>
+    public static readonly Class Cursor = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Cursor"));    
+
+    ///<summary>
+    ///A raster image.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage"/>
+    ///</summary>
+    public static readonly Class RasterImage = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage"));    
+
+    ///<summary>
+    ///This property is intended to point to an RDF list of MediaFiles.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasMediaFileListEntry"/>
+    ///</summary>
+    public static readonly Property hasMediaFileListEntry = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasMediaFileListEntry"));    
+
+    ///<summary>
+    ///A file containing a list of media files.e.g. a playlist
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaList"/>
+    ///</summary>
+    public static readonly Class MediaList = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaList"));    
+
+    ///<summary>
+    ///A single node in the list of media files contained within an MediaList instance. This class is intended to provide a type all those links have. In valid NRL untyped resources cannot be linked. There are no properties defined for this class but the application may expect rdf:first and rdf:last links. The former points to the DataObject instance, interpreted as Media the latter points at another MediaFileListEntr. At the end of the list there is a link to rdf:nil.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaFileListEntry"/>
+    ///</summary>
+    public static readonly Class MediaFileListEntry = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaFileListEntry"));    
+
+    ///<summary>
+    ///A folder with bookmarks of a webbrowser. Use nfo:containsBookmark to relate Bookmarks. Folders can contain subfolders, use containsBookmarkFolder to relate them.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#BookmarkFolder"/>
+    ///</summary>
+    public static readonly Class BookmarkFolder = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#BookmarkFolder"));    
+
+    ///<summary>
+    ///Amount of bits used to express the color of each pixel.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth"/>
+    ///</summary>
+    public static readonly Property colorDepth = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth"));    
+
+    ///<summary>
+    ///The average overall bitrate of a media container. (i.e. the size of the piece of media in bits, divided by it's duration expressed in seconds).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#averageBitrate"/>
+    ///</summary>
+    public static readonly Property averageBitrate = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#averageBitrate"));    
+
+    ///<summary>
+    ///An Icon (regardless of whether it's a raster or a vector icon. A resource representing an icon could have two types (Icon and Raster, or Icon and Vector) if required.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Icon"/>
+    ///</summary>
+    public static readonly Class Icon = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Icon"));    
+
+    ///<summary>
+    ///The owner of the file as defined by the file system access rights feature.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileOwner"/>
+    ///</summary>
+    public static readonly Property fileOwner = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileOwner"));    
+
+    ///<summary>
+    ///Visual content aspect ratio. (Width divided by Height)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#aspectRatio"/>
+    ///</summary>
+    public static readonly Property aspectRatio = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#aspectRatio"));    
+
+    ///<summary>
+    ///The folder contains a bookmark folder.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsBookmarkFolder"/>
+    ///</summary>
+    public static readonly Property containsBookmarkFolder = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsBookmarkFolder"));    
+
+    ///<summary>
+    ///Models the containment relations between Files and Folders (or CompressedFiles).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#belongsToContainer"/>
+    ///</summary>
+    public static readonly Property belongsToContainer = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#belongsToContainer"));    
+
+    ///<summary>
+    ///Vertical resolution of an Image (if printed). Expressed in DPI
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#verticalResolution"/>
+    ///</summary>
+    public static readonly Property verticalResolution = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#verticalResolution"));    
+
+    ///<summary>
+    ///URL of the file. It points at the location of the file. In cases where creating a simple file:// or http:// URL for a file is difficult (e.g. for files inside compressed archives) the applications are encouraged to use conventions defined by Apache Commons VFS Project at http://jakarta.apache.org/  commons/ vfs/ filesystems.html.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileUrl"/>
+    ///</summary>
+    public static readonly Property fileUrl = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileUrl"));    
+
+    ///<summary>
+    ///Amount of video frames per second.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frameRate"/>
+    ///</summary>
+    public static readonly Property frameRate = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frameRate"));    
+
+    ///<summary>
+    ///The name of the font family.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fontFamily"/>
+    ///</summary>
+    public static readonly Property fontFamily = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fontFamily"));    
+
+    ///<summary>
+    ///File creation date
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileCreated"/>
+    ///</summary>
+    public static readonly Property fileCreated = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileCreated"));    
+
+    ///<summary>
+    ///The type of the bitrate. Examples may include CBR and VBR.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitrateType"/>
+    ///</summary>
+    public static readonly Property bitrateType = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitrateType"));    
+
+    ///<summary>
+    ///The encoding used for the Embedded File. Examples might include BASE64 or UUEncode
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encoding"/>
+    ///</summary>
+    public static readonly Property encoding = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encoding"));    
+
+    ///<summary>
+    ///A folder/directory. Examples of folders include folders on a filesystem and message folders in a mailbox.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Folder"/>
+    ///</summary>
+    public static readonly Class Folder = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Folder"));    
+
+    ///<summary>
+    ///Links the file with it's hash value.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasHash"/>
+    ///</summary>
+    public static readonly Property hasHash = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasHash"));    
+
+    ///<summary>
+    ///The name of the codec necessary to decode a piece of media.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec"/>
+    ///</summary>
+    public static readonly Property codec = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec"));    
+
+    ///<summary>
+    ///last modification date
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileLastModified"/>
+    ///</summary>
+    public static readonly Property fileLastModified = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileLastModified"));    
+
+    ///<summary>
+    ///The type of the compression. Values include, 'lossy' and 'lossless'.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#compressionType"/>
+    ///</summary>
+    public static readonly Property compressionType = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#compressionType"));    
+
+    ///<summary>
+    ///Type of compression. Instances of this class represent the limited set of values allowed for the nfo:compressionType property.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#CompressionType"/>
+    ///</summary>
+    public static readonly Class CompressionType = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#CompressionType"));    
+
+    ///<summary>
+    ///Number of pages.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#pageCount"/>
+    ///</summary>
+    public static readonly Property pageCount = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#pageCount"));    
+
+    ///<summary>
+    ///A file containing a text document, that is unambiguously divided into pages. Examples might include PDF, DOC, PS, DVI etc.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PaginatedTextDocument"/>
+    ///</summary>
+    public static readonly Class PaginatedTextDocument = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PaginatedTextDocument"));    
+
+    ///<summary>
+    ///Name of a global variable defined within the source code file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesGlobalVariable"/>
+    ///</summary>
+    public static readonly Property definesGlobalVariable = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesGlobalVariable"));    
+
+    ///<summary>
+    ///Represents a container for deleted files, a feature common in modern operating systems.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Trash"/>
+    ///</summary>
+    public static readonly Class Trash = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Trash"));    
+
+    ///<summary>
+    ///States that a piece of software is in conflict with another piece of software.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#conflicts"/>
+    ///</summary>
+    public static readonly Property conflicts = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#conflicts"));    
+
+    ///<summary>
+    ///The status of the encryption of the InformationElement.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encryptionStatus"/>
+    ///</summary>
+    public static readonly Property encryptionStatus = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encryptionStatus"));    
+
+    ///<summary>
+    ///The status of the encryption of an InformationElement. nfo:encryptedStatus means that the InformationElement has been encrypted and couldn't be decrypted by the extraction software, thus no content is available. nfo:decryptedStatus means that decryption was successfull and the content is available.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#EncryptionStatus"/>
+    ///</summary>
+    public static readonly Class EncryptionStatus = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#EncryptionStatus"));    
+
+    ///<summary>
+    ///The folder contains a bookmark.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsBookmark"/>
+    ///</summary>
+    public static readonly Property containsBookmark = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsBookmark"));    
+
+    ///<summary>
+    ///An executable file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Executable"/>
+    ///</summary>
+    public static readonly Class Executable = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Executable"));    
+
+    ///<summary>
+    ///Name of a class defined in the source code file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesClass"/>
+    ///</summary>
+    public static readonly Property definesClass = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesClass"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lossyCompressionType"/>
+    ///</summary>
+    public static readonly Resource lossyCompressionType = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lossyCompressionType"));    
+
+    ///<summary>
+    ///An OperatingSystem
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#OperatingSystem"/>
+    ///</summary>
+    public static readonly Class OperatingSystem = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#OperatingSystem"));    
+
+    ///<summary>
+    ///The size of the file in bytes. For compressed files it means the size of the packed file, not of the contents. For folders it means the aggregated size of all contained files and folders 
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileSize"/>
+    ///</summary>
+    public static readonly Property fileSize = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileSize"));    
+
+    ///<summary>
+    ///A file data object stored at a remote location. Don't confuse this class with a RemotePortAddress. This one applies to a particular resource, RemotePortAddress applies to an address, that can have various interpretations.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RemoteDataObject"/>
+    ///</summary>
+    public static readonly Class RemoteDataObject = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RemoteDataObject"));    
+
+    ///<summary>
+    ///The number of colors used/available in a raster image.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorCount"/>
+    ///</summary>
+    public static readonly Property colorCount = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorCount"));    
+
+    ///<summary>
+    ///The number of colors defined in palette of the raster image.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#paletteSize"/>
+    ///</summary>
+    public static readonly Property paletteSize = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#paletteSize"));    
+
+    ///<summary>
+    ///An information resources of which representations (files, streams) can be retrieved through a web server. They may be generated at retrieval time. Typical examples are pages served by PHP or AJAX or mp3 streams.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject"/>
+    ///</summary>
+    public static readonly Class WebDataObject = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject"));    
+
+    ///<summary>
+    ///A local file data object which is stored on a local file system. Its nie:url always uses the file:/ protocol. The main use of this class is to distinguish local and non-local files.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#LocalFileDataObject"/>
+    ///</summary>
+    public static readonly Class LocalFileDataObject = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#LocalFileDataObject"));    
+
+    ///<summary>
+    ///Relates an information element to an image which depicts said element.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#depiction"/>
+    ///</summary>
+    public static readonly Property depiction = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#depiction"));    
+
+    ///<summary>
+    ///Relates an image to the information elements it depicts.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#depicts"/>
+    ///</summary>
+    public static readonly Property depicts = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#depicts"));    
+
+    ///<summary>
+    ///Containment relation between placemark containers (files) and placemarks within.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsPlacemark"/>
+    ///</summary>
+    public static readonly Property containsPlacemark = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsPlacemark"));    
+
+    ///<summary>
+    ///A data object containing placemark(s). Use nie:contentCreated to represent the date when the user created the dataobject, nao:creator for defining the creator, nie:contentLastModified for modifications. nfo:containsPlacemark to refer to individual placemarks within.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PlacemarkContainer"/>
+    ///</summary>
+    public static readonly Class PlacemarkContainer = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PlacemarkContainer"));    
+
+    ///<summary>
+    ///One placemark within a placemark container/file. Use nie:title for the name/label, nao:creator for defining the creator.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Placemark"/>
+    ///</summary>
+    public static readonly Class Placemark = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Placemark"));
+}
+///<summary>
+///NEPOMUK File Ontology (NFO)
+///
+///</summary>
+public static class NFO
+{
+    public static readonly Uri Namespace = new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "NFO";
+    public static string GetPrefix() { return Prefix; } 
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    ///</summary>
+    public const string _22_rdf_syntax_ns = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+
+    ///<summary>
+    ///Horizontal resolution of an image (if printed). Expressed in DPI.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#horizontalResolution"/>
+    ///</summary>
+    public const string horizontalResolution = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#horizontalResolution";
+
+    ///<summary>
+    ///A file containing an image.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image"/>
+    ///</summary>
+    public const string Image = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image";
+
+    ///<summary>
+    ///The amount of audio samples per second.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sampleRate"/>
+    ///</summary>
+    public const string sampleRate = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sampleRate";
+
+    ///<summary>
+    ///A file containing audio content
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Audio"/>
+    ///</summary>
+    public const string Audio = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Audio";
+
+    ///<summary>
+    ///A piece of media content. This class may be used to express complex media containers with many streams of various media content (both aural and visual).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Media"/>
+    ///</summary>
+    public const string Media = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Media";
+
+    ///<summary>
+    ///A common superproperty for all properties specifying the media rate. Examples of subproperties may include frameRate for video and sampleRate for audio. This property is expressed in units per second.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#rate"/>
+    ///</summary>
+    public const string rate = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#rate";
+
+    ///<summary>
+    ///A partition on a hard disk
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#HardDiskPartition"/>
+    ///</summary>
+    public const string HardDiskPartition = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#HardDiskPartition";
+
+    ///<summary>
+    ///Name of the file, together with the extension
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileName"/>
+    ///</summary>
+    public const string fileName = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileName";
+
+    ///<summary>
+    ///A resource containing a finite sequence of bytes with arbitrary information, that is available to a computer program and is usually based on some kind of durable storage. A file is durable in the sense that it remains available for programs to use after the current program has finished.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject"/>
+    ///</summary>
+    public const string FileDataObject = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject";
+
+    ///<summary>
+    ///A stream of multimedia content, usually contained within a media container such as a movie (containing both audio and video) or a DVD (possibly containing many streams of audio and video). Most common interpretations for such a DataObject include Audio and Video.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaStream"/>
+    ///</summary>
+    public const string MediaStream = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaStream";
+
+    ///<summary>
+    ///A Presentation made by some presentation software (Corel Presentations, OpenOffice Impress, MS Powerpoint etc.)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Presentation"/>
+    ///</summary>
+    public const string Presentation = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Presentation";
+
+    ///<summary>
+    ///A generic document. A common superclass for all documents on the desktop.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Document"/>
+    ///</summary>
+    public const string Document = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Document";
+
+    ///<summary>
+    ///Name of the algorithm used to compute the hash value. Examples might include CRC32, MD5, SHA, TTH etc.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hashAlgorithm"/>
+    ///</summary>
+    public const string hashAlgorithm = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hashAlgorithm";
+
+    ///<summary>
+    ///A fingerprint of the file, generated by some hashing function.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileHash"/>
+    ///</summary>
+    public const string FileHash = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileHash";
+
+    ///<summary>
+    ///The amount of character in comments i.e. characters ignored by the compiler/interpreter.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#commentCharacterCount"/>
+    ///</summary>
+    public const string commentCharacterCount = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#commentCharacterCount";
+
+    ///<summary>
+    ///Code in a compilable or interpreted programming language.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SourceCode"/>
+    ///</summary>
+    public const string SourceCode = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SourceCode";
+
+    ///<summary>
+    ///A file containing plain text (ASCII, Unicode or other encodings). Examples may include TXT, HTML, XML, program source code etc.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PlainTextDocument"/>
+    ///</summary>
+    public const string PlainTextDocument = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PlainTextDocument";
+
+    ///<summary>
+    ///A text document
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#TextDocument"/>
+    ///</summary>
+    public const string TextDocument = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#TextDocument";
+
+    ///<summary>
+    ///The foundry, the organization that created the font.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#foundry"/>
+    ///</summary>
+    public const string foundry = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#foundry";
+
+    ///<summary>
+    ///A font.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Font"/>
+    ///</summary>
+    public const string Font = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Font";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#losslessCompressionType"/>
+    ///</summary>
+    public const string losslessCompressionType = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#losslessCompressionType";
+
+    ///<summary>
+    ///Number of side channels
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sideChannels"/>
+    ///</summary>
+    public const string sideChannels = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sideChannels";
+
+    ///<summary>
+    ///Number of channels. This property is to be used directly if no detailed information is necessary. Otherwise use more detailed subproperties.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#channels"/>
+    ///</summary>
+    public const string channels = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#channels";
+
+    ///<summary>
+    ///True if the image is interlaced, false if not.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#interlaceMode"/>
+    ///</summary>
+    public const string interlaceMode = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#interlaceMode";
+
+    ///<summary>
+    ///File containing visual content.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Visual"/>
+    ///</summary>
+    public const string Visual = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Visual";
+
+    ///<summary>
+    ///Visual content width in pixels.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width"/>
+    ///</summary>
+    public const string width = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width";
+
+    ///<summary>
+    ///The amount of frames in a video sequence.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frameCount"/>
+    ///</summary>
+    public const string frameCount = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frameCount";
+
+    ///<summary>
+    ///A video file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Video"/>
+    ///</summary>
+    public const string Video = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Video";
+
+    ///<summary>
+    ///A common superproperty for all properties signifying the amount of atomic media data units. Examples of subproperties may include sampleCount and frameCount.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#count"/>
+    ///</summary>
+    public const string count = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#count";
+
+    ///<summary>
+    ///A filesystem. Examples of filesystems include hard disk partitions, removable media, but also images thereof stored in files such as ISO.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Filesystem"/>
+    ///</summary>
+    public const string Filesystem = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Filesystem";
+
+    ///<summary>
+    ///A superclass for all entities, whose primary purpose is to serve as containers for other data object. They usually don't have any "meaning" by themselves. Examples include folders, archives and optical disc images.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#DataContainer"/>
+    ///</summary>
+    public const string DataContainer = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#DataContainer";
+
+    ///<summary>
+    ///Type of filesystem such as ext3 and ntfs.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#filesystemType"/>
+    ///</summary>
+    public const string filesystemType = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#filesystemType";
+
+    ///<summary>
+    ///Total storage space of the filesystem, which can be different from nie:contentSize because the latter includes filesystem format overhead.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#totalSpace"/>
+    ///</summary>
+    public const string totalSpace = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#totalSpace";
+
+    ///<summary>
+    ///Unoccupied storage space of the filesystem.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#freeSpace"/>
+    ///</summary>
+    public const string freeSpace = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#freeSpace";
+
+    ///<summary>
+    ///Occupied storage space of the filesystem.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#occupiedSpace"/>
+    ///</summary>
+    public const string occupiedSpace = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#occupiedSpace";
+
+    ///<summary>
+    ///Universally unique identifier of the filesystem. In the future, this property may have its parent changed to a more generic class.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#uuid"/>
+    ///</summary>
+    public const string uuid = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#uuid";
+
+    ///<summary>
+    ///A name of a function/method defined in the given source code file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesFunction"/>
+    ///</summary>
+    public const string definesFunction = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesFunction";
+
+    ///<summary>
+    ///A string containing the permissions of a file. A feature common in many UNIX-like operating systems.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#permissions"/>
+    ///</summary>
+    public const string permissions = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#permissions";
+
+    ///<summary>
+    ///The amount of lines in a text document
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lineCount"/>
+    ///</summary>
+    public const string lineCount = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lineCount";
+
+    ///<summary>
+    ///A DataObject representing a piece of software. Examples of interpretations of a SoftwareItem include an Application and an OperatingSystem.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SoftwareItem"/>
+    ///</summary>
+    public const string SoftwareItem = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SoftwareItem";
+
+    ///<summary>
+    ///The amount of words in a text document.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#wordCount"/>
+    ///</summary>
+    public const string wordCount = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#wordCount";
+
+    ///<summary>
+    ///The address of the linked object. Usually a web URI.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bookmarks"/>
+    ///</summary>
+    public const string bookmarks = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bookmarks";
+
+    ///<summary>
+    ///A bookmark of a webbrowser. Use nie:title for the name/label, nie:contentCreated to represent the date when the user added the bookmark, and nie:contentLastModified for modifications. nfo:bookmarks to store the link.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Bookmark"/>
+    ///</summary>
+    public const string Bookmark = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Bookmark";
+
+    ///<summary>
+    ///Character position of the bookmark.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#characterPosition"/>
+    ///</summary>
+    public const string characterPosition = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#characterPosition";
+
+    ///<summary>
+    ///Page linked by the bookmark.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#pageNumber"/>
+    ///</summary>
+    public const string pageNumber = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#pageNumber";
+
+    ///<summary>
+    ///Stream position of the bookmark, suitable for e.g. audio books. Expressed in milliseconds
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#streamPosition"/>
+    ///</summary>
+    public const string streamPosition = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#streamPosition";
+
+    ///<summary>
+    ///An address specifying a remote host and port. Such an address can be interpreted in many ways (examples of such interpretations include mailboxes, websites, remote calendars or filesystems), depending on an interpretation, various kinds of data may be extracted from such an address.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RemotePortAddress"/>
+    ///</summary>
+    public const string RemotePortAddress = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RemotePortAddress";
+
+    ///<summary>
+    ///A file attached to another data object. Many data formats allow for attachments: emails, vcards, ical events, id3 and exif...
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Attachment"/>
+    ///</summary>
+    public const string Attachment = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Attachment";
+
+    ///<summary>
+    ///A file embedded in another data object. There are many ways in which a file may be embedded in another one. Use this class directly only in cases if none of the subclasses gives a better description of your case.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#EmbeddedFileDataObject"/>
+    ///</summary>
+    public const string EmbeddedFileDataObject = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#EmbeddedFileDataObject";
+
+    ///<summary>
+    ///The amount of characters in the document.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#characterCount"/>
+    ///</summary>
+    public const string characterCount = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#characterCount";
+
+    ///<summary>
+    ///Time when the file was last accessed.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileLastAccessed"/>
+    ///</summary>
+    public const string fileLastAccessed = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileLastAccessed";
+
+    ///<summary>
+    ///States that a piece of software supercedes another piece of software.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#supercedes"/>
+    ///</summary>
+    public const string supercedes = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#supercedes";
+
+    ///<summary>
+    ///A piece of software. Examples may include applications and the operating system. This interpretation most commonly applies to SoftwareItems.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Software"/>
+    ///</summary>
+    public const string Software = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Software";
+
+    ///<summary>
+    ///Indicates the name of the programming language this source code file is written in. Examples might include 'C', 'C++', 'Java' etc.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#programmingLanguage"/>
+    ///</summary>
+    public const string programmingLanguage = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#programmingLanguage";
+
+    ///<summary>
+    ///An application
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Application"/>
+    ///</summary>
+    public const string Application = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Application";
+
+    ///<summary>
+    ///The amount of samples in an audio clip.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sampleCount"/>
+    ///</summary>
+    public const string sampleCount = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sampleCount";
+
+    ///<summary>
+    ///Visual content height in pixels.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height"/>
+    ///</summary>
+    public const string height = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height";
+
+    ///<summary>
+    ///Number of front channels.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frontChannels"/>
+    ///</summary>
+    public const string frontChannels = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frontChannels";
+
+    ///<summary>
+    ///An image of a filesystem. Instances of this class may include CD images, DVD images or hard disk partition images created by various pieces of software (e.g. Norton Ghost). Deprecated in favor of nfo:Filesystem.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FilesystemImage"/>
+    ///</summary>
+    public const string FilesystemImage = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FilesystemImage";
+
+    ///<summary>
+    ///Number of rear channels.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#rearChannels"/>
+    ///</summary>
+    public const string rearChannels = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#rearChannels";
+
+    ///<summary>
+    ///Amount of bits in each audio sample.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitsPerSample"/>
+    ///</summary>
+    public const string bitsPerSample = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitsPerSample";
+
+    ///<summary>
+    ///A common superproperty for all properties signifying the amount of bits for an atomic unit of data. Examples of subproperties may include bitsPerSample and bitsPerPixel
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitDepth"/>
+    ///</summary>
+    public const string bitDepth = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitDepth";
+
+    ///<summary>
+    ///A HTML document, may contain links to other files.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#HtmlDocument"/>
+    ///</summary>
+    public const string HtmlDocument = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#HtmlDocument";
+
+    ///<summary>
+    ///Duration of a media piece.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#duration"/>
+    ///</summary>
+    public const string duration = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#duration";
+
+    ///<summary>
+    ///Number of Low Frequency Expansion (subwoofer) channels.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lfeChannels"/>
+    ///</summary>
+    public const string lfeChannels = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lfeChannels";
+
+    ///<summary>
+    ///Connects a media container with a single media stream contained within.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasMediaStream"/>
+    ///</summary>
+    public const string hasMediaStream = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasMediaStream";
+
+    ///<summary>
+    ///A spreadsheet, created by a spreadsheet application. Examples might include Gnumeric, OpenOffice Calc or MS Excel.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Spreadsheet"/>
+    ///</summary>
+    public const string Spreadsheet = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Spreadsheet";
+
+    ///<summary>
+    ///States if a given resource is password-protected.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#isPasswordProtected"/>
+    ///</summary>
+    public const string isPasswordProtected = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#isPasswordProtected";
+
+    ///<summary>
+    ///A file entity inside an archive.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#ArchiveItem"/>
+    ///</summary>
+    public const string ArchiveItem = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#ArchiveItem";
+
+    ///<summary>
+    ///The actual value of the hash.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hashValue"/>
+    ///</summary>
+    public const string hashValue = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hashValue";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encryptedStatus"/>
+    ///</summary>
+    public const string encryptedStatus = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encryptedStatus";
+
+    ///<summary>
+    ///Uncompressed size of the content of a compressed file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#uncompressedSize"/>
+    ///</summary>
+    public const string uncompressedSize = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#uncompressedSize";
+
+    ///<summary>
+    ///A compressed file. May contain other files or folder inside. 
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Archive"/>
+    ///</summary>
+    public const string Archive = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Archive";
+
+    ///<summary>
+    ///The date and time of the deletion.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#deletionDate"/>
+    ///</summary>
+    public const string deletionDate = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#deletionDate";
+
+    ///<summary>
+    ///A file entity that has been deleted from the original source. Usually such entities are stored within various kinds of 'Trash' or 'Recycle Bin' folders.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#DeletedResource"/>
+    ///</summary>
+    public const string DeletedResource = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#DeletedResource";
+
+    ///<summary>
+    ///A MindMap, created by a mind-mapping utility. Examples might include FreeMind or mind mapper.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MindMap"/>
+    ///</summary>
+    public const string MindMap = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MindMap";
+
+    ///<summary>
+    ///A service published by a piece of software, either by an operating system or an application. Examples of such services may include calendar, addressbook and mailbox managed by a PIM application. This category is introduced to distinguish between data available directly from the applications (Via some Interprocess Communication Mechanisms) and data available from files on a disk. In either case both DataObjects would receive a similar interpretation (e.g. a Mailbox) and wouldn't differ on the content level.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SoftwareService"/>
+    ///</summary>
+    public const string SoftwareService = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SoftwareService";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#decryptedStatus"/>
+    ///</summary>
+    public const string decryptedStatus = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#decryptedStatus";
+
+    ///<summary>
+    ///The original location of the deleted resource.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#originalLocation"/>
+    ///</summary>
+    public const string originalLocation = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#originalLocation";
+
+    ///<summary>
+    ///A website, usually a container for remote resources, that may be interpreted as HTMLDocuments, images or other types of content.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Website"/>
+    ///</summary>
+    public const string Website = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Website";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#VectorImage"/>
+    ///</summary>
+    public const string VectorImage = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#VectorImage";
+
+    ///<summary>
+    ///A Cursor.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Cursor"/>
+    ///</summary>
+    public const string Cursor = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Cursor";
+
+    ///<summary>
+    ///A raster image.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage"/>
+    ///</summary>
+    public const string RasterImage = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage";
+
+    ///<summary>
+    ///This property is intended to point to an RDF list of MediaFiles.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasMediaFileListEntry"/>
+    ///</summary>
+    public const string hasMediaFileListEntry = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasMediaFileListEntry";
+
+    ///<summary>
+    ///A file containing a list of media files.e.g. a playlist
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaList"/>
+    ///</summary>
+    public const string MediaList = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaList";
+
+    ///<summary>
+    ///A single node in the list of media files contained within an MediaList instance. This class is intended to provide a type all those links have. In valid NRL untyped resources cannot be linked. There are no properties defined for this class but the application may expect rdf:first and rdf:last links. The former points to the DataObject instance, interpreted as Media the latter points at another MediaFileListEntr. At the end of the list there is a link to rdf:nil.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaFileListEntry"/>
+    ///</summary>
+    public const string MediaFileListEntry = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaFileListEntry";
+
+    ///<summary>
+    ///A folder with bookmarks of a webbrowser. Use nfo:containsBookmark to relate Bookmarks. Folders can contain subfolders, use containsBookmarkFolder to relate them.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#BookmarkFolder"/>
+    ///</summary>
+    public const string BookmarkFolder = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#BookmarkFolder";
+
+    ///<summary>
+    ///Amount of bits used to express the color of each pixel.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth"/>
+    ///</summary>
+    public const string colorDepth = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth";
+
+    ///<summary>
+    ///The average overall bitrate of a media container. (i.e. the size of the piece of media in bits, divided by it's duration expressed in seconds).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#averageBitrate"/>
+    ///</summary>
+    public const string averageBitrate = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#averageBitrate";
+
+    ///<summary>
+    ///An Icon (regardless of whether it's a raster or a vector icon. A resource representing an icon could have two types (Icon and Raster, or Icon and Vector) if required.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Icon"/>
+    ///</summary>
+    public const string Icon = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Icon";
+
+    ///<summary>
+    ///The owner of the file as defined by the file system access rights feature.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileOwner"/>
+    ///</summary>
+    public const string fileOwner = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileOwner";
+
+    ///<summary>
+    ///Visual content aspect ratio. (Width divided by Height)
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#aspectRatio"/>
+    ///</summary>
+    public const string aspectRatio = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#aspectRatio";
+
+    ///<summary>
+    ///The folder contains a bookmark folder.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsBookmarkFolder"/>
+    ///</summary>
+    public const string containsBookmarkFolder = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsBookmarkFolder";
+
+    ///<summary>
+    ///Models the containment relations between Files and Folders (or CompressedFiles).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#belongsToContainer"/>
+    ///</summary>
+    public const string belongsToContainer = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#belongsToContainer";
+
+    ///<summary>
+    ///Vertical resolution of an Image (if printed). Expressed in DPI
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#verticalResolution"/>
+    ///</summary>
+    public const string verticalResolution = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#verticalResolution";
+
+    ///<summary>
+    ///URL of the file. It points at the location of the file. In cases where creating a simple file:// or http:// URL for a file is difficult (e.g. for files inside compressed archives) the applications are encouraged to use conventions defined by Apache Commons VFS Project at http://jakarta.apache.org/  commons/ vfs/ filesystems.html.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileUrl"/>
+    ///</summary>
+    public const string fileUrl = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileUrl";
+
+    ///<summary>
+    ///Amount of video frames per second.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frameRate"/>
+    ///</summary>
+    public const string frameRate = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frameRate";
+
+    ///<summary>
+    ///The name of the font family.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fontFamily"/>
+    ///</summary>
+    public const string fontFamily = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fontFamily";
+
+    ///<summary>
+    ///File creation date
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileCreated"/>
+    ///</summary>
+    public const string fileCreated = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileCreated";
+
+    ///<summary>
+    ///The type of the bitrate. Examples may include CBR and VBR.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitrateType"/>
+    ///</summary>
+    public const string bitrateType = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#bitrateType";
+
+    ///<summary>
+    ///The encoding used for the Embedded File. Examples might include BASE64 or UUEncode
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encoding"/>
+    ///</summary>
+    public const string encoding = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encoding";
+
+    ///<summary>
+    ///A folder/directory. Examples of folders include folders on a filesystem and message folders in a mailbox.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Folder"/>
+    ///</summary>
+    public const string Folder = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Folder";
+
+    ///<summary>
+    ///Links the file with it's hash value.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasHash"/>
+    ///</summary>
+    public const string hasHash = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasHash";
+
+    ///<summary>
+    ///The name of the codec necessary to decode a piece of media.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec"/>
+    ///</summary>
+    public const string codec = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec";
+
+    ///<summary>
+    ///last modification date
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileLastModified"/>
+    ///</summary>
+    public const string fileLastModified = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileLastModified";
+
+    ///<summary>
+    ///The type of the compression. Values include, 'lossy' and 'lossless'.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#compressionType"/>
+    ///</summary>
+    public const string compressionType = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#compressionType";
+
+    ///<summary>
+    ///Type of compression. Instances of this class represent the limited set of values allowed for the nfo:compressionType property.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#CompressionType"/>
+    ///</summary>
+    public const string CompressionType = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#CompressionType";
+
+    ///<summary>
+    ///Number of pages.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#pageCount"/>
+    ///</summary>
+    public const string pageCount = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#pageCount";
+
+    ///<summary>
+    ///A file containing a text document, that is unambiguously divided into pages. Examples might include PDF, DOC, PS, DVI etc.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PaginatedTextDocument"/>
+    ///</summary>
+    public const string PaginatedTextDocument = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PaginatedTextDocument";
+
+    ///<summary>
+    ///Name of a global variable defined within the source code file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesGlobalVariable"/>
+    ///</summary>
+    public const string definesGlobalVariable = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesGlobalVariable";
+
+    ///<summary>
+    ///Represents a container for deleted files, a feature common in modern operating systems.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Trash"/>
+    ///</summary>
+    public const string Trash = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Trash";
+
+    ///<summary>
+    ///States that a piece of software is in conflict with another piece of software.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#conflicts"/>
+    ///</summary>
+    public const string conflicts = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#conflicts";
+
+    ///<summary>
+    ///The status of the encryption of the InformationElement.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encryptionStatus"/>
+    ///</summary>
+    public const string encryptionStatus = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#encryptionStatus";
+
+    ///<summary>
+    ///The status of the encryption of an InformationElement. nfo:encryptedStatus means that the InformationElement has been encrypted and couldn't be decrypted by the extraction software, thus no content is available. nfo:decryptedStatus means that decryption was successfull and the content is available.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#EncryptionStatus"/>
+    ///</summary>
+    public const string EncryptionStatus = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#EncryptionStatus";
+
+    ///<summary>
+    ///The folder contains a bookmark.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsBookmark"/>
+    ///</summary>
+    public const string containsBookmark = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsBookmark";
+
+    ///<summary>
+    ///An executable file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Executable"/>
+    ///</summary>
+    public const string Executable = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Executable";
+
+    ///<summary>
+    ///Name of a class defined in the source code file.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesClass"/>
+    ///</summary>
+    public const string definesClass = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesClass";
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lossyCompressionType"/>
+    ///</summary>
+    public const string lossyCompressionType = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lossyCompressionType";
+
+    ///<summary>
+    ///An OperatingSystem
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#OperatingSystem"/>
+    ///</summary>
+    public const string OperatingSystem = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#OperatingSystem";
+
+    ///<summary>
+    ///The size of the file in bytes. For compressed files it means the size of the packed file, not of the contents. For folders it means the aggregated size of all contained files and folders 
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileSize"/>
+    ///</summary>
+    public const string fileSize = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileSize";
+
+    ///<summary>
+    ///A file data object stored at a remote location. Don't confuse this class with a RemotePortAddress. This one applies to a particular resource, RemotePortAddress applies to an address, that can have various interpretations.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RemoteDataObject"/>
+    ///</summary>
+    public const string RemoteDataObject = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RemoteDataObject";
+
+    ///<summary>
+    ///The number of colors used/available in a raster image.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorCount"/>
+    ///</summary>
+    public const string colorCount = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorCount";
+
+    ///<summary>
+    ///The number of colors defined in palette of the raster image.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#paletteSize"/>
+    ///</summary>
+    public const string paletteSize = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#paletteSize";
+
+    ///<summary>
+    ///An information resources of which representations (files, streams) can be retrieved through a web server. They may be generated at retrieval time. Typical examples are pages served by PHP or AJAX or mp3 streams.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject"/>
+    ///</summary>
+    public const string WebDataObject = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject";
+
+    ///<summary>
+    ///A local file data object which is stored on a local file system. Its nie:url always uses the file:/ protocol. The main use of this class is to distinguish local and non-local files.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#LocalFileDataObject"/>
+    ///</summary>
+    public const string LocalFileDataObject = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#LocalFileDataObject";
+
+    ///<summary>
+    ///Relates an information element to an image which depicts said element.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#depiction"/>
+    ///</summary>
+    public const string depiction = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#depiction";
+
+    ///<summary>
+    ///Relates an image to the information elements it depicts.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#depicts"/>
+    ///</summary>
+    public const string depicts = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#depicts";
+
+    ///<summary>
+    ///Containment relation between placemark containers (files) and placemarks within.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsPlacemark"/>
+    ///</summary>
+    public const string containsPlacemark = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#containsPlacemark";
+
+    ///<summary>
+    ///A data object containing placemark(s). Use nie:contentCreated to represent the date when the user created the dataobject, nao:creator for defining the creator, nie:contentLastModified for modifications. nfo:containsPlacemark to refer to individual placemarks within.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PlacemarkContainer"/>
+    ///</summary>
+    public const string PlacemarkContainer = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PlacemarkContainer";
+
+    ///<summary>
+    ///One placemark within a placemark container/file. Use nie:title for the name/label, nao:creator for defining the creator.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Placemark"/>
+    ///</summary>
+    public const string Placemark = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Placemark";
+}
+///<summary>
+///
+///
+///</summary>
+public class art : Ontology
+{
+    public static readonly Uri Namespace = new Uri("http://semiodesk.com/artivity/1.0/");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "art";
+    public static string GetPrefix() { return Prefix; }     
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/"/>
+    ///</summary>
+    public static readonly Resource _1_0 = new Resource(new Uri("http://semiodesk.com/artivity/1.0/"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Add"/>
+    ///</summary>
+    public static readonly Class Add = new Class(new Uri("http://semiodesk.com/artivity/1.0/Add"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Close"/>
+    ///</summary>
+    public static readonly Class Close = new Class(new Uri("http://semiodesk.com/artivity/1.0/Close"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Create"/>
+    ///</summary>
+    public static readonly Class Create = new Class(new Uri("http://semiodesk.com/artivity/1.0/Create"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Delete"/>
+    ///</summary>
+    public static readonly Class Delete = new Class(new Uri("http://semiodesk.com/artivity/1.0/Delete"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Open"/>
+    ///</summary>
+    public static readonly Class Open = new Class(new Uri("http://semiodesk.com/artivity/1.0/Open"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Redo"/>
+    ///</summary>
+    public static readonly Class Redo = new Class(new Uri("http://semiodesk.com/artivity/1.0/Redo"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Remove"/>
+    ///</summary>
+    public static readonly Class Remove = new Class(new Uri("http://semiodesk.com/artivity/1.0/Remove"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Undo"/>
+    ///</summary>
+    public static readonly Class Undo = new Class(new Uri("http://semiodesk.com/artivity/1.0/Undo"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Update"/>
+    ///</summary>
+    public static readonly Class Update = new Class(new Uri("http://semiodesk.com/artivity/1.0/Update"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Save"/>
+    ///</summary>
+    public static readonly Class Save = new Class(new Uri("http://semiodesk.com/artivity/1.0/Save"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/View"/>
+    ///</summary>
+    public static readonly Class View = new Class(new Uri("http://semiodesk.com/artivity/1.0/View"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Viewbox"/>
+    ///</summary>
+    public static readonly Class Viewbox = new Class(new Uri("http://semiodesk.com/artivity/1.0/Viewbox"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Modification"/>
+    ///</summary>
+    public static readonly Class Modification = new Class(new Uri("http://semiodesk.com/artivity/1.0/Modification"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hadViewbox"/>
+    ///</summary>
+    public static readonly Property hadViewbox = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadViewbox"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/left"/>
+    ///</summary>
+    public static readonly Property left = new Property(new Uri("http://semiodesk.com/artivity/1.0/left"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/right"/>
+    ///</summary>
+    public static readonly Property right = new Property(new Uri("http://semiodesk.com/artivity/1.0/right"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/top"/>
+    ///</summary>
+    public static readonly Property top = new Property(new Uri("http://semiodesk.com/artivity/1.0/top"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/bottom"/>
+    ///</summary>
+    public static readonly Property bottom = new Property(new Uri("http://semiodesk.com/artivity/1.0/bottom"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
+    ///</summary>
+    public static readonly Property zoomFactor = new Property(new Uri("http://semiodesk.com/artivity/1.0/zoomFactor"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
+    ///</summary>
+    public static readonly Property isCaptureEnabled = new Property(new Uri("http://semiodesk.com/artivity/1.0/isCaptureEnabled"));
+}
+///<summary>
+///
+///
+///</summary>
+public static class ART
+{
+    public static readonly Uri Namespace = new Uri("http://semiodesk.com/artivity/1.0/");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "ART";
+    public static string GetPrefix() { return Prefix; } 
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/"/>
+    ///</summary>
+    public const string _1_0 = "http://semiodesk.com/artivity/1.0/";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Add"/>
+    ///</summary>
+    public const string Add = "http://semiodesk.com/artivity/1.0/Add";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Close"/>
+    ///</summary>
+    public const string Close = "http://semiodesk.com/artivity/1.0/Close";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Create"/>
+    ///</summary>
+    public const string Create = "http://semiodesk.com/artivity/1.0/Create";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Delete"/>
+    ///</summary>
+    public const string Delete = "http://semiodesk.com/artivity/1.0/Delete";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Open"/>
+    ///</summary>
+    public const string Open = "http://semiodesk.com/artivity/1.0/Open";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Redo"/>
+    ///</summary>
+    public const string Redo = "http://semiodesk.com/artivity/1.0/Redo";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Remove"/>
+    ///</summary>
+    public const string Remove = "http://semiodesk.com/artivity/1.0/Remove";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Undo"/>
+    ///</summary>
+    public const string Undo = "http://semiodesk.com/artivity/1.0/Undo";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Update"/>
+    ///</summary>
+    public const string Update = "http://semiodesk.com/artivity/1.0/Update";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Save"/>
+    ///</summary>
+    public const string Save = "http://semiodesk.com/artivity/1.0/Save";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/View"/>
+    ///</summary>
+    public const string View = "http://semiodesk.com/artivity/1.0/View";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Viewbox"/>
+    ///</summary>
+    public const string Viewbox = "http://semiodesk.com/artivity/1.0/Viewbox";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Modification"/>
+    ///</summary>
+    public const string Modification = "http://semiodesk.com/artivity/1.0/Modification";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hadViewbox"/>
+    ///</summary>
+    public const string hadViewbox = "http://semiodesk.com/artivity/1.0/hadViewbox";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/left"/>
+    ///</summary>
+    public const string left = "http://semiodesk.com/artivity/1.0/left";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/right"/>
+    ///</summary>
+    public const string right = "http://semiodesk.com/artivity/1.0/right";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/top"/>
+    ///</summary>
+    public const string top = "http://semiodesk.com/artivity/1.0/top";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/bottom"/>
+    ///</summary>
+    public const string bottom = "http://semiodesk.com/artivity/1.0/bottom";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
+    ///</summary>
+    public const string zoomFactor = "http://semiodesk.com/artivity/1.0/zoomFactor";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
+    ///</summary>
+    public const string isCaptureEnabled = "http://semiodesk.com/artivity/1.0/isCaptureEnabled";
 }
 }
