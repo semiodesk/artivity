@@ -25,43 +25,44 @@ namespace Inkscape
         _desktop = desktop;
 
         _log = ActivityLog();
-        _instrument = new Resource("application://inkscape.desktop");
+        _agent = new SoftwareAgent("application://inkscape.desktop");
 
-        g_message("ArtivityLog(SPDocument*, SPDesktop*) called; doc=%p", doc);
+        cout << "ArtivityLog(SPDocument*, SPDesktop*) called; doc=" << doc << endl << flush;
         
         logEvent(art::Open, NULL);
     }
 
     ArtivityLog::~ArtivityLog()
     {
-        g_message("~ArtivityLog() called;");
+        cout << "~ArtivityLog() called;" << endl << flush;
         
-        if(_target != NULL) delete _target;
-        if(_instrument != NULL) delete _instrument;
+        logEvent(art::Close, NULL);
+                
+        if(_agent != NULL) delete _agent;
+        if(_entity != NULL) delete _entity;
     }
     
     void
     ArtivityLog::notifyUndoEvent(Event* e)
     {
-        logEvent(as::Undo, e);
+        logEvent(art::Undo, e);
     }
 
     void
     ArtivityLog::notifyRedoEvent(Event* e)
     {        
-        logEvent(as::Redo, e);
+        logEvent(art::Redo, e);
     }
 
     void
     ArtivityLog::notifyUndoCommitEvent(Event* e)
     {        
-        logEvent(as::Update, e);
+        logEvent(art::Update, e);
     }
 
     void
     ArtivityLog::notifyClearUndoEvent()
     {       
-        logEvent(art::Close, NULL);
     }
 
     void
@@ -82,24 +83,33 @@ namespace Inkscape
     void
     ArtivityLog::logEvent(Activity* activity, Event* e)
     {
+        if(_desktop == NULL) return;
+                
         time_t now;
-        
         time(&now);
+       
+        Geom::Rect vbox = _desktop->get_display_area();
 
-        activity->setTime(now);
-        activity->setInstrument(*_instrument);
-        
-        if(_target != NULL)
-        {
-            activity->setTarget(*_target);
-        }
-            
-        setEventType(activity, e);
-        setEventViewport(activity);
+        Viewbox* viewbox = new Viewbox();
+        viewbox->setLeft(vbox.left());
+        viewbox->setRight(vbox.right());
+        viewbox->setTop(vbox.top());
+        viewbox->setBottom(vbox.bottom());
+        viewbox->setZoomFactor(_desktop->current_zoom());
+                        
+        SoftwareAssociation* software = new SoftwareAssociation();
+        software->setAgent(_agent);
+        software->setViewbox(viewbox);
 
-        _resourcePointers.push_back(activity);
+        activity->setTime(&now);
+        activity->addAssociation(software);
         
-        _log.push_back(*activity);
+        setType(activity, e);
+        //setObject(activity, e);
+
+        _log.push_back(activity);
+        _log.addResource(software);
+        _log.addResource(viewbox);
         
         processEventQueue();
     }
@@ -107,364 +117,184 @@ namespace Inkscape
     void
     ArtivityLog::processEventQueue()
     {
+        if(_log.empty() || !_log.isConnected()) return;
+        
         if(_doc == NULL)
         {
             g_error("processEventQueue: _doc is NULL");
             return;
         }
-        
-        //if(!zeitgeist_log_is_connected(_log))
-        //{
-        //    g_warning("processEventQueue: No connection to Zeitgeist log.");
-        //}
 
-        const gchar* uri = _doc->getURI();
-
-        if(uri == NULL)
+        if(_doc->getURI() == NULL)
         {
             // The document is not yet persisted. Therefore we keep our events
             // in the queue until we have a valid file system path.
             return;
         }
-
-        if(_target == NULL)
+        
+        string uri = "file://" + string(_doc->getURI());
+        
+        if(_entity == NULL)
         {
-            uri = g_strconcat("file://", uri, NULL);
-
-            _target = new Resource(uri);
-            _log.setTarget(*_target);
+            _entity = new FileDataObject(uri.c_str());
+        }
+        
+        ActivityLogIterator it = _log.begin();
+        
+        while(it != _log.end())
+        {
+            Activity* activity = *it;
+            
+            activity->addUsedEntity(_entity);
+                            
+            if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
+            {
+                stringstream generatedUri;
+                generatedUri << uri << "#" << UriGenerator::getRandomId(10);
+                            
+                FileDataObject* generated = new FileDataObject(generatedUri.str().c_str());
+                generated->addProperty(rdf::_type, prov::Collection);
+                generated->addProperty(prov::generatedAtTime, activity->getTime());
+                generated->addGenericEntity(_entity);
+                generated->setUrl(uri.c_str());
+                generated->setLastModificationTime(activity->getTime());
+                
+                activity->addGeneratedEntity(generated);
+                
+                _log.addResource(generated);
+                
+                stringstream invalidatedUri;
+                invalidatedUri << uri << "#" << UriGenerator::getRandomId(10);
+                
+                FileDataObject* invalidated = new FileDataObject(invalidatedUri.str().c_str());
+                invalidated->addProperty(rdf::_type, prov::Collection);
+                invalidated->addProperty(prov::invalidatedAtTime, activity->getTime());
+                invalidated->addGenericEntity(_entity);
+                invalidated->setUrl(uri.c_str());
+                
+                activity->addInvalidatedEntity(invalidated);
+                
+                _log.addResource(invalidated);
+            }
+            
+            it++;
         }
         
         _log.transmit();
-    
-        clearPointers();
-    }
-
-    void
-    ArtivityLog::clearPointers()
-    {
-        vector<Resource*>::iterator iter, end;
-        
-        for(iter = _resourcePointers.begin(), end = _resourcePointers.end() ; iter != end; ++iter) 
-        {
-            delete (*iter);
-        }
-        
-        _resourcePointers.clear();
-    }
-
-/*  
-    void
-    ArtivityLog::logSubject(ZeitgeistSubject* s, const char* typeUri, Event* e, const gchar* subjectUri, const gchar* originUri, gint64 timestamp)
-    {
-        if(_doc == NULL)
-        {
-            g_error("logSubject: _doc is NULL");
-            return;
-        }
-        
-        if(subjectUri != NULL)
-        {
-            zeitgeist_subject_set_uri(s, subjectUri);
-            zeitgeist_subject_set_current_uri(s, subjectUri);
-        }
-
-        if(originUri != NULL)
-        {
-            zeitgeist_subject_set_origin(s, originUri);
-        }
-        
-        ZeitgeistEvent* event = zeitgeist_event_new_full(
-            typeUri,
-            ZEITGEIST_ZG_USER_ACTIVITY,
-            "application://inkscape.desktop", s, NULL);
-
-        zeitgeist_event_set_timestamp(event, timestamp);
-
-        
-        if(event != NULL)
-        {
-            if(e != NULL)
-            {
-                GByteArray* data = getEventPayload(e);
-
-                if(data != NULL)
-                {
-                    zeitgeist_event_set_payload(event, data);
-                }
-            }
-            
-            zeitgeist_log_insert_events_no_reply(_log, event, NULL);
-
-            // TODO: Free data, xml and event in completed event handler.
-            // zeitgeist_log_insert_events(_log, NULL, logSubjectComplete, event, NULL);
-        }
-        else
-        {
-            g_error("logSubject: Failed to create Zeitgeist event.");
-        }
-    }
-*/
-   
-    void
-    ArtivityLog::setEventViewport(Activity* activity)
-    {        
-        if(_desktop == NULL) return;
-       
-        Geom::Rect vbox = _desktop->get_display_area();
-
-        Resource* viewbox = new Resource(UriGenerator::getUri());
-        viewbox->addProperty(rdf::_type, art::Viewbox);
-        viewbox->addProperty(art::left, vbox.left());
-        viewbox->addProperty(art::right, vbox.right());
-        viewbox->addProperty(art::top, vbox.top());
-        viewbox->addProperty(art::bottom, vbox.bottom());
-        viewbox->addProperty(art::zoomFactor, _desktop->current_zoom());
-
-        activity->addProperty(art::viewbox, *viewbox);
-            
-        _log.addAnnotation(viewbox);
     }
    
     void
-    ArtivityLog::setEventType(Activity* activity, Event* e)
+    ArtivityLog::setType(Activity* activity, Event* e)
     {
         if(e == NULL || e->event == NULL)
             return;
             
-        if(activity->hasProperty(rdf::_type, as::Undo) || activity->hasProperty(rdf::_type, as::Redo))
+        if(activity->hasProperty(rdf::_type, art::Undo) || activity->hasProperty(rdf::_type, art::Redo))
             return;
         
         if(is<Inkscape::XML::EventAdd*>(e->event))
         {
-            activity->setValue(rdf::_type, as::Add);
+            activity->setValue(rdf::_type, art::Add);
         }
         else if(is<Inkscape::XML::EventDel*>(e->event))
         {
-            activity->setValue(rdf::_type, as::Delete);
+            activity->setValue(rdf::_type, art::Delete);
         }
         else if(is<Inkscape::XML::EventChgAttr*>(e->event))
         {
+            /*
             Inkscape::XML::EventChgAttr* x = as<Inkscape::XML::EventChgAttr*>(e->event);
             
-            const gchar* attribute = g_quark_to_string(x->key);
+            string oldval = string(x->oldval);
+            string newval = string(x->newval);
             
-            GString* fromValue = g_string_new("");
-            g_string_append_printf(fromValue, "%s", x->oldval);
+            AttributeValueMap* values = getChangedAttributes(oldval, newval);
+            AttributeValueIterator it = values->begin();
             
-            GString* toValue = g_string_new("");
-            g_string_append_printf(toValue, "%s", x->newval);
-            
-            AttributeValueMap* values = getChangedAttributes(x->oldval, x->newval);
-            
-            cout << values->size() << endl;
+            while(it != values->end())
+            {                     
+                const char* name = it->first.c_str();
+                const char* oldval = it->second->oldval.c_str();
+                const char* newval = it->second->newval.c_str();
+                
+                Resource* m = new Resource(UriGenerator::getUri());
+                m->setValue(rdf::_type, art::AttributeModification);                
+                m->setValue(art::attributeName, name);
+                m->setValue(art::fromValue, oldval);
+                m->setValue(art::toValue, newval);
+                                                
+                activity->setValue(art::modification, *m);
+                
+                _log.addAnnotation(m);
+                
+                delete it->second;
+                
+                it++;
+            }
             
             delete values;
-            
-            activity->setValue(rdf::_type, as::Update);
-            activity->setValue(art::attribute, attribute);
-            activity->setValue(art::fromValue, fromValue->str);
-            activity->setValue(art::toValue, toValue->str);
+            */
         }
         else if(is<Inkscape::XML::EventChgContent*>(e->event))
         {
+            /*
             Inkscape::XML::EventChgContent* x = as<Inkscape::XML::EventChgContent*>(e->event);
                         
-            GString* fromValue = g_string_new("");
-            g_string_append_printf(fromValue, "%s", x->oldval);
+            const char* oldval = string(x->oldval).c_str();
+            const char* newval = string(x->newval).c_str();
             
-            GString* toValue = g_string_new("");
-            g_string_append_printf(toValue, "%s", x->newval);
+            Resource* m = new Resource(UriGenerator::getUri());
+            m->setValue(rdf::_type, art::ContentModification);                
+            m->setValue(art::fromValue, oldval);
+            m->setValue(art::toValue, newval);
+                                            
+            activity->setValue(art::modification, *m);
             
-            activity->setValue(rdf::_type, as::Update);
-            activity->setValue(art::fromValue, fromValue->str);
-            activity->setValue(art::toValue, toValue->str);
+            _log.addAnnotation(m);
+            */
         }
         else if(is<Inkscape::XML::EventChgOrder*>(e->event))
         {
-            Inkscape::XML::EventChgOrder* x = as<Inkscape::XML::EventChgOrder*>(e->event);
+            //Inkscape::XML::EventChgOrder* x = as<Inkscape::XML::EventChgOrder*>(e->event);
             
-            activity->setValue(rdf::_type, as::Update);
+            activity->setValue(rdf::_type, art::Update);
         }
-        
-        setObject(activity, e);
     }
     
     void
     ArtivityLog::setObject(Activity* activity, Event* e)
     {
-        if(e == NULL || e->event == NULL || e->event->repr == NULL)
+        /*
+        if(e == NULL || e->event == NULL || e->event->repr == NULL || !e->event->repr->attribute("id"))
             return;
         
-        Node* n = e->event->repr;
+        string id = string(e->event->repr->attribute("id"));
         
-        Resource* shape = new Resource(UriGenerator::getUri());
+        if(id.size() == 0)
+            return;
+        
+        stringstream uri;
+        uri << "file://" << _doc->getURI() << "#" << id;
+                
+        Resource* shape = new Resource(uri.str());
         shape->setValue(rdf::_type, svg::Shape);
-        
-        const gchar* id = n->attribute("id");
-        
-        if(id != NULL)
-        {
-            shape->setValue(svg::id, id);
-        }
         
         activity->setValue(as::object, *shape);
         
         _log.addAnnotation(shape);
-    }
-   
-    GByteArray*
-    ArtivityLog::getEventPayload(Event* e)
-    {
-        if(e == NULL) return NULL;
-
-        if(e->event == NULL)
-        {
-            g_warning("getEventPayload: e->event was NULL");
-            
-            return NULL;
-        }
-        
-        GString* xml = g_string_new("");
-
-        Geom::Rect viewbox = _desktop->get_display_area();
-
-        // Bottom and top are switched
-        g_string_append_printf(xml, "<artsvg:viewbox left=\"%f\" top=\"%f\"  right=\"%f\" bottom=\"%f\" />", viewbox.left(), viewbox.bottom(), viewbox.right(), viewbox.top());
-
-        Inkscape::XML::Event* event = e->event;
-        
-        do
-        {
-            g_string_append_printf(xml, "%s", serializeEvent(event)->str);
-            
-            event = event->next;
-        }
-        while(event != NULL);
-
-        GByteArray* result = g_byte_array_new_take((guint8*)xml->str, xml->len);
-        
-        return result;
-    }
-    
-    GString* 
-    ArtivityLog::serializeEvent(Inkscape::XML::Event* event)
-    {
-        GString* xml = g_string_new("");
-        
-        if(is<Inkscape::XML::EventAdd*>(event))
-        {
-            Inkscape::XML::EventAdd* e = as<Inkscape::XML::EventAdd*>(event);
-
-            if(e->child != NULL)
-            {
-                const gchar* name = e->child->name();
-                
-                g_string_append_printf(xml, "<artsvg:addEvent>%s</artsvg:addEvent>", name);
-            }
-            else
-            {
-                g_warning("handleEvent: e->child of Inkscape::XML::EventAdd* was NULL.");
-            }
-        }
-        else if(is<Inkscape::XML::EventDel*>(event))
-        {
-            Inkscape::XML::EventDel* e = as<Inkscape::XML::EventDel*>(event);
-
-            if(e->child != NULL)
-            {
-                const gchar* name = e->child->name();
-                
-                g_string_append_printf(xml, "<artsvg:delEvent>%s</artsvg:delEvent>", name);
-            }
-            else
-            {
-                g_warning("handleEvent: e->child of Inkscape::XML::EventDel* was NULL.");
-            }
-        }
-        else if(is<Inkscape::XML::EventChgAttr*>(event))
-        {
-            Inkscape::XML::EventChgAttr* e = as<Inkscape::XML::EventChgAttr*>(event);
-            
-            const gchar* attributeName = g_quark_to_string(e->key);
-
-            g_string_append_printf(xml, "<artsvg:changeAttribute key=\"%s\" ", attributeName);
-            
-            if(e->oldval.pointer() != NULL)
-            {
-                g_string_append_printf(xml, "old=\"%s\" ", e->oldval);
-            }
-            
-            if(e->newval.pointer() != NULL)
-            {
-                g_string_append_printf(xml, "new=\"%s\" ", e->newval);
-            }
-            
-            g_string_append_printf(xml, "/>");
-        }
-        else if(is<Inkscape::XML::EventChgContent*>(event))
-        {
-            Inkscape::XML::EventChgContent* e = as<Inkscape::XML::EventChgContent*>(event);
-            
-            g_string_append_printf(xml, "<artsvg:changeContent");
-            
-            if(e->oldval.pointer() != NULL)
-            {
-                g_string_append_printf(xml, "old=\"%s\" ", e->oldval);
-            }
-            
-            if(e->newval.pointer() != NULL)
-            {
-                g_string_append_printf(xml, "new=\"%s\" ", e->newval);
-            }
-            
-            g_string_append_printf(xml, "/>");
-        }
-        else if(is<Inkscape::XML::EventChgOrder*>(event))
-        {
-            Inkscape::XML::EventChgOrder* e = as<Inkscape::XML::EventChgOrder*>(event);
-
-            if(e->child != NULL)
-            {
-                const gchar* content = e->child->content();
-                
-                g_message("Change order. node %s ", content);
-            }
-            else
-            {
-                g_warning("handleEvent: e->child of Inkscape::XML::EventChgOrder* was NULL.");
-            }
-        }
-        else
-        {
-            g_warning("handleEvent: Handled unknown event type.");
-        }
-        
-        return xml;
+        */
     }
 
-    template<class TEvent> bool
-    ArtivityLog::is(Inkscape::XML::Event* event)
-    {
-        return dynamic_cast<TEvent>(event) != NULL;
-    }
-
-    template<class TEvent> TEvent
-    ArtivityLog::as(Inkscape::XML::Event* event)
-    {
-        return dynamic_cast<TEvent>(event);
-    }
-    
     AttributeValueMap*
-    ArtivityLog::getChangedAttributes(const char* a, const char* b)
+    ArtivityLog::getChangedAttributes(string a, string b)
     {       
-        AttributeValueMap* attributes = new AttributeValueMap();
+        AttributeValueMap* result = new AttributeValueMap();
         
         string buffer = "";
         string key = "";
         unsigned int i = 0;
         
-        while(i < strlen(a))
+        while(i < a.size())
         {
             char c = a[i];
             
@@ -473,12 +303,17 @@ namespace Inkscape
                 key = buffer;
                 buffer = "";
             }
-            else if(c == ';')
+            else if(c == ';' || i == a.size() - 1)
             {
-                ValueRecord r = ValueRecord();
-                r.oldval = buffer;
+                if(key != "")
+                {
+                    ValueRecord* r = new ValueRecord();
+                    r->oldval = string(buffer);
+                    r->newval = "";
+                    
+                    result->operator[](key) = r;
+                }
                 
-                attributes->operator[](key) = r;
                 buffer = "";
             }
             else
@@ -493,7 +328,7 @@ namespace Inkscape
         key = "";
         i = 0;
         
-        while(i < strlen(b))
+        while(i < b.size())
         {
             char c = b[i];
             
@@ -502,30 +337,35 @@ namespace Inkscape
                 key = buffer;
                 buffer = "";
             }
-            else if(c == ';')
+            else if(c == ';' || i == b.size() - 1)
             {
-                AttributeValueIterator it = attributes->find(key);
-                
-                if(it != attributes->end())
+                if(key != "")
                 {
-                    ValueRecord r = attributes->operator[](key);
+                    AttributeValueIterator it = result->find(key);
                     
-                    if(r.oldval == buffer)
+                    if(it != result->end())
                     {
-                        attributes->erase(it);
+                        ValueRecord* r = result->operator[](key);
+                        
+                        if(r->oldval == buffer)
+                        {
+                            result->erase(it);
+                            
+                            delete r;
+                        }
+                        else
+                        {
+                            r->newval = string(buffer);
+                        }
                     }
                     else
                     {
-                        r.newval = buffer;
+                        ValueRecord* r = new ValueRecord();
+                        r->oldval = "";
+                        r->newval = string(buffer);
+                        
+                        result->operator[](key) = r;
                     }
-                }
-                else
-                {
-                    ValueRecord r = ValueRecord();
-                    r.oldval = "";
-                    r.newval = buffer;
-                    
-                    attributes->operator[](key) = r;
                 }
 
                 buffer = "";
@@ -538,7 +378,19 @@ namespace Inkscape
             i++;
         }
         
-        return attributes;
+        return result;
+    }
+    
+    template<class TEvent> bool
+    ArtivityLog::is(Inkscape::XML::Event* event)
+    {
+        return dynamic_cast<TEvent>(event) != NULL;
+    }
+
+    template<class TEvent> TEvent
+    ArtivityLog::as(Inkscape::XML::Event* event)
+    {
+        return dynamic_cast<TEvent>(event);
     }
 }
 

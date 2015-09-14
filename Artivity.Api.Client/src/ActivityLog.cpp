@@ -1,58 +1,95 @@
-#include "ActivityLog.h"
-#include "Serializer.h"
+// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
 
-#include <string>
+#include "ActivityLog.h"
 
 namespace artivity
 {
     ActivityLog::ActivityLog() 
     {
-        annotations = std::vector<Resource*>();
+        resources = list<Resource*>();
     }
 
     ActivityLog::~ActivityLog() 
     {
-        vector<Resource*>::iterator anoIt = annotations.begin();
+        // Free all the activities still in the log.
+        ActivityLogIterator ait = begin();
         
-        while(anoIt != annotations.end() )
+        while(ait != end())
         {
-            delete *anoIt;
-            anoIt++;
+            delete *ait;
+            
+            ait++;
+        }
+        
+        // Free all the related resources still in the log.
+        ResourceIterator rit = resources.begin();
+        
+        while(rit != resources.end())
+        {
+            delete *rit;
+            
+            rit++;
         }
     }
     
     bool ActivityLog::isConnected()
-    {            
+    {
+        // TODO: Implement CURL call to http://localhost:8890/artivity/1.0/activities
         return true;
     }
     
-    void ActivityLog::setInstrument(Resource& instrument)
+    void ActivityLog::setGeneratedEntity(Entity* entity)
     {
-        ActivityLogIterator it = begin();
-        
-        while(it != end())
+        // Add the entity to the RDF output if not already done.
+        if(find(resources.begin(), resources.end(), entity) == resources.end())
         {
-            it->setInstrument(instrument);
+            addResource(entity);
+        }
+     
+        // Add the entity to the generated entities of all activities.
+        ActivityLogIterator ait = begin();
+   
+        while(ait != end())
+        {
+            (*ait)->addGeneratedEntity(entity);
             
-            it++;
+            ait++;
         }
     }
     
-    void ActivityLog::setTarget(Resource& target)
+    void ActivityLog::addResource(Resource* resource)
     {
-        ActivityLogIterator it = begin();
-        
-        while(it != end())
-        {
-            it->setTarget(target);
-            
-            it++;
-        }
+        resources.push_back(resource);
     }
     
-    void ActivityLog::addAnnotation(Resource* resource)
+    void ActivityLog::removeResource(Resource* resource)
     {
-        annotations.push_back(resource);
+        resources.remove(resource);
     }
     
     void ActivityLog::transmit()
@@ -72,30 +109,33 @@ namespace artivity
         headers = curl_slist_append(headers, "charsets: utf-8");
         
         curl_easy_reset(curl);
-        curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8272/artivity/1.0/model");
+        curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8272/artivity/1.0/activities");
         
         stringstream stream;
         
-        ActivityLogIterator it = begin();
+        ActivityLogIterator ait = begin();
         
-        while(it != end())
+        while(ait != end())
         {
-            Serializer::serialize(stream, *it, N3);
+            Serializer::serialize(stream, **ait, N3);
             
-            it++;
+            delete *ait;
+            
+            ait++;
         }
         
-        vector<Resource*>::iterator anoIt = annotations.begin();
+        ResourceIterator rit = resources.begin();
         
-        while(anoIt != annotations.end() )
+        while(rit != resources.end())
         {
-            Serializer::serialize(stream, **anoIt, N3);
+            Serializer::serialize(stream, **rit, N3);
             
-            delete *anoIt;
-            anoIt++;
+            delete *rit;
+            
+            rit++;
         }
         
-        annotations.clear();
+        resources.clear();
         
         string content = stream.str();
         
@@ -108,7 +148,6 @@ namespace artivity
         
         curl_easy_perform(curl);
         
-        // always cleanup
         if(curl)
         {
             curl_easy_cleanup(curl);

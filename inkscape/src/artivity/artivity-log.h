@@ -19,18 +19,13 @@
 #include "xml/node.h"
 #include "xml/attribute-record.h"
 #include <ctime>
-#include <artivity-client/ActivityLog.h>
+
+#include <artivity-client/artivity.h>
 
 class SPDesktop;
 
 namespace Inkscape
 {
-    /**
-     * Inkscape::ArtivityObserver - observer for tracing calls to
-     * SPDocumentUndo::undo, SPDocumentUndo::redo, SPDocumentUndo::maybe_done.
-     *
-     */
-
     struct EventRecord
     {
         const char* eventType;
@@ -46,11 +41,16 @@ namespace Inkscape
         string newval;
     };
     
-    typedef map<string, ValueRecord> AttributeValueMap;
+    typedef map<string, ValueRecord*> AttributeValueMap;
     
-    typedef map<string, ValueRecord>::iterator AttributeValueIterator;
-    
-    class ArtivityLog : public UndoStackObserver
+    typedef map<string, ValueRecord*>::iterator AttributeValueIterator;
+ 
+    /**
+     * Inkscape::ArtivityObserver - observer for tracing calls to
+     * SPDocumentUndo::undo, SPDocumentUndo::redo, SPDocumentUndo::maybe_done.
+     *
+     */   
+    class ArtivityLog : public UndoStackObserver, public sigc::trackable
     {
     private:
         
@@ -64,11 +64,9 @@ namespace Inkscape
             
         template<class TEvent> TEvent as(Inkscape::XML::Event* event);
         
-        artivity::Resource* _target = NULL;
+        artivity::SoftwareAgent* _agent = NULL;
         
-        artivity::Resource* _instrument = NULL;
-        
-        std::vector<artivity::Resource*> _resourcePointers = std::vector<artivity::Resource*>();
+        artivity::FileDataObject* _entity = NULL;
    
     protected:
            
@@ -76,21 +74,17 @@ namespace Inkscape
  
         void logEvent(artivity::Activity* activity, Event* e);
         
-        void setEventType(artivity::Activity* activity, Event* e);
-        
-        void setEventViewport(artivity::Activity* activity);
+        void setType(artivity::Activity* activity, Event* e);
         
         void setObject(artivity::Activity* activity, Event* e);
-                
-        void processEventQueue();
         
-        AttributeValueMap* getChangedAttributes(const char* a, const char* b);
+        void processEventQueue();
+                
+        AttributeValueMap* getChangedAttributes(string a, string b);
         
         GByteArray* getEventPayload(Event* e);
 
         GString* serializeEvent(Inkscape::XML::Event* event);
-
-        void clearPointers();
     
     public:
         
@@ -108,7 +102,6 @@ namespace Inkscape
         
         void notifyClearRedoEvent();
     };
-
 }
 
 #endif // SEEN_INKSCAPE_ARTIVITY_OBSERVER_H

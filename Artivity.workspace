@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Artivity" Database="" SWTLW="No">
-  <Project Name="inkscape" Path="inkscape/inkscape.project" Active="No"/>
-  <Project Name="client" Path="Artivity.Api.Client/client.project" Active="Yes"/>
+  <Project Name="inkscape" Path="inkscape/inkscape.project" Active="Yes"/>
+  <Project Name="client" Path="Artivity.Api.Client/client.project" Active="No"/>
+  <Project Name="extension-chrome" Path="Artivity.Extension.Chromium/chromium.project" Active="No"/>
+  <Project Name="firefox" Path="Artivity.Extension.Firefox/firefox.project" Active="No"/>
+  <Project Name="firefox" Path="Artivity.Extension.Firefox/firefox.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Project Name="inkscape" ConfigName="Debug"/>
       <Project Name="client" ConfigName="Debug"/>
+      <Project Name="extension-chrome" ConfigName="Debug"/>
+      <Project Name="extension-firefox" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Project Name="inkscape" ConfigName="Release"/>
       <Project Name="client" ConfigName="Release"/>
+      <Project Name="extension-chrome" ConfigName="Debug"/>
+      <Project Name="extension-firefox" ConfigName="Debug"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

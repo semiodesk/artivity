@@ -1,0 +1,97 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
+@prefix art: <http://semiodesk.com/artivity/1.0/> .
+
+<http://semiodesk.com/artivity/1.0/> a owl:Ontology .
+
+art:Add a rdfs:Class ;
+    rdfs:label "Add" ;
+    rdfs:subClassOf prov:Activity .
+    
+art:Close a rdfs:Class ;
+    rdfs:label "Close" ;
+    rdfs:subClassOf prov:Activity .
+    
+art:Create a rdfs:Class ;
+    rdfs:label "Create" ;
+    rdfs:subClassOf prov:Activity .
+
+art:Delete a rdfs:Class ;
+    rdfs:label "Delete" ;
+    rdfs:subClassOf prov:Activity .
+    
+art:Open a rdfs:Class ;
+    rdfs:label "Open" ;
+    rdfs:subClassOf prov:Activity .
+
+art:Redo a rdfs:Class ;
+    rdfs:label "Redo" ;
+    rdfs:subClassOf prov:Activity .
+
+art:Remove a rdfs:Class ;
+    rdfs:label "Remove" ;
+    rdfs:subClassOf prov:Activity .
+    
+art:Undo a rdfs:Class ;
+    rdfs:label "Undo" ;
+    rdfs:subClassOf prov:Activity .
+
+art:Update a rdfs:Class ;
+    rdfs:label "Update" ;
+    rdfs:subClassOf prov:Activity .
+    
+art:Save a rdfs:Class ;
+    rdfs:label "Save" ;
+    rdfs:subClassOf prov:Activity .
+
+art:View a rdfs:Class ;
+    rdfs:label "View" ;
+    rdfs:subClassOf prov:Activity .
+      
+art:Viewbox a rdfs:Class ;
+    rdfs:label "Viewbox" .
+    
+art:Modification a rdfs:Class ;
+    rdfs:label "Modification" .
+    
+art:hadViewbox a rdf:Property ;
+    rdfs:label "hadViewbox" ;
+    rdfs:domain prov:Association ;
+    rdfs:range art:Viewport.
+    
+art:left a rdf:Property ;
+    rdfs:label "left" ;
+    rdfs:domain art:Viewport ;
+    rdfs:range xsd:double .
+
+art:right a rdf:Property ;
+    rdfs:label "right" ;
+    rdfs:domain art:Viewport ;
+    rdfs:range xsd:double .
+    
+art:top a rdf:Property ;
+    rdfs:label "top" ;
+    rdfs:domain art:Viewport ;
+    rdfs:range xsd:double .
+    
+art:bottom a rdf:Property ;
+    rdfs:label "bottom" ;
+    rdfs:domain art:Viewport ;
+    rdfs:range xsd:double .
+    
+art:zoomFactor a rdf:Property ;
+    rdfs:label "zoomFactor" ;
+    rdfs:domain art:Viewport ;
+    rdfs:range xsd:double .
+    
+art:isCaptureEnabled a rdf:Property ;
+    rdfs:label "isCaptureEnabled" ;
+    rdfs:domain prov:SoftwareAgent ;
+    rdfs:range xsd:boolean .
+    
+nfo:FileDataObject rdfs:subClassOf prov:Entity.
+nfo:WebDataObject rdfs:subClassOf prov:Entity.

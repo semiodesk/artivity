@@ -4,6 +4,8 @@
 #include "Property.h"
 #include "Serializer.h"
 
+#include "Ontologies/rdf.h"
+
 namespace artivity
 {
     Resource::Resource(string uriref)
@@ -19,10 +21,20 @@ namespace artivity
                     
         Properties = PropertyMap();
     }
+
+    bool Resource::is(const Resource& type)
+    {
+        return Properties.hasProperty(rdf::_type.Uri, &type);
+    }
+    
+    bool Resource::hasProperty(const Property& property, const Resource* value)
+    {
+        return Properties.hasProperty(property.Uri, value);
+    }
     
     bool Resource::hasProperty(const Property& property, const Resource& value)
     {
-        return Properties.hasProperty(property.Uri, value);
+        return Properties.hasProperty(property.Uri, &value);
     }
     
     bool Resource::hasProperty(const Property& property, const char* value)
@@ -54,10 +66,15 @@ namespace artivity
     {
         return Properties.hasProperty(property.Uri, Serializer::toString(value), typeid(value));
     }
+
+    void Resource::addProperty(const Property& property, const Resource* value)
+    {
+        Properties.addProperty(property.Uri, value);
+    } 
     
     void Resource::addProperty(const Property& property, const Resource& value)
     {
-        Properties.addProperty(property.Uri, value);
+        Properties.addProperty(property.Uri, &value);
     } 
         
     void Resource::addProperty(const Property& property, const char* value)
@@ -89,10 +106,15 @@ namespace artivity
     {
         Properties.addProperty(property.Uri, Serializer::toString(value), typeid(value));
     }
+
+    void Resource::removeProperty(const Property& property, const Resource* value)
+    {
+        Properties.removeProperty(property.Uri, value);
+    }
     
     void Resource::removeProperty(const Property& property, const Resource& value)
     {
-        Properties.removeProperty(property.Uri, value);
+        Properties.removeProperty(property.Uri, &value);
     }
     
     void Resource::removeProperty(const Property& property, const char* value)
@@ -124,10 +146,15 @@ namespace artivity
     {
         Properties.removeProperty(property.Uri, Serializer::toString(value), typeid(value));
     }
+
+    void Resource::setValue(const Property& property, const Resource* value)
+    {
+        Properties.setProperty(property.Uri, value);
+    }
     
     void Resource::setValue(const Property& property, const Resource& value)
     {
-        Properties.setProperty(property.Uri, value);
+        Properties.setProperty(property.Uri, &value);
     }
     
     void Resource::setValue(const Property& property, const time_t* value)
