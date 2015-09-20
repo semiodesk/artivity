@@ -44,6 +44,9 @@ namespace Artivity.Model.ObjectModel
 		[RdfProperty(PROV.hadRole)]
 		public Role Role { get; set; }
 
+		[RdfProperty(ART.hadViewbox)]
+		public Viewbox Viewbox { get; set; }
+
 		#endregion
 
         #region Constructor

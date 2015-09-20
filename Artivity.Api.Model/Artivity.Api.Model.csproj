@@ -47,7 +47,6 @@
     <Compile Include="ObjectModel\SoftwareAgent.cs" />
     <Compile Include="ObjectModel\Agent.cs" />
     <Compile Include="ObjectModel\Association.cs" />
-    <Compile Include="ObjectModel\SoftwareAssociation.cs" />
     <Compile Include="ObjectModel\Entities\XmlAttribute.cs" />
     <Compile Include="ObjectModel\Entities\XmlElement.cs" />
     <Compile Include="ObjectModel\Entities\FileDataObject.cs" />
@@ -94,7 +93,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Package>monodevelop</Package>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="Semiodesk.Trinity">
