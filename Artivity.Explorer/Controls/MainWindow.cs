@@ -75,20 +75,18 @@ namespace ArtivityExplorer.Controls
 		{
 			IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
-			Uri activities = new Uri("http://localhost:8890/artivity/1.0/activities");
-
-			if (store.ContainsModel(activities))
+			if (store.ContainsModel(Models.Activities))
 			{
-				_model = store.GetModel(activities);
+				_model = store.GetModel(Models.Activities);
 			}
 			else
 			{
-				_model = store.CreateModel(activities);
+				_model = store.CreateModel(Models.Activities);
 			}
 
 			if(_model == null)
 			{
-				Console.WriteLine("ERROR: Could not establish connection to model <{0}>", activities);
+				Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.Activities);
 			}
 		}
 
@@ -111,6 +109,11 @@ namespace ArtivityExplorer.Controls
 		{
 			_log.Store.Clear();
 
+			if (!file.StartsWith ("file://"))
+			{
+				file = "file://" + file;
+			}
+
 			DateTime firstTime = GetFirstEventTime(file);
 			DateTime lastTime = GetLastEventTime(file);
 
@@ -120,11 +123,10 @@ namespace ArtivityExplorer.Controls
 			}
 
 			ResourceQuery query = new ResourceQuery();
-			query.Where(rdf.type, prov.Activity);
 			query.Where(prov.startedAtTime).GreaterOrEqual(firstTime);
 			query.Where(prov.startedAtTime).LessOrEqual(lastTime);
 
-			List<Activity> activities = _model.GetResources<Activity>(query, true).OrderByDescending(a => a.StartTime).ToList();
+			List<Activity> activities = _model.GetResources<Activity>(query).OrderByDescending(a => a.StartTime).ToList();
 
 			foreach (Activity activity in activities)
 			{
@@ -185,7 +187,7 @@ namespace ArtivityExplorer.Controls
 					node.SetValue(_log.ModificationTypeField, ToDisplayString(m.GetTypes().FirstOrDefault().Uri));
 				}
 				*/
-}
+			}
 
 			_chart.Update(activities);
 		}
@@ -194,12 +196,12 @@ namespace ArtivityExplorer.Controls
 		{
 			string queryString = @"
 				PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-				PREFIX as: <http://www.w3.org/ns/activitystreams#>
+				PREFIX prov: <http://www.w3.org/ns/prov#>
 
-				SELECT ?time WHERE { ?s a as:Activity . ?s as:target <" + file + "> . ?s as:startTime ?time . } ORDER BY ASC(?time) LIMIT 1";
+				SELECT ?time WHERE { ?a prov:used <" + file + "> . ?a prov:startedAtTime ?time . } ORDER BY ASC(?time) LIMIT 1";
 
 			SparqlQuery query = new SparqlQuery(queryString);
-			ISparqlQueryResult result = _model.ExecuteQuery(query, true);
+			ISparqlQueryResult result = _model.ExecuteQuery(query);
 
 			return result.Count() > 0 ? (DateTime)result.GetBindings().First()["time"] : DateTime.MinValue;
 		}
@@ -208,12 +210,12 @@ namespace ArtivityExplorer.Controls
 		{
 			string queryString = @"
 				PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-				PREFIX as: <http://www.w3.org/ns/activitystreams#>
+				PREFIX prov: <http://www.w3.org/ns/prov#>
 
-				SELECT ?time WHERE { ?s a as:Activity . ?s as:target <" + file + "> . ?s as:startTime ?time . } ORDER BY DESC(?time) LIMIT 1";
+				SELECT ?time WHERE { ?a prov:used <" + file + "> . ?a prov:startedAtTime ?time . } ORDER BY DESC(?time) LIMIT 1";
 
 			SparqlQuery query = new SparqlQuery(queryString);
-			ISparqlQueryResult result = _model.ExecuteQuery(query, true);
+			ISparqlQueryResult result = _model.ExecuteQuery(query);
 
 			return result.Count() > 0 ? (DateTime)result.GetBindings().First()["time"] : DateTime.MinValue;
 		}

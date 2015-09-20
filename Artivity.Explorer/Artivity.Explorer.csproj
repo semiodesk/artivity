@@ -77,6 +77,7 @@
     <Reference Include="OxyPlot.Xwt">
       <HintPath>References\OxyPlot.Xwt.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
     <Reference Include="VDS.Common">
       <HintPath>..\packages\VDS.Common.1.5.0\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
@@ -96,9 +97,8 @@
       <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.8.3533\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
     </Reference>
     <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.91\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.93\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
-    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Widgets\EditingWidget.cs">
