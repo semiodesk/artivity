@@ -139,9 +139,9 @@ namespace ArtivityExplorer.Controls
 					node.SetValue(_log.TypeField, ToDisplayString(activity.GetTypes().First().Uri));
 				}
 
-				if (activity.Associations.OfType<SoftwareAssociation>().Any())
+				if (activity.Associations.Any())
 				{
-					SoftwareAssociation association = activity.Associations.OfType<SoftwareAssociation>().First();
+					Association association = activity.Associations.First();
 
 					if (association.Viewbox != null)
 					{

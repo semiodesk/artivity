@@ -38,8 +38,7 @@ namespace Artivity.Model.ObjectModel
     {
 		#region Members
 
-		[RdfProperty(ART.hadViewbox)]
-		public Viewbox Viewbox { get; set; }
+
 
 		#endregion
 

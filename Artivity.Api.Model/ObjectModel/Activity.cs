@@ -43,13 +43,13 @@ namespace Artivity.Model.ObjectModel
 		public List<Association> Associations { get; private set; }
 
 		[RdfProperty(PROV.used)]
-		public List<Resource> UsedEntities { get; private set; }
+		public List<Entity> UsedEntities { get; private set; }
 
 		[RdfProperty(PROV.invalidated)]
-		public List<Resource> InvalidatedEntities { get; set; }
+		public List<Entity> InvalidatedEntities { get; set; }
 
 		[RdfProperty(PROV.generated)]
-		public List<Resource> GeneratedEntities { get; set; }
+		public List<Entity> GeneratedEntities { get; set; }
 
 		[RdfProperty(PROV.startedAtTime)]
 		public DateTime StartTime { get; set; }
