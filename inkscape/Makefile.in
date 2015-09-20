@@ -114,7 +114,7 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(srcdir)/inkscape.spec.in $(srcdir)/Info.plist.in \
 	$(srcdir)/inkview.1.in ABOUT-NLS AUTHORS COPYING COPYING.LIB \
 	ChangeLog INSTALL NEWS README build-aux/ar-lib \
-	build-aux/compile build-aux/config.guess \
+	build-aux/compile build-aux/config.guess config.rpath \
 	build-aux/config.rpath build-aux/config.sub build-aux/depcomp \
 	build-aux/install-sh build-aux/missing build-aux/ltmain.sh \
 	$(top_srcdir)/build-aux/ar-lib $(top_srcdir)/build-aux/compile \

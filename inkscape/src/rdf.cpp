@@ -1210,6 +1210,12 @@ void RDFImpl::setDefaults( SPDocument * doc )
             setWorkEntity( doc, *entity, rdf_default->text );
         }
     }
+
+    struct rdf_work_entity_t* entity = rdf_find_entity("identifier");
+
+    if(entity == NULL) return;
+
+    setWorkEntity(doc, *entity, "12345");
 }
 
 /*
