@@ -71,7 +71,7 @@ namespace Artivity.Api.Http
 
 		#region Methods
 
-		private SoftwareAssociation GetSoftwareAssociation(IModel model, string agentId)
+		private Association GetSoftwareAssociation(IModel model, string agentId)
 		{
 			Uri agentUri = new Uri(agentId);
 
@@ -87,7 +87,7 @@ namespace Artivity.Api.Http
 				agent.Commit();
 			}
 
-			SoftwareAssociation association = model.CreateResource<SoftwareAssociation>();
+			Association association = model.CreateResource<Association>();
 			association.Agent = agent;
 			association.Commit();
 
