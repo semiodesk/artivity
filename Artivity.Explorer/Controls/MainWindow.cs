@@ -199,6 +199,7 @@ namespace ArtivityExplorer.Controls
 			}
 
 			_chart.Update(activities);
+			_statsPanel.EditingWidget.Update(_model, file);
 		}
 
 		private DateTime GetFirstEventTime(string file)
