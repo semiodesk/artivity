@@ -47,8 +47,6 @@ namespace ArtivityExplorer.Controls
 		public void Update(IEnumerable<Activity> activities)
 		{
 			_currentColor = 0;
-
-			List<LineSeries> series = new List<LineSeries>();
 		
 			double max = 1;
 
@@ -68,11 +66,6 @@ namespace ArtivityExplorer.Controls
 				}
 
 				agents[agent.Uri].Add(activity);
-			}
-
-			foreach (KeyValuePair<Uri, List<Activity>> item in agents)
-			{
-				series.Add(CreateSeries(item.Key.AbsoluteUri, item.Value, ref max));
 			}
 
 			DateTimeAxis x = new DateTimeAxis()
@@ -104,12 +97,6 @@ namespace ArtivityExplorer.Controls
 				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66)
 			};
 
-			y.Minimum = 0;
-			y.AbsoluteMinimum = 0;
-			y.Maximum = Math.Ceiling(max / 10) * 10;
-			y.AbsoluteMaximum = max;
-			y.PositionAtZeroCrossing = true;
-
 			PlotModel model = new PlotModel();
 			model.Title = "ACTIVITIES / MIN";
 			model.TitleFontSize = 9;
@@ -120,10 +107,16 @@ namespace ArtivityExplorer.Controls
 			model.Axes.Add(x);
 			model.Axes.Add(y);
 
-			foreach (LineSeries s in series)
+			foreach (KeyValuePair<Uri, List<Activity>> item in agents)
 			{
-				model.Series.Add(s);
+				CreateSeries(model, item.Key.AbsoluteUri, item.Value, ref max);
 			}
+
+			y.Minimum = 0;
+			y.AbsoluteMinimum = 0;
+			y.Maximum = Math.Ceiling(max / 10) * 10;
+			y.AbsoluteMaximum = max;
+			y.PositionAtZeroCrossing = true;
 
 			model.LegendOrientation = LegendOrientation.Horizontal;
 			model.LegendPlacement = LegendPlacement.Outside;
@@ -137,107 +130,19 @@ namespace ArtivityExplorer.Controls
 			Model = model;
 		}
 
-        public void Update()
-        {
-            Random random = new Random();
-
-			DateTime now = DateTime.Now;
-
-			// Prepare the editing session chart.
-			PolygonAnnotation sessions = new PolygonAnnotation();
-			sessions.Layer = AnnotationLayer.BelowAxes;
-			sessions.Fill = OxyColor.FromArgb(125, 237, 44, 169);
-			sessions.Points.Add(DateTimeAxis.CreateDataPoint(now.AddMinutes(10), 0));
-			sessions.Points.Add(DateTimeAxis.CreateDataPoint(now.AddMinutes(30), 0));            
-			sessions.Points.Add(DateTimeAxis.CreateDataPoint(now.AddMinutes(30), 100));
-			sessions.Points.Add(DateTimeAxis.CreateDataPoint(now.AddMinutes(10), 100));
-
-			// Prepare the editing an browsing line charts.
-			LineSeries edits = new LineSeries();
-			edits.Title = "Inkscape Vector Illustrator";
-			edits.Color = OxyColor.FromRgb(237, 44, 169);
-			edits.StrokeThickness = 2;
-
-			for (int i = 0; i < 100; i++)
-            {
-				edits.Points.Add(DateTimeAxis.CreateDataPoint(now.AddMinutes(i), random.NextDouble() * 100));
-            }
-
-			LineSeries browsing = new LineSeries();
-            browsing.Title = "Mozilla Firefox";
-            browsing.Color = OxyColor.FromRgb(4, 197, 247);
-            browsing.StrokeThickness = 2;
-
-            for (int i = 0; i < 100; i++)
-            {
-				browsing.Points.Add(DateTimeAxis.CreateDataPoint(now.AddMinutes(i), random.NextDouble() * 100));
-            }
-
-			DateTimeAxis x = new DateTimeAxis()
-			{
-				Position = AxisPosition.Bottom,
-				FontSize = 9,
-				TextColor = OxyColors.LightGray,
-				TicklineColor = OxyColors.LightGray,
-				MajorTickSize = 1,
-				MajorGridlineThickness = 0,
-				MajorGridlineStyle = LineStyle.Dot,
-				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66),
-				MinorTickSize = 60,
-				IntervalType = DateTimeIntervalType.Days,
-				MinorIntervalType = DateTimeIntervalType.Minutes,
-				StringFormat = "HH:mm",
-			};
-
-			LinearAxis y = new LinearAxis()
-			{
-				Position = AxisPosition.Left,
-				Minimum = 0,
-				Maximum = 100,
-				FontSize = 9,
-				TextColor = OxyColors.LightGray,
-				TicklineColor = OxyColors.LightGray,
-                MajorTickSize = 10,
-                MajorStep = 20,
-				MajorGridlineStyle = LineStyle.Dot,
-				MajorGridlineThickness = 1.0,
-				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66)
-			};
-
-            PlotModel model = new PlotModel();
-            model.Title = "ACTIVITIES / MIN";
-            model.TitleFontSize = 9;
-            model.TitleFontWeight = 0.5;
-            model.TitleColor = OxyColors.White;
-            model.PlotAreaBorderColor = OxyColor.FromRgb(88, 88, 88);
-            model.PlotAreaBorderThickness = new OxyThickness(0, 0, 0, 1);
-            model.Axes.Add(x);
-            model.Axes.Add(y);
-			model.Series.Add(browsing);
-            model.Series.Add(edits);
-			model.Annotations.Add(sessions);
-
-            model.LegendOrientation = LegendOrientation.Horizontal;
-            model.LegendPlacement = LegendPlacement.Outside;
-            model.LegendPosition = LegendPosition.BottomRight;
-            model.LegendBackground = OxyColors.Transparent;
-            model.LegendBorder = OxyColors.Transparent;
-            model.LegendMargin = 0;
-            model.LegendFontSize = 9;
-            model.LegendTextColor = OxyColors.LightGray;
-
-            Model = model;
-        }
-
-		private LineSeries CreateSeries(string actor, IEnumerable<Activity> activities, ref double max)
+		private void CreateSeries(PlotModel model, string actor, IEnumerable<Activity> activities, ref double max)
 		{
 			double i = 1;
 			DateTime currentTime = DateTime.MinValue;
 			DateTime previousTime = DateTime.MinValue;
 
+			OxyColor color = _colors[_currentColor];
+
+			_currentColor++;
+
 			LineSeries series = new LineSeries();
 			series.Title = actor;
-			series.Color = _colors[_currentColor];
+			series.Color = color;
 			series.StrokeThickness = 2;
 			series.MarkerSize = 2;
 			series.MarkerType = MarkerType.Circle;
@@ -245,13 +150,47 @@ namespace ArtivityExplorer.Controls
 			series.MarkerStroke = series.Color;
 			series.MarkerStrokeThickness = 2;
 
-			_currentColor++;
+			PolygonAnnotation annotations = new PolygonAnnotation();
+			annotations.Layer = AnnotationLayer.BelowAxes;
+			annotations.Fill = OxyColor.FromArgb(125, color.R, color.G, color.B);
 
 			if (activities.Any())
 			{
+				Open open = null;
+				Close close = null;
+
 				foreach (Activity activity in activities)
 				{
 					currentTime = activity.StartTime.RoundToMinute();
+
+					if (activity is Open)
+					{
+						open = activity as Open;
+					}
+
+					if (activity is Close)
+					{
+						close = activity as Close;
+					}
+
+					if (open != null && close != null)
+					{
+						DateTime openTime = open.StartTime.RoundToMinute();
+						DateTime closeTime = close.StartTime.RoundToMinute();
+
+						if (openTime == closeTime)
+						{
+							closeTime = openTime.AddMinutes(1);
+						}
+
+						annotations.Points.Add(DateTimeAxis.CreateDataPoint(openTime, 0));
+						annotations.Points.Add(DateTimeAxis.CreateDataPoint(openTime, 500));           
+						annotations.Points.Add(DateTimeAxis.CreateDataPoint(closeTime, 500));
+						annotations.Points.Add(DateTimeAxis.CreateDataPoint(closeTime, 0)); 
+
+						open = null;
+						close = null;
+					}
 
 					if (previousTime != DateTime.MinValue)
 					{
@@ -283,7 +222,15 @@ namespace ArtivityExplorer.Controls
 				series.Points.Add(DateTimeAxis.CreateDataPoint(currentTime, i));
 			}
 
-			return series;
+			if (annotations.Points.Any())
+			{
+				model.Annotations.Add(annotations);
+			}
+
+			if (series.Points.Any())
+			{
+				model.Series.Add(series);
+			}
 		}
 
         #endregion
