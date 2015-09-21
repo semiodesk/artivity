@@ -11,6 +11,8 @@ namespace artivity
     {
         static const Resource Activity = PROV("Activity");
         static const Resource ActivityInfluence = PROV("ActivityInfluence");
+        static const Resource Generation = PROV("Generation");
+        static const Resource Invalidation = PROV("Invalidation");
         static const Resource Agent = PROV("Agent");
         static const Resource AgentInfluence = PROV("AgentInfluence");
         static const Resource Association = PROV("Association");

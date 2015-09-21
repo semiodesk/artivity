@@ -186,7 +186,12 @@ namespace artivity
     {
         Properties.setProperty(property.Uri, Serializer::toString(value), typeid(value));
     }
-        
+       
+    void Resource::setUri(string uriref)
+    {
+        Uri = string(uriref);
+    }
+ 
     bool Resource::operator==(const Resource& other)
     {
         return Uri == other.Uri;

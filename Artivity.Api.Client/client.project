@@ -63,6 +63,8 @@
       <File Name="src/ObjectModel/SoftwareAgent.h"/>
       <File Name="src/ObjectModel/SoftwareAssociation.h"/>
       <File Name="src/ObjectModel/Viewbox.h"/>
+      <File Name="src/ObjectModel/Invalidation.h"/>
+      <File Name="src/ObjectModel/Generation.h"/>
     </VirtualDirectory>
     <File Name="src/artivity.h"/>
     <File Name="src/Makefile.am"/>

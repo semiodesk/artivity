@@ -16,6 +16,8 @@
 #include "ObjectModel/Activity.h"
 #include "ObjectModel/Agent.h"
 #include "ObjectModel/Association.h"
+#include "ObjectModel/Generation.h"
+#include "ObjectModel/Invalidation.h"
 #include "ObjectModel/Entity.h"
 #include "ObjectModel/Person.h"
 #include "ObjectModel/Role.h"
