@@ -87,29 +87,61 @@ namespace Inkscape
                 
         time_t now;
         time(&now);
-       
-        Geom::Rect vbox = _desktop->get_display_area();
-
-        Viewbox* viewbox = new Viewbox();
-        viewbox->setLeft(vbox.left());
-        viewbox->setRight(vbox.right());
-        viewbox->setTop(vbox.top());
-        viewbox->setBottom(vbox.bottom());
-        viewbox->setZoomFactor(_desktop->current_zoom());
                         
-        SoftwareAssociation* software = new SoftwareAssociation();
-        software->setAgent(_agent);
-        software->setViewbox(viewbox);
+        Association* association = new Association();
+        association->setAgent(_agent);
 
+        activity->addAssociation(association);
         activity->setTime(&now);
-        activity->addAssociation(software);
         
         setType(activity, e);
         //setObject(activity, e);
 
+        if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
+        {
+            Geom::Rect vbox = _desktop->get_display_area();
+
+            Viewbox* viewbox = new Viewbox();
+            viewbox->setLeft(vbox.left());
+            viewbox->setRight(vbox.right());
+            viewbox->setTop(vbox.top());
+            viewbox->setBottom(vbox.bottom());
+            viewbox->setZoomFactor(_desktop->current_zoom());
+        
+            _log.addResource(viewbox);
+            
+            Generation* generation = new Generation();
+            generation->setViewbox(viewbox);
+            
+            _log.addResource(generation);
+            
+            FileDataObject* generated = new FileDataObject("_:unset");
+            //generated->addProperty(rdf::_type, prov::Collection);
+            generated->addProperty(prov::generatedAtTime, activity->getTime());
+            generated->setGeneration(generation);
+            generated->setLastModificationTime(activity->getTime());
+            
+            activity->addGeneratedEntity(generated);
+                            
+            _log.addResource(generated);
+            
+            Invalidation* invalidation = new Invalidation();
+            invalidation->setViewbox(viewbox);
+            
+            _log.addResource(invalidation);
+            
+            FileDataObject* invalidated = new FileDataObject("_:unset");
+            //invalidated->addProperty(rdf::_type, prov::Collection);
+            invalidated->addProperty(prov::invalidatedAtTime, activity->getTime());
+            invalidated->setInvalidation(invalidation);
+            
+            activity->addInvalidatedEntity(invalidated);
+                
+            _log.addResource(invalidated);
+        }
+        
         _log.push_back(activity);
-        _log.addResource(software);
-        _log.addResource(viewbox);
+        _log.addResource(association);
         
         processEventQueue();
     }
@@ -149,32 +181,39 @@ namespace Inkscape
                             
             if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
             {
-                stringstream generatedUri;
-                generatedUri << uri << "#" << UriGenerator::getRandomId(10);
-                            
-                FileDataObject* generated = new FileDataObject(generatedUri.str().c_str());
-                generated->addProperty(rdf::_type, prov::Collection);
-                generated->addProperty(prov::generatedAtTime, activity->getTime());
-                generated->addGenericEntity(_entity);
-                generated->setUrl(uri.c_str());
-                generated->setLastModificationTime(activity->getTime());
+                if(!activity->getGeneratedEntities().empty())
+                {
+                    Entity* e = *(activity->getGeneratedEntities().begin());
+            
+                    FileDataObject* generated = dynamic_cast<FileDataObject*>(e);
+                    
+                    if(generated != NULL)
+                    {
+                        stringstream generatedUri;
+                        generatedUri << uri << "#" << UriGenerator::getRandomId(10);
+                    
+                        generated->setUri(generatedUri.str());
+                        generated->setUrl(uri.c_str());
+                        generated->addGenericEntity(_entity);
+                    }
+                }
                 
-                activity->addGeneratedEntity(generated);
-                
-                _log.addResource(generated);
-                
-                stringstream invalidatedUri;
-                invalidatedUri << uri << "#" << UriGenerator::getRandomId(10);
-                
-                FileDataObject* invalidated = new FileDataObject(invalidatedUri.str().c_str());
-                invalidated->addProperty(rdf::_type, prov::Collection);
-                invalidated->addProperty(prov::invalidatedAtTime, activity->getTime());
-                invalidated->addGenericEntity(_entity);
-                invalidated->setUrl(uri.c_str());
-                
-                activity->addInvalidatedEntity(invalidated);
-                
-                _log.addResource(invalidated);
+                if(!activity->getInvalidatedEntities().empty())
+                {
+                    Entity* e = *(activity->getInvalidatedEntities().begin());
+            
+                    FileDataObject* invalidated = dynamic_cast<FileDataObject*>(e);
+                    
+                    if(invalidated != NULL)
+                    {
+                        stringstream invalidatedUri;
+                        invalidatedUri << uri << "#" << UriGenerator::getRandomId(10);
+                    
+                        invalidated->setUri(invalidatedUri.str());
+                        invalidated->setUrl(uri.c_str());
+                        invalidated->addGenericEntity(_entity);
+                    }
+                }
             }
             
             it++;

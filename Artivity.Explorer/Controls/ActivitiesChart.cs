@@ -18,7 +18,9 @@ namespace ArtivityExplorer.Controls
     {
 		#region Members
 
-		private Dictionary<string, OxyColor> _actorColors = new Dictionary<string, OxyColor>();
+		private List<OxyColor> _colors = new List<OxyColor>();
+
+		private int _currentColor = 0;
 
 		#endregion
 
@@ -30,8 +32,12 @@ namespace ArtivityExplorer.Controls
             MinHeight = 200;
             Margin = 0;
 
-			_actorColors["application://inkscape.desktop"] = OxyColor.FromRgb(237, 44, 169);
-			_actorColors["application://chromium-browser.desktop"] = OxyColor.FromRgb(44, 237, 169);
+			_colors.Add(OxyColor.FromRgb(237, 20, 91)); // Crimson
+			_colors.Add(OxyColor.FromRgb(80, 186, 226)); // Malibu
+			_colors.Add(OxyColor.FromRgb(136, 199, 68)); // Christi
+			_colors.Add(OxyColor.FromRgb(254, 194, 18)); // Moon yellow
+			_colors.Add(OxyColor.FromRgb(248, 97, 68)); // Tomato
+			_colors.Add(OxyColor.FromRgb(128, 57, 122)); // Seance
         }
 
         #endregion
@@ -40,6 +46,8 @@ namespace ArtivityExplorer.Controls
 
 		public void Update(IEnumerable<Activity> activities)
 		{
+			_currentColor = 0;
+
 			List<LineSeries> series = new List<LineSeries>();
 		
 			double max = 1;
@@ -48,9 +56,11 @@ namespace ArtivityExplorer.Controls
 
 			foreach (Activity activity in activities)
 			{
-				SoftwareAgent agent = activity.GetAssociatedSoftwareAgents().FirstOrDefault();
+				Association association = activity.Associations.FirstOrDefault();
 
-				if (agent == null) continue;
+				if (association == null || association.Agent == null) continue;
+
+				Agent agent = association.Agent;
 
 				if (!agents.ContainsKey(agent.Uri))
 				{
@@ -71,12 +81,12 @@ namespace ArtivityExplorer.Controls
 				FontSize = 9,
 				TextColor = OxyColors.LightGray,
 				TicklineColor = OxyColors.LightGray,
+				IntervalType = DateTimeIntervalType.Days,
 				MajorTickSize = 1,
 				MajorGridlineThickness = 0,
 				MajorGridlineStyle = LineStyle.Dot,
 				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66),
 				MinorTickSize = 60,
-				IntervalType = DateTimeIntervalType.Days,
 				MinorIntervalType = DateTimeIntervalType.Minutes,
 				StringFormat = "HH:mm",
 			};
@@ -84,8 +94,6 @@ namespace ArtivityExplorer.Controls
 			LinearAxis y = new LinearAxis()
 			{
 				Position = AxisPosition.Left,
-				Minimum = 0,
-				Maximum = Math.Ceiling(max / 10) * 10,
 				FontSize = 9,
 				TextColor = OxyColors.LightGray,
 				TicklineColor = OxyColors.LightGray,
@@ -95,6 +103,12 @@ namespace ArtivityExplorer.Controls
 				MajorGridlineThickness = 1.0,
 				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66)
 			};
+
+			y.Minimum = 0;
+			y.AbsoluteMinimum = 0;
+			y.Maximum = Math.Ceiling(max / 10) * 10;
+			y.AbsoluteMaximum = max;
+			y.PositionAtZeroCrossing = true;
 
 			PlotModel model = new PlotModel();
 			model.Title = "ACTIVITIES / MIN";
@@ -113,7 +127,7 @@ namespace ArtivityExplorer.Controls
 
 			model.LegendOrientation = LegendOrientation.Horizontal;
 			model.LegendPlacement = LegendPlacement.Outside;
-			model.LegendPosition = LegendPosition.BottomRight;
+			model.LegendPosition = LegendPosition.BottomCenter;
 			model.LegendBackground = OxyColors.Transparent;
 			model.LegendBorder = OxyColors.Transparent;
 			model.LegendMargin = 0;
@@ -143,7 +157,6 @@ namespace ArtivityExplorer.Controls
 			edits.Title = "Inkscape Vector Illustrator";
 			edits.Color = OxyColor.FromRgb(237, 44, 169);
 			edits.StrokeThickness = 2;
-            edits.MarkerSize = 4;
 
 			for (int i = 0; i < 100; i++)
             {
@@ -224,9 +237,15 @@ namespace ArtivityExplorer.Controls
 
 			LineSeries series = new LineSeries();
 			series.Title = actor;
-			series.Color = _actorColors[actor];
+			series.Color = _colors[_currentColor];
 			series.StrokeThickness = 2;
-			series.MarkerSize = 4;
+			series.MarkerSize = 2;
+			series.MarkerType = MarkerType.Circle;
+			series.MarkerFill = OxyColor.FromRgb(49, 55, 57);;
+			series.MarkerStroke = series.Color;
+			series.MarkerStrokeThickness = 2;
+
+			_currentColor++;
 
 			if (activities.Any())
 			{
@@ -240,11 +259,13 @@ namespace ArtivityExplorer.Controls
 						{
 							series.Points.Add(DateTimeAxis.CreateDataPoint(previousTime, i));
 
-							int delta = Convert.ToInt32((currentTime - previousTime).TotalMinutes);
+							double delta = (previousTime - currentTime).TotalMinutes;
 
-							for (int n = 1; n < delta; n++)
+							for (double m = 1.0; m < delta; m++)
 							{
-								series.Points.Add(DateTimeAxis.CreateDataPoint(previousTime.AddMinutes(n), 0));
+								DateTime t = previousTime.Subtract(TimeSpan.FromMinutes(m));
+
+								series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
 							}
 
 							i = 1;

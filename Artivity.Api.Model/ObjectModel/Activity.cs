@@ -64,14 +64,5 @@ namespace Artivity.Model.ObjectModel
         public Activity(Uri uri) : base(uri) {}
 
         #endregion
-
-		#region Methods
-
-		public IEnumerable<SoftwareAgent> GetAssociatedSoftwareAgents()
-		{
-			return Associations.Select(a => a.Agent).OfType<SoftwareAgent>();
-		}
-
-		#endregion
     }
 }

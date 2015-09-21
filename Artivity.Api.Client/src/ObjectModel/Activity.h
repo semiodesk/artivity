@@ -13,13 +13,13 @@ namespace artivity
     class Activity : public Resource
     {
     private:        
-        list<const Association*>* _associations;
+        list<Association*>* _associations;
     
-        list<const Entity*>* _usedEntities;
+        list<Entity*>* _usedEntities;
                     
-        list<const Entity*>* _invalidatedEntities;
+        list<Entity*>* _invalidatedEntities;
                                 
-        list<const Entity*>* _generatedEntities;
+        list<Entity*>* _generatedEntities;
 
         const time_t* _startTime;
         
@@ -41,21 +41,21 @@ namespace artivity
         void setEndTime(const time_t* time);
         const time_t* getEndTime();
         
-        list<const Association*> getAssociations();
-        void addAssociation(const Association* association);
-        void removeAssociation(const Association* association);
+        list<Association*> getAssociations();
+        void addAssociation(Association* association);
+        void removeAssociation(Association* association);
         
-        list<const Entity*> getUsedEntities();
-        void addUsedEntity(const Entity* entity);
-        void removeUsedEntity(const Entity* entity);
+        list<Entity*> getUsedEntities();
+        void addUsedEntity(Entity* entity);
+        void removeUsedEntity(Entity* entity);
         
-        list<const Entity*> getInvalidatedEntities();
-        void addInvalidatedEntity(const Entity* entity);
-        void removeInvalidatedEntity(const Entity* entity);
+        list<Entity*> getInvalidatedEntities();
+        void addInvalidatedEntity(Entity* entity);
+        void removeInvalidatedEntity(Entity* entity);
         
-        list<const Entity*> getGeneratedEntities();
-        void addGeneratedEntity(const Entity* entity);
-        void removeGeneratedEntity(const Entity* entity);
+        list<Entity*> getGeneratedEntities();
+        void addGeneratedEntity(Entity* entity);
+        void removeGeneratedEntity(Entity* entity);
     };
 }
 
