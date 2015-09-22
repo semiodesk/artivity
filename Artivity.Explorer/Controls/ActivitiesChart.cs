@@ -33,7 +33,7 @@ namespace ArtivityExplorer.Controls
             Margin = 0;
 
 			_colors.Add(OxyColor.FromRgb(237, 20, 91)); // Crimson
-			_colors.Add(OxyColor.FromRgb(80, 186, 226)); // Malibu
+			_colors.Add(OxyColor.FromRgb(17, 158, 218)); // Malibu
 			_colors.Add(OxyColor.FromRgb(136, 199, 68)); // Christi
 			_colors.Add(OxyColor.FromRgb(254, 194, 18)); // Moon yellow
 			_colors.Add(OxyColor.FromRgb(248, 97, 68)); // Tomato

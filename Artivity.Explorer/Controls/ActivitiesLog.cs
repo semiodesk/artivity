@@ -12,29 +12,22 @@ namespace ArtivityExplorer.Controls
     public class ActivitiesLog : TreeView
     {
 		#region Members
-
-		private IModel _model;
-
+		
 		public TreeStore Store { get; private set; }
 
 		public IDataField<Activity> ActivityField { get; private set; }
-		public IDataField<DateTime> TimeField { get; private set; }
+		public IDataField<string> TimeField { get; private set; }
 		public IDataField<string> TypeField { get; private set; }
-		public IDataField<string> TargetField { get; private set; }
-		public IDataField<string> ModificationTypeField { get; private set; }
-		public IDataField<string> ModificationFromField { get; private set; }
-		public IDataField<string> ModificationToField { get; private set; }
+		public IDataField<string> ActionField { get; private set; }
 		public IDataField<string> ZoomField { get; private set; }
 
 		#endregion
 
         #region Constructors
 
-        public ActivitiesLog(IModel model)
+        public ActivitiesLog()
         {
             InitializeComponent();
-
-			_model = model;
         }
 
         #endregion
@@ -48,23 +41,29 @@ namespace ArtivityExplorer.Controls
             SelectionMode = SelectionMode.Multiple;
 
 			ActivityField = new DataField<Activity>();
-            TimeField = new DataField<DateTime>();
+            TimeField = new DataField<string>();
             TypeField = new DataField<string>();
-			TargetField = new DataField<string>();
-            ModificationTypeField = new DataField<string>();
-			ModificationFromField = new DataField<string>();
-			ModificationToField = new DataField<string>();
+			ActionField = new DataField<string>();
 			ZoomField = new DataField<string>();
 
-            Columns.Add(new ListViewColumn("Time", new TextCellView(TimeField)) { Alignment = Alignment.Start });
-            Columns.Add(new ListViewColumn("Event", new TextCellView(TypeField)));
-			Columns.Add(new ListViewColumn("Target", new TextCellView(TargetField)) { CanResize = true });
-            Columns.Add(new ListViewColumn("Modification", new TextCellView(ModificationTypeField)));
-			Columns.Add(new ListViewColumn("From", new TextCellView(ModificationFromField)));
-			Columns.Add(new ListViewColumn("To", new TextCellView(ModificationToField)));
-			Columns.Add(new ListViewColumn("Zoom", new TextCellView(ZoomField)));
+			TextCellView timeView = new TextCellView();
+			timeView.MarkupField = TimeField;
 
-			Store = new TreeStore(ActivityField, TimeField, TypeField, TargetField, ModificationTypeField, ModificationFromField, ModificationToField, ZoomField);
+			TextCellView typeView = new TextCellView();
+			typeView.MarkupField = TypeField;
+
+			TextCellView actionView = new TextCellView();
+			actionView.MarkupField = ActionField;
+
+			TextCellView zoomView = new TextCellView();
+			zoomView.MarkupField = ZoomField;
+
+            Columns.Add(new ListViewColumn("Time", timeView));
+            Columns.Add(new ListViewColumn("Event", typeView));
+			Columns.Add(new ListViewColumn("Target", actionView));
+			Columns.Add(new ListViewColumn("Zoom", zoomView));
+
+			Store = new TreeStore(ActivityField, TimeField, TypeField, ActionField, ZoomField);
 
             DataSource = Store;
 
