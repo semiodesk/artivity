@@ -56,7 +56,7 @@ namespace ArtivityExplorer.Controls
 
             Columns.Add(new ListViewColumn("Time", new TextCellView(TimeField)) { Alignment = Alignment.Start });
             Columns.Add(new ListViewColumn("Event", new TextCellView(TypeField)));
-			Columns.Add(new ListViewColumn("Target", new TextCellView(TargetField)));
+			Columns.Add(new ListViewColumn("Target", new TextCellView(TargetField)) { CanResize = true });
             Columns.Add(new ListViewColumn("Modification", new TextCellView(ModificationTypeField)));
 			Columns.Add(new ListViewColumn("From", new TextCellView(ModificationFromField)));
 			Columns.Add(new ListViewColumn("To", new TextCellView(ModificationToField)));
@@ -65,6 +65,12 @@ namespace ArtivityExplorer.Controls
 			Store = new TreeStore(UriField, TimeField, TypeField, TargetField, ModificationTypeField, ModificationFromField, ModificationToField, ZoomField);
 
             DataSource = Store;
+
+			foreach (ListViewColumn c in Columns)
+			{
+				c.Alignment = Alignment.Start;
+				c.CanResize = true;
+			}
         }
 
 		protected override void OnKeyReleased(KeyEventArgs args)

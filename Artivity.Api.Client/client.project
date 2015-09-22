@@ -23,6 +23,7 @@
       <File Name="src/Ontologies/svg.h"/>
       <File Name="src/Ontologies/prov.h"/>
       <File Name="src/Ontologies/nfo.h"/>
+      <File Name="src/Ontologies/xml.h"/>
     </VirtualDirectory>
     <File Name="src/ActivityLog.cpp"/>
     <File Name="src/ActivityLog.h"/>
