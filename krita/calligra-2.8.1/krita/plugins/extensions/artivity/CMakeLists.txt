@@ -2,7 +2,7 @@ include_directories( ${KOMAIN_INCLUDES} ${KOTEXT_INCLUDES} )
 
 set(kritaartivity_PART_SRCS
         artivity.cc
-        log.cc
+#        log.cc
    )
 
 kde4_add_plugin(kritaartivity ${kritaartivity_PART_SRCS})

@@ -6,7 +6,7 @@
 #include <kundo2command.h>
 #include <kis_canvas2.h>
 
-#include <artivity-client/ActivityLog.h>
+//#include <artivity-client/ActivityLog.h>
 
 
 class ArtivityLog : public QAbstractItemModel

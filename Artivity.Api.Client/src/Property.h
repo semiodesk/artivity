@@ -9,7 +9,7 @@ namespace artivity
     {
     public:
         Property(const char* uriref) : Resource(uriref) {}
-        ~Property() {}
+        virtual ~Property() {}
     };
 }
 

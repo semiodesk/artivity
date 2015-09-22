@@ -42,6 +42,8 @@
 #include <KoPattern.h>
 #include <recorder/kis_recorded_action_save_context.h> 
 
+#include <commands/kis_image_layer_add_command.h>
+
 
 #include <QDesktopServices>
 #include <QApplication>
@@ -63,14 +65,20 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
         : KisViewPlugin(parent, "kritaplugins/artivity.rc")
 {
     _currentIdx = 0;
-    _log = artivity::ActivityLog();
+     _log = new artivity::ActivityLog();
     if (parent->inherits("KisView2")) 
     {
+        _active = TRUE;
         m_view = (KisView2*) parent;
 
         _canvas = m_view->canvasBase();
         _undoStack = _canvas->shapeController()->resourceManager()->undoStack();
+        ImageInformation();
 
+        connect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
+        connect(_canvas->currentImage(), SIGNAL(sigAboutToBeDeleted()), this, SLOT(Close()));
+        //connect(m_view->mainWindow(), SIGNAL(documentSaved()), this, SLOT(DocumentSaved()));
+        /*
         // Start recording action
         m_startRecordingMacroAction = new KisAction(koIcon("media-record"), i18n("Start"), this);
         addAction("Start_Artivity", m_startRecordingMacroAction);
@@ -81,30 +89,36 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
         addAction("Stop_Artivity", m_stopRecordingMacroAction);
         connect(m_stopRecordingMacroAction, SIGNAL(triggered()), this, SLOT(StopArtivity()));
         m_stopRecordingMacroAction->setEnabled(false);
+        */
     }
 }
 
 ArtivityPlugin::~ArtivityPlugin()
 {
+    StopArtivity();
     m_view = 0;
+    _undoStack = NULL;
+    delete _log;
 }
 
 
 void ArtivityPlugin::StartArtivity()
 {
-    connect(m_view->image()->actionRecorder(), SIGNAL(addedAction(const KisRecordedAction&)), 
-        this, SLOT(addedAction(const KisRecordedAction&)));
+//    connect(m_view->image()->actionRecorder(), SIGNAL(addedAction(const KisRecordedAction&)), 
+//        this, SLOT(addedAction(const KisRecordedAction&)));
 
-    connect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
+    //std::cout << "Starting tracking";
+    //connect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
 }
 
 void ArtivityPlugin::StopArtivity()
 {
+    disconnect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
 }
 
 void ArtivityPlugin::addedAction(const KisRecordedAction& action)
 {
-    std::cout << "Action: " << action.name().toUtf8().constData() << std::endl;
+    /*std::cout << "Action: " << action.name().toUtf8().constData() << std::endl;
     
     QDomDocument doc;
     QDomElement e = doc.createElement("RecordedActions");
@@ -117,11 +131,26 @@ void ArtivityPlugin::addedAction(const KisRecordedAction& action)
 
 
     //std::cout << action.toXML() << std::endl;
+    */
 }
 
 void ArtivityPlugin::indexChanged(int idx)
 {
-    if( idx < _currentIdx )
+    if( _undoStack == NULL || _active == FALSE || !_undoStack->isActive() )
+        return; 
+
+    if( _undoStack->isClean() )
+    {
+        // Hold back undo changes until we get another change or a save
+        _holdBack = TRUE;
+        return;
+    }
+
+    if( idx == _currentIdx )
+    {
+        std::cout << "Do " << std::endl;
+    }
+    else if( idx < _currentIdx )
     {
         std::cout << "Undo " << _currentIdx - idx << " events" << std::endl;
     }else if( idx < _undoStack->count() )
@@ -129,15 +158,63 @@ void ArtivityPlugin::indexChanged(int idx)
         std::cout << "Redo " << idx - _currentIdx << " events" << std::endl;
     }
     const KUndo2Command* currentCommand = _undoStack->command(idx-1);
-     _currentIdx = idx;
 
-     if( dynamic_cast<const KisLayerCommand*>(currentCommand) == NULL )
+    if( currentCommand == NULL )
+        return;
+
+
+    _currentIdx = idx;
+    QString text = currentCommand->actionText();
+    QString text2 = currentCommand->text();
+    
+    //std::cout << "Action: " << text.toUtf8().constData() << " :: " << text2.toUtf8().constData() << std::endl;
+
+
+
+     if( dynamic_cast<const KisImageLayerAddCommand*>(currentCommand) != NULL )
      {
-         std::cout << "Layer command" << std::endl;
+        LogLayerAdded();
      }
+
+     LayerInformation();
+     //ImageInformation();
 }
 
 
+void ArtivityPlugin::LogLayerAdded()
+{
+    std::cout << "Layer Add command" << std::endl;
+}
+
+void ArtivityPlugin::LayerInformation()
+{
+    KisLayerSP layer = m_view->activeLayer();
+    std::cout << "Layer name " << layer->name().toUtf8().constData() << std::endl;
+}
+
+void ArtivityPlugin::ImageInformation()
+{
+    KisDoc2* doc = m_view->document();
+    std::cout << "File : " << doc->localFilePath().toUtf8().constData() << std::endl;
+
+
+    KisImageSP image = _canvas->currentImage();
+    std::cout << "Image info -> w: " << image->width() << " h: " << image->height() << std::endl;
+    std::cout << "Res -> x: " << image->xRes() << " y: " << image->yRes() << std::endl;
+    std::cout << "Color -> " << image->colorSpace()->name().toUtf8().constData() << std::endl;
+    std::cout << "Unit -> " << _canvas->unit().symbol().toUtf8().constData() << std::endl;
+}
+
+
+void ArtivityPlugin::Close()
+{
+    std::cout << "ABORT!" << std::endl;
+    if( _holdBack )
+    {
+        std::cout << "Discard last undo actions." << std::endl;
+    }
+    _active = FALSE;
+}
 
 
 #include "artivity.moc"

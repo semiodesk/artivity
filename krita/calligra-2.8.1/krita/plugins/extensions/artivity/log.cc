@@ -52,7 +52,7 @@ void ArtivityLog::stackDestroyed(QObject *obj)
 
 void ArtivityLog::stackChanged()
 {
-    std::cout << "Stack changed!" << std::endl;
+    //std::cout << "Stack changed!" << std::endl;
 }
 
 
