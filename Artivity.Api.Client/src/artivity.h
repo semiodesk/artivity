@@ -9,13 +9,17 @@
 
 #include "Ontologies/rdf.h"
 #include "Ontologies/xsd.h"
+#include "Ontologies/xml.h"
 #include "Ontologies/prov.h"
 #include "Ontologies/nfo.h"
 #include "Ontologies/art.h"
 
 #include "ObjectModel/Activity.h"
+#include "ObjectModel/ActivityInfluence.h"
 #include "ObjectModel/Agent.h"
 #include "ObjectModel/Association.h"
+#include "ObjectModel/Generation.h"
+#include "ObjectModel/Invalidation.h"
 #include "ObjectModel/Entity.h"
 #include "ObjectModel/Person.h"
 #include "ObjectModel/Role.h"
@@ -36,5 +40,7 @@
 
 #include "ObjectModel/Entities/FileDataObject.h"
 #include "ObjectModel/Entities/WebDataObject.h"
+#include "ObjectModel/Entities/XmlElement.h"
+#include "ObjectModel/Entities/XmlAttribute.h"
 
 #endif // ARTIVITY_H
