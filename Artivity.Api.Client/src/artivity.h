@@ -15,6 +15,7 @@
 #include "Ontologies/art.h"
 
 #include "ObjectModel/Activity.h"
+#include "ObjectModel/ActivityInfluence.h"
 #include "ObjectModel/Agent.h"
 #include "ObjectModel/Association.h"
 #include "ObjectModel/Generation.h"
@@ -39,5 +40,7 @@
 
 #include "ObjectModel/Entities/FileDataObject.h"
 #include "ObjectModel/Entities/WebDataObject.h"
+#include "ObjectModel/Entities/XmlElement.h"
+#include "ObjectModel/Entities/XmlAttribute.h"
 
 #endif // ARTIVITY_H

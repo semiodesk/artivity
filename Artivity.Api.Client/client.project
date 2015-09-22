@@ -53,6 +53,8 @@
       <VirtualDirectory Name="Entities">
         <File Name="src/ObjectModel/Entities/FileDataObject.h"/>
         <File Name="src/ObjectModel/Entities/WebDataObject.h"/>
+        <File Name="src/ObjectModel/Entities/XmlElement.h"/>
+        <File Name="src/ObjectModel/Entities/XmlAttribute.h"/>
       </VirtualDirectory>
       <File Name="src/ObjectModel/Activity.cpp"/>
       <File Name="src/ObjectModel/Activity.h"/>
@@ -66,6 +68,7 @@
       <File Name="src/ObjectModel/Viewbox.h"/>
       <File Name="src/ObjectModel/Invalidation.h"/>
       <File Name="src/ObjectModel/Generation.h"/>
+      <File Name="src/ObjectModel/ActivityInfluence.h"/>
     </VirtualDirectory>
     <File Name="src/artivity.h"/>
     <File Name="src/Makefile.am"/>

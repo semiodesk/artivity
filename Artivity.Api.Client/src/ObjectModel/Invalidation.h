@@ -1,69 +1,24 @@
 #ifndef INVALIDATION_H
 #define INVALIDATION_H
 
-#include "../Ontologies/rdf.h"
-#include "../Ontologies/prov.h"
-#include "../UriGenerator.h"
+#include "ActivityInfluence.h"
 
 namespace artivity
 {
-    class Invalidation : public Resource
-    {
-    private:
-        Viewbox* _viewbox;
-        
-        Resource* _location;
-        
-        string _value;
-        
+    class Invalidation : public ActivityInfluence
+    {        
     public:
-        Invalidation() : Resource(UriGenerator::getUri())
+        Invalidation() : ActivityInfluence()
         {
             Resource::setValue(rdf::_type, prov::Invalidation);
         }
         
-        Invalidation(const char* uriref) : Resource(uriref)
+        Invalidation(const char* uriref) : ActivityInfluence(uriref)
         {
             Resource::setValue(rdf::_type, prov::Invalidation);
         }
         
         virtual ~Invalidation() {}
-        
-        Viewbox* getViewbox()
-        {
-            return _viewbox;
-        }
-        
-        void setViewbox(Viewbox* viewbox)
-        {
-            _viewbox = viewbox;
-            
-            Resource::setValue(art::hadViewbox, viewbox);
-        }
-        
-        Resource* getLocation()
-        {
-            return _location;
-        }
-        
-        void setLocation(Resource* location)
-        {
-            _location = location;
-            
-            Resource::setValue(prov::atLocation, location);
-        }
-        
-        string getValue()
-        {
-            return _value;
-        }
-        
-        void setValue(string value)
-        {
-            _value = value;
-            
-            Resource::setValue(prov::value, value);
-        }
     };
 }
 

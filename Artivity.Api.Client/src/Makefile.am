@@ -14,6 +14,7 @@ nobase_pkginclude_HEADERS = artivity.h \
     XsdTypeMap.h \
     ActivityLog.h \
     ObjectModel/Activity.h  \
+    ObjectModel/ActivityInfluence.h  \
     ObjectModel/Agent.h \
     ObjectModel/Association.h \
     ObjectModel/Role.h \
@@ -26,6 +27,8 @@ nobase_pkginclude_HEADERS = artivity.h \
     ObjectModel/Entity.h \
     ObjectModel/Entities/FileDataObject.h \
     ObjectModel/Entities/WebDataObject.h \
+    ObjectModel/Entities/XmlElement.h \
+    ObjectModel/Entities/XmlAttribute.h \
     ObjectModel/Activities/Add.h \
     ObjectModel/Activities/Create.h \
     ObjectModel/Activities/Delete.h \

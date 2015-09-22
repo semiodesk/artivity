@@ -26,16 +26,12 @@ namespace Inkscape
 
         _log = ActivityLog();
         _agent = new SoftwareAgent("application://inkscape.desktop");
-
-        cout << "ArtivityLog(SPDocument*, SPDesktop*) called; doc=" << doc << endl << flush;
         
         logEvent(art::Open, NULL);
     }
 
     ArtivityLog::~ArtivityLog()
     {
-        cout << "~ArtivityLog() called;" << endl << flush;
-        
         logEvent(art::Close, NULL);
                 
         if(_agent != NULL) delete _agent;
@@ -75,16 +71,10 @@ namespace Inkscape
     void
     ArtivityLog::logEvent(const Resource& type, Event* e)
     {
+        if(_desktop == NULL) return;
+        
         Activity* activity = new Activity();
         activity->setValue(rdf::_type, type);
-        
-        logEvent(activity, e);
-    }
-    
-    void
-    ArtivityLog::logEvent(Activity* activity, Event* e)
-    {
-        if(_desktop == NULL) return;
                 
         time_t now;
         time(&now);
@@ -138,7 +128,7 @@ namespace Inkscape
             _log.addResource(invalidated);
         }
         
-        // setType() requires the Generation and Invalidation to be initialized.
+        // NOTE: setType() requires the Generation and Invalidation to be initialized.
         setType(activity, e);
         
         _log.push_back(activity);
@@ -242,100 +232,55 @@ namespace Inkscape
         }
         else if(is<Inkscape::XML::EventChgAttr*>(e->event))
         {
-            /*
+            if(activity->getGeneratedEntities().empty() && activity->getInvalidatedEntities().empty())
+                return;
+            
+            XmlElement* element = getXmlElement(e);
+            
+            _log.addResource(element);
+               
             Inkscape::XML::EventChgAttr* x = as<Inkscape::XML::EventChgAttr*>(e->event);
             
-            string oldval = string(x->oldval);
             string newval = string(x->newval);
-            
+            string oldval = string(x->oldval);
+                
             AttributeValueMap* values = getChangedAttributes(oldval, newval);
             AttributeValueIterator it = values->begin();
             
             while(it != values->end())
             {                     
                 const char* name = it->first.c_str();
-                const char* oldval = it->second->oldval.c_str();
-                const char* newval = it->second->newval.c_str();
                 
-                Resource* m = new Resource(UriGenerator::getUri());
-                m->setValue(rdf::_type, art::AttributeModification);                
-                m->setValue(art::attributeName, name);
-                m->setValue(art::fromValue, oldval);
-                m->setValue(art::toValue, newval);
-                                                
-                activity->setValue(art::modification, *m);
+                XmlAttribute* attribute = new XmlAttribute(element, name);
                 
-                _log.addAnnotation(m);
+                _log.addResource(attribute);
                 
+                setGeneratedValue(activity->getGeneratedEntities(), it->second->newval.c_str(), attribute);
+                setInvalidatedValue(activity->getInvalidatedEntities(), it->second->oldval.c_str(), attribute);
+            
                 delete it->second;
                 
                 it++;
             }
             
             delete values;
-            */
         }
         else if(is<Inkscape::XML::EventChgContent*>(e->event))
         {
-            if(activity->getGeneratedEntities().empty())
+            if(activity->getGeneratedEntities().empty() && activity->getInvalidatedEntities().empty())
                 return;
                 
-            const gchar* idc = e->event->repr->attribute("id");
-            
-            if(idc == NULL)
-            {
-                return;
-            }
-            
-            if(e->event->repr == NULL || e->event->repr->attribute("id") == NULL)
-                return;    
-
-            string id = string(e->event->repr->attribute("id"));
-        
-            if(id.size() == 0)
-                return;
-        
-            stringstream uri;
-            uri << "file://" << _doc->getURI() << "#" << id;
-                    
-            Resource* element = new Resource(uri.str().c_str());
-            element->setValue(rdf::_type, xml::Element);
+            XmlElement* element = getXmlElement(e);
             
             _log.addResource(element);
             
             Inkscape::XML::EventChgContent* x = as<Inkscape::XML::EventChgContent*>(e->event);
             
-            if(!activity->getGeneratedEntities().empty())
-            {
-                string newval = string(x->newval);
-                
-                Entity* e = *(activity->getGeneratedEntities().begin());
-                
-                FileDataObject* generated = dynamic_cast<FileDataObject*>(e);
-                        
-                if(generated != NULL)
-                {
-                    Generation* generation = generated->getGeneration();
-                    generation->setLocation(element);
-                    generation->setValue(newval);
-                }
-            }
+            string newval = string(x->newval);
+            string oldval = string(x->oldval);
             
-            if(!activity->getInvalidatedEntities().empty())
-            {
-                string oldval = string(x->oldval);
-                
-                Entity* e = *(activity->getInvalidatedEntities().begin());
-                
-                FileDataObject* invalidated = dynamic_cast<FileDataObject*>(e);
-                        
-                if(invalidated != NULL)
-                {
-                    Invalidation* invalidation = invalidated->getInvalidation();
-                    invalidation->setLocation(element);
-                    invalidation->setValue(oldval);
-                }
-            }
+            setGeneratedValue(activity->getGeneratedEntities(), newval, element);
+            setInvalidatedValue(activity->getInvalidatedEntities(), oldval, element);
         }
         else if(is<Inkscape::XML::EventChgOrder*>(e->event))
         {
@@ -346,27 +291,87 @@ namespace Inkscape
     }
     
     void
-    ArtivityLog::setObject(Activity* activity, Event* e)
+    ArtivityLog::setGeneratedValue(list<Entity*> entities, string value, Resource* location)
     {
-        /*
-        if(e == NULL || e->event == NULL || e->event->repr == NULL || !e->event->repr->attribute("id"))
+        if(entities.empty())
             return;
         
-        string id = string(e->event->repr->attribute("id"));
+        Entity* e = *(entities.begin());
         
-        if(id.size() == 0)
+        FileDataObject* file = dynamic_cast<FileDataObject*>(e);
+        
+        if(file == NULL)
             return;
         
-        stringstream uri;
-        uri << "file://" << _doc->getURI() << "#" << id;
-                
-        Resource* shape = new Resource(uri.str());
-        shape->setValue(rdf::_type, svg::Shape);
+        Generation* generation = file->getGeneration();
         
-        activity->setValue(as::object, *shape);
+        if(generation == NULL)
+            return;
         
-        _log.addAnnotation(shape);
-        */
+        generation->setValue(value);
+        generation->setLocation(location);
+    }
+    
+    void
+    ArtivityLog::setInvalidatedValue(list<Entity*> entities, string value, Resource* location)
+    {
+        if(entities.empty())
+            return;
+        
+        Entity* e = *(entities.begin());
+        
+        FileDataObject* file = dynamic_cast<FileDataObject*>(e);
+        
+        if(file == NULL)
+            return;
+        
+        Invalidation* invalidation = file->getInvalidation();
+        
+        if(invalidation == NULL)
+            return;
+        
+        invalidation->setValue(value);
+        invalidation->setLocation(location);
+    }
+    
+    XmlElement*
+    ArtivityLog::getXmlElement(Event* e)
+    {
+        const char* id = getXmlElementId(e);
+        const char* url = _doc->getURI();
+        
+        if(id == NULL || url == NULL)
+            return NULL;
+        
+        return new XmlElement(url, id);
+    }
+    
+    const char*
+    ArtivityLog::getXmlElementId(Event* e)
+    {
+        if(e->event->repr == NULL)
+            return NULL;
+        
+        Node* node = e->event->repr;
+        
+        const gchar* id = node->attribute("id");
+        
+        if(id == NULL)
+        {
+            node = node->parent();
+            
+            while(id == NULL && node != NULL)
+            {
+                id = node->attribute("id");
+            }
+        }
+        
+        if(id != NULL)
+        {
+            return string(id).c_str();
+        }
+        
+        return NULL;
     }
 
     AttributeValueMap*
