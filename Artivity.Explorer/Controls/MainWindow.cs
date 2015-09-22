@@ -59,8 +59,8 @@ namespace ArtivityExplorer.Controls
             // Initialize the widget layout.
             HBox content = new HBox();
 			content.Spacing = 0;
+			content.PackStart( _log, true);
             content.PackStart(_statsPanel);
-            content.PackStart( _log, true);
 
             VBox layout = new VBox();
             layout.Spacing = 0;
@@ -75,19 +75,27 @@ namespace ArtivityExplorer.Controls
 		{
 			IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
+			IModelGroup activities = store.CreateModelGroup();
+
 			if (store.ContainsModel(Models.Activities))
 			{
-				_model = store.GetModel(Models.Activities);
+				activities.Add(store.GetModel(Models.Activities));
 			}
 			else
 			{
-				_model = store.CreateModel(Models.Activities);
-			}
-
-			if(_model == null)
-			{
 				Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.Activities);
 			}
+
+			if (store.ContainsModel(Models.WebActivities))
+			{
+				activities.Add(store.GetModel(Models.WebActivities));
+			}
+			else
+			{
+				Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.WebActivities);
+			}
+
+			_model = activities;
 		}
 
         private void HandleFileSelected(object sender, FileSelectionEventArgs e)
@@ -131,48 +139,43 @@ namespace ArtivityExplorer.Controls
 			foreach (Activity activity in activities)
 			{
 				TreeNavigator node = _log.Store.AddNode();
-				node.SetValue(_log.UriField, activity.Uri);
-				node.SetValue(_log.TimeField, activity.StartTime);
+				node.SetValue(_log.ActivityField, activity);
+				node.SetValue(_log.TimeField, activity.StartTime); 
 
 				if (activity.GetTypes().Any())
 				{
 					node.SetValue(_log.TypeField, ToDisplayString(activity.GetTypes().First().Uri));
 				}
 
-				if (activity.Associations.Any())
-				{
-					Association association = activity.Associations.First();
-
-					if (association.Viewbox != null)
-					{
-						node.SetValue(_log.ZoomField, Math.Round(association.Viewbox.ZoomFactor * 100, 0) + "%");
-					}
-				}
-
-				if (activity.InvalidatedEntities.OfType<FileDataObject>().Any())
-				{
-					FileDataObject f = activity.InvalidatedEntities.OfType<FileDataObject>().First();
-
-					node.SetValue(_log.ModificationFromField, f.RevisedValue.ToString());
-				}
-
 				if (activity.GeneratedEntities.OfType<FileDataObject>().Any())
 				{
 					FileDataObject f = activity.GeneratedEntities.OfType<FileDataObject>().First();
 
-					node.SetValue(_log.ModificationToField, f.RevisedValue.ToString());
-
-					if (f.RevisedLocation is XmlAttribute)
+					if (f.Generation.Viewbox != null)
 					{
-						XmlAttribute a = f.RevisedLocation as XmlAttribute;
-
-						node.SetValue(_log.TargetField, a.LocalName);
+						node.SetValue(_log.ZoomField, Math.Round(f.Generation.Viewbox.ZoomFactor * 100, 0) + "%");
 					}
+
+					string target = "";
+
+					if (f.Generation.Location is XmlAttribute)
+					{
+						XmlAttribute a = f.Generation.Location as XmlAttribute;
+
+						target += a.LocalName + ": ";
+					}
+
+					if (f.Generation.Value != null)
+					{
+						target += f.Generation.Value;
+					}
+
+					node.SetValue(_log.TargetField, target);
 				}
 
 				if (activity.UsedEntities.OfType<WebDataObject>().Any())
 				{
-					WebDataObject w = activity.GeneratedEntities.OfType<WebDataObject>().First();
+					WebDataObject w = activity.UsedEntities.OfType<WebDataObject>().First();
 
 					node.SetValue(_log.TargetField, w.Uri.OriginalString);
 				}
@@ -190,6 +193,7 @@ namespace ArtivityExplorer.Controls
 			}
 
 			_chart.Update(activities);
+			_statsPanel.EditingWidget.Update(_model, file);
 		}
 
 		private DateTime GetFirstEventTime(string file)

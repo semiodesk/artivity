@@ -66,6 +66,8 @@ namespace artivity
         void setValue(const Property& property, float value);
         void setValue(const Property& property, double value);
         
+        void setUri(string uriref);
+        
         bool operator==(const Resource& other);
         
         friend ostream& operator<<(ostream& out, const Resource& resource);

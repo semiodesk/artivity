@@ -60,6 +60,12 @@
     <Compile Include="ObjectModel\Entities\WebDataObject.cs" />
     <Compile Include="Models.cs" />
     <Compile Include="ObjectModel\Entity.cs" />
+    <Compile Include="ObjectModel\ActivityInfluence.cs" />
+    <Compile Include="ObjectModel\Generation.cs" />
+    <Compile Include="ObjectModel\Influence.cs" />
+    <Compile Include="ObjectModel\Invalidation.cs" />
+    <Compile Include="ObjectModel\EntityInfluence.cs" />
+    <Compile Include="ObjectModel\Usage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Ontologies\prov.ttl" />

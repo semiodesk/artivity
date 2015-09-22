@@ -10,20 +10,20 @@ namespace artivity
 {
     Activity::Activity() : Resource(UriGenerator::getUri())
     {
-        _associations = new list<const Association*>();
-        _usedEntities = new list<const Entity*>();
-        _invalidatedEntities = new list<const Entity*>();
-        _generatedEntities = new list<const Entity*>();
+        _associations = new list<Association*>();
+        _usedEntities = new list<Entity*>();
+        _invalidatedEntities = new list<Entity*>();
+        _generatedEntities = new list<Entity*>();
         
         setValue(rdf::_type, prov::Activity);
     }
     
     Activity::Activity(const char* uriref) : Resource(uriref)
     {
-        _associations = new list<const Association*>();
-        _usedEntities = new list<const Entity*>();
-        _invalidatedEntities = new list<const Entity*>();
-        _generatedEntities = new list<const Entity*>();
+        _associations = new list<Association*>();
+        _usedEntities = new list<Entity*>();
+        _invalidatedEntities = new list<Entity*>();
+        _generatedEntities = new list<Entity*>();
         
         setValue(rdf::_type, prov::Activity);
     }
@@ -78,76 +78,76 @@ namespace artivity
         return _startTime;
     }
     
-    list<const Association*> Activity::getAssociations()
+    list<Association*> Activity::getAssociations()
     {
         return *_associations;
     }
     
-    void Activity::addAssociation(const Association* association)
+    void Activity::addAssociation(Association* association)
     {
         _associations->push_back(association);
         
         addProperty(prov::qualifiedAssociation, association);
     }
     
-    void Activity::removeAssociation(const Association* association)
+    void Activity::removeAssociation(Association* association)
     {        
         _associations->remove(association);
         
         removeProperty(prov::qualifiedAssociation, association);
     }
     
-    list<const Entity*> Activity::getUsedEntities()
+    list<Entity*> Activity::getUsedEntities()
     {
         return *_usedEntities;
     }
     
-    void Activity::addUsedEntity(const Entity* entity)
+    void Activity::addUsedEntity(Entity* entity)
     {
         _usedEntities->push_back(entity);
         
         addProperty(prov::used, entity);
     }
     
-    void Activity::removeUsedEntity(const Entity* entity)
+    void Activity::removeUsedEntity(Entity* entity)
     {        
         _usedEntities->remove(entity);
         
         removeProperty(prov::used, entity);
     }
     
-    list<const Entity*> Activity::getInvalidatedEntities()
+    list<Entity*> Activity::getInvalidatedEntities()
     {
         return *_invalidatedEntities;
     }
     
-    void Activity::addInvalidatedEntity(const Entity* entity)
+    void Activity::addInvalidatedEntity(Entity* entity)
     {
         _invalidatedEntities->push_back(entity);
         
         addProperty(prov::invalidated, entity);
     }
     
-    void Activity::removeInvalidatedEntity(const Entity* entity)
+    void Activity::removeInvalidatedEntity(Entity* entity)
     {       
         _invalidatedEntities->remove(entity);
         
         removeProperty(prov::invalidated, entity);
     }
     
-    list<const Entity*> Activity::getGeneratedEntities()
+    list<Entity*> Activity::getGeneratedEntities()
     {
         return *_generatedEntities;
     }
     
-    void Activity::addGeneratedEntity(const Entity* entity)
+    void Activity::addGeneratedEntity(Entity* entity)
     {
         _generatedEntities->push_back(entity);
         
         addProperty(prov::generated, entity);
     }
     
-    void Activity::removeGeneratedEntity(const Entity* entity)
+    void Activity::removeGeneratedEntity(Entity* entity)
     {        
         _generatedEntities->remove(entity);
         

@@ -119,8 +119,6 @@ namespace artivity
         {
             Serializer::serialize(stream, **ait, N3);
             
-            delete *ait;
-            
             ait++;
         }
         
@@ -130,7 +128,7 @@ namespace artivity
         {
             Serializer::serialize(stream, **rit, N3);
             
-            delete *rit;
+            //delete *rit;
             
             rit++;
         }
@@ -148,12 +146,29 @@ namespace artivity
         
         curl_easy_perform(curl);
         
+        // Cleanup AFTER all resources have been serialized and transmitted.
         if(curl)
         {
             curl_easy_cleanup(curl);
         }
         
         clear();
+        
+        ait = begin();
+        
+        while(ait != end())
+        {
+            delete *ait;
+        }
+        
+        rit = resources.begin();
+        
+        while(rit != resources.end())
+        {           
+            delete *rit;
+            
+            rit++;
+        }
     }
 }
 

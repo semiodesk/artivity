@@ -6,6 +6,8 @@
 #include "../Ontologies/rdf.h"
 #include "../Ontologies/prov.h"
 #include "../UriGenerator.h"
+#include "Generation.h"
+#include "Invalidation.h"
 
 using namespace std;
 
@@ -14,6 +16,8 @@ namespace artivity
     class Entity : public Resource
     {
     private:
+        Generation* _generation;
+        Invalidation* _invalidation;
         list<Entity*>* _genericEntities;
         
     public:
@@ -34,6 +38,30 @@ namespace artivity
         virtual ~Entity()
         {
             delete _genericEntities;
+        }
+        
+        Generation* getGeneration()
+        {
+            return _generation;
+        }
+        
+        void setGeneration(Generation* generation)
+        {
+            _generation = generation;
+            
+            setValue(prov::qualifiedGeneration, generation);
+        }
+        
+        Invalidation* getInvalidation()
+        {
+            return _invalidation;
+        }
+        
+        void setInvalidation(Invalidation* invalidation)
+        {
+            _invalidation = invalidation;
+            
+            setValue(prov::qualifiedInvalidation, invalidation);
         }
         
         list<Entity*> getGenericEntities()

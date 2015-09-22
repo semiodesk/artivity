@@ -5,6 +5,8 @@ using System.Text;
 using Xwt;
 using Xwt.Drawing;
 using ArtivityExplorer.Parsers;
+using Semiodesk.Trinity;
+using Artivity.Model;
 
 namespace ArtivityExplorer.Controls
 {
@@ -18,7 +20,7 @@ namespace ArtivityExplorer.Controls
 
         private readonly Label _stepLabel = new Label("Steps");
 
-        private readonly Label _stepCountLabel = new Label() { TextAlignment = Alignment.End, Text = "0" };
+        private readonly Label _updateCountLabel = new Label() { TextAlignment = Alignment.End, Text = "0" };
 
         private readonly Label _undoLabel = new Label("  Undos");
 
@@ -30,7 +32,7 @@ namespace ArtivityExplorer.Controls
 
         private readonly Label _confidenceLabel = new Label("Confidence");
 
-        private readonly Label _confidenceCountLabel = new Label() { TextAlignment = Alignment.End, Text = "0" };
+        private readonly Label _confidenceValueLabel = new Label() { TextAlignment = Alignment.End, Text = "0" };
 
         #endregion
 
@@ -66,10 +68,10 @@ namespace ArtivityExplorer.Controls
             Add(_sessionCountLabel, 2, 1);
 
             _stepLabel.TextColor = color;
-            _stepCountLabel.TextColor = color;
+            _updateCountLabel.TextColor = color;
 
             Add(_stepLabel, 1, 2, 1, 1, true);
-            Add(_stepCountLabel, 2, 2);
+            Add(_updateCountLabel, 2, 2);
 
             _undoLabel.TextColor = color;
             _undoCountLabel.TextColor = color;
@@ -84,11 +86,38 @@ namespace ArtivityExplorer.Controls
             Add(_redoCountLabel, 2, 4);
 
             _confidenceLabel.TextColor = color;
-            _confidenceCountLabel.TextColor = color;
+            _confidenceValueLabel.TextColor = color;
 
             Add(_confidenceLabel, 1, 5, 1, 1, true);
-            Add(_confidenceCountLabel, 2, 5);
+            Add(_confidenceValueLabel, 2, 5);
         }
+
+		public void Update(IModel model, string file)
+		{
+			ResourceQuery sessions = new ResourceQuery(art.Open);
+			ResourceQuery updates = new ResourceQuery(art.Update);
+			ResourceQuery undos = new ResourceQuery(art.Undo);
+			ResourceQuery redos = new ResourceQuery(art.Redo);
+
+			double sessionCount = model.ExecuteQuery(sessions).Count();
+			double updateCount = model.ExecuteQuery(updates).Count();
+			double undoCount = model.ExecuteQuery(undos).Count();
+			double redoCount = model.ExecuteQuery(redos).Count();
+
+			_sessionCountLabel.Text = sessionCount.ToString();
+			_updateCountLabel.Text = updateCount.ToString();
+			_undoCountLabel.Text = undoCount.ToString();
+			_redoCountLabel.Text = redoCount.ToString();
+
+			if (updateCount > 0)
+			{
+				_confidenceValueLabel.Text = Math.Round((updateCount - undoCount + redoCount) / updateCount, 2).ToString();
+			}
+			else
+			{
+				_confidenceValueLabel.Text = "0";
+			}
+		}
 
         #endregion
     }
