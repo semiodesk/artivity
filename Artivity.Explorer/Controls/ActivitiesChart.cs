@@ -29,7 +29,7 @@ namespace ArtivityExplorer.Controls
         public ActivitiesChart()
         {
 			BackgroundColor = Color.FromBytes(49, 55, 57);
-            MinHeight = 200;
+            MinHeight = 150;
             Margin = 0;
 
 			_colors.Add(OxyColor.FromRgb(237, 20, 91)); // Crimson
@@ -91,7 +91,7 @@ namespace ArtivityExplorer.Controls
 				TextColor = OxyColors.LightGray,
 				TicklineColor = OxyColors.LightGray,
 				MajorTickSize = 10,
-				MajorStep = 5,
+				MajorStep = 10,
 				MajorGridlineStyle = LineStyle.Dot,
 				MajorGridlineThickness = 1.0,
 				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66)

@@ -41,37 +41,47 @@ namespace ArtivityExplorer.Controls
             SelectionMode = SelectionMode.Multiple;
 
 			ActivityField = new DataField<Activity>();
+
             TimeField = new DataField<string>();
-            TypeField = new DataField<string>();
-			ActionField = new DataField<string>();
-			ZoomField = new DataField<string>();
 
 			TextCellView timeView = new TextCellView();
 			timeView.MarkupField = TimeField;
 
+			ListViewColumn timeColumn = new ListViewColumn ("Time", timeView);
+			timeColumn.Alignment = Alignment.End;
+
+			TypeField = new DataField<string>();
+
 			TextCellView typeView = new TextCellView();
 			typeView.MarkupField = TypeField;
+
+			ListViewColumn typeColumn = new ListViewColumn ("Event", typeView);
+			timeColumn.Alignment = Alignment.Start;
+
+			ActionField = new DataField<string>();
 
 			TextCellView actionView = new TextCellView();
 			actionView.MarkupField = ActionField;
 
+			ListViewColumn actionColumn = new ListViewColumn ("Details", actionView);
+			timeColumn.Alignment = Alignment.Start;
+
+			ZoomField = new DataField<string>();
+
 			TextCellView zoomView = new TextCellView();
 			zoomView.MarkupField = ZoomField;
 
-            Columns.Add(new ListViewColumn("Time", timeView));
-            Columns.Add(new ListViewColumn("Event", typeView));
-			Columns.Add(new ListViewColumn("Target", actionView));
-			Columns.Add(new ListViewColumn("Zoom", zoomView));
+			ListViewColumn zoomColumn = new ListViewColumn ("Zoom", zoomView);
+			timeColumn.Alignment = Alignment.End;
+
+            Columns.Add(typeColumn);
+			Columns.Add(actionColumn);
+			Columns.Add(zoomColumn);
+			Columns.Add(timeColumn);
 
 			Store = new TreeStore(ActivityField, TimeField, TypeField, ActionField, ZoomField);
 
             DataSource = Store;
-
-			foreach (ListViewColumn c in Columns)
-			{
-				c.Alignment = Alignment.Start;
-				c.CanResize = true;
-			}
         }
 
 		protected override void OnKeyReleased(KeyEventArgs args)
