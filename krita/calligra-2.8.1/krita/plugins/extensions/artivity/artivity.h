@@ -11,13 +11,16 @@
 #include <kis_action.h>
 #include <recorder/kis_recorded_action.h>
 #include <recorder/kis_action_recorder.h>
+#include <kis_view2.h>
+#include <kis_doc2.h>
+#include <kis_layer.h>
+#include <QWidget>
 
 #include <commands/kis_layer_command.h>
 
 
 class KisAction;
 class KisMacro;
-class KisView2;
 class KUrl;
 
 class ArtivityPlugin: public KisViewPlugin
@@ -34,11 +37,14 @@ private slots:
 
     void addedAction(const KisRecordedAction& action);
     void indexChanged(int idx); 
+    void Close();
 
 private:
 
     int _currentIdx;
-    artivity::ActivityLog _log;	
+    bool _active;
+    bool _holdBack;
+    artivity::ActivityLog* _log;	
     KisView2 * m_view;
     KisCanvas2* _canvas;
     KUndo2Stack* _undoStack;
@@ -47,6 +53,9 @@ private:
     KisAction* m_stopRecordingMacroAction;
 
 
+    void LogLayerAdded();
+    void LayerInformation();
+    void ImageInformation();
 };
 
 #endif // artivityPlugin_H
