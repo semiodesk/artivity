@@ -46,7 +46,7 @@ namespace ArtivityExplorer.Controls
 				LogError("Model not initialized.");
 			}
 
-			_log = new ActivitiesLog(_model);
+			_log = new ActivitiesLog();
 
             Padding = 0;
 
@@ -139,12 +139,18 @@ namespace ArtivityExplorer.Controls
 			foreach (Activity activity in activities)
 			{
 				TreeNavigator node = _log.Store.AddNode();
+
+				// Set the data context of the current row.
 				node.SetValue(_log.ActivityField, activity);
-				node.SetValue(_log.TimeField, activity.StartTime); 
+
+				// Set the formatted date time.
+				string time = "<span color=\"#475053\">" + activity.StartTime.ToString("HH:mm:ss") + "</span>";
+				node.SetValue(_log.TimeField, time); 
 
 				if (activity.GetTypes().Any())
 				{
-					node.SetValue(_log.TypeField, ToDisplayString(activity.GetTypes().First().Uri));
+					string type = "<b>" + ToDisplayString(activity.GetTypes().First().Uri) + "</b>";
+					node.SetValue(_log.TypeField, type);
 				}
 
 				if (activity.GeneratedEntities.OfType<FileDataObject>().Any())
@@ -153,7 +159,9 @@ namespace ArtivityExplorer.Controls
 
 					if (f.Generation.Viewbox != null)
 					{
-						node.SetValue(_log.ZoomField, Math.Round(f.Generation.Viewbox.ZoomFactor * 100, 0) + "%");
+						// Set the formatted zoom value.
+						string zoom = "<span color=\"#475053\">" + Math.Round(f.Generation.Viewbox.ZoomFactor * 100, 0) + "%</span>";
+						node.SetValue(_log.ZoomField, zoom);
 					}
 
 					string target = "";
@@ -170,14 +178,14 @@ namespace ArtivityExplorer.Controls
 						target += f.Generation.Value;
 					}
 
-					node.SetValue(_log.TargetField, target);
+					node.SetValue(_log.ActionField, target);
 				}
 
 				if (activity.UsedEntities.OfType<WebDataObject>().Any())
 				{
 					WebDataObject w = activity.UsedEntities.OfType<WebDataObject>().First();
 
-					node.SetValue(_log.TargetField, w.Uri.OriginalString);
+					node.SetValue(_log.ActionField, "<span color=\"#119eda\">" + w.Uri.Host + "</span>");
 				}
 
 				/* TODO: Node type not supported yet. Add to modelling.
