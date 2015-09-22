@@ -62,13 +62,14 @@ namespace Inkscape
 
     void
     ArtivityLog::notifyClearUndoEvent()
-    {       
+    {
+        // Do nothing.
     }
 
     void
     ArtivityLog::notifyClearRedoEvent()
     {
-        g_message("notifyClearRedoEvent() called");
+        // Do nothing.
     }
 
     void
@@ -93,9 +94,6 @@ namespace Inkscape
 
         activity->addAssociation(association);
         activity->setTime(&now);
-        
-        setType(activity, e);
-        //setObject(activity, e);
 
         if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
         {
@@ -115,7 +113,7 @@ namespace Inkscape
             
             _log.addResource(generation);
             
-            FileDataObject* generated = new FileDataObject("_:unset");
+            FileDataObject* generated = new FileDataObject("_:UNSET");
             //generated->addProperty(rdf::_type, prov::Collection);
             generated->addProperty(prov::generatedAtTime, activity->getTime());
             generated->setGeneration(generation);
@@ -130,7 +128,7 @@ namespace Inkscape
             
             _log.addResource(invalidation);
             
-            FileDataObject* invalidated = new FileDataObject("_:unset");
+            FileDataObject* invalidated = new FileDataObject("_:UNSET");
             //invalidated->addProperty(rdf::_type, prov::Collection);
             invalidated->addProperty(prov::invalidatedAtTime, activity->getTime());
             invalidated->setInvalidation(invalidation);
@@ -139,6 +137,9 @@ namespace Inkscape
                 
             _log.addResource(invalidated);
         }
+        
+        // setType() requires the Generation and Invalidation to be initialized.
+        setType(activity, e);
         
         _log.push_back(activity);
         _log.addResource(association);
@@ -276,21 +277,65 @@ namespace Inkscape
         }
         else if(is<Inkscape::XML::EventChgContent*>(e->event))
         {
-            /*
+            if(activity->getGeneratedEntities().empty())
+                return;
+                
+            const gchar* idc = e->event->repr->attribute("id");
+            
+            if(idc == NULL)
+            {
+                return;
+            }
+            
+            if(e->event->repr == NULL || e->event->repr->attribute("id") == NULL)
+                return;    
+
+            string id = string(e->event->repr->attribute("id"));
+        
+            if(id.size() == 0)
+                return;
+        
+            stringstream uri;
+            uri << "file://" << _doc->getURI() << "#" << id;
+                    
+            Resource* element = new Resource(uri.str().c_str());
+            element->setValue(rdf::_type, xml::Element);
+            
+            _log.addResource(element);
+            
             Inkscape::XML::EventChgContent* x = as<Inkscape::XML::EventChgContent*>(e->event);
+            
+            if(!activity->getGeneratedEntities().empty())
+            {
+                string newval = string(x->newval);
+                
+                Entity* e = *(activity->getGeneratedEntities().begin());
+                
+                FileDataObject* generated = dynamic_cast<FileDataObject*>(e);
                         
-            const char* oldval = string(x->oldval).c_str();
-            const char* newval = string(x->newval).c_str();
+                if(generated != NULL)
+                {
+                    Generation* generation = generated->getGeneration();
+                    generation->setLocation(element);
+                    generation->setValue(newval);
+                }
+            }
             
-            Resource* m = new Resource(UriGenerator::getUri());
-            m->setValue(rdf::_type, art::ContentModification);                
-            m->setValue(art::fromValue, oldval);
-            m->setValue(art::toValue, newval);
-                                            
-            activity->setValue(art::modification, *m);
-            
-            _log.addAnnotation(m);
-            */
+            if(!activity->getInvalidatedEntities().empty())
+            {
+                string oldval = string(x->oldval);
+                
+                Entity* e = *(activity->getInvalidatedEntities().begin());
+                
+                FileDataObject* invalidated = dynamic_cast<FileDataObject*>(e);
+                        
+                if(invalidated != NULL)
+                {
+                    Invalidation* invalidation = invalidated->getInvalidation();
+                    invalidation->setLocation(element);
+                    invalidation->setValue(oldval);
+                }
+            }
         }
         else if(is<Inkscape::XML::EventChgOrder*>(e->event))
         {

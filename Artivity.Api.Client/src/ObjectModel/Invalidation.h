@@ -10,31 +10,59 @@ namespace artivity
     class Invalidation : public Resource
     {
     private:
-        const Viewbox* _viewbox;
+        Viewbox* _viewbox;
+        
+        Resource* _location;
+        
+        string _value;
         
     public:
         Invalidation() : Resource(UriGenerator::getUri())
         {
-            setValue(rdf::_type, prov::Invalidation);
+            Resource::setValue(rdf::_type, prov::Invalidation);
         }
         
         Invalidation(const char* uriref) : Resource(uriref)
         {
-            setValue(rdf::_type, prov::Invalidation);
+            Resource::setValue(rdf::_type, prov::Invalidation);
         }
         
         virtual ~Invalidation() {}
         
-        const Viewbox* getViewbox()
+        Viewbox* getViewbox()
         {
             return _viewbox;
         }
         
-        void setViewbox(const Viewbox* viewbox)
+        void setViewbox(Viewbox* viewbox)
         {
             _viewbox = viewbox;
             
-            setValue(art::hadViewbox, viewbox);
+            Resource::setValue(art::hadViewbox, viewbox);
+        }
+        
+        Resource* getLocation()
+        {
+            return _location;
+        }
+        
+        void setLocation(Resource* location)
+        {
+            _location = location;
+            
+            Resource::setValue(prov::atLocation, location);
+        }
+        
+        string getValue()
+        {
+            return _value;
+        }
+        
+        void setValue(string value)
+        {
+            _value = value;
+            
+            Resource::setValue(prov::value, value);
         }
     };
 }

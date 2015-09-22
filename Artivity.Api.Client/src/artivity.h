@@ -9,6 +9,7 @@
 
 #include "Ontologies/rdf.h"
 #include "Ontologies/xsd.h"
+#include "Ontologies/xml.h"
 #include "Ontologies/prov.h"
 #include "Ontologies/nfo.h"
 #include "Ontologies/art.h"
