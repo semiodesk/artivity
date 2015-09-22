@@ -59,14 +59,15 @@ namespace ArtivityExplorer.Controls
             // Initialize the widget layout.
             HBox content = new HBox();
 			content.Spacing = 0;
+			content.PackStart(_statsPanel);
 			content.PackStart( _log, true);
-            content.PackStart(_statsPanel);
 
             VBox layout = new VBox();
             layout.Spacing = 0;
+			//layout.PackStart(new HeaderMenu());
             layout.PackStart(_chart);
             layout.PackStart(content, true);
-            layout.PackStart(_statusBar);
+            //layout.PackStart(_statusBar);
 
             Content = layout;
         }
