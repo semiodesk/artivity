@@ -139,7 +139,7 @@ namespace ArtivityExplorer.Controls
 			foreach (Activity activity in activities)
 			{
 				TreeNavigator node = _log.Store.AddNode();
-				node.SetValue(_log.UriField, activity.Uri);
+				node.SetValue(_log.ActivityField, activity);
 				node.SetValue(_log.TimeField, activity.StartTime); 
 
 				if (activity.GetTypes().Any())
@@ -151,32 +151,26 @@ namespace ArtivityExplorer.Controls
 				{
 					FileDataObject f = activity.GeneratedEntities.OfType<FileDataObject>().First();
 
-					if (f.RevisedValue != null)
-					{
-						node.SetValue(_log.ModificationToField, f.RevisedValue.ToString());
-					}
-
 					if (f.Generation.Viewbox != null)
 					{
 						node.SetValue(_log.ZoomField, Math.Round(f.Generation.Viewbox.ZoomFactor * 100, 0) + "%");
 					}
 
+					string target = "";
+
 					if (f.Generation.Location is XmlAttribute)
 					{
 						XmlAttribute a = f.Generation.Location as XmlAttribute;
 
-						node.SetValue(_log.TargetField, a.LocalName);
+						target += a.LocalName + ": ";
 					}
-				}
 
-				if (activity.InvalidatedEntities.OfType<FileDataObject>().Any())
-				{
-					FileDataObject f = activity.InvalidatedEntities.OfType<FileDataObject>().First();
-
-					if (f.RevisedValue != null)
+					if (f.Generation.Value != null)
 					{
-						node.SetValue(_log.ModificationFromField, f.RevisedValue.ToString());
+						target += f.Generation.Value;
 					}
+
+					node.SetValue(_log.TargetField, target);
 				}
 
 				if (activity.UsedEntities.OfType<WebDataObject>().Any())

@@ -71,20 +71,20 @@ namespace Inkscape
     protected:
            
         void logEvent(const artivity::Resource& type, Event* e);
- 
-        void logEvent(artivity::Activity* activity, Event* e);
         
         void setType(artivity::Activity* activity, Event* e);
+
+        void setGeneratedValue(list<artivity::Entity*> entities, string value, artivity::Resource* location);
         
-        void setObject(artivity::Activity* activity, Event* e);
+        void setInvalidatedValue(list<artivity::Entity*> entities, string value, artivity::Resource* location);
         
         void processEventQueue();
-                
-        AttributeValueMap* getChangedAttributes(string a, string b);
         
-        GByteArray* getEventPayload(Event* e);
-
-        GString* serializeEvent(Inkscape::XML::Event* event);
+        artivity::XmlElement* getXmlElement(Event* e);
+        
+        const char* getXmlElementId(Event* e);
+        
+        AttributeValueMap* getChangedAttributes(string a, string b);
     
     public:
         
