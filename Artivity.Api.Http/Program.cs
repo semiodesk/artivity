@@ -41,22 +41,22 @@ namespace Artivity.Api.Http
 
             Console.WriteLine("Artivity HTTP REST API, Version 1.1");
             Console.WriteLine();
+            Console.WriteLine("Press any key to quit.", Port);
+            Console.WriteLine();
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + Port)))
 			{
 				host.Start();
 
-				Logger.LogInfo("Listening on port {0}..", Port);
+				Logger.LogInfo("Started listening on port {0}..", Port);
 
                 using (var monitor = new FileSystemMonitor())
                 {
                     monitor.Start();
 
-                    Console.WriteLine();
-                    Console.WriteLine("Press any key to quit.", Port);
-                    Console.WriteLine();
-
                     Console.ReadLine();
+
+                    Logger.LogInfo("Stopped listening on port {0}..", Port);
 				}
 		    }
 		}
