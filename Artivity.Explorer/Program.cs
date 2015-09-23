@@ -17,8 +17,8 @@ namespace ArtivityExplorer
 			{
 				window.Title = "Artivity Explorer";
 				window.Icon = Image.FromResource("icon");
-				window.Width = 1200;
-				window.Height = 600;
+				window.Width = 1100;
+				window.Height = 700;
 				window.Show();
 
 				Application.Run();

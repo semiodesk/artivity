@@ -64,7 +64,6 @@ namespace ArtivityExplorer.Controls
 
             VBox layout = new VBox();
             layout.Spacing = 0;
-			//layout.PackStart(new HeaderMenu());
             layout.PackStart(_chart);
             layout.PackStart(content, true);
             //layout.PackStart(_statusBar);
@@ -131,32 +130,32 @@ namespace ArtivityExplorer.Controls
 				LogInfo(string.Format("Did not find any events for file: {0}", file)); return;
 			}
 
-			ResourceQuery query = new ResourceQuery();
-			query.Where(prov.startedAtTime).GreaterOrEqual(firstTime);
-			query.Where(prov.startedAtTime).LessOrEqual(lastTime);
+			ResourceQuery activity = new ResourceQuery();
+			activity.Where(prov.startedAtTime).GreaterOrEqual(firstTime);
+			activity.Where(prov.startedAtTime).LessOrEqual(lastTime);
 
-			List<Activity> activities = _model.GetResources<Activity>(query).OrderByDescending(a => a.StartTime).ToList();
+			List<Activity> activities = _model.GetResources<Activity>(activity).OrderByDescending(a => a.StartTime).ToList();
 
-			foreach (Activity activity in activities)
+			foreach (Activity a in activities)
 			{
 				TreeNavigator node = _log.Store.AddNode();
 
 				// Set the data context of the current row.
-				node.SetValue(_log.ActivityField, activity);
+				node.SetValue(_log.ActivityField, a);
 
 				// Set the formatted date time.
-				string time = "<span color=\"#475053\">" + activity.StartTime.ToString("HH:mm:ss") + "</span>";
+				string time = "<span color=\"#475053\">" + a.StartTime.ToString("HH:mm:ss") + "</span>";
 				node.SetValue(_log.TimeField, time); 
 
-				if (activity.GetTypes().Any())
+				if (a.GetTypes().Any())
 				{
-					string type = "<b>" + ToDisplayString(activity.GetTypes().First().Uri) + "</b>";
+					string type = "<b>" + ToDisplayString(a.GetTypes().First().Uri) + "</b>";
 					node.SetValue(_log.TypeField, type);
 				}
 
-				if (activity.GeneratedEntities.OfType<FileDataObject>().Any())
+				if (a.GeneratedEntities.OfType<FileDataObject>().Any())
 				{
-					FileDataObject f = activity.GeneratedEntities.OfType<FileDataObject>().First();
+					FileDataObject f = a.GeneratedEntities.OfType<FileDataObject>().First();
 
 					if (f.Generation.Viewbox != null)
 					{
@@ -169,9 +168,9 @@ namespace ArtivityExplorer.Controls
 
 					if (f.Generation.Location is XmlAttribute)
 					{
-						XmlAttribute a = f.Generation.Location as XmlAttribute;
+						XmlAttribute attribute = f.Generation.Location as XmlAttribute;
 
-						target += a.LocalName + ": ";
+						target += attribute.LocalName + ": ";
 					}
 
 					if (f.Generation.Value != null)
@@ -182,9 +181,9 @@ namespace ArtivityExplorer.Controls
 					node.SetValue(_log.ActionField, target);
 				}
 
-				if (activity.UsedEntities.OfType<WebDataObject>().Any())
+				if (a.UsedEntities.OfType<WebDataObject>().Any())
 				{
-					WebDataObject w = activity.UsedEntities.OfType<WebDataObject>().First();
+					WebDataObject w = a.UsedEntities.OfType<WebDataObject>().First();
 
 					node.SetValue(_log.ActionField, "<span color=\"#119eda\">" + w.Uri.Host + "</span>");
 				}
@@ -209,9 +208,10 @@ namespace ArtivityExplorer.Controls
 		{
 			string queryString = @"
 				PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
 				PREFIX prov: <http://www.w3.org/ns/prov#>
 
-				SELECT ?time WHERE { ?a prov:used <" + file + "> . ?a prov:startedAtTime ?time . } ORDER BY ASC(?time) LIMIT 1";
+				SELECT ?time WHERE { ?a prov:startedAtTime ?time . ?a prov:used ?f . ?f nfo:fileUrl """ + file + "\" . } ORDER BY ASC(?time) LIMIT 1";
 
 			SparqlQuery query = new SparqlQuery(queryString);
 			ISparqlQueryResult result = _model.ExecuteQuery(query);
@@ -223,9 +223,10 @@ namespace ArtivityExplorer.Controls
 		{
 			string queryString = @"
 				PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
 				PREFIX prov: <http://www.w3.org/ns/prov#>
 
-				SELECT ?time WHERE { ?a prov:used <" + file + "> . ?a prov:startedAtTime ?time . } ORDER BY DESC(?time) LIMIT 1";
+				SELECT ?time WHERE { ?a prov:startedAtTime ?time . ?a prov:used ?f . ?f nfo:fileUrl """ + file + "\" . } ORDER BY DESC(?time) LIMIT 1";
 
 			SparqlQuery query = new SparqlQuery(queryString);
 			ISparqlQueryResult result = _model.ExecuteQuery(query);
