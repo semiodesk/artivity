@@ -72,19 +72,20 @@ namespace Inkscape
     ArtivityLog::logEvent(const Resource& type, Event* e)
     {
         if(_desktop == NULL) return;
-        
-        Activity* activity = new Activity();
-        activity->setValue(rdf::_type, type);
-                
-        time_t now;
-        time(&now);
-                        
+                                
         Association* association = new Association();
         association->setAgent(_agent);
 
-        activity->addAssociation(association);
+        _log.addResource(association);
+                
+        time_t now;
+        time(&now);
+        
+        Activity* activity = new Activity();
+        activity->setValue(rdf::_type, type);
         activity->setTime(&now);
-
+        activity->addAssociation(association);
+        
         if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
         {
             Geom::Rect vbox = _desktop->get_display_area();
@@ -132,7 +133,6 @@ namespace Inkscape
         setType(activity, e);
         
         _log.push_back(activity);
-        _log.addResource(association);
         
         processEventQueue();
     }

@@ -29,11 +29,11 @@ namespace ArtivityExplorer.Controls
         public ActivitiesChart()
         {
 			BackgroundColor = Color.FromBytes(49, 55, 57);
-            MinHeight = 200;
+            MinHeight = 150;
             Margin = 0;
 
 			_colors.Add(OxyColor.FromRgb(237, 20, 91)); // Crimson
-			_colors.Add(OxyColor.FromRgb(80, 186, 226)); // Malibu
+			_colors.Add(OxyColor.FromRgb(17, 158, 218)); // Malibu
 			_colors.Add(OxyColor.FromRgb(136, 199, 68)); // Christi
 			_colors.Add(OxyColor.FromRgb(254, 194, 18)); // Moon yellow
 			_colors.Add(OxyColor.FromRgb(248, 97, 68)); // Tomato
@@ -91,7 +91,7 @@ namespace ArtivityExplorer.Controls
 				TextColor = OxyColors.LightGray,
 				TicklineColor = OxyColors.LightGray,
 				MajorTickSize = 10,
-				MajorStep = 5,
+				MajorStep = 10,
 				MajorGridlineStyle = LineStyle.Dot,
 				MajorGridlineThickness = 1.0,
 				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66)
