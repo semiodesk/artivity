@@ -61,6 +61,7 @@
     <Reference Include="Semiodesk.Trinity">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.93\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Parameters\ActivityParameters.cs" />
@@ -70,6 +71,9 @@
     <Compile Include="Parameters\AgentParameters.cs" />
     <Compile Include="Modules\ActivitiesModule.cs" />
     <Compile Include="Modules\AgentsModule.cs" />
+    <Compile Include="Helpers\FileSystemMonitor.cs" />
+    <Compile Include="Helpers\FileSystemObject.cs" />
+    <Compile Include="Helpers\Logger.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -81,5 +85,8 @@
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
       <Name>Artivity.Api.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>

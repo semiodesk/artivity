@@ -29,17 +29,19 @@ using Artivity.Model;
 using Artivity.Model.ObjectModel;
 using Artivity.Api.Http.Parameters;
 using Semiodesk.Trinity;
+using Semiodesk.Trinity.Store;
 using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Collections.Generic;
-using Nancy;
-using Nancy.ModelBinding;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Text;
 using System.IO;
+using Nancy;
 using Nancy.IO;
+using Nancy.ModelBinding;
 using VDS.RDF;
-using Semiodesk.Trinity.Store;
 
 namespace Artivity.Api.Http
 {
@@ -63,7 +65,7 @@ namespace Artivity.Api.Http
 			}
 			catch(Exception e)
 			{
-				LogError(HttpStatusCode.InternalServerError, e);
+				Logger.LogError(HttpStatusCode.InternalServerError, e);
 			}
 		}
 
@@ -100,12 +102,12 @@ namespace Artivity.Api.Http
 
 			if(model == null)
 			{
-				return LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
+				return Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
 			}
 
 			AddResources(model, ToStream(data));
 
-			return LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/", "POST", data);
+			return Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/", "POST", data);
 		}
 
 		private HttpStatusCode AddActivity(ActivityParameters p)
@@ -115,12 +117,12 @@ namespace Artivity.Api.Http
 			    || string.IsNullOrEmpty(p.url)
 			    || !Uri.IsWellFormedUriString(p.url, UriKind.Absolute))
 			{
-				return LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
+				return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
 			}
 
 			if (!IsCaptureEnabled(p))
 			{
-				return LogRequest(HttpStatusCode.Locked, "/artivity/1.0/activities/web/", "POST", "");
+				return Logger.LogRequest(HttpStatusCode.Locked, "/artivity/1.0/activities/web/", "POST", "");
 			}
 
 			IModel model = GetModel(Models.WebActivities);
@@ -139,21 +141,23 @@ namespace Artivity.Api.Http
 			view.EndTime = now;
 			view.Commit();
 
-			return LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/web/", "POST", "");
+			return Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/web/", "POST", "");
 		}
 
 		private void AddResources(IModel model, Stream stream)
 		{
 			string connectionString = "Server=localhost:1111;uid=dba;pwd=dba;Charset=utf-8";
 
-			using (TextReader reader = new StreamReader(stream))
+            using (StreamReader reader = new StreamReader(stream))
 			{
+                string data = BindUriVariables(reader.ReadToEnd());
+
 				using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
 				{
 					using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
 					{
 						IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
-						parser.Load(graph, reader);
+						parser.Load(graph, new StringReader(data));
 
 						graph.BaseUri = model.Uri;
 
@@ -162,6 +166,27 @@ namespace Artivity.Api.Http
 				}
 			}
 		}
+
+        public static string BindUriVariables(string data)
+        {
+            Regex expression = new Regex(@"<(?<var>\?\:(?<url>.+))>");
+
+            MatchCollection matches = expression.Matches(data);
+
+            if (matches.Count == 0) return data;
+
+            foreach (Match match in matches)
+            {
+                string token = match.Groups["var"].Value;
+                string url = match.Groups["url"].Value;
+
+                Uri uri = FileSystemMonitor.GetFileUri(url);
+
+                data = data.Replace(token, uri.OriginalString);
+            }
+
+            return data;
+        }
 
 		private Stream ToStream(string str)
 		{

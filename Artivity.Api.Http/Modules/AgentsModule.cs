@@ -54,7 +54,7 @@ namespace Artivity.Api.Http
 			}
 			catch(Exception e)
 			{
-				LogError(HttpStatusCode.InternalServerError, e);
+				Logger.LogError(HttpStatusCode.InternalServerError, e);
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace Artivity.Api.Http
 				agents.Add(new AgentParameters() { agent = agent.Uri.AbsoluteUri, enabled = agent.IsCaptureEnabled });
 			}
 
-			LogRequest(HttpStatusCode.OK, "/artivity/1.0/agents/status/", "GET", "");
+			Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/agents/status/", "GET", "");
 
 			return Response.AsJson(agents);
 		}
@@ -82,7 +82,7 @@ namespace Artivity.Api.Http
         {
 			if (p.agent == null)
 			{
-				LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
+				Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
 
 				// Return disabled state so that the browsers properly indicate disabled logging.
 				p.enabled = false;
@@ -103,7 +103,7 @@ namespace Artivity.Api.Http
 			// Capturing agent data is disabled by default.
 			p.enabled = agent != null ? agent.IsCaptureEnabled : false;
 
-			LogRequest(HttpStatusCode.OK, "/artivity/1.0/agents/status/ " + p.agent, "GET", "");
+			Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/agents/status/ " + p.agent, "GET", "");
 
 			return Response.AsJson(p);
         }
@@ -112,7 +112,7 @@ namespace Artivity.Api.Http
         {
 			if (p.agent == null)
 			{
-				LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
+				Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
 
 				// Return disabled state so that the browsers properly indicate disabled logging.
 				return Response.AsJson(new AgentParameters() { agent = p.agent, enabled = false });
@@ -135,7 +135,7 @@ namespace Artivity.Api.Http
 			agent.IsCaptureEnabled = Convert.ToBoolean(p.enabled);
 			agent.Commit();
 
-			LogRequest(HttpStatusCode.OK, "/artivity/1.0/agents/status/ " + p.agent, "POST", "");
+			Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/agents/status/ " + p.agent, "POST", "");
 
             // We return the request so that the plugin can set the server's enabled status.
 			return Response.AsJson(p);

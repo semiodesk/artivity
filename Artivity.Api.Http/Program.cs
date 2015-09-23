@@ -26,6 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
+using System.IO;
 using Nancy.Hosting.Self;
 
 namespace Artivity.Api.Http
@@ -38,19 +39,26 @@ namespace Artivity.Api.Http
 		{
             Artivity.Model.SemiodeskDiscovery.Discover();
 
+            Console.WriteLine("Artivity HTTP REST API, Version 1.1");
+            Console.WriteLine();
+
 			using (var host = new NancyHost(new Uri("http://localhost:" + Port)))
 			{
 				host.Start();
 
-				Console.WriteLine("Artivity HTTP REST API, Version 1.1");
-				Console.WriteLine();
-				Console.WriteLine("Listening on port {0}..", Port);
-                Console.WriteLine();
-                Console.WriteLine("Press any key to quit.", Port);
-                Console.WriteLine();
+				Logger.LogInfo("Listening on port {0}..", Port);
 
-				Console.ReadLine();
-			}
+                using (var monitor = new FileSystemMonitor())
+                {
+                    monitor.Start();
+
+                    Console.WriteLine();
+                    Console.WriteLine("Press any key to quit.", Port);
+                    Console.WriteLine();
+
+                    Console.ReadLine();
+				}
+		    }
 		}
 	}
 }
