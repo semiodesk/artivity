@@ -3,7 +3,7 @@
 
 #include <QVariant>
 #include <kis_view_plugin.h>
-#include <artivity-client/ActivityLog.h>
+#include <artivity-client/artivity.h>
 #include <kundo2stack.h>
 #include <KoShapeController.h>
 #include <kis_canvas2.h>
@@ -32,30 +32,33 @@ public:
 
 
 private slots:
-    void StartArtivity();
-    void StopArtivity();
-
-    void addedAction(const KisRecordedAction& action);
+    //void addedAction(const KisRecordedAction& action);
     void indexChanged(int idx); 
     void Close();
+
+protected:
+    //void logDrawEvent(const artivity::Resource& type, QString layer);
 
 private:
 
     int _currentIdx;
     bool _active;
     bool _holdBack;
-    artivity::ActivityLog* _log;	
+    
+    artivity::ActivityLog* _log;
+    artivity::SoftwareAgent* _agent;
+    artivity::FileDataObject* _entity;
+
     KisView2 * m_view;
     KisCanvas2* _canvas;
     KUndo2Stack* _undoStack;
-
-    KisAction* m_startRecordingMacroAction;
-    KisAction* m_stopRecordingMacroAction;
-
+    KisDoc2* _doc;
 
     void LogLayerAdded();
     void LayerInformation();
     void ImageInformation();
+    void LogEvent(const artivity::Resource& type);
+    void ProcessEventQueue();
 };
 
 #endif // artivityPlugin_H
