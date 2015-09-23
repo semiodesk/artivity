@@ -1,11 +1,3 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
 <kpartgui library="kritaartivity" version="1">
-<MenuBar>
-  <Menu name="Tools">
-    <Menu name="Artivity"><text>Artivity</text>
-      <Action name="Start_Artivity"><text>Start</text></Action>
-      <Action name="Stop_Artivity"><text>Stop</text></Action>
-    </Menu>
-  </Menu>
-</MenuBar>
 </kpartgui>
