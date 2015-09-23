@@ -55,39 +55,6 @@ namespace Artivity.Api.Http
 			}
 		}
 
-		protected HttpStatusCode LogInfo(HttpStatusCode status, string msg, params object[] p)
-		{
-			Console.WriteLine("[{0}] Info: ", status, msg, p);
-
-			return status;
-		}
-
-		protected HttpStatusCode LogRequest(HttpStatusCode status, string route, string method, string content)
-		{
-			Console.WriteLine("[{0}] {2} {1}", status, route, method);
-
-			if (!string.IsNullOrEmpty(content))
-			{
-				Console.WriteLine(content);
-			}
-
-			return status;
-		}
-
-		protected HttpStatusCode LogError(HttpStatusCode status, Exception e)
-		{
-			Console.WriteLine("[{0}] Error: {1}: {2}", status, e.GetType(), e.Message);
-
-			return status;
-		}
-
-		protected HttpStatusCode LogError(HttpStatusCode status, string msg, params object[] p)
-		{
-			Console.WriteLine("[{0}] Error: ", status, msg, p);
-
-			return status;
-		}
-
 		#endregion
 	}
 }

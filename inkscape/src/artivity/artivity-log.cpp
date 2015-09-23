@@ -159,7 +159,18 @@ namespace Inkscape
         
         if(_entity == NULL)
         {
-            _entity = new FileDataObject(uri.c_str());
+            // NOTE: We do not know the actual URI of the file data object here.
+            // Therefore we add it as a variable and let the server replace
+            // the URI with the one it knows. This is hacky, but will eventually
+            // not be necessary once the client API is being stabilized.
+            string var = "?:" + uri;
+            
+            FileDataObject* file = new FileDataObject(var.c_str());
+            file->setUrl(uri.c_str());
+            
+            _log.addResource(file);
+            
+            _entity = file;
         }
         
         ActivityLogIterator it = _log.begin();
