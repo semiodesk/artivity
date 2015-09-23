@@ -64,13 +64,18 @@ class RecordedActionSaveContext : public KisRecordedActionSaveContext
 ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
         : KisViewPlugin(parent, "kritaplugins/artivity.rc")
 {
+    // Initialization with zero
     _currentIdx = 0;
-     _log = new artivity::ActivityLog();
+    _agent = NULL;
+    _entity = NULL;
+
+    // test if plugin was loaded correctly
     if (parent->inherits("KisView2")) 
     {
         _active = TRUE;
         m_view = (KisView2*) parent;
 
+        _doc = m_view->document();
         _canvas = m_view->canvasBase();
         _undoStack = _canvas->shapeController()->resourceManager()->undoStack();
         ImageInformation();
@@ -78,61 +83,27 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
         connect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
         connect(_canvas->currentImage(), SIGNAL(sigAboutToBeDeleted()), this, SLOT(Close()));
         //connect(m_view->mainWindow(), SIGNAL(documentSaved()), this, SLOT(DocumentSaved()));
-        /*
-        // Start recording action
-        m_startRecordingMacroAction = new KisAction(koIcon("media-record"), i18n("Start"), this);
-        addAction("Start_Artivity", m_startRecordingMacroAction);
-        connect(m_startRecordingMacroAction, SIGNAL(triggered()), this, SLOT(StartArtivity()));
 
-        // Save recorded action
-        m_stopRecordingMacroAction  = new KisAction(koIcon("media-playback-stop"), i18n("Stop"), this);
-        addAction("Stop_Artivity", m_stopRecordingMacroAction);
-        connect(m_stopRecordingMacroAction, SIGNAL(triggered()), this, SLOT(StopArtivity()));
-        m_stopRecordingMacroAction->setEnabled(false);
-        */
+        _agent = new artivity::SoftwareAgent("application://krita.desktop");
+        _log = new artivity::ActivityLog();
+
+        LogEvent(artivity::art::Open);
     }
 }
 
 ArtivityPlugin::~ArtivityPlugin()
 {
-    StopArtivity();
+    //StopArtivity();
     m_view = 0;
     _undoStack = NULL;
-    delete _log;
+
+    // Cleanup
+    if( _log != NULL ) delete _log;
+    if( _agent != NULL ) delete _agent;
+    if( _entity != NULL ) delete _entity;
 }
 
 
-void ArtivityPlugin::StartArtivity()
-{
-//    connect(m_view->image()->actionRecorder(), SIGNAL(addedAction(const KisRecordedAction&)), 
-//        this, SLOT(addedAction(const KisRecordedAction&)));
-
-    //std::cout << "Starting tracking";
-    //connect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
-}
-
-void ArtivityPlugin::StopArtivity()
-{
-    disconnect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
-}
-
-void ArtivityPlugin::addedAction(const KisRecordedAction& action)
-{
-    /*std::cout << "Action: " << action.name().toUtf8().constData() << std::endl;
-    
-    QDomDocument doc;
-    QDomElement e = doc.createElement("RecordedActions");
-    RecordedActionSaveContext context;
-    action.toXML(doc, e, &context);
-    doc.appendChild(e);
-
-    //std::cout << "Content: " << doc.toString().toUtf8().constData() << std::endl;
-
-
-
-    //std::cout << action.toXML() << std::endl;
-    */
-}
 
 void ArtivityPlugin::indexChanged(int idx)
 {
@@ -167,16 +138,16 @@ void ArtivityPlugin::indexChanged(int idx)
     QString text = currentCommand->actionText();
     QString text2 = currentCommand->text();
     
-    //std::cout << "Action: " << text.toUtf8().constData() << " :: " << text2.toUtf8().constData() << std::endl;
+    std::cout << "Action: " << text.toUtf8().constData() << " :: " << text2.toUtf8().constData() << std::endl;
 
 
 
      if( dynamic_cast<const KisImageLayerAddCommand*>(currentCommand) != NULL )
      {
         LogLayerAdded();
+        LayerInformation();
      }
 
-     LayerInformation();
      //ImageInformation();
 }
 
@@ -205,6 +176,52 @@ void ArtivityPlugin::ImageInformation()
     std::cout << "Unit -> " << _canvas->unit().symbol().toUtf8().constData() << std::endl;
 }
 
+void ArtivityPlugin::LogEvent(const artivity::Resource& type)
+{
+    artivity::Activity* activity = new artivity::Activity();
+    activity->setValue(artivity::rdf::_type, type);
+
+    time_t now;
+    time(&now);
+    activity->setTime(&now);
+
+    artivity::Association* association = new artivity::Association();
+    association->setAgent(_agent);
+    _log->addResource(association);
+
+    activity->addAssociation(association);
+
+    _log->push_back(activity);
+
+    ProcessEventQueue();
+}
+
+void ArtivityPlugin::ProcessEventQueue()
+{
+    if( _log->empty() || !_log->isConnected()) return;
+
+    if( _doc->localFilePath() == NULL )
+    {
+        return;
+    }
+
+    if( _entity == NULL )
+    {
+        string uri = "file://" + string(_doc->localFilePath().toUtf8().constData());
+        _entity = new artivity::FileDataObject(uri.c_str());
+    }
+    
+    artivity::ActivityLogIterator it = _log->begin();
+    while( it != _log->end())
+    {
+        artivity::Activity* activity = *it;
+        activity->addUsedEntity(_entity);
+        it++;
+    }
+    _log->transmit();
+}
+
+
 
 void ArtivityPlugin::Close()
 {
@@ -213,6 +230,7 @@ void ArtivityPlugin::Close()
     {
         std::cout << "Discard last undo actions." << std::endl;
     }
+    LogEvent(artivity::art::Close);
     _active = FALSE;
 }
 
