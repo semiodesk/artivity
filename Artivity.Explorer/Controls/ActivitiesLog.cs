@@ -12,29 +12,22 @@ namespace ArtivityExplorer.Controls
     public class ActivitiesLog : TreeView
     {
 		#region Members
-
-		private IModel _model;
-
+		
 		public TreeStore Store { get; private set; }
 
 		public IDataField<Activity> ActivityField { get; private set; }
-		public IDataField<DateTime> TimeField { get; private set; }
+		public IDataField<string> TimeField { get; private set; }
 		public IDataField<string> TypeField { get; private set; }
-		public IDataField<string> TargetField { get; private set; }
-		public IDataField<string> ModificationTypeField { get; private set; }
-		public IDataField<string> ModificationFromField { get; private set; }
-		public IDataField<string> ModificationToField { get; private set; }
+		public IDataField<string> ActionField { get; private set; }
 		public IDataField<string> ZoomField { get; private set; }
 
 		#endregion
 
         #region Constructors
 
-        public ActivitiesLog(IModel model)
+        public ActivitiesLog()
         {
             InitializeComponent();
-
-			_model = model;
         }
 
         #endregion
@@ -48,31 +41,47 @@ namespace ArtivityExplorer.Controls
             SelectionMode = SelectionMode.Multiple;
 
 			ActivityField = new DataField<Activity>();
-            TimeField = new DataField<DateTime>();
-            TypeField = new DataField<string>();
-			TargetField = new DataField<string>();
-            ModificationTypeField = new DataField<string>();
-			ModificationFromField = new DataField<string>();
-			ModificationToField = new DataField<string>();
+
+            TimeField = new DataField<string>();
+
+			TextCellView timeView = new TextCellView();
+			timeView.MarkupField = TimeField;
+
+			ListViewColumn timeColumn = new ListViewColumn ("Time", timeView);
+			timeColumn.Alignment = Alignment.End;
+
+			TypeField = new DataField<string>();
+
+			TextCellView typeView = new TextCellView();
+			typeView.MarkupField = TypeField;
+
+			ListViewColumn typeColumn = new ListViewColumn ("Event", typeView);
+			timeColumn.Alignment = Alignment.Start;
+
+			ActionField = new DataField<string>();
+
+			TextCellView actionView = new TextCellView();
+			actionView.MarkupField = ActionField;
+
+			ListViewColumn actionColumn = new ListViewColumn ("Details", actionView);
+			timeColumn.Alignment = Alignment.Start;
+
 			ZoomField = new DataField<string>();
 
-            Columns.Add(new ListViewColumn("Time", new TextCellView(TimeField)) { Alignment = Alignment.Start });
-            Columns.Add(new ListViewColumn("Event", new TextCellView(TypeField)));
-			Columns.Add(new ListViewColumn("Target", new TextCellView(TargetField)) { CanResize = true });
-            Columns.Add(new ListViewColumn("Modification", new TextCellView(ModificationTypeField)));
-			Columns.Add(new ListViewColumn("From", new TextCellView(ModificationFromField)));
-			Columns.Add(new ListViewColumn("To", new TextCellView(ModificationToField)));
-			Columns.Add(new ListViewColumn("Zoom", new TextCellView(ZoomField)));
+			TextCellView zoomView = new TextCellView();
+			zoomView.MarkupField = ZoomField;
 
-			Store = new TreeStore(ActivityField, TimeField, TypeField, TargetField, ModificationTypeField, ModificationFromField, ModificationToField, ZoomField);
+			ListViewColumn zoomColumn = new ListViewColumn ("Zoom", zoomView);
+			timeColumn.Alignment = Alignment.End;
+
+            Columns.Add(typeColumn);
+			Columns.Add(actionColumn);
+			Columns.Add(zoomColumn);
+			Columns.Add(timeColumn);
+
+			Store = new TreeStore(ActivityField, TimeField, TypeField, ActionField, ZoomField);
 
             DataSource = Store;
-
-			foreach (ListViewColumn c in Columns)
-			{
-				c.Alignment = Alignment.Start;
-				c.CanResize = true;
-			}
         }
 
 		protected override void OnKeyReleased(KeyEventArgs args)
