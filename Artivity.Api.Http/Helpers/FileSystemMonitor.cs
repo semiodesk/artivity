@@ -33,6 +33,9 @@ namespace Artivity.Api.Http
 
             foreach (FileInfo file in GetMonitoredFiles())
             {
+                if (_monitoredFiles.ContainsKey(file.FullName))
+                    continue;
+
                 // We store an in-memory copy of the file's metadata, just in case the file gets deleted.
                 _monitoredFiles.Add(file.FullName, new FileSystemObject(file));
             }
@@ -140,20 +143,21 @@ namespace Artivity.Api.Http
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
 
-                SELECT DISTINCT ?f ?url WHERE { ?s a nfo:FileDataObject . ?s prov:specializationOf ?f . ?f nfo:fileUrl ?url . }";
+                SELECT DISTINCT ?uri ?url WHERE { ?s a nfo:FileDataObject . ?s prov:specializationOf ?uri . ?uri nfo:fileUrl ?url . }";
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = _model.ExecuteQuery(query);
 
             foreach (BindingSet binding in result.GetBindings())
             {
-                Uri uri = new Uri(binding["f"].ToString());
                 Uri url = new Uri(binding["url"].ToString());
 
-                if (!_monitoredFileUris.ContainsKey(url))
-                {
-                    _monitoredFileUris[uri] = url;
-                }
+                if (_monitoredFileUris.ContainsKey(url))
+                    continue;
+
+                Uri uri = new Uri(binding["uri"].ToString());
+
+                _monitoredFileUris[uri] = url;
 
                 yield return new FileInfo(url.AbsolutePath);
             }
