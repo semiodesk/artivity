@@ -15,8 +15,12 @@
 #include <kis_doc2.h>
 #include <kis_layer.h>
 #include <QWidget>
+#include <KoZoomController.h>
+#include <kis_selection.h>
 
-#include <commands/kis_layer_command.h>
+#include <commands/kis_layer_commands.h>
+#include <commands/kis_image_commands.h>
+#include <commands/kis_selection_commands.h>
 
 
 class KisAction;
@@ -33,8 +37,9 @@ public:
 
 private slots:
     //void addedAction(const KisRecordedAction& action);
-    void indexChanged(int idx); 
+    void indexChanged(int newIdx); 
     void Close();
+    void ZoomChanged(KoZoomMode::Mode mode, qreal zoom);
 
 protected:
     //void logDrawEvent(const artivity::Resource& type, QString layer);
@@ -44,6 +49,7 @@ private:
     int _currentIdx;
     bool _active;
     bool _holdBack;
+    qreal _zoomFactor;
     
     artivity::ActivityLog* _log;
     artivity::SoftwareAgent* _agent;
@@ -53,12 +59,20 @@ private:
     KisCanvas2* _canvas;
     KUndo2Stack* _undoStack;
     KisDoc2* _doc;
+    string uri;
+    //KisActionRecorder* _recorder;
 
     void LogLayerAdded();
-    void LayerInformation();
     void ImageInformation();
-    void LogEvent(const artivity::Resource& type);
+    void Selection();
+   
+    void LogEvent(const artivity::Resource& type, const KUndo2Command* command);
+    void LogDoEvent(const KUndo2Command* command);
+    void LogUndoEvent(const KUndo2Command* command);
+    void LogRedoEvent(const KUndo2Command* command);
+    void LogModifyingEvent(artivity::Activity* activity, const KUndo2Command* command);
     void ProcessEventQueue();
+
 };
 
 #endif // artivityPlugin_H
