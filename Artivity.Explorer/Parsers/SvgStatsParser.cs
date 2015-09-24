@@ -16,23 +16,30 @@ namespace ArtivityExplorer.Parsers
         {
             if (!File.Exists(filename)) return null;
 
-            SvgStats stats = new SvgStats();
+            try
+            {
+                SvgStats stats = new SvgStats();
 
-			XmlDocument document = new XmlDocument();
-			document.Load(filename);
+    			XmlDocument document = new XmlDocument();
+    			document.Load(filename);
 
-			HashSet<string> ignore = new HashSet<string>() { "svg", "metadata", "namedview" };
+    			HashSet<string> ignore = new HashSet<string>() { "svg", "metadata", "namedview" };
 
-			foreach (XmlElement e in document.SelectNodes("//*"))
-			{
-				if (ignore.Contains(e.LocalName)) continue;
+    			foreach (XmlElement e in document.SelectNodes("//*"))
+    			{
+    				if (ignore.Contains(e.LocalName)) continue;
 
-				TryParseElement(stats, e);
-			}
+    				TryParseElement(stats, e);
+    			}
 
-            stats.SortColours();
+                stats.SortColours();
 
-            return stats;
+                return stats;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
 		private static void TryParseElement(SvgStats stats, XmlElement e)

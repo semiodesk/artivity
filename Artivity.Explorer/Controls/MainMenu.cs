@@ -41,6 +41,9 @@ namespace ArtivityExplorer.Controls
             MenuItem exportItem = new MenuItem(ExportCommand);
             exportItem.Clicked += OnExportClicked;
 
+            MenuItem preferencesItem = new MenuItem(PreferencesCommand);
+            preferencesItem.Clicked += OnPreferencesClicked;
+
             MenuItem quitItem = new MenuItem(QuitCommand);
             quitItem.Clicked += OnQuitClicked;
 
@@ -49,18 +52,11 @@ namespace ArtivityExplorer.Controls
             fileMenu.SubMenu.Items.Add(openItem);
             fileMenu.SubMenu.Items.Add(exportItem);
             fileMenu.SubMenu.Items.Add(new SeparatorMenuItem());
+            fileMenu.SubMenu.Items.Add(preferencesItem);
+            fileMenu.SubMenu.Items.Add(new SeparatorMenuItem());
             fileMenu.SubMenu.Items.Add(quitItem);
 
             Items.Add(fileMenu);
-
-			MenuItem preferencesItem = new MenuItem(PreferencesCommand);
-			preferencesItem.Clicked += OnPreferencesClicked;
-
-			MenuItem editMenu = new MenuItem("Edit");
-			editMenu.SubMenu = new Menu();
-			editMenu.SubMenu.Items.Add(preferencesItem);
-
-			Items.Add(editMenu);
 
             MenuItem aboutItem = new MenuItem();
             aboutItem.Clicked += OnAboutClicked;
@@ -75,7 +71,7 @@ namespace ArtivityExplorer.Controls
         private void OnOpenClicked(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filters.Add(new FileDialogFilter("All Files", "*.*"));
+            dialog.Filters.Add(new FileDialogFilter("All files", "*.*"));
             
             if(dialog.Run())
             {
@@ -85,7 +81,16 @@ namespace ArtivityExplorer.Controls
 
         private void OnExportClicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filters.Add(new FileDialogFilter("RDF/XML", "*.rdf"));
+
+            if (dialog.Run())
+            {
+                string file = dialog.FileName;
+
+                ExportDialog export = new ExportDialog(file);
+                export.Run();
+            }
         }
 
         private void OnQuitClicked(object sender, EventArgs e)
@@ -95,6 +100,8 @@ namespace ArtivityExplorer.Controls
 
 		private void OnPreferencesClicked(object sender, EventArgs e)
 		{
+            SettingsDialog dialog = new SettingsDialog();
+            dialog.Show();
 		}
 
         private void OnAboutClicked(object sender, EventArgs e)
