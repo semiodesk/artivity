@@ -96,15 +96,20 @@ namespace Artivity.Api.Http
 
 		private HttpStatusCode AddActivity(string data)
 		{
-			IModel model = GetModel(Models.Activities);
-
-			if(model == null)
+			try
 			{
-				return LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
+				IModel model = GetModel(Models.Activities);
+
+				if(model == null)
+				{
+					return LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
+				}
+
+				AddResources(model, ToStream(data));
+			}catch(Exception) 
+			{
+				//TODO Log error
 			}
-
-			AddResources(model, ToStream(data));
-
 			return LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/", "POST", data);
 		}
 

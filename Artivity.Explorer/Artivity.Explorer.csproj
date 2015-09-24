@@ -50,7 +50,6 @@
     <Compile Include="Parsers\SvgStats.cs" />
     <Compile Include="Parsers\SvgStatsParser.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Controls\HeaderMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -49,6 +49,7 @@
 #include <QApplication>
 #include <QFileDialog>
 
+using namespace artivity;
 K_PLUGIN_FACTORY(ArtivityPluginFactory, registerPlugin<ArtivityPlugin>();)
 K_EXPORT_PLUGIN(ArtivityPluginFactory("krita"))
 
@@ -64,8 +65,7 @@ class RecordedActionSaveContext : public KisRecordedActionSaveContext
 ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
         : KisViewPlugin(parent, "kritaplugins/artivity.rc")
 {
-    // Initialization with zero
-    _currentIdx = 0;
+    _currentIdx = 1;
     _agent = NULL;
     _entity = NULL;
 
@@ -82,12 +82,16 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
 
         connect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
         connect(_canvas->currentImage(), SIGNAL(sigAboutToBeDeleted()), this, SLOT(Close()));
+        connect(m_view->zoomController(), SIGNAL(zoomChanged(KoZoomMode::Mode, qreal)), this, SLOT(ZoomChanged(KoZoomMode::Mode, qreal)));
         //connect(m_view->mainWindow(), SIGNAL(documentSaved()), this, SLOT(DocumentSaved()));
+        //connect(_recorder, SIGNAL(addedAction(const KisRecordedAction&)), this, SLOT(AddAction(const
+        //KisRecordedAction&)));
 
         _agent = new artivity::SoftwareAgent("application://krita.desktop");
         _log = new artivity::ActivityLog();
 
-        LogEvent(artivity::art::Open);
+        LogEvent(artivity::art::Open, NULL);
+        ProcessEventQueue();
     }
 }
 
@@ -105,63 +109,103 @@ ArtivityPlugin::~ArtivityPlugin()
 
 
 
-void ArtivityPlugin::indexChanged(int idx)
+void ArtivityPlugin::indexChanged(int newIdx)
 {
     if( _undoStack == NULL || _active == FALSE || !_undoStack->isActive() )
         return; 
 
-    if( _undoStack->isClean() )
-    {
-        // Hold back undo changes until we get another change or a save
-        _holdBack = TRUE;
-        return;
-    }
+    std::cout << "Index: " << newIdx << " Current idx: " << _currentIdx << std::endl;
 
-    if( idx == _currentIdx )
-    {
-        std::cout << "Do " << std::endl;
-    }
-    else if( idx < _currentIdx )
-    {
-        std::cout << "Undo " << _currentIdx - idx << " events" << std::endl;
-    }else if( idx < _undoStack->count() )
-    {
-        std::cout << "Redo " << idx - _currentIdx << " events" << std::endl;
-    }
-    const KUndo2Command* currentCommand = _undoStack->command(idx-1);
+
+    const KUndo2Command* currentCommand = _undoStack->command(newIdx-1);
 
     if( currentCommand == NULL )
         return;
 
+    if( newIdx < _currentIdx )
+    {
+        int undoneEvents =  _currentIdx - newIdx;
+        
+        std::cout << "Undo " << undoneEvents << " events" << std::endl;
 
-    _currentIdx = idx;
-    QString text = currentCommand->actionText();
-    QString text2 = currentCommand->text();
+        int toUndo = 0;
+        while(toUndo < undoneEvents )
+        {
+            currentCommand = _undoStack->command(_currentIdx - toUndo -1);
+            LogUndoEvent(currentCommand);
+            toUndo += 1; 
+        }
+        
+    }else if( newIdx < _undoStack->count() )
+    {
+        std::cout << "Redo " << newIdx - _currentIdx << " events" << std::endl;
+    }else
+    {
+        LogDoEvent(currentCommand);
+    }
+
+
+    _currentIdx = newIdx;
     
-    std::cout << "Action: " << text.toUtf8().constData() << " :: " << text2.toUtf8().constData() << std::endl;
+    if( dynamic_cast<const KisImageLayerAddCommand*>(currentCommand) != NULL )
+    {
+      LogLayerAdded();
+    }else if( dynamic_cast<const KisImageLayerRemoveCommand*>(currentCommand) != NULL )
+    {
 
+        std::cout << "Layer remove" << std::endl;
+    }
+    else if( dynamic_cast<const KisImageLayerMoveCommand*>(currentCommand) != NULL )
+    {
+        std::cout << "Layer move" << std::endl;
+    }
+    
+    //ImageInformation();
+    if( _undoStack->isClean() )
+    {
+        // Hold back undo changes until we get another change or a save
+        std::cout << "Holding back..." << std::endl;
+        _holdBack = TRUE;
+        return;
+    }
 
+    ProcessEventQueue();
 
-     if( dynamic_cast<const KisImageLayerAddCommand*>(currentCommand) != NULL )
-     {
-        LogLayerAdded();
-        LayerInformation();
-     }
-
-     //ImageInformation();
 }
 
+void ArtivityPlugin::LogDoEvent(const KUndo2Command* command)
+{
+    QString text = command->actionText();
+    std::cout << "Do " << text.toUtf8().constData() << std::endl;
+    LogEvent(art::Update, command);
+}
+
+void ArtivityPlugin::LogUndoEvent(const KUndo2Command* command)
+{
+    QString text = command->actionText();
+    std::cout << "Undo: " << text.toUtf8().constData() << std::endl;
+    LogEvent(art::Undo, command);
+}
+
+void ArtivityPlugin::LogRedoEvent(const KUndo2Command* command)
+{
+    QString text = command->actionText();
+    std::cout << "Redo: " << text.toUtf8().constData() << std::endl;
+    LogEvent(art::Redo, command);
+}
+
+void ArtivityPlugin::ZoomChanged(KoZoomMode::Mode mode, qreal zoom)
+{
+    //std::cout << "Zoom: " << zoom << std::endl;
+    _zoomFactor = zoom;
+}
 
 void ArtivityPlugin::LogLayerAdded()
 {
-    std::cout << "Layer Add command" << std::endl;
+    KisLayerSP layer = m_view->activeLayer();
+    std::cout << "Layer added: "<< layer->name().toUtf8().constData()  << std::endl;
 }
 
-void ArtivityPlugin::LayerInformation()
-{
-    KisLayerSP layer = m_view->activeLayer();
-    std::cout << "Layer name " << layer->name().toUtf8().constData() << std::endl;
-}
 
 void ArtivityPlugin::ImageInformation()
 {
@@ -176,7 +220,12 @@ void ArtivityPlugin::ImageInformation()
     std::cout << "Unit -> " << _canvas->unit().symbol().toUtf8().constData() << std::endl;
 }
 
-void ArtivityPlugin::LogEvent(const artivity::Resource& type)
+void ArtivityPlugin::Selection()
+{
+    KisSelectionSP sel = m_view->selection();
+}
+
+void ArtivityPlugin::LogEvent(const Resource& type, const KUndo2Command* command)
 {
     artivity::Activity* activity = new artivity::Activity();
     activity->setValue(artivity::rdf::_type, type);
@@ -190,10 +239,52 @@ void ArtivityPlugin::LogEvent(const artivity::Resource& type)
     _log->addResource(association);
 
     activity->addAssociation(association);
+    
+    if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
+    {
+        LogModifyingEvent(activity, command);
+    }
 
     _log->push_back(activity);
+}
 
-    ProcessEventQueue();
+void ArtivityPlugin::LogModifyingEvent(artivity::Activity* activity, const KUndo2Command* command)
+{
+    
+    Viewbox* viewbox = new Viewbox();
+    viewbox->setZoomFactor(_zoomFactor);
+
+    _log->addResource(viewbox);
+    
+    Generation* generation = new Generation();
+    generation->setViewbox(viewbox);
+    
+    _log->addResource(generation);
+    
+    FileDataObject* generated = new FileDataObject("_:UNSET");
+    //generated->addProperty(rdf::_type, prov::Collection);
+    generated->addProperty(prov::generatedAtTime, activity->getTime());
+    generated->setGeneration(generation);
+    generated->setLastModificationTime(activity->getTime());
+
+    activity->addGeneratedEntity(generated);
+
+    _log->addResource(generated);
+
+    Invalidation* invalidation = new Invalidation();
+    invalidation->setViewbox(viewbox);
+
+    _log->addResource(invalidation);
+
+    FileDataObject* invalidated = new FileDataObject("_:UNSET");
+    //invalidated->addProperty(rdf::_type, prov::Collection);
+    invalidated->addProperty(prov::invalidatedAtTime,
+    activity->getTime());
+    invalidated->setInvalidation(invalidation);
+
+    activity->addInvalidatedEntity(invalidated);
+
+    _log->addResource(invalidated);
 }
 
 void ArtivityPlugin::ProcessEventQueue()
@@ -207,7 +298,7 @@ void ArtivityPlugin::ProcessEventQueue()
 
     if( _entity == NULL )
     {
-        string uri = "file://" + string(_doc->localFilePath().toUtf8().constData());
+        uri = "file://" + string(_doc->localFilePath().toUtf8().constData());
         _entity = new artivity::FileDataObject(uri.c_str());
     }
     
@@ -216,6 +307,40 @@ void ArtivityPlugin::ProcessEventQueue()
     {
         artivity::Activity* activity = *it;
         activity->addUsedEntity(_entity);
+
+        if( activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
+        {
+            if(!activity->getGeneratedEntities().empty())
+            {
+                Entity* e = *(activity->getGeneratedEntities().begin());
+                FileDataObject* generated = dynamic_cast<FileDataObject*>(e);
+
+                if( generated != NULL )
+                {
+                    stringstream generatedUri;
+                    generatedUri << uri << "#" << UriGenerator::getRandomId(10);
+                    generated->setUri(generatedUri.str());
+                    generated->setUrl(uri.c_str());
+                    generated->addGenericEntity(_entity);
+                }
+            }
+
+            if(!activity->getInvalidatedEntities().empty())
+            {
+                Entity* e = *(activity->getInvalidatedEntities().begin());
+                FileDataObject* invalidated = dynamic_cast<FileDataObject*>(e);
+
+                if( invalidated != NULL )
+                {
+                    stringstream invalidatedUri;
+                    invalidatedUri << uri << "#" << UriGenerator::getRandomId(10);
+
+                    invalidated->setUri(invalidatedUri.str());
+                    invalidated->setUri(uri.c_str());
+                    invalidated->addGenericEntity(_entity);
+                }
+            }
+        }
         it++;
     }
     _log->transmit();
@@ -230,7 +355,8 @@ void ArtivityPlugin::Close()
     {
         std::cout << "Discard last undo actions." << std::endl;
     }
-    LogEvent(artivity::art::Close);
+    LogEvent(artivity::art::Close, NULL);
+    ProcessEventQueue();
     _active = FALSE;
 }
 

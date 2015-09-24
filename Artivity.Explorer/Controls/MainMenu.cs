@@ -75,7 +75,7 @@ namespace ArtivityExplorer.Controls
         private void OnOpenClicked(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filters.Add(new FileDialogFilter("Scalable Vector Graphics (.svg)", "*.svg"));
+            dialog.Filters.Add(new FileDialogFilter("All Files", "*.*"));
             
             if(dialog.Run())
             {
