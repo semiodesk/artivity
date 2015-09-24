@@ -64,6 +64,7 @@ namespace ArtivityExplorer.Controls
 
             VBox layout = new VBox();
             layout.Spacing = 0;
+            layout.PackStart(new HeaderMenu(this));
             layout.PackStart(_chart);
             layout.PackStart(content, true);
             //layout.PackStart(_statusBar);
@@ -98,12 +99,15 @@ namespace ArtivityExplorer.Controls
 			_model = activities;
 		}
 
-        private void HandleFileSelected(object sender, FileSelectionEventArgs e)
+        public void HandleFileSelected(object sender, FileSelectionEventArgs e)
         {
             SvgStats stats = SvgStatsParser.TryParse(e.FileName);
 
-            _statsPanel.CompositionWidget.Update(stats);
-            _statsPanel.ColourWidget.Update(stats);
+            if (stats != null)
+            {
+                _statsPanel.CompositionWidget.Update(stats);
+                _statsPanel.ColourWidget.Update(stats);
+            }
 
             _statusBar.Update(e.FileName);
 

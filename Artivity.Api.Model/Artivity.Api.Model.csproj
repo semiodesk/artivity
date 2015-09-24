@@ -78,6 +78,7 @@
     <None Include="Ontologies\nfo.rdf" />
     <None Include="Ontologies\xml.rdf" />
     <None Include="Ontologies\nie.rdf" />
+    <None Include="Ontologies\foaf.rdf" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

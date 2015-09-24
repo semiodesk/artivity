@@ -50,6 +50,12 @@
     <Compile Include="Parsers\SvgStats.cs" />
     <Compile Include="Parsers\SvgStatsParser.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Controls\SettingsDialog.cs" />
+    <Compile Include="Controls\Widgets\UserSettingsWidget.cs" />
+    <Compile Include="Controls\Widgets\UserButton.cs" />
+    <Compile Include="Controls\HeaderMenu.cs" />
+    <Compile Include="Controls\Widgets\FileButton.cs" />
+    <Compile Include="Controls\ExportDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -57,6 +63,12 @@
       <LogicalName>colour</LogicalName>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\User.png">
+      <LogicalName>user</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Picture.png">
+      <LogicalName>picture</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xwt.Gtk">

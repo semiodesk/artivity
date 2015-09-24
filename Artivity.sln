@@ -55,7 +55,7 @@ Global
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Artivity.Api.Http\Artivity.Api.Http.csproj
+		StartupItem = Artivity.Explorer\Artivity.Explorer.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

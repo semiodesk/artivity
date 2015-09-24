@@ -49,6 +49,7 @@ namespace ArtivityExplorer.Controls
 
 			ListViewColumn timeColumn = new ListViewColumn ("Time", timeView);
 			timeColumn.Alignment = Alignment.End;
+            timeColumn.CanResize = true;
 
 			TypeField = new DataField<string>();
 
@@ -56,7 +57,8 @@ namespace ArtivityExplorer.Controls
 			typeView.MarkupField = TypeField;
 
 			ListViewColumn typeColumn = new ListViewColumn ("Event", typeView);
-			timeColumn.Alignment = Alignment.Start;
+			typeColumn.Alignment = Alignment.Start;
+            typeColumn.CanResize = true;
 
 			ActionField = new DataField<string>();
 
@@ -64,7 +66,8 @@ namespace ArtivityExplorer.Controls
 			actionView.MarkupField = ActionField;
 
 			ListViewColumn actionColumn = new ListViewColumn ("Details", actionView);
-			timeColumn.Alignment = Alignment.Start;
+            actionColumn.Alignment = Alignment.Start;
+            actionColumn.CanResize = true;
 
 			ZoomField = new DataField<string>();
 
@@ -72,7 +75,8 @@ namespace ArtivityExplorer.Controls
 			zoomView.MarkupField = ZoomField;
 
 			ListViewColumn zoomColumn = new ListViewColumn ("Zoom", zoomView);
-			timeColumn.Alignment = Alignment.End;
+			zoomColumn.Alignment = Alignment.End;
+            zoomColumn.CanResize = true;
 
             Columns.Add(typeColumn);
 			Columns.Add(actionColumn);

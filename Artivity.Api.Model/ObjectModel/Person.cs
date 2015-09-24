@@ -39,9 +39,17 @@ namespace Artivity.Model.ObjectModel
     {
 		#region Members
 
-		string GivenName { get; set; }
+        [RdfProperty(FOAF.name)]
+		public string Name { get; set; }
 
-		string EmailAddress { get; set; }
+        [RdfProperty(FOAF.description)] // TODO: Implement properly.
+        public string Organization { get; set; }
+
+        [RdfProperty(FOAF.mbox)]
+        public string EmailAddress { get; set; }
+
+        [RdfProperty(FOAF.img)]
+        public string Photo { get; set; }
 
 		#endregion
 
