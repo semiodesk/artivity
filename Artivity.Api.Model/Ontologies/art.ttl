@@ -55,8 +55,16 @@ art:View a rdfs:Class ;
 art:Viewbox a rdfs:Class ;
     rdfs:label "Viewbox" .
     
+art:Layer a rdfs:Class ;
+    rdfs:label "Layer" .
+    
 art:Modification a rdfs:Class ;
     rdfs:label "Modification" .
+    
+art:selectedLayer a rdf:Property ;
+	rdfs:label "selectedLayer" ;
+	rdfs:domain prov:Activity ;
+	rdfs:range xsd:string .
     
 art:hadViewbox a rdf:Property ;
     rdfs:label "hadViewbox" ;

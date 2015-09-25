@@ -72,6 +72,7 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
         : KisViewPlugin(parent, "kritaplugins/artivity.rc")
 {
     _currentIdx = 1;
+    _lastStackSize = 0;
     _agent = NULL;
     _entity = NULL;
 
@@ -120,13 +121,21 @@ void ArtivityPlugin::indexChanged(int newIdx)
     if( _undoStack == NULL || _active == FALSE || !_undoStack->isActive() )
         return; 
 
-    std::cout << "Index: " << newIdx << " Current idx: " << _currentIdx << std::endl;
+    std::cout << "Index: " << newIdx << " Current idx: " << _currentIdx << " Stack size: " << _undoStack->count() <<
+    "Last Stack size: " << _lastStackSize << std::endl;
 
 
     const KUndo2Command* currentCommand = _undoStack->command(newIdx-1);
 
     if( currentCommand == NULL )
         return;
+
+    if( _lastStackSize > 0 && _undoStack->count() == 0 )
+    {
+        std::cout << "Final clear of stack... not logging." << std::endl;
+        // Stack was emptied, do not log undos...
+        return;
+    }
 
     if( newIdx < _currentIdx )
     {
@@ -142,39 +151,22 @@ void ArtivityPlugin::indexChanged(int newIdx)
             toUndo += 1; 
         }
         
-    }else if( newIdx < _undoStack->count() )
+    }else if( newIdx <= _undoStack->count() && _lastStackSize == _undoStack->count())
     {
         std::cout << "Redo " << newIdx - _currentIdx << " events" << std::endl;
+        LogRedoEvent(currentCommand);
     }else
     {
         LogDoEvent(currentCommand);
     }
 
+    
 
     _currentIdx = newIdx;
-    
-    if( dynamic_cast<const KisImageLayerAddCommand*>(currentCommand) != NULL )
-    {
-      LogLayerAdded();
-    }else if( dynamic_cast<const KisImageLayerRemoveCommand*>(currentCommand) != NULL )
-    {
+    _lastStackSize = _undoStack->count();
 
-        std::cout << "Layer remove" << std::endl;
-    }
-    else if( dynamic_cast<const KisImageLayerMoveCommand*>(currentCommand) != NULL )
-    {
-        std::cout << "Layer move" << std::endl;
-    }
-    
-    //ImageInformation();
-    if( _undoStack->isClean() )
-    {
-        // Hold back undo changes until we get another change or a save
-        std::cout << "Holding back..." << std::endl;
-        _holdBack = TRUE;
-        return;
-    }
-
+  
+   
     ProcessEventQueue();
 
 }
@@ -250,7 +242,8 @@ void ArtivityPlugin::LogEvent(const Resource& type, const KUndo2Command* command
     {
         LogModifyingEvent(activity, command);
     }
-
+    
+   
     _log->push_back(activity);
 }
 
@@ -291,6 +284,40 @@ void ArtivityPlugin::LogModifyingEvent(artivity::Activity* activity, const KUndo
     activity->addInvalidatedEntity(invalidated);
 
     _log->addResource(invalidated);
+
+    LogActivityInformation(activity, command);
+}
+
+void ArtivityPlugin::LogActivityInformation(artivity::Activity* activity, const KUndo2Command* command)
+{
+
+    // Adding title
+    activity->setValue(dces::title, command->actionText().toUtf8().constData());
+
+    // Adding current layer
+    KisLayerSP layer = m_view->activeLayer();
+    activity->setValue(art::selectedLayer, layer->name().toUtf8().constData());
+
+
+
+/*
+    if(activity->hasProperty(rdf::_type, art::Undo) || activity->hasProperty(rdf::_type, art::Redo))
+        return;
+
+
+    if( dynamic_cast<const KisImageLayerAddCommand*>(currentCommand) != NULL )
+    {
+        activity->setValue(rdf::_type, art::Add);
+
+    }else if( dynamic_cast<const KisImageLayerRemoveCommand*>(currentCommand) != NULL )
+    {
+        activity->setValue(rdf::_type, art::Delete);
+    }
+    else if( dynamic_cast<const KisImageLayerMoveCommand*>(currentCommand) != NULL )
+    {
+        std::cout << "Layer move" << std::endl;
+    }
+*/
 }
 
 void ArtivityPlugin::ProcessEventQueue()
@@ -337,7 +364,6 @@ void ArtivityPlugin::ProcessEventQueue()
                     stringstream generatedUri;
                     string id = UriGenerator::getRandomId(10);
                     generatedUri << uri << "#" << id ;
-                    std::cout << id << std::endl;
                     generated->setUri(generatedUri.str());
                     generated->setUrl(uri.c_str());
                     generated->addGenericEntity(_entity);
@@ -354,7 +380,6 @@ void ArtivityPlugin::ProcessEventQueue()
                     stringstream invalidatedUri;
                     string id = UriGenerator::getRandomId(10);
                     invalidatedUri << uri << "#" << id;
-                    std::cout << id << std::endl;
 
                     invalidated->setUri(invalidatedUri.str());
                     invalidated->setUrl(uri.c_str());

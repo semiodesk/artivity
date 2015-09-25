@@ -45,4 +45,5 @@ nobase_pkginclude_HEADERS = artivity.h \
     Ontologies/xml.h \
     Ontologies/art.h \
     Ontologies/svg.h \
-    Ontologies/nfo.h
+    Ontologies/nfo.h \
+    Ontologies/dces.h

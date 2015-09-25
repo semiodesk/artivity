@@ -79,6 +79,7 @@
     <None Include="Ontologies\xml.rdf" />
     <None Include="Ontologies\nie.rdf" />
     <None Include="Ontologies\foaf.rdf" />
+    <None Include="Ontologies\dcelements.ttl" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
