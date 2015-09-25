@@ -1,3 +1,26 @@
+/*
+ * Authors:
+ * Moritz Eberl <moritz@semiodesk.com>
+ * Sebastian Faubel <sebastian@semiodesk.com>
+ *
+ * Copyright (c) 2015 Semiodesk GmbH
+ *
+ * Released under GNU GPL, see the file 'COPYING' for more information
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation; version 2 of the License.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
 #ifndef _ARTIVITY_H_
 #define _ARTIVITY_H_
 
@@ -59,7 +82,6 @@ private:
     KisCanvas2* _canvas;
     KUndo2Stack* _undoStack;
     KisDoc2* _doc;
-    string uri;
     //KisActionRecorder* _recorder;
 
     void LogLayerAdded();
