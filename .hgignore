@@ -33,3 +33,6 @@ packages/*
 */po/*
 *.a
 *.la
+*.tar.gz
+*/bin/*
+.codelite/*
