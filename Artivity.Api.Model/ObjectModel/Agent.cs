@@ -49,5 +49,14 @@ namespace Artivity.Model.ObjectModel
 		public Agent(Uri uri) : base(uri) {}
 
         #endregion
+
+        #region Methods
+
+        public override int GetHashCode()
+        {
+            return Uri.GetHashCode();
+        }
+
+        #endregion
     }
 }

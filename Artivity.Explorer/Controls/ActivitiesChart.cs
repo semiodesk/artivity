@@ -18,9 +18,25 @@ namespace ArtivityExplorer.Controls
     {
 		#region Members
 
-		private List<OxyColor> _colors = new List<OxyColor>();
+        private Dictionary<Agent, OxyColor> _palette = new Dictionary<Agent, OxyColor>()
+        {
+            { new Agent(new Uri("application://inkscape.desktop/")), OxyColor.FromRgb(237, 20, 91) },
+            { new Agent(new Uri("application://krita.desktop/")), OxyColor.FromRgb(136, 199, 68) },
+            { new Agent(new Uri("application://chromium-browser.desktop/")), OxyColor.FromRgb(17, 158, 218) },
+            { new Agent(new Uri("application://firefox-browser.desktop/")), OxyColor.FromRgb(17, 158, 218) },
+        };
 
-		private int _currentColor = 0;
+        private Dictionary<Agent, LineSeries> _series = new Dictionary<Agent, LineSeries>();
+
+		private Dictionary<Agent, Annotation> _annotations = new Dictionary<Agent, Annotation>();
+
+		private Dictionary<Agent, DateTime> _previous = new Dictionary<Agent, DateTime>();
+
+        private Axis _x;
+
+        private Axis _y;
+
+        private double _maxY;
 
 		#endregion
 
@@ -32,116 +48,185 @@ namespace ArtivityExplorer.Controls
             MinHeight = 150;
             Margin = 0;
 
-			_colors.Add(OxyColor.FromRgb(237, 20, 91)); // Crimson
-			_colors.Add(OxyColor.FromRgb(17, 158, 218)); // Malibu
-			_colors.Add(OxyColor.FromRgb(136, 199, 68)); // Christi
-			_colors.Add(OxyColor.FromRgb(254, 194, 18)); // Moon yellow
-			_colors.Add(OxyColor.FromRgb(248, 97, 68)); // Tomato
-			_colors.Add(OxyColor.FromRgb(128, 57, 122)); // Seance
+            Reset();
         }
 
         #endregion
 
         #region Methods
 
-		public void Update(IEnumerable<Activity> activities)
-		{
-			_currentColor = 0;
-		
-			double max = 1;
+        public void Reset()
+        {
+            Clear();
 
-			Dictionary<Uri, List<Activity>> agents = new Dictionary<Uri, List<Activity>>();
+            _series.Clear();
+			_annotations.Clear();
+			_previous.Clear();
 
-			foreach (Activity activity in activities)
+			_maxY = 1;
+
+            _x = new DateTimeAxis()
+            {
+                Minimum = 0,
+                Position = AxisPosition.Bottom,
+                FontSize = 9,
+                TextColor = OxyColors.LightGray,
+                TicklineColor = OxyColors.LightGray,
+                IntervalType = DateTimeIntervalType.Days,
+                MajorGridlineColor = OxyColor.FromRgb(66, 66, 66),
+                MinorTickSize = 60,
+                MinorIntervalType = DateTimeIntervalType.Minutes,
+                StringFormat = "HH:mm",
+                IsZoomEnabled = true,
+                IsPanEnabled = true
+            };
+
+            _y = new LinearAxis()
+            {
+                Position = AxisPosition.Left,
+                FontSize = 9,
+                TextColor = OxyColors.LightGray,
+                TicklineColor = OxyColors.LightGray,
+				Maximum = 30,
+                MajorTickSize = 10,
+                MajorStep = 10,
+                MajorGridlineStyle = LineStyle.Dot,
+                MajorGridlineThickness = 1,
+                MajorGridlineColor = OxyColor.FromRgb(66, 66, 66),
+                IsZoomEnabled = false,
+                IsPanEnabled = false
+            };
+
+            Model = new PlotModel();
+            Model.Title = "ACTIVITIES / MIN";
+            Model.TitleFontSize = 9;
+            Model.TitleFontWeight = 0.5;
+            Model.TitleColor = OxyColors.White;
+            Model.PlotAreaBorderColor = OxyColor.FromRgb(88, 88, 88);
+            Model.PlotAreaBorderThickness = new OxyThickness(0, 0, 0, 1);
+            Model.LegendOrientation = LegendOrientation.Horizontal;
+            Model.LegendPlacement = LegendPlacement.Outside;
+            Model.LegendPosition = LegendPosition.BottomCenter;
+            Model.LegendBackground = OxyColors.Transparent;
+            Model.LegendBorder = OxyColors.Transparent;
+            Model.LegendMargin = 0;
+            Model.LegendFontSize = 9;
+            Model.LegendTextColor = OxyColors.LightGray;
+            Model.Axes.Add(_x);
+            Model.Axes.Add(_y);
+        }
+
+        public void Add(Activity activity)
+        {
+            Agent agent = activity.Associations.Select(a => a.Agent).FirstOrDefault();
+
+			if (agent == null) return;
+            
+			DateTime current = activity.StartTime.RoundToMinute();
+
+			if (!_series.ContainsKey(agent))
+            {
+				LineSeries series = CreateSeries(agent);
+
+				series.Points.Add(DateTimeAxis.CreateDataPoint(current.Add(TimeSpan.FromMinutes(1)), 0));
+				series.Points.Add(DateTimeAxis.CreateDataPoint(current, 1));
+
+				_series[agent] = series;
+            }
+			else
 			{
-				Association association = activity.Associations.FirstOrDefault();
+	            LineSeries series = _series[agent];
 
-				if (association == null || association.Agent == null) continue;
+				DateTime previous = _previous[agent];
 
-				Agent agent = association.Agent;
+				if(DateTime.Equals(current, previous))
+	            {
+					// We increment the current data point's value..
+					DataPoint p = series.Points.Last();
 
-				if (!agents.ContainsKey(agent.Uri))
+					series.Points.Remove(p);
+
+					p.Y++;
+
+					series.Points.Add(p);
+
+	                _maxY = Math.Max(_maxY, p.Y);
+	            }
+				else
+	            {
+	                // We fill up the gapping minutes between the current time value and the previous one..
+					double delta = (previous - current).TotalMinutes;
+
+					for (double m = 1; m < delta; m++)
+	                {
+						DateTime t = previous.Subtract(TimeSpan.FromMinutes(m));
+
+	                    series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
+	                }
+
+	                // ..and add the new point at the end.
+					series.Points.Add(DateTimeAxis.CreateDataPoint(current, 1));
+	            }
+
+				if (activity is Open)
 				{
-					agents[agent.Uri] = new List<Activity>();
+					DateTime zero = current.Subtract(TimeSpan.FromMinutes(1));
+	
+					series.Points.Add(DateTimeAxis.CreateDataPoint(zero, 0));
+
+					// Add the background shade to the open and close sessions.
+//					OxyColor color = _palette[agent];
+//
+//					PolygonAnnotation annotation = new PolygonAnnotation();
+//					annotation.Layer = AnnotationLayer.BelowAxes;
+//					annotation.Fill = OxyColor.FromArgb(125, color.R, color.G, color.B);
+//
+//					_annotations[agent] = annotation;
 				}
-
-				agents[agent.Uri].Add(activity);
+				else if (activity is Close)
+				{
+					// TODO
+				}
 			}
 
-			DateTimeAxis x = new DateTimeAxis()
-			{
-				Position = AxisPosition.Bottom,
-				FontSize = 9,
-				TextColor = OxyColors.LightGray,
-				TicklineColor = OxyColors.LightGray,
-				IntervalType = DateTimeIntervalType.Days,
-				MajorTickSize = 1,
-				MajorGridlineThickness = 0,
-				MajorGridlineStyle = LineStyle.Dot,
-				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66),
-				MinorTickSize = 60,
-				MinorIntervalType = DateTimeIntervalType.Minutes,
-				StringFormat = "HH:mm",
-			};
+			_previous[agent] = current;
+        }
 
-			LinearAxis y = new LinearAxis()
-			{
-				Position = AxisPosition.Left,
-				FontSize = 9,
-				TextColor = OxyColors.LightGray,
-				TicklineColor = OxyColors.LightGray,
-				MajorTickSize = 10,
-				MajorStep = 10,
-				MajorGridlineStyle = LineStyle.Dot,
-				MajorGridlineThickness = 1.0,
-				MajorGridlineColor = OxyColor.FromRgb(66, 66, 66)
-			};
+        public void Draw()
+        {
+            foreach (LineSeries series in _series.Values)
+            {
+                Model.Series.Add(series);
+            }
 
-			PlotModel model = new PlotModel();
-			model.Title = "ACTIVITIES / MIN";
-			model.TitleFontSize = 9;
-			model.TitleFontWeight = 0.5;
-			model.TitleColor = OxyColors.White;
-			model.PlotAreaBorderColor = OxyColor.FromRgb(88, 88, 88);
-			model.PlotAreaBorderThickness = new OxyThickness(0, 0, 0, 1);
-			model.Axes.Add(x);
-			model.Axes.Add(y);
+			_y.Maximum = Math.Ceiling(_maxY / 10) * 10;
+        }
 
-			foreach (KeyValuePair<Uri, List<Activity>> item in agents)
-			{
-				CreateSeries(model, item.Key.AbsoluteUri, item.Value, ref max);
-			}
+        private LineSeries CreateSeries(Agent agent)
+        {
+            LineSeries series = new LineSeries();
+            series.Color = _palette[agent];
+            series.StrokeThickness = 2;
+            series.MarkerSize = 2;
+            series.MarkerType = MarkerType.Circle;
+            series.MarkerFill = OxyColor.FromRgb(49, 55, 57);;
+            series.MarkerStroke = series.Color;
+            series.MarkerStrokeThickness = 2;
+            series.Title = agent.Uri.AbsoluteUri;
 
-			y.Minimum = 0;
-			y.AbsoluteMinimum = 0;
-			y.Maximum = Math.Ceiling(max / 10) * 10;
-			y.AbsoluteMaximum = max;
-			y.PositionAtZeroCrossing = true;
+            return series;
+        }
 
-			model.LegendOrientation = LegendOrientation.Horizontal;
-			model.LegendPlacement = LegendPlacement.Outside;
-			model.LegendPosition = LegendPosition.BottomCenter;
-			model.LegendBackground = OxyColors.Transparent;
-			model.LegendBorder = OxyColors.Transparent;
-			model.LegendMargin = 0;
-			model.LegendFontSize = 9;
-			model.LegendTextColor = OxyColors.LightGray;
-
-			Model = model;
-		}
-
-		private void CreateSeries(PlotModel model, string actor, IEnumerable<Activity> activities, ref double max)
+		private void CreateSeries(PlotModel model, Agent agent, IEnumerable<Activity> activities, ref double max)
 		{
 			double i = 1;
 			DateTime currentTime = DateTime.MinValue;
 			DateTime previousTime = DateTime.MinValue;
 
-			OxyColor color = _colors[_currentColor];
-
-			_currentColor++;
+            OxyColor color = _palette[agent];
 
 			LineSeries series = new LineSeries();
-			series.Title = actor;
+			series.Title = agent.Uri.AbsoluteUri;
 			series.Color = color;
 			series.StrokeThickness = 2;
 			series.MarkerSize = 2;

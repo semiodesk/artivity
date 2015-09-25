@@ -27,7 +27,10 @@
 
 using System;
 using System.IO;
+using CommandLine;
 using Nancy.Hosting.Self;
+using Semiodesk.Trinity;
+using Artivity.Model;
 
 namespace Artivity.Api.Http
 {
@@ -39,26 +42,68 @@ namespace Artivity.Api.Http
 		{
             Artivity.Model.SemiodeskDiscovery.Discover();
 
-            Console.WriteLine("Artivity HTTP REST API, Version 1.1");
-            Console.WriteLine();
-            Console.WriteLine("Press any key to quit.", Port);
-            Console.WriteLine();
+            Options options = new Options();
+
+            if (!CommandLine.Parser.Default.ParseArguments(args, options))
+                return;
+
+            Console.WriteLine("Artivity Logging Service, Version 1.1");
+
+            if (options.Interactive)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Press any key to quit.", Port);
+                Console.WriteLine();
+            }
+
+            InitializeModels();
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + Port)))
 			{
-				host.Start();
-
-				Logger.LogInfo("Started listening on port {0}..", Port);
-
-                using (var monitor = new FileSystemMonitor())
+                try
                 {
-                    monitor.Start();
+    				host.Start();
 
-                    Console.ReadLine();
+    				Logger.LogInfo("Started listening on port {0}..", Port);
 
+                    using (var monitor = new FileSystemMonitor())
+                    {
+                        monitor.Start();
+
+                        Console.ReadLine();
+    				}
+                }
+                finally
+                {
                     Logger.LogInfo("Stopped listening on port {0}..", Port);
-				}
+                }
 		    }
 		}
+
+        private static void InitializeModels()
+        {
+            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+
+            if (!store.ContainsModel(Models.Agents))
+            {
+                Logger.LogInfo("Creating model {0}..", Models.Agents);
+
+                store.CreateModel(Models.Agents);
+            }
+
+            if (!store.ContainsModel(Models.Activities))
+            {
+                Logger.LogInfo("Creating model {0}..", Models.Activities);
+
+                store.CreateModel(Models.Activities);
+            }
+
+            if (!store.ContainsModel(Models.WebActivities))
+            {
+                Logger.LogInfo("Creating model {0}..", Models.WebActivities);
+
+                store.CreateModel(Models.WebActivities);
+            }
+        }
 	}
 }
