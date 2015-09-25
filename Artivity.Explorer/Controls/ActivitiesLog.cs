@@ -88,6 +88,80 @@ namespace ArtivityExplorer.Controls
             DataSource = Store;
         }
 
+        public void Reset()
+        {
+            Store.Clear();
+        }
+
+        public void Add(Activity activity)
+        {
+            TreeNavigator node = Store.AddNode();
+
+            // Set the data context of the current row.
+            node.SetValue(ActivityField, activity);
+
+            // Set the formatted date time.
+            node.SetValue(TimeField, activity.StartTime.ToString("HH:mm:ss")); 
+
+            if (activity.GetTypes().Any())
+            {
+                node.SetValue(TypeField, "<b>" + ToDisplayString(activity.GetTypes().First().Uri) + "</b>");
+            }
+
+            // Set activity action details.
+            FileDataObject f = activity.GeneratedEntities.OfType<FileDataObject>().FirstOrDefault();
+
+            if (f != null)
+            {
+                string action = "";
+
+                if (f.Generation.Location is XmlAttribute)
+                {
+                    XmlAttribute attribute = f.Generation.Location as XmlAttribute;
+
+                    action += attribute.LocalName + ": ";
+                }
+
+                if (f.Generation.Value != null)
+                {
+                    action += f.Generation.Value;
+                }
+
+                node.SetValue(ActionField, action);
+
+                if (f.Generation.Viewbox != null)
+                {
+                    // Set the formatted zoom value.
+                    node.SetValue(ZoomField, Math.Round(f.Generation.Viewbox.ZoomFactor * 100, 0) + "%");
+                }
+            }
+            else
+            {
+                WebDataObject w = activity.UsedEntities.OfType<WebDataObject>().FirstOrDefault();
+
+                if (w != null)
+                {
+                    node.SetValue(ActionField, w.Uri.Host);
+                }
+            }
+        }
+
+        private string ToDisplayString(Uri uri)
+        {
+            string result = uri.AbsoluteUri;
+
+            if (result.Contains('#'))
+            {
+                result = result.Substring(result.LastIndexOf('#') + 1);
+            }
+            else if(uri.AbsoluteUri.Contains('/'))
+            {
+                result = result.Substring(result.LastIndexOf('/') + 1);
+            }
+
+            return result.TrimEnd('>');
+        }
+
 		protected override void OnKeyReleased(KeyEventArgs args)
 		{
 			base.OnKeyReleased(args);
