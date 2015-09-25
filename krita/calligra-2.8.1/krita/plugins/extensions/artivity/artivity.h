@@ -69,10 +69,10 @@ protected:
 
 private:
 
+    const KUndo2Command* _topCommand;
     int _currentIdx;
     int _lastStackSize;
     bool _active;
-    bool _holdBack;
     qreal _zoomFactor;
     
     artivity::ActivityLog* _log;
