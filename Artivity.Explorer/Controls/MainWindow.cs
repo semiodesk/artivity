@@ -39,14 +39,39 @@ namespace ArtivityExplorer.Controls
 
         #region Methods
 
+        private void InitializeModel()
+        {
+            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+
+            IModelGroup activities = store.CreateModelGroup();
+
+            if (store.ContainsModel(Models.Activities))
+            {
+                activities.Add(store.GetModel(Models.Activities));
+            }
+            else
+            {
+                Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.Activities);
+            }
+
+            if (store.ContainsModel(Models.WebActivities))
+            {
+                activities.Add(store.GetModel(Models.WebActivities));
+            }
+            else
+            {
+                Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.WebActivities);
+            }
+
+            _model = activities;
+        }
+
         private void InitializeComponent()
         {
 			if (_model == null)
 			{
 				LogError("Model not initialized.");
 			}
-
-			_log = new ActivitiesLog();
 
             Padding = 0;
 
@@ -56,7 +81,10 @@ namespace ArtivityExplorer.Controls
 
             MainMenu = menu;
 
-            // Initialize the widget layout.
+            // Initialize the acitivites log.
+            _log = new ActivitiesLog();
+
+            // Initialize the content layout.
             HBox content = new HBox();
 			content.Spacing = 0;
 			content.PackStart(_statsPanel);
@@ -67,37 +95,9 @@ namespace ArtivityExplorer.Controls
             layout.PackStart(new HeaderMenu(this));
             layout.PackStart(_chart);
             layout.PackStart(content, true);
-            //layout.PackStart(_statusBar);
 
             Content = layout;
         }
-
-		private void InitializeModel()
-		{
-			IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
-
-			IModelGroup activities = store.CreateModelGroup();
-
-			if (store.ContainsModel(Models.Activities))
-			{
-				activities.Add(store.GetModel(Models.Activities));
-			}
-			else
-			{
-				Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.Activities);
-			}
-
-			if (store.ContainsModel(Models.WebActivities))
-			{
-				activities.Add(store.GetModel(Models.WebActivities));
-			}
-			else
-			{
-				Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.WebActivities);
-			}
-
-			_model = activities;
-		}
 
         public void HandleFileSelected(object sender, FileSelectionEventArgs e)
         {
@@ -109,149 +109,36 @@ namespace ArtivityExplorer.Controls
                 _statsPanel.ColourWidget.Update(stats);
             }
 
-            _statusBar.Update(e.FileName);
+			_statsPanel.EditingWidget.Update(_model, e.FileName);
 
-			if (_model == null)
-				return;
+            _statusBar.Update(e.FileName);
 
 			LoadActivities(e.FileName);
         }
 
 		private void LoadActivities(string file)
 		{
-			_log.Store.Clear();
+            _log.Reset();
+            _chart.Reset();
 
-			if (!file.StartsWith ("file://"))
+            IEnumerable<Activity> activities = ActivityLoader.GetActivities(_model, file);
+
+            if (!activities.Any())
+            {
+                // TODO: Show message in UI.
+
+                LogInfo(string.Format("Did not find any activities for file: {0}", file));
+
+                return;
+            }
+
+			foreach (Activity activity in activities)
 			{
-				file = "file://" + file;
+                _log.Add(activity);
+                _chart.Add(activity);
 			}
 
-			DateTime firstTime = GetFirstEventTime(file);
-			DateTime lastTime = GetLastEventTime(file);
-
-			if (firstTime == DateTime.MinValue || lastTime == DateTime.MinValue)
-			{
-				LogInfo(string.Format("Did not find any events for file: {0}", file)); return;
-			}
-
-			ResourceQuery activity = new ResourceQuery();
-			activity.Where(prov.startedAtTime).GreaterOrEqual(firstTime);
-			activity.Where(prov.startedAtTime).LessOrEqual(lastTime);
-
-			List<Activity> activities = _model.GetResources<Activity>(activity).OrderByDescending(a => a.StartTime).ToList();
-
-			foreach (Activity a in activities)
-			{
-				TreeNavigator node = _log.Store.AddNode();
-
-				// Set the data context of the current row.
-				node.SetValue(_log.ActivityField, a);
-
-				// Set the formatted date time.
-				string time = "<span color=\"#475053\">" + a.StartTime.ToString("HH:mm:ss") + "</span>";
-				node.SetValue(_log.TimeField, time); 
-
-				if (a.GetTypes().Any())
-				{
-					string type = "<b>" + ToDisplayString(a.GetTypes().First().Uri) + "</b>";
-					node.SetValue(_log.TypeField, type);
-				}
-
-				if (a.GeneratedEntities.OfType<FileDataObject>().Any())
-				{
-					FileDataObject f = a.GeneratedEntities.OfType<FileDataObject>().First();
-
-					if (f.Generation.Viewbox != null)
-					{
-						// Set the formatted zoom value.
-						string zoom = "<span color=\"#475053\">" + Math.Round(f.Generation.Viewbox.ZoomFactor * 100, 0) + "%</span>";
-						node.SetValue(_log.ZoomField, zoom);
-					}
-
-					string target = "";
-
-					if (f.Generation.Location is XmlAttribute)
-					{
-						XmlAttribute attribute = f.Generation.Location as XmlAttribute;
-
-						target += attribute.LocalName + ": ";
-					}
-
-					if (f.Generation.Value != null)
-					{
-						target += f.Generation.Value;
-					}
-
-					node.SetValue(_log.ActionField, target);
-				}
-
-				if (a.UsedEntities.OfType<WebDataObject>().Any())
-				{
-					WebDataObject w = a.UsedEntities.OfType<WebDataObject>().First();
-
-					node.SetValue(_log.ActionField, "<span color=\"#119eda\">" + w.Uri.Host + "</span>");
-				}
-
-				/* TODO: Node type not supported yet. Add to modelling.
-				if (activity.Modifications.Any())
-				{
-					Modification m = activity.Modifications.First();
-					string fromValue = m.FromValue != null ? m.FromValue.ToString() : "";
-					string toValue = m.ToValue != null ? m.ToValue.ToString() : "";
-
-					node.SetValue(_log.ModificationTypeField, ToDisplayString(m.GetTypes().FirstOrDefault().Uri));
-				}
-				*/
-			}
-
-			_chart.Update(activities);
-			_statsPanel.EditingWidget.Update(_model, file);
-		}
-
-		private DateTime GetFirstEventTime(string file)
-		{
-			string queryString = @"
-				PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
-				PREFIX prov: <http://www.w3.org/ns/prov#>
-
-				SELECT ?time WHERE { ?a prov:startedAtTime ?time . ?a prov:used ?f . ?f nfo:fileUrl """ + file + "\" . } ORDER BY ASC(?time) LIMIT 1";
-
-			SparqlQuery query = new SparqlQuery(queryString);
-			ISparqlQueryResult result = _model.ExecuteQuery(query);
-
-			return result.Count() > 0 ? (DateTime)result.GetBindings().First()["time"] : DateTime.MinValue;
-		}
-
-		private DateTime GetLastEventTime(string file)
-		{
-			string queryString = @"
-				PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
-				PREFIX prov: <http://www.w3.org/ns/prov#>
-
-				SELECT ?time WHERE { ?a prov:startedAtTime ?time . ?a prov:used ?f . ?f nfo:fileUrl """ + file + "\" . } ORDER BY DESC(?time) LIMIT 1";
-
-			SparqlQuery query = new SparqlQuery(queryString);
-			ISparqlQueryResult result = _model.ExecuteQuery(query);
-
-			return result.Count() > 0 ? (DateTime)result.GetBindings().First()["time"] : DateTime.MinValue;
-		}
-
-		private string ToDisplayString(Uri uri)
-		{
-			string result = uri.AbsoluteUri;
-
-			if (result.Contains('#'))
-			{
-				result = result.Substring(result.LastIndexOf('#') + 1);
-			}
-			else if(uri.AbsoluteUri.Contains('/'))
-			{
-				result = result.Substring(result.LastIndexOf('/') + 1);
-			}
-
-			return result.TrimEnd('>');
+            _chart.Draw();
 		}
 
         private void HandleClosed(object sender, EventArgs e)
