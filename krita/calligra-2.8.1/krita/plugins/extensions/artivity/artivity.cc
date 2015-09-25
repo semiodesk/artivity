@@ -1,5 +1,11 @@
 /*
- *  Copyright (c) 2007 Cyrille Berger (cberger@cberger.net)
+ * Authors:
+ * Moritz Eberl <moritz@semiodesk.com>
+ * Sebastian Faubel <sebastian@semiodesk.com>
+ *
+ * Copyright (c) 2015 Semiodesk GmbH
+ *
+ * Released under GNU GPL, see the file 'COPYING' for more information
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -296,10 +302,21 @@ void ArtivityPlugin::ProcessEventQueue()
         return;
     }
 
+    string uri = "file://" + string(_doc->localFilePath().toUtf8().constData());
     if( _entity == NULL )
     {
-        uri = "file://" + string(_doc->localFilePath().toUtf8().constData());
-        _entity = new artivity::FileDataObject(uri.c_str());
+        // NOTE: We do not know the actual URI of the file data object here.
+        // Therefore we add it as a variable and let the server replace
+        // the URI with the one it knows. This is hacky, but will eventually
+        // not be necessary once the client API is being stabilized.
+        string var = "?:" + uri;
+
+        FileDataObject* file = new FileDataObject(var.c_str());
+        file->setUrl(uri.c_str());
+
+        _log->addResource(file);
+
+        _entity = file;
     }
     
     artivity::ActivityLogIterator it = _log->begin();
@@ -318,7 +335,9 @@ void ArtivityPlugin::ProcessEventQueue()
                 if( generated != NULL )
                 {
                     stringstream generatedUri;
-                    generatedUri << uri << "#" << UriGenerator::getRandomId(10);
+                    string id = UriGenerator::getRandomId(10);
+                    generatedUri << uri << "#" << id ;
+                    std::cout << id << std::endl;
                     generated->setUri(generatedUri.str());
                     generated->setUrl(uri.c_str());
                     generated->addGenericEntity(_entity);
@@ -333,10 +352,12 @@ void ArtivityPlugin::ProcessEventQueue()
                 if( invalidated != NULL )
                 {
                     stringstream invalidatedUri;
-                    invalidatedUri << uri << "#" << UriGenerator::getRandomId(10);
+                    string id = UriGenerator::getRandomId(10);
+                    invalidatedUri << uri << "#" << id;
+                    std::cout << id << std::endl;
 
                     invalidated->setUri(invalidatedUri.str());
-                    invalidated->setUri(uri.c_str());
+                    invalidated->setUrl(uri.c_str());
                     invalidated->addGenericEntity(_entity);
                 }
             }
