@@ -72,6 +72,7 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
         : KisViewPlugin(parent, "kritaplugins/artivity.rc")
 {
     _currentIdx = 1;
+    _topCommand = NULL;
     _lastStackSize = 0;
     _agent = NULL;
     _entity = NULL;
@@ -115,14 +116,13 @@ ArtivityPlugin::~ArtivityPlugin()
 }
 
 
-
 void ArtivityPlugin::indexChanged(int newIdx)
 {
     if( _undoStack == NULL || _active == FALSE || !_undoStack->isActive() )
         return; 
 
-    std::cout << "Index: " << newIdx << " Current idx: " << _currentIdx << " Stack size: " << _undoStack->count() <<
-    "Last Stack size: " << _lastStackSize << std::endl;
+
+    //std::cout << "Index: " << newIdx << " Current idx: " << _currentIdx << " Stack size: " << _undoStack->count() << " Last Stack size: " << _lastStackSize << std::endl;
 
 
     const KUndo2Command* currentCommand = _undoStack->command(newIdx-1);
@@ -130,9 +130,12 @@ void ArtivityPlugin::indexChanged(int newIdx)
     if( currentCommand == NULL )
         return;
 
+
+    //std::cout << " Top command Id: " << _topCommand << " current command id: " << currentCommand << std::endl; 
+
     if( _lastStackSize > 0 && _undoStack->count() == 0 )
     {
-        std::cout << "Final clear of stack... not logging." << std::endl;
+        //std::cout << "Final clear of stack... not logging." << std::endl;
         // Stack was emptied, do not log undos...
         return;
     }
@@ -141,7 +144,7 @@ void ArtivityPlugin::indexChanged(int newIdx)
     {
         int undoneEvents =  _currentIdx - newIdx;
         
-        std::cout << "Undo " << undoneEvents << " events" << std::endl;
+        //std::cout << "Undo " << undoneEvents << " events" << std::endl;
 
         int toUndo = 0;
         while(toUndo < undoneEvents )
@@ -151,13 +154,14 @@ void ArtivityPlugin::indexChanged(int newIdx)
             toUndo += 1; 
         }
         
-    }else if( newIdx <= _undoStack->count() && _lastStackSize == _undoStack->count())
+    }else if( (newIdx < _undoStack->count() && _lastStackSize == _undoStack->count()) || (newIdx == _undoStack->count() && _topCommand == currentCommand) )
     {
-        std::cout << "Redo " << newIdx - _currentIdx << " events" << std::endl;
+        //std::cout << "Redo " << newIdx - _currentIdx << " events" << std::endl;
         LogRedoEvent(currentCommand);
     }else
     {
         LogDoEvent(currentCommand);
+        _topCommand = currentCommand;
     }
 
     
@@ -174,21 +178,21 @@ void ArtivityPlugin::indexChanged(int newIdx)
 void ArtivityPlugin::LogDoEvent(const KUndo2Command* command)
 {
     QString text = command->actionText();
-    std::cout << "Do " << text.toUtf8().constData() << std::endl;
+    //std::cout << "Do " << text.toUtf8().constData() << std::endl;
     LogEvent(art::Update, command);
 }
 
 void ArtivityPlugin::LogUndoEvent(const KUndo2Command* command)
 {
     QString text = command->actionText();
-    std::cout << "Undo: " << text.toUtf8().constData() << std::endl;
+    //std::cout << "Undo: " << text.toUtf8().constData() << std::endl;
     LogEvent(art::Undo, command);
 }
 
 void ArtivityPlugin::LogRedoEvent(const KUndo2Command* command)
 {
     QString text = command->actionText();
-    std::cout << "Redo: " << text.toUtf8().constData() << std::endl;
+    //std::cout << "Redo: " << text.toUtf8().constData() << std::endl;
     LogEvent(art::Redo, command);
 }
 
@@ -201,21 +205,21 @@ void ArtivityPlugin::ZoomChanged(KoZoomMode::Mode mode, qreal zoom)
 void ArtivityPlugin::LogLayerAdded()
 {
     KisLayerSP layer = m_view->activeLayer();
-    std::cout << "Layer added: "<< layer->name().toUtf8().constData()  << std::endl;
+    //std::cout << "Layer added: "<< layer->name().toUtf8().constData()  << std::endl;
 }
 
 
 void ArtivityPlugin::ImageInformation()
 {
     KisDoc2* doc = m_view->document();
-    std::cout << "File : " << doc->localFilePath().toUtf8().constData() << std::endl;
+    //std::cout << "File : " << doc->localFilePath().toUtf8().constData() << std::endl;
 
 
     KisImageSP image = _canvas->currentImage();
-    std::cout << "Image info -> w: " << image->width() << " h: " << image->height() << std::endl;
-    std::cout << "Res -> x: " << image->xRes() << " y: " << image->yRes() << std::endl;
-    std::cout << "Color -> " << image->colorSpace()->name().toUtf8().constData() << std::endl;
-    std::cout << "Unit -> " << _canvas->unit().symbol().toUtf8().constData() << std::endl;
+    //std::cout << "Image info -> w: " << image->width() << " h: " << image->height() << std::endl;
+    //std::cout << "Res -> x: " << image->xRes() << " y: " << image->yRes() << std::endl;
+    //std::cout << "Color -> " << image->colorSpace()->name().toUtf8().constData() << std::endl;
+    //std::cout << "Unit -> " << _canvas->unit().symbol().toUtf8().constData() << std::endl;
 }
 
 void ArtivityPlugin::Selection()
@@ -396,11 +400,8 @@ void ArtivityPlugin::ProcessEventQueue()
 
 void ArtivityPlugin::Close()
 {
-    std::cout << "ABORT!" << std::endl;
-    if( _holdBack )
-    {
-        std::cout << "Discard last undo actions." << std::endl;
-    }
+    //std::cout << "ABORT!" << std::endl;
+    
     LogEvent(artivity::art::Close, NULL);
     ProcessEventQueue();
     _active = FALSE;
