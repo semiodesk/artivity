@@ -13,6 +13,7 @@
 #include "Ontologies/prov.h"
 #include "Ontologies/nfo.h"
 #include "Ontologies/art.h"
+#include "Ontologies/dces.h"
 
 #include "ObjectModel/Activity.h"
 #include "ObjectModel/ActivityInfluence.h"

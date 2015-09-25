@@ -70,6 +70,7 @@ protected:
 private:
 
     int _currentIdx;
+    int _lastStackSize;
     bool _active;
     bool _holdBack;
     qreal _zoomFactor;
@@ -87,6 +88,7 @@ private:
     void LogLayerAdded();
     void ImageInformation();
     void Selection();
+    void LogActivityInformation(artivity::Activity* activity, const KUndo2Command* command);
    
     void LogEvent(const artivity::Resource& type, const KUndo2Command* command);
     void LogDoEvent(const KUndo2Command* command);

@@ -30,6 +30,8 @@ namespace artivity
         static const Property zoomFactor = ART("zoomFactor");
         
         static const Property isCaptureEnabled = ART("isCaptureEnabled");
+
+        static const Property selectedLayer = ART("selectedLayer");
     }
 }
 
