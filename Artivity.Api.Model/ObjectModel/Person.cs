@@ -35,12 +35,9 @@ using System.Threading.Tasks;
 namespace Artivity.Model.ObjectModel
 {
     [RdfClass(PROV.Person)]
-    public class Person : Resource
+    public class Person : Agent
     {
 		#region Members
-
-        [RdfProperty(FOAF.name)]
-		public string Name { get; set; }
 
         [RdfProperty(FOAF.description)] // TODO: Implement properly.
         public string Organization { get; set; }

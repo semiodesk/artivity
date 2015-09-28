@@ -39,8 +39,8 @@ namespace Artivity.Model.ObjectModel
     {
 		#region Members
 
-		[RdfProperty(RDFS.label)]
-		string Label { get; set; }
+        [RdfProperty(FOAF.name)]
+        public string Name { get; set; }
 
 		#endregion
 

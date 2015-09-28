@@ -40,6 +40,9 @@ namespace Artivity.Model.ObjectModel
 		[RdfProperty(ART.isCaptureEnabled)]
 		public bool IsCaptureEnabled { get; set; }
 
+        [RdfProperty(ART.hasColourCode)]
+        public string ColourCode { get; set; }
+
 		#endregion
 
         #region Constructors

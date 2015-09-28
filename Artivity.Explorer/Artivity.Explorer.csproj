@@ -55,6 +55,7 @@
     <Compile Include="Controls\Widgets\FileButton.cs" />
     <Compile Include="Controls\ExportDialog.cs" />
     <Compile Include="Helpers\ActivityLoader.cs" />
+    <Compile Include="Controls\Widgets\AgentSettingsWidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

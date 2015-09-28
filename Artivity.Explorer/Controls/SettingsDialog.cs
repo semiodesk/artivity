@@ -15,6 +15,8 @@ namespace ArtivityExplorer
 
         private UserSettingsWidget _userSettings;
 
+        private AgentSettingsWidget _agentSettings;
+
         #endregion
 
         #region Constructors
@@ -35,12 +37,11 @@ namespace ArtivityExplorer
             Height = 500;
 
             _userSettings = new UserSettingsWidget();
-
-            VBox applicationsLayout = new VBox();
+            _agentSettings = new AgentSettingsWidget();
 
             Notebook notebook = new Notebook();
             notebook.Add(_userSettings, "User");
-            notebook.Add(applicationsLayout, "Applications");
+            notebook.Add(_agentSettings, "Applications");
 
             Button okButton = new Button();
             okButton.MinWidth = 100;
@@ -67,6 +68,7 @@ namespace ArtivityExplorer
         private void OnOkButtonClicked(object sender, System.EventArgs e)
         {
             _userSettings.Save();
+            _agentSettings.Save();
 
             Close();
         }

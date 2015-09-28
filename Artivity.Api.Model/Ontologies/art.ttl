@@ -100,6 +100,11 @@ art:isCaptureEnabled a rdf:Property ;
     rdfs:label "isCaptureEnabled" ;
     rdfs:domain prov:SoftwareAgent ;
     rdfs:range xsd:boolean .
+
+art:hasColourCode a rdf:Property ;
+    rdfs:label "hasColourCode" ;
+    rdfs:domain prov:SoftwareAgent ;
+    rdfs:range xsd:string .
     
 nfo:FileDataObject rdfs:subClassOf prov:Entity.
 nfo:WebDataObject rdfs:subClassOf prov:Entity.
