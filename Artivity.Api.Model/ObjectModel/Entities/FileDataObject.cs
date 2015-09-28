@@ -53,6 +53,9 @@ namespace Artivity.Model.ObjectModel
 		[RdfProperty(PROV.value)]
 		public string RevisedValue { get; set; }
 
+        [RdfProperty(ART.dimensions)]
+        public Dimensions Dimensions { get ; set; }
+
 		#endregion
 
 		#region Constructors

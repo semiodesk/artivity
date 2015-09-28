@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 9/28/2015 12:34:00 PM
+// Date: 9/28/2015 5:06:19 PM
 
 using System;
 using System.Collections.Generic;
@@ -6783,12 +6783,6 @@ public class art : Ontology
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Modification"/>
-    ///</summary>
-    public static readonly Class Modification = new Class(new Uri("http://semiodesk.com/artivity/1.0/Modification"));    
-
-    ///<summary>
-    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
     ///</summary>
     public static readonly Property selectedLayer = new Property(new Uri("http://semiodesk.com/artivity/1.0/selectedLayer"));    
@@ -6840,6 +6834,42 @@ public class art : Ontology
     ///<see cref="http://semiodesk.com/artivity/1.0/hasColourCode"/>
     ///</summary>
     public static readonly Property hasColourCode = new Property(new Uri("http://semiodesk.com/artivity/1.0/hasColourCode"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Dimensions"/>
+    ///</summary>
+    public static readonly Class Dimensions = new Class(new Uri("http://semiodesk.com/artivity/1.0/Dimensions"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/x"/>
+    ///</summary>
+    public static readonly Property x = new Property(new Uri("http://semiodesk.com/artivity/1.0/x"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/y"/>
+    ///</summary>
+    public static readonly Property y = new Property(new Uri("http://semiodesk.com/artivity/1.0/y"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/z"/>
+    ///</summary>
+    public static readonly Property z = new Property(new Uri("http://semiodesk.com/artivity/1.0/z"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/unit"/>
+    ///</summary>
+    public static readonly Property unit = new Property(new Uri("http://semiodesk.com/artivity/1.0/unit"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/dimensions"/>
+    ///</summary>
+    public static readonly Property dimensions = new Property(new Uri("http://semiodesk.com/artivity/1.0/dimensions"));    
 
     ///<summary>
     ///
@@ -6951,12 +6981,6 @@ public static class ART
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Modification"/>
-    ///</summary>
-    public const string Modification = "http://semiodesk.com/artivity/1.0/Modification";
-
-    ///<summary>
-    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
     ///</summary>
     public const string selectedLayer = "http://semiodesk.com/artivity/1.0/selectedLayer";
@@ -7008,6 +7032,42 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/hasColourCode"/>
     ///</summary>
     public const string hasColourCode = "http://semiodesk.com/artivity/1.0/hasColourCode";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Dimensions"/>
+    ///</summary>
+    public const string Dimensions = "http://semiodesk.com/artivity/1.0/Dimensions";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/x"/>
+    ///</summary>
+    public const string x = "http://semiodesk.com/artivity/1.0/x";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/y"/>
+    ///</summary>
+    public const string y = "http://semiodesk.com/artivity/1.0/y";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/z"/>
+    ///</summary>
+    public const string z = "http://semiodesk.com/artivity/1.0/z";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/unit"/>
+    ///</summary>
+    public const string unit = "http://semiodesk.com/artivity/1.0/unit";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/dimensions"/>
+    ///</summary>
+    public const string dimensions = "http://semiodesk.com/artivity/1.0/dimensions";
 
     ///<summary>
     ///

@@ -18,6 +18,7 @@
 #include "xml/event.h"
 #include "xml/node.h"
 #include "xml/attribute-record.h"
+#include "util/units.h"
 #include <ctime>
 
 #include <artivity-client/artivity.h>
@@ -54,7 +55,7 @@ namespace Inkscape
     {
     private:
         
-        SPDocument* _doc;
+        SPDocument* _document;
 
         SPDesktop* _desktop;
 
@@ -88,7 +89,7 @@ namespace Inkscape
     
     public:
         
-        ArtivityLog(SPDocument* doc, SPDesktop* desktop);
+        ArtivityLog(SPDocument* document, SPDesktop* desktop);
         
         virtual ~ArtivityLog();
         

@@ -12,7 +12,7 @@
       <Project Name="extension-chrome" ConfigName="Debug"/>
       <Project Name="extension-firefox" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="yes">
+    <WorkspaceConfiguration Name="Release" Selected="no">
       <Project Name="inkscape" ConfigName="Release"/>
       <Project Name="client" ConfigName="Release"/>
       <Project Name="extension-chrome" ConfigName="Debug"/>

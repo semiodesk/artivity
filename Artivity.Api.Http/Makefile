@@ -1,5 +1,9 @@
 all:
 
+clean:
+	rm -R dist
+	rm artivity-service-1.0.0.tar.gz
+
 dist:
 	mkdir dist
 	cp bin/Release/*.exe dist/

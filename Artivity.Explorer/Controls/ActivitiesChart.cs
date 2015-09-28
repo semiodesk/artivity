@@ -184,9 +184,16 @@ namespace ArtivityExplorer.Controls
                     // We fill up the gapping minutes between the current time value and the previous one..
                     double delta = (previous - current).TotalMinutes;
 
-                    for (double m = 1; m < delta; m++)
+                    if (delta > 1)
                     {
-                        DateTime t = previous.Subtract(TimeSpan.FromMinutes(m));
+                        DateTime t = previous.Subtract(TimeSpan.FromMinutes(1));
+
+                        series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
+                    }
+
+                    if (delta > 2)
+                    {
+                        DateTime t = current.Add(TimeSpan.FromMinutes(1));
 
                         series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
                     }
@@ -264,120 +271,25 @@ namespace ArtivityExplorer.Controls
 
         private LineSeries CreateSeries(Agent agent)
         {
+            OxyColor color = _palette[agent];
+
             LineSeries series = new LineSeries();
-            series.Color = _palette[agent];
-            series.StrokeThickness = 2;
-            series.MarkerSize = 2;
-            series.MarkerType = MarkerType.Circle;
-            series.MarkerFill = OxyColor.FromRgb(49, 55, 57);;
-            series.MarkerStroke = series.Color;
-            series.MarkerStrokeThickness = 2;
             series.Title = agent.Name;
+            series.Color = color;
+            series.StrokeThickness = 2;
+            series.MarkerSize = 4;
+            series.MarkerType = MarkerType.Circle;
+            series.MarkerFill = color;
+            series.MarkerStroke = OxyColor.FromRgb(49, 55, 57);
+            series.MarkerStrokeThickness = 1;
+            series.CanTrackerInterpolatePoints = true;
+            series.Selectable = true;
+            series.SelectionMode = OxyPlot.SelectionMode.Single;
+            //series.Smooth = true;
 
             return series;
         }
-
-		private void CreateSeries(PlotModel model, Agent agent, IEnumerable<Activity> activities, ref double max)
-		{
-			double i = 1;
-			DateTime currentTime = DateTime.MinValue;
-			DateTime previousTime = DateTime.MinValue;
-
-            OxyColor color = _palette[agent];
-
-			LineSeries series = new LineSeries();
-			series.Title = agent.Uri.AbsoluteUri;
-			series.Color = color;
-			series.StrokeThickness = 2;
-			series.MarkerSize = 2;
-			series.MarkerType = MarkerType.Circle;
-			series.MarkerFill = OxyColor.FromRgb(49, 55, 57);;
-			series.MarkerStroke = series.Color;
-			series.MarkerStrokeThickness = 2;
-
-			PolygonAnnotation annotations = new PolygonAnnotation();
-			annotations.Layer = AnnotationLayer.BelowAxes;
-			annotations.Fill = OxyColor.FromArgb(125, color.R, color.G, color.B);
-
-			if (activities.Any())
-			{
-				Open open = null;
-				Close close = null;
-
-				foreach (Activity activity in activities)
-				{
-					currentTime = activity.StartTime.RoundToMinute();
-
-					if (activity is Open)
-					{
-						open = activity as Open;
-					}
-
-					if (activity is Close)
-					{
-						close = activity as Close;
-					}
-
-					if (open != null && close != null)
-					{
-						DateTime openTime = open.StartTime.RoundToMinute();
-						DateTime closeTime = close.StartTime.RoundToMinute();
-
-						if (openTime == closeTime)
-						{
-							closeTime = openTime.AddMinutes(1);
-						}
-
-						annotations.Points.Add(DateTimeAxis.CreateDataPoint(openTime, 0));
-						annotations.Points.Add(DateTimeAxis.CreateDataPoint(openTime, 500));           
-						annotations.Points.Add(DateTimeAxis.CreateDataPoint(closeTime, 500));
-						annotations.Points.Add(DateTimeAxis.CreateDataPoint(closeTime, 0)); 
-
-						open = null;
-						close = null;
-					}
-
-					if (previousTime != DateTime.MinValue)
-					{
-						if (currentTime != previousTime)
-						{
-							series.Points.Add(DateTimeAxis.CreateDataPoint(previousTime, i));
-
-							double delta = (previousTime - currentTime).TotalMinutes;
-
-							for (double m = 1.0; m < delta; m++)
-							{
-								DateTime t = previousTime.Subtract(TimeSpan.FromMinutes(m));
-
-								series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
-							}
-
-							i = 1;
-						}
-						else
-						{
-							i += 1;
-							max = i > max ? i : max;
-						}
-					}
-
-					previousTime = currentTime;
-				}
-
-				series.Points.Add(DateTimeAxis.CreateDataPoint(currentTime, i));
-			}
-
-			if (annotations.Points.Any())
-			{
-				model.Annotations.Add(annotations);
-			}
-
-			if (series.Points.Any())
-			{
-				model.Series.Add(series);
-			}
-		}
-
+            
         #endregion
     }
 }

@@ -24,6 +24,7 @@
       <File Name="src/Ontologies/prov.h"/>
       <File Name="src/Ontologies/nfo.h"/>
       <File Name="src/Ontologies/xml.h"/>
+      <File Name="src/Ontologies/unit.h"/>
     </VirtualDirectory>
     <File Name="src/ActivityLog.cpp"/>
     <File Name="src/ActivityLog.h"/>
@@ -69,6 +70,7 @@
       <File Name="src/ObjectModel/Invalidation.h"/>
       <File Name="src/ObjectModel/Generation.h"/>
       <File Name="src/ObjectModel/ActivityInfluence.h"/>
+      <File Name="src/ObjectModel/Dimensions.h"/>
     </VirtualDirectory>
     <File Name="src/artivity.h"/>
     <File Name="src/Makefile.am"/>

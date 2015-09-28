@@ -58,9 +58,6 @@ art:Viewbox a rdfs:Class ;
 art:Layer a rdfs:Class ;
     rdfs:label "Layer" .
     
-art:Modification a rdfs:Class ;
-    rdfs:label "Modification" .
-    
 art:selectedLayer a rdf:Property ;
 	rdfs:label "selectedLayer" ;
 	rdfs:domain prov:Activity ;
@@ -105,6 +102,33 @@ art:hasColourCode a rdf:Property ;
     rdfs:label "hasColourCode" ;
     rdfs:domain prov:SoftwareAgent ;
     rdfs:range xsd:string .
-    
+
+art:Dimensions a rdfs:Class ;
+    rdfs:label "Dimensions" .
+
+art:x a rdf:Property ;
+    rdfs:label "x" ;
+    rdfs:domain art:Dimensions ;
+    rdfs:range xsd:double .
+
+art:y a rdf:Property ;
+    rdfs:label "y" ;
+    rdfs:domain art:Dimensions ;
+    rdfs:range xsd:double .
+
+art:z a rdf:Property ;
+    rdfs:label "z" ;
+    rdfs:domain art:Dimensions ;
+    rdfs:range xsd:double .
+
+art:unit a rdf:Property ;
+    rdfs:label "unit" ;
+    rdfs:domain art:Dimensions .
+
+art:dimensions a rdf:Property ;
+    rdfs:label "dimensions" ;
+    rdfs:domain prov:Entity ;
+    rdfs:range art:Dimensions .
+
 nfo:FileDataObject rdfs:subClassOf prov:Entity.
 nfo:WebDataObject rdfs:subClassOf prov:Entity.

@@ -4,6 +4,7 @@
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/nfo.h"
 #include "../Entity.h"
+#include "../Dimensions.h"
 
 namespace artivity
 {
@@ -15,6 +16,7 @@ namespace artivity
         const time_t* _lastAccessTime;
         const time_t* _lastModificationTime;
         long _size;
+        Dimensions* _dimensions;
         
     public:
         FileDataObject() : Entity()
@@ -85,6 +87,18 @@ namespace artivity
             _size = size;
             
             setValue(nfo::fileSize, size);
+        }
+        
+        Dimensions* getDimensions()
+        {
+            return _dimensions;
+        }
+        
+        void setDimensions(Dimensions* dimensions)
+        {
+            _dimensions = dimensions;
+            
+            Resource::setValue(art::dimensions, dimensions);
         }
     };
 }
