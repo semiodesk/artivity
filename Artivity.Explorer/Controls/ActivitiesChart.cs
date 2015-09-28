@@ -11,6 +11,7 @@ using Semiodesk.Trinity;
 using Xwt;
 using Xwt.Drawing;
 using Artivity.Model.ObjectModel;
+using Artivity.Model;
 
 namespace ArtivityExplorer.Controls
 {
@@ -18,13 +19,7 @@ namespace ArtivityExplorer.Controls
     {
 		#region Members
 
-        private Dictionary<Agent, OxyColor> _palette = new Dictionary<Agent, OxyColor>()
-        {
-            { new Agent(new Uri("application://inkscape.desktop/")), OxyColor.FromRgb(237, 20, 91) },
-            { new Agent(new Uri("application://krita.desktop/")), OxyColor.FromRgb(136, 199, 68) },
-            { new Agent(new Uri("application://chromium-browser.desktop/")), OxyColor.FromRgb(17, 158, 218) },
-            { new Agent(new Uri("application://firefox-browser.desktop/")), OxyColor.FromRgb(17, 158, 218) },
-        };
+        private Dictionary<Agent, OxyColor> _palette = new Dictionary<Agent, OxyColor>();
 
         private Dictionary<Agent, LineSeries> _series = new Dictionary<Agent, LineSeries>();
 
@@ -50,12 +45,39 @@ namespace ArtivityExplorer.Controls
             MinHeight = 150;
             Margin = 0;
 
+            InitializeAgents();
+
             Reset();
         }
 
         #endregion
 
         #region Methods
+
+        private void InitializeAgents()
+        {
+            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+
+            IModel model;
+
+            if (store.ContainsModel(Models.Agents))
+            {
+                model = store.GetModel(Models.Agents);
+            }
+            else
+            {
+                model = store.CreateModel(Models.Agents);
+            }
+
+            ResourceQuery query = new ResourceQuery(prov.SoftwareAgent);
+
+            foreach (SoftwareAgent agent in model.GetResources<SoftwareAgent>(query))
+            {
+                System.Drawing.Color c = System.Drawing.ColorTranslator.FromHtml(agent.ColourCode);
+
+                _palette[agent] = OxyColor.FromArgb(c.A, c.R, c.G, c.B);
+            }
+        }
 
         public void Reset()
         {
@@ -250,7 +272,7 @@ namespace ArtivityExplorer.Controls
             series.MarkerFill = OxyColor.FromRgb(49, 55, 57);;
             series.MarkerStroke = series.Color;
             series.MarkerStrokeThickness = 2;
-            series.Title = agent.Uri.AbsoluteUri;
+            series.Title = agent.Name;
 
             return series;
         }

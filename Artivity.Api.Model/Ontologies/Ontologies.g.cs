@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 9/25/2015 4:20:21 PM
+// Date: 9/28/2015 12:34:00 PM
 
 using System;
 using System.Collections.Generic;
@@ -6777,9 +6777,21 @@ public class art : Ontology
 
     ///<summary>
     ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Layer"/>
+    ///</summary>
+    public static readonly Class Layer = new Class(new Uri("http://semiodesk.com/artivity/1.0/Layer"));    
+
+    ///<summary>
+    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/Modification"/>
     ///</summary>
     public static readonly Class Modification = new Class(new Uri("http://semiodesk.com/artivity/1.0/Modification"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
+    ///</summary>
+    public static readonly Property selectedLayer = new Property(new Uri("http://semiodesk.com/artivity/1.0/selectedLayer"));    
 
     ///<summary>
     ///
@@ -6822,6 +6834,12 @@ public class art : Ontology
     ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
     ///</summary>
     public static readonly Property isCaptureEnabled = new Property(new Uri("http://semiodesk.com/artivity/1.0/isCaptureEnabled"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hasColourCode"/>
+    ///</summary>
+    public static readonly Property hasColourCode = new Property(new Uri("http://semiodesk.com/artivity/1.0/hasColourCode"));    
 
     ///<summary>
     ///
@@ -6927,9 +6945,21 @@ public static class ART
 
     ///<summary>
     ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Layer"/>
+    ///</summary>
+    public const string Layer = "http://semiodesk.com/artivity/1.0/Layer";
+
+    ///<summary>
+    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/Modification"/>
     ///</summary>
     public const string Modification = "http://semiodesk.com/artivity/1.0/Modification";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
+    ///</summary>
+    public const string selectedLayer = "http://semiodesk.com/artivity/1.0/selectedLayer";
 
     ///<summary>
     ///
@@ -6972,6 +7002,12 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
     ///</summary>
     public const string isCaptureEnabled = "http://semiodesk.com/artivity/1.0/isCaptureEnabled";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hasColourCode"/>
+    ///</summary>
+    public const string hasColourCode = "http://semiodesk.com/artivity/1.0/hasColourCode";
 
     ///<summary>
     ///
@@ -8040,5 +8076,221 @@ public static class FOAF
     ///<see cref="http://xmlns.com/foaf/0.1/status"/>
     ///</summary>
     public const string status = "http://xmlns.com/foaf/0.1/status";
+}
+///<summary>
+///
+///
+///</summary>
+public class dces : Ontology
+{
+    public static readonly Uri Namespace = new Uri("http://purl.org/dc/elements/1.1/");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "dces";
+    public static string GetPrefix() { return Prefix; }     
+
+    ///<summary>
+    ///
+    ///<see cref="http://purl.org/dc/elements/1.1/"/>
+    ///</summary>
+    public static readonly Resource _1_1 = new Resource(new Uri("http://purl.org/dc/elements/1.1/"));    
+
+    ///<summary>
+    ///An entity responsible for making contributions to the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/contributor"/>
+    ///</summary>
+    public static readonly Property contributor = new Property(new Uri("http://purl.org/dc/elements/1.1/contributor"));    
+
+    ///<summary>
+    ///The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant.
+    ///<see cref="http://purl.org/dc/elements/1.1/coverage"/>
+    ///</summary>
+    public static readonly Property coverage = new Property(new Uri("http://purl.org/dc/elements/1.1/coverage"));    
+
+    ///<summary>
+    ///An entity primarily responsible for making the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/creator"/>
+    ///</summary>
+    public static readonly Property creator = new Property(new Uri("http://purl.org/dc/elements/1.1/creator"));    
+
+    ///<summary>
+    ///A point or period of time associated with an event in the lifecycle of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/date"/>
+    ///</summary>
+    public static readonly Property date = new Property(new Uri("http://purl.org/dc/elements/1.1/date"));    
+
+    ///<summary>
+    ///An account of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/description"/>
+    ///</summary>
+    public static readonly Property description = new Property(new Uri("http://purl.org/dc/elements/1.1/description"));    
+
+    ///<summary>
+    ///The file format, physical medium, or dimensions of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/format"/>
+    ///</summary>
+    public static readonly Property format = new Property(new Uri("http://purl.org/dc/elements/1.1/format"));    
+
+    ///<summary>
+    ///An unambiguous reference to the resource within a given context.
+    ///<see cref="http://purl.org/dc/elements/1.1/identifier"/>
+    ///</summary>
+    public static readonly Property identifier = new Property(new Uri("http://purl.org/dc/elements/1.1/identifier"));    
+
+    ///<summary>
+    ///A language of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/language"/>
+    ///</summary>
+    public static readonly Property language = new Property(new Uri("http://purl.org/dc/elements/1.1/language"));    
+
+    ///<summary>
+    ///An entity responsible for making the resource available.
+    ///<see cref="http://purl.org/dc/elements/1.1/publisher"/>
+    ///</summary>
+    public static readonly Property publisher = new Property(new Uri("http://purl.org/dc/elements/1.1/publisher"));    
+
+    ///<summary>
+    ///A related resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/relation"/>
+    ///</summary>
+    public static readonly Property relation = new Property(new Uri("http://purl.org/dc/elements/1.1/relation"));    
+
+    ///<summary>
+    ///Information about rights held in and over the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/rights"/>
+    ///</summary>
+    public static readonly Property rights = new Property(new Uri("http://purl.org/dc/elements/1.1/rights"));    
+
+    ///<summary>
+    ///A related resource from which the described resource is derived.
+    ///<see cref="http://purl.org/dc/elements/1.1/source"/>
+    ///</summary>
+    public static readonly Property source = new Property(new Uri("http://purl.org/dc/elements/1.1/source"));    
+
+    ///<summary>
+    ///The topic of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/subject"/>
+    ///</summary>
+    public static readonly Property subject = new Property(new Uri("http://purl.org/dc/elements/1.1/subject"));    
+
+    ///<summary>
+    ///A name given to the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/title"/>
+    ///</summary>
+    public static readonly Property title = new Property(new Uri("http://purl.org/dc/elements/1.1/title"));    
+
+    ///<summary>
+    ///The nature or genre of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/type"/>
+    ///</summary>
+    public static readonly Property type = new Property(new Uri("http://purl.org/dc/elements/1.1/type"));
+}
+///<summary>
+///
+///
+///</summary>
+public static class DCES
+{
+    public static readonly Uri Namespace = new Uri("http://purl.org/dc/elements/1.1/");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "DCES";
+    public static string GetPrefix() { return Prefix; } 
+
+    ///<summary>
+    ///
+    ///<see cref="http://purl.org/dc/elements/1.1/"/>
+    ///</summary>
+    public const string _1_1 = "http://purl.org/dc/elements/1.1/";
+
+    ///<summary>
+    ///An entity responsible for making contributions to the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/contributor"/>
+    ///</summary>
+    public const string contributor = "http://purl.org/dc/elements/1.1/contributor";
+
+    ///<summary>
+    ///The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant.
+    ///<see cref="http://purl.org/dc/elements/1.1/coverage"/>
+    ///</summary>
+    public const string coverage = "http://purl.org/dc/elements/1.1/coverage";
+
+    ///<summary>
+    ///An entity primarily responsible for making the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/creator"/>
+    ///</summary>
+    public const string creator = "http://purl.org/dc/elements/1.1/creator";
+
+    ///<summary>
+    ///A point or period of time associated with an event in the lifecycle of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/date"/>
+    ///</summary>
+    public const string date = "http://purl.org/dc/elements/1.1/date";
+
+    ///<summary>
+    ///An account of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/description"/>
+    ///</summary>
+    public const string description = "http://purl.org/dc/elements/1.1/description";
+
+    ///<summary>
+    ///The file format, physical medium, or dimensions of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/format"/>
+    ///</summary>
+    public const string format = "http://purl.org/dc/elements/1.1/format";
+
+    ///<summary>
+    ///An unambiguous reference to the resource within a given context.
+    ///<see cref="http://purl.org/dc/elements/1.1/identifier"/>
+    ///</summary>
+    public const string identifier = "http://purl.org/dc/elements/1.1/identifier";
+
+    ///<summary>
+    ///A language of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/language"/>
+    ///</summary>
+    public const string language = "http://purl.org/dc/elements/1.1/language";
+
+    ///<summary>
+    ///An entity responsible for making the resource available.
+    ///<see cref="http://purl.org/dc/elements/1.1/publisher"/>
+    ///</summary>
+    public const string publisher = "http://purl.org/dc/elements/1.1/publisher";
+
+    ///<summary>
+    ///A related resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/relation"/>
+    ///</summary>
+    public const string relation = "http://purl.org/dc/elements/1.1/relation";
+
+    ///<summary>
+    ///Information about rights held in and over the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/rights"/>
+    ///</summary>
+    public const string rights = "http://purl.org/dc/elements/1.1/rights";
+
+    ///<summary>
+    ///A related resource from which the described resource is derived.
+    ///<see cref="http://purl.org/dc/elements/1.1/source"/>
+    ///</summary>
+    public const string source = "http://purl.org/dc/elements/1.1/source";
+
+    ///<summary>
+    ///The topic of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/subject"/>
+    ///</summary>
+    public const string subject = "http://purl.org/dc/elements/1.1/subject";
+
+    ///<summary>
+    ///A name given to the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/title"/>
+    ///</summary>
+    public const string title = "http://purl.org/dc/elements/1.1/title";
+
+    ///<summary>
+    ///The nature or genre of the resource.
+    ///<see cref="http://purl.org/dc/elements/1.1/type"/>
+    ///</summary>
+    public const string type = "http://purl.org/dc/elements/1.1/type";
 }
 }

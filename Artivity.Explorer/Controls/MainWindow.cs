@@ -45,6 +45,15 @@ namespace ArtivityExplorer.Controls
 
             IModelGroup activities = store.CreateModelGroup();
 
+            if (store.ContainsModel(Models.Agents))
+            {
+                activities.Add(store.GetModel(Models.Agents));
+            }
+            else
+            {
+                Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.Agents);
+            }
+
             if (store.ContainsModel(Models.Activities))
             {
                 activities.Add(store.GetModel(Models.Activities));
