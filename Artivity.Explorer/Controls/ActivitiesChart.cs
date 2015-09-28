@@ -28,7 +28,9 @@ namespace ArtivityExplorer.Controls
 
         private Dictionary<Agent, LineSeries> _series = new Dictionary<Agent, LineSeries>();
 
-		private Dictionary<Agent, Annotation> _annotations = new Dictionary<Agent, Annotation>();
+        private Dictionary<Agent, List<PolygonAnnotation>> _annotations = new Dictionary<Agent, List<PolygonAnnotation>>();
+
+        private Close _lastClose;
 
 		private Dictionary<Agent, DateTime> _previous = new Dictionary<Agent, DateTime>();
 
@@ -67,7 +69,6 @@ namespace ArtivityExplorer.Controls
 
             _x = new DateTimeAxis()
             {
-                Minimum = 0,
                 Position = AxisPosition.Bottom,
                 FontSize = 9,
                 TextColor = OxyColors.LightGray,
@@ -124,69 +125,101 @@ namespace ArtivityExplorer.Controls
             
 			DateTime current = activity.StartTime.RoundToMinute();
 
+            // We initialize one series per agent.
+            LineSeries series;
+
 			if (!_series.ContainsKey(agent))
             {
-				LineSeries series = CreateSeries(agent);
-
-				series.Points.Add(DateTimeAxis.CreateDataPoint(current.Add(TimeSpan.FromMinutes(1)), 0));
-				series.Points.Add(DateTimeAxis.CreateDataPoint(current, 1));
+				series = CreateSeries(agent);
 
 				_series[agent] = series;
             }
-			else
+            else
+            {
+                series = _series[agent];
+            }
+
+            if (_previous.ContainsKey(agent))
+            {
+                // If there are already points in the series, we add the current one..
+                DateTime previous = _previous[agent];
+
+                if (DateTime.Equals(current, previous))
+                {
+                    // We increment the current data point's value..
+                    DataPoint p = series.Points.Last();
+
+                    series.Points.Remove(p);
+
+                    p.Y++;
+
+                    series.Points.Add(p);
+
+                    _maxY = Math.Max(_maxY, p.Y);
+                }
+                else
+                {
+                    // We fill up the gapping minutes between the current time value and the previous one..
+                    double delta = (previous - current).TotalMinutes;
+
+                    for (double m = 1; m < delta; m++)
+                    {
+                        DateTime t = previous.Subtract(TimeSpan.FromMinutes(m));
+
+                        series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
+                    }
+
+                    // ..and add the new point at the end.
+                    series.Points.Add(DateTimeAxis.CreateDataPoint(current, 1));
+                }
+            }
+            else
+            {
+                // If there are no points in the series, we add this one.
+                DateTime zero = current.Add(TimeSpan.FromMinutes(1));
+
+                series.Points.Add(DateTimeAxis.CreateDataPoint(zero, 0));
+                series.Points.Add(DateTimeAxis.CreateDataPoint(current, 1));
+            }
+
+            if (_lastClose == null && activity is Close)
+            {
+                // We move both, open and close a minute from each other so that the region
+                // is always visible in case both events happen at the same minute.
+                DateTime close = current.Add(TimeSpan.FromMinutes(1));
+
+                // If there are no annotations for this client yet, initialize them now.
+                if (!_annotations.ContainsKey(agent))
+                {
+                    _annotations.Add(agent, new List<PolygonAnnotation>());
+                }
+
+                // Add the background shade to the open and close sessions.
+                OxyColor color = _palette[agent];
+
+                // Since we're going backward in time, we see the close activities first.
+                PolygonAnnotation annotation = new PolygonAnnotation();
+                annotation.Layer = AnnotationLayer.BelowAxes;
+                annotation.Fill = OxyColor.FromArgb(125, color.R, color.G, color.B);
+                annotation.Points.Add(DateTimeAxis.CreateDataPoint(close, 0));
+                annotation.Points.Add(DateTimeAxis.CreateDataPoint(close, 100));
+
+                _annotations[agent].Add(annotation);
+
+                _lastClose = activity as Close;
+            }
+			else if (_lastClose != null && activity is Open)
 			{
-	            LineSeries series = _series[agent];
+                DateTime open = current.Subtract(TimeSpan.FromMinutes(1));
 
-				DateTime previous = _previous[agent];
+                if (_annotations.ContainsKey(agent))
+                {
+                    PolygonAnnotation annotation = _annotations[agent].Last();
+                    annotation.Points.Add(DateTimeAxis.CreateDataPoint(open, 100));
+                    annotation.Points.Add(DateTimeAxis.CreateDataPoint(open, 0));
+                }
 
-				if(DateTime.Equals(current, previous))
-	            {
-					// We increment the current data point's value..
-					DataPoint p = series.Points.Last();
-
-					series.Points.Remove(p);
-
-					p.Y++;
-
-					series.Points.Add(p);
-
-	                _maxY = Math.Max(_maxY, p.Y);
-	            }
-				else
-	            {
-	                // We fill up the gapping minutes between the current time value and the previous one..
-					double delta = (previous - current).TotalMinutes;
-
-					for (double m = 1; m < delta; m++)
-	                {
-						DateTime t = previous.Subtract(TimeSpan.FromMinutes(m));
-
-	                    series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
-	                }
-
-	                // ..and add the new point at the end.
-					series.Points.Add(DateTimeAxis.CreateDataPoint(current, 1));
-	            }
-
-				if (activity is Open)
-				{
-					DateTime zero = current.Subtract(TimeSpan.FromMinutes(1));
-	
-					series.Points.Add(DateTimeAxis.CreateDataPoint(zero, 0));
-
-					// Add the background shade to the open and close sessions.
-//					OxyColor color = _palette[agent];
-//
-//					PolygonAnnotation annotation = new PolygonAnnotation();
-//					annotation.Layer = AnnotationLayer.BelowAxes;
-//					annotation.Fill = OxyColor.FromArgb(125, color.R, color.G, color.B);
-//
-//					_annotations[agent] = annotation;
-				}
-				else if (activity is Close)
-				{
-					// TODO
-				}
+                _lastClose = null;
 			}
 
 			_previous[agent] = current;
@@ -200,6 +233,11 @@ namespace ArtivityExplorer.Controls
             }
 
 			_y.Maximum = Math.Ceiling(_maxY / 10) * 10;
+
+            foreach (PolygonAnnotation annoation in _annotations.Values.SelectMany(a => a))
+            {
+                Model.Annotations.Add(annoation);
+            }
         }
 
         private LineSeries CreateSeries(Agent agent)
