@@ -57,15 +57,6 @@ namespace ArtivityExplorer.Controls
             fileMenu.SubMenu.Items.Add(quitItem);
 
             Items.Add(fileMenu);
-
-            MenuItem aboutItem = new MenuItem();
-            aboutItem.Clicked += OnAboutClicked;
-
-            MenuItem helpMenu = new MenuItem("Help");
-            helpMenu.SubMenu = new Menu();
-            helpMenu.SubMenu.Items.Add(aboutItem);
-
-            Items.Add(helpMenu);
         }
 
         private void OnOpenClicked(object sender, EventArgs e)
