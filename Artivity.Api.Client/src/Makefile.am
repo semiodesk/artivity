@@ -20,6 +20,7 @@ nobase_pkginclude_HEADERS = artivity.h \
     ObjectModel/Role.h \
     ObjectModel/Person.h \
     ObjectModel/Viewbox.h \
+    ObjectModel/Dimensions.h \
     ObjectModel/Generation.h \
     ObjectModel/Invalidation.h \
     ObjectModel/SoftwareAssociation.h \

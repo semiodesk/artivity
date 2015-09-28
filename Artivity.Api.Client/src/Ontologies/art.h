@@ -29,6 +29,16 @@ namespace artivity
         static const Property bottom = ART("bottom");
         static const Property zoomFactor = ART("zoomFactor");
         
+        static const Resource Dimensions = ART("Dimensions");
+        static const Property dimensions = ART("dimensions");
+        static const Property x = ART("x");
+        static const Property y = ART("y");
+        static const Property z = ART("z");
+        static const Property unit = ART("unit");
+        
+        // There is no Pixel unit in the QUDT unit ontology.. :/
+        static const Resource Pixel = ART("Pixel");
+        
         static const Property isCaptureEnabled = ART("isCaptureEnabled");
 
         static const Property selectedLayer = ART("selectedLayer");

@@ -14,14 +14,18 @@ namespace Inkscape
 {
     using namespace std;
     using namespace artivity;
+    using Geom::Rect;
+    using Geom::Point;
     using Inkscape::Util::List;
     using Inkscape::Util::rest;
+    using Inkscape::Util::Unit;
     using Inkscape::XML::AttributeRecord;
     using Inkscape::XML::Node;
     using Inkscape::XML::NodeType;
     
-    ArtivityLog::ArtivityLog(SPDocument* doc, SPDesktop* desktop) : UndoStackObserver(), _doc(doc)
+    ArtivityLog::ArtivityLog(SPDocument* document, SPDesktop* desktop) : UndoStackObserver()
     {
+        _document = document;
         _desktop = desktop;
 
         _log = ActivityLog();
@@ -85,11 +89,21 @@ namespace Inkscape
         activity->setValue(rdf::_type, type);
         activity->setTime(&now);
         activity->addAssociation(association);
-        
+                
         if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
         {
-            Geom::Rect vbox = _desktop->get_display_area();
-
+            const Unit* unit = _document->getDefaultUnit();
+            
+            Point dim = _document->getDimensions();
+            
+            Dimensions* dimensions = new Dimensions();
+            dimensions->setX(dim.x());
+            dimensions->setY(dim.y());
+            
+            _log.addResource(dimensions);
+            
+            Rect vbox = _desktop->get_display_area();
+  
             Viewbox* viewbox = new Viewbox();
             viewbox->setLeft(vbox.left());
             viewbox->setRight(vbox.right());
@@ -106,9 +120,10 @@ namespace Inkscape
             
             FileDataObject* generated = new FileDataObject("_:UNSET");
             //generated->addProperty(rdf::_type, prov::Collection);
-            generated->addProperty(prov::generatedAtTime, activity->getTime());
+            generated->setDimensions(dimensions);
             generated->setGeneration(generation);
             generated->setLastModificationTime(activity->getTime());
+            generated->addProperty(prov::generatedAtTime, activity->getTime());
             
             activity->addGeneratedEntity(generated);
                             
@@ -121,8 +136,9 @@ namespace Inkscape
             
             FileDataObject* invalidated = new FileDataObject("_:UNSET");
             //invalidated->addProperty(rdf::_type, prov::Collection);
-            invalidated->addProperty(prov::invalidatedAtTime, activity->getTime());
+            invalidated->setDimensions(dimensions);
             invalidated->setInvalidation(invalidation);
+            invalidated->addProperty(prov::invalidatedAtTime, activity->getTime());
             
             activity->addInvalidatedEntity(invalidated);
                 
@@ -142,20 +158,20 @@ namespace Inkscape
     {
         if(_log.empty() || !_log.isConnected()) return;
         
-        if(_doc == NULL)
+        if(_document == NULL)
         {
             g_error("processEventQueue: _doc is NULL");
             return;
         }
 
-        if(_doc->getURI() == NULL)
+        if(_document->getURI() == NULL)
         {
             // The document is not yet persisted. Therefore we keep our events
             // in the queue until we have a valid file system path.
             return;
         }
         
-        string uri = "file://" + string(_doc->getURI());
+        string uri = "file://" + string(_document->getURI());
         
         if(_entity == NULL)
         {
@@ -349,7 +365,7 @@ namespace Inkscape
     ArtivityLog::getXmlElement(Event* e)
     {
         const char* id = getXmlElementId(e);
-        const char* url = _doc->getURI();
+        const char* url = _document->getURI();
         
         if(id == NULL || url == NULL)
             return NULL;

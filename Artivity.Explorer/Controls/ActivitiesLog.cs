@@ -9,16 +9,17 @@ using Artivity.Model;
 
 namespace ArtivityExplorer.Controls
 {
-    public class ActivitiesLog : TreeView
+    public class ActivitiesLog : ListView
     {
 		#region Members
 		
-		public TreeStore Store { get; private set; }
+        public ListStore Store { get; private set; }
 
 		public IDataField<Activity> ActivityField { get; private set; }
 		public IDataField<string> TimeField { get; private set; }
 		public IDataField<string> TypeField { get; private set; }
 		public IDataField<string> ActionField { get; private set; }
+        public IDataField<string> SizeField { get; private set; }
 		public IDataField<string> ZoomField { get; private set; }
 
 		#endregion
@@ -38,6 +39,8 @@ namespace ArtivityExplorer.Controls
         {
             Margin = 0;
             HeadersVisible = true;
+            BorderVisible = false;
+            ExpandHorizontal = true;
             SelectionMode = SelectionMode.Multiple;
 
 			ActivityField = new DataField<Activity>();
@@ -69,6 +72,15 @@ namespace ArtivityExplorer.Controls
             actionColumn.Alignment = Alignment.Start;
             actionColumn.CanResize = true;
 
+            SizeField = new DataField<string>();
+
+            TextCellView sizeView = new TextCellView();
+            sizeView.MarkupField = SizeField;
+
+            ListViewColumn sizeColumn = new ListViewColumn ("Size", sizeView);
+            actionColumn.Alignment = Alignment.Start;
+            actionColumn.CanResize = true;
+
 			ZoomField = new DataField<string>();
 
 			TextCellView zoomView = new TextCellView();
@@ -80,10 +92,11 @@ namespace ArtivityExplorer.Controls
 
             Columns.Add(typeColumn);
 			Columns.Add(actionColumn);
+            Columns.Add(sizeColumn);
 			Columns.Add(zoomColumn);
 			Columns.Add(timeColumn);
 
-			Store = new TreeStore(ActivityField, TimeField, TypeField, ActionField, ZoomField);
+            Store = new ListStore(ActivityField, TimeField, TypeField, ActionField, SizeField, ZoomField);
 
             DataSource = Store;
         }
@@ -95,17 +108,17 @@ namespace ArtivityExplorer.Controls
 
         public void Add(Activity activity)
         {
-            TreeNavigator node = Store.AddNode();
+            int row = Store.AddRow();
 
             // Set the data context of the current row.
-            node.SetValue(ActivityField, activity);
+            Store.SetValue(row, ActivityField, activity);
 
             // Set the formatted date time.
-            node.SetValue(TimeField, activity.StartTime.ToString("HH:mm:ss")); 
+            Store.SetValue(row, TimeField, activity.StartTime.ToString("HH:mm:ss")); 
 
             if (activity.GetTypes().Any())
             {
-                node.SetValue(TypeField, "<b>" + ToDisplayString(activity.GetTypes().First().Uri) + "</b>");
+                Store.SetValue(row, TypeField, "<b>" + ToDisplayString(activity.GetTypes().First().Uri) + "</b>");
             }
 
             // Set activity action details.
@@ -127,12 +140,17 @@ namespace ArtivityExplorer.Controls
                     action += f.Generation.Value;
                 }
 
-                node.SetValue(ActionField, action);
+                Store.SetValue(row, ActionField, action);
+
+                if (f.Dimensions != null)
+                {
+                    Store.SetValue(row, SizeField, f.Dimensions.X + " x " + f.Dimensions.Y);
+                }
 
                 if (f.Generation.Viewbox != null)
                 {
                     // Set the formatted zoom value.
-                    node.SetValue(ZoomField, Math.Round(f.Generation.Viewbox.ZoomFactor * 100, 0) + "%");
+                    Store.SetValue(row, ZoomField, Math.Round(f.Generation.Viewbox.ZoomFactor * 100, 0) + "%");
                 }
             }
             else
@@ -141,7 +159,7 @@ namespace ArtivityExplorer.Controls
 
                 if (w != null)
                 {
-                    node.SetValue(ActionField, w.Uri.Host);
+                    Store.SetValue(row, ActionField, w.Uri.Host);
                 }
             }
         }
@@ -170,11 +188,9 @@ namespace ArtivityExplorer.Controls
 			{
 				IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
-				foreach(TreePosition pos in SelectedRows)
+                foreach(int row in SelectedRows)
 				{
-					TreeNavigator node = Store.GetNavigatorAt(pos);
-
-					Activity activity = node.GetValue(ActivityField);
+					Activity activity = Store.GetValue(row, ActivityField);
 
 					IModel model;
 
@@ -187,9 +203,9 @@ namespace ArtivityExplorer.Controls
 						model = store.GetModel(Models.Activities);
 					}
 
-					model.DeleteResource(activity);
+					model.DeleteResource(activity.Uri);
 
-					node.Remove();
+                    Store.RemoveRow(row);
 				}
 			}
 		}
