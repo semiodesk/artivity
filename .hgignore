@@ -36,3 +36,9 @@ packages/*
 *.tar.gz
 */bin/*
 .codelite/*
+*.resolve
+*.guess
+*.status
+*.m4
+*.sub
+*.pc
