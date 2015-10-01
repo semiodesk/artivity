@@ -146,25 +146,32 @@ namespace Artivity.Api.Http
 
 		private void AddResources(IModel model, Stream stream)
 		{
-			string connectionString = "Server=localhost:1111;uid=dba;pwd=dba;Charset=utf-8";
+            try
+            {
+    			string connectionString = "Server=localhost:1111;uid=dba;pwd=dba;Charset=utf-8";
 
-            using (StreamReader reader = new StreamReader(stream))
-			{
-                string data = BindUriVariables(reader.ReadToEnd());
+                using (StreamReader reader = new StreamReader(stream))
+    			{
+                    string data = BindUriVariables(reader.ReadToEnd());
 
-				using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
-				{
-					using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
-					{
-						IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
-						parser.Load(graph, new StringReader(data));
+    				using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
+    				{
+    					using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
+    					{
+    						IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
+    						parser.Load(graph, new StringReader(data));
 
-						graph.BaseUri = model.Uri;
+    						graph.BaseUri = model.Uri;
 
-						m.UpdateGraph(model.Uri, graph.Triples, new List<Triple>());
-					}
-				}
-			}
+    						m.UpdateGraph(model.Uri, graph.Triples, new List<Triple>());
+    					}
+    				}
+    			}
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(HttpStatusCode.InternalServerError, e);
+            }
 		}
 
         public static string BindUriVariables(string data)

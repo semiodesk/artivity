@@ -4,14 +4,16 @@
 #include "../Ontologies/rdf.h"
 #include "../Ontologies/prov.h"
 #include "../UriGenerator.h"
-#include "Viewbox.h"
+#include "Geometry/Viewport.h"
 
 namespace artivity
 {
     class ActivityInfluence : public Resource
     {
     private:
-        Viewbox* _viewbox;
+        Viewport* _viewport;
+        
+        Geometry* _boundaries;
         
         Resource* _location;
         
@@ -28,18 +30,28 @@ namespace artivity
             Resource::setValue(rdf::_type, prov::ActivityInfluence);
         }
         
-        virtual ~ActivityInfluence() {}
-        
-        Viewbox* getViewbox()
+        Viewport* getViewport()
         {
-            return _viewbox;
+            return _viewport;
         }
         
-        void setViewbox(Viewbox* viewbox)
+        void setViewport(Viewport* viewport)
         {
-            _viewbox = viewbox;
+            _viewport = viewport;
             
-            Resource::setValue(art::hadViewbox, viewbox);
+            Resource::setValue(art::hadViewport, viewport);
+        }
+        
+        Geometry* getBoundaries()
+        {
+            return _boundaries;
+        }
+        
+        void setBoundaries(Geometry* boundaries)
+        {
+            _boundaries = boundaries;
+            
+            Resource::setValue(art::hadBoundaries, boundaries);
         }
         
         Resource* getLocation()

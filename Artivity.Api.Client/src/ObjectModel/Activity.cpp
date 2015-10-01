@@ -43,37 +43,37 @@ namespace artivity
         return true;
     }
     
-    void Activity::setTime(const time_t* time)
+    void Activity::setTime(time_t time)
     {
         setStartTime(time);
         setEndTime(time);
     }
     
-    const time_t* Activity::getTime()
+    time_t Activity::getTime()
     {
         return _startTime;
     }
     
-    void Activity::setEndTime(const time_t* time)
+    void Activity::setEndTime(time_t time)
     {
         _endTime = time;
         
-        setValue(prov::endedAtTime, _endTime);
+        setValue(prov::endedAtTime, &_endTime);
     }
     
-    const time_t* Activity::getEndTime()
+    time_t Activity::getEndTime()
     {
         return _endTime;
     }
     
-    void Activity::setStartTime(const time_t* time)
+    void Activity::setStartTime(time_t time)
     {
         _startTime = time;
         
-        setValue(prov::startedAtTime, _startTime);
+        setValue(prov::startedAtTime, &_startTime);
     }
     
-    const time_t* Activity::getStartTime()
+    time_t Activity::getStartTime()
     {
         return _startTime;
     }

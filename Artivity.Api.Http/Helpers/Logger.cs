@@ -25,6 +25,13 @@ namespace Artivity.Api.Http
             return status;
         }
 
+        public static HttpStatusCode LogRequest(HttpStatusCode status, Request request)
+        {
+            Console.WriteLine("[{0} {1}] {3} {2}", DateTime.Now.ToString("g"), status, request.Path, request.Method);
+
+            return status;
+        }
+
         public static HttpStatusCode LogRequest(HttpStatusCode status, string route, string method, string content)
         {
             Console.WriteLine("[{0} {1}] {3} {2}", DateTime.Now.ToString("g"), status, route, method);
@@ -47,7 +54,7 @@ namespace Artivity.Api.Http
         public static HttpStatusCode LogError(HttpStatusCode status, string msg, params object[] p)
         {
             Console.Write("[{0} {1}] Error: ", DateTime.Now.ToString("g"), status);
-            Console.Write(msg, p);
+            Console.WriteLine(msg, p);
 
             return status;
         }

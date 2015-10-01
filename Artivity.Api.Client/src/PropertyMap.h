@@ -18,6 +18,8 @@ namespace artivity
         
         PropertyMapIterator findProperty(const string& property, const Resource* resource)
         {
+            if(resource == NULL) return end();
+            
             PropertyMapIterator it = begin();
         
             while(it != end())
@@ -65,7 +67,7 @@ namespace artivity
         
         void addProperty(const string& property, const Resource* resource)
         {
-            if(hasProperty(property, resource)) return;
+            if(resource == NULL || hasProperty(property, resource)) return;
             
             insert(pair<string, PropertyValue>(property, PropertyValue(resource)));
         }
@@ -98,6 +100,8 @@ namespace artivity
         void setProperty(const string& property, const Resource* resource)
         {
             erase(property);
+            
+            if(resource == NULL) return;
             
             addProperty(property, resource);
         }

@@ -20,8 +20,11 @@ namespace Artivity.Model.ObjectModel
 		[RdfProperty(PROV.value)]
 		public string Value { get; set; }
 
-		[RdfProperty(ART.hadViewbox)]
-		public Viewbox Viewbox { get; set; }
+		[RdfProperty(ART.hadViewport)]
+		public Viewport Viewport { get; set; }
+
+        [RdfProperty(ART.hadBoundaries)]
+        public Geometry Boundaries { get; set; }
 
 		#endregion
 

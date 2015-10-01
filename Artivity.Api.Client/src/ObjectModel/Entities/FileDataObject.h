@@ -4,7 +4,7 @@
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/nfo.h"
 #include "../Entity.h"
-#include "../Dimensions.h"
+#include "../Geometry/Canvas.h"
 
 namespace artivity
 {
@@ -12,11 +12,16 @@ namespace artivity
     {
     private:
         const char* _url;
-        const time_t* _creationTime;
-        const time_t* _lastAccessTime;
-        const time_t* _lastModificationTime;
+        
+        time_t _creationTime;
+        
+        time_t _lastAccessTime;
+        
+        time_t _lastModificationTime;
+        
         long _size;
-        Dimensions* _dimensions;
+        
+        Canvas* _canvas;
         
     public:
         FileDataObject() : Entity()
@@ -41,40 +46,40 @@ namespace artivity
             setValue(nfo::fileUrl, url);
         }
         
-        const time_t* getCreationTime()
+        time_t getCreationTime()
         {
             return _creationTime;
         }
         
-        void setCreationTime(const time_t* time)
+        void setCreationTime(time_t time)
         {
             _creationTime = time;
             
-            setValue(nfo::fileCreated, _creationTime);
+            setValue(nfo::fileCreated, &_creationTime);
         }
         
-        const time_t* getLastAccessTime()
+        time_t getLastAccessTime()
         {
             return _lastAccessTime;
         }
         
-        void setLastAccessTime(const time_t* time)
+        void setLastAccessTime(time_t time)
         {
             _lastAccessTime = time;
             
-            setValue(nfo::fileLastAccessed, _lastAccessTime);
+            setValue(nfo::fileLastAccessed, &_lastAccessTime);
         }
         
-        const time_t* getLastModificationTime()
+        time_t getLastModificationTime()
         {
             return _lastModificationTime;
         }
         
-        void setLastModificationTime(const time_t* time)
+        void setLastModificationTime(time_t time)
         {
             _lastModificationTime = time;
             
-            setValue(nfo::fileLastModified, _lastModificationTime);
+            setValue(nfo::fileLastModified, &_lastModificationTime);
         }
         
         long getSize()
@@ -89,16 +94,16 @@ namespace artivity
             setValue(nfo::fileSize, size);
         }
         
-        Dimensions* getDimensions()
+        Canvas* getCanvas()
         {
-            return _dimensions;
+            return _canvas;
         }
         
-        void setDimensions(Dimensions* dimensions)
+        void setCanvas(Canvas* canvas)
         {
-            _dimensions = dimensions;
+            _canvas = canvas;
             
-            Resource::setValue(art::dimensions, dimensions);
+            Resource::setValue(art::hadCanvas, canvas);
         }
     };
 }

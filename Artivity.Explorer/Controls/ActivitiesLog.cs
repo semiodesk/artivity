@@ -19,6 +19,7 @@ namespace ArtivityExplorer.Controls
 		public IDataField<string> TimeField { get; private set; }
 		public IDataField<string> TypeField { get; private set; }
 		public IDataField<string> ActionField { get; private set; }
+        public IDataField<string> BoundsField { get; private set; }
         public IDataField<string> SizeField { get; private set; }
 		public IDataField<string> ZoomField { get; private set; }
 
@@ -72,14 +73,23 @@ namespace ArtivityExplorer.Controls
             actionColumn.Alignment = Alignment.Start;
             actionColumn.CanResize = true;
 
+            BoundsField = new DataField<string>();
+
+            TextCellView boundsView = new TextCellView();
+            boundsView.MarkupField = BoundsField;
+
+            ListViewColumn boundsColumn = new ListViewColumn ("Bounds", boundsView);
+            boundsColumn.Alignment = Alignment.Start;
+            boundsColumn.CanResize = true;
+
             SizeField = new DataField<string>();
 
             TextCellView sizeView = new TextCellView();
             sizeView.MarkupField = SizeField;
 
             ListViewColumn sizeColumn = new ListViewColumn ("Size", sizeView);
-            actionColumn.Alignment = Alignment.Start;
-            actionColumn.CanResize = true;
+            sizeColumn.Alignment = Alignment.Start;
+            sizeColumn.CanResize = true;
 
 			ZoomField = new DataField<string>();
 
@@ -92,11 +102,12 @@ namespace ArtivityExplorer.Controls
 
             Columns.Add(typeColumn);
 			Columns.Add(actionColumn);
+            Columns.Add(boundsColumn);
             Columns.Add(sizeColumn);
 			Columns.Add(zoomColumn);
 			Columns.Add(timeColumn);
 
-            Store = new ListStore(ActivityField, TimeField, TypeField, ActionField, SizeField, ZoomField);
+            Store = new ListStore(ActivityField, TimeField, TypeField, ActionField, BoundsField, SizeField, ZoomField);
 
             DataSource = Store;
         }
@@ -142,15 +153,23 @@ namespace ArtivityExplorer.Controls
 
                 Store.SetValue(row, ActionField, action);
 
-                if (f.Dimensions != null)
+                if (f.Canvas != null)
                 {
-                    Store.SetValue(row, SizeField, f.Dimensions.X + " x " + f.Dimensions.Y);
+                    Store.SetValue(row, SizeField, f.Canvas.Width + " x " + f.Canvas.Height);
                 }
 
-                if (f.Generation.Viewbox != null)
+                if (f.Generation.Viewport != null)
                 {
-                    // Set the formatted zoom value.
-                    Store.SetValue(row, ZoomField, Math.Round(f.Generation.Viewbox.ZoomFactor * 100, 0) + "%");
+                    Viewport viewport = f.Generation.Viewport;
+
+                    Store.SetValue(row, ZoomField, Math.Round(viewport.ZoomFactor * 100, 0) + "%");
+                }
+
+                if (f.Generation.Boundaries is BoundingRectangle)
+                {
+                    BoundingRectangle bounds = f.Generation.Boundaries as BoundingRectangle;
+
+                    Store.SetValue(row, BoundsField, bounds.Width + " x " + bounds.Height);
                 }
             }
             else

@@ -1,29 +1,30 @@
-#ifndef DIMENSIONS_H
-#define DIMENSIONS_H
+#ifndef POINT_H
+#define POINT_H
 
-#include "../Ontologies/rdf.h"
-#include "../Ontologies/art.h"
-#include "../UriGenerator.h"
+#include "../../Ontologies/rdf.h"
+#include "../../Ontologies/art.h"
+#include "../../UriGenerator.h"
 
 namespace artivity
 {
-    class Dimensions : public Resource
+    class Point : public Resource
     {
     private:
         double _x;
+        
         double _y;
+        
         double _z;
-        Resource* _unit;
         
     public:
-        Dimensions() : Resource(UriGenerator::getUri())
+        Point() : Resource(UriGenerator::getUri())
         {
-            setValue(rdf::_type, art::Dimensions);
+            setValue(rdf::_type, art::Point);
         }
         
-        Dimensions(const char* uriref) : Resource(uriref)
+        Point(const char* uriref) : Resource(uriref)
         {
-            setValue(rdf::_type, art::Dimensions);
+            setValue(rdf::_type, art::Point);
         }
         
         double getX()
@@ -61,19 +62,7 @@ namespace artivity
             
             setValue(art::z, z);
         }
-        
-        Resource* getUnit()
-        {
-            return _unit;
-        }
-        
-        void setUnit(Resource* unit)
-        {
-            _unit = unit;
-            
-            setValue(art::unit, unit);
-        }
     };
 }
 
-#endif // DIMENSIONS_H
+#endif // POINT_H
