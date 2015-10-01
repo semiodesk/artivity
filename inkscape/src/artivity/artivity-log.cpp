@@ -15,10 +15,11 @@ namespace Inkscape
     using namespace std;
     using namespace artivity;
     using Geom::Rect;
-    using Geom::Point;
+    using Geom::OptRect;
     using Inkscape::Util::List;
     using Inkscape::Util::rest;
     using Inkscape::Util::Unit;
+    using Inkscape::Util::Quantity;
     using Inkscape::XML::AttributeRecord;
     using Inkscape::XML::Node;
     using Inkscape::XML::NodeType;
@@ -29,8 +30,8 @@ namespace Inkscape
         _desktop = desktop;
 
         _log = ActivityLog();
-        _agent = new SoftwareAgent("application://inkscape.desktop");
-        
+        _log.addAgent(new SoftwareAgent("application://inkscape.desktop"));
+    
         logEvent(art::Open, NULL);
     }
 
@@ -71,92 +72,100 @@ namespace Inkscape
     {
         // Do nothing.
     }
-
+    
     void
     ArtivityLog::logEvent(const Resource& type, Event* e)
     {
-        if(_desktop == NULL) return;
-                                
-        Association* association = new Association();
-        association->setAgent(_agent);
-
-        _log.addResource(association);
-                
-        time_t now;
-        time(&now);
+        if(_desktop == NULL)
+            return;
         
-        Activity* activity = new Activity();
-        activity->setValue(rdf::_type, type);
-        activity->setTime(&now);
-        activity->addAssociation(association);
-                
-        if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
+        try
         {
-            const Unit* unit = _document->getDefaultUnit();
-            
-            Point dim = _document->getDimensions();
-            
-            Dimensions* dimensions = new Dimensions();
-            dimensions->setX(dim.x());
-            dimensions->setY(dim.y());
-            
-            _log.addResource(dimensions);
-            
-            Rect vbox = _desktop->get_display_area();
-  
-            Viewbox* viewbox = new Viewbox();
-            viewbox->setLeft(vbox.left());
-            viewbox->setRight(vbox.right());
-            viewbox->setTop(vbox.top());
-            viewbox->setBottom(vbox.bottom());
-            viewbox->setZoomFactor(_desktop->current_zoom());
-        
-            _log.addResource(viewbox);
-            
-            Generation* generation = new Generation();
-            generation->setViewbox(viewbox);
-            
-            _log.addResource(generation);
-            
-            FileDataObject* generated = new FileDataObject("_:UNSET");
-            //generated->addProperty(rdf::_type, prov::Collection);
-            generated->setDimensions(dimensions);
-            generated->setGeneration(generation);
-            generated->setLastModificationTime(activity->getTime());
-            generated->addProperty(prov::generatedAtTime, activity->getTime());
-            
-            activity->addGeneratedEntity(generated);
-                            
-            _log.addResource(generated);
-            
-            Invalidation* invalidation = new Invalidation();
-            invalidation->setViewbox(viewbox);
-            
-            _log.addResource(invalidation);
-            
-            FileDataObject* invalidated = new FileDataObject("_:UNSET");
-            //invalidated->addProperty(rdf::_type, prov::Collection);
-            invalidated->setDimensions(dimensions);
-            invalidated->setInvalidation(invalidation);
-            invalidated->addProperty(prov::invalidatedAtTime, activity->getTime());
-            
-            activity->addInvalidatedEntity(invalidated);
+            Activity* activity = _log.createActivity(type);
+                    
+            if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
+            {
+                Quantity width = _document->getWidth();
+                Quantity height = _document->getHeight();
                 
-            _log.addResource(invalidated);
+                CoordinateSystem* coordinateSystem = new CoordinateSystem();
+                coordinateSystem->setCoordinateDimension(2);
+                coordinateSystem->setTransformationMatrix("[1 0 0; 0 1 0; 0 0 0]");
+                
+                _log.addResource(coordinateSystem);
+                
+                // TODO: Get the one referencing to the actual file to reduce data overhead.
+                Canvas* canvas = new Canvas();
+                canvas->setWidth(width.quantity);
+                canvas->setHeight(height.quantity);
+                canvas->setLengthUnit(getUnit(width));
+                canvas->setCoordinateSystem(coordinateSystem);
+                
+                _log.addResource(canvas);
+                
+                Rect vbox = _desktop->get_display_area();
+      
+                Point* p = new Point();
+                p->setX(vbox.left());
+                p->setY(vbox.top());
+                
+                _log.addResource(p);
+                
+                Viewport* viewport = new Viewport();
+                viewport->setPosition(p);
+                viewport->setWidth(vbox.right() - vbox.left());
+                viewport->setHeight(vbox.bottom() - vbox.top());
+                viewport->setZoomFactor(_desktop->current_zoom());
+            
+                _log.addResource(viewport);
+                
+                Generation* generation = new Generation();
+                generation->setViewport(viewport);
+                
+                _log.addResource(generation);
+                
+                FileDataObject* generated = new FileDataObject("_:UNSET");
+                //generated->addProperty(rdf::_type, prov::Collection);
+                generated->setCanvas(canvas);
+                generated->setGeneration(generation);
+                generated->setLastModificationTime(activity->getTime());
+                generated->setGenerationTime(activity->getTime());
+                
+                activity->addGeneratedEntity(generated);
+                                
+                _log.addResource(generated);
+                
+                Invalidation* invalidation = new Invalidation();
+                invalidation->setViewport(viewport);
+                
+                _log.addResource(invalidation);
+                
+                FileDataObject* invalidated = new FileDataObject("_:UNSET");
+                //invalidated->addProperty(rdf::_type, prov::Collection);
+                invalidated->setCanvas(canvas);
+                invalidated->setInvalidation(invalidation);
+                invalidated->setInvalidationTime(activity->getTime());
+                
+                activity->addInvalidatedEntity(invalidated);
+                    
+                _log.addResource(invalidated);
+            }
+            
+            // NOTE: setType() requires the Generation and Invalidation to be initialized.
+            setType(activity, e);
+            
+            processEventQueue();
         }
-        
-        // NOTE: setType() requires the Generation and Invalidation to be initialized.
-        setType(activity, e);
-        
-        _log.push_back(activity);
-        
-        processEventQueue();
+        catch(exception e)
+        {
+            g_error("exception caught.");
+        }
     }
 
     void
     ArtivityLog::processEventQueue()
     {
-        if(_log.empty() || !_log.isConnected()) return;
+        if(_log.empty() || !_log.connected()) return;
         
         if(_document == NULL)
         {
@@ -261,18 +270,18 @@ namespace Inkscape
         {
             if(activity->getGeneratedEntities().empty() && activity->getInvalidatedEntities().empty())
                 return;
-            
-            XmlElement* element = getXmlElement(e);
-            
-            _log.addResource(element);
-               
+                        
             Inkscape::XML::EventChgAttr* x = as<Inkscape::XML::EventChgAttr*>(e->event);
             
-            string newval = string(x->newval);
-            string oldval = string(x->oldval);
+            string newval = x->newval != 0 ? string(x->newval) : "";
+            string oldval = x->oldval != 0 ? string(x->oldval) : "";
                 
             AttributeValueMap* values = getChangedAttributes(oldval, newval);
             AttributeValueIterator it = values->begin();
+            
+            XmlElement* element = getXmlElement(e);
+               
+            BoundingRectangle* bounds = getBoundingRectangle(e);
             
             while(it != values->end())
             {                     
@@ -282,8 +291,8 @@ namespace Inkscape
                 
                 _log.addResource(attribute);
                 
-                setGeneratedValue(activity->getGeneratedEntities(), it->second->newval.c_str(), attribute);
-                setInvalidatedValue(activity->getInvalidatedEntities(), it->second->oldval.c_str(), attribute);
+                setGeneratedValue(activity->getGeneratedEntities(), it->second->newval.c_str(), attribute, bounds);
+                setInvalidatedValue(activity->getInvalidatedEntities(), it->second->oldval.c_str(), attribute, bounds);
             
                 delete it->second;
                 
@@ -296,18 +305,18 @@ namespace Inkscape
         {
             if(activity->getGeneratedEntities().empty() && activity->getInvalidatedEntities().empty())
                 return;
-                
+            
             XmlElement* element = getXmlElement(e);
             
-            _log.addResource(element);
-            
+            BoundingRectangle* bounds = getBoundingRectangle(e);
+                    
             Inkscape::XML::EventChgContent* x = as<Inkscape::XML::EventChgContent*>(e->event);
             
-            string newval = string(x->newval);
-            string oldval = string(x->oldval);
+            string newval = x->newval != 0 ? string(x->newval) : "";
+            string oldval = x->oldval != 0 ? string(x->oldval) : "";
             
-            setGeneratedValue(activity->getGeneratedEntities(), newval, element);
-            setInvalidatedValue(activity->getInvalidatedEntities(), oldval, element);
+            setGeneratedValue(activity->getGeneratedEntities(), newval, element, bounds);
+            setInvalidatedValue(activity->getInvalidatedEntities(), oldval, element, bounds);
         }
         else if(is<Inkscape::XML::EventChgOrder*>(e->event))
         {
@@ -318,7 +327,7 @@ namespace Inkscape
     }
     
     void
-    ArtivityLog::setGeneratedValue(list<Entity*> entities, string value, Resource* location)
+    ArtivityLog::setGeneratedValue(list<Entity*> entities, string value, Resource* location, BoundingRectangle* bounds)
     {
         if(entities.empty())
             return;
@@ -337,10 +346,15 @@ namespace Inkscape
         
         generation->setValue(value);
         generation->setLocation(location);
+        
+        if(bounds)
+        {
+            generation->setBoundaries(bounds);
+        }
     }
     
     void
-    ArtivityLog::setInvalidatedValue(list<Entity*> entities, string value, Resource* location)
+    ArtivityLog::setInvalidatedValue(list<Entity*> entities, string value, Resource* location, BoundingRectangle* bounds)
     {
         if(entities.empty())
             return;
@@ -359,6 +373,53 @@ namespace Inkscape
         
         invalidation->setValue(value);
         invalidation->setLocation(location);
+        
+        if(bounds)
+        {
+            invalidation->setBoundaries(bounds);
+        }
+    }
+    
+    BoundingRectangle*
+    ArtivityLog::getBoundingRectangle(Event* e)
+    {
+        const char* id = getXmlElementId(e);
+        
+        SPObject* obj = _document->getObjectById(id);
+        
+        if(!obj) return NULL;
+            
+        SPItem* item = dynamic_cast<SPItem*>(obj);
+
+        if(!item) return NULL;
+                
+        OptRect rect = item->documentVisualBounds();
+        
+        if(!rect) return NULL;
+        
+        const Unit* svg = &(_document->getSVGUnit());
+        
+        Quantity x = Quantity(rect->min()[0], svg);
+        Quantity y = Quantity(rect->min()[1], svg);
+        Quantity w = Quantity(rect->dimensions()[0], svg);
+        Quantity h = Quantity(rect->dimensions()[1], svg);
+        
+        const Unit* doc = _document->getWidth().unit;
+        
+        Point* p = new Point();
+        p->setX(x.value(doc));
+        p->setY(y.value(doc));
+        
+        _log.addResource(p);
+        
+        BoundingRectangle* bounds = new BoundingRectangle();
+        bounds->setPosition(p);
+        bounds->setWidth(w.value(doc));
+        bounds->setHeight(h.value(doc));
+        
+        _log.addResource(bounds);
+        
+        return bounds;
     }
     
     XmlElement*
@@ -370,7 +431,11 @@ namespace Inkscape
         if(id == NULL || url == NULL)
             return NULL;
         
-        return new XmlElement(url, id);
+        XmlElement* element = new XmlElement(url, id);
+        
+        _log.addResource(element);
+                        
+        return element;
     }
     
     const char*
@@ -399,6 +464,50 @@ namespace Inkscape
         }
         
         return NULL;
+    }
+    
+    Node*
+    ArtivityLog::getXmlElementNode(Event* e)
+    {
+        if(e->event->repr == NULL)
+            return NULL;
+        
+        return e->event->repr;
+    }
+
+    const Resource*
+    ArtivityLog::getUnit(const Quantity& quantity)
+    {        
+        const Unit* unit = quantity.unit;
+                    
+        if(unit->abbr == "px")
+        {
+            return &(art::px);
+        }
+        else if(unit->abbr == "m")
+        {
+            return &(art::m);
+        }
+        else if(unit->abbr == "cm")
+        {
+            return &(art::cm);
+        }
+        else if(unit->abbr == "mm")
+        {
+            return &(art::mm);
+        }
+        else if(unit->abbr == "in")
+        {
+            return &(art::in);
+        }
+        else if(unit->abbr == "ft")
+        {
+            return &(art::ft);
+        }
+        else
+        {
+            return NULL;
+        }
     }
 
     AttributeValueMap*

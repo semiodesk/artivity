@@ -30,39 +30,20 @@ using Semiodesk.Trinity;
 
 namespace Artivity.Model.ObjectModel
 {
-	[RdfClass(NFO.FileDataObject)]
-	public class FileDataObject : Entity
+    [RdfClass(ART.Viewport)]
+	public class Viewport : Rectangle
 	{
 		#region Members
 
-		[RdfProperty(NFO.fileUrl)]
-		public string Url { get; set; }
-
-		[RdfProperty(NFO.fileSize)]
-		public long ByteSize { get; set; }
-
-		[RdfProperty(NFO.fileCreated)]
-		public DateTime CreationTime { get; set; }
-
-		[RdfProperty(NFO.fileLastAccessed)]
-		public DateTime LastAccessTime { get; set; }
-
-		[RdfProperty(NFO.fileLastModified)]
-		public DateTime LastModificationTime { get; set; }
-
-		[RdfProperty(PROV.value)]
-		public string RevisedValue { get; set; }
-
-        [RdfProperty(ART.hadCanvas)]
-        public Canvas Canvas { get; set; }
+		[RdfProperty(ART.zoomFactor)]
+		public double ZoomFactor { get; set; }
 
 		#endregion
 
 		#region Constructors
 
-		public FileDataObject(Uri uri) : base(uri) {}
+		public Viewport(Uri uri) : base(uri) {}
 
 		#endregion
 	}
 }
-

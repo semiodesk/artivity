@@ -1,4 +1,4 @@
-// LICENSE:
+﻿// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,41 +28,32 @@
 using System;
 using Semiodesk.Trinity;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.Model
 {
-	[RdfClass(NFO.FileDataObject)]
-	public class FileDataObject : Entity
-	{
-		#region Members
+    [RdfClass(ART.Cube)]
+    public class Cube : Geometry
+    {
+        #region Members
 
-		[RdfProperty(NFO.fileUrl)]
-		public string Url { get; set; }
+        [RdfProperty(ART.position)]
+        public Point Position { get; set; }
 
-		[RdfProperty(NFO.fileSize)]
-		public long ByteSize { get; set; }
+        [RdfProperty(ART.width)]
+        public double Width { get; set; }
 
-		[RdfProperty(NFO.fileCreated)]
-		public DateTime CreationTime { get; set; }
+        [RdfProperty(ART.height)]
+        public double Height { get; set; }
 
-		[RdfProperty(NFO.fileLastAccessed)]
-		public DateTime LastAccessTime { get; set; }
+        [RdfProperty(ART.depth)]
+        public double Depth { get; set; }
 
-		[RdfProperty(NFO.fileLastModified)]
-		public DateTime LastModificationTime { get; set; }
+        #endregion
 
-		[RdfProperty(PROV.value)]
-		public string RevisedValue { get; set; }
+        #region Constructors
 
-        [RdfProperty(ART.hadCanvas)]
-        public Canvas Canvas { get; set; }
+        public Cube(Uri uri) : base(uri) {}
 
-		#endregion
-
-		#region Constructors
-
-		public FileDataObject(Uri uri) : base(uri) {}
-
-		#endregion
-	}
+        #endregion
+    }
 }
 

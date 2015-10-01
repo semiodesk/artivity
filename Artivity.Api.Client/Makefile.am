@@ -1,7 +1,6 @@
 SUBDIRS = src
 
 pkgconfigdir = $(libdir)/pkgconfig
-nodist_pkgconfig_DATA = libartivity.pc
 
 libartivity.pc: libartivity.pc.in
 	sed -e 's![@]prefix[@]!$(prefix)!g' \
@@ -10,3 +9,6 @@ libartivity.pc: libartivity.pc.in
 		-e 's![@]libdir[@]!$(libdir)!g' \
 		-e 's![@]PACKAGE_VERSION[@]!$(PACKAGE_VERSION)!g' \
 		$(srcdir)libartivity.pc.in > $@
+
+nodist_pkgconfig_DATA = libartivity.pc
+

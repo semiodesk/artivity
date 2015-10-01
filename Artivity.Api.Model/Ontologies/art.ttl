@@ -5,6 +5,8 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
 @prefix art: <http://semiodesk.com/artivity/1.0/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix qudt: <http://qudt.org/vocab/unit#> .
 
 <http://semiodesk.com/artivity/1.0/> a owl:Ontology .
 
@@ -51,9 +53,6 @@ art:Save a rdfs:Class ;
 art:View a rdfs:Class ;
     rdfs:label "View" ;
     rdfs:subClassOf prov:Activity .
-      
-art:Viewbox a rdfs:Class ;
-    rdfs:label "Viewbox" .
     
 art:Layer a rdfs:Class ;
     rdfs:label "Layer" .
@@ -62,36 +61,6 @@ art:selectedLayer a rdf:Property ;
 	rdfs:label "selectedLayer" ;
 	rdfs:domain prov:Activity ;
 	rdfs:range xsd:string .
-    
-art:hadViewbox a rdf:Property ;
-    rdfs:label "hadViewbox" ;
-    rdfs:domain prov:Association ;
-    rdfs:range art:Viewport.
-    
-art:left a rdf:Property ;
-    rdfs:label "left" ;
-    rdfs:domain art:Viewport ;
-    rdfs:range xsd:double .
-
-art:right a rdf:Property ;
-    rdfs:label "right" ;
-    rdfs:domain art:Viewport ;
-    rdfs:range xsd:double .
-    
-art:top a rdf:Property ;
-    rdfs:label "top" ;
-    rdfs:domain art:Viewport ;
-    rdfs:range xsd:double .
-    
-art:bottom a rdf:Property ;
-    rdfs:label "bottom" ;
-    rdfs:domain art:Viewport ;
-    rdfs:range xsd:double .
-    
-art:zoomFactor a rdf:Property ;
-    rdfs:label "zoomFactor" ;
-    rdfs:domain art:Viewport ;
-    rdfs:range xsd:double .
     
 art:isCaptureEnabled a rdf:Property ;
     rdfs:label "isCaptureEnabled" ;
@@ -103,32 +72,161 @@ art:hasColourCode a rdf:Property ;
     rdfs:domain prov:SoftwareAgent ;
     rdfs:range xsd:string .
 
-art:Dimensions a rdfs:Class ;
-    rdfs:label "Dimensions" .
+art:coordinateSystem a rdf:Property ;
+    rdfs:label "coordinateSystem" ;
+    rdfs:domain art:Canvas ;
+    rdfs:range art:CoordinateSystem .
+
+art:CoordinateSystem a rdfs:Class ;
+    rdfs:label "CoordinateSystem" .
+
+art:CartesianCoordinateSystem a rdfs:Class ;
+    rdfs:label "CoordinateSystem" ;
+    rdfs:subClassOf art:CoordinateSystem .
+
+art:lengthUnit a rdf:Property ;
+    rdfs:label "lengthUnit" ;
+    rdfs:domain art:Canvas ;
+    rdfs:range art:LengthUnit .
+
+art:transformationMatrix a rdf:Property ;
+    rdfs:label "transformationMatrix" ;
+    rdfs:domain art:Canvas ;
+    rdfs:range xsd:string .
+
+art:Point a rdfs:Class ;
+    rdfs:label "Point" .
 
 art:x a rdf:Property ;
     rdfs:label "x" ;
-    rdfs:domain art:Dimensions ;
+    rdfs:domain art:Point ;
     rdfs:range xsd:double .
 
 art:y a rdf:Property ;
     rdfs:label "y" ;
-    rdfs:domain art:Dimensions ;
+    rdfs:domain art:Point ;
     rdfs:range xsd:double .
 
 art:z a rdf:Property ;
     rdfs:label "z" ;
-    rdfs:domain art:Dimensions ;
+    rdfs:domain art:Point ;
     rdfs:range xsd:double .
 
-art:unit a rdf:Property ;
-    rdfs:label "unit" ;
-    rdfs:domain art:Dimensions .
+art:Geometry a rdfs:Class ;
+    rdfs:label "Geometry" ;
+    owl:sameAs geo:Geometry .
 
-art:dimensions a rdf:Property ;
-    rdfs:label "dimensions" ;
+art:coordinateDimension a rdf:Property ;
+    rdfs:label "coordinateDimension" ;
+    rdfs:domain art:Geometry ;
+    rdfs:range xsd:int ;
+    owl:sameAs geo:coordinateDimension .
+
+art:width a rdf:Property ;
+    rdfs:label "width" ;
+    rdfs:domain art:Geometry ;
+    rdfs:range xsd:double .
+
+art:height a rdf:Property ;
+    rdfs:label "height" ;
+    rdfs:domain art:Geometry ;
+    rdfs:range xsd:double .
+
+art:depth a rdf:Property ;
+    rdfs:label "depth" ;
+    rdfs:domain art:Geometry ;
+    rdfs:range xsd:double .
+
+art:position a rdf:Property ;
+    rdfs:label "position" ;
+    rdfs:domain art:Geometry ;
+    rdfs:range art:Point .
+
+art:Rectangle a rdfs:Class ;
+    rdfs:label "Rectangle" ;
+    rdfs:subClassOf art:Geometry .
+
+art:Cube a rdfs:Class ;
+    rdfs:label "Cube" ;
+    rdfs:subClassOf art:Geometry .
+
+art:hadCanvas a rdf:Property ;
+    rdfs:label "hadCanvas" ;
+    rdfs:subClassOf geo:hasGeometry ;
+    rdfs:domain nfo:FileDataObject ;
+    rdfs:range art:Canvas .
+
+art:Canvas a rdfs:Class ;
+    rdfs:label "Canvas" ;
+    rdfs:subClassOf art:Rectangle .
+
+art:hadBoundaries a rdf:Property ;
+    rdfs:label "hadBoundaries" ;
+    rdfs:subClassOf geo:hasGeometry ;
     rdfs:domain prov:Entity ;
-    rdfs:range art:Dimensions .
+    rdfs:range art:BoundingRectangle ;
+    rdfs:range art:BoundingCube .
+
+art:BoundingRectangle a rdfs:Class ;
+    rdfs:label "BoundingRectangle" ;
+    rdfs:subClassOf art:Rectangle .
+
+art:BoundingCube a rdfs:Class ;
+    rdfs:label "BoundingCube" ;
+    rdfs:subClassOf art:Cube .
+
+art:hadViewport a rdf:Property ;
+    rdfs:label "hadViewport" ;
+    rdfs:subClassOf geo:hasGeometry ;
+    rdfs:domain prov:ActivityInfluence ;
+    rdfs:range art:Viewport.
+
+art:Viewport a rdfs:Class ;
+    rdfs:label "Viewport" ;
+    rdfs:subClassOf art:Rectangle .
+    
+art:zoomFactor a rdf:Property ;
+    rdfs:label "zoomFactor" ;
+    rdfs:domain art:Viewport ;
+    rdfs:range xsd:double .
+
+art:LengthUnit a rdfs:Class ;
+    rdfs:label "LengthUnit" ;
+    owl:sameAs qudt:LengthUnit .
+
+art:m a rdfs:Class ;
+    rdfs:label "m" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Meter .
+
+art:cm a rdfs:Class ;
+    rdfs:label "cm" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Centimeter .
+
+art:mm a rdfs:Class ;
+    rdfs:label "mm" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Millimeter .
+
+art:pt a rdfs:Class ;
+    rdfs:label "pt" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Point .
+
+art:in a rdfs:Class ;
+    rdfs:label "in" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Inch .
+
+art:ft a rdfs:Class ;
+    rdfs:label "ft" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Foot .
+
+art:px a rdfs:Class ;
+    rdfs:label "px" ;
+    rdfs:subClassOf art:LengthUnit .
 
 nfo:FileDataObject rdfs:subClassOf prov:Entity.
 nfo:WebDataObject rdfs:subClassOf prov:Entity.

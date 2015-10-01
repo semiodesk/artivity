@@ -19,7 +19,12 @@
 #include "xml/node.h"
 #include "xml/attribute-record.h"
 #include "util/units.h"
+#include "sp-item.h"
+#include "2geom/coord.h"
 #include <ctime>
+#include <signal.h>
+#include <stdio.h>
+#include <unistd.h>
 
 #include <artivity-client/artivity.h>
 
@@ -61,13 +66,15 @@ namespace Inkscape
 
         artivity::ActivityLog _log;	
 
-        template<class TEvent> bool is(Inkscape::XML::Event* event);
-            
-        template<class TEvent> TEvent as(Inkscape::XML::Event* event);
-        
         artivity::SoftwareAgent* _agent = NULL;
         
         artivity::FileDataObject* _entity = NULL;
+        
+        artivity::Canvas* _canvas = NULL;
+        
+        template<class TEvent> bool is(Inkscape::XML::Event* event);
+            
+        template<class TEvent> TEvent as(Inkscape::XML::Event* event);
    
     protected:
            
@@ -75,16 +82,22 @@ namespace Inkscape
         
         void setType(artivity::Activity* activity, Event* e);
 
-        void setGeneratedValue(list<artivity::Entity*> entities, string value, artivity::Resource* location);
+        void setGeneratedValue(list<artivity::Entity*> entities, string value, artivity::Resource* location, artivity::BoundingRectangle* bounds);
         
-        void setInvalidatedValue(list<artivity::Entity*> entities, string value, artivity::Resource* location);
+        void setInvalidatedValue(list<artivity::Entity*> entities, string value, artivity::Resource* location, artivity::BoundingRectangle* bounds);
         
         void processEventQueue();
         
+        artivity::BoundingRectangle* getBoundingRectangle(Event* e);
+    
         artivity::XmlElement* getXmlElement(Event* e);
         
         const char* getXmlElementId(Event* e);
         
+        Inkscape::XML::Node* getXmlElementNode(Event* e);
+    
+        const artivity::Resource* getUnit(const Util::Quantity& quantity);
+    
         AttributeValueMap* getChangedAttributes(string a, string b);
     
     public:

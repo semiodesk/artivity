@@ -41,7 +41,6 @@
     <Compile Include="ObjectModel\Activities\Undo.cs" />
     <Compile Include="ObjectModel\Activities\Add.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />
-    <Compile Include="ObjectModel\Viewbox.cs" />
     <Compile Include="ObjectModel\SoftwareAgent.cs" />
     <Compile Include="ObjectModel\Agent.cs" />
     <Compile Include="ObjectModel\Association.cs" />
@@ -64,7 +63,16 @@
     <Compile Include="ObjectModel\Invalidation.cs" />
     <Compile Include="ObjectModel\EntityInfluence.cs" />
     <Compile Include="ObjectModel\Usage.cs" />
-    <Compile Include="ObjectModel\Dimensions.cs" />
+    <Compile Include="ObjectModel\Geometry\Canvas.cs" />
+    <Compile Include="ObjectModel\Geometry\BoundingCube.cs" />
+    <Compile Include="ObjectModel\Geometry\BoundingRectangle.cs" />
+    <Compile Include="ObjectModel\Geometry\CartesianCoordinateSystem.cs" />
+    <Compile Include="ObjectModel\Geometry\CoordinateSystem.cs" />
+    <Compile Include="ObjectModel\Geometry\Cube.cs" />
+    <Compile Include="ObjectModel\Geometry\Geometry.cs" />
+    <Compile Include="ObjectModel\Geometry\Point.cs" />
+    <Compile Include="ObjectModel\Geometry\Rectangle.cs" />
+    <Compile Include="ObjectModel\Geometry\Viewport.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Ontologies\prov.ttl" />
@@ -116,6 +124,7 @@
   -->
   <ItemGroup>
     <Folder Include="ObjectModel\Entities\" />
+    <Folder Include="ObjectModel\Geometry\" />
   </ItemGroup>
   <Import Project="../packages/Semiodesk.Trinity.Modelling.0.9.93/build/net40/Semiodesk.Trinity.Modelling.targets" Condition="Exists('../packages/Semiodesk.Trinity.Modelling.0.9.93/build/net40/Semiodesk.Trinity.Modelling.targets')" />
 </Project>

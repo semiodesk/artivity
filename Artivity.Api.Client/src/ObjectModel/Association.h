@@ -33,11 +33,7 @@ namespace artivity
             setValue(rdf::_type, prov::Association);
         }
         
-        virtual ~Association()
-        {
-            //if(_agent != NULL) delete _agent;
-            //if(_role != NULL) delete _role;
-        }
+        virtual ~Association() {}
         
         const Agent* getAgent()
         {

@@ -31,50 +31,101 @@ namespace artivity
 {
     ActivityLog::ActivityLog() 
     {
-        resources = list<Resource*>();
+        _activities = deque<Activity*>();
+        _resources = list<Resource*>();
     }
 
     ActivityLog::~ActivityLog() 
     {
         // Free all the activities still in the log.
-        ActivityLogIterator ait = begin();
+        ActivityLogIterator ait = _activities.begin();
         
-        while(ait != end())
+        while(ait != _activities.end())
         {
             delete *ait;
             
             ait++;
         }
         
-        // Free all the related resources still in the log.
-        ResourceIterator rit = resources.begin();
+        // Free all the related _resources still in the log.
+        ResourceIterator rit = _resources.begin();
         
-        while(rit != resources.end())
+        while(rit != _resources.end())
         {
             delete *rit;
             
             rit++;
         }
+        
+        // Free all the associated agents still in the log.
+        AgentIterator agit = _agents.begin();
+        
+        while(agit != _agents.end())
+        {
+            delete *agit;
+            
+            agit++;
+        }
     }
     
-    bool ActivityLog::isConnected()
+    bool ActivityLog::connected()
     {
         // TODO: Implement CURL call to http://localhost:8890/artivity/1.0/activities
         return true;
     }
     
+    bool ActivityLog::empty()
+    {
+        return _activities.empty();
+    }
+    
+    ActivityLogIterator ActivityLog::begin()
+    {
+        return _activities.begin();
+    }
+    
+    ActivityLogIterator ActivityLog::end()
+    {
+        return _activities.end();
+    }
+    
+    void ActivityLog::clear()
+    {
+        ActivityLogIterator ait = _activities.begin();
+        
+        while(ait != _activities.end())
+        {
+            delete *ait;
+            
+            ait++;
+        }
+        
+        _activities.clear();
+        
+        ResourceIterator rit = _resources.begin();
+        
+        while(rit != _resources.end())
+        {           
+            delete *rit;
+            
+            rit++;
+        }
+        
+        _resources.clear();
+    }
+    
     void ActivityLog::setGeneratedEntity(Entity* entity)
     {
         // Add the entity to the RDF output if not already done.
-        if(find(resources.begin(), resources.end(), entity) == resources.end())
+        if(find(_resources.begin(), _resources.end(), entity) == _resources.end())
         {
             addResource(entity);
         }
      
         // Add the entity to the generated entities of all activities.
-        ActivityLogIterator ait = begin();
+        ActivityLogIterator ait = _activities.begin();
    
-        while(ait != end())
+        while(ait != _activities.end())
         {
             (*ait)->addGeneratedEntity(entity);
             
@@ -82,14 +133,57 @@ namespace artivity
         }
     }
     
+    Activity* ActivityLog::createActivity(const Resource& type)
+    {
+        time_t now;
+        time(&now);
+            
+        Activity* activity = new Activity();
+        activity->setValue(rdf::_type, type);
+        activity->setTime(now);
+        
+        addActivity(activity);
+        
+        return activity;
+    }
+    
+    void ActivityLog::addActivity(Activity* activity)
+    {
+        _activities.push_back(activity);
+             
+        AgentIterator agit = _agents.begin();
+        
+        while(agit != _agents.end())
+        {
+            Association* association = new Association();
+            association->setAgent(*agit);
+            
+            addResource(association);
+            
+            activity->addAssociation(association);
+            
+            agit++;
+        }
+    }
+    
+    void ActivityLog::addAgent(Agent* agent)
+    {
+        _resources.push_back(agent);
+    }
+    
+    void ActivityLog::removeAgent(Agent* agent)
+    {
+        _resources.remove(agent);
+    }
+    
     void ActivityLog::addResource(Resource* resource)
     {
-        resources.push_back(resource);
+        _resources.push_back(resource);
     }
     
     void ActivityLog::removeResource(Resource* resource)
     {
-        resources.remove(resource);
+        _resources.remove(resource);
     }
     
     void ActivityLog::transmit()
@@ -113,27 +207,25 @@ namespace artivity
         
         stringstream stream;
         
-        ActivityLogIterator ait = begin();
+        ActivityLogIterator ait = _activities.begin();
         
-        while(ait != end())
-        {
+        while(ait != _activities.end())
+        {            
             Serializer::serialize(stream, **ait, N3);
             
             ait++;
         }
         
-        ResourceIterator rit = resources.begin();
+        ResourceIterator rit = _resources.begin();
         
-        while(rit != resources.end())
+        while(rit != _resources.end())
         {
             Serializer::serialize(stream, **rit, N3);
-            
-            //delete *rit;
             
             rit++;
         }
         
-        resources.clear();
+        _resources.clear();
         
         string content = stream.str();
         
@@ -146,29 +238,13 @@ namespace artivity
         
         curl_easy_perform(curl);
         
-        // Cleanup AFTER all resources have been serialized and transmitted.
+        // Cleanup AFTER all _resources have been serialized and transmitted.
         if(curl)
         {
             curl_easy_cleanup(curl);
         }
         
         clear();
-        
-        ait = begin();
-        
-        while(ait != end())
-        {
-            delete *ait;
-        }
-        
-        rit = resources.begin();
-        
-        while(rit != resources.end())
-        {           
-            delete *rit;
-            
-            rit++;
-        }
     }
 }
 

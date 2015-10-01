@@ -15,25 +15,25 @@ int main(int argc, char **argv)
     time(&now);
      
     Create* a0 = new Create();
-    a0->setTime(&now);
+    a0->setTime(now);
     
-    log.push_back(a0);
+    log.addActivity(a0);
     
     time(&now);
         
     Update* a1 = new Update();
-    a1->setTime(&now);
+    a1->setTime(now);
     
-    log.push_back(a1);
+    log.addActivity(a1);
     
     time(&now);
         
     Update* a2 = new Update();
-    a2->setTime(&now);
+    a2->setTime(now);
     
-    log.push_back(a2);
+    log.addActivity(a2);
     
-    if(log.isConnected())
+    if(log.connected())
     {
         FileDataObject* file = new FileDataObject("file://example.svg");
         

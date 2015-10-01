@@ -65,12 +65,21 @@
       <File Name="src/ObjectModel/Person.h"/>
       <File Name="src/ObjectModel/Role.h"/>
       <File Name="src/ObjectModel/SoftwareAgent.h"/>
-      <File Name="src/ObjectModel/SoftwareAssociation.h"/>
-      <File Name="src/ObjectModel/Viewbox.h"/>
       <File Name="src/ObjectModel/Invalidation.h"/>
       <File Name="src/ObjectModel/Generation.h"/>
       <File Name="src/ObjectModel/ActivityInfluence.h"/>
-      <File Name="src/ObjectModel/Dimensions.h"/>
+      <VirtualDirectory Name="Geometry">
+        <File Name="src/ObjectModel/Geometry/Geometry.h"/>
+        <File Name="src/ObjectModel/Geometry/CartesianCoordinateSystem.h"/>
+        <File Name="src/ObjectModel/Geometry/Rectangle.h"/>
+        <File Name="src/ObjectModel/Geometry/Cube.h"/>
+        <File Name="src/ObjectModel/Geometry/BoundingRectangle.h"/>
+        <File Name="src/ObjectModel/Geometry/BoundingCube.h"/>
+        <File Name="src/ObjectModel/Geometry/Point.h"/>
+        <File Name="src/ObjectModel/Geometry/CoordinateSystem.h"/>
+        <File Name="src/ObjectModel/Geometry/Canvas.h"/>
+        <File Name="src/ObjectModel/Geometry/Viewport.h"/>
+      </VirtualDirectory>
     </VirtualDirectory>
     <File Name="src/artivity.h"/>
     <File Name="src/Makefile.am"/>

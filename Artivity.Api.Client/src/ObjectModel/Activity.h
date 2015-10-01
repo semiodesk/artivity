@@ -21,9 +21,9 @@ namespace artivity
                                 
         list<Entity*>* _generatedEntities;
 
-        const time_t* _startTime;
+        time_t _startTime;
         
-        const time_t* _endTime;
+        time_t _endTime;
         
     public:
         Activity();
@@ -32,14 +32,14 @@ namespace artivity
         
         bool isValid();
         
-        void setTime(const time_t* time);
-        const time_t* getTime();
+        void setTime(time_t time);
+        time_t getTime();
         
-        void setStartTime(const time_t* time);
-        const time_t* getStartTime();
+        void setStartTime(time_t time);
+        time_t getStartTime();
         
-        void setEndTime(const time_t* time);
-        const time_t* getEndTime();
+        void setEndTime(time_t time);
+        time_t getEndTime();
         
         list<Association*> getAssociations();
         void addAssociation(Association* association);

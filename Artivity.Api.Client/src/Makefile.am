@@ -19,11 +19,18 @@ nobase_pkginclude_HEADERS = artivity.h \
     ObjectModel/Association.h \
     ObjectModel/Role.h \
     ObjectModel/Person.h \
-    ObjectModel/Viewbox.h \
-    ObjectModel/Dimensions.h \
+    ObjectModel/Geometry/Canvas.h \
+    ObjectModel/Geometry/CoordinateSystem.h \
+    ObjectModel/Geometry/CartesianCoordinateSystem.h \
+    ObjectModel/Geometry/Point.h \
+    ObjectModel/Geometry/Geometry.h \
+    ObjectModel/Geometry/Rectangle.h \
+    ObjectModel/Geometry/Cube.h \
+    ObjectModel/Geometry/BoundingRectangle.h \
+    ObjectModel/Geometry/BoundingCube.h \
+    ObjectModel/Geometry/Viewport.h \
     ObjectModel/Generation.h \
     ObjectModel/Invalidation.h \
-    ObjectModel/SoftwareAssociation.h \
     ObjectModel/SoftwareAgent.h \
     ObjectModel/Entity.h \
     ObjectModel/Entities/FileDataObject.h \
@@ -47,4 +54,5 @@ nobase_pkginclude_HEADERS = artivity.h \
     Ontologies/art.h \
     Ontologies/svg.h \
     Ontologies/nfo.h \
-    Ontologies/dces.h
+    Ontologies/dces.h \
+    Ontologies/unit.h

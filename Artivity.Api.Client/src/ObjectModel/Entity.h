@@ -17,7 +17,13 @@ namespace artivity
     {
     private:
         Generation* _generation;
+        
+        time_t _generationTime;
+        
         Invalidation* _invalidation;
+        
+        time_t _invalidationTime;
+        
         list<Entity*>* _genericEntities;
         
     public:
@@ -52,6 +58,18 @@ namespace artivity
             setValue(prov::qualifiedGeneration, generation);
         }
         
+        time_t getGenerationTime()
+        {
+            return _generationTime;
+        }
+        
+        void setGenerationTime(time_t time)
+        {
+            _generationTime = time;
+            
+            Resource::setValue(prov::generatedAtTime, &time);
+        }
+        
         Invalidation* getInvalidation()
         {
             return _invalidation;
@@ -62,6 +80,18 @@ namespace artivity
             _invalidation = invalidation;
             
             setValue(prov::qualifiedInvalidation, invalidation);
+        }
+        
+        time_t getInvalidationTime()
+        {
+            return _invalidationTime;
+        }
+        
+        void setInvalidationTime(time_t time)
+        {
+            _invalidationTime = time;
+            
+            Resource::setValue(prov::invalidatedAtTime, &time);
         }
         
         list<Entity*> getGenericEntities()

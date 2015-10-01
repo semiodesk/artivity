@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 9/28/2015 5:06:19 PM
+// Date: 9/30/2015 5:44:12 PM
 
 using System;
 using System.Collections.Generic;
@@ -6771,12 +6771,6 @@ public class art : Ontology
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Viewbox"/>
-    ///</summary>
-    public static readonly Class Viewbox = new Class(new Uri("http://semiodesk.com/artivity/1.0/Viewbox"));    
-
-    ///<summary>
-    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/Layer"/>
     ///</summary>
     public static readonly Class Layer = new Class(new Uri("http://semiodesk.com/artivity/1.0/Layer"));    
@@ -6786,42 +6780,6 @@ public class art : Ontology
     ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
     ///</summary>
     public static readonly Property selectedLayer = new Property(new Uri("http://semiodesk.com/artivity/1.0/selectedLayer"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadViewbox"/>
-    ///</summary>
-    public static readonly Property hadViewbox = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadViewbox"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/left"/>
-    ///</summary>
-    public static readonly Property left = new Property(new Uri("http://semiodesk.com/artivity/1.0/left"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/right"/>
-    ///</summary>
-    public static readonly Property right = new Property(new Uri("http://semiodesk.com/artivity/1.0/right"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/top"/>
-    ///</summary>
-    public static readonly Property top = new Property(new Uri("http://semiodesk.com/artivity/1.0/top"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/bottom"/>
-    ///</summary>
-    public static readonly Property bottom = new Property(new Uri("http://semiodesk.com/artivity/1.0/bottom"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
-    ///</summary>
-    public static readonly Property zoomFactor = new Property(new Uri("http://semiodesk.com/artivity/1.0/zoomFactor"));    
 
     ///<summary>
     ///
@@ -6837,9 +6795,39 @@ public class art : Ontology
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Dimensions"/>
+    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateSystem"/>
     ///</summary>
-    public static readonly Class Dimensions = new Class(new Uri("http://semiodesk.com/artivity/1.0/Dimensions"));    
+    public static readonly Property coordinateSystem = new Property(new Uri("http://semiodesk.com/artivity/1.0/coordinateSystem"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/CoordinateSystem"/>
+    ///</summary>
+    public static readonly Class CoordinateSystem = new Class(new Uri("http://semiodesk.com/artivity/1.0/CoordinateSystem"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem"/>
+    ///</summary>
+    public static readonly Class CartesianCoordinateSystem = new Class(new Uri("http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/lengthUnit"/>
+    ///</summary>
+    public static readonly Property lengthUnit = new Property(new Uri("http://semiodesk.com/artivity/1.0/lengthUnit"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/transformationMatrix"/>
+    ///</summary>
+    public static readonly Property transformationMatrix = new Property(new Uri("http://semiodesk.com/artivity/1.0/transformationMatrix"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Point"/>
+    ///</summary>
+    public static readonly Class Point = new Class(new Uri("http://semiodesk.com/artivity/1.0/Point"));    
 
     ///<summary>
     ///
@@ -6861,15 +6849,147 @@ public class art : Ontology
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/unit"/>
+    ///<see cref="http://semiodesk.com/artivity/1.0/Geometry"/>
     ///</summary>
-    public static readonly Property unit = new Property(new Uri("http://semiodesk.com/artivity/1.0/unit"));    
+    public static readonly Class Geometry = new Class(new Uri("http://semiodesk.com/artivity/1.0/Geometry"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/dimensions"/>
+    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateDimension"/>
     ///</summary>
-    public static readonly Property dimensions = new Property(new Uri("http://semiodesk.com/artivity/1.0/dimensions"));    
+    public static readonly Property coordinateDimension = new Property(new Uri("http://semiodesk.com/artivity/1.0/coordinateDimension"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/width"/>
+    ///</summary>
+    public static readonly Property width = new Property(new Uri("http://semiodesk.com/artivity/1.0/width"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/height"/>
+    ///</summary>
+    public static readonly Property height = new Property(new Uri("http://semiodesk.com/artivity/1.0/height"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/depth"/>
+    ///</summary>
+    public static readonly Property depth = new Property(new Uri("http://semiodesk.com/artivity/1.0/depth"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/position"/>
+    ///</summary>
+    public static readonly Property position = new Property(new Uri("http://semiodesk.com/artivity/1.0/position"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Rectangle"/>
+    ///</summary>
+    public static readonly Class Rectangle = new Class(new Uri("http://semiodesk.com/artivity/1.0/Rectangle"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Cube"/>
+    ///</summary>
+    public static readonly Class Cube = new Class(new Uri("http://semiodesk.com/artivity/1.0/Cube"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hadCanvas"/>
+    ///</summary>
+    public static readonly Property hadCanvas = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadCanvas"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Canvas"/>
+    ///</summary>
+    public static readonly Class Canvas = new Class(new Uri("http://semiodesk.com/artivity/1.0/Canvas"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hadBoundaries"/>
+    ///</summary>
+    public static readonly Property hadBoundaries = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadBoundaries"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingRectangle"/>
+    ///</summary>
+    public static readonly Class BoundingRectangle = new Class(new Uri("http://semiodesk.com/artivity/1.0/BoundingRectangle"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingCube"/>
+    ///</summary>
+    public static readonly Class BoundingCube = new Class(new Uri("http://semiodesk.com/artivity/1.0/BoundingCube"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hadViewport"/>
+    ///</summary>
+    public static readonly Property hadViewport = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadViewport"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Viewport"/>
+    ///</summary>
+    public static readonly Class Viewport = new Class(new Uri("http://semiodesk.com/artivity/1.0/Viewport"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
+    ///</summary>
+    public static readonly Property zoomFactor = new Property(new Uri("http://semiodesk.com/artivity/1.0/zoomFactor"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/LengthUnit"/>
+    ///</summary>
+    public static readonly Class LengthUnit = new Class(new Uri("http://semiodesk.com/artivity/1.0/LengthUnit"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/m"/>
+    ///</summary>
+    public static readonly Class m = new Class(new Uri("http://semiodesk.com/artivity/1.0/m"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/cm"/>
+    ///</summary>
+    public static readonly Class cm = new Class(new Uri("http://semiodesk.com/artivity/1.0/cm"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/mm"/>
+    ///</summary>
+    public static readonly Class mm = new Class(new Uri("http://semiodesk.com/artivity/1.0/mm"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/pt"/>
+    ///</summary>
+    public static readonly Class pt = new Class(new Uri("http://semiodesk.com/artivity/1.0/pt"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/in"/>
+    ///</summary>
+    public static readonly Class _in = new Class(new Uri("http://semiodesk.com/artivity/1.0/in"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/ft"/>
+    ///</summary>
+    public static readonly Class ft = new Class(new Uri("http://semiodesk.com/artivity/1.0/ft"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/px"/>
+    ///</summary>
+    public static readonly Class px = new Class(new Uri("http://semiodesk.com/artivity/1.0/px"));    
 
     ///<summary>
     ///
@@ -6969,12 +7089,6 @@ public static class ART
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Viewbox"/>
-    ///</summary>
-    public const string Viewbox = "http://semiodesk.com/artivity/1.0/Viewbox";
-
-    ///<summary>
-    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/Layer"/>
     ///</summary>
     public const string Layer = "http://semiodesk.com/artivity/1.0/Layer";
@@ -6984,42 +7098,6 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
     ///</summary>
     public const string selectedLayer = "http://semiodesk.com/artivity/1.0/selectedLayer";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadViewbox"/>
-    ///</summary>
-    public const string hadViewbox = "http://semiodesk.com/artivity/1.0/hadViewbox";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/left"/>
-    ///</summary>
-    public const string left = "http://semiodesk.com/artivity/1.0/left";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/right"/>
-    ///</summary>
-    public const string right = "http://semiodesk.com/artivity/1.0/right";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/top"/>
-    ///</summary>
-    public const string top = "http://semiodesk.com/artivity/1.0/top";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/bottom"/>
-    ///</summary>
-    public const string bottom = "http://semiodesk.com/artivity/1.0/bottom";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
-    ///</summary>
-    public const string zoomFactor = "http://semiodesk.com/artivity/1.0/zoomFactor";
 
     ///<summary>
     ///
@@ -7035,9 +7113,39 @@ public static class ART
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Dimensions"/>
+    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateSystem"/>
     ///</summary>
-    public const string Dimensions = "http://semiodesk.com/artivity/1.0/Dimensions";
+    public const string coordinateSystem = "http://semiodesk.com/artivity/1.0/coordinateSystem";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/CoordinateSystem"/>
+    ///</summary>
+    public const string CoordinateSystem = "http://semiodesk.com/artivity/1.0/CoordinateSystem";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem"/>
+    ///</summary>
+    public const string CartesianCoordinateSystem = "http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/lengthUnit"/>
+    ///</summary>
+    public const string lengthUnit = "http://semiodesk.com/artivity/1.0/lengthUnit";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/transformationMatrix"/>
+    ///</summary>
+    public const string transformationMatrix = "http://semiodesk.com/artivity/1.0/transformationMatrix";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Point"/>
+    ///</summary>
+    public const string Point = "http://semiodesk.com/artivity/1.0/Point";
 
     ///<summary>
     ///
@@ -7059,15 +7167,147 @@ public static class ART
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/unit"/>
+    ///<see cref="http://semiodesk.com/artivity/1.0/Geometry"/>
     ///</summary>
-    public const string unit = "http://semiodesk.com/artivity/1.0/unit";
+    public const string Geometry = "http://semiodesk.com/artivity/1.0/Geometry";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/dimensions"/>
+    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateDimension"/>
     ///</summary>
-    public const string dimensions = "http://semiodesk.com/artivity/1.0/dimensions";
+    public const string coordinateDimension = "http://semiodesk.com/artivity/1.0/coordinateDimension";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/width"/>
+    ///</summary>
+    public const string width = "http://semiodesk.com/artivity/1.0/width";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/height"/>
+    ///</summary>
+    public const string height = "http://semiodesk.com/artivity/1.0/height";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/depth"/>
+    ///</summary>
+    public const string depth = "http://semiodesk.com/artivity/1.0/depth";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/position"/>
+    ///</summary>
+    public const string position = "http://semiodesk.com/artivity/1.0/position";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Rectangle"/>
+    ///</summary>
+    public const string Rectangle = "http://semiodesk.com/artivity/1.0/Rectangle";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Cube"/>
+    ///</summary>
+    public const string Cube = "http://semiodesk.com/artivity/1.0/Cube";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hadCanvas"/>
+    ///</summary>
+    public const string hadCanvas = "http://semiodesk.com/artivity/1.0/hadCanvas";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Canvas"/>
+    ///</summary>
+    public const string Canvas = "http://semiodesk.com/artivity/1.0/Canvas";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hadBoundaries"/>
+    ///</summary>
+    public const string hadBoundaries = "http://semiodesk.com/artivity/1.0/hadBoundaries";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingRectangle"/>
+    ///</summary>
+    public const string BoundingRectangle = "http://semiodesk.com/artivity/1.0/BoundingRectangle";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingCube"/>
+    ///</summary>
+    public const string BoundingCube = "http://semiodesk.com/artivity/1.0/BoundingCube";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hadViewport"/>
+    ///</summary>
+    public const string hadViewport = "http://semiodesk.com/artivity/1.0/hadViewport";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Viewport"/>
+    ///</summary>
+    public const string Viewport = "http://semiodesk.com/artivity/1.0/Viewport";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
+    ///</summary>
+    public const string zoomFactor = "http://semiodesk.com/artivity/1.0/zoomFactor";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/LengthUnit"/>
+    ///</summary>
+    public const string LengthUnit = "http://semiodesk.com/artivity/1.0/LengthUnit";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/m"/>
+    ///</summary>
+    public const string m = "http://semiodesk.com/artivity/1.0/m";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/cm"/>
+    ///</summary>
+    public const string cm = "http://semiodesk.com/artivity/1.0/cm";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/mm"/>
+    ///</summary>
+    public const string mm = "http://semiodesk.com/artivity/1.0/mm";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/pt"/>
+    ///</summary>
+    public const string pt = "http://semiodesk.com/artivity/1.0/pt";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/in"/>
+    ///</summary>
+    public const string _in = "http://semiodesk.com/artivity/1.0/in";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/ft"/>
+    ///</summary>
+    public const string ft = "http://semiodesk.com/artivity/1.0/ft";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/px"/>
+    ///</summary>
+    public const string px = "http://semiodesk.com/artivity/1.0/px";
 
     ///<summary>
     ///

@@ -17,8 +17,6 @@ namespace artivity
         {
             Resource::setValue(rdf::_type, prov::Invalidation);
         }
-        
-        virtual ~Invalidation() {}
     };
 }
 

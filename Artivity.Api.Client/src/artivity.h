@@ -14,6 +14,7 @@
 #include "Ontologies/nfo.h"
 #include "Ontologies/art.h"
 #include "Ontologies/dces.h"
+#include "Ontologies/unit.h"
 
 #include "ObjectModel/Activity.h"
 #include "ObjectModel/ActivityInfluence.h"
@@ -25,8 +26,13 @@
 #include "ObjectModel/Person.h"
 #include "ObjectModel/Role.h"
 #include "ObjectModel/SoftwareAgent.h"
-#include "ObjectModel/SoftwareAssociation.h"
-#include "ObjectModel/Viewbox.h"
+
+#include "ObjectModel/Geometry/Point.h"
+#include "ObjectModel/Geometry/Canvas.h"
+#include "ObjectModel/Geometry/CartesianCoordinateSystem.h"
+#include "ObjectModel/Geometry/BoundingRectangle.h"
+#include "ObjectModel/Geometry/BoundingCube.h"
+#include "ObjectModel/Geometry/Viewport.h"
 
 #include "ObjectModel/Activities/Add.h"
 #include "ObjectModel/Activities/Close.h"

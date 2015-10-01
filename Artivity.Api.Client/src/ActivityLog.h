@@ -38,6 +38,8 @@
 #include "Serializer.h"
 #include "ObjectModel/Activity.h"
 #include "ObjectModel/Entity.h"
+#include "ObjectModel/Agent.h"
+#include "ObjectModel/Association.h"
 
 using namespace std;
 
@@ -45,24 +47,50 @@ namespace artivity
 {
     typedef deque<Activity*>::iterator ActivityLogIterator;
     typedef list<Resource*>::iterator ResourceIterator;
+    typedef list<Agent*>::iterator AgentIterator;
     
-    class ActivityLog : public deque<Activity*>
+    class ActivityLog
     {
     protected:
-        list<Resource*> resources;
+        deque<Activity*> _activities;
+    
+        list<Resource*> _resources;
+        
+        list<Agent*> _agents;
         
     public:
         ActivityLog();
-        ~ActivityLog();
+        virtual ~ActivityLog();
         
         // Indicates if there is a connection to the Artivity HTTP API.
-        bool isConnected();
+        bool connected();
+        
+        // Indicates if there are any activities in the log.
+        bool empty();
+
+        ActivityLogIterator begin();
+        
+        ActivityLogIterator end();
+        
+        void clear();
+
+        // Adds an activity to the transmitted RDF output.
+        Activity* createActivity(const Resource& type);
+        
+        // Adds an activity to the transmitted RDF output.
+        void addActivity(Activity* activity);
         
         // Add a referenced resource to the transmitted RDF output.
         void addResource(Resource* resource);
         
         // Remove a referenced resource to the transmitted RDF output.
         void removeResource(Resource* resource);
+        
+        // Adds an associated agent to any activities which are being logged.
+        void addAgent(Agent* agent);
+        
+        // Removes an associated agent to any activities which are being logged.
+        void removeAgent(Agent* agent);
         
         // Set a target on all activites in the queue.
         void setGeneratedEntity(Entity* entity);
