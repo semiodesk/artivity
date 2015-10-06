@@ -95,8 +95,8 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
         //connect(_recorder, SIGNAL(addedAction(const KisRecordedAction&)), this, SLOT(AddAction(const
         //KisRecordedAction&)));
 
-        _agent = new artivity::SoftwareAgent("application://krita.desktop");
         _log = new artivity::ActivityLog();
+        _log->addAgent(new SoftwareAgent("application://krita.desktop"));
 
         LogEvent(artivity::art::Open, NULL);
         ProcessEventQueue();
@@ -229,38 +229,52 @@ void ArtivityPlugin::Selection()
 
 void ArtivityPlugin::LogEvent(const Resource& type, const KUndo2Command* command)
 {
-    artivity::Activity* activity = new artivity::Activity();
-    activity->setValue(artivity::rdf::_type, type);
+    artivity::Activity* activity = _log->createActivity(type);
 
-    time_t now;
-    time(&now);
-    activity->setTime(&now);
-
-    artivity::Association* association = new artivity::Association();
-    association->setAgent(_agent);
-    _log->addResource(association);
-
-    activity->addAssociation(association);
-    
     if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
     {
         LogModifyingEvent(activity, command);
     }
-    
    
-    _log->push_back(activity);
 }
 
 void ArtivityPlugin::LogModifyingEvent(artivity::Activity* activity, const KUndo2Command* command)
 {
+    CoordinateSystem* coordinateSystem = new CoordinateSystem();
+    coordinateSystem->setCoordinateDimension(2);
+    coordinateSystem->setTransformationMatrix("[1 0 0; 0 1 0; 0 0 0]");
+    _log->addResource(coordinateSystem);
     
-    Viewbox* viewbox = new Viewbox();
-    viewbox->setZoomFactor(_zoomFactor);
 
-    _log->addResource(viewbox);
+
+    /*
+    Canvas* canvas = new Canvas(); 
+    canvas->setWidth(width.quantity); 
+    canvas->setHeight(height.quantity); 
+    canvas->setLengthUnit(getUnit(width)); 
+    canvas->setCoordinateSystem(coordinateSystem); 
+    _log.addResource(canvas);
+    */
+
+ 
+    QPoint origin = _canvas->documentOffset();
+    Point* p = new Point();
+    p->setX(origin.x()/_zoomFactor);
+    p->setY(origin.y()/_zoomFactor);
+    _log->addResource(p);
+
+   
+    QWidget* widget = _canvas->canvasWidget();
+    
+    Viewport* viewport = new Viewport();
+    viewport->setPosition(p);
+    viewport->setWidth(widget->width()/_zoomFactor);
+    viewport->setHeight(widget->height()/_zoomFactor);
+    viewport->setZoomFactor(_zoomFactor);
+    _log->addResource(viewport);
     
     Generation* generation = new Generation();
-    generation->setViewbox(viewbox);
+    generation->setViewport(viewport);
     
     _log->addResource(generation);
     
@@ -275,7 +289,7 @@ void ArtivityPlugin::LogModifyingEvent(artivity::Activity* activity, const KUndo
     _log->addResource(generated);
 
     Invalidation* invalidation = new Invalidation();
-    invalidation->setViewbox(viewbox);
+    invalidation->setViewport(viewport);
 
     _log->addResource(invalidation);
 
@@ -326,7 +340,7 @@ void ArtivityPlugin::LogActivityInformation(artivity::Activity* activity, const 
 
 void ArtivityPlugin::ProcessEventQueue()
 {
-    if( _log->empty() || !_log->isConnected()) return;
+    if( _log->empty() ) return;
 
     if( _doc->localFilePath() == NULL )
     {
