@@ -29,6 +29,8 @@ namespace artivity
         virtual ~Resource() {}
 
         bool is(const Resource& type);
+        
+        void clear();
 
         bool hasProperty(const Property& property, const Resource* value);
         bool hasProperty(const Property& property, const Resource& value);
@@ -65,6 +67,11 @@ namespace artivity
         void setValue(const Property& property, long value);
         void setValue(const Property& property, float value);
         void setValue(const Property& property, double value);
+        
+        void setType(const Resource* type);
+        void setType(const Resource& type);
+        
+        const Resource* getType();
         
         void setUri(string uriref);
         

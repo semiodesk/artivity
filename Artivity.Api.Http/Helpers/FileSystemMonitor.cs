@@ -118,6 +118,13 @@ namespace Artivity.Api.Http
             }
         }
 
+        public static Uri TryGetFileUri(string fileUrl)
+        {
+            Uri url = new Uri(fileUrl);
+
+            return _monitoredFileUris.ContainsKey(url) ? _monitoredFileUris[url] : null;
+        }
+
         public static Uri GetFileUri(string fileUrl)
         {
             Uri url = new Uri(fileUrl);
@@ -157,7 +164,7 @@ namespace Artivity.Api.Http
 
                 Uri uri = new Uri(binding["uri"].ToString());
 
-                _monitoredFileUris[uri] = url;
+                _monitoredFileUris[url] = uri;
 
                 yield return new FileInfo(url.AbsolutePath);
             }

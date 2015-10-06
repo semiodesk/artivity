@@ -1,6 +1,8 @@
 #ifndef ARTIVITY_H
 #define ARTIVITY_H
 
+#include "curlresponse.h"
+
 #include "Resource.h"
 #include "Property.h"
 #include "UriGenerator.h"
@@ -34,16 +36,15 @@
 #include "ObjectModel/Geometry/BoundingCube.h"
 #include "ObjectModel/Geometry/Viewport.h"
 
-#include "ObjectModel/Activities/Add.h"
-#include "ObjectModel/Activities/Close.h"
-#include "ObjectModel/Activities/Create.h"
-#include "ObjectModel/Activities/Delete.h"
-#include "ObjectModel/Activities/Open.h"
-#include "ObjectModel/Activities/Remove.h"
-#include "ObjectModel/Activities/Save.h"
-#include "ObjectModel/Activities/Undo.h"
-#include "ObjectModel/Activities/Update.h"
-#include "ObjectModel/Activities/View.h"
+#include "ObjectModel/Activities/Browse.h"
+#include "ObjectModel/Activities/CreateFile.h"
+#include "ObjectModel/Activities/DeleteFile.h"
+#include "ObjectModel/Activities/EditFile.h"
+#include "ObjectModel/Influences/Add.h"
+#include "ObjectModel/Influences/Edit.h"
+#include "ObjectModel/Influences/Save.h"
+#include "ObjectModel/Influences/Remove.h"
+#include "ObjectModel/Influences/Undo.h"
 
 #include "ObjectModel/Entities/FileDataObject.h"
 #include "ObjectModel/Entities/WebDataObject.h"

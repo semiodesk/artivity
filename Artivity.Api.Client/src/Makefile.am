@@ -1,10 +1,11 @@
 lib_LTLIBRARIES = libartivity.la
 
-libartivity_la_SOURCES = main.cpp  Resource.cpp  Serializer.cpp ActivityLog.cpp ObjectModel/Activity.cpp
+libartivity_la_SOURCES = main.cpp curlresponse.cpp Resource.cpp  Serializer.cpp ActivityLog.cpp ObjectModel/Activity.cpp
 libartivity_la_LDFLAGS = $(CURL_LIBS)
 libartivity_la_CFLAGS = $(CURL_CFLAGS) 
 
-nobase_pkginclude_HEADERS = artivity.h \
+nobase_pkginclude_HEADERS = curlresponse.h \
+    artivity.h \
     Resource.h \
     Property.h \
     PropertyMap.h \
@@ -37,16 +38,16 @@ nobase_pkginclude_HEADERS = artivity.h \
     ObjectModel/Entities/WebDataObject.h \
     ObjectModel/Entities/XmlElement.h \
     ObjectModel/Entities/XmlAttribute.h \
-    ObjectModel/Activities/Add.h \
-    ObjectModel/Activities/Create.h \
-    ObjectModel/Activities/Delete.h \
-    ObjectModel/Activities/Remove.h \
-    ObjectModel/Activities/Undo.h \
-    ObjectModel/Activities/Update.h \
-    ObjectModel/Activities/View.h \
-    ObjectModel/Activities/Open.h \
-    ObjectModel/Activities/Close.h \
-    ObjectModel/Activities/Save.h \
+    ObjectModel/Activities/Browse.h \
+    ObjectModel/Activities/CreateFile.h \
+    ObjectModel/Activities/DeleteFile.h \
+    ObjectModel/Activities/EditFile.h \
+    ObjectModel/Influences/Save.h \
+    ObjectModel/Influences/Add.h \
+    ObjectModel/Influences/Remove.h \
+    ObjectModel/Influences/Edit.h \
+    ObjectModel/Influences/Undo.h \
+    ObjectModel/Influences/Redo.h \
     Ontologies/prov.h \
     Ontologies/rdf.h \
     Ontologies/xsd.h \

@@ -48,9 +48,22 @@ namespace Artivity.Api.Http
 		{
 			try
 			{
-				Get["/artivity/1.0/agents/"] = parameters => { return GetAgents(); };
-				Get["/artivity/1.0/agents/status/"] = parameters => { return GetStatus(this.Bind<AgentParameters>()); };
-				Post["/artivity/1.0/agents/status/"] = parameters => { return SetStatus(this.Bind<AgentParameters>()); };
+				Get["/artivity/1.0/agents"] = parameters => { return GetAgents(); };
+				Get["/artivity/1.0/agents/status"] = parameters =>
+                {
+                    if(Request.Query.agent)
+                    {
+                        AgentParameters p = new AgentParameters();
+                        p.agent = Request.Query.agent.ToString();
+
+                        return GetStatus(p);
+                    }
+                    else
+                    {
+                        return GetStatus(this.Bind<AgentParameters>());
+                    }
+                };
+				Post["/artivity/1.0/agents/status"] = parameters => { return SetStatus(this.Bind<AgentParameters>()); };
 			}
 			catch(Exception e)
 			{

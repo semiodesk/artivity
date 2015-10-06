@@ -27,6 +27,11 @@ namespace artivity
         return Properties.hasProperty(rdf::_type.Uri, &type);
     }
     
+    void Resource::clear()
+    {
+        Properties.clear();
+    }
+    
     bool Resource::hasProperty(const Property& property, const Resource* value)
     {
         return Properties.hasProperty(property.Uri, value);
@@ -186,7 +191,27 @@ namespace artivity
     {
         Properties.setProperty(property.Uri, Serializer::toString(value), typeid(value));
     }
-       
+
+    void Resource::setType(const Resource* type)
+    {
+        Properties.setProperty(rdf::_type.Uri, type);
+    }
+
+    void Resource::setType(const Resource& type)
+    {
+        Properties.setProperty(rdf::_type.Uri, &type);
+    }
+    
+    const Resource* Resource::getType()
+    {
+        if(Properties.find(rdf::_type.Uri) != Properties.end())
+        {
+            return Properties.find(rdf::_type.Uri)->second.Value;
+        }
+        
+        return NULL;
+    }
+    
     void Resource::setUri(string uriref)
     {
         Uri = string(uriref);

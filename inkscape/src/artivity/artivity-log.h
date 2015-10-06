@@ -64,42 +64,54 @@ namespace Inkscape
 
         SPDesktop* _desktop;
 
-        artivity::ActivityLog _log;	
-
-        artivity::SoftwareAgent* _agent = NULL;
+        artivity::ActivityLog _log;
         
-        artivity::FileDataObject* _entity = NULL;
+        artivity::Activity* _activity;
         
-        artivity::Canvas* _canvas = NULL;
+        string _filePath;
         
         template<class TEvent> bool is(Inkscape::XML::Event* event);
             
         template<class TEvent> TEvent as(Inkscape::XML::Event* event);
-   
+        
     protected:
            
-        void logEvent(const artivity::Resource& type, Event* e);
+        void logEvent(Event* e, const artivity::Resource& type);
         
-        void setType(artivity::Activity* activity, Event* e);
+        void logUndoOrRedo(time_t time, Event* e, artivity::Canvas* canvas, artivity::Viewport* viewport, const artivity::Resource& type);
+    
+        void logAdd(time_t time, Event* e, artivity::Canvas* canvas, artivity::Viewport* viewport);
+        
+        void logDelete(time_t time, Event* e, artivity::Canvas* canvas, artivity::Viewport* viewport);
+        
+        void logChangeContent(time_t time, Event* e, artivity::Canvas* canvas, artivity::Viewport* viewport);
+    
+        void logChangeAttributes(time_t time, Event* e, artivity::Canvas* canvas, artivity::Viewport* viewport);
+        
+        void logChangeOrder(time_t time, Event* e, artivity::Canvas* canvas, artivity::Viewport* viewport);
+    
+        artivity::FileDataObject* createGeneratedVersion(artivity::Entity* entity, artivity::Canvas* canvas);
+        
+        artivity::FileDataObject* createInvalidatedVersion(artivity::Entity* entity, artivity::Canvas* canvas);
+        
+        artivity::Generation* createGeneration(artivity::Entity* entity, time_t time, artivity::Viewport* viewport, const artivity::Resource& type);
 
-        void setGeneratedValue(list<artivity::Entity*> entities, string value, artivity::Resource* location, artivity::BoundingRectangle* bounds);
-        
-        void setInvalidatedValue(list<artivity::Entity*> entities, string value, artivity::Resource* location, artivity::BoundingRectangle* bounds);
-        
-        void processEventQueue();
-        
-        artivity::BoundingRectangle* getBoundingRectangle(Event* e);
+        artivity::Invalidation* createInvalidation(artivity::Entity* entity, time_t time, artivity::Viewport* viewport, const artivity::Resource& type);
     
-        artivity::XmlElement* getXmlElement(Event* e);
+        artivity::Viewport* createViewport();
         
-        const char* getXmlElementId(Event* e);
+        artivity::BoundingRectangle* createBoundingRectangle(Event* e);
         
-        Inkscape::XML::Node* getXmlElementNode(Event* e);
+        artivity::Canvas* getCanvas();
+        
+        const char* getXmlNodeId(Inkscape::XML::Node* n);
     
-        const artivity::Resource* getUnit(const Util::Quantity& quantity);
+        const artivity::Resource* getLengthUnit(const Util::Quantity& quantity);
     
         AttributeValueMap* getChangedAttributes(string a, string b);
     
+        void transmitQueue();
+        
     public:
         
         ArtivityLog(SPDocument* document, SPDesktop* desktop);

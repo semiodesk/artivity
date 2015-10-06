@@ -33,13 +33,16 @@
 #include <deque>
 #include <vector>
 #include <curl/curl.h>
+#include "curlresponse.h"
 
 #include "Resource.h"
 #include "Serializer.h"
-#include "ObjectModel/Activity.h"
-#include "ObjectModel/Entity.h"
 #include "ObjectModel/Agent.h"
 #include "ObjectModel/Association.h"
+#include "ObjectModel/Activity.h"
+#include "ObjectModel/Entity.h"
+#include "ObjectModel/Entities/FileDataObject.h"
+#include "ObjectModel/Geometry/Canvas.h"
 
 using namespace std;
 
@@ -58,8 +61,46 @@ namespace artivity
         
         list<Agent*> _agents;
         
+        string _fileUri;
+        
+        string _filePath;
+        
+        string _canvasUri;
+        
+        double _canvasWidth;
+        
+        double _canvasHeight;
+        
+        const Resource* _canvasUnit;
+        
+        // Issues an HTTP request.
+        long request(string url, string postFields, string& response);
+        
+        void logError(string msg);
+        
+        void logInfo(string msg);
+        
+        string getTime();
+
+        const char* getFileUri(string path);
+
+        const char* getCanvasUri(string path);
+        
+        const char* getLatestVersionUri(string path);
+        
+        void createCanvas(FileDataObject* file, double width, double height, const Resource* unit);
+        
+        ResourceIterator findResource(const char* uri);
+        
+        // Add a referenced resource to the transmitted RDF output.
+        void addResource(Resource* resource);
+        
+        // Remove a referenced resource to the transmitted RDF output.
+        void removeResource(Resource* resource);
+        
     public:
         ActivityLog();
+        
         virtual ~ActivityLog();
         
         // Indicates if there is a connection to the Artivity HTTP API.
@@ -70,21 +111,62 @@ namespace artivity
 
         ActivityLogIterator begin();
         
+        Activity* first();
+        
         ActivityLogIterator end();
+        
+        Activity* last();
         
         void clear();
 
-        // Adds an activity to the transmitted RDF output.
-        Activity* createActivity(const Resource& type);
+        // Create a new resource and add it the transmitted RDF output.
+        template <class T> T* createResource()
+        {
+            return createResource<T>(UriGenerator::getUri().c_str());
+        }
         
-        // Adds an activity to the transmitted RDF output.
+        // Create a new resource with a given URI ant add it to the transmitted RDF output.
+        template <class T> T* createResource(const char* uri)
+        {            
+            T* t = new T(uri);
+            
+            addResource(t);
+            
+            return t;
+        }
+        
+        template <class T> T* getResource(const char* uri)
+        {
+            ResourceIterator it = findResource(uri);
+            
+            if(it == _resources.end())
+            {
+                return NULL;
+            }
+            
+            return dynamic_cast<T*>(*it);
+        }
+        
+        bool hasResource(const char* uri);
+
+        // Create a new activity and add to the transmitted RDF output.
+        template <class T> T* createActivity()
+        {
+            time_t now;
+            time(&now);
+                
+            T* activity = new T();
+            activity->setStartTime(now);
+            
+            addActivity(activity);
+            
+            return activity;
+        }
+        
+        Activity* updateActivity(Activity* activity);
+        
+        // Add an activity to the transmitted RDF output.
         void addActivity(Activity* activity);
-        
-        // Add a referenced resource to the transmitted RDF output.
-        void addResource(Resource* resource);
-        
-        // Remove a referenced resource to the transmitted RDF output.
-        void removeResource(Resource* resource);
         
         // Adds an associated agent to any activities which are being logged.
         void addAgent(Agent* agent);
@@ -92,8 +174,19 @@ namespace artivity
         // Removes an associated agent to any activities which are being logged.
         void removeAgent(Agent* agent);
         
-        // Set a target on all activites in the queue.
-        void setGeneratedEntity(Entity* entity);
+        FileDataObject* loadFile(string path, double width, double height, const Resource* lengthUnit);
+        
+        FileDataObject* createFile(double width, double height, const Resource* lengthUnit);
+        
+        FileDataObject* getFile();
+        
+        bool hasFile(string path);
+                        
+        void updateCanvas(double width, double height, const Resource* lengthUnit);
+        
+        Canvas* getCanvas();
+ 
+        bool hasCanvas(double width, double height, const Resource* lengthUnit);
         
         // Send all items in the queue to the Artivity server.
         void transmit();

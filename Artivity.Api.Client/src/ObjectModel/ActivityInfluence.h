@@ -17,6 +17,8 @@ namespace artivity
         
         Resource* _location;
         
+        time_t _time;
+                
         string _value;
         
     public:
@@ -64,6 +66,18 @@ namespace artivity
             _location = location;
             
             Resource::setValue(prov::atLocation, location);
+        }
+        
+        time_t getTime()
+        {
+            return _time;
+        }
+        
+        void setTime(time_t time)
+        {
+            _time = time;
+            
+            Resource::setValue(prov::atTime, &time);
         }
         
         string getValue()

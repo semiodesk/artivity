@@ -9,9 +9,24 @@ namespace artivity
 {
     namespace art
     {
+        // http://www.w3.org/ns/activitystreams#View
+        static const Resource Browse = ART("Browse");
+        
+        // No match in ActivityStreams
+        static const Resource EditFile = ART("EditFile");
+        
+        // No match in ActivityStreams
+        static const Resource CreateFile = ART("CreateFile");
+        
+        // No match in ActivityStreams
+        static const Resource DeleteFile = ART("DeleteFile");
+        
         // --- ACTIVITIES ---
         // NOTE: There are very little predefined activity types in PROV.
         //       The following are inspired by the Activity Streams vocabulary.
+        
+        // No match in ActivityStreams
+        static const Resource Edit = ART("Edit");
         
         // http://www.w3.org/ns/activitystreams#Add
         static const Resource Add = ART("Add");
@@ -19,29 +34,11 @@ namespace artivity
         // http://www.w3.org/ns/activitystreams#Remove
         static const Resource Remove = ART("Remove");
         
-        // http://www.w3.org/ns/activitystreams#Create
-        static const Resource Create = ART("Create");
-        
-        // http://www.w3.org/ns/activitystreams#Delete
-        static const Resource Delete = ART("Delete");
-        
         // http://www.w3.org/ns/activitystreams#Undo
         static const Resource Undo = ART("Undo");
         
-        // http://www.w3.org/ns/activitystreams#Update
-        static const Resource Update = ART("Update");
-        
-        // http://www.w3.org/ns/activitystreams#View
-        static const Resource View = ART("View");
-        
         // No match in ActivityStreams
         static const Resource Redo = ART("Redo");
-        
-        // No match in ActivityStreams
-        static const Resource Open = ART("Open");
-        
-        // No match in ActivityStreams
-        static const Resource Close = ART("Close");
         
         // No match in ActivityStreams
         static const Resource Save = ART("Save");
@@ -55,6 +52,8 @@ namespace artivity
         // NOTE: We try to be compatible with OGC geometry vocabularies since
         //       many databases support spatial querying using this standard.
         
+        static const Property canvas = ART("canvas");
+                
         // Subclass of :hadGeometry
         static const Property hadCanvas = ART("hadCanvas");
         

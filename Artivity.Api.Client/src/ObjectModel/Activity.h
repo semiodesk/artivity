@@ -32,6 +32,8 @@ namespace artivity
         
         bool isValid();
         
+        void clear();
+        
         void setTime(time_t time);
         time_t getTime();
         
