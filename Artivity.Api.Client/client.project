@@ -40,16 +40,10 @@
     <File Name="src/UriGenerator.h"/>
     <VirtualDirectory Name="ObjectModel">
       <VirtualDirectory Name="Activities">
-        <File Name="src/ObjectModel/Activities/Add.h"/>
-        <File Name="src/ObjectModel/Activities/Close.h"/>
-        <File Name="src/ObjectModel/Activities/Create.h"/>
-        <File Name="src/ObjectModel/Activities/Delete.h"/>
-        <File Name="src/ObjectModel/Activities/Open.h"/>
-        <File Name="src/ObjectModel/Activities/Remove.h"/>
-        <File Name="src/ObjectModel/Activities/Save.h"/>
-        <File Name="src/ObjectModel/Activities/Undo.h"/>
-        <File Name="src/ObjectModel/Activities/Update.h"/>
-        <File Name="src/ObjectModel/Activities/View.h"/>
+        <File Name="src/ObjectModel/Activities/CreateFile.h"/>
+        <File Name="src/ObjectModel/Activities/DeleteFile.h"/>
+        <File Name="src/ObjectModel/Activities/EditFile.h"/>
+        <File Name="src/ObjectModel/Activities/Browse.h"/>
       </VirtualDirectory>
       <VirtualDirectory Name="Entities">
         <File Name="src/ObjectModel/Entities/FileDataObject.h"/>
@@ -80,9 +74,19 @@
         <File Name="src/ObjectModel/Geometry/Canvas.h"/>
         <File Name="src/ObjectModel/Geometry/Viewport.h"/>
       </VirtualDirectory>
+      <VirtualDirectory Name="Influences">
+        <File Name="src/ObjectModel/Influences/Add.h"/>
+        <File Name="src/ObjectModel/Influences/Edit.h"/>
+        <File Name="src/ObjectModel/Influences/Remove.h"/>
+        <File Name="src/ObjectModel/Influences/Save.h"/>
+        <File Name="src/ObjectModel/Influences/Undo.h"/>
+        <File Name="src/ObjectModel/Influences/Redo.h"/>
+      </VirtualDirectory>
     </VirtualDirectory>
     <File Name="src/artivity.h"/>
     <File Name="src/Makefile.am"/>
+    <File Name="src/curlresponse.h"/>
+    <File Name="src/curlresponse.cpp"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>

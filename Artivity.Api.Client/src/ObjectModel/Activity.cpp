@@ -43,6 +43,16 @@ namespace artivity
         return true;
     }
     
+    void Activity::clear()
+    {
+        Resource::clear();
+        
+        _associations->clear();
+        _usedEntities->clear();
+        _invalidatedEntities->clear();
+        _generatedEntities->clear();
+    }
+    
     void Activity::setTime(time_t time)
     {
         setStartTime(time);

@@ -33,11 +33,16 @@ namespace artivity
     {
         _activities = deque<Activity*>();
         _resources = list<Resource*>();
+        _fileUri = "";
+        _filePath = "";
+        _canvasUri = "";
     }
 
     ActivityLog::~ActivityLog() 
     {
-        // Free all the activities still in the log.
+        clear();
+        
+        // Free all the activities in the log.
         ActivityLogIterator ait = _activities.begin();
         
         while(ait != _activities.end())
@@ -47,15 +52,7 @@ namespace artivity
             ait++;
         }
         
-        // Free all the related _resources still in the log.
-        ResourceIterator rit = _resources.begin();
-        
-        while(rit != _resources.end())
-        {
-            delete *rit;
-            
-            rit++;
-        }
+        _activities.clear();
         
         // Free all the associated agents still in the log.
         AgentIterator agit = _agents.begin();
@@ -76,7 +73,7 @@ namespace artivity
     
     bool ActivityLog::empty()
     {
-        return _activities.empty();
+        return _activities.empty() && _resources.empty();
     }
     
     ActivityLogIterator ActivityLog::begin()
@@ -84,9 +81,19 @@ namespace artivity
         return _activities.begin();
     }
     
+    Activity* ActivityLog::first()
+    {
+        return _activities.empty() ? NULL : *(_activities.begin());
+    }
+    
     ActivityLogIterator ActivityLog::end()
     {
         return _activities.end();
+    }
+    
+    Activity* ActivityLog::last()
+    {
+        return _activities.empty() ? NULL : *(_activities.end());
     }
     
     void ActivityLog::clear()
@@ -95,13 +102,14 @@ namespace artivity
         
         while(ait != _activities.end())
         {
-            delete *ait;
+            // Just clear the properties so that the activities
+            // can be reused at a later time.
+            (*ait)->clear();
             
             ait++;
         }
         
-        _activities.clear();
-        
+        // Free all the activities still in the log.
         ResourceIterator rit = _resources.begin();
         
         while(rit != _resources.end())
@@ -113,38 +121,37 @@ namespace artivity
         
         _resources.clear();
     }
-    
-    void ActivityLog::setGeneratedEntity(Entity* entity)
+
+    ResourceIterator ActivityLog::findResource(const char* uri)
     {
-        // Add the entity to the RDF output if not already done.
-        if(find(_resources.begin(), _resources.end(), entity) == _resources.end())
+        ResourceIterator rit = _resources.begin();
+        
+        while(rit != _resources.end())
         {
-            addResource(entity);
-        }
-     
-        // Add the entity to the generated entities of all activities.
-        ActivityLogIterator ait = _activities.begin();
-   
-        while(ait != _activities.end())
-        {
-            (*ait)->addGeneratedEntity(entity);
+            if((*rit)->Uri == uri)
+            {
+                return rit;
+            }
             
-            ait++;
+            rit++;
         }
+        
+        return _resources.end();
     }
     
-    Activity* ActivityLog::createActivity(const Resource& type)
+    bool ActivityLog::hasResource(const char* uri)
+    {        
+        return findResource(uri) != _resources.end();
+    }
+    
+    void ActivityLog::addResource(Resource* resource)
+    {        
+        _resources.push_back(resource);
+    }
+    
+    void ActivityLog::removeResource(Resource* resource)
     {
-        time_t now;
-        time(&now);
-            
-        Activity* activity = new Activity();
-        activity->setValue(rdf::_type, type);
-        activity->setTime(now);
-        
-        addActivity(activity);
-        
-        return activity;
+        _resources.remove(resource);
     }
     
     void ActivityLog::addActivity(Activity* activity)
@@ -155,10 +162,8 @@ namespace artivity
         
         while(agit != _agents.end())
         {
-            Association* association = new Association();
+            Association* association = createResource<Association>();
             association->setAgent(*agit);
-            
-            addResource(association);
             
             activity->addAssociation(association);
             
@@ -166,45 +171,185 @@ namespace artivity
         }
     }
     
+    Activity* ActivityLog::updateActivity(Activity* activity)
+    {
+        Activity* a = createResource<Activity>(activity->Uri.c_str());
+        a->setType(activity->getType());
+        
+        return a;
+    }
+    
     void ActivityLog::addAgent(Agent* agent)
     {
-        _resources.push_back(agent);
+        _agents.push_back(agent);
     }
     
     void ActivityLog::removeAgent(Agent* agent)
     {
-        _resources.remove(agent);
+        _agents.remove(agent);
     }
     
-    void ActivityLog::addResource(Resource* resource)
-    {
-        _resources.push_back(resource);
+    // Create a new file data object without a path. For use with unsaved new files.
+    FileDataObject* ActivityLog::createFile(double width, double height, const Resource* lengthUnit)
+    {        
+        time_t now;
+        time(&now);
+        
+        // Add the new file to the transmitted RDF output.
+        FileDataObject* file = createResource<FileDataObject>();
+        file->setCreationTime(now);
+        
+        _fileUri = string(file->Uri);
+        _filePath = "";
+        
+        // Add a canvas to the newly created file.
+        createCanvas(file, width, height, lengthUnit);
+        
+        return file;
     }
     
-    void ActivityLog::removeResource(Resource* resource)
+    FileDataObject* ActivityLog::loadFile(string path, double width, double height, const Resource* lengthUnit)
     {
-        _resources.remove(resource);
+        _fileUri = string(getFileUri(path));
+        _filePath = path;
+                            
+        _canvasUri = string(getCanvasUri(path));
+        _canvasWidth = width;
+        _canvasHeight = height;
+        _canvasUnit = lengthUnit;
+        
+        FileDataObject* file = createResource<FileDataObject>(_fileUri.c_str());
+        
+        if(_canvasUri == "")
+        {            
+            createCanvas(file, width, height, lengthUnit);
+        }
+        
+        return file;
     }
     
-    void ActivityLog::transmit()
+    bool ActivityLog::hasFile(string path)
     {
-        CURL* curl = curl_easy_init();
-
-        if (!curl)
+        return path != "" && path == _filePath;
+    }
+    
+    FileDataObject* ActivityLog::getFile()
+    {
+        if(_fileUri == "")
         {
-            cout << ">>> ERROR: Failed to initialize CURL." << endl << flush;
-            
+            return NULL;
+        }
+        
+        const char* uri = _fileUri.c_str();
+        
+        if(hasResource(uri))
+        {
+            return getResource<FileDataObject>(uri);
+        }
+        else
+        {
+            return createResource<FileDataObject>(uri);
+        }
+    }
+    
+    const char* ActivityLog::getFileUri(string path)
+    {
+        string url = "http://localhost:8272/artivity/1.0/uri?file=" + path;
+        string data = "";
+        
+        request(url, "", data);
+        
+        return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : "";
+    }
+    
+    const char* ActivityLog::getCanvasUri(string path)
+    {
+        string url = "http://localhost:8272/artivity/1.0/uri?canvas=" + path;
+        string data = "";
+        
+        request(url, "", data);
+        
+        return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : "";
+    }
+    
+    void ActivityLog::createCanvas(FileDataObject* file, double width, double height, const Resource* lengthUnit)
+    {
+        if(file == NULL)
+        {
             return;
         }
         
-        struct curl_slist *headers = NULL; // init to NULL is important 
-        headers = curl_slist_append(headers, "Accept: text/n3");
-        headers = curl_slist_append(headers, "Content-Type: text/n3");
-        headers = curl_slist_append(headers, "charsets: utf-8");
+        // Transmit the coorindate system which is associated with the new canvas.
+        CoordinateSystem* coordinateSystem = createResource<CoordinateSystem>();
+        coordinateSystem->setCoordinateDimension(2);
+        coordinateSystem->setTransformationMatrix("[1 0 0; 0 1 0; 0 0 0]");
         
-        curl_easy_reset(curl);
-        curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8272/artivity/1.0/activities");
+        // Transmit the new canvas.
+        Canvas* canvas = createResource<Canvas>();
+        canvas->setWidth(width);
+        canvas->setHeight(height);
+        canvas->setLengthUnit(lengthUnit);
+        canvas->setCoordinateSystem(coordinateSystem);
+                
+        // Store a copy of the canvas.
+        _canvasUri = canvas->Uri.c_str();
+        _canvasWidth = width;
+        _canvasHeight = height;
+        _canvasUnit = lengthUnit;
         
+        file->setCanvas(canvas);
+    }
+    
+    void ActivityLog::updateCanvas(double width, double height, const Resource* lengthUnit)
+    {
+        if(hasCanvas(width, height, lengthUnit))
+        {
+            return;
+        }
+                
+        FileDataObject* file = getFile();
+
+        createCanvas(file, width, height, lengthUnit);
+    }
+    
+    Canvas* ActivityLog::getCanvas()
+    {
+        if(_canvasUri == "")
+        {
+            return NULL;
+        }
+        
+        const char* uri = _canvasUri.c_str();
+        
+        if(hasResource(uri))
+        {
+            return getResource<Canvas>(uri);
+        }
+        else
+        {
+            return createResource<Canvas>(uri);
+        }
+    }
+    
+    bool ActivityLog::hasCanvas(double width, double height, const Resource* lengthUnit)
+    {
+        return _canvasUri != "" && _canvasWidth == width && _canvasHeight == height && _canvasUnit == lengthUnit;
+    }
+    
+    const char* ActivityLog::getLatestVersionUri(string path)
+    {
+        stringstream url;
+        url << "http://localhost:8272/artivity/1.0/uri?latestVersion=" << path;
+        
+        string data;
+        
+        request(url.str(), "", data);
+        
+        return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : "";
+    }
+    
+    void ActivityLog::transmit()
+    {        
         stringstream stream;
         
         ActivityLogIterator ait = _activities.begin();
@@ -225,26 +370,84 @@ namespace artivity
             rit++;
         }
         
-        _resources.clear();
+        string requestData = stream.str();
+        string responseData;
         
-        string content = stream.str();
+        request("http://localhost:8272/artivity/1.0/activities", requestData, responseData);
         
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, content.c_str());
+        // Cleanup after all resources have been serialized and transmitted.
+        clear();
+    }
+    
+    long ActivityLog::request(string url, string postFields, string& response)
+    {
+        CURL* curl = curl_easy_init();
+
+        if (!curl)
+        {
+            logError("Failed to initialize CURL.");
+            
+            return CURLE_FAILED_INIT;
+        }
+            
+        struct curl_slist *headers = NULL; // init to NULL is important
+        headers = curl_slist_append(headers, "charsets: utf-8");
+        
+        struct curl_string data;
+        curl_init_string(&data);
+        
+        curl_easy_reset(curl);
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
         
-        cout << endl;
-        cout << ">>> OPEN: http://localhost:8272/artivity/1.0/model; Method: POST" << endl;
-        cout << content << endl;
+        if(postFields.length() > 0)
+        {
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
+        }
         
         curl_easy_perform(curl);
         
-        // Cleanup AFTER all _resources have been serialized and transmitted.
-        if(curl)
+        long responseCode = 0;
+        
+        if(data.len > 0)
         {
-            curl_easy_cleanup(curl);
+            response = data.ptr;
         }
         
-        clear();
+        curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &responseCode);
+        curl_easy_cleanup(curl);
+        
+        logInfo(url);
+        
+        if(postFields.length() > 0)
+        {
+            cout << postFields << endl << flush;
+        }
+        
+        return responseCode;
+    }
+    
+    void ActivityLog::logError(string msg)
+    {
+        cout << "[" << getTime() << "] " << msg << endl << flush;
+    }
+    
+    void ActivityLog::logInfo(string msg)
+    {
+        cout << "[" << getTime() << "] " << msg << endl << flush;
+    }
+    
+    string ActivityLog::getTime()
+    {
+        time_t t = time(NULL);
+        
+        char date_str[20];
+        
+        strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
+        
+        return string(date_str);
     }
 }
 

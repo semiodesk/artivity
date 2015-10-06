@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2015 Authors
  *
- * Released under GNU GPL, see the file 'COPYING' for more information
+ * Released under GNU GPL, see the file 'COPYING' for more information.
  */
 
 #include "artivity/artivity-log.h"
@@ -25,40 +25,69 @@ namespace Inkscape
     using Inkscape::XML::NodeType;
     
     ArtivityLog::ArtivityLog(SPDocument* document, SPDesktop* desktop) : UndoStackObserver()
-    {
-        _document = document;
+    {        
         _desktop = desktop;
-
+        _document = document;
+        
         _log = ActivityLog();
         _log.addAgent(new SoftwareAgent("application://inkscape.desktop"));
-    
-        logEvent(art::Open, NULL);
+        
+        double width = _document->getWidth().quantity;
+        double height = _document->getHeight().quantity;
+        const Resource* unit = getLengthUnit(_document->getWidth());
+            
+        if(_document->getURI() != NULL)
+        {
+            _filePath = string(_document->getURI());
+                        
+            _log.loadFile(_filePath.c_str(), width, height, unit);
+            
+            FileDataObject* file = _log.getFile();
+            
+            _activity = _log.createActivity<EditFile>();
+            _activity->addUsedEntity(file);
+        
+            transmitQueue();
+        }
+        else
+        {
+            _filePath = "";
+            
+            _log.createFile(width, height, unit);
+            
+            _activity = _log.createActivity<CreateFile>();
+        }
     }
 
     ArtivityLog::~ArtivityLog()
     {
-        logEvent(art::Close, NULL);
-                
-        if(_agent != NULL) delete _agent;
-        if(_entity != NULL) delete _entity;
+        if(_document->getURI() != NULL)
+        {
+            time_t now;
+            time(&now);
+            
+            _activity->setEndTime(now);
+            
+            _log.transmit();
+        }
+    }
+    
+    void
+    ArtivityLog::notifyUndoCommitEvent(Event* e)
+    {        
+        logEvent(e, art::Edit);
     }
     
     void
     ArtivityLog::notifyUndoEvent(Event* e)
     {
-        logEvent(art::Undo, e);
+        logEvent(e, art::Undo);
     }
-
+    
     void
     ArtivityLog::notifyRedoEvent(Event* e)
     {        
-        logEvent(art::Redo, e);
-    }
-
-    void
-    ArtivityLog::notifyUndoCommitEvent(Event* e)
-    {        
-        logEvent(art::Update, e);
+        logEvent(e, art::Redo);
     }
 
     void
@@ -74,316 +103,279 @@ namespace Inkscape
     }
     
     void
-    ArtivityLog::logEvent(const Resource& type, Event* e)
+    ArtivityLog::logEvent(Event* e, const Resource& type)
     {
-        if(_desktop == NULL)
+        if(e->event == NULL)
+        {
             return;
-        
+        }
+            
         try
         {
-            Activity* activity = _log.createActivity(type);
-                    
-            if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
+            time_t now;
+            time(&now);
+                         
+            Canvas* canvas = getCanvas();
+            
+            Viewport* viewport = createViewport();
+            
+            if(is<Inkscape::XML::EventAdd*>(e->event))
             {
-                Quantity width = _document->getWidth();
-                Quantity height = _document->getHeight();
-                
-                CoordinateSystem* coordinateSystem = new CoordinateSystem();
-                coordinateSystem->setCoordinateDimension(2);
-                coordinateSystem->setTransformationMatrix("[1 0 0; 0 1 0; 0 0 0]");
-                
-                _log.addResource(coordinateSystem);
-                
-                // TODO: Get the one referencing to the actual file to reduce data overhead.
-                Canvas* canvas = new Canvas();
-                canvas->setWidth(width.quantity);
-                canvas->setHeight(height.quantity);
-                canvas->setLengthUnit(getUnit(width));
-                canvas->setCoordinateSystem(coordinateSystem);
-                
-                _log.addResource(canvas);
-                
-                Rect vbox = _desktop->get_display_area();
-      
-                Point* p = new Point();
-                p->setX(vbox.left());
-                p->setY(vbox.top());
-                
-                _log.addResource(p);
-                
-                Viewport* viewport = new Viewport();
-                viewport->setPosition(p);
-                viewport->setWidth(vbox.right() - vbox.left());
-                viewport->setHeight(vbox.bottom() - vbox.top());
-                viewport->setZoomFactor(_desktop->current_zoom());
-            
-                _log.addResource(viewport);
-                
-                Generation* generation = new Generation();
-                generation->setViewport(viewport);
-                
-                _log.addResource(generation);
-                
-                FileDataObject* generated = new FileDataObject("_:UNSET");
-                //generated->addProperty(rdf::_type, prov::Collection);
-                generated->setCanvas(canvas);
-                generated->setGeneration(generation);
-                generated->setLastModificationTime(activity->getTime());
-                generated->setGenerationTime(activity->getTime());
-                
-                activity->addGeneratedEntity(generated);
-                                
-                _log.addResource(generated);
-                
-                Invalidation* invalidation = new Invalidation();
-                invalidation->setViewport(viewport);
-                
-                _log.addResource(invalidation);
-                
-                FileDataObject* invalidated = new FileDataObject("_:UNSET");
-                //invalidated->addProperty(rdf::_type, prov::Collection);
-                invalidated->setCanvas(canvas);
-                invalidated->setInvalidation(invalidation);
-                invalidated->setInvalidationTime(activity->getTime());
-                
-                activity->addInvalidatedEntity(invalidated);
-                    
-                _log.addResource(invalidated);
+                logAdd(now, e, canvas, viewport);
             }
-            
-            // NOTE: setType() requires the Generation and Invalidation to be initialized.
-            setType(activity, e);
-            
-            processEventQueue();
+            else if(is<Inkscape::XML::EventDel*>(e->event))
+            {
+                logDelete(now, e, canvas, viewport);
+            }
+            else if(is<Inkscape::XML::EventChgContent*>(e->event))
+            {
+                logChangeContent(now, e, canvas, viewport);
+            }
+            else if(is<Inkscape::XML::EventChgAttr*>(e->event))
+            {
+                logChangeAttributes(now, e, canvas, viewport);
+            }
+            else if(is<Inkscape::XML::EventChgOrder*>(e->event))
+            {
+                logChangeOrder(now, e, canvas, viewport);
+            }
+            else if(type.Uri == art::Undo.Uri || type.Uri == art::Redo.Uri)
+            {
+                logUndoOrRedo(now, e, canvas, viewport, type);
+            }
+        
+            transmitQueue();
         }
         catch(exception e)
         {
-            g_error("exception caught.");
+            // TODO: log error.
         }
     }
-
+   
     void
-    ArtivityLog::processEventQueue()
+    ArtivityLog::logUndoOrRedo(time_t time, Event* e, Canvas* canvas, Viewport* viewport, const Resource& type)
     {
-        if(_log.empty() || !_log.connected()) return;
+        FileDataObject* file = _log.getFile();
+        FileDataObject* newver = createGeneratedVersion(file, canvas);
+        FileDataObject* oldver = createInvalidatedVersion(file, canvas);
         
-        if(_document == NULL)
+        Generation* generation = createGeneration(newver, time, viewport, type);
+        Invalidation* invalidation = createInvalidation(oldver, time, viewport, type);
+    }
+    
+    void
+    ArtivityLog::logAdd(time_t time, Event* e, Canvas* canvas, Viewport* viewport)
+    {
+        Inkscape::XML::EventAdd* x = as<Inkscape::XML::EventAdd*>(e->event);
+        
+        BoundingRectangle* bounds = createBoundingRectangle(e);
+        
+        FileDataObject* file = _log.getFile();
+        FileDataObject* newver = createGeneratedVersion(file, canvas);
+        FileDataObject* oldver = createInvalidatedVersion(file, canvas);
+        
+        stringstream uri;
+        uri << newver->Uri << "#" << getXmlNodeId(x->child);
+        
+        XmlElement* element = _log.createResource<XmlElement>(uri.str().c_str());
+        
+        Generation* generation = createGeneration(newver, time, viewport, art::Add);
+        generation->setLocation(element);
+        generation->setBoundaries(bounds);
+        
+        Invalidation* invalidation = createInvalidation(oldver, time, viewport, art::Add);
+        invalidation->setBoundaries(bounds);
+    }
+    
+    void
+    ArtivityLog::logDelete(time_t time, Event* e, Canvas* canvas, Viewport* viewport)
+    {
+        // Inkscape::XML::EventDel* x = as<Inkscape::XML::EventDel*>(e->event);
+            
+        FileDataObject* file = _log.getFile();
+        FileDataObject* newver = createGeneratedVersion(file, canvas);
+        FileDataObject* oldver = createInvalidatedVersion(file, canvas);
+        
+        Generation* generation = createGeneration(newver, time, viewport, art::Remove);
+        Invalidation* invalidation = createInvalidation(oldver, time, viewport, art::Remove);
+    }
+    
+    void
+    ArtivityLog::logChangeContent(time_t time, Event* e, Canvas* canvas, Viewport* viewport)
+    {
+        if(e->event->repr == NULL)
         {
-            g_error("processEventQueue: _doc is NULL");
+            // TODO: Log error.
             return;
         }
-
-        if(_document->getURI() == NULL)
+        
+        Inkscape::XML::EventChgContent* x = as<Inkscape::XML::EventChgContent*>(e->event);
+        
+        BoundingRectangle* bounds = createBoundingRectangle(e);
+        
+        FileDataObject* file = _log.getFile();
+        FileDataObject* newver = createGeneratedVersion(file, canvas);
+        FileDataObject* oldver = createInvalidatedVersion(file, canvas);
+        
+        stringstream uri;
+        uri << newver->Uri << "#" << getXmlNodeId(e->event->repr);
+        
+        XmlElement* element = _log.createResource<XmlElement>(uri.str().c_str());
+         
+        // NEW VALUE
+        string newval = x->newval != 0 ? string(x->newval) : "";
+        
+        Generation* generation = createGeneration(newver, time, viewport, art::Edit);
+        generation->setValue(newval);
+        generation->setLocation(element);
+        generation->setBoundaries(bounds);
+        
+        // OLD VALUE
+        string oldval = x->oldval != 0 ? string(x->oldval) : "";
+        
+        Invalidation* invalidation = createInvalidation(oldver, time, viewport, art::Edit);
+        invalidation->setValue(oldval);
+        invalidation->setLocation(element);
+        invalidation->setBoundaries(bounds);
+    }
+    
+    void
+    ArtivityLog::logChangeAttributes(time_t time, Event* e, Canvas* canvas, Viewport* viewport)
+    {
+        if(e->event->repr == NULL)
         {
-            // The document is not yet persisted. Therefore we keep our events
-            // in the queue until we have a valid file system path.
+            // TODO: Log error.
             return;
         }
         
-        string uri = "file://" + string(_document->getURI());
+        Inkscape::XML::EventChgAttr* x = as<Inkscape::XML::EventChgAttr*>(e->event);
+             
+        BoundingRectangle* bounds = createBoundingRectangle(e);
+               
+        FileDataObject* file = _log.getFile();
+        FileDataObject* newver = createGeneratedVersion(file, canvas);
+        FileDataObject* oldver = createInvalidatedVersion(file, canvas);
         
-        if(_entity == NULL)
+        string newval = x->newval != 0 ? string(x->newval) : "";
+        string oldval = x->oldval != 0 ? string(x->oldval) : "";
+            
+        AttributeValueMap* values = getChangedAttributes(oldval, newval);
+        AttributeValueIterator it = values->begin();
+        
+        stringstream uri;
+        uri << newver->Uri << "#" << getXmlNodeId(e->event->repr);
+        
+        XmlElement* element = _log.createResource<XmlElement>(uri.str().c_str());
+        
+        while(it != values->end())
         {
-            // NOTE: We do not know the actual URI of the file data object here.
-            // Therefore we add it as a variable and let the server replace
-            // the URI with the one it knows. This is hacky, but will eventually
-            // not be necessary once the client API is being stabilized.
-            string var = "?:" + uri;
+            string name = it->first;
             
-            FileDataObject* file = new FileDataObject(var.c_str());
-            file->setUrl(uri.c_str());
+            stringstream atturi;
+            atturi << uri.str() << "@" << name;
             
-            _log.addResource(file);
+            XmlAttribute* attribute = _log.createResource<XmlAttribute>(atturi.str().c_str());
+            attribute->setOwnerElement(element);
+            attribute->setLocalName(name.c_str());
             
-            _entity = file;
-        }
+            Generation* generation = createGeneration(newver, time, viewport, art::Edit);
+            generation->setValue(it->second->newval.c_str());
+            generation->setLocation(attribute);
+            generation->setBoundaries(bounds);
         
-        ActivityLogIterator it = _log.begin();
+            Invalidation* invalidation = createInvalidation(oldver, time, viewport, art::Edit);
+            invalidation->setValue(it->second->oldval.c_str());
+            invalidation->setLocation(attribute);
+            invalidation->setBoundaries(bounds);
         
-        while(it != _log.end())
-        {
-            Activity* activity = *it;
-            
-            activity->addUsedEntity(_entity);
-                            
-            if(activity->is(art::Update) || activity->is(art::Undo) || activity->is(art::Redo))
-            {
-                if(!activity->getGeneratedEntities().empty())
-                {
-                    Entity* e = *(activity->getGeneratedEntities().begin());
-            
-                    FileDataObject* generated = dynamic_cast<FileDataObject*>(e);
-                    
-                    if(generated != NULL)
-                    {
-                        stringstream generatedUri;
-                        generatedUri << uri << "#" << UriGenerator::getRandomId(10);
-                    
-                        generated->setUri(generatedUri.str());
-                        generated->setUrl(uri.c_str());
-                        generated->addGenericEntity(_entity);
-                    }
-                }
-                
-                if(!activity->getInvalidatedEntities().empty())
-                {
-                    Entity* e = *(activity->getInvalidatedEntities().begin());
-            
-                    FileDataObject* invalidated = dynamic_cast<FileDataObject*>(e);
-                    
-                    if(invalidated != NULL)
-                    {
-                        stringstream invalidatedUri;
-                        invalidatedUri << uri << "#" << UriGenerator::getRandomId(10);
-                    
-                        invalidated->setUri(invalidatedUri.str());
-                        invalidated->setUrl(uri.c_str());
-                        invalidated->addGenericEntity(_entity);
-                    }
-                }
-            }
+            delete it->second;
             
             it++;
         }
         
-        _log.transmit();
-    }
-   
-    void
-    ArtivityLog::setType(Activity* activity, Event* e)
-    {
-        if(e == NULL || e->event == NULL)
-            return;
-            
-        if(activity->hasProperty(rdf::_type, art::Undo) || activity->hasProperty(rdf::_type, art::Redo))
-            return;
-        
-        if(is<Inkscape::XML::EventAdd*>(e->event))
-        {
-            activity->setValue(rdf::_type, art::Add);
-        }
-        else if(is<Inkscape::XML::EventDel*>(e->event))
-        {
-            activity->setValue(rdf::_type, art::Delete);
-        }
-        else if(is<Inkscape::XML::EventChgAttr*>(e->event))
-        {
-            if(activity->getGeneratedEntities().empty() && activity->getInvalidatedEntities().empty())
-                return;
-                        
-            Inkscape::XML::EventChgAttr* x = as<Inkscape::XML::EventChgAttr*>(e->event);
-            
-            string newval = x->newval != 0 ? string(x->newval) : "";
-            string oldval = x->oldval != 0 ? string(x->oldval) : "";
-                
-            AttributeValueMap* values = getChangedAttributes(oldval, newval);
-            AttributeValueIterator it = values->begin();
-            
-            XmlElement* element = getXmlElement(e);
-               
-            BoundingRectangle* bounds = getBoundingRectangle(e);
-            
-            while(it != values->end())
-            {                     
-                const char* name = it->first.c_str();
-                
-                XmlAttribute* attribute = new XmlAttribute(element, name);
-                
-                _log.addResource(attribute);
-                
-                setGeneratedValue(activity->getGeneratedEntities(), it->second->newval.c_str(), attribute, bounds);
-                setInvalidatedValue(activity->getInvalidatedEntities(), it->second->oldval.c_str(), attribute, bounds);
-            
-                delete it->second;
-                
-                it++;
-            }
-            
-            delete values;
-        }
-        else if(is<Inkscape::XML::EventChgContent*>(e->event))
-        {
-            if(activity->getGeneratedEntities().empty() && activity->getInvalidatedEntities().empty())
-                return;
-            
-            XmlElement* element = getXmlElement(e);
-            
-            BoundingRectangle* bounds = getBoundingRectangle(e);
-                    
-            Inkscape::XML::EventChgContent* x = as<Inkscape::XML::EventChgContent*>(e->event);
-            
-            string newval = x->newval != 0 ? string(x->newval) : "";
-            string oldval = x->oldval != 0 ? string(x->oldval) : "";
-            
-            setGeneratedValue(activity->getGeneratedEntities(), newval, element, bounds);
-            setInvalidatedValue(activity->getInvalidatedEntities(), oldval, element, bounds);
-        }
-        else if(is<Inkscape::XML::EventChgOrder*>(e->event))
-        {
-            //Inkscape::XML::EventChgOrder* x = as<Inkscape::XML::EventChgOrder*>(e->event);
-            
-            activity->setValue(rdf::_type, art::Update);
-        }
+        delete values;
     }
     
     void
-    ArtivityLog::setGeneratedValue(list<Entity*> entities, string value, Resource* location, BoundingRectangle* bounds)
-    {
-        if(entities.empty())
-            return;
+    ArtivityLog::logChangeOrder(time_t time, Event* e, Canvas* canvas, Viewport* viewport)
+    {                    
+        // Inkscape::XML::EventChgOrder* x = as<Inkscape::XML::EventChgOrder*>(e->event);
         
-        Entity* e = *(entities.begin());
-        
-        FileDataObject* file = dynamic_cast<FileDataObject*>(e);
-        
-        if(file == NULL)
-            return;
-        
-        Generation* generation = file->getGeneration();
-        
-        if(generation == NULL)
-            return;
-        
-        generation->setValue(value);
-        generation->setLocation(location);
-        
-        if(bounds)
-        {
-            generation->setBoundaries(bounds);
-        }
+        // TODO: Set the element and location.
     }
     
-    void
-    ArtivityLog::setInvalidatedValue(list<Entity*> entities, string value, Resource* location, BoundingRectangle* bounds)
+    FileDataObject*
+    ArtivityLog::createGeneratedVersion(Entity* entity, Canvas* canvas)
     {
-        if(entities.empty())
-            return;
+        FileDataObject* version = _log.createResource<FileDataObject>();
+        version->setCanvas(canvas);
+        version->addGenericEntity(entity);
         
-        Entity* e = *(entities.begin());
+        _activity->addGeneratedEntity(version);
         
-        FileDataObject* file = dynamic_cast<FileDataObject*>(e);
+        return version;
+    }
+    
+    FileDataObject*
+    ArtivityLog::createInvalidatedVersion(Entity* entity, Canvas* canvas)
+    {
+        FileDataObject* version = _log.createResource<FileDataObject>();
+        version->setCanvas(canvas);
+        version->addGenericEntity(entity);
         
-        if(file == NULL)
-            return;
+        _activity->addInvalidatedEntity(version);
         
-        Invalidation* invalidation = file->getInvalidation();
+        return version;
+    }
+    
+    Generation*
+    ArtivityLog::createGeneration(Entity* entity, time_t time, Viewport* viewport, const Resource& type)
+    {
+        Generation* generation = _log.createResource<Generation>();
+        generation->setType(type);
+        generation->setTime(time);
+        generation->setViewport(viewport);
         
-        if(invalidation == NULL)
-            return;
+        entity->setGeneration(generation);
         
-        invalidation->setValue(value);
-        invalidation->setLocation(location);
+        return generation;
+    }
+
+    Invalidation*
+    ArtivityLog::createInvalidation(Entity* entity, time_t time, Viewport* viewport, const Resource& type)
+    {
+        Invalidation* invalidation = _log.createResource<Invalidation>();
+        invalidation->setType(type);
+        invalidation->setTime(time);
+        invalidation->setViewport(viewport);
         
-        if(bounds)
-        {
-            invalidation->setBoundaries(bounds);
-        }
+        entity->setInvalidation(invalidation);
+        
+        return invalidation;
+    }
+    
+    Viewport*
+    ArtivityLog::createViewport()
+    {
+        Rect vbox = _desktop->get_display_area();
+        
+        Point* p = _log.createResource<Point>();
+        p->setX(vbox.left());
+        p->setY(vbox.top());
+        
+        Viewport* viewport = _log.createResource<Viewport>();
+        viewport->setPosition(p);
+        viewport->setWidth(vbox.right() - vbox.left());
+        viewport->setHeight(vbox.bottom() - vbox.top());
+        viewport->setZoomFactor(_desktop->current_zoom());
+        
+        return viewport;
     }
     
     BoundingRectangle*
-    ArtivityLog::getBoundingRectangle(Event* e)
+    ArtivityLog::createBoundingRectangle(Event* e)
     {
-        const char* id = getXmlElementId(e);
+        const char* id = getXmlNodeId(e->event->repr);
         
         SPObject* obj = _document->getObjectById(id);
         
@@ -406,77 +398,58 @@ namespace Inkscape
         
         const Unit* doc = _document->getWidth().unit;
         
-        Point* p = new Point();
+        Point* p = _log.createResource<Point>();
         p->setX(x.value(doc));
         p->setY(y.value(doc));
         
-        _log.addResource(p);
-        
-        BoundingRectangle* bounds = new BoundingRectangle();
+        BoundingRectangle* bounds = _log.createResource<BoundingRectangle>();
         bounds->setPosition(p);
         bounds->setWidth(w.value(doc));
         bounds->setHeight(h.value(doc));
         
-        _log.addResource(bounds);
-        
         return bounds;
     }
     
-    XmlElement*
-    ArtivityLog::getXmlElement(Event* e)
+    Canvas*
+    ArtivityLog::getCanvas()
     {
-        const char* id = getXmlElementId(e);
-        const char* url = _document->getURI();
+        double width = _document->getWidth().quantity;
+        double height = _document->getHeight().quantity;
+        const Resource* lengthUnit = getLengthUnit(_document->getWidth());
+                
+        _log.updateCanvas(width, height, lengthUnit);
         
-        if(id == NULL || url == NULL)
-            return NULL;
-        
-        XmlElement* element = new XmlElement(url, id);
-        
-        _log.addResource(element);
-                        
-        return element;
+        return _log.getCanvas();
     }
     
     const char*
-    ArtivityLog::getXmlElementId(Event* e)
+    ArtivityLog::getXmlNodeId(Node* n)
     {
-        if(e->event->repr == NULL)
-            return NULL;
-        
-        Node* node = e->event->repr;
-        
-        const gchar* id = node->attribute("id");
-        
-        if(id == NULL)
-        {
-            node = node->parent();
+        if(n != NULL)
+        {        
+            const gchar* id = n->attribute("id");
             
-            while(id == NULL && node != NULL)
+            if(id == NULL)
             {
-                id = node->attribute("id");
+                n = n->parent();
+                
+                while(id == NULL && n != NULL)
+                {
+                    id = n->attribute("id");
+                }
             }
-        }
-        
-        if(id != NULL)
-        {
-            return string(id).c_str();
+            
+            if(id != NULL)
+            {
+                return string(id).c_str();
+            }
         }
         
         return NULL;
     }
-    
-    Node*
-    ArtivityLog::getXmlElementNode(Event* e)
-    {
-        if(e->event->repr == NULL)
-            return NULL;
-        
-        return e->event->repr;
-    }
 
     const Resource*
-    ArtivityLog::getUnit(const Quantity& quantity)
+    ArtivityLog::getLengthUnit(const Quantity& quantity)
     {        
         const Unit* unit = quantity.unit;
                     
@@ -604,6 +577,70 @@ namespace Inkscape
         }
         
         return result;
+    }
+    
+    void
+    ArtivityLog::transmitQueue()
+    { 
+        // If the document has not been saved yet, we keep all 
+        // pending changes in the event queue.
+        if(_document->getURI() == NULL || _log.empty())
+        {
+            return;
+        }
+        
+        FileDataObject* file = _log.getFile();
+        
+        if(file == NULL)
+        {
+            g_error("ERROR: File data object is not initialized.");
+            return;
+        }
+        
+        string url = string("file://") + _document->getURI();
+        
+        if(_filePath == "")
+        {
+            _filePath = string(_document->getURI());
+            
+            file->setUrl(url.c_str());
+            
+            _activity->addUsedEntity(file);
+        }
+        
+        if(!_activity->getGeneratedEntities().empty())
+        {
+            Entity* e = *(_activity->getGeneratedEntities().begin());
+    
+            FileDataObject* newver = dynamic_cast<FileDataObject*>(e);
+            
+            if(newver != NULL)
+            {
+                stringstream uri;
+                uri << url << "#" << UriGenerator::getRandomId(10);
+            
+                newver->setUri(uri.str());
+                newver->addGenericEntity(file);
+            }
+        }
+        
+        if(!_activity->getInvalidatedEntities().empty())
+        {
+            Entity* e = *(_activity->getInvalidatedEntities().begin());
+    
+            FileDataObject* oldver = dynamic_cast<FileDataObject*>(e);
+            
+            if(oldver != NULL)
+            {
+                stringstream uri;
+                uri << url << "#" << UriGenerator::getRandomId(10);
+            
+                oldver->setUri(uri.str());
+                oldver->addGenericEntity(file);
+            }
+        }
+        
+        _log.transmit();
     }
     
     template<class TEvent> bool

@@ -14,15 +14,9 @@ namespace artivity
         const char* _localName;
         
     public:        
-        XmlAttribute(XmlElement* ownerElement, const char* localName)
+        XmlAttribute(const char* uri) : Entity(uri)
         {
-            stringstream uri;            
-            uri << ownerElement->Uri << "@" << localName;
-            
-            setUri(uri.str());
-            setValue(rdf::_type, xml::Attribute);
-            setOwnerElement(ownerElement);
-            setLocalName(localName);
+            setType(xml::Attribute);
         }
         
         XmlElement* getOwnerElement()

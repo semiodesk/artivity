@@ -11,7 +11,7 @@ namespace artivity
     class FileDataObject : public Entity
     {
     private:
-        const char* _url;
+        string _url;
         
         time_t _creationTime;
         
@@ -26,24 +26,28 @@ namespace artivity
     public:
         FileDataObject() : Entity()
         {
+            _url = "";
+            
             setValue(rdf::_type, nfo::FileDataObject);
         }
         
         FileDataObject(const char* uriref) : Entity(uriref)
         {
+            _url = "";
+            
             setValue(rdf::_type, nfo::FileDataObject);
         }
         
         const char* getUrl()
         {
-            return _url;
+            return _url.c_str();
         }
         
         void setUrl(const char* url)
         {
-            _url = url;
+            _url = string(url);
             
-            setValue(nfo::fileUrl, url);
+            setValue(nfo::fileUrl, _url.c_str());
         }
         
         time_t getCreationTime()
@@ -103,7 +107,7 @@ namespace artivity
         {
             _canvas = canvas;
             
-            Resource::setValue(art::hadCanvas, canvas);
+            Resource::setValue(art::canvas, canvas);
         }
     };
 }

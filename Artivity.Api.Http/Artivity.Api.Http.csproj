@@ -77,7 +77,7 @@
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Parameters\UriParameters.cs" />
-    <Compile Include="Modules\FilesModule.cs" />
+    <Compile Include="Modules\UriModule.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
