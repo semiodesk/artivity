@@ -38,7 +38,7 @@ namespace ArtivityExplorer
                 ORDER BY DESC(?time)";
 
             SparqlQuery query = new SparqlQuery(queryString);
-            ISparqlQueryResult result = model.ExecuteQuery(query);
+            ISparqlQueryResult result = model.ExecuteQuery(query, true);
 
             foreach (Activity a in result.GetResources<Activity>())
             {
@@ -46,14 +46,24 @@ namespace ArtivityExplorer
             }
         }
 
-        private static DateTime GetFirstEventTime(IModel model, string file)
+        public static DateTime GetFirstEventTime(IModel model, string file)
         {
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
 
-                SELECT ?time WHERE { ?a prov:startedAtTime ?time . ?a prov:used ?f . ?f nfo:fileUrl """ + file + "\" . } ORDER BY ASC(?time) LIMIT 1";
+                SELECT ?time WHERE 
+                {
+                    ?activity prov:used ?file .
+                    ?file nfo:fileUrl """ + file + @""" .
+
+                    ?activity prov:generated ?entity .
+                    ?entity prov:qualifiedGeneration ?generation .
+
+                    ?activity prov:startedAtTime ?time .
+                }
+                ORDER BY ASC(?time) LIMIT 1";
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);
@@ -61,14 +71,24 @@ namespace ArtivityExplorer
             return result.Count() > 0 ? (DateTime)result.GetBindings().First()["time"] : DateTime.MinValue;
         }
 
-        private static DateTime GetLastEventTime(IModel model, string file)
+        public static DateTime GetLastEventTime(IModel model, string file)
         {
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
 
-                SELECT ?time WHERE { ?a prov:startedAtTime ?time . ?a prov:used ?f . ?f nfo:fileUrl """ + file + "\" . } ORDER BY DESC(?time) LIMIT 1";
+                SELECT ?time WHERE 
+                {
+                    ?activity prov:used ?file .
+                    ?file nfo:fileUrl """ + file + @""" .
+
+                    ?activity prov:generated ?entity .
+                    ?entity prov:qualifiedGeneration ?generation .
+
+                    ?activity prov:endedAtTime ?time .
+                }
+                ORDER BY DESC(?time) LIMIT 1";
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);

@@ -11,4 +11,3 @@ libartivity.pc: libartivity.pc.in
 		$(srcdir)libartivity.pc.in > $@
 
 nodist_pkgconfig_DATA = libartivity.pc
-

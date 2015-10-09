@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <artivity-client/artivity.h>
+#include <libartivity/artivity.h>
 
 class SPDesktop;
 

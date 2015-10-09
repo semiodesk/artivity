@@ -12,6 +12,7 @@ using Xwt;
 using Xwt.Drawing;
 using Artivity.Model.ObjectModel;
 using Artivity.Model;
+using System.Threading.Tasks;
 
 namespace ArtivityExplorer.Controls
 {
@@ -139,136 +140,96 @@ namespace ArtivityExplorer.Controls
             Model.Axes.Add(_y);
         }
 
-        public void Add(Activity activity)
+        public void LoadActivities(IModel model, string fileUrl)
         {
-            Agent agent = activity.Associations.Select(a => a.Agent).FirstOrDefault();
+            string queryString = @"
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
 
-			if (agent == null) return;
-            
-			DateTime current = activity.StartTime.RoundToMinute();
-
-            // We initialize one series per agent.
-            LineSeries series;
-
-			if (!_series.ContainsKey(agent))
-            {
-				series = CreateSeries(agent);
-
-				_series[agent] = series;
-            }
-            else
-            {
-                series = _series[agent];
-            }
-
-            if (_previous.ContainsKey(agent))
-            {
-                // If there are already points in the series, we add the current one..
-                DateTime previous = _previous[agent];
-
-                if (DateTime.Equals(current, previous))
+                SELECT ?agent ?startTime ?endTime WHERE
                 {
-                    // We increment the current data point's value..
-                    DataPoint p = series.Points.Last();
+                  ?activity prov:qualifiedAssociation ?association .
+                  ?activity prov:startedAtTime ?startTime .
+                  ?activity prov:endedAtTime ?endTime .
 
-                    series.Points.Remove(p);
+                  ?activity prov:used ?entity .
+                  ?entity nfo:fileUrl """ + fileUrl + @""" .
 
-                    p.Y++;
+                  ?association prov:agent ?agent .
 
-                    series.Points.Add(p);
-
-                    _maxY = Math.Max(_maxY, p.Y);
+                  FILTER(?startTime != ?endTime)
                 }
-                else
-                {
-                    // We fill up the gapping minutes between the current time value and the previous one..
-                    double delta = (previous - current).TotalMinutes;
+                ORDER BY DESC(?startTime)";
 
-                    if (delta > 1)
-                    {
-                        DateTime t = previous.Subtract(TimeSpan.FromMinutes(1));
+            SparqlQuery query = new SparqlQuery(queryString);
+            ISparqlQueryResult result = model.ExecuteQuery(query, true);
 
-                        series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
-                    }
-
-                    if (delta > 2)
-                    {
-                        DateTime t = current.Add(TimeSpan.FromMinutes(1));
-
-                        series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
-                    }
-
-                    // ..and add the new point at the end.
-                    series.Points.Add(DateTimeAxis.CreateDataPoint(current, 1));
-                }
-            }
-            else
+            foreach (BindingSet binding in result.GetBindings())
             {
-                // If there are no points in the series, we add this one.
-                DateTime zero = current.Add(TimeSpan.FromMinutes(1));
+                Agent agent = new Agent(new Uri(binding["agent"].ToString()));
+                DateTime startTime = ((DateTime)binding["startTime"]).RoundToMinute();
+                DateTime endTime = ((DateTime)binding["endTime"]).RoundToMinute();
 
-                series.Points.Add(DateTimeAxis.CreateDataPoint(zero, 0));
-                series.Points.Add(DateTimeAxis.CreateDataPoint(current, 1));
-            }
-
-            if (_lastClose == null && activity is Close)
-            {
-                // We move both, open and close a minute from each other so that the region
-                // is always visible in case both events happen at the same minute.
-                DateTime close = current.Add(TimeSpan.FromMinutes(1));
-
-                // If there are no annotations for this client yet, initialize them now.
-                if (!_annotations.ContainsKey(agent))
-                {
-                    _annotations.Add(agent, new List<PolygonAnnotation>());
-                }
-
-                // Add the background shade to the open and close sessions.
                 OxyColor color = _palette[agent];
 
                 // Since we're going backward in time, we see the close activities first.
                 PolygonAnnotation annotation = new PolygonAnnotation();
                 annotation.Layer = AnnotationLayer.BelowAxes;
                 annotation.Fill = OxyColor.FromArgb(125, color.R, color.G, color.B);
-                annotation.Points.Add(DateTimeAxis.CreateDataPoint(close, 0));
-                annotation.Points.Add(DateTimeAxis.CreateDataPoint(close, 100));
+                annotation.Points.Add(DateTimeAxis.CreateDataPoint(startTime, 0));
+                annotation.Points.Add(DateTimeAxis.CreateDataPoint(startTime, 100));
+                annotation.Points.Add(DateTimeAxis.CreateDataPoint(endTime, 100));
+                annotation.Points.Add(DateTimeAxis.CreateDataPoint(endTime, 0));
 
-                _annotations[agent].Add(annotation);
-
-                _lastClose = activity as Close;
+                Model.Annotations.Add(annotation);
             }
-			else if (_lastClose != null && activity is Open)
-			{
-                DateTime open = current.Subtract(TimeSpan.FromMinutes(1));
-
-                if (_annotations.ContainsKey(agent))
-                {
-                    PolygonAnnotation annotation = _annotations[agent].Last();
-                    annotation.Points.Add(DateTimeAxis.CreateDataPoint(open, 100));
-                    annotation.Points.Add(DateTimeAxis.CreateDataPoint(open, 0));
-                }
-
-                _lastClose = null;
-			}
-
-			_previous[agent] = current;
         }
 
-        public void Draw()
+        public void LoadActivityInfluences(IModel model, string fileUrl)
         {
-            foreach (LineSeries series in _series.Values)
-            {
-                Model.Series.Add(series);
-            }
+            string queryString = @"
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
 
-			_y.Maximum = Math.Ceiling(_maxY / 10) * 10;
+                SELECT ?agent ?time ?generationTime WHERE 
+                {
+                    ?activity prov:qualifiedAssociation ?association ;
+                        prov:startedAtTime ?time .
 
-            foreach (PolygonAnnotation annoation in _annotations.Values.SelectMany(a => a))
-            {
-                Model.Annotations.Add(annoation);
-            }
+                    ?association prov:agent ?agent .
+
+                    OPTIONAL
+                    {
+                        ?activity prov:generated ?version .
+
+                        ?version prov:qualifiedGeneration ?generation .
+
+                        ?generation prov:atTime ?generationTime .
+                    }
+
+                    {
+                        SELECT ?startTime ?endTime
+                        {
+                            ?activity prov:used ?file;
+                                prov:startedAtTime ?startTime ;
+                                prov:endedAtTime ?endTime .
+
+                            ?file nfo:fileUrl """ + fileUrl + @""" .
+                        }
+                    }
+
+                    FILTER(?startTime <= ?time && ?time <= ?endTime) .
+                }
+                ORDER BY DESC(?time)";
+
+            SparqlQuery query = new SparqlQuery(queryString);
+            ISparqlQueryResult result = model.ExecuteQuery(query, true);
+
+            CreateSeriesPoints(result);
         }
-
+            
         private LineSeries CreateSeries(Agent agent)
         {
             OxyColor color = _palette[agent];
@@ -290,6 +251,96 @@ namespace ArtivityExplorer.Controls
             return series;
         }
             
+        private void CreateSeriesPoints(ISparqlQueryResult result)
+        {
+            DateTime previousTime = DateTime.MinValue;
+
+            foreach (BindingSet binding in result.GetBindings())
+            {
+                Agent agent = new Agent(new Uri(binding["agent"].ToString()));
+
+                // We initialize one series per agent.
+                LineSeries series;
+
+                if (!_series.ContainsKey(agent))
+                {
+                    series = CreateSeries(agent);
+
+                    Model.Series.Add(series);
+
+                    _series[agent] = series;
+                }
+                else
+                {
+                    series = _series[agent];
+                }
+
+                DateTime currentTime;
+
+                if(binding["generationTime"] is DBNull)
+                {
+                    currentTime = (DateTime)binding["time"];
+                }
+                else
+                {
+                    currentTime = (DateTime)binding["generationTime"];
+                }
+
+                currentTime = currentTime.RoundToMinute();
+
+                if (previousTime != DateTime.MinValue)
+                {
+                    if (DateTime.Equals(currentTime, previousTime))
+                    {
+                        // We increment the current data point's value..
+                        DataPoint p = series.Points.Last();
+
+                        series.Points.Remove(p);
+
+                        p.Y++;
+
+                        series.Points.Add(p);
+
+                        _maxY = Math.Max(_maxY, p.Y);
+                    }
+                    else
+                    {
+                        // We fill up the gapping minutes between the current time value and the previous one..
+                        double delta = (previousTime - currentTime).TotalMinutes;
+
+                        if (delta > 1)
+                        {
+                            DateTime t = previousTime.Subtract(TimeSpan.FromMinutes(1));
+
+                            series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
+                        }
+
+                        if (delta > 2)
+                        {
+                            DateTime t = currentTime.Add(TimeSpan.FromMinutes(1));
+
+                            series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
+                        }
+
+                        // ..and add the new point at the end.
+                        series.Points.Add(DateTimeAxis.CreateDataPoint(currentTime, 1));
+                    }
+                }
+                else
+                {
+                    // If there are no points in the series, we add this one.
+                    DateTime zeroTime = currentTime.Add(TimeSpan.FromMinutes(1));
+
+                    series.Points.Add(DateTimeAxis.CreateDataPoint(zeroTime, 0));
+                    series.Points.Add(DateTimeAxis.CreateDataPoint(currentTime, 1));
+                }
+
+                previousTime = currentTime;
+            }
+        }
+
         #endregion
     }
+
+    public delegate void AsyncLoadMethodCaller(IModel model, string file);
 }
