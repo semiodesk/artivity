@@ -1,7 +1,7 @@
 lib_LTLIBRARIES = libartivity.la
 
 libartivity_la_SOURCES = main.cpp curlresponse.cpp Resource.cpp  Serializer.cpp ActivityLog.cpp ObjectModel/Activity.cpp
-libartivity_la_LDFLAGS = $(CURL_LIBS)
+libartivity_la_LDFLAGS = $(CURL_LIBS) -version-info 0:0:0
 libartivity_la_CFLAGS = $(CURL_CFLAGS) 
 
 nobase_pkginclude_HEADERS = curlresponse.h \
@@ -57,3 +57,4 @@ nobase_pkginclude_HEADERS = curlresponse.h \
     Ontologies/nfo.h \
     Ontologies/dces.h \
     Ontologies/unit.h
+

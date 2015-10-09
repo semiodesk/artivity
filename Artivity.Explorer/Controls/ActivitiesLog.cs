@@ -15,13 +15,10 @@ namespace ArtivityExplorer.Controls
 		
         public ListStore Store { get; private set; }
 
-		public IDataField<Activity> ActivityField { get; private set; }
+		public IDataField<string> AgentField { get; private set; }
 		public IDataField<string> TimeField { get; private set; }
 		public IDataField<string> TypeField { get; private set; }
-		public IDataField<string> ActionField { get; private set; }
-        public IDataField<string> BoundsField { get; private set; }
-        public IDataField<string> SizeField { get; private set; }
-		public IDataField<string> ZoomField { get; private set; }
+		public IDataField<string> DataField { get; private set; }
 
 		#endregion
 
@@ -44,7 +41,7 @@ namespace ArtivityExplorer.Controls
             ExpandHorizontal = true;
             SelectionMode = SelectionMode.Multiple;
 
-			ActivityField = new DataField<Activity>();
+			AgentField = new DataField<string>();
 
             TimeField = new DataField<string>();
 
@@ -64,50 +61,20 @@ namespace ArtivityExplorer.Controls
 			typeColumn.Alignment = Alignment.Start;
             typeColumn.CanResize = true;
 
-			ActionField = new DataField<string>();
+			DataField = new DataField<string>();
 
-			TextCellView actionView = new TextCellView();
-			actionView.MarkupField = ActionField;
+            TextCellView dataView = new TextCellView();
+            dataView.MarkupField = DataField;
 
-			ListViewColumn actionColumn = new ListViewColumn ("Details", actionView);
-            actionColumn.Alignment = Alignment.Start;
-            actionColumn.CanResize = true;
+            ListViewColumn dataColumn = new ListViewColumn ("Details", dataView);
+            dataColumn.Alignment = Alignment.Start;
+            dataColumn.CanResize = true;
 
-            BoundsField = new DataField<string>();
-
-            TextCellView boundsView = new TextCellView();
-            boundsView.MarkupField = BoundsField;
-
-            ListViewColumn boundsColumn = new ListViewColumn ("Bounds", boundsView);
-            boundsColumn.Alignment = Alignment.Start;
-            boundsColumn.CanResize = true;
-
-            SizeField = new DataField<string>();
-
-            TextCellView sizeView = new TextCellView();
-            sizeView.MarkupField = SizeField;
-
-            ListViewColumn sizeColumn = new ListViewColumn ("Size", sizeView);
-            sizeColumn.Alignment = Alignment.Start;
-            sizeColumn.CanResize = true;
-
-			ZoomField = new DataField<string>();
-
-			TextCellView zoomView = new TextCellView();
-			zoomView.MarkupField = ZoomField;
-
-			ListViewColumn zoomColumn = new ListViewColumn ("Zoom", zoomView);
-			zoomColumn.Alignment = Alignment.End;
-            zoomColumn.CanResize = true;
-
+            Columns.Add(timeColumn);
             Columns.Add(typeColumn);
-			Columns.Add(actionColumn);
-            Columns.Add(boundsColumn);
-            Columns.Add(sizeColumn);
-			Columns.Add(zoomColumn);
-			Columns.Add(timeColumn);
+			Columns.Add(dataColumn);
 
-            Store = new ListStore(ActivityField, TimeField, TypeField, ActionField, BoundsField, SizeField, ZoomField);
+            Store = new ListStore(AgentField, TimeField, TypeField, DataField);
 
             DataSource = Store;
         }
@@ -117,86 +84,109 @@ namespace ArtivityExplorer.Controls
             Store.Clear();
         }
 
-        public void Add(Activity activity)
+        public void LoadInfluences(IModel model, string fileUrl)
         {
-            int row = Store.AddRow();
+            string queryString = @"
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
 
-            // Set the data context of the current row.
-            Store.SetValue(row, ActivityField, activity);
+                SELECT ?agent ?time ?generation ?generationTime ?generationType ?value ?entity ?entityType WHERE 
+                {
+                    ?activity prov:used ?entity ;
+                        prov:qualifiedAssociation ?association ;
+                        prov:startedAtTime ?time .
 
-            // Set the formatted date time.
-            Store.SetValue(row, TimeField, activity.StartTime.ToString("HH:mm:ss")); 
+                    ?entity a ?entityType .
 
-            if (activity.GetTypes().Any())
+                    ?association prov:agent ?agent .
+
+                    OPTIONAL
+                    {
+                        ?activity prov:generated ?x .
+
+                        ?x prov:qualifiedGeneration ?generation .
+
+                        ?generation rdf:type ?generationType .
+                        ?generation prov:atTime ?generationTime .
+                        ?generation prov:value ?value .
+                    }
+
+                    {
+                        SELECT ?startTime ?endTime
+                        {
+                            ?activity prov:used ?file;
+                                prov:startedAtTime ?startTime ;
+                                prov:endedAtTime ?endTime .
+
+                            ?file nfo:fileUrl """ + fileUrl + @""" .
+                        }
+                    }
+
+                    FILTER(?startTime <= ?time && ?time <= ?endTime) .
+                }
+                ORDER BY DESC(?time)";
+
+            SparqlQuery query = new SparqlQuery(queryString);
+            ISparqlQueryResult result = model.ExecuteQuery(query);
+
+            CreateRows(result);
+        }
+
+        private void CreateRows(ISparqlQueryResult result)
+        {
+            foreach (BindingSet binding in result.GetBindings())
             {
-                Store.SetValue(row, TypeField, "<b>" + ToDisplayString(activity.GetTypes().First().Uri) + "</b>");
-            }
+                int row = Store.AddRow();
 
-            // Set activity action details.
-            FileDataObject f = activity.GeneratedEntities.OfType<FileDataObject>().FirstOrDefault();
+                Store.SetValue(row, AgentField, binding["agent"].ToString());
 
-            if (f != null)
-            {
-                string action = "";
+                DateTime time;
 
-                if (f.Generation.Location is XmlAttribute)
+                if(binding["generationTime"] is DBNull)
                 {
-                    XmlAttribute attribute = f.Generation.Location as XmlAttribute;
-
-                    action += attribute.LocalName + ": ";
+                    time = (DateTime)binding["time"];
+                }
+                else
+                {
+                    time = (DateTime)binding["generationTime"];
                 }
 
-                if (f.Generation.Value != null)
+                // Set the formatted date time.
+                Store.SetValue(row, TimeField, time.ToString("HH:mm:ss")); 
+
+                if (!(binding["generationType"] is DBNull))
                 {
-                    action += f.Generation.Value;
+                    Store.SetValue(row, TypeField, "<b>" + ToDisplayString(binding["generationType"].ToString()) + "</b>");
                 }
+                    
+                UriRef entityType = new UriRef(binding["entityType"].ToString());
 
-                Store.SetValue(row, ActionField, action);
-
-                if (f.Canvas != null)
+                if (entityType == nfo.FileDataObject.Uri)
                 {
-                    Store.SetValue(row, SizeField, f.Canvas.Width + " x " + f.Canvas.Height);
+                    Store.SetValue(row, DataField, binding["value"].ToString());
                 }
-
-                if (f.Generation.Viewport != null)
+                else
                 {
-                    Viewport viewport = f.Generation.Viewport;
+                    UriRef entityUri = new UriRef(binding["entity"].ToString());
 
-                    Store.SetValue(row, ZoomField, Math.Round(viewport.ZoomFactor * 100, 0) + "%");
-                }
-
-                if (f.Generation.Boundaries is BoundingRectangle)
-                {
-                    BoundingRectangle bounds = f.Generation.Boundaries as BoundingRectangle;
-
-                    Store.SetValue(row, BoundsField, bounds.Width + " x " + bounds.Height);
-                }
-            }
-            else
-            {
-                WebDataObject w = activity.UsedEntities.OfType<WebDataObject>().FirstOrDefault();
-
-                if (w != null)
-                {
-                    Store.SetValue(row, ActionField, w.Uri.Host);
+                    Store.SetValue(row, DataField, entityUri.Host);
                 }
             }
         }
-
-        private string ToDisplayString(Uri uri)
+            
+        private string ToDisplayString(string uri)
         {
-            string result = uri.AbsoluteUri;
-
-            if (result.Contains('#'))
+            if (uri.Contains('#'))
             {
-                result = result.Substring(result.LastIndexOf('#') + 1);
+                uri = uri.Substring(uri.LastIndexOf('#') + 1);
             }
-            else if(uri.AbsoluteUri.Contains('/'))
+            else if(uri.Contains('/'))
             {
-                result = result.Substring(result.LastIndexOf('/') + 1);
+                uri = uri.Substring(uri.LastIndexOf('/') + 1);
             }
 
-            return result.TrimEnd('>');
+            return uri.TrimEnd('>');
         }
 
 		protected override void OnKeyReleased(KeyEventArgs args)
@@ -209,22 +199,22 @@ namespace ArtivityExplorer.Controls
 
                 foreach(int row in SelectedRows)
 				{
-					Activity activity = Store.GetValue(row, ActivityField);
-
-					IModel model;
-
-					if (activity.UsedEntities.OfType<WebDataObject>().Any())
-					{
-						model = store.GetModel(Models.WebActivities);
-					}
-					else
-					{
-						model = store.GetModel(Models.Activities);
-					}
-
-					model.DeleteResource(activity.Uri);
-
-                    Store.RemoveRow(row);
+//					Activity activity = Store.GetValue(row, ActivityField);
+//
+//					IModel model;
+//
+//					if (activity.UsedEntities.OfType<WebDataObject>().Any())
+//					{
+//						model = store.GetModel(Models.WebActivities);
+//					}
+//					else
+//					{
+//						model = store.GetModel(Models.Activities);
+//					}
+//
+//					model.DeleteResource(activity.Uri);
+//
+//                    Store.RemoveRow(row);
 				}
 			}
 		}

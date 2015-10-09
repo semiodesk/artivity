@@ -127,27 +127,22 @@ namespace ArtivityExplorer.Controls
 
 		private void LoadActivities(string file)
 		{
+            string fileUrl = file.StartsWith("file://") ? file : "file://" + file;
+
             _log.Reset();
             _chart.Reset();
 
-            IEnumerable<Activity> activities = ActivityLoader.GetActivities(_model, file);
+            AsyncLoadMethodCaller activities = new AsyncLoadMethodCaller(_chart.LoadActivities);
+            AsyncLoadMethodCaller influences = new AsyncLoadMethodCaller(_chart.LoadActivityInfluences);
+            AsyncLoadMethodCaller log = new AsyncLoadMethodCaller(_log.LoadInfluences);
 
-            if (!activities.Any())
-            {
-                // TODO: Show message in UI.
+            IAsyncResult activitiesResult = activities.BeginInvoke(_model, fileUrl, null, null);
+            IAsyncResult influencesResult = influences.BeginInvoke(_model, fileUrl, null, null);
+            IAsyncResult logResult = log.BeginInvoke(_model, fileUrl, null, null);
 
-                LogInfo(string.Format("Did not find any activities for file: {0}", file));
-
-                return;
-            }
-
-			foreach (Activity activity in activities)
-			{
-                _log.Add(activity);
-                _chart.Add(activity);
-			}
-
-            _chart.Draw();
+            activities.EndInvoke(activitiesResult);
+            influences.EndInvoke(influencesResult);
+            log.EndInvoke(logResult);
 		}
 
         private void HandleClosed(object sender, EventArgs e)
