@@ -47,6 +47,12 @@ namespace Artivity.Api.Http
 {
 	public class ActivitiesModule : ModuleBase
 	{
+        #region Members
+
+        private static readonly Dictionary<string, Browse> _activities = new Dictionary<string, Browse>();
+
+        #endregion
+
 		#region Constructors
 
 		public ActivitiesModule()
@@ -112,10 +118,12 @@ namespace Artivity.Api.Http
 
 		private HttpStatusCode AddActivity(ActivityParameters p)
 		{
-			if (string.IsNullOrEmpty(p.agent)
-			    || string.IsNullOrEmpty(p.title)
-			    || string.IsNullOrEmpty(p.url)
-			    || !Uri.IsWellFormedUriString(p.url, UriKind.Absolute))
+            if (string.IsNullOrEmpty(p.tab))
+            {
+                return Logger.LogRequest(HttpStatusCode.NotModified, "/artivity/1.0/activities/web/", "POST", p.tab);
+            }
+
+            if (string.IsNullOrEmpty(p.agent))
 			{
 				return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
 			}
@@ -124,22 +132,58 @@ namespace Artivity.Api.Http
 			{
 				return Logger.LogRequest(HttpStatusCode.Locked, "/artivity/1.0/activities/web/", "POST", "");
 			}
+                
+            IModel model = GetModel(Models.WebActivities);
 
-			IModel model = GetModel(Models.WebActivities);
+            Browse activity;
 
-			WebDataObject website = model.CreateResource<WebDataObject>(p.url);
-			website.Title = p.title;
-			website.Commit();
+            if (!_activities.ContainsKey(p.tab))
+            {
+                activity = model.CreateResource<Browse>();
+                activity.StartTime = p.startTime != null ? (DateTime)p.startTime : DateTime.Now;
+                activity.Commit();
 
-			DateTime now = DateTime.Now;
+                _activities[p.tab] = activity;
+            }
+            else
+            {
+                activity = _activities[p.tab];
+            }
 
-			View view = model.CreateResource<View>();
-			//view.Associations.Add(GetUserAssociation(model));
-			view.Associations.Add(GetSoftwareAssociation(model, p.agent));
-			view.UsedEntities.Add(website);
-			view.StartTime = now;
-			view.EndTime = now;
-			view.Commit();
+            if (!string.IsNullOrEmpty(p.url) && Uri.IsWellFormedUriString(p.url, UriKind.Absolute))
+            {
+                UriRef url = new UriRef(p.url);
+
+                WebDataObject website;
+
+                if (!model.ContainsResource(url))
+                {
+                    website = model.CreateResource<WebDataObject>(url);
+                    website.Title = p.title;
+                    website.Commit();
+                }
+                else
+                {
+                    website = model.GetResource<WebDataObject>(url);
+                }
+
+                DateTime time = p.time != null ? (DateTime)p.time : DateTime.Now;
+
+                View view = model.CreateResource<View>();
+                view.Entity = website;
+                view.Time = time;
+                view.Commit();
+
+                activity.Usages.Add(view);
+                activity.Commit();
+            }
+            else if (p.endTime != null)
+            {
+                activity.EndTime = (DateTime)p.endTime;
+                activity.Commit();
+
+                _activities.Remove(p.tab);
+            }
 
 			return Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/web/", "POST", "");
 		}

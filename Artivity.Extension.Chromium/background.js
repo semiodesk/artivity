@@ -6,23 +6,67 @@
 //                                                                                                                     
 // Distributed under the GNU GPL version 3.
 
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-     var url = request.url;
-     var title = request.title;
+var endpoint = "http://localhost:8272/artivity/1.0/activities/web/";
 
-     if(url.indexOf('http') === 0) {
-		var tabId;
-         
-		if(sender && sender.tab && sender.tab.id) {
-			tabId = sender.tab.id;
+var agent = "application://chromium-browser.desktop";
+
+chrome.tabs.onCreated.addListener(
+    function(tab) {
+        var now = new Date();
+        
+        console.log("[", now, ", CREATED] ");
+        
+        logActivity(tab.id, now, null);
+    }
+);
+
+chrome.tabs.onUpdated.addListener(
+    function(tabId, changeInfo, tab) {
+        if(tab.url !== undefined) {
+            // Do not track secure connections and only track on load to avoid duplicate events.
+            if(tab.url.indexOf('https') === -1 && changeInfo.status == "loading") {
+                var now = new Date();
+                
+                console.log("[", now, ", UPDATED] ", tab.url, tab.title);
+                
+                logUsage(tab.id, now, tab.url, tab.title);
+            }
         }
-		
-        var params = {title: title, url: url, agent: "application://chromium-browser.desktop", tab: tabId}
+    }
+);
 
-        var request = new XMLHttpRequest();
-        request.open("POST", 'http://localhost:8272/artivity/1.0/activities/web/', true);
-        request.setRequestHeader("Content-type", "application/json");
-        request.send(JSON.stringify(params));
-     }
-});
+chrome.tabs.onRemoved.addListener(
+    function(tabId, removeInfo) {
+        var now = new Date();
+        
+        console.log("[", now, ", REMOVED] ");
+        
+        logActivity(tabId, null, now);
+    }
+);
+
+function logUsage(tabId, time, url, title)
+{       
+    var params = {agent: agent, tab: tabId, url: url, title: title, time: time, startTime: null, endTime: null};
+    
+    sendRequest(params);
+}
+
+function logActivity(tabId, startTime, endTime)
+{    
+    var params = {agent: agent, tab: tabId, url: null, title: null, time: null, startTime: startTime, endTime: endTime};
+    
+    sendRequest(params);
+}
+
+function sendRequest(params)
+{
+    var now = new Date();
+    
+    console.log("[", now, "] ", endpoint, params);
+    
+    var request = new XMLHttpRequest();
+    request.open("POST", endpoint, true);
+    request.setRequestHeader("Content-type", "application/json");
+    request.send(JSON.stringify(params));
+}

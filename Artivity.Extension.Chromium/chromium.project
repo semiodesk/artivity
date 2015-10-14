@@ -61,7 +61,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="src">
     <File Name="background.js"/>
-    <File Name="content.js"/>
     <File Name="popup.js"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>

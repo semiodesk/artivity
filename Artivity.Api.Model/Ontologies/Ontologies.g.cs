@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 9/30/2015 5:44:12 PM
+// Date: 10/14/2015 3:28:23 PM
 
 using System;
 using System.Collections.Generic;
@@ -6705,33 +6705,39 @@ public class art : Ontology
 
     ///<summary>
     ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Browse"/>
+    ///</summary>
+    public static readonly Class Browse = new Class(new Uri("http://semiodesk.com/artivity/1.0/Browse"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/CreateFile"/>
+    ///</summary>
+    public static readonly Class CreateFile = new Class(new Uri("http://semiodesk.com/artivity/1.0/CreateFile"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/DeleteFile"/>
+    ///</summary>
+    public static readonly Class DeleteFile = new Class(new Uri("http://semiodesk.com/artivity/1.0/DeleteFile"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/EditFile"/>
+    ///</summary>
+    public static readonly Class EditFile = new Class(new Uri("http://semiodesk.com/artivity/1.0/EditFile"));    
+
+    ///<summary>
+    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/Add"/>
     ///</summary>
     public static readonly Class Add = new Class(new Uri("http://semiodesk.com/artivity/1.0/Add"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Close"/>
+    ///<see cref="http://semiodesk.com/artivity/1.0/Edit"/>
     ///</summary>
-    public static readonly Class Close = new Class(new Uri("http://semiodesk.com/artivity/1.0/Close"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Create"/>
-    ///</summary>
-    public static readonly Class Create = new Class(new Uri("http://semiodesk.com/artivity/1.0/Create"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Delete"/>
-    ///</summary>
-    public static readonly Class Delete = new Class(new Uri("http://semiodesk.com/artivity/1.0/Delete"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Open"/>
-    ///</summary>
-    public static readonly Class Open = new Class(new Uri("http://semiodesk.com/artivity/1.0/Open"));    
+    public static readonly Class Edit = new Class(new Uri("http://semiodesk.com/artivity/1.0/Edit"));    
 
     ///<summary>
     ///
@@ -6750,18 +6756,6 @@ public class art : Ontology
     ///<see cref="http://semiodesk.com/artivity/1.0/Undo"/>
     ///</summary>
     public static readonly Class Undo = new Class(new Uri("http://semiodesk.com/artivity/1.0/Undo"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Update"/>
-    ///</summary>
-    public static readonly Class Update = new Class(new Uri("http://semiodesk.com/artivity/1.0/Update"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Save"/>
-    ///</summary>
-    public static readonly Class Save = new Class(new Uri("http://semiodesk.com/artivity/1.0/Save"));    
 
     ///<summary>
     ///
@@ -7023,33 +7017,39 @@ public static class ART
 
     ///<summary>
     ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Browse"/>
+    ///</summary>
+    public const string Browse = "http://semiodesk.com/artivity/1.0/Browse";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/CreateFile"/>
+    ///</summary>
+    public const string CreateFile = "http://semiodesk.com/artivity/1.0/CreateFile";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/DeleteFile"/>
+    ///</summary>
+    public const string DeleteFile = "http://semiodesk.com/artivity/1.0/DeleteFile";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/EditFile"/>
+    ///</summary>
+    public const string EditFile = "http://semiodesk.com/artivity/1.0/EditFile";
+
+    ///<summary>
+    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/Add"/>
     ///</summary>
     public const string Add = "http://semiodesk.com/artivity/1.0/Add";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Close"/>
+    ///<see cref="http://semiodesk.com/artivity/1.0/Edit"/>
     ///</summary>
-    public const string Close = "http://semiodesk.com/artivity/1.0/Close";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Create"/>
-    ///</summary>
-    public const string Create = "http://semiodesk.com/artivity/1.0/Create";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Delete"/>
-    ///</summary>
-    public const string Delete = "http://semiodesk.com/artivity/1.0/Delete";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Open"/>
-    ///</summary>
-    public const string Open = "http://semiodesk.com/artivity/1.0/Open";
+    public const string Edit = "http://semiodesk.com/artivity/1.0/Edit";
 
     ///<summary>
     ///
@@ -7068,18 +7068,6 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/Undo"/>
     ///</summary>
     public const string Undo = "http://semiodesk.com/artivity/1.0/Undo";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Update"/>
-    ///</summary>
-    public const string Update = "http://semiodesk.com/artivity/1.0/Update";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Save"/>
-    ///</summary>
-    public const string Save = "http://semiodesk.com/artivity/1.0/Save";
 
     ///<summary>
     ///

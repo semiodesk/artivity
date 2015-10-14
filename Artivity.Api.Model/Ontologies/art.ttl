@@ -10,50 +10,46 @@
 
 <http://semiodesk.com/artivity/1.0/> a owl:Ontology .
 
-art:Add a rdfs:Class ;
-    rdfs:label "Add" ;
-    rdfs:subClassOf prov:Activity .
-    
-art:Close a rdfs:Class ;
-    rdfs:label "Close" ;
-    rdfs:subClassOf prov:Activity .
-    
-art:Create a rdfs:Class ;
-    rdfs:label "Create" ;
+art:Browse a rdfs:Class ;
+    rdfs:label "Browse" ;
     rdfs:subClassOf prov:Activity .
 
-art:Delete a rdfs:Class ;
-    rdfs:label "Delete" ;
+art:CreateFile a rdfs:Class ;
+    rdfs:label "CreateFile" ;
     rdfs:subClassOf prov:Activity .
-    
-art:Open a rdfs:Class ;
-    rdfs:label "Open" ;
+
+art:DeleteFile a rdfs:Class ;
+    rdfs:label "DeleteFile" ;
     rdfs:subClassOf prov:Activity .
+
+art:EditFile a rdfs:Class ;
+    rdfs:label "EditFile" ;
+    rdfs:subClassOf prov:Activity .
+
+art:Add a rdfs:Class ;
+    rdfs:label "Add" ;
+    rdfs:subClassOf prov:EntityInfluence .
+
+art:Edit a rdfs:Class ;
+    rdfs:label "Edit" ;
+    rdfs:subClassOf prov:EntityInfluence .
 
 art:Redo a rdfs:Class ;
     rdfs:label "Redo" ;
-    rdfs:subClassOf prov:Activity .
+    rdfs:subClassOf prov:EntityInfluence .
 
 art:Remove a rdfs:Class ;
     rdfs:label "Remove" ;
-    rdfs:subClassOf prov:Activity .
+    rdfs:subClassOf prov:EntityInfluence .
     
 art:Undo a rdfs:Class ;
     rdfs:label "Undo" ;
-    rdfs:subClassOf prov:Activity .
-
-art:Update a rdfs:Class ;
-    rdfs:label "Update" ;
-    rdfs:subClassOf prov:Activity .
-    
-art:Save a rdfs:Class ;
-    rdfs:label "Save" ;
-    rdfs:subClassOf prov:Activity .
+    rdfs:subClassOf prov:EntityInfluence .
 
 art:View a rdfs:Class ;
     rdfs:label "View" ;
-    rdfs:subClassOf prov:Activity .
-    
+    rdfs:subClassOf prov:Usage .
+        
 art:Layer a rdfs:Class ;
     rdfs:label "Layer" .
     

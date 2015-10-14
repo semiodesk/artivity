@@ -48,11 +48,11 @@ namespace Artivity.Api.Http
                 return;
 
             Console.WriteLine("Artivity Logging Service, Version 1.1");
+            Console.WriteLine();
 
             if (options.Interactive)
             {
-                Console.WriteLine();
-                Console.WriteLine("Press any key to quit.", Port);
+                Console.WriteLine("Press any key to quit.");
                 Console.WriteLine();
             }
 
