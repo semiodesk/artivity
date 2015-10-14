@@ -42,8 +42,8 @@ namespace Artivity.Model.ObjectModel
 		[RdfProperty(PROV.qualifiedAssociation)]
 		public List<Association> Associations { get; private set; }
 
-		[RdfProperty(PROV.used)]
-		public List<Entity> UsedEntities { get; private set; }
+        [RdfProperty(PROV.qualifiedUsage)]
+		public List<Usage> Usages { get; private set; }
 
 		[RdfProperty(PROV.invalidated)]
 		public List<Entity> InvalidatedEntities { get; set; }

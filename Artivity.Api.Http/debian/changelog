@@ -1,0 +1,17 @@
+artivity-apid (1.5.2-1semiodesk0) trusty; urgency=low
+
+  * Implemented PROV data model for logging web browser events. 
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Wed, 14 Oct 2015 15:22:00 +0200
+
+artivity-apid (1.5.1-1semiodesk0) trusty; urgency=low
+
+  * Added dependency on OpenLink Virtuoso to debian package. 
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Tue, 13 Oct 2015 16:46:00 +0200
+
+artivity-apid (1.5.0-1semiodesk0) trusty; urgency=low
+
+  * Initial packaging release.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Tue, 13 Oct 2015 13:50:00 +0200

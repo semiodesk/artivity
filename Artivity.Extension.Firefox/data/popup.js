@@ -23,7 +23,7 @@ function onRequestError() {
   var enabledBox = document.getElementById('settings-option-enabled');
   enabledBox.checked = false;
 
-  chrome.browserAction.setIcon({path: 'icon-disabled.png'});
+  self.postMessage(false);
 }
 
 function onRequestResponse() {
@@ -42,18 +42,13 @@ function onRequestResponse() {
      enabledBox.checked = this.response.enabled;
   }
 
-  if(enabledBox.checked) {
-    chrome.browserAction.setIcon({path: 'icon-enabled.png'});
-  }
-  else {
-    chrome.browserAction.setIcon({path: 'icon-disabled.png'});
-  }
+  self.postMessage(enabledBox.checked);
 }
 
 function sendRequest(type, callback, errorCallback, params) {
   var url = 'http://localhost:8272/artivity/1.0/agents/status/';
 
-  params['actor'] = 'application://chromium.desktop';
+  params['agent'] = 'application://firefox-browser.desktop';
   
   if(type === 'GET') {
       url += formatParams(params);

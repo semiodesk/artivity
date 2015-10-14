@@ -1,11 +1,12 @@
 {
   "name": "artivity",
   "title": "Artivity",
-  "id": "jid1-1BXmXMTUuyzP8g",
-  "description": "This extension tracks the webpages you visit in the Zeigeist log.",
+  "id": "jid1-1BXmXMTUuyzP8g@jetpack",
+  "description": "This extension tracks the webpages you visit in the Artivity log.",
   "author": "Sebastian Faubel <sebastian@semiodesk.com>",
   "license": "GPL 3.0",
-  "version": "1.0",
+  "version": "1.5.0",
+  "main": "lib/main.js",
   "permissions": {
     "cross-domain-content": ["http://localhost:8272/"]
   }

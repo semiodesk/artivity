@@ -37,5 +37,8 @@ namespace Artivity.Api.Http.Parameters
         public string tab { get; set; }
         public string title { get; set; }
         public string url { get; set; }
+        public DateTime? time { get; set; }
+        public DateTime? startTime { get; set; }
+        public DateTime? endTime { get; set; }
     }
 }

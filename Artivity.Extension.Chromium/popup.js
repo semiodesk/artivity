@@ -38,7 +38,7 @@ function onRequestResponse() {
 
   var enabledBox = document.getElementById('settings-option-enabled');
     
-  if(this.response !== null && this.response.enabled !== null) {
+  if(this.response != 'null' && this.response.enabled != 'null') {
      enabledBox.checked = this.response.enabled;
   }
 

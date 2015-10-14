@@ -56,7 +56,9 @@
   </Settings>
   <VirtualDirectory Name="data">
     <File Name="data/popup.html"/>
-    <File Name="data/content.js"/>
     <File Name="data/popup.js"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="lib">
+    <File Name="lib/main.js"/>
   </VirtualDirectory>
 </CodeLite_Project>
