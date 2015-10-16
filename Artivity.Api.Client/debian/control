@@ -1,0 +1,26 @@
+Source: libartivity
+Section: libs
+Priority: optional
+Maintainer: Sebastian Faubel <sebastian@semiodesk.com>
+Build-Depends: debhelper (>= 9.0.0), dh-autoreconf, libc6-dev (>= 2.19), libstdc++-4.8-dev, libcurl4-openssl-dev 
+Standards-Version: 3.9.5
+
+Package: libartivity
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libstdc++6, libcurl3
+Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
+Description: Library for developing Artivity clients using C++.
+ The library includes a data model and HTTP based communication
+ routines for the Artivity API daemon.
+
+Package: libartivity-dev
+Architecture: any
+Section: libdevel
+Depends: libartivity (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Description: Library for developing Artivity clients using C++.
+ The library includes a data model and HTTP based communication
+ routines for the Artivity API daemon.
+ .
+ This package contains development files.

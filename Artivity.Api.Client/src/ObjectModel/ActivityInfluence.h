@@ -19,7 +19,7 @@ namespace artivity
         
         time_t _time;
                 
-        string _value;
+        string _content;
         
     public:
         ActivityInfluence() : Resource(UriGenerator::getUri())
@@ -80,16 +80,16 @@ namespace artivity
             Resource::setValue(prov::atTime, &time);
         }
         
-        string getValue()
+        string getContent()
         {
-            return _value;
+            return _content;
         }
         
-        void setValue(string value)
+        void setContent(string content)
         {
-            _value = string(value);
+            _content = string(content);
             
-            Resource::setValue(prov::value, _value.c_str());
+            setValue(prov::value, _content.c_str());
         }
     };
 }

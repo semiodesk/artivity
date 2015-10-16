@@ -1,20 +1,16 @@
-include_directories( ${KOMAIN_INCLUDES} ${KOTEXT_INCLUDES} )
+include_directories(${KOMAIN_INCLUDES} ${KOTEXT_INCLUDES})
 
-set(kritaartivity_PART_SRCS
-        artivity.cc
-#        log.cc
-   )
+set(krita-extension-artivity_PART_SRCS artivity.cc)
 
-kde4_add_plugin(kritaartivity ${kritaartivity_PART_SRCS})
+kde4_add_plugin(krita-extension-artivity ${krita-extension-artivity_PART_SRCS})
 
+target_link_libraries(krita-extension-artivity komain kritaui artivity)
 
-target_link_libraries(kritaartivity komain kritaui artivity)
-
-install(TARGETS kritaartivity DESTINATION ${PLUGIN_INSTALL_DIR})
-
+install(TARGETS krita-extension-artivity DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ########### install files ###############
 
-install( FILES  artivity.rc  DESTINATION ${DATA_INSTALL_DIR}/kritaplugins)
-install( FILES  kritaartivity.desktop  DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES artivity.rc DESTINATION ${DATA_INSTALL_DIR}/kritaplugins)
+install(FILES krita-extension-artivity.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
+include(CPack)

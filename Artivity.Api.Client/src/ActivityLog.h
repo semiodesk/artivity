@@ -40,6 +40,8 @@
 #include "ObjectModel/Agent.h"
 #include "ObjectModel/Association.h"
 #include "ObjectModel/Activity.h"
+#include "ObjectModel/Activities/CreateFile.h"
+#include "ObjectModel/Activities/EditFile.h"
 #include "ObjectModel/Entity.h"
 #include "ObjectModel/Entities/FileDataObject.h"
 #include "ObjectModel/Geometry/Canvas.h"
@@ -163,6 +165,25 @@ namespace artivity
             return activity;
         }
         
+        template <class T> T* createEntityVersion(T* entity, Canvas* canvas)
+        {
+            T* version = createResource<T>();
+            version->setCanvas(canvas);
+            version->addGenericEntity(entity);
+            
+            return version;
+        }
+        
+        template <class T> T* createEntityInfluence(time_t time, const Resource& type, Viewport* viewport)
+        {
+            T* influence = createResource<T>();
+            influence->setType(type);
+            influence->setTime(time);
+            influence->setViewport(viewport);
+            
+            return influence;
+        }
+        
         Activity* updateActivity(Activity* activity);
         
         // Add an activity to the transmitted RDF output.
@@ -174,19 +195,19 @@ namespace artivity
         // Removes an associated agent to any activities which are being logged.
         void removeAgent(Agent* agent);
         
-        FileDataObject* loadFile(string path, double width, double height, const Resource* lengthUnit);
+        bool hasFile(string path);
         
-        FileDataObject* createFile(double width, double height, const Resource* lengthUnit);
+        EditFile* editFile(string path, double width, double height, const Resource* lengthUnit);
+        
+        CreateFile* createFile(double width, double height, const Resource* lengthUnit);
         
         FileDataObject* getFile();
-        
-        bool hasFile(string path);
                         
+        bool hasCanvas(double width, double height, const Resource* lengthUnit);
+        
         void updateCanvas(double width, double height, const Resource* lengthUnit);
         
         Canvas* getCanvas();
- 
-        bool hasCanvas(double width, double height, const Resource* lengthUnit);
         
         // Send all items in the queue to the Artivity server.
         void transmit();

@@ -40,12 +40,7 @@ namespace Inkscape
         {
             _filePath = string(_document->getURI());
                         
-            _log.loadFile(_filePath.c_str(), width, height, unit);
-            
-            FileDataObject* file = _log.getFile();
-            
-            _activity = _log.createActivity<EditFile>();
-            _activity->addUsedEntity(file);
+            _activity = _log.editFile(_filePath.c_str(), width, height, unit);
         
             transmitQueue();
         }
@@ -53,9 +48,7 @@ namespace Inkscape
         {
             _filePath = "";
             
-            _log.createFile(width, height, unit);
-            
-            _activity = _log.createActivity<CreateFile>();
+            _activity = _log.createFile(width, height, unit);
         }
     }
 
@@ -154,13 +147,20 @@ namespace Inkscape
    
     void
     ArtivityLog::logUndoOrRedo(time_t time, Event* e, Canvas* canvas, Viewport* viewport, const Resource& type)
-    {
-        FileDataObject* file = _log.getFile();
-        FileDataObject* newver = createGeneratedVersion(file, canvas);
-        FileDataObject* oldver = createInvalidatedVersion(file, canvas);
+    {        
+        Generation* generation = _log.createEntityInfluence<Generation>(time, type, viewport);
+        Invalidation* invalidation = _log.createEntityInfluence<Invalidation>(time, type, viewport);
         
-        Generation* generation = createGeneration(newver, time, viewport, type);
-        Invalidation* invalidation = createInvalidation(oldver, time, viewport, type);
+        FileDataObject* file = _log.getFile();
+        
+        FileDataObject* newver = _log.createEntityVersion<FileDataObject>(file, canvas);
+        newver->setGeneration(generation);
+        
+        FileDataObject* oldver = _log.createEntityVersion<FileDataObject>(file, canvas);
+        oldver->setInvalidation(invalidation);
+        
+        _activity->addGeneratedEntity(newver);
+        _activity->addInvalidatedEntity(oldver);
     }
     
     void
@@ -171,20 +171,27 @@ namespace Inkscape
         BoundingRectangle* bounds = createBoundingRectangle(e);
         
         FileDataObject* file = _log.getFile();
-        FileDataObject* newver = createGeneratedVersion(file, canvas);
-        FileDataObject* oldver = createInvalidatedVersion(file, canvas);
-        
+        FileDataObject* newver = _log.createEntityVersion<FileDataObject>(file, canvas);
+        FileDataObject* oldver = _log.createEntityVersion<FileDataObject>(file, canvas);
+                
         stringstream uri;
         uri << newver->Uri << "#" << getXmlNodeId(x->child);
         
         XmlElement* element = _log.createResource<XmlElement>(uri.str().c_str());
         
-        Generation* generation = createGeneration(newver, time, viewport, art::Add);
+        Generation* generation = _log.createEntityInfluence<Generation>(time, art::Add, viewport);
         generation->setLocation(element);
         generation->setBoundaries(bounds);
         
-        Invalidation* invalidation = createInvalidation(oldver, time, viewport, art::Add);
+        Invalidation* invalidation = _log.createEntityInfluence<Invalidation>(time, art::Add, viewport);
+        invalidation->setLocation(element);
         invalidation->setBoundaries(bounds);
+        
+        newver->setGeneration(generation);
+        oldver->setInvalidation(invalidation);
+        
+        _activity->addGeneratedEntity(newver);
+        _activity->addInvalidatedEntity(oldver);
     }
     
     void
@@ -192,12 +199,19 @@ namespace Inkscape
     {
         // Inkscape::XML::EventDel* x = as<Inkscape::XML::EventDel*>(e->event);
             
-        FileDataObject* file = _log.getFile();
-        FileDataObject* newver = createGeneratedVersion(file, canvas);
-        FileDataObject* oldver = createInvalidatedVersion(file, canvas);
+        Generation* generation = _log.createEntityInfluence<Generation>(time, art::Remove, viewport);
+        Invalidation* invalidation = _log.createEntityInfluence<Invalidation>(time, art::Remove, viewport);
         
-        Generation* generation = createGeneration(newver, time, viewport, art::Remove);
-        Invalidation* invalidation = createInvalidation(oldver, time, viewport, art::Remove);
+        FileDataObject* file = _log.getFile();
+        
+        FileDataObject* newver = _log.createEntityVersion<FileDataObject>(file, canvas);
+        newver->setGeneration(generation);
+        
+        FileDataObject* oldver = _log.createEntityVersion<FileDataObject>(file, canvas);
+        oldver->setInvalidation(invalidation);
+        
+        _activity->addGeneratedEntity(newver);
+        _activity->addInvalidatedEntity(oldver);
     }
     
     void
@@ -209,34 +223,40 @@ namespace Inkscape
             return;
         }
         
-        Inkscape::XML::EventChgContent* x = as<Inkscape::XML::EventChgContent*>(e->event);
-        
-        BoundingRectangle* bounds = createBoundingRectangle(e);
-        
         FileDataObject* file = _log.getFile();
-        FileDataObject* newver = createGeneratedVersion(file, canvas);
-        FileDataObject* oldver = createInvalidatedVersion(file, canvas);
+        FileDataObject* newver = _log.createEntityVersion<FileDataObject>(file, canvas);        
+        FileDataObject* oldver = _log.createEntityVersion<FileDataObject>(file, canvas);
         
         stringstream uri;
         uri << newver->Uri << "#" << getXmlNodeId(e->event->repr);
+        
+        Inkscape::XML::EventChgContent* x = as<Inkscape::XML::EventChgContent*>(e->event);
+        
+        BoundingRectangle* bounds = createBoundingRectangle(e);
         
         XmlElement* element = _log.createResource<XmlElement>(uri.str().c_str());
          
         // NEW VALUE
         string newval = x->newval != 0 ? string(x->newval) : "";
         
-        Generation* generation = createGeneration(newver, time, viewport, art::Edit);
-        generation->setValue(newval);
+        Generation* generation = _log.createEntityInfluence<Generation>(time, art::Edit, viewport);
         generation->setLocation(element);
         generation->setBoundaries(bounds);
+        generation->setContent(newval);
         
         // OLD VALUE
         string oldval = x->oldval != 0 ? string(x->oldval) : "";
         
-        Invalidation* invalidation = createInvalidation(oldver, time, viewport, art::Edit);
-        invalidation->setValue(oldval);
+        Invalidation* invalidation = _log.createEntityInfluence<Invalidation>(time, art::Edit, viewport);
         invalidation->setLocation(element);
         invalidation->setBoundaries(bounds);
+        invalidation->setContent(oldval);
+        
+        newver->setGeneration(generation);
+        oldver->setInvalidation(invalidation);
+        
+        _activity->addGeneratedEntity(newver);
+        _activity->addInvalidatedEntity(oldver);
     }
     
     void
@@ -253,8 +273,8 @@ namespace Inkscape
         BoundingRectangle* bounds = createBoundingRectangle(e);
                
         FileDataObject* file = _log.getFile();
-        FileDataObject* newver = createGeneratedVersion(file, canvas);
-        FileDataObject* oldver = createInvalidatedVersion(file, canvas);
+        FileDataObject* newver = _log.createEntityVersion<FileDataObject>(file, canvas);        
+        FileDataObject* oldver = _log.createEntityVersion<FileDataObject>(file, canvas);
         
         string newval = x->newval != 0 ? string(x->newval) : "";
         string oldval = x->oldval != 0 ? string(x->oldval) : "";
@@ -278,20 +298,26 @@ namespace Inkscape
             attribute->setOwnerElement(element);
             attribute->setLocalName(name.c_str());
             
-            Generation* generation = createGeneration(newver, time, viewport, art::Edit);
-            generation->setValue(it->second->newval.c_str());
+            Generation* generation = _log.createEntityInfluence<Generation>(time, art::Edit, viewport);
             generation->setLocation(attribute);
             generation->setBoundaries(bounds);
+            generation->setContent(it->second->newval.c_str());
         
-            Invalidation* invalidation = createInvalidation(oldver, time, viewport, art::Edit);
-            invalidation->setValue(it->second->oldval.c_str());
+            Invalidation* invalidation = _log.createEntityInfluence<Invalidation>(time, art::Edit, viewport);
             invalidation->setLocation(attribute);
             invalidation->setBoundaries(bounds);
+            invalidation->setContent(it->second->oldval.c_str());
+            
+            newver->setGeneration(generation);
+            oldver->setInvalidation(invalidation);
         
             delete it->second;
             
             it++;
         }
+        
+        _activity->addGeneratedEntity(newver);
+        _activity->addInvalidatedEntity(oldver);
         
         delete values;
     }
@@ -304,6 +330,7 @@ namespace Inkscape
         // TODO: Set the element and location.
     }
     
+    /*
     FileDataObject*
     ArtivityLog::createGeneratedVersion(Entity* entity, Canvas* canvas)
     {
@@ -353,6 +380,7 @@ namespace Inkscape
         
         return invalidation;
     }
+    */
     
     Viewport*
     ArtivityLog::createViewport()
@@ -584,7 +612,7 @@ namespace Inkscape
     { 
         // If the document has not been saved yet, we keep all 
         // pending changes in the event queue.
-        if(_document->getURI() == NULL || _log.empty())
+        if(_log.empty() || _document->getURI() == NULL)
         {
             return;
         }

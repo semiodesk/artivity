@@ -1,0 +1,14 @@
+Source: artivity-explorer
+Section: misc
+Priority: optional
+Maintainer: Sebastian Faubel <sebastian@semiodesk.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+Homepage: http://bitbucket.org/semiodesk/artivity
+
+Package: artivity-explorer
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, mono-runtime, artivity-datamodel (>= 1.5.2), artivity-apid (>= 1.5.2), gtk-sharp3
+Description: View data captured during the creation process of graphics files.
+ View data captured during the creating process of graphics files. Currently
+ the only supported application is Inkscape.

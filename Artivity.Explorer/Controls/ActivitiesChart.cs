@@ -26,8 +26,6 @@ namespace ArtivityExplorer.Controls
 
         private Dictionary<Agent, List<PolygonAnnotation>> _annotations = new Dictionary<Agent, List<PolygonAnnotation>>();
 
-        private Close _lastClose;
-
 		private Dictionary<Agent, DateTime> _previous = new Dictionary<Agent, DateTime>();
 
         private Axis _x;
@@ -152,11 +150,11 @@ namespace ArtivityExplorer.Controls
                   ?activity prov:qualifiedAssociation ?association .
                   ?activity prov:startedAtTime ?startTime .
                   ?activity prov:endedAtTime ?endTime .
-
                   ?activity prov:used ?entity .
-                  ?entity nfo:fileUrl """ + fileUrl + @""" .
 
                   ?association prov:agent ?agent .
+
+                  ?entity nfo:fileUrl """ + fileUrl + @""" .
 
                   FILTER(?startTime != ?endTime)
                 }

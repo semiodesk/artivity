@@ -1,3 +1,9 @@
+artivity-datamodel (1.5.3-1semiodesk0) trusty; urgency=low
+
+  * Fixed missing dependencies in debian package.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 15 Oct 2015 10:00:00 +0200
+
 artivity-datamodel (1.5.2-1semiodesk0) trusty; urgency=low
 
   * Adapted datamodel for logging browser activities and usages.
