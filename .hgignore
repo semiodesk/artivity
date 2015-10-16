@@ -42,3 +42,6 @@ packages/*
 *.m4
 *.sub
 *.pc
+obj/*
+tmp/*
+bin/*
