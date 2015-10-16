@@ -1,5 +1,5 @@
 PACKAGE_NAME = artivity-extension-firefox
-PACKAGE_VERSION = 1.5.0
+PACKAGE_VERSION = $(shell dpkg-parsechangelog | grep Version: | cut -d' ' -f2- | cut -d'-' -f1)
 PACKAGE_ID = jid1-1BXmXMTUuyzP8g@jetpack
 
 all:

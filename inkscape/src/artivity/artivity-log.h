@@ -90,14 +90,6 @@ namespace Inkscape
         
         void logChangeOrder(time_t time, Event* e, artivity::Canvas* canvas, artivity::Viewport* viewport);
     
-        artivity::FileDataObject* createGeneratedVersion(artivity::Entity* entity, artivity::Canvas* canvas);
-        
-        artivity::FileDataObject* createInvalidatedVersion(artivity::Entity* entity, artivity::Canvas* canvas);
-        
-        artivity::Generation* createGeneration(artivity::Entity* entity, time_t time, artivity::Viewport* viewport, const artivity::Resource& type);
-
-        artivity::Invalidation* createInvalidation(artivity::Entity* entity, time_t time, artivity::Viewport* viewport, const artivity::Resource& type);
-    
         artivity::Viewport* createViewport();
         
         artivity::BoundingRectangle* createBoundingRectangle(Event* e);

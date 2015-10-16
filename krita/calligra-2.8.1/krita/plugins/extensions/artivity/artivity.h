@@ -25,26 +25,24 @@
 #define _ARTIVITY_H_
 
 #include <QVariant>
-#include <kis_view_plugin.h>
-#include <artivity-client/artivity.h>
+#include <QWidget>
 #include <kundo2stack.h>
-#include <KoShapeController.h>
+#include <kis_view_plugin.h>
 #include <kis_canvas2.h>
-#include <KoDocumentResourceManager.h>
 #include <kis_action.h>
-#include <recorder/kis_recorded_action.h>
-#include <recorder/kis_action_recorder.h>
 #include <kis_view2.h>
 #include <kis_doc2.h>
 #include <kis_layer.h>
-#include <QWidget>
-#include <KoZoomController.h>
 #include <kis_selection.h>
-
+#include <recorder/kis_recorded_action.h>
+#include <recorder/kis_action_recorder.h>
 #include <commands/kis_layer_commands.h>
 #include <commands/kis_image_commands.h>
 #include <commands/kis_selection_commands.h>
-
+#include <KoZoomController.h>
+#include <KoShapeController.h>
+#include <KoDocumentResourceManager.h>
+#include <libartivity/artivity.h>
 
 class KisAction;
 class KisMacro;
@@ -57,46 +55,41 @@ public:
     ArtivityPlugin(QObject *parent, const QVariantList &);
     virtual ~ArtivityPlugin();
 
-
-private slots:
-    //void addedAction(const KisRecordedAction& action);
-    void indexChanged(int newIdx); 
-    void Close();
-    void ZoomChanged(KoZoomMode::Mode mode, qreal zoom);
-
 protected:
     //void logDrawEvent(const artivity::Resource& type, QString layer);
 
-private:
+private slots:
+    //void addedAction(const KisRecordedAction& action);
+    void onUndoIndexChanged(int newIndex); 
+    void onZoomChanged(KoZoomMode::Mode mode, qreal zoomFactor);
+    void onClose();
 
-    const KUndo2Command* _topCommand;
-    int _currentIdx;
-    int _lastStackSize;
+private:
     bool _active;
+    int _currentIndex;
+    int _lastStackSize;
+    const KUndo2Command* _topCommand;
     qreal _zoomFactor;
     
     artivity::ActivityLog* _log;
-    artivity::SoftwareAgent* _agent;
-    artivity::FileDataObject* _entity;
+    artivity::Activity* _activity;
 
-    KisView2 * m_view;
+    KisView2* _view;
+    KisDoc2* _document;
     KisCanvas2* _canvas;
     KUndo2Stack* _undoStack;
-    KisDoc2* _doc;
+    const char* _filePath;
     //KisActionRecorder* _recorder;
 
-    void LogLayerAdded();
-    void ImageInformation();
-    void Selection();
-    void LogActivityInformation(artivity::Activity* activity, const KUndo2Command* command);
-   
-    void LogEvent(const artivity::Resource& type, const KUndo2Command* command);
-    void LogDoEvent(const KUndo2Command* command);
-    void LogUndoEvent(const KUndo2Command* command);
-    void LogRedoEvent(const KUndo2Command* command);
-    void LogModifyingEvent(artivity::Activity* activity, const KUndo2Command* command);
-    void ProcessEventQueue();
+    void logEvent(const artivity::Resource& type, const KUndo2Command* command);
+    void transmitQueue();
 
+    const artivity::Resource* getLengthUnit();
+    artivity::Canvas* getCanvas();
+
+    void getImageInformation();
+    void getSelection();
 };
 
-#endif // artivityPlugin_H
+#endif // _ARTIVITY_H_
+

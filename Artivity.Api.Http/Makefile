@@ -1,5 +1,5 @@
 PACKAGE_NAME = artivity-apid
-PACKAGE_VERSION = 1.5.2
+PACKAGE_VERSION = $(shell dpkg-parsechangelog | grep Version: | cut -d' ' -f2- | cut -d'-' -f1)
 
 SHARED_LIBS = Artivity.Model.dll dotNetRDF.Data.Virtuoso.dll dotNetRDF.dll OpenLink.Data.Virtuoso.dll Semiodesk.Trinity.dll VDS.Common.dll HtmlAgilityPack.dll Newtonsoft.Json.dll
 

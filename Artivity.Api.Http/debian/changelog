@@ -1,3 +1,9 @@
+artivity-apid (1.5.3-1semiodesk0) trusty; urgency=low
+
+  * Fixed dependencies in debian package. 
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 15 Oct 2015 10:05:00 +0200
+
 artivity-apid (1.5.2-1semiodesk0) trusty; urgency=low
 
   * Implemented PROV data model for logging web browser events. 

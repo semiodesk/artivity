@@ -7,6 +7,7 @@ using Xwt.Drawing;
 using ArtivityExplorer.Parsers;
 using Semiodesk.Trinity;
 using Artivity.Model;
+using Artivity.Model.ObjectModel;
 
 namespace ArtivityExplorer.Controls
 {
@@ -94,12 +95,19 @@ namespace ArtivityExplorer.Controls
 
 		public void Update(IModel model, string file)
 		{
-			ResourceQuery sessions = new ResourceQuery(art.Open);
-			ResourceQuery updates = new ResourceQuery(art.Update);
+            string fileUrl = file.StartsWith("file://") ? file : "file://" + file;
+
+            ResourceQuery entity = new ResourceQuery();
+            entity.Where(nfo.fileUrl, fileUrl);
+
+			ResourceQuery sessions = new ResourceQuery(prov.Activity);
+            sessions.Where(prov.used, entity);
+
+			ResourceQuery updates = new ResourceQuery(art.Edit);
 			ResourceQuery undos = new ResourceQuery(art.Undo);
 			ResourceQuery redos = new ResourceQuery(art.Redo);
 
-			double sessionCount = model.ExecuteQuery(sessions).Count();
+			double sessionCount = model.ExecuteQuery(sessions, true).Count();
 			double updateCount = model.ExecuteQuery(updates).Count();
 			double undoCount = model.ExecuteQuery(undos).Count();
 			double redoCount = model.ExecuteQuery(redos).Count();

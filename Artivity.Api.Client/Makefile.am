@@ -1,5 +1,7 @@
 SUBDIRS = src
 
+EXTRA_DIST = debian
+
 pkgconfigdir = $(libdir)/pkgconfig
 
 libartivity.pc: libartivity.pc.in

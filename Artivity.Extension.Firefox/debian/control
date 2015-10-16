@@ -1,0 +1,17 @@
+Source: artivity-extension-firefox
+Section: misc
+Priority: optional
+Maintainer: Sebastian Faubel <sebastian@semiodesk.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+Homepage: http://bitbucket.org/semiodesk/artivity/
+#Vcs-Git: git://git.debian.org/collab-maint/artivity-extension-firefox.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/artivity-extension-firefox.git;a=summary
+
+Package: artivity-extension-firefox
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, artivity-apid, firefox
+Description: Extension for Firefox to track the browsing history in Zeitgeist.
+ This extension for Mozilla Firefox allows for capturing the entire browsing
+ history in the Zeitgeist activity journal. It can be enabled or disabled
+ at any time.

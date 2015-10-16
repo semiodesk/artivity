@@ -1,0 +1,17 @@
+artivity-extension-firefox (1.5.1-1semiodesk0) trusty; urgency=low
+
+  * Fixed triggering the capture checkbox not updating the extension icon state.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 15 Oct 2015 10:45:00 +0200
+
+artivity-extension-firefox (1.5.0-1semiodesk0) trusty; urgency=low
+
+  * Initial packaging release of .NET based version.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Wed, 14 Oct 2015 14:47:00 +0200
+
+artivity-extension-firefox (1.0.2-1ubuntu2) trusty; urgency=low
+
+  * Removed virtual package 'artivity-desktop'. To be replaced by metapackage.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 23 Apr 2015 15:30:08 +0200

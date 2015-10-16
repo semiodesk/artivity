@@ -8,7 +8,7 @@ Homepage: http://bitbucket.org/semiodesk/artivity
 
 Package: artivity-datamodel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, mono-runtime
+Depends: ${shlibs:Depends}, ${misc:Depends}, mono-runtime, libmono-system-runtime4.0-cil, libmono-microsoft-csharp4.0-cil, libmono-system-componentmodel-dataannotations4.0-cil, libmono-system-componentmodel-composition4.0-cil
 Description: Runtime data model library for .NET based Artivity applications.
  Runtime data model library for .NET based Artivity applications. Defines
  objects which map to the PROV and NEPOMUK ontologies.
