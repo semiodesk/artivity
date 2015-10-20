@@ -1,3 +1,27 @@
+artivity-extension-chromium (1.5.4-1semiodesk0) trusty; urgency=low
+
+  * Fixed wrong null check in popup.js
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 14:18:00 +0200
+
+artivity-extension-chromium (1.5.3-1semiodesk0) trusty; urgency=low
+
+  * Added dependency on unzip to build dependencies.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 10:48:00 +0200
+
+artivity-extension-chromium (1.5.2-1semiodesk0) trusty; urgency=low
+
+  * Added dependency on unzip for installing the extension for developers. 
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 10:34:00 +0200
+
+artivity-extension-chromium (1.5.1-1semiodesk0) trusty; urgency=low
+
+  * Added correct extension package file.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 10:21:00 +0200
+
 artivity-extension-chromium (1.5.0-1semiodesk0) trusty; urgency=low
 
   * Initial packaging release of .NET based version.

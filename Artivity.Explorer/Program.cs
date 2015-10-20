@@ -21,7 +21,7 @@ namespace ArtivityExplorer
 				window.Height = 700;
 				window.Show();
 
-				Application.Run();
+			    Application.Run();
 			};
 		}
 	}

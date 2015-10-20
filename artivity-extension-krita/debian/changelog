@@ -1,0 +1,35 @@
+artivity-extension-krita (1.5.4-1semiodesk1) trusty; urgency=low
+
+  * Recompiling package against new version of libartivity.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Tue, 20 Oct 2015 10:11:00 +0200
+
+artivity-extension-krita (1.5.4-1semiodesk0) trusty; urgency=low
+
+  * Fixed wrong plugin name: Krita now loads the Artivity plugin.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 19 Oct 2015 16:06:00 +0200
+
+artivity-extension-krita (1.5.3-1semiodesk0) trusty; urgency=low
+
+  * Fixed package build dependencies (krita).
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 16 Oct 2015 18:09:00 +0200
+
+artivity-extension-krita (1.5.2-1semiodesk0) trusty; urgency=low
+
+  * Fixed package build dependencies (libcurl-openssl4-dev).
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 16 Oct 2015 17:14:00 +0200
+
+artivity-extension-krita (1.5.1-1semiodesk0) trusty; urgency=low
+
+  * Fixed package build dependencies (wget).
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 16 Oct 2015 16:37:00 +0200
+
+artivity-extension-krita (1.5.0-1semiodesk0) trusty; urgency=low
+
+  * Initial packaging release. 
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 16 Oct 2015 12:30:00 +0200

@@ -1,3 +1,9 @@
+artivity-extension-firefox (1.5.2-1semiodesk0) trusty; urgency=low
+
+  * Fixed wrong null check in popup.js.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 14:14:00 +0200
+
 artivity-extension-firefox (1.5.1-1semiodesk0) trusty; urgency=low
 
   * Fixed triggering the capture checkbox not updating the extension icon state.

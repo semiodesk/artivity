@@ -63,7 +63,10 @@ namespace Artivity.Api.Http
                         return GetStatus(this.Bind<AgentParameters>());
                     }
                 };
-				Post["/artivity/1.0/agents/status"] = parameters => { return SetStatus(this.Bind<AgentParameters>()); };
+				Post["/artivity/1.0/agents/status"] = parameters =>
+                {
+                    return SetStatus(this.Bind<AgentParameters>());
+                };
 			}
 			catch(Exception e)
 			{
@@ -108,6 +111,8 @@ namespace Artivity.Api.Http
 			SoftwareAgent agent = null;
 			Uri agentUri = new Uri(p.agent);
 
+            Console.WriteLine(agentUri);
+
 			if (model.ContainsResource(agentUri))
 			{
 				agent = model.GetResource<SoftwareAgent>(agentUri);
@@ -133,8 +138,10 @@ namespace Artivity.Api.Http
 
 			IModel model = GetModel(Models.Agents);
 
-			SoftwareAgent agent;
+            SoftwareAgent agent = null;
 			Uri agentUri = new Uri(p.agent);
+
+            Console.WriteLine(agentUri);
 
 			if (model.ContainsResource(agentUri))
 			{

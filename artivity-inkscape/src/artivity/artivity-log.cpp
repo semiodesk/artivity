@@ -330,58 +330,6 @@ namespace Inkscape
         // TODO: Set the element and location.
     }
     
-    /*
-    FileDataObject*
-    ArtivityLog::createGeneratedVersion(Entity* entity, Canvas* canvas)
-    {
-        FileDataObject* version = _log.createResource<FileDataObject>();
-        version->setCanvas(canvas);
-        version->addGenericEntity(entity);
-        
-        _activity->addGeneratedEntity(version);
-        
-        return version;
-    }
-    
-    FileDataObject*
-    ArtivityLog::createInvalidatedVersion(Entity* entity, Canvas* canvas)
-    {
-        FileDataObject* version = _log.createResource<FileDataObject>();
-        version->setCanvas(canvas);
-        version->addGenericEntity(entity);
-        
-        _activity->addInvalidatedEntity(version);
-        
-        return version;
-    }
-    
-    Generation*
-    ArtivityLog::createGeneration(Entity* entity, time_t time, Viewport* viewport, const Resource& type)
-    {
-        Generation* generation = _log.createResource<Generation>();
-        generation->setType(type);
-        generation->setTime(time);
-        generation->setViewport(viewport);
-        
-        entity->setGeneration(generation);
-        
-        return generation;
-    }
-
-    Invalidation*
-    ArtivityLog::createInvalidation(Entity* entity, time_t time, Viewport* viewport, const Resource& type)
-    {
-        Invalidation* invalidation = _log.createResource<Invalidation>();
-        invalidation->setType(type);
-        invalidation->setTime(time);
-        invalidation->setViewport(viewport);
-        
-        entity->setInvalidation(invalidation);
-        
-        return invalidation;
-    }
-    */
-    
     Viewport*
     ArtivityLog::createViewport()
     {
