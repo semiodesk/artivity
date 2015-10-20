@@ -1,3 +1,15 @@
+artivity-datamodel (1.5.5-1semiodesk0) trusty; urgency=low
+
+  * Fixed missing ontologies.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 12:28:00 +0200
+
+artivity-datamodel (1.5.4-1semiodesk0) trusty; urgency=low
+
+  * Fixed missing config file.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 12:18:00 +0200
+
 artivity-datamodel (1.5.3-1semiodesk0) trusty; urgency=low
 
   * Fixed missing dependencies in debian package.

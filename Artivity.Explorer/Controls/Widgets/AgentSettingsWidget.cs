@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using Semiodesk.Trinity;
-using Xwt;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
-using System.Text.RegularExpressions;
+using Xwt;
 
 namespace ArtivityExplorer
 {
@@ -64,9 +64,11 @@ namespace ArtivityExplorer
 
         private void SetupAgent(string uri, string name, string colour)
         {
-            if (!_model.ContainsResource(new UriRef(uri)))
+            UriRef agentUri = new UriRef(uri);
+
+            if (!_model.ContainsResource(agentUri))
             {
-                SoftwareAgent agent = _model.CreateResource<SoftwareAgent>(new UriRef(uri));
+                SoftwareAgent agent = _model.CreateResource<SoftwareAgent>(agentUri);
                 agent.Name = name;
                 agent.IsCaptureEnabled = false;
                 agent.Commit();
@@ -75,7 +77,7 @@ namespace ArtivityExplorer
             {
                 bool modified = false;
 
-                SoftwareAgent agent = _model.GetResource<SoftwareAgent>(new UriRef(uri));
+                SoftwareAgent agent = _model.GetResource<SoftwareAgent>(agentUri);
 
                 if(!agent.HasProperty(rdf.type, prov.SoftwareAgent))
                 {
@@ -114,8 +116,13 @@ namespace ArtivityExplorer
 
             ResourceQuery query = new ResourceQuery(prov.SoftwareAgent);
 
-            foreach (SoftwareAgent agent in _model.GetResources<SoftwareAgent>(query, true))
+            foreach (SoftwareAgent agent in _model.GetResources<SoftwareAgent>(query))
             {
+                if (agent.Name == "" || agent.ColourCode == null)
+                {
+                    continue;
+                }
+
                 int row = _store.AddRow();
 
                 _store.SetValues(row, _uriField, agent.Uri, _enabledField, agent.IsCaptureEnabled, _nameField, agent.Name, _colourField, agent.ColourCode);
@@ -126,7 +133,7 @@ namespace ArtivityExplorer
             enabledView.ActiveField = _enabledField;
 
             TextCellView nameView = new TextCellView();
-            nameView.MarkupField = _nameField;
+            nameView.TextField = _nameField;
 
             TextCellView colourView = new TextCellView();
             colourView.Editable = true;
@@ -158,7 +165,7 @@ namespace ArtivityExplorer
 
                 Regex expression = new Regex("^#([A-Fa-f0-9]{6})$");
 
-                if (!expression.IsMatch(colour))
+                if (string.IsNullOrEmpty(colour) || !expression.IsMatch(colour))
                     continue;
 
                 Uri uri = _store.GetValue(i, _uriField);

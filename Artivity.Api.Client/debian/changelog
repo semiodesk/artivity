@@ -1,3 +1,9 @@
+libartivity (0.8.5-1semiodesk0) trusty; urgency=medium
+
+  * Fixed ArtivityLog not returning an empty File object when a file is being created.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 October 2015 16:09:00 +0200
+
 libartivity (0.8.4-1semiodesk0) trusty; urgency=medium
 
   * Improvements on the API.

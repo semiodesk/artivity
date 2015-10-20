@@ -93,15 +93,15 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
 
 	_filePath = _view->document()->localFilePath().toUtf8().constData();
 
-	if(strlen(_filePath) == 0)
+	if(_filePath == NULL || strlen(_filePath) == 0)
 	{
 	   _activity = _log->createFile(width, height, unit);
-		
-	   transmitQueue();
 	}
 	else
 	{
 	   _activity = _log->editFile(_filePath, width, height, unit);
+
+	   transmitQueue();
 	}
 
         connect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(onUndoIndexChanged(int)));
@@ -204,7 +204,7 @@ void ArtivityPlugin::transmitQueue()
 
     string url = string("file://") + _document->localFilePath().toUtf8().constData();
 
-    if(strlen(_filePath) == 0)
+    if(_filePath == NULL || strlen(_filePath) == 0)
     {
         _filePath = _document->localFilePath().toUtf8().constData();
 
@@ -307,8 +307,10 @@ void ArtivityPlugin::onUndoIndexChanged(int newIndex)
 
 void ArtivityPlugin::onClose()
 {
+    const char* filePath = _document->localFilePath().toUtf8().constData();
+
     // Mark the end time of the activity if the file has been saved.
-    if(_filePath != NULL && strlen(_filePath) > 0)
+    if(filePath != NULL && strlen(filePath) > 0)
     {
         time_t now;
         time(&now);

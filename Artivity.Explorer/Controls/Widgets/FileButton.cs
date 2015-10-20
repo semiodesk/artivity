@@ -23,8 +23,6 @@ namespace ArtivityExplorer
 
         private void InitializeComponent()
         {
-            Style = ButtonStyle.Borderless;
-
             Label = " Please click here to select a file.";
 
             Image = BitmapImage.FromResource("picture").WithSize(30, 30);

@@ -5,7 +5,7 @@
   "description": "This extension tracks the webpages you visit in the Artivity log.",
   "author": "Sebastian Faubel <sebastian@semiodesk.com>",
   "license": "GPL 3.0",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "main": "lib/main.js",
   "permissions": {
     "cross-domain-content": ["http://localhost:8272/"]

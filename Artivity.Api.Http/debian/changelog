@@ -1,3 +1,30 @@
+artivity-apid (1.5.7-1semiodesk0) trusty; urgency=low
+
+  * Fixed directory sperators in app.config.
+  * Removed debug output from agents module.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 14:24:00 +0200
+
+artivity-apid (1.5.6-1semiodesk0) trusty; urgency=low
+
+  * Fixed missing dependency on System.Numerics library.
+  * Fixed missing dependency on System.Runtime.Serialization library.
+  * Daemon ontology updates are now optional: -u or --update.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 13:36:00 +0200
+
+artivity-apid (1.5.5-1semiodesk0) trusty; urgency=low
+
+  * Daemon now updating ontologies.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 12:57:00 +0200
+
+artivity-apid (1.5.4-1semiodesk0) trusty; urgency=low
+
+  * Improved error handling in case of exceptions: message now print on the console properly.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 19 Oct 2015 11:34:00 +0200
+
 artivity-apid (1.5.3-1semiodesk0) trusty; urgency=low
 
   * Fixed dependencies in debian package. 

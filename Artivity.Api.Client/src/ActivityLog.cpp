@@ -214,7 +214,9 @@ EditFile* ActivityLog::editFile(string path, double width, double height, const 
 {
     _fileUri = string(getFileUri(path));
     _filePath = path;
-                        
+    
+    cout << _fileUri << endl << flush;
+    
     _canvasUri = string(getCanvasUri(path));
     _canvasWidth = width;
     _canvasHeight = height;
@@ -264,7 +266,7 @@ const char* ActivityLog::getFileUri(string path)
     
     request(url, "", data);
     
-    return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : "";
+    return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : UriGenerator::getUri().c_str();
 }
 
 const char* ActivityLog::getCanvasUri(string path)
@@ -274,7 +276,7 @@ const char* ActivityLog::getCanvasUri(string path)
     
     request(url, "", data);
     
-    return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : "";
+    return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : UriGenerator::getUri().c_str();
 }
 
 void ActivityLog::createCanvas(FileDataObject* file, double width, double height, const Resource* lengthUnit)

@@ -6,6 +6,7 @@ using Xwt;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
 using ArtivityExplorer.Parsers;
+using System.IO;
 
 namespace ArtivityExplorer.Controls
 {
@@ -14,6 +15,8 @@ namespace ArtivityExplorer.Controls
         #region Members
 
 		private IModel _model;
+
+        private HeaderMenu _headerMenu;
 
         private ActivitiesChart _chart = new ActivitiesChart();
 
@@ -42,6 +45,7 @@ namespace ArtivityExplorer.Controls
         private void InitializeModel()
         {
             IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+            store.LoadOntologySettings();
 
             IModelGroup activities = store.CreateModelGroup();
 
@@ -84,11 +88,7 @@ namespace ArtivityExplorer.Controls
 
             Padding = 0;
 
-            // Initialize the main menu.
-            MainMenu menu = new MainMenu();
-            menu.FileSelected += HandleFileSelected;
-
-            MainMenu = menu;
+            _headerMenu = new HeaderMenu(this);
 
             // Initialize the acitivites log.
             _log = new ActivitiesLog();
@@ -101,15 +101,26 @@ namespace ArtivityExplorer.Controls
 
             VBox layout = new VBox();
             layout.Spacing = 0;
-            layout.PackStart(new HeaderMenu(this));
+            layout.PackStart(_headerMenu);
             layout.PackStart(_chart);
             layout.PackStart(content, true);
 
             Content = layout;
+
+            Content.SetFocus();
         }
 
         public void HandleFileSelected(object sender, FileSelectionEventArgs e)
         {
+            bool fileExists = File.Exists(e.FileName);
+
+            _headerMenu.ExportButton.Sensitive = fileExists;
+
+            if (!fileExists)
+            {
+                return;
+            }
+
             SvgStats stats = SvgStatsParser.TryParse(e.FileName);
 
             if (stats != null)

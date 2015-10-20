@@ -23,8 +23,6 @@ namespace ArtivityExplorer
 
         public UserButton()
         {
-            Style = ButtonStyle.Borderless;
-
             InitializeModel();
         }
 

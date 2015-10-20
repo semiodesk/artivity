@@ -40,14 +40,14 @@ namespace Artivity.Api.Http
 
 		public static void Main(string[] args)
 		{
-            Artivity.Model.SemiodeskDiscovery.Discover();
+            SemiodeskDiscovery.Discover();
 
             Options options = new Options();
 
             if (!CommandLine.Parser.Default.ParseArguments(args, options))
                 return;
 
-            Console.WriteLine("Artivity Logging Service, Version 1.1");
+            Console.WriteLine("Artivity Logging Service, Version 1.5.7");
             Console.WriteLine();
 
             if (options.Interactive)
@@ -56,7 +56,7 @@ namespace Artivity.Api.Http
                 Console.WriteLine();
             }
 
-            InitializeModels();
+            InitializeModels(options);
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + Port)))
 			{
@@ -80,9 +80,16 @@ namespace Artivity.Api.Http
 		    }
 		}
 
-        private static void InitializeModels()
+        private static void InitializeModels(Options options)
         {
             IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+
+            if (options.Update)
+            {
+                Logger.LogInfo("Updating ontologies.");
+
+                store.LoadOntologySettings();
+            }
 
             if (!store.ContainsModel(Models.Agents))
             {

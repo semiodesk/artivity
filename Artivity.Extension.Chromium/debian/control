@@ -2,13 +2,13 @@ Source: artivity-extension-chromium
 Section: misc
 Priority: optional
 Maintainer: Sebastian Faubel <sebastian@semiodesk.com>
-Build-Depends: debhelper (>= 9)
+Build-Depends: debhelper (>= 9), unzip
 Standards-Version: 3.9.5
 Homepage: http://bitbucket.org/semiodesk/artivity
 
 Package: artivity-extension-chromium
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, chromium-browser, artivity-apid (>= 1.5.0)
+Depends: ${shlibs:Depends}, ${misc:Depends}, unzip, chromium-browser, artivity-apid (>= 1.5.0)
 Description: Extension for Chromium to track the browsing history in Zeitgeist
  This extension for Chromium allows for capturing the entire browsing
  history in the Zeitgeist activity journal. It can be enabled or disabled

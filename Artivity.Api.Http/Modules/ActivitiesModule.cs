@@ -57,22 +57,15 @@ namespace Artivity.Api.Http
 
 		public ActivitiesModule()
 		{
-			try
-			{
-	            Post["/artivity/1.0/activities/"] = parameters => 
-	            {
-					return AddActivity(ToString(this.Request.Body));
-	            };
+            Post["/artivity/1.0/activities/"] = parameters => 
+            {
+				return AddActivity(ToString(this.Request.Body));
+            };
 
-				Post["/artivity/1.0/activities/web/"] = parameters => 
-				{
-					return AddActivity(this.Bind<ActivityParameters>()); 
-				};
-			}
-			catch(Exception e)
+			Post["/artivity/1.0/activities/web/"] = parameters => 
 			{
-				Logger.LogError(HttpStatusCode.InternalServerError, e);
-			}
+				return AddActivity(this.Bind<ActivityParameters>()); 
+			};
 		}
 
 		#endregion
@@ -104,88 +97,102 @@ namespace Artivity.Api.Http
 
 		private HttpStatusCode AddActivity(string data)
 		{
-			IModel model = GetModel(Models.Activities);
+            try
+            {
+        		IModel model = GetModel(Models.Activities);
 
-			if(model == null)
-			{
-				return Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
-			}
+        		if(model == null)
+        		{
+        			return Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
+        		}
 
-			AddResources(model, ToStream(data));
+        		AddResources(model, ToStream(data));
 
-			return Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/", "POST", data);
+        		return Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/", "POST", data);
+            }
+            catch(Exception e)
+            {
+                return Logger.LogError(HttpStatusCode.InternalServerError, e);
+            }
 		}
 
 		private HttpStatusCode AddActivity(ActivityParameters p)
 		{
-            if (string.IsNullOrEmpty(p.tab))
+            try
             {
-                return Logger.LogRequest(HttpStatusCode.NotModified, "/artivity/1.0/activities/web/", "POST", p.tab);
-            }
-
-            if (string.IsNullOrEmpty(p.agent))
-			{
-				return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
-			}
-
-			if (!IsCaptureEnabled(p))
-			{
-				return Logger.LogRequest(HttpStatusCode.Locked, "/artivity/1.0/activities/web/", "POST", "");
-			}
-                
-            IModel model = GetModel(Models.WebActivities);
-
-            Browse activity;
-
-            if (!_activities.ContainsKey(p.tab))
-            {
-                activity = model.CreateResource<Browse>();
-                activity.StartTime = p.startTime != null ? (DateTime)p.startTime : DateTime.Now;
-                activity.Commit();
-
-                _activities[p.tab] = activity;
-            }
-            else
-            {
-                activity = _activities[p.tab];
-            }
-
-            if (!string.IsNullOrEmpty(p.url) && Uri.IsWellFormedUriString(p.url, UriKind.Absolute))
-            {
-                UriRef url = new UriRef(p.url);
-
-                WebDataObject website;
-
-                if (!model.ContainsResource(url))
+                if (string.IsNullOrEmpty(p.tab))
                 {
-                    website = model.CreateResource<WebDataObject>(url);
-                    website.Title = p.title;
-                    website.Commit();
+                    return Logger.LogRequest(HttpStatusCode.NotModified, "/artivity/1.0/activities/web/", "POST", p.tab);
+                }
+
+                if (string.IsNullOrEmpty(p.agent))
+    			{
+    				return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
+    			}
+
+    			if (!IsCaptureEnabled(p))
+    			{
+    				return Logger.LogRequest(HttpStatusCode.Locked, "/artivity/1.0/activities/web/", "POST", "");
+    			}
+                    
+                IModel model = GetModel(Models.WebActivities);
+
+                Browse activity;
+
+                if (!_activities.ContainsKey(p.tab))
+                {
+                    activity = model.CreateResource<Browse>();
+                    activity.StartTime = p.startTime != null ? (DateTime)p.startTime : DateTime.Now;
+                    activity.Commit();
+
+                    _activities[p.tab] = activity;
                 }
                 else
                 {
-                    website = model.GetResource<WebDataObject>(url);
+                    activity = _activities[p.tab];
                 }
 
-                DateTime time = p.time != null ? (DateTime)p.time : DateTime.Now;
+                if (!string.IsNullOrEmpty(p.url) && Uri.IsWellFormedUriString(p.url, UriKind.Absolute))
+                {
+                    UriRef url = new UriRef(p.url);
 
-                View view = model.CreateResource<View>();
-                view.Entity = website;
-                view.Time = time;
-                view.Commit();
+                    WebDataObject website;
 
-                activity.Usages.Add(view);
-                activity.Commit();
+                    if (!model.ContainsResource(url))
+                    {
+                        website = model.CreateResource<WebDataObject>(url);
+                        website.Title = p.title;
+                        website.Commit();
+                    }
+                    else
+                    {
+                        website = model.GetResource<WebDataObject>(url);
+                    }
+
+                    DateTime time = p.time != null ? (DateTime)p.time : DateTime.Now;
+
+                    View view = model.CreateResource<View>();
+                    view.Entity = website;
+                    view.Time = time;
+                    view.Commit();
+
+                    activity.Usages.Add(view);
+                    activity.Commit();
+                }
+                else if (p.endTime != null)
+                {
+                    activity.EndTime = (DateTime)p.endTime;
+                    activity.Commit();
+
+                    _activities.Remove(p.tab);
+                }
+
+    			return Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/web/", "POST", "");
             }
-            else if (p.endTime != null)
+            catch(Exception e)
             {
-                activity.EndTime = (DateTime)p.endTime;
-                activity.Commit();
-
-                _activities.Remove(p.tab);
+                return Logger.LogError(HttpStatusCode.InternalServerError, e);
             }
-
-			return Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/web/", "POST", "");
 		}
 
 		private void AddResources(IModel model, Stream stream)
