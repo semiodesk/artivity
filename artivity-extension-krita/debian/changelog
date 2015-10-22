@@ -1,3 +1,9 @@
+artivity-extension-krita (1.5.8-1semiodesk1) trusty; urgency=low
+
+  * Added missing kritaartivity.desktop file.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 22 Oct 2015 11:38:00 +0200
+
 artivity-extension-krita (1.5.7-1semiodesk1) trusty; urgency=low
 
   * Recompiling package against new version of libartivity.

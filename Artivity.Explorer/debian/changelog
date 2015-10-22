@@ -1,3 +1,9 @@
+artivity-explorer (1.5.5-1semiodesk0) trusty; urgency=low
+
+  * Fixed missing legend in activity chart.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Wed, 22 Oct 2015 11:34:00 +0200
+
 artivity-explorer (1.5.4-1semiodesk0) trusty; urgency=low
 
   * Fixed query for activity log to return web browser events and editing events.
