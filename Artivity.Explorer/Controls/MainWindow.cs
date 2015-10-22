@@ -44,31 +44,16 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeModel()
         {
+            if (!SetupHelper.HasModels() && !SetupHelper.InstallModels())
+            {
+                throw new Exception("Failed to setup RDF datamodels.");
+            }
+
             IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
-            store.LoadOntologySettings();
-
             IModelGroup activities = store.CreateModelGroup();
-
-            if (!store.ContainsModel(Models.Agents))
-            {
-                store.CreateModel(Models.Agents);
-            }
-
             activities.Add(store.GetModel(Models.Agents));
-
-            if (!store.ContainsModel(Models.Activities))
-            {
-                store.CreateModel(Models.Activities);
-            }
-
             activities.Add(store.GetModel(Models.Activities));
-
-            if (!store.ContainsModel(Models.WebActivities))
-            {
-                store.CreateModel(Models.WebActivities);
-            }
-
             activities.Add(store.GetModel(Models.WebActivities));
 
             _model = activities;
@@ -76,11 +61,6 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeComponent()
         {
-			if (_model == null)
-			{
-				LogError("Model not initialized.");
-			}
-
             Padding = 0;
 
             _headerMenu = new HeaderMenu(this);
