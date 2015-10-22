@@ -47,15 +47,22 @@
     <Compile Include="Parsers\SvgStats.cs" />
     <Compile Include="Parsers\SvgStatsParser.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Controls\SettingsDialog.cs" />
     <Compile Include="Controls\Widgets\UserSettingsWidget.cs" />
     <Compile Include="Controls\Widgets\UserButton.cs" />
     <Compile Include="Controls\HeaderMenu.cs" />
     <Compile Include="Controls\Widgets\FileButton.cs" />
-    <Compile Include="Controls\ExportDialog.cs" />
     <Compile Include="Helpers\ActivityLoader.cs" />
     <Compile Include="Controls\Widgets\AgentSettingsWidget.cs" />
     <Compile Include="Controls\Widgets\ExportButton.cs" />
+    <Compile Include="Helpers\SetupHelper.cs" />
+    <Compile Include="Dialogs\SettingsDialog.cs" />
+    <Compile Include="Dialogs\SetupDialog.cs" />
+    <Compile Include="Dialogs\ExportDialog.cs" />
+    <Compile Include="Controls\Widgets\DialogButtons.cs" />
+    <Compile Include="Controls\Widgets\DialogNavigationButtons.cs" />
+    <Compile Include="Controls\DialogPage.cs" />
+    <Compile Include="Dialogs\Pages\WelcomePage.cs" />
+    <Compile Include="Dialogs\Pages\SetupPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -128,6 +135,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helpers\" />
+    <Folder Include="Dialogs\" />
+    <Folder Include="Dialogs\Pages\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Artivity.Api.Model\Artivity.Api.Model.csproj">

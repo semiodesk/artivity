@@ -1,3 +1,21 @@
+artivity-explorer (1.5.4-1semiodesk0) trusty; urgency=low
+
+  * Fixed query for activity log to return web browser events and editing events.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Wed, 21 Oct 2015 13:00:00 +0200
+
+artivity-explorer (1.5.3-1semiodesk0) trusty; urgency=low
+
+  * Setup now properly handling the start of APID.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Wed, 21 Oct 2015 10:29:00 +0200
+
+artivity-explorer (1.5.2-1semiodesk0) trusty; urgency=low
+
+  * Added initial setup to Artivity Explorer.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Tue, 20 Oct 2015 17:24:00 +0200
+
 artivity-explorer (1.5.1-1semiodesk0) trusty; urgency=low
 
   * Fixed package to include version which links against the new datamodel.

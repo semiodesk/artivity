@@ -45,36 +45,31 @@ namespace ArtivityExplorer.Controls
         private void InitializeModel()
         {
             IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+
             store.LoadOntologySettings();
 
             IModelGroup activities = store.CreateModelGroup();
 
-            if (store.ContainsModel(Models.Agents))
+            if (!store.ContainsModel(Models.Agents))
             {
-                activities.Add(store.GetModel(Models.Agents));
-            }
-            else
-            {
-                Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.Agents);
+                store.CreateModel(Models.Agents);
             }
 
-            if (store.ContainsModel(Models.Activities))
+            activities.Add(store.GetModel(Models.Agents));
+
+            if (!store.ContainsModel(Models.Activities))
             {
-                activities.Add(store.GetModel(Models.Activities));
-            }
-            else
-            {
-                Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.Activities);
+                store.CreateModel(Models.Activities);
             }
 
-            if (store.ContainsModel(Models.WebActivities))
+            activities.Add(store.GetModel(Models.Activities));
+
+            if (!store.ContainsModel(Models.WebActivities))
             {
-                activities.Add(store.GetModel(Models.WebActivities));
+                store.CreateModel(Models.WebActivities);
             }
-            else
-            {
-                Console.WriteLine("ERROR: Could not establish connection to model <{0}>", Models.WebActivities);
-            }
+
+            activities.Add(store.GetModel(Models.WebActivities));
 
             _model = activities;
         }
@@ -143,17 +138,9 @@ namespace ArtivityExplorer.Controls
             _log.Reset();
             _chart.Reset();
 
-            AsyncLoadMethodCaller activities = new AsyncLoadMethodCaller(_chart.LoadActivities);
-            AsyncLoadMethodCaller influences = new AsyncLoadMethodCaller(_chart.LoadActivityInfluences);
-            AsyncLoadMethodCaller log = new AsyncLoadMethodCaller(_log.LoadInfluences);
-
-            IAsyncResult activitiesResult = activities.BeginInvoke(_model, fileUrl, null, null);
-            IAsyncResult influencesResult = influences.BeginInvoke(_model, fileUrl, null, null);
-            IAsyncResult logResult = log.BeginInvoke(_model, fileUrl, null, null);
-
-            activities.EndInvoke(activitiesResult);
-            influences.EndInvoke(influencesResult);
-            log.EndInvoke(logResult);
+            _log.LoadInfluences(_model, fileUrl);
+            _chart.LoadActivities(_model, fileUrl);
+            _chart.LoadActivityInfluences(_model, fileUrl);
 		}
 
         private void HandleClosed(object sender, EventArgs e)

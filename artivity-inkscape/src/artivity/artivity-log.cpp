@@ -61,7 +61,7 @@ namespace Inkscape
             
             _activity->setEndTime(now);
             
-            _log.transmit();
+            transmitQueue();
         }
     }
     
@@ -575,9 +575,11 @@ namespace Inkscape
         
         string url = string("file://") + _document->getURI();
         
-        if(_filePath == "")
+        if(_filePath.empty())
         {
             _filePath = string(_document->getURI());
+            
+            cout << url << endl << flush;
             
             file->setUrl(url.c_str());
             

@@ -1,2 +1,2 @@
 #! /bin/bash
-/usr/bin/mono /usr/lib/artivity/artivity-apid.exe "@"
+/usr/bin/nohup /usr/bin/mono /usr/lib/artivity/artivity-apid.exe "@" &
