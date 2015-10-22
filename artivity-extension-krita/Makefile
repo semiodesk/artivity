@@ -34,4 +34,4 @@ clean:
 	rm -Rf $(BUILD_DIR)
 
 dist: clean
-	tar cvzf $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(APP_DIR) debian Makefile
+	tar cvzf $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(APP_DIR) Makefile

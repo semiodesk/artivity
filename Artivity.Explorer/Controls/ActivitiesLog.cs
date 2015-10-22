@@ -46,7 +46,7 @@ namespace ArtivityExplorer.Controls
             TimeField = new DataField<string>();
 
 			TextCellView timeView = new TextCellView();
-			timeView.MarkupField = TimeField;
+			timeView.TextField = TimeField;
 
 			ListViewColumn timeColumn = new ListViewColumn ("Time", timeView);
 			timeColumn.Alignment = Alignment.End;
@@ -55,7 +55,7 @@ namespace ArtivityExplorer.Controls
 			TypeField = new DataField<string>();
 
 			TextCellView typeView = new TextCellView();
-			typeView.MarkupField = TypeField;
+            typeView.TextField = TypeField;
 
 			ListViewColumn typeColumn = new ListViewColumn ("Event", typeView);
 			typeColumn.Alignment = Alignment.Start;
@@ -64,7 +64,7 @@ namespace ArtivityExplorer.Controls
 			DataField = new DataField<string>();
 
             TextCellView dataView = new TextCellView();
-            dataView.MarkupField = DataField;
+            dataView.TextField = DataField;
 
             ListViewColumn dataColumn = new ListViewColumn ("Details", dataView);
             dataColumn.Alignment = Alignment.Start;
@@ -91,26 +91,13 @@ namespace ArtivityExplorer.Controls
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
 
-                SELECT ?agent ?time ?generation ?generationTime ?generationType ?value ?entity ?entityType WHERE 
+                SELECT ?agent ?time ?activityType ?entity ?entityType ?generation ?generationTime ?value  WHERE 
                 {
-                    ?activity prov:used ?entity ;
+                    ?activity 
                         prov:qualifiedAssociation ?association ;
                         prov:startedAtTime ?time .
 
-                    ?entity a ?entityType .
-
                     ?association prov:agent ?agent .
-
-                    OPTIONAL
-                    {
-                        ?activity prov:generated ?x .
-
-                        ?x prov:qualifiedGeneration ?generation .
-
-                        ?generation rdf:type ?generationType .
-                        ?generation prov:atTime ?generationTime .
-                        ?generation prov:value ?value .
-                    }
 
                     {
                         SELECT ?startTime ?endTime
@@ -122,6 +109,30 @@ namespace ArtivityExplorer.Controls
                             ?file nfo:fileUrl """ + fileUrl + @""" .
                         }
                     }
+
+                    {
+                        ?activity prov:used ?entity .
+                        ?activity prov:generated ?version .
+
+                        ?entity a ?entityType .
+
+                        ?version prov:qualifiedGeneration ?generation .
+
+                        ?generation rdf:type ?activityType .
+                        ?generation prov:atTime ?generationTime .
+
+                        OPTIONAL { ?generation prov:value ?value . }
+                    }
+                    UNION
+                    {
+                        ?activity prov:qualifiedUsage ?usage .
+
+                        ?usage a ?activityType .
+                        ?usage prov:entity ?entity .
+
+                        ?entity a ?entityType .
+                    }
+
 
                     FILTER(?startTime <= ?time && ?time <= ?endTime) .
                 }
@@ -155,16 +166,21 @@ namespace ArtivityExplorer.Controls
                 // Set the formatted date time.
                 Store.SetValue(row, TimeField, time.ToString("HH:mm:ss")); 
 
-                if (!(binding["generationType"] is DBNull))
+                if (!(binding["activityType"] is DBNull))
                 {
-                    Store.SetValue(row, TypeField, "<b>" + ToDisplayString(binding["generationType"].ToString()) + "</b>");
+                    Store.SetValue(row, TypeField, ToDisplayString(binding["activityType"].ToString()));
                 }
                     
                 UriRef entityType = new UriRef(binding["entityType"].ToString());
 
                 if (entityType == nfo.FileDataObject.Uri)
                 {
-                    Store.SetValue(row, DataField, binding["value"].ToString());
+                    string value = binding["value"].ToString();
+
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        Store.SetValue(row, DataField, value);
+                    }
                 }
                 else
                 {

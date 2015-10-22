@@ -141,7 +141,12 @@ namespace Artivity.Api.Http
 
                 if (!_activities.ContainsKey(p.tab))
                 {
+                    Association association = model.CreateResource<Association>();
+                    association.Agent = new SoftwareAgent(new UriRef(p.agent));
+                    association.Commit();
+
                     activity = model.CreateResource<Browse>();
+                    activity.Associations.Add(association);
                     activity.StartTime = p.startTime != null ? (DateTime)p.startTime : DateTime.Now;
                     activity.Commit();
 

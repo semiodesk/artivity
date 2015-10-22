@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Artivity" Database="">
-  <Project Name="inkscape" Path="inkscape/inkscape.project" Active="Yes"/>
-  <Project Name="client" Path="Artivity.Api.Client/client.project" Active="No"/>
-  <Project Name="extension-chrome" Path="Artivity.Extension.Chromium/chromium.project" Active="No"/>
   <Project Name="firefox" Path="Artivity.Extension.Firefox/firefox.project" Active="No"/>
   <Project Name="firefox" Path="Artivity.Extension.Firefox/firefox.project" Active="No"/>
   <Project Name="firefox" Path="Artivity.Extension.Firefox/firefox.project" Active="No"/>
+  <Project Name="artivity-inkscape" Path="artivity-inkscape/artivity-inkscape.project" Active="No"/>
+  <Project Name="artivity-extension-krita" Path="artivity-extension-krita/artivity-extension-krita.project" Active="No"/>
+  <Project Name="libartivity" Path="libartivity/libartivity.project" Active="Yes"/>
+  <Project Name="artivity-extension-chromium" Path="artivity-extension-chromium/artivity-extension-chromium.project" Active="No"/>
+  <Project Name="artivity-extension-firefox" Path="artivity-extension-firefox/artivity-extension-firefox.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
-      <Project Name="inkscape" ConfigName="Debug"/>
-      <Project Name="client" ConfigName="Debug"/>
-      <Project Name="extension-chrome" ConfigName="Debug"/>
-      <Project Name="extension-firefox" ConfigName="Debug"/>
+      <Project Name="artivity-inkscape" ConfigName="Debug"/>
+      <Project Name="artivity-extension-krita" ConfigName="Debug"/>
+      <Project Name="libartivity" ConfigName="Debug"/>
+      <Project Name="artivity-extension-chromium" ConfigName="Debug"/>
+      <Project Name="artivity-extension-firefox" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
-      <Project Name="inkscape" ConfigName="Release"/>
-      <Project Name="client" ConfigName="Release"/>
-      <Project Name="extension-chrome" ConfigName="Debug"/>
-      <Project Name="extension-firefox" ConfigName="Debug"/>
+      <Project Name="artivity-inkscape" ConfigName="Release"/>
+      <Project Name="artivity-extension-krita" ConfigName="Release"/>
+      <Project Name="libartivity" ConfigName="Release"/>
+      <Project Name="artivity-extension-chromium" ConfigName="Release"/>
+      <Project Name="artivity-extension-firefox" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

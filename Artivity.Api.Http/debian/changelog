@@ -1,3 +1,15 @@
+artivity-apid (1.5.9-1semiodesk0) trusty; urgency=low
+
+  * Browser API now propery generated qualified associations. 
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Wed, 21 Oct 2015 12:55:00 +0200
+
+artivity-apid (1.5.8-1semiodesk0) trusty; urgency=low
+
+  * Now properly deamonizing by running in an own thread and listening to CancelKeyPressEvent. 
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Wed, 21 Oct 2015 10:11:00 +0200
+
 artivity-apid (1.5.7-1semiodesk0) trusty; urgency=low
 
   * Fixed directory sperators in app.config.

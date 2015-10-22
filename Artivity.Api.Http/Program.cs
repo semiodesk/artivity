@@ -31,6 +31,7 @@ using CommandLine;
 using Nancy.Hosting.Self;
 using Semiodesk.Trinity;
 using Artivity.Model;
+using System.Threading;
 
 namespace Artivity.Api.Http
 {
@@ -45,39 +46,54 @@ namespace Artivity.Api.Http
             Options options = new Options();
 
             if (!CommandLine.Parser.Default.ParseArguments(args, options))
-                return;
-
-            Console.WriteLine("Artivity Logging Service, Version 1.5.7");
-            Console.WriteLine();
-
-            if (options.Interactive)
             {
-                Console.WriteLine("Press any key to quit.");
-                Console.WriteLine();
+                return;
             }
 
-            InitializeModels(options);
+            Console.WriteLine("Artivity Logging Service, Version 1.5.8");
+            Console.WriteLine();
 
-			using (var host = new NancyHost(new Uri("http://localhost:" + Port)))
-			{
-                try
+            AutoResetEvent wait = new AutoResetEvent(false);
+            AutoResetEvent finalize = new AutoResetEvent(false);
+
+            Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
+            {
+                Logger.LogInfo("Received SIGINT. Shutting down.");
+
+                wait.Set();
+                finalize.WaitOne();
+            };
+
+            Thread t = new Thread(() =>
+            {
+                InitializeModels(options);
+
+                using (var host = new NancyHost(new Uri("http://localhost:" + Port)))
                 {
-    				host.Start();
-
-    				Logger.LogInfo("Started listening on port {0}..", Port);
-
-                    using (var monitor = new FileSystemMonitor())
+                    try
                     {
-                        monitor.Start();
+                        host.Start();
 
-                        Console.ReadLine();
-    				}
+                        Logger.LogInfo("Started listening on port {0}..", Port);
+
+                        using (var monitor = new FileSystemMonitor())
+                        {
+                            monitor.Start();
+
+                            wait.WaitOne();
+                        }
+                    }
+                    finally
+                    {
+                        Logger.LogInfo("Stopped listening on port {0}..", Port);
+                    }
                 }
-                finally
-                {
-                    Logger.LogInfo("Stopped listening on port {0}..", Port);
-                }
-		    }
+
+                finalize.Set();
+            });
+            
+            t.Start();
+            t.Join();
 		}
 
         private static void InitializeModels(Options options)

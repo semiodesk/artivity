@@ -1,26 +1,15 @@
-artivity-extension-krita (1.5.7-1semiodesk1) trusty; urgency=low
+artivity-extension-krita (1.5.6-1semiodesk0) trusty; urgency=low
 
-  * Recompiling package against new version of libartivity.
+  * Recompiling against new version of libartivity.
+  * Fixed broken package Makefile. 
 
- -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 22 Oct 2015 10:41:00 +0200
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Tue, 20 Oct 2015 11:05:00 +0200
 
-artivity-extension-krita (1.5.6-1semiodesk1) trusty; urgency=low
+artivity-extension-krita (1.5.5-1semiodesk0) trusty; urgency=low
 
-  * Recompiling package against new version of libartivity.
+  * Recompiling against new version of libartivity.
 
- -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 21 Oct 2015 10:23:00 +0200
-
-artivity-extension-krita (1.5.5-1semiodesk1) trusty; urgency=low
-
-  * Recompiling package against new version of libartivity.
-
- -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 21 Oct 2015 09:38:00 +0200
-
-artivity-extension-krita (1.5.4-1semiodesk1) trusty; urgency=low
-
-  * Recompiling package against new version of libartivity.
-
- -- Sebastian Faubel <sebastian@semiodesk.com>  Tue, 20 Oct 2015 10:11:00 +0200
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Tue, 20 Oct 2015 11:05:00 +0200
 
 artivity-extension-krita (1.5.4-1semiodesk0) trusty; urgency=low
 

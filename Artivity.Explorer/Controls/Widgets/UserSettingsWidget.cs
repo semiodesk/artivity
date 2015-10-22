@@ -17,11 +17,11 @@ namespace ArtivityExplorer
 
         private Person _user;
 
-        private TextEntry _nameEntry;
+        public TextEntry NameEntry;
 
-        private TextEntry _organizationEntry;
+        public TextEntry OrganizationEntry;
 
-        private TextEntry _emailEntry;
+        public TextEntry EmailEntry;
 
         #endregion
 
@@ -65,6 +65,7 @@ namespace ArtivityExplorer
         private void InitializeComponent()
         {
             Button photoButton = new Button();
+            photoButton.Style = ButtonStyle.Flat;
             photoButton.ImagePosition = ContentPosition.Top | ContentPosition.Left;
             photoButton.ExpandHorizontal = false;
             photoButton.ExpandVertical = false;
@@ -85,31 +86,31 @@ namespace ArtivityExplorer
             Label nameLabel = new Label();
             nameLabel.Text = "Name";
 
-            _nameEntry = new TextEntry();
-            _nameEntry.WidthRequest = 300;
-            _nameEntry.Text = _user.Name;
+            NameEntry = new TextEntry();
+            NameEntry.WidthRequest = 300;
+            NameEntry.Text = _user.Name;
 
             Label organizationLabel = new Label();
             organizationLabel.Text = "Organization";
 
-            _organizationEntry = new TextEntry();
-            _organizationEntry.WidthRequest = 300;
-            _organizationEntry.Text = _user.Organization;
+            OrganizationEntry = new TextEntry();
+            OrganizationEntry.WidthRequest = 300;
+            OrganizationEntry.Text = _user.Organization;
 
             Label emailLabel = new Label();
             emailLabel.Text = "E-Mail";
 
-            _emailEntry = new TextEntry();
-            _emailEntry.Text = _user.EmailAddress;
+            EmailEntry = new TextEntry();
+            EmailEntry.Text = _user.EmailAddress;
 
             VBox column1 = new VBox();
             column1.Spacing = 7;
             column1.PackStart(nameLabel);
-            column1.PackStart(_nameEntry);
+            column1.PackStart(NameEntry);
             column1.PackStart(organizationLabel);
-            column1.PackStart(_organizationEntry);
+            column1.PackStart(OrganizationEntry);
             column1.PackStart(emailLabel);
-            column1.PackStart(_emailEntry);
+            column1.PackStart(EmailEntry);
 
             Margin = 7;
             Spacing = 14;
@@ -136,16 +137,16 @@ namespace ArtivityExplorer
 
         public void Save()
         {
-            if (!string.IsNullOrEmpty(_nameEntry.Text))
+            if (!string.IsNullOrEmpty(NameEntry.Text))
             {
-                _user.Name = _nameEntry.Text;
+                _user.Name = NameEntry.Text;
             }
 
-            _user.Organization = _organizationEntry.Text;
+            _user.Organization = OrganizationEntry.Text;
 
-            if (!string.IsNullOrEmpty(_emailEntry.Text))
+            if (!string.IsNullOrEmpty(EmailEntry.Text))
             {
-                _user.EmailAddress = _emailEntry.Text;
+                _user.EmailAddress = EmailEntry.Text;
             }
 
             _user.Commit();
