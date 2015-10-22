@@ -20,6 +20,8 @@ namespace ArtivityExplorer.Controls
     {
 		#region Members
 
+        private Dictionary<Uri, Agent> _agents = new Dictionary<Uri, Agent>();
+
         private Dictionary<Agent, OxyColor> _palette = new Dictionary<Agent, OxyColor>();
 
         private Dictionary<Agent, LineSeries> _series = new Dictionary<Agent, LineSeries>();
@@ -72,6 +74,8 @@ namespace ArtivityExplorer.Controls
 
             foreach (SoftwareAgent agent in model.GetResources<SoftwareAgent>(query))
             {
+                _agents[agent.Uri] = agent;
+
                 System.Drawing.Color c = System.Drawing.ColorTranslator.FromHtml(agent.ColourCode);
 
                 _palette[agent] = OxyColor.FromArgb(c.A, c.R, c.G, c.B);
@@ -255,7 +259,9 @@ namespace ArtivityExplorer.Controls
 
             foreach (BindingSet binding in result.GetBindings())
             {
-                Agent agent = new Agent(new Uri(binding["agent"].ToString()));
+                UriRef uri = new UriRef(binding["agent"].ToString());
+                    
+                Agent agent = _agents.ContainsKey(uri) ? _agents[uri] : new Agent(uri);
 
                 // We initialize one series per agent.
                 LineSeries series;
