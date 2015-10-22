@@ -1,0 +1,19 @@
+Source: artivity-inkscape
+Section: misc
+Priority: optional
+Maintainer: Sebastian Faubel <sebastian@semiodesk.com>
+Build-Depends: debhelper (>= 9.0.0), autotools-dev, ant, libboost-dev, libstdc++-4.8-dev, libsigc++-2.0-dev, libcairo2-dev, libxml++2.6-dev, libxslt1-dev, libpoppler-dev, libpangomm-1.4-dev, libgtkmm-2.4-dev, libglibmm-2.4-dev, intltool, gnome-common, libgnomevfs2-0, liblcms2-dev, libwpg-dev, libgsl0-dev, libatkmm-1.6-dev, libaspell-dev, libfreetype6-dev, libgc-dev, libgdk-pixbuf2.0-dev, libglibmm-2.4-dev, libgtkspell-dev, libpng12-dev, zlib1g-dev, libpopt-dev, libartivity-dev (>= 0.8), libcurl3-dev
+Standards-Version: 3.9.5
+Homepage: http://www.inkscape.org/
+#Vcs-Git: git://git.debian.org/collab-maint/artivity-inkscape.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/artivity-inkscape.git;a=summary
+
+Package: artivity-inkscape
+Architecture: any
+Conflicts: inkscape
+Suggests: ruby
+Depends: ${shlibs:Depends}, ${misc:Depends}, python:any (>= 2.7.1-0ubuntu2), libaspell15 (>= 0.60.7~20110707), libatkmm-1.6-1 (>= 2.22.1), libcairo2 (>= 1.10.0), libcairomm-1.0-1 (>= 1.6.4), libfontconfig1 (>= 2.9.0), libfreetype6 (>= 2.2.1), libgc1c2 (>= 1:7.2d), libgcc1 (>= 1:4.1.1), libgdk-pixbuf2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.35.9), libglibmm-2.4-1c2a (>= 2.36.2), libgnomevfs2-0 (>= 1:2.17.90), libgomp1 (>= 4.2.1), libgsl0ldbl (>= 1.9), libgtk2.0-0 (>= 2.24.0), libgtkmm-2.4-1c2a (>= 1:2.24.0), libgtkspell0 (>= 2.0.10), liblcms2-2 (>= 2.2+git20110628), libmagick++5 (>= 8:6.7.7.10), libpango-1.0-0 (>= 1.14.0), libpangocairo-1.0-0 (>= 1.14.0), libpangoft2-1.0-0 (>= 1.14.0), libpangomm-1.4-1 (>= 2.27.1), libpng12-0 (>= 1.2.13-4), libpoppler-glib8 (>= 0.18.0), libpoppler44 (>= 0.24.5), libpopt0 (>= 1.14), libsigc++-2.0-0c2a (>= 2.0.2), libstdc++6 (>= 4.6), libwpd-0.9-9, libwpg-0.2-2, libx11-6, libxml2 (>= 2.7.4), libxslt1.1 (>= 1.1.25), zlib1g (>= 1:1.1.4), libartivity (>= 0.8.4), libcurl3
+Description: Vector illustration program; Artivity version.
+ Inkscape is an illustration editor which has everything needed to create professional-quality computer art. You can use it to make diagrams and illustrations, technical drawings, web graphics, clip art, icons and logos. A collection of
+ hands-on tutorials show you how to combine lines, shapes and text of different types and styles to build up a picture. This version has been patched to log data about the creation process of an image into the Zeitgeist event log.
+

@@ -1,0 +1,29 @@
+artivity-inkscape (0.91.14-1semiodesk0) trusty; urgency=low
+
+  * Recompiling package against newest version of libartivity.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 22 October 2015 10:39:00 +0200
+
+artivity-inkscape (0.91.13-1semiodesk0) trusty; urgency=low
+
+  * Recompiling package against newest version of libartivity.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Tue, 20 October 2015 10:22:00 +0200
+
+artivity-inkscape (0.91.12-1semiodesk2) trusty; urgency=low
+
+  * Inkscape using latest version of Artivity C++ API.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 16 October 2015 17:59:00 +0200
+
+artivity-inkscape (0.91.10-1semiodesk2) trusty; urgency=low
+
+  * Inkscape using latest version of Artivity C++ API.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 08 October 2015 14:33:00 +0200
+
+artivity-inkscape (0.91.10-1semiodesk1) trusty; urgency=low
+
+  * Inkscape using Artivity C++ API.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Tue, 06 October 2015 16:38:00 +0200
