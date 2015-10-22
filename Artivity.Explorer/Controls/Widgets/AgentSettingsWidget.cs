@@ -31,81 +31,12 @@ namespace ArtivityExplorer
 
         public AgentSettingsWidget()
         {
-            InitializeModel();
-            InitializeAgents();
             InitializeComponent();
         }
 
         #endregion
 
         #region Methods
-
-        private void InitializeModel()
-        {
-            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
-
-            if (store.ContainsModel(Models.Agents))
-            {
-                _model = store.GetModel(Models.Agents);
-            }
-            else
-            {
-                _model = store.CreateModel(Models.Agents);
-            }
-        }
-
-        private void InitializeAgents()
-        {
-            SetupAgent("application://inkscape.desktop/", "Inkscape", "#EE204E");
-            SetupAgent("application://krita.desktop/", "Krita", "#926EAE");
-            SetupAgent("application://chromium-browser.desktop/", "Chromium Browser", "#1F75FE");
-            SetupAgent("application://firefox-browser.desktop/", "Firefox Browser", "#1F75FE");
-        }
-
-        private void SetupAgent(string uri, string name, string colour)
-        {
-            UriRef agentUri = new UriRef(uri);
-
-            if (!_model.ContainsResource(agentUri))
-            {
-                SoftwareAgent agent = _model.CreateResource<SoftwareAgent>(agentUri);
-                agent.Name = name;
-                agent.IsCaptureEnabled = false;
-                agent.Commit();
-            }
-            else
-            {
-                bool modified = false;
-
-                SoftwareAgent agent = _model.GetResource<SoftwareAgent>(agentUri);
-
-                if(!agent.HasProperty(rdf.type, prov.SoftwareAgent))
-                {
-                    agent.AddProperty(rdf.type, prov.SoftwareAgent);
-
-                    modified = true;
-                }
-
-                if (agent.Name != name)
-                {
-                    agent.Name = name;
-
-                    modified = true;
-                }
-
-                if (string.IsNullOrEmpty(agent.ColourCode))
-                {
-                    agent.ColourCode = colour;
-
-                    modified = true;
-                }
-
-                if (modified)
-                {
-                    agent.Commit();
-                }
-            }
-        }
 
         private void InitializeComponent()
         {
@@ -114,9 +45,12 @@ namespace ArtivityExplorer
             // Initialize the list data.
             _store = new ListStore(_uriField, _enabledField, _nameField, _colourField);
 
-            ResourceQuery query = new ResourceQuery(prov.SoftwareAgent);
+            // Get a refernce to the triple store.
+            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
-            foreach (SoftwareAgent agent in _model.GetResources<SoftwareAgent>(query))
+            _model = store.GetModel(Models.Agents);
+
+            foreach (SoftwareAgent agent in _model.GetResources<SoftwareAgent>())
             {
                 if (agent.Name == "" || agent.ColourCode == null)
                 {

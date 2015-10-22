@@ -9,38 +9,47 @@ namespace ArtivityExplorer
 
         private CheckBox _startLogging;
 
+        private CheckBox _setupDatabase;
+
         public SetupPage(Dialog dialog) : base(dialog) {}
 
         protected override void InitializeComponent()
         {
             base.InitializeComponent();
 
-            Title = "Installing";
+            Title = "Ready";
 
+            Buttons.HorizontalPlacement = WidgetPlacement.Center;
+            Buttons.ExpandHorizontal = false;
             Buttons.BackButton.Visible = false;
             Buttons.NextButton.Visible = false;
             Buttons.OkButton.Visible = false;
             Buttons.OkButton.Sensitive = false;
+            Buttons.OkButton.MinWidth = 120;
             Buttons.CancelButton.Visible = true;
             Buttons.CancelButton.Sensitive = true;
+            Buttons.CancelButton.MinWidth = 120;
 
             Label introText = new Label("Finally we need to active our logging service which enables \nyour applications to track your activities.");
             introText.ExpandVertical = true;
             introText.Ellipsize = EllipsizeMode.None;
             introText.Margin = new WidgetSpacing(0, 0, 0, 28);
 
+            _setupDatabase = new CheckBox();
+            _setupDatabase.Sensitive = false;
+            _setupDatabase.Label = "Setting up the database.";
+
             _enableLogging = new CheckBox();
             _enableLogging.Sensitive = false;
-            _enableLogging.Active = true;
-            _enableLogging.Label = "Enable autostart for logging service.";
+            _enableLogging.Label = "Installing logging service into autostart.";
 
             _startLogging = new CheckBox();
             _startLogging.Sensitive = false;
-            _startLogging.Active = true;
             _startLogging.Label = "Start logging service.";
 
             VBox layout = new VBox();
             layout.PackStart(introText);
+            layout.PackStart(_setupDatabase);
             layout.PackStart(_enableLogging);
             layout.PackStart(_startLogging);
 
@@ -49,6 +58,8 @@ namespace ArtivityExplorer
 
         public void BeginSetup()
         {
+            _setupDatabase.State = SetupHelper.InstallModels() ? CheckBoxState.On : CheckBoxState.Off;
+
             if (!SetupHelper.HasApiDaemonAutostart())
             {
                 _enableLogging.State = SetupHelper.InstallApiDaemonAutostart() ? CheckBoxState.On : CheckBoxState.Off;
@@ -59,6 +70,10 @@ namespace ArtivityExplorer
                 _enableLogging.State = CheckBoxState.On;
                 _startLogging.State = CheckBoxState.On;
             }
+
+            _setupDatabase.Sensitive = _setupDatabase.State == CheckBoxState.On;
+            _enableLogging.Sensitive = _enableLogging.State == CheckBoxState.On;
+            _startLogging.Sensitive = _startLogging.State == CheckBoxState.On;
 
             Buttons.OkButton.Visible = true;
             Buttons.OkButton.Sensitive = true;

@@ -2,6 +2,10 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using Semiodesk.Trinity;
+using Artivity.Model;
+using Artivity.Model.ObjectModel;
+using System.Linq;
 
 namespace ArtivityExplorer
 {
@@ -50,7 +54,7 @@ namespace ArtivityExplorer
 
         public static bool CheckEnvironment()
         {
-            return HasApiDaemonAutostart();
+            return HasApiDaemonAutostart() && HasUserAgent();
         }
 
         public static bool HasApiDaemonAutostart()
@@ -83,6 +87,15 @@ namespace ArtivityExplorer
 
                     Console.WriteLine("Installing Artivity API daemon autostart..");
 
+                    // Make sure that the target directory exists..
+                    string autostartDirectory = Path.GetDirectoryName(desktopTarget);
+
+                    if(!Directory.Exists(autostartDirectory))
+                    {
+                        Directory.CreateDirectory(autostartDirectory);
+                    }
+
+                    // Copy the autostart .desktop file into the config directory for GNOME.
                     File.Copy(desktopSource, desktopTarget);
 
                     return true;
@@ -198,6 +211,175 @@ namespace ArtivityExplorer
         private static void OnProcessOutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             Console.WriteLine(e.Data);
+        }
+
+        public static bool HasModels()
+        {
+            bool result = true;
+
+            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+
+            result &= store.ContainsModel(Models.Agents) && !store.GetModel(Models.Agents).IsEmpty;
+            result &= store.ContainsModel(Models.Activities);
+            result &= store.ContainsModel(Models.WebActivities);
+
+            return result;
+        }
+
+        public static bool InstallModels()
+        {
+            try
+            {
+                Console.WriteLine("Installing database models..");
+
+                IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+
+                IModel agents;
+
+                if (!store.ContainsModel(Models.Agents))
+                {
+                    agents = store.CreateModel(Models.Agents);
+                }
+                else
+                {
+                    agents = store.GetModel(Models.Agents);
+                }
+                    
+                InstallAgent(agents, "application://inkscape.desktop/", "Inkscape", "#EE204E", true);
+                InstallAgent(agents, "application://krita.desktop/", "Krita", "#926EAE", true);
+                InstallAgent(agents, "application://chromium-browser.desktop/", "Chromium Browser", "#1F75FE");
+                InstallAgent(agents, "application://firefox-browser.desktop/", "Firefox Browser", "#1F75FE");
+
+                if(agents.IsEmpty)
+                {
+                    return false;
+                }
+
+                IModel activities;
+
+                if (!store.ContainsModel(Models.Activities))
+                {
+                    activities = store.CreateModel(Models.Activities);
+                }
+                else
+                {
+                    activities = store.GetModel(Models.Activities);
+                }
+
+                IModel webActivities;
+
+                if (!store.ContainsModel(Models.WebActivities))
+                {
+                    webActivities = store.CreateModel(Models.WebActivities);
+                }
+                else
+                {
+                    webActivities = store.GetModel(Models.WebActivities);
+                }
+
+                // Load the ontologies into the database for inferencing support.
+                store.LoadOntologySettings();
+
+                return agents != null && activities != null && webActivities != null;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+
+                return false;
+            }
+        }
+
+        public static void InstallAgent(IModel model, string uri, string name, string colour, bool captureEnabled = false)
+        {
+            Console.WriteLine("Installing agent {0}..", name);
+
+            UriRef agentUri = new UriRef(uri);
+
+            if (!model.ContainsResource(agentUri))
+            {
+                SoftwareAgent agent = model.CreateResource<SoftwareAgent>(agentUri);
+                agent.Name = name;
+                agent.IsCaptureEnabled = captureEnabled;
+                agent.ColourCode = colour;
+                agent.Commit();
+            }
+            else
+            {
+                bool modified = false;
+
+                SoftwareAgent agent = model.GetResource<SoftwareAgent>(agentUri);
+
+                if(!agent.HasProperty(rdf.type, prov.SoftwareAgent))
+                {
+                    agent.AddProperty(rdf.type, prov.SoftwareAgent);
+
+                    modified = true;
+                }
+
+                if (agent.Name != name)
+                {
+                    agent.Name = name;
+
+                    modified = true;
+                }
+
+                if (string.IsNullOrEmpty(agent.ColourCode))
+                {
+                    agent.ColourCode = colour;
+
+                    modified = true;
+                }
+
+                if (modified)
+                {
+                    agent.Commit();
+                }
+            }
+        }
+
+        public static bool UninstallModels()
+        {
+            try
+            {
+                Console.WriteLine("Uninstalling database models..");
+
+                IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+
+                if (store.ContainsModel(Models.Agents))
+                {
+                    store.RemoveModel(Models.Agents);
+                }
+
+                if (store.ContainsModel(Models.Activities))
+                {
+                    store.RemoveModel(Models.Activities);
+                }
+
+                if (store.ContainsModel(Models.WebActivities))
+                {
+                    store.RemoveModel(Models.WebActivities);
+                }
+
+                return true;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+
+                return false;
+            }
+        }
+
+        public static bool HasUserAgent()
+        {
+            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+
+            IModel agents = store.GetModel(Models.Agents);
+
+            Person user = agents.GetResources<Person>().FirstOrDefault();
+
+            return user != null && user.EmailAddress != null;
         }
 
         #endregion

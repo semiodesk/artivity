@@ -48,6 +48,30 @@ namespace ArtivityExplorer
         }
 
         #endregion
+
+        #region Methods
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            if (OkButton.Visible && OkButton.Sensitive)
+            {
+                OkButton.SetFocus();
+            }
+            else if (NextButton.Visible && NextButton.Sensitive)
+            {
+                NextButton.SetFocus();
+            }
+            else if (BackButton.Visible && BackButton.Sensitive)
+            {
+                BackButton.SetFocus();
+            }
+            else
+            {
+                CancelButton.SetFocus();
+            }
+        }
+
+        #endregion
     }
 }
 

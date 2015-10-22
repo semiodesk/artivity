@@ -17,6 +17,8 @@ namespace ArtivityExplorer
 
             Title = "Welcome";
 
+            Buttons.BackButton.Visible = false;
+
             Label introText = new Label("This is the first time you start Artivity. Before you can start \nusing the app, we need you to set up your user account.");
             introText.ExpandVertical = true;
             introText.Ellipsize = EllipsizeMode.None;
