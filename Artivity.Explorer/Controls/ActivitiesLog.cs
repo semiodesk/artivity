@@ -91,7 +91,7 @@ namespace ArtivityExplorer.Controls
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
 
-                SELECT ?agent ?influenceTime ?influenceType ?entityType ?value  WHERE 
+                SELECT ?agent ?influenceTime ?influenceType ?entity ?entityType ?value  WHERE 
                 {
                     ?activity prov:qualifiedAssociation ?association .
 
@@ -99,17 +99,17 @@ namespace ArtivityExplorer.Controls
 
                     {
                         ?activity prov:used ?file ;
-                                        prov:generated ?version .
+                            prov:generated ?entity .
 
-                                ?file nfo:fileUrl """ + fileUrl + @""" .
+                        ?file nfo:fileUrl """ + fileUrl + @""" .
 
-                                ?version a ?entityType ;
+                        ?entity a ?entityType ;
                             prov:qualifiedGeneration ?generation .
 
-                                ?generation a ?influenceType ;
+                        ?generation a ?influenceType ;
                             prov:atTime ?influenceTime .
 
-                                OPTIONAL { ?generation prov:value ?value . }
+                        OPTIONAL { ?generation prov:value ?value . }
                     }
                     UNION
                     {
@@ -117,7 +117,7 @@ namespace ArtivityExplorer.Controls
                                     prov:startedAtTime ?startTime ;
                                     prov:endedAtTime ?endTime .
 
-                                ?file nfo:fileUrl """ + fileUrl + @""" .
+                        ?file nfo:fileUrl """ + fileUrl + @""" .
 
                         ?activity prov:startedAtTime ?time ;
                             prov:qualifiedUsage ?usage .
@@ -128,7 +128,7 @@ namespace ArtivityExplorer.Controls
 
                         ?entity a ?entityType .
 
-                            FILTER(?startTime <= ?time && ?time <= ?endTime) .
+                        FILTER(?startTime <= ?time && ?time <= ?endTime) .
                     }
                 }
                 ORDER BY DESC(?influenceTime)";
@@ -163,10 +163,7 @@ namespace ArtivityExplorer.Controls
                 {
                     string value = binding["value"].ToString();
 
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        Store.SetValue(row, DataField, value);
-                    }
+                    Store.SetValue(row, DataField, value);
                 }
                 else
                 {
