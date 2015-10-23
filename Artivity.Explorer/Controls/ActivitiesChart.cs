@@ -203,11 +203,11 @@ namespace ArtivityExplorer.Controls
                         ?activity prov:used ?file ;
                                         prov:generated ?version .
 
-                                ?file nfo:fileUrl """ + fileUrl + @""" .
+                        ?file nfo:fileUrl """ + fileUrl + @""" .
 
-                                ?version prov:qualifiedGeneration ?generation .
+                        ?version prov:qualifiedGeneration ?generation .
 
-                                ?generation prov:atTime ?influenceTime .
+                        ?generation prov:atTime ?influenceTime .
                     }
                     UNION
                     {
@@ -215,14 +215,14 @@ namespace ArtivityExplorer.Controls
                                     prov:startedAtTime ?startTime ;
                                     prov:endedAtTime ?endTime .
 
-                                ?file nfo:fileUrl """ + fileUrl + @""" .
+                        ?file nfo:fileUrl """ + fileUrl + @""" .
 
                         ?activity prov:startedAtTime ?time ;
                             prov:qualifiedUsage ?usage .
 
                         ?usage prov:atTime ?influenceTime .
 
-                            FILTER(?startTime <= ?time && ?time <= ?endTime) .
+                        FILTER(?startTime <= ?time && ?time <= ?endTime) .
                     }
                 }
                 ORDER BY DESC(?influenceTime)";
@@ -249,14 +249,13 @@ namespace ArtivityExplorer.Controls
             series.CanTrackerInterpolatePoints = true;
             series.Selectable = true;
             series.SelectionMode = OxyPlot.SelectionMode.Single;
-            //series.Smooth = true;
 
             return series;
         }
             
         private void CreateSeriesPoints(ISparqlQueryResult result)
         {
-            DateTime previousTime = DateTime.MinValue;
+            DateTime previousTime;
 
             foreach (BindingSet binding in result.GetBindings())
             {
@@ -274,10 +273,14 @@ namespace ArtivityExplorer.Controls
                     Model.Series.Add(series);
 
                     _series[agent] = series;
+
+                    previousTime = DateTime.MinValue;
                 }
                 else
                 {
                     series = _series[agent];
+
+                    previousTime = DateTimeAxis.ToDateTime(series.Points.Last().X);
                 }
 
                 DateTime currentTime = (DateTime)binding["influenceTime"];
