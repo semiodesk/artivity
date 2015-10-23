@@ -195,37 +195,35 @@ namespace ArtivityExplorer.Controls
 
                 SELECT ?agent ?influenceTime WHERE 
                 {
-                    ?activity prov:qualifiedAssociation ?association ;
-                        prov:startedAtTime ?time .
+                    ?activity prov:qualifiedAssociation ?association .
 
                     ?association prov:agent ?agent .
 
                     {
-                        SELECT ?startTime ?endTime
-                        {
-                            ?activity prov:used ?file;
-                                prov:startedAtTime ?startTime ;
-                                prov:endedAtTime ?endTime .
+                        ?activity prov:used ?file ;
+                                        prov:generated ?version .
 
-                            ?entity nfo:fileUrl """ + fileUrl + @""" .
-                        }
-                    }
+                                ?file nfo:fileUrl """ + fileUrl + @""" .
 
-                    {
-                        ?activity prov:generated ?version .
+                                ?version prov:qualifiedGeneration ?generation .
 
-                        ?version prov:qualifiedGeneration ?generation .
-
-                        ?generation prov:atTime ?influenceTime .
+                                ?generation prov:atTime ?influenceTime .
                     }
                     UNION
                     {
-                        ?activity prov:qualifiedUsage ?usage .
+                        ?editing prov:used ?file;
+                                    prov:startedAtTime ?startTime ;
+                                    prov:endedAtTime ?endTime .
+
+                                ?file nfo:fileUrl """ + fileUrl + @""" .
+
+                        ?activity prov:startedAtTime ?time ;
+                            prov:qualifiedUsage ?usage .
 
                         ?usage prov:atTime ?influenceTime .
-                    }
 
-                    FILTER(?startTime <= ?time && ?time <= ?endTime) .
+                            FILTER(?startTime <= ?time && ?time <= ?endTime) .
+                    }
                 }
                 ORDER BY DESC(?influenceTime)";
 
@@ -251,7 +249,7 @@ namespace ArtivityExplorer.Controls
             series.CanTrackerInterpolatePoints = true;
             series.Selectable = true;
             series.SelectionMode = OxyPlot.SelectionMode.Single;
-            series.Smooth = true;
+            //series.Smooth = true;
 
             return series;
         }
