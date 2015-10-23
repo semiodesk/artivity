@@ -91,51 +91,45 @@ namespace ArtivityExplorer.Controls
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
 
-                SELECT ?agent ?influenceTime ?influenceType ?entity ?entityType ?value  WHERE 
+                SELECT ?agent ?influenceTime ?influenceType ?entityType ?value  WHERE 
                 {
-                    ?activity 
-                        prov:qualifiedAssociation ?association ;
-                        prov:startedAtTime ?time .
+                    ?activity prov:qualifiedAssociation ?association .
 
                     ?association prov:agent ?agent .
 
                     {
-                        SELECT ?startTime ?endTime
-                        {
-                            ?a prov:used ?file;
-                                prov:startedAtTime ?startTime ;
-                                prov:endedAtTime ?endTime .
+                        ?activity prov:used ?file ;
+                                        prov:generated ?version .
 
-                            ?file nfo:fileUrl """ + fileUrl + @""" .
-                        }
-                    }
+                                ?file nfo:fileUrl """ + fileUrl + @""" .
 
-                    {
-                        ?activity prov:used ?entity .
-                        ?activity prov:generated ?version .
+                                ?version a ?entityType ;
+                            prov:qualifiedGeneration ?generation .
 
-                        ?entity a ?entityType .
+                                ?generation a ?influenceType ;
+                            prov:atTime ?influenceTime .
 
-                        ?version prov:qualifiedGeneration ?generation .
-
-                        ?generation a ?influenceType .
-                        ?generation prov:atTime ?influenceTime .
-
-                        OPTIONAL { ?generation prov:value ?value . }
+                                OPTIONAL { ?generation prov:value ?value . }
                     }
                     UNION
                     {
-                        ?activity prov:qualifiedUsage ?usage .
+                        ?editing prov:used ?file;
+                                    prov:startedAtTime ?startTime ;
+                                    prov:endedAtTime ?endTime .
 
-                        ?usage a ?influenceType .
-                        ?usage prov:entity ?entity .
-                        ?usage prov:atTime ?influenceTime .
+                                ?file nfo:fileUrl """ + fileUrl + @""" .
+
+                        ?activity prov:startedAtTime ?time ;
+                            prov:qualifiedUsage ?usage .
+
+                        ?usage a ?influenceType ;
+                            prov:entity ?entity ;
+                            prov:atTime ?influenceTime .
 
                         ?entity a ?entityType .
+
+                            FILTER(?startTime <= ?time && ?time <= ?endTime) .
                     }
-
-
-                    FILTER(?startTime <= ?time && ?time <= ?endTime) .
                 }
                 ORDER BY DESC(?influenceTime)";
 
