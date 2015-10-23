@@ -159,8 +159,6 @@ namespace ArtivityExplorer.Controls
                   ?association prov:agent ?agent .
 
                   ?entity nfo:fileUrl """ + fileUrl + @""" .
-
-                  FILTER(?startTime != ?endTime)
                 }
                 ORDER BY DESC(?startTime)";
 
@@ -195,21 +193,12 @@ namespace ArtivityExplorer.Controls
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
 
-                SELECT ?agent ?time ?generationTime WHERE 
+                SELECT ?agent ?influenceTime WHERE 
                 {
                     ?activity prov:qualifiedAssociation ?association ;
                         prov:startedAtTime ?time .
 
                     ?association prov:agent ?agent .
-
-                    OPTIONAL
-                    {
-                        ?activity prov:generated ?version .
-
-                        ?version prov:qualifiedGeneration ?generation .
-
-                        ?generation prov:atTime ?generationTime .
-                    }
 
                     {
                         SELECT ?startTime ?endTime
@@ -218,13 +207,27 @@ namespace ArtivityExplorer.Controls
                                 prov:startedAtTime ?startTime ;
                                 prov:endedAtTime ?endTime .
 
-                            ?file nfo:fileUrl """ + fileUrl + @""" .
+                            ?entity nfo:fileUrl """ + fileUrl + @""" .
                         }
+                    }
+
+                    {
+                        ?activity prov:generated ?version .
+
+                        ?version prov:qualifiedGeneration ?generation .
+
+                        ?generation prov:atTime ?influenceTime .
+                    }
+                    UNION
+                    {
+                        ?activity prov:qualifiedUsage ?usage .
+
+                        ?usage prov:atTime ?influenceTime .
                     }
 
                     FILTER(?startTime <= ?time && ?time <= ?endTime) .
                 }
-                ORDER BY DESC(?time)";
+                ORDER BY DESC(?influenceTime)";
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query, true);
@@ -239,8 +242,8 @@ namespace ArtivityExplorer.Controls
             LineSeries series = new LineSeries();
             series.Title = agent.Name;
             series.Color = color;
-            series.StrokeThickness = 2;
-            series.MarkerSize = 4;
+            series.StrokeThickness = 1.5;
+            series.MarkerSize = 3;
             series.MarkerType = MarkerType.Circle;
             series.MarkerFill = color;
             series.MarkerStroke = OxyColor.FromRgb(49, 55, 57);
@@ -248,7 +251,7 @@ namespace ArtivityExplorer.Controls
             series.CanTrackerInterpolatePoints = true;
             series.Selectable = true;
             series.SelectionMode = OxyPlot.SelectionMode.Single;
-            //series.Smooth = true;
+            series.Smooth = true;
 
             return series;
         }
@@ -279,16 +282,7 @@ namespace ArtivityExplorer.Controls
                     series = _series[agent];
                 }
 
-                DateTime currentTime;
-
-                if(binding["generationTime"] is DBNull)
-                {
-                    currentTime = (DateTime)binding["time"];
-                }
-                else
-                {
-                    currentTime = (DateTime)binding["generationTime"];
-                }
+                DateTime currentTime = (DateTime)binding["influenceTime"];
 
                 currentTime = currentTime.RoundToMinute();
 

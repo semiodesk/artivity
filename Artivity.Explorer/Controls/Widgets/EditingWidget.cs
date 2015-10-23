@@ -97,35 +97,116 @@ namespace ArtivityExplorer.Controls
 		{
             string fileUrl = file.StartsWith("file://") ? file : "file://" + file;
 
-            ResourceQuery entity = new ResourceQuery();
-            entity.Where(nfo.fileUrl, fileUrl);
-
-			ResourceQuery sessions = new ResourceQuery(prov.Activity);
-            sessions.Where(prov.used, entity);
-
-			ResourceQuery updates = new ResourceQuery(art.Edit);
-			ResourceQuery undos = new ResourceQuery(art.Undo);
-			ResourceQuery redos = new ResourceQuery(art.Redo);
-
-			double sessionCount = model.ExecuteQuery(sessions, true).Count();
-			double updateCount = model.ExecuteQuery(updates).Count();
-			double undoCount = model.ExecuteQuery(undos).Count();
-			double redoCount = model.ExecuteQuery(redos).Count();
+            double sessionCount = GetSessionCount(model, fileUrl);
+            double stepCount = GetStepCount(model, fileUrl);
+            double undoCount = GetUndoCount(model, fileUrl);
+            double redoCount = GetRedoCount(model, fileUrl);
 
 			_sessionCountLabel.Text = sessionCount.ToString();
-			_updateCountLabel.Text = updateCount.ToString();
+			_updateCountLabel.Text = stepCount.ToString();
 			_undoCountLabel.Text = undoCount.ToString();
 			_redoCountLabel.Text = redoCount.ToString();
 
-			if (updateCount > 0)
+			if (stepCount > 0)
 			{
-				_confidenceValueLabel.Text = Math.Round((updateCount - undoCount + redoCount) / updateCount, 2).ToString();
+				_confidenceValueLabel.Text = Math.Round((stepCount - undoCount + redoCount) / stepCount, 2).ToString();
 			}
 			else
 			{
 				_confidenceValueLabel.Text = "0";
 			}
 		}
+
+        private int GetSessionCount(IModel model, string fileUrl)
+        {
+            string queryString = @"PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+
+                select count(distinct ?activity) as ?activities where
+                {
+                    ?activity prov:used ?file .
+
+                    ?file nfo:fileUrl """ + fileUrl + @""" .
+                }";
+
+            SparqlQuery query = new SparqlQuery(queryString);
+
+            IEnumerable<BindingSet> bindings = model.ExecuteQuery(query).GetBindings();
+
+            return bindings.Any() ? (int)bindings.First()["activities"] : 0;
+        }
+
+        private int GetStepCount(IModel model, string fileUrl)
+        {
+            string queryString = @"PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+
+                select count(distinct ?version) as ?steps where
+                {
+                    ?activity prov:used ?file .
+                    ?activity prov:generated ?version .
+
+                    ?file nfo:fileUrl """ + fileUrl + @""" .
+
+                    ?version prov:qualifiedGeneration ?generation .
+                }";
+
+            SparqlQuery query = new SparqlQuery(queryString);
+
+            IEnumerable<BindingSet> bindings = model.ExecuteQuery(query).GetBindings();
+
+            return bindings.Any() ? (int)bindings.First()["steps"] : 0;
+        }
+
+        private int GetUndoCount(IModel model, string fileUrl)
+        {
+            string queryString = @"PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX art: <http://semiodesk.com/artivity/1.0/>
+
+                select count(distinct ?version) as ?undos where
+                {
+                    ?activity prov:used ?file .
+                    ?activity prov:generated ?version .
+
+                    ?file nfo:fileUrl """ + fileUrl + @""" .
+
+                    ?version prov:qualifiedGeneration ?generation .
+
+                    ?generation a art:Undo .
+                }";
+
+            SparqlQuery query = new SparqlQuery(queryString);
+
+            IEnumerable<BindingSet> bindings = model.ExecuteQuery(query).GetBindings();
+
+            return bindings.Any() ? (int)bindings.First()["undos"] : 0;
+        }
+
+        private int GetRedoCount(IModel model, string fileUrl)
+        {
+            string queryString = @"PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX art: <http://semiodesk.com/artivity/1.0/>
+
+                select count(distinct ?version) as ?redos where
+                {
+                    ?activity prov:used ?file .
+                    ?activity prov:generated ?version .
+
+                    ?file nfo:fileUrl """ + fileUrl + @""" .
+
+                    ?version prov:qualifiedGeneration ?generation .
+
+                    ?generation a art:Redo .
+                }";
+
+            SparqlQuery query = new SparqlQuery(queryString);
+
+            IEnumerable<BindingSet> bindings = model.ExecuteQuery(query).GetBindings();
+
+            return bindings.Any() ? (int)bindings.First()["redos"] : 0;
+        }
 
         #endregion
     }
