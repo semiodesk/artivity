@@ -91,7 +91,7 @@ namespace ArtivityExplorer.Controls
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
 
-                SELECT ?agent ?time ?activityType ?entity ?entityType ?generation ?generationTime ?value  WHERE 
+                SELECT ?agent ?influenceTime ?influenceType ?entity ?entityType ?value  WHERE 
                 {
                     ?activity 
                         prov:qualifiedAssociation ?association ;
@@ -102,7 +102,7 @@ namespace ArtivityExplorer.Controls
                     {
                         SELECT ?startTime ?endTime
                         {
-                            ?activity prov:used ?file;
+                            ?a prov:used ?file;
                                 prov:startedAtTime ?startTime ;
                                 prov:endedAtTime ?endTime .
 
@@ -118,8 +118,8 @@ namespace ArtivityExplorer.Controls
 
                         ?version prov:qualifiedGeneration ?generation .
 
-                        ?generation rdf:type ?activityType .
-                        ?generation prov:atTime ?generationTime .
+                        ?generation a ?influenceType .
+                        ?generation prov:atTime ?influenceTime .
 
                         OPTIONAL { ?generation prov:value ?value . }
                     }
@@ -127,8 +127,9 @@ namespace ArtivityExplorer.Controls
                     {
                         ?activity prov:qualifiedUsage ?usage .
 
-                        ?usage a ?activityType .
+                        ?usage a ?influenceType .
                         ?usage prov:entity ?entity .
+                        ?usage prov:atTime ?influenceTime .
 
                         ?entity a ?entityType .
                     }
@@ -136,7 +137,7 @@ namespace ArtivityExplorer.Controls
 
                     FILTER(?startTime <= ?time && ?time <= ?endTime) .
                 }
-                ORDER BY DESC(?time)";
+                ORDER BY DESC(?influenceTime)";
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);
@@ -152,23 +153,14 @@ namespace ArtivityExplorer.Controls
 
                 Store.SetValue(row, AgentField, binding["agent"].ToString());
 
-                DateTime time;
-
-                if(binding["generationTime"] is DBNull)
-                {
-                    time = (DateTime)binding["time"];
-                }
-                else
-                {
-                    time = (DateTime)binding["generationTime"];
-                }
+                DateTime time = (DateTime)binding["influenceTime"];
 
                 // Set the formatted date time.
                 Store.SetValue(row, TimeField, time.ToString("HH:mm:ss")); 
 
-                if (!(binding["activityType"] is DBNull))
+                if (!(binding["influenceType"] is DBNull))
                 {
-                    Store.SetValue(row, TypeField, ToDisplayString(binding["activityType"].ToString()));
+                    Store.SetValue(row, TypeField, ToDisplayString(binding["influenceType"].ToString()));
                 }
                     
                 UriRef entityType = new UriRef(binding["entityType"].ToString());
