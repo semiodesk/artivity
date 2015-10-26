@@ -35,7 +35,6 @@
   <ItemGroup>
     <Compile Include="Controls\ActivitiesChart.cs" />
     <Compile Include="Controls\ActivitiesLog.cs" />
-    <Compile Include="Controls\MainMenu.cs" />
     <Compile Include="Controls\MainWindow.cs" />
     <Compile Include="Controls\StatsPanel.cs" />
     <Compile Include="Controls\StatusBar.cs" />
@@ -47,22 +46,27 @@
     <Compile Include="Parsers\SvgStats.cs" />
     <Compile Include="Parsers\SvgStatsParser.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Controls\Widgets\UserSettingsWidget.cs" />
     <Compile Include="Controls\Widgets\UserButton.cs" />
     <Compile Include="Controls\HeaderMenu.cs" />
     <Compile Include="Controls\Widgets\FileButton.cs" />
-    <Compile Include="Helpers\ActivityLoader.cs" />
-    <Compile Include="Controls\Widgets\AgentSettingsWidget.cs" />
     <Compile Include="Controls\Widgets\ExportButton.cs" />
-    <Compile Include="Helpers\SetupHelper.cs" />
     <Compile Include="Dialogs\SettingsDialog.cs" />
     <Compile Include="Dialogs\SetupDialog.cs" />
     <Compile Include="Dialogs\ExportDialog.cs" />
-    <Compile Include="Controls\Widgets\DialogButtons.cs" />
-    <Compile Include="Controls\Widgets\DialogNavigationButtons.cs" />
     <Compile Include="Controls\DialogPage.cs" />
     <Compile Include="Dialogs\Pages\WelcomePage.cs" />
     <Compile Include="Dialogs\Pages\SetupPage.cs" />
+    <Compile Include="Setup\Setup.cs" />
+    <Compile Include="Controls\DialogButtons.cs" />
+    <Compile Include="Controls\DialogNavigationButtons.cs" />
+    <Compile Include="Controls\UserSettingsControl.cs" />
+    <Compile Include="Controls\AgentSettingsControl.cs" />
+    <Compile Include="Controls\TabControl.cs" />
+    <Compile Include="Controls\Journal.cs" />
+    <Compile Include="Controls\FileSelectionEventArgs.cs" />
+    <Compile Include="Extensions\ListViewExtensions.cs" />
+    <Compile Include="Controls\FileView.cs" />
+    <Compile Include="Controls\FileSelectionEventHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -76,6 +80,9 @@
       <LogicalName>picture</LogicalName>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\Journal.png">
+      <LogicalName>journal</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xwt.Gtk">
@@ -134,9 +141,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Helpers\" />
     <Folder Include="Dialogs\" />
     <Folder Include="Dialogs\Pages\" />
+    <Folder Include="Setup\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Artivity.Api.Model\Artivity.Api.Model.csproj">

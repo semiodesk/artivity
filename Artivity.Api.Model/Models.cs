@@ -26,15 +26,74 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
+using Semiodesk.Trinity;
 
 namespace Artivity.Model
 {
 	public static class Models
 	{
-		public static readonly Uri Agents = new Uri("http://localhost:8890/artivity/1.0/agents");
+        #region Members
 
-		public static readonly Uri Activities = new Uri("http://localhost:8890/artivity/1.0/activities");
+        public static readonly string DefaultStore = "virt0";
 
-		public static readonly Uri WebActivities = new Uri("http://localhost:8890/artivity/1.0/activities/web");
+        public static readonly Uri Agents = new Uri("http://localhost:8890/artivity/1.0/agents");
+
+        public static readonly Uri Activities = new Uri("http://localhost:8890/artivity/1.0/activities");
+
+        public static readonly Uri WebActivities = new Uri("http://localhost:8890/artivity/1.0/activities/web");
+
+        #endregion
+
+        #region Methods
+
+        private static IModel GetModel(IStore store, Uri uri)
+        {
+            if(store == null)
+            {
+                store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
+            }
+
+            return store.GetModel(uri);
+        }
+
+        public static IModelGroup GetAll()
+        {
+            IStore store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
+
+            IModelGroup result = store.CreateModelGroup();
+            result.Add(GetAgents(store));
+            result.Add(GetActivities(store));
+            result.Add(GetWebActivities(store));
+
+            return result;
+        }
+
+        public static IModel GetAllActivities()
+        {
+            IStore store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
+
+            IModelGroup result = store.CreateModelGroup();
+            result.Add(GetActivities(store));
+            result.Add(GetWebActivities(store));
+
+            return result;
+        }
+
+        public static IModel GetAgents(IStore store = null)
+        {
+            return GetModel(store, Agents);
+        }
+
+        public static IModel GetActivities(IStore store = null)
+        {
+            return GetModel(store, Activities);
+        }
+
+        public static IModel GetWebActivities(IStore store = null)
+        {
+            return GetModel(store, WebActivities);
+        }
+
+        #endregion
 	}
 }

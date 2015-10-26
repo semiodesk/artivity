@@ -93,9 +93,9 @@ namespace Artivity.Api.Http
 
                 SELECT DISTINCT ?uri WHERE { ?v prov:specializationOf ?uri . ?uri nfo:fileUrl """ + url + "\" . } LIMIT 1";
 
-            SparqlQuery query = new SparqlQuery(queryString);
+            IModel model = Models.GetActivities();
 
-            IModel model = GetModel(Models.Activities);
+            SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);
 
             if (result.GetBindings().Any())
@@ -126,9 +126,9 @@ namespace Artivity.Api.Http
 
                 SELECT DISTINCT ?uri WHERE { ?v prov:specializationOf ?f . ?f nfo:fileUrl """ + url + "\" . ?f art:canvas ?uri . } LIMIT 1";
 
-            SparqlQuery query = new SparqlQuery(queryString);
+            IModel model = Models.GetActivities();
 
-            IModel model = GetModel(Models.Activities);
+            SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);
 
             if (result.GetBindings().Any())
@@ -159,9 +159,9 @@ namespace Artivity.Api.Http
 
                 SELECT DISTINCT ?uri WHERE { ?uri prov:specializationOf ?f . ?f nfo:fileUrl """ + url + "\" . ?uri prov:qualifiedGeneration ?g . ?g prov:atTime ?time . } ORDER BY DESC(?time) LIMIT 1";
 
-            SparqlQuery query = new SparqlQuery(queryString);
+            IModel model = Models.GetActivities();
 
-            IModel model = GetModel(Models.Activities);
+            SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);
 
             if (result.GetBindings().Any())

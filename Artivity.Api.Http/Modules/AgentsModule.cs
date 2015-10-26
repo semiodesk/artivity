@@ -80,7 +80,7 @@ namespace Artivity.Api.Http
 
 		protected Response GetAgents()
 		{
-			IModel model = GetModel(Models.Agents);
+            IModel model = Models.GetAgents();
 
 			List<AgentParameters> agents = new List<AgentParameters>();
 
@@ -106,7 +106,7 @@ namespace Artivity.Api.Http
 				return Response.AsJson(p);
 			}
 
-			IModel model = GetModel(Models.Agents);
+            IModel model = Models.GetAgents();
 
 			SoftwareAgent agent = null;
 			Uri agentUri = new Uri(p.agent);
@@ -136,7 +136,7 @@ namespace Artivity.Api.Http
 				return Response.AsJson(new AgentParameters() { agent = p.agent, enabled = false });
 			}
 
-			IModel model = GetModel(Models.Agents);
+            IModel model = Models.GetAgents();
 
             SoftwareAgent agent = null;
 			Uri agentUri = new Uri(p.agent);

@@ -58,12 +58,12 @@ namespace ArtivityExplorer
 
         public void BeginSetup()
         {
-            _setupDatabase.State = SetupHelper.InstallModels() ? CheckBoxState.On : CheckBoxState.Off;
+            _setupDatabase.State = Setup.InstallModels() ? CheckBoxState.On : CheckBoxState.Off;
 
-            if (!SetupHelper.HasApiDaemonAutostart())
+            if (!Setup.HasApiDaemonAutostart())
             {
-                _enableLogging.State = SetupHelper.InstallApiDaemonAutostart() ? CheckBoxState.On : CheckBoxState.Off;
-                _startLogging.State = SetupHelper.TryStartApiDaemon() ? CheckBoxState.On : CheckBoxState.Off;
+                _enableLogging.State = Setup.InstallApiDaemonAutostart() ? CheckBoxState.On : CheckBoxState.Off;
+                _startLogging.State = Setup.TryStartApiDaemon() ? CheckBoxState.On : CheckBoxState.Off;
             }
             else
             {

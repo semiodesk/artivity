@@ -1,3 +1,11 @@
+artivity-inkscape (0.91.15-1semiodesk0) trusty; urgency=low
+
+  * Fixed missing undo and redo events.
+  * Added support for logging save events.
+  * Added description to events.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 23 October 2015 15:28:00 +0200
+
 artivity-inkscape (0.91.14-1semiodesk0) trusty; urgency=low
 
   * Recompiling package against newest version of libartivity.

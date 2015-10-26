@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Artivity" Database="">
-  <Project Name="firefox" Path="Artivity.Extension.Firefox/firefox.project" Active="No"/>
-  <Project Name="firefox" Path="Artivity.Extension.Firefox/firefox.project" Active="No"/>
-  <Project Name="firefox" Path="Artivity.Extension.Firefox/firefox.project" Active="No"/>
-  <Project Name="artivity-inkscape" Path="artivity-inkscape/artivity-inkscape.project" Active="No"/>
+  <Project Name="artivity-inkscape" Path="artivity-inkscape/artivity-inkscape.project" Active="Yes"/>
   <Project Name="artivity-extension-krita" Path="artivity-extension-krita/artivity-extension-krita.project" Active="No"/>
-  <Project Name="libartivity" Path="libartivity/libartivity.project" Active="Yes"/>
+  <Project Name="libartivity" Path="libartivity/libartivity.project" Active="No"/>
   <Project Name="artivity-extension-chromium" Path="artivity-extension-chromium/artivity-extension-chromium.project" Active="No"/>
   <Project Name="artivity-extension-firefox" Path="artivity-extension-firefox/artivity-extension-firefox.project" Active="No"/>
   <BuildMatrix>

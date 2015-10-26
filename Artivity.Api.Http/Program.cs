@@ -27,11 +27,11 @@
 
 using System;
 using System.IO;
-using CommandLine;
-using Nancy.Hosting.Self;
+using System.Threading;
 using Semiodesk.Trinity;
 using Artivity.Model;
-using System.Threading;
+using CommandLine;
+using Nancy.Hosting.Self;
 
 namespace Artivity.Api.Http
 {
@@ -98,7 +98,7 @@ namespace Artivity.Api.Http
 
         private static void InitializeModels(Options options)
         {
-            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
+            IStore store = StoreFactory.CreateStoreFromConfiguration(Models.DefaultStore);
 
             if (options.Update)
             {

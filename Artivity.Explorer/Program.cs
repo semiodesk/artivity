@@ -13,7 +13,7 @@ namespace ArtivityExplorer
 
 			Application.Initialize(ToolkitType.Gtk);
 
-            if (!SetupHelper.CheckEnvironment())
+            if (!Setup.CheckEnvironment())
             {
                 ShowSetup();
             }
@@ -46,7 +46,7 @@ namespace ArtivityExplorer
             {
                 window.Title = "Artivity Explorer";
                 window.Icon = Image.FromResource("icon");
-                window.Width = 1100;
+                window.Width = 800;
                 window.Height = 700;
                 window.Show();
 

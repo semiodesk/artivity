@@ -26,6 +26,9 @@ namespace Artivity.Model.ObjectModel
         [RdfProperty(ART.hadBoundaries)]
         public Geometry Boundaries { get; set; }
 
+        [RdfProperty(DCES.description)]
+        public Geometry Description { get; set; }
+
 		#endregion
 
 		#region Constructors

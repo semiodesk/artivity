@@ -1,3 +1,16 @@
+artivity-explorer (1.5.11-1semiodesk0) trusty; urgency=low
+
+  * Added support for description of activity influences.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 23 Oct 2015 15:32:00 +0200
+
+artivity-explorer (1.5.10-1semiodesk0) trusty; urgency=low
+
+  * Significantly improved performance and accuracy of queries.
+  * Editing stats are now correct. 
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 23 Oct 2015 13:50:00 +0200
+
 artivity-explorer (1.5.9-1semiodesk0) trusty; urgency=low
 
   * Packaging correct binaries for previous version.. ;) 

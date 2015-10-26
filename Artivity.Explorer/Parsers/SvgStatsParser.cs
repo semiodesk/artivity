@@ -38,6 +38,8 @@ namespace ArtivityExplorer.Parsers
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
+
                 return null;
             }
         }

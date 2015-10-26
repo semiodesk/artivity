@@ -29,7 +29,7 @@ namespace ArtivityExplorer.Controls
             Margin = 0;
             Spacing = 30;
 
-			BackgroundColor = Color.FromBytes(255, 255, 255);
+			BackgroundColor = Color.FromBytes(246, 246, 245);
         }
 
         #endregion
@@ -41,6 +41,7 @@ namespace ArtivityExplorer.Controls
 			EditingWidget.Margin = new WidgetSpacing(10, 10, 20, 0);
 			CompositionWidget.Margin = new WidgetSpacing(10, 0, 20, 0);
 			ColourWidget.Margin = new WidgetSpacing(10, 0, 20, 0);
+            ColourWidget.HorizontalPlacement = WidgetPlacement.Fill;
 
             PackStart(EditingWidget);
             PackStart(CompositionWidget);
