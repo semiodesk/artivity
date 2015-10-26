@@ -83,33 +83,32 @@ ArtivityPlugin::ArtivityPlugin(QObject *parent, const QVariantList &)
 
         _active = TRUE;
 
-	// Initialize the Artivity log.
+        // Initialize the Artivity log.
         _log = new ActivityLog();
         _log->addAgent(new SoftwareAgent("application://krita.desktop"));
 
-	double width = _canvas->currentImage()->xRes();
-	double height = _canvas->currentImage()->yRes();
-	const Resource* unit = getLengthUnit();
+        double width = _canvas->currentImage()->xRes();
+        double height = _canvas->currentImage()->yRes();
+        const Resource* unit = getLengthUnit();
 
-	_filePath = _view->document()->localFilePath().toUtf8().constData();
+        _filePath = string(_view->document()->localFilePath().toUtf8().constData()).c_str();
 
-	if(_filePath == NULL || strlen(_filePath) == 0)
-	{
-	   _activity = _log->createFile(width, height, unit);
-	}
-	else
-	{
-	   _activity = _log->editFile(_filePath, width, height, unit);
+        if(_filePath == NULL || strlen(_filePath) == 0)
+        {
+           _activity = _log->createFile(width, height, unit);
+        }
+        else
+        {
+           _activity = _log->editFile(_filePath, width, height, unit);
 
-	   transmitQueue();
-	}
+           transmitQueue();
+        }
 
         connect(_undoStack, SIGNAL(indexChanged(int)), this, SLOT(onUndoIndexChanged(int)));
         connect(_canvas->currentImage(), SIGNAL(sigAboutToBeDeleted()), this, SLOT(onClose()));
         connect(_view->zoomController(), SIGNAL(zoomChanged(KoZoomMode::Mode, qreal)), this, SLOT(onZoomChanged(KoZoomMode::Mode, qreal)));
-        //connect(_view->mainWindow(), SIGNAL(documentSaved()), this, SLOT(DocumentSaved()));
-        //connect(_recorder, SIGNAL(addedAction(const KisRecordedAction&)), this, SLOT(AddAction(const
-        //KisRecordedAction&)));
+        connect((const QObject*)_view->mainWindow(), SIGNAL(documentSaved()), this, SLOT(onDocumentSaved()));
+        //connect(_recorder, SIGNAL(addedAction(const KisRecordedAction&)), this, SLOT(AddAction(const KisRecordedAction&)));
     }
 }
 
@@ -147,15 +146,15 @@ void ArtivityPlugin::logEvent(const Resource& type, const KUndo2Command* command
     viewport->setHeight(widget->height() / _zoomFactor);
     viewport->setZoomFactor(_zoomFactor);
 
-    const char* title = command->actionText().toUtf8().constData();
-    const char* layer = _view->activeLayer()->name().toUtf8().constData();
+    string title = string(command->actionText().toUtf8().constData());
+    string layer = string(_view->activeLayer()->name().toUtf8().constData());
  
     Generation* generation = _log->createEntityInfluence<Generation>(now, type, viewport);
-    generation->setValue(art::selectedLayer, layer);
-    generation->setValue(dces::title, title);
+    generation->setValue(art::selectedLayer, layer.c_str());
+    generation->setDescription(title);
 
     Invalidation* invalidation = _log->createEntityInfluence<Invalidation>(now, type, viewport);
-    generation->setValue(art::selectedLayer, layer);
+    generation->setValue(art::selectedLayer, layer.c_str());
 
     Canvas* canvas = getCanvas();
 
@@ -202,16 +201,16 @@ void ArtivityPlugin::transmitQueue()
         return;
     }
 
-    string url = string("file://") + _document->localFilePath().toUtf8().constData();
-
     if(_filePath == NULL || strlen(_filePath) == 0)
     {
-        _filePath = _document->localFilePath().toUtf8().constData();
-
-        file->setUrl(url.c_str());
-
-        _activity->addUsedEntity(file);
+        _filePath = string(_document->localFilePath().toUtf8().constData()).c_str();
     }
+    
+    string fileUrl = string("file://") + _filePath;
+    
+    file->setUrl(fileUrl.c_str());
+
+    _activity->addUsedEntity(file);
     
     if(!_activity->getGeneratedEntities().empty())
     {
@@ -222,7 +221,7 @@ void ArtivityPlugin::transmitQueue()
         if(newver != NULL)
         {
             stringstream uri;
-            uri << url << "#" << UriGenerator::getRandomId(10);
+            uri << fileUrl << "#" << UriGenerator::getRandomId(10);
             
             newver->setUri(uri.str());
             newver->addGenericEntity(file);
@@ -238,7 +237,7 @@ void ArtivityPlugin::transmitQueue()
         if(oldver != NULL)
         {
             stringstream uri;
-            uri << url << "#" << UriGenerator::getRandomId(10);
+            uri << fileUrl << "#" << UriGenerator::getRandomId(10);
             
             oldver->setUri(uri.str());
             oldver->addGenericEntity(file);
@@ -246,6 +245,36 @@ void ArtivityPlugin::transmitQueue()
     }
    
     _log->transmit();
+}
+
+void ArtivityPlugin::onDocumentSaved()
+{
+    time_t now;
+    time(&now);
+
+    QPoint origin = _canvas->documentOffset();
+    
+    Point* p = _log->createResource<Point>();
+    p->setX(origin.x() / _zoomFactor);
+    p->setY(origin.y() / _zoomFactor);
+    
+    QWidget* widget = _canvas->canvasWidget();
+    
+    Viewport* viewport = _log->createResource<Viewport>();
+    viewport->setPosition(p);
+    viewport->setWidth(widget->width() / _zoomFactor);
+    viewport->setHeight(widget->height() / _zoomFactor);
+    viewport->setZoomFactor(_zoomFactor);
+    
+    Generation* generation = _log->createEntityInfluence<Generation>(now, art::Save, viewport);
+    
+    FileDataObject* file = _log->getFile();
+    file->setGeneration(generation);
+    file->setLastModificationTime(now);
+    
+    _activity->addGeneratedEntity(file);
+    
+    transmitQueue();
 }
 
 void ArtivityPlugin::onZoomChanged(KoZoomMode::Mode mode, qreal zoomFactor)

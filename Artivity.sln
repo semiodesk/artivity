@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Explorer", "Artivity.Explorer\Artivity.Explorer.csproj", "{823D4E87-D4D8-4D08-98AE-EAD625579E1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Explorer", "artivity-explorer\Artivity.Explorer.csproj", "{823D4E87-D4D8-4D08-98AE-EAD625579E1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Api.Http", "Artivity.Api.Http\Artivity.Api.Http.csproj", "{18E3ACB7-2958-43C7-B201-EA31F542F22C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Apid", "artivity-apid\Artivity.Apid.csproj", "{18E3ACB7-2958-43C7-B201-EA31F542F22C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Api.Model", "Artivity.Api.Model\Artivity.Api.Model.csproj", "{AF97FB55-09C8-4775-81F6-F1F97C2DB468}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.DataModel", "artivity-datamodel\Artivity.DataModel.csproj", "{AF97FB55-09C8-4775-81F6-F1F97C2DB468}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

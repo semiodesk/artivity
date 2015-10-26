@@ -622,18 +622,16 @@ namespace Inkscape
             return;
         }
         
-        string url = string("file://") + _document->getURI();
-        
         if(_filePath.empty())
         {
             _filePath = string(_document->getURI());
-            
-            cout << url << endl << flush;
-            
-            file->setUrl(url.c_str());
-            
-            _activity->addUsedEntity(file);
         }
+        
+        string fileUrl = string("file://") + _filePath;
+        
+        file->setUrl(fileUrl.c_str());
+        
+        _activity->addUsedEntity(file);
         
         if(!_activity->getGeneratedEntities().empty())
         {
@@ -644,7 +642,7 @@ namespace Inkscape
             if(newver != NULL)
             {
                 stringstream uri;
-                uri << url << "#" << UriGenerator::getRandomId(10);
+                uri << fileUrl << "#" << UriGenerator::getRandomId(10);
             
                 newver->setUri(uri.str());
                 newver->addGenericEntity(file);
@@ -660,7 +658,7 @@ namespace Inkscape
             if(oldver != NULL)
             {
                 stringstream uri;
-                uri << url << "#" << UriGenerator::getRandomId(10);
+                uri << fileUrl << "#" << UriGenerator::getRandomId(10);
             
                 oldver->setUri(uri.str());
                 oldver->addGenericEntity(file);

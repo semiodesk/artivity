@@ -60,6 +60,7 @@ protected:
 
 private slots:
     //void addedAction(const KisRecordedAction& action);
+    void onDocumentSaved();
     void onUndoIndexChanged(int newIndex); 
     void onZoomChanged(KoZoomMode::Mode mode, qreal zoomFactor);
     void onClose();

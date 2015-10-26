@@ -2,12 +2,12 @@ Source: artivity-extension-krita
 Section: misc
 Priority: optional
 Maintainer: Sebastian Faubel <sebastian@semiodesk.com>
-Build-Depends: wget, cmake (>= 2.6.2), debhelper (>= 9), freetds-dev, kdelibs5-dev (>= 4), kdepimlibs5-dev (>= 4), libattica-dev, libboost-dev, libeigen2-dev (>= 2.0~beta6), libetonyek-dev, libexiv2-dev, libfftw3-dev, libglew-dev, libglib2.0-dev, libgsl0-dev, libicu-dev, libjpeg-dev, libkactivities-dev, libkdcraw-dev (>= 4), liblcms2-dev, libmarble-dev (>= 4), libmysqlclient-dev, libodfgen-dev, libopencolorio-dev, libopenexr-dev, libopenjpeg-dev, libphononexperimental-dev, libpng-dev, libpoppler-private-dev, libpoppler-qt4-dev, libpq-dev, libpqxx3-dev, libqca2-dev, libqt4-dev, libqt4-opengl-dev, libqtwebkit-dev, libspnav-dev, libsqlite3-dev, libtiff-dev, libvisio-dev, libwpd-dev (>= 0.9.1), libwpg-dev (>= 0.2.0), libwps-dev, libxbase64-dev, libxi-dev, nepomuk-core-dev, okular-dev (>= 4), pkg-kde-tools (>= 0.9), pstoedit, shared-desktop-ontologies, shared-mime-info, vc-dev (>= 0.7.3), zlib1g-dev, libcurl4-openssl-dev, libartivity-dev (>= 0.8.4), krita
+Build-Depends: wget, cmake (>= 2.6.2), debhelper (>= 9), freetds-dev, kdelibs5-dev (>= 4), kdepimlibs5-dev (>= 4), libattica-dev, libboost-dev, libeigen2-dev (>= 2.0~beta6), libetonyek-dev, libexiv2-dev, libfftw3-dev, libglew-dev, libglib2.0-dev, libgsl0-dev, libicu-dev, libjpeg-dev, libkactivities-dev, libkdcraw-dev (>= 4), liblcms2-dev, libmarble-dev (>= 4), libmysqlclient-dev, libodfgen-dev, libopencolorio-dev, libopenexr-dev, libopenjpeg-dev, libphononexperimental-dev, libpng-dev, libpoppler-private-dev, libpoppler-qt4-dev, libpq-dev, libpqxx3-dev, libqca2-dev, libqt4-dev, libqt4-opengl-dev, libqtwebkit-dev, libspnav-dev, libsqlite3-dev, libtiff-dev, libvisio-dev, libwpd-dev (>= 0.9.1), libwpg-dev (>= 0.2.0), libwps-dev, libxbase64-dev, libxi-dev, nepomuk-core-dev, okular-dev (>= 4), pkg-kde-tools (>= 0.9), pstoedit, shared-desktop-ontologies, shared-mime-info, vc-dev (>= 0.7.3), zlib1g-dev, libcurl4-openssl-dev, libartivity-dev (>= 0.8.8), krita
 Standards-Version: 3.9.5
 Homepage: http://bitbucket.org/semiodesk/artivity
 
 Package: artivity-extension-krita
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, krita, libartivity (>= 0.8.4)
+Depends: ${shlibs:Depends}, ${misc:Depends}, krita, libartivity (>= 0.8.8)
 Description: Artivity plugin for Krita image editor.
  The plugins pushes file provenance data into the Artivity database.
