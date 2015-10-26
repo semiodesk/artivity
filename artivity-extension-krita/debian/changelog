@@ -1,3 +1,10 @@
+artivity-extension-krita (1.5.10-1semiodesk1) trusty; urgency=low
+
+  * Added support for action descriptions.
+  * Added support for save events.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 26 Oct 2015 16:22:00 +0200
+
 artivity-extension-krita (1.5.9-1semiodesk1) trusty; urgency=low
 
   * Recompiling package against new version of libartivity.

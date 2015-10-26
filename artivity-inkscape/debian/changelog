@@ -1,3 +1,9 @@
+artivity-inkscape (0.91.16-1semiodesk0) trusty; urgency=low
+
+  * Adding file URLs to transmitted RDF when files are edited.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 26 October 2015 16:24:00 +0200
+
 artivity-inkscape (0.91.15-1semiodesk0) trusty; urgency=low
 
   * Fixed missing undo and redo events.
