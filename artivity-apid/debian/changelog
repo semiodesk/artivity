@@ -1,3 +1,9 @@
+artivity-apid (1.5.10-1semiodesk0) trusty; urgency=low
+
+  * Models are now specific to a user.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 26 Oct 2015 16:48:00 +0200
+
 artivity-apid (1.5.9-1semiodesk0) trusty; urgency=low
 
   * Browser API now propery generated qualified associations. 
