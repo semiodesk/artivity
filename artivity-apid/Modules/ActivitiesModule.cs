@@ -208,7 +208,7 @@ namespace Artivity.Api.Http
 
                 using (StreamReader reader = new StreamReader(stream))
     			{
-                    string data = BindUriVariables(reader.ReadToEnd());
+                    string data = reader.ReadToEnd();
 
     				using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
     				{
@@ -229,27 +229,6 @@ namespace Artivity.Api.Http
                 Logger.LogError(HttpStatusCode.InternalServerError, e);
             }
 		}
-
-        public static string BindUriVariables(string data)
-        {
-            Regex expression = new Regex(@"<(?<var>\?\:(?<url>.+))>");
-
-            MatchCollection matches = expression.Matches(data);
-
-            if (matches.Count == 0) return data;
-
-            foreach (Match match in matches)
-            {
-                string token = match.Groups["var"].Value;
-                string url = match.Groups["url"].Value;
-
-                Uri uri = FileSystemMonitor.GetFileUri(url);
-
-                data = data.Replace(token, uri.OriginalString);
-            }
-
-            return data;
-        }
 
 		private Stream ToStream(string str)
 		{
