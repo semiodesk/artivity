@@ -10,7 +10,7 @@ namespace artivity
     namespace dces
     {
         static const Property title = DCES("title");
-        
+        static const Property description = DCES("description");
     }
 }
 

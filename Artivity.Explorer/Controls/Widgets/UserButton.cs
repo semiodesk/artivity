@@ -11,40 +11,16 @@ namespace ArtivityExplorer
 {
     public class UserButton : Button
     {
-        #region Members
-
-        IModel _model;
-
-        Person _user;
-
-        #endregion
-
         #region Constructors
 
         public UserButton()
         {
-            InitializeModel();
+            Update();
         }
 
         #endregion
 
         #region Methods
-
-        private void InitializeModel()
-        {
-            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
-
-            if (store.ContainsModel(Models.Agents))
-            {
-                _model = store.GetModel(Models.Agents);
-            }
-            else
-            {
-                _model = store.CreateModel(Models.Agents);
-            }
-
-            Update();
-        }
 
         protected override void OnClicked(EventArgs e)
         {
@@ -56,22 +32,15 @@ namespace ArtivityExplorer
 
         public void Update()
         {
-            ResourceQuery query = new ResourceQuery(prov.Person);
+            IModel model = Models.GetAgents();
 
-            _user = _model.GetResources<Person>(query).FirstOrDefault();
+            Person user = model.GetResources<Person>().FirstOrDefault();
 
-            if (_user == null)
+            Label = " " + user.Name;
+
+            if (File.Exists(user.Photo))
             {
-                _user = _model.CreateResource<Person>();
-                _user.Name = "Unkown";
-                _user.Commit();
-            }
-
-            Label = " " + _user.Name;
-
-            if (File.Exists(_user.Photo))
-            {
-                Image = BitmapImage.FromFile(_user.Photo).WithSize(30, 30);
+                Image = BitmapImage.FromFile(user.Photo).WithSize(30, 30);
             }
             else
             {

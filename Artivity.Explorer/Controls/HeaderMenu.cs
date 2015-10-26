@@ -7,7 +7,7 @@ namespace ArtivityExplorer
 {
     public class HeaderMenu : HBox
     {
-        public Button FileButton { get; private set; }
+        public FileButton FileButton { get; private set; }
 
         public Button ExportButton { get; private set; }
 
@@ -18,8 +18,8 @@ namespace ArtivityExplorer
             Spacing = 3;
             Margin = 3;
 
-            FileButton = new FileButton(window);
-            ExportButton = new ExportButton(window) { Sensitive = false };
+            FileButton = new FileButton();
+            ExportButton = new ExportButton() { Sensitive = false };
             PreferncesButton = new UserButton();
 
             PackStart(FileButton);

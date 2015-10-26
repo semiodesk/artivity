@@ -93,9 +93,9 @@ namespace ArtivityExplorer.Controls
             Add(_confidenceValueLabel, 2, 5);
         }
 
-		public void Update(IModel model, string file)
+		public void Update(string fileUrl)
 		{
-            string fileUrl = file.StartsWith("file://") ? file : "file://" + file;
+            IModel model = Models.GetAllActivities();
 
             double sessionCount = GetSessionCount(model, fileUrl);
             double stepCount = GetStepCount(model, fileUrl);

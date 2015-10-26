@@ -18,6 +18,7 @@ namespace ArtivityExplorer.Controls
 		public IDataField<string> AgentField { get; private set; }
 		public IDataField<string> TimeField { get; private set; }
 		public IDataField<string> TypeField { get; private set; }
+        public IDataField<string> DescriptionField { get; private set; }
 		public IDataField<string> DataField { get; private set; }
 
 		#endregion
@@ -61,6 +62,15 @@ namespace ArtivityExplorer.Controls
 			typeColumn.Alignment = Alignment.Start;
             typeColumn.CanResize = true;
 
+            DescriptionField = new DataField<string>();
+
+            TextCellView descriptionView = new TextCellView();
+            descriptionView.TextField = DescriptionField;
+
+            ListViewColumn descriptionColumn = new ListViewColumn ("Description", descriptionView);
+            descriptionColumn.Alignment = Alignment.Start;
+            descriptionColumn.CanResize = true;
+
 			DataField = new DataField<string>();
 
             TextCellView dataView = new TextCellView();
@@ -72,9 +82,10 @@ namespace ArtivityExplorer.Controls
 
             Columns.Add(timeColumn);
             Columns.Add(typeColumn);
+            Columns.Add(descriptionColumn);
 			Columns.Add(dataColumn);
 
-            Store = new ListStore(AgentField, TimeField, TypeField, DataField);
+            Store = new ListStore(AgentField, TimeField, TypeField, DescriptionField, DataField);
 
             DataSource = Store;
         }
@@ -84,14 +95,15 @@ namespace ArtivityExplorer.Controls
             Store.Clear();
         }
 
-        public void LoadInfluences(IModel model, string fileUrl)
+        public void LoadInfluences(string fileUrl)
         {
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX dces: <http://purl.org/dc/elements/1.1/>
 
-                SELECT ?agent ?influenceTime ?influenceType ?entity ?entityType ?value  WHERE 
+                SELECT ?agent ?influenceTime ?influenceType ?entity ?entityType ?description ?value WHERE 
                 {
                     ?activity prov:qualifiedAssociation ?association .
 
@@ -109,6 +121,7 @@ namespace ArtivityExplorer.Controls
                         ?generation a ?influenceType ;
                             prov:atTime ?influenceTime .
 
+                        OPTIONAL { ?generation dces:description ?description . }
                         OPTIONAL { ?generation prov:value ?value . }
                     }
                     UNION
@@ -132,6 +145,8 @@ namespace ArtivityExplorer.Controls
                     }
                 }
                 ORDER BY DESC(?influenceTime)";
+
+            IModel model = Models.GetAllActivities();
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);
@@ -157,6 +172,11 @@ namespace ArtivityExplorer.Controls
                     Store.SetValue(row, TypeField, ToDisplayString(binding["influenceType"].ToString()));
                 }
                     
+                if (!(binding["description"] is DBNull))
+                {
+                    Store.SetValue(row, DescriptionField, binding["description"].ToString());
+                }
+
                 UriRef entityType = new UriRef(binding["entityType"].ToString());
 
                 if (entityType == nfo.FileDataObject.Uri)
@@ -187,36 +207,6 @@ namespace ArtivityExplorer.Controls
 
             return uri.TrimEnd('>');
         }
-
-		protected override void OnKeyReleased(KeyEventArgs args)
-		{
-			base.OnKeyReleased(args);
-
-			if (args.Key == Key.Delete)
-			{
-				IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
-
-                foreach(int row in SelectedRows)
-				{
-//					Activity activity = Store.GetValue(row, ActivityField);
-//
-//					IModel model;
-//
-//					if (activity.UsedEntities.OfType<WebDataObject>().Any())
-//					{
-//						model = store.GetModel(Models.WebActivities);
-//					}
-//					else
-//					{
-//						model = store.GetModel(Models.Activities);
-//					}
-//
-//					model.DeleteResource(activity.Uri);
-//
-//                    Store.RemoveRow(row);
-				}
-			}
-		}
 
         #endregion
     }

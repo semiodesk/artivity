@@ -57,18 +57,7 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeAgents()
         {
-            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
-
-            IModel model;
-
-            if (store.ContainsModel(Models.Agents))
-            {
-                model = store.GetModel(Models.Agents);
-            }
-            else
-            {
-                model = store.CreateModel(Models.Agents);
-            }
+            IModel model = Models.GetAgents();
 
             ResourceQuery query = new ResourceQuery(prov.SoftwareAgent);
 
@@ -118,13 +107,16 @@ namespace ArtivityExplorer.Controls
                 MajorStep = 10,
                 MajorGridlineStyle = LineStyle.Dot,
                 MajorGridlineThickness = 1,
-                MajorGridlineColor = OxyColor.FromRgb(66, 66, 66),
+                MajorGridlineColor = OxyColor.FromRgb(88, 88, 88),
+                MinorGridlineStyle = LineStyle.Dot,
+                MinorGridlineThickness = 1,
+                MinorGridlineColor = OxyColor.FromRgb(66, 66, 66),
                 IsZoomEnabled = false,
                 IsPanEnabled = false
             };
 
             Model = new PlotModel();
-            Model.Title = "ACTIVITIES / MIN";
+            Model.Title = "Influences / Min";
             Model.TitleFontSize = 9;
             Model.TitleFontWeight = 0.5;
             Model.TitleColor = OxyColors.White;
@@ -142,7 +134,7 @@ namespace ArtivityExplorer.Controls
             Model.Axes.Add(_y);
         }
 
-        public void LoadActivities(IModel model, string fileUrl)
+        public void LoadActivities(string fileUrl)
         {
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -161,6 +153,8 @@ namespace ArtivityExplorer.Controls
                   ?entity nfo:fileUrl """ + fileUrl + @""" .
                 }
                 ORDER BY DESC(?startTime)";
+
+            IModel model = Models.GetAllActivities();
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query, true);
@@ -186,7 +180,7 @@ namespace ArtivityExplorer.Controls
             }
         }
 
-        public void LoadActivityInfluences(IModel model, string fileUrl)
+        public void LoadActivityInfluences(string fileUrl)
         {
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -227,10 +221,23 @@ namespace ArtivityExplorer.Controls
                 }
                 ORDER BY DESC(?influenceTime)";
 
+            IModel model = Models.GetAllActivities();
+
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query, true);
 
             CreateSeriesPoints(result);
+
+            double max = Math.Ceiling(_maxY / 10) * 10;
+
+            _y.Maximum = max;
+
+            if (max == _maxY)
+            {
+                _y.Maximum += max <= 100 ? 5 : 10;
+            }
+
+            _y.MinorStep = max <= 100 ? 5 : 10;
         }
             
         private LineSeries CreateSeries(Agent agent)
@@ -335,6 +342,19 @@ namespace ArtivityExplorer.Controls
                 }
 
                 previousTime = currentTime;
+            }
+
+            // Add a zero to the end of each line series.
+            foreach (LineSeries series in _series.Values)
+            {
+                if (!series.Points.Any())
+                    continue;
+
+                previousTime = DateTimeAxis.ToDateTime(series.Points.Last().X);
+
+                DateTime t = previousTime.Subtract(TimeSpan.FromMinutes(1));
+
+                series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
             }
         }
 

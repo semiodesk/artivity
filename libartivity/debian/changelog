@@ -1,3 +1,9 @@
+libartivity (0.8.8-1semiodesk0) trusty; urgency=medium
+
+  * Added description to activity influence.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 23 October 2015 15:16:00 +0200
+
 libartivity (0.8.7-1semiodesk0) trusty; urgency=medium
 
   * Fixed not checking for adding duplicate entries in Activity.addX methods.

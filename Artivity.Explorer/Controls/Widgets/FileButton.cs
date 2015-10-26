@@ -12,13 +12,9 @@ namespace ArtivityExplorer
 {
     public class FileButton : Button
     {
-        MainWindow _window;
-
-        public FileButton(WindowFrame window)
+        public FileButton()
         {
             InitializeComponent();
-
-            _window = window as MainWindow;
         }
 
         private void InitializeComponent()
@@ -38,10 +34,7 @@ namespace ArtivityExplorer
             {
                 Label = " " + dialog.FileName;
 
-                if (_window != null)
-                {
-                    _window.HandleFileSelected(this, new FileSelectionEventArgs(dialog.FileName));
-                }
+                RaiseFileSelected(dialog.FileName);
             }
         }
 

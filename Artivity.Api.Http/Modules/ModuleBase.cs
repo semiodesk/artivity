@@ -38,23 +38,5 @@ namespace Artivity.Api.Http
 		public ModuleBase() {}
 
 		#endregion
-
-		#region Methods
-
-		protected IModel GetModel(Uri uri)
-		{
-			IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
-
-			if (store.ContainsModel(uri))
-			{
-				return store.GetModel(uri);
-			}
-			else
-			{
-				return store.CreateModel(uri);
-			}
-		}
-
-		#endregion
 	}
 }

@@ -13,9 +13,9 @@ namespace ArtivityExplorer
     {
         #region Members
 
-        private UserSettingsWidget _userSettings;
+        private UserSettingsControl _userSettings;
 
-        private AgentSettingsWidget _agentSettings;
+        private AgentSettingsControl _agentSettings;
 
         #endregion
 
@@ -36,8 +36,8 @@ namespace ArtivityExplorer
             Width = 500;
             Height = 500;
 
-            _userSettings = new UserSettingsWidget();
-            _agentSettings = new AgentSettingsWidget();
+            _userSettings = new UserSettingsControl();
+            _agentSettings = new AgentSettingsControl();
 
             Notebook notebook = new Notebook();
             notebook.Add(_userSettings, "User");

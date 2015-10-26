@@ -99,7 +99,7 @@ namespace Artivity.Api.Http
 		{
             try
             {
-        		IModel model = GetModel(Models.Activities);
+                IModel model = Models.GetActivities();
 
         		if(model == null)
         		{
@@ -135,7 +135,7 @@ namespace Artivity.Api.Http
     				return Logger.LogRequest(HttpStatusCode.Locked, "/artivity/1.0/activities/web/", "POST", "");
     			}
                     
-                IModel model = GetModel(Models.WebActivities);
+                IModel model = Models.GetWebActivities();
 
                 Browse activity;
 
@@ -273,7 +273,7 @@ namespace Artivity.Api.Http
 
 		private bool IsCaptureEnabled(ActivityParameters p)
 		{
-			IModel model = GetModel(Models.Agents);
+            IModel model = Models.GetAgents();
 
 			SoftwareAgent agent = null;
 			Uri agentUri = new Uri(p.agent);

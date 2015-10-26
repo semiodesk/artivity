@@ -74,8 +74,16 @@ namespace Inkscape
             
         template<class TEvent> TEvent as(Inkscape::XML::Event* event);
         
+        sigc::connection _modifiedConnection;
+        
+        sigc::connection _savedConnection;
+        
     protected:
            
+        void onSaved();
+        
+        void onModified();
+        
         void logEvent(Event* e, const artivity::Resource& type);
         
         void logUndoOrRedo(time_t time, Event* e, artivity::Canvas* canvas, artivity::Viewport* viewport, const artivity::Resource& type);
@@ -100,7 +108,7 @@ namespace Inkscape
     
         const artivity::Resource* getLengthUnit(const Util::Quantity& quantity);
     
-        AttributeValueMap* getChangedAttributes(string a, string b);
+        AttributeValueMap* getChangedAttributes(Event* e);
     
         void transmitQueue();
         

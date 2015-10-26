@@ -5,7 +5,7 @@ namespace ArtivityExplorer
 {
     public class WelcomePage : DialogPage
     {
-        private UserSettingsWidget _userSettings;
+        private UserSettingsControl _userSettings;
 
         private CheckBox _agreePrivacy;
 
@@ -23,7 +23,7 @@ namespace ArtivityExplorer
             introText.ExpandVertical = true;
             introText.Ellipsize = EllipsizeMode.None;
 
-            _userSettings = new UserSettingsWidget();
+            _userSettings = new UserSettingsControl();
             _userSettings.Margin = new WidgetSpacing(0, 28, 0, 0);
             _userSettings.NameEntry.SetFocus();
             _userSettings.NameEntry.Changed += Validate;

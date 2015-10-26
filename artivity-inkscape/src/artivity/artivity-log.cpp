@@ -29,6 +29,9 @@ namespace Inkscape
         _desktop = desktop;
         _document = document;
         
+        _savedConnection = _document->connectURISet(sigc::hide(sigc::mem_fun(*this, &ArtivityLog::onSaved)));
+        _modifiedConnection = _document->connectModified(sigc::hide(sigc::mem_fun(*this, &ArtivityLog::onModified)));
+        
         _log = ActivityLog();
         _log.addAgent(new SoftwareAgent("application://inkscape.desktop"));
         
@@ -63,11 +66,39 @@ namespace Inkscape
             
             transmitQueue();
         }
+        
+        _savedConnection.disconnect();
+        _modifiedConnection.disconnect();
     }
     
     void
+    ArtivityLog::onSaved()
+    {
+        time_t now;
+        time(&now);
+        
+        Viewport* viewport = createViewport();
+        
+        Generation* generation = _log.createEntityInfluence<Generation>(now, art::Save, viewport);
+        
+        FileDataObject* file = _log.getFile();
+        file->setGeneration(generation);
+        file->setLastModificationTime(now);
+        
+        _activity->addGeneratedEntity(file);
+        
+        transmitQueue();
+    }
+    
+    void
+    ArtivityLog::onModified()
+    {
+        // Do nothing.
+    }
+
+    void
     ArtivityLog::notifyUndoCommitEvent(Event* e)
-    {        
+    {
         logEvent(e, art::Edit);
     }
     
@@ -112,7 +143,11 @@ namespace Inkscape
             
             Viewport* viewport = createViewport();
             
-            if(is<Inkscape::XML::EventAdd*>(e->event))
+            if(type.Uri == art::Undo.Uri || type.Uri == art::Redo.Uri)
+            {
+                logUndoOrRedo(now, e, canvas, viewport, type);
+            }
+            else if(is<Inkscape::XML::EventAdd*>(e->event))
             {
                 logAdd(now, e, canvas, viewport);
             }
@@ -131,10 +166,6 @@ namespace Inkscape
             else if(is<Inkscape::XML::EventChgOrder*>(e->event))
             {
                 logChangeOrder(now, e, canvas, viewport);
-            }
-            else if(type.Uri == art::Undo.Uri || type.Uri == art::Redo.Uri)
-            {
-                logUndoOrRedo(now, e, canvas, viewport, type);
             }
         
             transmitQueue();
@@ -182,6 +213,7 @@ namespace Inkscape
         Generation* generation = _log.createEntityInfluence<Generation>(time, art::Add, viewport);
         generation->setLocation(element);
         generation->setBoundaries(bounds);
+        generation->setDescription(e->description);
         
         Invalidation* invalidation = _log.createEntityInfluence<Invalidation>(time, art::Add, viewport);
         invalidation->setLocation(element);
@@ -200,6 +232,8 @@ namespace Inkscape
         // Inkscape::XML::EventDel* x = as<Inkscape::XML::EventDel*>(e->event);
             
         Generation* generation = _log.createEntityInfluence<Generation>(time, art::Remove, viewport);
+        generation->setDescription(e->description);
+        
         Invalidation* invalidation = _log.createEntityInfluence<Invalidation>(time, art::Remove, viewport);
         
         FileDataObject* file = _log.getFile();
@@ -243,6 +277,7 @@ namespace Inkscape
         generation->setLocation(element);
         generation->setBoundaries(bounds);
         generation->setContent(newval);
+        generation->setDescription(e->description);
         
         // OLD VALUE
         string oldval = x->oldval != 0 ? string(x->oldval) : "";
@@ -267,19 +302,14 @@ namespace Inkscape
             // TODO: Log error.
             return;
         }
-        
-        Inkscape::XML::EventChgAttr* x = as<Inkscape::XML::EventChgAttr*>(e->event);
              
         BoundingRectangle* bounds = createBoundingRectangle(e);
                
         FileDataObject* file = _log.getFile();
         FileDataObject* newver = _log.createEntityVersion<FileDataObject>(file, canvas);        
         FileDataObject* oldver = _log.createEntityVersion<FileDataObject>(file, canvas);
-        
-        string newval = x->newval != 0 ? string(x->newval) : "";
-        string oldval = x->oldval != 0 ? string(x->oldval) : "";
             
-        AttributeValueMap* values = getChangedAttributes(oldval, newval);
+        AttributeValueMap* values = getChangedAttributes(e);
         AttributeValueIterator it = values->begin();
         
         stringstream uri;
@@ -302,6 +332,7 @@ namespace Inkscape
             generation->setLocation(attribute);
             generation->setBoundaries(bounds);
             generation->setContent(it->second->newval.c_str());
+            generation->setDescription(e->description);
         
             Invalidation* invalidation = _log.createEntityInfluence<Invalidation>(time, art::Edit, viewport);
             invalidation->setLocation(attribute);
@@ -460,96 +491,114 @@ namespace Inkscape
     }
 
     AttributeValueMap*
-    ArtivityLog::getChangedAttributes(string a, string b)
-    {       
+    ArtivityLog::getChangedAttributes(Event* e)
+    {
         AttributeValueMap* result = new AttributeValueMap();
         
-        string buffer = "";
-        string key = "";
-        unsigned int i = 0;
+        Inkscape::XML::EventChgAttr* x = as<Inkscape::XML::EventChgAttr*>(e->event);
         
-        while(i < a.size())
-        {
-            char c = a[i];
+        string newval = x->newval != 0 ? string(x->newval) : "";
+        string oldval = x->oldval != 0 ? string(x->oldval) : "";
+        
+        const char* k = g_quark_to_string(x->key);
+        
+        if(strcmp(k, "style") == 0)
+        {            
+            string buffer = "";
+            string key = "";
+            unsigned int i = 0;
             
-            if(c == ':')
+            while(i < oldval.size())
             {
-                key = buffer;
-                buffer = "";
-            }
-            else if(c == ';' || i == a.size() - 1)
-            {
-                if(key != "")
-                {
-                    ValueRecord* r = new ValueRecord();
-                    r->oldval = string(buffer);
-                    r->newval = "";
-                    
-                    result->operator[](key) = r;
-                }
+                char c = oldval[i];
                 
-                buffer = "";
-            }
-            else
-            {
-                buffer += c;
-            }
-            
-            i++;
-        }
-        
-        buffer = "";
-        key = "";
-        i = 0;
-        
-        while(i < b.size())
-        {
-            char c = b[i];
-            
-            if(c == ':')
-            {
-                key = buffer;
-                buffer = "";
-            }
-            else if(c == ';' || i == b.size() - 1)
-            {
-                if(key != "")
+                if(c == ':')
                 {
-                    AttributeValueIterator it = result->find(key);
-                    
-                    if(it != result->end())
-                    {
-                        ValueRecord* r = result->operator[](key);
-                        
-                        if(r->oldval == buffer)
-                        {
-                            result->erase(it);
-                            
-                            delete r;
-                        }
-                        else
-                        {
-                            r->newval = string(buffer);
-                        }
-                    }
-                    else
+                    key = buffer;
+                    buffer = "";
+                }
+                else if(c == ';' || i == oldval.size() - 1)
+                {
+                    if(key != "")
                     {
                         ValueRecord* r = new ValueRecord();
-                        r->oldval = "";
-                        r->newval = string(buffer);
+                        r->oldval = string(buffer);
+                        r->newval = "";
                         
                         result->operator[](key) = r;
                     }
+                    
+                    buffer = "";
                 }
-
-                buffer = "";
-            }
-            else
-            {
-                buffer += c;
+                else
+                {
+                    buffer += c;
+                }
+                
+                i++;
             }
             
-            i++;
+            buffer = "";
+            key = "";
+            i = 0;
+            
+            while(i < newval.size())
+            {
+                char c = newval[i];
+                
+                if(c == ':')
+                {
+                    key = buffer;
+                    buffer = "";
+                }
+                else if(c == ';' || i == newval.size() - 1)
+                {
+                    if(key != "")
+                    {
+                        AttributeValueIterator it = result->find(key);
+                        
+                        if(it != result->end())
+                        {
+                            ValueRecord* r = result->operator[](key);
+                            
+                            if(r->oldval == buffer)
+                            {
+                                result->erase(it);
+                                
+                                delete r;
+                            }
+                            else
+                            {
+                                r->newval = string(buffer);
+                            }
+                        }
+                        else
+                        {
+                            ValueRecord* r = new ValueRecord();
+                            r->oldval = "";
+                            r->newval = string(buffer);
+                            
+                            result->operator[](key) = r;
+                        }
+                    }
+
+                    buffer = "";
+                }
+                else
+                {
+                    buffer += c;
+                }
+                
+                i++;
+            }
+        }
+        else
+        {
+            ValueRecord* r = new ValueRecord();
+            r->oldval = oldval;
+            r->newval = newval;
+            
+            result->operator[](k) = r;
         }
         
         return result;

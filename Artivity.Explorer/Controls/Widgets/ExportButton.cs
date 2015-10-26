@@ -6,13 +6,9 @@ namespace ArtivityExplorer
 {
     public class ExportButton : Button
     {
-        MainWindow _window;
-
-        public ExportButton(WindowFrame window)
+        public ExportButton()
         {
             InitializeComponent();
-
-            _window = window as MainWindow;
         }
 
         private void InitializeComponent()
