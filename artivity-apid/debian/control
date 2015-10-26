@@ -10,7 +10,7 @@ Homepage: http://bitbucket.org/semiodesk/artivity
 
 Package: artivity-apid
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, mono-runtime, libmono-system-numerics4.0-cil, libmono-system-runtime-serialization4.0-cil, artivity-datamodel (>= 1.5.4), virtuoso-opensource-6.1
+Depends: ${shlibs:Depends}, ${misc:Depends}, mono-runtime, libmono-system-numerics4.0-cil, libmono-system-runtime-serialization4.0-cil, artivity-datamodel (>= 1.5.7), virtuoso-opensource-6.1
 Description: REST API for pushing events into the Artivity RDF database.
  This package contains a lightweight HTTP daemon which provides a
  REST API to push browsing events such as visiting a website into 

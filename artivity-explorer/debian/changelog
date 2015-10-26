@@ -1,3 +1,9 @@
+artivity-explorer (1.5.12-1semiodesk0) trusty; urgency=low
+
+  * Added recently used files journal.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 26 Oct 2015 16:51:00 +0200
+
 artivity-explorer (1.5.11-1semiodesk0) trusty; urgency=low
 
   * Added support for description of activity influences.
