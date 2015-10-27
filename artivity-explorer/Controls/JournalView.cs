@@ -1,22 +1,25 @@
 ﻿using System;
-using Semiodesk.Trinity;
-using Artivity.Model;
-using Xwt;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using Semiodesk.Trinity;
+using Xwt;
+using Xwt.Drawing;
+using Artivity.Model;
 
 namespace ArtivityExplorer
 {
-    public class JournalView : ListView
+    public class JournalView : ScrollView
     {
         #region Members
 
-        private ListStore _store = new ListStore();
+        private readonly VBox _layout = new VBox();
 
-        private DataField<string> _timeField = new DataField<string>();
+        private List<FileListView> _views = new List<FileListView>();
 
-        private DataField<string> _fileNameField = new DataField<string>();
+        private Dictionary<DateTime, FileListView> _dayViews = new Dictionary<DateTime, FileListView>();
 
-        private DataField<string> _fileUrlField = new DataField<string>();
+        private Dictionary<string, FileListView> _fileViews = new Dictionary<string, FileListView>();
 
         #endregion
 
@@ -33,25 +36,38 @@ namespace ArtivityExplorer
 
         protected virtual void InitializeComponent()
         {
-            // Initialize the list data.
-            _store = new ListStore(_timeField, _fileNameField, _fileUrlField);
+            KeyPressed += HandleKeyEvent;
 
-            // Initialize the list view.
-            TextCellView timeView = new TextCellView();
-            timeView.TextField = _timeField;
+            CanGetFocus = true;
+            ExpandVertical = true;
 
-            TextCellView fileView = new TextCellView();
-            fileView.TextField = _fileNameField;
-
-            this.CreateColumn<string>(timeView, "Time", Alignment.Start);
-            this.CreateColumn<string>(fileView, "File", Alignment.End);
+            Content = _layout;
+            Content.CanGetFocus = false;
+            Content.BackgroundColor = Colors.White;
 
             Update();
         }
 
+        public void Clear()
+        {
+            _layout.Clear();
+
+            foreach (FileListView view in _views)
+            {
+                view.FileSelected -= OnFileListFileSelected;
+            }
+
+            _views.Clear();
+            _dayViews.Clear();
+            _fileViews.Clear();
+        }
+
         public void Update()
         {
-            _store.Clear();
+            if (_layout.Children.Any())
+            {
+                Clear();
+            }
 
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -59,64 +75,160 @@ namespace ArtivityExplorer
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX dces: <http://purl.org/dc/elements/1.1/>
 
-                SELECT ?fileUrl MAX(?t) as ?time WHERE
+                SELECT ?startTime ?endTime ?fileUrl WHERE
                 {
-                    ?activity prov:startedAtTime ?t .
-                    ?activity prov:used ?entity .
+                       ?activity prov:used ?entity .
+                       ?activity prov:startedAtTime ?startTime .
+                       ?activity prov:endedAtTime ?endTime .
 
-                    ?entity nfo:fileUrl ?fileUrl .
-
-                    {
-                        SELECT DISTINCT ?fileUrl WHERE 
-                        {
-                            ?activity prov:startedAtTime ?t .
-                            ?activity prov:used ?entity .
-
-                            ?entity nfo:fileUrl ?fileUrl .
-                        }
-                        ORDER BY DESC(?t)
-                    }
+                       ?entity nfo:fileUrl ?fileUrl .
                 }
-                GROUP BY ?fileUrl ?time
-                ORDER BY DESC(?time)
-                LIMIT 20";
+                ORDER BY DESC(?startTime)";
 
             IModel model = Models.GetActivities();
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);
 
-            foreach (BindingSet binding in result.GetBindings())
-            {
-                string fileUrl = binding["fileUrl"].ToString();
-
-                if (!Uri.IsWellFormedUriString(fileUrl, UriKind.Absolute))
-                {
-                    continue;
-                }
-
-                string fileName = new Uri(fileUrl).AbsolutePath;
-
-                if (!File.Exists(fileName))
-                {
-                    continue;
-                }
-
-                string time = binding["time"].ToString();
-
-                int row = _store.AddRow();
-
-                _store.SetValues(row, _timeField, time, _fileNameField, Path.GetFileName(fileName), _fileUrlField, fileUrl);
-            }
-
-            DataSource = _store;
+            LoadBindings(result.GetBindings());
         }
 
-        protected override void OnRowActivated(ListViewRowEventArgs e)
+        private void LoadBindings(IEnumerable<BindingSet> bindings)
         {
-            string fileUrl = _store.GetValue(e.RowIndex, _fileUrlField);
+            foreach (BindingSet binding in bindings)
+            {
+                string url = binding["fileUrl"].ToString();
 
-            RaiseFileSelected(fileUrl);
+                // Skip any malformed URIs.
+                if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                {
+                    continue;
+                }
+
+                // Do not list files which do not exist.
+                string path = new Uri(url).AbsolutePath;
+
+                if (!File.Exists(path))
+                {
+                    continue;
+                }
+
+                DateTime startTime = (DateTime)binding["startTime"];
+                DateTime endTime = (DateTime)binding["endTime"];
+                TimeSpan duration = endTime - startTime;
+
+                if (_fileViews.ContainsKey(path))
+                {
+                    _fileViews[path].Update(url, path, startTime, duration);
+                }
+                else
+                {
+                    DateTime day = startTime.RoundToDay();
+
+                    if (!_dayViews.ContainsKey(day))
+                    {
+                        FileListView view = new FileListView();
+                        view.ExpandVertical = false;
+                        view.VerticalScrollPolicy = ScrollPolicy.Never;
+                        view.PreviousView = _views.LastOrDefault();
+                        view.FileSelected += OnFileListFileSelected;
+                        view.SelectionChanged += OnFileListSelectionChanged;
+
+                        _views.Add(view);
+                        _dayViews[day] = view;
+                        _fileViews[path] = view;
+
+                        Label label = new Label(day.ToString("D"));
+                        label.Margin = new WidgetSpacing(10, 10, 10, 0);
+                        label.HorizontalPlacement = WidgetPlacement.Start;
+                        label.Font = Font.WithWeight(FontWeight.Bold);
+
+                        _layout.PackStart(label, false);
+                        _layout.PackStart(view, false);
+                    }
+
+                    _dayViews[day].Update(url, path, startTime, duration);
+                }
+            }
+        }
+
+        protected override void OnKeyPressed(KeyEventArgs e)
+        {
+            HandleKeyEvent(this, e);
+        }
+
+        private void HandleKeyEvent(object sender, KeyEventArgs e)
+        {
+            FileListView selectedView = _views.FirstOrDefault(v => v.SelectedRow > -1);
+
+            if (selectedView == null)
+            {
+                return;
+            }
+
+            if (e.Key == Key.Up)
+            {
+                if (selectedView.SelectedRow > 0)
+                {
+                    selectedView.SelectPrevious();
+                }
+                else if (selectedView != _views.First())
+                {
+                    selectedView.UnselectAll();
+
+                    int i = _views.IndexOf(selectedView);
+
+                    selectedView = _views[i - 1];
+                    selectedView.SelectLast();
+                }
+
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Down)
+            {
+                if (selectedView.SelectedRow < selectedView.DataSource.RowCount - 1)
+                {
+                    selectedView.SelectNext();
+                }
+                else if (selectedView != _views.Last())
+                {
+                    selectedView.UnselectAll();
+
+                    int i = _views.IndexOf(selectedView);
+
+                    selectedView = _views[i + 1];
+                    selectedView.SelectFirst();
+                }
+
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Return || e.Key == Key.NumPadEnter)
+            {
+                FileSelectionEventArgs args = new FileSelectionEventArgs(selectedView.GetSelectedFile());
+
+                RaiseFileSelected(args);
+            }
+        }
+
+        private void OnFileListSelectionChanged(object sender, EventArgs e)
+        {
+            FileListView view = sender as FileListView;
+
+            if (view == null || view.SelectedRow == -1)
+                return;
+
+            foreach (FileListView v in _views)
+            {
+                if (v == view)
+                    continue;
+                
+                v.UnselectAll();
+            }
+        }
+
+        private void OnFileListFileSelected(object sender, FileSelectionEventArgs e)
+        {
+            RaiseFileSelected(e);
         }
 
         #endregion
@@ -125,11 +237,11 @@ namespace ArtivityExplorer
 
         public FileSelectionEventHandler FileSelected { get; set; }
 
-        private void RaiseFileSelected(string filename)
+        private void RaiseFileSelected(FileSelectionEventArgs e)
         {
             if (FileSelected == null) return;
 
-            FileSelected(this, new FileSelectionEventArgs(filename));
+            FileSelected(this, e);
         }
 
         #endregion

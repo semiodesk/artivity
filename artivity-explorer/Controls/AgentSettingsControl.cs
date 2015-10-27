@@ -7,21 +7,19 @@ using Xwt;
 
 namespace ArtivityExplorer
 {
-    public class AgentSettingsControl : VBox
+    public class AgentSettingsControl : ListView
     {
         #region Members
 
         private ListStore _store;
 
-        private ListView _view;
+        public readonly static DataField<Uri> UriField = new DataField<Uri>();
 
-        private DataField<Uri> _uriField = new DataField<Uri>();
+        public readonly static DataField<bool> EnabledField = new DataField<bool>();
 
-        private DataField<string> _nameField = new DataField<string>();
+        public readonly static DataField<string> NameField = new DataField<string>();
 
-        private DataField<bool> _enabledField = new DataField<bool>();
-
-        private DataField<string> _colourField = new DataField<string>();
+        public readonly static DataField<string> ColourField = new DataField<string>();
 
         #endregion
 
@@ -41,7 +39,7 @@ namespace ArtivityExplorer
             Margin = new WidgetSpacing(6, 7, 6, 7);
 
             // Initialize the list data.
-            _store = new ListStore(_uriField, _enabledField, _nameField, _colourField);
+            _store = new ListStore(UriField, EnabledField, NameField, ColourField);
 
             IModel model = Models.GetAgents();
 
@@ -49,32 +47,22 @@ namespace ArtivityExplorer
             {
                 if (agent.Name == "" || agent.ColourCode == null)
                 {
+                    // We found a corrupted entry in the database.
+                    model.DeleteResource(agent);
+
                     continue;
                 }
 
                 int row = _store.AddRow();
 
-                _store.SetValues(row, _uriField, agent.Uri, _enabledField, agent.IsCaptureEnabled, _nameField, agent.Name, _colourField, agent.ColourCode);
+                _store.SetValues(row, UriField, agent.Uri, EnabledField, agent.IsCaptureEnabled, NameField, agent.Name, ColourField, agent.ColourCode);
             }
 
             // Initialize the list view.
-            CheckBoxCellView enabledView = new CheckBoxCellView();
-            enabledView.ActiveField = _enabledField;
-
-            TextCellView nameView = new TextCellView();
-            nameView.TextField = _nameField;
-
-            TextCellView colourView = new TextCellView();
-            colourView.Editable = true;
-            colourView.TextField = _colourField;
-
-            _view = new ListView();
-            _view.CreateColumn<bool>(enabledView, "Enabled", Alignment.End);
-            _view.CreateColumn<string>(nameView, "Name", Alignment.Start);
-            _view.CreateColumn<string>(colourView, "Colour", Alignment.End);
-            _view.DataSource = _store;
-
-            PackStart(_view, true);
+            Columns.AddCheckBoxColumn(EnabledField, "", Alignment.End);
+            Columns.AddTextColumn(NameField, "Name", Alignment.Start);
+            Columns.AddTextColumn(ColourField, "Colour", Alignment.End, true);
+            DataSource = _store;
         }
 
         public void Save()
@@ -83,14 +71,16 @@ namespace ArtivityExplorer
 
             for (int i = 0; i < _store.RowCount; i++)
             {
-                string colour = _store.GetValue(i, _colourField);
+                string colour = _store.GetValue(i, ColourField);
 
                 Regex expression = new Regex("^#([A-Fa-f0-9]{6})$");
 
                 if (string.IsNullOrEmpty(colour) || !expression.IsMatch(colour))
+                {
                     continue;
+                }
 
-                Uri uri = _store.GetValue(i, _uriField);
+                Uri uri = _store.GetValue(i, UriField);
 
                 SoftwareAgent agent = model.GetResource<SoftwareAgent>(uri);
                 agent.ColourCode = colour;

@@ -45,13 +45,14 @@ namespace ArtivityExplorer.Controls
             Padding = 0;
 
             _journalButton = new Button();
+            _journalButton.Sensitive = false;
             _journalButton.MinWidth = 40;
             _journalButton.MinHeight = 40;
             _journalButton.Image = BitmapImage.FromResource("journal");
             _journalButton.Clicked += OnJournalButtonClicked;
 
             _exportButton = new Button();
-            _exportButton.Sensitive = false;
+            _exportButton.Visible = false;
             _exportButton.MinWidth = 40;
             _exportButton.MinHeight = 40;
             _exportButton.Image = BitmapImage.FromResource("export");
@@ -71,7 +72,6 @@ namespace ArtivityExplorer.Controls
             _journalView = new JournalView();
             _journalView.Visible = true;
             _journalView.FileSelected += OnJournalFileSelected;
-            _journalView.SelectionChanged += OnJournalSelectionChanged;
             _journalView.SetFocus();
 
             _fileView = new FileView();
@@ -87,22 +87,21 @@ namespace ArtivityExplorer.Controls
 
         private void OnJournalButtonClicked(object sender, EventArgs e)
         {
+            _journalButton.Sensitive = false;
             _journalView.Visible = true;
             _journalView.Update();
             _fileView.Visible = false;
+            _exportButton.Visible = false;
         }
 
         private void OnJournalFileSelected(object sender, FileSelectionEventArgs e)
         {
+            _journalButton.Sensitive = true;
             _journalView.Visible = false;
             _fileView.Visible = true;
             _fileView.FileUrl = e.FileName;
             _fileView.Update();
-        }
-
-        private void OnJournalSelectionChanged(object sender, EventArgs e)
-        {
-            _exportButton.Sensitive = true;
+            _exportButton.Visible = true;
         }
 
         private void OnExportButtonClicked(object sender, EventArgs e)
