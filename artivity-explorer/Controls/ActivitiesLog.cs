@@ -15,11 +15,11 @@ namespace ArtivityExplorer.Controls
 		
         public ListStore Store { get; private set; }
 
-		public IDataField<string> AgentField { get; private set; }
-		public IDataField<string> TimeField { get; private set; }
-		public IDataField<string> TypeField { get; private set; }
-        public IDataField<string> DescriptionField { get; private set; }
-		public IDataField<string> DataField { get; private set; }
+        public readonly static IDataField<string> AgentField = new DataField<string>();
+        public readonly static IDataField<string> TimeField = new DataField<string>();
+        public readonly static IDataField<string> TypeField = new DataField<string>();
+        public readonly static IDataField<string> DescriptionField = new DataField<string>();
+        public readonly static IDataField<string> DataField = new DataField<string>();
 
 		#endregion
 
@@ -42,48 +42,10 @@ namespace ArtivityExplorer.Controls
             ExpandHorizontal = true;
             SelectionMode = SelectionMode.Multiple;
 
-			AgentField = new DataField<string>();
-
-            TimeField = new DataField<string>();
-
-			TextCellView timeView = new TextCellView();
-			timeView.TextField = TimeField;
-
-			ListViewColumn timeColumn = new ListViewColumn ("Time", timeView);
-			timeColumn.Alignment = Alignment.End;
-            timeColumn.CanResize = true;
-
-			TypeField = new DataField<string>();
-
-			TextCellView typeView = new TextCellView();
-            typeView.TextField = TypeField;
-
-			ListViewColumn typeColumn = new ListViewColumn ("Event", typeView);
-			typeColumn.Alignment = Alignment.Start;
-            typeColumn.CanResize = true;
-
-            DescriptionField = new DataField<string>();
-
-            TextCellView descriptionView = new TextCellView();
-            descriptionView.TextField = DescriptionField;
-
-            ListViewColumn descriptionColumn = new ListViewColumn ("Description", descriptionView);
-            descriptionColumn.Alignment = Alignment.Start;
-            descriptionColumn.CanResize = true;
-
-			DataField = new DataField<string>();
-
-            TextCellView dataView = new TextCellView();
-            dataView.TextField = DataField;
-
-            ListViewColumn dataColumn = new ListViewColumn ("Details", dataView);
-            dataColumn.Alignment = Alignment.Start;
-            dataColumn.CanResize = true;
-
-            Columns.Add(timeColumn);
-            Columns.Add(typeColumn);
-            Columns.Add(descriptionColumn);
-			Columns.Add(dataColumn);
+            Columns.AddTextColumn(TimeField, "Time", Alignment.Start, false, true);
+            Columns.AddTextColumn(TypeField, "Event", Alignment.Start, false, true);
+            Columns.AddTextColumn(DescriptionField, "Description", Alignment.Start, false, true);
+            Columns.AddTextColumn(DataField, "Data", Alignment.Start, false, true);
 
             Store = new ListStore(AgentField, TimeField, TypeField, DescriptionField, DataField);
 
