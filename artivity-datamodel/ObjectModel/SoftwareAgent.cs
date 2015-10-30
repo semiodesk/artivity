@@ -28,7 +28,9 @@
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
+using System.Drawing;
 
 namespace Artivity.Model.ObjectModel
 {
@@ -37,11 +39,29 @@ namespace Artivity.Model.ObjectModel
     {
 		#region Members
 
-		[RdfProperty(ART.isCaptureEnabled)]
-		public bool IsCaptureEnabled { get; set; }
+        [RdfProperty(ART.isCaptureEnabled), NotifyPropertyChanged]
+		public bool? IsCaptureEnabled { get; set; }
 
-        [RdfProperty(ART.hasColourCode)]
+        [RdfProperty(ART.hasColourCode), NotifyPropertyChanged]
         public string ColourCode { get; set; }
+
+        public Color Colour
+        {
+            get
+            {
+                return ColorTranslator.FromHtml("#FFCC66");
+            }
+            set
+            {
+                ColourCode = ColorTranslator.ToHtml(value);
+            }
+        }
+
+        [RdfProperty(ART.executableName), NotifyPropertyChanged]
+        public string ExecutableName { get; set; }
+
+        [RdfProperty(ART.executablePath), NotifyPropertyChanged]
+        public string ExecutablePath { get; set; }
 
 		#endregion
 

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xwt;
-using Xwt.Drawing;
+using Eto.Forms;
+using Eto.Drawing;
 
 namespace ArtivityExplorer.Controls
 {
-    public class FileStatsPanel : VBox
+    public class FileStatsPanel : StackLayout
     {
         #region Members
 
@@ -25,11 +25,10 @@ namespace ArtivityExplorer.Controls
         {
             InitializeComponent();
 
-            MinWidth = 250;
-            Margin = 0;
+            Width = 250;
             Spacing = 30;
 
-			BackgroundColor = Color.FromBytes(246, 246, 245);
+			BackgroundColor = new Color(246, 246, 245);
         }
 
         #endregion
@@ -38,14 +37,9 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeComponent()
         {
-			EditingWidget.Margin = new WidgetSpacing(10, 10, 20, 0);
-			CompositionWidget.Margin = new WidgetSpacing(10, 0, 20, 0);
-			ColourWidget.Margin = new WidgetSpacing(10, 0, 20, 0);
-            ColourWidget.HorizontalPlacement = WidgetPlacement.Fill;
-
-            PackStart(EditingWidget);
-            PackStart(CompositionWidget);
-            PackStart(ColourWidget);
+            Items.Add(new StackLayoutItem(EditingWidget));
+            Items.Add(new StackLayoutItem(CompositionWidget));
+            Items.Add(new StackLayoutItem(ColourWidget));
         }
 
         #endregion

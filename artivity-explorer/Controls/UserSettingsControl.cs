@@ -1,25 +1,25 @@
 using System;
 using System.Linq;
 using System.IO;
-using Xwt;
-using Xwt.Drawing;
+using Eto.Forms;
+using Eto.Drawing;
 using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
 
 namespace ArtivityExplorer
 {
-    public class UserSettingsControl : HBox
+    public class UserSettingsControl : StackLayout
     {
         #region Members
 
         private Person _user;
 
-        public TextEntry NameEntry;
+        public TextBox NameBox;
 
-        public TextEntry OrganizationEntry;
+        public TextBox OrganizationBox;
 
-        public TextEntry EmailEntry;
+        public TextBox EmailBox;
 
         #endregion
 
@@ -39,9 +39,7 @@ namespace ArtivityExplorer
         {
             IModel model = Models.GetAgents();
 
-            ResourceQuery query = new ResourceQuery(prov.Person);
-
-            _user = model.GetResources<Person>(query).FirstOrDefault();
+            _user = model.GetResources<Person>().FirstOrDefault();
 
             if (_user == null)
             {
@@ -53,71 +51,71 @@ namespace ArtivityExplorer
 
         private void InitializeComponent()
         {
+            Spacing = 14;
+
             Button photoButton = new Button();
-            photoButton.Style = ButtonStyle.Flat;
-            photoButton.ImagePosition = ContentPosition.Top | ContentPosition.Left;
-            photoButton.ExpandHorizontal = false;
-            photoButton.ExpandVertical = false;
-            photoButton.Clicked += OnPhotoButtonClicked;
+            photoButton.Click += OnPhotoButtonClicked;
 
             if (File.Exists(_user.Photo))
             {
-                photoButton.Image = BitmapImage.FromFile(_user.Photo);
+                photoButton.Image = new Bitmap(_user.Photo);
             }
             else
             {
-                photoButton.Image = BitmapImage.FromResource("user");
+                photoButton.Image = Bitmap.FromResource("user");
             }
 
-            VBox column0 = new VBox();
-            column0.PackStart(photoButton);
+            StackLayout column0 = new StackLayout();
+            column0.Items.Add(photoButton);
 
             Label nameLabel = new Label();
             nameLabel.Text = "Name";
 
-            NameEntry = new TextEntry();
-            NameEntry.WidthRequest = 300;
-            NameEntry.Text = _user.Name;
+            NameBox = new TextBox();
+            NameBox.Width = 300;
+            NameBox.Text = _user.Name;
 
             Label organizationLabel = new Label();
             organizationLabel.Text = "Organization";
 
-            OrganizationEntry = new TextEntry();
-            OrganizationEntry.WidthRequest = 300;
-            OrganizationEntry.Text = _user.Organization;
+            OrganizationBox = new TextBox();
+            OrganizationBox.Width = 300;
+            OrganizationBox.Text = _user.Organization;
 
             Label emailLabel = new Label();
             emailLabel.Text = "E-Mail";
 
-            EmailEntry = new TextEntry();
-            EmailEntry.Text = _user.EmailAddress;
+            EmailBox = new TextBox();
+            EmailBox.Width = 300;
+            EmailBox.Text = _user.EmailAddress;
 
-            VBox column1 = new VBox();
+            StackLayout column1 = new StackLayout();
             column1.Spacing = 7;
-            column1.PackStart(nameLabel);
-            column1.PackStart(NameEntry);
-            column1.PackStart(organizationLabel);
-            column1.PackStart(OrganizationEntry);
-            column1.PackStart(emailLabel);
-            column1.PackStart(EmailEntry);
+            column1.Items.Add(nameLabel);
+            column1.Items.Add(NameBox);
+            column1.Items.Add(organizationLabel);
+            column1.Items.Add(OrganizationBox);
+            column1.Items.Add(emailLabel);
+            column1.Items.Add(EmailBox);
 
-            Margin = 7;
+            Orientation = Orientation.Horizontal;
             Spacing = 14;
-            PackStart(column0);
-            PackStart(column1);
+
+            Items.Add(column0);
+            Items.Add(column1);
         }
 
         private void OnPhotoButtonClicked(object sender, System.EventArgs e)
         {
             OpenFileDialog openDialog = new OpenFileDialog();
             openDialog.Filters.Add(new FileDialogFilter("Images", "*.png"));
-            openDialog.Run();
+            openDialog.ShowDialog(this);
 
             if (!string.IsNullOrEmpty(openDialog.FileName))
             {
                 _user.Photo = openDialog.FileName;
 
-                Image avatar = BitmapImage.FromFile(_user.Photo);
+                Image avatar = new Bitmap(_user.Photo);
 
                 Button avatarButton = sender as Button;
                 avatarButton.Image = avatar;
@@ -126,16 +124,16 @@ namespace ArtivityExplorer
 
         public void Save()
         {
-            if (!string.IsNullOrEmpty(NameEntry.Text))
+            if (!string.IsNullOrEmpty(NameBox.Text))
             {
-                _user.Name = NameEntry.Text;
+                _user.Name = NameBox.Text;
             }
 
-            _user.Organization = OrganizationEntry.Text;
+            _user.Organization = OrganizationBox.Text;
 
-            if (!string.IsNullOrEmpty(EmailEntry.Text))
+            if (!string.IsNullOrEmpty(EmailBox.Text))
             {
-                _user.EmailAddress = EmailEntry.Text;
+                _user.EmailAddress = EmailBox.Text;
             }
 
             _user.Commit();

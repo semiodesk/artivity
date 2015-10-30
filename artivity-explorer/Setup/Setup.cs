@@ -245,10 +245,10 @@ namespace ArtivityExplorer
                     agents = store.GetModel(Models.Agents);
                 }
                     
-                InstallAgent(agents, "application://inkscape.desktop/", "Inkscape", "#EE204E", true);
-                InstallAgent(agents, "application://krita.desktop/", "Krita", "#926EAE", true);
-                InstallAgent(agents, "application://chromium-browser.desktop/", "Chromium Browser", "#1F75FE");
-                InstallAgent(agents, "application://firefox-browser.desktop/", "Firefox Browser", "#1F75FE");
+                InstallAgent(agents, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
+                InstallAgent(agents, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
+                InstallAgent(agents, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
+                InstallAgent(agents, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
 
                 if(agents.IsEmpty)
                 {
@@ -290,7 +290,7 @@ namespace ArtivityExplorer
             }
         }
 
-        public static void InstallAgent(IModel model, string uri, string name, string colour, bool captureEnabled = false)
+        public static void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
         {
             Console.WriteLine("Installing agent {0}..", name);
 
@@ -300,6 +300,7 @@ namespace ArtivityExplorer
             {
                 SoftwareAgent agent = model.CreateResource<SoftwareAgent>(agentUri);
                 agent.Name = name;
+                agent.ExecutableName = executableName;
                 agent.IsCaptureEnabled = captureEnabled;
                 agent.ColourCode = colour;
                 agent.Commit();

@@ -3,23 +3,27 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using Semiodesk.Trinity;
-using Xwt;
-using Xwt.Drawing;
+using Eto.Forms;
+using Eto.Drawing;
 using Artivity.Model;
+using System.Diagnostics;
+using Artivity.Model.ObjectModel;
 
 namespace ArtivityExplorer
 {
-    public class JournalView : ScrollView
+    public class JournalView : Scrollable
     {
         #region Members
 
-        private readonly VBox _layout = new VBox();
+        private readonly DynamicLayout _layout = new DynamicLayout() { BackgroundColor = Colors.White, Spacing = new Size(0, 7), DefaultPadding = new Padding(0, 7) };
 
-        private List<FileListView> _views = new List<FileListView>();
+        private List<JournalFileList> _lists = new List<JournalFileList>();
 
-        private Dictionary<DateTime, FileListView> _dayViews = new Dictionary<DateTime, FileListView>();
+        private Dictionary<DateTime, JournalFileList> _dayLists = new Dictionary<DateTime, JournalFileList>();
 
-        private Dictionary<string, FileListView> _fileViews = new Dictionary<string, FileListView>();
+        private Dictionary<string, JournalFileList> _fileLists = new Dictionary<string, JournalFileList>();
+
+        private JournalFileList _selectedList = null;
 
         #endregion
 
@@ -27,42 +31,30 @@ namespace ArtivityExplorer
 
         public JournalView()
         {
-            InitializeComponent();
+            Content = _layout;
+
+            Refresh();
         }
 
         #endregion
 
         #region Methods
 
-        protected virtual void InitializeComponent()
-        {
-            KeyPressed += HandleKeyEvent;
-
-            CanGetFocus = true;
-            ExpandVertical = true;
-
-            Content = _layout;
-            Content.CanGetFocus = false;
-            Content.BackgroundColor = Colors.White;
-
-            Update();
-        }
-
         public void Clear()
         {
             _layout.Clear();
 
-            foreach (FileListView view in _views)
+            foreach (JournalFileList view in _lists)
             {
-                view.FileSelected -= OnFileListFileSelected;
+                view.SelectionChanged -= OnFileListSelectionChanged;
             }
 
-            _views.Clear();
-            _dayViews.Clear();
-            _fileViews.Clear();
+            _lists.Clear();
+            _dayLists.Clear();
+            _fileLists.Clear();
         }
 
-        public void Update()
+        public void Refresh()
         {
             if (_layout.Children.Any())
             {
@@ -75,11 +67,14 @@ namespace ArtivityExplorer
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX dces: <http://purl.org/dc/elements/1.1/>
 
-                SELECT ?startTime ?endTime ?fileUrl WHERE
+                SELECT ?agent ?startTime ?endTime ?fileUrl WHERE
                 {
                        ?activity prov:used ?entity .
                        ?activity prov:startedAtTime ?startTime .
                        ?activity prov:endedAtTime ?endTime .
+                       ?activity prov:qualifiedAssociation ?association .
+
+                       ?association prov:agent ?agent .
 
                        ?entity nfo:fileUrl ?fileUrl .
                 }
@@ -113,122 +108,159 @@ namespace ArtivityExplorer
                     continue;
                 }
 
+                Uri agent = new Uri(binding["agent"].ToString());
                 DateTime startTime = (DateTime)binding["startTime"];
                 DateTime endTime = (DateTime)binding["endTime"];
-                TimeSpan duration = endTime - startTime;
+                TimeSpan editingTime = endTime - startTime;
 
-                if (_fileViews.ContainsKey(path))
+                JournalFileListItem item = new JournalFileListItem()
                 {
-                    _fileViews[path].Update(url, path, startTime, duration);
+                    Agent = agent,
+                    Url = url,
+                    Path = path,
+                    LastEditingDate = startTime,
+                    TotalEditingTime = editingTime
+                };
+                
+                if (_fileLists.ContainsKey(path))
+                {                   
+                    _fileLists[path].Add(item);
                 }
                 else
                 {
                     DateTime day = startTime.RoundToDay();
 
-                    if (!_dayViews.ContainsKey(day))
+                    JournalFileList list;
+
+                    if (!_dayLists.ContainsKey(day))
                     {
-                        FileListView view = new FileListView();
-                        view.ExpandVertical = false;
-                        view.VerticalScrollPolicy = ScrollPolicy.Never;
-                        view.PreviousView = _views.LastOrDefault();
-                        view.FileSelected += OnFileListFileSelected;
-                        view.SelectionChanged += OnFileListSelectionChanged;
+                        list = new JournalFileList(this);
+                        list.SelectionChanged += OnFileListSelectionChanged;
+                        list.CellDoubleClick += OnFileListCellDoubleClicked;
 
-                        _views.Add(view);
-                        _dayViews[day] = view;
-                        _fileViews[path] = view;
+                        _lists.Add(list);
+                        _dayLists[day] = list;
 
-                        Label label = new Label(day.ToString("D"));
-                        label.Margin = new WidgetSpacing(10, 10, 10, 0);
-                        label.HorizontalPlacement = WidgetPlacement.Start;
-                        label.Font = Font.WithWeight(FontWeight.Bold);
+                        Label label = new Label() { Text = day.ToString("D").ToUpperInvariant() };
+                        label.Font = SystemFonts.Label(10);
 
-                        _layout.PackStart(label, false);
-                        _layout.PackStart(view, false);
+                        _layout.AddSeparateRow(new Padding(7, 7, 7, 0), null, true, false, new [] { label });
+                        _layout.AddRow(list);
+                    }
+                    else
+                    {
+                        list = _dayLists[day];
                     }
 
-                    _dayViews[day].Update(url, path, startTime, duration);
+                    _fileLists[path] = list;
+
+                    list.Add(item);
                 }
             }
         }
 
-        protected override void OnKeyPressed(KeyEventArgs e)
+        protected override void OnKeyDown(KeyEventArgs e)
         {
-            HandleKeyEvent(this, e);
-        }
-
-        private void HandleKeyEvent(object sender, KeyEventArgs e)
-        {
-            FileListView selectedView = _views.FirstOrDefault(v => v.SelectedRow > -1);
-
-            if (selectedView == null)
+            if (_selectedList == null)
             {
                 return;
             }
 
-            if (e.Key == Key.Up)
+            if (e.Key == Keys.Up)
             {
-                if (selectedView.SelectedRow > 0)
+                if (_selectedList.SelectedRows.First() > 0)
                 {
-                    selectedView.SelectPrevious();
+                    _selectedList.SelectRow(_selectedList.SelectedRows.First() - 1);
                 }
-                else if (selectedView != _views.First())
+                else if (_selectedList != _lists.First())
                 {
-                    selectedView.UnselectAll();
+                    _selectedList.UnselectAll();
 
-                    int i = _views.IndexOf(selectedView);
+                    int i = _lists.IndexOf(_selectedList);
 
-                    selectedView = _views[i - 1];
-                    selectedView.SelectLast();
+                    _selectedList = _lists[i - 1];
+                    _selectedList.SelectRow(_selectedList.DataStore.Count() - 1);
                 }
 
                 e.Handled = true;
             }
-            else if (e.Key == Key.Down)
+            else if (e.Key == Keys.Down)
             {
-                if (selectedView.SelectedRow < selectedView.DataSource.RowCount - 1)
+                if (_selectedList.SelectedRows.First() < _selectedList.DataStore.Count() - 1)
                 {
-                    selectedView.SelectNext();
+                    _selectedList.SelectRow(_selectedList.SelectedRows.First() + 1);
                 }
-                else if (selectedView != _views.Last())
+                else if (_selectedList != _lists.Last())
                 {
-                    selectedView.UnselectAll();
+                    _selectedList.UnselectAll();
 
-                    int i = _views.IndexOf(selectedView);
+                    int i = _lists.IndexOf(_selectedList);
 
-                    selectedView = _views[i + 1];
-                    selectedView.SelectFirst();
+                    _selectedList = _lists[i + 1];
+                    _selectedList.SelectRow(0);
                 }
 
                 e.Handled = true;
             }
-            else if (e.Key == Key.Return || e.Key == Key.NumPadEnter)
+            else if (e.Key == Keys.Enter)
             {
-                FileSelectionEventArgs args = new FileSelectionEventArgs(selectedView.GetSelectedFile());
+                string filePath = _selectedList.GetSelectedItem().Path;
 
-                RaiseFileSelected(args);
+                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                {
+                    return;
+                }
+
+                RaiseFileSelected(new FileSelectionEventArgs(filePath));
             }
+            else if (e.Key == Keys.F5)
+            {
+                Refresh();
+            }
+        }
+
+        private void OnFileListCellDoubleClicked(object sender, EventArgs e)
+        {
+            IModel agents = Models.GetAgents();
+
+            JournalFileListItem item = _selectedList.GetSelectedItem();
+
+            if (string.IsNullOrEmpty(item.Path) || !File.Exists(item.Path) || !agents.ContainsResource(item.Agent))
+            {
+                return;
+            }
+
+            SoftwareAgent agent = agents.GetResource<SoftwareAgent>(item.Agent);
+
+            if (string.IsNullOrEmpty(agent.ExecutableName))
+            {
+                return;
+            }
+
+            ProcessStartInfo process = new ProcessStartInfo();
+            process.Arguments = item.Path;
+            process.UseShellExecute = true;
+            process.WorkingDirectory = Path.GetDirectoryName(item.Path);
+            process.FileName = agent.ExecutableName;
+
+            Process.Start(process);
         }
 
         private void OnFileListSelectionChanged(object sender, EventArgs e)
         {
-            FileListView view = sender as FileListView;
-
-            if (view == null || view.SelectedRow == -1)
-                return;
-
-            foreach (FileListView v in _views)
+            if (_selectedList == sender)
             {
-                if (v == view)
-                    continue;
-                
-                v.UnselectAll();
+                return;
             }
-        }
 
-        private void OnFileListFileSelected(object sender, FileSelectionEventArgs e)
-        {
-            RaiseFileSelected(e);
+            if (_selectedList != null)
+            {
+                _selectedList.SelectionChanged -= OnFileListSelectionChanged;
+                _selectedList.UnselectAll();
+                _selectedList.SelectionChanged += OnFileListSelectionChanged;
+            }
+
+            _selectedList = sender as JournalFileList;
         }
 
         #endregion

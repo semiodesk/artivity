@@ -2,106 +2,107 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Xwt;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
 using ArtivityExplorer.Parsers;
 using System.IO;
-using Xwt.Drawing;
+using Eto.Forms;
+using Eto.Drawing;
 
 namespace ArtivityExplorer.Controls
 {
-    public class MainWindow : Window
+    public class MainWindow : Form
     {
         #region Members
 
-        private Button _journalButton;
+        private ButtonToolItem _homeButton;
 
-        private Button _exportButton;
+        private ButtonToolItem _exportButton;
 
-        private Button _userButton;
-
-        private JournalView _journalView;
-
-        private FileView _fileView;
+        private ButtonToolItem _settingsButton;
 
         #endregion
 
         #region Constructors
 
-        public MainWindow() : base()
+        public MainWindow()
         {
+            InitializeEnvironment();
             InitializeComponent();
-
-            Closed += HandleClosed;
         }
 
         #endregion
 
         #region Methods
 
-        private void InitializeComponent()
+        private void InitializeEnvironment()
         {
-            Padding = 0;
+            if (Setup.CheckEnvironment())
+            {
+                return;
+            }
 
-            _journalButton = new Button();
-            _journalButton.Sensitive = false;
-            _journalButton.MinWidth = 40;
-            _journalButton.MinHeight = 40;
-            _journalButton.Image = BitmapImage.FromResource("journal");
-            _journalButton.Clicked += OnJournalButtonClicked;
+            Visible = false;
 
-            _exportButton = new Button();
-            _exportButton.Visible = false;
-            _exportButton.MinWidth = 40;
-            _exportButton.MinHeight = 40;
-            _exportButton.Image = BitmapImage.FromResource("export");
-            _exportButton.Clicked += OnExportButtonClicked;
+            using (SetupDialog setup = new SetupDialog())
+            {
+                setup.ShowModal(this);
 
-            _userButton = new UserButton();
-
-            HBox toolbar = new HBox();
-            toolbar.ExpandHorizontal = true;
-            toolbar.VerticalPlacement = WidgetPlacement.Center;
-            toolbar.Margin = new WidgetSpacing(4, 4, 4, 0);
-            toolbar.Spacing = 4;
-            toolbar.PackStart(_journalButton);
-            toolbar.PackStart(_exportButton);
-            toolbar.PackEnd(_userButton);
-
-            _journalView = new JournalView();
-            _journalView.Visible = true;
-            _journalView.FileSelected += OnJournalFileSelected;
-            _journalView.SetFocus();
-
-            _fileView = new FileView();
-            _fileView.Visible = false;
-
-            VBox layout = new VBox();
-            layout.PackStart(toolbar);
-            layout.PackStart(_journalView, true);
-            layout.PackStart(_fileView, true);
-
-            Content = layout;
+                if (setup.Success)
+                {
+                    Visible = true;
+                }
+                else
+                {
+                    Close();
+                }
+            }
         }
 
-        private void OnJournalButtonClicked(object sender, EventArgs e)
+        private void InitializeComponent()
         {
-            _journalButton.Sensitive = false;
-            _journalView.Visible = true;
-            _journalView.Update();
-            _fileView.Visible = false;
-            _exportButton.Visible = false;
+            // Run the setup if not already done.
+            Title = "Artivity Explorer";
+            Icon = Icon.FromResource("icon");
+            ClientSize = new Size(700, 750);
+
+            _homeButton = new HomeToolItem();
+            _homeButton.Click += OnHomeButtonClicked;
+
+            _exportButton = new ExportToolItem();
+            _exportButton.Click += OnExportButtonClicked;
+
+            _settingsButton = new SettingToolItem();
+
+            ToolBar = new ToolBar();
+            ToolBar.TextAlign = ToolBarTextAlign.Right;
+            ToolBar.Items.Add(_homeButton);
+            ToolBar.Items.AddSeparator(0, SeparatorToolItemType.Divider);
+            ToolBar.Items.Add(_exportButton);
+            ToolBar.Items.AddSeparator(0, SeparatorToolItemType.FlexibleSpace);
+            ToolBar.Items.Add(_settingsButton);
+
+            JournalView journalView = new JournalView();
+            journalView.FileSelected += OnJournalFileSelected;
+
+            Content = journalView;
+        }
+
+        private void OnHomeButtonClicked(object sender, EventArgs e)
+        {
+            _homeButton.Enabled = false;
+
+            Content = new JournalView();
         }
 
         private void OnJournalFileSelected(object sender, FileSelectionEventArgs e)
         {
-            _journalButton.Sensitive = true;
-            _journalView.Visible = false;
-            _fileView.Visible = true;
-            _fileView.FileUrl = e.FileName;
-            _fileView.Update();
-            _exportButton.Visible = true;
+            _homeButton.Enabled = true;
+
+            FileView view = new FileView();
+            view.FileUrl = e.FileName;
+
+            Content = view;
         }
 
         private void OnExportButtonClicked(object sender, EventArgs e)
@@ -109,18 +110,13 @@ namespace ArtivityExplorer.Controls
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filters.Add(new FileDialogFilter("RDF/XML", "*.rdf"));
 
-            if (dialog.Run())
+            if (dialog.ShowDialog(this) == DialogResult.Ok)
             {
                 string file = dialog.FileName;
 
                 ExportDialog export = new ExportDialog(file);
-                export.Run();
+                export.ShowModalAsync();
             }
-        }
-
-        private void HandleClosed(object sender, EventArgs e)
-        {
-            Application.Exit();
         }
 
         #endregion

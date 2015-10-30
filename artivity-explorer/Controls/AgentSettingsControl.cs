@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
-using Xwt;
+using Eto.Forms;
+using Eto.Drawing;
 
 namespace ArtivityExplorer
 {
-    public class AgentSettingsControl : ListView
+    public class AgentSettingsControl : GridView
     {
         #region Members
 
-        private ListStore _store;
-
-        public readonly static DataField<Uri> UriField = new DataField<Uri>();
-
-        public readonly static DataField<bool> EnabledField = new DataField<bool>();
-
-        public readonly static DataField<string> NameField = new DataField<string>();
-
-        public readonly static DataField<string> ColourField = new DataField<string>();
+        private ObservableCollection<SoftwareAgent> _agents;
 
         #endregion
 
@@ -36,54 +31,71 @@ namespace ArtivityExplorer
 
         private void InitializeComponent()
         {
-            Margin = new WidgetSpacing(6, 7, 6, 7);
+            _agents = new ObservableCollection<SoftwareAgent>(Models.GetAgents().GetResources<SoftwareAgent>());
 
-            // Initialize the list data.
-            _store = new ListStore(UriField, EnabledField, NameField, ColourField);
+            DataStore = _agents;
 
-            IModel model = Models.GetAgents();
+            Columns.Add(new GridColumn {
+                DataCell = new CheckBoxCell { Binding = Binding.Property<SoftwareAgent, bool?>(a => a.IsCaptureEnabled) },
+                Editable = true,
+                HeaderText = ""
+            });
 
-            foreach (SoftwareAgent agent in model.GetResources<SoftwareAgent>())
+            Columns.Add(new GridColumn {
+                DataCell = new ColourPickerCell { Binding = Binding.Property<SoftwareAgent, string>(a => a.ColourCode) },
+                Editable = true,
+                HeaderText = "",
+                Resizable = false,
+                Width = 30
+            });
+
+            Columns.Add(new GridColumn {
+                DataCell = new TextBoxCell { Binding = Binding.Property<SoftwareAgent, string>(a => a.Name) },
+                Editable = true,
+                HeaderText = "Name",
+                Width = 200
+            });
+
+            Columns.Add(new GridColumn {
+                DataCell = new TextBoxCell { Binding = Binding.Property<SoftwareAgent, string>(a => a.ExecutableName) },
+                Editable = true,
+                HeaderText = "Executable",
+                Width = 150
+            });
+        }
+
+        protected override void OnCellClick(GridViewCellEventArgs e)
+        {
+            base.OnCellClick(e);
+
+            if (e.GridColumn.DataCell is ColourPickerCell)
             {
-                if (agent.Name == "" || agent.ColourCode == null)
-                {
-                    // We found a corrupted entry in the database.
-                    model.DeleteResource(agent);
+                ColourPickerCell cell = e.GridColumn.DataCell as ColourPickerCell;
 
-                    continue;
-                }
+                Color color = Color.Parse(cell.Binding.GetValue(e.Item));
 
-                int row = _store.AddRow();
+                ColorPicker picker = new ColorPicker();
+                picker.Value = color;
 
-                _store.SetValues(row, UriField, agent.Uri, EnabledField, agent.IsCaptureEnabled, NameField, agent.Name, ColourField, agent.ColourCode);
+                Dialog dialog = new Dialog();
+                dialog.Content = picker;
+                dialog.ShowModal();
+
+                cell.Binding.SetValue(e.Item, picker.Value.ToHex());
             }
-
-            // Initialize the list view.
-            Columns.AddCheckBoxColumn(EnabledField, "", Alignment.End);
-            Columns.AddTextColumn(NameField, "Name", Alignment.Start);
-            Columns.AddTextColumn(ColourField, "Colour", Alignment.End, true);
-            DataSource = _store;
         }
 
         public void Save()
         {
-            IModel model = Models.GetAgents();
+            Regex expression = new Regex("^#([A-Fa-f0-9]{6})$");
 
-            for (int i = 0; i < _store.RowCount; i++)
+            foreach (SoftwareAgent agent in _agents)
             {
-                string colour = _store.GetValue(i, ColourField);
-
-                Regex expression = new Regex("^#([A-Fa-f0-9]{6})$");
-
-                if (string.IsNullOrEmpty(colour) || !expression.IsMatch(colour))
+                if (!expression.IsMatch(agent.ColourCode))
                 {
                     continue;
                 }
-
-                Uri uri = _store.GetValue(i, UriField);
-
-                SoftwareAgent agent = model.GetResource<SoftwareAgent>(uri);
-                agent.ColourCode = colour;
+                    
                 agent.Commit();
             }
         }

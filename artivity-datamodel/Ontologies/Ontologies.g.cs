@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 10/27/2015 7:55:26 PM
+// Date: 10/30/2015 4:59:18 PM
 
 using System;
 using System.Collections.Generic;
@@ -6783,6 +6783,18 @@ public class art : Ontology
 
     ///<summary>
     ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/executableName"/>
+    ///</summary>
+    public static readonly Property executableName = new Property(new Uri("http://semiodesk.com/artivity/1.0/executableName"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/executablePath"/>
+    ///</summary>
+    public static readonly Property executablePath = new Property(new Uri("http://semiodesk.com/artivity/1.0/executablePath"));    
+
+    ///<summary>
+    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/hasColourCode"/>
     ///</summary>
     public static readonly Property hasColourCode = new Property(new Uri("http://semiodesk.com/artivity/1.0/hasColourCode"));    
@@ -7092,6 +7104,18 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
     ///</summary>
     public const string isCaptureEnabled = "http://semiodesk.com/artivity/1.0/isCaptureEnabled";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/executableName"/>
+    ///</summary>
+    public const string executableName = "http://semiodesk.com/artivity/1.0/executableName";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/executablePath"/>
+    ///</summary>
+    public const string executablePath = "http://semiodesk.com/artivity/1.0/executablePath";
 
     ///<summary>
     ///

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
-using Xwt;
-using Xwt.Drawing;
+using Eto;
+using Eto.Forms;
+using Eto.Drawing;
 
 namespace ArtivityExplorer
 {
-    public class DialogPage : VBox
+    public class DialogPage : StackLayout
     {
         #region Members
 
@@ -19,15 +20,15 @@ namespace ArtivityExplorer
 
         protected readonly Label TitleLabel = new Label();
 
-        protected readonly VBox ContentHost = new VBox();
+        protected readonly StackLayout ContentHost = new StackLayout();
 
-        public new Widget Content
+        public new Control Content
         {
             get { return ContentHost.Children.FirstOrDefault(); }
             set
             {
-                ContentHost.Clear();
-                ContentHost.PackStart(value, true);
+                ContentHost.Items.Clear();
+                ContentHost.Items.Add(new StackLayoutItem(value, true));
             }
         }
 
@@ -54,28 +55,30 @@ namespace ArtivityExplorer
 
         protected virtual void InitializeComponent()
         {
-            MarginTop = 7;
+            Height = Dialog.Height;
+
             BackgroundColor = Colors.White;
 
-            TitleLabel.Margin = new WidgetSpacing(28, 28, 28, 7);
-            TitleLabel.Font = Font.WithFamily("Helvetica").WithSize(24).WithWeight(FontWeight.Bold);
+            TitleLabel.Font = SystemFonts.Label(24);
 
-            ContentHost.Margin = new WidgetSpacing(28, 7, 28, 7);
+            Orientation = Orientation.Vertical;
+            Spacing = 14;
+            Padding = new Padding(24);
 
             Buttons = new DialogNavigationButtons();
-            Buttons.OkButton.Clicked += OnOkButtonClicked;
-            Buttons.OkButton.Sensitive = false;
+            Buttons.OkButton.Click += OnOkButtonClicked;
+            Buttons.OkButton.Enabled = false;
             Buttons.OkButton.Visible = false;
-            Buttons.CancelButton.Clicked += OnCancelButtonClicked;
-            Buttons.CancelButton.SetFocus();
-            Buttons.NextButton.Sensitive = false;
-            Buttons.NextButton.Clicked += OnNextButtonClicked;
-            Buttons.BackButton.Sensitive = false;
-            Buttons.BackButton.Clicked += OnBackButtonClicked;
+            Buttons.CancelButton.Click += OnCancelButtonClicked;
+            Buttons.CancelButton.Focus();
+            Buttons.NextButton.Enabled = false;
+            Buttons.NextButton.Click += OnNextButtonClicked;
+            Buttons.BackButton.Enabled = false;
+            Buttons.BackButton.Click += OnBackButtonClicked;
 
-            PackStart(TitleLabel, false);
-            PackStart(ContentHost, true);
-            PackStart(Buttons, false);
+            Items.Add(new StackLayoutItem(TitleLabel, HorizontalAlignment.Left));
+            Items.Add(new StackLayoutItem(ContentHost, HorizontalAlignment.Stretch, true));
+            Items.Add(new StackLayoutItem(Buttons, HorizontalAlignment.Right));
         }
 
         protected virtual void OnOkButtonClicked(object sender, EventArgs e)

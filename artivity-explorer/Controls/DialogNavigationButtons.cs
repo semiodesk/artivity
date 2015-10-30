@@ -1,9 +1,9 @@
 ﻿using System;
-using Xwt;
+using Eto.Forms;
 
 namespace ArtivityExplorer
 {
-    public class DialogNavigationButtons : HBox
+    public class DialogNavigationButtons : StackLayout
     {
         #region Members
 
@@ -21,30 +21,32 @@ namespace ArtivityExplorer
 
         public DialogNavigationButtons()
         {
+            Orientation = Orientation.Horizontal;
+
+            Spacing = 7;
+
             OkButton = new Button();
-            OkButton.MinWidth = 100;
-            OkButton.Label = "OK";
+            OkButton.Width = 100;
+            OkButton.Text = "OK";
+            OkButton.Visible = false;
 
             CancelButton = new Button();
-            CancelButton.MinWidth = 100;
-            CancelButton.Label = "Cancel";
+            CancelButton.Width = 100;
+            CancelButton.Text = "Cancel";
 
             NextButton = new Button();
-            NextButton.MinWidth = 100;
-            NextButton.Label = "Next >";
+            NextButton.Width = 100;
+            NextButton.Text = "Next >";
 
             BackButton = new Button();
-            BackButton.MinWidth = 100;
-            BackButton.Label = "< Back";
+            BackButton.Width = 100;
+            BackButton.Text = "< Back";
 
-            Margin = 14;
-            Spacing = 7;
-            PackEnd(CancelButton);
-            PackEnd(OkButton);
-            PackEnd(NextButton);
-            PackEnd(BackButton);
-
-            Show();
+            Items.Add(new StackLayoutItem(null, true));
+            Items.Add(new StackLayoutItem(CancelButton));
+            Items.Add(new StackLayoutItem(OkButton));
+            Items.Add(new StackLayoutItem(NextButton));
+            Items.Add(new StackLayoutItem(BackButton));
         }
 
         #endregion
@@ -53,21 +55,21 @@ namespace ArtivityExplorer
 
         protected override void OnGotFocus(EventArgs e)
         {
-            if (OkButton.Visible && OkButton.Sensitive)
+            if (OkButton.Visible && OkButton.Enabled)
             {
-                OkButton.SetFocus();
+                OkButton.Focus();
             }
-            else if (NextButton.Visible && NextButton.Sensitive)
+            else if (NextButton.Visible && NextButton.Enabled)
             {
-                NextButton.SetFocus();
+                NextButton.Focus();
             }
-            else if (BackButton.Visible && BackButton.Sensitive)
+            else if (BackButton.Visible && BackButton.Enabled)
             {
-                BackButton.SetFocus();
+                BackButton.Focus();
             }
             else
             {
-                CancelButton.SetFocus();
+                CancelButton.Focus();
             }
         }
 

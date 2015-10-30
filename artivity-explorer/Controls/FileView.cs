@@ -1,16 +1,16 @@
 ﻿using System;
 using ArtivityExplorer.Controls;
-using Xwt;
+using Eto.Forms;
 using System.IO;
 using ArtivityExplorer.Parsers;
 
 namespace ArtivityExplorer
 {
-    public class FileView : VBox
+    public class FileView : StackLayout
     {
         #region Members
 
-        private ActivitiesChart _chart = new ActivitiesChart();
+        //private ActivitiesChart _chart = new ActivitiesChart();
 
         private ActivitiesLog _log = new ActivitiesLog();
 
@@ -33,18 +33,18 @@ namespace ArtivityExplorer
 
         private void InitializeComponent()
         {
-            Margin = 0;
+            Orientation = Orientation.Horizontal;
             Spacing = 0;
 
             // Initialize the content layout.
-            HBox content = new HBox();
-            content.PackStart(_statsPanel);
-            content.PackStart( _log, true);
+            StackLayout content = new StackLayout();
+            content.Orientation = Orientation.Horizontal;
+            content.Items.Add(new StackLayoutItem(_statsPanel));
+            content.Items.Add(new StackLayoutItem( _log, true));
             content.Spacing = 0;
-            content.Margin = 0;
 
-            PackStart(_chart);
-            PackStart(content, true);
+            //Items.Add(new StackLayoutItem(_chart));
+            Items.Add(new StackLayoutItem(content, true));
         }
 
         public void Update()
@@ -68,12 +68,11 @@ namespace ArtivityExplorer
 
             _statsPanel.EditingWidget.Update(FileUrl);
 
-            _log.Reset();
             _log.LoadInfluences(FileUrl);
 
-            _chart.Reset();
-            _chart.LoadActivities(FileUrl);
-            _chart.LoadActivityInfluences(FileUrl);
+            //_chart.Reset();
+            //_chart.LoadActivities(FileUrl);
+            //_chart.LoadActivityInfluences(FileUrl);
         }
 
         #endregion

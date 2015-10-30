@@ -7,9 +7,9 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ArtivityExplorer</RootNamespace>
     <AssemblyName>artivity-explorer</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <StartupObject>ArtivityExplorer.Program</StartupObject>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,18 +39,13 @@
     <Compile Include="Controls\Widgets\ColourBox.cs" />
     <Compile Include="Controls\Widgets\ColourWidget.cs" />
     <Compile Include="Controls\Widgets\CompositionWidget.cs" />
-    <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Parsers\SvgStats.cs" />
     <Compile Include="Parsers\SvgStatsParser.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Controls\Widgets\UserButton.cs" />
     <Compile Include="Dialogs\SettingsDialog.cs" />
-    <Compile Include="Dialogs\SetupDialog.cs" />
     <Compile Include="Dialogs\ExportDialog.cs" />
     <Compile Include="Controls\DialogPage.cs" />
-    <Compile Include="Dialogs\Pages\WelcomePage.cs" />
-    <Compile Include="Dialogs\Pages\SetupPage.cs" />
     <Compile Include="Setup\Setup.cs" />
     <Compile Include="Controls\DialogButtons.cs" />
     <Compile Include="Controls\DialogNavigationButtons.cs" />
@@ -62,7 +57,16 @@
     <Compile Include="Controls\FileSelectionEventHandler.cs" />
     <Compile Include="Controls\JournalView.cs" />
     <Compile Include="Controls\FileStatsPanel.cs" />
-    <Compile Include="Controls\FileListView.cs" />
+    <Compile Include="Controls\ToolItems\HomeToolItem.cs" />
+    <Compile Include="Controls\ToolItems\SettingsToolItem.cs" />
+    <Compile Include="Controls\ToolItems\ExportToolItem.cs" />
+    <Compile Include="Controls\JournalFileList.cs" />
+    <Compile Include="Controls\JournalFileListItem.cs" />
+    <Compile Include="Controls\Cells\ColourPickerCell.cs" />
+    <Compile Include="Controls\ColourPickerDialog.cs" />
+    <Compile Include="Dialogs\SetupDialog.cs" />
+    <Compile Include="Dialogs\Pages\SetupReadyPage.cs" />
+    <Compile Include="Dialogs\Pages\SetupWelcomePage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -85,38 +89,54 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Core" />
-    <Reference Include="VDS.Common">
-      <HintPath>..\packages\VDS.Common.1.5.0\lib\net40-client\VDS.Common.dll</HintPath>
+    <Reference Include="System.Data" />
+    <Reference Include="Eto">
+      <HintPath>..\packages\Eto.Forms.2.1.0\lib\net45\Eto.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Eto.Gtk3">
+      <HintPath>..\packages\Eto.Platform.Gtk3.2.1.0\lib\net45\Eto.Gtk3.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMac">
+      <HintPath>..\packages\Eto.Platform.Mac.2.1.0\lib\net45\MonoMac.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.Mac">
+      <HintPath>..\packages\Eto.Platform.Mac.2.1.0\lib\net45\Eto.Mac.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.Wpf">
+      <HintPath>..\packages\Eto.Platform.Wpf.2.1.0\lib\net45\Eto.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="dotNetRDF">
-      <HintPath>..\packages\dotNetRDF.1.0.8.3533\lib\net40\dotNetRDF.dll</HintPath>
-    </Reference>
-    <Reference Include="dotNetRDF.Data.Virtuoso">
-      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.8.3533\lib\net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenLink.Data.Virtuoso">
-      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.8.3533\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.97\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot">
-      <HintPath>..\packages\OxyPlot.Core.1.0.0-unstable1870\lib\net40\OxyPlot.dll</HintPath>
+      <HintPath>..\packages\OxyPlot.Core.2014.1.474\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.Xwt">
-      <HintPath>..\packages\OxyPlot.Xwt.1.0.0-unstable1870\lib\net40\OxyPlot.Xwt.dll</HintPath>
+    <Reference Include="VDS.Common">
+      <HintPath>..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Xwt">
-      <HintPath>References\Xwt.dll</HintPath>
+    <Reference Include="dotNetRDF">
+      <HintPath>..\packages\dotNetRDF.1.0.9.3683\lib\net40\dotNetRDF.dll</HintPath>
     </Reference>
-    <Reference Include="Xwt.Gtk">
-      <HintPath>References\Xwt.Gtk.dll</HintPath>
+    <Reference Include="virtado4">
+      <HintPath>..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net40\virtado4.dll</HintPath>
+    </Reference>
+    <Reference Include="dotNetRDF.Data.Virtuoso">
+      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenLink.Data.Virtuoso">
+      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.104\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.OxyPlot">
+      <HintPath>..\packages\Eto.OxyPlot.1.0.5377.38510\lib\net45\Eto.OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.OxyPlot.Wpf">
+      <HintPath>..\packages\Eto.OxyPlot.Wpf.1.0.5377.38510\lib\net45\Eto.OxyPlot.Wpf.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -135,8 +155,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dialogs\" />
-    <Folder Include="Dialogs\Pages\" />
     <Folder Include="Setup\" />
+    <Folder Include="Controls\ToolItems\" />
+    <Folder Include="Controls\Cells\" />
+    <Folder Include="Dialogs\Pages\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

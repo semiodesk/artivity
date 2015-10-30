@@ -1,63 +1,30 @@
 using System;
-using Xwt;
-using Xwt.Drawing;
+using Artivity.Model;
 using ArtivityExplorer.Controls;
+using Eto.Forms;
+using Eto.Drawing;
 
 namespace ArtivityExplorer
 {
 	public class Program
 	{
+        [STAThread]
 		static void Main ()
 		{
-			Artivity.Model.SemiodeskDiscovery.Discover();
-
-			Application.Initialize(ToolkitType.Gtk);
+			SemiodeskDiscovery.Discover();
 
             if (!Setup.HasModels() && !Setup.InstallModels())
             {
-                throw new Exception("Failed to setup RDF datamodels.");
+                throw new Exception("Failed to setup the database.");
             }
 
-            if (!Setup.CheckEnvironment())
-            {
-                ShowSetup();
-            }
-            else
-            {
-                ShowExplorer();
-            }
-		}
+            Application app = new Application();
 
-        static void ShowSetup()
-        {
-            using (SetupDialog setup = new SetupDialog())
-            {
-                setup.Closed += (object sender, EventArgs e) => 
-                {
-                    if(setup.Success)
-                    {
-                        ShowExplorer();
-                    }
-                };
-                
-                setup.Show();
-                setup.Run();
-            }
-        }
-
-        static void ShowExplorer()
-        {
             using (MainWindow window = new MainWindow())
             {
-                window.Title = "Artivity Explorer";
-                window.Icon = Image.FromResource("icon");
-                window.Width = 800;
-                window.Height = 700;
-                window.Show();
-
-                Application.Run();
+                app.Run(window);
             }
-        }
+		}
 	}
 }
 

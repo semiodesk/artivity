@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using System.IO;
-using Xwt;
-using Xwt.Drawing;
+using Eto.Forms;
+using Eto.Drawing;
 using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
@@ -39,17 +39,23 @@ namespace ArtivityExplorer
             _userSettings = new UserSettingsControl();
             _agentSettings = new AgentSettingsControl();
 
-            Notebook notebook = new Notebook();
-            notebook.Add(_userSettings, "User");
-            notebook.Add(_agentSettings, "Applications");
+            TabControl notebook = new TabControl();
+            notebook.Pages.Add(new TabPage(_userSettings, new Padding(7)) { Text = "User" });
+            notebook.Pages.Add(new TabPage(_agentSettings, new Padding(7)) { Text = "Applications"});
 
             DialogButtons buttons = new DialogButtons();
-            buttons.OkButton.Clicked += OnOkButtonClicked;
-            buttons.CancelButton.Clicked += OnCancelButtonClicked;
+            buttons.OkButton.Click += OnOkButtonClicked;
+            buttons.CancelButton.Click += OnCancelButtonClicked;
 
-            VBox layout = new VBox();
-            layout.PackStart(notebook, true);
-            layout.PackStart(buttons);
+            AbortButton = buttons.CancelButton;
+            DefaultButton = buttons.OkButton;
+
+            TableLayout layout = new TableLayout();
+            layout.Height = 500;
+            layout.Spacing = new Size(0, 7);
+            layout.Padding = new Padding(7, 0);
+            layout.Rows.Add(new TableRow(notebook) { ScaleHeight = true });
+            layout.Rows.Add(new TableRow(buttons));
 
             Content = layout;
         }
