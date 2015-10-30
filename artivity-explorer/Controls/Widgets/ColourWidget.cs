@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xwt;
-using Xwt.Drawing;
+using Eto.Forms;
+using Eto.Drawing;
 using ArtivityExplorer.Parsers;
 
 namespace ArtivityExplorer.Controls
 {
-    public class ColourWidget : Table
+    public class ColourWidget : TableLayout
     {
         #region Members
 
-        private readonly Label _colourLabel = new Label("Colours");
+        private Label _colours;
 
-        private readonly Label _colourCountLabel = new Label() { TextAlignment = Alignment.End, Text = "0" };
+        private Label _coloursCount;
 
-        private readonly ColourBox _colourBox = new ColourBox();
+        private ColourBox _colourBox;
 
         #endregion
 
@@ -33,29 +33,26 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeComponent()
         {
-			Color color = Color.FromBytes(49, 55, 57);
+            Color color = new Color(49, 55, 57);
 
-			ImageView icon = new ImageView(BitmapImage.FromResource("colour"));
+            var icon = new ImageView() { Image = Bitmap.FromResource("colour") };
+            var title = new Label() { Text = "Colour", TextColor = color };
 
-			Add(icon, 0, 0);
+            Rows.Add(new TableRow(new TableCell(icon), new TableCell(title)));
 
-            Label title = new Label("Colour");
-            title.Font = Font.WithWeight(FontWeight.Semibold);
-            title.TextColor = color;
+            _colours = new Label() { Text = "Colours", TextColor = color };
+            _coloursCount = new Label() { Text = "0", TextColor = color };
 
-            Add(title, 1, 0);
+            Rows.Add(new TableRow(new TableCell(_colours), new TableCell(_coloursCount)));
 
-            _colourLabel.TextColor = color;
-            _colourCountLabel.TextColor = color;
+            _colourBox = new ColourBox();
 
-            Add(_colourLabel, 1, 1, 1, 1, true);
-            Add(_colourCountLabel, 2, 1);
-            Add(_colourBox, 1, 2, 2, 2, true);
+            Rows.Add(new TableRow(new TableCell(_colourBox, true)));
         }
 
         public void Update(SvgStats stats)
         {
-            _colourCountLabel.Text = stats.Colours.Count().ToString();
+            _coloursCount.Text = stats.Colours.Count().ToString();
             _colourBox.Update(stats.Colours);
         }
 

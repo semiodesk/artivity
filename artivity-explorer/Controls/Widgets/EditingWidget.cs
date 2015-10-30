@@ -2,38 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xwt;
-using Xwt.Drawing;
+using Eto.Forms;
+using Eto.Drawing;
 using ArtivityExplorer.Parsers;
 using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
+using System.Collections.ObjectModel;
 
 namespace ArtivityExplorer.Controls
 {
-    public class EditingWidget : Table
+    public class EditingWidget : TableLayout
     {
         #region Members
 
-        private readonly Label _sessionLabel = new Label("Sessions");
+        private Label _sessions;
 
-        private readonly Label _sessionCountLabel = new Label() { TextAlignment = Alignment.End, Text = "0" };
+        private Label _sessionsCount;
 
-        private readonly Label _stepLabel = new Label("Steps");
+        private Label _steps;
 
-        private readonly Label _updateCountLabel = new Label() { TextAlignment = Alignment.End, Text = "0" };
+        private Label _stepsCount;
 
-        private readonly Label _undoLabel = new Label("  Undos");
+        private Label _undos;
 
-        private readonly Label _undoCountLabel = new Label() { TextAlignment = Alignment.End, Text = "0" };
+        private Label _undosCount;
 
-        private readonly Label _redoLabel = new Label("  Redos");
+        private Label _redos;
 
-        private readonly Label _redoCountLabel = new Label() { TextAlignment = Alignment.End, Text = "0" };
+        private Label _redosCount;
 
-        private readonly Label _confidenceLabel = new Label("Confidence");
+        private Label _confidence;
 
-        private readonly Label _confidenceValueLabel = new Label() { TextAlignment = Alignment.End, Text = "0" };
+        private Label _confidenceValue;
 
         #endregion
 
@@ -50,47 +51,37 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeComponent()
         {
-			Color color = Color.FromBytes(49, 55, 57);
+			Color color = new Color(49, 55, 57);
 
-			ImageView icon = new ImageView(BitmapImage.FromResource("edit"));
+            var icon = new ImageView() { Image = Bitmap.FromResource("edit") };
+            var title = new Label() { Text = "Editing", TextColor = color };
 
-			Add(icon, 0, 0);
+            Rows.Add(new TableRow(new TableCell(icon), new TableCell(title)));
 
-            Label title = new Label("Editing");
-            title.Font = Font.WithWeight(FontWeight.Semibold);
-            title.TextColor = color;
+            _sessions = new Label() { Text = "Sessions", TextColor = color };
+            _sessionsCount = new Label() { Text = "0", TextColor = color };
 
-            Add(title, 1, 0);
+            Rows.Add(new TableRow(new TableCell(_sessions), new TableCell(_sessionsCount)));
 
-            _sessionLabel.TextColor = color;
-            _sessionCountLabel.TextColor = color;
+            _steps = new Label() { Text = "Steps", TextColor = color };
+            _stepsCount = new Label() { Text = "0", TextColor = color };
 
-            Add(_sessionLabel, 1, 1, 1, 1, true);
-            Add(_sessionCountLabel, 2, 1);
+            Rows.Add(new TableRow(new TableCell(_steps), new TableCell(_stepsCount)));
 
-            _stepLabel.TextColor = color;
-            _updateCountLabel.TextColor = color;
+            _undos = new Label() { Text = "Undos", TextColor = color };
+            _undosCount = new Label() { Text = "0", TextColor = color };
 
-            Add(_stepLabel, 1, 2, 1, 1, true);
-            Add(_updateCountLabel, 2, 2);
+            Rows.Add(new TableRow(new TableCell(_undos), new TableCell(_undosCount)));
 
-            _undoLabel.TextColor = color;
-            _undoCountLabel.TextColor = color;
+            _redos = new Label() { Text = "Redos", TextColor = color };
+            _redosCount = new Label() { Text = "0", TextColor = color };
 
-            Add(_undoLabel, 1, 3, 1, 1, true);
-            Add(_undoCountLabel, 2, 3);
+            Rows.Add(new TableRow(new TableCell(_redos), new TableCell(_redosCount)));
 
-            _redoLabel.TextColor = color;
-            _redoCountLabel.TextColor = color;
+            _confidence = new Label() { Text = "Confidence", TextColor = color };
+            _confidenceValue = new Label() { Text = "0", TextColor = color };
 
-            Add(_redoLabel, 1, 4, 1, 1, true);
-            Add(_redoCountLabel, 2, 4);
-
-            _confidenceLabel.TextColor = color;
-            _confidenceValueLabel.TextColor = color;
-
-            Add(_confidenceLabel, 1, 5, 1, 1, true);
-            Add(_confidenceValueLabel, 2, 5);
+            Rows.Add(new TableRow(new TableCell(_confidence), new TableCell(_confidenceValue)));
         }
 
 		public void Update(string fileUrl)
@@ -102,18 +93,18 @@ namespace ArtivityExplorer.Controls
             double undoCount = GetUndoCount(model, fileUrl);
             double redoCount = GetRedoCount(model, fileUrl);
 
-			_sessionCountLabel.Text = sessionCount.ToString();
-			_updateCountLabel.Text = stepCount.ToString();
-			_undoCountLabel.Text = undoCount.ToString();
-			_redoCountLabel.Text = redoCount.ToString();
+			_sessionsCount.Text = sessionCount.ToString();
+			_stepsCount.Text = stepCount.ToString();
+			_undosCount.Text = undoCount.ToString();
+			_redosCount.Text = redoCount.ToString();
 
 			if (stepCount > 0)
 			{
-				_confidenceValueLabel.Text = Math.Round((stepCount - undoCount + redoCount) / stepCount, 2).ToString();
+				_confidenceValue.Text = Math.Round((stepCount - undoCount + redoCount) / stepCount, 2).ToString();
 			}
 			else
 			{
-				_confidenceValueLabel.Text = "0";
+				_confidenceValue.Text = "0";
 			}
 		}
 

@@ -1,8 +1,8 @@
 using System;
-using Xwt;
-using Semiodesk.Trinity;
 using System.IO;
+using Semiodesk.Trinity;
 using Artivity.Model;
+using Eto.Forms;
 
 namespace ArtivityExplorer
 {
@@ -16,23 +16,23 @@ namespace ArtivityExplorer
 
             Title = "Exporting..";
 
-            Button exportButton = new Button("Cancel");
-            exportButton.Clicked += OnCancelButtonClicked;
+            Button exportButton = new Button() { Text = "Cancel" };
+            exportButton.Click += OnCancelButtonClicked;
 
-            HBox buttons = new HBox();
-            buttons.PackEnd(exportButton);
+            StackLayout buttons = new StackLayout();
+            buttons.Items.Add(exportButton);
 
-            VBox layout = new VBox();
-            layout.PackStart(new ProgressBar() { Indeterminate = true });
-            layout.PackStart(buttons);
+            StackLayout layout = new StackLayout();
+            layout.Items.Add(new ProgressBar() { Indeterminate = true });
+            layout.Items.Add(buttons);
 
             Content = layout;
+
+            Shown += OnShown;
         }
-
-        protected override void OnShown()
+            
+        private void OnShown(object sender, EventArgs e)
         {
-            base.OnShown();
-
             using (FileStream stream = new FileStream(_filename, FileMode.Create))
             {
                 IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");

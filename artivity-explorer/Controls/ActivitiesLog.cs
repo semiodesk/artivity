@@ -2,27 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xwt;
 using Semiodesk.Trinity;
 using Artivity.Model.ObjectModel;
 using Artivity.Model;
+using Eto.Forms;
 
 namespace ArtivityExplorer.Controls
 {
-    public class ActivitiesLog : ListView
+    public class ActivitiesLog : GridView
     {
-		#region Members
-		
-        public ListStore Store { get; private set; }
-
-        public readonly static IDataField<string> AgentField = new DataField<string>();
-        public readonly static IDataField<string> TimeField = new DataField<string>();
-        public readonly static IDataField<string> TypeField = new DataField<string>();
-        public readonly static IDataField<string> DescriptionField = new DataField<string>();
-        public readonly static IDataField<string> DataField = new DataField<string>();
-
-		#endregion
-
         #region Constructors
 
         public ActivitiesLog()
@@ -36,25 +24,12 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeComponent()
         {
-            Margin = 0;
-            HeadersVisible = true;
-            BorderVisible = false;
-            ExpandHorizontal = true;
-            SelectionMode = SelectionMode.Multiple;
+            ShowHeader = true;
 
-            Columns.AddTextColumn(TimeField, "Time", Alignment.Start, false, true);
-            Columns.AddTextColumn(TypeField, "Event", Alignment.Start, false, true);
-            Columns.AddTextColumn(DescriptionField, "Description", Alignment.Start, false, true);
-            Columns.AddTextColumn(DataField, "Data", Alignment.Start, false, true);
-
-            Store = new ListStore(AgentField, TimeField, TypeField, DescriptionField, DataField);
-
-            DataSource = Store;
-        }
-
-        public void Reset()
-        {
-            Store.Clear();
+//            Columns.AddTextColumn(TimeField, "Time", Alignment.Start, false, true);
+//            Columns.AddTextColumn(TypeField, "Event", Alignment.Start, false, true);
+//            Columns.AddTextColumn(DescriptionField, "Description", Alignment.Start, false, true);
+//            Columns.AddTextColumn(DataField, "Data", Alignment.Start, false, true);
         }
 
         public void LoadInfluences(string fileUrl)
@@ -118,42 +93,42 @@ namespace ArtivityExplorer.Controls
 
         private void CreateRows(ISparqlQueryResult result)
         {
-            foreach (BindingSet binding in result.GetBindings())
-            {
-                int row = Store.AddRow();
-
-                Store.SetValue(row, AgentField, binding["agent"].ToString());
-
-                DateTime time = (DateTime)binding["influenceTime"];
-
-                // Set the formatted date time.
-                Store.SetValue(row, TimeField, time.ToString("HH:mm:ss")); 
-
-                if (!(binding["influenceType"] is DBNull))
-                {
-                    Store.SetValue(row, TypeField, ToDisplayString(binding["influenceType"].ToString()));
-                }
-                    
-                if (!(binding["description"] is DBNull))
-                {
-                    Store.SetValue(row, DescriptionField, binding["description"].ToString());
-                }
-
-                UriRef entityType = new UriRef(binding["entityType"].ToString());
-
-                if (entityType == nfo.FileDataObject.Uri)
-                {
-                    string value = binding["value"].ToString();
-
-                    Store.SetValue(row, DataField, value);
-                }
-                else
-                {
-                    UriRef entityUri = new UriRef(binding["entity"].ToString());
-
-                    Store.SetValue(row, DataField, entityUri.Host);
-                }
-            }
+//            foreach (BindingSet binding in result.GetBindings())
+//            {
+//                int row = Store.AddRow();
+//
+//                Store.SetValue(row, AgentField, binding["agent"].ToString());
+//
+//                DateTime time = (DateTime)binding["influenceTime"];
+//
+//                // Set the formatted date time.
+//                Store.SetValue(row, TimeField, time.ToString("HH:mm:ss")); 
+//
+//                if (!(binding["influenceType"] is DBNull))
+//                {
+//                    Store.SetValue(row, TypeField, ToDisplayString(binding["influenceType"].ToString()));
+//                }
+//                    
+//                if (!(binding["description"] is DBNull))
+//                {
+//                    Store.SetValue(row, DescriptionField, binding["description"].ToString());
+//                }
+//
+//                UriRef entityType = new UriRef(binding["entityType"].ToString());
+//
+//                if (entityType == nfo.FileDataObject.Uri)
+//                {
+//                    string value = binding["value"].ToString();
+//
+//                    Store.SetValue(row, DataField, value);
+//                }
+//                else
+//                {
+//                    UriRef entityUri = new UriRef(binding["entity"].ToString());
+//
+//                    Store.SetValue(row, DataField, entityUri.Host);
+//                }
+//            }
         }
             
         private string ToDisplayString(string uri)

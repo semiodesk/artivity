@@ -2,21 +2,20 @@
 using OxyPlot.Axes;
 using OxyPlot.Annotations;
 using OxyPlot.Series;
-using OxyPlot.Xwt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Semiodesk.Trinity;
-using Xwt;
-using Xwt.Drawing;
 using Artivity.Model.ObjectModel;
 using Artivity.Model;
-using System.Threading.Tasks;
+using Eto.Forms;
+using Eto.OxyPlot;
 
 namespace ArtivityExplorer.Controls
 {
-    public class ActivitiesChart : PlotView
+    public class ActivitiesChart : Plot
     {
 		#region Members
 
@@ -42,9 +41,9 @@ namespace ArtivityExplorer.Controls
 
         public ActivitiesChart()
         {
-			BackgroundColor = Color.FromBytes(49, 55, 57);
-            MinHeight = 150;
-            Margin = 0;
+//			BackgroundColor = Color.FromBytes(49, 55, 57);
+//            MinHeight = 150;
+//            Margin = 0;
 
             InitializeAgents();
 
@@ -71,7 +70,7 @@ namespace ArtivityExplorer.Controls
 
         public void Reset()
         {
-            Clear();
+//            Clear();
 
             _series.Clear();
 			_annotations.Clear();
@@ -79,57 +78,57 @@ namespace ArtivityExplorer.Controls
 
 			_maxY = 1;
 
-            _x = new DateTimeAxis()
-            {
-                Position = AxisPosition.Bottom,
-                FontSize = 9,
-                TextColor = OxyColors.LightGray,
-                TicklineColor = OxyColors.LightGray,
-                IntervalType = DateTimeIntervalType.Days,
-                MajorGridlineColor = OxyColor.FromRgb(66, 66, 66),
-                MinorTickSize = 60,
-                MinorIntervalType = DateTimeIntervalType.Minutes,
-                StringFormat = "HH:mm",
-                IsZoomEnabled = true,
-                IsPanEnabled = true,
-            };
+//            _x = new DateTimeAxis()
+//            {
+//                Position = AxisPosition.Bottom,
+//                FontSize = 9,
+//                TextColor = OxyColors.LightGray,
+//                TicklineColor = OxyColors.LightGray,
+//                IntervalType = DateTimeIntervalType.Days,
+//                MajorGridlineColor = OxyColor.FromRgb(66, 66, 66),
+//                MinorTickSize = 60,
+//                MinorIntervalType = DateTimeIntervalType.Minutes,
+//                StringFormat = "HH:mm",
+//                IsZoomEnabled = true,
+//                IsPanEnabled = true,
+//            };
+//
+//            _y = new LinearAxis()
+//            {
+//                Position = AxisPosition.Left,
+//                FontSize = 9,
+//                TextColor = OxyColors.LightGray,
+//                TicklineColor = OxyColors.LightGray,
+//				Maximum = 30,
+//                MajorTickSize = 10,
+//                MajorStep = 10,
+//                MajorGridlineStyle = LineStyle.Dot,
+//                MajorGridlineThickness = 1,
+//                MajorGridlineColor = OxyColor.FromRgb(88, 88, 88),
+//                MinorGridlineStyle = LineStyle.Dot,
+//                MinorGridlineThickness = 1,
+//                MinorGridlineColor = OxyColor.FromRgb(66, 66, 66),
+//                IsZoomEnabled = false,
+//                IsPanEnabled = false
+//            };
 
-            _y = new LinearAxis()
-            {
-                Position = AxisPosition.Left,
-                FontSize = 9,
-                TextColor = OxyColors.LightGray,
-                TicklineColor = OxyColors.LightGray,
-				Maximum = 30,
-                MajorTickSize = 10,
-                MajorStep = 10,
-                MajorGridlineStyle = LineStyle.Dot,
-                MajorGridlineThickness = 1,
-                MajorGridlineColor = OxyColor.FromRgb(88, 88, 88),
-                MinorGridlineStyle = LineStyle.Dot,
-                MinorGridlineThickness = 1,
-                MinorGridlineColor = OxyColor.FromRgb(66, 66, 66),
-                IsZoomEnabled = false,
-                IsPanEnabled = false
-            };
-
-            Model = new PlotModel();
-            Model.Title = "Influences / Min";
-            Model.TitleFontSize = 9;
-            Model.TitleFontWeight = 0.5;
-            Model.TitleColor = OxyColors.White;
-            Model.PlotAreaBorderColor = OxyColor.FromRgb(88, 88, 88);
-            Model.PlotAreaBorderThickness = new OxyThickness(0, 0, 0, 1);
-            Model.LegendOrientation = LegendOrientation.Horizontal;
-            Model.LegendPlacement = LegendPlacement.Outside;
-            Model.LegendPosition = LegendPosition.BottomCenter;
-            Model.LegendBackground = OxyColors.Transparent;
-            Model.LegendBorder = OxyColors.Transparent;
-            Model.LegendMargin = 0;
-            Model.LegendFontSize = 9;
-            Model.LegendTextColor = OxyColors.LightGray;
-            Model.Axes.Add(_x);
-            Model.Axes.Add(_y);
+//            Model = new PlotModel();
+//            Model.Title = "Influences / Min";
+//            Model.TitleFontSize = 9;
+//            Model.TitleFontWeight = 0.5;
+//            Model.TitleColor = OxyColors.White;
+//            Model.PlotAreaBorderColor = OxyColor.FromRgb(88, 88, 88);
+//            Model.PlotAreaBorderThickness = new OxyThickness(0, 0, 0, 1);
+//            Model.LegendOrientation = LegendOrientation.Horizontal;
+//            Model.LegendPlacement = LegendPlacement.Outside;
+//            Model.LegendPosition = LegendPosition.BottomCenter;
+//            Model.LegendBackground = OxyColors.Transparent;
+//            Model.LegendBorder = OxyColors.Transparent;
+//            Model.LegendMargin = 0;
+//            Model.LegendFontSize = 9;
+//            Model.LegendTextColor = OxyColors.LightGray;
+//            Model.Axes.Add(_x);
+//            Model.Axes.Add(_y);
         }
 
         public void LoadActivities(string fileUrl)
@@ -174,7 +173,7 @@ namespace ArtivityExplorer.Controls
                 annotation.Points.Add(DateTimeAxis.CreateDataPoint(endTime, 100));
                 annotation.Points.Add(DateTimeAxis.CreateDataPoint(endTime, 0));
 
-                Model.Annotations.Add(annotation);
+//                Model.Annotations.Add(annotation);
             }
         }
 
@@ -275,7 +274,7 @@ namespace ArtivityExplorer.Controls
                 {
                     series = CreateSeries(agent);
 
-                    Model.Series.Add(series);
+//                    Model.Series.Add(series);
 
                     _series[agent] = series;
 

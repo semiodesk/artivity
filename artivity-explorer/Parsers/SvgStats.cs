@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
+using Eto.Drawing;
 
 namespace ArtivityExplorer.Parsers
 {
@@ -43,7 +43,7 @@ namespace ArtivityExplorer.Parsers
 
         internal void SortColours()
         {
-            _colours = _colours.OrderBy(c => c.GetBrightness()).ToList();
+            //_colours = _colours.OrderBy(c => c.GetBrightness()).ToList();
         }
 
         #endregion

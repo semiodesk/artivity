@@ -1,0 +1,44 @@
+﻿using System;
+using Eto;
+using Eto.Forms;
+using Eto.Drawing;
+
+namespace ArtivityExplorer
+{
+    [Handler(typeof(IHandler))]
+    public class ColourPickerCell : DrawableCell
+    {
+        #region Members
+
+        /// <summary>
+        /// Gets or sets the binding to get/set the value of the cell.
+        /// </summary>
+        /// <value>The cell's binding.</value>
+        public IIndirectBinding<string> Binding { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        public ColourPickerCell() {}
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnPaint(DrawableCellPaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            Color color = Color.Parse(Binding.GetValue(e.Item));
+
+            PointF location = new PointF(e.ClipRectangle.Location.X + 10, e.ClipRectangle.Location.Y + 4);
+            SizeF size = new SizeF(e.ClipRectangle.Width - 10, e.ClipRectangle.Width - 10);
+
+            e.Graphics.FillRectangle(color, new RectangleF(location, size));
+        }
+
+        #endregion
+    }
+}
+

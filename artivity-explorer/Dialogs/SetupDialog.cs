@@ -1,5 +1,6 @@
 ﻿using System;
-using Xwt;
+using Eto.Forms;
+using Eto.Drawing;
 
 namespace ArtivityExplorer
 {
@@ -27,11 +28,9 @@ namespace ArtivityExplorer
             Title = "Artivity Setup";
             Width = 500;
             Height = 500;
-            Padding = 0;
+            Padding = new Padding(0);
 
-            DialogPage page = new WelcomePage(this);
-
-            Content = page;
+            Content = new SetupWelcomePage(this);
         }
 
         #endregion

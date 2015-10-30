@@ -63,6 +63,16 @@ art:isCaptureEnabled a rdf:Property ;
     rdfs:domain prov:SoftwareAgent ;
     rdfs:range xsd:boolean .
 
+art:executableName a rdf:Property ;
+    rdfs:label "executableName" ;
+    rdfs:domain prov:SoftwareAgent ;
+    rdfs:range xsd:boolean .
+
+art:executablePath a rdf:Property ;
+    rdfs:label "executablePath" ;
+    rdfs:domain prov:SoftwareAgent ;
+    rdfs:range xsd:boolean .
+
 art:hasColourCode a rdf:Property ;
     rdfs:label "hasColourCode" ;
     rdfs:domain prov:SoftwareAgent ;

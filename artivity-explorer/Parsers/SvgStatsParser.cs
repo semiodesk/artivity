@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Xwt.Drawing;
+using Eto.Drawing;
 
 namespace ArtivityExplorer.Parsers
 {
@@ -76,23 +76,23 @@ namespace ArtivityExplorer.Parsers
 			// Parse colours which are direct attributes of the XML element.
 			if (e.HasAttribute("fill"))
 			{
-				Color c = Color.FromName(e.GetAttribute("fill"));
+                Color c = Color.Parse(e.GetAttribute("fill"));
 
-				stats.AddColour(c.ToSystemColor());
+				stats.AddColour(c);
 			}
 
 			if (e.HasAttribute("stroke"))
 			{
-				Color c = Color.FromName(e.GetAttribute("stroke"));
+                Color c = Color.Parse(e.GetAttribute("stroke"));
 
-				stats.AddColour(c.ToSystemColor());
+				stats.AddColour(c);
 			}
 
 			if (e.HasAttribute("stop-color"))
 			{
-				Color c = Color.FromName(e.GetAttribute("stop-color"));
+                Color c = Color.Parse(e.GetAttribute("stop-color"));
 
-				stats.AddColour(c.ToSystemColor());
+				stats.AddColour(c);
 			}
 
 			// Parse colours which are part of a style attribute.
@@ -115,9 +115,9 @@ namespace ArtivityExplorer.Parsers
 					case "stroke":
 					case "stop-color":
 					{
-						Color c = Color.FromName(value);
+						Color c = Color.Parse(value);
 
-						stats.AddColour(c.ToSystemColor());
+						stats.AddColour(c);
 
 						break;
 					}

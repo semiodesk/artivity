@@ -1,9 +1,9 @@
 ﻿using System;
-using Xwt;
+using Eto.Forms;
 
 namespace ArtivityExplorer
 {
-    public class DialogButtons : HBox
+    public class DialogButtons : StackLayout
     {
         #region Members
 
@@ -17,19 +17,21 @@ namespace ArtivityExplorer
 
         public DialogButtons()
         {
-            OkButton = new Button();
-            OkButton.MinWidth = 100;
-            OkButton.Label = "OK";
-
-            CancelButton = new Button();
-            CancelButton.MinWidth = 100;
-            CancelButton.Label = "Cancel";
+            Orientation = Orientation.Horizontal;
 
             Spacing = 7;
-            PackEnd(CancelButton);
-            PackEnd(OkButton);
 
-            Show();
+            OkButton = new Button();
+            OkButton.Width = 100;
+            OkButton.Text = "OK";
+
+            CancelButton = new Button();
+            CancelButton.Width = 100;
+            CancelButton.Text = "Cancel";
+
+            Items.Add(new StackLayoutItem(null, true));
+            Items.Add(new StackLayoutItem(CancelButton));
+            Items.Add(new StackLayoutItem(OkButton));
         }
 
         #endregion
