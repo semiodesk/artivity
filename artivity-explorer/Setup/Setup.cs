@@ -273,11 +273,6 @@ namespace ArtivityExplorer
                 InstallAgent(agents, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
                 InstallAgent(agents, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
 
-                if(agents.IsEmpty)
-                {
-                    return false;
-                }
-
                 IModel activities;
 
                 if (!store.ContainsModel(Models.Activities))
@@ -303,7 +298,7 @@ namespace ArtivityExplorer
                 // Load the ontologies into the database for inferencing support.
                 store.LoadOntologySettings();
 
-                return agents != null && activities != null && webActivities != null;
+				return agents != null && !agents.IsEmpty && activities != null && webActivities != null;
             }
             catch(Exception e)
             {
