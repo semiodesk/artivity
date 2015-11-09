@@ -46,8 +46,8 @@ namespace ArtivityExplorer.Controls
             StackLayout layout = new StackLayout();
             layout.Orientation = Orientation.Vertical;
             layout.Items.Add(new StackLayoutItem(new UserHeader(), HorizontalAlignment.Stretch, false));
-            layout.Items.Add(new StackLayoutItem(journalView, HorizontalAlignment.Stretch, true));
-            //layout.Items.Add(new StackLayoutItem(new FileView(), HorizontalAlignment.Stretch, true));
+            //layout.Items.Add(new StackLayoutItem(journalView, HorizontalAlignment.Stretch, true));
+            layout.Items.Add(new StackLayoutItem(new FileView(), HorizontalAlignment.Stretch, true));
 
             Content = layout;
         }

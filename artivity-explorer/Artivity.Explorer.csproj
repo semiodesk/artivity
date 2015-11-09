@@ -123,56 +123,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Eto.OxyPlot">
-      <HintPath>References\Eto.OxyPlot.dll</HintPath>
-    </Reference>
-    <Reference Include="Eto.OxyPlot.Gtk3">
-      <HintPath>References\Eto.OxyPlot.Gtk3.dll</HintPath>
-    </Reference>
-    <Reference Include="Eto.OxyPlot.Wpf">
-      <HintPath>References\Eto.OxyPlot.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot, Version=2015.1.1046.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\OxyPlot.Core.2015.1.1046-alpha\lib\net40\OxyPlot.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.GtkSharp3">
-      <HintPath>..\packages\OxyPlot.GtkSharp3.2015.1.1046-alpha\lib\net40\OxyPlot.GtkSharp3.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.Wpf">
-      <HintPath>..\packages\OxyPlot.Wpf.2013.1.11.1\lib\NET40\OxyPlot.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.Xps">
-      <HintPath>..\packages\OxyPlot.Wpf.2013.1.11.1\lib\NET40\OxyPlot.Xps.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="VDS.Common">
-      <HintPath>..\packages\VDS.Common.1.5.0\lib\net40-client\VDS.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.97\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-    </Reference>
-    <Reference Include="dotNetRDF">
-      <HintPath>..\packages\dotNetRDF.1.0.8.3533\lib\net40\dotNetRDF.dll</HintPath>
-    </Reference>
-    <Reference Include="dotNetRDF.Data.Virtuoso">
-      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.8.3533\lib\net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
-    </Reference>
     <Reference Include="Eto">
       <HintPath>..\packages\Eto.Forms.2.1.0\lib\net40\Eto.dll</HintPath>
     </Reference>
     <Reference Include="Eto.Gtk3">
       <HintPath>..\packages\Eto.Platform.Gtk3.2.1.0\lib\net40\Eto.Gtk3.dll</HintPath>
-    </Reference>
-    <Reference Include="Eto.Mac">
-      <HintPath>..\packages\Eto.Platform.Mac.2.1.0\lib\net40\Eto.Mac.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoMac">
-      <HintPath>..\packages\Eto.Platform.Mac.2.1.0\lib\net40\MonoMac.dll</HintPath>
     </Reference>
     <Reference Include="Eto.Wpf">
       <HintPath>..\packages\Eto.Platform.Wpf.2.1.0\lib\net40\Eto.Wpf.dll</HintPath>
@@ -183,9 +139,47 @@
     <Reference Include="virtado4">
       <HintPath>..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net40\virtado4.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Eto.OxyPlot">
+      <HintPath>References\Eto.OxyPlot.dll</HintPath>
     </Reference>
+    <Reference Include="Eto.OxyPlot.Gtk3">
+      <HintPath>References\Eto.OxyPlot.Gtk3.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.OxyPlot.Wpf">
+      <HintPath>References\Eto.OxyPlot.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Core.1.0.0-unstable1875\lib\net40\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.GtkSharp">
+      <HintPath>..\packages\OxyPlot.GtkSharp.1.0.0-unstable1875\lib\net40\OxyPlot.GtkSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="VDS.Common">
+      <HintPath>..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="dotNetRDF">
+      <HintPath>..\packages\dotNetRDF.1.0.9.3683\lib\net40\dotNetRDF.dll</HintPath>
+    </Reference>
+    <Reference Include="dotNetRDF.Data.Virtuoso">
+      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenLink.Data.Virtuoso">
+      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.104\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf">
+      <HintPath>..\packages\OxyPlot.Wpf.1.0.0-unstable1875\lib\net40\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Xps">
+      <HintPath>..\packages\OxyPlot.Wpf.1.0.0-unstable1875\lib\net40\OxyPlot.Xps.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Widgets\EditingWidget.cs">

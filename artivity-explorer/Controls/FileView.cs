@@ -43,7 +43,7 @@ namespace ArtivityExplorer
             content.Items.Add(new StackLayoutItem( _log, true));
             content.Spacing = 0;
 
-            //Items.Add(new StackLayoutItem(_chart));
+            Items.Add(new StackLayoutItem(_chart));
             Items.Add(new StackLayoutItem(content, true));
         }
 
