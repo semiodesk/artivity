@@ -33,6 +33,16 @@ namespace ArtivityExplorer
             return Environment.OSVersion.Platform == PlatformID.MacOSX;
         }
 
+        public static bool IsWindowsPlatform()
+        {
+            return Environment.OSVersion.Platform == PlatformID.Win32NT;
+        }
+
+        public static string GetIconExtension()
+        {
+            return IsWindowsPlatform() ? ".ico" : ".png";
+        }
+
         public static string GetUserHomeFolder()
         {
             if (IsLinuxPlatform() || IsMacPlatform())
@@ -47,9 +57,21 @@ namespace ArtivityExplorer
 
         public static string GetAppDataFolder()
         {
-            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), _appDataFolderName);
 
-            return Path.Combine(appData, _appDataFolderName);
+            if(!Directory.Exists(appData))
+            {
+                try
+                {
+                    Directory.CreateDirectory(appData);
+                }
+                catch(IOException e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+
+            return appData;
         }
 
         public static bool CheckEnvironment()
@@ -67,7 +89,8 @@ namespace ArtivityExplorer
             }
             else
             {
-                throw new PlatformNotSupportedException();
+                //throw new PlatformNotSupportedException();
+                return true;
             }
         }
 

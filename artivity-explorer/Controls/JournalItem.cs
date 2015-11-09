@@ -3,13 +3,18 @@ using Semiodesk.Trinity;
 
 namespace ArtivityExplorer
 {
-    public class JournalFileListItem
+    public class JournalItem
     {
         public Uri Agent { get; set; }
 
         public string Url { get; set; }
 
         public string Path { get; set; }
+
+        public string FileName
+        {
+            get { return System.IO.Path.GetFileName(Path); }
+        }
 
         [NotifyPropertyChanged]
         public DateTime LastEditingDate { get; set; }

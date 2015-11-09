@@ -4,7 +4,7 @@ using Semiodesk.Trinity;
 using Artivity.Model;
 using Eto.Forms;
 
-namespace ArtivityExplorer
+namespace ArtivityExplorer.Dialogs.ExportDialog
 {
     public class ExportDialog : Dialog
     {

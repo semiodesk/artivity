@@ -10,7 +10,7 @@ namespace ArtivityExplorer
     {
         #region Members
 
-        //private ActivitiesChart _chart = new ActivitiesChart();
+        private ActivitiesChart _chart = new ActivitiesChart();
 
         private ActivitiesLog _log = new ActivitiesLog();
 
@@ -70,9 +70,9 @@ namespace ArtivityExplorer
 
             _log.LoadInfluences(FileUrl);
 
-            //_chart.Reset();
-            //_chart.LoadActivities(FileUrl);
-            //_chart.LoadActivityInfluences(FileUrl);
+            _chart.Reset();
+            _chart.LoadActivities(FileUrl);
+            _chart.LoadActivityInfluences(FileUrl);
         }
 
         #endregion

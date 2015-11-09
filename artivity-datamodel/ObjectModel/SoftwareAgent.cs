@@ -42,20 +42,9 @@ namespace Artivity.Model.ObjectModel
         [RdfProperty(ART.isCaptureEnabled), NotifyPropertyChanged]
 		public bool? IsCaptureEnabled { get; set; }
 
+        [DefaultValue("#FF0000")]
         [RdfProperty(ART.hasColourCode), NotifyPropertyChanged]
         public string ColourCode { get; set; }
-
-        public Color Colour
-        {
-            get
-            {
-                return ColorTranslator.FromHtml("#FFCC66");
-            }
-            set
-            {
-                ColourCode = ColorTranslator.ToHtml(value);
-            }
-        }
 
         [RdfProperty(ART.executableName), NotifyPropertyChanged]
         public string ExecutableName { get; set; }

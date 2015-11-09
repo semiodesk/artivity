@@ -54,6 +54,8 @@ namespace ArtivityExplorer
             Spacing = 14;
 
             Button photoButton = new Button();
+            photoButton.Width = 83;
+            photoButton.Height = 83;
             photoButton.Click += OnPhotoButtonClicked;
 
             if (File.Exists(_user.Photo))
@@ -72,21 +74,21 @@ namespace ArtivityExplorer
             nameLabel.Text = "Name";
 
             NameBox = new TextBox();
-            NameBox.Width = 300;
+            NameBox.Width = 250;
             NameBox.Text = _user.Name;
 
             Label organizationLabel = new Label();
             organizationLabel.Text = "Organization";
 
             OrganizationBox = new TextBox();
-            OrganizationBox.Width = 300;
+            OrganizationBox.Width = 250;
             OrganizationBox.Text = _user.Organization;
 
             Label emailLabel = new Label();
             emailLabel.Text = "E-Mail";
 
             EmailBox = new TextBox();
-            EmailBox.Width = 300;
+            EmailBox.Width = 250;
             EmailBox.Text = _user.EmailAddress;
 
             StackLayout column1 = new StackLayout();
@@ -113,12 +115,25 @@ namespace ArtivityExplorer
 
             if (!string.IsNullOrEmpty(openDialog.FileName))
             {
-                _user.Photo = openDialog.FileName;
+                try
+                {
+                    string sourceFile = openDialog.FileName;
+                    string targetFile = Path.Combine(Setup.GetAppDataFolder(), Path.GetFileName(openDialog.FileName));
 
-                Image avatar = new Bitmap(_user.Photo);
+                    File.Copy(sourceFile, targetFile, true);
 
-                Button avatarButton = sender as Button;
-                avatarButton.Image = avatar;
+                    _user.Photo = targetFile;
+                    _user.Commit();
+
+                    Image avatar = new Bitmap(_user.Photo);
+
+                    Button avatarButton = sender as Button;
+                    avatarButton.Image = new Bitmap(avatar, 75, 75, ImageInterpolation.High);
+                }
+                catch(IOException ex)
+                {
+                    Console.WriteLine(ex);
+                }
             }
         }
 
