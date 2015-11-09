@@ -6,6 +6,7 @@ using Eto.Drawing;
 using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
+using ArtivityExplorer.Dialogs.SettingsDialog;
 
 namespace ArtivityExplorer
 {
@@ -41,7 +42,14 @@ namespace ArtivityExplorer
                 return;
             }
 
-            Text = " " + user.Name.Split(' ').FirstOrDefault();
+            if (user.Name == null)
+            {
+                Text = " Unkown";
+            }
+            else
+            {
+                Text = " " + user.Name.Split(' ').FirstOrDefault();
+            }
 
             Bitmap photo;
 
@@ -55,7 +63,6 @@ namespace ArtivityExplorer
             }
 
             Image = new Bitmap(photo, 30, 30, ImageInterpolation.High);
-            Text = user.Name.Split(' ').First();
         }
 
         #endregion

@@ -28,6 +28,7 @@
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,7 @@ namespace Artivity.Model.ObjectModel
     {
 		#region Members
 
+        [DefaultValue("")]
         [RdfProperty(FOAF.name)]
         public string Name { get; set; }
 

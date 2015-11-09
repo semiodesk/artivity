@@ -30,12 +30,17 @@ namespace ArtivityExplorer
         {
             base.OnPaint(e);
 
-            Color color = Color.Parse(Binding.GetValue(e.Item));
+            string colourCode = Binding.GetValue(e.Item);
 
-            PointF location = new PointF(e.ClipRectangle.Location.X + 10, e.ClipRectangle.Location.Y + 4);
-            SizeF size = new SizeF(e.ClipRectangle.Width - 10, e.ClipRectangle.Width - 10);
+            if (!string.IsNullOrEmpty(colourCode))
+            {
+                Color colour = Color.Parse(colourCode);
 
-            e.Graphics.FillRectangle(color, new RectangleF(location, size));
+                PointF location = new PointF(e.ClipRectangle.Location.X + 10, e.ClipRectangle.Location.Y + 4);
+                SizeF size = new SizeF(e.ClipRectangle.Width - 10, e.ClipRectangle.Width - 10);
+
+                e.Graphics.FillRectangle(colour, new RectangleF(location, size));
+            }
         }
 
         #endregion

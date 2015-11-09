@@ -1,9 +1,11 @@
 ﻿using System;
 using Eto.Forms;
+using Eto.Drawing;
+using ArtivityExplorer.Controls;
 
-namespace ArtivityExplorer
+namespace ArtivityExplorer.Dialogs.SetupWizard
 {
-    public class SetupReadyPage : DialogPage
+    public class CompletePage : WizardPage
     {
         private CheckBox _enableLogging;
 
@@ -11,30 +13,38 @@ namespace ArtivityExplorer
 
         private CheckBox _setupDatabase;
 
-        public SetupReadyPage(Dialog dialog) : base(dialog) {}
+        public CompletePage(Wizard wizard) : base(wizard) { }
 
         protected override void InitializeComponent()
         {
             base.InitializeComponent();
 
-            Title = "Ready.";
+            Title = "Complete";
 
             Label introText = new Label();
-            introText.Text = "Finally we need to active our logging service which enables \nyour applications to track your activities.\n";
+			introText.Width = 500;
+			introText.Wrap = WrapMode.Word;
+            introText.Text = "Finally we need to active our logging service which enables your applications to track your activities.";
+            //introText.Font = SystemFonts.Label(10);
 
             _setupDatabase = new CheckBox();
             _setupDatabase.Enabled = false;
             _setupDatabase.Text = "Setting up the database.";
+            //_setupDatabase.Font = SystemFonts.Label(10);
 
             _enableLogging = new CheckBox();
             _enableLogging.Enabled = false;
             _enableLogging.Text = "Installing logging service into autostart.";
+            //_enableLogging.Font = SystemFonts.Label(10);
 
             _startLogging = new CheckBox();
             _startLogging.Enabled = false;
             _startLogging.Text = "Start logging service.";
+            //_startLogging.Font = SystemFonts.Label(10);
 
             StackLayout layout = new StackLayout();
+			layout.Padding = new Padding(24);
+			layout.Spacing = 24;
             layout.Items.Add(introText);
             layout.Items.Add(_setupDatabase);
             layout.Items.Add(_enableLogging);
@@ -42,15 +52,12 @@ namespace ArtivityExplorer
 
             Content = layout;
 
-            Buttons.BackButton.Visible = false;
-            Buttons.NextButton.Visible = false;
-            Buttons.OkButton.Visible = false;
-            Buttons.OkButton.Enabled = false;
-            Buttons.CancelButton.Visible = true;
-            Buttons.CancelButton.Enabled = true;
+            Buttons.Add(AbortButton);
+            Buttons.Add(OkButton);
 
-            Dialog.DefaultButton = Buttons.OkButton;
-            Dialog.AbortButton = Buttons.CancelButton;
+            DefaultButton = OkButton;
+
+            BeginSetup();
         }
 
         public void BeginSetup()
@@ -72,22 +79,10 @@ namespace ArtivityExplorer
             _enableLogging.Enabled = _enableLogging.Checked == true;
             _startLogging.Enabled = _startLogging.Checked == true;
 
-            Buttons.OkButton.Visible = true;
-            Buttons.OkButton.Enabled = true;
-            Buttons.CancelButton.Visible = false;
-            Buttons.CancelButton.Enabled = false;
-
-            SetupDialog setup = Dialog as SetupDialog;
-
-            if (setup != null)
-            {
-                setup.Success = true;
-            }
-        }
-
-        protected override void OnOkButtonClicked(object sender, EventArgs e)
-        {
-            Dialog.Close();
+            OkButton.Visible = true;
+            OkButton.Enabled = true;
+            AbortButton.Visible = false;
+            AbortButton.Enabled = false;
         }
     }
 }

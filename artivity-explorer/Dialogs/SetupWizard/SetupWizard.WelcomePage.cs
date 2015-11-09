@@ -1,15 +1,17 @@
 ﻿using System;
 using Eto.Forms;
+using Eto.Drawing;
+using ArtivityExplorer.Controls;
 
-namespace ArtivityExplorer
+namespace ArtivityExplorer.Dialogs.SetupWizard
 {
-    public class SetupWelcomePage : DialogPage
+    public class WelcomePage : WizardPage
     {
         private UserSettingsControl _userSettings;
 
         private CheckBox _agreePrivacy;
 
-        public SetupWelcomePage(Dialog dialog) : base(dialog) {}
+        public WelcomePage(Wizard wizard) : base(wizard) { }
 
         protected override void InitializeComponent()
         {
@@ -18,7 +20,8 @@ namespace ArtivityExplorer
             Title = "Welcome";
 
             Label introText = new Label();
-            introText.Text = "This is the first time you start Artivity. Before you can start \nusing the app, we need you to set up your user account.";
+            introText.Wrap = WrapMode.Word;
+            introText.Text = "This is the first time you start Artivity. Before you can start using the app, we need you to set up your user account.";
 
             _userSettings = new UserSettingsControl();
             _userSettings.NameBox.Focus();
@@ -29,24 +32,27 @@ namespace ArtivityExplorer
             _agreePrivacy.CheckedChanged += Validate;
 
             StackLayout layout = new StackLayout();
-            layout.Spacing = 24;
-            layout.Items.Add(new StackLayoutItem(introText, false));
+			layout.Padding = new Padding(24, 0);
+			layout.Spacing = 24;
+			layout.Items.Add(new StackLayoutItem(introText, false));
             layout.Items.Add(new StackLayoutItem(_userSettings, false));
-            layout.Items.Add(new StackLayoutItem(_agreePrivacy, false));
+			layout.Items.Add(new StackLayoutItem(_agreePrivacy, false));
 
             Content = layout;
 
-            Validate(this, new EventArgs());
+            Buttons.Add(AbortButton);
+            Buttons.Add(NextButton);
 
-            Buttons.BackButton.Visible = false;
+            AbortButton.Enabled = true;
+            NextButton.Enabled = true;
+            DefaultButton = NextButton;
 
-            Dialog.DefaultButton = Buttons.NextButton;
-            Dialog.AbortButton = Buttons.CancelButton;
+			Validate(this, new EventArgs());
         }
             
         private void Validate(object sender, EventArgs e)
         {
-            Buttons.NextButton.Enabled =
+            NextButton.Enabled =
                 !string.IsNullOrEmpty(_userSettings.NameBox.Text) &&
                 !string.IsNullOrEmpty(_userSettings.EmailBox.Text) &&
                 _agreePrivacy.Checked == true;
@@ -56,11 +62,7 @@ namespace ArtivityExplorer
         {
             _userSettings.Save();
 
-            SetupReadyPage page = new SetupReadyPage(Dialog);
-
-            Dialog.Content = page;
-
-            page.BeginSetup();
+            Wizard.CurrentPage = new CompletePage(Wizard);
         }
     }
 }
