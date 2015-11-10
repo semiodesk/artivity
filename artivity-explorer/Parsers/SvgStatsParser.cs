@@ -12,16 +12,16 @@ namespace Artivity.Explorer.Parsers
     {
         #region Methods
 
-        public static SvgStats TryParse(string filename)
+        public static SvgStats TryParse(string filePath)
         {
-            if (!File.Exists(filename)) return null;
+            if (!File.Exists(filePath)) return null;
 
             try
             {
                 SvgStats stats = new SvgStats();
 
     			XmlDocument document = new XmlDocument();
-    			document.Load(filename);
+    			document.Load(filePath);
 
     			HashSet<string> ignore = new HashSet<string>() { "svg", "metadata", "namedview" };
 

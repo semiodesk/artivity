@@ -31,16 +31,15 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Content Include="Resources\Icon.ico" />
     <EmbeddedResource Include="Resources\Preferences.png">
       <LogicalName>preferences</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Icon.png">
+      <LogicalName>icon.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\MainWindow.cs">
-      <SubType>Eto.Forms</SubType>
-    </Compile>
-    <Compile Include="Controls\UserHeader.cs">
       <SubType>Eto.Forms</SubType>
     </Compile>
     <Compile Include="Controls\Widgets\ColourBox.cs">
@@ -76,29 +75,13 @@
     </Compile>
     <Compile Include="Controls\FileSelectionEventArgs.cs" />
     <Compile Include="Extensions\ListViewExtensions.cs" />
-    <Compile Include="Controls\FileView.cs">
-      <SubType>Eto.Forms</SubType>
-    </Compile>
     <Compile Include="Controls\FileSelectionEventHandler.cs" />
-    <Compile Include="Controls\JournalView.cs">
-      <SubType>Eto.Forms</SubType>
-    </Compile>
     <Compile Include="Controls\FileStatsPanel.cs">
       <SubType>Eto.Forms</SubType>
     </Compile>
-    <Compile Include="Controls\ToolItems\HomeToolItem.cs" />
-    <Compile Include="Controls\ToolItems\SettingsToolItem.cs" />
-    <Compile Include="Controls\ToolItems\ExportToolItem.cs" />
-    <Compile Include="Controls\JournalItem.cs" />
-    <Compile Include="Controls\Cells\ColourPickerCell.cs" />
     <Compile Include="Controls\ColourPickerDialog.cs">
       <SubType>Eto.Forms</SubType>
     </Compile>
-    <Compile Include="Dialogs\SetupWizard\SetupWizard.cs">
-      <SubType>Eto.Forms</SubType>
-    </Compile>
-    <Compile Include="Dialogs\SetupWizard\SetupWizard.WelcomePage.cs" />
-    <Compile Include="Dialogs\SetupWizard\SetupWizard.CompletePage.cs" />
     <Compile Include="Controls\ActivityLogItem.cs" />
     <Compile Include="Controls\ActivityLog.cs">
       <SubType>Eto.Forms</SubType>
@@ -106,6 +89,24 @@
     <Compile Include="Controls\ActivityChart.cs">
       <SubType>Eto.Forms</SubType>
     </Compile>
+    <Compile Include="Views\JournalView.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Views\FileView.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Views\JournalViewHeader.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Views\JournalViewListItem.cs" />
+    <Compile Include="Views\FileViewHeader.cs" />
+    <Compile Include="Controls\View.cs" />
+    <Compile Include="Controls\ColourPickerCell.cs" />
+    <Compile Include="Setup\SetupWizard.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Setup\SetupWizard.CompletePage.cs" />
+    <Compile Include="Setup\SetupWizard.WelcomePage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -193,9 +194,6 @@
     <EmbeddedResource Include="Resources\Edit.png">
       <LogicalName>edit</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Icon.png">
-      <LogicalName>icon.png</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Icon.ico">
       <LogicalName>icon.ico</LogicalName>
     </EmbeddedResource>
@@ -213,5 +211,8 @@
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
       <Name>Artivity.DataModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
   </ItemGroup>
 </Project>

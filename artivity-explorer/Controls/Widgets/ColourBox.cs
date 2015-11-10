@@ -13,7 +13,7 @@ namespace Artivity.Explorer.Controls
 
         public ColourBox()
         {
-            Spacing = 0;
+            Spacing = 7;
         }
 
         #endregion

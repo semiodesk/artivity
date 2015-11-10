@@ -43,7 +43,7 @@ namespace Artivity.Explorer.Controls
         public ActivityChart()
         {
             BackgroundColor = Color.FromArgb(49, 55, 57);
-            Height = 150;
+            Height = 100;
 
             InitializeAgents();
 
@@ -104,8 +104,8 @@ namespace Artivity.Explorer.Controls
                 MajorGridlineThickness = 1,
                 MajorGridlineColor = OxyColor.FromRgb(88, 88, 88),
                 MinorGridlineStyle = LineStyle.Dot,
-                MinorGridlineThickness = 1,
-                MinorGridlineColor = OxyColor.FromRgb(66, 66, 66),
+                //MinorGridlineThickness = 1,
+                //MinorGridlineColor = OxyColor.FromRgb(66, 66, 66),
                 IsZoomEnabled = false,
                 IsPanEnabled = false
             };

@@ -7,7 +7,7 @@ using Eto.Drawing;
 
 namespace Artivity.Explorer.Controls
 {
-    public class FileStatsPanel : StackLayout
+    public class FileStatsPanel : TableLayout
     {
         #region Members
 
@@ -32,14 +32,11 @@ namespace Artivity.Explorer.Controls
 
         private void InitializeComponent()
         {
-            Orientation = Orientation.Vertical;
-            Width = 200;
-            Spacing = 30;
+            Spacing = new Size(30, 30);
             Padding = new Padding(10);
 
-            Items.Add(new StackLayoutItem(EditingWidget, HorizontalAlignment.Stretch, false));
-            Items.Add(new StackLayoutItem(CompositionWidget, HorizontalAlignment.Stretch, false));
-            Items.Add(new StackLayoutItem(ColourWidget, HorizontalAlignment.Stretch, false));
+            Rows.Add(new TableRow(new TableCell(EditingWidget, true), new TableCell(CompositionWidget, true)));
+            Rows.Add(new TableRow(new TableCell(ColourWidget, true), new TableCell()));
         }
 
         #endregion

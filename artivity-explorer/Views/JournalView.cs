@@ -8,14 +8,17 @@ using Eto.Forms;
 using Eto.Drawing;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
+using Artivity.Explorer.Controls;
 
 namespace Artivity.Explorer
 {
-    public class JournalView : GridView
+    public class JournalView : View
     {
         #region Members
 
-        private readonly Dictionary<string, JournalItem> _items = new Dictionary<string, JournalItem>();
+        private readonly JournalViewHeader _header = new JournalViewHeader();
+
+        private readonly GridView _grid = new GridView();
 
         #endregion
 
@@ -23,11 +26,21 @@ namespace Artivity.Explorer
 
         public JournalView()
         {
-            Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FileName"), HeaderText = "File Name", Width = 300 });
-            Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedTotalEditingTime"), HeaderText = "Editing Time", Width = 90 });
-            Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedLastEditingDate"), HeaderText = "Last Used", Width = 90 });
+            Orientation = Orientation.Vertical;
 
-            CellDoubleClick += OnCellDoubleClick;
+            Items.Add(new StackLayoutItem(_header, HorizontalAlignment.Stretch, false));
+            Items.Add(new StackLayoutItem(_grid, HorizontalAlignment.Stretch, true));
+
+            GridColumn fileColumn = new GridColumn();
+            fileColumn.HeaderText = "File Name";
+            fileColumn.DataCell = new TextBoxCell("FileName");
+            fileColumn.Width = 395;
+            fileColumn.AutoSize = false;
+
+            _grid.Columns.Add(fileColumn);
+            _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedTotalEditingTime"), HeaderText = "Editing Time", Width = 90 });
+            _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedLastEditingDate"), HeaderText = "Last Used", Width = 90 });
+            _grid.CellDoubleClick += OnCellDoubleClick;
 
             Refresh();
         }
@@ -38,8 +51,6 @@ namespace Artivity.Explorer
 
         public void Refresh()
         {
-            _items.Clear();
-
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
@@ -69,6 +80,8 @@ namespace Artivity.Explorer
 
         private void LoadBindings(IEnumerable<BindingSet> bindings)
         {
+            Dictionary<string, JournalViewListItem> items = new Dictionary<string, JournalViewListItem>();
+
             foreach (BindingSet binding in bindings)
             {
                 string url = binding["fileUrl"].ToString();
@@ -92,7 +105,7 @@ namespace Artivity.Explorer
                 DateTime endTime = (DateTime)binding["endTime"];
                 TimeSpan editingTime = endTime - startTime;
 
-                JournalItem item = new JournalItem()
+                JournalViewListItem item = new JournalViewListItem()
                 {
                     Agent = agent,
                     Url = url,
@@ -101,24 +114,24 @@ namespace Artivity.Explorer
                     TotalEditingTime = editingTime
                 };
                 
-                if (_items.ContainsKey(path))
+                if (items.ContainsKey(path))
                 {
-                    _items[path].TotalEditingTime += item.TotalEditingTime;
+                    items[path].TotalEditingTime += item.TotalEditingTime;
                 }
                 else
                 {
-                    _items[path] = item;
+                    items[path] = item;
                 }
             }
 
-            DataStore = _items.Values;
+            _grid.DataStore = items.Values;
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
             if (e.Key == Keys.Enter)
             {
-                JournalItem selectedItem = SelectedItem as JournalItem;
+                JournalViewListItem selectedItem = _grid.SelectedItem as JournalViewListItem;
 
                 if(selectedItem == null)
                 {
@@ -136,7 +149,7 @@ namespace Artivity.Explorer
             }
             else if(e.Key == Keys.Space)
             {
-                JournalItem selectedItem = SelectedItem as JournalItem;
+                JournalViewListItem selectedItem = _grid.SelectedItem as JournalViewListItem;
 
                 if (selectedItem == null)
                 {
@@ -153,14 +166,17 @@ namespace Artivity.Explorer
 
         protected void OnCellDoubleClick(object sender, EventArgs e)
         {
-            JournalItem selectedItem = SelectedItem as JournalItem;
+            JournalViewListItem selectedItem = _grid.SelectedItem as JournalViewListItem;
 
-            if (selectedItem == null || !File.Exists(selectedItem.Path))
+            if (selectedItem == null)
             {
                 return;
             }
 
-            RaiseFileSelected(new FileSelectionEventArgs("file://" + selectedItem.Path));
+            MainWindow.Navigate<FileView>((window, view) =>
+            {
+                view.FilePath = selectedItem.Path;
+            });
         }
 
 //        protected void OnCellDoubleClick(object sender, EventArgs e)

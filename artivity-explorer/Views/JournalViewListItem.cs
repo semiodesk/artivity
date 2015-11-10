@@ -3,7 +3,7 @@ using Semiodesk.Trinity;
 
 namespace Artivity.Explorer
 {
-    public class JournalItem
+    public class JournalViewListItem
     {
         public Uri Agent { get; set; }
 
@@ -21,7 +21,7 @@ namespace Artivity.Explorer
 
         public string FormattedLastEditingDate
         {
-            get { return " " + LastEditingDate.ToLocalTime().ToString("t"); }
+            get { return " " + LastEditingDate.ToLocalTime().ToString("ddd, hh:mm"); }
         }
 
         [NotifyPropertyChanged]

@@ -33,6 +33,8 @@ namespace Artivity.Explorer.Controls
 
         private void InitializeComponent()
         {
+            Spacing = new Size(7, 7);
+
             Color color = Color.FromArgb(49, 55, 57);
 
             var icon = new ImageView() { Image = Bitmap.FromResource("colour") };
