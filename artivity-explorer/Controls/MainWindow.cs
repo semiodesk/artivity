@@ -10,6 +10,7 @@ using Artivity.Explorer.Dialogs.ExportDialog;
 using System.IO;
 using Eto.Forms;
 using Eto.Drawing;
+using System.Diagnostics;
 
 namespace Artivity.Explorer.Controls
 {
@@ -39,30 +40,13 @@ namespace Artivity.Explorer.Controls
             {
                 ClientSize = new Size(600, 650);
             }
-
-            JournalView journalView = new JournalView();
-            journalView.FileSelected += OnJournalFileSelected;
-
-            StackLayout layout = new StackLayout();
-            layout.Orientation = Orientation.Vertical;
-            layout.Items.Add(new StackLayoutItem(new UserHeader(), HorizontalAlignment.Stretch, false));
-            layout.Items.Add(new StackLayoutItem(journalView, HorizontalAlignment.Stretch, true));
-
-            Content = layout;
         }
 
-        private void OnHomeButtonClicked(object sender, EventArgs e)
+        protected override void OnLoadComplete(EventArgs e)
         {
-            Content = new JournalView();
-        }
+            base.OnLoadComplete(e);
 
-        private void OnJournalFileSelected(object sender, FileSelectionEventArgs e)
-        {
-            FileView view = new FileView();
-            view.FileUrl = e.FileName;
-            view.Update();
-
-            Content = view;
+            Navigate<JournalView>();
         }
 
         private void OnExportButtonClicked(object sender, EventArgs e)
@@ -78,7 +62,30 @@ namespace Artivity.Explorer.Controls
                 export.ShowModalAsync();
             }
         }
+        
+        public static void Navigate<T>(NavigationEventHandler<T> onComplete = null) where T : View, new()
+        {
+            MainWindow window = Application.Instance.MainForm as MainWindow;
+
+            if (window == null)
+            {
+                Debug.WriteLine("Unable to navigate: application main form is not instance of {0}.", typeof(MainWindow));
+
+                return;
+            }
+
+            T view = new T();
+
+            window.Content = view;
+
+            if (onComplete != null)
+            {
+                onComplete(window, view);
+            }
+        }
 
         #endregion
     }
+
+    public delegate void NavigationEventHandler<T>(MainWindow window, T view) where T : View;
 }

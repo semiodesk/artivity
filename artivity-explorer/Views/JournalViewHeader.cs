@@ -13,7 +13,7 @@ using System.IO;
 
 namespace Artivity.Explorer.Controls
 {
-    public class UserHeader : StackLayout
+    public class JournalViewHeader : StackLayout
     {
         #region Members
 
@@ -29,7 +29,7 @@ namespace Artivity.Explorer.Controls
 
         #region Constructors
 
-        public UserHeader()
+        public JournalViewHeader()
         {
             InitializeComponent();
 
@@ -43,12 +43,12 @@ namespace Artivity.Explorer.Controls
         private void InitializeComponent()
         {
             Orientation = Orientation.Horizontal;
-            Padding = new Padding(14, 7);
+            Padding = new Padding(14, 7, 7, 7);
             Spacing = 7;
 
             _titleLabel = new Label();
-            _titleLabel.TextColor = Color.Parse("#3A4149");
-            _titleLabel.Font = SystemFonts.Label(18);
+            _titleLabel.TextColor = Color.Parse("#42484a");
+            _titleLabel.Font = SystemFonts.Label(16);
 
             _titleLayout = new StackLayout();
             _titleLayout.Orientation = Orientation.Vertical;
@@ -56,13 +56,11 @@ namespace Artivity.Explorer.Controls
             _titleLayout.Items.Add(_titleLabel);
 
             _photoBox = new ImageView();
-            _photoBox.Size = new Size(75, 75);
+            _photoBox.Size = new Size(65, 65);
             
             _preferencesButton = new Button();
             _preferencesButton.Image = Bitmap.FromResource("preferences");
-            _preferencesButton.Width = 42;
-            _preferencesButton.Height = 42;
-            _preferencesButton.ImagePosition = ButtonImagePosition.Overlay;
+            _preferencesButton.Width = 40;
             _preferencesButton.Click += OnPreferencesButtonClick;
 
             Items.Add(new StackLayoutItem(_photoBox));
