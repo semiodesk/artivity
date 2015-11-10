@@ -1,11 +1,11 @@
 using System;
-using Artivity.Model;
-using ArtivityExplorer.Controls;
 using Eto.Forms;
 using Eto.Drawing;
-using ArtivityExplorer.Dialogs.SetupWizard;
+using Artivity.Model;
+using Artivity.Explorer.Controls;
+using Artivity.Explorer.Dialogs.SetupWizard;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
 	public class Program
 	{

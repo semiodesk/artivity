@@ -7,13 +7,19 @@ using Artivity.Model.ObjectModel;
 using Artivity.Model;
 using Eto.Forms;
 
-namespace ArtivityExplorer.Controls
+namespace Artivity.Explorer.Controls
 {
-    public class ActivitiesLog : GridView
+    public class ActivityLog : GridView
     {
+        #region Members
+
+        private readonly List<ActivityLogItem> _items = new List<ActivityLogItem>();
+
+        #endregion
+
         #region Constructors
 
-        public ActivitiesLog()
+        public ActivityLog()
         {
             InitializeComponent();
         }
@@ -26,10 +32,10 @@ namespace ArtivityExplorer.Controls
         {
             ShowHeader = true;
 
-//            Columns.AddTextColumn(TimeField, "Time", Alignment.Start, false, true);
-//            Columns.AddTextColumn(TypeField, "Event", Alignment.Start, false, true);
-//            Columns.AddTextColumn(DescriptionField, "Description", Alignment.Start, false, true);
-//            Columns.AddTextColumn(DataField, "Data", Alignment.Start, false, true);
+            Columns.Add(new GridColumn() { HeaderText = "Time", DataCell = new TextBoxCell("Time") });
+            Columns.Add(new GridColumn() { HeaderText = "Influence", DataCell = new TextBoxCell("InfluenceType") });
+            Columns.Add(new GridColumn() { HeaderText = "Description", DataCell = new TextBoxCell("Description") });
+            Columns.Add(new GridColumn() { HeaderText = "Data", DataCell = new TextBoxCell("Data") });
         }
 
         public void LoadInfluences(string fileUrl)
@@ -93,43 +99,50 @@ namespace ArtivityExplorer.Controls
 
         private void CreateRows(ISparqlQueryResult result)
         {
-//            foreach (BindingSet binding in result.GetBindings())
-//            {
-//                int row = Store.AddRow();
-//
-//                Store.SetValue(row, AgentField, binding["agent"].ToString());
-//
-//                DateTime time = (DateTime)binding["influenceTime"];
-//
-//                // Set the formatted date time.
-//                Store.SetValue(row, TimeField, time.ToString("HH:mm:ss")); 
-//
-//                if (!(binding["influenceType"] is DBNull))
-//                {
-//                    Store.SetValue(row, TypeField, ToDisplayString(binding["influenceType"].ToString()));
-//                }
-//                    
-//                if (!(binding["description"] is DBNull))
-//                {
-//                    Store.SetValue(row, DescriptionField, binding["description"].ToString());
-//                }
-//
-//                UriRef entityType = new UriRef(binding["entityType"].ToString());
-//
-//                if (entityType == nfo.FileDataObject.Uri)
-//                {
-//                    string value = binding["value"].ToString();
-//
-//                    Store.SetValue(row, DataField, value);
-//                }
-//                else
-//                {
-//                    UriRef entityUri = new UriRef(binding["entity"].ToString());
-//
-//                    Store.SetValue(row, DataField, entityUri.Host);
-//                }
-//            }
+            _items.Clear();
+
+            foreach (BindingSet binding in result.GetBindings())
+            {
+                ActivityLogItem item = new ActivityLogItem();
+
+                item.Agent = binding["agent"].ToString();
+
+                DateTime time = (DateTime)binding["influenceTime"];
+
+                // Set the formatted date time.
+                item.Time = time.ToString("HH:mm:ss");
+
+                if (!(binding["influenceType"] is DBNull))
+                {
+                    item.InfluenceType = ToDisplayString(binding["influenceType"].ToString());
+                }
+                    
+                if (!(binding["description"] is DBNull))
+                {
+                    item.Description = binding["description"].ToString();
+                }
+
+                UriRef entityType = new UriRef(binding["entityType"].ToString());
+
+                if (entityType == nfo.FileDataObject.Uri)
+                {
+                    string value = binding["value"].ToString();
+
+                    item.Data = value;
+                }
+                else
+                {
+                    UriRef entityUri = new UriRef(binding["entity"].ToString());
+
+                    item.Data = entityUri.Host;
+                }
+
+                _items.Add(item);
+            }
+
+            DataStore = _items;
         }
+        
             
         private string ToDisplayString(string uri)
         {

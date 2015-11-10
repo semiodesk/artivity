@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using Eto.Forms;
 using Eto.Drawing;
-using ArtivityExplorer.Parsers;
+using Artivity.Explorer.Parsers;
 
-namespace ArtivityExplorer.Controls
+namespace Artivity.Explorer.Controls
 {
     public class ColourWidget : TableLayout
     {
@@ -33,21 +33,21 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeComponent()
         {
-            Color color = new Color(49, 55, 57);
+            Color color = Color.FromArgb(49, 55, 57);
 
             var icon = new ImageView() { Image = Bitmap.FromResource("colour") };
             var title = new Label() { Text = "Colour", TextColor = color };
 
-            Rows.Add(new TableRow(new TableCell(icon), new TableCell(title)));
+            Rows.Add(new TableRow(new TableCell(icon), new TableCell(title, true), new TableCell()));
 
             _colours = new Label() { Text = "Colours", TextColor = color };
-            _coloursCount = new Label() { Text = "0", TextColor = color };
+            _coloursCount = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right };
 
-            Rows.Add(new TableRow(new TableCell(_colours), new TableCell(_coloursCount)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_colours), new TableCell(_coloursCount)));
 
             _colourBox = new ColourBox();
 
-            Rows.Add(new TableRow(new TableCell(_colourBox, true)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_colourBox)));
         }
 
         public void Update(SvgStats stats)

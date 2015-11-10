@@ -6,9 +6,9 @@ using Eto.Drawing;
 using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
-using ArtivityExplorer.Dialogs.SettingsDialog;
+using Artivity.Explorer.Dialogs.SettingsDialog;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public class SettingToolItem : ButtonToolItem
     {

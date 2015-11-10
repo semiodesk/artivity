@@ -5,7 +5,7 @@ using System.Text;
 using Eto.Forms;
 using Eto.Drawing;
 
-namespace ArtivityExplorer.Controls
+namespace Artivity.Explorer.Controls
 {
     public class ColourBox : StackLayout
     {
@@ -22,21 +22,25 @@ namespace ArtivityExplorer.Controls
 
         public void Update(IEnumerable<Color> colours)
         {
-//            while(Children.Count() > 0)
-//            {
-//                Remove(Children.First());
-//            }
-//
-//            int n = colours.Count();
-//
-//			if (n == 0) return;
-//
-//            int w = Convert.ToInt32(Math.Max(Size.Width / n, 1));
-//
-//            foreach(Color c in colours)
-//            {
-//                Items.Add(new () { BackgroundColor = c.ToXwtColor(), Margin = 0, MinWidth = 1, WidthRequest = w });
-//            }
+            while(Children.Count() > 0)
+            {
+                Remove(Children.First());
+            }
+
+            int n = colours.Count();
+
+			if (n == 0) return;
+
+            int w = Convert.ToInt32(Math.Max(Size.Width / n, 1));
+
+            foreach(Color c in colours)
+            {
+                Panel p = new Panel();
+                p.BackgroundColor = c;
+                p.MinimumSize = new Size(w, Height);
+
+                Items.Add(new StackLayoutItem(p, HorizontalAlignment.Stretch, true));
+            }
         }
 
         #endregion

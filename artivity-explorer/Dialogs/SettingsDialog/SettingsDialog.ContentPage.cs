@@ -1,4 +1,4 @@
-﻿using ArtivityExplorer.Controls;
+﻿using Artivity.Explorer.Controls;
 using Eto.Drawing;
 using Eto.Forms;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArtivityExplorer.Dialogs.SettingsDialog
+namespace Artivity.Explorer.Dialogs.SettingsDialog
 {
     public class ContentPage : WizardPage
     {

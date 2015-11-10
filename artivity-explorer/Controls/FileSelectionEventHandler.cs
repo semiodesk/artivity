@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public delegate void FileSelectionEventHandler(object sender, FileSelectionEventArgs e);
 }

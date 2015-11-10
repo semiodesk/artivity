@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Eto;
 using Eto.Forms;
 using Eto.Drawing;
-using ArtivityExplorer.Controls;
+using Artivity.Explorer.Controls;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public class WizardPage
     {

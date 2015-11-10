@@ -1,7 +1,7 @@
 ﻿using System;
 using Semiodesk.Trinity;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public class JournalItem
     {

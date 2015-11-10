@@ -8,7 +8,7 @@ using Artivity.Model.ObjectModel;
 using Eto.Forms;
 using Eto.Drawing;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public class AgentSettingsControl : GridView
     {

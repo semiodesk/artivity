@@ -4,14 +4,14 @@ using System.Linq;
 using System.Collections.Generic;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
-using ArtivityExplorer.Parsers;
-using ArtivityExplorer.Dialogs.SetupWizard;
-using ArtivityExplorer.Dialogs.ExportDialog;
+using Artivity.Explorer.Parsers;
+using Artivity.Explorer.Dialogs.SetupWizard;
+using Artivity.Explorer.Dialogs.ExportDialog;
 using System.IO;
 using Eto.Forms;
 using Eto.Drawing;
 
-namespace ArtivityExplorer.Controls
+namespace Artivity.Explorer.Controls
 {
     public class MainWindow : Form
     {
@@ -46,8 +46,7 @@ namespace ArtivityExplorer.Controls
             StackLayout layout = new StackLayout();
             layout.Orientation = Orientation.Vertical;
             layout.Items.Add(new StackLayoutItem(new UserHeader(), HorizontalAlignment.Stretch, false));
-            //layout.Items.Add(new StackLayoutItem(journalView, HorizontalAlignment.Stretch, true));
-            layout.Items.Add(new StackLayoutItem(new FileView(), HorizontalAlignment.Stretch, true));
+            layout.Items.Add(new StackLayoutItem(journalView, HorizontalAlignment.Stretch, true));
 
             Content = layout;
         }

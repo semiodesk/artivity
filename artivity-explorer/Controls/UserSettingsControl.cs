@@ -7,7 +7,7 @@ using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public class UserSettingsControl : StackLayout
     {
@@ -19,7 +19,7 @@ namespace ArtivityExplorer
 
         public TextBox OrganizationBox;
 
-        public TextBox EmailBox;
+        public MaskedTextBox EmailBox;
 
         #endregion
 
@@ -54,8 +54,9 @@ namespace ArtivityExplorer
             Spacing = 14;
 
             Button photoButton = new Button();
-            photoButton.Width = 83;
-            photoButton.Height = 83;
+            photoButton.Width = 93;
+            photoButton.Height = 93;
+            photoButton.ImagePosition = ButtonImagePosition.Overlay;
             photoButton.Click += OnPhotoButtonClicked;
 
             if (File.Exists(_user.Photo))
@@ -87,7 +88,7 @@ namespace ArtivityExplorer
             Label emailLabel = new Label();
             emailLabel.Text = "E-Mail";
 
-            EmailBox = new TextBox();
+            EmailBox = new MaskedTextBox();
             EmailBox.Width = 250;
             EmailBox.Text = _user.EmailAddress;
 

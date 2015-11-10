@@ -7,7 +7,7 @@ using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public class HomeToolItem : ButtonToolItem
     {

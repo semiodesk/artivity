@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using Eto.Forms;
 using Eto.Drawing;
-using ArtivityExplorer.Parsers;
+using Artivity.Explorer.Parsers;
 
-namespace ArtivityExplorer.Controls
+namespace Artivity.Explorer.Controls
 {
     public class CompositionWidget : TableLayout
     {
@@ -47,37 +47,37 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeComponent()
         {
-			Color color = new Color(49, 55, 57);
+            Color color = Color.FromArgb(49, 55, 57);
 
             var icon = new ImageView() { Image = Bitmap.FromResource("composition") };
             var title = new Label() { Text = "Composition", TextColor = color };
 
-            Rows.Add(new TableRow(new TableCell(icon), new TableCell(title)));
+            Rows.Add(new TableRow(new TableCell(icon), new TableCell(title, true), new TableCell()));
 
             _layers = new Label() { Text = "Layers", TextColor = color };
-            _layersCount = new Label() { Text = "0", TextColor = color };
+            _layersCount = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right };
 
-            Rows.Add(new TableRow(new TableCell(_layers), new TableCell(_layersCount)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_layers), new TableCell(_layersCount)));
 
             _groups = new Label() { Text = "Groups", TextColor = color };
-            _groupsCount = new Label() { Text = "0", TextColor = color };
+            _groupsCount = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right };
 
-            Rows.Add(new TableRow(new TableCell(_groups), new TableCell(_groupsCount)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_groups), new TableCell(_groupsCount)));
 
             _elements = new Label() { Text = "Elements", TextColor = color };
-            _elementsCount = new Label() { Text = "0", TextColor = color };
+            _elementsCount = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right };
 
-            Rows.Add(new TableRow(new TableCell(_elements), new TableCell(_elementsCount)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_elements), new TableCell(_elementsCount)));
 
             _masked = new Label() { Text = "  Masked", TextColor = color };
-            _maskedCount = new Label() { Text = "0", TextColor = color };
+            _maskedCount = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right };
 
-            Rows.Add(new TableRow(new TableCell(_masked), new TableCell(_maskedCount)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_masked), new TableCell(_maskedCount)));
 
             _clipped = new Label() { Text = "  Clipped", TextColor = color };
-            _clippedCount = new Label() { Text = "0", TextColor = color };
+            _clippedCount = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right };
 
-            Rows.Add(new TableRow(new TableCell(_clipped), new TableCell(_clippedCount)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_clipped), new TableCell(_clippedCount)));
         }
 
         public void Update(SvgStats stats)

@@ -5,7 +5,7 @@ using System.Text;
 using Eto.Forms;
 using Eto.Drawing;
 
-namespace ArtivityExplorer.Controls
+namespace Artivity.Explorer.Controls
 {
     public class FileStatsPanel : StackLayout
     {
@@ -24,11 +24,6 @@ namespace ArtivityExplorer.Controls
         public FileStatsPanel()
         {
             InitializeComponent();
-
-            Width = 250;
-            Spacing = 30;
-
-			BackgroundColor = new Color(246, 246, 245);
         }
 
         #endregion
@@ -37,9 +32,14 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeComponent()
         {
-            Items.Add(new StackLayoutItem(EditingWidget));
-            Items.Add(new StackLayoutItem(CompositionWidget));
-            Items.Add(new StackLayoutItem(ColourWidget));
+            Orientation = Orientation.Vertical;
+            Width = 200;
+            Spacing = 30;
+            Padding = new Padding(10);
+
+            Items.Add(new StackLayoutItem(EditingWidget, HorizontalAlignment.Stretch, false));
+            Items.Add(new StackLayoutItem(CompositionWidget, HorizontalAlignment.Stretch, false));
+            Items.Add(new StackLayoutItem(ColourWidget, HorizontalAlignment.Stretch, false));
         }
 
         #endregion

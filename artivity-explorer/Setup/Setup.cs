@@ -7,7 +7,7 @@ using Artivity.Model;
 using Artivity.Model.ObjectModel;
 using System.Linq;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public class Setup
     {

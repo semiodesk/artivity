@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using Eto.Forms;
 using Eto.Drawing;
-using ArtivityExplorer.Parsers;
+using Artivity.Explorer.Parsers;
 using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
 using System.Collections.ObjectModel;
 
-namespace ArtivityExplorer.Controls
+namespace Artivity.Explorer.Controls
 {
     public class EditingWidget : TableLayout
     {
@@ -51,37 +51,37 @@ namespace ArtivityExplorer.Controls
 
         private void InitializeComponent()
         {
-			Color color = new Color(49, 55, 57);
+            Color color = Color.FromArgb(49, 55, 57);
 
             var icon = new ImageView() { Image = Bitmap.FromResource("edit") };
             var title = new Label() { Text = "Editing", TextColor = color };
 
-            Rows.Add(new TableRow(new TableCell(icon), new TableCell(title)));
+            Rows.Add(new TableRow(new TableCell(icon), new TableCell(title, true), new TableCell()));
 
             _sessions = new Label() { Text = "Sessions", TextColor = color };
-            _sessionsCount = new Label() { Text = "0", TextColor = color };
+            _sessionsCount = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right };
 
-            Rows.Add(new TableRow(new TableCell(_sessions), new TableCell(_sessionsCount)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_sessions), new TableCell(_sessionsCount)));
 
             _steps = new Label() { Text = "Steps", TextColor = color };
-            _stepsCount = new Label() { Text = "0", TextColor = color };
+            _stepsCount = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right };
 
-            Rows.Add(new TableRow(new TableCell(_steps), new TableCell(_stepsCount)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_steps), new TableCell(_stepsCount)));
 
             _undos = new Label() { Text = "Undos", TextColor = color };
-            _undosCount = new Label() { Text = "0", TextColor = color };
+            _undosCount = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right};
 
-            Rows.Add(new TableRow(new TableCell(_undos), new TableCell(_undosCount)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_undos), new TableCell(_undosCount)));
 
             _redos = new Label() { Text = "Redos", TextColor = color };
-            _redosCount = new Label() { Text = "0", TextColor = color };
+            _redosCount = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right };
 
-            Rows.Add(new TableRow(new TableCell(_redos), new TableCell(_redosCount)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_redos), new TableCell(_redosCount)));
 
             _confidence = new Label() { Text = "Confidence", TextColor = color };
-            _confidenceValue = new Label() { Text = "0", TextColor = color };
+            _confidenceValue = new Label() { Text = "0", TextColor = color, TextAlignment = TextAlignment.Right };
 
-            Rows.Add(new TableRow(new TableCell(_confidence), new TableCell(_confidenceValue)));
+            Rows.Add(new TableRow(new TableCell(), new TableCell(_confidence), new TableCell(_confidenceValue)));
         }
 
 		public void Update(string fileUrl)

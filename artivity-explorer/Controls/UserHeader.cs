@@ -3,7 +3,7 @@ using Eto.Drawing;
 using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
-using ArtivityExplorer.Dialogs.SettingsDialog;
+using Artivity.Explorer.Dialogs.SettingsDialog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace ArtivityExplorer.Controls
+namespace Artivity.Explorer.Controls
 {
     public class UserHeader : StackLayout
     {
@@ -60,8 +60,9 @@ namespace ArtivityExplorer.Controls
             
             _preferencesButton = new Button();
             _preferencesButton.Image = Bitmap.FromResource("preferences");
-            _preferencesButton.Width = 32;
-            _preferencesButton.Height = 32;
+            _preferencesButton.Width = 42;
+            _preferencesButton.Height = 42;
+            _preferencesButton.ImagePosition = ButtonImagePosition.Overlay;
             _preferencesButton.Click += OnPreferencesButtonClick;
 
             Items.Add(new StackLayoutItem(_photoBox));
@@ -104,7 +105,7 @@ namespace ArtivityExplorer.Controls
         protected void OnPreferencesButtonClick(object sender, EventArgs e)
         {
             SettingsDialog dialog = new SettingsDialog();
-            dialog.ShowModal(this);
+            dialog.ShowModal();
 
             Refresh();
         }

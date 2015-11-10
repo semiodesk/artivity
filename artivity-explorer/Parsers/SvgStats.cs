@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Eto.Drawing;
 
-namespace ArtivityExplorer.Parsers
+namespace Artivity.Explorer.Parsers
 {
     public class SvgStats
     {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Xml;
 using Eto.Drawing;
 
-namespace ArtivityExplorer.Parsers
+namespace Artivity.Explorer.Parsers
 {
     public class SvgStatsParser
     {

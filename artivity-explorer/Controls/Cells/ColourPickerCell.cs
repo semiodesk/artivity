@@ -3,7 +3,7 @@ using Eto;
 using Eto.Forms;
 using Eto.Drawing;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     [Handler(typeof(IHandler))]
     public class ColourPickerCell : DrawableCell
