@@ -127,9 +127,6 @@
     <Reference Include="Eto">
       <HintPath>..\packages\Eto.Forms.2.1.0\lib\net40\Eto.dll</HintPath>
     </Reference>
-    <Reference Include="Eto.Gtk3">
-      <HintPath>..\packages\Eto.Platform.Gtk3.2.1.0\lib\net40\Eto.Gtk3.dll</HintPath>
-    </Reference>
     <Reference Include="Eto.Wpf">
       <HintPath>..\packages\Eto.Platform.Wpf.2.1.0\lib\net40\Eto.Wpf.dll</HintPath>
     </Reference>
@@ -141,9 +138,6 @@
     </Reference>
     <Reference Include="Eto.OxyPlot">
       <HintPath>References\Eto.OxyPlot.dll</HintPath>
-    </Reference>
-    <Reference Include="Eto.OxyPlot.Gtk3">
-      <HintPath>References\Eto.OxyPlot.Gtk3.dll</HintPath>
     </Reference>
     <Reference Include="Eto.OxyPlot.Wpf">
       <HintPath>References\Eto.OxyPlot.Wpf.dll</HintPath>
@@ -180,6 +174,12 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Drawing" />
+    <Reference Include="Eto.Gtk2">
+      <HintPath>..\packages\Eto.Platform.Gtk.2.1.0\lib\net40\Eto.Gtk2.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.OxyPlot.Gtk2">
+      <HintPath>References\Eto.OxyPlot.Gtk2.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Widgets\EditingWidget.cs">
