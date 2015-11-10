@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{823D4E87-D4D8-4D08-98AE-EAD625579E1A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ArtivityExplorer</RootNamespace>
+    <RootNamespace>Artivity.Explorer</RootNamespace>
     <AssemblyName>artivity-explorer</AssemblyName>
     <TargetFrameworkProfile />
-    <StartupObject>ArtivityExplorer.Program</StartupObject>
+    <StartupObject>Artivity.Explorer.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,12 +37,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\ActivitiesChart.cs">
-      <SubType>Eto.Forms</SubType>
-    </Compile>
-    <Compile Include="Controls\ActivitiesLog.cs">
-      <SubType>Eto.Forms</SubType>
-    </Compile>
     <Compile Include="Controls\MainWindow.cs">
       <SubType>Eto.Forms</SubType>
     </Compile>
@@ -105,6 +99,13 @@
     </Compile>
     <Compile Include="Dialogs\SetupWizard\SetupWizard.WelcomePage.cs" />
     <Compile Include="Dialogs\SetupWizard\SetupWizard.CompletePage.cs" />
+    <Compile Include="Controls\ActivityLogItem.cs" />
+    <Compile Include="Controls\ActivityLog.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Controls\ActivityChart.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

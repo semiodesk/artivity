@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Eto.Forms;
 using Eto.Drawing;
 
-namespace ArtivityExplorer.Controls
+namespace Artivity.Explorer.Controls
 {
     public class Wizard : Dialog
     {
@@ -76,10 +76,7 @@ namespace ArtivityExplorer.Controls
 
         #region Constructors
 
-        public Wizard()
-        {
-            InitializeComponent();
-        }
+        public Wizard() {}
 
         #endregion
 
@@ -96,10 +93,10 @@ namespace ArtivityExplorer.Controls
 			TitleLayout.Padding = new Padding(24, 14);
 			TitleLayout.Content = TitleLabel;
 
-            AbortButton = new Button() { Text = "Cancel", Height = 24, Width = 100 };
-            OkButton = new Button() { Text = "Ok", Height = 24, Width = 100 };
-            BackButton = new Button() { Text = "< Back", Width = 100, Height = 24 };
-            NextButton = new Button() { Text = "Next >", Width = 100, Height = 24 };
+            AbortButton = new Button() { Text = "Cancel", Height = 34, Width = 100 };
+            OkButton = new Button() { Text = "Ok", Height = 34, Width = 100 };
+            BackButton = new Button() { Text = "< Back", Width = 100, Height = 34 };
+            NextButton = new Button() { Text = "Next >", Width = 100, Height = 34 };
 
             ButtonLayout = new StackLayout();
             ButtonLayout.Orientation = Orientation.Horizontal;
@@ -110,8 +107,10 @@ namespace ArtivityExplorer.Controls
 			Padding = new Padding(0);
 
             LayoutRoot = new StackLayout();
-            LayoutRoot.Size = ClientSize;
+            LayoutRoot.Spacing = 0;
             LayoutRoot.Orientation = Orientation.Vertical;
+            LayoutRoot.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            LayoutRoot.VerticalContentAlignment = VerticalAlignment.Stretch;
 			LayoutRoot.Items.Add(new StackLayoutItem(TitleLayout, HorizontalAlignment.Left, false));
             LayoutRoot.Items.Add(new StackLayoutItem(new Panel(), HorizontalAlignment.Stretch, true));
             LayoutRoot.Items.Add(new StackLayoutItem(ButtonLayout, HorizontalAlignment.Stretch, false));

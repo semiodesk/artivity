@@ -1,9 +1,9 @@
 ﻿using System;
 using Eto.Forms;
 using Eto.Drawing;
-using ArtivityExplorer.Controls;
+using Artivity.Explorer.Controls;
 
-namespace ArtivityExplorer.Dialogs.SetupWizard
+namespace Artivity.Explorer.Dialogs.SetupWizard
 {
     public class WelcomePage : WizardPage
     {

@@ -2,14 +2,14 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using Semiodesk.Trinity;
 using Eto.Forms;
 using Eto.Drawing;
 using Artivity.Model;
-using System.Diagnostics;
 using Artivity.Model.ObjectModel;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public class JournalView : GridView
     {
@@ -23,8 +23,6 @@ namespace ArtivityExplorer
 
         public JournalView()
         {
-            RowHeight = 40;
-
             Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FileName"), HeaderText = "File Name", Width = 300 });
             Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedTotalEditingTime"), HeaderText = "Editing Time", Width = 90 });
             Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedLastEditingDate"), HeaderText = "Last Used", Width = 90 });
@@ -162,21 +160,33 @@ namespace ArtivityExplorer
                 return;
             }
 
-            SoftwareAgent agent = Models.GetAgents().GetResource<SoftwareAgent>(selectedItem.Agent);
-
-            if (string.IsNullOrEmpty(agent.ExecutableName))
-            {
-                return;
-            }
-
-            ProcessStartInfo process = new ProcessStartInfo();
-            process.Arguments = selectedItem.Path;
-            process.UseShellExecute = true;
-            process.WorkingDirectory = Path.GetDirectoryName(selectedItem.Path);
-            process.FileName = agent.ExecutableName;
-
-            Process.Start(process);
+            RaiseFileSelected(new FileSelectionEventArgs("file://" + selectedItem.Path));
         }
+
+//        protected void OnCellDoubleClick(object sender, EventArgs e)
+//        {
+//            JournalItem selectedItem = SelectedItem as JournalItem;
+//
+//            if (selectedItem == null || !File.Exists(selectedItem.Path))
+//            {
+//                return;
+//            }
+//
+//            SoftwareAgent agent = Models.GetAgents().GetResource<SoftwareAgent>(selectedItem.Agent);
+//
+//            if (string.IsNullOrEmpty(agent.ExecutableName))
+//            {
+//                return;
+//            }
+//
+//            ProcessStartInfo process = new ProcessStartInfo();
+//            process.Arguments = selectedItem.Path;
+//            process.UseShellExecute = true;
+//            process.WorkingDirectory = Path.GetDirectoryName(selectedItem.Path);
+//            process.FileName = agent.ExecutableName;
+//
+//            Process.Start(process);
+//        }
 
         #endregion
 

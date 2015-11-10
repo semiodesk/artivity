@@ -6,9 +6,9 @@ using Eto.Drawing;
 using Semiodesk.Trinity;
 using Artivity.Model;
 using Artivity.Model.ObjectModel;
-using ArtivityExplorer.Controls;
+using Artivity.Explorer.Controls;
 
-namespace ArtivityExplorer.Dialogs.SettingsDialog
+namespace Artivity.Explorer.Dialogs.SettingsDialog
 {
     public class SettingsDialog : Wizard
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Eto.Forms;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public static class ListViewExtensions
     {

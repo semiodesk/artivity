@@ -1,18 +1,18 @@
 ﻿using System;
-using ArtivityExplorer.Controls;
+using Artivity.Explorer.Controls;
 using Eto.Forms;
 using System.IO;
-using ArtivityExplorer.Parsers;
+using Artivity.Explorer.Parsers;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public class FileView : StackLayout
     {
         #region Members
 
-        private ActivitiesChart _chart = new ActivitiesChart();
+        private ActivityChart _chart = new ActivityChart();
 
-        private ActivitiesLog _log = new ActivitiesLog();
+        private ActivityLog _log = new ActivityLog();
 
         private FileStatsPanel _statsPanel = new FileStatsPanel();
 
@@ -33,18 +33,18 @@ namespace ArtivityExplorer
 
         private void InitializeComponent()
         {
-            Orientation = Orientation.Horizontal;
+            Orientation = Orientation.Vertical;
             Spacing = 0;
 
             // Initialize the content layout.
             StackLayout content = new StackLayout();
             content.Orientation = Orientation.Horizontal;
-            content.Items.Add(new StackLayoutItem(_statsPanel));
-            content.Items.Add(new StackLayoutItem( _log, true));
+            content.Items.Add(new StackLayoutItem(_statsPanel, VerticalAlignment.Stretch, false));
+            content.Items.Add(new StackLayoutItem( _log, VerticalAlignment.Stretch, true));
             content.Spacing = 0;
 
-            Items.Add(new StackLayoutItem(_chart));
-            Items.Add(new StackLayoutItem(content, true));
+            Items.Add(new StackLayoutItem(_chart, HorizontalAlignment.Stretch, false));
+            Items.Add(new StackLayoutItem(content, HorizontalAlignment.Stretch, true));
         }
 
         public void Update()
