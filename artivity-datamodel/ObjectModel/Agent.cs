@@ -33,7 +33,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
     [RdfClass(PROV.Agent)]
     public class Agent : Resource

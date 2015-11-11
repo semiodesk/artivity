@@ -28,7 +28,7 @@
 using Semiodesk.Trinity;
 using System;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
 	[RdfClass(ART.Redo)]
     public class Redo : EntityInfluence

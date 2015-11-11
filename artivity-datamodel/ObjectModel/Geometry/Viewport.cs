@@ -28,7 +28,7 @@
 using System;
 using Semiodesk.Trinity;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
     [RdfClass(ART.Viewport)]
 	public class Viewport : Rectangle

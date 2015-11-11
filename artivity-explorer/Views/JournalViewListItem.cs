@@ -7,13 +7,13 @@ namespace Artivity.Explorer
     {
         public Uri Agent { get; set; }
 
-        public string Url { get; set; }
+        public string FileUrl { get; set; }
 
-        public string Path { get; set; }
+        public string FilePath { get; set; }
 
         public string FileName
         {
-            get { return System.IO.Path.GetFileName(Path); }
+            get { return System.IO.Path.GetFileName(FilePath); }
         }
 
         [NotifyPropertyChanged]

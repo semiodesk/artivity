@@ -28,7 +28,7 @@
 using System;
 using Semiodesk.Trinity;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
 	[RdfClass(NFO.FileDataObject)]
 	public class FileDataObject : Entity
@@ -53,7 +53,7 @@ namespace Artivity.Model.ObjectModel
 		[RdfProperty(PROV.value)]
 		public string RevisedValue { get; set; }
 
-        [RdfProperty(ART.hadCanvas)]
+        [RdfProperty(ART.canvas)]
         public Canvas Canvas { get; set; }
 
 		#endregion

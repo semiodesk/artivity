@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Semiodesk.Trinity;
-using Artivity.Model.ObjectModel;
-using Artivity.Model;
+using Artivity.DataModel;
 using Eto.Forms;
 
 namespace Artivity.Explorer.Controls
@@ -45,8 +44,9 @@ namespace Artivity.Explorer.Controls
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX dces: <http://purl.org/dc/elements/1.1/>
+                PREFIX art: <http://semiodesk.com/artivity/1.0/>
 
-                SELECT ?agent ?influenceTime ?influenceType ?entity ?entityType ?description ?value WHERE 
+                SELECT ?agent ?influenceTime ?influenceType ?entity ?entityType ?description ?value ?bounds WHERE 
                 {
                     ?activity prov:qualifiedAssociation ?association .
 
@@ -64,6 +64,7 @@ namespace Artivity.Explorer.Controls
                         ?generation a ?influenceType ;
                             prov:atTime ?influenceTime .
 
+                        OPTIONAL { ?generation art:hadBoundaries ?bounds . }
                         OPTIONAL { ?generation dces:description ?description . }
                         OPTIONAL { ?generation prov:value ?value . }
                     }
@@ -135,6 +136,11 @@ namespace Artivity.Explorer.Controls
                     UriRef entityUri = new UriRef(binding["entity"].ToString());
 
                     item.Data = entityUri.Host;
+                }
+
+                if (!(binding["bounds"] is DBNull))
+                {
+                    item.InfluencedRegion = binding["bounds"].ToString();
                 }
 
                 _items.Add(item);

@@ -36,8 +36,8 @@ namespace Artivity.Explorer
             {
                 Color colour = Color.Parse(colourCode);
 
-                PointF location = new PointF(e.ClipRectangle.Location.X + 10, e.ClipRectangle.Location.Y + 4);
-                SizeF size = new SizeF(e.ClipRectangle.Width - 10, e.ClipRectangle.Width - 10);
+                PointF location = new PointF(e.ClipRectangle.Location.X, e.ClipRectangle.Location.Y);
+                SizeF size = new SizeF(e.ClipRectangle.Width, e.ClipRectangle.Height);
 
                 e.Graphics.FillRectangle(colour, new RectangleF(location, size));
             }

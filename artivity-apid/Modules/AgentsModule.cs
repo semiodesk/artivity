@@ -25,8 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Model;
-using Artivity.Model.ObjectModel;
+using Artivity.DataModel;
 using Artivity.Api.Http.Parameters;
 using Semiodesk.Trinity;
 using System;

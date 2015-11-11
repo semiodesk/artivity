@@ -3,8 +3,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using Semiodesk.Trinity;
-using Artivity.Model;
-using Artivity.Model.ObjectModel;
+using Artivity.DataModel;
 using System.Linq;
 
 namespace Artivity.Explorer

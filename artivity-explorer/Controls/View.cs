@@ -26,6 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
+using Semiodesk.Trinity;
 using Eto.Forms;
 using Artivity.Explorer.Controls;
 
@@ -33,6 +34,12 @@ namespace Artivity.Explorer
 {
     public class View : StackLayout
     {
+        #region Members
+
+        protected IModel Model;
+
+        #endregion
+
         #region Constructors
 
         public View() {}

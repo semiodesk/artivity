@@ -28,7 +28,7 @@
 using System;
 using Semiodesk.Trinity;
 
-namespace Artivity.Model
+namespace Artivity.DataModel
 {
 	public static class Models
 	{

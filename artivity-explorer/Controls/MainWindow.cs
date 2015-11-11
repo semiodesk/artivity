@@ -2,8 +2,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Artivity.Model;
-using Artivity.Model.ObjectModel;
+using Artivity.DataModel;
 using Artivity.Explorer.Parsers;
 using Artivity.Explorer.Dialogs.SetupWizard;
 using Artivity.Explorer.Dialogs.ExportDialog;

@@ -4,8 +4,7 @@ using System.IO;
 using Eto.Forms;
 using Eto.Drawing;
 using Semiodesk.Trinity;
-using Artivity.Model;
-using Artivity.Model.ObjectModel;
+using Artivity.DataModel;
 
 namespace Artivity.Explorer
 {

@@ -20,24 +20,45 @@
 //
 // AUTHORS:
 //
-//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using Semiodesk.Trinity;
+using Eto.Drawing;
 
-namespace Artivity.DataModel
+namespace Artivity.Explorer
 {
-    [RdfClass(ART.BoundingRectangle)]
-    public class BoundingRectangle : Rectangle
+    public static class RectangleFExtensions
     {
-        #region Constructors
+        public static double GetScalingFactor(this RectangleF target, Artivity.DataModel.Rectangle rectangle)
+        {
+            if (rectangle == null)
+            {
+                return 1;
+            }
 
-        public BoundingRectangle(Uri uri) : base(uri) {}
+            double w = target.Width / rectangle.Width;
+            double h = target.Height / rectangle.Height;
 
-        #endregion
+            return w >= h ? h : w;
+        }
+
+        public static RectangleF Fit(this RectangleF target, Artivity.DataModel.Rectangle rectangle)
+        {
+            if (rectangle == null)
+            {
+                return target;
+            }
+                
+            double s = target.GetScalingFactor(rectangle);
+
+            RectangleF result = new RectangleF();
+            result.Width = Convert.ToSingle(Math.Round(rectangle.Width * s, 0));
+            result.Height = Convert.ToSingle(Math.Round(rectangle.Height * s, 0));
+
+            return result;
+        }
     }
 }
 

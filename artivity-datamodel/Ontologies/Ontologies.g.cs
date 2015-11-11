@@ -1,12 +1,12 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 03.11.2015 17:10:04
+// Date: 11/11/2015 11:30:19 AM
 
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Semiodesk.Trinity;
 
-namespace Artivity.Model
+namespace Artivity.DataModel
 {
 	
 ///<summary>
@@ -492,29 +492,6 @@ public class owl : Ontology
     public static string GetPrefix() { return Prefix; }     
 
     ///<summary>
-    ///
-    ///  This ontology partially describes the built-in classes and
-    ///  properties that together form the basis of the RDF/XML syntax of OWL 2.
-    ///  The content of this ontology is based on Tables 6.1 and 6.2
-    ///  in Section 6.4 of the OWL 2 RDF-Based Semantics specification,
-    ///  available at http://www.w3.org/TR/owl2-rdf-based-semantics/.
-    ///  Please note that those tables do not include the different annotations
-    ///  (labels, comments and rdfs:isDefinedBy links) used in this file.
-    ///  Also note that the descriptions provided in this ontology do not
-    ///  provide a complete and correct formal description of either the syntax
-    ///  or the semantics of the introduced terms (please see the OWL 2
-    ///  recommendations for the complete and normative specifications).
-    ///  Furthermore, the information provided by this ontology may be
-    ///  misleading if not used with care. This ontology SHOULD NOT be imported
-    ///  into OWL ontologies. Importing this file into an OWL 2 DL ontology
-    ///  will cause it to become an OWL 2 Full ontology and may have other,
-    ///  unexpected, consequences.
-    ///   
-    ///<see cref="http://www.w3.org/2002/07/owl"/>
-    ///</summary>
-    public static readonly Resource owl_0 = new Resource(new Uri("http://www.w3.org/2002/07/owl"));    
-
-    ///<summary>
     ///The class of collections of pairwise different individuals.
     ///<see cref="http://www.w3.org/2002/07/owl#AllDifferent"/>
     ///</summary>
@@ -987,29 +964,6 @@ public static class OWL
     
     public static readonly string Prefix = "OWL";
     public static string GetPrefix() { return Prefix; } 
-
-    ///<summary>
-    ///
-    ///  This ontology partially describes the built-in classes and
-    ///  properties that together form the basis of the RDF/XML syntax of OWL 2.
-    ///  The content of this ontology is based on Tables 6.1 and 6.2
-    ///  in Section 6.4 of the OWL 2 RDF-Based Semantics specification,
-    ///  available at http://www.w3.org/TR/owl2-rdf-based-semantics/.
-    ///  Please note that those tables do not include the different annotations
-    ///  (labels, comments and rdfs:isDefinedBy links) used in this file.
-    ///  Also note that the descriptions provided in this ontology do not
-    ///  provide a complete and correct formal description of either the syntax
-    ///  or the semantics of the introduced terms (please see the OWL 2
-    ///  recommendations for the complete and normative specifications).
-    ///  Furthermore, the information provided by this ontology may be
-    ///  misleading if not used with care. This ontology SHOULD NOT be imported
-    ///  into OWL ontologies. Importing this file into an OWL 2 DL ontology
-    ///  will cause it to become an OWL 2 Full ontology and may have other,
-    ///  unexpected, consequences.
-    ///   
-    ///<see cref="http://www.w3.org/2002/07/owl"/>
-    ///</summary>
-    public const string owl_0 = "http://www.w3.org/2002/07/owl";
 
     ///<summary>
     ///The class of collections of pairwise different individuals.
@@ -1492,7 +1446,7 @@ public class prov : Ontology
     ///Archives/Public/public-prov-comments/). All feedback is welcome.
     ///<see cref="http://www.w3.org/ns/prov#"/>
     ///</summary>
-    public static readonly Resource prov_0 = new Resource(new Uri("http://www.w3.org/ns/prov#"));    
+    //public static readonly Resource # = new Resource(new Uri("http://www.w3.org/ns/prov#"));    
 
     ///<summary>
     ///
@@ -2128,9 +2082,9 @@ public class prov : Ontology
 
     ///<summary>
     ///
-    ///<see cref="file:///D:/Projects/Artivity/artivity-datamodel/Ontologies/prov.ttl#"/>
+    ///<see cref="file://home/sebastian/Projects/Artivity/artivity-datamodel/Ontologies/prov.ttl#"/>
     ///</summary>
-    public static readonly Resource prov_ttl = new Resource(new Uri("file:///D:/Projects/Artivity/artivity-datamodel/Ontologies/prov.ttl#"));    
+    public static readonly Resource prov_ttl = new Resource(new Uri("file://home/sebastian/Projects/Artivity/artivity-datamodel/Ontologies/prov.ttl#"));    
 
     ///<summary>
     ///
@@ -2640,7 +2594,7 @@ public static class PROV
     ///Archives/Public/public-prov-comments/). All feedback is welcome.
     ///<see cref="http://www.w3.org/ns/prov#"/>
     ///</summary>
-    public const string prov_0 = "http://www.w3.org/ns/prov#";
+    //public const string # = "http://www.w3.org/ns/prov#";
 
     ///<summary>
     ///
@@ -3276,9 +3230,9 @@ public static class PROV
 
     ///<summary>
     ///
-    ///<see cref="file:///D:/Projects/Artivity/artivity-datamodel/Ontologies/prov.ttl#"/>
+    ///<see cref="file://home/sebastian/Projects/Artivity/artivity-datamodel/Ontologies/prov.ttl#"/>
     ///</summary>
-    public const string prov_ttl = "file:///D:/Projects/Artivity/artivity-datamodel/Ontologies/prov.ttl#";
+    public const string prov_ttl = "file://home/sebastian/Projects/Artivity/artivity-datamodel/Ontologies/prov.ttl#";
 
     ///<summary>
     ///
@@ -6903,9 +6857,9 @@ public class art : Ontology
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadCanvas"/>
+    ///<see cref="http://semiodesk.com/artivity/1.0/canvas"/>
     ///</summary>
-    public static readonly Property hadCanvas = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadCanvas"));    
+    public static readonly Property canvas = new Property(new Uri("http://semiodesk.com/artivity/1.0/canvas"));    
 
     ///<summary>
     ///
@@ -7227,9 +7181,9 @@ public static class ART
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadCanvas"/>
+    ///<see cref="http://semiodesk.com/artivity/1.0/canvas"/>
     ///</summary>
-    public const string hadCanvas = "http://semiodesk.com/artivity/1.0/hadCanvas";
+    public const string canvas = "http://semiodesk.com/artivity/1.0/canvas";
 
     ///<summary>
     ///
