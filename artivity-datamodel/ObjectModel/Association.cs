@@ -31,7 +31,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
     [RdfClass(PROV.Association)]
 	public class Association : Resource

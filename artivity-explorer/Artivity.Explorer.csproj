@@ -37,6 +37,9 @@
     <EmbeddedResource Include="Resources\Icon.png">
       <LogicalName>icon.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ArrowBack.png">
+      <LogicalName>ArrowBack.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\MainWindow.cs">
@@ -107,6 +110,10 @@
     </Compile>
     <Compile Include="Setup\SetupWizard.CompletePage.cs" />
     <Compile Include="Setup\SetupWizard.WelcomePage.cs" />
+    <Compile Include="Controls\CanvasThumbnailCell.cs" />
+    <Compile Include="Controls\CanvasThumbnailRenderer.cs" />
+    <Compile Include="Palette.cs" />
+    <Compile Include="Extensions\RectangleFExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -1,9 +1,11 @@
 ﻿using System;
-using Artivity.Explorer.Controls;
-using Eto.Forms;
 using System.IO;
-using Artivity.Explorer.Parsers;
+using Semiodesk.Trinity;
+using Eto.Forms;
 using Eto.Drawing;
+using data = Artivity.DataModel;
+using Artivity.Explorer.Controls;
+using Artivity.Explorer.Parsers;
 
 namespace Artivity.Explorer
 {
@@ -49,8 +51,10 @@ namespace Artivity.Explorer
 
         private void InitializeComponent()
         {
+            Model = data.Models.GetActivities();
+
             Orientation = Orientation.Vertical;
-            Spacing = 0;
+            Spacing = 7;
 
             _tabs.Pages.Add(new TabPage(_log) { Text = "Activities", Padding = new Padding(0) });
             _tabs.Pages.Add(new TabPage(_statsPanel) { Text = "Statistics", Padding = new Padding(0) });
@@ -58,6 +62,8 @@ namespace Artivity.Explorer
             Items.Add(new StackLayoutItem(_header, HorizontalAlignment.Stretch, false));
             Items.Add(new StackLayoutItem(_chart, HorizontalAlignment.Stretch, false));
             Items.Add(new StackLayoutItem(_tabs, HorizontalAlignment.Stretch, true));
+
+            _log.SelectedItemsChanged += OnActivityLogSelectedItemsChanged;
         }
 
         private void Refresh()
@@ -88,6 +94,22 @@ namespace Artivity.Explorer
             _chart.Reset();
             _chart.LoadActivities(fileUrl);
             _chart.LoadActivityInfluences(fileUrl);
+        }
+
+        private void OnActivityLogSelectedItemsChanged(object sender, EventArgs e)
+        {
+            ActivityLogItem selectedItem = _log.SelectedItem as ActivityLogItem;
+
+            if (selectedItem == null || string.IsNullOrEmpty(selectedItem.InfluencedRegion))
+            {
+                return;
+            }
+
+            UriRef regionUri = new UriRef(selectedItem.InfluencedRegion);
+
+            data.Rectangle region = Model.GetResource<data.Rectangle>(regionUri);
+
+            _header.Thumbnail.HighlightedRegion = region;
         }
 
         #endregion

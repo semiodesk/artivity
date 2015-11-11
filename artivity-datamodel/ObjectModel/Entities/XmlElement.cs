@@ -30,7 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
     [RdfClass(XML.Element)]
 	public class XmlElement : Entity

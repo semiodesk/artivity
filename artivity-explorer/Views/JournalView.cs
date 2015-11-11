@@ -6,8 +6,7 @@ using System.Diagnostics;
 using Semiodesk.Trinity;
 using Eto.Forms;
 using Eto.Drawing;
-using Artivity.Model;
-using Artivity.Model.ObjectModel;
+using Artivity.DataModel;
 using Artivity.Explorer.Controls;
 
 namespace Artivity.Explorer
@@ -31,13 +30,9 @@ namespace Artivity.Explorer
             Items.Add(new StackLayoutItem(_header, HorizontalAlignment.Stretch, false));
             Items.Add(new StackLayoutItem(_grid, HorizontalAlignment.Stretch, true));
 
-            GridColumn fileColumn = new GridColumn();
-            fileColumn.HeaderText = "File Name";
-            fileColumn.DataCell = new TextBoxCell("FileName");
-            fileColumn.Width = 395;
-            fileColumn.AutoSize = false;
-
-            _grid.Columns.Add(fileColumn);
+            _grid.RowHeight = 50;
+            _grid.Columns.Add(new GridColumn() { DataCell = new CanvasThumbnailCell("FilePath"), Width = 75, AutoSize = false });
+            _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FileName"), HeaderText = "File", Width = 295, AutoSize = false });
             _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedTotalEditingTime"), HeaderText = "Editing Time", Width = 90 });
             _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedLastEditingDate"), HeaderText = "Last Used", Width = 90 });
             _grid.CellDoubleClick += OnCellDoubleClick;
@@ -100,7 +95,7 @@ namespace Artivity.Explorer
                     continue;
                 }
 
-                Uri agent = new Uri(binding["agent"].ToString());
+                UriRef agent = new UriRef(binding["agent"].ToString());
                 DateTime startTime = (DateTime)binding["startTime"];
                 DateTime endTime = (DateTime)binding["endTime"];
                 TimeSpan editingTime = endTime - startTime;
@@ -108,8 +103,8 @@ namespace Artivity.Explorer
                 JournalViewListItem item = new JournalViewListItem()
                 {
                     Agent = agent,
-                    Url = url,
-                    Path = path,
+                    FileUrl = url,
+                    FilePath = path,
                     LastEditingDate = startTime,
                     TotalEditingTime = editingTime
                 };
@@ -138,7 +133,7 @@ namespace Artivity.Explorer
                     return;
                 }
 
-                string filePath = selectedItem.Path;
+                string filePath = selectedItem.FilePath;
 
                 if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
                 {
@@ -156,7 +151,7 @@ namespace Artivity.Explorer
                     return;
                 }
 
-                RaiseFileSelected(new FileSelectionEventArgs(selectedItem.Path));
+                RaiseFileSelected(new FileSelectionEventArgs(selectedItem.FilePath));
             }
             else if (e.Key == Keys.F5)
             {
@@ -175,7 +170,7 @@ namespace Artivity.Explorer
 
             MainWindow.Navigate<FileView>((window, view) =>
             {
-                view.FilePath = selectedItem.Path;
+                view.FilePath = selectedItem.FilePath;
             });
         }
 

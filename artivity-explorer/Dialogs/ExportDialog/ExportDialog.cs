@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using Semiodesk.Trinity;
-using Artivity.Model;
+using Artivity.DataModel;
 using Eto.Forms;
 
 namespace Artivity.Explorer.Dialogs.ExportDialog

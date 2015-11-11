@@ -32,7 +32,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Drawing;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
     [RdfClass(PROV.SoftwareAgent)]
     public class SoftwareAgent : Agent

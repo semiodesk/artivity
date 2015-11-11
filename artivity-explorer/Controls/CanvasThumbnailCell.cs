@@ -20,22 +20,55 @@
 //
 // AUTHORS:
 //
-//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using Semiodesk.Trinity;
+using Artivity.DataModel;
+using Eto;
+using Eto.Forms;
+using Eto.Drawing;
 
-namespace Artivity.DataModel
+namespace Artivity.Explorer
 {
-    [RdfClass(ART.BoundingRectangle)]
-    public class BoundingRectangle : Rectangle
+    [Handler(typeof(IHandler))]
+    public class CanvasThumbnailCell : DrawableCell
     {
+        #region Members
+
+        private CanvasThumbnailRenderer _thumbnailRenderer = new CanvasThumbnailRenderer() { Padding = new Padding(10, 0, 0, 0) };
+
+        /// <summary>
+        /// Gets or sets the binding to get/set the value of the cell.
+        /// </summary>
+        /// <value>The cell's binding.</value>
+        public IIndirectBinding<string> Binding { get; set; }
+
+        #endregion
+
         #region Constructors
 
-        public BoundingRectangle(Uri uri) : base(uri) {}
+        public CanvasThumbnailCell() {}
+
+        public CanvasThumbnailCell(string property)
+        {
+            Binding = new PropertyBinding<string>(property);
+        }
+
+        #endregion
+
+        #region Methods
+
+        protected override void OnPaint(DrawableCellPaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            string filePath = Binding.GetValue(e.Item);
+
+            _thumbnailRenderer.FilePath = filePath;
+            _thumbnailRenderer.DrawCanvas(e);
+        }
 
         #endregion
     }

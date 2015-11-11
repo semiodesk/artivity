@@ -39,7 +39,7 @@ namespace Artivity.Explorer
 
         private Button _homeButton;
 
-        private ImageView _photoBox;
+        public CanvasThumbnailRenderer Thumbnail { get; private set; }
 
         private StackLayout _titleLayout;
 
@@ -58,6 +58,7 @@ namespace Artivity.Explorer
 
                 _titleLabel.Text = Path.GetFileName(_filePath);
                 _pathLabel.Text = Path.GetDirectoryName(_filePath);
+                Thumbnail.FilePath = _filePath;
             }
         }
 
@@ -69,16 +70,17 @@ namespace Artivity.Explorer
         {
             Orientation = Orientation.Horizontal;
             Padding = new Padding(7, 7, 7, 0);
-            Spacing = 7;
+            Spacing = 14;
 
             _homeButton = new Button();
-            _homeButton.Image = Bitmap.FromResource("journal");
-            _homeButton.Width = 40;
+            _homeButton.Image = Bitmap.FromResource("ArrowBack.png");
+            _homeButton.Width = 32;
             _homeButton.Height = 40;
             _homeButton.Click += OnHomeButtonClick;
 
-            _photoBox = new ImageView();
-            _photoBox.Size = new Size(65, 65);
+            Thumbnail = new CanvasThumbnailRenderer();
+            Thumbnail.Width = 150;
+            Thumbnail.Height = 100;
 
             _titleLabel = new Label();
             _titleLabel.TextColor = Color.Parse("#42484a");
@@ -95,7 +97,7 @@ namespace Artivity.Explorer
             _titleLayout.Items.Add(_pathLabel);
 
             Items.Add(new StackLayoutItem(_homeButton, HorizontalAlignment.Left) { VerticalAlignment = VerticalAlignment.Center });
-            //Items.Add(new StackLayoutItem(_photoBox, HorizontalAlignment.Left) { VerticalAlignment = VerticalAlignment.Center });
+            Items.Add(new StackLayoutItem(Thumbnail, HorizontalAlignment.Left) { VerticalAlignment = VerticalAlignment.Center });
             Items.Add(new StackLayoutItem(_titleLayout, HorizontalAlignment.Left, true));
         }
 

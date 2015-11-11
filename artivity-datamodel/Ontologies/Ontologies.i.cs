@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using Semiodesk.Trinity;
 
-namespace Artivity.Model
+namespace Artivity.DataModel
 {
     public static class SemiodeskDiscovery
     {

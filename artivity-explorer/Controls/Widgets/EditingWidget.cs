@@ -6,8 +6,7 @@ using Eto.Forms;
 using Eto.Drawing;
 using Artivity.Explorer.Parsers;
 using Semiodesk.Trinity;
-using Artivity.Model;
-using Artivity.Model.ObjectModel;
+using Artivity.DataModel;
 using System.Collections.ObjectModel;
 
 namespace Artivity.Explorer.Controls

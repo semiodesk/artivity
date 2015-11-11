@@ -156,8 +156,8 @@ art:Cube a rdfs:Class ;
     rdfs:label "Cube" ;
     rdfs:subClassOf art:Geometry .
 
-art:hadCanvas a rdf:Property ;
-    rdfs:label "hadCanvas" ;
+art:canvas a rdf:Property ;
+    rdfs:label "canvas" ;
     rdfs:subClassOf geo:hasGeometry ;
     rdfs:domain nfo:FileDataObject ;
     rdfs:range art:Canvas .

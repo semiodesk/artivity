@@ -27,9 +27,9 @@
 
 using Semiodesk.Trinity;
 using System;
-using Artivity.Model.ObjectModel;
+using Artivity.DataModel;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
 	[RdfClass(NFO.WebDataObject)]
 	public class WebDataObject : Entity

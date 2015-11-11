@@ -28,7 +28,7 @@
 using System;
 using Semiodesk.Trinity;
 
-namespace Artivity.Model
+namespace Artivity.DataModel
 {
     [RdfClass(ART.Point)]
     public class Point : Geometry
@@ -36,13 +36,13 @@ namespace Artivity.Model
         #region Members
 
         [RdfProperty(ART.x)]
-        double X { get; set; }
+        public double X { get; set; }
 
         [RdfProperty(ART.y)]
-        double Y { get; set; }
+        public double Y { get; set; }
 
         [RdfProperty(ART.z)]
-        double Z { get; set; }
+        public double Z { get; set; }
 
         #endregion
 

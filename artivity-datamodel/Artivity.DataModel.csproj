@@ -7,7 +7,7 @@
     <ProjectGuid>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Artivity.Model</RootNamespace>
+    <RootNamespace>Artivity.DataModel</RootNamespace>
     <AssemblyName>Artivity.Model</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>932c28d3</NuGetPackageImportStamp>

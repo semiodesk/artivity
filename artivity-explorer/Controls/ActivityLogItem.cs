@@ -12,6 +12,8 @@ namespace Artivity.Explorer.Controls
 
         public string InfluenceType { get;  set; }
 
+        public string InfluencedRegion { get; set; }
+
         public string Description { get; set; }
 
         public string Data { get; set; }

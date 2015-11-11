@@ -20,24 +20,28 @@
 //
 // AUTHORS:
 //
-//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using Semiodesk.Trinity;
+using Eto.Drawing;
 
-namespace Artivity.DataModel
+namespace Artivity.Explorer
 {
-    [RdfClass(ART.BoundingRectangle)]
-    public class BoundingRectangle : Rectangle
+    public static class Palette
     {
-        #region Constructors
+        public static readonly Color AccentColor = Color.Parse("#3A81CC");
 
-        public BoundingRectangle(Uri uri) : base(uri) {}
+        public static readonly Color DarkColor = Color.Parse("#42484a");
 
-        #endregion
+        public static readonly Color LightColor = Color.Parse("#ffffff");
+
+        public static readonly Color TextColor = DarkColor;
+
+        public static readonly Color ShadeColor = new Color(DarkColor, 0.25f);
+
+        public static readonly Color HighlightColor = LightColor;
     }
 }
 

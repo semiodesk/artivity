@@ -29,7 +29,7 @@ using Semiodesk.Trinity;
 using System;
 using System.Text;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
 	[RdfClass(PROV.Role)]
 	public class Role : Agent

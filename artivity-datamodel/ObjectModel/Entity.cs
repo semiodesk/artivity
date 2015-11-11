@@ -28,7 +28,7 @@
 using Semiodesk.Trinity;
 using System;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
 	[RdfClass(PROV.Entity)]
 	public class Entity : Resource

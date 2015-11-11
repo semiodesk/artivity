@@ -1,11 +1,10 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Semiodesk.Trinity;
-using Artivity.Model;
-using System.Collections.Generic;
-using Artivity.Model.ObjectModel;
+using Artivity.DataModel;
 
 namespace Artivity.Api.Http
 {

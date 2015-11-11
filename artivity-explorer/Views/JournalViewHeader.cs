@@ -1,8 +1,7 @@
 ﻿using Eto.Forms;
 using Eto.Drawing;
 using Semiodesk.Trinity;
-using Artivity.Model;
-using Artivity.Model.ObjectModel;
+using Artivity.DataModel;
 using Artivity.Explorer.Dialogs.SettingsDialog;
 using System;
 using System.Collections.Generic;
@@ -61,6 +60,7 @@ namespace Artivity.Explorer.Controls
             _preferencesButton = new Button();
             _preferencesButton.Image = Bitmap.FromResource("preferences");
             _preferencesButton.Width = 40;
+            _preferencesButton.Height = 40;
             _preferencesButton.Click += OnPreferencesButtonClick;
 
             Items.Add(new StackLayoutItem(_photoBox));

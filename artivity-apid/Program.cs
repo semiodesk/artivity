@@ -28,7 +28,7 @@ using System;
 using System.IO;
 using System.Threading;
 using Semiodesk.Trinity;
-using Artivity.Model;
+using Artivity.DataModel;
 using CommandLine;
 using Nancy.Hosting.Self;
 

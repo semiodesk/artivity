@@ -32,7 +32,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
     [RdfClass(XML.Attribute)]
     public class XmlAttribute : Entity
