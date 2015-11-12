@@ -54,8 +54,8 @@ namespace Artivity.Explorer.Controls
 
             Color color = Color.FromArgb(49, 55, 57);
 
-            var icon = new ImageView() { Image = Bitmap.FromResource("edit") };
-            var title = new Label() { Text = "Editing", TextColor = color };
+            var icon = new ImageView() { Image = Bitmap.FromResource("Edit.png") };
+            var title = new Label() { Text = "Editing", TextColor = color, Font = SystemFonts.Bold() };
 
             Rows.Add(new TableRow(new TableCell(icon), new TableCell(title, true), new TableCell()));
 

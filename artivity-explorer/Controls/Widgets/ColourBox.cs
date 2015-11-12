@@ -13,7 +13,8 @@ namespace Artivity.Explorer.Controls
 
         public ColourBox()
         {
-            Spacing = 7;
+            Spacing = 0;
+            Orientation = Orientation.Horizontal;
         }
 
         #endregion
@@ -37,7 +38,7 @@ namespace Artivity.Explorer.Controls
             {
                 Panel p = new Panel();
                 p.BackgroundColor = c;
-                p.MinimumSize = new Size(w, Height);
+                p.MinimumSize = new Size(w, 20);
 
                 Items.Add(new StackLayoutItem(p, HorizontalAlignment.Stretch, true));
             }

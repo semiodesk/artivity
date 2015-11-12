@@ -20,52 +20,32 @@
 //
 // AUTHORS:
 //
-//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using System.Drawing;
-using Semiodesk.Trinity;
+using Eto.Drawing;
+using OxyPlot;
 
-namespace Artivity.DataModel
+namespace Artivity.Explorer
 {
-    [RdfClass(ART.Rectangle)]
-    public class Rectangle : Geometry
+    public static class ColorExtensions
     {
-        #region Members
-
-        [RdfProperty(ART.position)]
-        public Point Position { get; set; }
-
-        [RdfProperty(ART.width)]
-        public double Width { get; set; }
-
-        [RdfProperty(ART.height)]
-        public double Height { get; set; }
-
-        #endregion
-
-        #region Constructors
-
-        public Rectangle(Uri uri) : base(uri) {}
-
-        #endregion
-
-        #region Methods
-
-        public RectangleF ToRectangleF()
+        public static Color WithA(this Color color, float a)
         {
-            RectangleF rectangle = new RectangleF();
-            rectangle.Location = Position.ToPointF();
-            rectangle.Width = Convert.ToSingle(Width);
-            rectangle.Height = Convert.ToSingle(Height);
-
-            return rectangle;
+            return new Color(color) { A = a };
         }
 
-        #endregion
+        public static OxyColor ToOxyColor(this Color color)
+        {
+            byte a = Convert.ToByte(color.Ab);
+            byte r = Convert.ToByte(color.Rb);
+            byte g = Convert.ToByte(color.Gb);
+            byte b = Convert.ToByte(color.Bb);
+
+            return OxyColor.FromArgb(a, r, g, b);
+        }
     }
 }
 

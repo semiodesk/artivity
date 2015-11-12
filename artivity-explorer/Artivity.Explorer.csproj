@@ -77,7 +77,6 @@
       <SubType>Eto.Forms</SubType>
     </Compile>
     <Compile Include="Controls\FileSelectionEventArgs.cs" />
-    <Compile Include="Extensions\ListViewExtensions.cs" />
     <Compile Include="Controls\FileSelectionEventHandler.cs" />
     <Compile Include="Controls\FileStatsPanel.cs">
       <SubType>Eto.Forms</SubType>
@@ -113,7 +112,10 @@
     <Compile Include="Controls\CanvasThumbnailCell.cs" />
     <Compile Include="Controls\CanvasThumbnailRenderer.cs" />
     <Compile Include="Palette.cs" />
-    <Compile Include="Extensions\RectangleFExtensions.cs" />
+    <Compile Include="Extensions\RectangleExtensions.cs" />
+    <Compile Include="Extensions\PointExtensions.cs" />
+    <Compile Include="Extensions\ColorExtensions.cs" />
+    <Compile Include="Commands\EditFileCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -199,7 +201,7 @@
       <LogicalName>composition</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Edit.png">
-      <LogicalName>edit</LogicalName>
+      <LogicalName>Edit.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Icon.ico">
       <LogicalName>icon.ico</LogicalName>
@@ -221,5 +223,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\" />
+    <Folder Include="Commands\" />
   </ItemGroup>
 </Project>

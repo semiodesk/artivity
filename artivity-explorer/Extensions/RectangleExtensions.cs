@@ -20,52 +20,45 @@
 //
 // AUTHORS:
 //
-//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-
+//
 using System;
-using System.Drawing;
-using Semiodesk.Trinity;
+using Eto.Drawing;
 
-namespace Artivity.DataModel
+namespace Artivity.Explorer
 {
-    [RdfClass(ART.Rectangle)]
-    public class Rectangle : Geometry
+    public static class RectangleExtensions
     {
-        #region Members
-
-        [RdfProperty(ART.position)]
-        public Point Position { get; set; }
-
-        [RdfProperty(ART.width)]
-        public double Width { get; set; }
-
-        [RdfProperty(ART.height)]
-        public double Height { get; set; }
-
-        #endregion
-
-        #region Constructors
-
-        public Rectangle(Uri uri) : base(uri) {}
-
-        #endregion
-
-        #region Methods
-
-        public RectangleF ToRectangleF()
+        public static RectangleF ToRectangle(this Artivity.DataModel.Rectangle r)
         {
             RectangleF rectangle = new RectangleF();
-            rectangle.Location = Position.ToPointF();
-            rectangle.Width = Convert.ToSingle(Width);
-            rectangle.Height = Convert.ToSingle(Height);
+            rectangle.Location = r.Position.ToPoint();
+            rectangle.Width = Convert.ToSingle(r.Width);
+            rectangle.Height = Convert.ToSingle(r.Height);
 
             return rectangle;
         }
 
-        #endregion
+        public static double GetScalingFactor(this Artivity.DataModel.Rectangle r, RectangleF target)
+        {
+            double w = target.Width / r.Width;
+            double h = target.Height / r.Height;
+
+            return w >= h ? h : w;
+        }
+
+        public static RectangleF Fit(this Artivity.DataModel.Rectangle r, RectangleF target)
+        {
+            double s = r.GetScalingFactor(target);
+
+            RectangleF result = new RectangleF();
+            result.Width = Convert.ToSingle(Math.Round(r.Width * s, 0));
+            result.Height = Convert.ToSingle(Math.Round(r.Height * s, 0));
+
+            return result;
+        }
     }
 }
 

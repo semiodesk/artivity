@@ -5,12 +5,15 @@ using System.Text;
 using Semiodesk.Trinity;
 using Artivity.DataModel;
 using Eto.Forms;
+using OxyPlot;
 
 namespace Artivity.Explorer.Controls
 {
     public class ActivityLog : GridView
     {
         #region Members
+
+        private Dictionary<Uri, SoftwareAgent> _agents = new Dictionary<Uri, SoftwareAgent>();
 
         private readonly List<ActivityLogItem> _items = new List<ActivityLogItem>();
 
@@ -21,6 +24,7 @@ namespace Artivity.Explorer.Controls
         public ActivityLog()
         {
             InitializeComponent();
+            InitializeAgents();
         }
 
         #endregion
@@ -31,10 +35,21 @@ namespace Artivity.Explorer.Controls
         {
             ShowHeader = true;
 
-            Columns.Add(new GridColumn() { HeaderText = "Time", DataCell = new TextBoxCell("Time") });
+            Columns.Add(new GridColumn() { HeaderText = "", DataCell = new ColourPickerCell("AgentColour") { MaxWidth = 2 }, Width = 5, AutoSize = false, Resizable = false });
+            Columns.Add(new GridColumn() { HeaderText = "Time", DataCell = new TextBoxCell("FormattedTime") });
             Columns.Add(new GridColumn() { HeaderText = "Influence", DataCell = new TextBoxCell("InfluenceType") });
             Columns.Add(new GridColumn() { HeaderText = "Description", DataCell = new TextBoxCell("Description") });
             Columns.Add(new GridColumn() { HeaderText = "Data", DataCell = new TextBoxCell("Data") });
+        }
+
+        private void InitializeAgents()
+        {
+            IModel model = Models.GetAgents();
+
+            foreach (SoftwareAgent agent in model.GetResources<SoftwareAgent>())
+            {
+                _agents[agent.Uri] = agent;
+            }
         }
 
         public void LoadInfluences(string fileUrl)
@@ -46,7 +61,7 @@ namespace Artivity.Explorer.Controls
                 PREFIX dces: <http://purl.org/dc/elements/1.1/>
                 PREFIX art: <http://semiodesk.com/artivity/1.0/>
 
-                SELECT ?agent ?influenceTime ?influenceType ?entity ?entityType ?description ?value ?bounds WHERE 
+                SELECT ?activity ?agent ?influenceTime ?influenceType ?entity ?entityType ?description ?value ?bounds WHERE 
                 {
                     ?activity prov:qualifiedAssociation ?association .
 
@@ -106,12 +121,15 @@ namespace Artivity.Explorer.Controls
             {
                 ActivityLogItem item = new ActivityLogItem();
 
-                item.Agent = binding["agent"].ToString();
+                item.Activity = new UriRef(binding["activity"].ToString());
+                item.Agent = new UriRef(binding["agent"].ToString());
 
-                DateTime time = (DateTime)binding["influenceTime"];
+                if (_agents.ContainsKey(item.Agent))
+                {
+                    item.AgentColour = _agents[item.Agent].ColourCode;
+                }
 
-                // Set the formatted date time.
-                item.Time = time.ToString("HH:mm:ss");
+                item.Date = (DateTime)binding["influenceTime"];
 
                 if (!(binding["influenceType"] is DBNull))
                 {

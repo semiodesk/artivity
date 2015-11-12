@@ -27,6 +27,8 @@ namespace Artivity.Explorer.Controls
 
         private Dictionary<Agent, List<PolygonAnnotation>> _annotations = new Dictionary<Agent, List<PolygonAnnotation>>();
 
+        private PolylineAnnotation _positionMarker = new PolylineAnnotation();
+
 		private Dictionary<Agent, DateTime> _previous = new Dictionary<Agent, DateTime>();
 
         private Axis _x;
@@ -41,8 +43,8 @@ namespace Artivity.Explorer.Controls
 
         public ActivityChart()
         {
-            BackgroundColor = Color.FromArgb(49, 55, 57);
-            Height = 100;
+            BackgroundColor = Colors.Transparent;
+            Height = 130;
 
             InitializeAgents();
 
@@ -69,20 +71,30 @@ namespace Artivity.Explorer.Controls
 
         public void Reset()
         {
+            SuspendLayout();
+
             _series.Clear();
 			_annotations.Clear();
 			_previous.Clear();
 
 			_maxY = 1;
 
+            Font font = SystemFonts.Label(12);
+
+            OxyColor axisTextColor = Palette.TextColor.WithA(0.85f).ToOxyColor();
+            OxyColor axisLineColor = Palette.DarkColor.WithA(0.25f).ToOxyColor();
+
             _x = new DateTimeAxis()
             {
                 Position = AxisPosition.Bottom,
-                FontSize = 9,
-                TextColor = OxyColors.LightGray,
-                TicklineColor = OxyColors.LightGray,
+                Font = font.FamilyName,
+                FontSize = font.Size,
+                FontWeight = 800,
+                TextColor = axisTextColor,
+                TicklineColor = axisLineColor,
                 IntervalType = DateTimeIntervalType.Days,
-                MajorGridlineColor = OxyColor.FromRgb(66, 66, 66),
+                MajorGridlineColor = axisLineColor,
+                MajorGridlineStyle = LineStyle.Solid,
                 MinorTickSize = 60,
                 MinorIntervalType = DateTimeIntervalType.Minutes,
                 StringFormat = "HH:mm",
@@ -93,43 +105,47 @@ namespace Artivity.Explorer.Controls
             _y = new LinearAxis()
             {
                 Position = AxisPosition.Left,
-                FontSize = 9,
-                TextColor = OxyColors.LightGray,
-                TicklineColor = OxyColors.LightGray,
+                Font = font.FamilyName,
+                FontSize = font.Size,
+                FontWeight = 800,
+                TextColor = axisTextColor,
+                TicklineColor = axisLineColor,
 				Maximum = 30,
-                MajorTickSize = 10,
+                MinorTickSize = 10,
+                MajorTickSize = 15,
                 MajorStep = 10,
-                MajorGridlineStyle = LineStyle.Dot,
+                MajorGridlineStyle = LineStyle.Dash,
                 MajorGridlineThickness = 1,
-                MajorGridlineColor = OxyColor.FromRgb(88, 88, 88),
-                MinorGridlineStyle = LineStyle.Dot,
-                //MinorGridlineThickness = 1,
-                //MinorGridlineColor = OxyColor.FromRgb(66, 66, 66),
+                MajorGridlineColor = axisLineColor,
                 IsZoomEnabled = false,
-                IsPanEnabled = false
+                IsPanEnabled = false,
             };
 
             Model = new PlotModel();
             Model.Title = "Influences / Min";
-            Model.TitleFontSize = 9;
-            Model.TitleFontWeight = 0.5;
-            Model.TitleColor = OxyColors.White;
-            Model.PlotAreaBorderColor = OxyColor.FromRgb(88, 88, 88);
+            Model.TitleFont = font.FamilyName;
+            Model.TitleFontSize = font.Size;
+            Model.TitleColor = axisTextColor;
+            Model.PlotAreaBorderColor = Palette.DarkColor.WithA(0.75f).ToOxyColor();
             Model.PlotAreaBorderThickness = new OxyThickness(0, 0, 0, 1);
             Model.LegendOrientation = LegendOrientation.Horizontal;
             Model.LegendPlacement = LegendPlacement.Outside;
-            Model.LegendPosition = LegendPosition.BottomCenter;
+            Model.LegendPosition = LegendPosition.BottomRight;
             Model.LegendBackground = OxyColors.Transparent;
             Model.LegendBorder = OxyColors.Transparent;
             Model.LegendMargin = 0;
-            Model.LegendFontSize = 9;
-            Model.LegendTextColor = OxyColors.LightGray;
+            Model.LegendFontSize = 10;
+            Model.LegendTextColor = Palette.TextColor.ToOxyColor();
             Model.Axes.Add(_x);
             Model.Axes.Add(_y);
+
+            ResumeLayout();
         }
 
-        public void LoadActivities(string fileUrl)
+        private void LoadActivities(string fileUrl)
         {
+            SuspendLayout();
+
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
@@ -166,16 +182,22 @@ namespace Artivity.Explorer.Controls
                 annotation.Layer = AnnotationLayer.BelowAxes;
                 annotation.Fill = OxyColor.FromArgb(125, color.R, color.G, color.B);
                 annotation.Points.Add(DateTimeAxis.CreateDataPoint(startTime, 0));
-                annotation.Points.Add(DateTimeAxis.CreateDataPoint(startTime, 100));
-                annotation.Points.Add(DateTimeAxis.CreateDataPoint(endTime, 100));
+                annotation.Points.Add(DateTimeAxis.CreateDataPoint(startTime, 2));
+                annotation.Points.Add(DateTimeAxis.CreateDataPoint(endTime, 2));
                 annotation.Points.Add(DateTimeAxis.CreateDataPoint(endTime, 0));
 
                 Model.Annotations.Add(annotation);
             }
+
+            ResumeLayout();
         }
 
-        public void LoadActivityInfluences(string fileUrl)
+        public void LoadInfluences(string fileUrl)
         {
+            SuspendLayout();
+
+            Reset();
+
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
@@ -232,28 +254,32 @@ namespace Artivity.Explorer.Controls
             }
 
             _y.MinorStep = max <= 100 ? 5 : 10;
+
+            ResumeLayout();
         }
             
-        private LineSeries CreateSeries(Agent agent)
+        private AreaSeries CreateSeries(Agent agent)
         {
-            OxyColor color = _palette[agent];
+            OxyColor stroke = _palette[agent];
+            OxyColor fill = OxyColor.FromAColor(64, stroke);
 
-            LineSeries series = new LineSeries();
+            AreaSeries series = new AreaSeries();
             series.Title = agent.Name;
-            series.Color = color;
-            series.StrokeThickness = 1.5;
+            series.Color = stroke;
+            series.Color2 = fill;
+            series.StrokeThickness = 2;
             series.MarkerSize = 3;
             series.MarkerType = MarkerType.Circle;
-            series.MarkerFill = color;
-            series.MarkerStroke = OxyColor.FromRgb(49, 55, 57);
-            series.MarkerStrokeThickness = 1;
+            series.MarkerFill = Palette.LightColor.ToOxyColor();
+            series.MarkerStroke = stroke;
+            series.MarkerStrokeThickness = 2;
             series.CanTrackerInterpolatePoints = true;
             series.Selectable = true;
             series.SelectionMode = OxyPlot.SelectionMode.Single;
 
             return series;
         }
-            
+           
         private void CreateSeriesPoints(ISparqlQueryResult result)
         {
             DateTime previousTime;
@@ -350,6 +376,42 @@ namespace Artivity.Explorer.Controls
 
                 series.Points.Add(DateTimeAxis.CreateDataPoint(t, 0));
             }
+        }
+
+        public void SetTitle(DateTime time)
+        {
+            Model.Title = time.ToString("D");
+        }
+
+        public void SetPositionMarker(DateTime time)
+        {
+            DataPoint p0 = DateTimeAxis.CreateDataPoint(time, -5);
+            DataPoint p1 = DateTimeAxis.CreateDataPoint(time, _y.Maximum + 5);
+
+            _positionMarker.StrokeThickness = 2;
+            _positionMarker.LineStyle = LineStyle.Solid;
+            _positionMarker.LineJoin = LineJoin.Miter;
+            _positionMarker.Color = Palette.AccentColor.ToOxyColor();
+            _positionMarker.Points.Clear();
+            _positionMarker.Points.Add(p0);
+            _positionMarker.Points.Add(p1);
+
+            if (!Model.Annotations.Contains(_positionMarker))
+            {
+                Model.Annotations.Add(_positionMarker);
+            }
+
+            Model.InvalidatePlot(false);
+        }
+
+        public void Zoom(DateTime start, DateTime end)
+        {
+            TimeSpan delta = TimeSpan.FromMinutes(2);
+
+            _x.Minimum = DateTimeAxis.ToDouble(start.RoundToMinute().Subtract(delta));
+            _x.Maximum = DateTimeAxis.ToDouble(end.RoundToMinute().Add(delta));
+
+            Model.ResetAllAxes();
         }
 
         #endregion

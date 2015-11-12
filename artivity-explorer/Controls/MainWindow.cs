@@ -33,11 +33,11 @@ namespace Artivity.Explorer.Controls
 
             if(Setup.IsWindowsPlatform())
             {
-                ClientSize = new Size(500, 550);
+                ClientSize = new Size(550, 600);
             }
             else
             {
-                ClientSize = new Size(600, 650);
+                ClientSize = new Size(650, 700);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Semiodesk.Trinity;
 using Eto.Forms;
 using Eto.Drawing;
@@ -54,13 +55,19 @@ namespace Artivity.Explorer
             Model = data.Models.GetActivities();
 
             Orientation = Orientation.Vertical;
-            Spacing = 7;
+            Spacing = 14;
 
-            _tabs.Pages.Add(new TabPage(_log) { Text = "Activities", Padding = new Padding(0) });
+            StackLayout _logLayout = new StackLayout();
+            _logLayout.Spacing = 7;
+            _logLayout.Orientation = Orientation.Vertical;
+            _logLayout.Items.Add(new StackLayoutItem(_chart, HorizontalAlignment.Stretch, false));
+            _logLayout.Items.Add(new StackLayoutItem(_log, HorizontalAlignment.Stretch, true));
+
+            _tabs.TabPosition = DockPosition.Top;
             _tabs.Pages.Add(new TabPage(_statsPanel) { Text = "Statistics", Padding = new Padding(0) });
+            _tabs.Pages.Add(new TabPage(_logLayout) { Text = "History", Padding = new Padding(0) });
 
             Items.Add(new StackLayoutItem(_header, HorizontalAlignment.Stretch, false));
-            Items.Add(new StackLayoutItem(_chart, HorizontalAlignment.Stretch, false));
             Items.Add(new StackLayoutItem(_tabs, HorizontalAlignment.Stretch, true));
 
             _log.SelectedItemsChanged += OnActivityLogSelectedItemsChanged;
@@ -90,10 +97,20 @@ namespace Artivity.Explorer
             _statsPanel.EditingWidget.Update(fileUrl);
 
             _log.LoadInfluences(fileUrl);
+            _chart.LoadInfluences(fileUrl);
 
-            _chart.Reset();
-            _chart.LoadActivities(fileUrl);
-            _chart.LoadActivityInfluences(fileUrl);
+            if (_log.DataStore.Any())
+            {
+                ActivityLogItem item = _log.DataStore.First() as ActivityLogItem;
+
+                _chart.SetTitle(item.Date);
+
+                data.Activity activity = Model.GetResource<data.Activity>(item.Activity);
+
+                _chart.Zoom(activity.StartTime, activity.EndTime);
+            }
+
+            _tabs.SelectedPage = _tabs.Pages.Last();
         }
 
         private void OnActivityLogSelectedItemsChanged(object sender, EventArgs e)
@@ -104,12 +121,20 @@ namespace Artivity.Explorer
             {
                 return;
             }
-
+                
             UriRef regionUri = new UriRef(selectedItem.InfluencedRegion);
 
             data.Rectangle region = Model.GetResource<data.Rectangle>(regionUri);
 
+            _header.Thumbnail.HighlightColour = Color.Parse(selectedItem.AgentColour);
             _header.Thumbnail.HighlightedRegion = region;
+
+            data.Activity activity = Model.GetResource<data.Activity>(selectedItem.Activity);
+
+            _chart.Zoom(activity.StartTime, activity.EndTime);
+
+            _chart.SetTitle(selectedItem.Date);
+            _chart.SetPositionMarker(selectedItem.Date);
         }
 
         #endregion

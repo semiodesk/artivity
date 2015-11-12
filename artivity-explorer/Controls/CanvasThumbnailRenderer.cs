@@ -37,7 +37,16 @@ namespace Artivity.Explorer
     {
         #region Members
 
+        private double _scalingFactor;
+
+        // The original document canvas dimensions.
         private data.Canvas _canvas;
+
+        // The canvas transformed into screen coordinates.
+        private RectangleF _canvasScaled;
+
+        // The canvas shadow transformed into screen coordinates.
+        private RectangleF _canvasShadow;
 
         private string _filePath;
 
@@ -64,6 +73,14 @@ namespace Artivity.Explorer
             }
         }
 
+        private Color _highlightColour = Palette.AccentColor;
+
+        public Color HighlightColour
+        {
+            get { return _highlightColour; }
+            set { _highlightColour = value; }
+        }
+
         private PointF _shadeOffset = new PointF(3, 3);
 
         public PointF ShadeOffset
@@ -77,7 +94,7 @@ namespace Artivity.Explorer
             }
         }
 
-        private double _scalingFactor;
+        public Size RenderSize { get; private set; }
 
         #endregion
 
@@ -98,17 +115,26 @@ namespace Artivity.Explorer
 
         public void Draw(PaintEventArgs e)
         {
-            DrawCanvas(e);
+            RenderCanvas(e.Graphics, e.ClipRectangle);
 
             if (HighlightedRegion != null)
             {
-                DrawHighlightedRegion(e);
+                RenderHighlightedRegion(e.Graphics, e.ClipRectangle);
             }
         }
 
-        public void DrawCanvas(PaintEventArgs e)
+        public Size Measure(int width, int height)
         {
-            _scalingFactor = e.ClipRectangle.GetScalingFactor(_canvas);
+            Graphics graphics = new Graphics(new Bitmap(Size, PixelFormat.Format24bppRgb));
+
+            RenderCanvas(graphics, new RectangleF(0, 0, width, height));
+
+            return RenderSize;
+        }
+
+        public void RenderCanvas(Graphics graphics, RectangleF targetRegion)
+        {
+            _scalingFactor = _canvas != null ? _canvas.GetScalingFactor(targetRegion) : 1;
 
             Color shadeColor = Palette.ShadeColor;
             Color canvasFill = Palette.LightColor;
@@ -120,47 +146,62 @@ namespace Artivity.Explorer
                 canvasBorder.A = canvasBorder.A * 0.5f;
             }
 
-            PointF location = e.ClipRectangle.Location;
+            PointF location = targetRegion.Location;
             location.X += Padding.Left;
             location.Y += Padding.Top;
 
-            RectangleF canvas = new RectangleF(location, e.ClipRectangle.Fit(_canvas).Size);
-            canvas.Width -= (_shadeOffset.X + Padding.Left + Padding.Right);
-            canvas.Height -= (_shadeOffset.Y + Padding.Top + Padding.Bottom);
+            SizeF size = _canvas != null ? _canvas.Fit(targetRegion).Size : targetRegion.Size;
+            size.Width -= (_shadeOffset.X + Padding.Left + Padding.Right);
+            size.Height -= (_shadeOffset.Y + Padding.Top + Padding.Bottom);
 
-            RectangleF shade = new RectangleF(canvas.Location + _shadeOffset, canvas.Size);
+            _canvasScaled = new RectangleF(location, size);
+            _canvasShadow = new RectangleF(location + _shadeOffset, size);
 
-            e.Graphics.FillRectangle(shadeColor, shade);
-            e.Graphics.FillRectangle(canvasFill, canvas);
-            e.Graphics.DrawRectangle(canvasBorder, canvas);
+            graphics.FillRectangle(shadeColor, _canvasShadow);
+            graphics.FillRectangle(canvasFill, _canvasScaled);
+            graphics.DrawRectangle(canvasBorder, _canvasScaled);
 
             if (_canvas == null)
             {
                 string text = "?";
-                SizeF textSize = e.Graphics.MeasureString(SystemFonts.Bold(12), text);
+                SizeF textSize = graphics.MeasureString(SystemFonts.Bold(12), text);
 
-                e.Graphics.DrawText(SystemFonts.Bold(12), canvasBorder, e.ClipRectangle.Center - textSize / 2, "?");
+                graphics.DrawText(SystemFonts.Bold(12), canvasBorder, _canvasScaled.Center - textSize / 2, "?");
             }
+
+            Point topLeft = _canvasScaled.TopLeft.ToPoint();
+            Point bottomRight = _canvasShadow.BottomRight.ToPoint();
+                
+            RenderSize = new Rectangle(topLeft, bottomRight).Size;
         }
 
-        private void DrawHighlightedRegion(PaintEventArgs e)
+        public void RenderHighlightedRegion(Graphics graphics, RectangleF targetRegion)
         {
-            Color highlightColor = Palette.AccentColor;
-            highlightColor.A = highlightColor.A * 0.9f;
+            if (HighlightedRegion == null)
+            {
+                return;
+            }
+
+            Color fillColour = HighlightColour;
+            fillColour.A = fillColour.A * 0.75f;
 
             float x = Convert.ToSingle(Math.Round(HighlightedRegion.Position.X * _scalingFactor, 0));
             float y = Convert.ToSingle(Math.Round(HighlightedRegion.Position.Y * _scalingFactor, 0));
+            float w = Convert.ToSingle(Math.Round(HighlightedRegion.Width * _scalingFactor, 0));
+            float h = Convert.ToSingle(Math.Round(HighlightedRegion.Height * _scalingFactor, 0));
 
-            PointF location = new PointF(x, y);
-            location.X += Padding.Left;
-            location.Y += Padding.Top;
+            PointF location = _canvasScaled.Location;
+            location.X += x;
+            location.Y += y;
 
-            RectangleF region = e.ClipRectangle.Fit(HighlightedRegion);
-            region.Location = location;
-            region.Width -= (_shadeOffset.X + Padding.Left + Padding.Right);
-            region.Height -= (_shadeOffset.Y + Padding.Top + Padding.Bottom);
+            SizeF size = new SizeF();
+            size.Width = w;
+            size.Height = h;
 
-            e.Graphics.FillRectangle(highlightColor, region);
+            // TODO: Fit into viewfield.
+            RectangleF region = new RectangleF(location, size);
+
+            graphics.FillRectangle(fillColour, region);
         }
 
         private data.Canvas TryGetCanvas(string filePath)

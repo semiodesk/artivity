@@ -26,12 +26,15 @@ namespace Artivity.Explorer
         public JournalView()
         {
             Orientation = Orientation.Vertical;
+            Spacing = 14;
 
             Items.Add(new StackLayoutItem(_header, HorizontalAlignment.Stretch, false));
             Items.Add(new StackLayoutItem(_grid, HorizontalAlignment.Stretch, true));
 
             _grid.RowHeight = 50;
-            _grid.Columns.Add(new GridColumn() { DataCell = new CanvasThumbnailCell("FilePath"), Width = 75, AutoSize = false });
+            _grid.AllowMultipleSelection = false;
+            _grid.AllowColumnReordering = false;
+            _grid.Columns.Add(new GridColumn() { DataCell = new CanvasThumbnailCell("FilePath"), Width = 75, AutoSize = false, Resizable = false });
             _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FileName"), HeaderText = "File", Width = 295, AutoSize = false });
             _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedTotalEditingTime"), HeaderText = "Editing Time", Width = 90 });
             _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedLastEditingDate"), HeaderText = "Last Used", Width = 90 });
@@ -173,31 +176,6 @@ namespace Artivity.Explorer
                 view.FilePath = selectedItem.FilePath;
             });
         }
-
-//        protected void OnCellDoubleClick(object sender, EventArgs e)
-//        {
-//            JournalItem selectedItem = SelectedItem as JournalItem;
-//
-//            if (selectedItem == null || !File.Exists(selectedItem.Path))
-//            {
-//                return;
-//            }
-//
-//            SoftwareAgent agent = Models.GetAgents().GetResource<SoftwareAgent>(selectedItem.Agent);
-//
-//            if (string.IsNullOrEmpty(agent.ExecutableName))
-//            {
-//                return;
-//            }
-//
-//            ProcessStartInfo process = new ProcessStartInfo();
-//            process.Arguments = selectedItem.Path;
-//            process.UseShellExecute = true;
-//            process.WorkingDirectory = Path.GetDirectoryName(selectedItem.Path);
-//            process.FileName = agent.ExecutableName;
-//
-//            Process.Start(process);
-//        }
 
         #endregion
 
