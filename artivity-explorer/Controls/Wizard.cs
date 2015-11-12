@@ -93,10 +93,10 @@ namespace Artivity.Explorer.Controls
 			TitleLayout.Padding = new Padding(24, 14);
 			TitleLayout.Content = TitleLabel;
 
-            AbortButton = new Button() { Text = "Cancel", Height = 34, Width = 100 };
-            OkButton = new Button() { Text = "Ok", Height = 34, Width = 100 };
-            BackButton = new Button() { Text = "< Back", Width = 100, Height = 34 };
-            NextButton = new Button() { Text = "Next >", Width = 100, Height = 34 };
+            AbortButton = new Button() { Text = "Cancel", Height = 30, Width = 100 };
+            OkButton = new Button() { Text = "Ok", Height = 30, Width = 100 };
+            BackButton = new Button() { Text = "< Back", Width = 100, Height = 30 };
+            NextButton = new Button() { Text = "Next >", Width = 100, Height = 30 };
 
             ButtonLayout = new StackLayout();
             ButtonLayout.Orientation = Orientation.Horizontal;

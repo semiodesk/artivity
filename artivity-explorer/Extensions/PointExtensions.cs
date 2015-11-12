@@ -29,35 +29,24 @@ using Eto.Drawing;
 
 namespace Artivity.Explorer
 {
-    public static class RectangleFExtensions
+    public static class PointExtensions
     {
-        public static double GetScalingFactor(this RectangleF target, Artivity.DataModel.Rectangle rectangle)
+        public static PointF ToPoint(this Artivity.DataModel.Point p)
         {
-            if (rectangle == null)
-            {
-                return 1;
-            }
+            PointF point = new PointF();
+            point.X = Convert.ToSingle(p.X);
+            point.Y = Convert.ToSingle(p.Y);
 
-            double w = target.Width / rectangle.Width;
-            double h = target.Height / rectangle.Height;
-
-            return w >= h ? h : w;
+            return point;
         }
 
-        public static RectangleF Fit(this RectangleF target, Artivity.DataModel.Rectangle rectangle)
+        public static Point ToPoint(this PointF p)
         {
-            if (rectangle == null)
-            {
-                return target;
-            }
-                
-            double s = target.GetScalingFactor(rectangle);
+            Point point = new Point();
+            point.X = Convert.ToInt32(p.X);
+            point.Y = Convert.ToInt32(p.Y);
 
-            RectangleF result = new RectangleF();
-            result.Width = Convert.ToSingle(Math.Round(rectangle.Width * s, 0));
-            result.Height = Convert.ToSingle(Math.Round(rectangle.Height * s, 0));
-
-            return result;
+            return point;
         }
     }
 }

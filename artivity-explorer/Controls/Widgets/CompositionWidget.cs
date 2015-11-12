@@ -52,7 +52,7 @@ namespace Artivity.Explorer.Controls
             Color color = Color.FromArgb(49, 55, 57);
 
             var icon = new ImageView() { Image = Bitmap.FromResource("composition") };
-            var title = new Label() { Text = "Composition", TextColor = color };
+            var title = new Label() { Text = "Composition", TextColor = color, Font = SystemFonts.Bold() };
 
             Rows.Add(new TableRow(new TableCell(icon), new TableCell(title, true), new TableCell()));
 

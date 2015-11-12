@@ -67,7 +67,7 @@ namespace Artivity.Explorer
             string filePath = Binding.GetValue(e.Item);
 
             _thumbnailRenderer.FilePath = filePath;
-            _thumbnailRenderer.DrawCanvas(e);
+            _thumbnailRenderer.RenderCanvas(e.Graphics, e.ClipRectangle);
         }
 
         #endregion

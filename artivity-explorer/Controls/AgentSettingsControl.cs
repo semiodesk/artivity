@@ -80,7 +80,7 @@ namespace Artivity.Explorer
                 dialog.Content = picker;
                 dialog.ShowModal();
 
-                cell.Binding.SetValue(e.Item, picker.Value.ToHex());
+                cell.Binding.SetValue(e.Item, picker.Value.ToHex(false));
             }
         }
 

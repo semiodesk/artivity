@@ -115,11 +115,14 @@ namespace Artivity.Explorer.Parsers
 					case "stroke":
 					case "stop-color":
 					{
-						Color c = Color.Parse(value);
+                        Color c = new Color();
 
-						stats.AddColour(c);
+                        if (Color.TryParse(value, out c))
+                        {
+                            stats.AddColour(c);
+                        }
 
-						break;
+                        break;
 					}
 				}
 			}

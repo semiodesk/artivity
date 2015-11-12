@@ -1,4 +1,5 @@
 ﻿using System;
+using Semiodesk.Trinity;
 
 namespace Artivity.Explorer.Controls
 {
@@ -6,9 +7,18 @@ namespace Artivity.Explorer.Controls
     {
         #region Members
 
-        public string Agent { get;  set; }
+        public UriRef Activity { get; set; }
 
-        public string Time { get; set; }
+        public UriRef Agent { get;  set; }
+
+        public string AgentColour { get; set; }
+
+        public DateTime Date { get; set; }
+
+        public string FormattedTime
+        {
+            get { return Date.ToString("HH:mm:ss"); }
+        }
 
         public string InfluenceType { get;  set; }
 

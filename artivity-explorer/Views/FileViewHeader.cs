@@ -29,6 +29,7 @@ using System;
 using System.IO;
 using Eto.Forms;
 using Eto.Drawing;
+using Artivity.DataModel;
 using Artivity.Explorer.Controls;
 
 namespace Artivity.Explorer
@@ -38,6 +39,10 @@ namespace Artivity.Explorer
         #region Members
 
         private Button _homeButton;
+
+        private EditFileCommand _editCommand;
+
+        private Button _editButton;
 
         public CanvasThumbnailRenderer Thumbnail { get; private set; }
 
@@ -58,7 +63,10 @@ namespace Artivity.Explorer
 
                 _titleLabel.Text = Path.GetFileName(_filePath);
                 _pathLabel.Text = Path.GetDirectoryName(_filePath);
+                _editCommand.FilePath = _filePath;
+
                 Thumbnail.FilePath = _filePath;
+                Thumbnail.Size = Thumbnail.Measure(150, 100);
             }
         }
 
@@ -79,8 +87,6 @@ namespace Artivity.Explorer
             _homeButton.Click += OnHomeButtonClick;
 
             Thumbnail = new CanvasThumbnailRenderer();
-            Thumbnail.Width = 150;
-            Thumbnail.Height = 100;
 
             _titleLabel = new Label();
             _titleLabel.TextColor = Color.Parse("#42484a");
@@ -96,9 +102,18 @@ namespace Artivity.Explorer
             _titleLayout.Items.Add(_titleLabel);
             _titleLayout.Items.Add(_pathLabel);
 
+            _editCommand = new EditFileCommand();
+
+            _editButton = new Button();
+            _editButton.Command = _editCommand;
+            _editButton.Image = _editCommand.Image;
+            _editButton.Width = 40;
+            _editButton.Height = 40;
+
             Items.Add(new StackLayoutItem(_homeButton, HorizontalAlignment.Left) { VerticalAlignment = VerticalAlignment.Center });
             Items.Add(new StackLayoutItem(Thumbnail, HorizontalAlignment.Left) { VerticalAlignment = VerticalAlignment.Center });
             Items.Add(new StackLayoutItem(_titleLayout, HorizontalAlignment.Left, true));
+            Items.Add(new StackLayoutItem(_editButton, HorizontalAlignment.Right) { VerticalAlignment = VerticalAlignment.Center });
         }
 
         #endregion

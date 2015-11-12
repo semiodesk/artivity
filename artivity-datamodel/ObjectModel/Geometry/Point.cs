@@ -26,6 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
+using System.Drawing;
 using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
@@ -49,6 +50,19 @@ namespace Artivity.DataModel
         #region Constructors
 
         public Point(Uri uri) : base(uri) {}
+
+        #endregion
+
+        #region Methods
+
+        public PointF ToPointF()
+        {
+            PointF point = new PointF();
+            point.X = Convert.ToSingle(X);
+            point.Y = Convert.ToSingle(Y);
+
+            return point;
+        }
 
         #endregion
     }
