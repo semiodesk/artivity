@@ -36,11 +36,11 @@ namespace Artivity.DataModel
 
         public static readonly string DefaultStore = "virt0";
 
-        public static readonly Uri Agents;
+        public static Uri Agents;
 
-        public static readonly Uri Activities;
+        public static Uri Activities;
 
-        public static readonly Uri WebActivities;
+        public static Uri WebActivities;
 
         #endregion
 

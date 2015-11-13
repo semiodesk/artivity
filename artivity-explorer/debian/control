@@ -8,7 +8,7 @@ Homepage: http://bitbucket.org/semiodesk/artivity
 
 Package: artivity-explorer
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, mono-runtime, artivity-datamodel (>= 1.5.7), artivity-apid (>= 1.5.9), gtk-sharp2, libmono-system-xaml4.0-cil
+Depends: ${shlibs:Depends}, ${misc:Depends}, mono-runtime, artivity-datamodel (>= 1.5.10), artivity-apid (>= 1.5.9), gtk-sharp2, libmono-system-xaml4.0-cil
 Description: View data captured during the creation process of graphics files.
  View data captured during the creating process of graphics files. Currently
  the only supported application is Inkscape.

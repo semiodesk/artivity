@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Artivity.Explorer.Dialogs.ExportDialog;
 
 namespace Artivity.Explorer.Controls
 {
@@ -20,9 +21,11 @@ namespace Artivity.Explorer.Controls
 
         private Label _titleLabel;
 
-        private ImageView _photoBox;
+        private CircularImageView _photoBox;
 
-        private Button _preferencesButton;
+        private Button _settingsButton;
+
+        private Button _exportButton;
 
         #endregion
 
@@ -54,18 +57,33 @@ namespace Artivity.Explorer.Controls
 			_titleLayout.Padding = new Padding (0, 10);
             _titleLayout.Items.Add(_titleLabel);
 
-            _photoBox = new ImageView();
+            _photoBox = new CircularImageView();
             _photoBox.Size = new Size(65, 65);
             
-            _preferencesButton = new Button();
-            _preferencesButton.Image = Bitmap.FromResource("preferences");
-            _preferencesButton.Width = 40;
-            _preferencesButton.Height = 40;
-            _preferencesButton.Click += OnPreferencesButtonClick;
+            _settingsButton = new Button();
+            _settingsButton.Image = Bitmap.FromResource("preferences");
+            _settingsButton.Width = 40;
+            _settingsButton.Height = 40;
+            _settingsButton.Click += OnPreferencesButtonClick;
+
+            _exportButton = new Button();
+            _exportButton.Image = Bitmap.FromResource("export");
+            _exportButton.Width = 40;
+            _exportButton.Height = 40;
+            _exportButton.Click += OnExportButtonClick;
 
             Items.Add(new StackLayoutItem(_photoBox));
             Items.Add(new StackLayoutItem(_titleLayout, HorizontalAlignment.Left, true));
-            Items.Add(new StackLayoutItem(_preferencesButton, HorizontalAlignment.Right) { VerticalAlignment = VerticalAlignment.Center });
+            Items.Add(new StackLayoutItem(_exportButton, HorizontalAlignment.Right) { VerticalAlignment = VerticalAlignment.Center });
+            Items.Add(new StackLayoutItem(_settingsButton, HorizontalAlignment.Right) { VerticalAlignment = VerticalAlignment.Center });
+        }
+            
+        protected void OnPreferencesButtonClick(object sender, EventArgs e)
+        {
+            SettingsDialog dialog = new SettingsDialog();
+            dialog.ShowModal();
+
+            Refresh();
         }
 
         public void Refresh()
@@ -100,12 +118,18 @@ namespace Artivity.Explorer.Controls
             _photoBox.Image = photo;
         }
 
-        protected void OnPreferencesButtonClick(object sender, EventArgs e)
+        protected void OnExportButtonClick(object sender, EventArgs e)
         {
-            SettingsDialog dialog = new SettingsDialog();
-            dialog.ShowModal();
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filters.Add(new FileDialogFilter("RDF/XML", "*.rdf"));
 
-            Refresh();
+            if (dialog.ShowDialog(this) == DialogResult.Ok)
+            {
+                string file = dialog.FileName;
+
+                ExportDialog export = new ExportDialog(file);
+                export.ShowModalAsync();
+            }
         }
 
         #endregion

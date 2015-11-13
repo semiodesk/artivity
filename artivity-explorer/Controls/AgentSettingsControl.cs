@@ -41,10 +41,11 @@ namespace Artivity.Explorer
             });
 
             Columns.Add(new GridColumn {
-                DataCell = new ColourPickerCell { Binding = Binding.Property<SoftwareAgent, string>(a => a.ColourCode) },
+                DataCell = new ColourPickerCell { Binding = Binding.Property<SoftwareAgent, string>(a => a.ColourCode), Padding = new Padding(2) },
                 Editable = true,
                 HeaderText = "",
                 Resizable = false,
+                AutoSize = false,
                 Width = 30
             });
 
@@ -71,16 +72,13 @@ namespace Artivity.Explorer
             {
                 ColourPickerCell cell = e.GridColumn.DataCell as ColourPickerCell;
 
-                Color color = Color.Parse(cell.Binding.GetValue(e.Item));
+                ColorDialog dialog = new ColorDialog();
+                dialog.Color = Color.Parse(cell.Binding.GetValue(e.Item));
 
-                ColorPicker picker = new ColorPicker();
-                picker.Value = color;
-
-                Dialog dialog = new Dialog();
-                dialog.Content = picker;
-                dialog.ShowModal();
-
-                cell.Binding.SetValue(e.Item, picker.Value.ToHex(false));
+                if (dialog.ShowDialog(this) == DialogResult.Ok)
+                {
+                    cell.Binding.SetValue(e.Item, dialog.Color.ToHex(false));
+                }
             }
         }
 

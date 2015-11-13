@@ -40,6 +40,18 @@
     <EmbeddedResource Include="Resources\ArrowBack.png">
       <LogicalName>ArrowBack.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Folder.png">
+      <LogicalName>Folder.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\History.png">
+      <LogicalName>History.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\PieChart.png">
+      <LogicalName>PieChart.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Note.png">
+      <LogicalName>Note.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\MainWindow.cs">
@@ -116,6 +128,8 @@
     <Compile Include="Extensions\PointExtensions.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Commands\EditFileCommand.cs" />
+    <Compile Include="Controls\CircularImageView.cs" />
+    <Compile Include="Controls\DatabaseSettingsControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

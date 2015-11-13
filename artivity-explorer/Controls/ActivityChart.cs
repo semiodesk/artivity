@@ -92,11 +92,11 @@ namespace Artivity.Explorer.Controls
                 FontWeight = 800,
                 TextColor = axisTextColor,
                 TicklineColor = axisLineColor,
-                IntervalType = DateTimeIntervalType.Days,
+                IntervalType = DateTimeIntervalType.Minutes,
+                MajorTickSize = 10,
                 MajorGridlineColor = axisLineColor,
                 MajorGridlineStyle = LineStyle.Solid,
-                MinorTickSize = 60,
-                MinorIntervalType = DateTimeIntervalType.Minutes,
+                MajorGridlineThickness = 1,
                 StringFormat = "HH:mm",
                 IsZoomEnabled = true,
                 IsPanEnabled = true,
@@ -125,7 +125,8 @@ namespace Artivity.Explorer.Controls
             Model.Title = "Influences / Min";
             Model.TitleFont = font.FamilyName;
             Model.TitleFontSize = font.Size;
-            Model.TitleColor = axisTextColor;
+            Model.TitlePadding = font.Size;
+            Model.TitleColor = Palette.TextColor.ToOxyColor();
             Model.PlotAreaBorderColor = Palette.DarkColor.WithA(0.75f).ToOxyColor();
             Model.PlotAreaBorderThickness = new OxyThickness(0, 0, 0, 1);
             Model.LegendOrientation = LegendOrientation.Horizontal;
@@ -406,10 +407,8 @@ namespace Artivity.Explorer.Controls
 
         public void Zoom(DateTime start, DateTime end)
         {
-            TimeSpan delta = TimeSpan.FromMinutes(2);
-
-            _x.Minimum = DateTimeAxis.ToDouble(start.RoundToMinute().Subtract(delta));
-            _x.Maximum = DateTimeAxis.ToDouble(end.RoundToMinute().Add(delta));
+            _x.Minimum = DateTimeAxis.ToDouble(end.RoundToMinute().Subtract(TimeSpan.FromMinutes(60)));
+            _x.Maximum = DateTimeAxis.ToDouble(end.RoundToMinute().AddMinutes(10));
 
             Model.ResetAllAxes();
         }

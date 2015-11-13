@@ -60,7 +60,11 @@ namespace Artivity.Explorer
 
             if (File.Exists(_user.Photo))
             {
-                photoButton.Image = new Bitmap(_user.Photo);
+                Bitmap buffer = new Bitmap(_user.Photo);
+                int width = photoButton.Width - 14;
+                int height = photoButton.Height - 14;
+
+                photoButton.Image = new Bitmap(buffer, width, height, ImageInterpolation.High);
             }
             else
             {
@@ -110,7 +114,7 @@ namespace Artivity.Explorer
         private void OnPhotoButtonClicked(object sender, System.EventArgs e)
         {
             OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Filters.Add(new FileDialogFilter("Images", "*.png"));
+            openDialog.Filters.Add(new FileDialogFilter("Images", ".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG", ".bmp", ".BMP"));
             openDialog.ShowDialog(this);
 
             if (!string.IsNullOrEmpty(openDialog.FileName))

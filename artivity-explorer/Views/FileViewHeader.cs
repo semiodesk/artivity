@@ -50,6 +50,10 @@ namespace Artivity.Explorer
 
         private Label _titleLabel;
 
+        private Label _agentLabel;
+
+        private Label _sizeLabel;
+
         private Label _pathLabel;
 
         private string _filePath;
@@ -82,7 +86,7 @@ namespace Artivity.Explorer
 
             _homeButton = new Button();
             _homeButton.Image = Bitmap.FromResource("ArrowBack.png");
-            _homeButton.Width = 32;
+            _homeButton.Width = 40;
             _homeButton.Height = 40;
             _homeButton.Click += OnHomeButtonClick;
 
@@ -92,14 +96,32 @@ namespace Artivity.Explorer
             _titleLabel.TextColor = Color.Parse("#42484a");
             _titleLabel.Font = SystemFonts.Label(16);
 
+            _sizeLabel = new Label();
+            _sizeLabel.TextColor = Color.Parse("#42484a");
+            _sizeLabel.Font = SystemFonts.Label(10);
+            _sizeLabel.Text = "279mm x 210mm";
+
+            _agentLabel = new Label();
+            _agentLabel.TextColor = Color.Parse("#42484a");
+            _agentLabel.Font = SystemFonts.Label(10);
+            _agentLabel.Text = "Inkscape";
+
             _pathLabel = new Label();
             _pathLabel.TextColor = Color.Parse("#42484a");
+            _pathLabel.Font = SystemFonts.Label(10);
+
+            StackLayout row0 = new StackLayout();
+            row0.Orientation = Orientation.Horizontal;
+            row0.Spacing = 10;
+            row0.Items.Add(_sizeLabel);
+            row0.Items.Add(_agentLabel);
 
             _titleLayout = new StackLayout();
             _titleLayout.Orientation = Orientation.Vertical;
             _titleLayout.Padding = new Padding (0, 10);
             _titleLayout.Spacing = 7;
             _titleLayout.Items.Add(_titleLabel);
+            _titleLayout.Items.Add(row0);
             _titleLayout.Items.Add(_pathLabel);
 
             _editCommand = new EditFileCommand();

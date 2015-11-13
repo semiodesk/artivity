@@ -35,11 +35,11 @@ namespace Artivity.Explorer.Controls
         {
             ShowHeader = true;
 
+            Columns.Add(new GridColumn() { HeaderText = "Time", DataCell = new TextBoxCell("FormattedTime"), AutoSize = false, Resizable = false, Width = 80 });
             Columns.Add(new GridColumn() { HeaderText = "", DataCell = new ColourPickerCell("AgentColour") { MaxWidth = 2 }, Width = 5, AutoSize = false, Resizable = false });
-            Columns.Add(new GridColumn() { HeaderText = "Time", DataCell = new TextBoxCell("FormattedTime") });
-            Columns.Add(new GridColumn() { HeaderText = "Influence", DataCell = new TextBoxCell("InfluenceType") });
-            Columns.Add(new GridColumn() { HeaderText = "Description", DataCell = new TextBoxCell("Description") });
-            Columns.Add(new GridColumn() { HeaderText = "Data", DataCell = new TextBoxCell("Data") });
+            Columns.Add(new GridColumn() { HeaderText = "", DataCell = new TextBoxCell("InfluenceType") });
+            Columns.Add(new GridColumn() { HeaderText = "Activity", DataCell = new TextBoxCell("Description"), AutoSize = false, Width = 250 });
+            Columns.Add(new GridColumn() { HeaderText = "Data", DataCell = new TextBoxCell("Data"), AutoSize = false, Width = 200, Visible = false });
         }
 
         private void InitializeAgents()

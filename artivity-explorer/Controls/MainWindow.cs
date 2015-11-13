@@ -47,20 +47,6 @@ namespace Artivity.Explorer.Controls
 
             Navigate<JournalView>();
         }
-
-        private void OnExportButtonClicked(object sender, EventArgs e)
-        {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filters.Add(new FileDialogFilter("RDF/XML", "*.rdf"));
-
-            if (dialog.ShowDialog(this) == DialogResult.Ok)
-            {
-                string file = dialog.FileName;
-
-                ExportDialog export = new ExportDialog(file);
-                export.ShowModalAsync();
-            }
-        }
         
         public static void Navigate<T>(NavigationEventHandler<T> onComplete = null) where T : View, new()
         {
