@@ -64,8 +64,9 @@ namespace Artivity.Explorer
             _logLayout.Items.Add(new StackLayoutItem(_log, HorizontalAlignment.Stretch, true));
 
             _tabs.TabPosition = DockPosition.Top;
-            _tabs.Pages.Add(new TabPage(_statsPanel) { Text = "Statistics", Padding = new Padding(0) });
-            _tabs.Pages.Add(new TabPage(_logLayout) { Text = "History", Padding = new Padding(0) });
+            _tabs.Pages.Add(new TabPage(_statsPanel) { Text = " Statistics  ", Image = Bitmap.FromResource("PieChart.png"), Padding = new Padding(0) });
+            _tabs.Pages.Add(new TabPage(_logLayout) { Text = " History    ", Image = Bitmap.FromResource("History.png"), Padding = new Padding(0) });
+            _tabs.Pages.Add(new TabPage() { Text = " Notes     ", Image = Bitmap.FromResource("Note.png"), Padding = new Padding(0) });
 
             Items.Add(new StackLayoutItem(_header, HorizontalAlignment.Stretch, false));
             Items.Add(new StackLayoutItem(_tabs, HorizontalAlignment.Stretch, true));
@@ -110,7 +111,7 @@ namespace Artivity.Explorer
                 _chart.Zoom(activity.StartTime, activity.EndTime);
             }
 
-            _tabs.SelectedPage = _tabs.Pages.Last();
+            _tabs.SelectedIndex = 1;
         }
 
         private void OnActivityLogSelectedItemsChanged(object sender, EventArgs e)

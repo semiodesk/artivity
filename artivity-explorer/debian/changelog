@@ -1,3 +1,31 @@
+artivity-explorer (1.5.19-1semiodesk0) trusty; urgency=low
+
+  * Added circular image control for displaying the user photo.
+  * Added support for selecting jpeg, bmp and png files as avatar pictures.
+  * Click on colour box in agent settings now directly opens the color dialog.
+  * Added initial settings page for database. 
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 13 Nov 2015 17:00:00 +0200
+
+artivity-explorer (1.5.18-1semiodesk0) trusty; urgency=low
+
+  * Minor UI improvements.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 13 Nov 2015 15:30:00 +0200
+
+artivity-explorer (1.5.17-1semiodesk0) trusty; urgency=low
+
+  * Removed conflicting duplicate dll from package.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 13 Nov 2015 09:30:00 +0200
+
+artivity-explorer (1.5.16-1semiodesk0) trusty; urgency=low
+
+  * Ported to ETO.Net UI toolkit.
+  * Improved visualisation of changes in journal.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 12 Nov 2015 17:22:00 +0200
+
 artivity-explorer (1.5.12-1semiodesk0) trusty; urgency=low
 
   * Added recently used files journal.

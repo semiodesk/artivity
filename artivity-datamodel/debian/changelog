@@ -1,3 +1,15 @@
+artivity-datamodel (1.5.11-1semiodesk0) trusty; urgency=low
+
+  * Fixing invalid bytecode exception when loading assembly.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 13 Nov 2015 17:55:00 +0200
+
+artivity-datamodel (1.5.10-1semiodesk0) trusty; urgency=low
+
+  * Added conversion methods from artivity geometry to system geometry primivites.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 12 Nov 2015 17:15:00 +0200
+
 artivity-datamodel (1.5.7-1semiodesk0) trusty; urgency=low
 
   * Models are now specific to a user.

@@ -13,9 +13,11 @@ namespace Artivity.Explorer.Dialogs.SettingsDialog
     {
         #region Members
 
-        private UserSettingsControl _userSettings;
+        private UserSettingsControl _userSettings = new UserSettingsControl();
 
-        private AgentSettingsControl _agentSettings;
+        private AgentSettingsControl _agentSettings = new AgentSettingsControl();
+
+        private DatabaseSettingsControl _databaseSettings = new DatabaseSettingsControl();
 
         #endregion
 
@@ -31,12 +33,10 @@ namespace Artivity.Explorer.Dialogs.SettingsDialog
         {
             base.InitializeComponent();
 
-            _userSettings = new UserSettingsControl();
-            _agentSettings = new AgentSettingsControl();
-
             TabControl tabs = new TabControl();
             tabs.Pages.Add(new TabPage(_userSettings, new Padding(7)) { Text = "User" });
             tabs.Pages.Add(new TabPage(_agentSettings, new Padding(7)) { Text = "Applications" });
+            tabs.Pages.Add(new TabPage(_databaseSettings, new Padding(7)) { Text = "Database" });
 
             Content = tabs;
 

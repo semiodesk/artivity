@@ -49,7 +49,7 @@ namespace Artivity.Explorer.Controls
         {
             Spacing = new Size(7, 7);
 
-            Color color = Color.FromArgb(49, 55, 57);
+            Color color = Palette.TextColor;
 
             var icon = new ImageView() { Image = Bitmap.FromResource("composition") };
             var title = new Label() { Text = "Composition", TextColor = color, Font = SystemFonts.Bold() };

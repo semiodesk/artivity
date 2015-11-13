@@ -19,14 +19,20 @@ namespace Artivity.Explorer
 
         public int MaxWidth { get; set; }
 
+        public Padding Padding { get; set; }
+
         #endregion
 
         #region Constructors
 
-        public ColourPickerCell() {}
+        public ColourPickerCell()
+        {
+            Padding = new Padding(-3, -3, 3, -6);
+        }
 
         public ColourPickerCell(string property)
         {
+            Padding = new Padding(-3, -3, 3, -6);
             Binding = new PropertyBinding<string>(property);
         }
 
@@ -44,10 +50,10 @@ namespace Artivity.Explorer
             {
                 Color colour = Color.Parse(colourCode);
 
-                float x = e.ClipRectangle.Location.X - 3;
-                float y = e.ClipRectangle.Location.Y - 3;
-                float w = MaxWidth > 0 ? MaxWidth : e.ClipRectangle.Width + 3;
-                float h = e.ClipRectangle.Height + 6;
+                float x = e.ClipRectangle.Location.X + Padding.Left;
+                float y = e.ClipRectangle.Location.Y + Padding.Top;
+                float w = MaxWidth > 0 ? MaxWidth : e.ClipRectangle.Width - Padding.Right;
+                float h = e.ClipRectangle.Height - Padding.Bottom;
 
                 e.Graphics.FillRectangle(colour, new RectangleF(x, y, w, h));
             }
