@@ -261,7 +261,7 @@ namespace Artivity.Api.Http
 				agent = model.GetResource<SoftwareAgent>(agentUri);
 			}
 
-            return agent != null ? (bool)agent.IsCaptureEnabled : false;
+            return agent.IsCaptureEnabled;
 		}
 
 		#endregion

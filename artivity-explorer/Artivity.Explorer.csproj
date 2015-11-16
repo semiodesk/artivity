@@ -28,6 +28,8 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -185,9 +187,6 @@
     <Reference Include="OpenLink.Data.Virtuoso">
       <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
     </Reference>
-    <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.104\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -204,6 +203,9 @@
     </Reference>
     <Reference Include="Eto.OxyPlot.Gtk2">
       <HintPath>References\Eto.OxyPlot.Gtk2.dll</HintPath>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.105\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -230,13 +232,13 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
+    <Folder Include="Views\" />
+    <Folder Include="Commands\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\artivity-datamodel\Artivity.DataModel.csproj">
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
       <Name>Artivity.DataModel</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-    <Folder Include="Commands\" />
   </ItemGroup>
 </Project>

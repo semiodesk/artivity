@@ -21,7 +21,6 @@ namespace Artivity.Explorer.Dialogs.SetupWizard
 			InitializeComponent();
 
             CurrentPage = new WelcomePage(this);
-			CurrentPage.Content.BackgroundColor = Colors.White;
         }
 
         #endregion

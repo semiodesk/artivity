@@ -1,3 +1,15 @@
+artivity-datamodel (1.5.13-1semiodesk0) trusty; urgency=low
+
+  * Fixed old version of Trinity being referenced in package.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 14 Nov 2015 15:17:00 +0200
+
+artivity-datamodel (1.5.12-1semiodesk0) trusty; urgency=low
+
+  * Invalid bytecode exception fixed.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Mon, 14 Nov 2015 13:23:00 +0200
+
 artivity-datamodel (1.5.11-1semiodesk0) trusty; urgency=low
 
   * Fixing invalid bytecode exception when loading assembly.

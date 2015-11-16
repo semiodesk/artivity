@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 using Eto.Forms;
 using Eto.Drawing;
 
@@ -101,8 +101,7 @@ namespace Artivity.Explorer.Controls
             ButtonLayout = new StackLayout();
             ButtonLayout.Orientation = Orientation.Horizontal;
             ButtonLayout.Spacing = 7;
-			ButtonLayout.Padding = new Padding(7);
-            ButtonLayout.BackgroundColor = Color.Parse("#f0f0f0");
+			ButtonLayout.Padding = new Padding(7, 7, 7, 0);
 
 			Padding = new Padding(0);
 
