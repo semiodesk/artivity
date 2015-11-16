@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 11/11/2015 11:30:19 AM
+// Date: 11/16/2015 3:01:15 PM
 
 using System;
 using System.Collections.Generic;
@@ -1440,15 +1440,6 @@ public class prov : Ontology
     public static string GetPrefix() { return Prefix; }     
 
     ///<summary>
-    ///This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page).
-    ///
-    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/
-    ///Archives/Public/public-prov-comments/). All feedback is welcome.
-    ///<see cref="http://www.w3.org/ns/prov#"/>
-    ///</summary>
-    //public static readonly Resource # = new Resource(new Uri("http://www.w3.org/ns/prov#"));    
-
-    ///<summary>
     ///
     ///<see cref="http://www.w3.org/2000/01/rdf-schema#comment"/>
     ///</summary>
@@ -2586,15 +2577,6 @@ public static class PROV
     
     public static readonly string Prefix = "PROV";
     public static string GetPrefix() { return Prefix; } 
-
-    ///<summary>
-    ///This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page).
-    ///
-    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/
-    ///Archives/Public/public-prov-comments/). All feedback is welcome.
-    ///<see cref="http://www.w3.org/ns/prov#"/>
-    ///</summary>
-    //public const string # = "http://www.w3.org/ns/prov#";
 
     ///<summary>
     ///

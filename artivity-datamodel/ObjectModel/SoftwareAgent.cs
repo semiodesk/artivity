@@ -39,8 +39,8 @@ namespace Artivity.DataModel
     {
 		#region Members
 
-        [RdfProperty(ART.isCaptureEnabled), NotifyPropertyChanged]
-		public bool? IsCaptureEnabled { get; set; }
+        [RdfProperty(ART.isCaptureEnabled)]
+        public bool IsCaptureEnabled { get; set; }
 
         [DefaultValue("#FF0000")]
         [RdfProperty(ART.hasColourCode), NotifyPropertyChanged]
