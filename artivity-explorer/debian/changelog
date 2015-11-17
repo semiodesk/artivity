@@ -1,3 +1,10 @@
+artivity-explorer (1.5.20-1semiodesk0) trusty; urgency=low
+
+  * Added single user option.
+  * Adapted to changes in the data model.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 17 Nov 2015 10:00:00 +0200
+
 artivity-explorer (1.5.19-1semiodesk0) trusty; urgency=low
 
   * Added circular image control for displaying the user photo.

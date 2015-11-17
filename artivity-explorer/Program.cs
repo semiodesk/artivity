@@ -10,9 +10,23 @@ namespace Artivity.Explorer
 	public class Program
 	{
         [STAThread]
-		static void Main ()
+        static void Main(string[] args)
 		{
 			SemiodeskDiscovery.Discover();
+
+            Options options = new Options();
+
+            if (!CommandLine.Parser.Default.ParseArguments(args, options))
+            {
+                return;
+            }
+
+            if (options.SingleUser)
+            {
+                Models.Agents = new Uri("http://localhost:8890/artivity/1.0/agents");
+                Models.Activities = new Uri("http://localhost:8890/artivity/1.0/activities");
+                Models.WebActivities = new Uri("http://localhost:8890/artivity/1.0/activities/web");
+            }
 
             if (!Setup.HasModels() && !Setup.InstallModels())
             {
