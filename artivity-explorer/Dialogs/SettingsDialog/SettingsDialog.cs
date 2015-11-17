@@ -26,8 +26,8 @@ namespace Artivity.Explorer.Dialogs.SettingsDialog
         {
             base.InitializeComponent();
 
-            Size = new Size(450, 450);
-            ClientSize = new Size(450, 450);
+            Size = new Size(450, 500);
+            ClientSize = new Size(450, 500);
 
             LayoutRoot.Padding = new Padding(7);
 

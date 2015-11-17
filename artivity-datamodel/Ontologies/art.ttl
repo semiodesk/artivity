@@ -10,6 +10,32 @@
 
 <http://semiodesk.com/artivity/1.0/> a owl:Ontology .
 
+art:Database a rdfs:Class ;
+    rdfs:label "Database" .
+
+art:isMonitoringEnabled a rdf:Property ;
+    rdfs:label "isMonitoringEnabled" ;
+    rdfs:domain art:Database ;
+    rdfs:range xsd:boolean .
+
+art:hadState a rdf:Property ;
+    rdfs:label "hadState" ;
+    rdfs:domain art:Database ;
+    rdfs:range art:DatabaseState .
+
+art:DatabaseState a rdfs:Class ;
+    rdfs:label "DatabaseState" .
+
+art:atTime a rdf:Property ;
+    rdfs:label "atTime" ;
+    rdfs:domain art:DatabaseState ;
+    rdfs:range xsd:dateTime .
+
+art:factsCount a rdf:Property ;
+    rdfs:label "factsCount" ;
+    rdfs:domain art:DatabaseState ;
+    rdfs:range xsd:integer .
+
 art:Browse a rdfs:Class ;
     rdfs:label "Browse" ;
     rdfs:subClassOf prov:Activity .

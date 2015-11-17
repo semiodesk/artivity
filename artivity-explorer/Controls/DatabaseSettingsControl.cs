@@ -29,16 +29,52 @@ using System.Linq;
 using System.Collections.Generic;
 using Semiodesk.Trinity;
 using Eto.Forms;
+using Eto.OxyPlot;
+using Eto.Drawing;
 using Artivity.DataModel;
 
 namespace Artivity.Explorer
 {
     public class DatabaseSettingsControl : StackLayout
     {
+        #region Members
+
+        private Database _database;
+
+        private TextBox _filePathBox = new TextBox() { Enabled = false };
+
+        private Button _filePickerButton = new Button() { Width = 30 };
+
+        private Label _fileSizeLabel = new Label();
+
+        private DatabaseSizeChart _fileSizePlot = new DatabaseSizeChart() { Height = 130 };
+
+        private Label _factsCountLabel = new Label();
+
+        private DatabaseFactsChart _factsCountPlot = new DatabaseFactsChart() { Height = 130 };
+
+        private CheckBox _monitoringEnabledBox = new CheckBox() { Text = "Enable database growth monitoring" };
+
+        #endregion
+
         #region Constructors
 
         public DatabaseSettingsControl()
         {
+            if (!Models.Exists(Models.Monitoring))
+            {
+                Setup.InstallMonitoring();
+            }
+
+            IModel monitoring = Models.GetMonitoring();
+
+            if (monitoring.IsEmpty)
+            {
+                Setup.InstallMonitoring();
+            }
+
+            _database = monitoring.GetResources<Database>().FirstOrDefault();
+
             InitializeComponent();
         }
 
@@ -48,23 +84,65 @@ namespace Artivity.Explorer
 
         private void InitializeComponent()
         {
+            Spacing = 14;
             Orientation = Orientation.Vertical;
 
-            Spacing = 14;
+            if (_database != null)
+            {
+                _filePathBox.Text = new Uri(_database.Url).AbsolutePath;
 
-            SparqlQuery query = new SparqlQuery("select count(?s) as ?tripleCount where { ?s ?p ?o . }");
+                _factsCountLabel.Text = "Facts:\t" + _database.GetFactsCount();
+                _factsCountLabel.TextColor = Palette.TextColor;
 
-            IEnumerable<BindingSet> bindings = Models.GetAll().ExecuteQuery(query).GetBindings();
+                _fileSizeLabel.Text = "Size:\t" + Math.Round((_database.GetFileSize() / 1024f) / 1024f, 2) + " MB";
+                _fileSizeLabel.TextColor = Palette.TextColor;
 
-            int tripleCount = bindings.Any() ? Convert.ToInt32(bindings.First()["tripleCount"]) : -1;
-            double estimatedSize = tripleCount * 3 / 1024;
+                _monitoringEnabledBox.Checked = _database.IsMonitoringEnabled;
+            }
 
-            TableLayout layout = new TableLayout();
-            layout.Width = 200;
-            layout.Rows.Add(new TableRow(new TableCell(new Label() { Text = "Content" }) { ScaleWidth = true }, new TableCell(new Label() { Text = tripleCount.ToString() + " facts", TextAlignment = TextAlignment.Right })));
-            layout.Rows.Add(new TableRow(new TableCell(new Label() { Text = "Estimated size" }) { ScaleWidth = true }, new TableCell(new Label() { Text = estimatedSize.ToString() + " mb", TextAlignment = TextAlignment.Right })));
+            StackLayout fileLayout = new StackLayout();
+            fileLayout.Spacing = 7;
+            fileLayout.Orientation = Orientation.Horizontal;
+            fileLayout.Items.Add(new StackLayoutItem(_filePathBox, true));
+            fileLayout.Items.Add(new StackLayoutItem(_filePickerButton, false));
 
-            Items.Add(new StackLayoutItem(layout));
+            StackLayout fileStatsLayout = new StackLayout();
+            fileStatsLayout.Spacing = 7;
+            fileStatsLayout.Orientation = Orientation.Vertical;
+            fileStatsLayout.Items.Add(new StackLayoutItem(_factsCountLabel, false));
+            fileStatsLayout.Items.Add(new StackLayoutItem(_factsCountPlot, HorizontalAlignment.Stretch));
+            fileStatsLayout.Items.Add(new StackLayoutItem(_fileSizeLabel, false));
+            fileStatsLayout.Items.Add(new StackLayoutItem(_fileSizePlot, HorizontalAlignment.Stretch));
+
+            Items.Add(new StackLayoutItem(fileLayout, HorizontalAlignment.Stretch));
+            Items.Add(new StackLayoutItem(fileStatsLayout, HorizontalAlignment.Stretch, true));
+            Items.Add(new StackLayoutItem(_monitoringEnabledBox));
+
+            _fileSizePlot.LoadMetrics();
+            _factsCountPlot.LoadMetrics();
+
+            _monitoringEnabledBox.CheckedChanged += OnMonitoringEnabledBoxCheckedChanged;
+            _filePickerButton.Click += OnFilePickerButtonClick;
+        }
+
+        private void OnMonitoringEnabledBoxCheckedChanged(object sender, EventArgs e)
+        {
+            _database.IsMonitoringEnabled = Convert.ToBoolean(_monitoringEnabledBox.Checked);
+            _database.Commit();
+        }
+
+        private void OnFilePickerButtonClick(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.FileName = new Uri(_database.Url).AbsolutePath;
+            dialog.CheckFileExists = true;
+            dialog.MultiSelect = false;
+
+            if (dialog.ShowDialog(this) == DialogResult.Ok)
+            {
+                _database.Url = "file://" + dialog.FileName;
+                _database.Commit();
+            }
         }
 
         #endregion

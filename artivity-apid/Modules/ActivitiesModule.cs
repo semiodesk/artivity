@@ -56,15 +56,25 @@ namespace Artivity.Api.Http
 
 		public ActivitiesModule()
 		{
-            Post["/artivity/1.0/activities/"] = parameters => 
+            try
             {
-				return AddActivity(ToString(this.Request.Body));
-            };
+                UpdateMonitoring();
 
-			Post["/artivity/1.0/activities/web/"] = parameters => 
-			{
-				return AddActivity(this.Bind<ActivityParameters>()); 
-			};
+                Post["/artivity/1.0/activities/"] = parameters => 
+                {
+    				return AddActivity(ToString(this.Request.Body));
+                };
+
+    			Post["/artivity/1.0/activities/web/"] = parameters => 
+    			{
+    				return AddActivity(this.Bind<ActivityParameters>()); 
+    			};
+
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(HttpStatusCode.InternalServerError, e);
+            }
 		}
 
 		#endregion

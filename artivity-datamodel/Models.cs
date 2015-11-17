@@ -42,6 +42,8 @@ namespace Artivity.DataModel
 
         public static Uri WebActivities;
 
+        public static Uri Monitoring;
+
         #endregion
 
         static Models()
@@ -51,9 +53,17 @@ namespace Artivity.DataModel
             Agents = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/agents", username));
             Activities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities", username));
             WebActivities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities/web", username));
+            Monitoring = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/monitoring", username));
         }
 
         #region Methods
+
+        public static bool Exists(Uri uri)
+        {
+            IStore store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
+
+            return store.ContainsModel(uri);
+        }
 
         private static IModel GetModel(IStore store, Uri uri)
         {
@@ -73,6 +83,7 @@ namespace Artivity.DataModel
             result.Add(GetAgents(store));
             result.Add(GetActivities(store));
             result.Add(GetWebActivities(store));
+            result.Add(GetMonitoring());
 
             return result;
         }
@@ -82,6 +93,7 @@ namespace Artivity.DataModel
             IStore store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
 
             IModelGroup result = store.CreateModelGroup();
+            result.Add(GetAgents(store));
             result.Add(GetActivities(store));
             result.Add(GetWebActivities(store));
 
@@ -101,6 +113,11 @@ namespace Artivity.DataModel
         public static IModel GetWebActivities(IStore store = null)
         {
             return GetModel(store, WebActivities);
+        }
+
+        public static IModel GetMonitoring(IStore store = null)
+        {
+            return GetModel(store, Monitoring);
         }
 
         #endregion

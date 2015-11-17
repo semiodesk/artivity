@@ -110,7 +110,7 @@ namespace Artivity.Explorer
 
             SparqlQuery query = new SparqlQuery(queryString);
 
-            return Models.GetAll().GetResources<SoftwareAgent>(query).FirstOrDefault();
+            return Models.GetAllActivities().GetResources<SoftwareAgent>(query).FirstOrDefault();
         }
 
         #endregion

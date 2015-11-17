@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 11/17/2015 10:06:58 AM
+// Date: 11/17/2015 6:03:48 PM
 
 using System;
 using System.Collections.Generic;
@@ -6641,6 +6641,42 @@ public class art : Ontology
 
     ///<summary>
     ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Database"/>
+    ///</summary>
+    public static readonly Class Database = new Class(new Uri("http://semiodesk.com/artivity/1.0/Database"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/isMonitoringEnabled"/>
+    ///</summary>
+    public static readonly Property isMonitoringEnabled = new Property(new Uri("http://semiodesk.com/artivity/1.0/isMonitoringEnabled"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hadState"/>
+    ///</summary>
+    public static readonly Property hadState = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadState"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/DatabaseState"/>
+    ///</summary>
+    public static readonly Class DatabaseState = new Class(new Uri("http://semiodesk.com/artivity/1.0/DatabaseState"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/atTime"/>
+    ///</summary>
+    public static readonly Property atTime = new Property(new Uri("http://semiodesk.com/artivity/1.0/atTime"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/factsCount"/>
+    ///</summary>
+    public static readonly Property factsCount = new Property(new Uri("http://semiodesk.com/artivity/1.0/factsCount"));    
+
+    ///<summary>
+    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/Browse"/>
     ///</summary>
     public static readonly Class Browse = new Class(new Uri("http://semiodesk.com/artivity/1.0/Browse"));    
@@ -6962,6 +6998,42 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/"/>
     ///</summary>
     public const string _1_0 = "http://semiodesk.com/artivity/1.0/";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/Database"/>
+    ///</summary>
+    public const string Database = "http://semiodesk.com/artivity/1.0/Database";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/isMonitoringEnabled"/>
+    ///</summary>
+    public const string isMonitoringEnabled = "http://semiodesk.com/artivity/1.0/isMonitoringEnabled";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/hadState"/>
+    ///</summary>
+    public const string hadState = "http://semiodesk.com/artivity/1.0/hadState";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/DatabaseState"/>
+    ///</summary>
+    public const string DatabaseState = "http://semiodesk.com/artivity/1.0/DatabaseState";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/atTime"/>
+    ///</summary>
+    public const string atTime = "http://semiodesk.com/artivity/1.0/atTime";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/factsCount"/>
+    ///</summary>
+    public const string factsCount = "http://semiodesk.com/artivity/1.0/factsCount";
 
     ///<summary>
     ///

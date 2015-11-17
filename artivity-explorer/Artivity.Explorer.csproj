@@ -2,35 +2,25 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{823D4E87-D4D8-4D08-98AE-EAD625579E1A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Artivity.Explorer</RootNamespace>
     <AssemblyName>artivity-explorer</AssemblyName>
     <TargetFrameworkProfile />
     <StartupObject>Artivity.Explorer.Program</StartupObject>
+    <ReleaseVersion>1.5</ReleaseVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
-    <Commandlineparameters>--single-user</Commandlineparameters>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -134,6 +124,8 @@
     <Compile Include="Controls\CircularImageView.cs" />
     <Compile Include="Controls\DatabaseSettingsControl.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="Controls\DatabaseFactsChart.cs" />
+    <Compile Include="Controls\DatabaseSizeChart.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -161,9 +153,6 @@
     </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="virtado4">
-      <HintPath>..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net40\virtado4.dll</HintPath>
     </Reference>
     <Reference Include="Eto.OxyPlot">
       <HintPath>References\Eto.OxyPlot.dll</HintPath>
@@ -206,11 +195,14 @@
     <Reference Include="Eto.OxyPlot.Gtk2">
       <HintPath>References\Eto.OxyPlot.Gtk2.dll</HintPath>
     </Reference>
-    <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.105\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-    </Reference>
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.107\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    </Reference>
+    <Reference Include="virtado4">
+      <HintPath>..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net40\virtado4.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +224,9 @@
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
+        <Policies>
+          <StandardHeader Text="LICENSE:&#xA;&#xA;Permission is hereby granted, free of charge, to any person obtaining a copy&#xA;of this software and associated documentation files (the &quot;Software&quot;), to deal&#xA;in the Software without restriction, including without limitation the rights&#xA;to use, copy, modify, merge, publish, distribute, sublicense, and/or sell&#xA;copies of the Software, and to permit persons to whom the Software is&#xA;furnished to do so, subject to the following conditions:&#xA;&#xA;The above copyright notice and this permission notice shall be included in&#xA;all copies or substantial portions of the Software.&#xA;&#xA;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR&#xA;IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,&#xA;FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE&#xA;AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER&#xA;LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,&#xA;OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN&#xA;THE SOFTWARE.&#xA;&#xA;AUTHORS:&#xA;&#xA; Sebastian Faubel &lt;sebastian@semiodesk.com&gt;&#xA;&#xA;Copyright (c) Semiodesk GmbH 2015" IncludeInNewFiles="True" />
+        </Policies>
         <Deployment.LinuxDeployData scriptName="artivity-explorer" />
       </Properties>
     </MonoDevelop>

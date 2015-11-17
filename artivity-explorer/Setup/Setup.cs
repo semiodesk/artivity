@@ -294,10 +294,14 @@ namespace Artivity.Explorer
                     webActivities = store.GetModel(Models.WebActivities);
                 }
 
+                InstallMonitoring();
+
+                IModel monitoring = store.GetModel(Models.Monitoring);
+
                 // Load the ontologies into the database for inferencing support.
                 store.LoadOntologySettings();
 
-				return agents != null && !agents.IsEmpty && activities != null && webActivities != null;
+                return agents != null && !agents.IsEmpty && activities != null && webActivities != null && monitoring != null;
             }
             catch(Exception e)
             {
@@ -356,6 +360,35 @@ namespace Artivity.Explorer
             }
         }
 
+        public static void InstallMonitoring(IStore store = null)
+        {
+            if(store == null)
+            {
+                store = StoreFactory.CreateStoreFromConfiguration(Models.DefaultStore);
+            }
+
+            IModel model;
+
+            if (!store.ContainsModel(Models.Monitoring))
+            {
+                model = store.CreateModel(Models.Monitoring);
+            }
+            else
+            {
+                model = store.GetModel(Models.Monitoring);
+                model.Clear();
+            }
+
+            Database database = model.CreateResource<Database>();
+
+            if (IsLinuxPlatform())
+            {
+                database.Url = "file:///var/lib/virtuoso-opensource-6.1/db/virtuoso.db";
+                database.IsMonitoringEnabled = false;
+                database.Commit();
+            }
+        }
+
         public static bool UninstallModels()
         {
             try
@@ -377,6 +410,11 @@ namespace Artivity.Explorer
                 if (store.ContainsModel(Models.WebActivities))
                 {
                     store.RemoveModel(Models.WebActivities);
+                }
+
+                if (store.ContainsModel(Models.Monitoring))
+                {
+                    store.RemoveModel(Models.Monitoring);
                 }
 
                 return true;
