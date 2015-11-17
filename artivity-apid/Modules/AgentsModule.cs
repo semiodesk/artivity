@@ -47,6 +47,8 @@ namespace Artivity.Api.Http
 		{
 			try
 			{
+                UpdateMonitoring();
+
 				Get["/artivity/1.0/agents"] = parameters => { return GetAgents(); };
 				Get["/artivity/1.0/agents/status"] = parameters =>
                 {

@@ -25,9 +25,12 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Semiodesk.Trinity;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Semiodesk.Trinity;
 using Nancy;
+using Artivity.DataModel;
 
 namespace Artivity.Api.Http
 {
@@ -38,5 +41,63 @@ namespace Artivity.Api.Http
 		public ModuleBase() {}
 
 		#endregion
+
+        #region Methods
+
+        protected void UpdateMonitoring()
+        {
+            if (!IsMonitoringRequired()) return;
+
+            IModel monitoring = Models.GetMonitoring();
+
+            Database database = monitoring.GetResources<Database>().FirstOrDefault();
+
+            DatabaseState state = monitoring.CreateResource<DatabaseState>();
+            state.Time = DateTime.Now;
+            state.FileSize = database.GetFileSize();
+            state.FactsCount = database.GetFactsCount();
+            state.Commit();
+
+            database.States.Add(state);
+            database.Commit();
+        }
+
+        private bool IsMonitoringRequired()
+        {
+            string queryString = @"
+                PREFIX art: <http://semiodesk.com/artivity/1.0/>
+
+                select ?enabled ?time where
+                {
+                   ?database art:isMonitoringEnabled ?enabled .
+
+                   optional
+                   {
+                      ?database art:hadState ?state .
+                      ?state art:atTime ?time .
+                   }
+                }
+                order by desc(?time) limit 1";
+
+            SparqlQuery query = new SparqlQuery(queryString);
+
+            IEnumerable<BindingSet> bindings = Models.GetMonitoring().ExecuteQuery(query).GetBindings();
+
+            if(bindings.Any())
+            {
+                BindingSet binding = bindings.First();
+
+                var enabled = Convert.ToBoolean(binding["enabled"]);
+                var lastTime = binding["time"].ToString();
+
+                return enabled && (string.IsNullOrEmpty(lastTime) || (DateTime.Now - DateTime.Parse(lastTime)).Minutes >= 1);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        #endregion
 	}
 }

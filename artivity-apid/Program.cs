@@ -62,12 +62,16 @@ namespace Artivity.Api.Http
                 wait.Set();
                 finalize.WaitOne();
             };
-
+                    
             Thread t = new Thread(() =>
             {
                 InitializeModels(options);
+                
+                HostConfiguration config = new HostConfiguration();
+                config.RewriteLocalhost = false;
+                config.UnhandledExceptionCallback = new Action<Exception>((ex) => { Console.WriteLine(ex); });
 
-                using (var host = new NancyHost(new Uri("http://localhost:" + Port)))
+                using (var host = new NancyHost(config, new Uri("http://localhost:" + Port)))
                 {
                     try
                     {
@@ -125,6 +129,13 @@ namespace Artivity.Api.Http
                 Logger.LogInfo("Creating model {0}..", Models.WebActivities);
 
                 store.CreateModel(Models.WebActivities);
+            }
+                
+            if (!store.ContainsModel(Models.Monitoring))
+            {
+                Logger.LogInfo("Creating model {0}..", Models.Monitoring);
+
+                store.CreateModel(Models.Monitoring);
             }
         }
 	}

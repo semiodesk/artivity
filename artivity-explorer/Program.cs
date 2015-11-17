@@ -26,6 +26,7 @@ namespace Artivity.Explorer
                 Models.Agents = new Uri("http://localhost:8890/artivity/1.0/agents");
                 Models.Activities = new Uri("http://localhost:8890/artivity/1.0/activities");
                 Models.WebActivities = new Uri("http://localhost:8890/artivity/1.0/activities/web");
+                Models.Monitoring = new Uri("http://localhost:8890/artivity/1.0/monitoring");
             }
 
             if (!Setup.HasModels() && !Setup.InstallModels())

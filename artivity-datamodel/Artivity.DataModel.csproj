@@ -8,28 +8,22 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Artivity.DataModel</RootNamespace>
-    <AssemblyName>Artivity.Model</AssemblyName>
+    <AssemblyName>Artivity.DataModel</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>932c28d3</NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <ReleaseVersion>1.5</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
+    <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
+    <OutputPath>bin\Release</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ObjectModel\Person.cs" />
@@ -74,6 +68,8 @@
     <Compile Include="ObjectModel\Activities\DeleteFile.cs" />
     <Compile Include="ObjectModel\Influences\Edit.cs" />
     <Compile Include="ObjectModel\Influences\View.cs" />
+    <Compile Include="ObjectModel\Database.cs" />
+    <Compile Include="ObjectModel\DatabaseState.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -100,9 +96,15 @@
     <None Include="Ontologies\dcelements.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Ontologies\owl.n3" />
-    <None Include="Ontologies\rdf.rdf" />
-    <None Include="Ontologies\rdfs.n3" />
+    <None Include="Ontologies\owl.n3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ontologies\rdf.rdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ontologies\rdfs.n3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -120,21 +122,22 @@
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="virtado4">
-      <HintPath>..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net40\virtado4.dll</HintPath>
-    </Reference>
     <Reference Include="VDS.Common">
       <HintPath>..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
     <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.105\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.107\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    </Reference>
+    <Reference Include="virtado4">
+      <HintPath>..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net40\virtado4.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Semiodesk.Trinity.Modelling.0.9.105\build\net40\Semiodesk.Trinity.Modelling.targets" Condition="Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.105\build\net40\Semiodesk.Trinity.Modelling.targets')" />
+  <Import Project="..\packages\Semiodesk.Trinity.Modelling.0.9.107\build\net40\Semiodesk.Trinity.Modelling.targets" Condition="Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.107\build\net40\Semiodesk.Trinity.Modelling.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

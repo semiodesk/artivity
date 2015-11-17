@@ -1,3 +1,9 @@
+artivity-apid (1.5.13-1semiodesk0) trusty; urgency=low
+
+  * Adapted to new data model.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 17 Nov 2015 10:30:00 +0200
+
 artivity-apid (1.5.12-1semiodesk0) trusty; urgency=low
 
   * Removed conflicting duplicate dll from package.
