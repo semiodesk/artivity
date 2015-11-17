@@ -30,6 +30,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
+    <Commandlineparameters>--single-user</Commandlineparameters>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -132,6 +133,7 @@
     <Compile Include="Commands\EditFileCommand.cs" />
     <Compile Include="Controls\CircularImageView.cs" />
     <Compile Include="Controls\DatabaseSettingsControl.cs" />
+    <Compile Include="Options.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -206,6 +208,9 @@
     </Reference>
     <Reference Include="Semiodesk.Trinity">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.105\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    </Reference>
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

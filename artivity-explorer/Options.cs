@@ -1,7 +1,7 @@
 using System;
 using CommandLine;
 
-namespace ArtivityExplorer
+namespace Artivity.Explorer
 {
     public class Options
     {
