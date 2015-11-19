@@ -625,6 +625,9 @@ namespace Inkscape
         if(_filePath.empty())
         {
             _filePath = string(_document->getURI());
+            
+            // Add the newly created file to the file system monitor.
+            _log.enableMonitoring(_filePath);
         }
         
         string fileUrl = string("file://") + _filePath;

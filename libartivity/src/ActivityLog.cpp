@@ -262,20 +262,26 @@ FileDataObject* ActivityLog::getFile()
 
 const char* ActivityLog::getFileUri(string path)
 {
-    string url = "http://localhost:8272/artivity/1.0/uri?file=" + path;
-    string data = "";
+    CURL* curl = initializeRequest();
     
-    request(url, "", data);
+    string data = "";
+    stringstream url;
+    url << "http://localhost:8272/artivity/1.0/uri?file=" << escapeUrl(curl, path);
+    
+    executeRequest(curl, url.str(), "", data);
     
     return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : UriGenerator::getUri().c_str();
 }
 
 const char* ActivityLog::getCanvasUri(string path)
 {
-    string url = "http://localhost:8272/artivity/1.0/uri?canvas=" + path;
-    string data = "";
+    CURL* curl = initializeRequest();
     
-    request(url, "", data);
+    string data = "";
+    stringstream url;
+    url << "http://localhost:8272/artivity/1.0/uri?canvas=" << escapeUrl(curl, path);
+    
+    executeRequest(curl, url.str(), "", data);
     
     return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : UriGenerator::getUri().c_str();
 }
@@ -346,12 +352,14 @@ bool ActivityLog::hasCanvas(double width, double height, const Resource* lengthU
 
 const char* ActivityLog::getLatestVersionUri(string path)
 {
+    CURL* curl = initializeRequest();
+    
     stringstream url;
-    url << "http://localhost:8272/artivity/1.0/uri?latestVersion=" << path;
+    url << "http://localhost:8272/artivity/1.0/uri?latestVersion=" << escapeUrl(curl, path);
     
     string data;
     
-    request(url.str(), "", data);
+    executeRequest(curl, url.str(), "", data);
     
     return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : "";
 }
@@ -381,23 +389,35 @@ void ActivityLog::transmit()
     string requestData = stream.str();
     string responseData;
     
-    request("http://localhost:8272/artivity/1.0/activities", requestData, responseData);
+    CURL* curl = initializeRequest();
+    
+    executeRequest(curl, "http://localhost:8272/artivity/1.0/activities", requestData, responseData);
     
     // Cleanup after all resources have been serialized and transmitted.
     clear();
 }
 
-long ActivityLog::request(string url, string postFields, string& response)
+CURL* ActivityLog::initializeRequest()
 {
     CURL* curl = curl_easy_init();
 
     if (!curl)
     {
-        logError("Failed to initialize CURL.");
+        string msg = "Failed to initialize CURL.";
         
+        logError(CURLE_FAILED_INIT, msg);
+    }
+    
+    return curl;
+}
+
+long ActivityLog::executeRequest(CURL* curl, string url, string postFields, string& response)
+{       
+    if(!curl)
+    {
         return CURLE_FAILED_INIT;
     }
-        
+    
     struct curl_slist *headers = NULL; // init to NULL is important
     headers = curl_slist_append(headers, "charsets: utf-8");
     
@@ -415,19 +435,23 @@ long ActivityLog::request(string url, string postFields, string& response)
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
     }
     
-    curl_easy_perform(curl);
-    
-    long responseCode = 0;
+    CURLcode responseCode = curl_easy_perform(curl);
     
     if(data.len > 0)
     {
         response = data.ptr;
     }
     
-    curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &responseCode);
     curl_easy_cleanup(curl);
     
-    logInfo(url);
+    if(responseCode == CURLE_OK)
+    {
+        logInfo(responseCode, url);
+    }
+    else
+    {
+        logError(responseCode, url);
+    }
     
     if(postFields.length() > 0)
     {
@@ -437,14 +461,14 @@ long ActivityLog::request(string url, string postFields, string& response)
     return responseCode;
 }
 
-void ActivityLog::logError(string msg)
+void ActivityLog::logError(CURLcode responseCode, string msg)
 {
-    cout << "[" << getTime() << "] " << msg << endl << flush;
+    cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
 }
 
-void ActivityLog::logInfo(string msg)
+void ActivityLog::logInfo(CURLcode responseCode, string msg)
 {
-    cout << "[" << getTime() << "] " << msg << endl << flush;
+    cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
 }
 
 string ActivityLog::getTime()
@@ -456,4 +480,68 @@ string ActivityLog::getTime()
     strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
     
     return string(date_str);
+}
+
+void ActivityLog::enableMonitoring(string path)
+{
+    CURL* curl = initializeRequest();
+    
+    string data;
+    stringstream url;
+    url << "http://localhost:8272/artivity/1.0/monitor/add?file=" << escapeUrl(curl, path);
+    
+    executeRequest(curl, url.str(), "", data);
+}
+
+void ActivityLog::disableMonitoring(string path)
+{
+    CURL* curl = initializeRequest();
+
+    string data;
+    stringstream url;
+    url << "http://localhost:8272/artivity/1.0/monitor/remove?file=" << escapeUrl(curl, path);
+    
+    executeRequest(curl, url.str(), "", data);
+}
+
+string ActivityLog::escapeUrl(CURL* curl, string url)
+{
+    stringstream result;
+    string token;
+  
+    for(int i = 0; i < url.length(); i++)
+    {
+        char c = url[i];
+        
+        if(c == '/' || c == '\\')
+        {            
+            if(!token.empty())
+            {
+                char* t = curl_easy_escape(curl, token.c_str(), token.length());
+                
+                result << string(t);
+                
+                curl_free(t);
+                
+                token = "";
+            }
+            
+            result << c;
+        }
+        else
+        {
+            token += c;
+        }
+    }
+    
+    if(!token.empty())
+    {
+        char* t = curl_easy_escape(curl, token.c_str(), token.length());
+        
+        result << string(t);
+        
+        curl_free(t);
+    }
+  
+    return result.str();
 }

@@ -204,6 +204,9 @@ void ArtivityPlugin::transmitQueue()
     if(_filePath == NULL || strlen(_filePath) == 0)
     {
         _filePath = string(_document->localFilePath().toUtf8().constData()).c_str();
+        
+        // Add the newly created file to the file system monitor.
+        _log.enableMonitoring(_filePath);
     }
     
     string fileUrl = string("file://") + _filePath;

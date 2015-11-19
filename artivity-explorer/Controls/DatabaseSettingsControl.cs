@@ -32,12 +32,15 @@ using Eto.Forms;
 using Eto.OxyPlot;
 using Eto.Drawing;
 using Artivity.DataModel;
+using System.Timers;
 
 namespace Artivity.Explorer
 {
     public class DatabaseSettingsControl : StackLayout
     {
         #region Members
+
+        private Timer _timer;
 
         private Database _database;
 
@@ -53,7 +56,7 @@ namespace Artivity.Explorer
 
         private DatabaseFactsChart _factsCountPlot = new DatabaseFactsChart() { Height = 130 };
 
-        private CheckBox _monitoringEnabledBox = new CheckBox() { Text = "Enable database growth monitoring" };
+        private CheckBox _monitoringEnabledBox = new CheckBox() { Text = "Enable database monitoring" };
 
         #endregion
 
@@ -87,14 +90,21 @@ namespace Artivity.Explorer
             Spacing = 14;
             Orientation = Orientation.Vertical;
 
+            _fileSizePlot.Update();
+            _factsCountPlot.Update();
+
             if (_database != null)
             {
                 _filePathBox.Text = new Uri(_database.Url).AbsolutePath;
 
-                _factsCountLabel.Text = "Facts:\t" + _database.GetFactsCount();
+                string label0 = "Total Facts:  {0}        Avg. Increase:  {1} / day";
+
+                _factsCountLabel.Text = string.Format(label0, _database.GetFactsCount(), _factsCountPlot.AverageDelta);
                 _factsCountLabel.TextColor = Palette.TextColor;
 
-                _fileSizeLabel.Text = "Size:\t" + Math.Round((_database.GetFileSize() / 1024f) / 1024f, 2) + " MB";
+                string label1 = "Total Size:  {0} MB        Avg. Increase:  {1} kB / day";
+
+                _fileSizeLabel.Text = string.Format(label1, Math.Round((_database.GetFileSize() / 1024) / 1024f, 2), _fileSizePlot.AverageDelta);
                 _fileSizeLabel.TextColor = Palette.TextColor;
 
                 _monitoringEnabledBox.Checked = _database.IsMonitoringEnabled;
@@ -118,17 +128,37 @@ namespace Artivity.Explorer
             Items.Add(new StackLayoutItem(fileStatsLayout, HorizontalAlignment.Stretch, true));
             Items.Add(new StackLayoutItem(_monitoringEnabledBox));
 
-            _fileSizePlot.LoadMetrics();
-            _factsCountPlot.LoadMetrics();
-
             _monitoringEnabledBox.CheckedChanged += OnMonitoringEnabledBoxCheckedChanged;
             _filePickerButton.Click += OnFilePickerButtonClick;
+
+            _timer = new Timer();
+            _timer.Interval = 5000;
+            _timer.Elapsed += OnTimerElapsed;
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
+        }
+
+        protected override void OnUnLoad(EventArgs e)
+        {
+            base.OnUnLoad(e);
+
+            _timer.Enabled = false;
+            _timer.Elapsed -= OnTimerElapsed;
+        }
+
+        private void OnTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            _fileSizePlot.Update();
+            _factsCountPlot.Update();
         }
 
         private void OnMonitoringEnabledBoxCheckedChanged(object sender, EventArgs e)
         {
             _database.IsMonitoringEnabled = Convert.ToBoolean(_monitoringEnabledBox.Checked);
             _database.Commit();
+
+            _fileSizePlot.Enabled = _database.IsMonitoringEnabled;
+            _factsCountPlot.Enabled = _database.IsMonitoringEnabled;
         }
 
         private void OnFilePickerButtonClick(object sender, EventArgs e)

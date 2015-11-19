@@ -1,0 +1,8 @@
+CUSTOM LIBS REQUIRED
+
+We need to reference a custom build OpenLink.Data.Virtuoso.dll here, because the 
+one which is supplied by dotNetRdf and OpenLink references the System.Data.Entity.dll
+which is not available with a default Mono setup on Ubuntu 14.04.
+
+We're hoping to resolve the issue in cooperation with the dotNetRdf project. Once
+this is the case we can remove the references here.

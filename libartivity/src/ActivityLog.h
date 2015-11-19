@@ -75,12 +75,15 @@ namespace artivity
         
         const Resource* _canvasUnit;
         
-        // Issues an HTTP request.
-        long request(string url, string postFields, string& response);
+        CURL* initializeRequest();
         
-        void logError(string msg);
+        long executeRequest(CURL* curl, string url, string postFields, string& response);
         
-        void logInfo(string msg);
+        string escapeUrl(CURL* curl, string url);
+        
+        void logError(CURLcode responseCode, string msg);
+        
+        void logInfo(CURLcode responseCode, string msg);
         
         string getTime();
 
@@ -211,6 +214,10 @@ namespace artivity
         
         // Send all items in the queue to the Artivity server.
         void transmit();
+        
+        void enableMonitoring(string path);
+        
+        void disableMonitoring(string path);
     };
 }
 

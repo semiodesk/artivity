@@ -49,12 +49,15 @@ namespace Artivity.Api.Http
                 return;
             }
 
-            Console.WriteLine("Artivity Logging Service, Version 1.5.9");
+            string version = typeof(HttpService).Assembly.GetName().Version.ToString();
+
+            Console.WriteLine("Artivity Logging Service, Version {0}", version);
             Console.WriteLine();
 
             AutoResetEvent wait = new AutoResetEvent(false);
             AutoResetEvent finalize = new AutoResetEvent(false);
 
+            // Listen to SIGINT for cancelling the daemon.
             Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
             {
                 Logger.LogInfo("Received SIGINT. Shutting down.");
@@ -62,9 +65,11 @@ namespace Artivity.Api.Http
                 wait.Set();
                 finalize.WaitOne();
             };
-                    
+            
+            // Start the daemon in a new thread.
             Thread t = new Thread(() =>
             {
+                // Make sure the models are all set up.
                 InitializeModels(options);
                 
                 HostConfiguration config = new HostConfiguration();
@@ -79,8 +84,9 @@ namespace Artivity.Api.Http
 
                         Logger.LogInfo("Started listening on port {0}..", Port);
 
-                        using (var monitor = new FileSystemMonitor())
+                        using (var monitor = FileSystemMonitor.Instance)
                         {
+                            monitor.Initialize();
                             monitor.Start();
 
                             wait.WaitOne();

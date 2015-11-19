@@ -12,6 +12,23 @@ namespace Artivity.Api.Http
     {
         #region Members
 
+        private static FileSystemMonitor _instance;
+
+        public static FileSystemMonitor Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new FileSystemMonitor();
+                }
+
+                return _instance;
+            }
+        }
+
+        public bool IsInitialized { get; private set; }
+
         private IModel _model;
 
         private List<FileSystemWatcher> _watchers = new List<FileSystemWatcher>();
@@ -26,8 +43,17 @@ namespace Artivity.Api.Http
 
         #region Constructors
 
-        public FileSystemMonitor()
+        private FileSystemMonitor() {}
+
+        #endregion
+
+        #region Methods
+
+        public void Initialize()
         {
+            if (IsInitialized)
+                return;
+            
             _model = GetModel(Models.Activities);
 
             foreach (FileInfo file in GetMonitoredFiles())
@@ -48,11 +74,9 @@ namespace Artivity.Api.Http
             watcher.IncludeSubdirectories = true;
 
             _watchers.Add(watcher);
+
+            IsInitialized = true;
         }
-
-        #endregion
-
-        #region Methods
 
         public void Start()
         {
@@ -219,6 +243,22 @@ namespace Artivity.Api.Http
                 }
             }
          }
+
+        public void AddFile(string path)
+        {
+            if (Path.IsPathRooted(path) && File.Exists(path))
+            {
+                _monitoredFiles[path] = new FileSystemObject(path);
+            }
+        }
+
+        public void RemoveFile(string path)
+        {
+            if (_monitoredFiles.ContainsKey(path))
+            {
+                _monitoredFiles.Remove(path);
+            }
+        }
 
         private void UpdateFileDataObject(string oldPath, string newPath)
         {

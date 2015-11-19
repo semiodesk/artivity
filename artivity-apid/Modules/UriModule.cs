@@ -48,37 +48,44 @@ namespace Artivity.Api.Http
 	{
 		#region Constructors
 
-        public UriModule()
+        public UriModule() : base("/artivity/1.0/uri")
 		{
-			try
-			{
-				Get["/artivity/1.0/uri"] = parameters => 
-				{
-                    if(Request.Query.file)
-                    {
-                        return GetFileUri();
-                    }
-                    else if(Request.Query.canvas)
-                    {
-                        return GetCanvasUri();
-                    }
-                    else if(Request.Query.latestVersion)
-                    {
-                        return GetLatestVersionUri();
-                    }
-
-                    return Logger.LogError(HttpStatusCode.BadRequest, Request.Url, "");
-				};
-			}
-			catch(Exception e)
-			{
-				Logger.LogError(HttpStatusCode.InternalServerError, e);
-			}
+            Get[""] = parameters => { return GetUri(); };
 		}
 
 		#endregion
 
 		#region Methods
+
+        private Response GetUri()
+        {
+            try
+            {
+                if(Request.Query.file)
+                {
+                    return GetFileUri();
+                }
+                else if(Request.Query.canvas)
+                {
+                    return GetCanvasUri();
+                }
+                else if(Request.Query.latestVersion)
+                {
+                    return GetLatestVersionUri();
+                }
+
+                return Logger.LogError(HttpStatusCode.BadRequest, Request.Url, "");
+            }
+            catch(Exception e)
+            {
+                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+            }
+        }
+            
+        private string GetUri(string path)
+        {
+            return path.StartsWith("file://") ? path : "file://" + path;
+        }
 
         private Response GetFileUri()
 		{
@@ -176,11 +183,6 @@ namespace Artivity.Api.Http
             }
 
             return "";
-        }
-
-        private string GetUri(string path)
-        {
-            return path.StartsWith("file://") ? path : "file://" + path;
         }
 
 		#endregion

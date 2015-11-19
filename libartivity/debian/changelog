@@ -1,3 +1,10 @@
+libartivity (0.8.9-1semiodesk0) trusty; urgency=medium
+
+  * Bugfix: Escaping URLs before sending HTTP requests to API daemon.
+  * Added support for registering files with the file system monitor.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Wed, 18 November 2015 15:16:00 +0200
+
 libartivity (0.8.8-1semiodesk0) trusty; urgency=medium
 
   * Added description to activity influence.

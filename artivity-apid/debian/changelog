@@ -1,3 +1,9 @@
+artivity-apid (1.5.14-1semiodesk0) trusty; urgency=low
+
+  * Added support for database monitoring.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Wed, 18 Nov 2015 13:30:00 +0200
+
 artivity-apid (1.5.13-1semiodesk0) trusty; urgency=low
 
   * Adapted to new data model.

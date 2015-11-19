@@ -99,7 +99,7 @@ namespace Artivity.Explorer
             _sizeLabel = new Label();
             _sizeLabel.TextColor = Color.Parse("#42484a");
             _sizeLabel.Font = SystemFonts.Label(10);
-            _sizeLabel.Text = "279mm x 210mm";
+            _sizeLabel.Text = "297mm x 210mm";
 
             _agentLabel = new Label();
             _agentLabel.TextColor = Color.Parse("#42484a");

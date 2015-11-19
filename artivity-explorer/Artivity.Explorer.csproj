@@ -9,7 +9,7 @@
     <AssemblyName>artivity-explorer</AssemblyName>
     <TargetFrameworkProfile />
     <StartupObject>Artivity.Explorer.Program</StartupObject>
-    <ReleaseVersion>1.5</ReleaseVersion>
+    <ReleaseVersion>1.5.20</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -199,10 +199,10 @@
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.107\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+      <HintPath>..\artivity-datamodel\References\Semiodesk.Trinity.dll</HintPath>
     </Reference>
-    <Reference Include="virtado4">
-      <HintPath>..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net40\virtado4.dll</HintPath>
+    <Reference Include="OpenLink.Data.Virtuoso">
+      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -54,60 +54,22 @@ namespace Artivity.Api.Http
 
 		#region Constructors
 
-		public ActivitiesModule()
-		{
-            try
-            {
-                UpdateMonitoring();
-
-                Post["/artivity/1.0/activities/"] = parameters => 
-                {
-    				return AddActivity(ToString(this.Request.Body));
-                };
-
-    			Post["/artivity/1.0/activities/web/"] = parameters => 
-    			{
-    				return AddActivity(this.Bind<ActivityParameters>()); 
-    			};
-
-            }
-            catch(Exception e)
-            {
-                Logger.LogError(HttpStatusCode.InternalServerError, e);
-            }
-		}
+        public ActivitiesModule() : base("/artivity/1.0/activities")
+        {
+            Post["/"] = parameters => { return PostActivity(); };
+            Post["/web/"] = parameters => { return PostActivity(this.Bind<ActivityParameters>()); };
+        }
 
 		#endregion
 
 		#region Methods
 
-		private Association GetSoftwareAssociation(IModel model, string agentId)
-		{
-			Uri agentUri = new Uri(agentId);
-
-			SoftwareAgent agent;
-
-			if (model.ContainsResource(agentUri))
-			{
-				agent = model.GetResource<SoftwareAgent>(agentUri);
-			}
-			else
-			{
-				agent = model.CreateResource<SoftwareAgent>(agentUri);
-				agent.Commit();
-			}
-
-			Association association = model.CreateResource<Association>();
-			association.Agent = agent;
-			association.Commit();
-
-			return association;
-		}
-
-		private HttpStatusCode AddActivity(string data)
+		private HttpStatusCode PostActivity()
 		{
             try
             {
+                UpdateMonitoring();
+
                 IModel model = Models.GetActivities();
 
         		if(model == null)
@@ -115,23 +77,50 @@ namespace Artivity.Api.Http
         			return Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
         		}
 
-        		AddResources(model, ToStream(data));
+                string data = ToString(Request.Body);
 
-        		return Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/", "POST", data);
+        		AddResources(model, ToMemoryStream(data));
+
+                return Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
             }
             catch(Exception e)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, e);
+                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
             }
 		}
 
-		private HttpStatusCode AddActivity(ActivityParameters p)
+        private void AddResources(IModel model, Stream stream)
+        {
+            string connectionString = "Server=localhost:1111;uid=dba;pwd=dba;Charset=utf-8";
+
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string data = reader.ReadToEnd();
+
+                using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
+                {
+                    using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
+                    {
+                        IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
+                        parser.Load(graph, new StringReader(data));
+
+                        graph.BaseUri = model.Uri;
+
+                        m.UpdateGraph(model.Uri, graph.Triples, new List<Triple>());
+                    }
+                }
+            }
+        }
+
+		private HttpStatusCode PostActivity(ActivityParameters p)
 		{
             try
             {
+                UpdateMonitoring();
+
                 if (string.IsNullOrEmpty(p.tab))
                 {
-                    return Logger.LogRequest(HttpStatusCode.NotModified, "/artivity/1.0/activities/web/", "POST", p.tab);
+                    return Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
                 }
 
                 if (string.IsNullOrEmpty(p.agent))
@@ -141,7 +130,7 @@ namespace Artivity.Api.Http
 
     			if (!IsCaptureEnabled(p))
     			{
-    				return Logger.LogRequest(HttpStatusCode.Locked, "/artivity/1.0/activities/web/", "POST", "");
+                    return Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
     			}
                     
                 IModel model = Models.GetWebActivities();
@@ -201,77 +190,47 @@ namespace Artivity.Api.Http
                     _activities.Remove(p.tab);
                 }
 
-    			return Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/activities/web/", "POST", "");
+                return Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
             }
             catch(Exception e)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, e);
+                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
             }
 		}
 
-		private void AddResources(IModel model, Stream stream)
-		{
-            try
+        private bool IsCaptureEnabled(ActivityParameters p)
+        {
+            IModel model = Models.GetAgents();
+
+            SoftwareAgent agent = null;
+            Uri agentUri = new Uri(p.agent);
+
+            if (model.ContainsResource(agentUri))
             {
-    			string connectionString = "Server=localhost:1111;uid=dba;pwd=dba;Charset=utf-8";
-
-                using (StreamReader reader = new StreamReader(stream))
-    			{
-                    string data = reader.ReadToEnd();
-
-    				using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
-    				{
-    					using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
-    					{
-    						IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
-    						parser.Load(graph, new StringReader(data));
-
-    						graph.BaseUri = model.Uri;
-
-    						m.UpdateGraph(model.Uri, graph.Triples, new List<Triple>());
-    					}
-    				}
-    			}
+                agent = model.GetResource<SoftwareAgent>(agentUri);
             }
-            catch(Exception e)
+
+            return agent.IsCaptureEnabled;
+        }
+
+        private string ToString(RequestStream stream)
+        {
+            using (var reader = new StreamReader(stream))
             {
-                Logger.LogError(HttpStatusCode.InternalServerError, e);
+                return reader.ReadToEnd();
             }
-		}
+        }
 
-		private Stream ToStream(string str)
+        private Stream ToMemoryStream(string data)
 		{
 			MemoryStream stream = new MemoryStream();
 
 			StreamWriter writer = new StreamWriter(stream);
-			writer.Write(str);
+			writer.Write(data);
 			writer.Flush();
 			stream.Position = 0;
 
 			return stream;
-		}
-
-		private string ToString(RequestStream stream)
-		{
-			using (var reader = new StreamReader(stream))
-			{
-				return reader.ReadToEnd();
-			}
-		}
-
-		private bool IsCaptureEnabled(ActivityParameters p)
-		{
-            IModel model = Models.GetAgents();
-
-			SoftwareAgent agent = null;
-			Uri agentUri = new Uri(p.agent);
-
-			if (model.ContainsResource(agentUri))
-			{
-				agent = model.GetResource<SoftwareAgent>(agentUri);
-			}
-
-            return agent.IsCaptureEnabled;
 		}
 
 		#endregion

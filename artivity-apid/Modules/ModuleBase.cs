@@ -40,6 +40,8 @@ namespace Artivity.Api.Http
 
 		public ModuleBase() {}
 
+        public ModuleBase(string modulePath) : base(modulePath) {}
+
 		#endregion
 
         #region Methods

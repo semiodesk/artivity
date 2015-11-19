@@ -1,2 +1,2 @@
 #! /bin/bash
-/usr/bin/mono /usr/lib/artivity/artivity-explorer.exe "@"
+/usr/bin/mono /usr/lib/artivity/artivity-explorer.exe "$@"

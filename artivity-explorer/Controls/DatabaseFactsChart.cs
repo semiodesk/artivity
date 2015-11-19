@@ -45,6 +45,8 @@ namespace Artivity.Explorer
 
         private Axis _y;
 
+        public double AverageDelta = 0;
+
         #endregion
 
         #region Constructors
@@ -70,41 +72,41 @@ namespace Artivity.Explorer
             OxyColor axisLineColor = Palette.DarkColor.WithA(0.25f).ToOxyColor();
 
             _x = new DateTimeAxis()
-                {
-                    Position = AxisPosition.Bottom,
-                    Font = font.FamilyName,
-                    FontSize = font.Size,
-                    FontWeight = 800,
-                    TextColor = axisTextColor,
-                    TicklineColor = axisLineColor,
-                    IntervalType = DateTimeIntervalType.Days,
-                    MajorTickSize = 1,
-                    MajorGridlineColor = axisLineColor,
-                    MajorGridlineStyle = LineStyle.Solid,
-                    MajorGridlineThickness = 1,
-                    StringFormat = "dd.MM",
-                    IsZoomEnabled = true,
-                    IsPanEnabled = true,
-                };
+            {
+                Position = AxisPosition.Bottom,
+                Font = font.FamilyName,
+                FontSize = font.Size,
+                FontWeight = 800,
+                TextColor = axisTextColor,
+                TicklineColor = axisLineColor,
+                IntervalType = DateTimeIntervalType.Days,
+                MajorTickSize = 1,
+                MajorGridlineColor = axisLineColor,
+                MajorGridlineStyle = LineStyle.Solid,
+                MajorGridlineThickness = 1,
+                StringFormat = "dd.MM",
+                IsZoomEnabled = true,
+                IsPanEnabled = true,
+            };
 
             _y = new LinearAxis()
-                {
-                    Position = AxisPosition.Left,
-                    Font = font.FamilyName,
-                    FontSize = font.Size,
-                    FontWeight = 800,
-                    TextColor = axisTextColor,
-                    TicklineColor = axisLineColor,
-                    Maximum = 1000,
-                    Minimum = 0,
-                    MajorStep = 200,
-                    MajorTickSize = 1,
-                    MajorGridlineStyle = LineStyle.Dash,
-                    MajorGridlineThickness = 1,
-                    MajorGridlineColor = axisLineColor,
-                    IsZoomEnabled = false,
-                    IsPanEnabled = false,
-                };
+            {
+                Position = AxisPosition.Left,
+                Font = font.FamilyName,
+                FontSize = font.Size,
+                FontWeight = 800,
+                TextColor = axisTextColor,
+                TicklineColor = axisLineColor,
+                Maximum = 1000,
+                Minimum = 0,
+                MajorStep = 200,
+                MajorTickSize = 1,
+                MajorGridlineStyle = LineStyle.Dash,
+                MajorGridlineThickness = 1,
+                MajorGridlineColor = axisLineColor,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+            };
 
             Model = new PlotModel();
             Model.PlotAreaBorderColor = Palette.DarkColor.WithA(0.75f).ToOxyColor();
@@ -123,11 +125,11 @@ namespace Artivity.Explorer
             ResumeLayout();
         }
             
-        public void LoadMetrics()
+        public void Update()
         {
             SuspendLayout();
 
-            Reset();
+            Model.Series.Clear();
 
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -142,7 +144,8 @@ namespace Artivity.Explorer
                   ?state art:factsCount ?facts .
                   ?state nfo:fileSize ?size .
                 }
-                ORDER BY DESC(?time)";
+                ORDER BY ASC(?time)";
+
 
             IModel model = Models.GetMonitoring();
 
@@ -163,13 +166,34 @@ namespace Artivity.Explorer
         {
             AreaSeries series = CreateSeries("Facts x 1000", OxyColor.Parse("#119eda"));
 
+            int d = 0;
+            int n = 0;
+            double y0 = 0;
+            double y1 = 0;
+
             foreach (BindingSet binding in result.GetBindings())
             {
                 DateTime x = DateTime.Parse(binding["time"].ToString());
-                double y = Convert.ToInt32(binding["facts"]) / 1000;
+                double y = Convert.ToInt32(binding["facts"]);
 
-                series.Points.Add(DateTimeAxis.CreateDataPoint(x, y));
+                if (n == 0)
+                {
+                    y0 = y;
+                }
+
+                if (d != x.DayOfYear)
+                {
+                    d = x.DayOfYear;
+
+                    n++;
+                }
+                    
+                y1 = y;
+
+                series.Points.Add(DateTimeAxis.CreateDataPoint(x, y / 1000));
             }
+
+            AverageDelta = n > 0 ? (y1 - y0) / n : 0;
 
             Model.Series.Add(series);
         }
