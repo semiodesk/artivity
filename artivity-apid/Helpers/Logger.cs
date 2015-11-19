@@ -13,13 +13,13 @@ namespace Artivity.Api.Http
 
         public static void LogError(string msg, params object[] p)
         {
-            Console.Write("[{0}] Error: ", DateTime.Now.ToString("g"));
+            Console.Write("[{0}] ", DateTime.Now.ToString("g"));
             Console.WriteLine(msg, p);
         }
 
         public static HttpStatusCode LogInfo(HttpStatusCode status, string msg, params object[] p)
         {
-            Console.Write("[{0} {1}] ", DateTime.Now.ToString("g"), status);
+            Console.Write("[{0}] {1}, ", DateTime.Now.ToString("g"), status);
             Console.WriteLine(msg, p);
 
             return status;
@@ -27,14 +27,14 @@ namespace Artivity.Api.Http
 
         public static HttpStatusCode LogRequest(HttpStatusCode status, Request request)
         {
-            Console.WriteLine("[{0} {1}] {3} {2}", DateTime.Now.ToString("g"), status, request.Path, request.Method);
+            Console.WriteLine("[{0}] {1}, {3} {2}", DateTime.Now.ToString("g"), status, request.Path, request.Method);
 
             return status;
         }
 
         public static HttpStatusCode LogRequest(HttpStatusCode status, string route, string method, string content)
         {
-            Console.WriteLine("[{0} {1}] {3} {2}", DateTime.Now.ToString("g"), status, route, method);
+            Console.WriteLine("[{0}] {1}, {3} {2}", DateTime.Now.ToString("g"), status, route, method);
 
             if (!string.IsNullOrEmpty(content))
             {

@@ -43,36 +43,11 @@ namespace Artivity.Api.Http
 	{
 		#region Constructors
 
-		public AgentsModule()
+        public AgentsModule() : base("/artivity/1.0/agents")
 		{
-			try
-			{
-                UpdateMonitoring();
-
-				Get["/artivity/1.0/agents"] = parameters => { return GetAgents(); };
-				Get["/artivity/1.0/agents/status"] = parameters =>
-                {
-                    if(Request.Query.agent)
-                    {
-                        AgentParameters p = new AgentParameters();
-                        p.agent = Request.Query.agent.ToString();
-
-                        return GetStatus(p);
-                    }
-                    else
-                    {
-                        return GetStatus(this.Bind<AgentParameters>());
-                    }
-                };
-				Post["/artivity/1.0/agents/status"] = parameters =>
-                {
-                    return SetStatus(this.Bind<AgentParameters>());
-                };
-			}
-			catch(Exception e)
-			{
-				Logger.LogError(HttpStatusCode.InternalServerError, e);
-			}
+			Get["/"] = parameters => { return GetAgents(); };
+			Get["/status"] = parameters => { return GetAgentStatus(); };
+			Post["/status"] = parameters => { return SetAgentStatus(this.Bind<AgentParameters>()); };
 		}
 
 		#endregion
@@ -81,21 +56,50 @@ namespace Artivity.Api.Http
 
 		protected Response GetAgents()
 		{
-            IModel model = Models.GetAgents();
+            try
+            {
+                IModel model = Models.GetAgents();
 
-			List<AgentParameters> agents = new List<AgentParameters>();
+    			List<AgentParameters> agents = new List<AgentParameters>();
 
-			foreach (SoftwareAgent agent in model.GetResources<SoftwareAgent>())
-			{
-				agents.Add(new AgentParameters() { agent = agent.Uri.AbsoluteUri, enabled = agent.IsCaptureEnabled });
-			}
+    			foreach (SoftwareAgent agent in model.GetResources<SoftwareAgent>())
+    			{
+    				agents.Add(new AgentParameters() { agent = agent.Uri.AbsoluteUri, enabled = agent.IsCaptureEnabled });
+    			}
 
-			Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/agents/status/", "GET", "");
+                Logger.LogRequest(HttpStatusCode.OK, Request.Url, "GET", "");
 
-			return Response.AsJson(agents);
+    			return Response.AsJson(agents);
+            }
+            catch(Exception e)
+            {
+                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+            }
 		}
 
-        protected Response GetStatus(AgentParameters p)
+        protected Response GetAgentStatus()
+        {
+            try
+            {
+                if(Request.Query.agent)
+                {
+                    AgentParameters p = new AgentParameters();
+                    p.agent = Request.Query.agent.ToString();
+
+                    return GetAgentStatus(p);
+                }
+                else
+                {
+                    return GetAgentStatus(this.Bind<AgentParameters>());
+                }
+            }
+            catch(Exception e)
+            {
+                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+            }
+        }
+
+        protected Response GetAgentStatus(AgentParameters p)
         {
 			if (p.agent == null)
 			{
@@ -120,42 +124,49 @@ namespace Artivity.Api.Http
 			// Capturing agent data is disabled by default.
 			p.enabled = agent != null ? agent.IsCaptureEnabled : false;
 
-			Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/agents/status/ " + p.agent, "GET", "");
+            Logger.LogRequest(HttpStatusCode.OK, Request.Url + " " + p.agent, "GET", "");
 
 			return Response.AsJson(p);
         }
 
-		protected Response SetStatus(AgentParameters p)
+		protected Response SetAgentStatus(AgentParameters p)
         {
-			if (p.agent == null)
-			{
-				Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
+            try
+            {
+    			if (p.agent == null)
+    			{
+    				Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
 
-				// Return disabled state so that the browsers properly indicate disabled logging.
-				return Response.AsJson(new AgentParameters() { agent = p.agent, enabled = false });
-			}
+    				// Return disabled state so that the browsers properly indicate disabled logging.
+    				return Response.AsJson(new AgentParameters() { agent = p.agent, enabled = false });
+    			}
 
-            IModel model = Models.GetAgents();
+                IModel model = Models.GetAgents();
 
-            SoftwareAgent agent = null;
-			Uri agentUri = new Uri(p.agent);
+                SoftwareAgent agent = null;
+    			Uri agentUri = new Uri(p.agent);
 
-			if (model.ContainsResource(agentUri))
-			{
-				agent = model.GetResource<SoftwareAgent>(agentUri);
-			}
-			else
-			{
-				agent = model.CreateResource<SoftwareAgent>(agentUri);
-			}
+    			if (model.ContainsResource(agentUri))
+    			{
+    				agent = model.GetResource<SoftwareAgent>(agentUri);
+    			}
+    			else
+    			{
+    				agent = model.CreateResource<SoftwareAgent>(agentUri);
+    			}
 
-			agent.IsCaptureEnabled = Convert.ToBoolean(p.enabled);
-			agent.Commit();
+    			agent.IsCaptureEnabled = Convert.ToBoolean(p.enabled);
+    			agent.Commit();
 
-			Logger.LogRequest(HttpStatusCode.OK, "/artivity/1.0/agents/status/ " + p.agent, "POST", "");
+                Logger.LogRequest(HttpStatusCode.OK, Request.Url + " " + p.agent, "POST", "");
 
-            // We return the request so that the plugin can set the server's enabled status.
-			return Response.AsJson(p);
+                // We return the request so that the plugin can set the server's enabled status.
+    			return Response.AsJson(p);
+            }
+            catch(Exception e)
+            {
+                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+            }
         }
 
 		#endregion

@@ -15,7 +15,7 @@ clean:
 	rm -f *.debian.tar.gz
 	rm -f *.diff.gz
 	rm -Rf build-area
-	rm -Rf $(PACKAGE_NAME)
+	rm -Rf $(PACKAGE_NAME)*
 
 branch: clean
 	cd .. && make dist && mv $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz debian-dist/
@@ -36,3 +36,6 @@ source: branch
 
 release: branch source
 	dput $(PACKAGE_REPO) $(PACKAGE_NAME)_$(PACKAGE_VERSION)-$(PACKAGE_RELEASE)_source.changes
+
+install: binary
+	sudo dpkg -i $(PACKAGE_NAME)_$(PACKAGE_VERSION)-$(PACKAGE_RELEASE)_amd64.deb
