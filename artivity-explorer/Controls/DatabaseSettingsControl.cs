@@ -95,7 +95,7 @@ namespace Artivity.Explorer
 
             if (_database != null)
             {
-                _filePathBox.Text = new Uri(_database.Url).AbsolutePath;
+                _filePathBox.Text = new Uri(_database.Url).LocalPath;
 
                 string label0 = "Total Facts:  {0}        Avg. Increase:  {1} / day";
 
@@ -164,7 +164,7 @@ namespace Artivity.Explorer
         private void OnFilePickerButtonClick(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.FileName = new Uri(_database.Url).AbsolutePath;
+            dialog.FileName = new Uri(_database.Url).LocalPath;
             dialog.CheckFileExists = true;
             dialog.MultiSelect = false;
 

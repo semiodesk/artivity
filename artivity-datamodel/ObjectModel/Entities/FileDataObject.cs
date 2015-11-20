@@ -35,6 +35,7 @@ namespace Artivity.DataModel
 	{
 		#region Members
 
+        // TODO: Map into a URI, not a literal value. (Needs changing libartivity).
 		[RdfProperty(NFO.fileUrl)]
 		public string Url { get; set; }
 

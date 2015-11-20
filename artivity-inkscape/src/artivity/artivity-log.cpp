@@ -630,7 +630,7 @@ namespace Inkscape
             _log.enableMonitoring(_filePath);
         }
         
-        string fileUrl = string("file://") + _filePath;
+        string fileUrl = string("file://") + _log.escapePath(_filePath);
         
         file->setUrl(fileUrl.c_str());
         

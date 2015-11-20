@@ -7,6 +7,7 @@ namespace Artivity.Explorer
     {
         public Uri Agent { get; set; }
 
+        // TODO: Map into a URI.
         public string FileUrl { get; set; }
 
         public string FilePath { get; set; }

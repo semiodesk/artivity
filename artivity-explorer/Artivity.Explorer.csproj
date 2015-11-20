@@ -202,8 +202,9 @@
       <HintPath>..\artivity-datamodel\References\Semiodesk.Trinity.dll</HintPath>
     </Reference>
     <Reference Include="OpenLink.Data.Virtuoso">
-      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
+      <HintPath>..\artivity-datamodel\References\OpenLink.Data.Virtuoso.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cairo" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Widgets\EditingWidget.cs">

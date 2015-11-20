@@ -161,7 +161,7 @@ namespace Artivity.Explorer.Controls
 
                   ?association prov:agent ?agent .
 
-                  ?entity nfo:fileUrl """ + fileUrl + @""" .
+                  ?entity nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
                 }
                 ORDER BY DESC(?startTime)";
 
@@ -214,7 +214,7 @@ namespace Artivity.Explorer.Controls
                         ?activity prov:used ?file ;
                                         prov:generated ?version .
 
-                        ?file nfo:fileUrl """ + fileUrl + @""" .
+                        ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
 
                         ?version prov:qualifiedGeneration ?generation .
 
@@ -226,7 +226,7 @@ namespace Artivity.Explorer.Controls
                                     prov:startedAtTime ?startTime ;
                                     prov:endedAtTime ?endTime .
 
-                        ?file nfo:fileUrl """ + fileUrl + @""" .
+                        ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
 
                         ?activity prov:startedAtTime ?time ;
                             prov:qualifiedUsage ?usage .

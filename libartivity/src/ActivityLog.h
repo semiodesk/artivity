@@ -57,6 +57,8 @@ namespace artivity
     class ActivityLog
     {
     protected:
+        CURL* _curl;
+        
         deque<Activity*> _activities;
     
         list<Resource*> _resources;
@@ -78,8 +80,6 @@ namespace artivity
         CURL* initializeRequest();
         
         long executeRequest(CURL* curl, string url, string postFields, string& response);
-        
-        string escapeUrl(CURL* curl, string url);
         
         void logError(CURLcode responseCode, string msg);
         
@@ -218,6 +218,8 @@ namespace artivity
         void enableMonitoring(string path);
         
         void disableMonitoring(string path);
+        
+        string escapePath(string path);
     };
 }
 

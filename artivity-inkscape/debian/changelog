@@ -1,3 +1,9 @@
+artivity-inkscape (0.91.17-1semiodesk0) trusty; urgency=low
+
+  * Escaping URLs in transmitted RDF ouptut.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 19 November 2015 17:55:00 +0200
+
 artivity-inkscape (0.91.16-1semiodesk0) trusty; urgency=low
 
   * Adding file URLs to transmitted RDF when files are edited.

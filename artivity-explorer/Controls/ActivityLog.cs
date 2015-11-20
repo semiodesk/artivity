@@ -71,7 +71,7 @@ namespace Artivity.Explorer.Controls
                         ?activity prov:used ?file ;
                             prov:generated ?entity .
 
-                        ?file nfo:fileUrl """ + fileUrl + @""" .
+                        ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
 
                         ?entity a ?entityType ;
                             prov:qualifiedGeneration ?generation .
@@ -89,7 +89,7 @@ namespace Artivity.Explorer.Controls
                                     prov:startedAtTime ?startTime ;
                                     prov:endedAtTime ?endTime .
 
-                        ?file nfo:fileUrl """ + fileUrl + @""" .
+                        ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
 
                         ?activity prov:startedAtTime ?time ;
                             prov:qualifiedUsage ?usage .

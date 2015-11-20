@@ -225,7 +225,7 @@ namespace Artivity.Explorer
                        ?activity prov:startedAtTime ?startTime .
 
                        ?file rdf:type nfo:FileDataObject .
-                       ?file nfo:fileUrl ""file://" + filePath + @""" .
+                       ?file nfo:fileUrl ""file://" + Uri.EscapeUriString(filePath) + @""" .
                        ?file art:canvas ?canvas .
                 }
                 ORDER BY DESC(?startTime) LIMIT 1";

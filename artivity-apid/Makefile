@@ -2,7 +2,7 @@ PACKAGE_NAME = artivity-apid
 PACKAGE_VERSION = $(shell dpkg-parsechangelog | grep Version: | cut -d' ' -f2- | cut -d'-' -f1)
 PROJECT_FILE = Artivity.Apid.csproj
 
-SHARED_LIBS = Artivity.DataModel.dll dotNetRDF.Data.Virtuoso.dll dotNetRDF.dll OpenLink.Data.Virtuoso.dll Semiodesk.Trinity.dll VDS.Common.dll HtmlAgilityPack.dll Newtonsoft.Json.dll virtado4.dll
+SHARED_LIBS = Artivity.DataModel.dll dotNetRDF.Data.Virtuoso.dll dotNetRDF.dll OpenLink.Data.Virtuoso.dll Semiodesk.Trinity.dll VDS.Common.dll HtmlAgilityPack.dll Newtonsoft.Json.dll
 
 all:
 

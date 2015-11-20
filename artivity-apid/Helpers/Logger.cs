@@ -46,7 +46,7 @@ namespace Artivity.Api.Http
 
         public static HttpStatusCode LogError(HttpStatusCode status, Exception e)
         {
-            Console.WriteLine("[{0} {1}] Error: {2}: {3}", DateTime.Now.ToString("g"), status, e.GetType(), e.Message);
+            Console.WriteLine("[{0}] {1}, {2}: {3}", DateTime.Now.ToString("g"), status, e.GetType(), e.Message);
             Console.Clear();
 
             return status;
@@ -54,7 +54,7 @@ namespace Artivity.Api.Http
 
         public static HttpStatusCode LogError(HttpStatusCode status, string msg, params object[] p)
         {
-            Console.Write("[{0} {1}] Error: ", DateTime.Now.ToString("g"), status);
+            Console.Write("[{0}] {1}, ", DateTime.Now.ToString("g"), status);
             Console.WriteLine(msg, p);
             Console.Clear();
 

@@ -71,12 +71,12 @@
     <Compile Include="Modules\ActivitiesModule.cs" />
     <Compile Include="Modules\AgentsModule.cs" />
     <Compile Include="Helpers\FileSystemMonitor.cs" />
-    <Compile Include="Helpers\FileSystemObject.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Parameters\UriParameters.cs" />
     <Compile Include="Modules\UriModule.cs" />
     <Compile Include="Modules\MonitorModule.cs" />
+    <Compile Include="Helpers\FileInfoCache.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
