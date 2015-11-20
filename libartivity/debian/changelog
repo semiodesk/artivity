@@ -1,3 +1,9 @@
+libartivity (0.8.10-1semiodesk0) trusty; urgency=medium
+
+  * Made path escaping method accessible to the clients.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Wed, 18 November 2015 16:16:00 +0200
+
 libartivity (0.8.9-1semiodesk0) trusty; urgency=medium
 
   * Bugfix: Escaping URLs before sending HTTP requests to API daemon.

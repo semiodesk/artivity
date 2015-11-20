@@ -1,3 +1,15 @@
+artivity-extension-krita (1.5.12-1semiodesk1) trusty; urgency=low
+
+  * Fixed compiler errors.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 20 Nov 2015 10:04:00 +0200
+
+artivity-extension-krita (1.5.11-1semiodesk1) trusty; urgency=low
+
+  * Added path escaping to plugins.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 19 Nov 2015 17:44:00 +0200
+
 artivity-extension-krita (1.5.10-1semiodesk1) trusty; urgency=low
 
   * Added support for action descriptions.

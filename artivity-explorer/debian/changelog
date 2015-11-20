@@ -1,3 +1,17 @@
+artivity-explorer (1.5.22-1semiodesk0) trusty; urgency=low
+
+  * Bugfix: Explorer now handles files with whitespaces in the file name.
+  * Bugfix: Crash in FileView when trying to access an activity in the model which does not exist.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 20 Nov 2015 11:21:00 +0200
+
+artivity-explorer (1.5.21-1semiodesk0) trusty; urgency=low
+
+  * Added database monitoring support.
+  * Build against new data model.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 19 Nov 2015 16:18:00 +0200
+
 artivity-explorer (1.5.20-1semiodesk0) trusty; urgency=low
 
   * Added single user option.

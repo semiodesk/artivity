@@ -93,6 +93,7 @@ namespace Artivity.Explorer
                 _statsPanel.ColourWidget.Update(stats);
             }
 
+            // TODO: Handle as Uri, not as string.
             string fileUrl = new Uri("file://" + FilePath).AbsoluteUri;
 
             _statsPanel.EditingWidget.Update(fileUrl);
@@ -106,9 +107,12 @@ namespace Artivity.Explorer
 
                 _chart.SetTitle(item.Date);
 
-                data.Activity activity = Model.GetResource<data.Activity>(item.Activity);
+                if(Model.ContainsResource(item.Activity))
+                {
+                    data.Activity activity = Model.GetResource<data.Activity>(item.Activity);
 
-                _chart.Zoom(activity.StartTime, activity.EndTime);
+                    _chart.Zoom(activity.StartTime, activity.EndTime);
+                }
             }
 
             _tabs.SelectedIndex = 1;

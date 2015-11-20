@@ -31,6 +31,7 @@ using namespace artivity;
 
 ActivityLog::ActivityLog() 
 {
+    _curl = initializeRequest(); // For use with curl_easy_escape.
     _activities = deque<Activity*>();
     _resources = list<Resource*>();
     _fileUri = "";
@@ -262,12 +263,11 @@ FileDataObject* ActivityLog::getFile()
 
 const char* ActivityLog::getFileUri(string path)
 {
-    CURL* curl = initializeRequest();
-    
     string data = "";
     stringstream url;
-    url << "http://localhost:8272/artivity/1.0/uri?file=" << escapeUrl(curl, path);
+    url << "http://localhost:8272/artivity/1.0/uri?file=" << escapePath(path);
     
+    CURL* curl = initializeRequest();    
     executeRequest(curl, url.str(), "", data);
     
     return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : UriGenerator::getUri().c_str();
@@ -275,12 +275,11 @@ const char* ActivityLog::getFileUri(string path)
 
 const char* ActivityLog::getCanvasUri(string path)
 {
-    CURL* curl = initializeRequest();
-    
     string data = "";
     stringstream url;
-    url << "http://localhost:8272/artivity/1.0/uri?canvas=" << escapeUrl(curl, path);
+    url << "http://localhost:8272/artivity/1.0/uri?canvas=" << escapePath(path);
     
+    CURL* curl = initializeRequest();   
     executeRequest(curl, url.str(), "", data);
     
     return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : UriGenerator::getUri().c_str();
@@ -352,13 +351,11 @@ bool ActivityLog::hasCanvas(double width, double height, const Resource* lengthU
 
 const char* ActivityLog::getLatestVersionUri(string path)
 {
-    CURL* curl = initializeRequest();
-    
-    stringstream url;
-    url << "http://localhost:8272/artivity/1.0/uri?latestVersion=" << escapeUrl(curl, path);
-    
     string data;
-    
+    stringstream url;
+    url << "http://localhost:8272/artivity/1.0/uri?latestVersion=" << escapePath(path);
+ 
+    CURL* curl = initializeRequest();   
     executeRequest(curl, url.str(), "", data);
     
     return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : "";
@@ -483,41 +480,39 @@ string ActivityLog::getTime()
 }
 
 void ActivityLog::enableMonitoring(string path)
-{
-    CURL* curl = initializeRequest();
-    
+{   
     string data;
     stringstream url;
-    url << "http://localhost:8272/artivity/1.0/monitor/add?file=" << escapeUrl(curl, path);
-    
+    url << "http://localhost:8272/artivity/1.0/monitor/add?file=" << escapePath(path);
+ 
+    CURL* curl = initializeRequest();   
     executeRequest(curl, url.str(), "", data);
 }
 
 void ActivityLog::disableMonitoring(string path)
 {
-    CURL* curl = initializeRequest();
-
     string data;
     stringstream url;
-    url << "http://localhost:8272/artivity/1.0/monitor/remove?file=" << escapeUrl(curl, path);
-    
+    url << "http://localhost:8272/artivity/1.0/monitor/remove?file=" << escapePath(path);
+ 
+    CURL* curl = initializeRequest();   
     executeRequest(curl, url.str(), "", data);
 }
 
-string ActivityLog::escapeUrl(CURL* curl, string url)
+string ActivityLog::escapePath(string path)
 {
     stringstream result;
     string token;
   
-    for(int i = 0; i < url.length(); i++)
+    for(int i = 0; i < path.length(); i++)
     {
-        char c = url[i];
+        char c = path[i];
         
         if(c == '/' || c == '\\')
         {            
             if(!token.empty())
             {
-                char* t = curl_easy_escape(curl, token.c_str(), token.length());
+                char* t = curl_easy_escape(_curl, token.c_str(), token.length());
                 
                 result << string(t);
                 
@@ -536,7 +531,7 @@ string ActivityLog::escapeUrl(CURL* curl, string url)
     
     if(!token.empty())
     {
-        char* t = curl_easy_escape(curl, token.c_str(), token.length());
+        char* t = curl_easy_escape(_curl, token.c_str(), token.length());
         
         result << string(t);
         

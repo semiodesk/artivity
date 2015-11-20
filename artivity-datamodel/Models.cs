@@ -34,6 +34,8 @@ namespace Artivity.DataModel
 	{
         #region Members
 
+        private static IStore _store = null;
+
         public static readonly string DefaultStore = "virt0";
 
         public static Uri Agents;
@@ -48,6 +50,8 @@ namespace Artivity.DataModel
 
         static Models()
         {
+            _store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
+
             string username = Environment.UserName;
 
             Agents = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/agents", username));
@@ -60,29 +64,15 @@ namespace Artivity.DataModel
 
         public static bool Exists(Uri uri)
         {
-            IStore store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
-
-            return store.ContainsModel(uri);
-        }
-
-        private static IModel GetModel(IStore store, Uri uri)
-        {
-            if(store == null)
-            {
-                store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
-            }
-
-            return store.GetModel(uri);
+            return _store.ContainsModel(uri);
         }
 
         public static IModelGroup GetAll()
         {
-            IStore store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
-
-            IModelGroup result = store.CreateModelGroup();
-            result.Add(GetAgents(store));
-            result.Add(GetActivities(store));
-            result.Add(GetWebActivities(store));
+            IModelGroup result = _store.CreateModelGroup();
+            result.Add(GetAgents(_store));
+            result.Add(GetActivities(_store));
+            result.Add(GetWebActivities(_store));
             result.Add(GetMonitoring());
 
             return result;
@@ -90,34 +80,32 @@ namespace Artivity.DataModel
 
         public static IModel GetAllActivities()
         {
-            IStore store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
-
-            IModelGroup result = store.CreateModelGroup();
-            result.Add(GetAgents(store));
-            result.Add(GetActivities(store));
-            result.Add(GetWebActivities(store));
+            IModelGroup result = _store.CreateModelGroup();
+            result.Add(GetAgents(_store));
+            result.Add(GetActivities(_store));
+            result.Add(GetWebActivities(_store));
 
             return result;
         }
 
         public static IModel GetAgents(IStore store = null)
         {
-            return GetModel(store, Agents);
+            return _store.GetModel(Agents);
         }
 
         public static IModel GetActivities(IStore store = null)
         {
-            return GetModel(store, Activities);
+            return _store.GetModel(Activities);
         }
 
         public static IModel GetWebActivities(IStore store = null)
         {
-            return GetModel(store, WebActivities);
+            return _store.GetModel(WebActivities);
         }
 
         public static IModel GetMonitoring(IStore store = null)
         {
-            return GetModel(store, Monitoring);
+            return _store.GetModel(Monitoring);
         }
 
         #endregion

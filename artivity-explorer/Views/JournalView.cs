@@ -82,7 +82,7 @@ namespace Artivity.Explorer
 
             foreach (BindingSet binding in bindings)
             {
-                string url = binding["fileUrl"].ToString();
+                string url = Uri.UnescapeDataString(binding["fileUrl"].ToString());
 
                 // Skip any malformed URIs.
                 if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
@@ -91,7 +91,7 @@ namespace Artivity.Explorer
                 }
 
                 // Do not list files which do not exist.
-                string path = new Uri(url).AbsolutePath;
+                string path = new Uri(url).LocalPath;
 
                 if (!File.Exists(path))
                 {

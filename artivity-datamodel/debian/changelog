@@ -1,3 +1,9 @@
+artivity-datamodel (1.5.16-1semiodesk0) trusty; urgency=low
+
+  * Added custom Semiodesk.Trinity.dll and OpenLink.Data.Virtuoso.dll for compatibility with Mono on Ubuntu 14.04
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Thu, 19 Nov 2015 16:16:00 +0200
+
 artivity-datamodel (1.5.15-1semiodesk0) trusty; urgency=low
 
   * Added support for database monitoring.

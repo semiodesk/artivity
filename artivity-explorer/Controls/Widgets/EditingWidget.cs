@@ -118,7 +118,7 @@ namespace Artivity.Explorer.Controls
                 {
                     ?activity prov:used ?file .
 
-                    ?file nfo:fileUrl """ + fileUrl + @""" .
+                    ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
                 }";
 
             SparqlQuery query = new SparqlQuery(queryString);
@@ -138,7 +138,7 @@ namespace Artivity.Explorer.Controls
                     ?activity prov:used ?file .
                     ?activity prov:generated ?version .
 
-                    ?file nfo:fileUrl """ + fileUrl + @""" .
+                    ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
 
                     ?version prov:qualifiedGeneration ?generation .
                 }";
@@ -161,7 +161,7 @@ namespace Artivity.Explorer.Controls
                     ?activity prov:used ?file .
                     ?activity prov:generated ?version .
 
-                    ?file nfo:fileUrl """ + fileUrl + @""" .
+                    ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
 
                     ?version prov:qualifiedGeneration ?generation .
 
@@ -186,7 +186,7 @@ namespace Artivity.Explorer.Controls
                     ?activity prov:used ?file .
                     ?activity prov:generated ?version .
 
-                    ?file nfo:fileUrl """ + fileUrl + @""" .
+                    ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
 
                     ?version prov:qualifiedGeneration ?generation .
 
