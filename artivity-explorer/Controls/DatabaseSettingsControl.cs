@@ -97,12 +97,12 @@ namespace Artivity.Explorer
             {
                 _filePathBox.Text = new Uri(_database.Url).LocalPath;
 
-                string label0 = "Total Facts:  {0}        Avg. Increase:  {1} / day";
+                string label0 = "Total Facts:  {0}        Avg. Increase:  {1:0.##} / day";
 
                 _factsCountLabel.Text = string.Format(label0, _database.GetFactsCount(), _factsCountPlot.AverageDelta);
                 _factsCountLabel.TextColor = Palette.TextColor;
 
-                string label1 = "Total Size:  {0} MB        Avg. Increase:  {1} kB / day";
+                string label1 = "Total Size:  {0} MB        Avg. Increase:  {1:0.##} kB / day";
 
                 _fileSizeLabel.Text = string.Format(label1, Math.Round((_database.GetFileSize() / 1024) / 1024f, 2), _fileSizePlot.AverageDelta);
                 _fileSizeLabel.TextColor = Palette.TextColor;
@@ -148,8 +148,8 @@ namespace Artivity.Explorer
 
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            _fileSizePlot.Update();
-            _factsCountPlot.Update();
+            //_fileSizePlot.Update();
+            //_factsCountPlot.Update();
         }
 
         private void OnMonitoringEnabledBoxCheckedChanged(object sender, EventArgs e)

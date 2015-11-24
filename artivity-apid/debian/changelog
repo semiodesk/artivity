@@ -1,3 +1,9 @@
+artivity-apid (1.5.16-1semiodesk0) trusty; urgency=low
+
+  * Bugfixes in file system monitor.
+
+ -- Sebastian Faubel <sebastian@semiodesk.com>  Fri, 20 Nov 2015 16:17:00 +0200
+
 artivity-apid (1.5.15-1semiodesk0) trusty; urgency=low
 
   * Implemented monitoring module for registering files with the file system monitor.

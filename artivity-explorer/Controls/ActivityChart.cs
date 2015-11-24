@@ -193,7 +193,7 @@ namespace Artivity.Explorer.Controls
             ResumeLayout();
         }
 
-        public void LoadInfluences(string fileUrl)
+        public void LoadInfluences(Uri fileUrl)
         {
             SuspendLayout();
 
@@ -214,7 +214,7 @@ namespace Artivity.Explorer.Controls
                         ?activity prov:used ?file ;
                                         prov:generated ?version .
 
-                        ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
+                        ?file nfo:fileUrl """ + fileUrl.AbsoluteUri + @""" .
 
                         ?version prov:qualifiedGeneration ?generation .
 
@@ -226,14 +226,14 @@ namespace Artivity.Explorer.Controls
                                     prov:startedAtTime ?startTime ;
                                     prov:endedAtTime ?endTime .
 
-                        ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
+                        ?file nfo:fileUrl """ + fileUrl.AbsoluteUri + @""" .
 
                         ?activity prov:startedAtTime ?time ;
                             prov:qualifiedUsage ?usage .
 
                         ?usage prov:atTime ?influenceTime .
 
-                        FILTER(?startTime <= ?time && ?time <= ?endTime) .
+                        FILTER(?startTime <= ?influenceTime && ?influenceTime <= ?endTime) .
                     }
                 }
                 ORDER BY DESC(?influenceTime)";

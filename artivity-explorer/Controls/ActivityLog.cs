@@ -39,7 +39,7 @@ namespace Artivity.Explorer.Controls
             Columns.Add(new GridColumn() { HeaderText = "", DataCell = new ColourPickerCell("AgentColour") { MaxWidth = 2 }, Width = 5, AutoSize = false, Resizable = false });
             Columns.Add(new GridColumn() { HeaderText = "", DataCell = new TextBoxCell("InfluenceType") });
             Columns.Add(new GridColumn() { HeaderText = "Activity", DataCell = new TextBoxCell("Description"), AutoSize = false, Width = 250 });
-            Columns.Add(new GridColumn() { HeaderText = "Data", DataCell = new TextBoxCell("Data"), AutoSize = false, Width = 200, Visible = false });
+            Columns.Add(new GridColumn() { HeaderText = "Data", DataCell = new TextBoxCell("Data"), AutoSize = false, Width = 200 });
         }
 
         private void InitializeAgents()
@@ -52,7 +52,7 @@ namespace Artivity.Explorer.Controls
             }
         }
 
-        public void LoadInfluences(string fileUrl)
+        public void LoadInfluences(Uri fileUrl)
         {
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -71,7 +71,7 @@ namespace Artivity.Explorer.Controls
                         ?activity prov:used ?file ;
                             prov:generated ?entity .
 
-                        ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
+                        ?file nfo:fileUrl """ + fileUrl.AbsoluteUri + @""" .
 
                         ?entity a ?entityType ;
                             prov:qualifiedGeneration ?generation .
@@ -89,7 +89,7 @@ namespace Artivity.Explorer.Controls
                                     prov:startedAtTime ?startTime ;
                                     prov:endedAtTime ?endTime .
 
-                        ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
+                        ?file nfo:fileUrl """ + fileUrl.AbsoluteUri + @""" .
 
                         ?activity prov:startedAtTime ?time ;
                             prov:qualifiedUsage ?usage .

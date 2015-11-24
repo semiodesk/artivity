@@ -94,7 +94,7 @@ namespace Artivity.Explorer
             }
 
             // TODO: Handle as Uri, not as string.
-            string fileUrl = new Uri("file://" + FilePath).AbsoluteUri;
+            Uri fileUrl = new Uri("file://" + FilePath);
 
             _statsPanel.EditingWidget.Update(fileUrl);
 

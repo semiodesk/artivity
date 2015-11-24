@@ -191,7 +191,7 @@ namespace Artivity.Explorer
                 series.Points.Add(DateTimeAxis.CreateDataPoint(x, ToMegaByte(y, 2)));
             }
                 
-            AverageDelta = n > 0 ? ToKiloByte((y1 - y0) / n, 2) : 0;
+            AverageDelta = n > 0 ? ToKiloByte((y0 - y1) / n, 2) : 0;
 
             Model.Series.Add(series);
         }

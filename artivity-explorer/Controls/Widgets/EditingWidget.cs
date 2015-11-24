@@ -85,7 +85,7 @@ namespace Artivity.Explorer.Controls
             Rows.Add(new TableRow(new TableCell(), new TableCell(_confidence), new TableCell(_confidenceValue)));
         }
 
-		public void Update(string fileUrl)
+		public void Update(Uri fileUrl)
 		{
             IModel model = Models.GetAllActivities();
 
@@ -109,7 +109,7 @@ namespace Artivity.Explorer.Controls
 			}
 		}
 
-        private int GetSessionCount(IModel model, string fileUrl)
+        private int GetSessionCount(IModel model, Uri fileUrl)
         {
             string queryString = @"PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -118,7 +118,7 @@ namespace Artivity.Explorer.Controls
                 {
                     ?activity prov:used ?file .
 
-                    ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
+                    ?file nfo:fileUrl """ + fileUrl.AbsoluteUri + @""" .
                 }";
 
             SparqlQuery query = new SparqlQuery(queryString);
@@ -128,7 +128,7 @@ namespace Artivity.Explorer.Controls
             return bindings.Any() ? (int)bindings.First()["activities"] : 0;
         }
 
-        private int GetStepCount(IModel model, string fileUrl)
+        private int GetStepCount(IModel model, Uri fileUrl)
         {
             string queryString = @"PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -138,7 +138,7 @@ namespace Artivity.Explorer.Controls
                     ?activity prov:used ?file .
                     ?activity prov:generated ?version .
 
-                    ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
+                    ?file nfo:fileUrl """ + fileUrl.AbsoluteUri + @""" .
 
                     ?version prov:qualifiedGeneration ?generation .
                 }";
@@ -150,7 +150,7 @@ namespace Artivity.Explorer.Controls
             return bindings.Any() ? (int)bindings.First()["steps"] : 0;
         }
 
-        private int GetUndoCount(IModel model, string fileUrl)
+        private int GetUndoCount(IModel model, Uri fileUrl)
         {
             string queryString = @"PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -161,7 +161,7 @@ namespace Artivity.Explorer.Controls
                     ?activity prov:used ?file .
                     ?activity prov:generated ?version .
 
-                    ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
+                    ?file nfo:fileUrl """ + fileUrl.AbsoluteUri + @""" .
 
                     ?version prov:qualifiedGeneration ?generation .
 
@@ -175,7 +175,7 @@ namespace Artivity.Explorer.Controls
             return bindings.Any() ? (int)bindings.First()["undos"] : 0;
         }
 
-        private int GetRedoCount(IModel model, string fileUrl)
+        private int GetRedoCount(IModel model, Uri fileUrl)
         {
             string queryString = @"PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -186,7 +186,7 @@ namespace Artivity.Explorer.Controls
                     ?activity prov:used ?file .
                     ?activity prov:generated ?version .
 
-                    ?file nfo:fileUrl """ + Uri.EscapeUriString(fileUrl) + @""" .
+                    ?file nfo:fileUrl """ + fileUrl.AbsoluteUri + @""" .
 
                     ?version prov:qualifiedGeneration ?generation .
 

@@ -105,7 +105,7 @@ namespace Artivity.Explorer
                        ?s rdf:type prov:SoftwareAgent .
                        ?s ?p ?o .
 
-                       ?entity nfo:fileUrl ""file://" + filePath + @""" .
+                       ?entity nfo:fileUrl ""file://" + Uri.EscapeUriString(filePath) + @""" .
                 }";
 
             SparqlQuery query = new SparqlQuery(queryString);
