@@ -81,7 +81,7 @@ namespace Artivity.Explorer.Controls
         protected void OnPreferencesButtonClick(object sender, EventArgs e)
         {
             SettingsDialog dialog = new SettingsDialog();
-            dialog.ShowModal();
+            dialog.ShowModal(this);
 
             Refresh();
         }
@@ -120,16 +120,8 @@ namespace Artivity.Explorer.Controls
 
         protected void OnExportButtonClick(object sender, EventArgs e)
         {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filters.Add(new FileDialogFilter("RDF/XML", "*.rdf"));
-
-            if (dialog.ShowDialog(this) == DialogResult.Ok)
-            {
-                string file = dialog.FileName;
-
-                ExportDialog export = new ExportDialog(file);
-                export.ShowModalAsync();
-            }
+            ExportDialog export = new ExportDialog();
+            export.ShowModalAsync(this);
         }
 
         #endregion

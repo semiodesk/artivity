@@ -82,7 +82,7 @@ namespace Artivity.Explorer
 
             foreach (BindingSet binding in bindings)
             {
-                string url = Uri.UnescapeDataString(binding["fileUrl"].ToString());
+                string url = binding["fileUrl"].ToString();
 
                 // Skip any malformed URIs.
                 if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
