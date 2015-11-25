@@ -49,3 +49,5 @@ debian-dist/*
 nohup.out
 .tern-project
 *.orig.tar.*
+inkscape
+inkview
