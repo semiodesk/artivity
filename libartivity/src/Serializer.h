@@ -17,21 +17,21 @@ namespace artivity
     class Serializer
     {  
     public:
-        static XsdTypeMap TYPE_MAP;
+        XsdTypeMap TYPE_MAP;
                 
         Serializer() {}
         ~Serializer() {}
 
         static string toString(const Resource& value);
         static string toString(const char* value);
-        static string toString(int value);
-        static string toString(long value);
-        static string toString(float value);
-        static string toString(double value);
-        static string toString(const time_t* value);
+		static string toString(int value);
+		static string toString(long value);
+		static string toString(float value);
+		static string toString(double value);
+		static string toString(const time_t* value);
         
-        static string serialize(Resource& resource, RdfSerializationFormat format);
-        static stringstream& serialize(stringstream& out, Resource& resource, RdfSerializationFormat format);
+        string serialize(Resource& resource, RdfSerializationFormat format);
+        stringstream& serialize(stringstream& out, Resource& resource, RdfSerializationFormat format);
     };
 }
 

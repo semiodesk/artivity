@@ -1,7 +1,7 @@
 #ifndef ART_H
 #define ART_H
 
-#include "../Property.h"
+
 
 #define ART(label) "http://semiodesk.com/artivity/1.0/"label;
 
@@ -10,154 +10,154 @@ namespace artivity
     namespace art
     {
         // http://www.w3.org/ns/activitystreams#View
-        static const Resource Browse = ART("Browse");
+        static const char* Browse = ART("Browse");
         
         // No match in ActivityStreams
-        static const Resource EditFile = ART("EditFile");
+		static const char* EditFile = ART("EditFile");
         
         // No match in ActivityStreams
-        static const Resource CreateFile = ART("CreateFile");
+		static const char* CreateFile = ART("CreateFile");
         
         // No match in ActivityStreams
-        static const Resource DeleteFile = ART("DeleteFile");
+		static const char* DeleteFile = ART("DeleteFile");
         
         // --- ACTIVITIES ---
         // NOTE: There are very little predefined activity types in PROV.
         //       The following are inspired by the Activity Streams vocabulary.
         
         // No match in ActivityStreams
-        static const Resource Edit = ART("Edit");
+		static const char* Edit = ART("Edit");
         
         // http://www.w3.org/ns/activitystreams#Add
-        static const Resource Add = ART("Add");
+		static const char* Add = ART("Add");
         
         // http://www.w3.org/ns/activitystreams#Remove
-        static const Resource Remove = ART("Remove");
+        static const char* Remove = ART("Remove");
         
         // http://www.w3.org/ns/activitystreams#Undo
-        static const Resource Undo = ART("Undo");
+		static const char* Undo = ART("Undo");
         
         // No match in ActivityStreams
-        static const Resource Redo = ART("Redo");
+		static const char* Redo = ART("Redo");
         
         // No match in ActivityStreams
-        static const Resource Save = ART("Save");
+		static const char* Save = ART("Save");
         
-        static const Property selectedLayer = ART("selectedLayer");
+		static const char* selectedLayer = ART("selectedLayer");
         
         // --- AGENT ---
-        static const Property isCaptureEnabled = ART("isCaptureEnabled");
+		static const char* isCaptureEnabled = ART("isCaptureEnabled");
         
         // --- GEOMETRY ---
         // NOTE: We try to be compatible with OGC geometry vocabularies since
         //       many databases support spatial querying using this standard.
         
-        static const Property canvas = ART("canvas");
+		static const char* canvas = ART("canvas");
                 
         // Subclass of :hadGeometry
-        static const Property hadCanvas = ART("hadCanvas");
+		static const char* hadCanvas = ART("hadCanvas");
         
         // Subclass of :Rectangle
-        static const Resource Canvas = ART("Canvas");
+		static const char* Canvas = ART("Canvas");
         
         // No equivalent in GeoSPARQL
-        static const Property coordinateSystem = ART("coordinateSystem");
+		static const char* coordinateSystem = ART("coordinateSystem");
         
         // No equivalent in GeoSPARQL
-        static const Resource CoordinateSystem = ART("CoordinateSystem");
+		static const char* CoordinateSystem = ART("CoordinateSystem");
         
         // WKT CS, Cartesian
         // https://en.wikipedia.org/wiki/Well-known_text
-        static const Resource CartesianCoordinateSystem = ART("CartesianCoordinateSystem");
+		static const char* CartesianCoordinateSystem = ART("CartesianCoordinateSystem");
         
         // No equivalent in GeoSPARQL
-        static const Property lengthUnit = ART("lengthUnit");
+		static const char* lengthUnit = ART("lengthUnit");
         
         // No equivalent in GeoSPARL, MATLAB notation [1 0 0; 0 1 0; 0 0 1]
-        static const Property transformationMatrix = ART("transformationMatrix");
+		static const char* transformationMatrix = ART("transformationMatrix");
         
         // http://www.opengis.net/ont/geosparql#hasGeometry
-        static const Property hadGeometry= ART("hadGeometry");
+		static const char* hadGeometry = ART("hadGeometry");
         
         // WKT Geometry
         // http://www.opengis.net/ont/geosparql#Geometry
-        static const Resource Geometry = ART("Geometry");
+		static const char* Geometry = ART("Geometry");
         
         // http://www.opengis.net/ont/geosparql#coordinateDimension
-        static const Property coordinateDimension = ART("coordinateDimension");
+		static const char* coordinateDimension = ART("coordinateDimension");
         
         // No equivalent in GeoSPARQL
-        static const Resource Rectangle = ART("Rectangle");
+        static const char* Rectangle = ART("Rectangle");
         
         // No equivalent in GeoSPARQL
-        static const Property width = ART("width");
+        static const char* width = ART("width");
         
         // No equivalent in GeoSPARQL
-        static const Property height = ART("height");
+        static const char* height = ART("height");
         
         // No equivalent in GeoSPARQL
-        static const Resource Cube = ART("Cube");
+        static const char* Cube = ART("Cube");
         
         // No equivalent in GeoSPARQL
-        static const Property depth = ART("depth");
+        static const char* depth = ART("depth");
         
         // No equivalent in GeoSPARQL
-        static const Property hadBoundaries = ART("hadBoundaries");
+        static const char* hadBoundaries = ART("hadBoundaries");
         
         // Subclass of :Rectangle
-        static const Resource BoundingRectangle = ART("BoundingRectangle");
+        static const char* BoundingRectangle = ART("BoundingRectangle");
         
         // Subclass of :Cube
-        static const Resource BoundingCube = ART("BoundingCube");
+        static const char* BoundingCube = ART("BoundingCube");
         
         // No equivalent in GeoSPARQL
-        static const Property hadViewport = ART("hadViewport");
+        static const char* hadViewport = ART("hadViewport");
         
         // Subclass of :Rectangle
-        static const Resource Viewport = ART("Viewport");
+        static const char* Viewport = ART("Viewport");
         
         // No equivalent in GeoSPARQL
-        static const Property zoomFactor = ART("zoomFactor");
+        static const char* zoomFactor = ART("zoomFactor");
         
         // http://www.opengis.net/ont/geosparql#coordinateDimension
-        static const Property position = ART("position");
+        static const char* position = ART("position");
         
         // WKT Point
         // No equivalent in GeoSPARQL
-        static const Resource Point = ART("Point");
+        static const char* Point = ART("Point");
         
         // No equivalent in GeoSPARQL
-        static const Property x = ART("x");
+        static const char* x = ART("x");
         
         // No equivalent in GeoSPARQL
-        static const Property y = ART("y");
+        static const char* y = ART("y");
         
         // No equivalent in GeoSPARQL
-        static const Property z = ART("z");
+        static const char* z = ART("z");
         
         // --- UNITS ---
         // NOTE: Except for px, all units are owl:sameAs their counterparts in the QUDT ontology.
         
         // http://qudt.org/vocab/unit#Millimeter
-        static const Resource mm = ART("mm");
+        static const char* mm = ART("mm");
         
         // http://qudt.org/vocab/unit#Centimeter
-        static const Resource cm = ART("cm");
+        static const char* cm = ART("cm");
         
         // http://qudt.org/vocab/unit#Meter
-        static const Resource m = ART("m");
+        static const char* m = ART("m");
         
         // http://qudt.org/vocab/unit#Point
-        static const Resource pt = ART("pt");
+        static const char* pt = ART("pt");
         
         // http://qudt.org/vocab/unit#Inch
-        static const Resource in = ART("in");
+        static const char* in = ART("in");
         
         // http://qudt.org/vocab/unit#Foot
-        static const Resource ft = ART("ft");
+        static const char* ft = ART("ft");
         
         // No equivalent in QUDT
-        static const Resource px = ART("px");
+        static const char* px = ART("px");
     }
 }
 

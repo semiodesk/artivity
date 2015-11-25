@@ -9,7 +9,7 @@ namespace artivity
 {
     namespace rdf
     {
-        static const Property _type = RDF("type");
+		static const char* _type = RDF("type");
     }
 }
 

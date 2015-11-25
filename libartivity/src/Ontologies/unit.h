@@ -10,12 +10,12 @@ namespace artivity
 {
     namespace unit
     {
-        static const Resource Millimeter = UNIT("Millimeter");
-        static const Resource Centimeter = UNIT("Centimeter");
-        static const Resource Meter = UNIT("Meter");
-        static const Resource Point = UNIT("Point");
-        static const Resource Inch = UNIT("Inch");
-        static const Resource Foot = UNIT("Foot");
+        static const char* Millimeter = UNIT("Millimeter");
+        static const char* Centimeter = UNIT("Centimeter");
+        static const char* Meter = UNIT("Meter");
+        static const char* Point = UNIT("Point");
+        static const char* Inch = UNIT("Inch");
+        static const char* Foot = UNIT("Foot");
     }
 }
 

@@ -1,38 +1,36 @@
 #ifndef SVG_H
 #define SVG_H
 
-#include "../Property.h"
-
 #define SVG(label) "http://www.mathiswebs.com/ontology/svg_ont.owl#"label;
 
 namespace artivity
 {
     namespace svg
     {
-        static const Resource Shape = SVG("Shape");
+        static const char* Shape = SVG("Shape");
         
-        static const Resource Curved = SVG("Curved");
-        static const Resource Circle = SVG("Circle");
-        static const Resource Ellipse = SVG("Ellipse");
+        static const char* Curved = SVG("Curved");
+        static const char* Circle = SVG("Circle");
+        static const char* Ellipse = SVG("Ellipse");
         
-        static const Resource Polygon = SVG("Polygon");
-        static const Resource Triangle = SVG("Triangle");
-        static const Resource Quadrate = SVG("Quadrate");
-        static const Resource Trapezoid = SVG("Trapezoid");
-        static const Resource Parallelogram = SVG("Parallelogram");
-        static const Resource Diamond = SVG("Diamond");
-        static const Resource Rectangle = SVG("Rectangle");
-        static const Resource Square = SVG("Square");
-        static const Resource Pentagon = SVG("Pentagon");
-        static const Resource Hexagon = SVG("Hexagon");
+        static const char* Polygon = SVG("Polygon");
+        static const char* Triangle = SVG("Triangle");
+        static const char* Quadrate = SVG("Quadrate");
+        static const char* Trapezoid = SVG("Trapezoid");
+        static const char* Parallelogram = SVG("Parallelogram");
+        static const char* Diamond = SVG("Diamond");
+        static const char* Rectangle = SVG("Rectangle");
+        static const char* Square = SVG("Square");
+        static const char* Pentagon = SVG("Pentagon");
+        static const char* Hexagon = SVG("Hexagon");
         
-        static const Resource Predefined = SVG("Predefined");
-        static const Resource Star = SVG("Star");
-        static const Resource Heart = SVG("Heart");
-        static const Resource Crescent = SVG("Crescent");
-        static const Resource Sun = SVG("Sun");
+        static const char* Predefined = SVG("Predefined");
+        static const char* Star = SVG("Star");
+        static const char* Heart = SVG("Heart");
+        static const char* Crescent = SVG("Crescent");
+        static const char* Sun = SVG("Sun");
         
-        static const Property id = SVG("id");
+        static const char* id = SVG("id");
     }
 }
 
