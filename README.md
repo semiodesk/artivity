@@ -1,20 +1,31 @@
 # Readme #
 
-Artivity is a project which aims to produce a toolkit for capturing contextual data produced during the creative process of artists and designers while working on a computer. The project is funded by [JISC](http://www.jisc.ac.uk) and based on a cooparation of the [University of the Arts London](http://www.arts.ac.uk) and [Semiodesk GmbH](http://www.semiodesk.com). The captured data may include browsing history, email exchange and file editing statistics. Such information is already provided by [GNOME's Activity Journal](http://en.wikipedia.org/wiki/GNOME_Activity_Journal) which is build using the [Zeitgeist Framework](http://zeitgeist-project.com). This project will extend Activity Journal to capture data about the way designers and artists use popular software applications such as [Inkscape](https://inkscape.org/en/) and [GIMP](http://www.gimp.org).
+The Artivity Project aims to produce an open desktop logging framework for 
+arts practice. It allows for capturing detailed data about the creation process 
+of digital artwork and its context. This data can be used to study the techniques, 
+workflow and sources of inspiration in the creation process of digital media. 
+The project is executed as a cooperation with the [University of the Arts, London](http://www.arts.ac.uk) 
+and [Semiodesk GmbH](http://www.semiodesk.com). It is currently funded by [JISC](http://www.jisc.ac.uk).
 
 ### Summary ###
 
 This repository currently contains the following modules:
 
-* **inkscape**: Modified version of Inkscape which pushes undo/redo events to Zeitgeist
-* **artivity-explorer**: Simple GUI for viewing the undo/redo events for Inkscape drawings
-* **artivity-extension-firefox**: Browser extension for web browsers which are based on Mozilla Firefox
-* **artivity-extension-chromium**: Browser extension for web browsers which are based on Google Chrome
-* **artivity-apid**: OS daemon which provides a REST API for pushing events from a browser extension into Zeitgeist
+* **artivity-apid**: OS daemon which provides a REST API for pushing events from a browser extension into the Artivity database.
+* **artivity-explorer**: Simple user interface for viewing the activity events for drawings.
+* **artivity-extension-firefox**: Browser extension for web browsers which are based on Mozilla Firefox.
+* **artivity-extension-chromium**: Browser extension for web browsers which are based on Google Chrome.
+* **artivity-extension-krita**: An extension to Krita for logging undo/redo events to the Artivity database.
+* **artivity-inkscape**: Modified version of Inkscape for logging undo/redo events to the Artivity database.
 
 ### Installing ###
 
-There are prebuild binaries for [Ubuntu 14.04 LTS GNOME](http://cdimage.ubuntu.com/ubuntu-gnome/releases/14.04/release/) or [Ubuntu 14.04 LTS](http://www.ubuntu.com/), which are provided via a so called [Personal Package Archive](http://wiki.ubuntuusers.de/Launchpad/PPA). With this repository you will receive updates and new features via Ubuntu's updating mechanism as soon as they're published. If you want to try the current release, please follow these steps:
+There are prebuild binaries for [Elementary OS](http://elementary.io/), 
+[Ubuntu 14.04 LTS](http://www.ubuntu.com/) or [Ubuntu 14.04 LTS GNOME](http://cdimage.ubuntu.com/ubuntu-gnome/releases/14.04/release/).
+They are provided via a so called [Personal Package Archive](http://wiki.ubuntuusers.de/Launchpad/PPA). 
+With this repository you will receive updates and new features via Ubuntu's 
+updating mechanism as soon as they're published. If you want to try the 
+current release, please follow these steps:
 
 1) Download [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/) and install it on your computer or in a virtual machine such as [Virtualbox](https://www.virtualbox.org).
 
@@ -33,19 +44,24 @@ sudo apt-get update
 sudo apt-get install artivity-desktop
 ```
 
-4) Enable the Zeitgeist browser event logging feature with the following command:
+4) During the setup you will be asked to set a password for the OpenLink Virtuoso administrator. Please fill in the following values:
 ```
 #!bash
 
-artivity-setup
+User: dba
+Password: dba
 ```
-5) Click on the Artivity icon in Mozilla Firefox and check the 'Capture browsing history' box.
+5) Start the Artivity Explorer application.
+
+6) If you want to activate the browser logging feature, click on the Artivity icon in Mozilla Firefox or Goolge Chrome and check the 'Capture browsing history' box.
 
 ### Compiling ###
-Currently, only the customized build of Inkscape requires compilation. Please refer to the [Inkscape Wiki](http://wiki.inkscape.org/wiki/index.php/Compiling_Inkscape) for detailed instructions on how to compile it. Since Inkscape has a quite large code base it is highly recommended to use a byte code caching solution such as [ccache](https://ccache.samba.org).
+The core Artivity platform is implemented using .NET/Mono. If you want to use MonoDevelop or Xamarin Studio for development, 
+please make sure to install the latest [Mono platform from Xamarin](http://www.mono-project.com/download/).
 
-Most of the tools developed for the Artivity project are written in Python and do not require compilation. We currently depend on the following Python libraries:
+The customized build of Inkscape requires compilation. Please refer to the [Inkscape Wiki](http://wiki.inkscape.org/wiki/index.php/Compiling_Inkscape) 
+for detailed instructions on how to compile it. Since Inkscape has a quite large code base it is 
+highly recommended to use a byte code caching solution such as [ccache](https://ccache.samba.org).
 
-* [Zeitgeist](http://bloc.eurion.net/archives/2012/zeitgeist-python-api-tutorial/)
-* [Werkzeug](http://werkzeug.pocoo.org)
-* [PyGObject (Gtk+ 3)](https://wiki.gnome.org/action/show/Projects/PyGObject)
+If you want to build the Krtia plugin from source, please refer to [Building Krita on Linux for cats](http://www.davidrevoy.com/article193/guide-building-krita-on-linux-for-cats) 
+for detailed instructions on how to setup your build environment.
