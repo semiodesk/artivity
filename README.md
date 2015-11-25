@@ -2,12 +2,7 @@
 
 # Readme #
 
-The Artivity Project aims to produce an open desktop logging framework for 
-arts practice. It allows for capturing detailed data about the creation process 
-of digital artwork and its context. This data can be used to study the techniques, 
-workflow and sources of inspiration in the creation process of digital media. 
-The project is executed as a cooperation with the [University of the Arts, London](http://www.arts.ac.uk) 
-and [Semiodesk GmbH](http://www.semiodesk.com). It is currently funded by [JISC](http://www.jisc.ac.uk).
+The Artivity Project aims to produce an open desktop logging framework for arts practice. It allows for capturing detailed data about the creation process of digital artwork and its context. This data can be used to study the techniques, workflow and sources of inspiration in the creation process of digital media. The project is executed as a cooperation with the [University of the Arts, London](http://www.arts.ac.uk) and [Semiodesk GmbH](http://www.semiodesk.com). It is currently funded by [JISC](http://www.jisc.ac.uk).
 
 ### Summary ###
 
@@ -23,12 +18,7 @@ This repository currently contains the following modules:
 
 ### Installing ###
 
-There are prebuild binaries for [Elementary OS](http://elementary.io/), 
-[Ubuntu 14.04 LTS](http://www.ubuntu.com/) or [Ubuntu 14.04 LTS GNOME](http://cdimage.ubuntu.com/ubuntu-gnome/releases/14.04/release/).
-They are provided via a so called [Personal Package Archive](http://wiki.ubuntuusers.de/Launchpad/PPA). 
-With this repository you will receive updates and new features via Ubuntu's 
-updating mechanism as soon as they're published. If you want to try the 
-current release, please follow these steps:
+There are prebuild binaries for [Elementary OS](http://elementary.io/), [Ubuntu 14.04 LTS](http://www.ubuntu.com/) or [Ubuntu 14.04 LTS GNOME](http://cdimage.ubuntu.com/ubuntu-gnome/releases/14.04/release/). They are provided via a so called [Personal Package Archive](http://wiki.ubuntuusers.de/Launchpad/PPA). With this repository you will receive updates and new features via Ubuntu's updating mechanism as soon as they're published. If you want to try the current release, please follow these steps:
 
 1) Download [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/) and install it on your computer or in a virtual machine such as [Virtualbox](https://www.virtualbox.org).
 
@@ -59,8 +49,7 @@ Password: dba
 6) If you want to activate the browser logging feature, click on the Artivity icon in Mozilla Firefox or Goolge Chrome and check the 'Capture browsing history' box.
 
 ### Compiling ###
-The core Artivity platform is implemented using .NET/Mono. If you want to use MonoDevelop or Xamarin Studio for development, 
-please make sure to install the latest [Mono platform from Xamarin](http://www.mono-project.com/download/).
+The core Artivity platform is implemented using .NET/Mono. We're using the [Semiodesk Trinity](http://www.semiodesk.com/products/trinity) Linked Data API for C# on top of the [OpenLink Virtuoso](https://github.com/openlink/virtuoso-opensource) graph database. If you want to use [MonoDevelop](http://www.monodevelop.com) or [Xamarin Studio](https://xamarin.com/studio) for development, please make sure to install the latest [Mono platform from Xamarin](http://www.mono-project.com/download/).
 
 The customized build of Inkscape requires compilation. Please refer to the [Inkscape Wiki](http://wiki.inkscape.org/wiki/index.php/Compiling_Inkscape) 
 for detailed instructions on how to compile it. Since Inkscape has a quite large code base it is 
