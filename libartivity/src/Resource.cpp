@@ -24,7 +24,7 @@ namespace artivity
 
     bool Resource::is(const Resource& type)
     {
-        return Properties.hasProperty(rdf::_type.Uri, &type);
+        return Properties.hasProperty(rdf::_type, &type);
     }
     
     void Resource::clear()
@@ -194,19 +194,19 @@ namespace artivity
 
     void Resource::setType(const Resource* type)
     {
-        Properties.setProperty(rdf::_type.Uri, type);
+        Properties.setProperty(rdf::_type, type);
     }
 
     void Resource::setType(const Resource& type)
     {
-        Properties.setProperty(rdf::_type.Uri, &type);
+        Properties.setProperty(rdf::_type, &type);
     }
     
     const Resource* Resource::getType()
     {
-        if(Properties.find(rdf::_type.Uri) != Properties.end())
+        if(Properties.find(rdf::_type) != Properties.end())
         {
-            return Properties.find(rdf::_type.Uri)->second.Value;
+            return Properties.find(rdf::_type)->second.Value;
         }
         
         return NULL;

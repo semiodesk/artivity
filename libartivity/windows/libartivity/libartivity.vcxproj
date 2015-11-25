@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{591A29E2-9096-462F-95B9-F433FF354D80}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>libartivity</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <NuGetPackageImportStamp>5e6bafae</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <AdditionalIncludeDirectories>..\libcurl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <Lib>
+      <AdditionalDependencies>libcurl_a_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>..\libcurl\lib\static-debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\libcurl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>libcurl_a.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libcurl\lib\static-release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\ActivityLog.h" />
+    <ClInclude Include="..\..\src\artivity.h" />
+    <ClInclude Include="..\..\src\curlresponse.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Activities\Browse.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Activities\CreateFile.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Activities\DeleteFile.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Activities\EditFile.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Activity.h" />
+    <ClInclude Include="..\..\src\ObjectModel\ActivityInfluence.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Agent.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Association.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\FileDataObject.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\WebDataObject.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\XmlAttribute.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\XmlElement.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entity.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Generation.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\BoundingCube.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\BoundingRectangle.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Canvas.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\CartesianCoordinateSystem.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\CoordinateSystem.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Cube.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Geometry.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Point.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Rectangle.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Viewport.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Add.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Edit.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Redo.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Remove.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Undo.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Invalidation.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Person.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Role.h" />
+    <ClInclude Include="..\..\src\ObjectModel\SoftwareAgent.h" />
+    <ClInclude Include="..\..\src\Ontologies\art.h" />
+    <ClInclude Include="..\..\src\Ontologies\dces.h" />
+    <ClInclude Include="..\..\src\Ontologies\nfo.h" />
+    <ClInclude Include="..\..\src\Ontologies\prov.h" />
+    <ClInclude Include="..\..\src\Ontologies\rdf.h" />
+    <ClInclude Include="..\..\src\Ontologies\svg.h" />
+    <ClInclude Include="..\..\src\Ontologies\unit.h" />
+    <ClInclude Include="..\..\src\Ontologies\xml.h" />
+    <ClInclude Include="..\..\src\Ontologies\xsd.h" />
+    <ClInclude Include="..\..\src\Property.h" />
+    <ClInclude Include="..\..\src\PropertyMap.h" />
+    <ClInclude Include="..\..\src\PropertyValue.h" />
+    <ClInclude Include="..\..\src\Resource.h" />
+    <ClInclude Include="..\..\src\Serializer.h" />
+    <ClInclude Include="..\..\src\UriGenerator.h" />
+    <ClInclude Include="..\..\src\XsdTypeMap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\ActivityLog.cpp" />
+    <ClCompile Include="..\..\src\curlresponse.cpp" />
+    <ClCompile Include="..\..\src\ObjectModel\Activity.cpp" />
+    <ClCompile Include="..\..\src\Resource.cpp" />
+    <ClCompile Include="..\..\src\Serializer.cpp" />
+    <ClCompile Include="..\..\src\UriGenerator.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
