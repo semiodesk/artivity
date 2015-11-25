@@ -49,7 +49,8 @@ namespace Artivity.Explorer.Dialogs.ExportDialog
             _directoryBox.Text = Setup.GetUserHomeFolder();
 
             _directoryButton = new Button();
-            _directoryButton.Width = 40;
+            _directoryButton.Width = 30;
+            _directoryButton.Image = Bitmap.FromResource("Folder.png");
             _directoryButton.Click += OnDirectoryButtonClicked;
 
             StackLayout directoryLayout = new StackLayout();
