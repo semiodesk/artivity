@@ -8,7 +8,7 @@ The Artivity Project aims to produce an open desktop logging framework for arts 
 
 This repository currently contains the following modules:
 
-* **artivity-apid**: OS daemon which provides a REST API for logging events from a browser extension into the Artivity.
+* **artivity-apid**: OS daemon which provides a REST API for logging events from clients into Artivity.
 * **artivity-explorer**: Simple user interface for viewing the activity events for drawings.
 * **artivity-extension-firefox**: Browser extension for web browsers which are based on Mozilla Firefox.
 * **artivity-extension-chromium**: Browser extension for web browsers which are based on Google Chrome.
