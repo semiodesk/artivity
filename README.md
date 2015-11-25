@@ -1,3 +1,5 @@
+![Icon128.png](https://bitbucket.org/repo/nybqaa/images/1076748993-Icon128.png)
+
 # Readme #
 
 The Artivity Project aims to produce an open desktop logging framework for 
