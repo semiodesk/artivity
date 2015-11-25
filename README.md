@@ -1,4 +1,4 @@
-![Icon128.png](https://bitbucket.org/repo/nybqaa/images/1076748993-Icon128.png)
+![Icon64.png](https://bitbucket.org/repo/nybqaa/images/4039620649-Icon64.png)
 
 # Readme #
 
@@ -13,12 +13,13 @@ and [Semiodesk GmbH](http://www.semiodesk.com). It is currently funded by [JISC]
 
 This repository currently contains the following modules:
 
-* **artivity-apid**: OS daemon which provides a REST API for pushing events from a browser extension into the Artivity database.
+* **artivity-apid**: OS daemon which provides a REST API for logging events from a browser extension into the Artivity.
 * **artivity-explorer**: Simple user interface for viewing the activity events for drawings.
 * **artivity-extension-firefox**: Browser extension for web browsers which are based on Mozilla Firefox.
 * **artivity-extension-chromium**: Browser extension for web browsers which are based on Google Chrome.
-* **artivity-extension-krita**: An extension to Krita for logging undo/redo events to the Artivity database.
-* **artivity-inkscape**: Modified version of Inkscape for logging undo/redo events to the Artivity database.
+* **artivity-extension-krita**: An extension to Krita for logging undo/redo events in Artivity.
+* **artivity-inkscape**: Modified version of Inkscape for logging undo/redo events in Artivity.
+* **libartivity**: A C++ client library for communication with the Artivity database.
 
 ### Installing ###
 
