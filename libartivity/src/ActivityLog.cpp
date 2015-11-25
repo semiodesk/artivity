@@ -25,7 +25,14 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+#ifdef WIN32 
+#define CURL_STATICLIB
+#endif
+
+#include "curlresponse.h"
 #include "ActivityLog.h"
+#include <curl/curl.h>
+
 
 using namespace artivity;
 
@@ -191,7 +198,7 @@ void ActivityLog::removeAgent(Agent* agent)
 }
 
 // Create a new file data object without a path. For use with unsaved new files.
-CreateFile* ActivityLog::createFile(double width, double height, const Resource* lengthUnit)
+artivity::CreateFile* ActivityLog::createFile(double width, double height, const Resource* lengthUnit)
 {        
     time_t now;
     time(&now);
@@ -206,7 +213,7 @@ CreateFile* ActivityLog::createFile(double width, double height, const Resource*
     // Add a canvas to the newly created file.
     createCanvas(file, width, height, lengthUnit);
     
-    CreateFile* activity = createActivity<CreateFile>();
+	artivity::CreateFile* activity = createActivity<artivity::CreateFile>();
     activity->addUsedEntity(file);
     
     return activity;
@@ -366,10 +373,10 @@ void ActivityLog::transmit()
     stringstream stream;
     
     ActivityLogIterator ait = _activities.begin();
-    
+	Serializer s;
     while(ait != _activities.end())
     {            
-        Serializer::serialize(stream, **ait, N3);
+        s.serialize(stream, **ait, N3);
         
         ait++;
     }
@@ -378,7 +385,7 @@ void ActivityLog::transmit()
     
     while(rit != _resources.end())
     {
-        Serializer::serialize(stream, **rit, N3);
+        s.serialize(stream, **rit, N3);
         
         rit++;
     }
@@ -473,8 +480,13 @@ string ActivityLog::getTime()
     time_t t = time(NULL);
     
     char date_str[20];
-    
-    strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
+	#ifdef WIN32
+	tm* time = new tm();
+	localtime_s(time, &t);
+    strftime(date_str, 20, "%Y/%m/%d %H:%M:%S",time);
+	#else
+	strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
+	#endif
     
     return string(date_str);
 }

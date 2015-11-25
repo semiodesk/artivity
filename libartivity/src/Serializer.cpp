@@ -8,7 +8,6 @@
 
 namespace artivity
 {
-    XsdTypeMap Serializer::TYPE_MAP = XsdTypeMap();
   
     string Serializer::toString(const Resource& value)
     {            
@@ -59,8 +58,15 @@ namespace artivity
     string Serializer::toString(const time_t* value)
     {
         char buf[21];
-        
-        strftime(buf, 21, "%Y-%m-%dT%H:%M:%SZ", gmtime(value));
+		#ifdef WIN32
+		tm* time = new tm();
+		gmtime_s(time, value);
+		strftime(buf, 21, "%Y-%m-%dT%H:%M:%SZ", time);
+		#else
+		strftime(buf, 21, "%Y-%m-%dT%H:%M:%SZ", gmtime(value));
+		#endif
+
+       
         
         return string(buf);
     }
@@ -105,7 +111,7 @@ namespace artivity
                     
                     XsdTypeMapIterator it = TYPE_MAP.find(x.LiteralType);
                     
-                    if(it != TYPE_MAP.end())
+					if (it != TYPE_MAP.end())
                     {
                         out << "^^" << it->second;
                     }

@@ -9,8 +9,8 @@ namespace artivity
 {
     namespace dces
     {
-        static const Property title = DCES("title");
-        static const Property description = DCES("description");
+        static const char* title = DCES("title");
+        static const char* description = DCES("description");
     }
 }
 

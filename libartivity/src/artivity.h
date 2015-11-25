@@ -1,7 +1,7 @@
 #ifndef ARTIVITY_H
 #define ARTIVITY_H
 
-#include "curlresponse.h"
+
 
 #include "Resource.h"
 #include "Property.h"
