@@ -90,6 +90,8 @@ namespace Artivity.Explorer
             Spacing = 14;
             Orientation = Orientation.Vertical;
 
+            _filePickerButton.Image = Bitmap.FromResource("Folder.png");
+
             _fileSizePlot.Update();
             _factsCountPlot.Update();
 
