@@ -4,6 +4,7 @@ using Eto.Drawing;
 using Artivity.DataModel;
 using Artivity.Explorer.Controls;
 using Artivity.Explorer.Dialogs.SetupWizard;
+using System.Configuration;
 
 namespace Artivity.Explorer
 {
@@ -13,6 +14,9 @@ namespace Artivity.Explorer
         static void Main(string[] args)
 		{
 			SemiodeskDiscovery.Discover();
+
+            Models.ConnectionString = GetConnectionStringFromConfiguration();
+            Models.InitializeStore();
 
             Options options = new Options();
 
@@ -61,6 +65,20 @@ namespace Artivity.Explorer
                 Console.WriteLine(e);
             }
 		}
+
+        private static string GetConnectionStringFromConfiguration()
+        {
+            string name = "virt0";
+            foreach (ConnectionStringSettings setting in ConfigurationManager.ConnectionStrings)
+            {
+                if (!string.IsNullOrEmpty(name) && setting.Name != name)
+                    continue;
+
+                return setting.ConnectionString;
+
+            }
+            return null;
+        }
 	}
 }
 

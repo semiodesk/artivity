@@ -32,6 +32,7 @@
 #include <algorithm>
 #include <deque>
 #include <vector>
+#include <curl/curl.h>
 
 #include "Resource.h"
 #include "Serializer.h"

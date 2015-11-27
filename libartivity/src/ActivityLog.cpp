@@ -31,7 +31,7 @@
 
 #include "curlresponse.h"
 #include "ActivityLog.h"
-#include <curl/curl.h>
+
 
 
 using namespace artivity;
@@ -71,6 +71,8 @@ ActivityLog::~ActivityLog()
         
         agit++;
     }
+
+	curl_easy_cleanup(_curl);
 }
 
 bool ActivityLog::connected()

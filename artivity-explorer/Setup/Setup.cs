@@ -239,7 +239,7 @@ namespace Artivity.Explorer
         {
             bool result = true;
 
-            IStore store = StoreFactory.CreateStoreFromConfiguration(Models.DefaultStore);
+            IStore store = StoreFactory.CreateStore(Models.ConnectionString);
 
             result &= store.ContainsModel(Models.Agents) && !store.GetModel(Models.Agents).IsEmpty;
             result &= store.ContainsModel(Models.Activities);
@@ -254,7 +254,7 @@ namespace Artivity.Explorer
             {
                 Console.WriteLine("Installing database models..");
 
-                IStore store = StoreFactory.CreateStoreFromConfiguration(Models.DefaultStore);
+                IStore store = StoreFactory.CreateStore(Models.ConnectionString);
 
                 IModel agents;
 
@@ -364,7 +364,7 @@ namespace Artivity.Explorer
         {
             if(store == null)
             {
-                store = StoreFactory.CreateStoreFromConfiguration(Models.DefaultStore);
+                store = StoreFactory.CreateStore(Models.ConnectionString);
             }
 
             IModel model;
