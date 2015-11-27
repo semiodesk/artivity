@@ -36,7 +36,7 @@ namespace Artivity.DataModel
 
         private static IStore _store = null;
 
-        public static readonly string DefaultStore = "virt0";
+        public static string ConnectionString;
 
         public static Uri Agents;
 
@@ -50,8 +50,6 @@ namespace Artivity.DataModel
 
         static Models()
         {
-            _store = StoreFactory.CreateStoreFromConfiguration(DefaultStore);
-
             string username = Environment.UserName;
 
             Agents = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/agents", username));
@@ -61,6 +59,11 @@ namespace Artivity.DataModel
         }
 
         #region Methods
+
+        public static void InitializeStore()
+        {
+            _store = StoreFactory.CreateStore(Models.ConnectionString);
+        }
 
         public static bool Exists(Uri uri)
         {

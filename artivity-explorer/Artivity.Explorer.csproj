@@ -22,6 +22,9 @@
     <OutputPath>bin\Release</OutputPath>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="Resources\Preferences.png">
@@ -106,8 +109,12 @@
       <SubType>Eto.Forms</SubType>
     </Compile>
     <Compile Include="Views\JournalViewListItem.cs" />
-    <Compile Include="Views\FileViewHeader.cs" />
-    <Compile Include="Controls\View.cs" />
+    <Compile Include="Views\FileViewHeader.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Controls\View.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Controls\ColourPickerCell.cs" />
     <Compile Include="Setup\SetupWizard.cs">
       <SubType>Eto.Forms</SubType>
@@ -115,17 +122,27 @@
     <Compile Include="Setup\SetupWizard.CompletePage.cs" />
     <Compile Include="Setup\SetupWizard.WelcomePage.cs" />
     <Compile Include="Controls\CanvasThumbnailCell.cs" />
-    <Compile Include="Controls\CanvasThumbnailRenderer.cs" />
+    <Compile Include="Controls\CanvasThumbnailRenderer.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Palette.cs" />
     <Compile Include="Extensions\RectangleExtensions.cs" />
     <Compile Include="Extensions\PointExtensions.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Commands\EditFileCommand.cs" />
-    <Compile Include="Controls\CircularImageView.cs" />
-    <Compile Include="Controls\DatabaseSettingsControl.cs" />
+    <Compile Include="Controls\CircularImageView.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Controls\DatabaseSettingsControl.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Options.cs" />
-    <Compile Include="Controls\DatabaseFactsChart.cs" />
-    <Compile Include="Controls\DatabaseSizeChart.cs" />
+    <Compile Include="Controls\DatabaseFactsChart.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Controls\DatabaseSizeChart.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -144,6 +161,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="Eto">
       <HintPath>..\packages\Eto.Forms.2.1.0\lib\net40\Eto.dll</HintPath>
@@ -166,6 +187,7 @@
     <Reference Include="OxyPlot.GtkSharp">
       <HintPath>..\packages\OxyPlot.GtkSharp.1.0.0-unstable1875\lib\net40\OxyPlot.GtkSharp.dll</HintPath>
     </Reference>
+    <Reference Include="System.configuration" />
     <Reference Include="VDS.Common">
       <HintPath>..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
@@ -177,9 +199,6 @@
     </Reference>
     <Reference Include="OpenLink.Data.Virtuoso">
       <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot.Wpf">
       <HintPath>..\packages\OxyPlot.Wpf.1.0.0-unstable1875\lib\net40\OxyPlot.Wpf.dll</HintPath>
@@ -232,10 +251,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-    <Folder Include="Views\" />
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\artivity-datamodel\Artivity.DataModel.csproj">
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
