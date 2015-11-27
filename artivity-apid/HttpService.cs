@@ -100,8 +100,8 @@ namespace Artivity.Api.Http
 
                     using (var monitor = FileSystemMonitor.Instance)
                     {
-                        monitor.Initialize();
-                        monitor.Start();
+                        //monitor.Initialize();
+                        //monitor.Start();
 
                         _wait.WaitOne();
                     }

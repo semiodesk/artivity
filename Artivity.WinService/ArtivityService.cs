@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 
 namespace Artivity.Api.Http
 {
@@ -72,7 +73,16 @@ namespace Artivity.Api.Http
 
         public void Start()
         {
-            _service.Start();
+            try
+            {
+                _service.Start(false);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.EventLog appLog = new System.Diagnostics.EventLog();
+                appLog.Source = "Artivity Service";
+                appLog.WriteEntry(e.ToString());
+            }
         }
 
         /// <summary>
@@ -81,8 +91,11 @@ namespace Artivity.Api.Http
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            _service.Start();
+            Thread startThread = new Thread(Start);
+            startThread.Start();
         }
+
+        
 
         protected override void OnStop()
         {
