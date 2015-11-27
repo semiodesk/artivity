@@ -33,7 +33,7 @@ namespace Artivity.Explorer
     {
         public static readonly Color AccentColor = Color.Parse("#3A81CC");
 
-        public static readonly Color DarkColor = Color.Parse("#42484a");
+        public static readonly Color DarkColor = Color.Parse("#313739");
 
         public static readonly Color LightColor = Color.Parse("#ffffff");
 

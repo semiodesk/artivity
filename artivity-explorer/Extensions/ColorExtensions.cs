@@ -46,6 +46,16 @@ namespace Artivity.Explorer
 
             return OxyColor.FromArgb(a, r, g, b);
         }
+
+        public static Color ToEtoColor(this System.Drawing.Color color)
+        {
+            byte a = color.A;
+            byte r = color.R;
+            byte g = color.G;
+            byte b = color.B;
+
+            return Color.FromArgb(r, g, b, a);
+        }
     }
 }
 

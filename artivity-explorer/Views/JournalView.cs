@@ -31,13 +31,13 @@ namespace Artivity.Explorer
             Items.Add(new StackLayoutItem(_header, HorizontalAlignment.Stretch, false));
             Items.Add(new StackLayoutItem(_grid, HorizontalAlignment.Stretch, true));
 
-            _grid.RowHeight = 50;
+            _grid.RowHeight = 60;
             _grid.AllowMultipleSelection = false;
             _grid.AllowColumnReordering = false;
+            _grid.Columns.Add(new GridColumn() { DataCell = new FormattedTextCell("FormattedLastEditingDate") { HorizontalAlign = HorizontalAlignment.Right }, HeaderText = "", Width = 85, AutoSize = false });
             _grid.Columns.Add(new GridColumn() { DataCell = new CanvasThumbnailCell("FilePath"), Width = 75, AutoSize = false, Resizable = false });
-            _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FileName"), HeaderText = "File", Width = 295, AutoSize = false });
-            _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedTotalEditingTime"), HeaderText = "Editing Time", Width = 90 });
-            _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FormattedLastEditingDate"), HeaderText = "Last Used", Width = 90 });
+            _grid.Columns.Add(new GridColumn() { DataCell = new TextBoxCell("FileName"), HeaderText = "File", Width = 355, AutoSize = false });
+            _grid.Columns.Add(new GridColumn() { DataCell = new FormattedTextCell("FormattedTotalEditingTime") { HorizontalAlign = HorizontalAlignment.Center }, HeaderText = "Editing Time", Width = 90 });
             _grid.CellDoubleClick += OnCellDoubleClick;
 
             Refresh();

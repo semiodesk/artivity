@@ -126,6 +126,7 @@
     <Compile Include="Options.cs" />
     <Compile Include="Controls\DatabaseFactsChart.cs" />
     <Compile Include="Controls\DatabaseSizeChart.cs" />
+    <Compile Include="Controls\FormattedTextCell.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

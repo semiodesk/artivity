@@ -22,7 +22,7 @@ namespace Artivity.Explorer
 
         public string FormattedLastEditingDate
         {
-            get { return " " + LastEditingDate.ToLocalTime().ToString("ddd, hh:mm"); }
+            get { return LastEditingDate.ToLocalTime().ToString("d MMM\nh:m"); }
         }
 
         [NotifyPropertyChanged]
