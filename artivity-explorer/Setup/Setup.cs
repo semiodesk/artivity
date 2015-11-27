@@ -56,7 +56,8 @@ namespace Artivity.Explorer
 
         public static string GetAppDataFolder()
         {
-            string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), _appDataFolderName);
+            // i.e. C:\Users\{User}\AppData\Roaming\artivity
+            string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), _appDataFolderName);
 
             if(!Directory.Exists(appData))
             {
