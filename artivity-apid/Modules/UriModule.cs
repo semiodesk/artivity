@@ -82,22 +82,23 @@ namespace Artivity.Api.Http
             }
         }
             
-        private string GetUri(string path)
+        private Uri GetUri(string path)
         {
-            return path.StartsWith("file://") ? path : "file://" + path;
+            FileInfo f = new FileInfo(path);
+            return f.ToUriRef();
         }
 
         private Response GetFileUri()
 		{
             Logger.LogRequest(HttpStatusCode.OK, Request);
 
-            string url = GetUri(Request.Query.file);
+            Uri url = GetUri(Request.Query.file);
 
             string queryString = @"
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
 
-                SELECT DISTINCT ?uri WHERE { ?v prov:specializationOf ?uri . ?uri nfo:fileUrl """ + url + "\" . } LIMIT 1";
+                SELECT DISTINCT ?uri WHERE { ?v prov:specializationOf ?uri . ?uri nfo:fileUrl """ + url.AbsoluteUri + "\" . } LIMIT 1";
 
             IModel model = Models.GetActivities();
 
