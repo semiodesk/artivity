@@ -21,6 +21,7 @@
 // AUTHORS:
 //
 //  Sebastian Faubel <sebastian@semiodesk.com>
+//  Moritz Eberl <moritz@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
@@ -48,13 +49,12 @@ namespace Artivity.Api.Http
 
         Virtuoso _instance = null;
         TinyVirtuoso _tinyVirtuoso;
+        NancyHost _host;
 
         #endregion
 
         public void Start(bool blocking = true)
         {
-
-
             SemiodeskDiscovery.Discover();
 
             string version = typeof(HttpService).Assembly.GetName().Version.ToString();
@@ -65,11 +65,13 @@ namespace Artivity.Api.Http
             InitializeDatabase();
 
             // Start the daemon in a new thread.
-            ServiceThread = new Thread(ServiceProcess);
 
+            ServiceThread = new Thread(ServiceProcess);
             ServiceThread.Start();
             if (blocking)
                 ServiceThread.Join();
+            
+            
 
         }
 
@@ -87,14 +89,15 @@ namespace Artivity.Api.Http
             Models.InitializeStore();
 
             HostConfiguration config = new HostConfiguration();
-            config.RewriteLocalhost = false;
+            config.RewriteLocalhost = true;
             config.UnhandledExceptionCallback = new Action<Exception>((ex) => { Console.WriteLine(ex); });
 
-            using (var host = new NancyHost(config, new Uri("http://localhost:" + Port)))
+            using (_host = new NancyHost(config, new Uri("http://localhost:" + Port)))
             {
+                
                 try
                 {
-                    host.Start();
+                    _host.Start();
 
                     Logger.LogInfo("Started listening on port {0}..", Port);
 
@@ -105,6 +108,9 @@ namespace Artivity.Api.Http
 
                         _wait.WaitOne();
                     }
+                }
+                catch (Exception e)
+                {
                 }
                 finally
                 {
@@ -183,6 +189,7 @@ namespace Artivity.Api.Http
                 _instance = _tinyVirtuoso.GetOrCreateInstance("Data");
                 _instance.Configuration.Parameters.ServerPort = "localhost:8273";
                 _instance.Configuration.SaveConfigFile();
+                _instance.RemoveLock();
                 _instance.Start();
 
                 Models.ConnectionString = _instance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Artivity.WinService
@@ -66,14 +67,14 @@ namespace Artivity.WinService
                 }
                 else if (opt != null && opt.ToLower() == "-debug")
                 {
-
-                    Service.Start();
-
+                    var  ServiceThread = new Thread(Service.Start);
+                    ServiceThread.Start();
                     Console.WriteLine("Press a key to stop...");
                     Console.Read();
+                    
                     Service.Stop();
                     Service.Dispose();
-
+                    ServiceThread.Join();
                 }
 
             }
