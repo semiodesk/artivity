@@ -181,6 +181,13 @@ void ActivityLog::addActivity(Activity* activity)
     }
 }
 
+void ActivityLog::removeActivity(Activity* activity)
+{
+    ActivityLogIterator it = std::find(_activities.begin(), _activities.end(), activity);
+    if (it != _activities.end())
+        _activities.erase(it);
+}
+
 Activity* ActivityLog::updateActivity(Activity* activity)
 {
     Activity* a = createResource<Activity>(activity->Uri.c_str());

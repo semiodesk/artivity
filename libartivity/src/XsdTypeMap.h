@@ -8,18 +8,18 @@
 
 namespace artivity
 {
-    typedef map<const char*, const Resource&>::iterator XsdTypeMapIterator;
+    typedef map<const char*, const char*>::iterator XsdTypeMapIterator;
     
-    class XsdTypeMap : public map<const char*, const Resource&>
+    class XsdTypeMap : public map<const char*, const char*>
     {
     public:
         XsdTypeMap()
         {
-            insert(pair<const char*, const Resource&>(typeid(int).name(), xsd::_int));
-            insert(pair<const char*, const Resource&>(typeid(long).name(), xsd::_long));
-            insert(pair<const char*, const Resource&>(typeid(float).name(), xsd::_float));
-            insert(pair<const char*, const Resource&>(typeid(double).name(), xsd::_double));
-            insert(pair<const char*, const Resource&>(typeid(const time_t*).name(), xsd::dateTime));
+            insert(pair<const char*, const char*>(typeid(int).name(), xsd::_int));
+            insert(pair<const char*, const char*>(typeid(long).name(), xsd::_long));
+            insert(pair<const char*, const char*>(typeid(float).name(), xsd::_float));
+            insert(pair<const char*, const char*>(typeid(double).name(), xsd::_double));
+            insert(pair<const char*, const char*>(typeid(const time_t*).name(), xsd::dateTime));
         }
         
         ~XsdTypeMap() {}
