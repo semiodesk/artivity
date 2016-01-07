@@ -58,6 +58,7 @@ namespace artivity
     string Serializer::toString(const time_t* value)
     {
         char buf[21];
+
 		#ifdef WIN32
 		tm* time = new tm();
 		gmtime_s(time, value);
@@ -66,8 +67,6 @@ namespace artivity
 		strftime(buf, 21, "%Y-%m-%dT%H:%M:%SZ", gmtime(value));
 		#endif
 
-       
-        
         return string(buf);
     }
     
