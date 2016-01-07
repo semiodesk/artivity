@@ -32,8 +32,6 @@
 #include "curlresponse.h"
 #include "ActivityLog.h"
 
-
-
 using namespace artivity;
 
 ActivityLog::ActivityLog() 
