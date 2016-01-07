@@ -75,7 +75,7 @@ namespace Artivity.Api.Http
         {
             try
             {
-                _service.Start(false);
+                _service.Start(true);
             }
             catch (Exception e)
             {
