@@ -9,6 +9,13 @@ namespace artivity
 {
     namespace art
     {
+        #ifdef CreateFile
+        #undef CreateFile
+        #endif
+        #ifdef DeleteFile
+        #undef DeleteFile
+        #endif
+
         // http://www.w3.org/ns/activitystreams#View
         static const char* Browse = ART("Browse");
         

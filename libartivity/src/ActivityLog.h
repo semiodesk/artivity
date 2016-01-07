@@ -190,6 +190,9 @@ namespace artivity
         
         // Add an activity to the transmitted RDF output.
         void addActivity(Activity* activity);
+
+        // Remove an activity
+        void removeActivity(Activity* activity);
         
         // Adds an associated agent to any activities which are being logged.
         void addAgent(Agent* agent);
