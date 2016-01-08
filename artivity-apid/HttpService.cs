@@ -27,29 +27,51 @@
 
 using System;
 using System.IO;
+using System.Configuration;
 using System.Threading;
-using Semiodesk.Trinity;
-using Artivity.DataModel;
+using System.Runtime.InteropServices;
+using System.Linq;
 using CommandLine;
 using Nancy.Hosting.Self;
+using Semiodesk.Trinity;
 using Semiodesk.TinyVirtuoso;
-using System.Runtime.InteropServices;
-using System.Configuration;
+using Artivity.DataModel;
 
 namespace Artivity.Api.Http
 {
     public class HttpService
     {
         #region Members
-        public const int Port = 8272;
-        public bool UpdateModels { get; set; }
-        protected Thread ServiceThread;
-        AutoResetEvent _wait = new AutoResetEvent(false);
-        AutoResetEvent _finalize = new AutoResetEvent(false);
 
-        Virtuoso _instance = null;
-        TinyVirtuoso _tinyVirtuoso;
-        NancyHost _host;
+        /// <summary>
+        /// The REST API service port.
+        /// </summary>
+        public const int ServicePort = 8272;
+
+        /// <summary>
+        /// The REST API service thread.
+        /// </summary>
+        protected Thread ServiceThread;
+
+        private NancyHost _serviceHost;
+
+        private AutoResetEvent _wait = new AutoResetEvent(false);
+
+        private AutoResetEvent _finalize = new AutoResetEvent(false);
+
+        /// <summary>
+        /// The Virtuoso database port.
+        /// </summary>
+        public const int VirtuosoPort = 8273;
+
+        private TinyVirtuoso _virtuoso;
+
+        private Virtuoso _virtuosoInstance = null;
+
+        /// <summary>
+        /// Indicates if the ontologies used for inferencing should be updated from the copies on the hard drive.
+        /// </summary>
+        public bool UpdateOntologies { get; set; }
 
         #endregion
 
@@ -62,17 +84,17 @@ namespace Artivity.Api.Http
             Console.WriteLine("Artivity Logging Service, Version {0}", version);
             Console.WriteLine();
 
+            // Make sure the database is started.
             InitializeDatabase();
 
             // Start the daemon in a new thread.
-
             ServiceThread = new Thread(ServiceProcess);
             ServiceThread.Start();
-            if (blocking)
-                ServiceThread.Join();
-            
-            
 
+            if (blocking)
+            {
+                ServiceThread.Join();
+            }
         }
 
         public void Stop()
@@ -90,31 +112,27 @@ namespace Artivity.Api.Http
 
             HostConfiguration config = new HostConfiguration();
             config.RewriteLocalhost = true;
-            config.UnhandledExceptionCallback = new Action<Exception>((ex) => { Console.WriteLine(ex); });
-
-            using (_host = new NancyHost(config, new Uri("http://localhost:" + Port)))
+            config.UnhandledExceptionCallback = new Action<Exception>((ex) =>
             {
-                
+                Logger.LogError(ex.Message);
+            });
+
+            using (_serviceHost = new NancyHost(config, new Uri("http://localhost:" + ServicePort)))
+            {
                 try
                 {
-                    _host.Start();
+                    _serviceHost.Start();
 
-                    Logger.LogInfo("Started listening on port {0}..", Port);
+                    Logger.LogInfo("Started listening on port {0}..", ServicePort);
 
                     using (var monitor = FileSystemMonitor.Instance)
                     {
-                        //monitor.Initialize();
-                        //monitor.Start();
-
                         _wait.WaitOne();
                     }
                 }
-                catch (Exception e)
-                {
-                }
                 finally
                 {
-                    Logger.LogInfo("Stopped listening on port {0}..", Port);
+                    Logger.LogInfo("Stopped listening on port {0}..", ServicePort);
                 }
             }
 
@@ -123,15 +141,16 @@ namespace Artivity.Api.Http
 
         private string GetConnectionStringFromConfiguration()
         {
-            string name = "virt0";
-            foreach (ConnectionStringSettings setting in ConfigurationManager.ConnectionStrings)
-            {
-                if (!string.IsNullOrEmpty(name) && setting.Name != name)
-                    continue;
+            string configName = "virt0";
 
-                return setting.ConnectionString;
-                
+            foreach (ConnectionStringSettings s in ConfigurationManager.ConnectionStrings)
+            {
+                if (s.Name == configName)
+                {
+                    return s.ConnectionString;
+                }
             }
+
             return null;
         }
 
@@ -139,8 +158,7 @@ namespace Artivity.Api.Http
         {
             IStore store = StoreFactory.CreateStore(Models.ConnectionString);
 
-
-            if (UpdateModels)
+            if (UpdateOntologies)
             {
                 Logger.LogInfo("Updating ontologies.");
 
@@ -174,60 +192,68 @@ namespace Artivity.Api.Http
 
                 store.CreateModel(Models.Monitoring);
             }
+
             store.Dispose();
         }
 
         private void InitializeDatabase()
         {
-            
-            if (System.Environment.OSVersion.Platform != PlatformID.Unix || IsRunningOnMac())
+            if (Environment.OSVersion.Platform != PlatformID.Unix || IsRunningOnMac())
             {
-                Console.WriteLine("Starting Virtuoso database...");
-                // We are running on Windows or Mac -> We need to start the TinyVirtuoso
+                // We are running on Windows or Mac. Start the database using TinyVirtuoso..
+                Logger.LogInfo("Starting the OpenLink Virtuoso database on port {0}...", VirtuosoPort);
+
                 string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                _tinyVirtuoso = new TinyVirtuoso(Path.Combine(appData, "Artivity"));
-                _instance = _tinyVirtuoso.GetOrCreateInstance("Data");
-                _instance.Configuration.Parameters.ServerPort = "localhost:8273";
-                _instance.Configuration.SaveConfigFile();
-                _instance.RemoveLock();
-                _instance.Start();
 
-                Models.ConnectionString = _instance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";
+                // The database is started in the user's application data folder on port 8273..
+                _virtuoso = new TinyVirtuoso(Path.Combine(appData, "Artivity"));
+                _virtuosoInstance = _virtuoso.GetOrCreateInstance("Data");
+                _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("localhost:{0}", VirtuosoPort);
+                _virtuosoInstance.Configuration.SaveConfigFile();
+                _virtuosoInstance.RemoveLock();
+                _virtuosoInstance.Start();
 
-            }else
+                Models.ConnectionString = _virtuosoInstance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";
+            }
+            else
             {
-                // We are running on Linux
+                // We are running on Linux..
                 Models.ConnectionString = GetConnectionStringFromConfiguration();
             }
-            
+        }
+
+        static bool IsRunningOnMac()
+        {
+            string os = string.Empty;
+
+            IntPtr buffer = IntPtr.Zero;
+
+            try
+            {
+                buffer = Marshal.AllocHGlobal(8192);
+
+                // This is a hacktastic way of getting sysname from uname()..
+                if (uname(buffer) == 0)
+                {
+                    os = Marshal.PtrToStringAnsi(buffer).ToLowerInvariant();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message);
+            }
+            finally
+            {
+                if (buffer != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(buffer);
+                }
+            }
+
+            return os == "darwin";;
         }
 
         [DllImport("libc")]
         static extern int uname(IntPtr buf);
-        static bool IsRunningOnMac()
-        {
-            IntPtr buf = IntPtr.Zero;
-            try
-            {
-                buf = Marshal.AllocHGlobal(8192);
-                // This is a hacktastic way of getting sysname from uname ()
-                if (uname(buf) == 0)
-                {
-                    string os = Marshal.PtrToStringAnsi(buf);
-                    if (os == "Darwin")
-                        return true;
-                }
-            }
-            catch
-            {
-            }
-            finally
-            {
-                if (buf != IntPtr.Zero)
-                    Marshal.FreeHGlobal(buf);
-            }
-            return false;
-        }
     }
-	
 }

@@ -7,7 +7,7 @@ namespace Artivity.Api.Http
     {
         #region Members
 
-        [Option('u', "update", Required = false, HelpText = "Updates the ontologies in the database which are used for inferencing.")]
+        [Option('u', "update", Required = false, HelpText = "Update the ontologies in the database which are used for inferencing.")]
         public bool Update { get; set; }
 
         #endregion
