@@ -12,12 +12,12 @@ namespace artivity
     public:
         Person() : Resource(UriGenerator::getUri())
         {
-            setValue(rdf::_type, prov::Person);
+            setType(prov::Person);
         }
         
         Person(const char* uriref) : Resource(uriref)
         {
-            setValue(rdf::_type, prov::Person);
+            setType(prov::Person);
         }
     };
 }

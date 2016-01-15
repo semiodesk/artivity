@@ -10,12 +10,12 @@ namespace artivity
     public:
         Invalidation() : ActivityInfluence()
         {
-            Resource::setValue(rdf::_type, prov::Invalidation);
+            setType(prov::Invalidation);
         }
         
         Invalidation(const char* uriref) : ActivityInfluence(uriref)
         {
-            Resource::setValue(rdf::_type, prov::Invalidation);
+            setType(prov::Invalidation);
         }
     };
 }

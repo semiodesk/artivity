@@ -70,6 +70,7 @@ namespace artivity
         
         void setType(const Resource* type);
         void setType(const Resource& type);
+        void setType(const char* value);
         
         const Resource* getType();
         

@@ -27,12 +27,12 @@ namespace artivity
     public:
         ActivityInfluence() : Resource(UriGenerator::getUri())
         {
-            Resource::setValue(rdf::_type, prov::ActivityInfluence);
+            setType( prov::ActivityInfluence);
         }
         
         ActivityInfluence(const char* uriref) : Resource(uriref)
         {
-            Resource::setValue(rdf::_type, prov::ActivityInfluence);
+            setType(prov::ActivityInfluence);
         }
         
         Viewport* getViewport()

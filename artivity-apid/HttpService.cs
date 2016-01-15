@@ -214,6 +214,7 @@ namespace Artivity.Api.Http
                 _virtuosoInstance.Start();
 
                 Models.ConnectionString = _virtuosoInstance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";
+                Models.NativeConnectionString = _virtuosoInstance.GetAdoNetConnectionString();
             }
             else
             {

@@ -12,12 +12,12 @@ namespace artivity
     public:
         Agent() : Resource(UriGenerator::getUri())
         {
-            setValue(rdf::_type, prov::Agent);
+            setType(prov::Agent);
         }
         
         Agent(const char* uriref) : Resource(uriref)
         {
-            setValue(rdf::_type, prov::Agent);
+            setType(prov::Agent);
         }
     };
 }

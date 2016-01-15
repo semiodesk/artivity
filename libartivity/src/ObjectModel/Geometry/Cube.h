@@ -21,12 +21,12 @@ namespace artivity
     public:
         Cube() : Geometry()
         {
-            setValue(rdf::_type, art::Cube);
+            setType(art::Cube);
         }
         
         Cube(const char* uriref) : Geometry(uriref)
         {
-            setValue(rdf::_type, art::Cube);
+            setType(art::Cube);
         }
         
         Point* getPosition()

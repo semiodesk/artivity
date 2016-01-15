@@ -28,14 +28,14 @@ namespace artivity
         {
             _url = "";
             
-            setValue(rdf::_type, nfo::FileDataObject);
+            setType(nfo::FileDataObject);
         }
         
         FileDataObject(const char* uriref) : Entity(uriref)
         {
             _url = "";
             
-            setValue(rdf::_type, nfo::FileDataObject);
+            setType(nfo::FileDataObject);
         }
         
         const char* getUrl()

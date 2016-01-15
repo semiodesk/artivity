@@ -275,7 +275,19 @@ FileDataObject* ActivityLog::getFile()
     }
 }
 
-const char* ActivityLog::getFileUri(string path)
+string ActivityLog::getLatestVersionUri(string path)
+{
+    string data;
+    stringstream url;
+    url << "http://localhost:8272/artivity/1.0/uri?latestVersion=" << escapePath(path);
+
+    CURL* curl = initializeRequest();
+    executeRequest(curl, url.str(), "", data);
+
+    return data.length() > 2 ? data.substr(1, data.length() - 2) : "";
+}
+
+string ActivityLog::getFileUri(string path)
 {
     string data = "";
     stringstream url;
@@ -284,10 +296,10 @@ const char* ActivityLog::getFileUri(string path)
     CURL* curl = initializeRequest();    
     executeRequest(curl, url.str(), "", data);
     
-    return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : UriGenerator::getUri().c_str();
+    return data.length() > 2 ? data.substr(1, data.length() - 2) : UriGenerator::getUri();
 }
 
-const char* ActivityLog::getCanvasUri(string path)
+string ActivityLog::getCanvasUri(string path)
 {
     string data = "";
     stringstream url;
@@ -296,7 +308,7 @@ const char* ActivityLog::getCanvasUri(string path)
     CURL* curl = initializeRequest();   
     executeRequest(curl, url.str(), "", data);
     
-    return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : UriGenerator::getUri().c_str();
+    return data.length() > 2 ? data.substr(1, data.length() - 2) : UriGenerator::getUri();
 }
 
 void ActivityLog::createCanvas(FileDataObject* file, double width, double height, const Resource* lengthUnit)
@@ -361,18 +373,6 @@ Canvas* ActivityLog::getCanvas()
 bool ActivityLog::hasCanvas(double width, double height, const Resource* lengthUnit)
 {
     return _canvasUri != "" && _canvasWidth == width && _canvasHeight == height && _canvasUnit == lengthUnit;
-}
-
-const char* ActivityLog::getLatestVersionUri(string path)
-{
-    string data;
-    stringstream url;
-    url << "http://localhost:8272/artivity/1.0/uri?latestVersion=" << escapePath(path);
- 
-    CURL* curl = initializeRequest();   
-    executeRequest(curl, url.str(), "", data);
-    
-    return data.length() > 2 ? data.substr(1, data.length() - 2).c_str() : "";
 }
 
 void ActivityLog::transmit()
@@ -527,7 +527,7 @@ string ActivityLog::escapePath(string path)
     {
         char c = path[i];
         
-        if(c == '/' || c == '\\')
+        if(c == '/' || c == '\\' || c == ':')
         {            
             if(!token.empty())
             {
@@ -540,7 +540,10 @@ string ActivityLog::escapePath(string path)
                 token = "";
             }
             
-            result << c;
+            if (c == '\\')
+                result << '/';
+            else
+                result << c;
         }
         else
         {

@@ -15,7 +15,7 @@ namespace artivity
         _invalidatedEntities = new list<Entity*>();
         _generatedEntities = new list<Entity*>();
         
-        setValue(rdf::_type, prov::Activity);
+        setType(prov::Activity);
     }
     
     Activity::Activity(const char* uriref) : Resource(uriref)
@@ -25,7 +25,7 @@ namespace artivity
         _invalidatedEntities = new list<Entity*>();
         _generatedEntities = new list<Entity*>();
         
-        setValue(rdf::_type, prov::Activity);
+        setType(prov::Activity);
     }
 
     Activity::~Activity()

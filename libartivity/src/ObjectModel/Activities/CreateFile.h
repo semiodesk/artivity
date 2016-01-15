@@ -12,12 +12,12 @@ namespace artivity
     public:
         CreateFile() : Activity()
         {
-            setValue(rdf::_type, art::CreateFile);
+            setType(art::CreateFile);
         }
         
         CreateFile(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, art::CreateFile);
+            setType(art::CreateFile);
         }
     };
 }

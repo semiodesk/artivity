@@ -91,7 +91,7 @@ namespace Artivity.Api.Http
 
         private void AddResources(IModel model, Stream stream)
         {
-            string connectionString = "Server=localhost:1111;uid=dba;pwd=dba;Charset=utf-8";
+            string connectionString = Models.NativeConnectionString;
 
             using (StreamReader reader = new StreamReader(stream))
             {

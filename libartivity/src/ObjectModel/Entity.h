@@ -27,14 +27,14 @@ namespace artivity
         {
             _genericEntities = new list<Entity*>();
             
-            setValue(rdf::_type, prov::Entity);
+            setType(prov::Entity);
         }
         
         Entity(const char* uriref) : Resource(uriref)
         {
             _genericEntities = new list<Entity*>();
             
-            setValue(rdf::_type, prov::Entity);
+            setType(prov::Entity);
         }
         
         virtual ~Entity()

@@ -12,12 +12,12 @@ namespace artivity
     public:
         DeleteFile() : Activity()
         {
-            setValue(rdf::_type, art::DeleteFile);
+            setType(art::DeleteFile);
         }
         
         DeleteFile(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, art::DeleteFile);
+            setType(art::DeleteFile);
         }
     };
 }

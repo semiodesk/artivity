@@ -10,12 +10,12 @@ namespace artivity
     public:
         Generation() : ActivityInfluence()
         {
-            Resource::setValue(rdf::_type, prov::Generation);
+            Resource::setType(prov::Generation);
         }
         
         Generation(const char* uriref) : ActivityInfluence(uriref)
         {
-            Resource::setValue(rdf::_type, prov::Generation);
+            Resource::setType(prov::Generation);
         }
     };
 }

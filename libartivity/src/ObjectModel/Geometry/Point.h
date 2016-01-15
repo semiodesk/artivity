@@ -19,12 +19,12 @@ namespace artivity
     public:
         Point() : Resource(UriGenerator::getUri())
         {
-            setValue(rdf::_type, art::Point);
+            setType(art::Point);
         }
         
         Point(const char* uriref) : Resource(uriref)
         {
-            setValue(rdf::_type, art::Point);
+            setType(art::Point);
         }
         
         double getX()

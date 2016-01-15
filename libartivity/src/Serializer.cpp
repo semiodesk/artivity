@@ -105,17 +105,24 @@ namespace artivity
                     out << "<" << x.Value->Uri << ">";
                 }
                 else if(x.LiteralType != NULL)
-                {                    
-                    out << "\"" << x.LiteralValue << "\"";
-                    
-                    XsdTypeMapIterator it = TYPE_MAP.find(x.LiteralType);
-                    
-					if (it != TYPE_MAP.end())
+                {
+                    if (x.LiteralType == typeid(Resource).name())
                     {
-                        out << "^^" << it->second;
+                        out << "<" << x.LiteralValue << ">";
+                    }
+                    else
+                    {
+                        out << "\"" << x.LiteralValue << "\"";
+
+                        XsdTypeMapIterator it = TYPE_MAP.find(x.LiteralType);
+
+                        if (it != TYPE_MAP.end())
+                        {
+                            out << "^^<" << it->second << ">";
+                        }
                     }
                 }
-                
+
                 it++;
             }
             

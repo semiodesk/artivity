@@ -194,12 +194,17 @@ namespace artivity
 
     void Resource::setType(const Resource* type)
     {
-        Properties.setProperty(rdf::_type, type);
+        Properties.setProperty(rdf::_type, type->Uri, typeid(Resource));
     }
 
     void Resource::setType(const Resource& type)
     {
-        Properties.setProperty(rdf::_type, &type);
+        Properties.setProperty(rdf::_type, type.Uri, typeid(Resource));
+    }
+
+    void Resource::setType(const char* value)
+    {
+        Properties.setProperty(rdf::_type, Serializer::toString(value), typeid(Resource));
     }
     
     const Resource* Resource::getType()

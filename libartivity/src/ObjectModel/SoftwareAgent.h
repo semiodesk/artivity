@@ -13,12 +13,12 @@ namespace artivity
     public:
         SoftwareAgent() : Agent()
         {
-            setValue(rdf::_type, prov::SoftwareAgent);
+            setType(prov::SoftwareAgent);
         }
         
         SoftwareAgent(const char* uriref) : Agent(uriref)
         {
-            setValue(rdf::_type, prov::SoftwareAgent);
+            setType(prov::SoftwareAgent);
         }
     };
 }

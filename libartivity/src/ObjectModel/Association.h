@@ -22,7 +22,7 @@ namespace artivity
             _agent = NULL;
             _role = NULL;
             
-            setValue(rdf::_type, prov::Association);
+            setType(prov::Association);
         }
         
         Association(const char* uriref) : Resource(uriref)
@@ -30,7 +30,7 @@ namespace artivity
             _agent = NULL;
             _role = NULL;
             
-            setValue(rdf::_type, prov::Association);
+            setType(prov::Association);
         }
         
         virtual ~Association() {}

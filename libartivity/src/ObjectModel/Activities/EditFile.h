@@ -12,12 +12,12 @@ namespace artivity
     public:
         EditFile() : Activity()
         {
-            setValue(rdf::_type, art::EditFile);
+            setType(art::EditFile);
         }
         
         EditFile(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, art::EditFile);
+            setType(art::EditFile);
         }
     };
 }
