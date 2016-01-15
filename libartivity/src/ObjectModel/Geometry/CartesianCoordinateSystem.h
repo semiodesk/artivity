@@ -12,12 +12,12 @@ namespace artivity
     public:
         CartesianCoordinateSystem() : CoordinateSystem()
         {
-            setValue(rdf::_type, art::CartesianCoordinateSystem);
+            setType(art::CartesianCoordinateSystem);
         }
         
         CartesianCoordinateSystem(const char* uriref) : CoordinateSystem(uriref)
         {
-            setValue(rdf::_type, art::CartesianCoordinateSystem);
+            setType(art::CartesianCoordinateSystem);
         }
     };
 }

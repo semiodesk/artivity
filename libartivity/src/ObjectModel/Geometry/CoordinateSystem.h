@@ -19,12 +19,12 @@ namespace artivity
     public:
         CoordinateSystem() : Resource(UriGenerator::getUri())
         {
-            setValue(rdf::_type, art::CoordinateSystem);
+            setType(art::CoordinateSystem);
         }
         
         CoordinateSystem(const char* uriref) : Resource(uriref)
         {
-            setValue(rdf::_type, art::CoordinateSystem);
+            setType(art::CoordinateSystem);
         }
 
         int getCoordinateDimension()

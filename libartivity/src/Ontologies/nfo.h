@@ -1,14 +1,13 @@
 #ifndef NFO_H
 #define NFO_H
 
-
-
 #define NFO(label) "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#"label;
 
 namespace artivity
 {
     namespace nfo
     {
+        
 		static const char* FileDataObject = NFO("FileDataObject");
         static const char* WebDataObject = NFO("WebDataObject");
 

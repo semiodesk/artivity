@@ -20,12 +20,12 @@ namespace artivity
     public:
         Rectangle() : Geometry()
         {
-            setValue(rdf::_type, art::Rectangle);
+            setType(art::Rectangle);
         }
         
         Rectangle(const char* uriref) : Geometry(uriref)
         {
-            setValue(rdf::_type, art::Rectangle);
+            setType(art::Rectangle);
         }
         
         Point* getPosition()

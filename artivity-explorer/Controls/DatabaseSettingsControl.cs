@@ -165,6 +165,9 @@ namespace Artivity.Explorer
 
         private void OnFilePickerButtonClick(object sender, EventArgs e)
         {
+            if (_database == null)
+                return;
+
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.FileName = new Uri(_database.Url).LocalPath;
             dialog.CheckFileExists = true;

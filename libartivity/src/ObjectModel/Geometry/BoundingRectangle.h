@@ -12,12 +12,12 @@ namespace artivity
     public:
         BoundingRectangle() : Rectangle()
         {
-            setValue(rdf::_type, art::BoundingRectangle);
+            setType(art::BoundingRectangle);
         }
         
         BoundingRectangle(const char* uriref) : Rectangle(uriref)
         {
-            setValue(rdf::_type, art::BoundingRectangle);
+            setType(art::BoundingRectangle);
         }
     };
 }

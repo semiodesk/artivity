@@ -12,12 +12,12 @@ namespace artivity
     public:
         Role() : Resource(UriGenerator::getUri())
         {
-            setValue(rdf::_type, prov::Role);
+            setType(prov::Role);
         }
         
         Role(const char* uriref) : Resource(uriref)
         {
-            setValue(rdf::_type, prov::Role);
+            setType(prov::Role);
         }
     };
 }

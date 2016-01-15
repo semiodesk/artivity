@@ -86,11 +86,11 @@ namespace artivity
         
         string getTime();
 
-        const char* getFileUri(string path);
+        string getFileUri(string path);
 
-        const char* getCanvasUri(string path);
+        string getCanvasUri(string path);
         
-        const char* getLatestVersionUri(string path);
+        string getLatestVersionUri(string path);
         
         void createCanvas(FileDataObject* file, double width, double height, const Resource* unit);
         
@@ -207,6 +207,8 @@ namespace artivity
         CreateFile* createFile(double width, double height, const Resource* lengthUnit);
         
         FileDataObject* getFile();
+
+        string getFilePath() { return _filePath; }
                         
         bool hasCanvas(double width, double height, const Resource* lengthUnit);
         

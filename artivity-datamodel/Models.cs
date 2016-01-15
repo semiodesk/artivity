@@ -38,6 +38,8 @@ namespace Artivity.DataModel
 
         public static string ConnectionString;
 
+        public static string NativeConnectionString;
+
         public static Uri Agents;
 
         public static Uri Activities;

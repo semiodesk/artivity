@@ -12,12 +12,12 @@ namespace artivity
     public:
         Browse() : Activity()
         {
-            setValue(rdf::_type, art::Browse);
+            setType(art::Browse);
         }
         
         Browse(const char* uriref) : Activity(uriref)
         {
-            setValue(rdf::_type, art::Browse);
+            setType(art::Browse);
         }
     };
 }

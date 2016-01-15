@@ -12,12 +12,12 @@ namespace artivity
     public:
         BoundingCube() : Cube()
         {
-            setValue(rdf::_type, art::BoundingCube);
+            setType(art::BoundingCube);
         }
         
         BoundingCube(const char* uriref) : Cube(uriref)
         {
-            setValue(rdf::_type, art::BoundingCube);
+            setType(art::BoundingCube);
         }
     };
 }

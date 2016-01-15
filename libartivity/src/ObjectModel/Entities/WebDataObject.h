@@ -12,12 +12,12 @@ namespace artivity
     public:
         WebDataObject() : Entity()
         {
-            setValue(rdf::_type, nfo::WebDataObject);
+            setType(nfo::WebDataObject);
         }
         
         WebDataObject(const char* uriref) : Entity(uriref)
         {
-            setValue(rdf::_type, nfo::WebDataObject);
+            setType(nfo::WebDataObject);
         }
     };
 }

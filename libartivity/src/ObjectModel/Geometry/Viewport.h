@@ -15,12 +15,12 @@ namespace artivity
     public:
         Viewport() : Rectangle()
         {
-            setValue(rdf::_type, art::Viewport);
+            setType(art::Viewport);
         }
         
         Viewport(const char* uriref) : Rectangle(uriref)
         {
-            setValue(rdf::_type, art::Viewport);
+            setType(art::Viewport);
         }
         
         double getZoomFactor()

@@ -267,10 +267,11 @@ namespace Artivity.Explorer
                     agents = store.GetModel(Models.Agents);
                 }
                     
-                InstallAgent(agents, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
-                InstallAgent(agents, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
-                InstallAgent(agents, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
-                InstallAgent(agents, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
+                InstallAgentIfMissing(agents, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
+                InstallAgentIfMissing(agents, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
+                InstallAgentIfMissing(agents, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
+                InstallAgentIfMissing(agents, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
+                InstallAgentIfMissing(agents, "application://photoshop.desktop", "Photoshop", "photoshop", "#EE2000", true);
 
                 IModel activities;
 
@@ -311,14 +312,13 @@ namespace Artivity.Explorer
             }
         }
 
-        public static void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
+        public static void InstallAgentIfMissing(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
         {
-            Console.WriteLine("Installing agent {0}..", name);
-
             UriRef agentUri = new UriRef(uri);
 
             if (!model.ContainsResource(agentUri))
             {
+                Console.WriteLine("Installing agent {0}..", name);
                 SoftwareAgent agent = model.CreateResource<SoftwareAgent>(agentUri);
                 agent.Name = name;
                 agent.ExecutableName = executableName;
@@ -331,13 +331,6 @@ namespace Artivity.Explorer
                 bool modified = false;
 
                 SoftwareAgent agent = model.GetResource<SoftwareAgent>(agentUri);
-
-                if(!agent.HasProperty(rdf.type, prov.SoftwareAgent))
-                {
-                    agent.AddProperty(rdf.type, prov.SoftwareAgent);
-
-                    modified = true;
-                }
 
                 if (agent.Name != name)
                 {
@@ -355,6 +348,7 @@ namespace Artivity.Explorer
 
                 if (modified)
                 {
+                    Console.WriteLine("Updating agent {0}..", name);
                     agent.Commit();
                 }
             }
@@ -443,7 +437,29 @@ namespace Artivity.Explorer
             return user != null && user.EmailAddress != null;
         }
 
+        internal static void VerfiyIntegrity()
+        {
+            IStore store = StoreFactory.CreateStore(Models.ConnectionString);
+
+            IModel agents;
+
+            if (!store.ContainsModel(Models.Agents))
+            {
+                agents = store.CreateModel(Models.Agents);
+            }
+            else
+            {
+                agents = store.GetModel(Models.Agents);
+            }
+
+            InstallAgentIfMissing(agents, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
+            InstallAgentIfMissing(agents, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
+            InstallAgentIfMissing(agents, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
+            InstallAgentIfMissing(agents, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
+            InstallAgentIfMissing(agents, "application://photoshop.desktop", "Photoshop", "photoshop", "#EE2000", true);
+        }
         #endregion
+
     }
 }
 

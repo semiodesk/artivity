@@ -33,9 +33,16 @@ namespace Artivity.Explorer
                 Models.Monitoring = new Uri("http://localhost:8890/artivity/1.0/monitoring");
             }
 
-            if (!Setup.HasModels() && !Setup.InstallModels())
+            if (!Setup.HasModels())
             {
-                throw new Exception("Failed to setup the database.");
+                if (!Setup.InstallModels())
+                {
+                    throw new Exception("Failed to setup the database.");
+                }
+            }
+            else
+            {
+                Setup.VerfiyIntegrity();
             }
 
             try

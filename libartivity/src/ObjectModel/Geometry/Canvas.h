@@ -18,12 +18,12 @@ namespace artivity
     public:
         Canvas() : Rectangle()
         {
-            setValue(rdf::_type, art::Canvas);
+            setType(art::Canvas);
         }
         
         Canvas(const char* uriref) : Rectangle(uriref)
         {
-            setValue(rdf::_type, art::Canvas);
+            setType(art::Canvas);
         }
         
         CoordinateSystem* getCoordinateSystem()

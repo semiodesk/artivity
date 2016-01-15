@@ -12,12 +12,12 @@ namespace artivity
     public:
         Geometry() : Resource(UriGenerator::getUri())
         {
-            setValue(rdf::_type, art::Geometry);
+            setType(art::Geometry);
         }
         
         Geometry(const char* uriref) : Resource(uriref)
         {
-            setValue(rdf::_type, art::Geometry);
+            setType(art::Geometry);
         }
     };
 }

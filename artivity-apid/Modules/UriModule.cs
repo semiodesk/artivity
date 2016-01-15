@@ -124,7 +124,8 @@ namespace Artivity.Api.Http
         {
             Logger.LogRequest(HttpStatusCode.OK, Request);
 
-            string url = GetUri(Request.Query.canvas);
+            string canvas = Request.Query.canvas;
+            Uri url = GetUri(canvas);
 
             string queryString = @"
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -157,7 +158,8 @@ namespace Artivity.Api.Http
         {
             Logger.LogRequest(HttpStatusCode.OK, Request);
 
-            string url = GetUri(Request.Query.latestVersion);
+            string latestVersion = Request.Query.latestVersion;
+            Uri url = GetUri(latestVersion);
 
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
