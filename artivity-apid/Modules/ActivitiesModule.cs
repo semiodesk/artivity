@@ -66,6 +66,7 @@ namespace Artivity.Api.Http
 
 		private HttpStatusCode PostActivity()
 		{
+            string data = "";
             try
             {
                 UpdateMonitoring();
@@ -77,7 +78,7 @@ namespace Artivity.Api.Http
         			return Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
         		}
 
-                string data = ToString(Request.Body);
+                data = ToString(Request.Body);
 
         		AddResources(model, ToMemoryStream(data));
 
@@ -85,7 +86,7 @@ namespace Artivity.Api.Http
             }
             catch(Exception e)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e, data);
             }
 		}
 
