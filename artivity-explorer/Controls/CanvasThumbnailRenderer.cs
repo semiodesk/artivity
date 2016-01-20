@@ -125,10 +125,12 @@ namespace Artivity.Explorer
 
         public Size Measure(int width, int height)
         {
-            Graphics graphics = new Graphics(new Bitmap(Size, PixelFormat.Format24bppRgb));
+            if (width > 0 && height > 0)
+            {
+                Graphics graphics = new Graphics(new Bitmap(new Size(width, height), PixelFormat.Format24bppRgb));
 
-            RenderCanvas(graphics, new RectangleF(0, 0, width, height));
-
+                RenderCanvas(graphics, new RectangleF(0, 0, width, height));
+            }
             return RenderSize;
         }
 
