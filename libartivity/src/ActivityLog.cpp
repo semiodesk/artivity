@@ -440,6 +440,7 @@ long ActivityLog::executeRequest(CURL* curl, string url, string postFields, stri
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 500);
     
     if(postFields.length() > 0)
     {
