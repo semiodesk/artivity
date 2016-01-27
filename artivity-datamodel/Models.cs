@@ -41,12 +41,16 @@ namespace Artivity.DataModel
         public static string NativeConnectionString;
 
         public static Uri Agents;
+        public static IModel AgentsModel;
 
         public static Uri Activities;
+        public static IModel ActivitiesModel;
 
         public static Uri WebActivities;
+        public static IModel WebActivitiesModel;
 
         public static Uri Monitoring;
+        public static IModel MonitoringModel;
 
         #endregion
 
@@ -65,6 +69,10 @@ namespace Artivity.DataModel
         public static void InitializeStore()
         {
             _store = StoreFactory.CreateStore(Models.ConnectionString);
+            AgentsModel = _store.GetModel(Agents);
+            ActivitiesModel = _store.GetModel(Activities);
+            WebActivitiesModel = _store.GetModel(WebActivities);
+            MonitoringModel = _store.GetModel(Monitoring);
         }
 
         public static bool Exists(Uri uri)
@@ -95,22 +103,22 @@ namespace Artivity.DataModel
 
         public static IModel GetAgents(IStore store = null)
         {
-            return _store.GetModel(Agents);
+            return AgentsModel;
         }
 
         public static IModel GetActivities(IStore store = null)
         {
-            return _store.GetModel(Activities);
+            return ActivitiesModel;
         }
 
         public static IModel GetWebActivities(IStore store = null)
         {
-            return _store.GetModel(WebActivities);
+            return WebActivitiesModel;
         }
 
         public static IModel GetMonitoring(IStore store = null)
         {
-            return _store.GetModel(Monitoring);
+            return MonitoringModel;
         }
 
         #endregion

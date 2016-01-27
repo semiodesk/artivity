@@ -127,7 +127,8 @@ void ActivityLog::clear()
         rit++;
     }
     
-    _resources.clear();
+    if (_resources.size() > 0)
+        _resources.clear();
 }
 
 ResourceIterator ActivityLog::findResource(const char* uri)
@@ -440,7 +441,7 @@ long ActivityLog::executeRequest(CURL* curl, string url, string postFields, stri
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 500);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
     
     if(postFields.length() > 0)
     {
