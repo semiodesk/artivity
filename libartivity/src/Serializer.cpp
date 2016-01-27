@@ -83,6 +83,9 @@ namespace artivity
     {
         if(format == N3)
         {               
+            if (resource.Properties.size() == 0)
+                return out;
+
             out << resource;
             
             PropertyMapIterator it = resource.Properties.begin();

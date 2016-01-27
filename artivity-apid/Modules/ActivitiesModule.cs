@@ -41,6 +41,7 @@ using Nancy;
 using Nancy.IO;
 using Nancy.ModelBinding;
 using VDS.RDF;
+using System.Threading.Tasks;
 
 namespace Artivity.Api.Http
 {
@@ -49,7 +50,7 @@ namespace Artivity.Api.Http
         #region Members
 
         private static readonly Dictionary<string, Browse> _activities = new Dictionary<string, Browse>();
-
+        private static object _modelLock = new object();
         #endregion
 
 		#region Constructors
@@ -67,28 +68,37 @@ namespace Artivity.Api.Http
 		private HttpStatusCode PostActivity()
 		{
             string data = "";
+            
+            data = ToString(Request.Body);
+            new Task(() => StoreData(data)).Start();
+            // We just return okay because we want the data provider to continue with it's work as fast as possible.
+            return HttpStatusCode.OK;
+		}
+
+        private void StoreData(string data)
+        {
             try
             {
-                UpdateMonitoring();
+                lock (_modelLock)
+                {
+                    UpdateMonitoring();
 
-                IModel model = Models.GetActivities();
+                    IModel model = Models.GetActivities();
 
-        		if(model == null)
-        		{
-        			return Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
-        		}
+                    if (model == null)
+                    {
+                        Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
+                    }
 
-                data = ToString(Request.Body);
-
-        		AddResources(model, ToMemoryStream(data));
-
-                return Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
+                    AddResources(model, ToMemoryStream(data));
+                }
+                Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e, data);
+                 Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e, data);
             }
-		}
+        }
 
         private void AddResources(IModel model, Stream stream)
         {
@@ -107,6 +117,7 @@ namespace Artivity.Api.Http
 
                         graph.BaseUri = model.Uri;
 
+                        
                         m.UpdateGraph(model.Uri, graph.Triples, new List<Triple>());
                     }
                 }
