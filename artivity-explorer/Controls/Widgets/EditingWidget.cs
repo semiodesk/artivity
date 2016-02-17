@@ -87,7 +87,7 @@ namespace Artivity.Explorer.Controls
 
 		public void Update(Uri fileUrl)
 		{
-            IModel model = Models.GetAllActivities();
+            IModel model = Models.Instance.Provider.GetAllActivities();
 
             double sessionCount = GetSessionCount(model, fileUrl);
             double stepCount = GetStepCount(model, fileUrl);

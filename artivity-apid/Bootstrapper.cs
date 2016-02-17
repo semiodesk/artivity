@@ -32,14 +32,28 @@ using System.Text;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.Diagnostics;
+using Artivity.DataModel;
 
 namespace Artivity.Api.Http
 {
     public class Bootstrapper : DefaultNancyBootstrapper
     {
+        #region Members
+
+        public IModelProvider ModelProvider { get; set; }
+
+        #endregion
+
         protected override DiagnosticsConfiguration DiagnosticsConfiguration
         {
             get { return new DiagnosticsConfiguration { Password = @"abc" }; }
+        }
+
+        protected override void ConfigureApplicationContainer(Nancy.TinyIoc.TinyIoCContainer container)
+        {
+            if( ModelProvider != null)
+                container.Register(ModelProvider);
+            base.ConfigureApplicationContainer(container);
         }
 
     }

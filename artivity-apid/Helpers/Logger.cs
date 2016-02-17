@@ -1,64 +1,76 @@
 using System;
 using Nancy;
+using log4net;
 
 namespace Artivity.Api.Http
 {
     public class Logger
     {
+        public static ILog Log = LogManager.GetLogger("HttpService");
+
         public static void LogInfo(string msg, params object[] p)
         {
-            Console.Write("[{0}] ", DateTime.Now.ToString("g"));
-            Console.WriteLine(msg, p);
+            if( Log.IsInfoEnabled )
+                Log.InfoFormat(msg, p);
         }
 
         public static void LogError(string msg, params object[] p)
         {
-            Console.Write("[{0}] ", DateTime.Now.ToString("g"));
-            Console.WriteLine(msg, p);
+            if (Log.IsErrorEnabled)
+                Log.ErrorFormat(msg, p);
+        }
+
+        public static void LogFatal(string msg, params object[] p)
+        {
+            if (Log.IsFatalEnabled)
+                Log.FatalFormat(msg, p);
         }
 
         public static HttpStatusCode LogInfo(HttpStatusCode status, string msg, params object[] p)
         {
-            Console.Write("[{0}] {1}, ", DateTime.Now.ToString("g"), status);
-            Console.WriteLine(msg, p);
+            if (Log.IsInfoEnabled)
+                Log.InfoFormat("{0} {1}", status, msg, p);
 
             return status;
         }
 
         public static HttpStatusCode LogRequest(HttpStatusCode status, Request request)
         {
-            Console.WriteLine("[{0}] {1}, {3} {2}", DateTime.Now.ToString("g"), status, request.Path, request.Method);
+            if (Log.IsInfoEnabled)
+                Log.InfoFormat("{0}, {2} {1}", status, request.Path, request.Method);
 
             return status;
         }
 
         public static HttpStatusCode LogRequest(HttpStatusCode status, string route, string method, string content)
         {
-            Console.WriteLine("[{0}] {1}, {3} {2}", DateTime.Now.ToString("g"), status, route, method);
+            if( Log.IsInfoEnabled )
+            { 
+                Log.InfoFormat("{0}, {2} {1}", status, route, method);
 
-            if (!string.IsNullOrEmpty(content))
-            {
-                Console.WriteLine(content);
+                if (!string.IsNullOrEmpty(content))
+                {
+                    Log.Info(content);
+                }
             }
-
             return status;
         }
 
         public static HttpStatusCode LogError(HttpStatusCode status, Exception e)
         {
-            Console.WriteLine("[{0}] {1}, {2}: {3}", DateTime.Now.ToString("g"), status, e.GetType(), e.Message);
-            Console.Clear();
+            if (Log.IsErrorEnabled)
+                Log.ErrorFormat("{0}, {1} {2}  {3}", status, e.GetType(), e.Message, e.StackTrace);
 
             return status;
         }
 
         public static HttpStatusCode LogError(HttpStatusCode status, string msg, params object[] p)
         {
-            Console.Write("[{0}] {1}, ", DateTime.Now.ToString("g"), status);
-            Console.WriteLine(msg, p);
-            Console.Clear();
+            if (Log.IsErrorEnabled)
+                Log.ErrorFormat("{0}, {1}", status, string.Format(msg, p));
 
             return status;
+
         }
     }
 }

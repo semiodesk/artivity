@@ -15,8 +15,8 @@ namespace Artivity.Explorer
 		{
 			SemiodeskDiscovery.Discover();
 
-            Models.ConnectionString = GetConnectionStringFromConfiguration();
-            Models.InitializeStore();
+            Models.Instance.ConnectionString = GetConnectionStringFromConfiguration();
+            Models.Instance.InitializeStore();
 
             Options options = new Options();
 
@@ -27,10 +27,10 @@ namespace Artivity.Explorer
 
             if (options.SingleUser)
             {
-                Models.Agents = new Uri("http://localhost:8890/artivity/1.0/agents");
-                Models.Activities = new Uri("http://localhost:8890/artivity/1.0/activities");
-                Models.WebActivities = new Uri("http://localhost:8890/artivity/1.0/activities/web");
-                Models.Monitoring = new Uri("http://localhost:8890/artivity/1.0/monitoring");
+                Models.Instance.Provider.Agents = new Uri("http://localhost:8890/artivity/1.0/agents");
+                Models.Instance.Provider.Activities = new Uri("http://localhost:8890/artivity/1.0/activities");
+                Models.Instance.Provider.WebActivities = new Uri("http://localhost:8890/artivity/1.0/activities/web");
+                Models.Instance.Provider.Monitoring = new Uri("http://localhost:8890/artivity/1.0/monitoring");
             }
 
             if (!Setup.HasModels())

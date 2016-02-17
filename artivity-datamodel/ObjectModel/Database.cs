@@ -71,11 +71,11 @@ namespace Artivity.DataModel
             }
         }
 
-        public long GetFactsCount()
+        public long GetFactsCount(IModelProvider provider)
         {
             SparqlQuery query = new SparqlQuery("select count(?s) as ?factsCount where { ?s ?p ?o . }");
 
-            IEnumerable<BindingSet> bindings = Models.GetAllActivities().ExecuteQuery(query).GetBindings();
+            IEnumerable<BindingSet> bindings = provider.GetAllActivities().ExecuteQuery(query).GetBindings();
 
             return bindings.Any() ? Convert.ToInt32(bindings.First()["factsCount"]) : -1;
         }

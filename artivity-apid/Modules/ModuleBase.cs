@@ -35,12 +35,23 @@ using Artivity.DataModel;
 namespace Artivity.Api.Http
 {
 	public class ModuleBase : NancyModule
-	{
-		#region Constructors
+    {
+        #region Members
+        public IModelProvider ModelProvider { get; set; }
+        #endregion
 
-		public ModuleBase() {}
+        #region Constructors
 
-        public ModuleBase(string modulePath) : base(modulePath) {}
+        public ModuleBase(IModelProvider provider) 
+        {
+            ModelProvider = provider;
+        }
+
+
+        public ModuleBase(string modulePath, IModelProvider provider) : base(modulePath)
+        {
+            ModelProvider = provider;
+        }
 
 		#endregion
 
@@ -50,14 +61,14 @@ namespace Artivity.Api.Http
         {
             if (!IsMonitoringRequired()) return;
 
-            IModel monitoring = Models.GetMonitoring();
+            IModel monitoring = ModelProvider.GetMonitoring();
 
             Database database = monitoring.GetResources<Database>().FirstOrDefault();
 
             DatabaseState state = monitoring.CreateResource<DatabaseState>();
             state.Time = DateTime.Now;
             state.FileSize = database.GetFileSize();
-            state.FactsCount = database.GetFactsCount();
+            state.FactsCount = database.GetFactsCount(ModelProvider);
             state.Commit();
 
             database.States.Add(state);
@@ -83,7 +94,7 @@ namespace Artivity.Api.Http
 
             SparqlQuery query = new SparqlQuery(queryString);
 
-            IEnumerable<BindingSet> bindings = Models.GetMonitoring().ExecuteQuery(query).GetBindings();
+            IEnumerable<BindingSet> bindings = ModelProvider.GetMonitoring().ExecuteQuery(query).GetBindings();
 
             if(bindings.Any())
             {
