@@ -52,7 +52,7 @@ namespace Artivity.Explorer
 
         private void InitializeComponent()
         {
-            Model = data.Models.GetActivities();
+            Model = Models.Instance.Provider.GetActivities();
 
             Orientation = Orientation.Vertical;
             Spacing = 14;

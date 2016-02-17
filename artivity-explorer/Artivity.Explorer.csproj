@@ -65,6 +65,7 @@
     <Compile Include="Controls\Wizard.cs">
       <SubType>Eto.Forms</SubType>
     </Compile>
+    <Compile Include="Data.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Parsers\SvgStats.cs" />
     <Compile Include="Parsers\SvgStatsParser.cs" />

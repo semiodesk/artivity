@@ -26,6 +26,7 @@
 
 using System;
 using Nancy;
+using Artivity.DataModel;
 
 namespace Artivity.Api.Http
 {
@@ -33,7 +34,8 @@ namespace Artivity.Api.Http
     {
         #region Constructors
 
-        public MonitoringModule() : base("/artivity/1.0/monitor")
+        public MonitoringModule(IModelProvider provider)
+            : base("/artivity/1.0/monitor", provider)
         {
             Get["/add"] = parameters => { return AddFile(); };
             Get["/remove"] = parameters => { return RemoveFile(); };

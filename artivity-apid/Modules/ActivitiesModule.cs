@@ -55,7 +55,7 @@ namespace Artivity.Api.Http
 
 		#region Constructors
 
-        public ActivitiesModule() : base("/artivity/1.0/activities")
+        public ActivitiesModule(IModelProvider provider) : base("/artivity/1.0/activities", provider)
         {
             Post["/"] = parameters => { return PostActivity(); };
             Post["/web/"] = parameters => { return PostActivity(this.Bind<ActivityParameters>()); };
@@ -83,7 +83,7 @@ namespace Artivity.Api.Http
                 {
                     UpdateMonitoring();
 
-                    IModel model = Models.GetActivities();
+                    IModel model = ModelProvider.GetActivities();
 
                     if (model == null)
                     {
@@ -102,7 +102,7 @@ namespace Artivity.Api.Http
 
         private void AddResources(IModel model, Stream stream)
         {
-            string connectionString = Models.NativeConnectionString;
+            string connectionString = ModelProvider.NativeConnectionString;
 
             using (StreamReader reader = new StreamReader(stream))
             {
@@ -144,8 +144,8 @@ namespace Artivity.Api.Http
     			{
                     return Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
     			}
-                    
-                IModel model = Models.GetWebActivities();
+
+                IModel model = ModelProvider.GetWebActivities();
 
                 Browse activity;
 
@@ -212,7 +212,7 @@ namespace Artivity.Api.Http
 
         private bool IsCaptureEnabled(ActivityParameters p)
         {
-            IModel model = Models.GetAgents();
+            IModel model = ModelProvider.GetAgents();
 
             SoftwareAgent agent = null;
             Uri agentUri = new Uri(p.agent);

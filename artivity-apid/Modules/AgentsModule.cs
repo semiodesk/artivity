@@ -43,7 +43,7 @@ namespace Artivity.Api.Http
 	{
 		#region Constructors
 
-        public AgentsModule() : base("/artivity/1.0/agents")
+        public AgentsModule(IModelProvider provider) : base("/artivity/1.0/agents", provider)
 		{
 			Get["/"] = parameters => { return GetAgents(); };
 			Get["/status"] = parameters => { return GetAgentStatus(); };
@@ -58,7 +58,7 @@ namespace Artivity.Api.Http
 		{
             try
             {
-                IModel model = Models.GetAgents();
+                IModel model = ModelProvider.GetAgents();
 
     			List<AgentParameters> agents = new List<AgentParameters>();
 
@@ -111,7 +111,7 @@ namespace Artivity.Api.Http
 				return Response.AsJson(p);
 			}
 
-            IModel model = Models.GetAgents();
+            IModel model = ModelProvider.GetAgents();
 
 			SoftwareAgent agent = null;
 			Uri agentUri = new Uri(p.agent);
@@ -141,7 +141,7 @@ namespace Artivity.Api.Http
     				return Response.AsJson(new AgentParameters() { agent = p.agent, enabled = false });
     			}
 
-                IModel model = Models.GetAgents();
+                IModel model = ModelProvider.GetAgents();
 
                 SoftwareAgent agent = null;
     			Uri agentUri = new Uri(p.agent);

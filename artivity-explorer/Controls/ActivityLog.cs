@@ -44,7 +44,7 @@ namespace Artivity.Explorer.Controls
 
         private void InitializeAgents()
         {
-            IModel model = Models.GetAgents();
+            IModel model = Models.Instance.Provider.GetAgents();
 
             foreach (SoftwareAgent agent in model.GetResources<SoftwareAgent>())
             {
@@ -105,7 +105,7 @@ namespace Artivity.Explorer.Controls
                 }
                 ORDER BY DESC(?influenceTime)";
 
-            IModel model = Models.GetAllActivities();
+            IModel model = Models.Instance.Provider.GetAllActivities();
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);

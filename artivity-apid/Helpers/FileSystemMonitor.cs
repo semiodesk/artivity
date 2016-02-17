@@ -76,14 +76,14 @@ namespace Artivity.Api.Http
 
         #region Methods
 
-        public void Initialize()
+        public void Initialize(IModelProvider provider)
         {
             if (IsInitialized)
             {
                 return;
             }
-            
-            _model = Models.GetActivities();
+
+            _model = provider.GetActivities();
 
             InitializeMonitoredFiles();
 

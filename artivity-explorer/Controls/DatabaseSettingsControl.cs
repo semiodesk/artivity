@@ -64,12 +64,12 @@ namespace Artivity.Explorer
 
         public DatabaseSettingsControl()
         {
-            if (!Models.Exists(Models.Monitoring))
+            if (!Models.Instance.Provider.Exists(Models.Instance.Provider.Monitoring))
             {
                 Setup.InstallMonitoring();
             }
 
-            IModel monitoring = Models.GetMonitoring();
+            IModel monitoring = Models.Instance.Provider.GetMonitoring();
 
             if (monitoring.IsEmpty)
             {
@@ -101,7 +101,7 @@ namespace Artivity.Explorer
 
                 string label0 = "Total Facts:  {0}        Avg. Increase:  {1:0.##} / day";
 
-                _factsCountLabel.Text = string.Format(label0, _database.GetFactsCount(), _factsCountPlot.AverageDelta);
+                _factsCountLabel.Text = string.Format(label0, _database.GetFactsCount(Models.Instance.Provider), _factsCountPlot.AverageDelta);
                 _factsCountLabel.TextColor = Palette.TextColor;
 
                 string label1 = "Total Size:  {0} MB        Avg. Increase:  {1:0.##} kB / day";

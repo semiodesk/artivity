@@ -88,7 +88,7 @@ namespace Artivity.Explorer.Controls
 
         public void Refresh()
         {
-            Person user = Models.GetAgents().GetResources<Person>().FirstOrDefault();
+            Person user = Models.Instance.Provider.GetAgents().GetResources<Person>().FirstOrDefault();
 
             if (user == null)
             {

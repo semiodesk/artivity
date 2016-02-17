@@ -13,13 +13,13 @@ namespace Artivity.WinService
     class Program
     {
         #region Members
-        public static bool LoggingEnabled = false;
 
         #endregion
 
         #region Constructor
         public Program()
         {
+
         }
         #endregion
 
@@ -49,7 +49,7 @@ namespace Artivity.WinService
             //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
             string ServiceName = "Artivity Service";
             ArtivityService Service = new ArtivityService(ServiceName);
-            Service.CreateInstaller(ServiceName, System.ServiceProcess.ServiceAccount.User, System.ServiceProcess.ServiceStartMode.Automatic);
+            Service.CreateInstaller(ServiceName, System.ServiceProcess.ServiceAccount.LocalService, System.ServiceProcess.ServiceStartMode.Automatic);
 
             string opt = null;
             // check for argumenst
@@ -86,7 +86,7 @@ namespace Artivity.WinService
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Console.Write("ERROR Unhandled Exception: \n" + e.ToString());
+            Logger.LogFatal("Unhandled Exception: \n" + e.ToString());
         }
 
 

@@ -145,7 +145,7 @@ namespace Artivity.Explorer
                 }
                 ORDER BY DESC(?time)";
 
-            IModel model = Models.GetMonitoring();
+            IModel model = Models.Instance.Provider.GetMonitoring();
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query, false);

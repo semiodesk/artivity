@@ -68,7 +68,7 @@ namespace Artivity.Explorer
                 }
                 ORDER BY DESC(?startTime)";
 
-            IModel model = Models.GetActivities();
+            IModel model = Models.Instance.Provider.GetActivities();
 
             SparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);

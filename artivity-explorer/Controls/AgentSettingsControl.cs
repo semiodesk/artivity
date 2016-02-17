@@ -30,7 +30,7 @@ namespace Artivity.Explorer
 
         private void InitializeComponent()
         {
-            _agents = new ObservableCollection<SoftwareAgent>(Models.GetAgents().GetResources<SoftwareAgent>());
+            _agents = new ObservableCollection<SoftwareAgent>(Models.Instance.Provider.GetAgents().GetResources<SoftwareAgent>());
 
             DataStore = _agents;
 

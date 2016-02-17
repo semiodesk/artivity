@@ -30,57 +30,84 @@ using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
 {
-	public static class Models
+	public class ModelProviderFactory
 	{
+        public static ModelProvider CreateModelProvider(string connectionString, string nativeConectionString, string username=null)
+        {
+            ModelProvider p = new ModelProvider();
+            p.ConnectionString = connectionString;
+            p.NativeConnectionString = nativeConectionString;
+            p.Username = username;
+            p.InitializeStore();
+            return p;
+        }
+	}
+
+    public class ModelProvider : Artivity.DataModel.IModelProvider
+    {
         #region Members
 
-        private static IStore _store = null;
+        private IStore _store = null;
 
-        public static string ConnectionString;
+        public string ConnectionString { get; set; }
 
-        public static string NativeConnectionString;
+        public string NativeConnectionString { get; set; }
 
-        public static Uri Agents;
-        public static IModel AgentsModel;
+        public Uri Agents { get; set; }
+        public IModel AgentsModel { get; set; }
 
-        public static Uri Activities;
-        public static IModel ActivitiesModel;
+        public Uri Activities { get; set; }
+        public IModel ActivitiesModel { get; set; }
 
-        public static Uri WebActivities;
-        public static IModel WebActivitiesModel;
+        public Uri WebActivities { get; set; }
+        public IModel WebActivitiesModel { get; set; }
 
-        public static Uri Monitoring;
-        public static IModel MonitoringModel;
+        public Uri Monitoring { get; set; }
+        public IModel MonitoringModel { get; set; }
+
+        public string Username { get; set; }
+
+        private bool UrisLoaded = false;
 
         #endregion
 
-        static Models()
-        {
-            string username = Environment.UserName;
+        #region Constructor
+        internal ModelProvider()
+        { }
+        #endregion
 
-            Agents = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/agents", username));
-            Activities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities", username));
-            WebActivities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities/web", username));
-            Monitoring = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/monitoring", username));
-        }
 
         #region Methods
-
-        public static void InitializeStore()
+        void LoadModelUris()
         {
-            _store = StoreFactory.CreateStore(Models.ConnectionString);
+            if (string.IsNullOrEmpty(Username))
+                Username = Environment.UserName;
+
+            Agents = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/agents", Username));
+            Activities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities", Username));
+            WebActivities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities/web", Username));
+            Monitoring = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/monitoring", Username));
+            UrisLoaded = true;
+        }
+
+        public void InitializeStore()
+        {
+            if (!UrisLoaded)
+                LoadModelUris();
+
+            _store = StoreFactory.CreateStore(ConnectionString);
             AgentsModel = _store.GetModel(Agents);
             ActivitiesModel = _store.GetModel(Activities);
             WebActivitiesModel = _store.GetModel(WebActivities);
             MonitoringModel = _store.GetModel(Monitoring);
         }
 
-        public static bool Exists(Uri uri)
+        public bool Exists(Uri uri)
         {
             return _store.ContainsModel(uri);
         }
 
-        public static IModelGroup GetAll()
+        public IModelGroup GetAll()
         {
             IModelGroup result = _store.CreateModelGroup();
             result.Add(GetAgents(_store));
@@ -91,7 +118,7 @@ namespace Artivity.DataModel
             return result;
         }
 
-        public static IModel GetAllActivities()
+        public IModel GetAllActivities()
         {
             IModelGroup result = _store.CreateModelGroup();
             result.Add(GetAgents(_store));
@@ -101,26 +128,26 @@ namespace Artivity.DataModel
             return result;
         }
 
-        public static IModel GetAgents(IStore store = null)
+        public IModel GetAgents(IStore store = null)
         {
             return AgentsModel;
         }
 
-        public static IModel GetActivities(IStore store = null)
+        public IModel GetActivities(IStore store = null)
         {
             return ActivitiesModel;
         }
 
-        public static IModel GetWebActivities(IStore store = null)
+        public IModel GetWebActivities(IStore store = null)
         {
             return WebActivitiesModel;
         }
 
-        public static IModel GetMonitoring(IStore store = null)
+        public IModel GetMonitoring(IStore store = null)
         {
             return MonitoringModel;
         }
 
         #endregion
-	}
+    }
 }

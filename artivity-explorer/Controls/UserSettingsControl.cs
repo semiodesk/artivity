@@ -36,7 +36,7 @@ namespace Artivity.Explorer
 
         private void InitializeModel()
         {
-            IModel model = Models.GetAgents();
+            IModel model = Models.Instance.Provider.GetAgents();
 
             _user = model.GetResources<Person>().FirstOrDefault();
 

@@ -77,9 +77,9 @@ namespace Artivity.Explorer.Dialogs.ExportDialog
 
             List<ModelExportOption> options = new List<ModelExportOption>()
             {
-                new ModelExportOption(true, Models.Agents, "Agents", "The agents involved in the creation process."),
-                new ModelExportOption(true, Models.Activities, "Activities", "File editing steps and movements."),
-                new ModelExportOption(true, Models.WebActivities, "Web Activities", "Web browsing activities."),
+                new ModelExportOption(true, Models.Instance.Provider.Agents, "Agents", "The agents involved in the creation process."),
+                new ModelExportOption(true, Models.Instance.Provider.Activities, "Activities", "File editing steps and movements."),
+                new ModelExportOption(true, Models.Instance.Provider.WebActivities, "Web Activities", "Web browsing activities."),
             };
 
             _rdfModelsView = new GridView();
@@ -248,7 +248,7 @@ namespace Artivity.Explorer.Dialogs.ExportDialog
                 {
                     try
                     {
-                        IModel model = Models.GetActivities();
+                        IModel model = Models.Instance.Provider.GetActivities();
                         model.Write(stream, RdfSerializationFormat.Turtle);
 
                         e.Result = true;
@@ -321,7 +321,7 @@ namespace Artivity.Explorer.Dialogs.ExportDialog
                             }
                             ORDER BY DESC(?influenceTime)";
                 
-                        IModel model = Models.GetAllActivities();
+                        IModel model = Models.Instance.Provider.GetAllActivities();
 
                         SparqlQuery query = new SparqlQuery(queryString);
                         ISparqlQueryResult result = model.ExecuteQuery(query);
