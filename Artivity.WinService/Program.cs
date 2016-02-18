@@ -49,7 +49,7 @@ namespace Artivity.WinService
             //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
             string ServiceName = "Artivity Service";
             ArtivityService Service = new ArtivityService(ServiceName);
-            Service.CreateInstaller(ServiceName, System.ServiceProcess.ServiceAccount.LocalService, System.ServiceProcess.ServiceStartMode.Automatic);
+            Service.CreateInstaller(ServiceName, System.ServiceProcess.ServiceAccount.LocalSystem, System.ServiceProcess.ServiceStartMode.Automatic);
 
             string opt = null;
             // check for argumenst
