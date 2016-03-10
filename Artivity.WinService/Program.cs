@@ -1,4 +1,5 @@
 ﻿using Artivity.Api.Http;
+using Artivity.WinService.Plugin;
 using System;
 using System.Collections.Generic;
 using System.IO;

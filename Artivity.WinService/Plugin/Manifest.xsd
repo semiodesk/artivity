@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.artivity.io/plugins/manifest/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="PluginManifest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element type="xs:string" name="DisplayName"/>
+        <xs:element type="xs:string" name="ProcessName"/>
+        <xs:element type="xs:string" name="ID"/>
+        <xs:element type="xs:string" name="TargetPath"/>
+        <xs:element type="xs:float" name="Version"/>
+        <xs:element type="xs:string" name="HostVersion"/>
+        <xs:element type="xs:byte" name="Arch"/>
+        <xs:element name="PluginFile">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute type="xs:boolean" name="Link"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
