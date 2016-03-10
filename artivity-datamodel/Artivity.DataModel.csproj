@@ -10,7 +10,7 @@
     <RootNamespace>Artivity.DataModel</RootNamespace>
     <AssemblyName>Artivity.DataModel</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>41491814</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>8d4c8d9d</NuGetPackageImportStamp>
     <TargetFrameworkProfile />
     <ReleaseVersion>1.5.20</ReleaseVersion>
   </PropertyGroup>
@@ -130,8 +130,8 @@
       <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Semiodesk.Trinity, Version=0.9.110.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.110\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    <Reference Include="Semiodesk.Trinity, Version=0.9.122.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.122\lib\Net40\Semiodesk.Trinity.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -152,11 +152,11 @@
   </Target>
   -->
   <ItemGroup />
-  <Import Project="..\packages\Semiodesk.Trinity.Modelling.0.9.110\build\net40\Semiodesk.Trinity.Modelling.targets" Condition="Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.110\build\net40\Semiodesk.Trinity.Modelling.targets')" />
+  <Import Project="..\packages\Semiodesk.Trinity.Modelling.0.9.122\build\net40\Semiodesk.Trinity.Modelling.targets" Condition="Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.122\build\net40\Semiodesk.Trinity.Modelling.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.110\build\net40\Semiodesk.Trinity.Modelling.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Semiodesk.Trinity.Modelling.0.9.110\build\net40\Semiodesk.Trinity.Modelling.targets'))" />
+    <Error Condition="!Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.122\build\net40\Semiodesk.Trinity.Modelling.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Semiodesk.Trinity.Modelling.0.9.122\build\net40\Semiodesk.Trinity.Modelling.targets'))" />
   </Target>
 </Project>
