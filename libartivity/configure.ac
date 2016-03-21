@@ -7,6 +7,18 @@ LIBARTIVITY_MINOR_VERSION=8
 LIBARTIVITY_MICRO_VERSION=10
 LIBARTIVITY_VERSION=$LIBARTIVITY_MAJOR_VERSION.$LIBARTIVITY_MINOR_VERSION.$LIBARTIVITY_MICRO_VERSION
 
+
+dnl ******************************
+dnl Check for C++11
+dnl ******************************
+AC_ARG_ENABLE([cxx11],
+       AS_HELP_STRING([--enable-cxx11], [compile with C++11]))
+
+if test "x$enable_cxx11" != "xno"; then
+	AC_DEFINE(CXX11,1,[Build with C++11])
+	CXXFLAGS="$CXXFLAGS -std=c++11"
+fi
+
 AC_SUBST(LIBARTIVITY_MAJOR_VERSION)
 AC_SUBST(LIBARTIVITY_MINOR_VERSION)
 AC_SUBST(LIBARTIVITY_MICRO_VERSION)
@@ -42,7 +54,7 @@ echo \
  ${PACKAGE_NAME} version ${PACKAGE_VERSION}
 
  Prefix: '${prefix}'.
- Compiler: '${CC} ${CFLAGS} ${CPPFLAGS}'
+ Compiler: '${CXX} ${CXXFLAGS}'
  Libraries: '${LIBS}'
 
  Package features:

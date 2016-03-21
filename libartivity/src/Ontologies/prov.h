@@ -1,7 +1,7 @@
 #ifndef PROV_H
 #define PROV_H
 
-#define PROV(label) "http://www.w3.org/ns/prov#"label;
+#define PROV(label) "http://www.w3.org/ns/prov#" label;
 
 namespace artivity
 {

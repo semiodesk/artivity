@@ -1,4 +1,31 @@
-﻿using System;
+﻿// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
+//
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,7 +33,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Artivity.WinService
+namespace Artivity.Api.Plugin
 {
     /// <remarks/>
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]
@@ -23,6 +50,10 @@ namespace Artivity.WinService
         private string idField;
 
         private string targetPathField;
+
+        private string targetExampleFile;
+
+        private string targetFilterName;
 
         private decimal versionField;
 
@@ -85,6 +116,32 @@ namespace Artivity.WinService
         }
 
         /// <remarks/>
+        public string ExampleFile
+        {
+            get
+            {
+                return this.targetExampleFile;
+            }
+            set
+            {
+                this.targetExampleFile = value;
+            }
+        }
+
+        /// <remarks/>
+        public string FilterName
+        {
+            get
+            {
+                return this.targetFilterName;
+            }
+            set
+            {
+                this.targetFilterName = value;
+            }
+        }
+            
+        /// <remarks/>
         public decimal Version
         {
             get
@@ -136,9 +193,9 @@ namespace Artivity.WinService
             }
         }
 
-        public FileInfo GetPluginSourceFile()
+        public string GetPluginSource()
         {
-            return new FileInfo(Path.Combine(ManifestFile.Directory.FullName, PluginFile.Value));
+            return Path.Combine(ManifestFile.Directory.FullName, PluginFile.Value);
         }
     }
 
@@ -181,9 +238,11 @@ namespace Artivity.WinService
 
         public string GetName()
         {
+            #if WIN
             if (Link)
                 return string.Format("{0}.lnk", Value);
             else
+            #endif
                 return Value;
         }
     }

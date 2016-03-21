@@ -3,7 +3,7 @@
 
 
 
-#define ART(label) "http://semiodesk.com/artivity/1.0/"label;
+#define ART(label) "http://semiodesk.com/artivity/1.0/" label;
 
 namespace artivity
 {

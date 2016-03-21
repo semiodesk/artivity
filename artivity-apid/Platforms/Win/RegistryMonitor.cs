@@ -5,6 +5,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
+
 namespace RegistryUtils
 {
 	/// <summary>

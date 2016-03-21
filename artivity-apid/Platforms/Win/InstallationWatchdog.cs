@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿
+using Microsoft.Win32;
 using RegistryUtils;
 using System;
 using System.Collections.Generic;
@@ -7,25 +8,26 @@ using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.WinService.Plugin
+namespace Artivity.Api.Plugin.Win
 {
-    delegate void HandleProgramInstalled(object sender, EventArgs args);
-
     class InstallationWatchdog
     {
         #region Members
         RegistryKey _key32;
         RegistryKey _key64;
 
-        public event HandleProgramInstalled ProgrammInstalledOrRemvoed;
+        public event Artivity.Api.Plugin.HandleProgramInstalledOrRemoved ProgrammInstalledOrRemvoed;
 
         private RegistryMonitor _monitor32;
         private RegistryMonitor _monitor64;
+
+        private string _registryKey;
         #endregion
 
         #region Constructor
-        public InstallationWatchdog()
+        public InstallationWatchdog(string registryKey)
         {
+            _registryKey = registryKey;
         }
         #endregion
 
@@ -33,7 +35,7 @@ namespace Artivity.WinService.Plugin
         public void Start()
         {
             //_key32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(InstalledPrograms.RegistryKeyString);
-            _key64 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(InstalledPrograms.RegistryKeyString);
+            _key64 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(_registryKey);
 
             //_monitor32 = new RegistryMonitor(_key32);
             //_monitor32.RegChangeNotifyFilter = RegChangeNotifyFilter.Key;

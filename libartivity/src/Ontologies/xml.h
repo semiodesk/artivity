@@ -1,7 +1,7 @@
 #ifndef XML_H
 #define XML_H
 
-#define XML(label) "http://www.w3.org/2001/04/infoset#"label;
+#define XML(label) "http://www.w3.org/2001/04/infoset#" label;
 
 namespace artivity
 {
