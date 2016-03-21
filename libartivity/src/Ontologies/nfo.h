@@ -1,7 +1,7 @@
 #ifndef NFO_H
 #define NFO_H
 
-#define NFO(label) "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#"label;
+#define NFO(label) "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#" label;
 
 namespace artivity
 {

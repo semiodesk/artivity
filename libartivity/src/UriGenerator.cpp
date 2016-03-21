@@ -6,9 +6,9 @@
 namespace artivity
 {
 
-	string UriGenerator::getRandomId(size_t length)
+	string UriGenerator::getRandomId(unsigned long length)
 	{
-#ifdef WIN32
+#if defined(WIN32) || defined(CXX11)
 
 		std::random_device rd;
 		std::mt19937 gen(rd());

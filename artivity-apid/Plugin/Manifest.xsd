@@ -7,6 +7,8 @@
         <xs:element type="xs:string" name="ProcessName"/>
         <xs:element type="xs:string" name="ID"/>
         <xs:element type="xs:string" name="TargetPath"/>
+        <xs:element type="xs:string" name="ExampleFile"/>
+        <xs:element type="xs:string" name="FilterName"/>
         <xs:element type="xs:float" name="Version"/>
         <xs:element type="xs:string" name="HostVersion"/>
         <xs:element type="xs:byte" name="Arch"/>

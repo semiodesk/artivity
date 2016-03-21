@@ -1,8 +1,8 @@
 lib_LTLIBRARIES = libartivity.la
 
-libartivity_la_SOURCES = main.cpp curlresponse.cpp Resource.cpp  Serializer.cpp ActivityLog.cpp ObjectModel/Activity.cpp
+libartivity_la_SOURCES = main.cpp curlresponse.cpp Resource.cpp  Serializer.cpp ActivityLog.cpp ObjectModel/Activity.cpp UriGenerator.cpp
 libartivity_la_LDFLAGS = $(CURL_LIBS) -version-info 0:0:0
-libartivity_la_CFLAGS = $(CURL_CFLAGS) 
+libartivity_la_CXXFLAGS = $(CURL_CFLAGS) $(ADD_CXXFLAGS)
 
 nobase_pkginclude_HEADERS = curlresponse.h \
     artivity.h \

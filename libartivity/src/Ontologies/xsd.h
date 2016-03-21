@@ -4,7 +4,7 @@
 #include "../Resource.h"
 #include "../Property.h"
 
-#define XSD(label) "http://www.w3.org/2001/XMLSchema#"label;
+#define XSD(label) "http://www.w3.org/2001/XMLSchema#" label;
 
 namespace artivity
 {

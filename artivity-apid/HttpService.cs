@@ -36,6 +36,7 @@ using Semiodesk.Trinity;
 using Semiodesk.TinyVirtuoso;
 using Artivity.DataModel;
 using log4net;
+using Nancy.TinyIoc;
 
 namespace Artivity.Api.Http
 {
@@ -46,7 +47,11 @@ namespace Artivity.Api.Http
         /// <summary>
         /// The REST API service port.
         /// </summary>
+        #if DEBUG
+        private int _servicePort = 8262;
+        #else
         private int _servicePort = 8272;
+        #endif
 
         /// <summary>
         /// The REST API service port.
@@ -77,7 +82,11 @@ namespace Artivity.Api.Http
         /// <summary>
         /// The Virtuoso database port.
         /// </summary>
+        #if DEBUG
+        private int _virtuosoPort = 8263;
+        #else
         private int _virtuosoPort = 8273;
+        #endif
 
         /// <summary>
         /// The Virtuoso database port.
@@ -191,14 +200,22 @@ namespace Artivity.Api.Http
                     using (var monitor = FileSystemMonitor.Instance)
                     {
                         _wait.WaitOne();
+
                     }
+                    _serviceHost.Stop();
+
+
+
                 }
                 finally
                 {
+                    
                     Logger.LogInfo("Stopped listening on port {0}..", _servicePort);
                 }
-            }
 
+            }
+            customBootstrapper.Dispose();
+            TinyIoCContainer.Current.Dispose();
         }
 
         private string GetConnectionStringFromConfiguration()
@@ -274,7 +291,8 @@ namespace Artivity.Api.Http
                 _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("localhost:{0}", _virtuosoPort);
                 _virtuosoInstance.Configuration.SaveConfigFile();
                 _virtuosoInstance.RemoveLock();
-                _virtuosoInstance.Start();
+                _virtuosoInstance.Start(false);
+                Thread.Sleep(5000);
 
                 string connectionString = _virtuosoInstance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";
                 string nativeConnectionString = _virtuosoInstance.GetAdoNetConnectionString();

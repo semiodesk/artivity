@@ -3,7 +3,7 @@
 
 #include "../Property.h"
 
-#define DCES(label) "http://purl.org/dc/elements/1.1/"label;
+#define DCES(label) "http://purl.org/dc/elements/1.1/" label;
 
 namespace artivity
 {

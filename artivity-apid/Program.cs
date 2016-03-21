@@ -29,12 +29,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using Artivity.Api.Plugin;
+using MonoDevelop.MacInterop;
 
 namespace Artivity.Api.Http
 {
     class Program
     {
+        #region Members
+        PluginChecker _checker;
+        #endregion
+
         public static void Main(string[] args)
+        {
+            
+            Program p = new Program ();
+            p.Run (args);
+        }
+
+        public void Run(string[] args)
         {
             Options options = new Options();
 
@@ -43,26 +57,54 @@ namespace Artivity.Api.Http
                 return;
             }
 
-            var appender = new log4net.Appender.ConsoleAppender();
-            appender.Name = "ConsoleAppender";
-            var layout = new log4net.Layout.PatternLayout();
-            layout.ConversionPattern = layout.ConversionPattern = "%newline%date{g} %-5level – %message%newline";
-            layout.ActivateOptions();
-            appender.Layout = layout;
-            log4net.Config.BasicConfigurator.Configure(appender);
+            bool consoleLogging = true;
+            if(options.LogConfig != null && File.Exists(options.LogConfig))
+            {
+                try
+                {
+                    FileInfo logFileConfig = new FileInfo(options.LogConfig);
+                    log4net.Config.XmlConfigurator.Configure(logFileConfig);
+                    consoleLogging = false;
+                }catch(Exception)
+                {
+                }
+            }
+            if (consoleLogging)
+            {
+                var appender = new log4net.Appender.ConsoleAppender();
+                appender.Name = "ConsoleAppender";
+                var layout = new log4net.Layout.PatternLayout();
+                layout.ConversionPattern = layout.ConversionPattern = "%newline%date{g} %-5level – %message%newline";
+                layout.ActivateOptions();
+                appender.Layout = layout;
+                log4net.Config.BasicConfigurator.Configure(appender);
+            }
+
+            _checker = PluginCheckerFactory.CreatePluginChecker();
+            _checker.Check();
+            IInstallationWatchdog wd = InstallationWatchdogFactory.CreateWatchdog ();
+            wd.ProgrammInstalledOrRemoved += ProgramInstalled;
+            wd.Start();
+
 
             HttpService service = new HttpService();
             service.UpdateOntologies = options.Update;
 
             // Listen to SIGINT for cancelling the daemon.
             Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
-            {
-                Logger.LogInfo("Received SIGINT. Shutting down.");
+                {
+                    Logger.LogInfo("Received SIGINT. Shutting down.");
 
-                service.Stop();
-            };
+                    service.Stop();
+                    wd.Stop();
+                };
 
             service.Start();
+        }
+
+        void ProgramInstalled(object sender, EventArgs entry)
+        {
+            _checker.Check();
         }
     }
 

@@ -21,7 +21,7 @@ namespace artivity
                 return string("http://semiodesk.com/id/" + getRandomId(10));
             }
         
-			static string getRandomId(size_t length);
+            static string getRandomId(unsigned long length);
     };
 }
 

@@ -28,46 +28,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Artivity.Api.Http
+namespace Artivity.Api.Plugin.Win
 {
-    class Platform
+    public class RegistryEntry
     {
-        public static bool IsRunningOnMac()
-        {
-            string os = string.Empty;
-
-            IntPtr buffer = IntPtr.Zero;
-
-            try
-            {
-                buffer = Marshal.AllocHGlobal(8192);
-
-                // This is a hacktastic way of getting sysname from uname()..
-                if (uname(buffer) == 0)
-                {
-                    os = Marshal.PtrToStringAnsi(buffer).ToLowerInvariant();
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e.Message);
-            }
-            finally
-            {
-                if (buffer != IntPtr.Zero)
-                {
-                    Marshal.FreeHGlobal(buffer);
-                }
-            }
-
-            return os == "darwin"; ;
-        }
-
-        [DllImport("libc")]
-        static extern int uname(IntPtr buf);
+        public string Name;
+        public string Id;
+        public string InstallLocation;
 
     }
 }
