@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Artivity.Api.Plugin.Win;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Artivity.Api.Plugin
         public static IInstallationWatchdog CreateWatchdog()
         {
             #if WIN
-            return new Artivity.Api.Plugin.Win.InstallationWatchdog();
+            return new Artivity.Api.Plugin.Win.InstallationWatchdog(InstalledPrograms.RegistryKeyString);
             #elif OSX
             return new Artivity.Api.Plugin.OSX.InstallationWatchdog();
             #endif
