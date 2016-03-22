@@ -80,11 +80,13 @@ namespace Artivity.Api.Http
                 log4net.Config.BasicConfigurator.Configure(appender);
             }
 
+            #if !DEBUG
             _checker = PluginCheckerFactory.CreatePluginChecker();
             _checker.Check();
             IInstallationWatchdog wd = InstallationWatchdogFactory.CreateWatchdog ();
             wd.ProgrammInstalledOrRemoved += ProgramInstalled;
             wd.Start();
+            #endif
 
 
             HttpService service = new HttpService();
@@ -96,7 +98,9 @@ namespace Artivity.Api.Http
                     Logger.LogInfo("Received SIGINT. Shutting down.");
 
                     service.Stop();
+#if !DEBUG
                     wd.Stop();
+#endif
                 };
 
             service.Start();

@@ -38,6 +38,7 @@ using Artivity.DataModel;
 using log4net;
 using Nancy.TinyIoc;
 
+
 namespace Artivity.Api.Http
 {
     public class HttpService

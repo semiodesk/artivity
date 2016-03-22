@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Artivity.Api.Plugin.Win
 {
-    class InstallationWatchdog
+    class InstallationWatchdog : IInstallationWatchdog
     {
         #region Members
         RegistryKey _key32;
         RegistryKey _key64;
 
-        public event Artivity.Api.Plugin.HandleProgramInstalledOrRemoved ProgrammInstalledOrRemvoed;
+        public event HandleProgramInstalledOrRemoved ProgrammInstalledOrRemoved;
 
         private RegistryMonitor _monitor32;
         private RegistryMonitor _monitor64;
@@ -50,18 +50,27 @@ namespace Artivity.Api.Plugin.Win
 
         void RegChanged(object sender, EventArgs e)
         {
-            if (ProgrammInstalledOrRemvoed != null)
-                ProgrammInstalledOrRemvoed(this, null);
+            if (ProgrammInstalledOrRemoved != null)
+                ProgrammInstalledOrRemoved(this, null);
         }
 
         public void Stop()
         {
-            _monitor32.Stop();
-            _monitor64.Stop();
+            if( _monitor32 != null)
+                _monitor32.Stop();
 
+            if( _monitor64 != null)
+                _monitor64.Stop();
+
+            if( _key32 != null)
             _key32.Dispose();
-            _key64.Dispose();
+
+            if( _key64 != null)
+                _key64.Dispose();
         }
         #endregion
+
+
+
     }
 }

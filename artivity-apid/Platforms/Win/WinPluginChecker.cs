@@ -38,7 +38,7 @@ namespace Artivity.Api.Plugin.Win
         #endregion
         
         #region Constructor
-        WinPluginChecker() : base()
+        public WinPluginChecker() : base()
         {
             
         }
@@ -49,7 +49,10 @@ namespace Artivity.Api.Plugin.Win
         protected override DirectoryInfo GetApplicationLocation (PluginManifest manifest)
         {
             RegistryEntry entry = InstalledPrograms.FindInstalledProgram(manifest.ID);
-            return new DirectoryInfo (entry.InstallLocation);
+            if( entry != null)
+                return new DirectoryInfo (entry.InstallLocation);
+
+            return null;
         }
 
         protected override void CreateLink (string target, string source)

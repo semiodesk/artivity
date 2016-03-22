@@ -1,5 +1,5 @@
-﻿using Artivity.WinService;
-using Artivity.WinService.Plugin;
+﻿using Artivity.Api.Plugin;
+using Artivity.WinService;
 using log4net;
 using log4net.Appender;
 using Microsoft.Win32;
@@ -102,11 +102,11 @@ namespace Artivity.Api.Http
 
         public void Start()
         {
-            var check = new PluginChecker();
+            var check = PluginCheckerFactory.CreatePluginChecker();
             check.Check();
-            InstallationWatchdog wd = new InstallationWatchdog();
-            wd.ProgrammInstalledOrRemvoed += ProgramInstalled;
-            wd.Start();
+            var watchdog = InstallationWatchdogFactory.CreateWatchdog();
+            watchdog.ProgrammInstalledOrRemoved += (object s, EventArgs e) => { check.Check(); };
+            watchdog.Start();
 
             FindCurrentUsers();
             _log.DebugFormat("Waiting for user login...");
@@ -115,13 +115,7 @@ namespace Artivity.Api.Http
             foreach (var session in _services)
                 session.Value.Stop();
 
-            wd.Stop();
-        }
-
-        void ProgramInstalled(object sender, EventArgs entry)
-        {
-            var check = new PluginChecker();
-            check.Check();
+            watchdog.Stop();
         }
 
         private void FindCurrentUsers()

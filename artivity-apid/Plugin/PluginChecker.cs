@@ -65,7 +65,6 @@ namespace Artivity.Api.Plugin
         }
         #endregion
 
-
         #region Methods
 
         private void LoadManifests()
@@ -136,7 +135,7 @@ namespace Artivity.Api.Plugin
         public static PluginChecker CreatePluginChecker()
         {
             #if WIN
-            return new Artivity.Api.Plugin.Win.PluginChecker();
+            return new Artivity.Api.Plugin.Win.WinPluginChecker();
             #elif OSX
             return new Artivity.Api.Plugin.OSX.OsxPluginChecker();
             #endif
