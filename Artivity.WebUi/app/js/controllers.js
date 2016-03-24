@@ -10,7 +10,11 @@ explorerControllers.controller('FileListController', function (api, $scope, $roo
 	});
 });
 
-explorerControllers.controller('FileDetailController', function (api, $scope, $rootScope) {
+explorerControllers.controller('FileDetailController', function (api, $scope, $rootScope, $location) {
+	api.getActivities($location.search().fileUrl).then(function (data) {
+		$scope.activities = data;
+	});
+	
 	$scope.skipPrev = function (value) {
 		$rootScope.$broadcast('skipPrev', value);
 		

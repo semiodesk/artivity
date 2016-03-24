@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 24.03.2016 12:56:48
+// Date: 24.03.2016 16:10:00
 
 using System;
 using System.Collections.Generic;
@@ -1440,7 +1440,7 @@ public class prov : Ontology
     public static string GetPrefix() { return Prefix; }     
 
     ///<summary>
-    ///
+    ///(, en)
     ///<see cref="http://www.w3.org/2000/01/rdf-schema#comment"/>
     ///</summary>
     public static readonly Property comment = new Property(new Uri("http://www.w3.org/2000/01/rdf-schema#comment"));    
@@ -1452,13 +1452,13 @@ public class prov : Ontology
     public static readonly Property isDefinedBy = new Property(new Uri("http://www.w3.org/2000/01/rdf-schema#isDefinedBy"));    
 
     ///<summary>
-    ///
+    ///(, en)
     ///<see cref="http://www.w3.org/2000/01/rdf-schema#label"/>
     ///</summary>
     public static readonly Property label = new Property(new Uri("http://www.w3.org/2000/01/rdf-schema#label"));    
 
     ///<summary>
-    ///
+    ///(, en)
     ///<see cref="http://www.w3.org/2000/01/rdf-schema#seeAlso"/>
     ///</summary>
     public static readonly Property seeAlso = new Property(new Uri("http://www.w3.org/2000/01/rdf-schema#seeAlso"));    
@@ -1482,7 +1482,7 @@ public class prov : Ontology
     public static readonly Class Activity = new Class(new Uri("http://www.w3.org/ns/prov#Activity"));    
 
     ///<summary>
-    ///ActivityInfluence provides additional descriptions of an Activity's binary influence upon any other kind of resource. Instances of ActivityInfluence use the prov:activity property to cite the influencing Activity.
+    ///(ActivityInfluence provides additional descriptions of an Activity's binary influence upon any other kind of resource. Instances of ActivityInfluence use the prov:activity property to cite the influencing Activity., en)
     ///<see cref="http://www.w3.org/ns/prov#ActivityInfluence"/>
     ///</summary>
     public static readonly Class ActivityInfluence = new Class(new Uri("http://www.w3.org/ns/prov#ActivityInfluence"));    
@@ -1494,25 +1494,25 @@ public class prov : Ontology
     public static readonly Class Agent = new Class(new Uri("http://www.w3.org/ns/prov#Agent"));    
 
     ///<summary>
-    ///AgentInfluence provides additional descriptions of an Agent's binary influence upon any other kind of resource. Instances of AgentInfluence use the prov:agent property to cite the influencing Agent.
+    ///(AgentInfluence provides additional descriptions of an Agent's binary influence upon any other kind of resource. Instances of AgentInfluence use the prov:agent property to cite the influencing Agent., en)
     ///<see cref="http://www.w3.org/ns/prov#AgentInfluence"/>
     ///</summary>
     public static readonly Class AgentInfluence = new Class(new Uri("http://www.w3.org/ns/prov#AgentInfluence"));    
 
     ///<summary>
-    ///An instance of prov:Association provides additional descriptions about the binary prov:wasAssociatedWith relation from an prov:Activity to some prov:Agent that had some responsiblity for it. For example, :baking prov:wasAssociatedWith :baker; prov:qualifiedAssociation [ a prov:Association; prov:agent :baker; :foo :bar ].
+    ///(An instance of prov:Association provides additional descriptions about the binary prov:wasAssociatedWith relation from an prov:Activity to some prov:Agent that had some responsiblity for it. For example, :baking prov:wasAssociatedWith :baker; prov:qualifiedAssociation [ a prov:Association; prov:agent :baker; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Association"/>
     ///</summary>
     public static readonly Class Association = new Class(new Uri("http://www.w3.org/ns/prov#Association"));    
 
     ///<summary>
-    ///An instance of prov:Attribution provides additional descriptions about the binary prov:wasAttributedTo relation from an prov:Entity to some prov:Agent that had some responsible for it. For example, :cake prov:wasAttributedTo :baker; prov:qualifiedAttribution [ a prov:Attribution; prov:entity :baker; :foo :bar ].
+    ///(An instance of prov:Attribution provides additional descriptions about the binary prov:wasAttributedTo relation from an prov:Entity to some prov:Agent that had some responsible for it. For example, :cake prov:wasAttributedTo :baker; prov:qualifiedAttribution [ a prov:Attribution; prov:entity :baker; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Attribution"/>
     ///</summary>
     public static readonly Class Attribution = new Class(new Uri("http://www.w3.org/ns/prov#Attribution"));    
 
     ///<summary>
-    ///Note that there are kinds of bundles (e.g. handwritten letters, audio recordings, etc.) that are not expressed in PROV-O, but can be still be described by PROV-O.
+    ///(Note that there are kinds of bundles (e.g. handwritten letters, audio recordings, etc.) that are not expressed in PROV-O, but can be still be described by PROV-O., en)
     ///<see cref="http://www.w3.org/ns/prov#Bundle"/>
     ///</summary>
     public static readonly Class Bundle = new Class(new Uri("http://www.w3.org/ns/prov#Bundle"));    
@@ -1524,19 +1524,19 @@ public class prov : Ontology
     public static readonly Class Collection = new Class(new Uri("http://www.w3.org/ns/prov#Collection"));    
 
     ///<summary>
-    ///An instance of prov:Communication provides additional descriptions about the binary prov:wasInformedBy relation from an informed prov:Activity to the prov:Activity that informed it. For example, :you_jumping_off_bridge prov:wasInformedBy :everyone_else_jumping_off_bridge; prov:qualifiedCommunication [ a prov:Communication; prov:activity :everyone_else_jumping_off_bridge; :foo :bar ].
+    ///(An instance of prov:Communication provides additional descriptions about the binary prov:wasInformedBy relation from an informed prov:Activity to the prov:Activity that informed it. For example, :you_jumping_off_bridge prov:wasInformedBy :everyone_else_jumping_off_bridge; prov:qualifiedCommunication [ a prov:Communication; prov:activity :everyone_else_jumping_off_bridge; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Communication"/>
     ///</summary>
     public static readonly Class Communication = new Class(new Uri("http://www.w3.org/ns/prov#Communication"));    
 
     ///<summary>
-    ///An instance of prov:Delegation provides additional descriptions about the binary prov:actedOnBehalfOf relation from a performing prov:Agent to some prov:Agent for whom it was performed. For example, :mixing prov:wasAssociatedWith :toddler . :toddler prov:actedOnBehalfOf :mother; prov:qualifiedDelegation [ a prov:Delegation; prov:entity :mother; :foo :bar ].
+    ///(An instance of prov:Delegation provides additional descriptions about the binary prov:actedOnBehalfOf relation from a performing prov:Agent to some prov:Agent for whom it was performed. For example, :mixing prov:wasAssociatedWith :toddler . :toddler prov:actedOnBehalfOf :mother; prov:qualifiedDelegation [ a prov:Delegation; prov:entity :mother; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Delegation"/>
     ///</summary>
     public static readonly Class Delegation = new Class(new Uri("http://www.w3.org/ns/prov#Delegation"));    
 
     ///<summary>
-    ///An instance of prov:Derivation provides additional descriptions about the binary prov:wasDerivedFrom relation from some derived prov:Entity to another prov:Entity from which it was derived. For example, :chewed_bubble_gum prov:wasDerivedFrom :unwrapped_bubble_gum; prov:qualifiedDerivation [ a prov:Derivation; prov:entity :unwrapped_bubble_gum; :foo :bar ].
+    ///(An instance of prov:Derivation provides additional descriptions about the binary prov:wasDerivedFrom relation from some derived prov:Entity to another prov:Entity from which it was derived. For example, :chewed_bubble_gum prov:wasDerivedFrom :unwrapped_bubble_gum; prov:qualifiedDerivation [ a prov:Derivation; prov:entity :unwrapped_bubble_gum; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Derivation"/>
     ///</summary>
     public static readonly Class Derivation = new Class(new Uri("http://www.w3.org/ns/prov#Derivation"));    
@@ -1548,7 +1548,7 @@ public class prov : Ontology
     public static readonly Class EmptyCollection = new Class(new Uri("http://www.w3.org/ns/prov#EmptyCollection"));    
 
     ///<summary>
-    ///An instance of prov:End provides additional descriptions about the binary prov:wasEndedBy relation from some ended prov:Activity to an prov:Entity that ended it. For example, :ball_game prov:wasEndedBy :buzzer; prov:qualifiedEnd [ a prov:End; prov:entity :buzzer; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTime ].
+    ///(An instance of prov:End provides additional descriptions about the binary prov:wasEndedBy relation from some ended prov:Activity to an prov:Entity that ended it. For example, :ball_game prov:wasEndedBy :buzzer; prov:qualifiedEnd [ a prov:End; prov:entity :buzzer; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTime ]., en)
     ///<see cref="http://www.w3.org/ns/prov#End"/>
     ///</summary>
     public static readonly Class End = new Class(new Uri("http://www.w3.org/ns/prov#End"));    
@@ -1560,31 +1560,31 @@ public class prov : Ontology
     public static readonly Class Entity = new Class(new Uri("http://www.w3.org/ns/prov#Entity"));    
 
     ///<summary>
-    ///EntityInfluence provides additional descriptions of an Entity's binary influence upon any other kind of resource. Instances of EntityInfluence use the prov:entity property to cite the influencing Entity.
+    ///(EntityInfluence provides additional descriptions of an Entity's binary influence upon any other kind of resource. Instances of EntityInfluence use the prov:entity property to cite the influencing Entity., en)
     ///<see cref="http://www.w3.org/ns/prov#EntityInfluence"/>
     ///</summary>
     public static readonly Class EntityInfluence = new Class(new Uri("http://www.w3.org/ns/prov#EntityInfluence"));    
 
     ///<summary>
-    ///An instance of prov:Generation provides additional descriptions about the binary prov:wasGeneratedBy relation from a generated prov:Entity to the prov:Activity that generated it. For example, :cake prov:wasGeneratedBy :baking; prov:qualifiedGeneration [ a prov:Generation; prov:activity :baking; :foo :bar ].
+    ///(An instance of prov:Generation provides additional descriptions about the binary prov:wasGeneratedBy relation from a generated prov:Entity to the prov:Activity that generated it. For example, :cake prov:wasGeneratedBy :baking; prov:qualifiedGeneration [ a prov:Generation; prov:activity :baking; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Generation"/>
     ///</summary>
     public static readonly Class Generation = new Class(new Uri("http://www.w3.org/ns/prov#Generation"));    
 
     ///<summary>
-    ///An instance of prov:Influence provides additional descriptions about the binary prov:wasInfluencedBy relation from some influenced Activity, Entity, or Agent to the influencing Activity, Entity, or Agent. For example, :stomach_ache prov:wasInfluencedBy :spoon; prov:qualifiedInfluence [ a prov:Influence; prov:entity :spoon; :foo :bar ] . Because prov:Influence is a broad relation, the more specific relations (Communication, Delegation, End, etc.) should be used when applicable.
+    ///(An instance of prov:Influence provides additional descriptions about the binary prov:wasInfluencedBy relation from some influenced Activity, Entity, or Agent to the influencing Activity, Entity, or Agent. For example, :stomach_ache prov:wasInfluencedBy :spoon; prov:qualifiedInfluence [ a prov:Influence; prov:entity :spoon; :foo :bar ] . Because prov:Influence is a broad relation, the more specific relations (Communication, Delegation, End, etc.) should be used when applicable., en)
     ///<see cref="http://www.w3.org/ns/prov#Influence"/>
     ///</summary>
     public static readonly Class Influence = new Class(new Uri("http://www.w3.org/ns/prov#Influence"));    
 
     ///<summary>
-    ///An instantaneous event, or event for short, happens in the world and marks a change in the world, in its activities and in its entities. The term 'event' is commonly used in process algebra with a similar meaning. Events represent communications or interactions; they are assumed to be atomic and instantaneous.
+    ///(An instantaneous event, or event for short, happens in the world and marks a change in the world, in its activities and in its entities. The term 'event' is commonly used in process algebra with a similar meaning. Events represent communications or interactions; they are assumed to be atomic and instantaneous., en)
     ///<see cref="http://www.w3.org/ns/prov#InstantaneousEvent"/>
     ///</summary>
     public static readonly Class InstantaneousEvent = new Class(new Uri("http://www.w3.org/ns/prov#InstantaneousEvent"));    
 
     ///<summary>
-    ///An instance of prov:Invalidation provides additional descriptions about the binary prov:wasInvalidatedBy relation from an invalidated prov:Entity to the prov:Activity that invalidated it. For example, :uncracked_egg prov:wasInvalidatedBy :baking; prov:qualifiedInvalidation [ a prov:Invalidation; prov:activity :baking; :foo :bar ].
+    ///(An instance of prov:Invalidation provides additional descriptions about the binary prov:wasInvalidatedBy relation from an invalidated prov:Entity to the prov:Activity that invalidated it. For example, :uncracked_egg prov:wasInvalidatedBy :baking; prov:qualifiedInvalidation [ a prov:Invalidation; prov:activity :baking; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Invalidation"/>
     ///</summary>
     public static readonly Class Invalidation = new Class(new Uri("http://www.w3.org/ns/prov#Invalidation"));    
@@ -1608,25 +1608,25 @@ public class prov : Ontology
     public static readonly Class Person = new Class(new Uri("http://www.w3.org/ns/prov#Person"));    
 
     ///<summary>
-    ///There exist no prescriptive requirement on the nature of plans, their representation, the actions or steps they consist of, or their intended goals. Since plans may evolve over time, it may become necessary to track their provenance, so plans themselves are entities. Representing the plan explicitly in the provenance can be useful for various tasks: for example, to validate the execution as represented in the provenance record, to manage expectation failures, or to provide explanations.
+    ///(There exist no prescriptive requirement on the nature of plans, their representation, the actions or steps they consist of, or their intended goals. Since plans may evolve over time, it may become necessary to track their provenance, so plans themselves are entities. Representing the plan explicitly in the provenance can be useful for various tasks: for example, to validate the execution as represented in the provenance record, to manage expectation failures, or to provide explanations., en)
     ///<see cref="http://www.w3.org/ns/prov#Plan"/>
     ///</summary>
     public static readonly Class Plan = new Class(new Uri("http://www.w3.org/ns/prov#Plan"));    
 
     ///<summary>
-    ///An instance of prov:PrimarySource provides additional descriptions about the binary prov:hadPrimarySource relation from some secondary prov:Entity to an earlier, primary prov:Entity. For example, :blog prov:hadPrimarySource :newsArticle; prov:qualifiedPrimarySource [ a prov:PrimarySource; prov:entity :newsArticle; :foo :bar ] .
+    ///(An instance of prov:PrimarySource provides additional descriptions about the binary prov:hadPrimarySource relation from some secondary prov:Entity to an earlier, primary prov:Entity. For example, :blog prov:hadPrimarySource :newsArticle; prov:qualifiedPrimarySource [ a prov:PrimarySource; prov:entity :newsArticle; :foo :bar ] ., en)
     ///<see cref="http://www.w3.org/ns/prov#PrimarySource"/>
     ///</summary>
     public static readonly Class PrimarySource = new Class(new Uri("http://www.w3.org/ns/prov#PrimarySource"));    
 
     ///<summary>
-    ///An instance of prov:Quotation provides additional descriptions about the binary prov:wasQuotedFrom relation from some taken prov:Entity from an earlier, larger prov:Entity. For example, :here_is_looking_at_you_kid prov:wasQuotedFrom :casablanca_script; prov:qualifiedQuotation [ a prov:Quotation; prov:entity :casablanca_script; :foo :bar ].
+    ///(An instance of prov:Quotation provides additional descriptions about the binary prov:wasQuotedFrom relation from some taken prov:Entity from an earlier, larger prov:Entity. For example, :here_is_looking_at_you_kid prov:wasQuotedFrom :casablanca_script; prov:qualifiedQuotation [ a prov:Quotation; prov:entity :casablanca_script; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Quotation"/>
     ///</summary>
     public static readonly Class Quotation = new Class(new Uri("http://www.w3.org/ns/prov#Quotation"));    
 
     ///<summary>
-    ///An instance of prov:Revision provides additional descriptions about the binary prov:wasRevisionOf relation from some newer prov:Entity to an earlier prov:Entity. For example, :draft_2 prov:wasRevisionOf :draft_1; prov:qualifiedRevision [ a prov:Revision; prov:entity :draft_1; :foo :bar ].
+    ///(An instance of prov:Revision provides additional descriptions about the binary prov:wasRevisionOf relation from some newer prov:Entity to an earlier prov:Entity. For example, :draft_2 prov:wasRevisionOf :draft_1; prov:qualifiedRevision [ a prov:Revision; prov:entity :draft_1; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Revision"/>
     ///</summary>
     public static readonly Class Revision = new Class(new Uri("http://www.w3.org/ns/prov#Revision"));    
@@ -1644,19 +1644,19 @@ public class prov : Ontology
     public static readonly Class SoftwareAgent = new Class(new Uri("http://www.w3.org/ns/prov#SoftwareAgent"));    
 
     ///<summary>
-    ///An instance of prov:Start provides additional descriptions about the binary prov:wasStartedBy relation from some started prov:Activity to an prov:Entity that started it. For example, :foot_race prov:wasStartedBy :bang; prov:qualifiedStart [ a prov:Start; prov:entity :bang; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTime ] .
+    ///(An instance of prov:Start provides additional descriptions about the binary prov:wasStartedBy relation from some started prov:Activity to an prov:Entity that started it. For example, :foot_race prov:wasStartedBy :bang; prov:qualifiedStart [ a prov:Start; prov:entity :bang; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTime ] ., en)
     ///<see cref="http://www.w3.org/ns/prov#Start"/>
     ///</summary>
     public static readonly Class Start = new Class(new Uri("http://www.w3.org/ns/prov#Start"));    
 
     ///<summary>
-    ///An instance of prov:Usage provides additional descriptions about the binary prov:used relation from some prov:Activity to an prov:Entity that it used. For example, :keynote prov:used :podium; prov:qualifiedUsage [ a prov:Usage; prov:entity :podium; :foo :bar ].
+    ///(An instance of prov:Usage provides additional descriptions about the binary prov:used relation from some prov:Activity to an prov:Entity that it used. For example, :keynote prov:used :podium; prov:qualifiedUsage [ a prov:Usage; prov:entity :podium; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Usage"/>
     ///</summary>
     public static readonly Class Usage = new Class(new Uri("http://www.w3.org/ns/prov#Usage"));    
 
     ///<summary>
-    ///An object property to express the accountability of an agent towards another agent. The subordinate agent acted on behalf of the responsible agent in an actual activity. 
+    ///(An object property to express the accountability of an agent towards another agent. The subordinate agent acted on behalf of the responsible agent in an actual activity. , en)
     ///<see cref="http://www.w3.org/ns/prov#actedOnBehalfOf"/>
     ///</summary>
     public static readonly Property actedOnBehalfOf = new Property(new Uri("http://www.w3.org/ns/prov#actedOnBehalfOf"));    
@@ -1686,61 +1686,61 @@ public class prov : Ontology
     public static readonly Property aq = new Property(new Uri("http://www.w3.org/ns/prov#aq"));    
 
     ///<summary>
-    ///The Location of any resource.
+    ///(The Location of any resource., en)
     ///<see cref="http://www.w3.org/ns/prov#atLocation"/>
     ///</summary>
     public static readonly Property atLocation = new Property(new Uri("http://www.w3.org/ns/prov#atLocation"));    
 
     ///<summary>
-    ///The time at which an InstantaneousEvent occurred, in the form of xsd:dateTime.
+    ///(The time at which an InstantaneousEvent occurred, in the form of xsd:dateTime., en)
     ///<see cref="http://www.w3.org/ns/prov#atTime"/>
     ///</summary>
     public static readonly Property atTime = new Property(new Uri("http://www.w3.org/ns/prov#atTime"));    
 
     ///<summary>
-    ///Classify prov-o terms into three categories, including 'starting-point', 'qualifed', and 'extended'. This classification is used by the prov-o html document to gently introduce prov-o terms to its users. 
+    ///(Classify prov-o terms into three categories, including 'starting-point', 'qualifed', and 'extended'. This classification is used by the prov-o html document to gently introduce prov-o terms to its users. , en)
     ///<see cref="http://www.w3.org/ns/prov#category"/>
     ///</summary>
     public static readonly Property category = new Property(new Uri("http://www.w3.org/ns/prov#category"));    
 
     ///<summary>
-    ///Classify prov-o terms into six components according to prov-dm, including 'agents-responsibility', 'alternate', 'annotations', 'collections', 'derivations', and 'entities-activities'. This classification is used so that readers of prov-o specification can find its correspondence with the prov-dm specification.
+    ///(Classify prov-o terms into six components according to prov-dm, including 'agents-responsibility', 'alternate', 'annotations', 'collections', 'derivations', and 'entities-activities'. This classification is used so that readers of prov-o specification can find its correspondence with the prov-dm specification., en)
     ///<see cref="http://www.w3.org/ns/prov#component"/>
     ///</summary>
     public static readonly Property component = new Property(new Uri("http://www.w3.org/ns/prov#component"));    
 
     ///<summary>
-    ///A reference to the principal section of the PROV-CONSTRAINTS document that describes this concept.
+    ///(A reference to the principal section of the PROV-CONSTRAINTS document that describes this concept., en)
     ///<see cref="http://www.w3.org/ns/prov#constraints"/>
     ///</summary>
     public static readonly Property constraints = new Property(new Uri("http://www.w3.org/ns/prov#constraints"));    
 
     ///<summary>
-    ///A definition quoted from PROV-DM or PROV-CONSTRAINTS that describes the concept expressed with this OWL term.
+    ///(A definition quoted from PROV-DM or PROV-CONSTRAINTS that describes the concept expressed with this OWL term., en)
     ///<see cref="http://www.w3.org/ns/prov#definition"/>
     ///</summary>
     public static readonly Property definition = new Property(new Uri("http://www.w3.org/ns/prov#definition"));    
 
     ///<summary>
-    ///A reference to the principal section of the PROV-DM document that describes this concept.
+    ///(A reference to the principal section of the PROV-DM document that describes this concept., en)
     ///<see cref="http://www.w3.org/ns/prov#dm"/>
     ///</summary>
     public static readonly Property dm = new Property(new Uri("http://www.w3.org/ns/prov#dm"));    
 
     ///<summary>
-    ///A note by the OWL development team about how this term expresses the PROV-DM concept, or how it should be used in context of semantic web or linked data.
+    ///(A note by the OWL development team about how this term expresses the PROV-DM concept, or how it should be used in context of semantic web or linked data., en)
     ///<see cref="http://www.w3.org/ns/prov#editorialNote"/>
     ///</summary>
     public static readonly Property editorialNote = new Property(new Uri("http://www.w3.org/ns/prov#editorialNote"));    
 
     ///<summary>
-    ///When the prov-o term does not have a definition drawn from prov-dm, and the prov-o editor provides one.
+    ///(When the prov-o term does not have a definition drawn from prov-dm, and the prov-o editor provides one., en)
     ///<see cref="http://www.w3.org/ns/prov#editorsDefinition"/>
     ///</summary>
     public static readonly Property editorsDefinition = new Property(new Uri("http://www.w3.org/ns/prov#editorsDefinition"));    
 
     ///<summary>
-    ///The time at which an activity ended. See also prov:startedAtTime.
+    ///(The time at which an activity ended. See also prov:startedAtTime., en)
     ///<see cref="http://www.w3.org/ns/prov#endedAtTime"/>
     ///</summary>
     public static readonly Property endedAtTime = new Property(new Uri("http://www.w3.org/ns/prov#endedAtTime"));    
@@ -1758,19 +1758,19 @@ public class prov : Ontology
     public static readonly Property generated = new Property(new Uri("http://www.w3.org/ns/prov#generated"));    
 
     ///<summary>
-    ///The time at which an entity was completely created and is available for use.
+    ///(The time at which an entity was completely created and is available for use., en)
     ///<see cref="http://www.w3.org/ns/prov#generatedAtTime"/>
     ///</summary>
     public static readonly Property generatedAtTime = new Property(new Uri("http://www.w3.org/ns/prov#generatedAtTime"));    
 
     ///<summary>
-    ///The _optional_ Activity of an Influence, which used, generated, invalidated, or was the responsibility of some Entity. This property is _not_ used by ActivityInfluence (use prov:activity instead).
+    ///(The _optional_ Activity of an Influence, which used, generated, invalidated, or was the responsibility of some Entity. This property is _not_ used by ActivityInfluence (use prov:activity instead)., en)
     ///<see cref="http://www.w3.org/ns/prov#hadActivity"/>
     ///</summary>
     public static readonly Property hadActivity = new Property(new Uri("http://www.w3.org/ns/prov#hadActivity"));    
 
     ///<summary>
-    ///The _optional_ Generation involved in an Entity's Derivation.
+    ///(The _optional_ Generation involved in an Entity's Derivation., en)
     ///<see cref="http://www.w3.org/ns/prov#hadGeneration"/>
     ///</summary>
     public static readonly Property hadGeneration = new Property(new Uri("http://www.w3.org/ns/prov#hadGeneration"));    
@@ -1782,7 +1782,7 @@ public class prov : Ontology
     public static readonly Property hadMember = new Property(new Uri("http://www.w3.org/ns/prov#hadMember"));    
 
     ///<summary>
-    ///The _optional_ Plan adopted by an Agent in Association with some Activity. Plan specifications are out of the scope of this specification.
+    ///(The _optional_ Plan adopted by an Agent in Association with some Activity. Plan specifications are out of the scope of this specification., en)
     ///<see cref="http://www.w3.org/ns/prov#hadPlan"/>
     ///</summary>
     public static readonly Property hadPlan = new Property(new Uri("http://www.w3.org/ns/prov#hadPlan"));    
@@ -1794,13 +1794,13 @@ public class prov : Ontology
     public static readonly Property hadPrimarySource = new Property(new Uri("http://www.w3.org/ns/prov#hadPrimarySource"));    
 
     ///<summary>
-    ///The _optional_ Role that an Entity assumed in the context of an Activity. For example, :baking prov:used :spoon; prov:qualified [ a prov:Usage; prov:entity :spoon; prov:hadRole roles:mixing_implement ].
+    ///(The _optional_ Role that an Entity assumed in the context of an Activity. For example, :baking prov:used :spoon; prov:qualified [ a prov:Usage; prov:entity :spoon; prov:hadRole roles:mixing_implement ]., en)
     ///<see cref="http://www.w3.org/ns/prov#hadRole"/>
     ///</summary>
     public static readonly Property hadRole = new Property(new Uri("http://www.w3.org/ns/prov#hadRole"));    
 
     ///<summary>
-    ///The _optional_ Usage involved in an Entity's Derivation.
+    ///(The _optional_ Usage involved in an Entity's Derivation., en)
     ///<see cref="http://www.w3.org/ns/prov#hadUsage"/>
     ///</summary>
     public static readonly Property hadUsage = new Property(new Uri("http://www.w3.org/ns/prov#hadUsage"));    
@@ -1812,7 +1812,7 @@ public class prov : Ontology
     public static readonly Property influenced = new Property(new Uri("http://www.w3.org/ns/prov#influenced"));    
 
     ///<summary>
-    ///Subproperties of prov:influencer are used to cite the object of an unqualified PROV-O triple whose predicate is a subproperty of prov:wasInfluencedBy (e.g. prov:used, prov:wasGeneratedBy). prov:influencer is used much like rdf:object is used.
+    ///(Subproperties of prov:influencer are used to cite the object of an unqualified PROV-O triple whose predicate is a subproperty of prov:wasInfluencedBy (e.g. prov:used, prov:wasGeneratedBy). prov:influencer is used much like rdf:object is used., en)
     ///<see cref="http://www.w3.org/ns/prov#influencer"/>
     ///</summary>
     public static readonly Property influencer = new Property(new Uri("http://www.w3.org/ns/prov#influencer"));    
@@ -1824,67 +1824,67 @@ public class prov : Ontology
     public static readonly Property invalidated = new Property(new Uri("http://www.w3.org/ns/prov#invalidated"));    
 
     ///<summary>
-    ///The time at which an entity was invalidated (i.e., no longer usable).
+    ///(The time at which an entity was invalidated (i.e., no longer usable)., en)
     ///<see cref="http://www.w3.org/ns/prov#invalidatedAtTime"/>
     ///</summary>
     public static readonly Property invalidatedAtTime = new Property(new Uri("http://www.w3.org/ns/prov#invalidatedAtTime"));    
 
     ///<summary>
-    ///PROV-O does not define all property inverses. The directionalities defined in PROV-O should be given preference over those not defined. However, if users wish to name the inverse of a PROV-O property, the local name given by prov:inverse should be used.
+    ///(PROV-O does not define all property inverses. The directionalities defined in PROV-O should be given preference over those not defined. However, if users wish to name the inverse of a PROV-O property, the local name given by prov:inverse should be used., en)
     ///<see cref="http://www.w3.org/ns/prov#inverse"/>
     ///</summary>
     public static readonly Property inverse = new Property(new Uri("http://www.w3.org/ns/prov#inverse"));    
 
     ///<summary>
-    ///A reference to the principal section of the PROV-DM document that describes this concept.
+    ///(A reference to the principal section of the PROV-DM document that describes this concept., en)
     ///<see cref="http://www.w3.org/ns/prov#n"/>
     ///</summary>
     public static readonly Property n = new Property(new Uri("http://www.w3.org/ns/prov#n"));    
 
     ///<summary>
-    ///The position that this OWL term should be listed within documentation. The scope of the documentation (e.g., among all terms, among terms within a prov:category, among properties applying to a particular class, etc.) is unspecified.
+    ///(The position that this OWL term should be listed within documentation. The scope of the documentation (e.g., among all terms, among terms within a prov:category, among properties applying to a particular class, etc.) is unspecified., en)
     ///<see cref="http://www.w3.org/ns/prov#order"/>
     ///</summary>
     public static readonly Property order = new Property(new Uri("http://www.w3.org/ns/prov#order"));    
 
     ///<summary>
-    ///If this Activity prov:wasAssociatedWith Agent :ag, then it can qualify the Association using prov:qualifiedAssociation [ a prov:Association;  prov:agent :ag; :foo :bar ].
+    ///(If this Activity prov:wasAssociatedWith Agent :ag, then it can qualify the Association using prov:qualifiedAssociation [ a prov:Association;  prov:agent :ag; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedAssociation"/>
     ///</summary>
     public static readonly Property qualifiedAssociation = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedAssociation"));    
 
     ///<summary>
-    ///If this Entity prov:wasAttributedTo Agent :ag, then it can qualify how it was influenced using prov:qualifiedAttribution [ a prov:Attribution;  prov:agent :ag; :foo :bar ].
+    ///(If this Entity prov:wasAttributedTo Agent :ag, then it can qualify how it was influenced using prov:qualifiedAttribution [ a prov:Attribution;  prov:agent :ag; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedAttribution"/>
     ///</summary>
     public static readonly Property qualifiedAttribution = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedAttribution"));    
 
     ///<summary>
-    ///If this Activity prov:wasInformedBy Activity :a, then it can qualify how it was influenced using prov:qualifiedCommunication [ a prov:Communication;  prov:activity :a; :foo :bar ].
+    ///(If this Activity prov:wasInformedBy Activity :a, then it can qualify how it was influenced using prov:qualifiedCommunication [ a prov:Communication;  prov:activity :a; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedCommunication"/>
     ///</summary>
     public static readonly Property qualifiedCommunication = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedCommunication"));    
 
     ///<summary>
-    ///If this Agent prov:actedOnBehalfOf Agent :ag, then it can qualify how with prov:qualifiedResponsibility [ a prov:Responsibility;  prov:agent :ag; :foo :bar ].
+    ///(If this Agent prov:actedOnBehalfOf Agent :ag, then it can qualify how with prov:qualifiedResponsibility [ a prov:Responsibility;  prov:agent :ag; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedDelegation"/>
     ///</summary>
     public static readonly Property qualifiedDelegation = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedDelegation"));    
 
     ///<summary>
-    ///If this Entity prov:wasDerivedFrom Entity :e, then it can qualify how it was derived using prov:qualifiedDerivation [ a prov:Derivation;  prov:entity :e; :foo :bar ].
+    ///(If this Entity prov:wasDerivedFrom Entity :e, then it can qualify how it was derived using prov:qualifiedDerivation [ a prov:Derivation;  prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedDerivation"/>
     ///</summary>
     public static readonly Property qualifiedDerivation = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedDerivation"));    
 
     ///<summary>
-    ///If this Activity prov:wasEndedBy Entity :e1, then it can qualify how it was ended using prov:qualifiedEnd [ a prov:End;  prov:entity :e1; :foo :bar ].
+    ///(If this Activity prov:wasEndedBy Entity :e1, then it can qualify how it was ended using prov:qualifiedEnd [ a prov:End;  prov:entity :e1; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedEnd"/>
     ///</summary>
     public static readonly Property qualifiedEnd = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedEnd"));    
 
     ///<summary>
-    ///This annotation property links a subproperty of prov:wasInfluencedBy with the subclass of prov:Influence and the qualifying property that are used to qualify it. 
+    ///(This annotation property links a subproperty of prov:wasInfluencedBy with the subclass of prov:Influence and the qualifying property that are used to qualify it. 
     ///
     ///Example annotation:
     ///
@@ -1902,55 +1902,55 @@ public class prov : Ontology
     ///       prov:activity :activity1;
     ///       :customValue 1337 .
     ///
-    ///Note how the value of the unqualified influence (prov:wasGeneratedBy :activity1) is mirrored as the value of the prov:activity (or prov:entity, or prov:agent) property on the influence class.
+    ///Note how the value of the unqualified influence (prov:wasGeneratedBy :activity1) is mirrored as the value of the prov:activity (or prov:entity, or prov:agent) property on the influence class., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedForm"/>
     ///</summary>
     public static readonly Property qualifiedForm = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedForm"));    
 
     ///<summary>
-    ///If this Activity prov:generated Entity :e, then it can qualify how it performed the Generation using prov:qualifiedGeneration [ a prov:Generation;  prov:entity :e; :foo :bar ].
+    ///(If this Activity prov:generated Entity :e, then it can qualify how it performed the Generation using prov:qualifiedGeneration [ a prov:Generation;  prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedGeneration"/>
     ///</summary>
     public static readonly Property qualifiedGeneration = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedGeneration"));    
 
     ///<summary>
-    ///Because prov:qualifiedInfluence is a broad relation, the more specific relations (qualifiedCommunication, qualifiedDelegation, qualifiedEnd, etc.) should be used when applicable.
+    ///(Because prov:qualifiedInfluence is a broad relation, the more specific relations (qualifiedCommunication, qualifiedDelegation, qualifiedEnd, etc.) should be used when applicable., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedInfluence"/>
     ///</summary>
     public static readonly Property qualifiedInfluence = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedInfluence"));    
 
     ///<summary>
-    ///If this Entity prov:wasInvalidatedBy Activity :a, then it can qualify how it was invalidated using prov:qualifiedInvalidation [ a prov:Invalidation;  prov:activity :a; :foo :bar ].
+    ///(If this Entity prov:wasInvalidatedBy Activity :a, then it can qualify how it was invalidated using prov:qualifiedInvalidation [ a prov:Invalidation;  prov:activity :a; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedInvalidation"/>
     ///</summary>
     public static readonly Property qualifiedInvalidation = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedInvalidation"));    
 
     ///<summary>
-    ///If this Entity prov:hadPrimarySource Entity :e, then it can qualify how using prov:qualifiedPrimarySource [ a prov:PrimarySource; prov:entity :e; :foo :bar ].
+    ///(If this Entity prov:hadPrimarySource Entity :e, then it can qualify how using prov:qualifiedPrimarySource [ a prov:PrimarySource; prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedPrimarySource"/>
     ///</summary>
     public static readonly Property qualifiedPrimarySource = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedPrimarySource"));    
 
     ///<summary>
-    ///If this Entity prov:wasQuotedFrom Entity :e, then it can qualify how using prov:qualifiedQuotation [ a prov:Quotation;  prov:entity :e; :foo :bar ].
+    ///(If this Entity prov:wasQuotedFrom Entity :e, then it can qualify how using prov:qualifiedQuotation [ a prov:Quotation;  prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedQuotation"/>
     ///</summary>
     public static readonly Property qualifiedQuotation = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedQuotation"));    
 
     ///<summary>
-    ///If this Entity prov:wasRevisionOf Entity :e, then it can qualify how it was revised using prov:qualifiedRevision [ a prov:Revision;  prov:entity :e; :foo :bar ].
+    ///(If this Entity prov:wasRevisionOf Entity :e, then it can qualify how it was revised using prov:qualifiedRevision [ a prov:Revision;  prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedRevision"/>
     ///</summary>
     public static readonly Property qualifiedRevision = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedRevision"));    
 
     ///<summary>
-    ///If this Activity prov:wasStartedBy Entity :e1, then it can qualify how it was started using prov:qualifiedStart [ a prov:Start;  prov:entity :e1; :foo :bar ].
+    ///(If this Activity prov:wasStartedBy Entity :e1, then it can qualify how it was started using prov:qualifiedStart [ a prov:Start;  prov:entity :e1; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedStart"/>
     ///</summary>
     public static readonly Property qualifiedStart = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedStart"));    
 
     ///<summary>
-    ///If this Activity prov:used Entity :e, then it can qualify how it used it using prov:qualifiedUsage [ a prov:Usage; prov:entity :e; :foo :bar ].
+    ///(If this Activity prov:used Entity :e, then it can qualify how it used it using prov:qualifiedUsage [ a prov:Usage; prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedUsage"/>
     ///</summary>
     public static readonly Property qualifiedUsage = new Property(new Uri("http://www.w3.org/ns/prov#qualifiedUsage"));    
@@ -1968,7 +1968,7 @@ public class prov : Ontology
     public static readonly Property specializationOf = new Property(new Uri("http://www.w3.org/ns/prov#specializationOf"));    
 
     ///<summary>
-    ///The time at which an activity started. See also prov:endedAtTime.
+    ///(The time at which an activity started. See also prov:endedAtTime., en)
     ///<see cref="http://www.w3.org/ns/prov#startedAtTime"/>
     ///</summary>
     public static readonly Property startedAtTime = new Property(new Uri("http://www.w3.org/ns/prov#startedAtTime"));    
@@ -1980,13 +1980,13 @@ public class prov : Ontology
     public static readonly Property todo = new Property(new Uri("http://www.w3.org/ns/prov#todo"));    
 
     ///<summary>
-    ///Classes and properties used to qualify relationships are annotated with prov:unqualifiedForm to indicate the property used to assert an unqualified provenance relation.
+    ///(Classes and properties used to qualify relationships are annotated with prov:unqualifiedForm to indicate the property used to assert an unqualified provenance relation., en)
     ///<see cref="http://www.w3.org/ns/prov#unqualifiedForm"/>
     ///</summary>
     public static readonly Property unqualifiedForm = new Property(new Uri("http://www.w3.org/ns/prov#unqualifiedForm"));    
 
     ///<summary>
-    ///A prov:Entity that was used by this prov:Activity. For example, :baking prov:used :spoon, :egg, :oven .
+    ///(A prov:Entity that was used by this prov:Activity. For example, :baking prov:used :spoon, :egg, :oven ., en)
     ///<see cref="http://www.w3.org/ns/prov#used"/>
     ///</summary>
     public static readonly Property used = new Property(new Uri("http://www.w3.org/ns/prov#used"));    
@@ -1998,25 +1998,25 @@ public class prov : Ontology
     public static readonly Property value = new Property(new Uri("http://www.w3.org/ns/prov#value"));    
 
     ///<summary>
-    ///An prov:Agent that had some (unspecified) responsibility for the occurrence of this prov:Activity.
+    ///(An prov:Agent that had some (unspecified) responsibility for the occurrence of this prov:Activity., en)
     ///<see cref="http://www.w3.org/ns/prov#wasAssociatedWith"/>
     ///</summary>
     public static readonly Property wasAssociatedWith = new Property(new Uri("http://www.w3.org/ns/prov#wasAssociatedWith"));    
 
     ///<summary>
-    ///Attribution is the ascribing of an entity to an agent.
+    ///(Attribution is the ascribing of an entity to an agent., en)
     ///<see cref="http://www.w3.org/ns/prov#wasAttributedTo"/>
     ///</summary>
     public static readonly Property wasAttributedTo = new Property(new Uri("http://www.w3.org/ns/prov#wasAttributedTo"));    
 
     ///<summary>
-    ///The more specific subproperties of prov:wasDerivedFrom (i.e., prov:wasQuotedFrom, prov:wasRevisionOf, prov:hadPrimarySource) should be used when applicable.
+    ///(The more specific subproperties of prov:wasDerivedFrom (i.e., prov:wasQuotedFrom, prov:wasRevisionOf, prov:hadPrimarySource) should be used when applicable., en)
     ///<see cref="http://www.w3.org/ns/prov#wasDerivedFrom"/>
     ///</summary>
     public static readonly Property wasDerivedFrom = new Property(new Uri("http://www.w3.org/ns/prov#wasDerivedFrom"));    
 
     ///<summary>
-    ///End is when an activity is deemed to have ended. An end may refer to an entity, known as trigger, that terminated the activity.
+    ///(End is when an activity is deemed to have ended. An end may refer to an entity, known as trigger, that terminated the activity., en)
     ///<see cref="http://www.w3.org/ns/prov#wasEndedBy"/>
     ///</summary>
     public static readonly Property wasEndedBy = new Property(new Uri("http://www.w3.org/ns/prov#wasEndedBy"));    
@@ -2028,13 +2028,13 @@ public class prov : Ontology
     public static readonly Property wasGeneratedBy = new Property(new Uri("http://www.w3.org/ns/prov#wasGeneratedBy"));    
 
     ///<summary>
-    ///Because prov:wasInfluencedBy is a broad relation, its more specific subproperties (e.g. prov:wasInformedBy, prov:actedOnBehalfOf, prov:wasEndedBy, etc.) should be used when applicable.
+    ///(Because prov:wasInfluencedBy is a broad relation, its more specific subproperties (e.g. prov:wasInformedBy, prov:actedOnBehalfOf, prov:wasEndedBy, etc.) should be used when applicable., en)
     ///<see cref="http://www.w3.org/ns/prov#wasInfluencedBy"/>
     ///</summary>
     public static readonly Property wasInfluencedBy = new Property(new Uri("http://www.w3.org/ns/prov#wasInfluencedBy"));    
 
     ///<summary>
-    ///An activity a2 is dependent on or informed by another activity a1, by way of some unspecified entity that is generated by a1 and used by a2.
+    ///(An activity a2 is dependent on or informed by another activity a1, by way of some unspecified entity that is generated by a1 and used by a2., en)
     ///<see cref="http://www.w3.org/ns/prov#wasInformedBy"/>
     ///</summary>
     public static readonly Property wasInformedBy = new Property(new Uri("http://www.w3.org/ns/prov#wasInformedBy"));    
@@ -2046,27 +2046,27 @@ public class prov : Ontology
     public static readonly Property wasInvalidatedBy = new Property(new Uri("http://www.w3.org/ns/prov#wasInvalidatedBy"));    
 
     ///<summary>
-    ///An entity is derived from an original entity by copying, or 'quoting', some or all of it.
+    ///(An entity is derived from an original entity by copying, or 'quoting', some or all of it., en)
     ///<see cref="http://www.w3.org/ns/prov#wasQuotedFrom"/>
     ///</summary>
     public static readonly Property wasQuotedFrom = new Property(new Uri("http://www.w3.org/ns/prov#wasQuotedFrom"));    
 
     ///<summary>
-    ///A revision is a derivation that revises an entity into a revised version.
+    ///(A revision is a derivation that revises an entity into a revised version., en)
     ///<see cref="http://www.w3.org/ns/prov#wasRevisionOf"/>
     ///</summary>
     public static readonly Property wasRevisionOf = new Property(new Uri("http://www.w3.org/ns/prov#wasRevisionOf"));    
 
     ///<summary>
-    ///Start is when an activity is deemed to have started. A start may refer to an entity, known as trigger, that initiated the activity.
+    ///(Start is when an activity is deemed to have started. A start may refer to an entity, known as trigger, that initiated the activity., en)
     ///<see cref="http://www.w3.org/ns/prov#wasStartedBy"/>
     ///</summary>
     public static readonly Property wasStartedBy = new Property(new Uri("http://www.w3.org/ns/prov#wasStartedBy"));    
 
     ///<summary>
-    ///This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
+    ///(This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
     ///
-    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome.
+    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome., en)
     ///<see cref="http://www.w3.org/ns/prov-o#"/>
     ///</summary>
     public static readonly Resource prov_o = new Resource(new Uri("http://www.w3.org/ns/prov-o#"));    
@@ -2318,37 +2318,37 @@ public class prov : Ontology
     public static readonly Class DirectQueryService = new Class(new Uri("http://www.w3.org/ns/prov#DirectQueryService"));    
 
     ///<summary>
-    ///Indicates anchor URI for a potentially dynamic resource instance.
+    ///(Indicates anchor URI for a potentially dynamic resource instance., en)
     ///<see cref="http://www.w3.org/ns/prov#has_anchor"/>
     ///</summary>
     public static readonly Property has_anchor = new Property(new Uri("http://www.w3.org/ns/prov#has_anchor"));    
 
     ///<summary>
-    ///Indicates a provenance-URI for a resource; the resource identified by this property presents a provenance record about its subject or anchor resource.
+    ///(Indicates a provenance-URI for a resource; the resource identified by this property presents a provenance record about its subject or anchor resource., en)
     ///<see cref="http://www.w3.org/ns/prov#has_provenance"/>
     ///</summary>
     public static readonly Property has_provenance = new Property(new Uri("http://www.w3.org/ns/prov#has_provenance"));    
 
     ///<summary>
-    ///Indicates a provenance query service that can access provenance related to its subject or anchor resource.
+    ///(Indicates a provenance query service that can access provenance related to its subject or anchor resource., en)
     ///<see cref="http://www.w3.org/ns/prov#has_query_service"/>
     ///</summary>
     public static readonly Property has_query_service = new Property(new Uri("http://www.w3.org/ns/prov#has_query_service"));    
 
     ///<summary>
-    ///relates a generic provenance query service resource (type prov:ServiceDescription) to a specific query service description (e.g. a prov:DirectQueryService or a sd:Service).
+    ///(relates a generic provenance query service resource (type prov:ServiceDescription) to a specific query service description (e.g. a prov:DirectQueryService or a sd:Service)., en)
     ///<see cref="http://www.w3.org/ns/prov#describesService"/>
     ///</summary>
     public static readonly Property describesService = new Property(new Uri("http://www.w3.org/ns/prov#describesService"));    
 
     ///<summary>
-    ///Relates a provenance service to a URI template string for constructing provenance-URIs.
+    ///(Relates a provenance service to a URI template string for constructing provenance-URIs., en)
     ///<see cref="http://www.w3.org/ns/prov#provenanceUriTemplate"/>
     ///</summary>
     public static readonly Property provenanceUriTemplate = new Property(new Uri("http://www.w3.org/ns/prov#provenanceUriTemplate"));    
 
     ///<summary>
-    ///Relates a resource to a provenance pingback service that may receive additional provenance links about the resource.
+    ///(Relates a resource to a provenance pingback service that may receive additional provenance links about the resource., en)
     ///<see cref="http://www.w3.org/ns/prov#pingback"/>
     ///</summary>
     public static readonly Property pingback = new Property(new Uri("http://www.w3.org/ns/prov#pingback"));    
@@ -2360,9 +2360,9 @@ public class prov : Ontology
     public static readonly Property topObjectProperty = new Property(new Uri("http://www.w3.org/2002/07/owl#topObjectProperty"));    
 
     ///<summary>
-    ///This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
+    ///(This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
     ///
-    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome.
+    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome., en)
     ///<see cref="http://www.w3.org/ns/prov-dc#"/>
     ///</summary>
     public static readonly Resource prov_dc = new Resource(new Uri("http://www.w3.org/ns/prov-dc#"));    
@@ -2446,9 +2446,9 @@ public class prov : Ontology
     public static readonly Class Submit = new Class(new Uri("http://www.w3.org/ns/prov#Submit"));    
 
     ///<summary>
-    ///This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
+    ///(This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
     ///
-    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome.
+    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome., en)
     ///<see cref="http://www.w3.org/ns/prov-dictionary#"/>
     ///</summary>
     public static readonly Resource prov_dictionary = new Resource(new Uri("http://www.w3.org/ns/prov-dictionary#"));    
@@ -2544,24 +2544,24 @@ public class prov : Ontology
     public static readonly Property removedKey = new Property(new Uri("http://www.w3.org/ns/prov#removedKey"));    
 
     ///<summary>
-    ///This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/
-    ///). All feedback is welcome.
+    ///(This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/
+    ///). All feedback is welcome., en)
     ///<see cref="http://www.w3.org/ns/prov-links#"/>
     ///</summary>
     public static readonly Resource prov_links = new Resource(new Uri("http://www.w3.org/ns/prov-links#"));    
 
     ///<summary>
-    ///prov:asInBundle is used to specify which bundle the general entity of a prov:mentionOf property is described.
+    ///(prov:asInBundle is used to specify which bundle the general entity of a prov:mentionOf property is described.
     ///
-    ///When :x prov:mentionOf :y and :y is described in Bundle :b, the triple :x prov:asInBundle :b is also asserted to cite the Bundle in which :y was described.
+    ///When :x prov:mentionOf :y and :y is described in Bundle :b, the triple :x prov:asInBundle :b is also asserted to cite the Bundle in which :y was described., en)
     ///<see cref="http://www.w3.org/ns/prov#asInBundle"/>
     ///</summary>
     public static readonly Property asInBundle = new Property(new Uri("http://www.w3.org/ns/prov#asInBundle"));    
 
     ///<summary>
-    ///prov:mentionOf is used to specialize an entity as described in another bundle. It is to be used in conjuction with prov:asInBundle.
+    ///(prov:mentionOf is used to specialize an entity as described in another bundle. It is to be used in conjuction with prov:asInBundle.
     ///
-    ///prov:asInBundle is used to cite the Bundle in which the generalization was mentioned.
+    ///prov:asInBundle is used to cite the Bundle in which the generalization was mentioned., en)
     ///<see cref="http://www.w3.org/ns/prov#mentionOf"/>
     ///</summary>
     public static readonly Property mentionOf = new Property(new Uri("http://www.w3.org/ns/prov#mentionOf"));
@@ -2579,7 +2579,7 @@ public static class PROV
     public static string GetPrefix() { return Prefix; } 
 
     ///<summary>
-    ///
+    ///(, en)
     ///<see cref="http://www.w3.org/2000/01/rdf-schema#comment"/>
     ///</summary>
     public const string comment = "http://www.w3.org/2000/01/rdf-schema#comment";
@@ -2591,13 +2591,13 @@ public static class PROV
     public const string isDefinedBy = "http://www.w3.org/2000/01/rdf-schema#isDefinedBy";
 
     ///<summary>
-    ///
+    ///(, en)
     ///<see cref="http://www.w3.org/2000/01/rdf-schema#label"/>
     ///</summary>
     public const string label = "http://www.w3.org/2000/01/rdf-schema#label";
 
     ///<summary>
-    ///
+    ///(, en)
     ///<see cref="http://www.w3.org/2000/01/rdf-schema#seeAlso"/>
     ///</summary>
     public const string seeAlso = "http://www.w3.org/2000/01/rdf-schema#seeAlso";
@@ -2621,7 +2621,7 @@ public static class PROV
     public const string Activity = "http://www.w3.org/ns/prov#Activity";
 
     ///<summary>
-    ///ActivityInfluence provides additional descriptions of an Activity's binary influence upon any other kind of resource. Instances of ActivityInfluence use the prov:activity property to cite the influencing Activity.
+    ///(ActivityInfluence provides additional descriptions of an Activity's binary influence upon any other kind of resource. Instances of ActivityInfluence use the prov:activity property to cite the influencing Activity., en)
     ///<see cref="http://www.w3.org/ns/prov#ActivityInfluence"/>
     ///</summary>
     public const string ActivityInfluence = "http://www.w3.org/ns/prov#ActivityInfluence";
@@ -2633,25 +2633,25 @@ public static class PROV
     public const string Agent = "http://www.w3.org/ns/prov#Agent";
 
     ///<summary>
-    ///AgentInfluence provides additional descriptions of an Agent's binary influence upon any other kind of resource. Instances of AgentInfluence use the prov:agent property to cite the influencing Agent.
+    ///(AgentInfluence provides additional descriptions of an Agent's binary influence upon any other kind of resource. Instances of AgentInfluence use the prov:agent property to cite the influencing Agent., en)
     ///<see cref="http://www.w3.org/ns/prov#AgentInfluence"/>
     ///</summary>
     public const string AgentInfluence = "http://www.w3.org/ns/prov#AgentInfluence";
 
     ///<summary>
-    ///An instance of prov:Association provides additional descriptions about the binary prov:wasAssociatedWith relation from an prov:Activity to some prov:Agent that had some responsiblity for it. For example, :baking prov:wasAssociatedWith :baker; prov:qualifiedAssociation [ a prov:Association; prov:agent :baker; :foo :bar ].
+    ///(An instance of prov:Association provides additional descriptions about the binary prov:wasAssociatedWith relation from an prov:Activity to some prov:Agent that had some responsiblity for it. For example, :baking prov:wasAssociatedWith :baker; prov:qualifiedAssociation [ a prov:Association; prov:agent :baker; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Association"/>
     ///</summary>
     public const string Association = "http://www.w3.org/ns/prov#Association";
 
     ///<summary>
-    ///An instance of prov:Attribution provides additional descriptions about the binary prov:wasAttributedTo relation from an prov:Entity to some prov:Agent that had some responsible for it. For example, :cake prov:wasAttributedTo :baker; prov:qualifiedAttribution [ a prov:Attribution; prov:entity :baker; :foo :bar ].
+    ///(An instance of prov:Attribution provides additional descriptions about the binary prov:wasAttributedTo relation from an prov:Entity to some prov:Agent that had some responsible for it. For example, :cake prov:wasAttributedTo :baker; prov:qualifiedAttribution [ a prov:Attribution; prov:entity :baker; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Attribution"/>
     ///</summary>
     public const string Attribution = "http://www.w3.org/ns/prov#Attribution";
 
     ///<summary>
-    ///Note that there are kinds of bundles (e.g. handwritten letters, audio recordings, etc.) that are not expressed in PROV-O, but can be still be described by PROV-O.
+    ///(Note that there are kinds of bundles (e.g. handwritten letters, audio recordings, etc.) that are not expressed in PROV-O, but can be still be described by PROV-O., en)
     ///<see cref="http://www.w3.org/ns/prov#Bundle"/>
     ///</summary>
     public const string Bundle = "http://www.w3.org/ns/prov#Bundle";
@@ -2663,19 +2663,19 @@ public static class PROV
     public const string Collection = "http://www.w3.org/ns/prov#Collection";
 
     ///<summary>
-    ///An instance of prov:Communication provides additional descriptions about the binary prov:wasInformedBy relation from an informed prov:Activity to the prov:Activity that informed it. For example, :you_jumping_off_bridge prov:wasInformedBy :everyone_else_jumping_off_bridge; prov:qualifiedCommunication [ a prov:Communication; prov:activity :everyone_else_jumping_off_bridge; :foo :bar ].
+    ///(An instance of prov:Communication provides additional descriptions about the binary prov:wasInformedBy relation from an informed prov:Activity to the prov:Activity that informed it. For example, :you_jumping_off_bridge prov:wasInformedBy :everyone_else_jumping_off_bridge; prov:qualifiedCommunication [ a prov:Communication; prov:activity :everyone_else_jumping_off_bridge; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Communication"/>
     ///</summary>
     public const string Communication = "http://www.w3.org/ns/prov#Communication";
 
     ///<summary>
-    ///An instance of prov:Delegation provides additional descriptions about the binary prov:actedOnBehalfOf relation from a performing prov:Agent to some prov:Agent for whom it was performed. For example, :mixing prov:wasAssociatedWith :toddler . :toddler prov:actedOnBehalfOf :mother; prov:qualifiedDelegation [ a prov:Delegation; prov:entity :mother; :foo :bar ].
+    ///(An instance of prov:Delegation provides additional descriptions about the binary prov:actedOnBehalfOf relation from a performing prov:Agent to some prov:Agent for whom it was performed. For example, :mixing prov:wasAssociatedWith :toddler . :toddler prov:actedOnBehalfOf :mother; prov:qualifiedDelegation [ a prov:Delegation; prov:entity :mother; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Delegation"/>
     ///</summary>
     public const string Delegation = "http://www.w3.org/ns/prov#Delegation";
 
     ///<summary>
-    ///An instance of prov:Derivation provides additional descriptions about the binary prov:wasDerivedFrom relation from some derived prov:Entity to another prov:Entity from which it was derived. For example, :chewed_bubble_gum prov:wasDerivedFrom :unwrapped_bubble_gum; prov:qualifiedDerivation [ a prov:Derivation; prov:entity :unwrapped_bubble_gum; :foo :bar ].
+    ///(An instance of prov:Derivation provides additional descriptions about the binary prov:wasDerivedFrom relation from some derived prov:Entity to another prov:Entity from which it was derived. For example, :chewed_bubble_gum prov:wasDerivedFrom :unwrapped_bubble_gum; prov:qualifiedDerivation [ a prov:Derivation; prov:entity :unwrapped_bubble_gum; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Derivation"/>
     ///</summary>
     public const string Derivation = "http://www.w3.org/ns/prov#Derivation";
@@ -2687,7 +2687,7 @@ public static class PROV
     public const string EmptyCollection = "http://www.w3.org/ns/prov#EmptyCollection";
 
     ///<summary>
-    ///An instance of prov:End provides additional descriptions about the binary prov:wasEndedBy relation from some ended prov:Activity to an prov:Entity that ended it. For example, :ball_game prov:wasEndedBy :buzzer; prov:qualifiedEnd [ a prov:End; prov:entity :buzzer; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTime ].
+    ///(An instance of prov:End provides additional descriptions about the binary prov:wasEndedBy relation from some ended prov:Activity to an prov:Entity that ended it. For example, :ball_game prov:wasEndedBy :buzzer; prov:qualifiedEnd [ a prov:End; prov:entity :buzzer; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTime ]., en)
     ///<see cref="http://www.w3.org/ns/prov#End"/>
     ///</summary>
     public const string End = "http://www.w3.org/ns/prov#End";
@@ -2699,31 +2699,31 @@ public static class PROV
     public const string Entity = "http://www.w3.org/ns/prov#Entity";
 
     ///<summary>
-    ///EntityInfluence provides additional descriptions of an Entity's binary influence upon any other kind of resource. Instances of EntityInfluence use the prov:entity property to cite the influencing Entity.
+    ///(EntityInfluence provides additional descriptions of an Entity's binary influence upon any other kind of resource. Instances of EntityInfluence use the prov:entity property to cite the influencing Entity., en)
     ///<see cref="http://www.w3.org/ns/prov#EntityInfluence"/>
     ///</summary>
     public const string EntityInfluence = "http://www.w3.org/ns/prov#EntityInfluence";
 
     ///<summary>
-    ///An instance of prov:Generation provides additional descriptions about the binary prov:wasGeneratedBy relation from a generated prov:Entity to the prov:Activity that generated it. For example, :cake prov:wasGeneratedBy :baking; prov:qualifiedGeneration [ a prov:Generation; prov:activity :baking; :foo :bar ].
+    ///(An instance of prov:Generation provides additional descriptions about the binary prov:wasGeneratedBy relation from a generated prov:Entity to the prov:Activity that generated it. For example, :cake prov:wasGeneratedBy :baking; prov:qualifiedGeneration [ a prov:Generation; prov:activity :baking; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Generation"/>
     ///</summary>
     public const string Generation = "http://www.w3.org/ns/prov#Generation";
 
     ///<summary>
-    ///An instance of prov:Influence provides additional descriptions about the binary prov:wasInfluencedBy relation from some influenced Activity, Entity, or Agent to the influencing Activity, Entity, or Agent. For example, :stomach_ache prov:wasInfluencedBy :spoon; prov:qualifiedInfluence [ a prov:Influence; prov:entity :spoon; :foo :bar ] . Because prov:Influence is a broad relation, the more specific relations (Communication, Delegation, End, etc.) should be used when applicable.
+    ///(An instance of prov:Influence provides additional descriptions about the binary prov:wasInfluencedBy relation from some influenced Activity, Entity, or Agent to the influencing Activity, Entity, or Agent. For example, :stomach_ache prov:wasInfluencedBy :spoon; prov:qualifiedInfluence [ a prov:Influence; prov:entity :spoon; :foo :bar ] . Because prov:Influence is a broad relation, the more specific relations (Communication, Delegation, End, etc.) should be used when applicable., en)
     ///<see cref="http://www.w3.org/ns/prov#Influence"/>
     ///</summary>
     public const string Influence = "http://www.w3.org/ns/prov#Influence";
 
     ///<summary>
-    ///An instantaneous event, or event for short, happens in the world and marks a change in the world, in its activities and in its entities. The term 'event' is commonly used in process algebra with a similar meaning. Events represent communications or interactions; they are assumed to be atomic and instantaneous.
+    ///(An instantaneous event, or event for short, happens in the world and marks a change in the world, in its activities and in its entities. The term 'event' is commonly used in process algebra with a similar meaning. Events represent communications or interactions; they are assumed to be atomic and instantaneous., en)
     ///<see cref="http://www.w3.org/ns/prov#InstantaneousEvent"/>
     ///</summary>
     public const string InstantaneousEvent = "http://www.w3.org/ns/prov#InstantaneousEvent";
 
     ///<summary>
-    ///An instance of prov:Invalidation provides additional descriptions about the binary prov:wasInvalidatedBy relation from an invalidated prov:Entity to the prov:Activity that invalidated it. For example, :uncracked_egg prov:wasInvalidatedBy :baking; prov:qualifiedInvalidation [ a prov:Invalidation; prov:activity :baking; :foo :bar ].
+    ///(An instance of prov:Invalidation provides additional descriptions about the binary prov:wasInvalidatedBy relation from an invalidated prov:Entity to the prov:Activity that invalidated it. For example, :uncracked_egg prov:wasInvalidatedBy :baking; prov:qualifiedInvalidation [ a prov:Invalidation; prov:activity :baking; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Invalidation"/>
     ///</summary>
     public const string Invalidation = "http://www.w3.org/ns/prov#Invalidation";
@@ -2747,25 +2747,25 @@ public static class PROV
     public const string Person = "http://www.w3.org/ns/prov#Person";
 
     ///<summary>
-    ///There exist no prescriptive requirement on the nature of plans, their representation, the actions or steps they consist of, or their intended goals. Since plans may evolve over time, it may become necessary to track their provenance, so plans themselves are entities. Representing the plan explicitly in the provenance can be useful for various tasks: for example, to validate the execution as represented in the provenance record, to manage expectation failures, or to provide explanations.
+    ///(There exist no prescriptive requirement on the nature of plans, their representation, the actions or steps they consist of, or their intended goals. Since plans may evolve over time, it may become necessary to track their provenance, so plans themselves are entities. Representing the plan explicitly in the provenance can be useful for various tasks: for example, to validate the execution as represented in the provenance record, to manage expectation failures, or to provide explanations., en)
     ///<see cref="http://www.w3.org/ns/prov#Plan"/>
     ///</summary>
     public const string Plan = "http://www.w3.org/ns/prov#Plan";
 
     ///<summary>
-    ///An instance of prov:PrimarySource provides additional descriptions about the binary prov:hadPrimarySource relation from some secondary prov:Entity to an earlier, primary prov:Entity. For example, :blog prov:hadPrimarySource :newsArticle; prov:qualifiedPrimarySource [ a prov:PrimarySource; prov:entity :newsArticle; :foo :bar ] .
+    ///(An instance of prov:PrimarySource provides additional descriptions about the binary prov:hadPrimarySource relation from some secondary prov:Entity to an earlier, primary prov:Entity. For example, :blog prov:hadPrimarySource :newsArticle; prov:qualifiedPrimarySource [ a prov:PrimarySource; prov:entity :newsArticle; :foo :bar ] ., en)
     ///<see cref="http://www.w3.org/ns/prov#PrimarySource"/>
     ///</summary>
     public const string PrimarySource = "http://www.w3.org/ns/prov#PrimarySource";
 
     ///<summary>
-    ///An instance of prov:Quotation provides additional descriptions about the binary prov:wasQuotedFrom relation from some taken prov:Entity from an earlier, larger prov:Entity. For example, :here_is_looking_at_you_kid prov:wasQuotedFrom :casablanca_script; prov:qualifiedQuotation [ a prov:Quotation; prov:entity :casablanca_script; :foo :bar ].
+    ///(An instance of prov:Quotation provides additional descriptions about the binary prov:wasQuotedFrom relation from some taken prov:Entity from an earlier, larger prov:Entity. For example, :here_is_looking_at_you_kid prov:wasQuotedFrom :casablanca_script; prov:qualifiedQuotation [ a prov:Quotation; prov:entity :casablanca_script; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Quotation"/>
     ///</summary>
     public const string Quotation = "http://www.w3.org/ns/prov#Quotation";
 
     ///<summary>
-    ///An instance of prov:Revision provides additional descriptions about the binary prov:wasRevisionOf relation from some newer prov:Entity to an earlier prov:Entity. For example, :draft_2 prov:wasRevisionOf :draft_1; prov:qualifiedRevision [ a prov:Revision; prov:entity :draft_1; :foo :bar ].
+    ///(An instance of prov:Revision provides additional descriptions about the binary prov:wasRevisionOf relation from some newer prov:Entity to an earlier prov:Entity. For example, :draft_2 prov:wasRevisionOf :draft_1; prov:qualifiedRevision [ a prov:Revision; prov:entity :draft_1; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Revision"/>
     ///</summary>
     public const string Revision = "http://www.w3.org/ns/prov#Revision";
@@ -2783,19 +2783,19 @@ public static class PROV
     public const string SoftwareAgent = "http://www.w3.org/ns/prov#SoftwareAgent";
 
     ///<summary>
-    ///An instance of prov:Start provides additional descriptions about the binary prov:wasStartedBy relation from some started prov:Activity to an prov:Entity that started it. For example, :foot_race prov:wasStartedBy :bang; prov:qualifiedStart [ a prov:Start; prov:entity :bang; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTime ] .
+    ///(An instance of prov:Start provides additional descriptions about the binary prov:wasStartedBy relation from some started prov:Activity to an prov:Entity that started it. For example, :foot_race prov:wasStartedBy :bang; prov:qualifiedStart [ a prov:Start; prov:entity :bang; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTime ] ., en)
     ///<see cref="http://www.w3.org/ns/prov#Start"/>
     ///</summary>
     public const string Start = "http://www.w3.org/ns/prov#Start";
 
     ///<summary>
-    ///An instance of prov:Usage provides additional descriptions about the binary prov:used relation from some prov:Activity to an prov:Entity that it used. For example, :keynote prov:used :podium; prov:qualifiedUsage [ a prov:Usage; prov:entity :podium; :foo :bar ].
+    ///(An instance of prov:Usage provides additional descriptions about the binary prov:used relation from some prov:Activity to an prov:Entity that it used. For example, :keynote prov:used :podium; prov:qualifiedUsage [ a prov:Usage; prov:entity :podium; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#Usage"/>
     ///</summary>
     public const string Usage = "http://www.w3.org/ns/prov#Usage";
 
     ///<summary>
-    ///An object property to express the accountability of an agent towards another agent. The subordinate agent acted on behalf of the responsible agent in an actual activity. 
+    ///(An object property to express the accountability of an agent towards another agent. The subordinate agent acted on behalf of the responsible agent in an actual activity. , en)
     ///<see cref="http://www.w3.org/ns/prov#actedOnBehalfOf"/>
     ///</summary>
     public const string actedOnBehalfOf = "http://www.w3.org/ns/prov#actedOnBehalfOf";
@@ -2825,61 +2825,61 @@ public static class PROV
     public const string aq = "http://www.w3.org/ns/prov#aq";
 
     ///<summary>
-    ///The Location of any resource.
+    ///(The Location of any resource., en)
     ///<see cref="http://www.w3.org/ns/prov#atLocation"/>
     ///</summary>
     public const string atLocation = "http://www.w3.org/ns/prov#atLocation";
 
     ///<summary>
-    ///The time at which an InstantaneousEvent occurred, in the form of xsd:dateTime.
+    ///(The time at which an InstantaneousEvent occurred, in the form of xsd:dateTime., en)
     ///<see cref="http://www.w3.org/ns/prov#atTime"/>
     ///</summary>
     public const string atTime = "http://www.w3.org/ns/prov#atTime";
 
     ///<summary>
-    ///Classify prov-o terms into three categories, including 'starting-point', 'qualifed', and 'extended'. This classification is used by the prov-o html document to gently introduce prov-o terms to its users. 
+    ///(Classify prov-o terms into three categories, including 'starting-point', 'qualifed', and 'extended'. This classification is used by the prov-o html document to gently introduce prov-o terms to its users. , en)
     ///<see cref="http://www.w3.org/ns/prov#category"/>
     ///</summary>
     public const string category = "http://www.w3.org/ns/prov#category";
 
     ///<summary>
-    ///Classify prov-o terms into six components according to prov-dm, including 'agents-responsibility', 'alternate', 'annotations', 'collections', 'derivations', and 'entities-activities'. This classification is used so that readers of prov-o specification can find its correspondence with the prov-dm specification.
+    ///(Classify prov-o terms into six components according to prov-dm, including 'agents-responsibility', 'alternate', 'annotations', 'collections', 'derivations', and 'entities-activities'. This classification is used so that readers of prov-o specification can find its correspondence with the prov-dm specification., en)
     ///<see cref="http://www.w3.org/ns/prov#component"/>
     ///</summary>
     public const string component = "http://www.w3.org/ns/prov#component";
 
     ///<summary>
-    ///A reference to the principal section of the PROV-CONSTRAINTS document that describes this concept.
+    ///(A reference to the principal section of the PROV-CONSTRAINTS document that describes this concept., en)
     ///<see cref="http://www.w3.org/ns/prov#constraints"/>
     ///</summary>
     public const string constraints = "http://www.w3.org/ns/prov#constraints";
 
     ///<summary>
-    ///A definition quoted from PROV-DM or PROV-CONSTRAINTS that describes the concept expressed with this OWL term.
+    ///(A definition quoted from PROV-DM or PROV-CONSTRAINTS that describes the concept expressed with this OWL term., en)
     ///<see cref="http://www.w3.org/ns/prov#definition"/>
     ///</summary>
     public const string definition = "http://www.w3.org/ns/prov#definition";
 
     ///<summary>
-    ///A reference to the principal section of the PROV-DM document that describes this concept.
+    ///(A reference to the principal section of the PROV-DM document that describes this concept., en)
     ///<see cref="http://www.w3.org/ns/prov#dm"/>
     ///</summary>
     public const string dm = "http://www.w3.org/ns/prov#dm";
 
     ///<summary>
-    ///A note by the OWL development team about how this term expresses the PROV-DM concept, or how it should be used in context of semantic web or linked data.
+    ///(A note by the OWL development team about how this term expresses the PROV-DM concept, or how it should be used in context of semantic web or linked data., en)
     ///<see cref="http://www.w3.org/ns/prov#editorialNote"/>
     ///</summary>
     public const string editorialNote = "http://www.w3.org/ns/prov#editorialNote";
 
     ///<summary>
-    ///When the prov-o term does not have a definition drawn from prov-dm, and the prov-o editor provides one.
+    ///(When the prov-o term does not have a definition drawn from prov-dm, and the prov-o editor provides one., en)
     ///<see cref="http://www.w3.org/ns/prov#editorsDefinition"/>
     ///</summary>
     public const string editorsDefinition = "http://www.w3.org/ns/prov#editorsDefinition";
 
     ///<summary>
-    ///The time at which an activity ended. See also prov:startedAtTime.
+    ///(The time at which an activity ended. See also prov:startedAtTime., en)
     ///<see cref="http://www.w3.org/ns/prov#endedAtTime"/>
     ///</summary>
     public const string endedAtTime = "http://www.w3.org/ns/prov#endedAtTime";
@@ -2897,19 +2897,19 @@ public static class PROV
     public const string generated = "http://www.w3.org/ns/prov#generated";
 
     ///<summary>
-    ///The time at which an entity was completely created and is available for use.
+    ///(The time at which an entity was completely created and is available for use., en)
     ///<see cref="http://www.w3.org/ns/prov#generatedAtTime"/>
     ///</summary>
     public const string generatedAtTime = "http://www.w3.org/ns/prov#generatedAtTime";
 
     ///<summary>
-    ///The _optional_ Activity of an Influence, which used, generated, invalidated, or was the responsibility of some Entity. This property is _not_ used by ActivityInfluence (use prov:activity instead).
+    ///(The _optional_ Activity of an Influence, which used, generated, invalidated, or was the responsibility of some Entity. This property is _not_ used by ActivityInfluence (use prov:activity instead)., en)
     ///<see cref="http://www.w3.org/ns/prov#hadActivity"/>
     ///</summary>
     public const string hadActivity = "http://www.w3.org/ns/prov#hadActivity";
 
     ///<summary>
-    ///The _optional_ Generation involved in an Entity's Derivation.
+    ///(The _optional_ Generation involved in an Entity's Derivation., en)
     ///<see cref="http://www.w3.org/ns/prov#hadGeneration"/>
     ///</summary>
     public const string hadGeneration = "http://www.w3.org/ns/prov#hadGeneration";
@@ -2921,7 +2921,7 @@ public static class PROV
     public const string hadMember = "http://www.w3.org/ns/prov#hadMember";
 
     ///<summary>
-    ///The _optional_ Plan adopted by an Agent in Association with some Activity. Plan specifications are out of the scope of this specification.
+    ///(The _optional_ Plan adopted by an Agent in Association with some Activity. Plan specifications are out of the scope of this specification., en)
     ///<see cref="http://www.w3.org/ns/prov#hadPlan"/>
     ///</summary>
     public const string hadPlan = "http://www.w3.org/ns/prov#hadPlan";
@@ -2933,13 +2933,13 @@ public static class PROV
     public const string hadPrimarySource = "http://www.w3.org/ns/prov#hadPrimarySource";
 
     ///<summary>
-    ///The _optional_ Role that an Entity assumed in the context of an Activity. For example, :baking prov:used :spoon; prov:qualified [ a prov:Usage; prov:entity :spoon; prov:hadRole roles:mixing_implement ].
+    ///(The _optional_ Role that an Entity assumed in the context of an Activity. For example, :baking prov:used :spoon; prov:qualified [ a prov:Usage; prov:entity :spoon; prov:hadRole roles:mixing_implement ]., en)
     ///<see cref="http://www.w3.org/ns/prov#hadRole"/>
     ///</summary>
     public const string hadRole = "http://www.w3.org/ns/prov#hadRole";
 
     ///<summary>
-    ///The _optional_ Usage involved in an Entity's Derivation.
+    ///(The _optional_ Usage involved in an Entity's Derivation., en)
     ///<see cref="http://www.w3.org/ns/prov#hadUsage"/>
     ///</summary>
     public const string hadUsage = "http://www.w3.org/ns/prov#hadUsage";
@@ -2951,7 +2951,7 @@ public static class PROV
     public const string influenced = "http://www.w3.org/ns/prov#influenced";
 
     ///<summary>
-    ///Subproperties of prov:influencer are used to cite the object of an unqualified PROV-O triple whose predicate is a subproperty of prov:wasInfluencedBy (e.g. prov:used, prov:wasGeneratedBy). prov:influencer is used much like rdf:object is used.
+    ///(Subproperties of prov:influencer are used to cite the object of an unqualified PROV-O triple whose predicate is a subproperty of prov:wasInfluencedBy (e.g. prov:used, prov:wasGeneratedBy). prov:influencer is used much like rdf:object is used., en)
     ///<see cref="http://www.w3.org/ns/prov#influencer"/>
     ///</summary>
     public const string influencer = "http://www.w3.org/ns/prov#influencer";
@@ -2963,67 +2963,67 @@ public static class PROV
     public const string invalidated = "http://www.w3.org/ns/prov#invalidated";
 
     ///<summary>
-    ///The time at which an entity was invalidated (i.e., no longer usable).
+    ///(The time at which an entity was invalidated (i.e., no longer usable)., en)
     ///<see cref="http://www.w3.org/ns/prov#invalidatedAtTime"/>
     ///</summary>
     public const string invalidatedAtTime = "http://www.w3.org/ns/prov#invalidatedAtTime";
 
     ///<summary>
-    ///PROV-O does not define all property inverses. The directionalities defined in PROV-O should be given preference over those not defined. However, if users wish to name the inverse of a PROV-O property, the local name given by prov:inverse should be used.
+    ///(PROV-O does not define all property inverses. The directionalities defined in PROV-O should be given preference over those not defined. However, if users wish to name the inverse of a PROV-O property, the local name given by prov:inverse should be used., en)
     ///<see cref="http://www.w3.org/ns/prov#inverse"/>
     ///</summary>
     public const string inverse = "http://www.w3.org/ns/prov#inverse";
 
     ///<summary>
-    ///A reference to the principal section of the PROV-DM document that describes this concept.
+    ///(A reference to the principal section of the PROV-DM document that describes this concept., en)
     ///<see cref="http://www.w3.org/ns/prov#n"/>
     ///</summary>
     public const string n = "http://www.w3.org/ns/prov#n";
 
     ///<summary>
-    ///The position that this OWL term should be listed within documentation. The scope of the documentation (e.g., among all terms, among terms within a prov:category, among properties applying to a particular class, etc.) is unspecified.
+    ///(The position that this OWL term should be listed within documentation. The scope of the documentation (e.g., among all terms, among terms within a prov:category, among properties applying to a particular class, etc.) is unspecified., en)
     ///<see cref="http://www.w3.org/ns/prov#order"/>
     ///</summary>
     public const string order = "http://www.w3.org/ns/prov#order";
 
     ///<summary>
-    ///If this Activity prov:wasAssociatedWith Agent :ag, then it can qualify the Association using prov:qualifiedAssociation [ a prov:Association;  prov:agent :ag; :foo :bar ].
+    ///(If this Activity prov:wasAssociatedWith Agent :ag, then it can qualify the Association using prov:qualifiedAssociation [ a prov:Association;  prov:agent :ag; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedAssociation"/>
     ///</summary>
     public const string qualifiedAssociation = "http://www.w3.org/ns/prov#qualifiedAssociation";
 
     ///<summary>
-    ///If this Entity prov:wasAttributedTo Agent :ag, then it can qualify how it was influenced using prov:qualifiedAttribution [ a prov:Attribution;  prov:agent :ag; :foo :bar ].
+    ///(If this Entity prov:wasAttributedTo Agent :ag, then it can qualify how it was influenced using prov:qualifiedAttribution [ a prov:Attribution;  prov:agent :ag; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedAttribution"/>
     ///</summary>
     public const string qualifiedAttribution = "http://www.w3.org/ns/prov#qualifiedAttribution";
 
     ///<summary>
-    ///If this Activity prov:wasInformedBy Activity :a, then it can qualify how it was influenced using prov:qualifiedCommunication [ a prov:Communication;  prov:activity :a; :foo :bar ].
+    ///(If this Activity prov:wasInformedBy Activity :a, then it can qualify how it was influenced using prov:qualifiedCommunication [ a prov:Communication;  prov:activity :a; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedCommunication"/>
     ///</summary>
     public const string qualifiedCommunication = "http://www.w3.org/ns/prov#qualifiedCommunication";
 
     ///<summary>
-    ///If this Agent prov:actedOnBehalfOf Agent :ag, then it can qualify how with prov:qualifiedResponsibility [ a prov:Responsibility;  prov:agent :ag; :foo :bar ].
+    ///(If this Agent prov:actedOnBehalfOf Agent :ag, then it can qualify how with prov:qualifiedResponsibility [ a prov:Responsibility;  prov:agent :ag; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedDelegation"/>
     ///</summary>
     public const string qualifiedDelegation = "http://www.w3.org/ns/prov#qualifiedDelegation";
 
     ///<summary>
-    ///If this Entity prov:wasDerivedFrom Entity :e, then it can qualify how it was derived using prov:qualifiedDerivation [ a prov:Derivation;  prov:entity :e; :foo :bar ].
+    ///(If this Entity prov:wasDerivedFrom Entity :e, then it can qualify how it was derived using prov:qualifiedDerivation [ a prov:Derivation;  prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedDerivation"/>
     ///</summary>
     public const string qualifiedDerivation = "http://www.w3.org/ns/prov#qualifiedDerivation";
 
     ///<summary>
-    ///If this Activity prov:wasEndedBy Entity :e1, then it can qualify how it was ended using prov:qualifiedEnd [ a prov:End;  prov:entity :e1; :foo :bar ].
+    ///(If this Activity prov:wasEndedBy Entity :e1, then it can qualify how it was ended using prov:qualifiedEnd [ a prov:End;  prov:entity :e1; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedEnd"/>
     ///</summary>
     public const string qualifiedEnd = "http://www.w3.org/ns/prov#qualifiedEnd";
 
     ///<summary>
-    ///This annotation property links a subproperty of prov:wasInfluencedBy with the subclass of prov:Influence and the qualifying property that are used to qualify it. 
+    ///(This annotation property links a subproperty of prov:wasInfluencedBy with the subclass of prov:Influence and the qualifying property that are used to qualify it. 
     ///
     ///Example annotation:
     ///
@@ -3041,55 +3041,55 @@ public static class PROV
     ///       prov:activity :activity1;
     ///       :customValue 1337 .
     ///
-    ///Note how the value of the unqualified influence (prov:wasGeneratedBy :activity1) is mirrored as the value of the prov:activity (or prov:entity, or prov:agent) property on the influence class.
+    ///Note how the value of the unqualified influence (prov:wasGeneratedBy :activity1) is mirrored as the value of the prov:activity (or prov:entity, or prov:agent) property on the influence class., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedForm"/>
     ///</summary>
     public const string qualifiedForm = "http://www.w3.org/ns/prov#qualifiedForm";
 
     ///<summary>
-    ///If this Activity prov:generated Entity :e, then it can qualify how it performed the Generation using prov:qualifiedGeneration [ a prov:Generation;  prov:entity :e; :foo :bar ].
+    ///(If this Activity prov:generated Entity :e, then it can qualify how it performed the Generation using prov:qualifiedGeneration [ a prov:Generation;  prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedGeneration"/>
     ///</summary>
     public const string qualifiedGeneration = "http://www.w3.org/ns/prov#qualifiedGeneration";
 
     ///<summary>
-    ///Because prov:qualifiedInfluence is a broad relation, the more specific relations (qualifiedCommunication, qualifiedDelegation, qualifiedEnd, etc.) should be used when applicable.
+    ///(Because prov:qualifiedInfluence is a broad relation, the more specific relations (qualifiedCommunication, qualifiedDelegation, qualifiedEnd, etc.) should be used when applicable., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedInfluence"/>
     ///</summary>
     public const string qualifiedInfluence = "http://www.w3.org/ns/prov#qualifiedInfluence";
 
     ///<summary>
-    ///If this Entity prov:wasInvalidatedBy Activity :a, then it can qualify how it was invalidated using prov:qualifiedInvalidation [ a prov:Invalidation;  prov:activity :a; :foo :bar ].
+    ///(If this Entity prov:wasInvalidatedBy Activity :a, then it can qualify how it was invalidated using prov:qualifiedInvalidation [ a prov:Invalidation;  prov:activity :a; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedInvalidation"/>
     ///</summary>
     public const string qualifiedInvalidation = "http://www.w3.org/ns/prov#qualifiedInvalidation";
 
     ///<summary>
-    ///If this Entity prov:hadPrimarySource Entity :e, then it can qualify how using prov:qualifiedPrimarySource [ a prov:PrimarySource; prov:entity :e; :foo :bar ].
+    ///(If this Entity prov:hadPrimarySource Entity :e, then it can qualify how using prov:qualifiedPrimarySource [ a prov:PrimarySource; prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedPrimarySource"/>
     ///</summary>
     public const string qualifiedPrimarySource = "http://www.w3.org/ns/prov#qualifiedPrimarySource";
 
     ///<summary>
-    ///If this Entity prov:wasQuotedFrom Entity :e, then it can qualify how using prov:qualifiedQuotation [ a prov:Quotation;  prov:entity :e; :foo :bar ].
+    ///(If this Entity prov:wasQuotedFrom Entity :e, then it can qualify how using prov:qualifiedQuotation [ a prov:Quotation;  prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedQuotation"/>
     ///</summary>
     public const string qualifiedQuotation = "http://www.w3.org/ns/prov#qualifiedQuotation";
 
     ///<summary>
-    ///If this Entity prov:wasRevisionOf Entity :e, then it can qualify how it was revised using prov:qualifiedRevision [ a prov:Revision;  prov:entity :e; :foo :bar ].
+    ///(If this Entity prov:wasRevisionOf Entity :e, then it can qualify how it was revised using prov:qualifiedRevision [ a prov:Revision;  prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedRevision"/>
     ///</summary>
     public const string qualifiedRevision = "http://www.w3.org/ns/prov#qualifiedRevision";
 
     ///<summary>
-    ///If this Activity prov:wasStartedBy Entity :e1, then it can qualify how it was started using prov:qualifiedStart [ a prov:Start;  prov:entity :e1; :foo :bar ].
+    ///(If this Activity prov:wasStartedBy Entity :e1, then it can qualify how it was started using prov:qualifiedStart [ a prov:Start;  prov:entity :e1; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedStart"/>
     ///</summary>
     public const string qualifiedStart = "http://www.w3.org/ns/prov#qualifiedStart";
 
     ///<summary>
-    ///If this Activity prov:used Entity :e, then it can qualify how it used it using prov:qualifiedUsage [ a prov:Usage; prov:entity :e; :foo :bar ].
+    ///(If this Activity prov:used Entity :e, then it can qualify how it used it using prov:qualifiedUsage [ a prov:Usage; prov:entity :e; :foo :bar ]., en)
     ///<see cref="http://www.w3.org/ns/prov#qualifiedUsage"/>
     ///</summary>
     public const string qualifiedUsage = "http://www.w3.org/ns/prov#qualifiedUsage";
@@ -3107,7 +3107,7 @@ public static class PROV
     public const string specializationOf = "http://www.w3.org/ns/prov#specializationOf";
 
     ///<summary>
-    ///The time at which an activity started. See also prov:endedAtTime.
+    ///(The time at which an activity started. See also prov:endedAtTime., en)
     ///<see cref="http://www.w3.org/ns/prov#startedAtTime"/>
     ///</summary>
     public const string startedAtTime = "http://www.w3.org/ns/prov#startedAtTime";
@@ -3119,13 +3119,13 @@ public static class PROV
     public const string todo = "http://www.w3.org/ns/prov#todo";
 
     ///<summary>
-    ///Classes and properties used to qualify relationships are annotated with prov:unqualifiedForm to indicate the property used to assert an unqualified provenance relation.
+    ///(Classes and properties used to qualify relationships are annotated with prov:unqualifiedForm to indicate the property used to assert an unqualified provenance relation., en)
     ///<see cref="http://www.w3.org/ns/prov#unqualifiedForm"/>
     ///</summary>
     public const string unqualifiedForm = "http://www.w3.org/ns/prov#unqualifiedForm";
 
     ///<summary>
-    ///A prov:Entity that was used by this prov:Activity. For example, :baking prov:used :spoon, :egg, :oven .
+    ///(A prov:Entity that was used by this prov:Activity. For example, :baking prov:used :spoon, :egg, :oven ., en)
     ///<see cref="http://www.w3.org/ns/prov#used"/>
     ///</summary>
     public const string used = "http://www.w3.org/ns/prov#used";
@@ -3137,25 +3137,25 @@ public static class PROV
     public const string value = "http://www.w3.org/ns/prov#value";
 
     ///<summary>
-    ///An prov:Agent that had some (unspecified) responsibility for the occurrence of this prov:Activity.
+    ///(An prov:Agent that had some (unspecified) responsibility for the occurrence of this prov:Activity., en)
     ///<see cref="http://www.w3.org/ns/prov#wasAssociatedWith"/>
     ///</summary>
     public const string wasAssociatedWith = "http://www.w3.org/ns/prov#wasAssociatedWith";
 
     ///<summary>
-    ///Attribution is the ascribing of an entity to an agent.
+    ///(Attribution is the ascribing of an entity to an agent., en)
     ///<see cref="http://www.w3.org/ns/prov#wasAttributedTo"/>
     ///</summary>
     public const string wasAttributedTo = "http://www.w3.org/ns/prov#wasAttributedTo";
 
     ///<summary>
-    ///The more specific subproperties of prov:wasDerivedFrom (i.e., prov:wasQuotedFrom, prov:wasRevisionOf, prov:hadPrimarySource) should be used when applicable.
+    ///(The more specific subproperties of prov:wasDerivedFrom (i.e., prov:wasQuotedFrom, prov:wasRevisionOf, prov:hadPrimarySource) should be used when applicable., en)
     ///<see cref="http://www.w3.org/ns/prov#wasDerivedFrom"/>
     ///</summary>
     public const string wasDerivedFrom = "http://www.w3.org/ns/prov#wasDerivedFrom";
 
     ///<summary>
-    ///End is when an activity is deemed to have ended. An end may refer to an entity, known as trigger, that terminated the activity.
+    ///(End is when an activity is deemed to have ended. An end may refer to an entity, known as trigger, that terminated the activity., en)
     ///<see cref="http://www.w3.org/ns/prov#wasEndedBy"/>
     ///</summary>
     public const string wasEndedBy = "http://www.w3.org/ns/prov#wasEndedBy";
@@ -3167,13 +3167,13 @@ public static class PROV
     public const string wasGeneratedBy = "http://www.w3.org/ns/prov#wasGeneratedBy";
 
     ///<summary>
-    ///Because prov:wasInfluencedBy is a broad relation, its more specific subproperties (e.g. prov:wasInformedBy, prov:actedOnBehalfOf, prov:wasEndedBy, etc.) should be used when applicable.
+    ///(Because prov:wasInfluencedBy is a broad relation, its more specific subproperties (e.g. prov:wasInformedBy, prov:actedOnBehalfOf, prov:wasEndedBy, etc.) should be used when applicable., en)
     ///<see cref="http://www.w3.org/ns/prov#wasInfluencedBy"/>
     ///</summary>
     public const string wasInfluencedBy = "http://www.w3.org/ns/prov#wasInfluencedBy";
 
     ///<summary>
-    ///An activity a2 is dependent on or informed by another activity a1, by way of some unspecified entity that is generated by a1 and used by a2.
+    ///(An activity a2 is dependent on or informed by another activity a1, by way of some unspecified entity that is generated by a1 and used by a2., en)
     ///<see cref="http://www.w3.org/ns/prov#wasInformedBy"/>
     ///</summary>
     public const string wasInformedBy = "http://www.w3.org/ns/prov#wasInformedBy";
@@ -3185,27 +3185,27 @@ public static class PROV
     public const string wasInvalidatedBy = "http://www.w3.org/ns/prov#wasInvalidatedBy";
 
     ///<summary>
-    ///An entity is derived from an original entity by copying, or 'quoting', some or all of it.
+    ///(An entity is derived from an original entity by copying, or 'quoting', some or all of it., en)
     ///<see cref="http://www.w3.org/ns/prov#wasQuotedFrom"/>
     ///</summary>
     public const string wasQuotedFrom = "http://www.w3.org/ns/prov#wasQuotedFrom";
 
     ///<summary>
-    ///A revision is a derivation that revises an entity into a revised version.
+    ///(A revision is a derivation that revises an entity into a revised version., en)
     ///<see cref="http://www.w3.org/ns/prov#wasRevisionOf"/>
     ///</summary>
     public const string wasRevisionOf = "http://www.w3.org/ns/prov#wasRevisionOf";
 
     ///<summary>
-    ///Start is when an activity is deemed to have started. A start may refer to an entity, known as trigger, that initiated the activity.
+    ///(Start is when an activity is deemed to have started. A start may refer to an entity, known as trigger, that initiated the activity., en)
     ///<see cref="http://www.w3.org/ns/prov#wasStartedBy"/>
     ///</summary>
     public const string wasStartedBy = "http://www.w3.org/ns/prov#wasStartedBy";
 
     ///<summary>
-    ///This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
+    ///(This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
     ///
-    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome.
+    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome., en)
     ///<see cref="http://www.w3.org/ns/prov-o#"/>
     ///</summary>
     public const string prov_o = "http://www.w3.org/ns/prov-o#";
@@ -3457,37 +3457,37 @@ public static class PROV
     public const string DirectQueryService = "http://www.w3.org/ns/prov#DirectQueryService";
 
     ///<summary>
-    ///Indicates anchor URI for a potentially dynamic resource instance.
+    ///(Indicates anchor URI for a potentially dynamic resource instance., en)
     ///<see cref="http://www.w3.org/ns/prov#has_anchor"/>
     ///</summary>
     public const string has_anchor = "http://www.w3.org/ns/prov#has_anchor";
 
     ///<summary>
-    ///Indicates a provenance-URI for a resource; the resource identified by this property presents a provenance record about its subject or anchor resource.
+    ///(Indicates a provenance-URI for a resource; the resource identified by this property presents a provenance record about its subject or anchor resource., en)
     ///<see cref="http://www.w3.org/ns/prov#has_provenance"/>
     ///</summary>
     public const string has_provenance = "http://www.w3.org/ns/prov#has_provenance";
 
     ///<summary>
-    ///Indicates a provenance query service that can access provenance related to its subject or anchor resource.
+    ///(Indicates a provenance query service that can access provenance related to its subject or anchor resource., en)
     ///<see cref="http://www.w3.org/ns/prov#has_query_service"/>
     ///</summary>
     public const string has_query_service = "http://www.w3.org/ns/prov#has_query_service";
 
     ///<summary>
-    ///relates a generic provenance query service resource (type prov:ServiceDescription) to a specific query service description (e.g. a prov:DirectQueryService or a sd:Service).
+    ///(relates a generic provenance query service resource (type prov:ServiceDescription) to a specific query service description (e.g. a prov:DirectQueryService or a sd:Service)., en)
     ///<see cref="http://www.w3.org/ns/prov#describesService"/>
     ///</summary>
     public const string describesService = "http://www.w3.org/ns/prov#describesService";
 
     ///<summary>
-    ///Relates a provenance service to a URI template string for constructing provenance-URIs.
+    ///(Relates a provenance service to a URI template string for constructing provenance-URIs., en)
     ///<see cref="http://www.w3.org/ns/prov#provenanceUriTemplate"/>
     ///</summary>
     public const string provenanceUriTemplate = "http://www.w3.org/ns/prov#provenanceUriTemplate";
 
     ///<summary>
-    ///Relates a resource to a provenance pingback service that may receive additional provenance links about the resource.
+    ///(Relates a resource to a provenance pingback service that may receive additional provenance links about the resource., en)
     ///<see cref="http://www.w3.org/ns/prov#pingback"/>
     ///</summary>
     public const string pingback = "http://www.w3.org/ns/prov#pingback";
@@ -3499,9 +3499,9 @@ public static class PROV
     public const string topObjectProperty = "http://www.w3.org/2002/07/owl#topObjectProperty";
 
     ///<summary>
-    ///This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
+    ///(This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
     ///
-    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome.
+    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome., en)
     ///<see cref="http://www.w3.org/ns/prov-dc#"/>
     ///</summary>
     public const string prov_dc = "http://www.w3.org/ns/prov-dc#";
@@ -3585,9 +3585,9 @@ public static class PROV
     public const string Submit = "http://www.w3.org/ns/prov#Submit";
 
     ///<summary>
-    ///This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
+    ///(This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). 
     ///
-    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome.
+    ///If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All feedback is welcome., en)
     ///<see cref="http://www.w3.org/ns/prov-dictionary#"/>
     ///</summary>
     public const string prov_dictionary = "http://www.w3.org/ns/prov-dictionary#";
@@ -3683,24 +3683,24 @@ public static class PROV
     public const string removedKey = "http://www.w3.org/ns/prov#removedKey";
 
     ///<summary>
-    ///This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/
-    ///). All feedback is welcome.
+    ///(This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/
+    ///). All feedback is welcome., en)
     ///<see cref="http://www.w3.org/ns/prov-links#"/>
     ///</summary>
     public const string prov_links = "http://www.w3.org/ns/prov-links#";
 
     ///<summary>
-    ///prov:asInBundle is used to specify which bundle the general entity of a prov:mentionOf property is described.
+    ///(prov:asInBundle is used to specify which bundle the general entity of a prov:mentionOf property is described.
     ///
-    ///When :x prov:mentionOf :y and :y is described in Bundle :b, the triple :x prov:asInBundle :b is also asserted to cite the Bundle in which :y was described.
+    ///When :x prov:mentionOf :y and :y is described in Bundle :b, the triple :x prov:asInBundle :b is also asserted to cite the Bundle in which :y was described., en)
     ///<see cref="http://www.w3.org/ns/prov#asInBundle"/>
     ///</summary>
     public const string asInBundle = "http://www.w3.org/ns/prov#asInBundle";
 
     ///<summary>
-    ///prov:mentionOf is used to specialize an entity as described in another bundle. It is to be used in conjuction with prov:asInBundle.
+    ///(prov:mentionOf is used to specialize an entity as described in another bundle. It is to be used in conjuction with prov:asInBundle.
     ///
-    ///prov:asInBundle is used to cite the Bundle in which the generalization was mentioned.
+    ///prov:asInBundle is used to cite the Bundle in which the generalization was mentioned., en)
     ///<see cref="http://www.w3.org/ns/prov#mentionOf"/>
     ///</summary>
     public const string mentionOf = "http://www.w3.org/ns/prov#mentionOf";
@@ -8416,91 +8416,91 @@ public class dces : Ontology
     public static readonly Resource _1_1 = new Resource(new Uri("http://purl.org/dc/elements/1.1/"));    
 
     ///<summary>
-    ///An entity responsible for making contributions to the resource.
+    ///(An entity responsible for making contributions to the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/contributor"/>
     ///</summary>
     public static readonly Property contributor = new Property(new Uri("http://purl.org/dc/elements/1.1/contributor"));    
 
     ///<summary>
-    ///The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant.
+    ///(The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant., en)
     ///<see cref="http://purl.org/dc/elements/1.1/coverage"/>
     ///</summary>
     public static readonly Property coverage = new Property(new Uri("http://purl.org/dc/elements/1.1/coverage"));    
 
     ///<summary>
-    ///An entity primarily responsible for making the resource.
+    ///(An entity primarily responsible for making the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/creator"/>
     ///</summary>
     public static readonly Property creator = new Property(new Uri("http://purl.org/dc/elements/1.1/creator"));    
 
     ///<summary>
-    ///A point or period of time associated with an event in the lifecycle of the resource.
+    ///(A point or period of time associated with an event in the lifecycle of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/date"/>
     ///</summary>
     public static readonly Property date = new Property(new Uri("http://purl.org/dc/elements/1.1/date"));    
 
     ///<summary>
-    ///An account of the resource.
+    ///(An account of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/description"/>
     ///</summary>
     public static readonly Property description = new Property(new Uri("http://purl.org/dc/elements/1.1/description"));    
 
     ///<summary>
-    ///The file format, physical medium, or dimensions of the resource.
+    ///(The file format, physical medium, or dimensions of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/format"/>
     ///</summary>
     public static readonly Property format = new Property(new Uri("http://purl.org/dc/elements/1.1/format"));    
 
     ///<summary>
-    ///An unambiguous reference to the resource within a given context.
+    ///(An unambiguous reference to the resource within a given context., en)
     ///<see cref="http://purl.org/dc/elements/1.1/identifier"/>
     ///</summary>
     public static readonly Property identifier = new Property(new Uri("http://purl.org/dc/elements/1.1/identifier"));    
 
     ///<summary>
-    ///A language of the resource.
+    ///(A language of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/language"/>
     ///</summary>
     public static readonly Property language = new Property(new Uri("http://purl.org/dc/elements/1.1/language"));    
 
     ///<summary>
-    ///An entity responsible for making the resource available.
+    ///(An entity responsible for making the resource available., en)
     ///<see cref="http://purl.org/dc/elements/1.1/publisher"/>
     ///</summary>
     public static readonly Property publisher = new Property(new Uri("http://purl.org/dc/elements/1.1/publisher"));    
 
     ///<summary>
-    ///A related resource.
+    ///(A related resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/relation"/>
     ///</summary>
     public static readonly Property relation = new Property(new Uri("http://purl.org/dc/elements/1.1/relation"));    
 
     ///<summary>
-    ///Information about rights held in and over the resource.
+    ///(Information about rights held in and over the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/rights"/>
     ///</summary>
     public static readonly Property rights = new Property(new Uri("http://purl.org/dc/elements/1.1/rights"));    
 
     ///<summary>
-    ///A related resource from which the described resource is derived.
+    ///(A related resource from which the described resource is derived., en)
     ///<see cref="http://purl.org/dc/elements/1.1/source"/>
     ///</summary>
     public static readonly Property source = new Property(new Uri("http://purl.org/dc/elements/1.1/source"));    
 
     ///<summary>
-    ///The topic of the resource.
+    ///(The topic of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/subject"/>
     ///</summary>
     public static readonly Property subject = new Property(new Uri("http://purl.org/dc/elements/1.1/subject"));    
 
     ///<summary>
-    ///A name given to the resource.
+    ///(A name given to the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/title"/>
     ///</summary>
     public static readonly Property title = new Property(new Uri("http://purl.org/dc/elements/1.1/title"));    
 
     ///<summary>
-    ///The nature or genre of the resource.
+    ///(The nature or genre of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/type"/>
     ///</summary>
     public static readonly Property type = new Property(new Uri("http://purl.org/dc/elements/1.1/type"));
@@ -8524,91 +8524,91 @@ public static class DCES
     public const string _1_1 = "http://purl.org/dc/elements/1.1/";
 
     ///<summary>
-    ///An entity responsible for making contributions to the resource.
+    ///(An entity responsible for making contributions to the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/contributor"/>
     ///</summary>
     public const string contributor = "http://purl.org/dc/elements/1.1/contributor";
 
     ///<summary>
-    ///The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant.
+    ///(The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant., en)
     ///<see cref="http://purl.org/dc/elements/1.1/coverage"/>
     ///</summary>
     public const string coverage = "http://purl.org/dc/elements/1.1/coverage";
 
     ///<summary>
-    ///An entity primarily responsible for making the resource.
+    ///(An entity primarily responsible for making the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/creator"/>
     ///</summary>
     public const string creator = "http://purl.org/dc/elements/1.1/creator";
 
     ///<summary>
-    ///A point or period of time associated with an event in the lifecycle of the resource.
+    ///(A point or period of time associated with an event in the lifecycle of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/date"/>
     ///</summary>
     public const string date = "http://purl.org/dc/elements/1.1/date";
 
     ///<summary>
-    ///An account of the resource.
+    ///(An account of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/description"/>
     ///</summary>
     public const string description = "http://purl.org/dc/elements/1.1/description";
 
     ///<summary>
-    ///The file format, physical medium, or dimensions of the resource.
+    ///(The file format, physical medium, or dimensions of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/format"/>
     ///</summary>
     public const string format = "http://purl.org/dc/elements/1.1/format";
 
     ///<summary>
-    ///An unambiguous reference to the resource within a given context.
+    ///(An unambiguous reference to the resource within a given context., en)
     ///<see cref="http://purl.org/dc/elements/1.1/identifier"/>
     ///</summary>
     public const string identifier = "http://purl.org/dc/elements/1.1/identifier";
 
     ///<summary>
-    ///A language of the resource.
+    ///(A language of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/language"/>
     ///</summary>
     public const string language = "http://purl.org/dc/elements/1.1/language";
 
     ///<summary>
-    ///An entity responsible for making the resource available.
+    ///(An entity responsible for making the resource available., en)
     ///<see cref="http://purl.org/dc/elements/1.1/publisher"/>
     ///</summary>
     public const string publisher = "http://purl.org/dc/elements/1.1/publisher";
 
     ///<summary>
-    ///A related resource.
+    ///(A related resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/relation"/>
     ///</summary>
     public const string relation = "http://purl.org/dc/elements/1.1/relation";
 
     ///<summary>
-    ///Information about rights held in and over the resource.
+    ///(Information about rights held in and over the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/rights"/>
     ///</summary>
     public const string rights = "http://purl.org/dc/elements/1.1/rights";
 
     ///<summary>
-    ///A related resource from which the described resource is derived.
+    ///(A related resource from which the described resource is derived., en)
     ///<see cref="http://purl.org/dc/elements/1.1/source"/>
     ///</summary>
     public const string source = "http://purl.org/dc/elements/1.1/source";
 
     ///<summary>
-    ///The topic of the resource.
+    ///(The topic of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/subject"/>
     ///</summary>
     public const string subject = "http://purl.org/dc/elements/1.1/subject";
 
     ///<summary>
-    ///A name given to the resource.
+    ///(A name given to the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/title"/>
     ///</summary>
     public const string title = "http://purl.org/dc/elements/1.1/title";
 
     ///<summary>
-    ///The nature or genre of the resource.
+    ///(The nature or genre of the resource., en)
     ///<see cref="http://purl.org/dc/elements/1.1/type"/>
     ///</summary>
     public const string type = "http://purl.org/dc/elements/1.1/type";

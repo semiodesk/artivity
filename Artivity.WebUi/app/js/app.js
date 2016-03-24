@@ -35,7 +35,7 @@ explorerApp.factory('api', function ($http) {
                     return response.data;
                 })
         },
-        getFileHistory: function (fileUrl) {
+        getActivities: function (fileUrl) {
             return $http.get(endpoint + '/activities?fileUrl=' + fileUrl).then(
                 function (response) {
                     return response.data;

@@ -12,6 +12,7 @@ namespace Artivity.DataModel.Journal
         #region Methods
         public static IEnumerable<Activity> GetActivities(IModel model, string fileUrl) //TODO add paging
         {
+            List<Activity> res = new List<Activity>();
             string queryString = @"
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
@@ -35,13 +36,14 @@ namespace Artivity.DataModel.Journal
 
             foreach (BindingSet binding in result.GetBindings())
             {
-                yield return new Activity()
+                res.Add( new Activity()
                 {
                     AgentUri = new Uri(binding["agent"].ToString()),
                     StartTime = ((DateTime)binding["startTime"]).RoundToMinute(),
                     EndTime = ((DateTime)binding["endTime"]).RoundToMinute()
-                };
+                });
             }
+            return res;
         }
         #endregion
     }

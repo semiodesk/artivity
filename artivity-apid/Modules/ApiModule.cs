@@ -29,6 +29,17 @@ namespace Artivity.Api.Http.Modules
                 return GetUserAgent();
             };
 
+            Get["/agent/list"] = paramters =>
+            {
+                return Response.AsJson(ListAgents());
+            };
+
+            Get["/agent"] = paramters =>
+            {
+                string f = ((string)Request.Query["uri"]).Trim('"');
+                return Response.AsJson(GetAgent(f));
+            };
+
             Get["/files/recent"] = parameters =>
             {
                 return GetRecentlyUsedFiles();
@@ -43,6 +54,19 @@ namespace Artivity.Api.Http.Modules
         #endregion
 
         #region Methods
+
+        public IEnumerable<SoftwareAgent> ListAgents()
+        {
+            IModel model = ModelProvider.GetAgents();
+            return model.GetResources<SoftwareAgent>();
+        }
+
+        public SoftwareAgent GetAgent(string f)
+        {
+            IModel model = ModelProvider.GetAgents();
+
+            return model.GetResource<SoftwareAgent>(new Uri(f));
+        }
 
         public Response GetUserAgent()
         {
