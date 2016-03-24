@@ -11,41 +11,69 @@ namespace Artivity.Api.Http.Modules
 {
     public class ApiModule : NancyModule
     {
+        #region Members
+
         public IModelProvider ModelProvider { get; set; }
+
+        #endregion
+
+        #region Constructors
 
         public ApiModule(IModelProvider provider)
             : base("/artivity/1.0/api")
         {
             ModelProvider = provider;
 
-            Get["/list"] = parameters =>
+            Get["/agents/user"] = parameters =>
             {
-                return Response.AsJson(ListJournalFiles());
+                return GetUserAgent();
             };
 
-            Get["/activity/list"] = parameters =>
+            Get["/files/recent"] = parameters =>
             {
-                string f = Request.Query["file"];
-                int qty = Request.Query["qty"];
-                int idx = Request.Query["idx"];
-                var l = ListActivity(f);
-                return Response.AsJson(l);
+                return GetRecentlyUsedFiles();
             };
 
-
+            Get["/activities"] = parameters =>
+            {
+                return GetActivities();
+            };
         }
 
+        #endregion
 
+        #region Methods
 
-        public IEnumerable<JournalFile> ListJournalFiles()
+        public Response GetUserAgent()
         {
-            return Journal.GetItems(ModelProvider.ActivitiesModel);
+            var result = ModelProvider.AgentsModel.GetResources<Person>().FirstOrDefault();
+
+            if(result != null)
+            {
+                return Response.AsJson(result);
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public IEnumerable<Artivity.DataModel.Journal.Activity> ListActivity(string fileUrl)
+        public Response GetRecentlyUsedFiles()
         {
-            return ActivityList.GetActivities(ModelProvider.GetAllActivities(), fileUrl);
+            var result = Journal.GetItems(ModelProvider.ActivitiesModel);
+
+            return Response.AsJson(result);
         }
 
+        public Response GetActivities()
+        {
+            string fileUrl = Request.Query["fileUrl"];
+
+            var result = ActivityList.GetActivities(ModelProvider.GetAllActivities(), fileUrl);
+
+            return Response.AsJson(result);
+        }
+
+        #endregion
     }
 }

@@ -1,0 +1,12 @@
+{
+    "path": {
+        "app/css/style.scss": {
+            "sass.enabled": true,
+            "sass.options": {
+                "imagePath": null,
+                "outputStyle": "compressed"
+            },
+            "linting.collapsed": false
+        }
+    }
+}

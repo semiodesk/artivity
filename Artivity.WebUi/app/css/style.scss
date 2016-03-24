@@ -1,0 +1,166 @@
+$textColor: white;
+$labelColor: shade($textColor, .6);
+$accentColor: #F94C00;
+$selectionTextColor: white;
+$selectionBorderColor: $accentColor;
+$selectionBackgroundColor: rgba($accentColor, 1);
+$windowBackgroundColor: #1D1D1D;
+$headerBackgroundColor: #333;
+body {
+	color: $textColor;
+	background: $windowBackgroundColor;
+}
+
+a {
+	color: $textColor;
+}
+
+a:hover {
+	color: inherit;
+	text-decoration: none;
+}
+
+.list-view {
+	padding: 0;
+}
+
+.list-view li {
+	list-style: none;
+	border: 1px solid transparent;
+	padding: 10px;
+}
+
+.list-view li:hover {
+	color: $selectionTextColor;
+	background: $selectionBackgroundColor;
+	border: 1px solid $selectionBorderColor;
+}
+
+.list-view .list-item.row {
+	padding: 0;
+	margin: 0;
+}
+
+.img-circle {
+	border-radius: 50%;
+}
+
+.img-icon {
+	width: 40px;
+	height: 40px;
+}
+
+.img-avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: url('../img/placeholder-avatar.png') center center no-repeat;
+	background-size: contain;
+}
+
+.img-thumbnail {
+	border: 1px solid #eee;
+	border-radius: 0;
+	background: white url('../img/placeholder-img.png') center center no-repeat;
+	background-size: 100px 80px;
+	width: 100px;
+	height: 60px;
+	margin: 0 10px;
+	box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+	background: $headerBackgroundColor;
+	padding: 10px;
+	min-height: 60px;
+}
+
+.header .visual {
+	float: left;
+	margin-right: 10px;
+}
+
+.header .visual img {
+	border: none;
+}
+
+.header .title {}
+
+.header .subtitle {
+	color: $labelColor;
+}
+
+.body {}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 0;
+	margin: 0;
+}
+
+.center-parent {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	transform-style: preserve-3d;
+	text-align: center;
+}
+
+.playback-toolbar {
+	position: relative;
+	height: 75px;
+}
+
+.playback-toolbar .col-playback-controls {
+	background: $headerBackgroundColor;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 175px;
+	height: 100%;
+}
+
+.playback-toolbar .col-playback-chart {
+	background: $headerBackgroundColor;
+	position: absolute;
+	top: 0;
+	left: 175px;
+	right: 0;
+	bottom: 0;
+	height: 100%;
+}
+
+.playback-toolbar .btn {
+	transition: all .2s linear;
+	color: rgba($textColor, .6);
+}
+
+.playback-toolbar .btn:hover {
+	color: rgba($textColor, 1);
+}
+
+.btn-skip-prev,
+.btn-skip-next {
+	width: 30px;
+	height: 30px;
+	padding: 5px;
+	border-radius: 50%;
+	font-size: 16px;
+}
+
+.btn-play {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, .3);
+	font-size: 30px;
+	padding: 4px 6px;
+}
+
+.canvas {
+	background: white;
+}

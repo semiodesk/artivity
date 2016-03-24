@@ -1,0 +1,22 @@
+<div ng-controller="FileListController as fileList">
+	<div class="header">
+		<div class="visual img-avatar">
+			<!--<img src="{{user.Photo}}" width="40" height="40" />-->
+		</div>
+
+		<h5 class="title">{{user.Name}}</h5>
+	</div>
+
+	<div class="body">
+		<ul class="list-view">
+			<li ng-repeat="file in files">
+				<a href="#/files/view?fileUrl={{file.FileUrl}}">
+					<div class="row list-item">
+						<div class="pull-left img-thumbnail"></div>
+						<div class="pull-left">{{file.FileName}}</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>

@@ -51,10 +51,22 @@ namespace Artivity.Api.Http
 
         protected override void ConfigureApplicationContainer(Nancy.TinyIoc.TinyIoCContainer container)
         {
-            if( ModelProvider != null)
+            if (ModelProvider != null)
                 container.Register(ModelProvider);
             base.ConfigureApplicationContainer(container);
         }
 
+        protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container, IPipelines pipelines, NancyContext context)
+        {
+#if DEBUG
+            pipelines.AfterRequest.AddItemToEndOfPipeline((ctx) =>
+            {
+                ctx.Response.WithHeader("Access-Control-Allow-Origin", "*")
+                                .WithHeader("Access-Control-Allow-Methods", "POST,GET")
+                                .WithHeader("Access-Control-Allow-Headers", "Accept, Origin, Content-type");
+
+            });
+#endif
+        }
     }
 }
