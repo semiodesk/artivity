@@ -143,8 +143,10 @@ namespace Artivity.Api.Http
 
             Logger.LogInfo("Artivity Logging Service, Version {0}", version);
 
+            
             // Make sure the database is started.
             InitializeDatabase();
+           
 
             // Start the daemon in a new thread.
             ServiceThread = new Thread(ServiceProcess);
@@ -280,6 +282,7 @@ namespace Artivity.Api.Http
         {
             if (Environment.OSVersion.Platform != PlatformID.Unix ||  Platform.IsRunningOnMac())
             {
+                //#if !DEBUG
                 // We are running on Windows or Mac. Start the database using TinyVirtuoso..
                 Logger.LogInfo("Starting the OpenLink Virtuoso database on port {0}...", _virtuosoPort);
 
@@ -299,8 +302,11 @@ namespace Artivity.Api.Http
                 string nativeConnectionString = _virtuosoInstance.GetAdoNetConnectionString();
 
                 ModelProvider = ModelProviderFactory.CreateModelProvider(connectionString, nativeConnectionString);
-                
+                Logger.LogInfo(nativeConnectionString);
                 Logger.LogInfo("Virtuoso started!");
+                //#else
+                //ModelProvider = ModelProviderFactory.CreateModelProvider("provider=virtuoso;host=localhost;port=8263;uid=dba;pw=dba;rule=urn:semiodesk/ruleset", " Server=localhost:8263;uid=dba;pwd=dba;Charset=utf-8");
+                //#endif
             }
             else
             {

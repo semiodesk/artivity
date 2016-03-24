@@ -50,6 +50,10 @@
       <HintPath>..\packages\Nancy.1.4.3\lib\net40\Nancy.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Semiodesk.Trinity, Version=0.9.133.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.133-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -92,9 +96,6 @@
     </Reference>
     <Reference Include="VDS.Common, Version=1.6.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0">
       <HintPath>..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Semiodesk.Trinity, Version=0.9.122.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.122\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
     <Reference Include="System.Management" />
     <Reference Include="Mono.Posix" />
