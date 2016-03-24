@@ -11,7 +11,7 @@ namespace Artivity.WebUi
     {
         public Explorer()
         {
-            Get["/explorer"] = parameters => { return View["home.sshtml"]; };
+            Get["/explorer"] = parameters => { return View["home"]; };
         }
 
     }

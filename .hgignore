@@ -51,3 +51,4 @@ nohup.out
 *.orig.tar.*
 inkscape
 inkview
+Output/*
