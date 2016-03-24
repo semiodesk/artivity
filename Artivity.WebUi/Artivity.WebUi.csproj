@@ -48,40 +48,40 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\js\artivity.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\js\journal.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="explorer\journal.html" />
-    <Content Include="explorer\master.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="explorer\home.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="app\css\bootstrap-theme.css.map" />
+    <None Include="app\css\bootstrap-theme.min.css.map" />
+    <None Include="app\css\bootstrap.css.map" />
+    <None Include="app\css\bootstrap.min.css.map" />
+    <None Include="app\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="app\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="app\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="app\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\css\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\js\angular.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\js\d3.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\js\jquery-2.2.2.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\artivity-datamodel\Artivity.DataModel.csproj">
       <Project>{af97fb55-09c8-4775-81f6-f1f97c2db468}</Project>
       <Name>Artivity.DataModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app\css\bootstrap-theme.css" />
+    <Content Include="app\css\bootstrap-theme.min.css" />
+    <Content Include="app\css\bootstrap.css" />
+    <Content Include="app\css\bootstrap.min.css" />
+    <Content Include="app\css\style.css" />
+    <Content Include="app\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="app\index.html" />
+    <Content Include="app\js\angular.min.js" />
+    <Content Include="app\js\app.js" />
+    <Content Include="app\js\bootstrap.js" />
+    <Content Include="app\js\bootstrap.min.js" />
+    <Content Include="app\js\controllers.js" />
+    <Content Include="app\js\d3.min.js" />
+    <Content Include="app\js\jquery-2.2.2.min.js" />
+    <Content Include="app\js\npm.js" />
+    <Content Include="app\partials\journal.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
