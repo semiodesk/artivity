@@ -69,7 +69,14 @@ namespace Artivity.Api.Plugin
 
         private void LoadManifests()
         {
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "Plugins"));
+            string dirString = Path.Combine(Environment.CurrentDirectory, "Plugins");
+            DirectoryInfo dir = new DirectoryInfo(dirString);
+            if (dir == null || !dir.Exists)
+            {
+                Logger.ErrorFormat("Could not find plugin directory \"{0}\"", dirString);
+                return;
+            }
+
             foreach (var plugin in dir.EnumerateDirectories())
             {
                 var manifest = PluginManifestReader.ReadManifest(plugin);

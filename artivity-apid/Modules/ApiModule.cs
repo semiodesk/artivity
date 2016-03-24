@@ -23,18 +23,40 @@ namespace Artivity.Api.Http.Modules
                 return Response.AsJson(ListJournalFiles());
             };
 
+            Get["/agent/list"] = paramters =>
+            {
+                return Response.AsJson(ListAgents());
+            };
+
+            Get["/agent"] = paramters =>
+            {
+                string f = ((string)Request.Query["uri"]).Trim('"');
+                return Response.AsJson(GetAgent(f));
+            };
+
             Get["/activity/list"] = parameters =>
             {
-                string f = Request.Query["file"];
+                string f = ((string)Request.Query["file"]).Trim('"');
                 int qty = Request.Query["qty"];
                 int idx = Request.Query["idx"];
-                var l = ListActivity(f);
-                return Response.AsJson(l);
+                return Response.AsJson(ListActivity(f));
             };
 
 
         }
 
+        public IEnumerable<SoftwareAgent> ListAgents()
+        {
+            IModel model = ModelProvider.GetAgents();
+            return model.GetResources<SoftwareAgent>();
+        }
+
+        public SoftwareAgent GetAgent(string f)
+        {
+            IModel model = ModelProvider.GetAgents();
+
+            return model.GetResource<SoftwareAgent>(new Uri(f));
+        }
 
 
         public IEnumerable<JournalFile> ListJournalFiles()
@@ -44,8 +66,11 @@ namespace Artivity.Api.Http.Modules
 
         public IEnumerable<Artivity.DataModel.Journal.Activity> ListActivity(string fileUrl)
         {
-            return ActivityList.GetActivities(ModelProvider.GetAllActivities(), fileUrl);
+            var res = ActivityList.GetActivities(ModelProvider.GetAllActivities(), fileUrl).ToList();
+            return res;
         }
+
+
 
     }
 }
