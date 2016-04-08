@@ -74,7 +74,7 @@ namespace Artivity.Api.Http
                 var appender = new log4net.Appender.ConsoleAppender();
                 appender.Name = "ConsoleAppender";
                 var layout = new log4net.Layout.PatternLayout();
-                layout.ConversionPattern = layout.ConversionPattern = "%newline%date{g} %-5level – %message%newline";
+                layout.ConversionPattern = layout.ConversionPattern = "%date{g} %-5level – %message%newline";
                 layout.ActivateOptions();
                 appender.Layout = layout;
                 log4net.Config.BasicConfigurator.Configure(appender);

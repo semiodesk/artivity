@@ -29,8 +29,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Semiodesk.Trinity;
+using Semiodesk.Trinity.Serialization;
 using Nancy;
 using Artivity.DataModel;
+using Nancy.IO;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace Artivity.Api.Http
 {
@@ -108,6 +112,18 @@ namespace Artivity.Api.Http
             else
             {
                 return false;
+            }
+        }
+
+        public T Bind<T>(IStore store, RequestStream stream) where T : Resource
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                string value = reader.ReadToEnd();
+
+                JsonResourceSerializerSettings settings = new JsonResourceSerializerSettings(store);
+
+                return JsonConvert.DeserializeObject<T>(value, settings);
             }
         }
 
