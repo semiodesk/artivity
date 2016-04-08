@@ -47,7 +47,7 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        private IStore _store = null;
+        public IStore Store { get; private set; }
 
         public string ConnectionString { get; set; }
 
@@ -95,24 +95,24 @@ namespace Artivity.DataModel
             if (!UrisLoaded)
                 LoadModelUris();
 
-            _store = StoreFactory.CreateStore(ConnectionString);
-            AgentsModel = _store.GetModel(Agents);
-            ActivitiesModel = _store.GetModel(Activities);
-            WebActivitiesModel = _store.GetModel(WebActivities);
-            MonitoringModel = _store.GetModel(Monitoring);
+            Store = StoreFactory.CreateStore(ConnectionString);
+            AgentsModel = Store.GetModel(Agents);
+            ActivitiesModel = Store.GetModel(Activities);
+            WebActivitiesModel = Store.GetModel(WebActivities);
+            MonitoringModel = Store.GetModel(Monitoring);
         }
 
         public bool Exists(Uri uri)
         {
-            return _store.ContainsModel(uri);
+            return Store.ContainsModel(uri);
         }
 
         public IModelGroup GetAll()
         {
-            IModelGroup result = _store.CreateModelGroup();
-            result.Add(GetAgents(_store));
-            result.Add(GetActivities(_store));
-            result.Add(GetWebActivities(_store));
+            IModelGroup result = Store.CreateModelGroup();
+            result.Add(GetAgents(Store));
+            result.Add(GetActivities(Store));
+            result.Add(GetWebActivities(Store));
             result.Add(GetMonitoring());
 
             return result;
@@ -120,10 +120,10 @@ namespace Artivity.DataModel
 
         public IModel GetAllActivities()
         {
-            IModelGroup result = _store.CreateModelGroup();
-            result.Add(GetAgents(_store));
-            result.Add(GetActivities(_store));
-            result.Add(GetWebActivities(_store));
+            IModelGroup result = Store.CreateModelGroup();
+            result.Add(GetAgents(Store));
+            result.Add(GetActivities(Store));
+            result.Add(GetWebActivities(Store));
 
             return result;
         }

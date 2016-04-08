@@ -4,7 +4,7 @@ namespace Artivity.DataModel
 {
     public interface IModelProvider
     {
-
+        IStore Store { get; }
         string ConnectionString { get; set; }
         string NativeConnectionString { get; set; }
         Uri Agents { get; set; }

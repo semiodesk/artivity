@@ -238,44 +238,15 @@ namespace Artivity.Api.Http
 
         private void InitializeModels()
         {
-            IStore store = StoreFactory.CreateStore(ModelProvider.ConnectionString);
-
             if (UpdateOntologies)
             {
-                Logger.LogInfo("Updating ontologies.");
+                using (IStore store = StoreFactory.CreateStore(ModelProvider.ConnectionString))
+                {
+                    Logger.LogInfo("Updating ontologies.");
 
-                store.LoadOntologySettings();
+                    store.LoadOntologySettings();
+                }
             }
-
-            if (!store.ContainsModel(ModelProvider.Agents))
-            {
-                Logger.LogInfo("Creating model {0}..", ModelProvider.Agents);
-
-                store.CreateModel(ModelProvider.Agents);
-            }
-
-            if (!store.ContainsModel(ModelProvider.Activities))
-            {
-                Logger.LogInfo("Creating model {0}..", ModelProvider.Activities);
-
-                store.CreateModel(ModelProvider.Activities);
-            }
-
-            if (!store.ContainsModel(ModelProvider.WebActivities))
-            {
-                Logger.LogInfo("Creating model {0}..", ModelProvider.WebActivities);
-
-                store.CreateModel(ModelProvider.WebActivities);
-            }
-
-            if (!store.ContainsModel(ModelProvider.Monitoring))
-            {
-                Logger.LogInfo("Creating model {0}..", ModelProvider.Monitoring);
-
-                store.CreateModel(ModelProvider.Monitoring);
-            }
-
-            store.Dispose();
         }
 
         private void InitializeDatabase()
