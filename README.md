@@ -57,3 +57,6 @@ highly recommended to use a byte code caching solution such as [ccache](https://
 
 If you want to build the Krtia plugin from source, please refer to [Building Krita on Linux for cats](http://www.davidrevoy.com/article193/guide-building-krita-on-linux-for-cats) 
 for detailed instructions on how to setup your build environment.
+
+### License ###
+Artivity consists of multiple software components which may have individual licenses associated with them. For source code, licensing information may be contained in the headers of each file. You should find a license file named 'COPYING' in every sub-folder of the repository, which contains the license which is applied to its contents if not stated otherwise. If there is no such file, source code and other files contained in a folder in this directory are licensed under the terms of the GNU General Public License version 3. You can find a copy of the license in the file named 'COPYING' which is contained in the directory root of this repository.
