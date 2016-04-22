@@ -46,14 +46,6 @@
     <DefineConstants>OSX</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Nancy, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nancy.1.4.3\lib\net40\Nancy.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Semiodesk.Trinity, Version=0.9.137.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.137-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -100,6 +92,12 @@
     </Reference>
     <Reference Include="System.Management" />
     <Reference Include="Mono.Posix" />
+    <Reference Include="Nancy, Version=1.4.2.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Nancy.1.4.3\lib\net40\Nancy.dll</HintPath>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity, Version=0.9.137.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.137-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
@@ -260,7 +258,7 @@
       <Name>Artivity.DataModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\Artivity.Apid.Modules.Journal\Artivity.Apid.Modules.Journal.csproj">
-      <Project>{ebeaf1ee-acd3-4124-a8e4-314822824ec8}</Project>
+      <Project>{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}</Project>
       <Name>Artivity.Apid.Modules.Journal</Name>
     </ProjectReference>
   </ItemGroup>

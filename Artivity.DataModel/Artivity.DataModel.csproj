@@ -13,8 +13,6 @@
     <NuGetPackageImportStamp>e771faeb</NuGetPackageImportStamp>
     <TargetFrameworkProfile />
     <ReleaseVersion>1.5.20</ReleaseVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -128,10 +126,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Semiodesk.Trinity, Version=0.9.137.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.137-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -153,6 +147,9 @@
     </Reference>
     <Reference Include="VDS.Common, Version=1.6.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0">
       <HintPath>..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity, Version=0.9.137.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.137-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,7 +6,6 @@
     <ProjectGuid>{823D4E87-D4D8-4D08-98AE-EAD625579E1A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Artivity.Explorer</RootNamespace>
-    <AssemblyName>artivity-explorer</AssemblyName>
     <TargetFrameworkProfile />
     <StartupObject>Artivity.Explorer.Program</StartupObject>
     <ReleaseVersion>1.5.20</ReleaseVersion>
@@ -16,11 +15,13 @@
     <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <AssemblyName>artivity-explorer</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>..\Output\</OutputPath>
     <WarningLevel>4</WarningLevel>
+    <AssemblyName>artivity-explorer</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug OSX|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -174,10 +175,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Semiodesk.Trinity, Version=0.9.133.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.133-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="Eto">
       <HintPath>..\packages\Eto.Forms.2.1.0\lib\net40\Eto.dll</HintPath>
@@ -234,6 +231,9 @@
     <Reference Include="VDS.Common, Version=1.6.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0">
       <HintPath>..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Semiodesk.Trinity, Version=0.9.133.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.133-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Widgets\EditingWidget.cs">
@@ -252,7 +252,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
-      <Project>{af97fb55-09c8-4775-81f6-f1f97c2db468}</Project>
+      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
       <Name>Artivity.DataModel</Name>
     </ProjectReference>
   </ItemGroup>
