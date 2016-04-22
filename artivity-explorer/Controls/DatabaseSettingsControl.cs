@@ -64,14 +64,13 @@ namespace Artivity.Explorer
 
         public DatabaseSettingsControl()
         {
-            if (!Models.Instance.Provider.Exists(Models.Instance.Provider.Monitoring))
-            {
-                Setup.InstallMonitoring();
-            }
-
             IModel monitoring = Models.Instance.Provider.GetMonitoring();
 
-            if (monitoring.IsEmpty)
+            if(monitoring == null)
+            {
+                return;
+            }
+            else if (monitoring.IsEmpty)
             {
                 Setup.InstallMonitoring();
             }

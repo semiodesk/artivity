@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/artivity-apid
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=Artivity Service
+Name=Artivity Service
+Comment[en_US]=Track your art related browsing activities.
+Comment=System service which allows applications to log your art related activities.

@@ -1,0 +1,28 @@
+<div id="document" ng-controller="FileListController as fileList" class="jumbo-header">
+	<div id="header" class="row">
+		<div class="col">
+			<img class="icn icn-circle" src="{{user.PhotoUrl}}"/>
+		</div>
+
+		<div class="col expand">
+			<h5 class="title title-lg">{{user.Name}}</h5>
+		</div>
+
+		<div class="col">
+			<a class="btn" href="#/settings"><i class="zmdi zmdi-hc-fw"></i></a>
+		</div>
+	</div>
+
+	<div id="body">
+		<ul id="file-list" class="cards">
+			<li class="card" ng-repeat="file in files">
+				<a href="#/files/{{encodeBase64(file.url)}}">
+					<div>
+						<div class="img-thumbnail"></div>
+						<div class="title">{{getFileName(file.url)}}</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>

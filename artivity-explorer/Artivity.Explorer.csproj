@@ -251,7 +251,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\artivity-datamodel\Artivity.DataModel.csproj">
+    <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
       <Project>{af97fb55-09c8-4775-81f6-f1f97c2db468}</Project>
       <Name>Artivity.DataModel</Name>
     </ProjectReference>

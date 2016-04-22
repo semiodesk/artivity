@@ -237,15 +237,9 @@ namespace Artivity.Explorer
 
         public static bool HasModels()
         {
-            bool result = true;
-
             IStore store = StoreFactory.CreateStore(Models.Instance.Provider.ConnectionString);
 
-            result &= store.ContainsModel(Models.Instance.Provider.Agents) && !store.GetModel(Models.Instance.Provider.Agents).IsEmpty;
-            result &= store.ContainsModel(Models.Instance.Provider.Activities);
-            result &= store.ContainsModel(Models.Instance.Provider.WebActivities);
-
-            return result;
+            return !store.GetModel(Models.Instance.Provider.Agents).IsEmpty;
         }
 
         public static bool InstallModels()
@@ -256,16 +250,7 @@ namespace Artivity.Explorer
 
                 IStore store = StoreFactory.CreateStore(Models.Instance.Provider.ConnectionString);
 
-                IModel agents;
-
-                if (!store.ContainsModel(Models.Instance.Provider.Agents))
-                {
-                    agents = store.CreateModel(Models.Instance.Provider.Agents);
-                }
-                else
-                {
-                    agents = store.GetModel(Models.Instance.Provider.Agents);
-                }
+                IModel agents = store.GetModel(Models.Instance.Provider.Agents);
                     
                 InstallAgentIfMissing(agents, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
                 InstallAgentIfMissing(agents, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
@@ -273,27 +258,9 @@ namespace Artivity.Explorer
                 InstallAgentIfMissing(agents, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
                 InstallAgentIfMissing(agents, "application://photoshop.desktop", "Photoshop", "photoshop", "#EE2000", true);
 
-                IModel activities;
+                IModel activities = store.GetModel(Models.Instance.Provider.Activities);
 
-                if (!store.ContainsModel(Models.Instance.Provider.Activities))
-                {
-                    activities = store.CreateModel(Models.Instance.Provider.Activities);
-                }
-                else
-                {
-                    activities = store.GetModel(Models.Instance.Provider.Activities);
-                }
-
-                IModel webActivities;
-
-                if (!store.ContainsModel(Models.Instance.Provider.WebActivities))
-                {
-                    webActivities = store.CreateModel(Models.Instance.Provider.WebActivities);
-                }
-                else
-                {
-                    webActivities = store.GetModel(Models.Instance.Provider.WebActivities);
-                }
+                IModel webActivities = store.GetModel(Models.Instance.Provider.WebActivities);
 
                 InstallMonitoring();
 
@@ -302,7 +269,7 @@ namespace Artivity.Explorer
                 // Load the ontologies into the database for inferencing support.
                 store.LoadOntologySettings();
 
-                return agents != null && !agents.IsEmpty && activities != null && webActivities != null && monitoring != null;
+                return !agents.IsEmpty;
             }
             catch(Exception e)
             {
@@ -357,22 +324,14 @@ namespace Artivity.Explorer
         public static void InstallMonitoring(IStore store = null)
         {
             Uri monitoringUri = Models.Instance.Provider.Monitoring;
+
             if(store == null)
             {
                 store = StoreFactory.CreateStore(Models.Instance.ConnectionString);
             }
 
-            IModel model;
-
-            if (!store.ContainsModel(monitoringUri))
-            {
-                model = store.CreateModel(monitoringUri);
-            }
-            else
-            {
-                model = store.GetModel(monitoringUri);
-                model.Clear();
-            }
+            IModel model = store.GetModel(monitoringUri);
+            model.Clear();
 
             Database database = model.CreateResource<Database>();
 
@@ -392,25 +351,10 @@ namespace Artivity.Explorer
 
                 IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
-                if (store.ContainsModel(Models.Instance.Provider.Agents))
-                {
-                    store.RemoveModel(Models.Instance.Provider.Agents);
-                }
-
-                if (store.ContainsModel(Models.Instance.Provider.Activities))
-                {
-                    store.RemoveModel(Models.Instance.Provider.Activities);
-                }
-
-                if (store.ContainsModel(Models.Instance.Provider.WebActivities))
-                {
-                    store.RemoveModel(Models.Instance.Provider.WebActivities);
-                }
-
-                if (store.ContainsModel(Models.Instance.Provider.Monitoring))
-                {
-                    store.RemoveModel(Models.Instance.Provider.Monitoring);
-                }
+                store.RemoveModel(Models.Instance.Provider.Agents);
+                store.RemoveModel(Models.Instance.Provider.Activities);
+                store.RemoveModel(Models.Instance.Provider.WebActivities);
+                store.RemoveModel(Models.Instance.Provider.Monitoring);
 
                 return true;
             }
@@ -425,12 +369,8 @@ namespace Artivity.Explorer
         public static bool HasUserAgent()
         {
             Uri agentsUri = Models.Instance.Provider.Agents;
-            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
-            if (!store.ContainsModel(agentsUri))
-            {
-                return false;
-            }
+            IStore store = StoreFactory.CreateStoreFromConfiguration("virt0");
 
             IModel agents = store.GetModel(agentsUri);
 
@@ -444,16 +384,7 @@ namespace Artivity.Explorer
             Uri agentsUri = Models.Instance.Provider.Agents;
             IStore store = StoreFactory.CreateStore(Models.Instance.ConnectionString);
 
-            IModel agents;
-
-            if (!store.ContainsModel(agentsUri))
-            {
-                agents = store.CreateModel(agentsUri);
-            }
-            else
-            {
-                agents = store.GetModel(agentsUri);
-            }
+            IModel agents = store.GetModel(agentsUri);
 
             InstallAgentIfMissing(agents, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
             InstallAgentIfMissing(agents, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
