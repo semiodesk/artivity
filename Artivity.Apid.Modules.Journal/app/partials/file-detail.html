@@ -1,0 +1,72 @@
+<div ng-controller="FileDetailController as fileDetail">
+	<div id="header">
+		<div class="row">
+			<div class="col">
+				<a class="btn" href="#/files"><i class="zmdi zmdi-hc-fw"></i></a>
+			</div>
+
+			<div class="col">
+				<div class="icn" style="background-color: {{agent.ColourCode}}; width: 30px; height: 30px; position: relative; top: 10px; left: 5px;"></div>
+			</div>
+
+			<div class="col expand">
+				<h5 class="title">{{fileName}}</h5>
+			</div>
+		</div>
+	</div>
+	<div id="body">
+		<div class="content text-center">
+			<h4 style="margin-top: 200px">{{ getFormattedDate(selectedInfluence.time) }}</h4>
+			<h3>{{ getFormattedTime(selectedInfluence.time) }}</h3>
+			<span class="label">{{ getFormattedTimeFromNow(selectedInfluence.time) }}</span>
+		</div>
+		<div class="sidebar">
+			<ul class="nav nav-tabs" id="tabs" role="tablist">
+				<li role="presentation" class="active"><a data-target="#history" role="tab" data-toggle="tab">History</a></li>
+				<li role="presentation"><a data-target="#statistics" role="tab" data-toggle="tab">Stats</a></li>
+				<li role="presentation"><a data-target="#comments" role="tab" data-toggle="tab">Comments</a></li>
+			</ul>
+
+			<div class="tab-content" ng-mouseout="resetInfluence()">
+				<div role="tabpanel" class="tab-pane fade active in" id="history">
+					<ul class="list-unstyled">
+						<li ng-repeat="influence in influences" ng-class="{selected: influence == selectedInfluence}">
+							<a title="{{influence.time}}"
+							   ng-click="selectInfluence(influence)"
+							   ng-mouseover="previewInfluence(influence)">
+								<i class="zmdi zmdi-hc-fw icn icn-circle"></i> {{influence.description}}
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div role="tabpanel" class="tab-pane fade" id="statistics">
+					<div class="under-construction"></div>
+				</div>
+				<div role="tabpanel" class="tab-pane fade" id="comments">
+					<div class="under-construction"></div>
+				</div>
+			</div>
+
+			<script type="text/javascript">
+				$('#tabs a').click(function (e) {
+					e.preventDefault();
+					$(this).tab('show');
+				})
+			</script>
+		</div>
+	</div>
+	<div id="footer">
+		<div class="playback-toolbar">
+			<div class="col-playback-controls">
+				<div class="center-parent">
+					<div class="btn btn-skip-prev" ng-click="skipPrev()"><i class="zmdi zmdi-hc-fw"></i></div>
+					<div class="btn btn-play" ng-click="togglePlay()"><i class="zmdi zmdi-hc-fw"></i></div>
+					<div class="btn btn-skip-next" ng-click="skipNext()"><i class="zmdi zmdi-hc-fw"></i></div>
+				</div>
+			</div>
+			<div class="col-playback-chart">
+				<div gantt-chart chart-data="activities"></div>
+			</div>
+		</div>
+	</div>
+</div>

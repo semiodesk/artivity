@@ -1,4 +1,0 @@
-#! /bin/bash
-APP_DIR=$HOME/.artivity
-if ! test -d $APP_DIR; then mkdir $APP_DIR; fi;
-/usr/bin/nohup /usr/bin/mono /usr/lib/artivity/artivity-apid.exe "$@" > $APP_DIR/apid.log 2>&1&
