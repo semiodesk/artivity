@@ -1,14 +1,45 @@
-﻿using Artivity.DataModel;
+﻿// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
+
+using Artivity.DataModel;
 using Artivity.DataModel.Journal;
 using Nancy;
 using Nancy.Responses;
 using Nancy.ModelBinding;
+using Nancy.IO;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Threading.Tasks;
 using Artivity.Apid.Parameters;
 using Newtonsoft.Json;
 
@@ -37,6 +68,20 @@ namespace Artivity.Apid.Modules
                 }
             };
 
+            Post["/agents"] = parameters =>
+            {
+                Agent agent = Bind<Agent>(ModelProvider.Store, Request.Body);
+
+                if (agent == null)
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
+                agent.Commit();
+
+                return HttpStatusCode.OK;
+            };
+
             Get["/agents/user"] = parameters =>
             {
                 return GetUserAgent();
@@ -45,14 +90,32 @@ namespace Artivity.Apid.Modules
             Post["/agents/user"] = parameters =>
             {
                 Person user = Bind<Person>(ModelProvider.Store, Request.Body);
+
+                if (user == null)
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
                 user.Commit();
 
                 return HttpStatusCode.OK;
             };
 
+            Get["/agents/user/accounts"] = parameters =>
+            {
+                return GetUserAgentAccounts();
+            };
+
             Get["/agents/user/photo"] = parameters =>
             {
                 return GetUserAgentPhoto();
+            };
+
+            Post["/agents/user/photo"] = parameters =>
+            {
+                RequestStream stream = Request.Body;
+
+                return SetUserAgentPhoto(stream);
             };
 
             Get["/files/recent"] = parameters =>
@@ -122,20 +185,11 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@fileUrl", fileUrl);
 
-            return Response.AsJson(model.GetResources(query).FirstOrDefault());
-        }
+            IEnumerable<IResource> agents = model.GetResources(query);
 
-        public Response GetUserAgentPhoto()
-        {
-            Person result = ModelProvider.AgentsModel.GetResources<Person>().FirstOrDefault();
-
-            if(result != null && File.Exists(result.Photo))
+            if (agents.Any())
             {
-                FileStream file = new FileStream(result.Photo, FileMode.Open);
-
-                StreamResponse response = new StreamResponse(() => file, MimeTypes.GetMimeType(result.Photo));
-                  
-                return response.AsAttachment(result.Photo);
+                return Response.AsJson(agents.FirstOrDefault());
             }
             else
             {
@@ -155,6 +209,72 @@ namespace Artivity.Apid.Modules
             {
                 return null;
             }
+        }
+
+        private Response GetUserAgentAccounts()
+        {
+            Person result = ModelProvider.AgentsModel.GetResources<Person>().FirstOrDefault();
+
+            if(result != null)
+            {
+                return Response.AsJson(result.Accounts);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public Response GetUserAgentPhoto()
+        {
+            string file = Path.Combine(Platform.GetAppDataFolder(), "user.jpg");
+
+            if (File.Exists(file))
+            {
+                FileStream fileStream = new FileStream(file, FileMode.Open);
+
+                StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
+
+                return response.AsAttachment(file);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public Response SetUserAgentPhoto(RequestStream stream)
+        {
+            string file = Path.Combine(Platform.GetAppDataFolder(), "user.jpg");
+
+            try
+            {
+                Bitmap source = new Bitmap(stream);
+
+                // Always resize the image to the given size.
+                int width = 160;
+                int height = 160;
+
+                Bitmap target = new Bitmap(width, height);
+
+                using (Graphics g = Graphics.FromImage(target))
+                {
+                    g.DrawImage(source, 0, 0, width, height);
+
+                    using (FileStream fileStream = File.Create(file))
+                    {
+                        target.Save(fileStream, ImageFormat.Jpeg);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Logger.LogError(ex.Message);
+
+                return HttpStatusCode.InternalServerError;
+            }
+
+            return HttpStatusCode.OK;
         }
 
         public Response GetRecentlyUsedFiles()

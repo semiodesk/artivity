@@ -58,36 +58,43 @@ namespace Artivity.Apid
             }
 
             bool consoleLogging = true;
+
             if(options.LogConfig != null && File.Exists(options.LogConfig))
             {
                 try
                 {
                     FileInfo logFileConfig = new FileInfo(options.LogConfig);
+
                     log4net.Config.XmlConfigurator.Configure(logFileConfig);
+
                     consoleLogging = false;
-                }catch(Exception)
+                }
+                catch(Exception)
                 {
                 }
             }
+
             if (consoleLogging)
             {
-                var appender = new log4net.Appender.ConsoleAppender();
-                appender.Name = "ConsoleAppender";
                 var layout = new log4net.Layout.PatternLayout();
                 layout.ConversionPattern = layout.ConversionPattern = "%date{g} %-5level – %message%newline";
                 layout.ActivateOptions();
+
+                var appender = new log4net.Appender.ConsoleAppender();
+                appender.Name = "ConsoleAppender";
                 appender.Layout = layout;
+
                 log4net.Config.BasicConfigurator.Configure(appender);
             }
 
-            #if !DEBUG
+#if !DEBUG
             _checker = PluginCheckerFactory.CreatePluginChecker();
             _checker.Check();
-            IInstallationWatchdog wd = InstallationWatchdogFactory.CreateWatchdog ();
-            wd.ProgrammInstalledOrRemoved += ProgramInstalled;
-            wd.Start();
-            #endif
 
+            IInstallationWatchdog watchdog = InstallationWatchdogFactory.CreateWatchdog ();
+            watchdog.ProgrammInstalledOrRemoved += ProgramInstalled;
+            watchdog.Start();
+#endif
 
             HttpService service = new HttpService();
             service.UpdateOntologies = options.Update;
@@ -99,17 +106,16 @@ namespace Artivity.Apid
 
                     service.Stop();
 #if !DEBUG
-                    wd.Stop();
+                    watchdog.Stop();
 #endif
                 };
 
             service.Start();
         }
 
-        void ProgramInstalled(object sender, EventArgs entry)
+        private void ProgramInstalled(object sender, EventArgs entry)
         {
             _checker.Check();
         }
     }
-
 }

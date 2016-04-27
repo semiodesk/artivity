@@ -45,6 +45,8 @@
     <Compile Include="IModelProvider.cs" />
     <Compile Include="Journal\Journal.cs" />
     <Compile Include="Journal\JournalFile.cs" />
+    <Compile Include="ObjectModel\Accounts\OrcidAccount.cs" />
+    <Compile Include="ObjectModel\OnlineAccount.cs" />
     <Compile Include="ObjectModel\Person.cs" />
     <Compile Include="ObjectModel\Activity.cs" />
     <Compile Include="Ontologies\Ontologies.g.cs">

@@ -47,9 +47,12 @@ namespace Artivity.DataModel
         [RdfProperty(FOAF.img)]
         public string Photo { get; set; }
 
+        [RdfProperty(FOAF.account)]
+        public List<OnlineAccount> Accounts { get; private set; }
+
 		#endregion
 
-        #region Constructor
+        #region Constructors
 
         public Person(Uri uri) : base(uri) {}
 
