@@ -146,11 +146,9 @@ namespace Artivity.Apid
 
             Logger.LogInfo("Artivity Logging Service, Version {0}", version);
 
-            
             // Make sure the database is started.
             InitializeDatabase();
            
-
             // Start the daemon in a new thread.
             ServiceThread = new Thread(ServiceProcess);
             ServiceThread.Start();
@@ -256,7 +254,7 @@ namespace Artivity.Apid
 
         private void InitializeDatabase()
         {
-            if (Environment.OSVersion.Platform != PlatformID.Unix ||  Platform.IsRunningOnMac())
+            if (Platform.IsWindows() ||  Platform.IsMac())
             {
                 //#if !DEBUG
                 // We are running on Windows or Mac. Start the database using TinyVirtuoso..

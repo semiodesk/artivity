@@ -1,269 +1,328 @@
 var explorerControllers = angular.module('explorerControllers', ['ngInputModified']);
 
 explorerControllers.controller('FileListController', function (api, $scope) {
-	api.getUser().then(function (data) {
-		$scope.user = data;
-	});
+    api.getUser().then(function (data) {
+        $scope.user = data;
+    });
 
-	api.getRecentFiles().then(function (data) {
-		$scope.files = data;
-	});
+    $scope.userPhotoUrl = api.getUserPhotoUrl();
 
-	$scope.encodeBase64 = function(url) {
-		var result = Base64.encode(url, true);
+    api.getRecentFiles().then(function (data) {
+        $scope.files = data;
+    });
 
-		return result;
-	};
+    $scope.encodeBase64 = function (url) {
+        var result = Base64.encode(url, true);
 
-	$scope.getFileName = getFileName;
+        return result;
+    };
+
+    $scope.getFileName = getFileName;
 });
 
 explorerControllers.controller('FileDetailController', function (api, $scope, $rootScope, $routeParams) {
-	var fileUrl = Base64.decode($routeParams.fileUrl);
+    var fileUrl = Base64.decode($routeParams.fileUrl);
 
-	$scope.fileName = getFileName(fileUrl);
-	$scope.agent = {};
+    $scope.fileName = getFileName(fileUrl);
+    $scope.agent = {};
 
-	$scope.activities = [];
-	$scope.selectedActivity;
+    $scope.activities = [];
+    $scope.selectedActivity;
 
-	$scope.influences = [];
-	$scope.selectedInfluence = { name: "", time: new Date() };
-	$scope.previousInfluence = undefined;
+    $scope.influences = [];
+    $scope.selectedInfluence = {
+        name: "",
+        time: new Date()
+    };
+    $scope.previousInfluence = undefined;
 
-	$scope.playloop = undefined;
+    $scope.playloop = undefined;
 
-	api.getAgent(fileUrl).then(function (data) {
-		$scope.agent = data;
-	});
+    api.getAgent(fileUrl).then(function (data) {
+        $scope.agent = data;
+    });
 
-	api.getActivities(fileUrl).then(function (data) {
-		$scope.activities = data;
+    api.getActivities(fileUrl).then(function (data) {
+        $scope.activities = data;
 
-		if(data.length > 0) {
-			$scope.selectedActivity = data[0];
-		}
-	});
+        if (data.length > 0) {
+            $scope.selectedActivity = data[0];
+        }
+    });
 
-	api.getInfluences(fileUrl).then(function (data) {
-		$scope.influences = data;
+    api.getInfluences(fileUrl).then(function (data) {
+        $scope.influences = data;
 
-		if(data.length > 0) {
-			$scope.selectedInfluence = data[0];
-		}
-	});
+        if (data.length > 0) {
+            $scope.selectedInfluence = data[0];
+        }
+    });
 
-	$scope.getFormattedTime = function(time) {
-		return moment(time).format('hh:mm:ss');
-	};
+    $scope.getFormattedTime = function (time) {
+        return moment(time).format('hh:mm:ss');
+    };
 
-	$scope.getFormattedDate = function(time) {
-		return moment(time).format('dddd, Do MMMM YYYY');
-	};
+    $scope.getFormattedDate = function (time) {
+        return moment(time).format('dddd, Do MMMM YYYY');
+    };
 
-	$scope.getFormattedTimeFromNow = function(time) {
-		var result = moment(time).fromNow();
+    $scope.getFormattedTimeFromNow = function (time) {
+        var result = moment(time).fromNow();
 
-		return result;
-	};
+        return result;
+    };
 
-	$scope.selectInfluence = function(influence) {
-		$scope.selectedInfluence = influence;
-		$scope.previousInfluence = undefined;
-	};
+    $scope.selectInfluence = function (influence) {
+        $scope.selectedInfluence = influence;
+        $scope.previousInfluence = undefined;
+    };
 
-	$scope.previewInfluence = function(influence) {
-		$scope.previousInfluence = $scope.selectedInfluence;
-		$scope.selectedInfluence = influence;
-	}
+    $scope.previewInfluence = function (influence) {
+        $scope.previousInfluence = $scope.selectedInfluence;
+        $scope.selectedInfluence = influence;
+    }
 
-	$scope.resetInfluence = function() {
-		if($scope.previousInfluence) {
-			$scope.selectedInfluence = $scope.previousInfluence;
-			$scope.previousInfluence = undefined;
-		}
-	}
+    $scope.resetInfluence = function () {
+        if ($scope.previousInfluence) {
+            $scope.selectedInfluence = $scope.previousInfluence;
+            $scope.previousInfluence = undefined;
+        }
+    }
 
-	$scope.skipPrev = function () {
-		var i = $scope.influences.indexOf($scope.selectedInfluence);
+    $scope.skipPrev = function () {
+        var i = $scope.influences.indexOf($scope.selectedInfluence);
 
-		if(0 < i) {
-			$scope.selectedInfluence = $scope.influences[i - 1];
-		}
-	};
+        if (0 < i) {
+            $scope.selectedInfluence = $scope.influences[i - 1];
+        }
+    };
 
-	$scope.togglePlay = function () {
-		if($scope.playloop) {
-			$scope.pause();
-		}
-		else {
-			$scope.play();
-		}
-	};
+    $scope.togglePlay = function () {
+        if ($scope.playloop) {
+            $scope.pause();
+        } else {
+            $scope.play();
+        }
+    };
 
-	$scope.play = function() {
-		if(!$scope.playloop) {
-			$scope.playloop = setInterval($scope.skipNext, 500);
-		}
-	};
+    $scope.play = function () {
+        if (!$scope.playloop) {
+            $scope.playloop = setInterval($scope.skipNext, 500);
+        }
+    };
 
-	$scope.pause = function() {
-		if($scope.playloop) {
-			clearInterval($scope.playloop);
+    $scope.pause = function () {
+        if ($scope.playloop) {
+            clearInterval($scope.playloop);
 
-			$scope.playloop = undefined;
-		}
-	};
+            $scope.playloop = undefined;
+        }
+    };
 
-	$scope.skipNext = function () {
-		var i = $scope.influences.indexOf($scope.selectedInfluence) + 1;
+    $scope.skipNext = function () {
+        var i = $scope.influences.indexOf($scope.selectedInfluence) + 1;
 
-		if(0 < i && i < $scope.influences.length) {
-			$scope.selectedInfluence = $scope.influences[i];
-		}
+        if (0 < i && i < $scope.influences.length) {
+            $scope.selectedInfluence = $scope.influences[i];
+        }
 
-		if($scope.playloop) {
-			$scope.$digest();
+        if ($scope.playloop) {
+            $scope.$digest();
 
-			if(i == $scope.influences.length) {
-				$scope.pause();
-			}
-		}
-	};
-})
-.directive('ganttChart', function () {
-	return {
-		template: '<div class="chart"><svg class="canvas"></svg></div>',
-		link: function (scope, element, attributes) {
-			var gantt = d3.gantt();
-			gantt.init(element, getValue(scope, attributes.chartData));
+            if (i == $scope.influences.length) {
+                $scope.pause();
+            }
+        }
+    };
+}).directive('ganttChart', function () {
+    return {
+        template: '<div class="chart"><svg class="canvas"></svg></div>',
+        link: function (scope, element, attributes) {
+            var gantt = d3.gantt();
+            gantt.init(element, getValue(scope, attributes.chartData));
 
-			scope.$watchCollection(attributes.chartData, function () {
-				gantt.update(getValue(scope, attributes.chartData));
-			});
+            scope.$watchCollection(attributes.chartData, function () {
+                gantt.update(getValue(scope, attributes.chartData));
+            });
 
-			scope.$watch('selectedInfluence', function() {
-				gantt.position(scope.selectedInfluence.time);
-			});
+            scope.$watch('selectedInfluence', function () {
+                gantt.position(scope.selectedInfluence.time);
+            });
 
-			$(window).resize(function(){
-				var container = $('.col-playback-chart');
-				gantt.width(container.innerWidth());
-				gantt.update();
-			});
+            $(window).resize(function () {
+                var container = $('.col-playback-chart');
+                gantt.width(container.innerWidth());
+                gantt.update();
+            });
 
-			$(document).ready(function() {
-				var container = $('.col-playback-chart');
-				gantt.width(container.innerWidth());
-				gantt.update();
-			});
-		}
-	}
+            $(document).ready(function () {
+                var container = $('.col-playback-chart');
+                gantt.width(container.innerWidth());
+                gantt.update();
+            });
+        }
+    }
 });
 
 explorerControllers.controller('SettingsController', function (api, $scope, $rootScope, $routeParams) {
-	$scope.children = [];
+    $scope.children = [];
 
-	$scope.submit = function() {
-		$scope.children.forEach(function (child) {
-			if(child.submit) { child.submit(); }
-		});
-	};
+    $scope.submit = function () {
+        $scope.children.forEach(function (child) {
+            if (child.submit) {
+                child.submit();
+            }
+        });
+    };
 
-	$scope.reset = function() {
-		$scope.children.forEach(function (child) {
-			if(child.reset) { child.reset(); }
-		});
-	};
+    $scope.reset = function () {
+        $scope.children.forEach(function (child) {
+            if (child.reset) {
+                child.reset();
+            }
+        });
+    };
 }).directive("ngPhotoPicker", function () {
-	return {
-		link: function (scope, element, attributes) {
-			element.bind("change", function (changeEvent) {
-				scope.$apply(function () {
-					// TODO: This does not work. Browsers do not allow to generate local file system URLs.
-					scope.user.Photo = changeEvent.target.files[0];
-				});
-			});
-		}
-	}
+    return {
+        link: function (scope, element, attributes) {
+            element.bind("change", function (changeEvent) {
+                scope.$apply(function () {
+                    // Store the selected picture in the model for saving when the changes are applied.
+                    scope.userPhoto = changeEvent.target.files[0];
+                });
+            });
+        }
+    }
 }).directive("ngColorPicker", function () {
-	return {
-		template: '<button type="button" class="btn btn-colorpicker"><span class="color-fill-icon"><i></i></span></button>',
-		link: function (scope, element, attributes) {
-			var indicator = $('.color-fill-icon', element);
-			indicator.css('background-color', getValue(scope, attributes.selectedColor));
+    return {
+        template: '<button type="button" class="btn btn-colorpicker"><span class="color-fill-icon"><i></i></span></button>',
+        link: function (scope, element, attributes) {
+            var indicator = $('.color-fill-icon', element);
+            indicator.css('background-color', getValue(scope, attributes.selectedColor));
 
-			var button = $(element);
+            var button = $(element);
 
-			button.on('changeColor', function(e){
-				if(e.color==null) {
-					//when select transparent color
-					//$('.color-fill-icon', btn).addClass('colorpicker-color');
-				} else {
-					//$('.color-fill-icon', btn).removeClass('colorpicker-color');
-					indicator.css('background-color', e.color);
-				}
-			});
+            button.on('changeColor', function (e) {
+                if (e.color == null) {
+                    //when select transparent color
+                    //$('.color-fill-icon', btn).addClass('colorpicker-color');
+                } else {
+                    //$('.color-fill-icon', btn).removeClass('colorpicker-color');
+                    indicator.css('background-color', e.color);
+                    
+                    // Update the bound value.
+                    setValue(scope, attributes.selectedColor, e.color.toHex());
+                }
+            });
 
-			button.colorpicker({
-				customClass: 'colorpicker-lg',
-				align: 'right',
-				format: 'rgb',
-				color: getValue(scope, attributes.selectedColor),
-				colorSelectors: {
-					'default': '#777777',
-					'primary': '#337ab7',
-					'success': '#5cb85c',
-					'info': '#5bc0de',
-					'warning': '#f0ad4e',
-					'danger': '#d9534f'
-				},
-				sliders: {
-					saturation: {
-						maxLeft: 200,
-						maxTop: 200
-					},
-					hue: {
-						maxTop: 200
-					},
-					alpha: {
-						maxTop: 200
-					}
-				}
-			});
-		}
-	}
+            button.colorpicker({
+                customClass: 'colorpicker-lg',
+                align: 'right',
+                format: 'rgb',
+                color: getValue(scope, attributes.selectedColor),
+                colorSelectors: {
+                    'default': '#777777',
+                    'primary': '#337ab7',
+                    'success': '#5cb85c',
+                    'info': '#5bc0de',
+                    'warning': '#f0ad4e',
+                    'danger': '#d9534f'
+                },
+                sliders: {
+                    saturation: {
+                        maxLeft: 200,
+                        maxTop: 200
+                    },
+                    hue: {
+                        maxTop: 200
+                    },
+                    alpha: {
+                        maxTop: 200
+                    }
+                }
+            });
+        }
+    }
 });
 
-explorerControllers.controller('UserSettingsController', function(api, $scope) {
-	$scope.$parent.children.push(this);
+explorerControllers.controller('UserSettingsController', function (api, $scope, $uibModal, $log) {
+    // Register the controller with its parent for global apply/cancel.
+    $scope.$parent.children.push(this);
 
-	api.getUser().then(function (data) {
-		$scope.model = data;
-		$scope.userForm.$setPristine();
-	});
-	
-	this.submit = function() {
-		api.setUser($scope.model);
-	};
+    // Load the user data.
+    api.getUser().then(function (data) {
+        $scope.user = data;
+        $scope.userForm.$setPristine();
+    });
 
-	this.reset = function() {
-		$scope.userForm.reset();
-	};
+    // Set the user photo URL.
+    $scope.userPhotoUrl = api.getUserPhotoUrl();
+
+    $scope.addAccount = function () {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'addAccountDialog.html',
+            controller: 'AccountDialogController',
+            resolve: {
+                account: function () {
+                    return { Uri : '', Name : 'ORCID Account' };
+                }
+            }
+        });
+
+        modalInstance.result.then(function (account) {
+            $scope.user.Accounts.push(account);
+        });
+    };
+
+    $scope.removeAccount = function () {
+        alert("Remove account");
+    };
+
+    this.submit = function () {
+        api.setUser($scope.user);
+
+        if ($scope.userPhoto) {
+            api.setUserPhoto($scope.userPhoto);
+        }
+    };
+
+    this.reset = function () {
+        $scope.userForm.reset();
+    };
 });
 
-explorerControllers.controller('AgentSettingsController', function(api, $scope) {
-	$scope.$parent.children.push(this);
+explorerControllers.controller('AccountDialogController', function ($scope, $uibModalInstance, account) {
+    $scope.account = account;
 
-	api.getAgents().then(function (data) {
-		$scope.model = data;
-		$scope.agentForm.$setPristine();
-	});
+    $scope.ok = function () {
+        $uibModalInstance.close($scope.account);
+    };
 
-	this.submit = function() {
-	};
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});
 
-	this.reset = function() {
-		$scope.agentForm.reset();
-	};
+explorerControllers.controller('AgentSettingsController', function (api, $scope, $log) {
+    // Register the controller with its parent for global apply/cancel.
+    $scope.$parent.children.push(this);
+
+    api.getAgents().then(function (data) {
+        $scope.agents = data;
+        $scope.agentForm.$setPristine();
+    });
+
+    this.submit = function () {
+        if ($scope.agents.length > 0) {
+            $scope.agents.forEach(function(agent) {
+                console.log(agent.ColourCode);
+                api.setAgent(agent);
+            });
+        }
+    };
+
+    this.reset = function () {
+        $scope.agentForm.reset();
+    };
 });

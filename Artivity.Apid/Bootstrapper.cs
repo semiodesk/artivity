@@ -29,14 +29,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Reflection;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.Diagnostics;
 using Nancy.Responses;
 using Nancy.TinyIoc;
 using Artivity.DataModel;
-using System.Reflection;
-using System.IO;
 
 namespace Artivity.Apid
 {

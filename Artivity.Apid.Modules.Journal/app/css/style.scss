@@ -57,6 +57,26 @@ a:hover {
 .accent-color {
 	color: $accentColor;
 }
+ 
+.btn-default {
+	font-size: $iconFontSize;
+	text-shadow: none;
+	border: none;
+	background: $toolbarBackgroundColor;
+	color: $toolbarTextColor;
+	width: 45px;
+	height: 45px;
+	padding: 0;
+	margin: 14px 7px;
+	outline: none;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+}
+ 
+.btn-default:hover {
+	background: lighten($toolbarBackgroundColor, 10);
+    color: $toolbarTextColor;
+}
 
 .nav-tabs {
 	border: none;
@@ -179,7 +199,6 @@ a:hover {
 	padding: 0;
 	margin: 0;
 	border: none;
-	border-radius: 50%;
 	transition: all .2s linear;
 	color: rgba($textColor, .6);
 }
@@ -316,26 +335,6 @@ a:hover {
 
 .toolbar.visible {
 	max-height: 100px;
-}
-
-.toolbar .btn {
-	font-size: $iconFontSize;
-	text-shadow: none;
-	border: none;
-	border-radius: 50%;
-	background: $toolbarBackgroundColor;
-	color: $toolbarTextColor;
-	width: 45px;
-	height: 45px;
-	padding: 0;
-	margin: 14px 7px;
-	outline: none;
-	box-shadow: none;
-	-webkit-box-shadow: none;
-}
-
-.toolbar .btn:hover {
-	background: lighten($toolbarBackgroundColor, 10);
 }
 
 .playback-toolbar {

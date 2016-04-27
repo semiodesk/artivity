@@ -30,12 +30,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.IO;
 
 namespace Artivity.Apid
 {
     class Platform
     {
-        public static bool IsRunningOnMac()
+        private const string _appDataFolderName = "Artivity";
+
+        public static bool IsLinux()
+        {
+            return Environment.OSVersion.Platform == PlatformID.Unix;
+        }
+
+        [DllImport("libc")]
+        static extern int uname(IntPtr buf);
+
+        public static bool IsMac()
         {
             string os = string.Empty;
 
@@ -66,8 +77,38 @@ namespace Artivity.Apid
             return os == "darwin"; ;
         }
 
-        [DllImport("libc")]
-        static extern int uname(IntPtr buf);
+        public static bool IsWindows()
+        {
+            return Environment.OSVersion.Platform == PlatformID.Win32NT;
+        }
 
+        public static string GetAppDataFolder()
+        {
+            return GetSpecialFolder(Environment.SpecialFolder.ApplicationData, _appDataFolderName);
+        }
+
+        public static string GetLocalAppDataFolder()
+        {
+            return GetSpecialFolder(Environment.SpecialFolder.LocalApplicationData, _appDataFolderName);
+        }
+
+        private static string GetSpecialFolder(Environment.SpecialFolder folder, string subfolder)
+        {
+            string appData = Path.Combine(Environment.GetFolderPath(folder), subfolder);
+
+            if (!Directory.Exists(appData))
+            {
+                try
+                {
+                    Directory.CreateDirectory(appData);
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+
+            return appData;
+        }
     }
 }

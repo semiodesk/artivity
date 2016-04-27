@@ -1,6 +1,7 @@
 var explorerApp = angular.module('explorerApp', [
     'ngRoute',
-    'explorerControllers'
+    'explorerControllers',
+    'ui.bootstrap'
 ]);
 
 explorerApp.config(['$routeProvider',
@@ -39,17 +40,24 @@ explorerApp.factory('api', function ($http) {
 					return response.data;
 				})
 		},
+        setAgent: function (data) {
+			return $http.post(endpoint + '/agents', data);
+		},
 		getUser: function () {
 			return $http.get(endpoint + '/agents/user').then(
 				function (response) {
-					response.data['PhotoUrl'] = endpoint + '/agents/user/photo';
-
 					return response.data;
 				})
 		},
+        getUserPhotoUrl: function () {
+            return endpoint + '/agents/user/photo';
+        },
 		setUser: function (data) {
 			return $http.post(endpoint + '/agents/user', data);
 		},
+        setUserPhoto: function (data) {
+            return $http.post(endpoint + '/agents/user/photo', data);
+        },
 		getFile: function (fileUrl) {
 			return $http.get(endpoint + '/files?fileUrl=' + fileUrl).then(
 				function (response) {
@@ -97,4 +105,18 @@ function getValue(obj, path){
 		obj = obj[path[i]];
 	}
 	return obj;
+}
+
+function setValue(obj, path, value){
+    var p;
+    
+	for (var i=0, path=path.split('.'), len=path.length - 1; i<len; i++){
+		obj = obj[path[i]];
+        
+        p = path[i + 1];
+	}
+    
+    if(p) {
+        obj[p] = value;
+    }
 }
