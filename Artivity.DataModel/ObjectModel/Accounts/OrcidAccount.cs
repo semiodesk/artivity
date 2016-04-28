@@ -9,7 +9,11 @@ namespace Artivity.DataModel
     {
         #region Constructors
 
-        public OrcidAccount(Uri uri) : base(uri) {}
+        public OrcidAccount(Uri uri) : base(uri) 
+        {
+            Title = "ORCID Account";
+            ServiceUrl = "http://orcid.org";
+        }
 
         #endregion
     }

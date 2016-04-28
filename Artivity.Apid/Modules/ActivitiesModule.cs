@@ -50,7 +50,9 @@ namespace Artivity.Apid
         #region Members
 
         private static readonly Dictionary<string, Browse> _activities = new Dictionary<string, Browse>();
+
         private static object _modelLock = new object();
+
         #endregion
 
 		#region Constructors

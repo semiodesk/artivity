@@ -67,7 +67,7 @@ a:hover {
 	width: 45px;
 	height: 45px;
 	padding: 0;
-	margin: 14px 7px;
+	margin: 0 5px;
 	outline: none;
 	box-shadow: none;
 	-webkit-box-shadow: none;
@@ -76,6 +76,16 @@ a:hover {
 .btn-default:hover {
 	background: lighten($toolbarBackgroundColor, 10);
     color: $toolbarTextColor;
+}
+
+.btn-lg {
+	width: 90px;
+	height: 90px;
+}
+
+.modal-header,
+.modal-footer {
+	border: none;
 }
 
 .nav-tabs {
