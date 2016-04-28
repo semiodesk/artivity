@@ -83,7 +83,7 @@ namespace Artivity.Apid
 
         private bool IsMonitoringRequired()
         {
-            string queryString = @"
+            SparqlQuery query = new SparqlQuery(@"
                 PREFIX art: <http://semiodesk.com/artivity/1.0/>
 
                 select ?enabled ?time where
@@ -96,9 +96,7 @@ namespace Artivity.Apid
                       ?state art:atTime ?time .
                    }
                 }
-                order by desc(?time) limit 1";
-
-            SparqlQuery query = new SparqlQuery(queryString);
+                order by desc(?time) limit 1");
 
             IEnumerable<BindingSet> bindings = ModelProvider.GetMonitoring().ExecuteQuery(query).GetBindings();
 

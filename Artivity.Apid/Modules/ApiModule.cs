@@ -31,6 +31,7 @@ using Nancy;
 using Nancy.Responses;
 using Nancy.ModelBinding;
 using Nancy.IO;
+using Nancy.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using Artivity.Apid.Parameters;
-using Newtonsoft.Json;
 
 namespace Artivity.Apid.Modules
 {
@@ -50,7 +50,7 @@ namespace Artivity.Apid.Modules
         #region Constructors
 
         public ApiModule(IModelProvider provider)
-            : base("/artivity/1.0/api", provider)
+            : base("/artivity/api/1.0", provider)
         {
             ModelProvider = provider;
 
@@ -213,16 +213,11 @@ namespace Artivity.Apid.Modules
 
         private Response GetUserAgentAccounts()
         {
-            Person result = ModelProvider.AgentsModel.GetResources<Person>().FirstOrDefault();
+            IModel model = ModelProvider.GetAgents();
 
-            if(result != null)
-            {
-                return Response.AsJson(result.Accounts);
-            }
-            else
-            {
-                return null;
-            }
+            IEnumerable<OnlineAccount> accounts = model.GetResources<OnlineAccount>(true);
+
+            return Response.AsJson(accounts);
         }
 
         public Response GetUserAgentPhoto()

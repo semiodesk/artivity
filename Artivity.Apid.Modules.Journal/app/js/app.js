@@ -25,7 +25,7 @@ explorerApp.config(['$routeProvider',
   }]);
 
 explorerApp.factory('api', function ($http) {
-	var endpoint = 'http://localhost:8262/artivity/1.0/api';
+	var endpoint = 'http://localhost:8262/artivity/api/1.0/';
 
 	return {
 		getAgents: function () {

@@ -78,13 +78,14 @@
                         <div class="col-md-6">
                             <h4 class="pull-left">Accounts</h4>
 
-                            <button class="btn btn-default pull-right" ng-click="addAccount()"><i class="zmdi zmdi-hc-fw"></i></button>
+                            <a href="https://sandbox.orcid.org/oauth/authorize?client_id=APP-AF3XVP6X01AMZQH1&response_type=code&scope=/authenticate&redirect_uri=http://localhost:8262/artivity/api/1.0/agents/user/accounts/orcid/install" class="btn btn-default pull-right" target="_blank"><i class="zmdi zmdi-hc-fw"></i></a>
 
                             <ul class="list-view" style="clear:both">
                                 <li ng-repeat="account in user.Accounts">
                                     <div class="row list-item">
-                                        <b>{{account.Name}}</b><br>
-                                        <span>{{account.Uri}}</span>
+										<img src="/app/img/orcid_64x64.png" class="pull-left" style="margin: 7px 14px;" width="48" height="48"/>
+                                        <b>{{account.Title}}</b><br>
+                                        <span>{{account.Description}}</span>
                                     </div>
                                 </li>
                             </ul>

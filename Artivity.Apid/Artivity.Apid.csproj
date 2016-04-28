@@ -46,6 +46,14 @@
     <DefineConstants>OSX</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OAuth2, Version=0.8.36.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OAuth2.0.8.36\lib\OAuth2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -102,12 +110,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Modules\Accounts\OrcidAccountModule.cs" />
     <Compile Include="Modules\ApiModule.cs" />
     <Compile Include="Parameters\ActivityParameters.cs" />
     <Compile Include="HttpService.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Platforms\OSX\ThumbnailProvider.cs" />
-    <Compile Include="Platforms\IThumpnailProvider.cs" />
+    <Compile Include="Platforms\IThumbnailProvider.cs" />
     <Compile Include="Platforms\Win\ThumbnailProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
