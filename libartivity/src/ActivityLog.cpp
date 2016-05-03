@@ -300,6 +300,22 @@ string ActivityLog::getFileUri(string path)
     return data.length() > 2 ? data.substr(1, data.length() - 2) : UriGenerator::getUri();
 }
 
+
+string ActivityLog::getThumbnailPath(string path)
+{
+    string result;
+    stringstream url;
+    url << "http://localhost:8272/artivity/api/1.0/thumbnails/paths?fileUrl=" << escapePath(path);
+    CURL* curl = initializeRequest();
+    executeRequest(curl, url.str(), "", result);
+
+    if (result.length() > 0)
+        return result.substr(2, result.length() - 4);
+    else
+
+        return "";
+}
+
 string ActivityLog::getCanvasUri(string path)
 {
     string data = "";

@@ -48,7 +48,7 @@ namespace Artivity.Apid
         /// The REST API service port.
         /// </summary>
         #if DEBUG
-        private int _servicePort = 8262;
+        private int _servicePort = 8272;
         #else
         private int _servicePort = 8272;
         #endif

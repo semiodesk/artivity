@@ -92,31 +92,13 @@ namespace Artivity.Apid
 		{
             Logger.LogRequest(HttpStatusCode.OK, Request);
 
-            Uri url = GetUri(Request.Query.file);
+            string res = GetFileUri(Request.Query.file);
 
-            string queryString = @"
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
-
-                SELECT DISTINCT ?uri WHERE { ?v prov:specializationOf ?uri . ?uri nfo:fileUrl """ + url.AbsoluteUri + "\" . } LIMIT 1";
-
-            IModel model = ModelProvider.GetActivities();
-
-            SparqlQuery query = new SparqlQuery(queryString);
-            ISparqlQueryResult result = model.ExecuteQuery(query);
-
-            if (result.GetBindings().Any())
+            if (!string.IsNullOrEmpty(res))
             {
-                BindingSet binding = result.GetBindings().First();
-
-                string uri = binding["uri"].ToString();
-
-                if (!string.IsNullOrEmpty(uri))
-                {
-                    return Response.AsJson(uri);
-                }
+                return Response.AsJson(res);
             }
-                
+    
             return "";
 		}
 
@@ -186,6 +168,51 @@ namespace Artivity.Apid
             }
 
             return "";
+        }
+
+
+        private string GetFileUri(string path)
+        {
+            Uri url = GetUri(path);
+
+            string queryString = @"
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+
+                SELECT DISTINCT ?uri WHERE { ?v prov:specializationOf ?uri . ?uri nfo:fileUrl """ + url.AbsoluteUri + "\" . } LIMIT 1";
+
+            IModel model = ModelProvider.GetActivities();
+
+            SparqlQuery query = new SparqlQuery(queryString);
+            ISparqlQueryResult result = model.ExecuteQuery(query);
+
+            if (result.GetBindings().Any())
+            {
+                BindingSet binding = result.GetBindings().First();
+
+                string uri = binding["uri"].ToString();
+
+                if (!string.IsNullOrEmpty(uri))
+                {
+                   return uri;
+                }
+            }
+            return null;
+        }
+
+        private Response GetThumbnailPaths(string path)
+        {
+            string dirName = GetFileUri(path);
+            DirectoryInfo dir = new DirectoryInfo(Path.Combine(Platform.GetAppDataFolder("Thumbnails"), dirName));
+            if (!dir.Exists)
+                dir.Create();
+
+            List<string> result = new List<string>()
+            {
+                dir.FullName
+            };
+
+            return Response.AsJson(result);
         }
 
 		#endregion

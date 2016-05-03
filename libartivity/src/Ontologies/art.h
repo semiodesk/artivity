@@ -54,6 +54,9 @@ namespace artivity
         
         // --- AGENT ---
 		static const char* isCaptureEnabled = ART("isCaptureEnabled");
+
+        // --- THUMBNAIL ---
+        static const char* thumbnailUrl = ART("thumbnailUrl");
         
         // --- GEOMETRY ---
         // NOTE: We try to be compatible with OGC geometry vocabularies since
