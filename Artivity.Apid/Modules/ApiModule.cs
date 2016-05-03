@@ -82,12 +82,12 @@ namespace Artivity.Apid.Modules
                 return HttpStatusCode.OK;
             };
 
-            Get["/agents/user"] = parameters =>
+            Get["/user"] = parameters =>
             {
                 return GetUserAgent();
             };
 
-            Post["/agents/user"] = parameters =>
+            Post["/user"] = parameters =>
             {
                 Person user = Bind<Person>(ModelProvider.Store, Request.Body);
 
@@ -101,17 +101,17 @@ namespace Artivity.Apid.Modules
                 return HttpStatusCode.OK;
             };
 
-            Get["/agents/user/accounts"] = parameters =>
+            Get["/user/accounts"] = parameters =>
             {
                 return GetUserAgentAccounts();
             };
 
-            Get["/agents/user/photo"] = parameters =>
+            Get["/user/photo"] = parameters =>
             {
                 return GetUserAgentPhoto();
             };
 
-            Post["/agents/user/photo"] = parameters =>
+            Post["/user/photo"] = parameters =>
             {
                 RequestStream stream = Request.Body;
 
@@ -130,18 +130,23 @@ namespace Artivity.Apid.Modules
                 return GetActivities(fileUrl);
             };
 
-            Get["/activities/test"] = parameters =>
-            {
-                string fileUrl = Request.Query["fileUrl"];
-
-                return GetActivitiesTest(fileUrl);
-            };
-
             Get["/influences"] = parameters =>
             {
                 string fileUrl = Request.Query["fileUrl"];
 
                 return GetInfluences(fileUrl);
+            };
+
+            Get["/thumbnails"] = parameters =>
+            {
+                string fileUrl = Request.Query["fileUrl"];
+
+                return GetThumbnails(fileUrl);
+            };
+
+            Get["/thumbnails/paths"] = parameters =>
+            {
+                return GetThumbnailPaths();
             };
         }
 
@@ -318,36 +323,6 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(model.GetBindings(query));
         }
 
-        public Response GetActivitiesTest(string fileUrl)
-        {
-            IModel model = ModelProvider.GetAll();
-
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?duration ?color ?name WHERE
-                {
-                    ?file nfo:fileUrl @fileUrl .
-
-                    ?activity prov:used ?file ;
-                        prov:qualifiedAssociation ?association ;
-                        prov:startedAtTime ?startTime ;
-                        prov:endedAtTime ?endTime .
-
-                    BIND(?endTime - ?startTime as ?duration)
-
-                    ?association prov:agent ?agent .
-
-                    ?agent foaf:name ?name ;
-                        art:hasColourCode ?color .
-                }
-                ORDER BY DESC(?startTime)");
-
-            query.Bind("@fileUrl", fileUrl);
-
-            ISparqlQueryResult result = model.ExecuteQuery(query);
-
-            return Response.AsJson(result.GetBindings());
-        }
-
         public Response GetInfluences(string fileUrl)
         {
             IModel model = ModelProvider.GetAllActivities();
@@ -378,6 +353,37 @@ namespace Artivity.Apid.Modules
             query.Bind("@fileUrl", fileUrl);
 
             return Response.AsJson(model.GetBindings(query));
+        }
+
+        private Response GetThumbnails(string fileUrl)
+        {
+            IModel model = ModelProvider.ActivitiesModel;
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT ?thumbnailUrl WHERE 
+                {
+                    ?file nfo:fileUrl @fileUrl .
+
+                    ?activity prov:used ?file;
+                        prov:generated ?entity .
+
+                    ?entity prov:qualifiedGeneration ?generation .
+
+                    ?generation art:thumbnailUrl ?thumbnailUrl .
+                }
+                ORDER BY (?time)");
+
+            return Response.AsJson(model.GetBindings(query));
+        }
+
+        private Response GetThumbnailPaths()
+        {
+            List<string> result = new List<string>()
+            {
+                Platform.GetAppDataFolder("Thumbnails")
+            };
+
+            return Response.AsJson(result);
         }
 
         #endregion

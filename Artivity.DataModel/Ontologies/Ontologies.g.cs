@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 28.04.2016 17:03:56
+// Date: 03.05.2016 11:02:38
 
 using System;
 using System.Collections.Generic;
@@ -6911,6 +6911,12 @@ public class art : Ontology
 
     ///<summary>
     ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/thumbnailUrl"/>
+    ///</summary>
+    public static readonly Property thumbnailUrl = new Property(new Uri("http://semiodesk.com/artivity/1.0/thumbnailUrl"));    
+
+    ///<summary>
+    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/Viewport"/>
     ///</summary>
     public static readonly Class Viewport = new Class(new Uri("http://semiodesk.com/artivity/1.0/Viewport"));    
@@ -7268,6 +7274,12 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/hadViewport"/>
     ///</summary>
     public const string hadViewport = "http://semiodesk.com/artivity/1.0/hadViewport";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/thumbnailUrl"/>
+    ///</summary>
+    public const string thumbnailUrl = "http://semiodesk.com/artivity/1.0/thumbnailUrl";
 
     ///<summary>
     ///

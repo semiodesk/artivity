@@ -213,6 +213,11 @@ art:hadViewport a rdf:Property ;
     rdfs:domain prov:ActivityInfluence ;
     rdfs:range art:Viewport.
 
+art:thumbnailUrl a rdf:Property ;
+    rdfs:label "thumbnailUrl" ;
+    rdfs:subClassOf nfo:fileUrl ;
+    rdfs:domain prov:ActivityInfluence .
+
 art:Viewport a rdfs:Class ;
     rdfs:label "Viewport" ;
     rdfs:subClassOf art:Rectangle .
