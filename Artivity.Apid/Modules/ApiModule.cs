@@ -146,7 +146,8 @@ namespace Artivity.Apid.Modules
 
             Get["/thumbnails/paths"] = parameters =>
             {
-                return GetThumbnailPaths();
+                string fileUrl = Request.Query["fileUrl"];
+                return GetThumbnailPaths(fileUrl);
             };
         }
 
@@ -376,11 +377,55 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(model.GetBindings(query));
         }
 
-        private Response GetThumbnailPaths()
+        private Uri GetUri(string path)
         {
+            FileInfo f = new FileInfo(path);
+            return f.ToUriRef();
+        }
+
+        private string GetFileUri(string path)
+        {
+            Uri url = GetUri(path);
+
+            string queryString = @"
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+
+                SELECT DISTINCT ?uri WHERE { ?v prov:specializationOf ?uri . ?uri nfo:fileUrl """ + url.AbsoluteUri + "\" . } LIMIT 1";
+
+            IModel model = ModelProvider.GetActivities();
+
+            SparqlQuery query = new SparqlQuery(queryString);
+            ISparqlQueryResult result = model.ExecuteQuery(query);
+
+            if (result.GetBindings().Any())
+            {
+                BindingSet binding = result.GetBindings().First();
+
+                string uri = binding["uri"].ToString();
+
+                if (!string.IsNullOrEmpty(uri))
+                {
+                   return uri;
+                }
+            }
+            return null;
+        }
+
+        private Response GetThumbnailPaths(string path)
+        {
+
+            string dirName = GetFileUri(path);
+            var invalids = System.IO.Path.GetInvalidFileNameChars();
+            var newName = String.Join("_", dirName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+
+            DirectoryInfo dir = new DirectoryInfo(Path.Combine(Platform.GetAppDataFolder("Thumbnails"), newName));
+            if (!dir.Exists)
+                dir.Create();
+
             List<string> result = new List<string>()
             {
-                Platform.GetAppDataFolder("Thumbnails")
+                dir.FullName
             };
 
             return Response.AsJson(result);

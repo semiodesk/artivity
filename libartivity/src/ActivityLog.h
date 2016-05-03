@@ -224,6 +224,9 @@ namespace artivity
         void disableMonitoring(string path);
         
         string escapePath(string path);
+
+        string getThumbnailPath(string path);
+
     };
 }
 
