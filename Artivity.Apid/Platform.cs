@@ -87,9 +87,11 @@ namespace Artivity.Apid
             return GetSpecialFolder(Environment.SpecialFolder.ApplicationData, _appDataFolderName);
         }
 
-        public static string GetLocalAppDataFolder()
+        public static string GetAppDataFolder(string subFolder)
         {
-            return GetSpecialFolder(Environment.SpecialFolder.LocalApplicationData, _appDataFolderName);
+            string appData = GetSpecialFolder(Environment.SpecialFolder.ApplicationData, _appDataFolderName);
+
+            return Path.Combine(appData, subFolder);
         }
 
         private static string GetSpecialFolder(Environment.SpecialFolder folder, string subfolder)
