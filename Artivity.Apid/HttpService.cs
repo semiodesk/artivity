@@ -33,10 +33,10 @@ using System.Linq;
 using CommandLine;
 using Semiodesk.Trinity;
 using Semiodesk.TinyVirtuoso;
-using Artivity.DataModel;
 using log4net;
 using Nancy.Hosting.Self;
 using Nancy.TinyIoc;
+using Artivity.DataModel;
 
 namespace Artivity.Apid
 {

@@ -42,6 +42,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using Artivity.Apid.Parameters;
+using Artivity.Apid.Accounts;
 
 namespace Artivity.Apid.Modules
 {
@@ -54,6 +55,7 @@ namespace Artivity.Apid.Modules
         {
             ModelProvider = provider;
 
+            // Get a list of all installed agents.
             Get["/agents"] = paramters =>
             {
                 string fileUrl = Request.Query["fileUrl"];
@@ -68,6 +70,7 @@ namespace Artivity.Apid.Modules
                 }
             };
 
+            // Install a new or update an existing agent.
             Post["/agents"] = parameters =>
             {
                 Agent agent = Bind<Agent>(ModelProvider.Store, Request.Body);
@@ -80,6 +83,57 @@ namespace Artivity.Apid.Modules
                 agent.Commit();
 
                 return HttpStatusCode.OK;
+            };
+
+            // Get a list of all installed online accounts.
+            Get["/accounts"] = parameters =>
+            {
+                return GetAccounts();
+            };
+
+            // Get a list of all supported online account types.
+            Get["/accounts/providers"] = parameters =>
+            {
+                string providerId = Request.Query["providerId"];
+
+                if (string.IsNullOrEmpty(providerId))
+                {
+                    return GetAccountProviders();
+                }
+                else
+                {
+                    return GetAccountProvider(providerId);
+                }
+            };
+
+            Get["/accounts/oauth2/redirect"] = parameters =>
+            {
+                string providerId = Request.Query["providerId"];
+
+                return GetOAuth2AccountRedirectUrl(providerId);
+            };
+
+            Get["/accounts/oauth2/token"] = parameters =>
+            {
+                string providerId = Request.Query["providerId"];
+                string code = Request.Query["code"];
+
+                return SendOAuth2AccessToken(providerId, code);
+            };
+
+            Get["/accounts/install"] = parameters =>
+            {
+                string providerId = Request.Query["providerId"];
+
+                return InstallAccount(providerId);
+            };
+
+            // Uninstall a account with a specific id.
+            Get["/accounts/uninstall"] = parameters =>
+            {
+                string accountId = Request.Query["accountId"];
+
+                return UninstallAccount(accountId);
             };
 
             Get["/user"] = parameters =>
@@ -99,11 +153,6 @@ namespace Artivity.Apid.Modules
                 user.Commit();
 
                 return HttpStatusCode.OK;
-            };
-
-            Get["/user/accounts"] = parameters =>
-            {
-                return GetUserAgentAccounts();
             };
 
             Get["/user/photo"] = parameters =>
@@ -205,11 +254,19 @@ namespace Artivity.Apid.Modules
 
         public Response GetUserAgent()
         {
-            Person result = ModelProvider.AgentsModel.GetResources<Person>().FirstOrDefault();
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT ?s ?p ?o WHERE
+                {
+                    ?s ?p ?o .
+                    ?s rdf:type foaf:Person .
+                }
+            ");
 
-            if (result != null)
+            ISparqlQueryResult result = ModelProvider.AgentsModel.ExecuteQuery(query);
+
+            if (result.GetResources<Person>().Any())
             {
-                return Response.AsJson(result);
+                return Response.AsJson(result.GetResources<Person>().First());
             }
             else
             {
@@ -217,13 +274,91 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response GetUserAgentAccounts()
+        private Response GetAccounts()
         {
             IModel model = ModelProvider.GetAgents();
 
             IEnumerable<OnlineAccount> accounts = model.GetResources<OnlineAccount>(true);
 
             return Response.AsJson(accounts);
+        }
+
+        private Response GetAccountProviders()
+        {
+            return Response.AsJson(OnlineAccountFactory.GetRegisteredProviders());
+        }
+
+        private Response GetAccountProvider(string providerId)
+        {
+            try
+            {
+                return Response.AsJson(OnlineAccountFactory.GetProvider(providerId));
+            }
+            catch(KeyNotFoundException)
+            {
+                return HttpStatusCode.BadRequest;
+            }
+        }
+
+        private Response GetOAuth2AccountRedirectUrl(string providerId)
+        {
+            OAuth2AccountProvider provider = OnlineAccountFactory.GetProvider(providerId) as OAuth2AccountProvider;
+
+            if (provider != null)
+            {
+                string redirectUrl = string.Format("http://localhost:8262/artivity/api/1.0/accounts/oauth2/token?providerId={0}", providerId);
+
+                return Response.AsRedirect(provider.GetAuthorizationRequestUrl(redirectUrl));
+            }
+            else
+            {
+                return HttpStatusCode.MethodNotAllowed;
+            }
+        }
+
+        private Response SendOAuth2AccessToken(string providerId, string code)
+        {
+            OAuth2AccountProvider provider = OnlineAccountFactory.GetProvider(providerId) as OAuth2AccountProvider;
+
+            if (provider != null)
+            {
+                provider.Authorize(ModelProvider.AgentsModel, code);
+
+                return HttpStatusCode.Accepted;
+            }
+            else
+            {
+                return HttpStatusCode.MethodNotAllowed;
+            }
+        }
+
+        private Response InstallAccount(string providerId)
+        {
+            return HttpStatusCode.NotImplemented;
+        }
+
+        private Response UninstallAccount(string accountId)
+        {
+            Person user = ModelProvider.AgentsModel.GetResources<Person>().FirstOrDefault();
+
+            if (user == null)
+            {
+                return Logger.LogError(HttpStatusCode.InternalServerError, "Unable to retrieve user agent.");
+            }
+
+            OnlineAccount account = user.Accounts.FirstOrDefault(a => a.Id == accountId);
+
+            if (account == null)
+            {
+                return Logger.LogInfo(HttpStatusCode.BadRequest, "Did not find account with id {0}", accountId);
+            }
+
+            ModelProvider.AgentsModel.DeleteResource(account);
+
+            user.Accounts.Remove(account);
+            user.Commit();
+
+            return Logger.LogInfo(HttpStatusCode.OK, "Uninstalled account: {0}", accountId);
         }
 
         public Response GetUserAgentPhoto()

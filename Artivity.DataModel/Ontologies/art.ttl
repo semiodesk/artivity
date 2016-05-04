@@ -3,6 +3,7 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
 @prefix art: <http://semiodesk.com/artivity/1.0/> .
 @prefix geo: <http://www.opengis.net/ont/geosparql#> .
@@ -267,3 +268,7 @@ art:px a rdfs:Class ;
 
 nfo:FileDataObject rdfs:subClassOf prov:Entity.
 nfo:WebDataObject rdfs:subClassOf prov:Entity.
+
+art:OrcidAccount a rdfs:Class ;
+	rdfs:label "OrcidAccount" ;
+	rdfs:subClassOf foaf:OnlineAccount .
