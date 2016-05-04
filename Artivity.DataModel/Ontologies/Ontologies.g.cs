@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 03.05.2016 11:02:38
+// Date: 04.05.2016 16:57:07
 
 using System;
 using System.Collections.Generic;
@@ -4414,6 +4414,630 @@ public static class XML
     public const string version = "http://www.w3.org/2001/04/infoset#version";
 }
 ///<summary>
+///
+///
+///</summary>
+public class nao : Ontology
+{
+    public static readonly Uri Namespace = new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "nao";
+    public static string GetPrefix() { return Prefix; }     
+
+    ///<summary>
+    ///Defines the default static namespace abbreviation for a graph
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDefaultNamespaceAbbreviation"/>
+    ///</summary>
+    public static readonly Property hasDefaultNamespaceAbbreviation = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDefaultNamespaceAbbreviation"));    
+
+    ///<summary>
+    ///Generic annotation for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#annotation"/>
+    ///</summary>
+    public static readonly Property annotation = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#annotation"));    
+
+    ///<summary>
+    ///Represents a symbol, a visual representation of a resource. Typically a local or remote file would be double-typed to be used as a symbol. An alternative is nao:FreeDesktopIcon.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Symbol"/>
+    ///</summary>
+    public static readonly Class Symbol = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Symbol"));    
+
+    ///<summary>
+    ///Defines a name for a FreeDesktop Icon as defined in the FreeDesktop Icon Naming Standard
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#iconName"/>
+    ///</summary>
+    public static readonly Property iconName = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#iconName"));    
+
+    ///<summary>
+    ///Represents a desktop icon as defined in the FreeDesktop Icon Naming Standard (http://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#FreeDesktopIcon"/>
+    ///</summary>
+    public static readonly Class FreeDesktopIcon = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#FreeDesktopIcon"));    
+
+    ///<summary>
+    ///Defines a generic identifier for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#identifier"/>
+    ///</summary>
+    public static readonly Property identifier = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#identifier"));    
+
+    ///<summary>
+    ///An authoritative score for an item valued between 0 and 1
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#score"/>
+    ///</summary>
+    public static readonly Property score = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#score"));    
+
+    ///<summary>
+    ///Defines a relationship between two resources, where the subject is a topic of the object
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isTopicOf"/>
+    ///</summary>
+    public static readonly Property isTopicOf = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isTopicOf"));    
+
+    ///<summary>
+    ///Defines an annotation for a resource in the form of a relationship between the subject resource and another resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isRelated"/>
+    ///</summary>
+    public static readonly Property isRelated = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isRelated"));    
+
+    ///<summary>
+    ///Defines a relationship between two resources, where the object is a topic of the subject
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasTopic"/>
+    ///</summary>
+    public static readonly Property hasTopic = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasTopic"));    
+
+    ///<summary>
+    ///Defines a relationship between a resource and one or more sub resources. Descriptions of sub-resources are only interpretable when the super-resource exists. Deleting a super-resource should then also delete all sub-resources, and transferring a super-resource (for example, sending it to another user) must also include the sub-resource.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSubResource"/>
+    ///</summary>
+    public static readonly Property hasSubResource = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSubResource"));    
+
+    ///<summary>
+    ///Defines a relationship between a resource and one or more super resources
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSuperResource"/>
+    ///</summary>
+    public static readonly Property hasSuperResource = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSuperResource"));    
+
+    ///<summary>
+    ///States which resources a tag is associated with
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isTagFor"/>
+    ///</summary>
+    public static readonly Property isTagFor = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isTagFor"));    
+
+    ///<summary>
+    ///Represents a generic tag
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Tag"/>
+    ///</summary>
+    public static readonly Class Tag = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Tag"));    
+
+    ///<summary>
+    ///Defines an existing tag for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasTag"/>
+    ///</summary>
+    public static readonly Property hasTag = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasTag"));    
+
+    ///<summary>
+    ///Links a named graph to the resource for which it contains metadata. Its typical usage would be to link the graph containing extracted file metadata to the file resource. This allows for easy maintenance later on. Inverse property of nao:hasDataGraph.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isDataGraphFor"/>
+    ///</summary>
+    public static readonly Property isDataGraphFor = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isDataGraphFor"));    
+
+    ///<summary>
+    ///Links a resource to the graph which contains its metadata. Its typical usage would be to link the file resource to the graph containing its extracted file metadata. This allows for easy maintenance later on. Inverse property of nao:isDataGraphFor.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDataGraph"/>
+    ///</summary>
+    public static readonly Property hasDataGraph = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDataGraph"));    
+
+    ///<summary>
+    ///Specifies the version of a graph, in numeric format
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#version"/>
+    ///</summary>
+    public static readonly Property version = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#version"));    
+
+    ///<summary>
+    ///An alternative label alongside the preferred label for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#altLabel"/>
+    ///</summary>
+    public static readonly Property altLabel = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#altLabel"));    
+
+    ///<summary>
+    ///Annotation for a resource in the form of a visual representation. Typically the symbol is a double-typed image file or a nao:FreeDesktopIcon.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSymbol"/>
+    ///</summary>
+    public static readonly Property hasSymbol = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSymbol"));    
+
+    ///<summary>
+    ///A unique preferred symbol representation for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#prefSymbol"/>
+    ///</summary>
+    public static readonly Property prefSymbol = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#prefSymbol"));    
+
+    ///<summary>
+    ///An alternative symbol representation for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#altSymbol"/>
+    ///</summary>
+    public static readonly Property altSymbol = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#altSymbol"));    
+
+    ///<summary>
+    ///States the serialization language for a named graph that is represented within a document
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#serializationLanguage"/>
+    ///</summary>
+    public static readonly Property serializationLanguage = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#serializationLanguage"));    
+
+    ///<summary>
+    ///Refers to the single or group of individuals that created the resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#creator"/>
+    ///</summary>
+    public static readonly Property creator = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#creator"));    
+
+    ///<summary>
+    ///Represents a single or a group of individuals
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Party"/>
+    ///</summary>
+    public static readonly Class Party = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Party"));    
+
+    ///<summary>
+    /// Annotation for a resource in the form of a numeric rating (float value), allowed values are between 1 and 10 whereas 0 is interpreted as not set
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#numericRating"/>
+    ///</summary>
+    public static readonly Property numericRating = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#numericRating"));    
+
+    ///<summary>
+    ///Annotation for a resource in the form of an unrestricted rating
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#rating"/>
+    ///</summary>
+    public static readonly Property rating = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#rating"));    
+
+    ///<summary>
+    ///A marker property to mark selected properties which are input to a mathematical algorithm to generate scores for resources. Properties are marked by being defined as subproperties of this property
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#scoreParameter"/>
+    ///</summary>
+    public static readonly Property scoreParameter = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#scoreParameter"));    
+
+    ///<summary>
+    ///Refers to a single or a group of individuals that contributed to a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#contributor"/>
+    ///</summary>
+    public static readonly Property contributor = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#contributor"));    
+
+    ///<summary>
+    ///Defines the default static namespace for a graph
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDefaultNamespace"/>
+    ///</summary>
+    public static readonly Property hasDefaultNamespace = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDefaultNamespace"));    
+
+    ///<summary>
+    ///States the modification time for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#modified"/>
+    ///</summary>
+    public static readonly Property modified = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#modified"));    
+
+    ///<summary>
+    ///States the creation, or first modification time for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#created"/>
+    ///</summary>
+    public static readonly Property created = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#created"));    
+
+    ///<summary>
+    ///States the last modification time for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#lastModified"/>
+    ///</summary>
+    public static readonly Property lastModified = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#lastModified"));    
+
+    ///<summary>
+    ///Specifies the status of a graph, stable, unstable or testing
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#status"/>
+    ///</summary>
+    public static readonly Property status = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#status"));    
+
+    ///<summary>
+    ///A non-technical textual annotation for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#description"/>
+    ///</summary>
+    public static readonly Property description = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#description"));    
+
+    ///<summary>
+    ///A preferred label for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#prefLabel"/>
+    ///</summary>
+    public static readonly Property prefLabel = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#prefLabel"));    
+
+    ///<summary>
+    ///The plural form of the preferred label for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#pluralPrefLabel"/>
+    ///</summary>
+    public static readonly Property pluralPrefLabel = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#pluralPrefLabel"));    
+
+    ///<summary>
+    ///Specifies the engineering tool used to generate the graph
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#engineeringTool"/>
+    ///</summary>
+    public static readonly Property engineeringTool = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#engineeringTool"));    
+
+    ///<summary>
+    ///Defines a personal string identifier for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#personalIdentifier"/>
+    ///</summary>
+    public static readonly Property personalIdentifier = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#personalIdentifier"));    
+
+    ///<summary>
+    ///If this property is assigned, the subject class, property, or resource, is deprecated and should not be used in production systems any longer. It may be removed without further notice.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#deprecated"/>
+    ///</summary>
+    public static readonly Property deprecated = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#deprecated"));    
+
+    ///<summary>
+    ///Mark a property, class, or even resource as user visible or not. Non-user-visible entities should never be presented to the user. By default everything is user-visible.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#userVisible"/>
+    ///</summary>
+    public static readonly Property userVisible = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#userVisible"));    
+
+    ///<summary>
+    ///The agent that maintains this resource, ie. created it and knows what to do with it.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#maintainedBy"/>
+    ///</summary>
+    public static readonly Property maintainedBy = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#maintainedBy"));    
+
+    ///<summary>
+    ///An agent is the artificial counterpart to nao:Party. It can be a software component or some service.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Agent"/>
+    ///</summary>
+    public static readonly Class Agent = new Class(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Agent"));    
+
+    ///<summary>
+    ///A generalised trust level assigned to an agent, based on a combination of direct and network trust values it possesses. Allowed values range from 0 (no trust) to 1 (very high trust).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#trustLevel"/>
+    ///</summary>
+    public static readonly Property trustLevel = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#trustLevel"));    
+
+    ///<summary>
+    ///A direct trust value assigned to an agent, either manually by a user or semi-/automatically by a system. Allowed values range from 0 (no trust) to 1 (very high trust).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#directTrust"/>
+    ///</summary>
+    public static readonly Property directTrust = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#directTrust"));    
+
+    ///<summary>
+    ///A network-derived trust value assigned to an agent, based on the shared direct trust values for the same agent, as set by participating agents in a network. Allowed values range from 0 (no trust) to 1 (very high trust).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#networkTrust"/>
+    ///</summary>
+    public static readonly Property networkTrust = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#networkTrust"));    
+
+    ///<summary>
+    ///A privacy level as defined for a resource. Allowed values range from 0 (private) to 1 (public).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#privacyLevel"/>
+    ///</summary>
+    public static readonly Property privacyLevel = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#privacyLevel"));    
+
+    ///<summary>
+    ///An external identifier for a resource that has been retreived from an external source.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#externalIdentifier"/>
+    ///</summary>
+    public static readonly Property externalIdentifier = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#externalIdentifier"));    
+
+    ///<summary>
+    ///Signifies social endorsment by an agent, by way of marking the resource as a favourite.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#favouritedBy"/>
+    ///</summary>
+    public static readonly Property favouritedBy = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#favouritedBy"));    
+
+    ///<summary>
+    ///Signifies social endorsment of a resource by a specific agent. Endorsement includes social actions like favouriting, liking, voting for, starring a resource.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#endorsedBy"/>
+    ///</summary>
+    public static readonly Property endorsedBy = new Property(new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#endorsedBy"));
+}
+///<summary>
+///
+///
+///</summary>
+public static class NAO
+{
+    public static readonly Uri Namespace = new Uri("http://www.semanticdesktop.org/ontologies/2007/08/15/nao#");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "NAO";
+    public static string GetPrefix() { return Prefix; } 
+
+    ///<summary>
+    ///Defines the default static namespace abbreviation for a graph
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDefaultNamespaceAbbreviation"/>
+    ///</summary>
+    public const string hasDefaultNamespaceAbbreviation = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDefaultNamespaceAbbreviation";
+
+    ///<summary>
+    ///Generic annotation for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#annotation"/>
+    ///</summary>
+    public const string annotation = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#annotation";
+
+    ///<summary>
+    ///Represents a symbol, a visual representation of a resource. Typically a local or remote file would be double-typed to be used as a symbol. An alternative is nao:FreeDesktopIcon.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Symbol"/>
+    ///</summary>
+    public const string Symbol = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Symbol";
+
+    ///<summary>
+    ///Defines a name for a FreeDesktop Icon as defined in the FreeDesktop Icon Naming Standard
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#iconName"/>
+    ///</summary>
+    public const string iconName = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#iconName";
+
+    ///<summary>
+    ///Represents a desktop icon as defined in the FreeDesktop Icon Naming Standard (http://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#FreeDesktopIcon"/>
+    ///</summary>
+    public const string FreeDesktopIcon = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#FreeDesktopIcon";
+
+    ///<summary>
+    ///Defines a generic identifier for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#identifier"/>
+    ///</summary>
+    public const string identifier = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#identifier";
+
+    ///<summary>
+    ///An authoritative score for an item valued between 0 and 1
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#score"/>
+    ///</summary>
+    public const string score = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#score";
+
+    ///<summary>
+    ///Defines a relationship between two resources, where the subject is a topic of the object
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isTopicOf"/>
+    ///</summary>
+    public const string isTopicOf = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isTopicOf";
+
+    ///<summary>
+    ///Defines an annotation for a resource in the form of a relationship between the subject resource and another resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isRelated"/>
+    ///</summary>
+    public const string isRelated = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isRelated";
+
+    ///<summary>
+    ///Defines a relationship between two resources, where the object is a topic of the subject
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasTopic"/>
+    ///</summary>
+    public const string hasTopic = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasTopic";
+
+    ///<summary>
+    ///Defines a relationship between a resource and one or more sub resources. Descriptions of sub-resources are only interpretable when the super-resource exists. Deleting a super-resource should then also delete all sub-resources, and transferring a super-resource (for example, sending it to another user) must also include the sub-resource.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSubResource"/>
+    ///</summary>
+    public const string hasSubResource = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSubResource";
+
+    ///<summary>
+    ///Defines a relationship between a resource and one or more super resources
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSuperResource"/>
+    ///</summary>
+    public const string hasSuperResource = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSuperResource";
+
+    ///<summary>
+    ///States which resources a tag is associated with
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isTagFor"/>
+    ///</summary>
+    public const string isTagFor = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isTagFor";
+
+    ///<summary>
+    ///Represents a generic tag
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Tag"/>
+    ///</summary>
+    public const string Tag = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Tag";
+
+    ///<summary>
+    ///Defines an existing tag for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasTag"/>
+    ///</summary>
+    public const string hasTag = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasTag";
+
+    ///<summary>
+    ///Links a named graph to the resource for which it contains metadata. Its typical usage would be to link the graph containing extracted file metadata to the file resource. This allows for easy maintenance later on. Inverse property of nao:hasDataGraph.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isDataGraphFor"/>
+    ///</summary>
+    public const string isDataGraphFor = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#isDataGraphFor";
+
+    ///<summary>
+    ///Links a resource to the graph which contains its metadata. Its typical usage would be to link the file resource to the graph containing its extracted file metadata. This allows for easy maintenance later on. Inverse property of nao:isDataGraphFor.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDataGraph"/>
+    ///</summary>
+    public const string hasDataGraph = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDataGraph";
+
+    ///<summary>
+    ///Specifies the version of a graph, in numeric format
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#version"/>
+    ///</summary>
+    public const string version = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#version";
+
+    ///<summary>
+    ///An alternative label alongside the preferred label for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#altLabel"/>
+    ///</summary>
+    public const string altLabel = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#altLabel";
+
+    ///<summary>
+    ///Annotation for a resource in the form of a visual representation. Typically the symbol is a double-typed image file or a nao:FreeDesktopIcon.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSymbol"/>
+    ///</summary>
+    public const string hasSymbol = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasSymbol";
+
+    ///<summary>
+    ///A unique preferred symbol representation for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#prefSymbol"/>
+    ///</summary>
+    public const string prefSymbol = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#prefSymbol";
+
+    ///<summary>
+    ///An alternative symbol representation for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#altSymbol"/>
+    ///</summary>
+    public const string altSymbol = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#altSymbol";
+
+    ///<summary>
+    ///States the serialization language for a named graph that is represented within a document
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#serializationLanguage"/>
+    ///</summary>
+    public const string serializationLanguage = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#serializationLanguage";
+
+    ///<summary>
+    ///Refers to the single or group of individuals that created the resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#creator"/>
+    ///</summary>
+    public const string creator = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#creator";
+
+    ///<summary>
+    ///Represents a single or a group of individuals
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Party"/>
+    ///</summary>
+    public const string Party = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Party";
+
+    ///<summary>
+    /// Annotation for a resource in the form of a numeric rating (float value), allowed values are between 1 and 10 whereas 0 is interpreted as not set
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#numericRating"/>
+    ///</summary>
+    public const string numericRating = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#numericRating";
+
+    ///<summary>
+    ///Annotation for a resource in the form of an unrestricted rating
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#rating"/>
+    ///</summary>
+    public const string rating = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#rating";
+
+    ///<summary>
+    ///A marker property to mark selected properties which are input to a mathematical algorithm to generate scores for resources. Properties are marked by being defined as subproperties of this property
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#scoreParameter"/>
+    ///</summary>
+    public const string scoreParameter = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#scoreParameter";
+
+    ///<summary>
+    ///Refers to a single or a group of individuals that contributed to a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#contributor"/>
+    ///</summary>
+    public const string contributor = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#contributor";
+
+    ///<summary>
+    ///Defines the default static namespace for a graph
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDefaultNamespace"/>
+    ///</summary>
+    public const string hasDefaultNamespace = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#hasDefaultNamespace";
+
+    ///<summary>
+    ///States the modification time for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#modified"/>
+    ///</summary>
+    public const string modified = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#modified";
+
+    ///<summary>
+    ///States the creation, or first modification time for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#created"/>
+    ///</summary>
+    public const string created = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#created";
+
+    ///<summary>
+    ///States the last modification time for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#lastModified"/>
+    ///</summary>
+    public const string lastModified = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#lastModified";
+
+    ///<summary>
+    ///Specifies the status of a graph, stable, unstable or testing
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#status"/>
+    ///</summary>
+    public const string status = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#status";
+
+    ///<summary>
+    ///A non-technical textual annotation for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#description"/>
+    ///</summary>
+    public const string description = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#description";
+
+    ///<summary>
+    ///A preferred label for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#prefLabel"/>
+    ///</summary>
+    public const string prefLabel = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#prefLabel";
+
+    ///<summary>
+    ///The plural form of the preferred label for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#pluralPrefLabel"/>
+    ///</summary>
+    public const string pluralPrefLabel = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#pluralPrefLabel";
+
+    ///<summary>
+    ///Specifies the engineering tool used to generate the graph
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#engineeringTool"/>
+    ///</summary>
+    public const string engineeringTool = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#engineeringTool";
+
+    ///<summary>
+    ///Defines a personal string identifier for a resource
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#personalIdentifier"/>
+    ///</summary>
+    public const string personalIdentifier = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#personalIdentifier";
+
+    ///<summary>
+    ///If this property is assigned, the subject class, property, or resource, is deprecated and should not be used in production systems any longer. It may be removed without further notice.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#deprecated"/>
+    ///</summary>
+    public const string deprecated = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#deprecated";
+
+    ///<summary>
+    ///Mark a property, class, or even resource as user visible or not. Non-user-visible entities should never be presented to the user. By default everything is user-visible.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#userVisible"/>
+    ///</summary>
+    public const string userVisible = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#userVisible";
+
+    ///<summary>
+    ///The agent that maintains this resource, ie. created it and knows what to do with it.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#maintainedBy"/>
+    ///</summary>
+    public const string maintainedBy = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#maintainedBy";
+
+    ///<summary>
+    ///An agent is the artificial counterpart to nao:Party. It can be a software component or some service.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Agent"/>
+    ///</summary>
+    public const string Agent = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#Agent";
+
+    ///<summary>
+    ///A generalised trust level assigned to an agent, based on a combination of direct and network trust values it possesses. Allowed values range from 0 (no trust) to 1 (very high trust).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#trustLevel"/>
+    ///</summary>
+    public const string trustLevel = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#trustLevel";
+
+    ///<summary>
+    ///A direct trust value assigned to an agent, either manually by a user or semi-/automatically by a system. Allowed values range from 0 (no trust) to 1 (very high trust).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#directTrust"/>
+    ///</summary>
+    public const string directTrust = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#directTrust";
+
+    ///<summary>
+    ///A network-derived trust value assigned to an agent, based on the shared direct trust values for the same agent, as set by participating agents in a network. Allowed values range from 0 (no trust) to 1 (very high trust).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#networkTrust"/>
+    ///</summary>
+    public const string networkTrust = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#networkTrust";
+
+    ///<summary>
+    ///A privacy level as defined for a resource. Allowed values range from 0 (private) to 1 (public).
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#privacyLevel"/>
+    ///</summary>
+    public const string privacyLevel = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#privacyLevel";
+
+    ///<summary>
+    ///An external identifier for a resource that has been retreived from an external source.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#externalIdentifier"/>
+    ///</summary>
+    public const string externalIdentifier = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#externalIdentifier";
+
+    ///<summary>
+    ///Signifies social endorsment by an agent, by way of marking the resource as a favourite.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#favouritedBy"/>
+    ///</summary>
+    public const string favouritedBy = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#favouritedBy";
+
+    ///<summary>
+    ///Signifies social endorsment of a resource by a specific agent. Endorsement includes social actions like favouriting, liking, voting for, starring a resource.
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/08/15/nao#endorsedBy"/>
+    ///</summary>
+    public const string endorsedBy = "http://www.semanticdesktop.org/ontologies/2007/08/15/nao#endorsedBy";
+}
+///<summary>
 ///NEPOMUK Information Element Core Ontology
 ///
 ///</summary>
@@ -6985,7 +7609,13 @@ public class art : Ontology
     ///
     ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject"/>
     ///</summary>
-    public static readonly Resource WebDataObject = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject"));
+    public static readonly Resource WebDataObject = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/OrcidAccount"/>
+    ///</summary>
+    public static readonly Class OrcidAccount = new Class(new Uri("http://semiodesk.com/artivity/1.0/OrcidAccount"));
 }
 ///<summary>
 ///
@@ -7352,6 +7982,12 @@ public static class ART
     ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject"/>
     ///</summary>
     public const string WebDataObject = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/OrcidAccount"/>
+    ///</summary>
+    public const string OrcidAccount = "http://semiodesk.com/artivity/1.0/OrcidAccount";
 }
 ///<summary>
 ///Friend of a Friend (FOAF) vocabulary
