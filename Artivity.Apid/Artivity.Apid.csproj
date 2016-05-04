@@ -109,8 +109,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accounts\IOAuth2AccountProvider.cs" />
+    <Compile Include="Accounts\OnlineAccountProvider.cs" />
+    <Compile Include="Accounts\OAuth2AccountProvider.cs" />
+    <Compile Include="Accounts\OnlineAccountFactory.cs" />
+    <Compile Include="Accounts\IOnlineAccountProvider.cs" />
+    <Compile Include="Accounts\OrcidAccountProvider.cs" />
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="Modules\Accounts\OrcidAccountModule.cs" />
     <Compile Include="Modules\ApiModule.cs" />
     <Compile Include="Parameters\ActivityParameters.cs" />
     <Compile Include="HttpService.cs" />
@@ -148,6 +153,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <None Include="Accounts\Accounts.cd" />
     <None Include="app.config" />
     <None Include="Makefile" />
     <None Include="COPYING" />

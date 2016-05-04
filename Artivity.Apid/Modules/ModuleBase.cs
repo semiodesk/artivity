@@ -44,6 +44,8 @@ namespace Artivity.Apid
 
         public IModelProvider ModelProvider { get; set; }
 
+        protected string ModulePath { get; set; }
+
         #endregion
 
         #region Constructors
@@ -57,6 +59,7 @@ namespace Artivity.Apid
         public ModuleBase(string modulePath, IModelProvider provider) : base(modulePath)
         {
             ModelProvider = provider;
+            ModulePath = modulePath;
         }
 
 		#endregion

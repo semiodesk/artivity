@@ -28,59 +28,64 @@ explorerApp.factory('api', function ($http) {
 	var endpoint = 'http://localhost:8262/artivity/api/1.0/';
 
 	return {
+		getAccounts: function() {
+			return $http.get(endpoint + '/accounts/').then(
+				function (response) { return response.data; })	
+		},
+		getAccountProviders: function() {
+			return $http.get(endpoint + '/accounts/providers').then(
+				function (response) { return response.data; })	
+		},
+		getAccountProvider: function(providerId) {
+			return $http.get(endpoint + '/accounts/providers?providerId=' + providerId).then(
+				function (response) { return response.data;	})	
+		},
+		installAccount: function(providerId) {
+			return $http.get(endpoint + '/accounts/oauth2/redirect?providerId=' + providerId).then(
+				function (response) { return response.data;	})
+		},
+		uninstallAccount: function(accountId) {
+			return $http.get(endpoint + '/accounts/uninstall?accountId=' + accountId);
+		},
 		getAgents: function () {
 			return $http.get(endpoint + '/agents').then(
-				function (response) {
-					return response.data;
-				})
+				function (response) { return response.data; })
 		},
 		getAgent: function (fileUrl) {
 			return $http.get(endpoint + '/agents?fileUrl=' + fileUrl).then(
-				function (response) {
-					return response.data;
-				})
+				function (response) { return response.data; })
 		},
         setAgent: function (data) {
 			return $http.post(endpoint + '/agents', data);
 		},
 		getUser: function () {
-			return $http.get(endpoint + '/agents/user').then(
-				function (response) {
-					return response.data;
-				})
+			return $http.get(endpoint + '/user').then(
+				function (response) { return response.data; })
 		},
         getUserPhotoUrl: function () {
-            return endpoint + '/agents/user/photo';
+            return endpoint + '/user/photo';
         },
 		setUser: function (data) {
-			return $http.post(endpoint + '/agents/user', data);
+			return $http.post(endpoint + '/user', data);
 		},
         setUserPhoto: function (data) {
-            return $http.post(endpoint + '/agents/user/photo', data);
+            return $http.post(endpoint + '/user/photo', data);
         },
 		getFile: function (fileUrl) {
 			return $http.get(endpoint + '/files?fileUrl=' + fileUrl).then(
-				function (response) {
-					return response.data;
-				})
+				function (response) { return response.data; })
 		},
 		getRecentFiles: function () {
 			return $http.get(endpoint + '/files/recent').then(
-				function (response) {
-					return response.data;
-				})
+				function (response) { return response.data; })
 		},
 		getActivities: function (fileUrl) {
 			return $http.get(endpoint + '/activities?fileUrl=' + fileUrl).then(
-				function (response) {
-					return response.data;
-				})
+				function (response) { return response.data; })
 		},
 		getInfluences: function (fileUrl) {
 			return $http.get(endpoint + '/influences?fileUrl=' + fileUrl).then(
-				function (response) {
-					return response.data;
-				})
+				function (response) { return response.data; })
 		}
 	};
 });

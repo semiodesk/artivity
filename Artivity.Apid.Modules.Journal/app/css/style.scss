@@ -161,6 +161,19 @@ a:hover {
 	border-radius: 50%;
 }
 
+.account, .ok {
+	font-size: $iconFontSize;
+	text-shadow: none;
+	border: none;
+	border-radius: 50%;
+	width: 45px;
+	height: 45px;
+	padding: 0;
+	margin: 0 5px;
+	outline: none;
+	box-shadow: none;
+}
+
 /* HEADER */
 
 #header {
@@ -592,6 +605,51 @@ input.form-control:focus {
 	box-shadow: none;
 	outline: 0px !important;
 	-webkit-appearance:none;
+}
+
+/* LOADING SPINNER */
+
+.loader {
+  margin: .5em 1.5em;
+  font-size: 10px;
+  position: relative;
+  text-indent: -9999em;
+  background: transparent;
+  border-top: .6em solid rgba($textColor, 0.2);
+  border-right: .6em solid rgba($textColor, 0.2);
+  border-bottom: .6em solid rgba($textColor, 0.2);
+  border-left: .6em solid $textColor;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 5em;
+  height: 5em;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 
 /* MISC */
