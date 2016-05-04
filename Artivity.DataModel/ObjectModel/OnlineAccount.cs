@@ -20,13 +20,6 @@ namespace Artivity.DataModel
         [RdfProperty(FOAF.accountName)]
         public string Id { get; set; }
 
-
-        [RdfProperty(FOAF.title)]
-        public string Title { get; set; }
-
-        [RdfProperty(FOAF.description)]
-        public string Description { get; set; }
-
         /// <summary>
         /// Indicates a homepage of the service provide for this online account.
         /// </summary>
@@ -34,7 +27,19 @@ namespace Artivity.DataModel
         /// <foaf:accountServiceHomepage rdf:resource="http://www.freenode.net/"/>
         /// </example>
         [RdfProperty(FOAF.accountServiceHomepage)]
-        public string ServiceUrl { get; set; }
+        public string Url { get; set; }
+
+        [RdfProperty(FOAF.title)]
+        public string Title { get; set; }
+
+        [RdfProperty(FOAF.description)]
+        public string Description { get; set; }
+
+        [RdfProperty(NAO.created)]
+        public DateTime CreationTime { get; set; }
+
+        [RdfProperty(NAO.lastModified)]
+        public DateTime LastModificationTime { get; set; }
 
         #endregion
 

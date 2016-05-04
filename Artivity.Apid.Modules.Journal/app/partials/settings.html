@@ -1,130 +1,144 @@
 <div ng-controller="SettingsController as settings">
-    <script type="text/ng-template" id="addAccountDialog.html">
-        <div style="background: #222">
-            <div class="modal-header">
-                <h4 class="modal-title">Add ORCID account</h4>
-            </div>
-            <div class="modal-body">
-                <label for="name">ID</label>
-                <input type="text" class="form-control" id="id" name="id" placeholder="ID" size="30" ng-model="account.Uri" ng-minlength="5" required>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-default" type="button" ng-click="ok()"><i class="zmdi zmdi-hc-fw"></i></button>
-                <button class="btn btn-default" type="button" ng-click="cancel()"><i class="zmdi zmdi-hc-fw"></i></button>
-            </div>
-        </div>
-    </script>
+	<script type="text/ng-template" id="addAccountDialog.html">
+		<div style="background: #222">
+			<div class="modal-header">
+				<button class="btn btn-default pull-right" type="button" ng-click="cancel()"><i class="zmdi zmdi-hc-fw"></i></button>
+				
+				<h4 class="modal-title">Choose Account Provider</h4>
+			</div>
+			<div class="modal-body">
+				<ul class="list-view" style="clear:both">
+					<li ng-repeat="provider in providers">
+						<a ng-href="{{provider.InstallUrl}}" ng-click="showStatus(provider, $event)" target="_blank">
+							<div class="row list-item">
+								<div class="account pull-left"><i class="zmdi zmdi-hc-fw"></i></div>
+								<div class="loader pull-left collapse"></div>
+								<div class="ok pull-left collapse"><i class="zmdi zmdi-hc-fw"></i></div>
+								
+								<b>{{provider.Title}}</b><br>
+								
+								<span class="description">{{provider.Description}}</span>
+								<span class="status collapse">{{provider.Status}}</span>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</script>
 
-    <div id="header">
-        <div class="row">
-            <div class="col">
-                <a href="#/files" class="btn"><i class="zmdi zmdi-hc-fw"></i></a>
-            </div>
+	<div id="header">
+		<div class="row">
+			<div class="col">
+				<a href="#/files" class="btn"><i class="zmdi zmdi-hc-fw"></i></a>
+			</div>
 
-            <div class="col expand">
-                <h5 class="title">Preferences</h5>
-            </div>
-        </div>
-    </div>
+			<div class="col expand">
+				<h5 class="title">Preferences</h5>
+			</div>
+		</div>
+	</div>
 
-    <div id="body">
-        <ul class="nav nav-tabs" role="tablist" id="tabs">
-            <li role="presentation" class="active"><a data-target="#user-panel" role="tab" data-toggle="tab">Profile</a></li>
-            <li role="presentation"><a data-target="#applications-panel" role="tab" data-toggle="tab">Applications</a></li>
-            <li role="presentation"><a data-target="#database-panel" role="tab" data-toggle="tab">Database</a></li>
-        </ul>
+	<div id="body">
+		<ul class="nav nav-tabs" role="tablist" id="tabs">
+			<li role="presentation" class="active"><a data-target="#user-panel" role="tab" data-toggle="tab">Profile</a></li>
+			<li role="presentation"><a data-target="#applications-panel" role="tab" data-toggle="tab">Applications</a></li>
+			<li role="presentation"><a data-target="#database-panel" role="tab" data-toggle="tab">Database</a></li>
+		</ul>
 
-        <div class="tab-content">
-            <!-- PROFILE -->
-            <div role="tabpanel" class="tab-pane fade active in" id="user-panel">
-                <form name="userForm" ng-controller="UserSettingsController as userSettings" ng-submit="submit()">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!-- USER -->
-                            <div class="form-group">
-                                <input type="file" accept="image/*" id="photo" name="photo" ng-model="userPhoto" style="display: none;" ng-photo-picker/>
+		<div class="tab-content">
+			<!-- PROFILE -->
+			<div role="tabpanel" class="tab-pane fade active in" id="user-panel">
+				<form name="userForm" ng-controller="UserSettingsController as userSettings" ng-submit="submit()">
+					<div class="row">
+						<div class="col-md-6">
+							<!-- USER -->
+							<div class="form-group">
+								<input type="file" accept="image/*" id="photo" name="photo" ng-model="userPhoto" style="display: none;" ng-photo-picker/>
 
-                                <button id="photo-btn" class="btn img-avatar img-avatar-lg">
-                                    <img src="{{userPhotoUrl}}" width="100" height="100">
-                                </button>
+								<button id="photo-btn" class="btn img-avatar img-avatar-lg">
+									<img src="{{userPhotoUrl}}" width="100" height="100">
+								</button>
 
-                                <label for="photo-btn" style="margin: 10px 0">Click to select your profile picture.</label>
+								<label for="photo-btn" style="margin: 10px 0">Click to select your profile picture.</label>
 
-                                <script type="text/javascript">
-                                    $('#photo-btn').on('click', function () {
-                                        $('#photo').click();
-                                    });
-                                </script>
-                            </div>
+								<script type="text/javascript">
+									$('#photo-btn').on('click', function () {
+										$('#photo').click();
+									});
+								</script>
+							</div>
 
-                            <div style="max-width: 500px;">
-                                <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" size="30" ng-model="user.Name" ng-minlength="5" required>
-                                </div>
+							<div style="max-width: 500px;">
+								<div class="form-group">
+									<label for="name">Name</label>
+									<input type="text" class="form-control" id="name" name="name" placeholder="Name" size="30" ng-model="user.Name" ng-minlength="5" required>
+								</div>
 
-                                <div class="form-group">
-                                    <label for="organization">Organization</label>
-                                    <input type="text" class="form-control" id="organization" name="organization" placeholder="Organization" ng-model="user.Organization">
-                                </div>
+								<div class="form-group">
+									<label for="organization">Organization</label>
+									<input type="text" class="form-control" id="organization" name="organization" placeholder="Organization" ng-model="user.Organization">
+								</div>
 
-                                <div class="form-group">
-                                    <label for="email">E-Mail Address</label>
-                                    <input type="text" class="form-control" id="email" name="email" placeholder="you@example.org" ng-model="user.EmailAddress" ng-minlength="5" required>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- ACCOUNTS -->
-                        <div class="col-md-6">
-                            <h4 class="pull-left">Accounts</h4>
+								<div class="form-group">
+									<label for="email">E-Mail Address</label>
+									<input type="text" class="form-control" id="email" name="email" placeholder="you@example.org" ng-model="user.EmailAddress" ng-minlength="5" required>
+								</div>
+							</div>
+						</div>
+						<!-- ACCOUNTS -->
+						<div class="col-md-6">
+							<h4 class="pull-left">Accounts</h4>
 
-                            <a href="https://sandbox.orcid.org/oauth/authorize?client_id=APP-AF3XVP6X01AMZQH1&response_type=code&scope=/authenticate&redirect_uri=http://localhost:8262/artivity/api/1.0/agents/user/accounts/orcid/install" class="btn btn-default pull-right" target="_blank"><i class="zmdi zmdi-hc-fw"></i></a>
+							<button class="btn btn-default pull-right" target="_blank" ng-click="selectAccountProvider()"><i class="zmdi zmdi-hc-fw"></i></button>
 
-                            <ul class="list-view" style="clear:both">
-                                <li ng-repeat="account in user.Accounts">
-                                    <div class="row list-item">
-										<img src="/app/img/orcid_64x64.png" class="pull-left" style="margin: 7px 14px;" width="48" height="48"/>
-                                        <b>{{account.Title}}</b><br>
-                                        <span>{{account.Description}}</span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <!-- AGENTS -->
-            <div role="tabpanel" class="tab-pane fade" id="applications-panel">
-                <form name="agentForm" ng-controller="AgentSettingsController as agentSettings">
-                    <ul class="list-view">
-                        <li ng-repeat="agent in agents">
-                            <div class="row list-item">
-                                <div class="icn pull-left"></div>
-                                <span>{{agent.Name}}</span>
-                                <ng-color-picker selected-color="agent.ColourCode" class="pull-right"></ng-color-picker>
-                            </div>
-                        </li>
-                    </ul>
-                </form>
-            </div>
-            <!-- DATABASE -->
-            <div role="tabpanel" class="tab-pane fade" id="database-panel">
-                <div class="under-construction"></div>
-            </div>
-        </div>
+							<ul class="list-view" style="clear:both">
+								<li ng-repeat="account in accounts">
+									<div class="row list-item">
+										<img src="/app/img/orcid_64x64.png" class="pull-left" style="margin: 7px 14px;" width="48" height="48" />
+										<b>{{account.Title}}</b>
+										<br>
+										<span>{{account.Description}}</span>
+										<button class="btn btn-default pull-right" ng-click="uninstallAccount(account)"><i class="zmdi zmdi-hc-fw"></i></button>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-- AGENTS -->
+			<div role="tabpanel" class="tab-pane fade" id="applications-panel">
+				<form name="agentForm" ng-controller="AgentSettingsController as agentSettings">
+					<ul class="list-view">
+						<li ng-repeat="agent in agents">
+							<div class="row list-item">
+								<div class="icn pull-left"></div>
+								<span>{{agent.Name}}</span>
+								<ng-color-picker selected-color="agent.ColourCode" class="pull-right"></ng-color-picker>
+							</div>
+						</li>
+					</ul>
+				</form>
+			</div>
+			<!-- DATABASE -->
+			<div role="tabpanel" class="tab-pane fade" id="database-panel">
+				<div class="under-construction"></div>
+			</div>
+		</div>
 
-        <script type="text/javascript">
-            $('#tabs a').click(function (e) {
-                e.preventDefault();
-                $(this).tab('show');
-            });
-        </script>
-    </div>
+		<script type="text/javascript">
+			$('#tabs a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+		</script>
+	</div>
 
-    <div id="footer">
-        <div class="toolbar">
-            <button class="btn btn-default" ng-click="submit()"><i class="zmdi zmdi-hc-fw"></i></button>
-            <button class="btn btn-default" ng-click="reset()"><i class="zmdi zmdi-hc-fw"></i></button>
-        </div>
-    </div>
+	<div id="footer">
+		<div class="toolbar">
+			<button class="btn btn-default" ng-click="submit()"><i class="zmdi zmdi-hc-fw"></i></button>
+			<button class="btn btn-default" ng-click="reset()"><i class="zmdi zmdi-hc-fw"></i></button>
+		</div>
+	</div>
 </div>

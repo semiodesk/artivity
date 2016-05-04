@@ -45,7 +45,6 @@
     <Compile Include="IModelProvider.cs" />
     <Compile Include="Journal\Journal.cs" />
     <Compile Include="Journal\JournalFile.cs" />
-    <Compile Include="ObjectModel\Accounts\OrcidAccount.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
     <Compile Include="ObjectModel\Person.cs" />
     <Compile Include="ObjectModel\Activity.cs" />
@@ -95,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Ontologies\nao.rdf" />
     <None Include="Ontologies\owl.n3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

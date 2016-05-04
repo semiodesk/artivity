@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Artivity.Apid.Accounts.OnlineAccountProvider">
+    <Position X="1.25" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAgAEAAAEAABAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Accounts\OnlineAccountProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Artivity.Apid.Accounts.OrcidAccountProvider">
+    <Position X="1.25" Y="8.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAMAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Accounts\OrcidAccountProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Artivity.Apid.Accounts.OAuth2AccountProvider">
+    <Position X="1.25" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAHAMAAAAAAgAAAAAAQAAgAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Accounts\OAuth2AccountProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
