@@ -140,13 +140,17 @@ namespace Artivity.Apid.Modules
             Get["/thumbnails"] = parameters =>
             {
                 string fileUrl = Request.Query["fileUrl"];
-
+                if (string.IsNullOrEmpty(fileUrl))
+                    return HttpStatusCode.BadRequest;
                 return GetThumbnails(fileUrl);
             };
 
             Get["/thumbnails/paths"] = parameters =>
             {
                 string fileUrl = Request.Query["fileUrl"];
+                if (string.IsNullOrEmpty(fileUrl))
+                    return HttpStatusCode.BadRequest;
+
                 return GetThumbnailPaths(fileUrl);
             };
         }
@@ -416,6 +420,8 @@ namespace Artivity.Apid.Modules
         {
 
             string dirName = GetFileUri(path);
+            if( string.IsNullOrEmpty(dirName) )
+                return HttpStatusCode.InternalServerError;
             var invalids = System.IO.Path.GetInvalidFileNameChars();
             var newName = String.Join("_", dirName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 

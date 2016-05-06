@@ -41,6 +41,8 @@ namespace Artivity.DataModel
         [RdfProperty(ART.lengthUnit)]
         public Resource LengthUnit { get; set; }
 
+        [RdfProperty(DCES.title)]
+        public string Title { get; set; }
         #endregion
 
         #region Constructors

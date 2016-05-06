@@ -96,11 +96,15 @@ namespace artivity
         
         ResourceIterator findResource(const char* uri);
         
-        // Add a referenced resource to the transmitted RDF output.
-        void addResource(Resource* resource);
-        
-        // Remove a referenced resource to the transmitted RDF output.
-        void removeResource(Resource* resource);
+#if DEBUG
+        const char* _server = "http://localhost:8262";
+#else
+        const char* _server = "http://localhost:8272";
+#endif
+        const char* _uriAPI = "/artivity/1.0/uri";
+        const char* _activityAPI = "/artivity/1.0/activities";
+        const char* _monitorAPI = "/artivity/1.0/monitor";
+        const char* _API = "/artivity/api/1.0";
         
     public:
         ActivityLog();
@@ -211,9 +215,9 @@ namespace artivity
         string getFilePath() { return _filePath; }
                         
         bool hasCanvas(double width, double height, const Resource* lengthUnit);
-        
+
         void updateCanvas(double width, double height, const Resource* lengthUnit);
-        
+
         Canvas* getCanvas();
         
         // Send all items in the queue to the Artivity server.
@@ -226,6 +230,12 @@ namespace artivity
         string escapePath(string path);
 
         string getThumbnailPath(string path);
+
+        // Add a referenced resource to the transmitted RDF output.
+        void addResource(Resource* resource);
+
+        // Remove a referenced resource to the transmitted RDF output.
+        void removeResource(Resource* resource);
 
     };
 }
