@@ -662,3 +662,15 @@ input.form-control:focus {
 	background-size: 100px 100px;
 	opacity: .2;
 }
+
+#viewport, #viewport-overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#viewport-overlay {
+	background: rgba(0,0,0,.1);
+}

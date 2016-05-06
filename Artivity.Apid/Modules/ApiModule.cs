@@ -85,6 +85,20 @@ namespace Artivity.Apid.Modules
                 return HttpStatusCode.OK;
             };
 
+            Get["/agents/install"] = parameters =>
+            {
+                IModel model = ModelProvider.AgentsModel;
+
+                InstallAgent(model, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
+                InstallAgent(model, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
+                InstallAgent(model, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
+                InstallAgent(model, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
+                InstallAgent(model, "application://photoshop.desktop", "Adobe Photoshop", "photoshop", "#EE2000", true);
+                InstallAgent(model, "application://illustrator.desktop", "Adobe Illustrator", "illustrator", "#EE2000", true);
+
+                return HttpStatusCode.OK;
+            };
+
             // Get a list of all installed online accounts.
             Get["/accounts"] = parameters =>
             {
@@ -110,6 +124,11 @@ namespace Artivity.Apid.Modules
             {
                 string providerId = Request.Query["providerId"];
 
+                if (string.IsNullOrEmpty(providerId))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
                 return GetOAuth2AccountRedirectUrl(providerId);
             };
 
@@ -118,12 +137,22 @@ namespace Artivity.Apid.Modules
                 string providerId = Request.Query["providerId"];
                 string code = Request.Query["code"];
 
+                if (string.IsNullOrEmpty(providerId) || string.IsNullOrEmpty(code))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
                 return SendOAuth2AccessToken(providerId, code);
             };
 
             Get["/accounts/install"] = parameters =>
             {
                 string providerId = Request.Query["providerId"];
+
+                if (string.IsNullOrEmpty(providerId))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
 
                 return InstallAccount(providerId);
             };
@@ -132,6 +161,11 @@ namespace Artivity.Apid.Modules
             Get["/accounts/uninstall"] = parameters =>
             {
                 string accountId = Request.Query["accountId"];
+
+                if (string.IsNullOrEmpty(accountId))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
 
                 return UninstallAccount(accountId);
             };
@@ -174,33 +208,48 @@ namespace Artivity.Apid.Modules
 
             Get["/activities"] = parameters =>
             {
-                string fileUrl = Request.Query["fileUrl"];
+                if (string.IsNullOrEmpty(Request.Query.fileUrl))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
 
-                return GetActivities(fileUrl);
+                return GetActivities(Request.Query.fileUrl);
             };
 
             Get["/influences"] = parameters =>
             {
-                string fileUrl = Request.Query["fileUrl"];
+                if (string.IsNullOrEmpty(Request.Query.fileUrl))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
 
-                return GetInfluences(fileUrl);
+                return GetInfluences(Request.Query.fileUrl);
             };
 
             Get["/thumbnails"] = parameters =>
             {
-                string fileUrl = Request.Query["fileUrl"];
-                if (string.IsNullOrEmpty(fileUrl))
+                if(Request.Query.fileUrl)
+                {
+                    return GetThumbnails(Request.Query.fileUrl);
+                }
+                else if(Request.Query.thumbnailUrl)
+                {
+                    return GetThumbnail(Request.Query.thumbnailUrl);
+                }
+                else
+                {
                     return HttpStatusCode.BadRequest;
-                return GetThumbnails(fileUrl);
+                }
             };
 
             Get["/thumbnails/paths"] = parameters =>
             {
-                string fileUrl = Request.Query["fileUrl"];
-                if (string.IsNullOrEmpty(fileUrl))
+                if (string.IsNullOrEmpty(Request.Query.fileUrl))
+                {
                     return HttpStatusCode.BadRequest;
+                }
 
-                return GetThumbnailPaths(fileUrl);
+                return GetThumbnailPaths(Request.Query.fileUrl);
             };
         }
 
@@ -253,6 +302,50 @@ namespace Artivity.Apid.Modules
             else
             {
                 return null;
+            }
+        }
+
+        public void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
+        {
+            UriRef agentUri = new UriRef(uri);
+
+            if (!model.ContainsResource(agentUri))
+            {
+                Logger.LogInfo("Installing agent {0}", name);
+
+                SoftwareAgent agent = model.CreateResource<SoftwareAgent>(agentUri);
+                agent.Name = name;
+                agent.ExecutableName = executableName;
+                agent.IsCaptureEnabled = captureEnabled;
+                agent.ColourCode = colour;
+                agent.Commit();
+            }
+            else
+            {
+                bool modified = false;
+
+                SoftwareAgent agent = model.GetResource<SoftwareAgent>(agentUri);
+
+                if (agent.Name != name)
+                {
+                    agent.Name = name;
+
+                    modified = true;
+                }
+
+                if (string.IsNullOrEmpty(agent.ColourCode))
+                {
+                    agent.ColourCode = colour;
+
+                    modified = true;
+                }
+
+                if (modified)
+                {
+                    Logger.LogInfo("Updating agent {0}", name);
+
+                    agent.Commit();
+                }
             }
         }
 
@@ -453,8 +546,9 @@ namespace Artivity.Apid.Modules
 
                     ?association prov:agent ?agent .
 
-                    ?agent foaf:name ?name ;
-                        art:hasColourCode ?color .
+                    ?agent foaf:name ?name .
+
+                    OPTIONAL { ?agent art:hasColourCode ?color . }
                 }
                 ORDER BY DESC(?startTime)");
 
@@ -468,7 +562,7 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.GetAllActivities();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?time ?uri ?type ?color ?description ?bounds WHERE 
+                SELECT ?time ?uri ?type ?color ?description ?bounds ?thumbnailUrl WHERE 
                 {
                     ?file nfo:fileUrl @fileUrl .
 
@@ -487,6 +581,10 @@ namespace Artivity.Apid.Modules
 
                     OPTIONAL { ?generation dces:description ?description . }
                     OPTIONAL { ?generation art:hadBoundaries ?bounds . }
+                    OPTIONAL
+                    {
+                        ?generation art:thumbnailUrl ?thumbnailUrl .
+                    }
                 }
                 ORDER BY (?time)");
 
@@ -516,53 +614,42 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(model.GetBindings(query));
         }
 
-        private Uri GetUri(string path)
+        private Response GetThumbnail(string thumbnailUrl)
         {
-            FileInfo f = new FileInfo(path);
-            return f.ToUriRef();
-        }
+            string file = new Uri(thumbnailUrl).AbsolutePath;
 
-        private string GetFileUri(string path)
-        {
-            Uri url = GetUri(path);
-
-            string queryString = @"
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
-
-                SELECT DISTINCT ?uri WHERE { ?v prov:specializationOf ?uri . ?uri nfo:fileUrl """ + url.AbsoluteUri + "\" . } LIMIT 1";
-
-            IModel model = ModelProvider.GetActivities();
-
-            SparqlQuery query = new SparqlQuery(queryString);
-            ISparqlQueryResult result = model.ExecuteQuery(query);
-
-            if (result.GetBindings().Any())
+            if (File.Exists(file))
             {
-                BindingSet binding = result.GetBindings().First();
+                FileStream fileStream = new FileStream(file, FileMode.Open);
 
-                string uri = binding["uri"].ToString();
+                StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
 
-                if (!string.IsNullOrEmpty(uri))
-                {
-                   return uri;
-                }
+                return response.AsAttachment(file);
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
-        private Response GetThumbnailPaths(string path)
+        private Response GetThumbnailPaths(string filePath)
         {
+            string dirName = GetFileUri(filePath);
 
-            string dirName = GetFileUri(path);
-            if( string.IsNullOrEmpty(dirName) )
+            if (string.IsNullOrEmpty(dirName))
+            {
                 return HttpStatusCode.InternalServerError;
+            }
+
             var invalids = System.IO.Path.GetInvalidFileNameChars();
             var newName = String.Join("_", dirName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 
             DirectoryInfo dir = new DirectoryInfo(Path.Combine(Platform.GetAppDataFolder("Thumbnails"), newName));
+
             if (!dir.Exists)
+            {
                 dir.Create();
+            }
 
             List<string> result = new List<string>()
             {
@@ -570,6 +657,40 @@ namespace Artivity.Apid.Modules
             };
 
             return Response.AsJson(result);
+        }
+
+        private string GetFileUri(string filePath)
+        {
+            Uri fileUrl = new FileInfo(filePath).ToUriRef();
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT DISTINCT ?entity WHERE
+                {
+                    ?activity prov:startedAtTime ?startTime .
+                    ?activity prov:used ?entity .
+
+                    ?entity nfo:fileUrl @fileUrl .
+                }
+                ORDER BY(?startTime) LIMIT 1
+            ");
+
+            query.Bind("@fileUrl", fileUrl.AbsoluteUri);
+
+            ISparqlQueryResult result = ModelProvider.ActivitiesModel.ExecuteQuery(query);
+
+            if (result.GetBindings().Any())
+            {
+                BindingSet binding = result.GetBindings().First();
+
+                string uri = binding["entity"].ToString();
+
+                if (!string.IsNullOrEmpty(uri))
+                {
+                    return uri;
+                }
+            }
+
+            return null;
         }
 
         #endregion

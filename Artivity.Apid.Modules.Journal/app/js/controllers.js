@@ -20,7 +20,7 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 	$scope.getFileName = getFileName;
 });
 
-explorerControllers.controller('FileDetailController', function (api, $scope, $rootScope, $routeParams) {
+explorerControllers.controller('FileDetailController', function (api, $scope, $routeParams) {
 	var fileUrl = Base64.decode($routeParams.fileUrl);
 
 	$scope.fileName = getFileName(fileUrl);
@@ -30,13 +30,19 @@ explorerControllers.controller('FileDetailController', function (api, $scope, $r
 	$scope.selectedActivity;
 
 	$scope.influences = [];
+	$scope.previousInfluence = undefined;
 	$scope.selectedInfluence = {
 		name: "",
 		time: new Date()
 	};
-	$scope.previousInfluence = undefined;
 
 	$scope.playloop = undefined;
+
+	var viewport = document.getElementById('viewport');
+	
+	if(viewport) {
+		$scope.context = viewport.getContext('2d');
+	}
 
 	api.getAgent(fileUrl).then(function (data) {
 		$scope.agent = data;
@@ -80,13 +86,24 @@ explorerControllers.controller('FileDetailController', function (api, $scope, $r
 	$scope.previewInfluence = function (influence) {
 		$scope.previousInfluence = $scope.selectedInfluence;
 		$scope.selectedInfluence = influence;
+	
+		if(influence.thumbnailUrl) {			
+			var thumbnail = new Image();
+			thumbnail.src = api.getThumbnailUrl(influence.thumbnailUrl);
+			thumbnail.onload = function () {				
+				$scope.context.clearRect(0, 0, viewport.width, viewport.height);
+				$scope.context.drawImage(thumbnail, 0, 0, thumbnail.width, thumbnail.height);
+			};
+		}
 	}
 
 	$scope.resetInfluence = function () {
+		/*
 		if ($scope.previousInfluence) {
 			$scope.selectedInfluence = $scope.previousInfluence;
 			$scope.previousInfluence = undefined;
 		}
+		*/
 	}
 
 	$scope.skipPrev = function () {
@@ -302,29 +319,29 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
 
 explorerControllers.controller('AccountDialogController', function (api, $scope, $uibModalInstance) {
 	var timer = undefined;
-	
+
 	api.getAccountProviders().then(function (data) {
 		$scope.providers = data;
 	});
 
 	$scope.showStatus = function (provider, $event) {
 		var element = $event.currentTarget;
-		
+
 		$(element).find('.account').hide();
 		$(element).find('.description').hide();
 		$(element).find('.loader').show();
 		$(element).find('.status').show();
-		
+
 		// Update the provider status every 500ms.
-		timer = window.setInterval(function() {
-			api.getAccountProvider(provider.Id).then(function (data) {				
+		timer = window.setInterval(function () {
+			api.getAccountProvider(provider.Id).then(function (data) {
 				$(element).find('.status').val(data.Status);
-				
+
 				// TODO: Improve server API to provide status code.
-				if(data.Status.indexOf("install") > -1) {
+				if (data.Status.indexOf("install") > -1) {
 					$(element).find('.loader').hide();
 					$(element).find('.ok').show();
-					
+
 					window.clearInterval(timer);
 				}
 			});
@@ -333,8 +350,8 @@ explorerControllers.controller('AccountDialogController', function (api, $scope,
 
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');
-		
-		if(timer) {
+
+		if (timer) {
 			window.clearInterval(timer);
 		}
 	};

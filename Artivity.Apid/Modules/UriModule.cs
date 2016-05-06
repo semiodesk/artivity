@@ -173,30 +173,35 @@ namespace Artivity.Apid
 
         private string GetFileUri(string path)
         {
-            Uri url = GetUri(path);
+            Uri fileUrl = new FileInfo(path).ToUriRef();
 
-            string queryString = @"
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT DISTINCT ?entity WHERE
+                {
+                    ?activity prov:startedAtTime ?startTime .
+                    ?activity prov:used ?entity .
 
-                SELECT DISTINCT ?uri WHERE { ?v prov:specializationOf ?uri . ?uri nfo:fileUrl """ + url.AbsoluteUri + "\" . } LIMIT 1";
+                    ?entity nfo:fileUrl @fileUrl .
+                }
+                ORDER BY(?startTime) LIMIT 1
+            ");
 
-            IModel model = ModelProvider.GetActivities();
+            query.Bind("@fileUrl", fileUrl.AbsoluteUri);
 
-            SparqlQuery query = new SparqlQuery(queryString);
-            ISparqlQueryResult result = model.ExecuteQuery(query);
+            ISparqlQueryResult result = ModelProvider.ActivitiesModel.ExecuteQuery(query);
 
             if (result.GetBindings().Any())
             {
                 BindingSet binding = result.GetBindings().First();
 
-                string uri = binding["uri"].ToString();
+                string uri = binding["entity"].ToString();
 
                 if (!string.IsNullOrEmpty(uri))
                 {
-                   return uri;
+                    return uri;
                 }
             }
+
             return null;
         }
 
