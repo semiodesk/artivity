@@ -48,7 +48,7 @@ namespace Artivity.Apid
         /// The HTTP service port.
         /// </summary>
 #if DEBUG
-        private int _servicePort = 8272;
+        private int _servicePort = 8262;
 #else
         private int _servicePort = 8272;
 #endif

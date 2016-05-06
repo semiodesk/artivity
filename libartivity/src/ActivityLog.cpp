@@ -31,6 +31,7 @@
 
 #include "curlresponse.h"
 #include "ActivityLog.h"
+#include "JSON/jsonxx.h"
 
 using namespace artivity;
 
@@ -217,10 +218,10 @@ artivity::CreateFile* ActivityLog::createFile(double width, double height, const
     
     _fileUri = string(file->Uri);
     _filePath = "";
-    
+
     // Add a canvas to the newly created file.
     createCanvas(file, width, height, lengthUnit);
-    
+      
 	artivity::CreateFile* activity = createActivity<artivity::CreateFile>();
     activity->addUsedEntity(file);
     
@@ -233,19 +234,20 @@ EditFile* ActivityLog::editFile(string path, double width, double height, const 
     _filePath = path;
     
     cout << _fileUri << endl << flush;
-    
+
     _canvasUri = string(getCanvasUri(path));
     _canvasWidth = width;
     _canvasHeight = height;
     _canvasUnit = lengthUnit;
     
     FileDataObject* file = createResource<FileDataObject>(_fileUri.c_str());
-    
-    if(_canvasUri == "")
-    {            
+
+    if (_canvasUri == "")
+    {
         createCanvas(file, width, height, lengthUnit);
     }
-    
+
+
     EditFile* activity = createActivity<EditFile>();
     activity->addUsedEntity(file);
     
@@ -280,24 +282,30 @@ string ActivityLog::getLatestVersionUri(string path)
 {
     string data;
     stringstream url;
-    url << "http://localhost:8272/artivity/1.0/uri?latestVersion=" << escapePath(path);
+    url << _server << _uriAPI << "?latestVersion=" << escapePath(path);
 
     CURL* curl = initializeRequest();
     executeRequest(curl, url.str(), "", data);
 
-    return data.length() > 2 ? data.substr(1, data.length() - 2) : "";
+    jsonxx::Value val;
+    bool valid = val.parse(data);
+
+    return valid ? val.get<jsonxx::String>() : "";
 }
 
 string ActivityLog::getFileUri(string path)
 {
     string data = "";
     stringstream url;
-    url << "http://localhost:8272/artivity/1.0/uri?file=" << escapePath(path);
+    url << _server << _uriAPI << "?file=" << escapePath(path);
     
     CURL* curl = initializeRequest();    
     executeRequest(curl, url.str(), "", data);
     
-    return data.length() > 2 ? data.substr(1, data.length() - 2) : UriGenerator::getUri();
+    jsonxx::Value val;
+    bool valid = val.parse(data);
+
+    return valid ? val.get<jsonxx::String>() : UriGenerator::getUri();
 }
 
 
@@ -305,28 +313,28 @@ string ActivityLog::getThumbnailPath(string path)
 {
     string result;
     stringstream url;
-    url << "http://localhost:8272/artivity/api/1.0/thumbnails/paths?fileUrl=" << escapePath(path);
+    url << _server << _API << "/thumbnails/paths?fileUrl=" << escapePath(path);
     CURL* curl = initializeRequest();
     executeRequest(curl, url.str(), "", result);
 
-    if (result.length() > 0)
-        return result.substr(2, result.length() - 4);
-    else
+    jsonxx::Array a;
+    bool valid = a.parse(result);
 
-        return "";
+    return valid ? a.get<jsonxx::String>(a.size() -1) : "";
 }
 
 string ActivityLog::getCanvasUri(string path)
 {
     string data = "";
     stringstream url;
-    url << "http://localhost:8272/artivity/1.0/uri?canvas=" << escapePath(path);
-    
-    CURL* curl = initializeRequest();   
+    url << _server << _uriAPI << "?canvas=" << escapePath(path);
+
+    CURL* curl = initializeRequest();
     executeRequest(curl, url.str(), "", data);
-    
+
     return data.length() > 2 ? data.substr(1, data.length() - 2) : UriGenerator::getUri();
 }
+
 
 void ActivityLog::createCanvas(FileDataObject* file, double width, double height, const Resource* lengthUnit)
 {
@@ -370,14 +378,14 @@ void ActivityLog::updateCanvas(double width, double height, const Resource* leng
 
 Canvas* ActivityLog::getCanvas()
 {
-    if(_canvasUri == "")
+    if (_canvasUri == "")
     {
         return NULL;
     }
-    
+
     const char* uri = _canvasUri.c_str();
-    
-    if(hasResource(uri))
+
+    if (hasResource(uri))
     {
         return getResource<Canvas>(uri);
     }
@@ -385,6 +393,7 @@ Canvas* ActivityLog::getCanvas()
     {
         return createResource<Canvas>(uri);
     }
+
 }
 
 bool ActivityLog::hasCanvas(double width, double height, const Resource* lengthUnit)
@@ -418,8 +427,9 @@ void ActivityLog::transmit()
     string responseData;
     
     CURL* curl = initializeRequest();
-    
-    executeRequest(curl, "http://localhost:8272/artivity/1.0/activities", requestData, responseData);
+    stringstream url;
+    url << _server << _activityAPI;
+    executeRequest(curl, url.str(), requestData, responseData);
     
     // Cleanup after all resources have been serialized and transmitted.
     clear();
@@ -520,7 +530,7 @@ void ActivityLog::enableMonitoring(string path)
 {   
     string data;
     stringstream url;
-    url << "http://localhost:8272/artivity/1.0/monitor/add?file=" << escapePath(path);
+    url << _server << _monitorAPI << "/add?file=" << escapePath(path);
  
     CURL* curl = initializeRequest();   
     executeRequest(curl, url.str(), "", data);
@@ -529,8 +539,9 @@ void ActivityLog::enableMonitoring(string path)
 void ActivityLog::disableMonitoring(string path)
 {
     string data;
+   
     stringstream url;
-    url << "http://localhost:8272/artivity/1.0/monitor/remove?file=" << escapePath(path);
+    url << _server << _monitorAPI << "/remove?file=" << escapePath(path);
  
     CURL* curl = initializeRequest();   
     executeRequest(curl, url.str(), "", data);
