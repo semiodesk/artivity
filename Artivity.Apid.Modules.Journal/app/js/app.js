@@ -25,7 +25,7 @@ explorerApp.config(['$routeProvider',
   }]);
 
 explorerApp.factory('api', function ($http) {
-	var endpoint = 'http://localhost:8272/artivity/api/1.0/';
+	var endpoint = 'http://localhost:8262/artivity/api/1.0/';
 
 	return {
 		getAccounts: function () {
@@ -108,6 +108,9 @@ explorerApp.factory('api', function ($http) {
 				function (response) {
 					return response.data;
 				})
+		},
+		getThumbnailUrl: function (thumbnailUrl) {
+			return endpoint + '/thumbnails?thumbnailUrl=' + thumbnailUrl;
 		}
 	};
 });
