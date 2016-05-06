@@ -96,11 +96,7 @@ namespace artivity
         
         ResourceIterator findResource(const char* uri);
         
-        // Add a referenced resource to the transmitted RDF output.
-        void addResource(Resource* resource);
-        
-        // Remove a referenced resource to the transmitted RDF output.
-        void removeResource(Resource* resource);
+
         
     public:
         ActivityLog();
@@ -122,6 +118,12 @@ namespace artivity
         Activity* last();
         
         void clear();
+
+		// Add a referenced resource to the transmitted RDF output.
+		void addResource(Resource* resource);
+
+		// Remove a referenced resource to the transmitted RDF output.
+		void removeResource(Resource* resource);
 
         // Create a new resource and add it the transmitted RDF output.
         template <class T> T* createResource()

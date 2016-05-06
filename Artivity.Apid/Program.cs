@@ -38,14 +38,15 @@ namespace Artivity.Apid
     class Program
     {
         #region Members
-        PluginChecker _checker;
+
+        private PluginChecker _pluginChecker;
+
         #endregion
 
         public static void Main(string[] args)
         {
-            
-            Program p = new Program ();
-            p.Run (args);
+            Program program = new Program();
+            program.Run(args);
         }
 
         public void Run(string[] args)
@@ -88,10 +89,10 @@ namespace Artivity.Apid
             }
 
 #if !DEBUG
-            _checker = PluginCheckerFactory.CreatePluginChecker();
-            _checker.Check();
+            _pluginChecker = PluginCheckerFactory.CreatePluginChecker();
+            _pluginChecker.Check();
 
-            IInstallationWatchdog watchdog = InstallationWatchdogFactory.CreateWatchdog ();
+            IInstallationWatchdog watchdog = InstallationWatchdogFactory.CreateWatchdog();
             watchdog.ProgrammInstalledOrRemoved += ProgramInstalled;
             watchdog.Start();
 #endif
@@ -113,9 +114,9 @@ namespace Artivity.Apid
             service.Start();
         }
 
-        private void ProgramInstalled(object sender, EventArgs entry)
+        private void OnProgramInstalled(object sender, EventArgs entry)
         {
-            _checker.Check();
+            _pluginChecker.Check();
         }
     }
 }

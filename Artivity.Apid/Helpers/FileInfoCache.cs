@@ -60,7 +60,7 @@ namespace Artivity.Apid
         {
             FileInfo info = new FileInfo(fullName);
 
-            Url = new Uri("file://" + Uri.EscapeUriString(fullName));
+            Url = new Uri("file://" + Uri.EscapeUriString(fullName.Replace('\\', '/')));
             Name = info.Name;
             FullName = info.FullName;
             Exists = info.Exists;

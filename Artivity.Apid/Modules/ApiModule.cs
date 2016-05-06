@@ -454,7 +454,7 @@ namespace Artivity.Apid.Modules
                 }
                 ORDER BY DESC(?startTime)");
 
-            query.Bind("@fileUrl", fileUrl);
+            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
 
             return Response.AsJson(model.GetBindings(query));
         }
@@ -486,7 +486,7 @@ namespace Artivity.Apid.Modules
                 }
                 ORDER BY (?time)");
 
-            query.Bind("@fileUrl", fileUrl);
+            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
 
             return Response.AsJson(model.GetBindings(query));
         }
