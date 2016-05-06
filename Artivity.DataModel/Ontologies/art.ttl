@@ -218,6 +218,12 @@ art:thumbnailUrl a rdf:Property ;
     rdfs:subClassOf nfo:fileUrl ;
     rdfs:domain prov:ActivityInfluence .
 
+art:thumbnailPosition a rdf:Property ;
+    rdfs:label "thumbnailPosition" ;
+	rdfs:subClassOf geo:hasGeometry ;
+    rdfs:domain prov:ActivityInfluence ;
+	rdfs:range art:Rectangle.
+
 art:Viewport a rdfs:Class ;
     rdfs:label "Viewport" ;
     rdfs:subClassOf art:Rectangle .

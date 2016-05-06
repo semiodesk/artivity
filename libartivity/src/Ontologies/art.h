@@ -57,6 +57,8 @@ namespace artivity
 
         // --- THUMBNAIL ---
         static const char* thumbnailUrl = ART("thumbnailUrl");
+
+        static const char* thumbnailPos = ART("thumbnailPosition"); 
         
         // --- GEOMETRY ---
         // NOTE: We try to be compatible with OGC geometry vocabularies since
