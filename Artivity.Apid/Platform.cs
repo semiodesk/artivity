@@ -112,5 +112,25 @@ namespace Artivity.Apid
 
             return appData;
         }
+
+        private static string GetUserFolder()
+        {
+            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            {
+                return Environment.GetEnvironmentVariable("HOME");
+            }
+            else if (Environment.OSVersion.Platform == PlatformID.MacOSX)
+            {
+                return Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+            }
+            else if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            }
+            else
+            {
+                throw new PlatformNotSupportedException();
+            }
+        }
     }
 }

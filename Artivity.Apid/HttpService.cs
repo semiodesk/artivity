@@ -45,68 +45,82 @@ namespace Artivity.Apid
         #region Members
 
         /// <summary>
-        /// The REST API service port.
+        /// The HTTP service port.
         /// </summary>
-        #if DEBUG
+#if DEBUG
         private int _servicePort = 8272;
-        #else
+#else
         private int _servicePort = 8272;
-        #endif
+#endif
 
         /// <summary>
-        /// The REST API service port.
-        /// This property can only be set if the service has not been started yet.
+        /// The Virtuoso database port.
         /// </summary>
+#if DEBUG
+        private int _virtuosoPort = 8263;
+#else
+        private int _virtuosoPort = 8273;
+#endif
+
+        /// <summary>
+        /// Get or set the REST API service port.
+        /// </summary>
+        /// <remarks>
+        /// This property can only be set if the service has not been started yet.
+        /// </remarks>
         public int ServicePort
         {
-            get
+            get { return _servicePort; }
+            private set
             {
-                return _servicePort; 
-            }
-            set 
-            { 
-                if( !IsRunning )
-                    _servicePort = value; 
+                if(!IsRunning)
+                {
+                    _servicePort = value;
+                }
             }
         }
 
         /// <summary>
-        /// The REST API service thread.
+        /// The thread for the HTTP service.
         /// </summary>
         protected Thread ServiceThread;
 
+        /// <summary>
+        /// The host of the Nancy HTTP service.
+        /// </summary>
         private NancyHost _serviceHost;
 
+        /// <summary>
+        /// Handle used to keep the service threads alive.
+        /// </summary>
         private AutoResetEvent _wait = new AutoResetEvent(false);
 
         /// <summary>
         /// The Virtuoso database port.
         /// </summary>
-        #if DEBUG
-        private int _virtuosoPort = 8263;
-        #else
-        private int _virtuosoPort = 8273;
-        #endif
-
-        /// <summary>
-        /// The Virtuoso database port.
+        /// <remarks>
         /// This property can only be set if the service has not been started yet.
-        /// </summary>
+        /// </remarks>
         public int VirtuosoPort 
         { 
-            get 
-            { 
-                return _virtuosoPort; 
-            } 
+            get { return _virtuosoPort; } 
             set 
-            { 
-                if( !IsRunning ) 
-                    _virtuosoPort = value; 
+            {
+                if(!IsRunning)
+                {
+                    _virtuosoPort = value;
+                }
             } 
         }
 
+        /// <summary>
+        /// The TinyVirtuoso database instance manager.
+        /// </summary>
         private TinyVirtuoso _virtuoso;
 
+        /// <summary>
+        /// The OpenLink Virtuoso database instance.
+        /// </summary>
         private Virtuoso _virtuosoInstance = null;
 
         /// <summary>
@@ -119,8 +133,6 @@ namespace Artivity.Apid
         /// </summary>
         public bool IsRunning { get { return ServiceThread != null && ServiceThread.IsAlive; } }
 
-        public string ApplicationData { get; set; }
-
         public IModelProvider ModelProvider { get; set; }
 
         public string Username {get;set;}
@@ -131,7 +143,6 @@ namespace Artivity.Apid
 
         public HttpService()
         {
-            ApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         }   
 
         #endregion
@@ -147,10 +158,10 @@ namespace Artivity.Apid
             Logger.LogInfo("Artivity Logging Service, Version {0}", version);
 
             // Make sure the database is started.
-            InitializeDatabase();
-           
+            StartDatabase();
+
             // Start the daemon in a new thread.
-            ServiceThread = new Thread(ServiceProcess);
+            ServiceThread = new Thread(StartService);
             ServiceThread.Start();
 
             if (blocking)
@@ -170,11 +181,11 @@ namespace Artivity.Apid
                     ServiceThread.Join();
                 }
 
-                Logger.LogInfo("Stopping HttpService");
+                Logger.LogInfo("Stopped service on port {0}", _servicePort);
             }
         }
 
-        private void ServiceProcess()
+        private void StartService()
         {
             if (string.IsNullOrEmpty(Username))
             {
@@ -182,10 +193,6 @@ namespace Artivity.Apid
             }
 
             ModelProvider.Username = Username;
-
-            //throw new Exception("Test");
-            // Make sure the models are all set up.
-            InitializeModels();
 
             Bootstrapper customBootstrapper = new Bootstrapper();
             customBootstrapper.ModelProvider = ModelProvider;
@@ -197,16 +204,27 @@ namespace Artivity.Apid
                 Logger.LogError(ex.Message, ex);
             });
 
+            // Make sure the database is started.
+            if (UpdateOntologies)
+            {
+                LoadOntologies();
+            }
+
             using (_serviceHost = new NancyHost(customBootstrapper, config, new Uri("http://localhost:" + _servicePort)))
             {
                 try
                 {
+                    // Start the Nancy service host.
                     _serviceHost.Start();
 
-                    Logger.LogInfo("Started listening on port {0}..", _servicePort);
+                    Logger.LogInfo("Started service on port {0}", _servicePort);
 
                     using (var monitor = FileSystemMonitor.Instance)
                     {
+                        // Start the file system change monitor.
+                        monitor.Initialize(ModelProvider);
+                        monitor.Start();
+
                         _wait.WaitOne();
                     }
 
@@ -214,14 +232,47 @@ namespace Artivity.Apid
                 }
                 finally
                 {
-                    Logger.LogInfo("Stopped listening on port {0}..", _servicePort);
+                    Logger.LogInfo("Stopped service on port {0}", _servicePort);
                 }
-
             }
 
             customBootstrapper.Dispose();
 
             TinyIoCContainer.Current.Dispose();
+        }
+
+        private void StartDatabase()
+        {
+            if (Platform.IsWindows() ||  Platform.IsMac())
+            {
+                // We are running on Windows or Mac. Start the database using TinyVirtuoso..
+                Logger.LogInfo("Starting the OpenLink Virtuoso database..");
+                Logger.LogInfo("Database folder: {0}", Platform.GetAppDataFolder("Data"));
+
+                // The database is started in the user's application data folder on port 8273..
+                _virtuoso = new TinyVirtuoso(Platform.GetAppDataFolder());
+                _virtuosoInstance = _virtuoso.GetOrCreateInstance("Data");
+                _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("localhost:{0}", _virtuosoPort);
+                _virtuosoInstance.Configuration.SaveConfigFile();
+                _virtuosoInstance.RemoveLock();
+                _virtuosoInstance.Start(false);
+
+                // Wait for 5 seconds to make sure the database is started..
+                Thread.Sleep(5000);
+
+                string connectionString = _virtuosoInstance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";
+                string nativeConnectionString = _virtuosoInstance.GetAdoNetConnectionString();
+
+                ModelProvider = ModelProviderFactory.CreateModelProvider(connectionString, nativeConnectionString);
+
+                Logger.LogInfo("Database connection: {0}", nativeConnectionString);
+                Logger.LogInfo("Started database on port {0}", _virtuosoPort);
+            }
+            else
+            {
+                // We are running on Linux..
+                ModelProvider = ModelProviderFactory.CreateModelProvider(GetConnectionStringFromConfiguration(), null);
+            }
         }
 
         private string GetConnectionStringFromConfiguration()
@@ -239,56 +290,13 @@ namespace Artivity.Apid
             return null;
         }
 
-        private void InitializeModels()
+        private void LoadOntologies()
         {
-            if (UpdateOntologies)
+            using (IStore store = StoreFactory.CreateStore(ModelProvider.ConnectionString))
             {
-                using (IStore store = StoreFactory.CreateStore(ModelProvider.ConnectionString))
-                {
-                    Logger.LogInfo("Updating ontologies.");
+                Logger.LogInfo("Updating ontologies..");
 
-                    store.LoadOntologySettings();
-                }
-            }
-        }
-
-        private void InitializeDatabase()
-        {
-            if (Platform.IsWindows() ||  Platform.IsMac())
-            {
-                //#if !DEBUG
-                // We are running on Windows or Mac. Start the database using TinyVirtuoso..
-                Logger.LogInfo("Starting the OpenLink Virtuoso database on port {0}...", _virtuosoPort);
-
-                string appData = ApplicationData;
-
-                Logger.LogInfo("Database is going to be stored in {0}", Path.Combine(appData, "Artivity", "Data"));
-
-                // The database is started in the user's application data folder on port 8273..
-                _virtuoso = new TinyVirtuoso(Path.Combine(appData, "Artivity"));
-                _virtuosoInstance = _virtuoso.GetOrCreateInstance("Data");
-                _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("localhost:{0}", _virtuosoPort);
-                _virtuosoInstance.Configuration.SaveConfigFile();
-                _virtuosoInstance.RemoveLock();
-                _virtuosoInstance.Start(false);
-
-                Thread.Sleep(5000);
-
-                string connectionString = _virtuosoInstance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";
-                string nativeConnectionString = _virtuosoInstance.GetAdoNetConnectionString();
-
-                ModelProvider = ModelProviderFactory.CreateModelProvider(connectionString, nativeConnectionString);
-
-                Logger.LogInfo(nativeConnectionString);
-                Logger.LogInfo("Virtuoso started!");
-                //#else
-                //ModelProvider = ModelProviderFactory.CreateModelProvider("provider=virtuoso;host=localhost;port=8263;uid=dba;pw=dba;rule=urn:semiodesk/ruleset", " Server=localhost:8263;uid=dba;pwd=dba;Charset=utf-8");
-                //#endif
-            }
-            else
-            {
-                // We are running on Linux..
-                ModelProvider = ModelProviderFactory.CreateModelProvider(GetConnectionStringFromConfiguration(), null);
+                store.LoadOntologySettings();
             }
         }
 

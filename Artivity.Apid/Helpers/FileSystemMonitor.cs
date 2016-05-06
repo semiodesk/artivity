@@ -58,13 +58,15 @@ namespace Artivity.Apid
 
         private IModel _model;
 
-        private List<FileSystemWatcher> _watchers = new List<FileSystemWatcher>();
+        private readonly List<FileSystemWatcher> _watchers = new List<FileSystemWatcher>();
 
-        private HashSet<FileInfoCache> _deletedFiles = new HashSet<FileInfoCache>();
+        private readonly HashSet<FileInfoCache> _deletedFiles = new HashSet<FileInfoCache>();
 
-        private Dictionary<string, FileInfoCache> _monitoredFiles = new Dictionary<string, FileInfoCache>();
+        private readonly Dictionary<string, FileInfoCache> _monitoredFiles = new Dictionary<string, FileInfoCache>();
 
-        private static Dictionary<Uri, Uri> _monitoredFileUris = new Dictionary<Uri, Uri>();
+        private readonly static Dictionary<Uri, Uri> _monitoredFileUris = new Dictionary<Uri, Uri>();
+
+        private readonly static HashSet<string> _monitoredDirectories = new HashSet<string>();
 
         #endregion
 
@@ -78,6 +80,8 @@ namespace Artivity.Apid
 
         public void Initialize(IModelProvider provider)
         {
+            Logger.LogInfo("Starting file system monitor.");
+
             if (IsInitialized)
             {
                 return;
@@ -87,16 +91,6 @@ namespace Artivity.Apid
 
             InitializeMonitoredFiles();
 
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Created += OnFileSystemObjectCreated;
-            watcher.Deleted += OnFileSystemObjectDeleted;
-            watcher.Renamed += OnFileSystemObjectRenamed;
-            watcher.Path = GetUserDirectory();
-            watcher.NotifyFilter = NotifyFilters.FileName;
-            watcher.IncludeSubdirectories = true;
-
-            _watchers.Add(watcher);
-
             IsInitialized = true;
         }
 
@@ -104,11 +98,7 @@ namespace Artivity.Apid
         {
             // We order by start time so that we get the latest version of a file, 
             // just in case there exist previous (deleted) versions.
-            string queryString = @"
-                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
-
+            SparqlQuery query = new SparqlQuery(@"
                 SELECT DISTINCT ?uri ?url WHERE
                 {
                     ?activity prov:used ?uri .
@@ -116,12 +106,9 @@ namespace Artivity.Apid
                     ?uri a nfo:FileDataObject .
                     ?uri nfo:fileUrl ?url . FILTER(!ISIRI(?url))
                 }
-                ORDER BY DESC(?startTime)";
+                ORDER BY DESC(?startTime)");
 
-            SparqlQuery query = new SparqlQuery(queryString);
-            ISparqlQueryResult result = _model.ExecuteQuery(query);
-
-            foreach (BindingSet binding in result.GetBindings())
+            foreach (BindingSet binding in _model.GetBindings(query))
             {
                 string u = binding["url"].ToString();
 
@@ -139,8 +126,15 @@ namespace Artivity.Apid
 
                 Uri uri = new Uri(binding["uri"].ToString());
 
+                FileInfoCache fileInfo = new FileInfoCache(url.LocalPath);
+
                 _monitoredFileUris[url] = uri;
-                _monitoredFiles[url.LocalPath] = new FileInfoCache(url.LocalPath);
+                _monitoredFiles[url.LocalPath] = fileInfo;
+
+                if (!_monitoredDirectories.Contains(fileInfo.Url.LocalPath))
+                {
+                    CreateDirectoryWatcher(fileInfo);
+                }
             }
         }
 
@@ -150,10 +144,12 @@ namespace Artivity.Apid
             {
                 string file = Path.Combine(watcher.Path, watcher.Filter);
 
-                Logger.LogInfo("Started monitoring {0}", file);
+                Logger.LogInfo("Enabled monitoring: {0}", file);
 
                 watcher.EnableRaisingEvents = true;
             }
+
+            Logger.LogInfo("Started file system monitor.");
         }
 
         public void Stop()
@@ -162,10 +158,12 @@ namespace Artivity.Apid
             {
                 string file = Path.Combine(watcher.Path, watcher.Filter);
 
-                Logger.LogInfo("Stopped monitoring {0}", file);
+                Logger.LogInfo("Disabled monitoring: {0}", file);
 
                 watcher.EnableRaisingEvents = false;
             }
+
+            Logger.LogInfo("Started file system monitor.");
         }
 
         public void Dispose()
@@ -173,23 +171,28 @@ namespace Artivity.Apid
             Stop();
         }
             
-        private static string GetUserDirectory()
+        private void CreateDirectoryWatcher(FileInfoCache fileInfo)
         {
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            string path = fileInfo.Url.LocalPath;
+
+            if(!Directory.Exists(path))
             {
-                return Environment.GetEnvironmentVariable("HOME");
+                path = Path.GetDirectoryName(path);
             }
-            else if (Environment.OSVersion.Platform == PlatformID.MacOSX)
+
+            if(Directory.Exists(path) && !_monitoredDirectories.Contains(path))
             {
-                return Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
-            }
-            else if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                return Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            }
-            else
-            {
-                throw new PlatformNotSupportedException();
+                FileSystemWatcher watcher = new FileSystemWatcher();
+                watcher.Created += OnFileSystemObjectCreated;
+                watcher.Deleted += OnFileSystemObjectDeleted;
+                watcher.Renamed += OnFileSystemObjectRenamed;
+                watcher.Path = path;
+                watcher.NotifyFilter = NotifyFilters.FileName;
+                watcher.IncludeSubdirectories = true;
+
+                _watchers.Add(watcher);
+
+                _monitoredDirectories.Add(path);
             }
         }
 
@@ -286,9 +289,6 @@ namespace Artivity.Apid
             FileInfoCache file = new FileInfoCache(path);
 
             string queryString = @"
-                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
-
                 SELECT ?uri WHERE
                 {
                     ?uri a nfo:FileDataObject .
@@ -326,8 +326,8 @@ namespace Artivity.Apid
 
         private void UpdateFileDataObject(string oldPath, string newPath)
         {
-            Uri oldUrl = new Uri("file://" + Uri.EscapeUriString(oldPath));
-            Uri newUrl = new Uri("file://" + Uri.EscapeUriString(newPath));
+            Uri oldUrl = new Uri("file://" + Uri.EscapeUriString(oldPath.Replace('\\', '/')));
+            Uri newUrl = new Uri("file://" + Uri.EscapeUriString(newPath.Replace('\\', '/')));
 
             if (_monitoredFileUris.ContainsKey(oldUrl))
             {
