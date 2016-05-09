@@ -43,6 +43,7 @@ using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using Artivity.Apid.Parameters;
 using Artivity.Apid.Accounts;
+using System.Globalization;
 
 namespace Artivity.Apid.Modules
 {
@@ -54,11 +55,6 @@ namespace Artivity.Apid.Modules
             : base("/artivity/api/1.0", provider)
         {
             ModelProvider = provider;
-
-            Get["/"] = parameters =>
-            {
-                return HttpStatusCode.OK;
-            };
 
             // Get a list of all installed agents.
             Get["/agents"] = paramters =>
@@ -235,6 +231,15 @@ namespace Artivity.Apid.Modules
             {
                 if(Request.Query.fileUrl)
                 {
+                    if(Request.Query.timestamp)
+                    {
+                        string time = Request.Query.timestamp;
+
+                        DateTimeOffset timestamp = DateTimeOffset.Parse(time.Replace(' ', '+'));
+
+                        return GetThumbnails(Request.Query.fileUrl, timestamp.UtcDateTime);
+                    }
+
                     return GetThumbnails(Request.Query.fileUrl);
                 }
                 else if(Request.Query.thumbnailUrl)
@@ -567,7 +572,7 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.GetAllActivities();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?time ?uri ?type ?color ?description ?bounds ?thumbnailUrl WHERE 
+                SELECT ?time ?uri ?type ?color ?description ?bounds ?thumbnailUrl ?x ?y WHERE 
                 {
                     ?file nfo:fileUrl @fileUrl .
 
@@ -589,9 +594,15 @@ namespace Artivity.Apid.Modules
                     OPTIONAL
                     {
                         ?generation art:thumbnailUrl ?thumbnailUrl .
+                        ?generation art:thumbnailPosition ?rectangle .
+
+                        ?rectangle art:position ?position .
+
+                        ?position art:x ?x .
+                        ?position art:y ?y .
                     }
                 }
-                ORDER BY (?time)");
+                ORDER BY DESC(?time)");
 
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
 
@@ -603,18 +614,78 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.ActivitiesModel;
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?thumbnailUrl WHERE 
+                SELECT ?layer ?time ?thumbnailUrl ?x ?y WHERE 
                 {
-                    ?file nfo:fileUrl @fileUrl .
+                    {
+                        SELECT ?layer (SAMPLE(?generation) AS ?generation) (MAX(?time) AS ?time) WHERE
+                        {
+                            ?file nfo:fileUrl @fileUrl .
 
-                    ?activity prov:used ?file;
-                        prov:generated ?entity .
+                            ?activity prov:used ?file .
+                            ?activity prov:generated ?entity .
 
-                    ?entity prov:qualifiedGeneration ?generation .
+                            ?entity prov:qualifiedGeneration ?generation .
+
+                            ?generation art:selectedLayer ?layer .
+                            ?generation prov:atTime ?time .
+                        }
+                        GROUP BY ?layer
+                    }
 
                     ?generation art:thumbnailUrl ?thumbnailUrl .
+                    ?generation art:thumbnailPosition ?rectangle .
+
+                    ?rectangle art:position ?position .
+
+                    ?position art:x ?x .
+                    ?position art:y ?y .
                 }
-                ORDER BY (?time)");
+                ORDER BY DESC(?layer)");
+
+            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+
+            return Response.AsJson(model.GetBindings(query));
+        }
+
+        private Response GetThumbnails(string fileUrl, DateTime timestamp)
+        {
+            IModel model = ModelProvider.ActivitiesModel;
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT ?layer ?time ?thumbnailUrl ?x ?y WHERE 
+                {
+                    {
+                        SELECT ?layer (SAMPLE(?generation) AS ?generation) (SAMPLE(?time) AS ?time) WHERE
+                        {
+                            ?file nfo:fileUrl @fileUrl .
+
+                            ?activity prov:used ?file .
+                            ?activity prov:generated ?entity .
+
+                            ?entity prov:qualifiedGeneration ?generation .
+
+                            ?generation art:selectedLayer ?layer .
+                            ?generation prov:atTime ?time .
+
+                            FILTER(?time <= @time)
+                        }
+                        GROUP BY ?layer
+                    }
+
+                    ?generation art:thumbnailUrl ?thumbnailUrl .
+                    ?generation art:thumbnailPosition ?rectangle .
+
+                    ?rectangle art:position ?position .
+
+                    ?position art:x ?x .
+                    ?position art:y ?y .
+                }
+                ORDER BY DESC(?layer)");
+
+            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@time", timestamp);
+
+            string q = query.ToString();
 
             return Response.AsJson(model.GetBindings(query));
         }

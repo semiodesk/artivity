@@ -90,9 +90,12 @@ explorerControllers.controller('FileDetailController', function (api, $scope, $r
 		if(influence.thumbnailUrl) {			
 			var thumbnail = new Image();
 			thumbnail.src = api.getThumbnailUrl(influence.thumbnailUrl);
-			thumbnail.onload = function () {				
+			thumbnail.onload = function () {		
+				var x = influence.x;
+				var y = influence.y;
+				
 				$scope.context.clearRect(0, 0, viewport.width, viewport.height);
-				$scope.context.drawImage(thumbnail, 0, 0, thumbnail.width, thumbnail.height);
+				$scope.context.drawImage(thumbnail, x, y, thumbnail.width, thumbnail.height);
 			};
 		}
 	}
