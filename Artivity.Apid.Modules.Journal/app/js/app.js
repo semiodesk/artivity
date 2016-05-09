@@ -2,7 +2,19 @@ var explorerApp = angular.module('explorerApp', [
     'ngRoute',
     'explorerControllers',
     'ui.bootstrap'
-]);
+]).config(function($httpProvider) {
+     $httpProvider.interceptors.push(function($q) {
+        return {
+          responseError: function(rejection) {
+                if(rejection.status <= 0) {
+                    window.location = "/app/index.html#/error-no-apid-connection";
+                    return;
+                }
+                return $q.reject(rejection);
+            }
+        };
+    });
+});
 
 explorerApp.config(['$routeProvider',
   function ($routeProvider) {
@@ -18,6 +30,10 @@ explorerApp.config(['$routeProvider',
 		when('/settings', {
 			templateUrl: 'partials/settings.html',
 			controller: 'SettingsController'
+		}).
+		when('/error-no-apid-connection', {
+			templateUrl: 'partials/error-no-apid-connection.html',
+			controller: 'ErrorController'
 		}).
 		otherwise({
 			redirectTo: '/files'

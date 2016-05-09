@@ -76,14 +76,17 @@ namespace Artivity.Explorer
         private static string GetConnectionStringFromConfiguration()
         {
             string name = "virt0";
+
             foreach (ConnectionStringSettings setting in ConfigurationManager.ConnectionStrings)
             {
                 if (!string.IsNullOrEmpty(name) && setting.Name != name)
+                {
                     continue;
+                }
 
                 return setting.ConnectionString;
-
             }
+
             return null;
         }
 	}

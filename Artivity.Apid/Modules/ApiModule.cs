@@ -55,6 +55,11 @@ namespace Artivity.Apid.Modules
         {
             ModelProvider = provider;
 
+            Get["/"] = parameters =>
+            {
+                return HttpStatusCode.OK;
+            };
+
             // Get a list of all installed agents.
             Get["/agents"] = paramters =>
             {

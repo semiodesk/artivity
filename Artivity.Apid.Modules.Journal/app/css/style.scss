@@ -1,6 +1,6 @@
 $textFont: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 $textColor: #fff;
-$labelColor: #ccc;
+$labelColor: darken($textColor, 30%);
 $accentColor: #F94C00;
 $iconFontSize: 25px;
 
@@ -57,7 +57,7 @@ a:hover {
 .accent-color {
 	color: $accentColor;
 }
- 
+
 .btn-default {
 	font-size: $iconFontSize;
 	text-shadow: none;
@@ -145,7 +145,7 @@ a:hover {
 	background: $headerBackgroundColor;
 }
 
-.label {
+.label, .text-label {
 	color: $labelColor;
 }
 

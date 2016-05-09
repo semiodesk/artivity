@@ -50,7 +50,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="app\img\heart-broken.svg" />
+    <Content Include="app\img\heart.svg" />
+    <Content Include="app\img\orcid_64x64.png" />
+    <EmbeddedResource Include="app\partials\error-no-apid-connection.html" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
