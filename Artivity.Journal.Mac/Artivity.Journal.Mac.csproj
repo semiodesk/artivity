@@ -9,6 +9,8 @@
     <RootNamespace>Artivity.Journal.Mac</RootNamespace>
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <AssemblyName>Artivity.Journal.Mac</AssemblyName>
+    <SuppressXamMacMigration>True</SuppressXamMacMigration>
+    <ReleaseVersion>1.5.20</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,7 +26,6 @@
     <UseSGen>false</UseSGen>
     <IncludeMonoRuntime>false</IncludeMonoRuntime>
     <CreatePackage>false</CreatePackage>
-    <CodeSigningKey>Mac Developer</CodeSigningKey>
     <EnableCodeSigning>false</EnableCodeSigning>
     <EnablePackageSigning>false</EnablePackageSigning>
   </PropertyGroup>
@@ -55,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="Resources\Artivity.Journal.Mac\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindow.cs" />
@@ -76,4 +78,13 @@
     <None Include="Info.plist" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Artivity.Apid.Modules.Journal\Artivity.Apid.Modules.Journal.csproj">
+      <Project>{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}</Project>
+      <Name>Artivity.Apid.Modules.Journal</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Icon.icns" />
+  </ItemGroup>
 </Project>
