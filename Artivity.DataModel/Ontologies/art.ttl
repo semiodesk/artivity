@@ -84,6 +84,11 @@ art:selectedLayer a rdf:Property ;
 	rdfs:label "selectedLayer" ;
 	rdfs:domain prov:Activity ;
 	rdfs:range xsd:string .
+
+art:layerZPosition a rdf:Property ;
+	rdfs:label "layerZPosition" ;
+	rdfs:domain prov:Activity ;
+	rdfs:range xsd:integer .
     
 art:isCaptureEnabled a rdf:Property ;
     rdfs:label "isCaptureEnabled" ;
@@ -152,7 +157,7 @@ art:Geometry a rdfs:Class ;
 art:coordinateDimension a rdf:Property ;
     rdfs:label "coordinateDimension" ;
     rdfs:domain art:Geometry ;
-    rdfs:range xsd:int ;
+    rdfs:range xsd:integer ;
     owl:sameAs geo:coordinateDimension .
 
 art:width a rdf:Property ;

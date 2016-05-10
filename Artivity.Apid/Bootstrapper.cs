@@ -37,6 +37,7 @@ using Nancy.Diagnostics;
 using Nancy.Responses;
 using Nancy.TinyIoc;
 using Artivity.DataModel;
+using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {
@@ -48,6 +49,8 @@ namespace Artivity.Apid
 
         public IModelProvider ModelProvider { get; set; }
 
+        public IPlatformProvider PlatformProvider { get; set; }
+
         #endregion
 
         protected override DiagnosticsConfiguration DiagnosticsConfiguration
@@ -57,14 +60,20 @@ namespace Artivity.Apid
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
+            base.ConfigureApplicationContainer(container);
+
             if (ModelProvider != null)
             {
                 container.Register(ModelProvider);
             }
 
+            if (PlatformProvider != null)
+            {
+                container.Register(PlatformProvider);
+            }
+
             _container = container;
 
-            base.ConfigureApplicationContainer(container);
         }
 
         protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container, IPipelines pipelines, NancyContext context)
