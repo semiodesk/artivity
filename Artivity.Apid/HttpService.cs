@@ -37,6 +37,7 @@ using log4net;
 using Nancy.Hosting.Self;
 using Nancy.TinyIoc;
 using Artivity.DataModel;
+using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {
@@ -135,7 +136,11 @@ namespace Artivity.Apid
 
         public IModelProvider ModelProvider { get; set; }
 
-        public string Username {get;set;}
+        public string Username { get; set; }
+
+        public string ApplicationData { get; set; }
+
+        public IPlatformProvider PlatformProvider { get; set; }
 
         #endregion
 
@@ -143,6 +148,8 @@ namespace Artivity.Apid
 
         public HttpService()
         {
+            ApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            Username = Environment.UserName;
         }   
 
         #endregion
@@ -156,6 +163,8 @@ namespace Artivity.Apid
             string version = typeof(HttpService).Assembly.GetName().Version.ToString();
 
             Logger.LogInfo("Artivity Logging Service, Version {0}", version);
+
+            PlatformProvider = new PlatformProvider(ApplicationData, Username);
 
             // Make sure the database is started.
             StartDatabase();
@@ -187,15 +196,13 @@ namespace Artivity.Apid
 
         private void StartService()
         {
-            if (string.IsNullOrEmpty(Username))
-            {
-                Username = Environment.UserName;
-            }
-
+            
             ModelProvider.Username = Username;
 
             Bootstrapper customBootstrapper = new Bootstrapper();
             customBootstrapper.ModelProvider = ModelProvider;
+            customBootstrapper.PlatformProvider = PlatformProvider;
+
 
             HostConfiguration config = new HostConfiguration();
             config.RewriteLocalhost = true;
@@ -243,15 +250,15 @@ namespace Artivity.Apid
 
         private void StartDatabase()
         {
-            if (Platform.IsWindows() ||  Platform.IsMac())
+            if (PlatformProvider.IsWindows || PlatformProvider.IsMac)
             {
                 // We are running on Windows or Mac. Start the database using TinyVirtuoso..
                 Logger.LogInfo("Starting the OpenLink Virtuoso database..");
-                Logger.LogInfo("Database folder: {0}", Platform.GetAppDataFolder("Data"));
+                Logger.LogInfo("Database folder: {0}", PlatformProvider.DatabaseFolder);
 
                 // The database is started in the user's application data folder on port 8273..
-                _virtuoso = new TinyVirtuoso(Platform.GetAppDataFolder());
-                _virtuosoInstance = _virtuoso.GetOrCreateInstance("Data");
+                _virtuoso = new TinyVirtuoso(PlatformProvider.ArtivityUserDataFolder);
+                _virtuosoInstance = _virtuoso.GetOrCreateInstance(PlatformProvider.DatabaseName);
                 _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("localhost:{0}", _virtuosoPort);
                 _virtuosoInstance.Configuration.SaveConfigFile();
                 _virtuosoInstance.RemoveLock();
@@ -301,5 +308,6 @@ namespace Artivity.Apid
         }
 
         #endregion
+
     }
 }
