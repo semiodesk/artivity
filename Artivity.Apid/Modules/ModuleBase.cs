@@ -35,6 +35,7 @@ using Artivity.DataModel;
 using Nancy.IO;
 using System.IO;
 using Newtonsoft.Json;
+using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {
@@ -44,22 +45,27 @@ namespace Artivity.Apid
 
         public IModelProvider ModelProvider { get; set; }
 
-        protected string ModulePath { get; set; }
+        public IPlatformProvider PlatformProvider { get; set; }
+        
+
+        protected string ArtivityModulePath { get; set; }
 
         #endregion
 
         #region Constructors
 
-        public ModuleBase(IModelProvider provider) 
+        public ModuleBase(IModelProvider model, IPlatformProvider platform) 
         {
-            ModelProvider = provider;
+            ModelProvider = model;
+            PlatformProvider = platform;
         }
 
 
-        public ModuleBase(string modulePath, IModelProvider provider) : base(modulePath)
+        public ModuleBase(string modulePath, IModelProvider model, IPlatformProvider platform) : base(modulePath)
         {
-            ModelProvider = provider;
-            ModulePath = modulePath;
+            ModelProvider = model;
+            PlatformProvider = platform;
+            ArtivityModulePath = modulePath;
         }
 
 		#endregion

@@ -51,6 +51,8 @@ namespace artivity
 		static const char* Save = ART("Save");
         
 		static const char* selectedLayer = ART("selectedLayer");
+
+        static const char* layerZPosition = ART("layerZPosition")
         
         // --- AGENT ---
 		static const char* isCaptureEnabled = ART("isCaptureEnabled");
