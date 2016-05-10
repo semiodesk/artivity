@@ -36,6 +36,7 @@ using System.Collections.Generic;
 using System.IO;
 using Nancy;
 using Nancy.ModelBinding;
+using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {
@@ -43,7 +44,8 @@ namespace Artivity.Apid
 	{
 		#region Constructors
 
-        public AgentsModule(IModelProvider provider) : base("/artivity/1.0/agents", provider)
+        public AgentsModule(IModelProvider model, IPlatformProvider platform)
+            : base("/artivity/1.0/agents", model, platform)
 		{
 			Get["/"] = parameters => { return GetAgents(); };
 			Get["/status"] = parameters => { return GetAgentStatus(); };

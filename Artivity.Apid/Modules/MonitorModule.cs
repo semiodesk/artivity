@@ -27,6 +27,7 @@
 using System;
 using Nancy;
 using Artivity.DataModel;
+using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {
@@ -34,8 +35,8 @@ namespace Artivity.Apid
     {
         #region Constructors
 
-        public MonitoringModule(IModelProvider provider)
-            : base("/artivity/1.0/monitor", provider)
+        public MonitoringModule(IModelProvider model, IPlatformProvider platform)
+            : base("/artivity/1.0/agents", model, platform)
         {
             Get["/add"] = parameters => { return AddFile(); };
             Get["/remove"] = parameters => { return RemoveFile(); };

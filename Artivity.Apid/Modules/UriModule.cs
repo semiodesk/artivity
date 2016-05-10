@@ -41,6 +41,7 @@ using Nancy;
 using Nancy.IO;
 using Nancy.ModelBinding;
 using VDS.RDF;
+using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {
@@ -48,7 +49,8 @@ namespace Artivity.Apid
 	{
 		#region Constructors
 
-        public UriModule(IModelProvider provider) : base("/artivity/1.0/uri", provider)
+        public UriModule(IModelProvider model, IPlatformProvider platform)
+            : base("/artivity/1.0/uri", model, platform)
 		{
             Get[""] = parameters => { return GetUri(); };
 		}
@@ -208,7 +210,7 @@ namespace Artivity.Apid
         private Response GetThumbnailPaths(string path)
         {
             string dirName = GetFileUri(path);
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(Platform.GetAppDataFolder("Thumbnails"), dirName));
+            DirectoryInfo dir = new DirectoryInfo(Path.Combine(PlatformProvider.ThumbnailFolder, dirName));
             if (!dir.Exists)
                 dir.Create();
 
