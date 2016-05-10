@@ -2073,9 +2073,9 @@ public class prov : Ontology
 
     ///<summary>
     ///
-    ///<see cref="file:///D:/Projects/2016/Artivity/Artivity.DataModel/Ontologies/prov.ttl#"/>
+    ///<see cref="file:///D:/Projects/Artivity/Artivity.DataModel/Ontologies/prov.ttl#"/>
     ///</summary>
-    public static readonly Resource prov_ttl = new Resource(new Uri("file:///D:/Projects/2016/Artivity/Artivity.DataModel/Ontologies/prov.ttl#"));    
+    public static readonly Resource prov_ttl = new Resource(new Uri("file:///D:/Projects/Artivity/Artivity.DataModel/Ontologies/prov.ttl#"));    
 
     ///<summary>
     ///
@@ -3212,9 +3212,9 @@ public static class PROV
 
     ///<summary>
     ///
-    ///<see cref="file:///D:/Projects/2016/Artivity/Artivity.DataModel/Ontologies/prov.ttl#"/>
+    ///<see cref="file:///D:/Projects/Artivity/Artivity.DataModel/Ontologies/prov.ttl#"/>
     ///</summary>
-    public const string prov_ttl = "file:///D:/Projects/2016/Artivity/Artivity.DataModel/Ontologies/prov.ttl#";
+    public const string prov_ttl = "file:///D:/Projects/Artivity/Artivity.DataModel/Ontologies/prov.ttl#";
 
     ///<summary>
     ///
@@ -7373,6 +7373,12 @@ public class art : Ontology
 
     ///<summary>
     ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/layerZPosition"/>
+    ///</summary>
+    public static readonly Property layerZPosition = new Property(new Uri("http://semiodesk.com/artivity/1.0/layerZPosition"));    
+
+    ///<summary>
+    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
     ///</summary>
     public static readonly Property isCaptureEnabled = new Property(new Uri("http://semiodesk.com/artivity/1.0/isCaptureEnabled"));    
@@ -7748,6 +7754,12 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
     ///</summary>
     public const string selectedLayer = "http://semiodesk.com/artivity/1.0/selectedLayer";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/layerZPosition"/>
+    ///</summary>
+    public const string layerZPosition = "http://semiodesk.com/artivity/1.0/layerZPosition";
 
     ///<summary>
     ///

@@ -43,6 +43,7 @@ using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using Artivity.Apid.Parameters;
 using Artivity.Apid.Accounts;
+using Artivity.Apid.Platforms;
 using System.Globalization;
 
 namespace Artivity.Apid.Modules
@@ -51,10 +52,9 @@ namespace Artivity.Apid.Modules
     {
         #region Constructors
 
-        public ApiModule(IModelProvider provider)
-            : base("/artivity/api/1.0", provider)
+        public ApiModule(IModelProvider modelProvider, IPlatformProvider platform)
+            : base("/artivity/api/1.0", modelProvider, platform)
         {
-            ModelProvider = provider;
 
             // Get a list of all installed agents.
             Get["/agents"] = paramters =>
@@ -476,7 +476,7 @@ namespace Artivity.Apid.Modules
 
         public Response GetUserAgentPhoto()
         {
-            string file = Path.Combine(Platform.GetAppDataFolder(), "user.jpg");
+            string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
 
             if (File.Exists(file))
             {
@@ -494,7 +494,7 @@ namespace Artivity.Apid.Modules
 
         public Response SetUserAgentPhoto(RequestStream stream)
         {
-            string file = Path.Combine(Platform.GetAppDataFolder(), "user.jpg");
+            string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
 
             try
             {
@@ -729,7 +729,7 @@ namespace Artivity.Apid.Modules
             var invalids = System.IO.Path.GetInvalidFileNameChars();
             var newName = String.Join("_", dirName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(Platform.GetAppDataFolder("Thumbnails"), newName));
+            DirectoryInfo dir = new DirectoryInfo(Path.Combine(PlatformProvider.ThumbnailFolder, newName));
 
             if (!dir.Exists)
             {

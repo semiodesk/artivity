@@ -42,6 +42,7 @@ using Nancy.IO;
 using Nancy.ModelBinding;
 using VDS.RDF;
 using System.Threading.Tasks;
+using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {
@@ -57,7 +58,7 @@ namespace Artivity.Apid
 
 		#region Constructors
 
-        public ActivitiesModule(IModelProvider provider) : base("/artivity/1.0/activities", provider)
+        public ActivitiesModule(IModelProvider model, IPlatformProvider platform) : base("/artivity/1.0/activities", model, platform)
         {
             Post["/"] = parameters => { return PostActivity(); };
             Post["/web/"] = parameters => { return PostActivity(this.Bind<ActivityParameters>()); };
