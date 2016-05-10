@@ -38,11 +38,7 @@ explorerControllers.controller('FileDetailController', function (api, $scope, $r
 
 	$scope.playloop = undefined;
 
-	var viewport = document.getElementById('viewport');
-	
-	if(viewport) {
-		$scope.context = viewport.getContext('2d');
-	}
+	var buffer = document.getElementsByClassName('buffer')[0];
 
 	api.getAgent(fileUrl).then(function (data) {
 		$scope.agent = data;
@@ -86,28 +82,64 @@ explorerControllers.controller('FileDetailController', function (api, $scope, $r
 	$scope.previewInfluence = function (influence) {
 		$scope.previousInfluence = $scope.selectedInfluence;
 		$scope.selectedInfluence = influence;
+
+		$scope.renderInfluence(influence);
+	};
 	
-		if(influence.thumbnailUrl) {			
-			var thumbnail = new Image();
-			thumbnail.src = api.getThumbnailUrl(influence.thumbnailUrl);
-			thumbnail.onload = function () {		
-				var x = influence.x;
-				var y = influence.y;
-				
-				$scope.context.clearRect(0, 0, viewport.width, viewport.height);
-				$scope.context.drawImage(thumbnail, x, y, thumbnail.width, thumbnail.height);
+	$scope.renderInfluence = function (influence) {		
+		if (influence === undefined) {
+			var context = buffer.getContext('2d');
+
+			context.clearRect(0, 0, buffer.width, buffer.height);
+		} else {			
+			// A list with all loaded bitmaps.
+			var T = [];
+
+			// Loads a single bitmap and pushes it into the list when loading is complete.
+			var load = function (thumbnails, i, complete) {
+				var t = new Image();
+
+				t.onload = function () {
+					T.push({
+						image: t,
+						x: thumbnails[i].x,
+						y: thumbnails[i].y,
+						w: t.width,
+						h: t.height
+					});
+
+					complete(thumbnails, i);
+				};
+
+				t.src = api.getThumbnailUrl(thumbnails[i].thumbnailUrl);
 			};
+
+			// Renders all loaded images onto the canvas.
+			var render = function (thumbnails, i) {
+				var context = buffer.getContext('2d');
+
+				context.clearRect(0, 0, buffer.width, buffer.height);
+
+				T.forEach(function (t) {
+					context.drawImage(t.image, t.x, t.y, t.w, t.h);
+				});
+			};
+
+			// Trigger loading the bitmaps of the influence.
+			api.getThumbnails(fileUrl, influence.time).then(function (thumbnails) {
+				loadItems(thumbnails, load, render);
+			});
 		}
-	}
+	};
 
 	$scope.resetInfluence = function () {
-		/*
 		if ($scope.previousInfluence) {
 			$scope.selectedInfluence = $scope.previousInfluence;
 			$scope.previousInfluence = undefined;
+
+			$scope.renderInfluence($scope.selectedInfluence);
 		}
-		*/
-	}
+	};
 
 	$scope.skipPrev = function () {
 		var i = $scope.influences.indexOf($scope.selectedInfluence);

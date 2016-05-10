@@ -62,7 +62,7 @@ namespace Artivity.Apid
 
         private readonly HashSet<FileInfoCache> _deletedFiles = new HashSet<FileInfoCache>();
 
-        private readonly Dictionary<string, FileInfoCache> _monitoredFiles = new Dictionary<string, FileInfoCache>();
+        private readonly Dictionary<Uri, FileInfoCache> _monitoredFiles = new Dictionary<Uri, FileInfoCache>();
 
         private readonly static Dictionary<Uri, Uri> _monitoredFileUris = new Dictionary<Uri, Uri>();
 
@@ -129,7 +129,7 @@ namespace Artivity.Apid
                 FileInfoCache fileInfo = new FileInfoCache(url.LocalPath);
 
                 _monitoredFileUris[url] = uri;
-                _monitoredFiles[url.LocalPath] = fileInfo;
+                _monitoredFiles[url] = fileInfo;
 
                 if (!_monitoredDirectories.Contains(fileInfo.Url.LocalPath))
                 {
@@ -187,6 +187,7 @@ namespace Artivity.Apid
                 watcher.Deleted += OnFileSystemObjectDeleted;
                 watcher.Renamed += OnFileSystemObjectRenamed;
                 watcher.Path = path;
+                watcher.Filter = "*";
                 watcher.NotifyFilter = NotifyFilters.FileName;
                 watcher.IncludeSubdirectories = true;
 
@@ -223,23 +224,29 @@ namespace Artivity.Apid
 
         private void OnFileSystemObjectRenamed(object sender, RenamedEventArgs e)
         {
-            if (_monitoredFiles.ContainsKey(e.FullPath))
-            {
-                Logger.LogInfo("Renamed {0}", e.FullPath);
+            FileInfoCache file = new FileInfoCache(e.FullPath);
+            FileInfoCache oldFile = new FileInfoCache(e.OldFullPath);
 
-                _monitoredFiles[e.FullPath] = new FileInfoCache(e.FullPath);
-            }
-            else if (_monitoredFiles.ContainsKey(e.OldFullPath))
+            if (_monitoredFiles.ContainsKey(file.Url))
             {
-                UpdateFileDataObject(e.OldFullPath, e.FullPath);
+                _monitoredFiles[file.Url] = file;
             }
+
+            if (_monitoredFiles.ContainsKey(oldFile.Url))
+            {
+                UpdateFileDataObject(oldFile.Url, file.Url);
+            }
+
+            Logger.LogInfo("Renamed {0} -> {1}", oldFile.Url.LocalPath, file.Url.LocalPath);
         }
 
         private void OnFileSystemObjectDeleted(object sender, FileSystemEventArgs e)
         {
-            if (_monitoredFiles.ContainsKey(e.FullPath))
+            FileInfoCache file = new FileInfoCache(e.FullPath);
+
+            if (_monitoredFiles.ContainsKey(file.Url))
             {
-                _deletedFiles.Add(_monitoredFiles[e.FullPath]);
+                _deletedFiles.Add(_monitoredFiles[file.Url]);
             }
 
             // TODO: Mark the file as deleted if no sub-sequent create occurs.
@@ -247,21 +254,21 @@ namespace Artivity.Apid
 
         private void OnFileSystemObjectCreated(object sender, FileSystemEventArgs e)
         {
-            if (_monitoredFiles.ContainsKey(e.FullPath))
+            FileInfoCache file = new FileInfoCache(e.FullPath);
+
+            if (_monitoredFiles.ContainsKey(file.Url))
             {
-                _monitoredFiles[e.FullPath] = CreateFileDataObject(e.FullPath);
+                _monitoredFiles[file.Url] = CreateFileDataObject(file.Url);
             }
             else if (_deletedFiles.Count > 0)
             {
-                FileInfoCache created = new FileInfoCache(e.FullPath);
-
                 foreach (FileInfoCache deleted in _deletedFiles)
                 {
-                    if(deleted.CreationTime == created.CreationTime || deleted.Name == created.Name || deleted.Length == created.Length)
+                    if (deleted.CreationTime == file.CreationTime || deleted.Name == file.Name || deleted.Length == file.Length)
                     {
                         // We assume that a recently deleted file with the same size 
                         // and creation time of a monitored one is being moved.
-                        UpdateFileDataObject(deleted.FullName, created.FullName);
+                        UpdateFileDataObject(deleted.Url, file.Url);
 
                         _deletedFiles.Remove(deleted);
 
@@ -273,35 +280,44 @@ namespace Artivity.Apid
 
         public void AddFile(string path)
         {
-            _monitoredFiles[path] = new FileInfoCache(path);
+            FileInfoCache file = new FileInfoCache(path);
+
+            _monitoredFiles[file.Url] = file;
         }
 
         public void RemoveFile(string path)
         {
-            if (_monitoredFiles.ContainsKey(path))
+            FileInfoCache file = new FileInfoCache(path);
+
+            if (_monitoredFiles.ContainsKey(file.Url))
             {
-                _monitoredFiles.Remove(path);
+                _monitoredFiles.Remove(file.Url);
             }
         }
 
-        private FileInfoCache CreateFileDataObject(string path)
+        private FileInfoCache CreateFileDataObject(Uri url)
         {
-            FileInfoCache file = new FileInfoCache(path);
+            FileInfoCache file = new FileInfoCache(url.LocalPath);
 
-            string queryString = @"
+            SparqlQuery query = new SparqlQuery(@"
                 SELECT ?uri WHERE
                 {
                     ?uri a nfo:FileDataObject .
-                    ?uri nfo:fileUrl """ + file.Url.AbsoluteUri + @""" . 
+                    ?uri nfo:fileUrl @fileUrl . 
                 }
-                LIMIT 1";
+                LIMIT 1");
 
-            SparqlQuery query = new SparqlQuery(queryString);
-            ISparqlQueryResult result = _model.ExecuteQuery(query);
+            query.Bind("@fileUrl", file.Url.AbsoluteUri);
 
-            BindingSet bindings = result.GetBindings().FirstOrDefault();
+            BindingSet bindings = _model.GetBindings(query).FirstOrDefault();
 
-            if (bindings == null)
+            if (bindings != null)
+            {
+                _monitoredFileUris[file.Url] = new Uri(bindings["uri"].ToString());
+
+                Logger.LogInfo("Updating {0}", file.Url.LocalPath);
+            }
+            else
             {
                 FileDataObject f = _model.CreateResource<FileDataObject>();
                 f.CreationTime = file.CreationTime;
@@ -312,23 +328,14 @@ namespace Artivity.Apid
 
                 _monitoredFileUris[file.Url] = f.Uri;
 
-                Logger.LogInfo("Created {0}", file.FullName);
-            }
-            else
-            {
-                _monitoredFileUris[file.Url] = new Uri(bindings["uri"].ToString());
-
-                Logger.LogInfo("Updating {0}", file.FullName);
+                Logger.LogInfo("Created {0}", file.Url.LocalPath);
             }
 
             return file;
         }
 
-        private void UpdateFileDataObject(string oldPath, string newPath)
+        private void UpdateFileDataObject(Uri oldUrl, Uri newUrl)
         {
-            Uri oldUrl = new Uri("file://" + Uri.EscapeUriString(oldPath.Replace('\\', '/')));
-            Uri newUrl = new Uri("file://" + Uri.EscapeUriString(newPath.Replace('\\', '/')));
-
             if (_monitoredFileUris.ContainsKey(oldUrl))
             {
                 try
@@ -339,12 +346,16 @@ namespace Artivity.Apid
                     file.Url = newUrl.AbsoluteUri;
                     file.Commit();
 
-                    _monitoredFiles.Remove(oldPath);
-                    _monitoredFiles.Add(newPath, new FileInfoCache(newPath));
-                    _monitoredFileUris.Remove(oldUrl);
-                    _monitoredFileUris.Add(newUrl, file.Uri);
+                    if(_monitoredFiles.ContainsKey(oldUrl))
+                    {
+                        _monitoredFiles.Remove(oldUrl);
+                    }
 
-                    Logger.LogInfo("Moved {0}", newPath);
+                    _monitoredFiles[newUrl] = new FileInfoCache(newUrl.LocalPath);
+                    _monitoredFileUris.Remove(oldUrl);
+                    _monitoredFileUris[newUrl] = file.Uri;
+
+                    Logger.LogInfo("Moved {0} -> {1}", oldUrl.LocalPath, newUrl.LocalPath);
                 }
                 catch(Exception e)
                 {
@@ -353,7 +364,7 @@ namespace Artivity.Apid
             }
             else
             {
-                CreateFileDataObject(newPath);
+                CreateFileDataObject(newUrl);
             }
         }
 
