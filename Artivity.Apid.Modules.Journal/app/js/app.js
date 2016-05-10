@@ -2,18 +2,18 @@ var explorerApp = angular.module('explorerApp', [
     'ngRoute',
     'explorerControllers',
     'ui.bootstrap'
-]).config(function($httpProvider) {
-     $httpProvider.interceptors.push(function($q) {
-        return {
-          responseError: function(rejection) {
-                if(rejection.status <= 0) {
-                    window.location = "/app/index.html#/error-no-apid-connection";
-                    return;
-                }
-                return $q.reject(rejection);
-            }
-        };
-    });
+]).config(function ($httpProvider) {
+	$httpProvider.interceptors.push(function ($q) {
+		return {
+			responseError: function (rejection) {
+				if (rejection.status <= 0) {
+					window.location = "/app/index.html#/error-no-apid-connection";
+					return;
+				}
+				return $q.reject(rejection);
+			}
+		};
+	});
 });
 
 explorerApp.config(['$routeProvider',
@@ -125,6 +125,12 @@ explorerApp.factory('api', function ($http) {
 					return response.data;
 				})
 		},
+		getThumbnails: function (fileUrl, time) {
+			return $http.get(endpoint + '/thumbnails?fileUrl=' + fileUrl + '&timestamp=' + time).then(
+				function (response) {
+					return response.data;
+				})
+		},
 		getThumbnailUrl: function (thumbnailUrl) {
 			return endpoint + '/thumbnails?thumbnailUrl=' + thumbnailUrl;
 		}
@@ -164,5 +170,32 @@ function setValue(obj, path, value) {
 
 	if (p) {
 		obj[p] = value;
+	}
+}
+
+function loadItems(items, action, done) {
+	if (!items) {
+		return;
+	}
+
+	// convert single item to array.
+	if ("undefined" === items.length) {
+		items = [items];
+	}
+
+	var count = items.length;
+
+	// this callback counts down the things to do.
+	var completed = function (items, i) {
+		count--;
+
+		if (0 == count) {
+			done(items);
+		}
+	};
+
+	// invoke each action, and await callback.
+	for (var i = 0; i < items.length; i++) {
+		action(items, i, completed);
 	}
 }

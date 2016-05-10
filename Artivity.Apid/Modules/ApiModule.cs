@@ -217,6 +217,12 @@ namespace Artivity.Apid.Modules
                 return GetActivities(Request.Query.fileUrl);
             };
 
+            Get["/activities/remove/all"] = parameters =>
+            {
+                // TODO: We definitely need to add some kind of security here, i.e. a token.
+                return RemoveAllActivities();
+            };
+
             Get["/influences"] = parameters =>
             {
                 if (string.IsNullOrEmpty(Request.Query.fileUrl))
@@ -525,17 +531,14 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.ActivitiesModel;
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT MAX(?startTime) as ?time ?uri ?url ?agent WHERE
+                SELECT MAX(?time) as ?time ?entity ?url WHERE
                 {
-                    ?activity prov:used ?uri ;
-                        prov:startedAtTime ?startTime ;
-                        prov:qualifiedAssociation ?association .
+                    ?activity prov:used ?entity .
+                    ?activity prov:startedAtTime ?time .
 
-                    ?association prov:agent ?agent .
-
-                    ?uri nfo:fileUrl ?url .
+                    ?entity nfo:fileUrl ?url .
                 }
-                ORDER BY DESC(?time) LIMIT 25");
+                GROUP BY ?entity ?url ORDER BY DESC(?time) LIMIT 25");
 
             return Response.AsJson(model.GetBindings(query));
         }
@@ -565,6 +568,13 @@ namespace Artivity.Apid.Modules
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
 
             return Response.AsJson(model.GetBindings(query));
+        }
+
+        public Response RemoveAllActivities()
+        {
+            ModelProvider.ActivitiesModel.Clear();
+
+            return HttpStatusCode.OK;
         }
 
         public Response GetInfluences(string fileUrl)
@@ -652,10 +662,10 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.ActivitiesModel;
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?layer ?time ?thumbnailUrl ?x ?y WHERE 
+                SELECT ?layer ?time ?generation ?thumbnailUrl ?x ?y WHERE 
                 {
                     {
-                        SELECT ?layer (SAMPLE(?generation) AS ?generation) (SAMPLE(?time) AS ?time) WHERE
+                        SELECT ?layer MAX(?time) AS ?time WHERE
                         {
                             ?file nfo:fileUrl @fileUrl .
 
@@ -672,6 +682,8 @@ namespace Artivity.Apid.Modules
                         GROUP BY ?layer
                     }
 
+                    ?generation prov:atTime ?time .
+                    ?generation art:selectedLayer ?layer .
                     ?generation art:thumbnailUrl ?thumbnailUrl .
                     ?generation art:thumbnailPosition ?rectangle .
 
@@ -679,13 +691,10 @@ namespace Artivity.Apid.Modules
 
                     ?position art:x ?x .
                     ?position art:y ?y .
-                }
-                ORDER BY DESC(?layer)");
+                }");
 
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
             query.Bind("@time", timestamp);
-
-            string q = query.ToString();
 
             return Response.AsJson(model.GetBindings(query));
         }
@@ -747,7 +756,7 @@ namespace Artivity.Apid.Modules
 
                     ?entity nfo:fileUrl @fileUrl .
                 }
-                ORDER BY(?startTime) LIMIT 1
+                ORDER BY DESC(?startTime) LIMIT 1
             ");
 
             query.Bind("@fileUrl", fileUrl.AbsoluteUri);

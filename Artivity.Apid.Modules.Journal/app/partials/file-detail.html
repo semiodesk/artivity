@@ -16,22 +16,42 @@
 	</div>
 	<div id="body">
 		<div class="content text-center">
-			<canvas id="viewport">
-			</canvas>
+			<canvas class="buffer" style="margin: 1px;"></canvas>
 			<script>
-				$(function(){
+				$(function () {
 					updateCanvas();
-					
+
 					window.addEventListener('resize', updateCanvas, false);
 				});
 
-				function updateCanvas()
-				{
-					var container = $('.content');
+				function updateCanvas() {
+					var buffer = document.getElementsByClassName("buffer")[0];
+					
+					// To prevent flickering, store the current context before setting the size.
+					var bufferContext = buffer.getContext('2d');
+					
+					// Create temp canvas and context
+					var temp = document.createElement('canvas');
+					temp.width = $('.content').innerWidth();
+					temp.height = $('.content').innerHeight();
 
-					var canvas = document.getElementById("viewport");
-					canvas.height = container.innerHeight();
-					canvas.width = container.innerWidth();
+					// Draw current canvas to temp canvas.
+					var tempContext = temp.getContext("2d");
+					tempContext.drawImage(bufferContext.canvas, 0, 0);
+					
+					// Now resize the canvas.					
+					buffer.width = $('.content').innerWidth();
+					buffer.height = $('.content').innerHeight();
+
+					// Draw temp canvas back to the current canvas
+        			bufferContext.drawImage(tempContext.canvas, 0, 0);
+
+					// Update the buffer if now.
+					var scope = angular.element(buffer).scope();
+
+					if (scope.selectedInfluence) {
+						scope.renderInfluence(scope.selectedInfluence);
+					}
 				}
 			</script>
 			<div id="viewport-overlay">
@@ -51,7 +71,7 @@
 				<div role="tabpanel" class="tab-pane fade active in" id="history">
 					<ul class="list-unstyled">
 						<li ng-repeat="influence in influences" ng-class="{selected: influence == selectedInfluence}">
-							<a title="{{influence.time}}" ng-click="selectInfluence(influence)" ng-mouseover="previewInfluence(influence)">
+							<a title="{{influence.time}}" ng-click="selectInfluence(influence)" ng-mouseenter="previewInfluence(influence)" style="padding: 3px;">
 								<i class="zmdi zmdi-hc-fw icn icn-circle"></i> {{influence.description}}
 							</a>
 						</li>

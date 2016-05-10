@@ -176,14 +176,17 @@ namespace Artivity.Apid
             Uri fileUrl = new FileInfo(path).ToUriRef();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT DISTINCT ?entity WHERE
+                SELECT ?entity WHERE
                 {
-                    ?activity prov:startedAtTime ?startTime .
-                    ?activity prov:used ?entity .
+                    ?save prov:atTime ?time .
+                    ?save prov:qualifiedGeneration ?generation .
 
-                    ?entity nfo:fileUrl @fileUrl .
+                    ?generation prov:generated ?version .
+
+                    ?version nfo:fileUrl @fileUrl .
+                    ?version prov:specializationOf ?entity .
                 }
-                ORDER BY(?startTime) LIMIT 1
+                ORDER BY DESC(?time) LIMIT 1
             ");
 
             query.Bind("@fileUrl", fileUrl.AbsoluteUri);
