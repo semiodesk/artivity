@@ -140,6 +140,8 @@ namespace Artivity.Apid
 
         public string ApplicationData { get; set; }
 
+        public string UserFolder { get; set; }
+
         public IPlatformProvider PlatformProvider { get; set; }
 
         #endregion
@@ -149,6 +151,7 @@ namespace Artivity.Apid
         public HttpService()
         {
             ApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             Username = Environment.UserName;
         }   
 
@@ -164,7 +167,7 @@ namespace Artivity.Apid
 
             Logger.LogInfo("Artivity Logging Service, Version {0}", version);
 
-            PlatformProvider = new PlatformProvider(ApplicationData, Username);
+            PlatformProvider = new PlatformProvider(ApplicationData, UserFolder, Username);
 
             // Make sure the database is started.
             StartDatabase();
@@ -229,7 +232,7 @@ namespace Artivity.Apid
                     using (var monitor = FileSystemMonitor.Instance)
                     {
                         // Start the file system change monitor.
-                        monitor.Initialize(ModelProvider);
+                        monitor.Initialize(ModelProvider, PlatformProvider);
                         monitor.Enable();
 
                         _wait.WaitOne();
