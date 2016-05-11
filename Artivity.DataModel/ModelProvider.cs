@@ -27,6 +27,8 @@
 
 using System;
 using Semiodesk.Trinity;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Artivity.DataModel
 {
@@ -47,7 +49,23 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        public IStore Store { get; private set; }
+        private Dictionary<int, IStore> _stores = new Dictionary<int, IStore>();
+        public IStore Store 
+        {
+            get
+            {
+                int id = Thread.CurrentThread.ManagedThreadId;
+                if (_stores.ContainsKey(id))
+                    return _stores[id];
+                else
+                {
+                    var store = StoreFactory.CreateStore(ConnectionString);
+                    _stores[id] = store;
+                    return store;
+                }
+            }
+        }
+        
 
         public string ConnectionString { get; set; }
 
@@ -55,19 +73,19 @@ namespace Artivity.DataModel
 
         public Uri Agents { get; set; }
 
-        public IModel AgentsModel { get; set; }
+        public IModel AgentsModel { get { return Store.GetModel(Agents); } }
 
         public Uri Activities { get; set; }
 
-        public IModel ActivitiesModel { get; set; }
+        public IModel ActivitiesModel { get { return Store.GetModel(Activities); } }
 
         public Uri WebActivities { get; set; }
 
-        public IModel WebActivitiesModel { get; set; }
+        public IModel WebActivitiesModel { get { return Store.GetModel(WebActivities); } }
 
         public Uri Monitoring { get; set; }
 
-        public IModel MonitoringModel { get; set; }
+        public IModel MonitoringModel { get { return Store.GetModel(Monitoring); } }
 
         public string Username { get; set; }
 
@@ -100,11 +118,7 @@ namespace Artivity.DataModel
             if (!UrisLoaded)
                 LoadModelUris();
 
-            Store = StoreFactory.CreateStore(ConnectionString);
-            AgentsModel = Store.GetModel(Agents);
-            ActivitiesModel = Store.GetModel(Activities);
-            WebActivitiesModel = Store.GetModel(WebActivities);
-            MonitoringModel = Store.GetModel(Monitoring);
+            //Store = StoreFactory.CreateStore(ConnectionString);
         }
 
         public IModelGroup GetAll()
