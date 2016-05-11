@@ -45,6 +45,7 @@ using Artivity.Apid.Parameters;
 using Artivity.Apid.Accounts;
 using Artivity.Apid.Platforms;
 using System.Globalization;
+using System.Threading;
 
 namespace Artivity.Apid.Modules
 {
@@ -55,7 +56,6 @@ namespace Artivity.Apid.Modules
         public ApiModule(IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0", modelProvider, platform)
         {
-
             // Get a list of all installed agents.
             Get["/agents"] = paramters =>
             {
@@ -695,8 +695,8 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
             query.Bind("@time", timestamp);
-
-            return Response.AsJson(model.GetBindings(query));
+            var res = model.GetBindings(query);
+            return Response.AsJson(res);
         }
 
         private Response GetThumbnail(string thumbnailUrl)

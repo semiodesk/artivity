@@ -12,19 +12,19 @@ namespace Artivity.DataModel
 
         Uri Agents { get; set; }
 
-        IModel AgentsModel { get; set; }
+        IModel AgentsModel { get; }
 
         Uri Activities { get; set; }
 
-        IModel ActivitiesModel { get; set; }
+        IModel ActivitiesModel { get; }
 
         Uri WebActivities { get; set; }
 
-        IModel WebActivitiesModel { get; set; }
+        IModel WebActivitiesModel { get; }
 
         Uri Monitoring { get; set; }
 
-        IModel MonitoringModel { get; set; }
+        IModel MonitoringModel { get; }
 
         string Username { get; set; }
 

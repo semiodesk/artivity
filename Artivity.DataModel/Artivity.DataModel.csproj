@@ -61,7 +61,7 @@
     <Compile Include="ObjectModel\Entities\FileDataObject.cs" />
     <Compile Include="ObjectModel\Role.cs" />
     <Compile Include="ObjectModel\Entities\WebDataObject.cs" />
-    <Compile Include="Models.cs" />
+    <Compile Include="ModelProvider.cs" />
     <Compile Include="ObjectModel\Entity.cs" />
     <Compile Include="ObjectModel\ActivityInfluence.cs" />
     <Compile Include="ObjectModel\Generation.cs" />
