@@ -51,6 +51,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		if (data.length > 0) {
 			$scope.selectedInfluence = data[0];
+			
+			$scope.renderInfluence($scope.selectedInfluence);
 		}
 	});
 
@@ -85,7 +87,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			var context = buffer.getContext('2d');
 
 			context.clearRect(0, 0, buffer.width, buffer.height);
-		} else {			
+		} else if(influence.time !== undefined) {			
 			// A list with all loaded bitmaps.
 			var T = [];
 
@@ -115,7 +117,9 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 				context.clearRect(0, 0, buffer.width, buffer.height);
 
 				T.forEach(function (t) {
-					context.drawImage(t.image, t.x, t.y, t.w, t.h);
+					console.log(t.x, -t.y, t.w, t.h);
+					
+					context.drawImage(t.image, t.x, -t.y, t.w, t.h);
 				});
 			};
 

@@ -419,12 +419,26 @@ namespace Artivity.Apid
             if (_driveWatchers.ContainsKey(root))
             {
                 FileSystemWatcher watcher = _driveWatchers[root];
+
+                if(watcher == null)
+                {
+                    // Trying to remove a non initialized watcher.
+                    return;
+                }
+
+                if(watcher.EnableRaisingEvents)
+                {
+                    watcher.EnableRaisingEvents = false;
+
+                    Logger.LogInfo("Disabled device monitoring: {0}", watcher.Path);
+                }
+
                 watcher.Created -= OnFileSystemObjectCreated;
                 watcher.Dispose();
 
                 _driveWatchers.Remove(root);
 
-                Logger.LogInfo("Uninstalled device monitoring: {0}", watcher.Path);
+                Logger.LogInfo("Uninstalled device monitoring: {0}", root);
             }
         }
 
@@ -468,6 +482,9 @@ namespace Artivity.Apid
 
                     // A monitored file is being replaced, update the database.
                     UpdateFileDataObject(createdFile.Url);
+
+                    // Enable monitoring for the directory.
+                    InstallMonitoring(createdFile.Url.LocalPath);
                 }
                 else
                 {
