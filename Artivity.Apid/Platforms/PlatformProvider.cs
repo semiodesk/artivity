@@ -28,6 +28,12 @@ namespace Artivity.Apid.Platforms
             private set;
         }
 
+        public string UserFolder
+        {
+            get;
+            private set;
+        }
+
         public string DatabaseName { get; private set; }
 
         public string DatabaseFolder { get; private set; }
@@ -57,8 +63,9 @@ namespace Artivity.Apid.Platforms
         }
         #endregion
 
-        #region Constructor
-        public PlatformProvider(string appDataFolder, string userName)
+        #region Constructors
+
+        public PlatformProvider(string appDataFolder, string userFolder, string userName)
         {
             AppDataFolder = appDataFolder;
             ArtivityUserDataFolder = Path.Combine(AppDataFolder, "Artivity");
@@ -71,12 +78,14 @@ namespace Artivity.Apid.Platforms
             DatabaseFolder = Path.Combine(ArtivityUserDataFolder, DatabaseName);
             EnsureFolderExists(DatabaseFolder);
 
+            UserFolder = userFolder;
             UserName = userName;
 
             IsWindows = TestWindows();
             IsMac = TestMac();
             IsLinux = TestLinux();
         }
+
         #endregion
 
         #region Methods

@@ -9,6 +9,7 @@ namespace Artivity.Apid.Platforms
     {
         string AppDataFolder { get; }
         string ArtivityUserDataFolder { get; }
+        string UserFolder { get; }
         string ThumbnailFolder { get; }
         string DatabaseFolder { get; }
         string DatabaseName { get; }
