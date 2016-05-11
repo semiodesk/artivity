@@ -33,6 +33,7 @@ using System.Timers;
 using Semiodesk.Trinity;
 using Artivity.DataModel;
 using Nancy;
+using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {
@@ -67,6 +68,8 @@ namespace Artivity.Apid
 
         private IModel _model;
 
+        private IPlatformProvider _platform;
+
         /// <summary>
         /// Maps root directories of ready drives to file system watchers.
         /// </summary>
@@ -79,6 +82,15 @@ namespace Artivity.Apid
         /// A timer used for querying for new drives in a regluar interval.
         /// </summary>
         private readonly Timer _driveWatchersTimer = new Timer() { Interval = 1000 };
+
+        /// <summary>
+        /// Drive types which should be monitored by the drive watchers.
+        /// </summary>
+        private readonly HashSet<DriveType> _driveTypes = new HashSet<DriveType>()
+        {
+            DriveType.Network,
+            DriveType.Removable
+        };
 
         /// <summary>
         /// File system watchers used monitor directories which contain indexed files.
@@ -135,13 +147,14 @@ namespace Artivity.Apid
 
         #region Methods
 
-        public void Initialize(IModelProvider provider)
+        public void Initialize(IModelProvider provider, IPlatformProvider platform)
         {
             if (!IsInitialized)
             {
                 Logger.LogInfo("Starting file system monitor.");
 
                 _model = provider.ActivitiesModel;
+                _platform = platform;
 
                 InitializeDriveWatchers();
                 InitializeMonitoredFiles();
@@ -197,13 +210,28 @@ namespace Artivity.Apid
         /// </summary>
         private void InitializeDriveWatchers()
         {
+            if (_platform.IsWindows)
+            {
+                // Add watchers for all fixed hard drive partitions such as C:
+                _driveTypes.Add(DriveType.Fixed);
+            }
+            else
+            {
+                InstallMonitoring(_platform.UserFolder);
+            }
+
             foreach(DriveInfo drive in DriveInfo.GetDrives().Where(drive => drive.IsReady))
             {
+                if (!_driveTypes.Contains(drive.DriveType))
+                {
+                    continue;
+                }
+
                 string root = drive.RootDirectory.FullName;
 
                 if(!_driveWatchers.ContainsKey(root))
                 {
-                    InstallMonitoring(drive);
+                    InstallDriveMonitoring(root);
                 }
             }
 
@@ -219,15 +247,20 @@ namespace Artivity.Apid
         {
             foreach (DriveInfo drive in DriveInfo.GetDrives())
             {
+                if (!_driveTypes.Contains(drive.DriveType))
+                {
+                    continue;
+                }
+
                 string root = drive.RootDirectory.FullName;
 
                 if (drive.IsReady && !_driveWatchers.ContainsKey(root))
                 {
-                    InstallMonitoring(drive);
+                    InstallDriveMonitoring(drive.RootDirectory.FullName);
                 }
                 else if(!drive.IsReady && _driveWatchers.ContainsKey(root))
                 {
-                    UninstallMonitoring(drive);
+                    InstallDriveMonitoring(drive.RootDirectory.FullName);
                 }
             }
         }
@@ -239,20 +272,34 @@ namespace Artivity.Apid
         {
             IsEnabled = true;
 
-            foreach (FileSystemWatcher watcher in _driveWatchers.Values)
-            {
-                watcher.EnableRaisingEvents = IsEnabled;
-
-                Logger.LogInfo("Enabled device monitoring: {0}", watcher.Path);
-            }
-
             foreach (FileSystemWatcher watcher in _fileWatchers)
             {
-                string file = Path.Combine(watcher.Path, watcher.Filter);
+                try
+                {
+                    string file = Path.Combine(watcher.Path, watcher.Filter);
 
-                watcher.EnableRaisingEvents = IsEnabled;
+                    watcher.EnableRaisingEvents = IsEnabled;
 
-                Logger.LogInfo("Enabled monitoring: {0}", file);
+                    Logger.LogInfo("Enabled monitoring: {0}", file);
+                }
+                catch(Exception ex)
+                {
+                    Logger.LogError(ex.Message);
+                }
+            }
+
+            foreach (FileSystemWatcher watcher in _driveWatchers.Values)
+            {
+                try
+                {
+                    watcher.EnableRaisingEvents = IsEnabled;
+
+                    Logger.LogInfo("Enabled device monitoring: {0}", watcher.Path);
+                }
+                catch(Exception ex)
+                {
+                    Logger.LogError(ex.Message);
+                }
             }
 
             _driveWatchersTimer.Enabled = IsEnabled;
@@ -267,13 +314,6 @@ namespace Artivity.Apid
         {
             IsEnabled = false;
 
-            foreach (FileSystemWatcher watcher in _driveWatchers.Values)
-            {
-                watcher.EnableRaisingEvents = IsEnabled;
-
-                Logger.LogInfo("Disabled device monitoring: {0}", watcher.Path);
-            }
-
             foreach (FileSystemWatcher watcher in _fileWatchers)
             {
                 string file = Path.Combine(watcher.Path, watcher.Filter);
@@ -281,6 +321,13 @@ namespace Artivity.Apid
                 watcher.EnableRaisingEvents = IsEnabled;
 
                 Logger.LogInfo("Disabled monitoring: {0}", file);
+            }
+
+            foreach (FileSystemWatcher watcher in _driveWatchers.Values)
+            {
+                watcher.EnableRaisingEvents = IsEnabled;
+
+                Logger.LogInfo("Disabled device monitoring: {0}", watcher.Path);
             }
 
             _driveWatchersTimer.Enabled = IsEnabled;
@@ -292,12 +339,12 @@ namespace Artivity.Apid
         {
             Disable();
 
-            foreach(FileSystemWatcher watcher in _driveWatchers.Values)
+            foreach (FileSystemWatcher watcher in _fileWatchers)
             {
                 watcher.Dispose();
             }
 
-            foreach (FileSystemWatcher watcher in _fileWatchers)
+            foreach(FileSystemWatcher watcher in _driveWatchers.Values)
             {
                 watcher.Dispose();
             }
@@ -306,10 +353,10 @@ namespace Artivity.Apid
         /// <summary>
         /// Install a file system watcher for a given file, if necessary.
         /// </summary>
-        /// <param name="filePath">Path to a file in the local file system.</param>
-        private void InstallMonitoring(string filePath)
+        /// <param name="path">Path to a file or directory in the local file system.</param>
+        private void InstallMonitoring(string path)
         {
-            string directory = Path.GetDirectoryName(filePath);
+            string directory = Directory.Exists(path) ? path : Path.GetDirectoryName(path);
 
             if (!_monitoredDirectories.ContainsKey(directory))
             {
@@ -322,6 +369,7 @@ namespace Artivity.Apid
                     watcher.Path = directory;
                     watcher.Filter = "*";
                     watcher.NotifyFilter = NotifyFilters.FileName;
+                    watcher.InternalBufferSize = 1024 * 512;
                     watcher.IncludeSubdirectories = false;
 
                     // Set the initial monitored files count to one.
@@ -349,11 +397,9 @@ namespace Artivity.Apid
         /// <summary>
         /// Install the file system watcher for a given drive.
         /// </summary>
-        /// <param name="filePath">A drive info object.</param>
-        private void InstallMonitoring(DriveInfo drive)
+        /// <param name="root">The root path of the device.</param>
+        private void InstallDriveMonitoring(string root)
         {
-            string root = drive.RootDirectory.FullName;
-
             // Mark the watcher as being created, so that subsequent invokes from the update method do
             // not try to install it again.
             _driveWatchers[root] = null;
@@ -365,6 +411,7 @@ namespace Artivity.Apid
             watcher.Path = root;
             watcher.Filter = "*";
             watcher.NotifyFilter = NotifyFilters.FileName;
+            watcher.InternalBufferSize = 1024 * 1024;
             watcher.IncludeSubdirectories = true;
 
             _driveWatchers[watcher.Path] = watcher;
@@ -382,10 +429,10 @@ namespace Artivity.Apid
         /// <summary>
         /// Uninstall the file system watcher for a given file.
         /// </summary>
-        /// <param name="filePath">Path to a file in the local file system.</param>
-        private void UninstallMonitoring(string filePath)
+        /// <param name="path">Path to a file or directory in the local file system.</param>
+        private void UninstallMonitoring(string path)
         {
-            string directory = Path.GetDirectoryName(filePath);
+            string directory = Directory.Exists(path) ? path : Path.GetDirectoryName(path);
 
             if (_monitoredDirectories.ContainsKey(directory))
             {
@@ -411,11 +458,9 @@ namespace Artivity.Apid
         /// <summary>
         /// Uninstall the file system watcher for a given drive.
         /// </summary>
-        /// <param name="filePath">A drive info object.</param>
-        private void UninstallMonitoring(DriveInfo drive)
+        /// <param name="root">The root path of the device.</param>
+        private void UninstallDriveMonitoring(string root)
         {
-            string root = drive.RootDirectory.FullName;
-
             if (_driveWatchers.ContainsKey(root))
             {
                 FileSystemWatcher watcher = _driveWatchers[root];
