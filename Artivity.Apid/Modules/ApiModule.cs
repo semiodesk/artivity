@@ -217,10 +217,10 @@ namespace Artivity.Apid.Modules
                 return GetActivities(Request.Query.fileUrl);
             };
 
-            Get["/activities/remove/all"] = parameters =>
+            Get["/activities/clear"] = parameters =>
             {
                 // TODO: We definitely need to add some kind of security here, i.e. a token.
-                return RemoveAllActivities();
+                return ClearActivities();
             };
 
             Get["/influences"] = parameters =>
@@ -241,9 +241,16 @@ namespace Artivity.Apid.Modules
                     {
                         string time = Request.Query.timestamp;
 
-                        DateTimeOffset timestamp = DateTimeOffset.Parse(time.Replace(' ', '+'));
+                        DateTimeOffset timestamp;
 
-                        return GetThumbnails(Request.Query.fileUrl, timestamp.UtcDateTime);
+                        if (DateTimeOffset.TryParse(time.Replace(' ', '+'), out timestamp))
+                        {
+                            return GetThumbnails(Request.Query.fileUrl, timestamp.UtcDateTime);
+                        }
+                        else
+                        {
+                            return HttpStatusCode.BadRequest;
+                        }
                     }
 
                     return GetThumbnails(Request.Query.fileUrl);
@@ -577,7 +584,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(model.GetBindings(query));
         }
 
-        public Response RemoveAllActivities()
+        public Response ClearActivities()
         {
             ModelProvider.ActivitiesModel.Clear();
 
