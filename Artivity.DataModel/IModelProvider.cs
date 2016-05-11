@@ -41,5 +41,7 @@ namespace Artivity.DataModel
         Semiodesk.Trinity.IModel GetWebActivities(Semiodesk.Trinity.IStore store = null);
 
         void InitializeStore();
+
+        void ReleaseStore();
     }
 }

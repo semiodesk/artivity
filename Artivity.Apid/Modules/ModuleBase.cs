@@ -58,6 +58,11 @@ namespace Artivity.Apid
         {
             ModelProvider = model;
             PlatformProvider = platform;
+
+            After += ctx =>
+            {
+                model.ReleaseStore();
+            };
         }
 
 
@@ -66,6 +71,11 @@ namespace Artivity.Apid
             ModelProvider = model;
             PlatformProvider = platform;
             ArtivityModulePath = modulePath;
+
+            After += ctx =>
+            {
+                model.ReleaseStore();
+            };
         }
 
 		#endregion

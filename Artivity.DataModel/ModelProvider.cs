@@ -121,6 +121,17 @@ namespace Artivity.DataModel
             //Store = StoreFactory.CreateStore(ConnectionString);
         }
 
+        public void ReleaseStore()
+        {
+            int id = Thread.CurrentThread.ManagedThreadId;
+            if (_stores.ContainsKey(id))
+            {
+                var x = _stores[id];
+                x.Dispose();
+                _stores.Remove(id);
+            }
+        }
+
         public IModelGroup GetAll()
         {
             IModelGroup result = Store.CreateModelGroup();
@@ -162,6 +173,7 @@ namespace Artivity.DataModel
             return MonitoringModel;
         }
 
+        
         #endregion
     }
 }
