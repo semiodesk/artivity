@@ -4,25 +4,19 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 	api.getUser().then(function (data) {
 		$scope.user = data;
 	});
-
+	
 	$scope.userPhotoUrl = api.getUserPhotoUrl();
 
+	$scope.getFileName = getFileName;
+	
 	api.getRecentFiles().then(function (data) {
 		$scope.files = data;
 	});
-
-	$scope.encodeBase64 = function (url) {
-		var result = Base64.encode(url, true);
-
-		return result;
-	};
-
-	$scope.getFileName = getFileName;
 });
 
-explorerControllers.controller('FileDetailController', function (api, $scope, $routeParams) {
-	var fileUrl = Base64.decode($routeParams.fileUrl);
-
+explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams) {
+	var fileUrl = $location.search().fileUrl;
+	
 	$scope.fileName = getFileName(fileUrl);
 	$scope.agent = {};
 

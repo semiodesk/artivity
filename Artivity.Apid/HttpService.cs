@@ -230,7 +230,7 @@ namespace Artivity.Apid
                     {
                         // Start the file system change monitor.
                         monitor.Initialize(ModelProvider);
-                        monitor.Start();
+                        monitor.Enable();
 
                         _wait.WaitOne();
                     }

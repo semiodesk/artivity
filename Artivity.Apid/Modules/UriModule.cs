@@ -154,7 +154,7 @@ namespace Artivity.Apid
 
             IModel model = ModelProvider.GetActivities();
 
-            SparqlQuery query = new SparqlQuery(queryString);
+            ISparqlQuery query = new SparqlQuery(queryString);
             ISparqlQueryResult result = model.ExecuteQuery(query);
 
             if (result.GetBindings().Any())
@@ -180,24 +180,21 @@ namespace Artivity.Apid
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT ?entity WHERE
                 {
-                    ?save prov:atTime ?time .
-                    ?save prov:qualifiedGeneration ?generation .
-
-                    ?generation prov:generated ?version .
-
-                    ?version nfo:fileUrl @fileUrl .
-                    ?version prov:specializationOf ?entity .
+                    ?entity nfo:fileUrl @fileUrl .
+                    ?entity nfo:fileLastModified ?time .
                 }
                 ORDER BY DESC(?time) LIMIT 1
             ");
 
             query.Bind("@fileUrl", fileUrl.AbsoluteUri);
 
-            ISparqlQueryResult result = ModelProvider.ActivitiesModel.ExecuteQuery(query);
+            string q = query.ToString();
 
-            if (result.GetBindings().Any())
+            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+
+            if (bindings.Any())
             {
-                BindingSet binding = result.GetBindings().First();
+                BindingSet binding = bindings.First();
 
                 string uri = binding["entity"].ToString();
 
