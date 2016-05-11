@@ -23,9 +23,9 @@ explorerApp.config(['$routeProvider',
 			templateUrl: 'partials/file-list.html',
 			controller: 'FileListController'
 		}).
-		when('/files/:fileUrl', {
-			templateUrl: 'partials/file-detail.html',
-			controller: 'FileDetailController'
+		when('/files/view', {
+			templateUrl: 'partials/file-view.html',
+			controller: 'FileViewController'
 		}).
 		when('/settings', {
 			templateUrl: 'partials/settings.html',

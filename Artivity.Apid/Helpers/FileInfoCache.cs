@@ -26,19 +26,24 @@
 
 using System;
 using System.IO;
+using Semiodesk.Trinity;
 
 namespace Artivity.Apid
 {
     /// <summary>
     /// Keeps an in-memory copy of the values from a FileInfo object.
     /// </summary>
-    public class FileInfoCache
+    internal class FileInfoCache
     {
         #region Members
+
+        public FileAttributes Attributes { get; private set; }
 
         public Uri Url { get; private set; }
 
         public bool Exists { get; private set; }
+
+        public string Extension { get; private set; }
 
         public string Name { get; private set; }
 
@@ -52,26 +57,79 @@ namespace Artivity.Apid
 
         public long Length { get; private set; }
 
+        /// <summary>
+        /// A value which is used to determine if two files at different locations are equal.
+        /// </summary>
+        public readonly int IndexCode = -1;
+
         #endregion
 
         #region Constructors
 
-        public FileInfoCache(string fullName)
+        public FileInfoCache(string fullName) : this(new FileInfo(fullName))
         {
-            FileInfo info = new FileInfo(fullName);
+        }
 
-            Url = new Uri("file://" + Uri.EscapeUriString(fullName.Replace('\\', '/')));
-            Name = info.Name;
-            FullName = info.FullName;
-            Exists = info.Exists;
+        public FileInfoCache(FileInfo file)
+        {
+            Name = file.Name;
+            FullName = file.FullName;
+            Url = file.ToUriRef();
+            Extension = file.Extension;
+            Exists = file.Exists;
 
             if (Exists)
             {
-                CreationTime = info.CreationTime;
-                LastAccessTime = info.LastAccessTime;
-                LastWriteTime = info.LastWriteTime;
-                Length = info.Length;
+                Attributes = file.Attributes;
+                CreationTime = file.CreationTime;
+                LastAccessTime = file.LastAccessTime;
+                LastWriteTime = file.LastWriteTime;
+                Length = file.Length;
+                IndexCode = Name.GetHashCode() + CreationTime.GetHashCode() + Length.GetHashCode();
             }
+        }
+
+        #endregion
+
+        #region Methods
+
+        public bool IsLocked()
+        {
+            if(!File.Exists(FullName))
+            {
+                return false;
+            }
+
+            FileInfo file = new FileInfo(FullName);
+
+            FileStream stream = null;
+
+            try
+            {
+                stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
+            }
+            catch (IOException)
+            {
+                // The file is unavailable because it is:
+                // - still being written to
+                // - or being processed by another thread
+                // - or does not exist (has already been processed)
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Close();
+                }
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Url.LocalPath.GetHashCode();
         }
 
         #endregion

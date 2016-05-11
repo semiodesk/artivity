@@ -1,4 +1,4 @@
-<div ng-controller="FileDetailController as fileDetail">
+<div ng-controller="FileViewController as fileView">
 	<div id="header">
 		<div class="row">
 			<div class="col">
@@ -67,7 +67,7 @@
 				<li role="presentation"><a data-target="#comments" role="tab" data-toggle="tab">Comments</a></li>
 			</ul>
 
-			<div class="tab-content" ng-mouseout="resetInfluence()">
+			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane fade active in" id="history">
 					<ul class="list-unstyled">
 						<li ng-repeat="influence in influences" ng-class="{selected: influence == selectedInfluence}">
