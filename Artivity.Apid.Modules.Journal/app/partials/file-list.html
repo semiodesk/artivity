@@ -16,7 +16,7 @@
 	<div id="body">
 		<ul id="file-list" class="cards">
 			<li class="card" ng-repeat="file in files">
-				<a href="#/files/{{encodeBase64(file.url)}}">
+				<a href="#/files/view?fileUrl={{file.url}}">
 					<div>
 						<div class="img-thumbnail"></div>
 						<div class="title">{{getFileName(file.url)}}</div>
