@@ -93,7 +93,7 @@ namespace Artivity.Apid
             _pluginChecker.Check();
 
             IInstallationWatchdog watchdog = InstallationWatchdogFactory.CreateWatchdog();
-            watchdog.ProgrammInstalledOrRemoved += ProgramInstalled;
+            watchdog.ProgrammInstalledOrRemoved += OnProgramInstalled;
             watchdog.Start();
 #endif
 
