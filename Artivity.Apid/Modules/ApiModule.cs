@@ -533,12 +533,19 @@ namespace Artivity.Apid.Modules
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT MAX(?time) as ?time ?entity ?url WHERE
                 {
-                    ?activity prov:used ?entity .
-                    ?activity prov:startedAtTime ?time .
+                    {
+                        SELECT MAX(?time) as ?time ?url WHERE
+                        {
+                            ?entity nfo:fileLastModified ?time .
+                            ?entity nfo:fileUrl ?url .
+                        }
+                        GROUP BY ?url
+                    }
 
+                    ?entity nfo:fileLastModified ?time .
                     ?entity nfo:fileUrl ?url .
                 }
-                GROUP BY ?entity ?url ORDER BY DESC(?time) LIMIT 25");
+                ORDER BY DESC(?time) LIMIT 25");
 
             return Response.AsJson(model.GetBindings(query));
         }
@@ -744,28 +751,28 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(result);
         }
 
-        private string GetFileUri(string filePath)
+        private string GetFileUri(string path)
         {
-            Uri fileUrl = new FileInfo(filePath).ToUriRef();
+            Uri fileUrl = new FileInfo(path).ToUriRef();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT DISTINCT ?entity WHERE
+                SELECT ?entity WHERE
                 {
-                    ?activity prov:startedAtTime ?startTime .
-                    ?activity prov:used ?entity .
-
                     ?entity nfo:fileUrl @fileUrl .
+                    ?entity nfo:fileLastModified ?time .
                 }
-                ORDER BY DESC(?startTime) LIMIT 1
+                ORDER BY DESC(?time) LIMIT 1
             ");
 
             query.Bind("@fileUrl", fileUrl.AbsoluteUri);
 
-            ISparqlQueryResult result = ModelProvider.ActivitiesModel.ExecuteQuery(query);
+            string q = query.ToString();
 
-            if (result.GetBindings().Any())
+            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+
+            if (bindings.Any())
             {
-                BindingSet binding = result.GetBindings().First();
+                BindingSet binding = bindings.First();
 
                 string uri = binding["entity"].ToString();
 

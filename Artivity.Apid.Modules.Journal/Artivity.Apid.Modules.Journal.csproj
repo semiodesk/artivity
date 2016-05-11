@@ -54,6 +54,7 @@
     <Content Include="app\img\heart-broken.svg" />
     <Content Include="app\img\heart.svg" />
     <Content Include="app\img\orcid_64x64.png" />
+    <EmbeddedResource Include="app\partials\file-view.html" />
     <EmbeddedResource Include="app\partials\error-no-apid-connection.html" />
   </ItemGroup>
   <ItemGroup>
@@ -118,7 +119,6 @@
     <EmbeddedResource Include="app\js\light-grid.min.js" />
     <EmbeddedResource Include="app\js\moment.min.js" />
     <EmbeddedResource Include="app\js\npm.js" />
-    <EmbeddedResource Include="app\partials\file-detail.html" />
     <EmbeddedResource Include="app\partials\file-list.html" />
     <EmbeddedResource Include="app\partials\settings.html" />
   </ItemGroup>
