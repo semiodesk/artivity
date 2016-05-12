@@ -207,20 +207,6 @@ namespace Artivity.Apid
             return null;
         }
 
-        private Response GetThumbnailPaths(string path)
-        {
-            string dirName = GetFileUri(path);
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(PlatformProvider.ThumbnailFolder, dirName));
-            if (!dir.Exists)
-                dir.Create();
-
-            List<string> result = new List<string>()
-            {
-                dir.FullName
-            };
-
-            return Response.AsJson(result);
-        }
 
 		#endregion
 	}

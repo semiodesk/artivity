@@ -309,11 +309,11 @@ string ActivityLog::getFileUri(string path)
 }
 
 
-string ActivityLog::getThumbnailPath(string path)
+string ActivityLog::getThumbnailPath(string uri)
 {
     string result;
     stringstream url;
-    url << _server << _API << "/thumbnails/paths?fileUrl=" << escapePath(path);
+    url << _server << _API << "/thumbnails/path?fileUrl=" << escapePath(uri);
     CURL* curl = initializeRequest();
     executeRequest(curl, url.str(), "", result);
 
