@@ -229,7 +229,7 @@ namespace artivity
         
         string escapePath(string path);
 
-        string getThumbnailPath(string path);
+        string getThumbnailPath(string uri);
 
         // Add a referenced resource to the transmitted RDF output.
         void addResource(Resource* resource);
