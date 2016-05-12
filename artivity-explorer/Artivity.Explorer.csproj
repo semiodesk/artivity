@@ -250,12 +250,6 @@
       <LogicalName>icon.ico</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
-      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
-      <Name>Artivity.DataModel</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
@@ -267,4 +261,10 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
+      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
+      <Name>Artivity.DataModel</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

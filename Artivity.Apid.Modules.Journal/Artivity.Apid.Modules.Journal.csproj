@@ -58,12 +58,6 @@
     <EmbeddedResource Include="app\partials\error-no-apid-connection.html" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
-      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
-      <Name>Artivity.DataModel</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="app\css\bootstrap-colorpicker.css" />
     <EmbeddedResource Include="app\css\bootstrap-colorpicker.css.map" />
     <EmbeddedResource Include="app\css\bootstrap-colorpicker.min.css" />
@@ -130,4 +124,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
+      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
+      <Name>Artivity.DataModel</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
