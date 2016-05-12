@@ -46,14 +46,6 @@
     <DefineConstants>OSX</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OAuth2, Version=0.8.36.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OAuth2.0.8.36\lib\OAuth2.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -107,6 +99,12 @@
     <Reference Include="Semiodesk.Trinity, Version=0.9.137.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.137-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
+    <Reference Include="OAuth2, Version=0.8.36.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\OAuth2.0.8.36\lib\OAuth2.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounts\IOAuth2AccountProvider.cs" />
@@ -152,6 +150,7 @@
     <Compile Include="Platforms\Win\WinPluginChecker.cs" />
     <Compile Include="Platforms\OSX\InstallationWatchdog.cs" />
     <Compile Include="Repositories\ResourceRepository.cs" />
+    <Compile Include="Helpers\IFileSystemWatcher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -271,13 +270,13 @@
   </ProjectExtensions>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
-      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
-      <Name>Artivity.DataModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Artivity.Apid.Modules.Journal\Artivity.Apid.Modules.Journal.csproj">
       <Project>{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}</Project>
       <Name>Artivity.Apid.Modules.Journal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
+      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
+      <Name>Artivity.DataModel</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

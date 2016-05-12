@@ -217,7 +217,8 @@ namespace Artivity.Apid
             }
             else
             {
-                InstallMonitoring(_platform.UserFolder);
+                // TODO: This does not work as expected on Mac.
+                InstallDriveMonitoring(_platform.UserFolder);
             }
 
             foreach(DriveInfo drive in DriveInfo.GetDrives().Where(drive => drive.IsReady))
@@ -411,7 +412,7 @@ namespace Artivity.Apid
             watcher.Path = root;
             watcher.Filter = "*";
             watcher.NotifyFilter = NotifyFilters.FileName;
-            watcher.InternalBufferSize = 1024 * 1024;
+            watcher.InternalBufferSize = 1024 * 1024 * 10;
             watcher.IncludeSubdirectories = true;
 
             _driveWatchers[watcher.Path] = watcher;

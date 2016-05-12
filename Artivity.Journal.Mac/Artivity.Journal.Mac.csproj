@@ -3,13 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{42C0BBD9-55CE-4FC1-8D90-A7348ABAFB23};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <ProjectGuid>{5800B1C8-5C5A-4C32-A85E-7FA68541C965}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Artivity.Journal.Mac</RootNamespace>
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <AssemblyName>Artivity.Journal.Mac</AssemblyName>
-    <SuppressXamMacMigration>True</SuppressXamMacMigration>
     <ReleaseVersion>1.5.20</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -52,7 +51,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
-    <Reference Include="MonoMac" />
+    <Reference Include="XamMac" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -82,6 +81,10 @@
     <ProjectReference Include="..\Artivity.Apid.Modules.Journal\Artivity.Apid.Modules.Journal.csproj">
       <Project>{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}</Project>
       <Name>Artivity.Apid.Modules.Journal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
+      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
+      <Name>Artivity.DataModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
