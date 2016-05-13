@@ -11,7 +11,6 @@
     <AssemblyName>artivity-apid</AssemblyName>
     <ReleaseVersion>1.5.20</ReleaseVersion>
     <StartupObject>Artivity.Apid.Mac.Program</StartupObject>
-    <UseXamMacFullFramework>true</UseXamMacFullFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,6 +58,7 @@
     <Reference Include="TinyVirtuoso">
       <HintPath>..\packages\TinyVirtuoso.0.3.25\lib\Net35\TinyVirtuoso.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -80,6 +80,10 @@
     <ProjectReference Include="..\Artivity.Apid\Artivity.Apid.csproj">
       <Project>{18E3ACB7-2958-43C7-B201-EA31F542F22C}</Project>
       <Name>Artivity.Apid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Artivity.Apid.Modules.Journal\Artivity.Apid.Modules.Journal.csproj">
+      <Project>{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}</Project>
+      <Name>Artivity.Apid.Modules.Journal</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
