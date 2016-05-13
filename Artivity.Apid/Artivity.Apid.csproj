@@ -4,17 +4,16 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{18E3ACB7-2958-43C7-B201-EA31F542F22C}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>Artivity.Apid</RootNamespace>
     <ReleaseVersion>1.5.20</ReleaseVersion>
-    <StartupObject>Artivity.Apid.Program</StartupObject>
+    <AssemblyName>Artivity.Apid.Mac</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
-    <AssemblyName>artivity-apid</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WIN, DEBUG</DefineConstants>
   </PropertyGroup>
@@ -22,7 +21,6 @@
     <Optimize>true</Optimize>
     <OutputPath>..\Output\</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <AssemblyName>artivity-apid</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WIN</DefineConstants>
   </PropertyGroup>
@@ -30,7 +28,6 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug_OSX</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <AssemblyName>Artivity.Apid</AssemblyName>
     <Commandlineparameters>-l log.config</Commandlineparameters>
     <DebugSymbols>true</DebugSymbols>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -41,19 +38,10 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Release OSX</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <AssemblyName>Artivity.Apid</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>OSX</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OAuth2, Version=0.8.36.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OAuth2.0.8.36\lib\OAuth2.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -107,6 +95,12 @@
     <Reference Include="Semiodesk.Trinity, Version=0.9.137.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.137-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
     </Reference>
+    <Reference Include="OAuth2, Version=0.8.36.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\OAuth2.0.8.36\lib\OAuth2.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounts\IOAuth2AccountProvider.cs" />
@@ -125,7 +119,6 @@
     <Compile Include="Platforms\IThumbnailProvider.cs" />
     <Compile Include="Platforms\Win\ThumbnailProvider.cs" />
     <Compile Include="Platforms\PlatformProvider.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modules\ModuleBase.cs" />
     <Compile Include="Parameters\AgentParameters.cs" />
@@ -152,6 +145,10 @@
     <Compile Include="Platforms\Win\WinPluginChecker.cs" />
     <Compile Include="Platforms\OSX\InstallationWatchdog.cs" />
     <Compile Include="Repositories\ResourceRepository.cs" />
+    <Compile Include="ProgramBase.cs" />
+    <Compile Include="Helpers\IFileSystemWatcher.cs" />
+    <Compile Include="Helpers\FileSystemWatcherFactory.cs" />
+    <Compile Include="Helpers\DefaultFileSystemWatcher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

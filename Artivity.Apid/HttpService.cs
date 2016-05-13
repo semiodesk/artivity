@@ -199,7 +199,6 @@ namespace Artivity.Apid
 
         private void StartService()
         {
-            
             ModelProvider.Username = Username;
 
             Bootstrapper customBootstrapper = new Bootstrapper();
@@ -255,12 +254,20 @@ namespace Artivity.Apid
         {
             if (PlatformProvider.IsWindows || PlatformProvider.IsMac)
             {
+                string deploymentDir = null;
+
+                if (PlatformProvider.IsMac)
+                {
+                    deploymentDir = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                    deploymentDir = Path.Combine(deploymentDir, "..", "Resources");
+                }
+
                 // We are running on Windows or Mac. Start the database using TinyVirtuoso..
                 Logger.LogInfo("Starting the OpenLink Virtuoso database..");
                 Logger.LogInfo("Database folder: {0}", PlatformProvider.DatabaseFolder);
 
                 // The database is started in the user's application data folder on port 8273..
-                _virtuoso = new TinyVirtuoso(PlatformProvider.ArtivityUserDataFolder);
+                _virtuoso = new TinyVirtuoso(PlatformProvider.ArtivityUserDataFolder, deploymentDir);
                 _virtuosoInstance = _virtuoso.GetOrCreateInstance(PlatformProvider.DatabaseName);
                 _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("localhost:{0}", _virtuosoPort);
                 _virtuosoInstance.Configuration.SaveConfigFile();

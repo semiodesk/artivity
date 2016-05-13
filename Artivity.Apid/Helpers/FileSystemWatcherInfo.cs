@@ -10,7 +10,7 @@ namespace Artivity.Apid
     {
         #region Members
 
-        public FileSystemWatcher FileWatcher { get; private set; }
+        public IFileSystemWatcher FileWatcher { get; private set; }
 
         public int FileCount { get; set; }
 
@@ -18,7 +18,7 @@ namespace Artivity.Apid
 
         #region Constructors
 
-        public FileSystemWatcherInfo(FileSystemWatcher fileWatcher, int fileCount)
+        public FileSystemWatcherInfo(IFileSystemWatcher fileWatcher, int fileCount)
         {
             FileWatcher = fileWatcher;
             FileCount = fileCount;

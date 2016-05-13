@@ -1,7 +1,6 @@
 syntax: glob
 *.1
 *.in
-*.plist
 *.pot
 *.spec
 *.pyc
