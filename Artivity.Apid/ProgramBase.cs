@@ -35,7 +35,7 @@ using MonoDevelop.MacInterop;
 
 namespace Artivity.Apid
 {
-    class Program
+    public class ProgramBase
     {
         #region Members
 
@@ -43,13 +43,7 @@ namespace Artivity.Apid
 
         #endregion
 
-        public static void Main(string[] args)
-        {
-            Program program = new Program();
-            program.Run(args);
-        }
-
-        public void Run(string[] args)
+        protected virtual void Run(string[] args)
         {
             Options options = new Options();
 
