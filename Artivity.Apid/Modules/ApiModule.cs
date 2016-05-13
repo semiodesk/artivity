@@ -286,7 +286,7 @@ namespace Artivity.Apid.Modules
 
             IEnumerable<SoftwareAgent> agents = model.GetResources<SoftwareAgent>();
 
-            return Response.AsJson(agents);
+            return Response.AsJson(agents.ToList());
         }
 
         public Response GetAgent(string fileUrl)

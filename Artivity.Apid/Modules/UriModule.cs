@@ -188,8 +188,6 @@ namespace Artivity.Apid
 
             query.Bind("@fileUrl", fileUrl.AbsoluteUri);
 
-            string q = query.ToString();
-
             IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
 
             if (bindings.Any())
