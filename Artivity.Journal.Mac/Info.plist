@@ -3,20 +3,30 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>Artivity.Journal.Mac</string>
+	<string>Artivity Journal</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.semiodesk.Artivity.Journal.Mac</string>
+	<string>com.semiodesk.artivity-journal</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.6</string>
-	<key>NSMainNibFile</key>
-	<string>MainMenu</string>
+	<string>10.10</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>sebastian</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.utilities</string>
+	<key>NSMainStoryboardFile</key>
+	<string>Main</string>
 	<key>CFBundleIconFile</key>
-	<string>Icon.icns</string>
+	<string>Icons.icns</string>
 </dict>
 </plist>
