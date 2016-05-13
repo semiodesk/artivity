@@ -21,16 +21,25 @@
 // AUTHORS:
 //
 //  Sebastian Faubel <sebastian@semiodesk.com>
+//  Moritz Eberl <moritz@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
+using System.Threading;
 using AppKit;
 
 namespace Artivity.Apid.Mac
 {
     class Program : ProgramBase
     {
+        #region Members
+
+
+
+
+        #endregion
+
         #region Methods
 
         static void Main(string[] args)
@@ -39,18 +48,33 @@ namespace Artivity.Apid.Mac
             program.Run(args);
         }
 
-        protected override void Run(string[] args)
+        protected override bool Run(string[] args)
         {
+            _args = args;
+
+            if (!Initialize())
+                return false;
+
+            Thread fsThread = new Thread(FileSystemWatcherThread);
+            fsThread.Start();
+
+            Service.TestDatabaseStarted();
+
             // Initialize the Xamarin Mac application.
             NSApplication.Init();
 
             // Reigster the platform specific file system watcher.
             FileSystemWatcherFactory.CreateHandler(() => { return new FSEventsFileSystemWatcher(); });
 
-            // Start the service.
-            base.Run(args);
+            NSApplication.Main(_args);
+            return true;
+        }
 
-            NSApplication.Main(args);
+        protected void FileSystemWatcherThread()
+        {
+
+            // Start the service.
+            base.Run(_args);
         }
 
         #endregion
