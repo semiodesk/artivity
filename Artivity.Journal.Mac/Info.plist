@@ -28,5 +28,10 @@
 	<string>Main</string>
 	<key>CFBundleIconFile</key>
 	<string>Icons.icns</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>
