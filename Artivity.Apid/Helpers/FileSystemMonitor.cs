@@ -550,6 +550,8 @@ namespace Artivity.Apid
             FileInfoCache file = new FileInfoCache(path);
 
             _monitoredFiles[file.Url.LocalPath] = file;
+            // TODO: Set the file URI here.
+            //_monitoredFileUris[file.Url.LocalPath] = uri;
         }
 
         public void RemoveFile(string path)

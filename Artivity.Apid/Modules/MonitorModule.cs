@@ -36,7 +36,7 @@ namespace Artivity.Apid
         #region Constructors
 
         public MonitoringModule(IModelProvider model, IPlatformProvider platform)
-            : base("/artivity/1.0/agents", model, platform)
+            : base("/artivity/1.0/monitor", model, platform)
         {
             Get["/add"] = parameters => { return AddFile(); };
             Get["/remove"] = parameters => { return RemoveFile(); };
