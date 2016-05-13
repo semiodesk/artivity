@@ -40,25 +40,36 @@ namespace Artivity.Apid
         #region Members
 
         private PluginChecker _pluginChecker;
+        private IInstallationWatchdog _watchdog;
+        protected HttpService Service;
+        protected Options Options;
+        protected bool Initialized = false;
+
+        // Commandline arguments
+        protected string[] _args;
 
         #endregion
 
-        protected virtual void Run(string[] args)
+        protected bool InitializeOptions()
         {
-            Options options = new Options();
+            Options = new Options();
 
-            if (!CommandLine.Parser.Default.ParseArguments(args, options))
+            if (!CommandLine.Parser.Default.ParseArguments(_args, Options))
             {
-                return;
+                return false;
             }
+            return true;
+        }
 
+        protected void InitializeLogging()
+        {
             bool consoleLogging = true;
 
-            if(options.LogConfig != null && File.Exists(options.LogConfig))
+            if(Options.LogConfig != null && File.Exists(Options.LogConfig))
             {
                 try
                 {
-                    FileInfo logFileConfig = new FileInfo(options.LogConfig);
+                    FileInfo logFileConfig = new FileInfo(Options.LogConfig);
 
                     log4net.Config.XmlConfigurator.Configure(logFileConfig);
 
@@ -81,31 +92,75 @@ namespace Artivity.Apid
 
                 log4net.Config.BasicConfigurator.Configure(appender);
             }
+        }
 
-#if !DEBUG
+        protected void InitializePluginChecker()
+        {
             _pluginChecker = PluginCheckerFactory.CreatePluginChecker();
             _pluginChecker.Check();
 
-            IInstallationWatchdog watchdog = InstallationWatchdogFactory.CreateWatchdog();
-            watchdog.ProgrammInstalledOrRemoved += OnProgramInstalled;
-            watchdog.Start();
-#endif
+            _watchdog = InstallationWatchdogFactory.CreateWatchdog();
+            _watchdog.ProgrammInstalledOrRemoved += OnProgramInstalled;
+            _watchdog.Start();
+        }
 
-            HttpService service = new HttpService();
-            service.UpdateOntologies = options.Update;
+        protected bool Initialize()
+        {
+            if (!InitializeOptions())
+                return false;
+                
 
+            InitializeLogging();
+
+
+            #if !DEBUG
+            InitializePluginChecker();
+            #endif
+
+            InitializeService();
+
+            ShutdownOnSIGINT();
+
+            Initialized = true;
+            return true;
+        }
+
+        protected virtual bool Run(string[] args)
+        {
+            if (!Initialized)
+            {
+                bool res = Initialize();
+                if( !res)
+                    return false;
+            }
+            
+            Service.Start();
+            return true;
+        }
+
+        protected void InitializeService()
+        {
+            Service = new HttpService();
+            Service.UpdateOntologies = Options.Update;
+        }
+
+        protected void ShutdownOnSIGINT()
+        {
             // Listen to SIGINT for cancelling the daemon.
             Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
                 {
                     Logger.LogInfo("Received SIGINT. Shutting down.");
 
-                    service.Stop();
-#if !DEBUG
-                    watchdog.Stop();
-#endif
+                    Service.Stop();
+                    #if !DEBUG
+                    StopWatchdog();
+                    #endif
                 };
+        }
 
-            service.Start();
+        protected void StopWatchdog()
+        {
+            _watchdog.Stop();
         }
 
         private void OnProgramInstalled(object sender, EventArgs entry)
