@@ -76,7 +76,7 @@ namespace Artivity.Apid
         /// <remarks>
         /// Only listens to create events for tracking moved files.
         /// </remarks>
-        private readonly Dictionary<string, FileSystemWatcher> _driveWatchers = new Dictionary<string, FileSystemWatcher>();
+        private readonly Dictionary<string, IFileSystemWatcher> _driveWatchers = new Dictionary<string, IFileSystemWatcher>();
 
         /// <summary>
         /// A timer used for querying for new drives in a regluar interval.
@@ -99,7 +99,7 @@ namespace Artivity.Apid
         /// Only listens to delete and rename events. However, sometimes move events appear
         /// as a combination of delete and create events, not particularly in this order.
         /// </remarks>
-        private readonly List<FileSystemWatcher> _fileWatchers = new List<FileSystemWatcher>();
+        private readonly List<IFileSystemWatcher> _fileWatchers = new List<IFileSystemWatcher>();
 
         /// <summary>
         /// A log of previously created files; used for locating moved files.
@@ -272,7 +272,7 @@ namespace Artivity.Apid
         {
             IsEnabled = true;
 
-            foreach (FileSystemWatcher watcher in _fileWatchers)
+            foreach (IFileSystemWatcher watcher in _fileWatchers)
             {
                 try
                 {
@@ -288,7 +288,7 @@ namespace Artivity.Apid
                 }
             }
 
-            foreach (FileSystemWatcher watcher in _driveWatchers.Values)
+            foreach (IFileSystemWatcher watcher in _driveWatchers.Values)
             {
                 try
                 {
@@ -314,7 +314,7 @@ namespace Artivity.Apid
         {
             IsEnabled = false;
 
-            foreach (FileSystemWatcher watcher in _fileWatchers)
+            foreach (IFileSystemWatcher watcher in _fileWatchers)
             {
                 string file = Path.Combine(watcher.Path, watcher.Filter);
 
@@ -323,7 +323,7 @@ namespace Artivity.Apid
                 Logger.LogInfo("Disabled monitoring: {0}", file);
             }
 
-            foreach (FileSystemWatcher watcher in _driveWatchers.Values)
+            foreach (IFileSystemWatcher watcher in _driveWatchers.Values)
             {
                 watcher.EnableRaisingEvents = IsEnabled;
 
@@ -339,12 +339,12 @@ namespace Artivity.Apid
         {
             Disable();
 
-            foreach (FileSystemWatcher watcher in _fileWatchers)
+            foreach(IFileSystemWatcher watcher in _fileWatchers)
             {
                 watcher.Dispose();
             }
 
-            foreach(FileSystemWatcher watcher in _driveWatchers.Values)
+            foreach(IFileSystemWatcher watcher in _driveWatchers.Values)
             {
                 watcher.Dispose();
             }
@@ -363,14 +363,11 @@ namespace Artivity.Apid
                 // Register the watcher only if the directory is not yet monitored.
                 if (Directory.Exists(directory) && !_monitoredDirectories.ContainsKey(directory))
                 {
-                    FileSystemWatcher watcher = new FileSystemWatcher();
+                    IFileSystemWatcher watcher = FileSystemWatcherFactory.Create();
                     watcher.Deleted += OnFileSystemObjectDeleted;
                     watcher.Renamed += OnFileSystemObjectRenamed;
                     watcher.Path = directory;
-                    watcher.Filter = "*";
-                    watcher.NotifyFilter = NotifyFilters.FileName;
-                    watcher.InternalBufferSize = 1024 * 512;
-                    watcher.IncludeSubdirectories = false;
+                    //watcher.IncludeSubdirectories = false;
 
                     // Set the initial monitored files count to one.
                     _monitoredDirectories[directory] = new FileSystemWatcherInfo(watcher, 1);
@@ -406,13 +403,9 @@ namespace Artivity.Apid
 
             // Register a path root watcher for file creation events.
             // This is required since sometimes moved files appear as being deleted and subsequently created.
-            FileSystemWatcher watcher = new FileSystemWatcher();
+            IFileSystemWatcher watcher = FileSystemWatcherFactory.Create();
             watcher.Created += OnFileSystemObjectCreated;
             watcher.Path = root;
-            watcher.Filter = "*";
-            watcher.NotifyFilter = NotifyFilters.FileName;
-            watcher.InternalBufferSize = 1024 * 1024;
-            watcher.IncludeSubdirectories = true;
 
             _driveWatchers[watcher.Path] = watcher;
 
@@ -463,7 +456,7 @@ namespace Artivity.Apid
         {
             if (_driveWatchers.ContainsKey(root))
             {
-                FileSystemWatcher watcher = _driveWatchers[root];
+                IFileSystemWatcher watcher = _driveWatchers[root];
 
                 if(watcher == null)
                 {
