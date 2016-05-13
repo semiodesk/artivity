@@ -1,4 +1,4 @@
-// LICENSE:
+﻿// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,36 +23,31 @@
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
+//
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
-using System;
-using AppKit;
+// Information about this assembly is defined by the following attributes.
+// Change them to the values specific to your project.
 
-namespace Artivity.Apid.Mac
-{
-    class Program : ProgramBase
-    {
-        #region Methods
+[assembly: AssemblyTitle("Artivity.Apid.Mac")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("")]
+[assembly: AssemblyCopyright("sebastian")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
 
-        static void Main(string[] args)
-        {
-            Program program = new Program();
-            program.Run(args);
-        }
+// The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
+// The form "{Major}.{Minor}.*" will automatically update the build and revision,
+// and "{Major}.{Minor}.{Build}.*" will update just the revision.
 
-        protected override void Run(string[] args)
-        {
-            // Initialize the Xamarin Mac application.
-            NSApplication.Init();
+[assembly: AssemblyVersion("1.0.*")]
 
-            // Reigster the platform specific file system watcher.
-            FileSystemWatcherFactory.CreateHandler(() => { return new FSEventsFileSystemWatcher(); });
+// The following attributes are used to specify the signing key for the assembly,
+// if desired. See the Mono documentation for more information about signing.
 
-            // Start the service.
-            base.Run(args);
+//[assembly: AssemblyDelaySign(false)]
+//[assembly: AssemblyKeyFile("")]
 
-            NSApplication.Main(args);
-        }
-
-        #endregion
-    }
-}
