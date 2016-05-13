@@ -144,12 +144,16 @@ namespace Artivity.Apid
 
         public IPlatformProvider PlatformProvider { get; set; }
 
+        public AutoResetEvent DatabaseStarted { get; }
+        private bool _started = false;
+
         #endregion
 
         #region Constructor
 
         public HttpService()
         {
+            DatabaseStarted = new AutoResetEvent(false);
             ApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             Username = Environment.UserName;
@@ -171,6 +175,8 @@ namespace Artivity.Apid
 
             // Make sure the database is started.
             StartDatabase();
+            _started = true;
+            DatabaseStarted.Set();
 
             // Start the daemon in a new thread.
             ServiceThread = new Thread(StartService);
@@ -315,6 +321,17 @@ namespace Artivity.Apid
 
                 store.LoadOntologySettings();
             }
+        }
+
+        /// <summary>
+        /// This method checks if the database has been started. If not, it will block until it starts.
+        /// </summary>
+        public void TestDatabaseStarted()
+        {
+            if (_started)
+                return;
+            else
+                DatabaseStarted.WaitOne();
         }
 
         #endregion
