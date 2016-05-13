@@ -38,6 +38,9 @@ using Nancy.Responses;
 using Nancy.TinyIoc;
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Nancy.Serialization.JsonNet;
 
 namespace Artivity.Apid
 {
@@ -53,6 +56,9 @@ namespace Artivity.Apid
 
         #endregion
 
+        #region Methods
+
+
         protected override DiagnosticsConfiguration DiagnosticsConfiguration
         {
             get { return new DiagnosticsConfiguration { Password = @"abc" }; }
@@ -60,22 +66,23 @@ namespace Artivity.Apid
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
-            base.ConfigureApplicationContainer(container);
+            _container = container;
+
 
             if (ModelProvider != null)
             {
-                container.Register(ModelProvider);
+                _container.Register(ModelProvider);
             }
 
             if (PlatformProvider != null)
             {
-                container.Register(PlatformProvider);
+                _container.Register(PlatformProvider);
             }
-
-            _container = container;
+                
+            container.Register<JsonNetSerializer>();
 
         }
-
+            
         protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container, IPipelines pipelines, NancyContext context)
         {
             #if DEBUG
@@ -146,5 +153,10 @@ namespace Artivity.Apid
                 });
             }
         }
+
+
+
+        #endregion
     }
+
 }

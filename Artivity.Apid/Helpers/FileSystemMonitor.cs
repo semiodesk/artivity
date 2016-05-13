@@ -122,11 +122,6 @@ namespace Artivity.Apid
         /// </summary>
         private readonly static Dictionary<string, Uri> _monitoredFileUris = new Dictionary<string, Uri>();
 
-        /// <summary>
-        /// Maps monitored directory paths to their file system watchers.
-        /// </summary>
-        private readonly static Dictionary<string, FileSystemWatcherInfo> _monitoredDirectories = new Dictionary<string, FileSystemWatcherInfo>();
-
         #endregion
 
         #region Constructors
@@ -455,8 +450,10 @@ namespace Artivity.Apid
 
             if (!file.Exists || file.CreationTime == DateTime.MinValue)
             {
+                #if DEBUG
                 // The new file does not exist. It's probably in a virtual file system.
                 Logger.LogInfo("Rename ignored: {0}", file.Url.LocalPath);
+                #endif
 
                 return;
             }
@@ -529,7 +526,9 @@ namespace Artivity.Apid
                 }
                 else
                 {
+                    #if DEBUG
                     Logger.LogInfo("Deleted {0}", url.LocalPath);
+                    #endif
                 }
 
                 // Clean up the created files queue.
