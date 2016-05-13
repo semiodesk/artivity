@@ -41,6 +41,7 @@ using Artivity.Apid.Platforms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Nancy.Serialization.JsonNet;
+using Artivity.Apid.Modules;
 
 namespace Artivity.Apid
 {
@@ -80,6 +81,7 @@ namespace Artivity.Apid
             }
                 
             container.Register<JsonNetSerializer>();
+            container.Register(typeof(IViewModule), typeof(JournalModule));
 
         }
             
