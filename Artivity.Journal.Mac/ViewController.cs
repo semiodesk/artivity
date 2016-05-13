@@ -60,6 +60,15 @@ namespace Artivity.Journal.Mac
             // Handle connection errors.
             Browser.FailedProvisionalLoad += OnBrowserLoadError;
 
+            // Allow to open new browser windows.
+            Browser.DecidePolicyForNavigation += (object sender, WebNavigationPolicyEventArgs e) => {
+                WebView.DecideUse(e.DecisionToken);
+            };
+
+            Browser.DecidePolicyForNewWindow += (object sender, WebNewWindowPolicyEventArgs e) => {
+                Browser.MainFrame.LoadRequest(e.Request);
+            };
+
             // Initially try to load the journal app.
             Browser.MainFrame.LoadRequest(new NSUrlRequest(new NSUrl("http://localhost:8262/artivity/app/journal/1.0/")));
         }

@@ -100,6 +100,7 @@ namespace Artivity.Apid
         {
             base.ConfigureConventions(nancyConventions);
 
+            // Configure Nancy to support serving content from embedded resources.
             foreach(IViewModule view in _container.ResolveAll<IViewModule>())
             {
                 Assembly assembly = view.GetType().Assembly;
