@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -110,10 +110,10 @@
     <Compile Include="Accounts\IOnlineAccountProvider.cs" />
     <Compile Include="Accounts\OrcidAccountProvider.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="HttpService.cs" />
     <Compile Include="Helpers\FileSystemWatcherInfo.cs" />
     <Compile Include="Modules\ApiModule.cs" />
     <Compile Include="Parameters\ActivityParameters.cs" />
-    <Compile Include="HttpService.cs" />
     <Compile Include="Platforms\IPlatformProvider.cs" />
     <Compile Include="Platforms\OSX\ThumbnailProvider.cs" />
     <Compile Include="Platforms\IThumbnailProvider.cs" />
