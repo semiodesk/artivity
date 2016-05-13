@@ -217,7 +217,8 @@ namespace Artivity.Apid
             }
             else
             {
-                InstallMonitoring(_platform.UserFolder);
+                // TODO: This does not work as expected on Mac.
+                InstallDriveMonitoring(_platform.UserFolder);
             }
 
             foreach(DriveInfo drive in DriveInfo.GetDrives().Where(drive => drive.IsReady))
