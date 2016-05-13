@@ -28,15 +28,13 @@
 using System;
 using System.Threading;
 using AppKit;
+using CoreFoundation;
 
 namespace Artivity.Apid.Mac
 {
     class Program : ProgramBase
     {
         #region Members
-
-
-
 
         #endregion
 
@@ -55,26 +53,28 @@ namespace Artivity.Apid.Mac
             if (!Initialize())
                 return false;
 
-            Thread fsThread = new Thread(FileSystemWatcherThread);
-            fsThread.Start();
-
-            Service.TestDatabaseStarted();
-
             // Initialize the Xamarin Mac application.
             NSApplication.Init();
 
             // Reigster the platform specific file system watcher.
             FileSystemWatcherFactory.CreateHandler(() => { return new FSEventsFileSystemWatcher(); });
 
-            NSApplication.Main(_args);
+            Thread fsThread = new Thread(FileSystemWatcherThread);
+            fsThread.Start();
+
+            DispatchQueue.MainIteration();
+            fsThread.Join();
             return true;
         }
 
         protected void FileSystemWatcherThread()
         {
-
             // Start the service.
             base.Run(_args);
+            DispatchQueue.MainQueue.DispatchAsync(() =>
+                {
+                    DispatchQueue.CurrentQueue.Suspend();
+                });
         }
 
         #endregion

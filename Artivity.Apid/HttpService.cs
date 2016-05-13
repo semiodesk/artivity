@@ -201,6 +201,7 @@ namespace Artivity.Apid
 
                 Logger.LogInfo("Stopped service on port {0}", _servicePort);
             }
+            StopDatabase();
         }
 
         private void StartService()
@@ -241,6 +242,8 @@ namespace Artivity.Apid
                         monitor.Enable();
 
                         _wait.WaitOne();
+
+                        monitor.Disable();
                     }
 
                     _serviceHost.Stop();
@@ -296,6 +299,12 @@ namespace Artivity.Apid
                 // We are running on Linux..
                 ModelProvider = ModelProviderFactory.CreateModelProvider(GetConnectionStringFromConfiguration(), null);
             }
+        }
+
+        private void StopDatabase()
+        {
+            Logger.LogInfo("Stopping Database");
+            _virtuosoInstance.Stop(false);
         }
 
         private string GetConnectionStringFromConfiguration()

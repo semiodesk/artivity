@@ -21,6 +21,7 @@
 // AUTHORS:
 //
 //  Sebastian Faubel <sebastian@semiodesk.com>
+//  Moritz Eberl <moritz@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
@@ -28,12 +29,17 @@ using System;
 using System.Text.RegularExpressions;
 using CoreServices;
 using Foundation;
+using CoreFoundation;
+using System.Runtime.InteropServices;
 
 namespace Artivity.Apid.Mac
 {
     public class FSEventsFileSystemWatcher : IFileSystemWatcher, IDisposable
     {
         #region Members
+
+        [DllImport("/System/Library/Frameworks/CoreServices.framework/CoreServices")]
+        private static extern void FSEventStreamSetDispatchQueue(IntPtr handle, IntPtr queue);
 
         private TimeSpan _eventLatency = TimeSpan.FromMilliseconds(100);
 
@@ -108,7 +114,7 @@ namespace Artivity.Apid.Mac
                 }
             }
         }
-
+            
         #endregion
 
         #region Constructors
@@ -125,6 +131,7 @@ namespace Artivity.Apid.Mac
         {
             if (_eventStream != null)
             {
+                _eventStream.Stop();
                 _eventStream.Events -= OnEventStreamEvents;
                 _eventStream.Dispose();
                 _eventStream = null;
@@ -148,7 +155,8 @@ namespace Artivity.Apid.Mac
 
                 _eventStream = new FSEventStream (new [] { _path }, _eventLatency, flags);
                 _eventStream.Events += OnEventStreamEvents;
-                _eventStream.ScheduleWithRunLoop(NSRunLoop.Current);
+                FSEventStreamSetDispatchQueue(_eventStream.Handle, DispatchQueue.MainQueue.Handle);
+
             }
         }
 
