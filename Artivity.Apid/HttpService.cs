@@ -144,7 +144,7 @@ namespace Artivity.Apid
 
         public IPlatformProvider PlatformProvider { get; set; }
 
-        public AutoResetEvent DatabaseStarted { get; }
+        public AutoResetEvent DatabaseStarted { get; private set; }
         private bool _started = false;
 
         #endregion
