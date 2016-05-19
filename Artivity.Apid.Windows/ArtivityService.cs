@@ -25,15 +25,24 @@ namespace Artivity.Apid
         protected ILog _log;
         protected EventLog eventLog;
         protected Dictionary<uint, HttpService> _services;
+
+        public bool AutoPluginChecker { get; set; }
+
+        private string _logConfigPath = "log.config";
+        public string LogConfigPath { get { return _logConfigPath;} set{ _logConfigPath = value;} }
         #endregion
 
         #region Constructor
 
-        public ArtivityService(string serviceName)
+        public ArtivityService(string serviceName, string logConfig = null)
             : base(serviceName)
         {
             CanHandleSessionChangeEvent = true;
-           
+            AutoPluginChecker = true;
+
+            if (!string.IsNullOrEmpty(logConfig))
+                _logConfigPath = logConfig;
+            InitializeLog();
             //_configuration = Configuration.Instance;
 
             //EventWaitHandleSecurity security = new System.Security.AccessControl.EventWaitHandleSecurity();
@@ -85,15 +94,10 @@ namespace Artivity.Apid
             AutoLog = false;
             _stopping = new AutoResetEvent(false);
             _services = new Dictionary<uint, HttpService>();
-            InitializeLog();
-            _log = LogManager.GetLogger("Artivity Service");
 
-            AppDomain current = AppDomain.CurrentDomain;
-            current.UnhandledException += current_UnhandledException;
-
-            _log.Info("Service Initialized");
             
         }
+
 
         void current_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
@@ -102,11 +106,15 @@ namespace Artivity.Apid
 
         public void Start()
         {
-            var check = PluginCheckerFactory.CreatePluginChecker();
-            check.Check();
-            var watchdog = InstallationWatchdogFactory.CreateWatchdog();
-            watchdog.ProgrammInstalledOrRemoved += (object s, EventArgs e) => { check.Check(); };
-            watchdog.Start();
+            IInstallationWatchdog watchdog = null;
+            if (AutoPluginChecker)
+            {
+                var check = PluginCheckerFactory.CreatePluginChecker();
+                check.Check();
+                watchdog = InstallationWatchdogFactory.CreateWatchdog();
+                watchdog.ProgrammInstalledOrRemoved += (object s, EventArgs e) => { check.Check(); };
+                watchdog.Start();
+            }
 
             FindCurrentUsers();
             _log.DebugFormat("Waiting for user login...");
@@ -115,7 +123,10 @@ namespace Artivity.Apid
             foreach (var session in _services)
                 session.Value.Stop();
 
-            watchdog.Stop();
+            if (AutoPluginChecker && watchdog != null)
+            {
+                watchdog.Stop();
+            }
         }
 
         private void FindCurrentUsers()
@@ -152,8 +163,15 @@ namespace Artivity.Apid
             }
             ((ISupportInitialize)(this.EventLog)).EndInit();
 
-            FileInfo logFileConfig = new FileInfo(Path.Combine(GetCurrentDirectory(), "log.config"));
+            FileInfo logFileConfig = new FileInfo(Path.Combine(GetCurrentDirectory(), LogConfigPath));
             log4net.Config.XmlConfigurator.Configure(logFileConfig);
+
+            _log = LogManager.GetLogger("Artivity Service");
+
+            AppDomain current = AppDomain.CurrentDomain;
+            current.UnhandledException += current_UnhandledException;
+
+            _log.Info("Service Initialized");
         }
 
         private string GetCurrentDirectory()

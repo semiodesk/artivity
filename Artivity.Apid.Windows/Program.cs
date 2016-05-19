@@ -44,12 +44,15 @@ namespace Artivity.WinService
             RunWindowsService(args);
         }
 
-
         protected void RunWindowsService(string[] args)
         {
             //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
             string ServiceName = "Artivity Service";
-            ArtivityService Service = new ArtivityService(ServiceName);
+            string logConfig = "log.config";
+#if DEBUG
+            logConfig = "debug.log.config";
+#endif
+            ArtivityService Service = new ArtivityService(ServiceName, logConfig);
             Service.CreateInstaller(ServiceName, System.ServiceProcess.ServiceAccount.LocalSystem, System.ServiceProcess.ServiceStartMode.Automatic);
 
             string opt = null;
@@ -68,6 +71,9 @@ namespace Artivity.WinService
                 }
                 else if (opt != null && opt.ToLower() == "-debug")
                 {
+                    // We don't want plugin checks in debug
+                    Service.AutoPluginChecker = false;
+                    
                     var  ServiceThread = new Thread(Service.Start);
                     ServiceThread.Start();
                     Console.WriteLine("Press a key to stop...");
