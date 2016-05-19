@@ -265,14 +265,14 @@ namespace Artivity.Apid.Modules
                 }
             };
 
-            Get["/thumbnails/paths"] = parameters =>
+            Get["/thumbnails/path"] = parameters =>
             {
                 if (string.IsNullOrEmpty(Request.Query.fileUrl))
                 {
                     return HttpStatusCode.BadRequest;
                 }
 
-                return GetThumbnailPaths(Request.Query.fileUrl);
+                return GetThumbnailPath(Request.Query.fileUrl);
             };
         }
 
@@ -731,17 +731,15 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response GetThumbnailPaths(string filePath)
+        private Response GetThumbnailPath(string fileUri)
         {
-            string dirName = GetFileUri(filePath);
-
-            if (string.IsNullOrEmpty(dirName))
+            if (string.IsNullOrEmpty(fileUri))
             {
                 return HttpStatusCode.InternalServerError;
             }
 
             var invalids = System.IO.Path.GetInvalidFileNameChars();
-            var newName = String.Join("_", dirName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            var newName = String.Join("_", fileUri.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 
             DirectoryInfo dir = new DirectoryInfo(Path.Combine(PlatformProvider.ThumbnailFolder, newName));
 
