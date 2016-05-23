@@ -37,8 +37,15 @@ namespace Artivity.Apid
         [Option('u', "update", Required = false, HelpText = "Update the ontologies in the database which are used for inferencing.")]
         public bool Update { get; set; }
 
+        [Option('n', "nolog", Required = false, HelpText = "Log to console.")]
+        public bool NoLog { get; set; }
+
         [Option('l', "log", Required = false, HelpText = "Path to a log configuration file.")]
         public string LogConfig { get; set; }
+
+        [Option('d', "demon", Required = false, HelpText = "Starts the Artivity demon. This option should only be called by launchd.")]
+        public bool Demon { get; set; }
+
 
         #endregion
     }

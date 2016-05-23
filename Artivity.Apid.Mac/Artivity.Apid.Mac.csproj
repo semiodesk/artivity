@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\build\Debug\apid</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,11 +32,17 @@
     <XamMacArch>x86_64</XamMacArch>
     <Externalconsole>true</Externalconsole>
     <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterExecute" command="cp artivity-apid.app/Contents/MacOS/* Artivity.app/Contents/MacOS/" workingdir="${TargetDir}" externalConsole="True" pauseExternalConsole="True" />
+      </CustomCommands>
+    </CustomCommands>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\build\Release\apid</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -52,7 +58,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Xamarin.Mac" />
     <Reference Include="INIFileParser">
       <HintPath>..\packages\ini-parser.2.2.2\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
@@ -60,6 +65,7 @@
       <HintPath>..\packages\TinyVirtuoso.0.3.25\lib\Net35\TinyVirtuoso.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="Xamarin.Mac" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -75,6 +81,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="FSEventsFileSystemWatcher.cs" />
+    <Compile Include="MacPlatformProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <ItemGroup>
@@ -100,5 +107,7 @@
     <BundleResource Include="TinyVirtuoso\virtuoso\osx\virtuoso-t">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>
+    <BundleResource Include="log.config" />
+    <BundleResource Include="debug.log.config" />
   </ItemGroup>
 </Project>

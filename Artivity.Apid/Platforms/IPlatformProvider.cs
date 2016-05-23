@@ -13,6 +13,7 @@ namespace Artivity.Apid.Platforms
         string ThumbnailFolder { get; }
         string DatabaseFolder { get; }
         string DatabaseName { get; }
+        string DeploymentDir { get; }
         bool IsLinux { get; }
         bool IsMac { get; }
         bool IsWindows { get; }

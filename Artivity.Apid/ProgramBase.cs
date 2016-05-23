@@ -32,6 +32,7 @@ using System.Text;
 using System.IO;
 using Artivity.Api.Plugin;
 using MonoDevelop.MacInterop;
+using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {
@@ -42,8 +43,12 @@ namespace Artivity.Apid
         private PluginChecker _pluginChecker;
         private IInstallationWatchdog _watchdog;
         protected HttpService Service;
-        protected Options Options;
+        protected Options Options = null;
         protected bool Initialized = false;
+        protected bool overwriteLogging = false;
+        protected string logConfigFile = null;
+
+        protected IPlatformProvider platform;
 
         // Commandline arguments
         protected string[] _args;
@@ -52,9 +57,14 @@ namespace Artivity.Apid
 
         protected bool InitializeOptions()
         {
+            if (Options != null)
+                return true;
             Options = new Options();
+            bool res = CommandLine.Parser.Default.ParseArguments(_args, Options);
 
-            if (!CommandLine.Parser.Default.ParseArguments(_args, Options))
+
+            Console.WriteLine("nope");
+            if (!res)
             {
                 return false;
             }
@@ -65,11 +75,17 @@ namespace Artivity.Apid
         {
             bool consoleLogging = true;
 
-            if(Options.LogConfig != null && File.Exists(Options.LogConfig))
+            string logFile = null;
+            if (overwriteLogging)
+                logFile = logConfigFile;
+            if (Options.LogConfig != null)
+                logFile = Options.LogConfig;
+
+            if(File.Exists(logFile) && !Options.NoLog)
             {
                 try
                 {
-                    FileInfo logFileConfig = new FileInfo(Options.LogConfig);
+                    FileInfo logFileConfig = new FileInfo(logFile);
 
                     log4net.Config.XmlConfigurator.Configure(logFileConfig);
 
@@ -108,7 +124,6 @@ namespace Artivity.Apid
         {
             if (!InitializeOptions())
                 return false;
-                
 
             InitializeLogging();
 
@@ -124,8 +139,8 @@ namespace Artivity.Apid
             Initialized = true;
             return true;
         }
-
-        protected virtual bool Run(string[] args)
+            
+        protected bool Run()
         {
             if (!Initialized)
             {
@@ -133,7 +148,7 @@ namespace Artivity.Apid
                 if( !res)
                     return false;
             }
-            
+
             Service.Start();
             return true;
         }
@@ -141,6 +156,7 @@ namespace Artivity.Apid
         protected void InitializeService()
         {
             Service = new HttpService();
+            Service.PlatformProvider = platform;
             Service.UpdateOntologies = Options.Update;
         }
 

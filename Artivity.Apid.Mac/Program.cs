@@ -29,6 +29,7 @@ using System;
 using System.Threading;
 using AppKit;
 using CoreFoundation;
+using System.IO;
 
 namespace Artivity.Apid.Mac
 {
@@ -46,9 +47,17 @@ namespace Artivity.Apid.Mac
             program.Run(args);
         }
 
-        protected override bool Run(string[] args)
+        public bool Run(string[] args)
         {
             _args = args;
+            var applicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            var username = Environment.UserName;
+            platform = new MacPlatformProvider(applicationData, userFolder, username);
+
+            overwriteLogging = true;
+            logConfigFile = Path.Combine(platform.DeploymentDir, "log.config");
+
 
             if (!Initialize())
                 return false;
@@ -70,7 +79,7 @@ namespace Artivity.Apid.Mac
         protected void FileSystemWatcherThread()
         {
             // Start the service.
-            base.Run(_args);
+            Run();
             DispatchQueue.MainQueue.DispatchAsync(() =>
                 {
                     DispatchQueue.CurrentQueue.Suspend();
