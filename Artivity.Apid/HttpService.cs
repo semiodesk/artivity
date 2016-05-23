@@ -147,6 +147,7 @@ namespace Artivity.Apid
         public AutoResetEvent DatabaseStarted { get; private set; }
         private bool _started = false;
 
+
         #endregion
 
         #region Constructor
@@ -171,7 +172,8 @@ namespace Artivity.Apid
 
             Logger.LogInfo("Artivity Logging Service, Version {0}", version);
 
-            PlatformProvider = new PlatformProvider(ApplicationData, UserFolder, Username);
+            if( PlatformProvider == null )
+                PlatformProvider = new PlatformProvider(ApplicationData, UserFolder, Username);
 
             // Make sure the database is started.
             StartDatabase();
@@ -263,13 +265,7 @@ namespace Artivity.Apid
         {
             if (PlatformProvider.IsWindows || PlatformProvider.IsMac)
             {
-                string deploymentDir = null;
-
-                if (PlatformProvider.IsMac)
-                {
-                    deploymentDir = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-                    deploymentDir = Path.Combine(deploymentDir, "..", "Resources");
-                }
+                string deploymentDir = PlatformProvider.DeploymentDir;
 
                 // We are running on Windows or Mac. Start the database using TinyVirtuoso..
                 Logger.LogInfo("Starting the OpenLink Virtuoso database..");

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Artivity.Apid.Platforms
 {
-    class PlatformProvider : IPlatformProvider
+    public class PlatformProvider : IPlatformProvider
     {
         #region Members
         public string AppDataFolder
@@ -61,6 +61,8 @@ namespace Artivity.Apid.Platforms
             get;
             protected set;
         }
+
+        public string DeploymentDir { get; set; }
         #endregion
 
         #region Constructors
