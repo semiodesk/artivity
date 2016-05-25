@@ -37,7 +37,7 @@ $(MASTER_DMG): $(WC_DMG) $(addprefix $(SOURCE_DIR)/,$(SOURCE_FILES))
 	rm -f "$(MASTER_DMG)"
 	hdiutil convert "$(WC_DMG)" -quiet -format UDZO -imagekey zlib-level=9 -o "$@"
 	rm -rf $(WC_DIR)
-	cp $(MASTER_DMG) $(SOURCEDIR)/$(MASTER_DMG)
+	cp "$(MASTER_DMG)" "$(SOURCE_DIR)/$(MASTER_DMG)"
 	@echo
 
 .PHONY: clean
