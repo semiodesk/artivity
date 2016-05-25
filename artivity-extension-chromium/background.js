@@ -1,21 +1,21 @@
-// Copyright (c) 2015 Semiodesk GmbH                                                                                   
-//      
+// Copyright (c) 2015 Semiodesk GmbH
+//
 // AUTHORS
-// - Sebastian Faubel <sebastian@semiodesk.com>                                                                        
-// - Moritz Eberl <moritz@semiodesk.com>                                                                               
-//                                                                                                                     
+// - Sebastian Faubel <sebastian@semiodesk.com>
+// - Moritz Eberl <moritz@semiodesk.com>
+//
 // Distributed under the GNU GPL version 3.
 
-var endpoint = "http://localhost:8272/artivity/1.0/activities/web/";
+var endpoint = "http://localhost:8262/artivity/1.0/activities/web/";
 
 var agent = "application://chromium-browser.desktop";
 
 chrome.tabs.onCreated.addListener(
     function(tab) {
         var now = new Date();
-        
+
         console.log("[", now, ", CREATED] ");
-        
+
         logActivity(tab.id, now, null);
     }
 );
@@ -26,9 +26,9 @@ chrome.tabs.onUpdated.addListener(
             // Do not track secure connections and only track on load to avoid duplicate events.
             if(tab.url.indexOf('https') === -1 && changeInfo.status == "loading") {
                 var now = new Date();
-                
+
                 console.log("[", now, ", UPDATED] ", tab.url, tab.title);
-                
+
                 logUsage(tab.id, now, tab.url, tab.title);
             }
         }
@@ -38,33 +38,33 @@ chrome.tabs.onUpdated.addListener(
 chrome.tabs.onRemoved.addListener(
     function(tabId, removeInfo) {
         var now = new Date();
-        
+
         console.log("[", now, ", REMOVED] ");
-        
+
         logActivity(tabId, null, now);
     }
 );
 
 function logUsage(tabId, time, url, title)
-{       
+{
     var params = {agent: agent, tab: tabId, url: url, title: title, time: time, startTime: null, endTime: null};
-    
+
     sendRequest(params);
 }
 
 function logActivity(tabId, startTime, endTime)
-{    
+{
     var params = {agent: agent, tab: tabId, url: null, title: null, time: null, startTime: startTime, endTime: endTime};
-    
+
     sendRequest(params);
 }
 
 function sendRequest(params)
 {
     var now = new Date();
-    
+
     console.log("[", now, "] ", endpoint, params);
-    
+
     var request = new XMLHttpRequest();
     request.open("POST", endpoint, true);
     request.setRequestHeader("Content-type", "application/json");
