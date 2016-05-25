@@ -45,11 +45,13 @@
     <UseRefCounting>true</UseRefCounting>
     <UseSGen>true</UseSGen>
     <IncludeMonoRuntime>true</IncludeMonoRuntime>
-    <CreatePackage>true</CreatePackage>
+    <CreatePackage>false</CreatePackage>
     <CodeSigningKey>Developer ID Application</CodeSigningKey>
-    <EnableCodeSigning>true</EnableCodeSigning>
+    <EnableCodeSigning>false</EnableCodeSigning>
     <EnablePackageSigning>false</EnablePackageSigning>
     <StartupObject>Artivity.Journal.Mac.MainClass</StartupObject>
+    <PackageSigningKey>Developer ID Installer</PackageSigningKey>
+    <XamMacArch>x86_64</XamMacArch>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
