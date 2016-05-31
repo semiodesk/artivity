@@ -10,7 +10,7 @@
     <RootNamespace>Artivity.WinService</RootNamespace>
     <AssemblyName>Artivity.WinService</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <ReleaseVersion>1.5.20</ReleaseVersion>
+    <ReleaseVersion>1.5</ReleaseVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <SccProjectName>&lt;Project Location In Database&gt;</SccProjectName>
     <SccLocalPath>&lt;Local Binding Root of Project&gt;</SccLocalPath>

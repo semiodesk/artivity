@@ -26,7 +26,6 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using System.Drawing;
 using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
@@ -55,15 +54,6 @@ namespace Artivity.DataModel
 
         #region Methods
 
-        public RectangleF ToRectangleF()
-        {
-            RectangleF rectangle = new RectangleF();
-            rectangle.Location = Position.ToPointF();
-            rectangle.Width = Convert.ToSingle(Width);
-            rectangle.Height = Convert.ToSingle(Height);
-
-            return rectangle;
-        }
 
         #endregion
     }

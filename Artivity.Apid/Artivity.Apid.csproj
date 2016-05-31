@@ -6,7 +6,7 @@
     <ProjectGuid>{18E3ACB7-2958-43C7-B201-EA31F542F22C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Artivity.Apid</RootNamespace>
-    <ReleaseVersion>1.5.20</ReleaseVersion>
+    <ReleaseVersion>1.5</ReleaseVersion>
     <AssemblyName>Artivity.Apid.Mac</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -43,7 +43,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="CommandLine">
@@ -55,47 +54,47 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Numerics" />
-    <Reference Include="dotNetRDF, Version=1.0.9.3683, Culture=neutral, PublicKeyToken=6055ffe4c97cc780">
-      <HintPath>..\packages\dotNetRDF.1.0.9.3683\lib\net40\dotNetRDF.dll</HintPath>
-    </Reference>
-    <Reference Include="dotNetRDF.Data.Virtuoso, Version=1.0.9.3683, Culture=neutral, PublicKeyToken=6055ffe4c97cc780">
-      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
-      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
-    </Reference>
     <Reference Include="INIFileParser, Version=2.2.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c">
       <HintPath>..\packages\ini-parser.2.2.2\lib\net20\INIFileParser.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
-      <HintPath>..\packages\log4net.2.0.5\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenLink.Data.Virtuoso, Version=6.2.3128.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95">
-      <HintPath>..\packages\dotNetRDF.Data.Virtuoso.1.0.9.3683\lib\net40\OpenLink.Data.Virtuoso.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="TinyVirtuoso, Version=0.3.25.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\TinyVirtuoso.0.3.25\lib\Net35\TinyVirtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="VDS.Common, Version=1.6.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0">
-      <HintPath>..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
     <Reference Include="System.Management" />
     <Reference Include="Mono.Posix" />
     <Reference Include="Nancy, Version=1.4.2.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Nancy.1.4.3\lib\net40\Nancy.dll</HintPath>
     </Reference>
-    <Reference Include="Semiodesk.Trinity, Version=0.9.137.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.137-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-    </Reference>
     <Reference Include="OAuth2, Version=0.8.36.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\OAuth2.0.8.36\lib\OAuth2.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.5\lib\net40-client\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="dotNetRDF.Data.Virtuoso">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+    </Reference>
+    <Reference Include="dotNetRDF">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\dotNetRDF.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenLink.Data.Virtuoso">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    </Reference>
+    <Reference Include="VDS.Common">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\VDS.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

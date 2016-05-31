@@ -26,11 +26,11 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using System.Drawing;
 using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
 {
+  
     [RdfClass(ART.Point)]
     public class Point : Geometry
     {
@@ -54,15 +54,6 @@ namespace Artivity.DataModel
         #endregion
 
         #region Methods
-
-        public PointF ToPointF()
-        {
-            PointF point = new PointF();
-            point.X = Convert.ToSingle(X);
-            point.Y = Convert.ToSingle(Y);
-
-            return point;
-        }
 
         #endregion
     }

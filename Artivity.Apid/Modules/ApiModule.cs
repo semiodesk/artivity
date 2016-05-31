@@ -38,8 +38,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Drawing;
-using System.Drawing.Imaging;
+
 using System.Threading.Tasks;
 using Artivity.Apid.Parameters;
 using Artivity.Apid.Accounts;
@@ -505,23 +504,24 @@ namespace Artivity.Apid.Modules
 
             try
             {
-                Bitmap source = new Bitmap(stream);
-
-                // Always resize the image to the given size.
-                int width = 160;
-                int height = 160;
-
-                Bitmap target = new Bitmap(width, height);
-
-                using (Graphics g = Graphics.FromImage(target))
-                {
-                    g.DrawImage(source, 0, 0, width, height);
-
-                    using (FileStream fileStream = File.Create(file))
-                    {
-                        target.Save(fileStream, ImageFormat.Jpeg);
-                    }
-                }
+                //TODO: we need to find a platform independent way of doing this
+//                Bitmap source = new Bitmap(stream);
+//
+//                // Always resize the image to the given size.
+//                int width = 160;
+//                int height = 160;
+//
+//                Bitmap target = new Bitmap(width, height);
+//
+//                using (Graphics g = Graphics.FromImage(target))
+//                {
+//                    g.DrawImage(source, 0, 0, width, height);
+//
+//                    using (FileStream fileStream = File.Create(file))
+//                    {
+//                        target.Save(fileStream, ImageFormat.Jpeg);
+//                    }
+//                }
             }
             catch(Exception ex)
             {
