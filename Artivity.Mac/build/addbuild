@@ -1,0 +1,77 @@
+#!/bin/bash
+
+function show_help (){
+	echo "Adds the build number to csproj file and plist.info. Also reads the base version from csproj.
+Options:
+-p|--project: Project file where the verison should be changed.
+-i|--info: Info.plist file to be changed
+-b|--build: Build number to be set
+Example: addbuild -p=example.csproj -i=Info.plist -b=24"
+}
+
+for i in "$@"
+do
+case $i in
+    -h|--help)
+	show_help
+	exit
+	;;
+    -p=*|--project=*)
+    PROJECT="${i#*=}"
+    shift # past argument=value
+    ;;
+    -i=*|--info=*)
+    INFO="${i#*=}"
+    shift # past argument=value
+    ;;
+    -b=*|--build=*)
+    BUILD="${i#*=}"
+    shift # past argument=value
+    ;;
+    *)
+            # unknown option
+    ;;
+esac
+done
+
+VERSION="`./extractversion -p=${PROJECT}`.${BUILD}"
+
+CSPROJ="`cat ${PROJECT}`"
+
+./changeversion -p=<(echo "${CSPROJ}") -v=$VERSION > ${PROJECT}
+
+
+XSL='<?xml version="1.0" ?>
+<!--  Invoke with xsltproc -param build-number 4 updateVersion.xsl Info.plist > Info.plist /-->
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:param name="version">2</xsl:param>
+
+  <xsl:template match="node() | @*">
+    <xsl:copy>
+      <xsl:apply-templates select="node() | @*" />
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="/plist/dict/string">
+    <xsl:choose>
+      <xsl:when test="preceding-sibling::key[1] = '\''CFBundleVersion'\''">
+        <string><xsl:value-of select="$version"/></string>
+      </xsl:when>
+      <xsl:otherwise>
+        <string><xsl:value-of select="."/></string>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+</xsl:stylesheet>'
+
+PLIST="`cat ${INFO}`"
+
+
+xsltproc	 --stringparam version "${VERSION}" \
+		 <(echo "${XSL}") <(echo "${PLIST}") > ${INFO}
+
+
+
+
+# End of file

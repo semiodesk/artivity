@@ -27,12 +27,24 @@
 using System;
 using Artivity.Mac;
 using Artivity.Apid;
+using System.IO;
+using ObjCRuntime;
+using System.Reflection;
+using System.Diagnostics;
 
 
 namespace Artivity.Journal.Mac
 {
     static class MainClass
     {
+
+
+        static string GetCurrentExecutingDirectory()
+        {
+            string filePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
+            return Path.GetDirectoryName(filePath);
+        }
+
         static void Main(string[] args)
         {
             Options opts = new Options();
@@ -45,10 +57,62 @@ namespace Artivity.Journal.Mac
             }
            else
             {
+                #if !DEBUG
+                TestApid();
+                #endif
+
+                InitSparkle();
                 Artivity.Mac.Journal.Program prog = new Artivity.Mac.Journal.Program();
                 prog.Run(args);
             }
 
         }
+
+        static void InitSparkle()
+        {
+            var baseAppPath = Directory.GetParent(Directory.GetParent(System.AppDomain.CurrentDomain.BaseDirectory).ToString());
+            var sparklePath = baseAppPath + "/Frameworks/Sparkle.Framework/Sparkle";
+            if( Dlfcn.dlopen(sparklePath, 0) == IntPtr.Zero )
+            {
+                Console.Error.WriteLine("Unable to load the dynamic library.");
+                Environment.Exit(1);
+            }
+        }
+
+        static void TestApid()
+        {
+            var uname = Environment.UserName;
+            FileInfo globalAgent = new FileInfo("/Library/LaunchAgents/com.semiodesk.artivity.plist");
+
+            if (globalAgent.Exists)
+            {
+                // The plist for a global agent exists, so we assume everything is fine and people know what they are doing...
+                return;
+            }
+
+            var home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            FileInfo userAgent = new FileInfo(Path.Combine(home, "Library/LaunchAgents/com.semiodesk.artivity.plist"));
+            if (userAgent.Exists) // TODO: test if newer
+            {
+                // The plist for a local agent exists, so we assume everything is fine and people know what they are doing...
+                return;
+            }
+
+            var current = Environment.CurrentDirectory;
+            FileInfo agentFile = new FileInfo(Path.Combine(current,"..", "Resources", "com.semiodesk.artivity.plist"));
+
+            var text = File.ReadAllText(agentFile.FullName);
+            DirectoryInfo contentPath = new DirectoryInfo(Path.Combine(current, ".."));
+            File.WriteAllText(userAgent.FullName, string.Format(text, contentPath.FullName));
+
+            Process proc = new System.Diagnostics.Process();
+            proc.StartInfo.FileName = "/bin/bash";
+            proc.StartInfo.Arguments = string.Format("-c \"launchctl bootstrap gui/$UID {0}\"", userAgent);
+            proc.StartInfo.UseShellExecute = false; 
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.Start();
+        }
     }
+
+
 }

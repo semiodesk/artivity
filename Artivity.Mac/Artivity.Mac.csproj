@@ -9,8 +9,9 @@
     <RootNamespace>Artivity.Mac</RootNamespace>
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <AssemblyName>Artivity</AssemblyName>
-    <ReleaseVersion>1.5.20</ReleaseVersion>
+    <ReleaseVersion>1.5</ReleaseVersion>
     <StartupObject>Artivity.Mac.MainClass</StartupObject>
+    <UseXamMacFullFramework>true</UseXamMacFullFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -67,6 +68,9 @@
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
     </Reference>
+    <Reference Include="Sparkle">
+      <HintPath>Sparkle.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -75,14 +79,17 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="Journal\AppDelegate.cs" />
-    <Compile Include="Demon\FSEventsFileSystemWatcher.cs" />
-    <Compile Include="Demon\MacPlatformProvider.cs" />
     <Compile Include="Journal\ViewController.cs" />
     <Compile Include="Journal\ViewController.designer.cs">
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="Demon\Program.cs" />
     <Compile Include="Journal\Program.cs" />
+    <Compile Include="Journal\AppDelegate.designer.cs">
+      <DependentUpon>AppDelegate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Apid\FSEventsFileSystemWatcher.cs" />
+    <Compile Include="Apid\MacPlatformProvider.cs" />
+    <Compile Include="Apid\Program.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Journal\Main.storyboard" />
@@ -139,6 +146,7 @@
     </BundleResource>
     <BundleResource Include="debug.log.config" />
     <BundleResource Include="log.config" />
+    <BundleResource Include="dsa_pub.pem" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="startAgent.sh">
@@ -147,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Journal\" />
-    <Folder Include="Demon\" />
   </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+  <Import Project="build\CopyToOutput.targets" />
 </Project>

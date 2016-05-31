@@ -1,0 +1,39 @@
+#!/bin/bash
+
+function show_help (){
+	echo "Extracts version number from csproj file.
+Options:
+-p|--proj: Project file to extract build number from.
+Example: extractversion -p=Example.csproj"
+}
+
+
+for i in "$@"
+do
+case $i in
+    -h|--help)
+	show_help
+	exit
+	;;
+    -p=*|--proj=*)
+    PROJECT="${i#*=}"
+    shift # past argument=value
+    ;;
+    *)
+            # unknown option
+    ;;
+esac
+done
+
+if [ -z ${PROJECT} ];
+then show_help;
+exit;
+fi
+
+VERSION="`cat ${PROJECT} | xpath "//Project/PropertyGroup/ReleaseVersion/text()" 2> /dev/null`" 
+echo $VERSION
+
+
+
+
+# End of file

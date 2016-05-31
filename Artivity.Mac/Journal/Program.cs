@@ -29,6 +29,8 @@ using AppKit;
 using System.IO;
 using System;
 using System.Diagnostics;
+using System.Reflection;
+using ObjCRuntime;
 
 
 namespace Artivity.Mac.Journal
@@ -41,44 +43,38 @@ namespace Artivity.Mac.Journal
 
         public void Run(string[] args)
         {
-            TestApid();
             NSApplication.Init();
             NSApplication.Main(args);
         }
 
-        static void TestApid()
+
+
+        void LoadSparkle()
         {
-            var uname = Environment.UserName;
-            FileInfo globalAgent = new FileInfo("/Library/LaunchAgents/com.semiodesk.artivity.plist");
-
-            if (globalAgent.Exists)
+            if (Dlfcn.dlopen(Path.Combine(GetCurrentExecutingDirectory(), "Sparkle.framework", "Sparkle"), 0) == IntPtr.Zero)
             {
-                // The plist for a global agent exists, so we assume everything is fine and people know what they are doing...
-                return;
+                Console.Error.WriteLine("Unable to load the dynamic library.");
+                Environment.Exit(1);
             }
-
-            var home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            FileInfo userAgent = new FileInfo(Path.Combine(home, "Library/LaunchAgents/com.semiodesk.artivity.plist"));
-            if (userAgent.Exists) // TODO: test if newer
+            /*
+            string dirName = Directory.GetParent(Directory.GetParent(System.AppDomain.CurrentDomain.BaseDirectory).ToString()).FullName;
+            string sparkle = Path.Combine(dirName, "Frameworks", "Sparkle.framework", "Sparkle");
+            FileInfo f = new FileInfo(sparkle);
+            if (Dlfcn.dlopen(sparkle, 0) == IntPtr.Zero)
             {
-                // The plist for a local agent exists, so we assume everything is fine and people know what they are doing...
-                return;
+                Console.Error.WriteLine("Unable to load the dynamic library.");
+                Environment.Exit(1);
             }
-
-            var current = Environment.CurrentDirectory;
-            FileInfo agentFile = new FileInfo(Path.Combine(current,"..", "Resources", "com.semiodesk.artivity.plist"));
-
-            var text = File.ReadAllText(agentFile.FullName);
-            DirectoryInfo contentPath = new DirectoryInfo(Path.Combine(current, ".."));
-            File.WriteAllText(userAgent.FullName, string.Format(text, contentPath.FullName));
-
-            Process proc = new System.Diagnostics.Process();
-            proc.StartInfo.FileName = "/bin/bash";
-            proc.StartInfo.Arguments = string.Format("-c \"launchctl bootstrap gui/$UID {0}\"", userAgent);
-            proc.StartInfo.UseShellExecute = false; 
-            proc.StartInfo.RedirectStandardOutput = true;
-            proc.Start();
+            */
         }
+            
+
+            static string GetCurrentExecutingDirectory()
+            {
+                string filePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
+                return Path.GetDirectoryName(filePath);
+            }
+
     }
 }
 

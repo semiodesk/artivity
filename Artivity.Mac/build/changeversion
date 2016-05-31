@@ -1,0 +1,60 @@
+#!/bin/bash
+
+function show_help (){
+	echo "Create a new item for sparkle appcast.
+Options:
+-p|--project: Project file where the verison should be changed.
+-v|--version: Version to be set.
+Example: changeversion -p=example.csproj -v=0.9.1 "
+}
+
+for i in "$@"
+do
+case $i in
+    -h|--help)
+	show_help
+	exit
+	;;
+    -p=*|--project=*)
+    PROJECT="${i#*=}"
+    shift # past argument=value
+    ;;
+    -v=*|--version=*)
+    VERSION="${i#*=}"
+    shift # past argument=value
+    ;;
+    *)
+            # unknown option
+    ;;
+esac
+done
+
+XSL='<?xml version="1.0" ?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msb="http://schemas.microsoft.com/developer/msbuild/2003" version="1.0">
+
+        <!-- Parameter -->
+        <xsl:param name="version">version</xsl:param>
+
+        <xsl:output method="xml" encoding="utf-8" />
+
+        <!-- Generic identity template  -->     
+        <xsl:template match="node()|@*">
+
+                <xsl:copy>
+                        <xsl:apply-templates select="node() | @*"/>
+                </xsl:copy>
+        </xsl:template>
+   
+        <xsl:template match="//msb:Project/msb:PropertyGroup/msb:ReleaseVersion/text()">
+            <xsl:value-of select="$version" />
+        </xsl:template>
+</xsl:stylesheet>
+'
+
+xsltproc	 --stringparam version "${VERSION}" \
+		 <(echo "${XSL}") ${PROJECT}
+
+
+
+
+# End of file

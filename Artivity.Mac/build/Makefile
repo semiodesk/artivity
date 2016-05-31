@@ -2,7 +2,7 @@
 NAME ?= Artivity
 VERSION ?= 1.5
 
-SOURCE_DIR ?= ../build/Release
+SOURCE_DIR ?= ../../build/Release
 SOURCE_FILES ?= Artivity.app
 
 TEMPLATE_DMG ?= template.dmg
