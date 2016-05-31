@@ -1,0 +1,49 @@
+#!/bin/bash
+
+function show_help (){
+	echo "Creates a new update.
+Options:
+-c|--changelog: Changelog file to use.
+-v|--version: Version number to use
+-o|--output: Output file
+Example: makereleasenote -c=changelog.xml -v=1.6.5 -o=notes-1.6.5.html"
+}
+
+
+for i in "$@"
+do
+case $i in
+    -h|--help)
+	show_help
+	exit
+	;;
+    -c=*|--changelog=*)
+    CHANGELOG="${i#*=}"
+    shift # past argument=value
+    ;;
+    -v=*|--version=*)
+    VERSION="${i#*=}"
+    shift # past argument=value
+    ;;
+    -o=*|--output=*)
+    OUTPUT="${i#*=}"
+    shift # past argument=value
+    ;;
+    *)
+            # unknown option
+    ;;
+esac
+done
+
+if [ -z ${CHANGELOG} ];
+then show_help;
+exit;
+fi
+
+TITLE="`cat ${CHANGELOG} | xpath "string(//changelog/channel[contains(@os, 'osx')]/notes[not(../notes/@id > @id)]/@title)" 2> /dev/null`" 
+TITLE=`printf "$TITLE" "$VERSION"`
+
+xsltproc --stringparam title "${TITLE}" releasenote.xsl ${CHANGELOG} > ${OUTPUT}
+
+
+# End of file
