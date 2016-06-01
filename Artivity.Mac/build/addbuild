@@ -35,8 +35,8 @@ esac
 done
 
 CSPROJ="`cat ${PROJECT}`"
-
-./changeversion -p=<(echo "${CSPROJ}") -v=$VERSION > ${PROJECT}
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+${DIR}/changeversion -p=<(echo "${CSPROJ}") -v=$VERSION > ${PROJECT}
 
 VERSION="`"${DIR}"/extractversion -p=${PROJECT}`.${BUILD}"
 
@@ -72,7 +72,6 @@ PLIST="`cat ${INFO}`"
 
 xsltproc	 --stringparam version "${VERSION}" \
 		 <(echo "${XSL}") <(echo "${PLIST}") > ${INFO}
-
 
 
 

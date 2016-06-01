@@ -1,0 +1,66 @@
+#!/bin/bash
+
+function show_help (){
+	echo "Creates a new update.
+Options:
+-c|--changelog: Changelog file to use.
+-v|--version: Version number to use
+Example: makeupdate -c=changelog.xml -v=1.6.5 -p=priv_key.pem -o=appcast.xml"
+}
+
+
+for i in "$@"
+do
+case $i in
+    -h|--help)
+	show_help
+	exit
+	;;
+    -c=*|--changelog=*)
+    CHANGELOG="${i#*=}"
+    shift # past argument=value
+    ;;
+    -v=*|--version=*)
+    VERSION="${i#*=}"
+    shift # past argument=value
+    ;;
+    -p=*|--private=*)
+    PRIVATE="${i#*=}"
+    shift # past argument=value
+    ;;
+    -o=*|--output=*)
+    OUTPUT="${i#*=}"
+    shift # past argument=value
+
+    ;;
+    *)
+            # unknown option
+    ;;
+esac
+done
+
+if [ -z ${CHANGELOG} ];
+then show_help;
+exit;
+fi
+
+SOURCE="`cat ${CHANGELOG} | xpath "//changelog/channel[contains(@os, 'osx')]/source/text()" 2> /dev/null`" 
+DEST="`cat ${CHANGELOG} | xpath "//changelog/channel[contains(@os, 'osx')]/dest/text()" 2> /dev/null`" 
+TITLE="`cat ${CHANGELOG} | xpath "string(//changelog/channel[contains(@os, 'osx')]/notes[not(../notes/@id > @id)]/@title)" 2> /dev/null`" 
+TITLE=`printf "$TITLE" "$VERSION"`
+
+DEST="${DEST}/$VERSION"
+
+NOTES="release-${VERSION}.html"
+
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+${DIR}/makereleasenote -c=${CHANGELOG} -v=${VERSION} -o=${NOTES}
+make -C ${DIR} VERSION=${VERSION}
+
+FILE="Artivity-${VERSION}.dmg"
+
+${DIR}/additem -s=${SOURCE} -t="${TITLE}" -v=${VERSION} -f=${FILE} -p=${PRIVATE} -u=${DEST} > ${OUTPUT}
+
+# End of file
