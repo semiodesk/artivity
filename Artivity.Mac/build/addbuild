@@ -36,7 +36,6 @@ done
 
 CSPROJ="`cat ${PROJECT}`"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-${DIR}/changeversion -p=<(echo "${CSPROJ}") -v=$VERSION > ${PROJECT}
 
 VERSION="`"${DIR}"/extractversion -p=${PROJECT}`.${BUILD}"
 
