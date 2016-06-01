@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<changelog>
+<channel os="osx">
+	<!-- Where the appcast file is -->
+	<source>https://static.semiodesk.com/artivity/osx/appcast.xml</source>
+	<!-- Base directory for the upload, version number is appended -->
+	<dest>https://static.semiodesk.com/artivity/osx</dest>
+	
+	<!-- The title can be static or extended with the version number by inserting %s -->
+	<notes id="1" title="Artivity %s Update - Hello World!">
+		<note>This is the initial release of Artivity.</note>
+		<note>Update the Software with Help->Check for updates...</note>
+	</notes>
+</channel>
+
+<channel os="win">
+</channel>
+
+<channel os="linux">
+</channel>
+
+</changelog>
