@@ -56,11 +56,11 @@ NOTES="release-${VERSION}.html"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-${DIR}/makereleasenote -c=${CHANGELOG} -v=${VERSION} -o=${NOTES}
-make -C ${DIR} VERSION=${VERSION}
+"${DIR}"/makereleasenote -c=${CHANGELOG} -v=${VERSION} -o=${NOTES}
+make -C "${DIR}" VERSION=${VERSION}
 
 FILE="Artivity-${VERSION}.dmg"
 
-${DIR}/additem -s=${SOURCE} -t="${TITLE}" -v=${VERSION} -f=${FILE} -p=${PRIVATE} -u=${DEST} > ${OUTPUT}
+"${DIR}"/additem -s=${SOURCE} -t="${TITLE}" -v=${VERSION} -f=${FILE} -p=${PRIVATE} -u=${DEST} > ${OUTPUT}
 
 # End of file
