@@ -20,69 +20,28 @@
 //
 // AUTHORS:
 //
+//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-
-using AppKit;
-using Foundation;
+//
+using System;
 using Sparkle;
-
 
 namespace Artivity.Journal.Mac
 {
-    [Register("AppDelegate")]
-    public partial class AppDelegate : NSApplicationDelegate
+    public class SparkleDelegate : SUUpdaterDelegate
     {
-        private SUUpdater SUUpdater; 
-
-        public AppDelegate()
+        public SparkleDelegate()
         {
+        }
+
+        public override void UpdaterWillRelaunchApplication(SUUpdater updater)
+        {
+            MainClass.StopApid();
             
+            base.UpdaterWillRelaunchApplication(updater);
         }
-
-        public override void AwakeFromNib()
-        {
-            base.AwakeFromNib();
-            SUUpdater = new SUUpdater();
-            SUUpdater.Delegate = new SparkleDelegate();
-            SUUpdater.AutomaticallyChecksForUpdates = false;
-        }
-
-        public override bool ApplicationShouldHandleReopen(NSApplication sender, bool hasVisibleWindows)
-        {
-            if (sender.Windows.Length == 0)
-            {
-                return false;
-            }
-
-            if (!hasVisibleWindows)
-            {
-                sender.Windows[0].OrderFront(sender);
-            }
-            else
-            {
-                sender.Windows[0].MakeKeyAndOrderFront(sender);
-            }
-
-            return true;
-        }
-
-        public override void DidFinishLaunching(NSNotification notification)
-        {
-            
-        }
-
-        public override void WillTerminate(NSNotification notification)
-        {
-            // Insert code here to tear down your application
-        }
-
-        partial void checkForUpdate(Foundation.NSObject sender)
-        {
-            SUUpdater.CheckForUpdates(sender);
-        }
- 
     }
 }
 
