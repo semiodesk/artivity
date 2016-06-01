@@ -12,15 +12,6 @@ Options:
 Example: additem -s=https://example.com/download/appcast.xml -t=\"Version 0.9.1\" -v=0.9.1 -f=update.dmg  -p=private.pem -u=https://example.com/downloads/0.9.1/"
 }
 
-function trim()
-{
-	local var="$*"
-    var="${var#"${var%%[![/]]*}"}"   # remove leading whitespace characters
-    var="${var%"${var##*[![/]]}"}"   # remove trailing whitespace characters
-    echo -n "$var"
-}
-
-
 for i in "$@"
 do
 case $i in
@@ -40,20 +31,20 @@ case $i in
     VERSION="${i#*=}"
     shift # past argument=value
     ;;
-	-f=*|--file=*)
+    -f=*|--file=*)
     FILE="${i#*=}"
     shift # past argument=value
     ;;
-	-p=*|--private=*)
+    -p=*|--private=*)
     PRIVATE="${i#*=}"
     shift # past argument=value
     ;;
-	-u=*|--url=*)
+    -u=*|--url=*)
     URL="${i#*=}"
     shift # past argument=value
     ;;
     *)
-            # unknown option
+           # unknown option
     ;;
 esac
 done
@@ -107,10 +98,11 @@ XSL='<?xml version="1.0" ?>
 </xsl:stylesheet>'
 
 RESULT="`wget -qO- ${SOURCE}`"
-TIME="`date -R`"
-LENGTH="`stat --printf=\"%s\" ${FILE}`"
+TIME="`gdate -R`"
+LENGTH="`gstat --printf=\"%s\" ${FILE}`"
 
 openssl=/usr/bin/openssl
+
 DSASIG="`$openssl dgst -sha1 -binary < "${FILE}" | $openssl dgst -dss1 -sign "${PRIVATE}" | $openssl enc -base64`"
 
 RELNOTES="${URL}/changelog.html"
