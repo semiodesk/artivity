@@ -37,8 +37,8 @@ done
 VERSION="`./extractversion -p=${PROJECT}`.${BUILD}"
 
 CSPROJ="`cat ${PROJECT}`"
-
-./changeversion -p=<(echo "${CSPROJ}") -v=$VERSION > ${PROJECT}
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+${DIR}/changeversion -p=<(echo "${CSPROJ}") -v=$VERSION > ${PROJECT}
 
 
 XSL='<?xml version="1.0" ?>
@@ -70,7 +70,6 @@ PLIST="`cat ${INFO}`"
 
 xsltproc	 --stringparam version "${VERSION}" \
 		 <(echo "${XSL}") <(echo "${PLIST}") > ${INFO}
-
 
 
 
