@@ -5,7 +5,7 @@ function show_help (){
 Options:
 -c|--changelog: Changelog file to use.
 -v|--version: Version number to use
-Example: makereleasenote -c=changelog.xml -v=1.6.5"
+Example: makeupdate -c=changelog.xml -v=1.6.5 -p=priv_key.pem -o=appcast.xml"
 }
 
 
@@ -25,8 +25,13 @@ case $i in
     shift # past argument=value
     ;;
     -p=*|--private=*)
+    PRIVATE="${i#*=}"
+    shift # past argument=value
+    ;;
+    -o=*|--output=*)
     OUTPUT="${i#*=}"
     shift # past argument=value
+
     ;;
     *)
             # unknown option
@@ -47,11 +52,15 @@ TITLE=`printf "$TITLE" "$VERSION"`
 DEST="${DEST}/$VERSION"
 
 NOTES="release-${VERSION}.html"
-./makereleasenotes -c=${CHANGELOG} -v=${VERSION} -o=${NOTES}
-make VERSION=${VERSION}
+
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+${DIR}/makereleasenote -c=${CHANGELOG} -v=${VERSION} -o=${NOTES}
+make -C ${DIR} VERSION=${VERSION}
 
 FILE="Artivity-${VERSION}.dmg"
 
-./additem -s=${SOURCE} -t=${TITLE} -v=${VERSION} -f=${FILE} -p=${PRIVATE} -u=${DEST} 
+${DIR}/additem -s=${SOURCE} -t="${TITLE}" -v=${VERSION} -f=${FILE} -p=${PRIVATE} -u=${DEST} > ${OUTPUT}
 
 # End of file
