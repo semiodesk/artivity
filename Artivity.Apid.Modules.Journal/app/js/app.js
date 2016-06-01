@@ -41,7 +41,7 @@ explorerApp.config(['$routeProvider',
   }]);
 
 explorerApp.factory('api', function ($http) {
-	var endpoint = 'http://localhost:8262/artivity/api/1.0/';
+	var endpoint = 'http://localhost:'.concat(port, '/artivity/api/1.0/');
 
 	return {
 		getAccounts: function () {

@@ -86,11 +86,11 @@ XSL='<?xml version="1.0" ?>
 	<xsl:template name="create-item">
 		<item>
 		<title><xsl:value-of select="$title"/></title>
-		<releaseNotesLink><xsl:value-of select="$relNotes"/></releaseNotesLink>
+		<sparkle:releaseNotesLink><xsl:value-of select="$relNotes"/></sparkle:releaseNotesLink>
 		<pubDate><xsl:value-of select="$pubDate"/></pubDate>
 		<enclosure url="{$url}"
-					   version="{$version}"
-					   dsaSignature="{$dsaSig}"
+					   sparkle:version="{$version}"
+					   sparkle:dsaSignature="{$dsaSig}"
 					   length="{$length}"
 					   type="application/octet-stream" />
 		 </item>

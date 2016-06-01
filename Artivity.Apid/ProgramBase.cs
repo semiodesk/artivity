@@ -62,8 +62,6 @@ namespace Artivity.Apid
             Options = new Options();
             bool res = CommandLine.Parser.Default.ParseArguments(_args, Options);
 
-
-            Console.WriteLine("nope");
             if (!res)
             {
                 return false;
