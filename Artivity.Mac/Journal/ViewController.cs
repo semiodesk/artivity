@@ -35,6 +35,12 @@ namespace Artivity.Journal.Mac
 {
     public partial class ViewController : NSViewController
     {
+        #if DEBUG
+        string Port = "8262";
+        #else
+        string Port = "8272";
+        #endif
+
         public override NSObject RepresentedObject
         {
             get
@@ -70,7 +76,7 @@ namespace Artivity.Journal.Mac
             };
 
             // Initially try to load the journal app.
-            Browser.MainFrame.LoadRequest(new NSUrlRequest(new NSUrl("http://localhost:8262/artivity/app/journal/1.0/")));
+            Browser.MainFrame.LoadRequest(new NSUrlRequest(new NSUrl(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", Port))));
         }
 
         private void OnBrowserLoadError(object sender, WebFrameErrorEventArgs e)

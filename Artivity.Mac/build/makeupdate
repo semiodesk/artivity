@@ -51,7 +51,7 @@ TITLE=`printf "$TITLE" "$VERSION"`
 
 DEST="${DEST}/$VERSION"
 
-NOTES="release-${VERSION}.html"
+NOTES="changelog.html"
 
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

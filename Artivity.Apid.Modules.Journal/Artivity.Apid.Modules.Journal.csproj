@@ -57,6 +57,14 @@
     <EmbeddedResource Include="app\partials\file-view.html" />
     <EmbeddedResource Include="app\partials\error-no-apid-connection.html" />
   </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <EmbeddedResource Include="app\js\conf_release.js">
+      <LogicalName>Artivity.Apid.Modules.Journal.app.js.conf.js</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <EmbeddedResource Include="app\js\conf.js" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="app\css\bootstrap-colorpicker.css" />
     <EmbeddedResource Include="app\css\bootstrap-colorpicker.css.map" />
@@ -117,7 +125,7 @@
     <EmbeddedResource Include="app\partials\settings.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
