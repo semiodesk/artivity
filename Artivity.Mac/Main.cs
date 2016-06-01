@@ -59,7 +59,7 @@ namespace Artivity.Journal.Mac
             {
                 
                 #if !DEBUG
-                TestApid();
+                TestApidInstalled();
                 if (!TestApidRunning())
                     StartApid();
                 #endif
