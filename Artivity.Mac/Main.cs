@@ -57,8 +57,11 @@ namespace Artivity.Journal.Mac
             }
            else
             {
+                
                 #if !DEBUG
                 TestApid();
+                if (!TestApidRunning())
+                    StartApid();
                 #endif
 
                 InitSparkle();
@@ -79,7 +82,7 @@ namespace Artivity.Journal.Mac
             }
         }
 
-        static void TestApid()
+        static void TestApidInstalled()
         {
             var uname = Environment.UserName;
             FileInfo globalAgent = new FileInfo("/Library/LaunchAgents/com.semiodesk.artivity.plist");
@@ -90,8 +93,8 @@ namespace Artivity.Journal.Mac
                 return;
             }
 
-            var home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            FileInfo userAgent = new FileInfo(Path.Combine(home, "Library/LaunchAgents/com.semiodesk.artivity.plist"));
+           
+            FileInfo userAgent = GetPlist();
             if (userAgent.Exists) // TODO: test if newer
             {
                 // The plist for a local agent exists, so we assume everything is fine and people know what they are doing...
@@ -107,7 +110,56 @@ namespace Artivity.Journal.Mac
 
             Process proc = new System.Diagnostics.Process();
             proc.StartInfo.FileName = "/bin/bash";
-            proc.StartInfo.Arguments = string.Format("-c \"launchctl bootstrap gui/$UID {0}\"", userAgent);
+            proc.StartInfo.Arguments = string.Format("-c \"launchctl bootstrap gui/$UID {0}\"", userAgent.FullName);
+            proc.StartInfo.UseShellExecute = false; 
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.Start();
+        }
+
+        static bool TestApidRunning()
+        {
+            //launchctl list | grep 'com.semiodesk.artivity$' | awk '{print $2}'
+            Process proc = new System.Diagnostics.Process();
+            proc.StartInfo.FileName = "/bin/bash";
+            proc.StartInfo.Arguments = "-c \"launchctl list | grep 'com.semiodesk.artivity$' | awk '{print $2}'\"";
+            proc.StartInfo.UseShellExecute = false; 
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.Start();
+            while (!proc.StandardOutput.EndOfStream) {
+                string line = proc.StandardOutput.ReadLine();
+                if (line == "0")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        static FileInfo GetPlist()
+        {
+            var home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            return new FileInfo(Path.Combine(home, "Library/LaunchAgents/com.semiodesk.artivity.plist"));
+        }
+
+
+
+        public static void StopApid()
+        {
+            FileInfo userAgent = GetPlist();
+            Process proc = new System.Diagnostics.Process();
+            proc.StartInfo.FileName = "/bin/bash";
+            proc.StartInfo.Arguments = string.Format("-c \"launchctl unload {0}\"", userAgent.FullName);
+            proc.StartInfo.UseShellExecute = false; 
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.Start();
+        }
+
+        public static void StartApid()
+        {
+            FileInfo userAgent = GetPlist();
+            Process proc = new System.Diagnostics.Process();
+            proc.StartInfo.FileName = "/bin/bash";
+            proc.StartInfo.Arguments = string.Format("-c \"launchctl load {0}\"", userAgent.FullName);
             proc.StartInfo.UseShellExecute = false; 
             proc.StartInfo.RedirectStandardOutput = true;
             proc.Start();

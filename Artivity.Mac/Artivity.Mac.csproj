@@ -90,6 +90,7 @@
     <Compile Include="Apid\FSEventsFileSystemWatcher.cs" />
     <Compile Include="Apid\MacPlatformProvider.cs" />
     <Compile Include="Apid\Program.cs" />
+    <Compile Include="Journal\SparkleDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Journal\Main.storyboard" />
