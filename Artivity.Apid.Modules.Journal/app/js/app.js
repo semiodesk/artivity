@@ -7,7 +7,7 @@ var explorerApp = angular.module('explorerApp', [
 		return {
 			responseError: function (rejection) {
 				if (rejection.status <= 0) {
-					window.location = "/app/index.html#/error-no-apid-connection";
+					window.location = "#/error-no-apid-connection";
 					return;
 				}
 				return $q.reject(rejection);

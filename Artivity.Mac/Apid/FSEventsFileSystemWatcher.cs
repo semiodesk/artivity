@@ -31,8 +31,9 @@ using CoreServices;
 using Foundation;
 using CoreFoundation;
 using System.Runtime.InteropServices;
+using Artivity.Apid;
 
-namespace Artivity.Apid.Mac
+namespace Artivity.Mac.Apid
 {
     public class FSEventsFileSystemWatcher : IFileSystemWatcher, IDisposable
     {

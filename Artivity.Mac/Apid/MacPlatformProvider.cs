@@ -28,7 +28,7 @@ using System;
 using Artivity.Apid.Platforms;
 using System.IO;
 
-namespace Artivity.Apid.Mac
+namespace Artivity.Mac.Apid
 {
     public class MacPlatformProvider : PlatformProvider
     {
