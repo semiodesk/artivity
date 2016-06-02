@@ -27,13 +27,12 @@
 //
 using System;
 using Artivity.Apid;
-using Artivity.Apid.Mac;
 using System.IO;
 using AppKit;
 using System.Threading;
 using CoreFoundation;
 
-namespace Artivity.Mac.Demon
+namespace Artivity.Mac.Apid
 {
     public class Program : ProgramBase
     {

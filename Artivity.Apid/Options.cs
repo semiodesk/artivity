@@ -43,8 +43,8 @@ namespace Artivity.Apid
         [Option('l', "log", Required = false, HelpText = "Path to a log configuration file.")]
         public string LogConfig { get; set; }
 
-        [Option('d', "demon", Required = false, HelpText = "Starts the Artivity demon. This option should only be called by launchd.")]
-        public bool Demon { get; set; }
+        [Option('d', "daemon", Required = false, HelpText = "Starts the Artivity daemon. This option should only be called by launchd.")]
+        public bool Daemon { get; set; }
 
 
         #endregion

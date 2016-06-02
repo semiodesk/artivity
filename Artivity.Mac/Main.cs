@@ -37,6 +37,7 @@ namespace Artivity.Journal.Mac
 {
     static class MainClass
     {
+        static bool _forceApid = false;
 
 
         static string GetCurrentExecutingDirectory()
@@ -47,15 +48,18 @@ namespace Artivity.Journal.Mac
 
         static void Main(string[] args)
         {
+            #if APID
+            _forceApid = true;
+            #endif
+
             Options opts = new Options();
             CommandLine.Parser.Default.ParseArguments(args, opts);
-            if (opts.Demon)
+            if (opts.Daemon || _forceApid)
             {
-                Artivity.Mac.Demon.Program prog = new Artivity.Mac.Demon.Program();
+                Artivity.Mac.Apid.Program prog = new Artivity.Mac.Apid.Program();
                 prog.Run(opts);
        
-            }
-           else
+            } else
             {
                 
                 #if !DEBUG
@@ -77,7 +81,7 @@ namespace Artivity.Journal.Mac
             var sparklePath = baseAppPath + "/Frameworks/Sparkle.Framework/Sparkle";
             if( Dlfcn.dlopen(sparklePath, 0) == IntPtr.Zero )
             {
-                Console.Error.WriteLine("Unable to load the dynamic library.");
+                Console.Error.WriteLine(string.Format("Unable to load the dynamic library for Sparkle.\nTried {0}", sparklePath));
                 Environment.Exit(1);
             }
         }
@@ -140,8 +144,6 @@ namespace Artivity.Journal.Mac
             var home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             return new FileInfo(Path.Combine(home, "Library/LaunchAgents/com.semiodesk.artivity.plist"));
         }
-
-
 
         public static void StopApid()
         {

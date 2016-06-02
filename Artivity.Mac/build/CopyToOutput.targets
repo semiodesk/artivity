@@ -8,8 +8,8 @@
 	<Target Name="CopySparkle" >
 	    <Message Text="Copying Sparkle to app bundle." />
 	     <RemoveDir Directories="$(AppBundleDir)/Contents/Frameworks/Sparkle.framework"/>
-	    <MakeDir Directories="$(AppBundleDir)/Contents/Frameworks;$(AppBundleDir)/Contents/Frameworks/Sparkle.framework"/>
-	    <Exec Command="cp -Rf &quot;$(ProjectDir)&quot;/Sparkle.framework &quot;$(AppBundleDir)&quot;/Contents/Frameworks" />
+	    <MakeDir Directories="$(AppBundleDir)/Contents/Frameworks"/>
+	    <Exec Command="tar -xzvf &quot;$(ProjectDir)&quot;/sparkle.framework.tar.gz -C &quot;$(AppBundleDir)&quot;/Contents/Frameworks" />
 	</Target>
 
 </Project>
