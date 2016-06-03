@@ -153,15 +153,18 @@ namespace Artivity.Apid
 
         protected void InitializeLog()
         {
-            eventLog = new EventLog();
-            eventLog.Log = "Application";
-            eventLog.Source = base.ServiceName;
-            ((ISupportInitialize)(this.EventLog)).BeginInit();
-            if (!EventLog.SourceExists(this.EventLog.Source))
-            {
-                EventLog.CreateEventSource(this.EventLog.Source, this.EventLog.Log);
-            }
-            ((ISupportInitialize)(this.EventLog)).EndInit();
+            //eventLog = new EventLog();
+            //eventLog.Log = "Application";
+            //eventLog.Source = base.ServiceName;
+
+            //((ISupportInitialize)(this.EventLog)).BeginInit();
+
+            //if (!EventLog.SourceExists(this.EventLog.Source))
+            //{
+            //    EventLog.CreateEventSource(this.EventLog.Source, this.EventLog.Log);
+            //}
+
+            //((ISupportInitialize)(this.EventLog)).EndInit();
 
             FileInfo logFileConfig = new FileInfo(Path.Combine(GetCurrentDirectory(), LogConfigPath));
             log4net.Config.XmlConfigurator.Configure(logFileConfig);
