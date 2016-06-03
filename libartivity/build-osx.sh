@@ -1,6 +1,6 @@
 #! /bin/sh
 
-./configure CXXFLAGS="-DDEBUG"
+./configure
 
 make
 

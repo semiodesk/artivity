@@ -96,11 +96,7 @@ namespace artivity
         
         ResourceIterator findResource(const char* uri);
         
-#if DEBUG
-        const char* _server = "http://localhost:8262";
-#else
         const char* _server = "http://localhost:8272";
-#endif
         const char* _uriAPI = "/artivity/1.0/uri";
         const char* _activityAPI = "/artivity/1.0/activities";
         const char* _monitorAPI = "/artivity/1.0/monitor";
