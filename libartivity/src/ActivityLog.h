@@ -223,7 +223,7 @@ namespace artivity
         // Send all items in the queue to the Artivity server.
         void transmit();
         
-        void enableMonitoring(string path);
+		void enableMonitoring(string path, string uri);
         
         void disableMonitoring(string path);
         

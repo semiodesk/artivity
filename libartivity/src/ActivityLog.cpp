@@ -526,11 +526,12 @@ string ActivityLog::getTime()
     return string(date_str);
 }
 
-void ActivityLog::enableMonitoring(string path)
+void ActivityLog::enableMonitoring(string path, string uri)
 {   
     string data;
     stringstream url;
-    url << _server << _monitorAPI << "/add?file=" << escapePath(path);
+
+    url << _server << _monitorAPI << "/add?uri=" << uri << "&filePath=" << escapePath(path);
  
     CURL* curl = initializeRequest();   
     executeRequest(curl, url.str(), "", data);
@@ -538,10 +539,10 @@ void ActivityLog::enableMonitoring(string path)
 
 void ActivityLog::disableMonitoring(string path)
 {
-    string data;
-   
+    string data;  
     stringstream url;
-    url << _server << _monitorAPI << "/remove?file=" << escapePath(path);
+
+    url << _server << _monitorAPI << "/remove?filePath=" << escapePath(path);
  
     CURL* curl = initializeRequest();   
     executeRequest(curl, url.str(), "", data);

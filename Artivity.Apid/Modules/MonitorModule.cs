@@ -50,11 +50,12 @@ namespace Artivity.Apid
         {
             try
             {
-                if (Request.Query.file)
+                if (Request.Query.uri && Request.Query.filePath)
                 {
-                    string path = Request.Query.file;
+                    string path = Request.Query.filePath;
+                    string uri = Request.Query.uri;
 
-                    FileSystemMonitor.Instance.AddFile(path);
+                    FileSystemMonitor.Instance.AddFile(path, uri);
 
                     return Logger.LogRequest(HttpStatusCode.OK, Request);
                 }

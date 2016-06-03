@@ -131,7 +131,6 @@ namespace Artivity.Apid
         // Private because of singleton.
         private FileSystemMonitor() 
         {
-            IsLogging = false;
         }
 
         #endregion
@@ -410,8 +409,10 @@ namespace Artivity.Apid
 
                 if (_monitoredFiles.ContainsKey(createdFile.Url.LocalPath))
                 {
-                    if( IsLogging )
+                    if (IsLogging)
+                    {
                         Logger.LogInfo("Created {0} ; IndexCode {1}", createdFile.Url.LocalPath, createdFile.IndexCode);
+                    }
 
                     // A monitored file is being replaced, update the database.
                     UpdateFileDataObject(createdFile.Url);
@@ -424,7 +425,9 @@ namespace Artivity.Apid
                     if (deletedFile != null)
                     {
                         if (IsLogging)
+                        {
                             Logger.LogInfo("Created {0} ; IndexCode {1}", createdFile.Url.LocalPath, createdFile.IndexCode);
+                        }
 
                         _deletedFiles.Remove(deletedFile);
 
@@ -457,11 +460,11 @@ namespace Artivity.Apid
 
             if (!file.Exists || file.CreationTime == DateTime.MinValue)
             {
-                #if DEBUG
                 // The new file does not exist. It's probably in a virtual file system.
-                if( IsLogging )
+                if (IsLogging)
+                {
                     Logger.LogInfo("Rename ignored: {0}", file.Url.LocalPath);
-                #endif
+                }
 
                 return;
             }
@@ -469,8 +472,11 @@ namespace Artivity.Apid
             try
             {
                 FileInfoCache oldFile = new FileInfoCache(e.OldFullPath);
+
                 if (IsLogging)
+                {
                     Logger.LogInfo("Renamed {0} -> {1}", oldFile.Url.LocalPath, file.Url.LocalPath);
+                }
 
                 if (_monitoredFiles.ContainsKey(oldFile.Url.LocalPath))
                 {
@@ -511,8 +517,11 @@ namespace Artivity.Apid
                 if (_monitoredFiles.ContainsKey(url.LocalPath))
                 {
                     FileInfoCache deletedFile = _monitoredFiles[url.LocalPath];
+
                     if (IsLogging)
+                    {
                         Logger.LogInfo("Deleted {0} ; IndexCode {1}", url.LocalPath, deletedFile.IndexCode);
+                    }
 
                     // We do not need to monitor the files' directory anymore.
                     UninstallMonitoring(deletedFile.Url.LocalPath);
@@ -532,12 +541,9 @@ namespace Artivity.Apid
                         _deletedFiles.Add(deletedFile);
                     }
                 }
-                else
+                else if (IsLogging)
                 {
-                    #if DEBUG
-                    if (IsLogging)
-                        Logger.LogInfo("Deleted {0}", url.LocalPath);
-                    #endif
+                    Logger.LogInfo("Deleted {0}", url.LocalPath);
                 }
 
                 // Clean up the created files queue.
@@ -554,13 +560,14 @@ namespace Artivity.Apid
             }
         }
 
-        public void AddFile(string path)
+        public void AddFile(string path, string uri)
         {
             FileInfoCache file = new FileInfoCache(path);
 
             _monitoredFiles[file.Url.LocalPath] = file;
-            // TODO: Set the file URI here.
-            //_monitoredFileUris[file.Url.LocalPath] = uri;
+            _monitoredFileUris[file.Url.LocalPath] = new UriRef(uri);
+
+            Logger.LogInfo("Enabled monitoring {0}", file.Url.LocalPath);
         }
 
         public void RemoveFile(string path)
@@ -571,6 +578,8 @@ namespace Artivity.Apid
             if (_monitoredFiles.ContainsKey(path))
             {
                 _monitoredFiles.Remove(path);
+
+                Logger.LogInfo("Disabled monitoring {0}", path);
             }
         }
 
@@ -611,8 +620,7 @@ namespace Artivity.Apid
 
                 _monitoredFileUris[file.Url.LocalPath] = f.Uri;
 
-                if (IsLogging)
-                    Logger.LogInfo("Created {0}", file.Url.LocalPath);
+                Logger.LogInfo("Created {0}", file.Url.LocalPath);
             }
 
             return file;
@@ -638,8 +646,7 @@ namespace Artivity.Apid
                     _monitoredFiles[url.LocalPath] = new FileInfoCache(url.LocalPath);
                     _monitoredFileUris[url.LocalPath] = file.Uri;
 
-                    if (IsLogging)
-                        Logger.LogInfo("Updated {0}: {1}", file.Uri, url.LocalPath);
+                    Logger.LogInfo("Updated {0}: {1}", file.Uri, url.LocalPath);
                 }
                 catch (Exception e)
                 {
@@ -681,9 +688,8 @@ namespace Artivity.Apid
                     // Register the new file for monitoring.
                     _monitoredFiles[newUrl.LocalPath] = new FileInfoCache(newUrl.LocalPath);
                     _monitoredFileUris[newUrl.LocalPath] = file.Uri;
-                    
-                    if (IsLogging)
-                        Logger.LogInfo("Moved {0} -> {1} ; Updated {2}", oldUrl.LocalPath, newUrl.LocalPath, file.Uri);
+
+                    Logger.LogInfo("Moved {0} -> {1} ; Updated {2}", oldUrl.LocalPath, newUrl.LocalPath, file.Uri);
                 }
                 catch (Exception e)
                 {
