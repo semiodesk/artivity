@@ -145,6 +145,7 @@ namespace Artivity.Apid
         public IPlatformProvider PlatformProvider { get; set; }
 
         public AutoResetEvent DatabaseStarted { get; private set; }
+
         private bool _started = false;
 
 
@@ -172,13 +173,13 @@ namespace Artivity.Apid
 
             Logger.LogInfo("Artivity Logging Service, Version {0}", version);
 
-            if( PlatformProvider == null )
+            if (PlatformProvider == null)
+            {
                 PlatformProvider = new PlatformProvider(ApplicationData, UserFolder, Username);
+            }
 
             // Make sure the database is started.
             StartDatabase();
-            _started = true;
-            DatabaseStarted.Set();
 
             // Start the daemon in a new thread.
             ServiceThread = new Thread(StartService);
@@ -295,11 +296,23 @@ namespace Artivity.Apid
                 // We are running on Linux..
                 ModelProvider = ModelProviderFactory.CreateModelProvider(GetConnectionStringFromConfiguration(), null);
             }
+
+            if (!ModelProvider.CheckAgents())
+            {
+                Logger.LogInfo("Installing agents..");
+
+                ModelProvider.InitializeAgents();
+            }
+
+            _started = true;
+
+            DatabaseStarted.Set();
         }
 
         private void StopDatabase()
         {
             Logger.LogInfo("Stopping Database");
+
             _virtuosoInstance.Stop(false);
         }
 
@@ -334,9 +347,13 @@ namespace Artivity.Apid
         public void TestDatabaseStarted()
         {
             if (_started)
+            {
                 return;
+            }
             else
+            {
                 DatabaseStarted.WaitOne();
+            }
         }
 
         #endregion

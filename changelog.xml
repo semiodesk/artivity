@@ -11,6 +11,10 @@
 		<note>This is the initial release of Artivity.</note>
 		<note>Update the Software with Help->Check for updates...</note>
 	</notes>
+	<notes id="2" title="Artivity %s Update">
+		<note>This is a bugfix release of Artivity.</note>
+		<note>Update the Software with Help->Check for updates...</note>
+	</notes>
 </channel>
 
 <channel os="win">

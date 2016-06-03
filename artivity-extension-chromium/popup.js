@@ -6,6 +6,8 @@
 //                                                                                                                     
 // Distributed under the GNU GPL version 3.  
 
+var manifest = chrome.runtime.getManifest();
+
 function formatParams(params) {
   return "?" + Object.keys(params).map(function(key){ return key + "=" + params[key] }).join("&");
 }
@@ -51,9 +53,9 @@ function onRequestResponse() {
 }
 
 function sendRequest(type, callback, errorCallback, params) {
-  var url = 'http://localhost:8272/artivity/1.0/agents/status/';
+  var url = manifest.endpoint + "/agents/status";
 
-  params['agent'] = 'application://chromium-browser.desktop';
+  params['agent'] = manifest.agent;
   
   if(type === 'GET') {
       url += formatParams(params);

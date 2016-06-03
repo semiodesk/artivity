@@ -84,7 +84,7 @@ namespace Artivity.Apid
             {
                 lock (_modelLock)
                 {
-                    UpdateMonitoring();
+                    //UpdateMonitoring();
 
                     IModel model = ModelProvider.GetActivities();
 
@@ -131,7 +131,7 @@ namespace Artivity.Apid
 		{
             try
             {
-                UpdateMonitoring();
+                //UpdateMonitoring();
 
                 if (string.IsNullOrEmpty(p.tab))
                 {
@@ -209,7 +209,7 @@ namespace Artivity.Apid
             }
             catch(Exception e)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+                return Logger.LogError(HttpStatusCode.InternalServerError, "{0}: {1}", Request.Url, e.Message);
             }
 		}
 

@@ -87,14 +87,7 @@ namespace Artivity.Apid.Modules
 
             Get["/agents/install"] = parameters =>
             {
-                IModel model = ModelProvider.AgentsModel;
-
-                InstallAgent(model, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
-                InstallAgent(model, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
-                InstallAgent(model, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
-                InstallAgent(model, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
-                InstallAgent(model, "application://photoshop.desktop", "Adobe Photoshop", "photoshop", "#EE2000", true);
-                InstallAgent(model, "application://illustrator.desktop", "Adobe Illustrator", "illustrator", "#EE2000", true);
+                ModelProvider.InitializeAgents();
 
                 return HttpStatusCode.OK;
             };
@@ -327,49 +320,7 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        public void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
-        {
-            UriRef agentUri = new UriRef(uri);
 
-            if (!model.ContainsResource(agentUri))
-            {
-                Logger.LogInfo("Installing agent {0}", name);
-
-                SoftwareAgent agent = model.CreateResource<SoftwareAgent>(agentUri);
-                agent.Name = name;
-                agent.ExecutableName = executableName;
-                agent.IsCaptureEnabled = captureEnabled;
-                agent.ColourCode = colour;
-                agent.Commit();
-            }
-            else
-            {
-                bool modified = false;
-
-                SoftwareAgent agent = model.GetResource<SoftwareAgent>(agentUri);
-
-                if (agent.Name != name)
-                {
-                    agent.Name = name;
-
-                    modified = true;
-                }
-
-                if (string.IsNullOrEmpty(agent.ColourCode))
-                {
-                    agent.ColourCode = colour;
-
-                    modified = true;
-                }
-
-                if (modified)
-                {
-                    Logger.LogInfo("Updating agent {0}", name);
-
-                    agent.Commit();
-                }
-            }
-        }
 
         public Response GetUserAgent()
         {
