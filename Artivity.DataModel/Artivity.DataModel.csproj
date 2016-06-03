@@ -109,6 +109,7 @@
     </None>
     <None Include="Ontologies\nie.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Ontologies\foaf.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -70,11 +70,11 @@ namespace Artivity.Apid
 
 		private HttpStatusCode PostActivity()
 		{
-            string data = "";
-            
-            data = ToString(Request.Body);
+            string data = ToString(Request.Body);
+
+            // We start a new task so that the agent can continue its work as fast as possible.
             new Task(() => StoreData(data)).Start();
-            // We just return okay because we want the data provider to continue with it's work as fast as possible.
+
             return HttpStatusCode.OK;
 		}
 

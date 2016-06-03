@@ -266,12 +266,12 @@ namespace Artivity.Apid.Modules
 
             Get["/thumbnails/path"] = parameters =>
             {
-                if (string.IsNullOrEmpty(Request.Query.fileUrl))
+                if (string.IsNullOrEmpty(Request.Query.fileUri))
                 {
                     return HttpStatusCode.BadRequest;
                 }
 
-                return GetThumbnailPath(Request.Query.fileUrl);
+                return GetThumbnailPath(Request.Query.fileUri);
             };
         }
 
