@@ -5,6 +5,9 @@
   "description": "This extension captures the webpages you visit in the Artivity log.",
   "version": "1.5.0",
 
+  "agent": "application://chromium-browser.desktop",
+  "endpoint": "http://localhost:8262/artivity/1.0",
+
   "icons": { "16": "icon16.png",
            "48": "icon48.png",
           "128": "icon128.png" },
@@ -19,6 +22,9 @@
   },
 
   "permissions": [
-    "tabs", "activeTab", "http://localhost/", "http://localhost:8262/"
+    "tabs",
+    "activeTab",
+    "http://localhost/",
+    "http://localhost:8262/"
   ]
 }

@@ -28,6 +28,10 @@ namespace Artivity.DataModel
 
         string Username { get; set; }
 
+        bool CheckAgents();
+
+        void InitializeAgents();
+
         Semiodesk.Trinity.IModel GetActivities(Semiodesk.Trinity.IStore store = null);
 
         Semiodesk.Trinity.IModel GetAgents(Semiodesk.Trinity.IStore store = null);

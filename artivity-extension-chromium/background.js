@@ -6,9 +6,7 @@
 //
 // Distributed under the GNU GPL version 3.
 
-var endpoint = "http://localhost:8262/artivity/1.0/activities/web/";
-
-var agent = "application://chromium-browser.desktop";
+var manifest = chrome.runtime.getManifest();
 
 chrome.tabs.onCreated.addListener(
     function(tab) {
@@ -47,20 +45,21 @@ chrome.tabs.onRemoved.addListener(
 
 function logUsage(tabId, time, url, title)
 {
-    var params = {agent: agent, tab: tabId, url: url, title: title, time: time, startTime: null, endTime: null};
+    var params = {agent: manifest.agent, tab: tabId, url: url, title: title, time: time, startTime: null, endTime: null};
 
     sendRequest(params);
 }
 
 function logActivity(tabId, startTime, endTime)
 {
-    var params = {agent: agent, tab: tabId, url: null, title: null, time: null, startTime: startTime, endTime: endTime};
+    var params = {agent: manifest.agent, tab: tabId, url: null, title: null, time: null, startTime: startTime, endTime: endTime};
 
     sendRequest(params);
 }
 
 function sendRequest(params)
 {
+    var endpoint = manifest.endpoint + "/activities/web/";
     var now = new Date();
 
     console.log("[", now, "] ", endpoint, params);
