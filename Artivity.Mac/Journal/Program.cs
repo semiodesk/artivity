@@ -56,24 +56,14 @@ namespace Artivity.Mac.Journal
                 Console.Error.WriteLine("Unable to load the dynamic library.");
                 Environment.Exit(1);
             }
-            /*
-            string dirName = Directory.GetParent(Directory.GetParent(System.AppDomain.CurrentDomain.BaseDirectory).ToString()).FullName;
-            string sparkle = Path.Combine(dirName, "Frameworks", "Sparkle.framework", "Sparkle");
-            FileInfo f = new FileInfo(sparkle);
-            if (Dlfcn.dlopen(sparkle, 0) == IntPtr.Zero)
-            {
-                Console.Error.WriteLine("Unable to load the dynamic library.");
-                Environment.Exit(1);
-            }
-            */
         }
             
 
-            static string GetCurrentExecutingDirectory()
-            {
-                string filePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
-                return Path.GetDirectoryName(filePath);
-            }
+        static string GetCurrentExecutingDirectory()
+        {
+            string filePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
+            return Path.GetDirectoryName(filePath);
+        }
 
     }
 }
