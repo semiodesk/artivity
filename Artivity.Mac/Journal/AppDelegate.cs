@@ -27,6 +27,7 @@
 using AppKit;
 using Foundation;
 using Sparkle;
+using Artivity.Apid;
 
 
 namespace Artivity.Journal.Mac
@@ -80,8 +81,11 @@ namespace Artivity.Journal.Mac
 
         partial void checkForUpdate(Foundation.NSObject sender)
         {
+            Logger.LogInfo("Checking for updates");
             SUUpdater.CheckForUpdates(sender);
         }
+
+
  
     }
 }

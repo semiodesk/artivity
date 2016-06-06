@@ -88,28 +88,34 @@ namespace Artivity.Journal.Mac
 
         static void TestApidInstalled()
         {
+            Logger.LogInfo("Testing if APID is installed.");
             var uname = Environment.UserName;
-            FileInfo globalAgent = new FileInfo("/Library/LaunchAgents/com.semiodesk.artivity.plist");
+            string globalApidPath = "/Library/LaunchAgents/com.semiodesk.artivity.plist";
+            FileInfo globalAgent = new FileInfo(globalApidPath);
 
             if (globalAgent.Exists)
             {
+                Logger.LogInfo(string.Format("Found Apid LaunchAgent in {0}", globalApidPath));
                 // The plist for a global agent exists, so we assume everything is fine and people know what they are doing...
                 return;
             }
 
            
-            FileInfo userAgent = GetPlist();
+            FileInfo userAgent = GetLocalPlist();
             if (userAgent.Exists) // TODO: test if newer
             {
-                // The plist for a local agent exists, so we assume everything is fine and people know what they are doing...
+                Logger.LogInfo(string.Format("Found Apid LaunchAgent in {0}", userAgent.FullName));
+                // The plist for a local agent exists, so we assume everything is fine
                 return;
             }
+            Logger.LogInfo(string.Format("Did not find Apid LaunchAgent in {0}", userAgent.FullName));
 
             var current = Environment.CurrentDirectory;
             FileInfo agentFile = new FileInfo(Path.Combine(current,"..", "Resources", "com.semiodesk.artivity.plist"));
 
             var text = File.ReadAllText(agentFile.FullName);
             DirectoryInfo contentPath = new DirectoryInfo(Path.Combine(current, ".."));
+            Logger.LogInfo(string.Format("Creating Apid LaunchAgent in {0}", userAgent.FullName));
             File.WriteAllText(userAgent.FullName, string.Format(text, contentPath.FullName));
 
             Process proc = new System.Diagnostics.Process();
@@ -117,11 +123,13 @@ namespace Artivity.Journal.Mac
             proc.StartInfo.Arguments = string.Format("-c \"launchctl bootstrap gui/$UID {0}\"", userAgent.FullName);
             proc.StartInfo.UseShellExecute = false; 
             proc.StartInfo.RedirectStandardOutput = true;
+            Logger.LogInfo(string.Format("Starting APID with {0} {1}", proc.StartInfo.FileName, proc.StartInfo.Arguments));
             proc.Start();
         }
 
-        static bool TestApidRunning()
+        public static bool TestApidRunning()
         {
+            Logger.LogInfo(string.Format("Testing if APID is running."));
             //launchctl list | grep 'com.semiodesk.artivity$' | awk '{print $2}'
             Process proc = new System.Diagnostics.Process();
             proc.StartInfo.FileName = "/bin/bash";
@@ -133,13 +141,15 @@ namespace Artivity.Journal.Mac
                 string line = proc.StandardOutput.ReadLine();
                 if (line == "0")
                 {
+                    Logger.LogInfo(string.Format("APID is running."));
                     return true;
                 }
             }
+            Logger.LogInfo(string.Format("APID is not running."));
             return false;
         }
 
-        static FileInfo GetPlist()
+        static FileInfo GetLocalPlist()
         {
             var home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             return new FileInfo(Path.Combine(home, "Library/LaunchAgents/com.semiodesk.artivity.plist"));
@@ -147,7 +157,8 @@ namespace Artivity.Journal.Mac
 
         public static void StopApid()
         {
-            FileInfo userAgent = GetPlist();
+            Logger.LogInfo(string.Format("Stopping APID."));
+            FileInfo userAgent = GetLocalPlist();
             Process proc = new System.Diagnostics.Process();
             proc.StartInfo.FileName = "/bin/bash";
             proc.StartInfo.Arguments = string.Format("-c \"launchctl unload {0}\"", userAgent.FullName);
@@ -158,7 +169,8 @@ namespace Artivity.Journal.Mac
 
         public static void StartApid()
         {
-            FileInfo userAgent = GetPlist();
+            Logger.LogInfo(string.Format("Starting APID."));
+            FileInfo userAgent = GetLocalPlist();
             Process proc = new System.Diagnostics.Process();
             proc.StartInfo.FileName = "/bin/bash";
             proc.StartInfo.Arguments = string.Format("-c \"launchctl load {0}\"", userAgent.FullName);

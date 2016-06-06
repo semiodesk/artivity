@@ -100,5 +100,6 @@ namespace Artivity.Journal.Mac
                 }
             }
         }
+            
     }
 }

@@ -27,20 +27,34 @@
 //
 using System;
 using Sparkle;
+using Artivity.Apid;
 
 namespace Artivity.Journal.Mac
 {
     public class SparkleDelegate : SUUpdaterDelegate
     {
-        public SparkleDelegate()
-        {
+        public SparkleDelegate() : base()
+        {   
         }
 
-        public override void UpdaterWillRelaunchApplication(SUUpdater updater)
+        public override void UpdaterDidNotFindUpdate(SUUpdater updater)
         {
-            MainClass.StopApid();
-            
-            base.UpdaterWillRelaunchApplication(updater);
+            Logger.LogInfo("Did not find update.");
+        }
+
+        public override void UserDidCancelDownload(SUUpdater updater)
+        {
+            Logger.LogInfo("Download canceled.");
+        }
+
+        public override void WillInstallUpdate(SUUpdater updater, SUAppcastItem item)
+        {
+            Logger.LogInfo(string.Format("Found update {0}, installing...", item.DisplayVersionString));
+            if (MainClass.TestApidRunning())
+            {
+                Logger.LogInfo("Apid still running. Stopping...");
+                MainClass.StopApid();
+            }
         }
     }
 }
