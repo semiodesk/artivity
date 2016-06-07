@@ -8,9 +8,9 @@ using Nancy;
 [assembly: AssemblyTitle("ArtivityApi")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Sebastian")]
+[assembly: AssemblyCompany("Semiodesk GmbH")]
+[assembly: AssemblyProduct("Artivity")]
+[assembly: AssemblyCopyright("Copyright ©  2016 Semiodesk GmbH")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
