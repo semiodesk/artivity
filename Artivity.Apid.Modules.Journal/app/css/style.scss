@@ -284,12 +284,20 @@ a:hover {
 .content {
 	position: absolute;
 	top: 0;
-	left: 0;
+	left: 300px;
 	right: 300px;
 	bottom: 0;
 }
 
-.sidebar {
+.sidebar.left {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 300px;
+}
+
+.sidebar.right {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -673,4 +681,20 @@ input.form-control:focus {
 
 #viewport-overlay {
 	background: rgba(0,0,0,.1);
+}
+
+::-webkit-scrollbar
+{
+  width: 12px;  /* for vertical scrollbars */
+  height: 12px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track
+{
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb
+{
+  background: rgba(0, 0, 0, 0.5);
 }

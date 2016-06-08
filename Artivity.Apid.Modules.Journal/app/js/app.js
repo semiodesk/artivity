@@ -133,7 +133,19 @@ explorerApp.factory('api', function ($http) {
 		},
 		getThumbnailUrl: function (thumbnailUrl) {
 			return endpoint + '/thumbnails?thumbnailUrl=' + thumbnailUrl;
-		}
+		},
+        getStats: function (fileUrl) {
+            return $http.get(endpoint + '/stats/influences?fileUrl=' + fileUrl).then(
+                function (response) {
+                    return response.data;
+                })
+        },
+        getStats: function (fileUrl, time) {
+            return $http.get(endpoint + '/stats/influences?fileUrl=' + fileUrl + '&timestamp=' + time).then(
+                function (response) {
+                    return response.data;
+                })
+        }
 	};
 });
 
