@@ -23,7 +23,7 @@
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-//
+
 using System;
 using Artivity.Mac;
 using Artivity.Apid;
@@ -32,12 +32,11 @@ using ObjCRuntime;
 using System.Reflection;
 using System.Diagnostics;
 
-
 namespace Artivity.Journal.Mac
 {
     static class MainClass
     {
-        static bool _forceApid = false;
+        static bool _forceApid = true;
 
 
         static string GetCurrentExecutingDirectory()

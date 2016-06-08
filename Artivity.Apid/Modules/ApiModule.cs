@@ -266,6 +266,32 @@ namespace Artivity.Apid.Modules
 
                 return GetThumbnailPath(Request.Query.fileUri);
             };
+
+            Get["/stats/influences"] = parameters =>
+            {
+                if (string.IsNullOrEmpty(Request.Query.fileUrl))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
+                if(Request.Query.timestamp)
+                {
+                    string time = Request.Query.timestamp;
+
+                    DateTimeOffset timestamp;
+
+                    if (DateTimeOffset.TryParse(time.Replace(' ', '+'), out timestamp))
+                    {
+                        return GetCompositionStats(Request.Query.fileUrl, timestamp.UtcDateTime);
+                    }
+                    else
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+                }
+
+                return GetCompositionStats(Request.Query.fileUrl);
+            };
         }
 
         #endregion
@@ -622,7 +648,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(model.GetBindings(query));
         }
 
-        private Response GetThumbnails(string fileUrl, DateTime timestamp)
+        private Response GetThumbnails(string fileUrl, DateTime time)
         {
             IModel model = ModelProvider.ActivitiesModel;
 
@@ -659,8 +685,10 @@ namespace Artivity.Apid.Modules
                 }");
 
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
-            query.Bind("@time", timestamp);
+            query.Bind("@time", time);
+
             var res = model.GetBindings(query);
+
             return Response.AsJson(res);
         }
 
@@ -722,8 +750,6 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@fileUrl", fileUrl.AbsoluteUri);
 
-            string q = query.ToString();
-
             IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
 
             if (bindings.Any())
@@ -739,6 +765,59 @@ namespace Artivity.Apid.Modules
             }
 
             return null;
+        }
+
+        private Response GetCompositionStats(string fileUrl)
+        {
+            string queryString = @"
+                select ?type count(?type) as ?count where
+                {
+                    ?activity prov:used ?file .
+                    ?activity prov:generated ?version .
+
+                    ?file nfo:fileUrl @fileUrl .
+
+                    ?version prov:qualifiedGeneration ?generation .
+                    
+                    ?generation a ?type .
+                }";
+
+            SparqlQuery query = new SparqlQuery(queryString);
+            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+
+            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+
+            return Response.AsJson(bindings);
+        }
+
+        private Response GetCompositionStats(string fileUrl, DateTime time)
+        {
+            string queryString = @"
+                SELECT
+                    ?type
+                    count(?type) AS ?count
+                WHERE
+                {
+                    ?activity prov:used ?file .
+                    ?activity prov:generated ?version .
+
+                    ?file nfo:fileUrl @fileUrl .
+
+                    ?version prov:qualifiedGeneration ?generation .
+                    
+                    ?generation a ?type .
+                    ?generation prov:atTime ?time .
+
+                    FILTER (?time <= @time)
+                }";
+
+            SparqlQuery query = new SparqlQuery(queryString);
+            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@time", time);
+
+            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+
+            return Response.AsJson(bindings);
         }
 
         #endregion

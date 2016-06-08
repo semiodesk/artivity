@@ -29,6 +29,13 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		name: "",
 		time: new Date()
 	};
+    
+    $scope.stats = {
+        confidence: 100,
+        steps: 10,
+        undos: 0,
+        redos: 0
+    };
 
 	$scope.playloop = undefined;
 
@@ -45,6 +52,10 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			$scope.selectedActivity = data[0];
 		}
 	});
+    
+    api.getStats(fileUrl).then(function (data) {
+        $scope.updateStats(data);
+    });
 
 	api.getInfluences(fileUrl).then(function (data) {
 		$scope.influences = data;
@@ -70,6 +81,31 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		return result;
 	};
 
+    $scope.updateStats = function(data) {
+        var stats = {
+            confidence: 100,
+            steps: 0,
+            undos: 0,
+            redos: 0,
+        };
+        
+        for(var i = 0; i < data.length; i++) {
+            var influence = data[i];
+            
+            stats.steps += influence.count;
+            
+            if(influence.type == 'http://semiodesk.com/artivity/1.0/Undo') {
+                stats.undos += influence.count;
+            } else if(influence.type == 'http://semiodesk.com/artivity/1.0/Redo') {
+                stats.redos += influence.count;
+            }
+        }
+        
+        stats.confidence = (100 * (stats.steps - stats.undos - stats.redos) / stats.steps).toFixed(0);
+        
+        $scope.stats = stats;
+    };
+    
 	$scope.selectInfluence = function (influence) {
 		$scope.selectedInfluence = influence;
 		$scope.previousInfluence = undefined;
@@ -78,7 +114,11 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	$scope.previewInfluence = function (influence) {
 		$scope.previousInfluence = $scope.selectedInfluence;
 		$scope.selectedInfluence = influence;
-
+        
+        api.getStats(fileUrl, influence.time).then(function(data) {
+            $scope.updateStats(data);
+        });
+        
 		$scope.renderInfluence(influence);
 	};
 	
