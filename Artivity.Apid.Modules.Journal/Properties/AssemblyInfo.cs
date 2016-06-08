@@ -11,9 +11,9 @@ using Nancy;
 [assembly: AssemblyTitle("Artivity.WebUi")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Artivity.WebUi")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCompany("Semiodesk GmbH")]
+[assembly: AssemblyProduct("Artivity.Journal")]
+[assembly: AssemblyCopyright("Copyright ©  2016 Semiodesk GmbH")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

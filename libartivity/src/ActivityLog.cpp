@@ -332,7 +332,7 @@ string ActivityLog::getCanvasUri(string path)
     CURL* curl = initializeRequest();
     executeRequest(curl, url.str(), "", data);
 
-    return data.length() > 2 ? data.substr(1, data.length() - 2) : UriGenerator::getUri();
+    return data.length() > 2 ? data.substr(1, data.length() - 2) : "";
 }
 
 
