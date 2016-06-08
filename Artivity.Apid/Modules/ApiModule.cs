@@ -194,6 +194,35 @@ namespace Artivity.Apid.Modules
                 return SetUserAgentPhoto(stream);
             };
 
+            Get["/files"] = parameters =>
+            {
+                if(Request.Query.fileUrl)
+                {
+                    string fileUrl = Request.Query.fileUrl;
+
+                    if(string.IsNullOrEmpty(fileUrl))
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+
+                    return GetFile(fileUrl);
+                }
+
+                return HttpStatusCode.NotImplemented;
+            };
+
+            Get["/files/canvas"] = parameters =>
+            {
+                string fileUrl = Request.Query.fileUrl;
+
+                if(string.IsNullOrEmpty(fileUrl))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+                    
+                return GetCanvas(fileUrl);
+            };
+
             Get["/files/recent"] = parameters =>
             {
                 return GetRecentlyUsedFiles();
@@ -573,7 +602,7 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.GetAllActivities();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?time ?uri ?type ?color ?description ?bounds ?thumbnailUrl ?x ?y WHERE 
+                SELECT ?layer ?time ?uri ?type ?color ?description ?bounds ?thumbnailUrl ?x ?y WHERE 
                 {
                     ?file nfo:fileUrl @fileUrl .
 
@@ -590,6 +619,7 @@ namespace Artivity.Apid.Modules
                     ?generation a ?type ;
                         prov:atTime ?time .
 
+                    OPTIONAL { ?generation art:selectedLayer ?layer . }
                     OPTIONAL { ?generation dces:description ?description . }
                     OPTIONAL { ?generation art:hadBoundaries ?bounds . }
                     OPTIONAL
@@ -615,10 +645,12 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.ActivitiesModel;
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?layer ?time ?thumbnailUrl ?x ?y WHERE 
+                SELECT
+                    ?layer ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+                WHERE 
                 {
                     {
-                        SELECT ?layer (SAMPLE(?generation) AS ?generation) (MAX(?time) AS ?time) WHERE
+                        SELECT ?layer ?generation ?time WHERE
                         {
                             ?file nfo:fileUrl @fileUrl .
 
@@ -640,8 +672,20 @@ namespace Artivity.Apid.Modules
 
                     ?position art:x ?x .
                     ?position art:y ?y .
+
+                    OPTIONAL
+                    {
+                        ?generation art:hadBoundaries ?bounds .
+
+                        ?bounds art:width ?boundsWidth .
+                        ?bounds art:height ?boundsHeight .
+                        ?bounds art:position ?p .
+
+                        ?p art:x ?boundsX .
+                        ?p art:y ?boundsY .
+                    }
                 }
-                ORDER BY DESC(?layer)");
+                ORDER BY DESC(?time)");
 
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
 
@@ -653,7 +697,9 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.ActivitiesModel;
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?layer ?time ?generation ?thumbnailUrl ?x ?y WHERE 
+                SELECT
+                    ?layer ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+                WHERE 
                 {
                     {
                         SELECT ?layer MAX(?time) AS ?time WHERE
@@ -682,6 +728,18 @@ namespace Artivity.Apid.Modules
 
                     ?position art:x ?x .
                     ?position art:y ?y .
+
+                    OPTIONAL
+                    {
+                        ?generation art:hadBoundaries ?bounds .
+
+                        ?bounds art:width ?boundsWidth .
+                        ?bounds art:height ?boundsHeight .
+                        ?bounds art:position ?p .
+
+                        ?p art:x ?boundsX .
+                        ?p art:y ?boundsY .
+                    }
                 }");
 
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
@@ -701,6 +759,7 @@ namespace Artivity.Apid.Modules
                 FileStream fileStream = new FileStream(file, FileMode.Open);
 
                 StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
+                response.Headers["Allow-Control-Allow-Origin"] = "127.0.0.1";
 
                 return response.AsAttachment(file);
             }
@@ -740,7 +799,9 @@ namespace Artivity.Apid.Modules
             Uri fileUrl = new FileInfo(path).ToUriRef();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?entity WHERE
+                SELECT
+                    ?entity
+                WHERE
                 {
                     ?entity nfo:fileUrl @fileUrl .
                     ?entity nfo:fileLastModified ?time .
@@ -770,7 +831,9 @@ namespace Artivity.Apid.Modules
         private Response GetCompositionStats(string fileUrl)
         {
             string queryString = @"
-                select ?type count(?type) as ?count where
+                SELECT
+                    ?type count(?type) as ?count
+                WHERE
                 {
                     ?activity prov:used ?file .
                     ?activity prov:generated ?version .
@@ -794,8 +857,7 @@ namespace Artivity.Apid.Modules
         {
             string queryString = @"
                 SELECT
-                    ?type
-                    count(?type) AS ?count
+                    ?type count(?type) AS ?count
                 WHERE
                 {
                     ?activity prov:used ?file .
@@ -818,6 +880,75 @@ namespace Artivity.Apid.Modules
             IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
 
             return Response.AsJson(bindings);
+        }
+
+        private Response GetFile(string fileUrl)
+        {
+            string queryString = @"
+                SELECT
+                    ?s ?p ?o
+                WHERE
+                {
+                    ?s ?p ?o .
+
+                    {
+                        SELECT
+                            ?s
+                        WHERE
+                        {
+                            ?activity prov:used ?s .
+                            ?activity prov:startedAtTime ?startTime .
+
+                            ?s rdf:type nfo:FileDataObject .
+                            ?s nfo:fileUrl @fileUrl .
+                        }
+                        ORDER BY DESC(?startTime) LIMIT 1
+                    }
+                }";
+
+            ISparqlQuery query = new SparqlQuery(queryString);
+            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+
+            FileDataObject file = ModelProvider.ActivitiesModel.GetResources<FileDataObject>(query).FirstOrDefault();
+
+            if (file != null)
+            {
+                Dictionary<string, Resource> result = new Dictionary<string, Resource>();
+                result["file"] = file;
+                result["canvas"] = file.Canvases.First();
+
+                return Response.AsJson(result);
+            }
+
+            return Response.AsJson(file);
+        }
+
+        private Response GetCanvas(string fileUrl)
+        {
+            string queryString = @"
+                SELECT
+                    ?canvas ?width ?height ?lengthUnit
+                WHERE
+                {
+                    ?activity prov:used ?file .
+                    ?activity prov:startedAtTime ?startTime .
+
+                    ?file rdf:type nfo:FileDataObject .
+                    ?file nfo:fileUrl @fileUrl .
+                    ?file art:canvas ?canvas .
+
+                    ?canvas art:width ?width .
+                    ?canvas art:height ?height .
+                    ?canvas art:lengthUnit ?lengthUnit .
+                }
+                ORDER BY DESC(?startTime) LIMIT 1";
+                
+            ISparqlQuery query = new SparqlQuery(queryString);
+            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            
+            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+
+            return Response.AsJson(bindings.FirstOrDefault());
         }
 
         #endregion

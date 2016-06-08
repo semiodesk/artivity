@@ -16,11 +16,19 @@
     </div>
     <div id="body">
         <div class="content text-center">
-            <canvas class="buffer" style="margin: 1px;"></canvas>
+            <div id="canvas-header">
+                <label>{{ getFormattedDate(selectedInfluence.time) }}, {{ getFormattedTime(selectedInfluence.time) }}</label>
+                
+                <label class="pull-right">{{ getFormattedTimeFromNow(selectedInfluence.time) }}</label>
+            </div>
+            
+            <canvas id="canvas" class="buffer" style="margin: 1px;"></canvas>
+            
             <script>
                 $(function() {
                     updateCanvas();
 
+                    // Update the canvas every time the window is resized.
                     window.addEventListener('resize', updateCanvas, false);
                 });
 
@@ -32,34 +40,34 @@
 
                     // Create temp canvas and context
                     var temp = document.createElement('canvas');
-                    temp.width = $('.content').innerWidth();
-                    temp.height = $('.content').innerHeight();
+                    temp.width = $('.content').width();
+                    temp.height = $('.content').height();
 
                     // Draw current canvas to temp canvas.
                     var tempContext = temp.getContext("2d");
                     tempContext.drawImage(bufferContext.canvas, 0, 0);
 
                     // Now resize the canvas.					
-                    buffer.width = $('.content').innerWidth();
-                    buffer.height = $('.content').innerHeight();
-
-                    // Draw temp canvas back to the current canvas
-                    bufferContext.drawImage(tempContext.canvas, 0, 0);
+                    buffer.width = $('.content').width();
+                    buffer.height = $('.content').height();
 
                     // Update the buffer if now.
                     var scope = angular.element(buffer).scope();
 
+                    if(scope.canvas !== undefined) {
+                        console.log((buffer.width - scope.canvas.width) / 2);
+                        
+                        bufferContext.translate((buffer.width - scope.canvas.width) / 2, 0);
+                    }
+                    
+                    // Draw temp canvas back to the current canvas
+                    bufferContext.drawImage(tempContext.canvas, 0, 0);
+                    
                     if (scope.selectedInfluence) {
                         scope.renderInfluence(scope.selectedInfluence);
                     }
                 }
-
             </script>
-            <div id="viewport-overlay">
-                <h4 style="margin-top: 200px">{{ getFormattedDate(selectedInfluence.time) }}</h4>
-                <h3>{{ getFormattedTime(selectedInfluence.time) }}</h3>
-                <span class="label">{{ getFormattedTimeFromNow(selectedInfluence.time) }}</span>
-            </div>
         </div>
         <div class="sidebar left">
             <ul class="nav nav-tabs tablist" id="tabs" role="tablist">
@@ -86,6 +94,7 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane fade active in" id="statistics">
+                    <h5>Composition</h5>
                     <table style="width: 90%;">
                         <tr>
                             <td>
@@ -116,6 +125,13 @@
                             <td></td>
                         </tr>
                     </table>
+                    
+                    <h5 style="margin-top: 1em;">Colors</h5>
+                    <ul class="list-unstyled">
+                        <li ng-repeat="color in palette">
+                            <div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
+                        </li>
+                    </ul>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="comments">
                     <div class="under-construction"></div>

@@ -27,6 +27,7 @@
 
 using System;
 using Semiodesk.Trinity;
+using System.Collections.Generic;
 
 namespace Artivity.DataModel
 {
@@ -55,7 +56,7 @@ namespace Artivity.DataModel
 		public string RevisedValue { get; set; }
 
         [RdfProperty(ART.canvas)]
-        public Canvas Canvas { get; set; }
+        public List<Canvas> Canvases { get; set; }
 
 		#endregion
 
