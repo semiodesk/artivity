@@ -35,7 +35,7 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        [RdfProperty(ART.CoordinateSystem)]
+        [RdfProperty(ART.coordinateSystem)]
         public CoordinateSystem CoordinateSystem { get; set; }
 
         [RdfProperty(ART.lengthUnit)]
@@ -43,6 +43,7 @@ namespace Artivity.DataModel
 
         [RdfProperty(DCES.title)]
         public string Title { get; set; }
+
         #endregion
 
         #region Constructors

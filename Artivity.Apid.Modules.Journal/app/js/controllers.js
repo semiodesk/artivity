@@ -18,6 +18,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	var fileUrl = $location.search().fileUrl;
 	
 	$scope.fileName = getFileName(fileUrl);
+    $scope.canvas = {};
 	$scope.agent = {};
 
 	$scope.activities = [];
@@ -26,6 +27,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	$scope.influences = [];
 	$scope.previousInfluence = undefined;
 	$scope.selectedInfluence = {
+        layer: "",
 		name: "",
 		time: new Date()
 	};
@@ -38,9 +40,121 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
     };
 
 	$scope.playloop = undefined;
-
+    
+    // Used for extracting colors from images.
+    var thief = new ColorThief();
+    
+    // The canvas.
 	var buffer = document.getElementsByClassName('buffer')[0];
 
+    // A list with all loaded bitmaps.
+    var T = [];
+    
+    // Renders all loaded images onto the canvas.
+    var renderDocument = function (thumbnails, time) {        
+        var context = buffer.getContext('2d');
+
+        context.clearRect(0, 0, buffer.width, buffer.height);
+
+        if($scope.canvas !== undefined) {
+            var canvas = $scope.canvas;
+
+            context.shadowBlur=10;
+            context.shadowOffsetX = 5;
+            context.shadowOffsetY = 5;
+            context.shadowColor="black";
+
+            context.fillStyle = 'white';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            context.shadowBlur=0;
+            context.shadowColor=undefined;
+            context.shadowOffsetX = 0;
+            context.shadowOffsetY = 0;
+            
+            if(context.width !== undefined) {
+                context.translate((context.width - canvas.width) / 2, 0);
+            }
+        };
+
+        // Only render the newest version of every layer.
+        var renderedLayers = {};
+        
+        for(var j = T.length - 1; j > 0; j--) {
+            var t = T[j];
+            
+            if(t.layer in renderedLayers || time !== undefined && t.time > time) {
+                continue;
+            }
+            
+            context.drawImage(t.image, t.x, -t.y, t.w, t.h);
+            
+            // Draw a line around the layer bounds.
+            if(t.layer == $scope.selectedInfluence.layer) {                
+                context.lineJoin = 'miter';
+                context.lineWidth = 1;
+                context.strokeStyle = 'red';
+                context.setLineDash([1,2]);
+                
+                //context.strokeRect(t.x, -t.y, t.w, t.h);
+                
+                context.font = "1em Roboto";
+                context.fillStyle = "blue";
+                context.textAlign = "left";
+                context.fillText(t.layer, t.x, -t.y - 10);
+            }
+            
+            // Draw a line around the current influence bounds.
+            if(t.boundsX !== undefined) {
+                context.lineJoin = 'miter';
+                context.lineWidth = 1;
+                context.strokeStyle = 'blue';
+                context.setLineDash([1,2]);
+
+                context.strokeRect(t.boundsX, -t.boundsY, t.boundsWidth, t.boundsHeight);
+            }
+            
+            renderedLayers[t.layer] = t;
+        }
+    };
+    
+    // Loads a single bitmap and pushes it into the list when loading is complete.
+    var loadThumbnails = function (thumbnails, i, complete) {        
+        var t = new Image();
+
+        t.onload = function () {                    
+            var data = thumbnails[i];
+               
+            T.splice(0, 0, {
+                layer: data.layer,
+                time: data.time,
+                image: t,
+                x: data.x,
+                y: data.y,
+                w: t.width,
+                h: t.height,
+                boundsX: data.boundsX,
+                boundsY: data.boundsY,
+                boundsWidth: data.boundsWidth,
+                boundsHeight: data.boundsHeight
+            });
+
+            complete(thumbnails, i);
+        };
+
+        t.crossOrigin = 'Anonymous'; // Needed for color thief.
+        t.src = api.getThumbnailUrl(thumbnails[i].thumbnailUrl);
+    };
+    
+    // Trigger loading the bitmaps.
+    api.getThumbnails(fileUrl).then(function (thumbnails) {
+        loadItems(thumbnails, loadThumbnails, renderDocument);
+    });
+    
+    api.getCanvas(fileUrl).then(function (data) {
+        $scope.canvas = data;
+    });
+    
 	api.getAgent(fileUrl).then(function (data) {
 		$scope.agent = data;
 	});
@@ -115,9 +229,11 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		$scope.previousInfluence = $scope.selectedInfluence;
 		$scope.selectedInfluence = influence;
         
-        api.getStats(fileUrl, influence.time).then(function(data) {
-            $scope.updateStats(data);
-        });
+        if(influence.time !== undefined) {
+            api.getStats(fileUrl, influence.time).then(function(data) {
+                $scope.updateStats(data);
+            });
+        }
         
 		$scope.renderInfluence(influence);
 	};
@@ -128,45 +244,22 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 			context.clearRect(0, 0, buffer.width, buffer.height);
 		} else if(influence.time !== undefined) {			
-			// A list with all loaded bitmaps.
-			var T = [];
+			renderDocument(T, influence.time);
+            
+            // Extract the palette from the current influence render.     
+            for(var i = T.length - 1; i > 0; i--) {
+                var t = T[i];
 
-			// Loads a single bitmap and pushes it into the list when loading is complete.
-			var load = function (thumbnails, i, complete) {
-				var t = new Image();
+                if (t.layer == influence.layer && t.time == influence.time) {
+                    console.log(t);
 
-				t.onload = function () {
-					T.push({
-						image: t,
-						x: thumbnails[i].x,
-						y: thumbnails[i].y,
-						w: t.width,
-						h: t.height
-					});
+                    var palette = thief.getPalette(t.image, 8);
 
-					complete(thumbnails, i);
-				};
+                    $scope.palette = palette;
 
-				t.src = api.getThumbnailUrl(thumbnails[i].thumbnailUrl);
-			};
-
-			// Renders all loaded images onto the canvas.
-			var render = function (thumbnails, i) {
-				var context = buffer.getContext('2d');
-
-				context.clearRect(0, 0, buffer.width, buffer.height);
-
-				T.forEach(function (t) {
-					console.log(t.x, -t.y, t.w, t.h);
-					
-					context.drawImage(t.image, t.x, -t.y, t.w, t.h);
-				});
-			};
-
-			// Trigger loading the bitmaps of the influence.
-			api.getThumbnails(fileUrl, influence.time).then(function (thumbnails) {
-				loadItems(thumbnails, load, render);
-			});
+                    break;
+                }
+            }
 		}
 	};
 
@@ -184,6 +277,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		if (0 < i) {
 			$scope.selectedInfluence = $scope.influences[i - 1];
+            
+            renderDocument(T, $scope.selectedInfluence.time);
 		}
 	};
 
@@ -214,6 +309,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		if (0 < i && i < $scope.influences.length) {
 			$scope.selectedInfluence = $scope.influences[i];
+            
+            renderDocument(T, $scope.selectedInfluence.time);
 		}
 
 		if ($scope.playloop) {
