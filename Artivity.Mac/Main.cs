@@ -36,7 +36,7 @@ namespace Artivity.Journal.Mac
 {
     static class MainClass
     {
-        static bool _forceApid = true;
+        static bool _forceApid = false;
 
 
         static string GetCurrentExecutingDirectory()
