@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="app\js\color-thief.min.js" />
+    <None Include="app\js\quantize.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\img\heart-broken.svg" />
