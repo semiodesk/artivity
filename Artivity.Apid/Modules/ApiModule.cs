@@ -568,18 +568,24 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.GetAll();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?startTime ?endTime ?color ?name WHERE
+                SELECT ?startTime ?endTime MAX(?time) as ?maxTime ?color ?name WHERE
                 {
                     ?file nfo:fileUrl @fileUrl .
 
                     ?activity prov:used ?file ;
                         prov:qualifiedAssociation ?association ;
                         prov:startedAtTime ?startTime ;
-                        prov:endedAtTime ?endTime .
+                        prov:endedAtTime ?endTime ;
+                        prov:generated ?entity .
 
                     ?association prov:agent ?agent .
 
                     ?agent foaf:name ?name .
+
+                    ?entity prov:qualifiedGeneration ?generation .
+
+                    ?generation a ?type .
+                    ?generation prov:atTime ?time .
 
                     OPTIONAL { ?agent art:hasColourCode ?color . }
                 }
@@ -646,11 +652,11 @@ namespace Artivity.Apid.Modules
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?layer ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+                    ?layer ?layerZ ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
                 WHERE 
                 {
                     {
-                        SELECT ?layer ?generation ?time WHERE
+                        SELECT ?layer ?layerZ ?generation ?time WHERE
                         {
                             ?file nfo:fileUrl @fileUrl .
 
@@ -660,9 +666,10 @@ namespace Artivity.Apid.Modules
                             ?entity prov:qualifiedGeneration ?generation .
 
                             ?generation art:selectedLayer ?layer .
+                            ?generation art:layerZPosition ?layerZ .
                             ?generation prov:atTime ?time .
                         }
-                        GROUP BY ?layer
+                        GROUP BY ?layerZ
                     }
 
                     ?generation art:thumbnailUrl ?thumbnailUrl .
@@ -698,11 +705,11 @@ namespace Artivity.Apid.Modules
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?layer ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+                    ?layer ?layerZ ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
                 WHERE 
                 {
                     {
-                        SELECT ?layer MAX(?time) AS ?time WHERE
+                        SELECT ?layer ?layerZ MAX(?time) AS ?time WHERE
                         {
                             ?file nfo:fileUrl @fileUrl .
 
@@ -712,11 +719,12 @@ namespace Artivity.Apid.Modules
                             ?entity prov:qualifiedGeneration ?generation .
 
                             ?generation art:selectedLayer ?layer .
+                            ?generation art:layerZPosition ?layerZ .
                             ?generation prov:atTime ?time .
 
                             FILTER(?time <= @time)
                         }
-                        GROUP BY ?layer
+                        GROUP BY ?layerZ
                     }
 
                     ?generation prov:atTime ?time .

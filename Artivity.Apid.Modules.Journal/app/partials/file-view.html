@@ -79,7 +79,7 @@
                     <ul class="list-unstyled">
                         <li ng-repeat="influence in influences" ng-class="{selected: influence == selectedInfluence}">
                             <a title="{{influence.time}}" ng-click="selectInfluence(influence)" ng-mouseenter="previewInfluence(influence)" style="padding: 3px;">
-                                <i class="zmdi zmdi-hc-fw icn icn-circle"></i> {{influence.description}}
+                                <i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{influence.description}}
                             </a>
                         </li>
                     </ul>
@@ -94,14 +94,14 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane fade active in" id="statistics">
-                    <h5>Composition</h5>
+                    <h5>Editing</h5>
                     <table style="width: 90%;">
                         <tr>
                             <td>
                                 <label>Confidence</label>
                             </td>
                             <td><span class="pull-right">{{stats.confidence}}</span></td>
-                            <td>&nbsp;%</td>
+                            <td width="20">&nbsp;%</td>
                         </tr>
                         <tr>
                             <td>
@@ -122,6 +122,38 @@
                                 <label>Redos</label>
                             </td>
                             <td><span class="pull-right">{{stats.redos}}</span></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    
+                    <h5 style="margin-top: 1em;">Composition</h5>
+                    <table style="width: 90%;">
+                        <tr>
+                            <td>
+                                <label>Layers</label>
+                            </td>
+                            <td><span class="pull-right">{{stats.layers.length}}</span></td>
+                            <td width="20"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Groups</label>
+                            </td>
+                            <td><span class="pull-right">0</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Masked</label>
+                            </td>
+                            <td><span class="pull-right">0</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Clipped</label>
+                            </td>
+                            <td><span class="pull-right">0</span></td>
                             <td></td>
                         </tr>
                     </table>
