@@ -170,16 +170,25 @@ namespace Artivity.Apid.Modules
 
             Post["/user"] = parameters =>
             {
-                Person user = Bind<Person>(ModelProvider.Store, Request.Body);
-
-                if (user == null)
+                try
                 {
-                    return HttpStatusCode.BadRequest;
+                    Person user = Bind<Person>(ModelProvider.Store, Request.Body);
+
+                    if (user == null)
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+
+                    user.Commit();
+
+                    return HttpStatusCode.OK;
                 }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
 
-                user.Commit();
-
-                return HttpStatusCode.OK;
+                    return HttpStatusCode.InternalServerError;
+                }
             };
 
             Get["/user/photo"] = parameters =>
@@ -383,7 +392,7 @@ namespace Artivity.Apid.Modules
                 SELECT ?s ?p ?o WHERE
                 {
                     ?s ?p ?o .
-                    ?s rdf:type foaf:Person .
+                    ?s rdf:type prov:Person .
                 }
             ");
 
@@ -395,7 +404,12 @@ namespace Artivity.Apid.Modules
             }
             else
             {
-                return null;
+                Logger.LogInfo("Creating new profile because no existing user was found.");
+
+                Person user = ModelProvider.AgentsModel.CreateResource<Person>();
+                user.Commit();
+
+                return Response.AsJson(user);
             }
         }
 
