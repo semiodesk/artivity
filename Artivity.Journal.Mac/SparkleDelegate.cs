@@ -25,18 +25,31 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-namespace Artivity.Apid.Mac
+using System;
+using Sparkle;
+
+namespace Artivity.Journal.Mac
 {
-    class MainClass
+    public class SparkleDelegate : SUUpdaterDelegate
     {
-        static void Main(string[] args)
+        public override void UpdaterDidNotFindUpdate(SUUpdater updater)
         {
-            Options opts = new Options();
+            Console.WriteLine("No update found.");
+        }
 
-            CommandLine.Parser.Default.ParseArguments(args, opts);
+        public override void UserDidCancelDownload(SUUpdater updater)
+        {
+            Console.WriteLine("Update download canceled by user.");
+        }
 
-            Program prog = new Program();
-            prog.Run(opts);
+        public override void WillInstallUpdate(SUUpdater updater, SUAppcastItem item)
+        {
+            Console.WriteLine(string.Format("Found update {0}, preparing install..", item.DisplayVersionString));
+
+            if (Program.IsApidRunning())
+            {
+                Program.StopApid();
+            }
         }
     }
 }

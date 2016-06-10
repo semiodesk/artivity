@@ -38,13 +38,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="IViewModule.cs" />
-    <Compile Include="Journal\Activity.cs" />
-    <Compile Include="Journal\ActivityList.cs" />
-    <Compile Include="Journal\Editing.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />
-    <Compile Include="Journal\Journal.cs" />
-    <Compile Include="Journal\JournalFile.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
     <Compile Include="ObjectModel\Person.cs" />
     <Compile Include="ObjectModel\Activity.cs" />
@@ -91,6 +86,7 @@
     <Compile Include="ObjectModel\Database.cs" />
     <Compile Include="ObjectModel\DatabaseState.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />
+    <Compile Include="ModelProviderFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

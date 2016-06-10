@@ -19,24 +19,27 @@
 // THE SOFTWARE.
 //
 // AUTHORS:
-//
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-namespace Artivity.Apid.Mac
+using AppKit;
+
+namespace Artivity.Journal.Mac
 {
-    class MainClass
+    static class MainClass
     {
-        static void Main(string[] args)
+        #region Methods
+
+        private static void Main(string[] args)
         {
-            Options opts = new Options();
-
-            CommandLine.Parser.Default.ParseArguments(args, opts);
-
-            Program prog = new Program();
-            prog.Run(opts);
+            Program program = new Program();
+            program.InitApid();
+            program.InitSparkle();
+            program.Run(args);
         }
+
+        #endregion
     }
 }

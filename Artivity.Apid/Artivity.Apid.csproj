@@ -96,6 +96,7 @@
     <Reference Include="VDS.Common">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\VDS.Common.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounts\IOAuth2AccountProvider.cs" />
