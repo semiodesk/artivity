@@ -35,19 +35,21 @@ namespace Artivity.Journal.Mac
     [Register("AppDelegate")]
     public partial class AppDelegate : NSApplicationDelegate
     {
-        private SUUpdater SUUpdater; 
+        #region Members
 
-        public AppDelegate()
-        {
-            
-        }
+        private SUUpdater _updater; 
+
+        #endregion
+
+        #region Methods
 
         public override void AwakeFromNib()
         {
             base.AwakeFromNib();
-            SUUpdater = new SUUpdater();
-            SUUpdater.Delegate = new SparkleDelegate();
-            SUUpdater.AutomaticallyChecksForUpdates = false;
+
+            _updater = new SUUpdater();
+            _updater.Delegate = new SparkleDelegate();
+            _updater.AutomaticallyChecksForUpdates = false;
         }
 
         public override bool ApplicationShouldHandleReopen(NSApplication sender, bool hasVisibleWindows)
@@ -71,7 +73,6 @@ namespace Artivity.Journal.Mac
 
         public override void DidFinishLaunching(NSNotification notification)
         {
-            
         }
 
         public override void WillTerminate(NSNotification notification)
@@ -79,14 +80,13 @@ namespace Artivity.Journal.Mac
             // Insert code here to tear down your application
         }
 
-        partial void checkForUpdate(Foundation.NSObject sender)
+        partial void CheckForUpdate(Foundation.NSObject sender)
         {
-            Logger.LogInfo("Checking for updates");
-            SUUpdater.CheckForUpdates(sender);
+            Logger.LogInfo("Checking for updates..");
+
+            _updater.CheckForUpdates(sender);
         }
 
-
- 
+        #endregion
     }
 }
-

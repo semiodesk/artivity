@@ -12,7 +12,7 @@ namespace Artivity.Journal.Mac
 	partial class AppDelegate
 	{
 		[Action ("checkForUpdate:")]
-		partial void checkForUpdate (Foundation.NSObject sender);
+		partial void CheckForUpdate (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
