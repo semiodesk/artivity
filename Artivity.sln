@@ -9,13 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Apid.Modules.Journ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.DataModel", "Artivity.DataModel\Artivity.DataModel.csproj", "{AF97FB55-09C8-4775-81F6-F1F97C2DB468}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Explorer", "artivity-explorer\Artivity.Explorer.csproj", "{823D4E87-D4D8-4D08-98AE-EAD625579E1A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Apid.Windows", "Artivity.Apid.Windows\Artivity.Apid.Windows.csproj", "{3CAF4068-5CE1-43B2-BE19-4425B0A86DB8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Journal.Windows", "Artivity.Journal.Windows\Artivity.Journal.Windows.csproj", "{111D1A22-90FF-4ACD-8DE9-C38403ED691C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Mac", "Artivity.Mac\Artivity.Mac.csproj", "{B996381E-DBD4-4C4D-9FFF-43425F221C17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Journal.Mac", "Artivity.Journal.Mac\Artivity.Journal.Mac.csproj", "{B996381E-DBD4-4C4D-9FFF-43425F221C17}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Apid.Mac", "Artivity.Apid.Mac\Artivity.Apid.Mac.csproj", "{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}"
 EndProject
@@ -87,18 +85,6 @@ Global
 		{3CAF4068-5CE1-43B2-BE19-4425B0A86DB8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3CAF4068-5CE1-43B2-BE19-4425B0A86DB8}.Release|x64.ActiveCfg = Release|Any CPU
 		{3CAF4068-5CE1-43B2-BE19-4425B0A86DB8}.Release|x86.ActiveCfg = Release|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Debug OSX|Any CPU.ActiveCfg = Debug OSX|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Debug OSX|x64.ActiveCfg = Debug OSX|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Debug OSX|x86.ActiveCfg = Debug OSX|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Release OSX|Any CPU.ActiveCfg = Release OSX|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Release OSX|x64.ActiveCfg = Release OSX|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Release OSX|x86.ActiveCfg = Release OSX|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Release|x64.ActiveCfg = Release|Any CPU
-		{823D4E87-D4D8-4D08-98AE-EAD625579E1A}.Release|x86.ActiveCfg = Release|Any CPU
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Debug OSX|Any CPU.ActiveCfg = Debug OSX|Any CPU
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Debug OSX|Any CPU.Build.0 = Debug OSX|Any CPU
 		{AF97FB55-09C8-4775-81F6-F1F97C2DB468}.Debug OSX|x64.ActiveCfg = Debug OSX|Any CPU

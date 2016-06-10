@@ -36,6 +36,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Artivity.Apid.Modules
 {
@@ -511,39 +513,36 @@ namespace Artivity.Apid.Modules
 
         public Response SetUserAgentPhoto(RequestStream stream)
         {
-            //try
-            //{
-            //string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
+            try
+            {
+                string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
 
-            ////TODO: we need to find a platform independent way of doing this
-            //Bitmap source = new Bitmap(stream);
-            //
-            //// Always resize the image to the given size.
-            //int width = 160;
-            //int height = 160;
-            //
-            //Bitmap target = new Bitmap(width, height);
-            //
-            //using (Graphics g = Graphics.FromImage(target))
-            //{
-            //    g.DrawImage(source, 0, 0, width, height);
-            //
-            //    using (FileStream fileStream = File.Create(file))
-            //    {
-            //        target.Save(fileStream, ImageFormat.Jpeg);
-            //    }
-            //}
-            //}
-            //catch(Exception ex)
-            //{
-            //    Logger.LogError(ex.Message);
+                Bitmap source = new Bitmap(stream);
 
-            //    return HttpStatusCode.InternalServerError;
-            //}
+                // Always resize the image to the given size.
+                int width = 160;
+                int height = 160;
 
-            //return HttpStatusCode.OK;
+                Bitmap target = new Bitmap(width, height);
 
-            return HttpStatusCode.NotImplemented;
+                using (Graphics g = Graphics.FromImage(target))
+                {
+                    g.DrawImage(source, 0, 0, width, height);
+
+                    using (FileStream fileStream = File.Create(file))
+                    {
+                        target.Save(fileStream, ImageFormat.Jpeg);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+
+                return HttpStatusCode.InternalServerError;
+            }
+
+            return HttpStatusCode.OK;
         }
 
         public Response GetRecentlyUsedFiles()

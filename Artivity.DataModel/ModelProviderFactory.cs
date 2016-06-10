@@ -25,18 +25,19 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-namespace Artivity.Apid.Mac
+namespace Artivity.DataModel
 {
-    class MainClass
+    public class ModelProviderFactory
     {
-        static void Main(string[] args)
+        public static ModelProvider CreateModelProvider(string connectionString, string nativeConectionString, string username = null)
         {
-            Options opts = new Options();
+            ModelProvider p = new ModelProvider();
+            p.ConnectionString = connectionString;
+            p.NativeConnectionString = nativeConectionString;
+            p.Username = username;
+            p.InitializeStore();
 
-            CommandLine.Parser.Default.ParseArguments(args, opts);
-
-            Program prog = new Program();
-            prog.Run(opts);
+            return p;
         }
     }
 }

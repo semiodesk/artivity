@@ -24,7 +24,7 @@
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-//
+
 using System;
 using System.IO;
 using System.Threading;

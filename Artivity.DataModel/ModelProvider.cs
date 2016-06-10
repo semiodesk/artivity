@@ -32,40 +32,32 @@ using System.Threading;
 
 namespace Artivity.DataModel
 {
-	public class ModelProviderFactory
-	{
-        public static ModelProvider CreateModelProvider(string connectionString, string nativeConectionString, string username=null)
-        {
-            ModelProvider p = new ModelProvider();
-            p.ConnectionString = connectionString;
-            p.NativeConnectionString = nativeConectionString;
-            p.Username = username;
-            p.InitializeStore();
-            return p;
-        }
-	}
-
     public class ModelProvider : Artivity.DataModel.IModelProvider
     {
         #region Members
 
         private Dictionary<int, IStore> _stores = new Dictionary<int, IStore>();
+
         public IStore Store 
         {
             get
             {
                 int id = Thread.CurrentThread.ManagedThreadId;
+
                 if (_stores.ContainsKey(id))
+                {
                     return _stores[id];
+                }
                 else
                 {
                     var store = StoreFactory.CreateStore(ConnectionString);
+
                     _stores[id] = store;
+
                     return store;
                 }
             }
         }
-        
 
         public string ConnectionString { get; set; }
 
@@ -104,7 +96,9 @@ namespace Artivity.DataModel
         void LoadModelUris()
         {
             if (string.IsNullOrEmpty(Username))
+            {
                 Username = Environment.UserName;
+            }
 
             Agents = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/agents", Username));
             Activities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities", Username));
@@ -187,6 +181,7 @@ namespace Artivity.DataModel
         public void ReleaseStore()
         {
             int id = Thread.CurrentThread.ManagedThreadId;
+
             if (_stores.ContainsKey(id))
             {
                 var x = _stores[id];
@@ -235,8 +230,7 @@ namespace Artivity.DataModel
         {
             return MonitoringModel;
         }
-
-        
+         
         #endregion
     }
 }
