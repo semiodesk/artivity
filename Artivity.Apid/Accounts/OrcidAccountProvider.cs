@@ -72,8 +72,6 @@ namespace Artivity.Apid.Accounts
                 return null;
             }
 
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-
             string json = Encoding.UTF8.GetString(ResponseData);
 
             JObject response = JObject.Parse(json);

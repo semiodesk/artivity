@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Journal.Windows", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Mac", "Artivity.Mac\Artivity.Mac.csproj", "{B996381E-DBD4-4C4D-9FFF-43425F221C17}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Apid.Mac", "Artivity.Apid.Mac\Artivity.Apid.Mac.csproj", "{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug OSX|Any CPU = Debug OSX|Any CPU
@@ -153,6 +155,30 @@ Global
 		{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}.Release|x64.ActiveCfg = Release|Any CPU
 		{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}.Release|x86.ActiveCfg = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug OSX|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug OSX|Any CPU.Build.0 = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug OSX|x64.ActiveCfg = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug OSX|x64.Build.0 = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug OSX|x86.ActiveCfg = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug OSX|x86.Build.0 = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|x64.Build.0 = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|x86.Build.0 = Debug|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release OSX|Any CPU.ActiveCfg = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release OSX|Any CPU.Build.0 = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release OSX|x64.ActiveCfg = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release OSX|x64.Build.0 = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release OSX|x86.ActiveCfg = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release OSX|x86.Build.0 = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release|x64.ActiveCfg = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release|x64.Build.0 = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

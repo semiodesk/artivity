@@ -28,7 +28,6 @@
 using Artivity.DataModel;
 using Artivity.Apid.Accounts;
 using Artivity.Apid.Platforms;
-using ImageMagick;
 using Nancy;
 using Nancy.Responses;
 using Nancy.IO;
@@ -512,24 +511,39 @@ namespace Artivity.Apid.Modules
 
         public Response SetUserAgentPhoto(RequestStream stream)
         {
-            try
-            {
-                string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
+            //try
+            //{
+            //string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
 
-                using (MagickImage image = new MagickImage(stream))
-                {
-                    image.Resize(160, 160);
-                    image.Write(file);
-                }
+            ////TODO: we need to find a platform independent way of doing this
+            //Bitmap source = new Bitmap(stream);
+            //
+            //// Always resize the image to the given size.
+            //int width = 160;
+            //int height = 160;
+            //
+            //Bitmap target = new Bitmap(width, height);
+            //
+            //using (Graphics g = Graphics.FromImage(target))
+            //{
+            //    g.DrawImage(source, 0, 0, width, height);
+            //
+            //    using (FileStream fileStream = File.Create(file))
+            //    {
+            //        target.Save(fileStream, ImageFormat.Jpeg);
+            //    }
+            //}
+            //}
+            //catch(Exception ex)
+            //{
+            //    Logger.LogError(ex.Message);
 
-                return HttpStatusCode.OK;
-            }
-            catch(Exception ex)
-            {
-                Logger.LogError(ex.Message);
+            //    return HttpStatusCode.InternalServerError;
+            //}
 
-                return HttpStatusCode.InternalServerError;
-            }
+            //return HttpStatusCode.OK;
+
+            return HttpStatusCode.NotImplemented;
         }
 
         public Response GetRecentlyUsedFiles()

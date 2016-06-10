@@ -167,12 +167,6 @@
     <None Include="TinyVirtuoso\virtuoso\doc\LICENSE" />
     <None Include="TinyVirtuoso\virtuoso\doc\NEWS" />
     <None Include="TinyVirtuoso\virtuoso\doc\README" />
-    <None Include="TinyVirtuoso\virtuoso\osx\isql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TinyVirtuoso\virtuoso\osx\virtuoso-t">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Plugin\Manifest.xsd">
       <SubType>Designer</SubType>
     </None>

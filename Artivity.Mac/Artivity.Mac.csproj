@@ -61,9 +61,6 @@
     <Reference Include="INIFileParser">
       <HintPath>..\packages\ini-parser.2.2.2\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
-    <Reference Include="TinyVirtuoso">
-      <HintPath>..\packages\TinyVirtuoso.0.3.25\lib\Net35\TinyVirtuoso.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Posix" />
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
@@ -88,9 +85,6 @@
     <Compile Include="Journal\AppDelegate.designer.cs">
       <DependentUpon>AppDelegate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Apid\FSEventsFileSystemWatcher.cs" />
-    <Compile Include="Apid\MacPlatformProvider.cs" />
-    <Compile Include="Apid\Program.cs" />
     <Compile Include="Journal\SparkleDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -116,38 +110,6 @@
     <BundleResource Include="com.semiodesk.artivity.plist">
       <DeployService-Deploy>True</DeployService-Deploy>
     </BundleResource>
-    <BundleResource Include="TinyVirtuoso\database\virtuoso.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <BundleResource Include="TinyVirtuoso\virtuoso\doc\AUTHORS">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <BundleResource Include="TinyVirtuoso\virtuoso\doc\COPYING">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <BundleResource Include="TinyVirtuoso\virtuoso\doc\CREDITS">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <BundleResource Include="TinyVirtuoso\virtuoso\doc\INSTALL">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <BundleResource Include="TinyVirtuoso\virtuoso\doc\LICENSE">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <BundleResource Include="TinyVirtuoso\virtuoso\doc\NEWS">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <BundleResource Include="TinyVirtuoso\virtuoso\doc\README">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <BundleResource Include="TinyVirtuoso\virtuoso\osx\isql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <BundleResource Include="TinyVirtuoso\virtuoso\osx\virtuoso-t">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <BundleResource Include="debug.log.config" />
-    <BundleResource Include="log.config" />
     <BundleResource Include="dsa_pub.pem" />
   </ItemGroup>
   <ItemGroup>
