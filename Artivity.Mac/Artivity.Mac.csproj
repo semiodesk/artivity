@@ -10,7 +10,7 @@
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <AssemblyName>Artivity</AssemblyName>
     <ReleaseVersion>1.5</ReleaseVersion>
-    <StartupObject>Artivity.Mac.MainClass</StartupObject>
+    <StartupObject>Artivity.Journal.Mac.MainClass</StartupObject>
     <UseXamMacFullFramework>true</UseXamMacFullFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -71,6 +71,7 @@
     <Reference Include="Sparkle">
       <HintPath>Sparkle.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

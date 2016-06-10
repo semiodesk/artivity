@@ -26,25 +26,17 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
-using Artivity.DataModel.Journal;
+using Artivity.Apid.Accounts;
+using Artivity.Apid.Platforms;
+using ImageMagick;
 using Nancy;
 using Nancy.Responses;
-using Nancy.ModelBinding;
 using Nancy.IO;
-using Nancy.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-
-using System.Threading.Tasks;
-using Artivity.Apid.Parameters;
-using Artivity.Apid.Accounts;
-using Artivity.Apid.Platforms;
-using System.Globalization;
-using System.Threading;
 
 namespace Artivity.Apid.Modules
 {
@@ -520,28 +512,17 @@ namespace Artivity.Apid.Modules
 
         public Response SetUserAgentPhoto(RequestStream stream)
         {
-            string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
-
             try
             {
-                //TODO: we need to find a platform independent way of doing this
-//                Bitmap source = new Bitmap(stream);
-//
-//                // Always resize the image to the given size.
-//                int width = 160;
-//                int height = 160;
-//
-//                Bitmap target = new Bitmap(width, height);
-//
-//                using (Graphics g = Graphics.FromImage(target))
-//                {
-//                    g.DrawImage(source, 0, 0, width, height);
-//
-//                    using (FileStream fileStream = File.Create(file))
-//                    {
-//                        target.Save(fileStream, ImageFormat.Jpeg);
-//                    }
-//                }
+                string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
+
+                using (MagickImage image = new MagickImage(stream))
+                {
+                    image.Resize(160, 160);
+                    image.Write(file);
+                }
+
+                return HttpStatusCode.OK;
             }
             catch(Exception ex)
             {
@@ -549,8 +530,6 @@ namespace Artivity.Apid.Modules
 
                 return HttpStatusCode.InternalServerError;
             }
-
-            return HttpStatusCode.OK;
         }
 
         public Response GetRecentlyUsedFiles()

@@ -24,22 +24,18 @@
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-//
+
 using AppKit;
 using System.IO;
 using System;
-using System.Diagnostics;
 using System.Reflection;
 using ObjCRuntime;
-
 
 namespace Artivity.Mac.Journal
 {
     public class Program
     {
-        public Program()
-        {
-        }
+        #region Methods
 
         public void Run(string[] args)
         {
@@ -47,24 +43,24 @@ namespace Artivity.Mac.Journal
             NSApplication.Main(args);
         }
 
-
-
         void LoadSparkle()
         {
             if (Dlfcn.dlopen(Path.Combine(GetCurrentExecutingDirectory(), "Sparkle.framework", "Sparkle"), 0) == IntPtr.Zero)
             {
-                Console.Error.WriteLine("Unable to load the dynamic library.");
+                Console.Error.WriteLine("Failed to load Sparkle framework library.");
+
                 Environment.Exit(1);
             }
         }
             
-
         static string GetCurrentExecutingDirectory()
         {
             string filePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
+
             return Path.GetDirectoryName(filePath);
         }
 
+        #endregion
     }
 }
 

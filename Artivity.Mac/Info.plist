@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>Artivity</string>
+	<string>Artivity Journal</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.semiodesk.artivity</string>
 	<key>CFBundleVersion</key>
