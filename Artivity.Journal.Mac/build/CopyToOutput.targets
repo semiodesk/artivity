@@ -13,7 +13,7 @@
 
 	    <MakeDir Directories="$(AppBundleDir)/Contents/Frameworks"/>
 
-	    <Exec Command="tar -xzvf $(ProjectDir)/sparkle.framework.tar.gz -C &quot;$(AppBundleDir)/Contents/Frameworks&quot;" />
+	    <Exec Command="tar -xzvf &quot;$(ProjectDir)/sparkle.framework.tar.gz&quot; -C &quot;$(AppBundleDir)/Contents/Frameworks&quot;" />
 	</Target>
 
 
