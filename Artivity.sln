@@ -13,9 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Apid.Windows", "Ar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Journal.Windows", "Artivity.Journal.Windows\Artivity.Journal.Windows.csproj", "{111D1A22-90FF-4ACD-8DE9-C38403ED691C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Journal.Mac", "Artivity.Journal.Mac\Artivity.Journal.Mac.csproj", "{B996381E-DBD4-4C4D-9FFF-43425F221C17}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Apid.Mac", "Artivity.Apid.Mac\Artivity.Apid.Mac.csproj", "{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Journal.Mac", "Artivity.Journal.Mac\Artivity.Journal.Mac.csproj", "{B996381E-DBD4-4C4D-9FFF-43425F221C17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,7 +108,6 @@ Global
 		{B996381E-DBD4-4C4D-9FFF-43425F221C17}.Debug OSX|x86.ActiveCfg = Debug|Any CPU
 		{B996381E-DBD4-4C4D-9FFF-43425F221C17}.Debug OSX|x86.Build.0 = Debug|Any CPU
 		{B996381E-DBD4-4C4D-9FFF-43425F221C17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B996381E-DBD4-4C4D-9FFF-43425F221C17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B996381E-DBD4-4C4D-9FFF-43425F221C17}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{B996381E-DBD4-4C4D-9FFF-43425F221C17}.Debug|x64.Build.0 = Debug|Any CPU
 		{B996381E-DBD4-4C4D-9FFF-43425F221C17}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -148,7 +147,6 @@ Global
 		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug OSX|x86.ActiveCfg = Debug|Any CPU
 		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug OSX|x86.Build.0 = Debug|Any CPU
 		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|x64.Build.0 = Debug|Any CPU
 		{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}.Debug|x86.ActiveCfg = Debug|Any CPU
