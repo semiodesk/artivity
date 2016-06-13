@@ -4,24 +4,28 @@
 	    <CreateAppBundleDependsOn>$(CreateAppBundleDependsOn);CopySparkle</CreateAppBundleDependsOn>
 		<CreateAppBundleDependsOn>$(CreateAppBundleDependsOn);CopyApid</CreateAppBundleDependsOn>
 	</PropertyGroup>
-	
+
 	<!-- Since this has inputs/outputs, it will fire only when the inputs are changed or the output does not exist -->
 	<Target Name="CopySparkle">
 	    <Message Text="Copying Sparkle to app bundle.." />
-		
+
 	    <RemoveDir Directories="$(AppBundleDir)/Contents/Frameworks/Sparkle.framework"/>
-		
+
 	    <MakeDir Directories="$(AppBundleDir)/Contents/Frameworks"/>
-		
+
 	    <Exec Command="tar -xzvf $(ProjectDir)/sparkle.framework.tar.gz -C &quot;$(AppBundleDir)/Contents/Frameworks&quot;" />
 	</Target>
+
 
 	<!-- Since this has inputs/outputs, it will fire only when the inputs are changed or the output does not exist -->
 	<Target Name="CopyApid">
 	    <Message Text="Copying APID to app bundle.." />
+			<CreateItem Include="$(TargetDir)\artivity-apid.app\**\*.*">
+    		<Output TaskParameter="Include" ItemName="YourFilesToCopy" />
+    	</CreateItem>
+			<!-- See: http://stackoverflow.com/questions/1274480/two-executables-in-one-bundle-on-mac -->
+    	<Copy SourceFiles="@(YourFilesToCopy)"
+    			DestinationFiles="@(YourFilesToCopy->'$(AppBundleDir)\Contents\Plugins\artivity-apid.app\%(RecursiveDir)%(Filename)%(Extension)')" />
 
-		<!-- See: http://stackoverflow.com/questions/1274480/two-executables-in-one-bundle-on-mac -->
-		<MakeDir Directories="$(AppBundleDir)/Contents/Plugins"/>
-		<Exec Command="cp -vR $(ProjectDir)/../Artivity.Apid.Mac/bin/$(Configuration)/artivity-apid.app &quot;$(AppBundleDir)/Contents/Plugins/&quot;" />
-	</Target>
+  </Target>
 </Project>
