@@ -99,6 +99,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Artivity.Apid.Modules.Journal\Artivity.Apid.Modules.Journal.csproj">
+      <Project>{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}</Project>
+      <Name>Artivity.Apid.Modules.Journal</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="build\CopyToOutput.targets" />
 </Project>
