@@ -199,7 +199,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
         }
 
         console.log(data);
-        
+
         $scope.activities = data;
 
         if (data.length > 0) {
@@ -531,6 +531,21 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
         });
     };
 
+    $scope.onPhotoChanged = function (e) {
+        // Update the preview image..
+        var files = window.event.srcElement.files;
+        
+        if (FileReader && files.length) {            
+            var reader = new FileReader();
+            
+            reader.onload = function () {                
+                document.getElementById('photo-img').src = reader.result;
+            }
+            
+            reader.readAsDataURL(files[0]);
+        }
+    };
+
     $scope.uninstallAccount = function (account) {
         api.uninstallAccount(account.Id).then(function () {
             // Reload the accounts.
@@ -544,7 +559,10 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
         api.setUser($scope.user);
 
         if ($scope.userPhoto) {
-            api.setUserPhoto($scope.userPhoto);
+            api.setUserPhoto($scope.userPhoto).then(function () {
+                $scope.userPhotoUrl = '';
+                $scope.userPhotoUrl = api.getUserPhotoUrl();
+            });
         }
     };
 
@@ -605,7 +623,6 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
     this.submit = function () {
         if ($scope.agents.length > 0) {
             $scope.agents.forEach(function (agent) {
-                console.log(agent.ColourCode);
                 api.setAgent(agent);
             });
         }
