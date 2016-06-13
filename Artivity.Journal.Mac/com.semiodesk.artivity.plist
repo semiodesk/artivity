@@ -8,10 +8,9 @@
 	<string>com.semiodesk.artivity</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>{0}/MacOS/Artivity</string>
-		<string>-d</string>
+		<string>{0}/plugins/artivity-apid.app/Contents/MacOS/artivity-apid</string>
 	</array>
 	<key>WorkingDirectory</key>
-	<string>{0}/MacOS/</string>
+	<string>{0}/Plugins/</string>
 </dict>
 </plist>

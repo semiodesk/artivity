@@ -7,7 +7,7 @@
     <ProjectGuid>{B996381E-DBD4-4C4D-9FFF-43425F221C17}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Artivity.Journal.Mac</RootNamespace>
-    <AssemblyName>Artivity Journal</AssemblyName>
+    <AssemblyName>Artivity</AssemblyName>
 	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <ReleaseVersion>1.5</ReleaseVersion>
@@ -59,9 +59,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.Mac" />
-    <Reference Include="INIFileParser">
-      <HintPath>..\packages\ini-parser.2.2.2\lib\net20\INIFileParser.dll</HintPath>
-    </Reference>
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
     </Reference>
