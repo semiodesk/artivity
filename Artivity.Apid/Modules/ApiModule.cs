@@ -658,11 +658,11 @@ namespace Artivity.Apid.Modules
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?layer ?layerZ ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+                    ?layer ?layerZ ?time ?thumbnailUrl COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
                 WHERE 
                 {
                     {
-                        SELECT ?layer ?layerZ ?generation ?time WHERE
+                        SELECT ?layer COALESCE(?layerZ, 0) AS ?layerZ ?generation ?time WHERE
                         {
                             ?file nfo:fileUrl @fileUrl .
 
@@ -672,19 +672,24 @@ namespace Artivity.Apid.Modules
                             ?entity prov:qualifiedGeneration ?generation .
 
                             ?generation art:selectedLayer ?layer .
-                            ?generation art:layerZPosition ?layerZ .
                             ?generation prov:atTime ?time .
+
+                            OPTIONAL { ?generation art:layerZPosition ?layerZ . }
                         }
                         GROUP BY ?layerZ
                     }
 
                     ?generation art:thumbnailUrl ?thumbnailUrl .
-                    ?generation art:thumbnailPosition ?rectangle .
 
-                    ?rectangle art:position ?position .
+                    OPTIONAL
+                    {
+                        ?generation art:thumbnailPosition ?rectangle .
 
-                    ?position art:x ?x .
-                    ?position art:y ?y .
+                        ?rectangle art:position ?position .
+
+                        ?position art:x ?x .
+                        ?position art:y ?y .
+                    }
 
                     OPTIONAL
                     {
