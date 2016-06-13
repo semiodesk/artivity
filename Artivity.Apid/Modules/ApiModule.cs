@@ -958,7 +958,8 @@ namespace Artivity.Apid.Modules
 
                     ?canvas art:width ?width .
                     ?canvas art:height ?height .
-                    ?canvas art:lengthUnit ?lengthUnit .
+
+                    OPTIONAL { ?canvas art:lengthUnit ?lengthUnit . }
                 }
                 ORDER BY DESC(?startTime) LIMIT 1";
                 

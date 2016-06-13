@@ -48,35 +48,58 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
     // The canvas.
     var buffer = document.getElementsByClassName('buffer')[0];
 
+    // The drawing context.
+    var context = buffer.getContext('2d');
+    
     // A list with all loaded bitmaps.
     var T = [];
     var Tindex = {};
 
     // Renders all loaded images onto the canvas.
-    var renderDocument = function (thumbnails, time) {
-        var context = buffer.getContext('2d');
-
+    var renderDocument = function (thumbnails, time) {       
         context.clearRect(0, 0, buffer.width, buffer.height);
-
-        if ($scope.canvas !== undefined) {
+        
+        // Save the untransformed canvas state.
+        context.save();
+        
+        if ($scope.canvas !== undefined && $scope.canvas.width > 0 && $scope.canvas.height > 0) {
             var canvas = $scope.canvas;
-
+            
+            // Fit the rendered document into the available viewport.
+            var shadowOffsetX = 3;
+            var shadowOffsetY = 3;
+            
+            var width = canvas.width + shadowOffsetX;
+            var height = canvas.height + shadowOffsetY;
+            
+            var zoom = 1.0;
+            
+            if(width > buffer.width) {                 
+                zoom = Math.min(zoom, buffer.width / width);
+            }
+            
+            if(height > buffer.height) {                
+                zoom = Math.min(zoom, buffer.height / height);
+            }
+                        
+            context.scale(zoom, zoom);
+            
+            // Translate the document to be centered on the canvas.            
+            if (buffer.width !== undefined && buffer.width > canvas.width) {                
+                context.translate((buffer.width - canvas.width) / 2, 0);
+            }
+            
+            context.save();
+            
             context.shadowBlur = 10;
-            context.shadowOffsetX = 5;
-            context.shadowOffsetY = 5;
+            context.shadowOffsetX = shadowOffsetX;
+            context.shadowOffsetY = shadowOffsetY;
             context.shadowColor = "black";
 
             context.fillStyle = 'white';
             context.fillRect(0, 0, canvas.width, canvas.height);
-
-            context.shadowBlur = 0;
-            context.shadowColor = undefined;
-            context.shadowOffsetX = 0;
-            context.shadowOffsetY = 0;
-
-            if (context.width !== undefined) {
-                context.translate((context.width - canvas.width) / 2, 0);
-            }
+            
+            context.restore();
         };
 
         // Only render the newest version of every layer.
@@ -120,6 +143,9 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
             renderedLayers[t.layerZ] = t;
         }
+        
+        // Restore the untransformed canvas state.
+        context.restore();
     };
 
     var loadThumbnailsComplete = function (thumbnails) {
@@ -182,6 +208,10 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
     api.getCanvas(fileUrl).then(function (data) {
         $scope.canvas = data;
+        
+        if($scope.selectedInfluence !== undefined) {
+            renderDocument(T, $scope.selectedInfluence.time);
+        }
     });
 
     api.getAgent(fileUrl).then(function (data) {
