@@ -65,6 +65,7 @@ namespace Artivity.Api.Plugin.OSX
             {
                 var fi = app as FileInfo;
                 var info = FileVersionInfo.GetVersionInfo(fi.FullName);
+                return info.ProductVersion;
             }
 
 

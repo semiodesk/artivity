@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<art:PluginManifest xmlns:art="http://www.artivity.io/plugins/manifest/">
+  <art:Uri>http://adobe.com/products/illustrator</art:Uri>
+  <art:DisplayName>Adobe Illustrator CC 2015</art:DisplayName>
+  <art:ProcessName>Illustrator.exe</art:ProcessName>
+  <art:ExecPath>Support Files\Contents\Windows\Illustrator.exe</art:ExecPath>
+  <art:ID>ILST_19_2_1</art:ID>
+  <art:TargetPath>Plug-ins\Extensions</art:TargetPath>
+  <art:Version>0.5</art:Version>
+  <art:HostVersion>19.2.0</art:HostVersion>
+  <art:Arch>64</art:Arch>
+  <art:PluginFile Link="true">Artivity64_2015.aip</art:PluginFile>
+</art:PluginManifest>
