@@ -31,6 +31,7 @@ using System;
 using System.Reflection;
 using System.Diagnostics;
 using ObjCRuntime;
+using System.Xml.XPath;
 
 namespace Artivity.Journal.Mac
 {
@@ -70,71 +71,78 @@ namespace Artivity.Journal.Mac
 #endif
         }
 
-        private void TestApid()
+        private void TestApid ()
         {
-            Console.WriteLine("Testing if APID is installed..");
+            Console.WriteLine ("Testing if APID is installed..");
 
             string username = Environment.UserName;
 
             string globalApidPath = "/Library/LaunchAgents/com.semiodesk.artivity.plist";
 
-            FileInfo globalAgent = new FileInfo(globalApidPath);
+            FileInfo globalAgent = new FileInfo (globalApidPath);
 
-            if (globalAgent.Exists)
+            if (globalAgent.Exists) 
             {
-                Console.WriteLine(string.Format("Global launch agent found in {0}", globalApidPath));
+                Console.WriteLine (string.Format ("Global launch agent found in {0}", globalApidPath));
 
                 // The plist for a global agent exists, so we assume everything is fine and people know what they are doing...
                 return;
             }
 
-            FileInfo userAgent = GetLocalPlist();
+            FileInfo userAgent = GetLocalPlist ();
 
             var current = Environment.CurrentDirectory;
 
-            FileInfo agentFile = new FileInfo(Path.Combine(current, "..", "Resources", "com.semiodesk.artivity.plist"));
+            DirectoryInfo contentPath = new DirectoryInfo (Path.Combine (current, ".."));
 
-            if (userAgent.Exists && userAgent.Length == agentFile.Length)
+            FileInfo agentFile = new FileInfo (Path.Combine (current, "..", "Resources", "com.semiodesk.artivity.plist"));
+
+            if (userAgent.Exists) 
             {
-                Console.WriteLine(string.Format("Existing launch agent found in {0}", userAgent.FullName));
+                // Test if current plist file contains this apid
+                string currentApid = GetAgentPath ();
+                string thisApid = contentPath.FullName;
+                int sameApid = string.Compare (thisApid, 0, currentApid, 0, thisApid.Length);
+
+                if (sameApid == 0) 
+                {
+                    Console.WriteLine (string.Format ("Existing launch agent found in {0}", userAgent.FullName));
+                    return;
+                }
             }
-            else
+
+            Process process;
+
+            if (!userAgent.Exists) 
             {
-                Process process;
+                Console.WriteLine (string.Format ("Creating launch agent in {0}", userAgent.FullName));
+            } else 
+            {
+                Console.WriteLine (string.Format ("Replacing launch agent in {0}", userAgent.FullName));
 
-                if (!userAgent.Exists)
-                {
-                    Console.WriteLine(string.Format("Creating launch agent in {0}", userAgent.FullName));
-                }
-                else
-                {
-                    Console.WriteLine(string.Format("Replacing launch agent in {0}", userAgent.FullName));
-
-                    process = new Process();
-                    process.StartInfo.FileName = "/bin/bash";
-                    process.StartInfo.Arguments = string.Format("-c \"launchctl unload {0}\"", userAgent.FullName);
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.Start();
-
-                    Console.WriteLine(string.Format("Unloaded launch agent: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
-                }
-
-                var text = File.ReadAllText(agentFile.FullName);
-
-                DirectoryInfo contentPath = new DirectoryInfo(Path.Combine(current, ".."));
-
-                File.WriteAllText(userAgent.FullName, string.Format(text, contentPath.FullName));
-
-                process = new Process();
+                process = new Process ();
                 process.StartInfo.FileName = "/bin/bash";
-                process.StartInfo.Arguments = string.Format("-c \"launchctl bootstrap gui/$UID {0}\"", userAgent.FullName);
+                process.StartInfo.Arguments = string.Format ("-c \"launchctl unload {0}\"", userAgent.FullName);
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
-                process.Start();
+                process.Start ();
 
-                Console.WriteLine(string.Format("Bootstrapped launch agent: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
+                Console.WriteLine (string.Format ("Unloaded launch agent: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
             }
+
+            var text = File.ReadAllText (agentFile.FullName);
+
+            File.WriteAllText (userAgent.FullName, string.Format (text, contentPath.FullName));
+
+            process = new Process ();
+            process.StartInfo.FileName = "/bin/bash";
+            process.StartInfo.Arguments = string.Format ("-c \"launchctl bootstrap gui/$UID {0}\"", userAgent.FullName);
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start ();
+
+            Console.WriteLine (string.Format ("Bootstrapped launch agent: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
+
         }
 
         public static bool IsApidRunning()
@@ -170,6 +178,20 @@ namespace Artivity.Journal.Mac
 
             return Path.GetDirectoryName(filePath);
         }
+
+        private string GetAgentPath ()
+        {
+            XPathNavigator nav;
+            XPathDocument docNav;
+            string xPath;
+
+            docNav = new XPathDocument (GetLocalPlist().FullName);
+            nav = docNav.CreateNavigator ();
+            xPath = "//plist/dict/array/string";
+
+            return nav.SelectSingleNode (xPath).Value;             
+        }
+
 
         private static FileInfo GetLocalPlist()
         {
