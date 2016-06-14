@@ -110,7 +110,7 @@ namespace Artivity.Apid
 
         protected void InitializePluginChecker()
         {
-            _pluginChecker = PluginCheckerFactory.CreatePluginChecker();
+            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(new DirectoryInfo(platform.PluginDir));
             _pluginChecker.Check();
 
             _watchdog = InstallationWatchdogFactory.CreateWatchdog();
@@ -126,9 +126,8 @@ namespace Artivity.Apid
             InitializeLogging();
 
 
-            #if !DEBUG
+
             InitializePluginChecker();
-            #endif
 
             InitializeService();
 

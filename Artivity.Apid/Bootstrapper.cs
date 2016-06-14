@@ -42,6 +42,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Nancy.Serialization.JsonNet;
 using Artivity.Apid.Modules;
+using Artivity.Api.Plugin;
 
 namespace Artivity.Apid
 {
@@ -54,6 +55,8 @@ namespace Artivity.Apid
         public IModelProvider ModelProvider { get; set; }
 
         public IPlatformProvider PlatformProvider { get; set; }
+
+        public PluginChecker PluginChecker { get; set; }
 
         #endregion
 
@@ -78,6 +81,11 @@ namespace Artivity.Apid
             if (PlatformProvider != null)
             {
                 _container.Register(PlatformProvider);
+            }
+
+            if (PluginChecker != null)
+            {
+                _container.Register(PluginChecker);
             }
                 
             container.Register<JsonNetSerializer>();

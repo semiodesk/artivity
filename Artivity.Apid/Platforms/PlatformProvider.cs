@@ -62,7 +62,14 @@ namespace Artivity.Apid.Platforms
             protected set;
         }
 
+        public string PluginDir { get; set; }
+
         public string DeploymentDir { get; set; }
+
+        public bool CheckForNewSoftwareAgents { get; set; }
+
+        public bool AutomaticallyInstallSoftwareAgentPlugins { get; set; }
+
         #endregion
 
         #region Constructors
@@ -86,6 +93,12 @@ namespace Artivity.Apid.Platforms
             IsWindows = TestWindows();
             IsMac = TestMac();
             IsLinux = TestLinux();
+
+            DeploymentDir = Environment.CurrentDirectory;
+            PluginDir = Path.Combine(DeploymentDir, "Plugins");
+
+            CheckForNewSoftwareAgents = false;
+            AutomaticallyInstallSoftwareAgentPlugins = false;
         }
 
         #endregion
@@ -147,7 +160,5 @@ namespace Artivity.Apid.Platforms
             return Environment.OSVersion.Platform == PlatformID.Win32NT;
         }
         #endregion
-
-
     }
 }

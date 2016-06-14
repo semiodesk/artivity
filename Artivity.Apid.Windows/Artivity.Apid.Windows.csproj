@@ -101,5 +101,7 @@
   </Target>
   <Target Name="AfterBuild">
   </Target>
-  -->
+    -->
+	  <Import Project="$(ProjectDir)\CopyToOutput.targets" />
+
 </Project>

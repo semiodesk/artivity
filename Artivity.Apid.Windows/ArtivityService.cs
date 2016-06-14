@@ -28,8 +28,12 @@ namespace Artivity.Apid
 
         public bool AutoPluginChecker { get; set; }
 
+        PluginChecker _checker;
+
         private string _logConfigPath = "log.config";
         public string LogConfigPath { get { return _logConfigPath;} set{ _logConfigPath = value;} }
+
+        public bool Debug { get; set; }
         #endregion
 
         #region Constructor
@@ -106,27 +110,12 @@ namespace Artivity.Apid
 
         public void Start()
         {
-            IInstallationWatchdog watchdog = null;
-            if (AutoPluginChecker)
-            {
-                var check = PluginCheckerFactory.CreatePluginChecker();
-                check.Check();
-                watchdog = InstallationWatchdogFactory.CreateWatchdog();
-                watchdog.ProgrammInstalledOrRemoved += (object s, EventArgs e) => { check.Check(); };
-                watchdog.Start();
-            }
-
             FindCurrentUsers();
             _log.DebugFormat("Waiting for user login...");
             _stopping.WaitOne();
             _log.Info("... Stopping");
             foreach (var session in _services)
                 session.Value.Stop();
-
-            if (AutoPluginChecker && watchdog != null)
-            {
-                watchdog.Stop();
-            }
         }
 
         private void FindCurrentUsers()
@@ -215,8 +204,7 @@ namespace Artivity.Apid
             _log.DebugFormat("Starting service for user {0}", user);
             try
             {
-                
-                HttpService s = new HttpService();
+                HttpService httpService = new HttpService();
                
                 var action = new ParameterizedThreadStart(obj => 
                     {
@@ -226,15 +214,15 @@ namespace Artivity.Apid
                         string regKeyFolders = string.Format(@"HKEY_USERS\{0}\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", sid);
                         string regValueAppData = @"AppData";
                         string path = Registry.GetValue(regKeyFolders, regValueAppData, null) as string;
-                        s.ApplicationData = path;
+                        httpService.ApplicationData = path;
                         // Only set username, disregard domain
-                        s.Username = user.Split('\\')[1];
-                        s.Start(false);
+                        httpService.Username = user.Split('\\')[1];
+                        httpService.Start(false);
                     });
                 Thread starter = new Thread(action);
                 starter.Start();
 
-                _services.Add(sessionId, s);
+                _services.Add(sessionId, httpService);
                 _log.DebugFormat("Service running...");
             }
             catch (Exception e)

@@ -28,6 +28,9 @@ using System;
 using Artivity.Api.Plugin;
 using Artivity.Api.Plugin.Win;
 using System.IO;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Artivity.Api.Plugin.Win
 {
@@ -38,7 +41,7 @@ namespace Artivity.Api.Plugin.Win
         #endregion
         
         #region Constructor
-        public WinPluginChecker() : base()
+        public WinPluginChecker(DirectoryInfo dir) : base(dir)
         {
             
         }
@@ -57,9 +60,63 @@ namespace Artivity.Api.Plugin.Win
 
         protected override void CreateLink (string target, string source)
         {
-            throw new NotImplementedException ();
+            IShellLink link = (IShellLink)new ShellLink();
+
+            // setup shortcut information
+            link.SetDescription("Artivity Plugin");
+            link.SetPath(source);
+
+            // save it
+            System.Runtime.InteropServices.ComTypes.IPersistFile file = (System.Runtime.InteropServices.ComTypes.IPersistFile)link;
+            file.Save(target, false);
         }
-            
+
+        protected override string GetApplicationVersion(FileSystemInfo app)
+        {
+            string res = null;
+
+            if( app is FileInfo && app.Exists )
+            {
+                var fi = app as FileInfo;
+                var info = FileVersionInfo.GetVersionInfo(fi.FullName);
+                return info.ProductVersion;
+            }
+
+
+            return res;
+
+        }
+
+        [ComImport]
+        [Guid("00021401-0000-0000-C000-000000000046")]
+        internal class ShellLink
+        {
+        }
+
+        [ComImport]
+        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        [Guid("000214F9-0000-0000-C000-000000000046")]
+        internal interface IShellLink
+        {
+            void GetPath([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszFile, int cchMaxPath, out IntPtr pfd, int fFlags);
+            void GetIDList(out IntPtr ppidl);
+            void SetIDList(IntPtr pidl);
+            void GetDescription([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszName, int cchMaxName);
+            void SetDescription([MarshalAs(UnmanagedType.LPWStr)] string pszName);
+            void GetWorkingDirectory([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszDir, int cchMaxPath);
+            void SetWorkingDirectory([MarshalAs(UnmanagedType.LPWStr)] string pszDir);
+            void GetArguments([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszArgs, int cchMaxPath);
+            void SetArguments([MarshalAs(UnmanagedType.LPWStr)] string pszArgs);
+            void GetHotkey(out short pwHotkey);
+            void SetHotkey(short wHotkey);
+            void GetShowCmd(out int piShowCmd);
+            void SetShowCmd(int iShowCmd);
+            void GetIconLocation([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszIconPath, int cchIconPath, out int piIcon);
+            void SetIconLocation([MarshalAs(UnmanagedType.LPWStr)] string pszIconPath, int iIcon);
+            void SetRelativePath([MarshalAs(UnmanagedType.LPWStr)] string pszPathRel, int dwReserved);
+            void Resolve(IntPtr hwnd, int fFlags);
+            void SetPath([MarshalAs(UnmanagedType.LPWStr)] string pszFile);
+        }
         #endregion
 
 

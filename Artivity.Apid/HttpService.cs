@@ -38,6 +38,7 @@ using Nancy.Hosting.Self;
 using Nancy.TinyIoc;
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
+using Artivity.Api.Plugin;
 
 namespace Artivity.Apid
 {
@@ -148,6 +149,8 @@ namespace Artivity.Apid
 
         private bool _started = false;
 
+        private PluginChecker _pluginChecker = null;
+        private IInstallationWatchdog _watchdog;
 
         #endregion
 
@@ -181,9 +184,13 @@ namespace Artivity.Apid
             // Make sure the database is started.
             StartDatabase();
 
+            // Test for SoftwareAgents 
+            InitializeSoftwareAgentPlugins();
+
             // Start the daemon in a new thread.
             ServiceThread = new Thread(StartService);
             ServiceThread.Start();
+
 
             if (blocking)
             {
@@ -193,6 +200,8 @@ namespace Artivity.Apid
 
         public void Stop(bool waitForEnd = true)
         {
+            StopWatchdog();
+
             if (ServiceThread != null && ServiceThread.IsAlive)
             {
                 _wait.Set();
@@ -214,6 +223,7 @@ namespace Artivity.Apid
             Bootstrapper customBootstrapper = new Bootstrapper();
             customBootstrapper.ModelProvider = ModelProvider;
             customBootstrapper.PlatformProvider = PlatformProvider;
+            customBootstrapper.PluginChecker = _pluginChecker;
 
 
             HostConfiguration config = new HostConfiguration();
@@ -307,6 +317,36 @@ namespace Artivity.Apid
             _started = true;
 
             DatabaseStarted.Set();
+        }
+
+        private void InitializeSoftwareAgentPlugins()
+        {
+
+            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(new DirectoryInfo(PlatformProvider.PluginDir));
+            _pluginChecker.Check();
+            if (PlatformProvider.CheckForNewSoftwareAgents)
+            {
+                _watchdog = InstallationWatchdogFactory.CreateWatchdog();
+                _watchdog.ProgrammInstalledOrRemoved += OnProgramInstalled;
+                StartWatchdog();
+            }
+        }
+
+        private void OnProgramInstalled(object sender, EventArgs entry)
+        {
+            _pluginChecker.Check(PlatformProvider.AutomaticallyInstallSoftwareAgentPlugins);
+        }
+
+        private void StartWatchdog()
+        {
+            if( _watchdog != null)
+                _watchdog.Start();
+        }
+
+        private void StopWatchdog()
+        {
+            if (_watchdog != null)
+                _watchdog.Stop();
         }
 
         private void StopDatabase()
