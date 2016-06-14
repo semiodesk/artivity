@@ -86,7 +86,6 @@
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <ItemGroup>
     <BundleResource Include="Icons.icns" />
     <BundleResource Include="com.semiodesk.artivity.plist">
