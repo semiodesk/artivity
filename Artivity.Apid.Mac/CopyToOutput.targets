@@ -1,0 +1,18 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<!-- These targets will fire after mmp creates your bundle but before code signing -->
+	<PropertyGroup>
+		<CreateAppBundleDependsOn>$(CreateAppBundleDependsOn);CopyPlugin</CreateAppBundleDependsOn>
+	</PropertyGroup>
+
+	<!-- Since this has inputs/outputs, it will fire only when the inputs are changed or the output does not exist -->
+	<Target Name="CopyPlugin">
+		<Message Text="Copying Plugins..." />
+		<CreateItem Include="$(ProjectDir)\Plugins\**\*.*">
+			<Output TaskParameter="Include" ItemName="YourFilesToCopy" />
+		</CreateItem>
+
+		<Copy SourceFiles="@(YourFilesToCopy)"
+				DestinationFolder="$(AppBundleDir)\Contents\Resources\Plugins\%(RecursiveDir)" />
+	</Target>
+
+</Project>
