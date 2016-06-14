@@ -28,7 +28,7 @@
     <IncludeMonoRuntime>false</IncludeMonoRuntime>
     <CreatePackage>false</CreatePackage>
     <CodeSigningKey>Developer ID Application: Semiodesk GmbH (3F9DU688H9)</CodeSigningKey>
-    <EnableCodeSigning>true</EnableCodeSigning>
+    <EnableCodeSigning>false</EnableCodeSigning>
     <EnablePackageSigning>false</EnablePackageSigning>
     <PackageSigningKey>Developer ID Installer</PackageSigningKey>
     <XamMacArch>x86_64</XamMacArch>
@@ -65,6 +65,7 @@
     <Reference Include="Sparkle">
       <HintPath>Sparkle.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
