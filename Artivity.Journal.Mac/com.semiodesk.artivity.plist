@@ -8,7 +8,7 @@
 	<string>com.semiodesk.artivity</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>{0}/Plugins/artivity-apid.app/Contents/MacOS/artivity-apid</string>
+		<string>{0}/Applications/artivity-apid.app/Contents/MacOS/artivity-apid</string>
 	</array>
 	<key>WorkingDirectory</key>
 	<string>{0}/Applications/artivity-apid.app/Contents/Resources</string>
