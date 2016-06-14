@@ -7,7 +7,7 @@
     <ProjectGuid>{B996381E-DBD4-4C4D-9FFF-43425F221C17}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Artivity.Journal.Mac</RootNamespace>
-    <AssemblyName>Test</AssemblyName>
+    <AssemblyName>Artivity</AssemblyName>
 	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <ReleaseVersion>1.5</ReleaseVersion>
