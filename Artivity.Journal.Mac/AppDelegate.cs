@@ -54,7 +54,6 @@ namespace Artivity.Journal.Mac
         public override void DidFinishLaunching(NSNotification notification)
         {
             // Insert code here to initialize your application
-            Console.WriteLine("Test");
         }
 
         public override bool ApplicationShouldHandleReopen(NSApplication sender, bool hasVisibleWindows)
