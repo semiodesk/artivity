@@ -26,7 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
-using Artivity.DataModel.Journal;
+
 using Nancy;
 using Nancy.Responses;
 using Nancy.ModelBinding;

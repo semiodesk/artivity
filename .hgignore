@@ -51,6 +51,7 @@ nohup.out
 inkscape
 inkview
 Output/*
+build/*
 artivity-apid/TinyVirtuoso/*
 *.DS_Store
 libartivity/windows/boost_1_61_0/*

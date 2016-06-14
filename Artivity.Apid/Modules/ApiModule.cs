@@ -26,25 +26,18 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
-using Artivity.DataModel.Journal;
+using Artivity.Apid.Accounts;
+using Artivity.Apid.Platforms;
 using Nancy;
 using Nancy.Responses;
-using Nancy.ModelBinding;
 using Nancy.IO;
-using Nancy.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-
-using System.Threading.Tasks;
-using Artivity.Apid.Parameters;
-using Artivity.Apid.Accounts;
-using Artivity.Apid.Platforms;
-using System.Globalization;
-using System.Threading;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Artivity.Apid.Modules
 {
@@ -170,16 +163,25 @@ namespace Artivity.Apid.Modules
 
             Post["/user"] = parameters =>
             {
-                Person user = Bind<Person>(ModelProvider.Store, Request.Body);
-
-                if (user == null)
+                try
                 {
-                    return HttpStatusCode.BadRequest;
+                    Person user = Bind<Person>(ModelProvider.Store, Request.Body);
+
+                    if (user == null)
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+
+                    user.Commit();
+
+                    return HttpStatusCode.OK;
                 }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
 
-                user.Commit();
-
-                return HttpStatusCode.OK;
+                    return HttpStatusCode.InternalServerError;
+                }
             };
 
             Get["/user/photo"] = parameters =>
@@ -383,7 +385,7 @@ namespace Artivity.Apid.Modules
                 SELECT ?s ?p ?o WHERE
                 {
                     ?s ?p ?o .
-                    ?s rdf:type foaf:Person .
+                    ?s rdf:type prov:Person .
                 }
             ");
 
@@ -395,7 +397,12 @@ namespace Artivity.Apid.Modules
             }
             else
             {
-                return null;
+                Logger.LogInfo("Creating new profile because no existing user was found.");
+
+                Person user = ModelProvider.AgentsModel.CreateResource<Person>();
+                user.Commit();
+
+                return Response.AsJson(user);
             }
         }
 
@@ -506,30 +513,29 @@ namespace Artivity.Apid.Modules
 
         public Response SetUserAgentPhoto(RequestStream stream)
         {
-            string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
-
             try
             {
-                //TODO: we need to find a platform independent way of doing this
-//                Bitmap source = new Bitmap(stream);
-//
-//                // Always resize the image to the given size.
-//                int width = 160;
-//                int height = 160;
-//
-//                Bitmap target = new Bitmap(width, height);
-//
-//                using (Graphics g = Graphics.FromImage(target))
-//                {
-//                    g.DrawImage(source, 0, 0, width, height);
-//
-//                    using (FileStream fileStream = File.Create(file))
-//                    {
-//                        target.Save(fileStream, ImageFormat.Jpeg);
-//                    }
-//                }
+                string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
+
+                Bitmap source = new Bitmap(stream);
+
+                // Always resize the image to the given size.
+                int width = 160;
+                int height = 160;
+
+                Bitmap target = new Bitmap(width, height);
+
+                using (Graphics g = Graphics.FromImage(target))
+                {
+                    g.DrawImage(source, 0, 0, width, height);
+
+                    using (FileStream fileStream = File.Create(file))
+                    {
+                        target.Save(fileStream, ImageFormat.Jpeg);
+                    }
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
 
@@ -568,18 +574,24 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.GetAll();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?startTime ?endTime ?color ?name WHERE
+                SELECT ?startTime ?endTime MAX(?time) as ?maxTime ?color ?name WHERE
                 {
                     ?file nfo:fileUrl @fileUrl .
 
                     ?activity prov:used ?file ;
                         prov:qualifiedAssociation ?association ;
                         prov:startedAtTime ?startTime ;
-                        prov:endedAtTime ?endTime .
+                        prov:endedAtTime ?endTime ;
+                        prov:generated ?entity .
 
                     ?association prov:agent ?agent .
 
                     ?agent foaf:name ?name .
+
+                    ?entity prov:qualifiedGeneration ?generation .
+
+                    ?generation a ?type .
+                    ?generation prov:atTime ?time .
 
                     OPTIONAL { ?agent art:hasColourCode ?color . }
                 }
@@ -646,11 +658,11 @@ namespace Artivity.Apid.Modules
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?layer ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+                    ?layer ?layerZ ?time ?thumbnailUrl COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
                 WHERE 
                 {
                     {
-                        SELECT ?layer ?generation ?time WHERE
+                        SELECT ?layer COALESCE(?layerZ, 0) AS ?layerZ ?generation ?time WHERE
                         {
                             ?file nfo:fileUrl @fileUrl .
 
@@ -661,17 +673,23 @@ namespace Artivity.Apid.Modules
 
                             ?generation art:selectedLayer ?layer .
                             ?generation prov:atTime ?time .
+
+                            OPTIONAL { ?generation art:layerZPosition ?layerZ . }
                         }
-                        GROUP BY ?layer
+                        GROUP BY ?layerZ
                     }
 
                     ?generation art:thumbnailUrl ?thumbnailUrl .
-                    ?generation art:thumbnailPosition ?rectangle .
 
-                    ?rectangle art:position ?position .
+                    OPTIONAL
+                    {
+                        ?generation art:thumbnailPosition ?rectangle .
 
-                    ?position art:x ?x .
-                    ?position art:y ?y .
+                        ?rectangle art:position ?position .
+
+                        ?position art:x ?x .
+                        ?position art:y ?y .
+                    }
 
                     OPTIONAL
                     {
@@ -698,11 +716,11 @@ namespace Artivity.Apid.Modules
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?layer ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+                    ?layer ?layerZ ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
                 WHERE 
                 {
                     {
-                        SELECT ?layer MAX(?time) AS ?time WHERE
+                        SELECT ?layer ?layerZ MAX(?time) AS ?time WHERE
                         {
                             ?file nfo:fileUrl @fileUrl .
 
@@ -712,11 +730,12 @@ namespace Artivity.Apid.Modules
                             ?entity prov:qualifiedGeneration ?generation .
 
                             ?generation art:selectedLayer ?layer .
+                            ?generation art:layerZPosition ?layerZ .
                             ?generation prov:atTime ?time .
 
                             FILTER(?time <= @time)
                         }
-                        GROUP BY ?layer
+                        GROUP BY ?layerZ
                     }
 
                     ?generation prov:atTime ?time .
@@ -939,7 +958,8 @@ namespace Artivity.Apid.Modules
 
                     ?canvas art:width ?width .
                     ?canvas art:height ?height .
-                    ?canvas art:lengthUnit ?lengthUnit .
+
+                    OPTIONAL { ?canvas art:lengthUnit ?lengthUnit . }
                 }
                 ORDER BY DESC(?startTime) LIMIT 1";
                 
