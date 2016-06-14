@@ -48,7 +48,7 @@ namespace Artivity.DataModel
         public string Photo { get; set; }
 
         [RdfProperty(FOAF.account)]
-        public List<OnlineAccount> Accounts { get; private set; }
+        public List<OnlineAccount> Accounts { get; set; }
 
 		#endregion
 

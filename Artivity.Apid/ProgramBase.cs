@@ -26,12 +26,8 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using Artivity.Api.Plugin;
-using MonoDevelop.MacInterop;
 using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
@@ -40,33 +36,86 @@ namespace Artivity.Apid
     {
         #region Members
 
-        private PluginChecker _pluginChecker;
         private IInstallationWatchdog _watchdog;
+
+        private PluginChecker _pluginChecker;
+
+        protected string[] Args;
+
+        protected Options Options;
+
         protected HttpService Service;
-        protected Options Options = null;
-        protected bool Initialized = false;
-        protected bool overwriteLogging = false;
-        protected string logConfigFile = null;
 
-        protected IPlatformProvider platform;
+        protected bool Initialized;
 
-        // Commandline arguments
-        protected string[] _args;
+        protected bool OverwriteLogging;
+
+        protected string LogConfigFile;
+
+        protected IPlatformProvider Platform;
 
         #endregion
 
-        protected bool InitializeOptions()
+        public ProgramBase()
         {
-            if (Options != null)
-                return true;
-            Options = new Options();
-            bool res = CommandLine.Parser.Default.ParseArguments(_args, Options);
+        }
 
-            if (!res)
+        #region Methods
+
+        protected bool Run()
+        {
+            if (!Initialized && !Initialize())
             {
                 return false;
             }
+
+            Service.Start();
+
             return true;
+        }
+
+        protected bool Initialize()
+        {
+            if (!InitializeOptions())
+            {
+                return false;
+            }
+
+            InitializeLogging();
+
+#if !DEBUG
+            InitializePluginChecker();
+#endif
+
+            InitializeService();
+
+            EnableShutdownOnSigInt();
+
+            Initialized = true;
+
+            return true;
+        }
+
+        protected bool InitializeOptions()
+        {
+            if (Options == null)
+            {
+                Options = new Options();
+
+                return CommandLine.Parser.Default.ParseArguments(Args, Options);
+            }
+
+            return true;
+        }
+
+        protected void InitializePluginChecker()
+        {
+            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(new DirectoryInfo(Platform.PluginDir));
+            _pluginChecker.Check();
+
+            _watchdog = InstallationWatchdogFactory.CreateWatchdog();
+            _watchdog.ProgrammInstalledOrRemoved += (sender, e) => { _pluginChecker.Check(); };
+            _watchdog.Start();
         }
 
         protected void InitializeLogging()
@@ -74,12 +123,17 @@ namespace Artivity.Apid
             bool consoleLogging = true;
 
             string logFile = null;
-            if (overwriteLogging)
-                logFile = logConfigFile;
-            if (Options.LogConfig != null)
-                logFile = Options.LogConfig;
 
-            if(File.Exists(logFile) && !Options.NoLog)
+            if (OverwriteLogging)
+            {
+                logFile = LogConfigFile;
+            }
+            else if (Options.LogConfig != null)
+            {
+                logFile = Options.LogConfig;
+            }
+
+            if (File.Exists(logFile) && !Options.NoLog)
             {
                 try
                 {
@@ -89,15 +143,16 @@ namespace Artivity.Apid
 
                     consoleLogging = false;
                 }
-                catch(Exception)
+                catch (Exception ex)
                 {
+                    Logger.LogError(ex.Message);
                 }
             }
 
             if (consoleLogging)
             {
                 var layout = new log4net.Layout.PatternLayout();
-                layout.ConversionPattern = layout.ConversionPattern = "%date{g} %-5level – %message%newline";
+                layout.ConversionPattern = layout.ConversionPattern = "%date{g} [%-5level] – %message%newline";
                 layout.ActivateOptions();
 
                 var appender = new log4net.Appender.ConsoleAppender();
@@ -108,77 +163,28 @@ namespace Artivity.Apid
             }
         }
 
-        protected void InitializePluginChecker()
-        {
-            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(new DirectoryInfo(platform.PluginDir));
-            _pluginChecker.Check();
-
-            _watchdog = InstallationWatchdogFactory.CreateWatchdog();
-            _watchdog.ProgrammInstalledOrRemoved += OnProgramInstalled;
-            _watchdog.Start();
-        }
-
-        protected bool Initialize()
-        {
-            if (!InitializeOptions())
-                return false;
-
-            InitializeLogging();
-
-
-
-            InitializePluginChecker();
-
-            InitializeService();
-
-            ShutdownOnSIGINT();
-
-            Initialized = true;
-            return true;
-        }
-            
-        protected bool Run()
-        {
-            if (!Initialized)
-            {
-                bool res = Initialize();
-                if( !res)
-                    return false;
-            }
-
-            Service.Start();
-            return true;
-        }
-
         protected void InitializeService()
         {
             Service = new HttpService();
-            Service.PlatformProvider = platform;
+            Service.PlatformProvider = Platform;
             Service.UpdateOntologies = Options.Update;
         }
 
-        protected void ShutdownOnSIGINT()
+        protected void EnableShutdownOnSigInt()
         {
             // Listen to SIGINT for cancelling the daemon.
             Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
-                {
-                    Logger.LogInfo("Received SIGINT. Shutting down.");
+            {
+                Logger.LogInfo("Received SIGINT. Shutting down.");
 
-                    Service.Stop();
-                    #if !DEBUG
-                    StopWatchdog();
-                    #endif
-                };
+                Service.Stop();
+
+#if !DEBUG
+                _watchdog.Stop();
+#endif
+            };
         }
 
-        protected void StopWatchdog()
-        {
-            _watchdog.Stop();
-        }
-
-        private void OnProgramInstalled(object sender, EventArgs entry)
-        {
-            _pluginChecker.Check();
-        }
+        #endregion
     }
 }

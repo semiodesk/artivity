@@ -56,6 +56,8 @@
     <Content Include="app\img\orcid_64x64.png" />
     <EmbeddedResource Include="app\partials\file-view.html" />
     <EmbeddedResource Include="app\partials\error-no-apid-connection.html" />
+    <EmbeddedResource Include="app\js\quantize.js" />
+    <EmbeddedResource Include="app\js\color-thief.min.js" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
     <EmbeddedResource Include="app\js\conf_release.js">
