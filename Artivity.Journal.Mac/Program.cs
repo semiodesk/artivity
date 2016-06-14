@@ -82,7 +82,7 @@ namespace Artivity.Journal.Mac
 
             if (globalAgent.Exists)
             {
-                Console.WriteLine(string.Format("APID LaunchAgent found in {0}", globalApidPath));
+                Console.WriteLine(string.Format("Global launch agent found in {0}", globalApidPath));
 
                 // The plist for a global agent exists, so we assume everything is fine and people know what they are doing...
                 return;
@@ -90,34 +90,50 @@ namespace Artivity.Journal.Mac
 
             FileInfo userAgent = GetLocalPlist();
 
-            if (userAgent.Exists) // TODO: test if newer
+            var current = Environment.CurrentDirectory;
+
+            FileInfo agentFile = new FileInfo(Path.Combine(current, "..", "Resources", "com.semiodesk.artivity.plist"));
+
+            if (userAgent.Exists && userAgent.Length == agentFile.Length)
             {
-                Console.WriteLine(string.Format("APID launch agent found in {0}", userAgent.FullName));
+                Console.WriteLine(string.Format("Existing launch agent found in {0}", userAgent.FullName));
             }
             else
             {
-                Console.WriteLine(string.Format("No APID launch agent found in {0}", userAgent.FullName));
+                Process process;
 
-                var current = Environment.CurrentDirectory;
+                if (!userAgent.Exists)
+                {
+                    Console.WriteLine(string.Format("Creating launch agent in {0}", userAgent.FullName));
+                }
+                else
+                {
+                    Console.WriteLine(string.Format("Replacing launch agent in {0}", userAgent.FullName));
 
-                FileInfo agentFile = new FileInfo(Path.Combine(current, "..", "Resources", "com.semiodesk.artivity.plist"));
+                    process = new Process();
+                    process.StartInfo.FileName = "/bin/bash";
+                    process.StartInfo.Arguments = string.Format("-c \"launchctl unload {0}\"", userAgent.FullName);
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.Start();
+
+                    Console.WriteLine(string.Format("Unloaded launch agent: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
+                }
 
                 var text = File.ReadAllText(agentFile.FullName);
 
                 DirectoryInfo contentPath = new DirectoryInfo(Path.Combine(current, ".."));
 
-                Console.WriteLine(string.Format("Creating launch agent for APID in {0}", userAgent.FullName));
-
                 File.WriteAllText(userAgent.FullName, string.Format(text, contentPath.FullName));
 
-                Process process = new Process();
+                process = new Process();
                 process.StartInfo.FileName = "/bin/bash";
                 process.StartInfo.Arguments = string.Format("-c \"launchctl bootstrap gui/$UID {0}\"", userAgent.FullName);
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.Start();
 
-                Console.WriteLine(string.Format("Started APID: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
+                Console.WriteLine(string.Format("Bootstrapped launch agent: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
             }
         }
 
