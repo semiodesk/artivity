@@ -38,9 +38,10 @@ namespace Artivity.Api.Plugin
 {
     public abstract class PluginChecker
     {
-
         #region Members
         List<PluginManifest> _manifests = new List<PluginManifest>();
+        List<string> _errorManifests = new List<string>();
+        public List<SoftwareAgentPlugin> Plugins { get; private set;}
 
         private static log4net.ILog _logger;
         private static log4net.ILog Logger
@@ -55,12 +56,15 @@ namespace Artivity.Api.Plugin
                 return _logger;
             }
         }
-            
+
+        private DirectoryInfo _pluginDir;
         #endregion
 
         #region Constructor
-        public PluginChecker()
+        public PluginChecker(DirectoryInfo pluginDir)
         {
+            _pluginDir = pluginDir;
+            Plugins = new List<SoftwareAgentPlugin>();
             LoadManifests();
         }
         #endregion
@@ -69,82 +73,133 @@ namespace Artivity.Api.Plugin
 
         private void LoadManifests()
         {
-            string dirString = Path.Combine(Environment.CurrentDirectory, "Plugins");
-            DirectoryInfo dir = new DirectoryInfo(dirString);
-            if (dir == null || !dir.Exists)
+            if (_pluginDir == null || !_pluginDir.Exists)
             {
-                Logger.ErrorFormat("Could not find plugin directory \"{0}\"", dirString);
+                Logger.ErrorFormat("Could not find plugin directory \"{0}\"", _pluginDir);
                 return;
             }
 
-            foreach (var plugin in dir.EnumerateDirectories())
+            foreach (var plugin in _pluginDir.EnumerateDirectories())
             {
+
                 var manifest = PluginManifestReader.ReadManifest(plugin);
                 if (manifest != null)
+                {
                     _manifests.Add(manifest);
+                    Plugins.Add(new SoftwareAgentPlugin(manifest));
+                }
                 else
+                {
+                    _errorManifests.Add(plugin.FullName);
                     Logger.ErrorFormat("Directory {0} did not contain valid manifest.", plugin.FullName);
+                }
             }
         }
 
-        public void Check()
+        public void Check(bool autoInstall = false)
         {
-            foreach (var man in _manifests)
+            foreach (var p in Plugins)
             {
-                bool? res = IsPluginInstalled(man);
-                if (res.HasValue && !res.Value)
+                bool? res = IsPluginInstalled(p);
+                if (res.HasValue)
                 {
-                    InstallPlugin(man);
+                    p.IsInstalled = res.Value;
+                    p.IsSoftwareInstalled = true;
+
+                    if (!p.IsInstalled && autoInstall)
+                        InstallPlugin(p.Manifest);
+                }
+                else
+                {
+                    p.IsSoftwareInstalled = false;
                 }
             }
         }
 
         protected abstract DirectoryInfo GetApplicationLocation (PluginManifest manifest);
         protected abstract void CreateLink (string target, string source);
+        protected abstract string GetApplicationVersion(FileSystemInfo app);
 
-        protected bool? IsPluginInstalled (PluginManifest manifest)
+        public bool? IsPluginInstalled(SoftwareAgentPlugin plugin)
+        {
+            return IsPluginInstalled(plugin.Manifest);
+        }
+
+        public bool? IsPluginInstalled (PluginManifest manifest)
         {
             DirectoryInfo location = GetApplicationLocation (manifest);
             if(location != null && location.Exists)
             {
-                var pluginPath = Path.Combine(location.FullName, manifest.TargetPath, manifest.PluginFile.GetName());
-                return File.Exists(pluginPath) || Directory.Exists(pluginPath);
+                FileSystemInfo info;
+                if (!string.IsNullOrEmpty(manifest.ExecPath))
+                    info = new FileInfo(Path.Combine(location.FullName, manifest.ExecPath));
+                else
+                    info = location;
+                var version = GetApplicationVersion(info);
+                if (version != manifest.HostVersion)
+                    return null;
+
+                bool exists = true;
+                foreach (var pluginFile in manifest.PluginFile)
+                {
+                    var pluginPath = Path.Combine(location.FullName, manifest.TargetPath, pluginFile.GetName());
+                    exists = exists && ( File.Exists(pluginPath) || Directory.Exists(pluginPath) );
+                }
+                return exists;
+
             }
             return null;
         }
 
+        public bool InstallPlugin(SoftwareAgentPlugin plugin)
+        {
+            return InstallPlugin(plugin.Manifest);
+        }
 
-        protected void InstallPlugin (PluginManifest manifest)
+        public bool InstallPlugin(PluginManifest manifest)
         {
             DirectoryInfo location = GetApplicationLocation (manifest);
             if (location != null && location.Exists)
             {
-                var pluginPath = Path.Combine(location.FullName, manifest.TargetPath, manifest.PluginFile.GetName());
-                string source = manifest.GetPluginSource();
-                if (File.Exists(source) || Directory.Exists(source))
+                foreach (var pluginFile in manifest.PluginFile)
                 {
-                    if (manifest.PluginFile.Link)
+                    var pluginPath = Path.Combine(location.FullName, manifest.TargetPath, pluginFile.GetName());
+                    string source = pluginFile.GetPluginSource(manifest);
+                    if (File.Exists(source) || Directory.Exists(source))
                     {
-                        CreateLink(pluginPath, source);
-                    }
-                    else
-                    {
-                        File.Copy(source, pluginPath);
+                        if (pluginFile.Link)
+                        {
+                            CreateLink(pluginPath, source);
+                        }
+                        else
+                        {
+                            File.Copy(source, pluginPath);
+                        }
                     }
                 }
+                return true;
             }
+            return false;
+        }
+
+        public bool InstallPlugin(string uri)
+        {
+            var p = Plugins.First((x) => x.Uri == uri);
+            if (p != null)
+                return InstallPlugin(p);
+            return false;
         }
         #endregion
     }
 
     public class PluginCheckerFactory
     {
-        public static PluginChecker CreatePluginChecker()
+        public static PluginChecker CreatePluginChecker(DirectoryInfo dir)
         {
             #if WIN
-            return new Artivity.Api.Plugin.Win.WinPluginChecker();
+            return new Artivity.Api.Plugin.Win.WinPluginChecker(dir);
             #elif OSX
-            return new Artivity.Api.Plugin.OSX.OsxPluginChecker();
+            return new Artivity.Api.Plugin.OSX.OsxPluginChecker(dir);
             #endif
         }
     }

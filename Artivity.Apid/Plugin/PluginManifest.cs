@@ -55,13 +55,17 @@ namespace Artivity.Api.Plugin
 
         private string targetFilterName;
 
-        private decimal versionField;
+        private string versionField;
 
         private string hostVersionField;
 
         private byte archField;
 
-        private PluginManifestPluginFile pluginFileField;
+        private string uri;
+
+        private string execPath;
+
+        private List<PluginManifestPluginFile> pluginFileField = new List<PluginManifestPluginFile>();
 
         /// <remarks/>
         public string DisplayName
@@ -89,7 +93,11 @@ namespace Artivity.Api.Plugin
             }
         }
 
-        /// <remarks/>
+        /// <summary>
+        /// This is the ID of a software. 
+        /// Windows:
+        /// Here we look for this id in the registry
+        /// </summary>
         public string ID
         {
             get
@@ -142,7 +150,7 @@ namespace Artivity.Api.Plugin
         }
             
         /// <remarks/>
-        public decimal Version
+        public string Version
         {
             get
             {
@@ -180,8 +188,33 @@ namespace Artivity.Api.Plugin
             }
         }
 
+        public string Uri
+        {
+            get
+            {
+                return this.uri;
+            }
+            set
+            {
+                this.uri = value;
+            }
+        }
+
+        public string ExecPath
+        {
+            get
+            {
+                return this.execPath;
+            }
+            set
+            {
+                this.execPath = value;
+            }
+        }
+
         /// <remarks/>
-        public PluginManifestPluginFile PluginFile
+        [XmlElement("PluginFile")]
+        public List<PluginManifestPluginFile> PluginFile
         {
             get
             {
@@ -191,11 +224,6 @@ namespace Artivity.Api.Plugin
             {
                 this.pluginFileField = value;
             }
-        }
-
-        public string GetPluginSource()
-        {
-            return Path.Combine(ManifestFile.Directory.FullName, PluginFile.Value);
         }
     }
 
@@ -244,6 +272,11 @@ namespace Artivity.Api.Plugin
             else
             #endif
                 return Value;
+        }
+
+        public string GetPluginSource(PluginManifest manifest)
+        {
+            return Path.Combine(manifest.ManifestFile.Directory.FullName, Value);
         }
     }
 

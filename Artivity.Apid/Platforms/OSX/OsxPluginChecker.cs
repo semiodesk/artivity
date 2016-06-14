@@ -29,11 +29,16 @@ using MonoDevelop.MacInterop;
 using System.IO;
 using System.Linq;
 using Mono.Unix;
+using System.Diagnostics;
 
 namespace Artivity.Api.Plugin.OSX
 {
     public class OsxPluginChecker : PluginChecker
     {
+        public OsxPluginChecker(DirectoryInfo dir)
+            : base(dir)
+        {
+        }
 
         protected override DirectoryInfo GetApplicationLocation (PluginManifest manifest)
         {
@@ -50,6 +55,21 @@ namespace Artivity.Api.Plugin.OSX
         {
             UnixFileInfo f = new UnixFileInfo (source);
             f.CreateSymbolicLink (target);
+        }
+
+        protected override string GetApplicationVersion(FileSystemInfo app)
+        {
+            string res = null;
+
+            if (app is FileInfo)
+            {
+                var fi = app as FileInfo;
+                var info = FileVersionInfo.GetVersionInfo(fi.FullName);
+            }
+
+
+            return res;
+
         }
     }
 }
