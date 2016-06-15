@@ -113,7 +113,7 @@ namespace artivity
         bool connected();
         
         // Indicates if there are any activities in the log.
-        bool empty() { return _activities != NULL; }
+        bool empty() { if (_activities) return false; else return true; }
         
         void clear();
 
