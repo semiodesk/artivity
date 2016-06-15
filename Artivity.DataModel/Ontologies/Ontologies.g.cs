@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 03.06.2016 12:07:21
+// Date: 07.06.2016 11:19:36
 
 using System;
 using System.Collections.Generic;
@@ -7249,9 +7249,751 @@ public static class NFO
 ///
 ///
 ///</summary>
+public class geo : Ontology
+{
+    public static readonly Uri Namespace = new Uri("http://www.opengis.net/ont/geosparql#");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "geo";
+    public static string GetPrefix() { return Prefix; }     
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.opengis.net/ont/geosparql"/>
+    ///</summary>
+    public static readonly Resource geosparql = new Resource(new Uri("http://www.opengis.net/ont/geosparql"));    
+
+    ///<summary>
+    ///(
+    ///      A Well-known Text serialization of a geometry object.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#wktLiteral"/>
+    ///</summary>
+    public static readonly Resource wktLiteral = new Resource(new Uri("http://www.opengis.net/ont/geosparql#wktLiteral"));    
+
+    ///<summary>
+    ///(
+    ///      A GML serialization of a geometry object.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#gmlLiteral"/>
+    ///</summary>
+    public static readonly Resource gmlLiteral = new Resource(new Uri("http://www.opengis.net/ont/geosparql#gmlLiteral"));    
+
+    ///<summary>
+    ///(
+    ///      The class spatial-object represents everything that can have 
+    ///      a spatial representation. It is superclass of feature and geometry.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#SpatialObject"/>
+    ///</summary>
+    public static readonly Class SpatialObject = new Class(new Uri("http://www.opengis.net/ont/geosparql#SpatialObject"));    
+
+    ///<summary>
+    ///(
+    ///      The class represents the top-level geometry type. This class is 
+    ///      equivalent to the UML class GM_Object defined in ISO 19107, and 
+    ///      it is superclass of all geometry types.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#Geometry"/>
+    ///</summary>
+    public static readonly Class Geometry = new Class(new Uri("http://www.opengis.net/ont/geosparql#Geometry"));    
+
+    ///<summary>
+    ///(
+    ///      This class represents the top-level feature type. This class is 
+    ///      equivalent to GFI_Feature defined in ISO 19156:2011, and it is 
+    ///      superclass of all feature types.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#Feature"/>
+    ///</summary>
+    public static readonly Class Feature = new Class(new Uri("http://www.opengis.net/ont/geosparql#Feature"));    
+
+    ///<summary>
+    ///(
+    ///      The default geometry to be used in spatial calculations.
+    ///      It is Usually the most detailed geometry.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#defaultGeometry"/>
+    ///</summary>
+    public static readonly Property defaultGeometry = new Property(new Uri("http://www.opengis.net/ont/geosparql#defaultGeometry"));    
+
+    ///<summary>
+    ///(
+    ///      A spatial representation for a given feature.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#hasGeometry"/>
+    ///</summary>
+    public static readonly Property hasGeometry = new Property(new Uri("http://www.opengis.net/ont/geosparql#hasGeometry"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially disjoint
+    ///      from the object SpatialObject. DE-9IM: FF*FF****
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehDisjoint"/>
+    ///</summary>
+    public static readonly Property ehDisjoint = new Property(new Uri("http://www.opengis.net/ont/geosparql#ehDisjoint"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially inside 
+    ///      the object SpatialObject. DE-9IM: TFFTFFTTT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8ntpp"/>
+    ///</summary>
+    public static readonly Property rcc8ntpp = new Property(new Uri("http://www.opengis.net/ont/geosparql#rcc8ntpp"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially contains the 
+    ///      object SpatialObject. DE-9IM: T*TFF*FF*
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehContains"/>
+    ///</summary>
+    public static readonly Property ehContains = new Property(new Uri("http://www.opengis.net/ont/geosparql#ehContains"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially covers the 
+    ///      object SpatialObject. DE-9IM: TTTFTTFFT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8tppi"/>
+    ///</summary>
+    public static readonly Property rcc8tppi = new Property(new Uri("http://www.opengis.net/ont/geosparql#rcc8tppi"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially meets the 
+    ///      object SpatialObject. DE-9IM: FFTFTTTTT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8ec"/>
+    ///</summary>
+    public static readonly Property rcc8ec = new Property(new Uri("http://www.opengis.net/ont/geosparql#rcc8ec"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially equals the 
+    ///      object SpatialObject. DE-9IM: TFFFTFFFT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfEquals"/>
+    ///</summary>
+    public static readonly Property sfEquals = new Property(new Uri("http://www.opengis.net/ont/geosparql#sfEquals"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially overlaps the 
+    ///      object SpatialObject. DE-9IM: T*T***T**
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehOverlap"/>
+    ///</summary>
+    public static readonly Property ehOverlap = new Property(new Uri("http://www.opengis.net/ont/geosparql#ehOverlap"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially disjoint
+    ///      from the object SpatialObject. DE-9IM: FFTFFTTTT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8dc"/>
+    ///</summary>
+    public static readonly Property rcc8dc = new Property(new Uri("http://www.opengis.net/ont/geosparql#rcc8dc"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially covers the 
+    ///      object SpatialObject. DE-9IM: T*TFT*FF*
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehCovers"/>
+    ///</summary>
+    public static readonly Property ehCovers = new Property(new Uri("http://www.opengis.net/ont/geosparql#ehCovers"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially covered 
+    ///      by the object SpatialObject. DE-9IM: TFF*TFT**
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehCoveredBy"/>
+    ///</summary>
+    public static readonly Property ehCoveredBy = new Property(new Uri("http://www.opengis.net/ont/geosparql#ehCoveredBy"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially contains the 
+    ///      object SpatialObject. DE-9IM: T*****FF*
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfContains"/>
+    ///</summary>
+    public static readonly Property sfContains = new Property(new Uri("http://www.opengis.net/ont/geosparql#sfContains"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially covered 
+    ///      by the object SpatialObject. DE-9IM: TFFTTFTTT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8tpp"/>
+    ///</summary>
+    public static readonly Property rcc8tpp = new Property(new Uri("http://www.opengis.net/ont/geosparql#rcc8tpp"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially equals the 
+    ///      object SpatialObject. DE-9IM: TFFFTFFFT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehEquals"/>
+    ///</summary>
+    public static readonly Property ehEquals = new Property(new Uri("http://www.opengis.net/ont/geosparql#ehEquals"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially overlaps the 
+    ///      object SpatialObject. DE-9IM: TTTTTTTTT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8po"/>
+    ///</summary>
+    public static readonly Property rcc8po = new Property(new Uri("http://www.opengis.net/ont/geosparql#rcc8po"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially overlaps the 
+    ///      object SpatialObject. DE-9IM: T*T***T** 
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfOverlaps"/>
+    ///</summary>
+    public static readonly Property sfOverlaps = new Property(new Uri("http://www.opengis.net/ont/geosparql#sfOverlaps"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially within the 
+    ///      object SpatialObject. DE-9IM: T*F**F***
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfWithin"/>
+    ///</summary>
+    public static readonly Property sfWithin = new Property(new Uri("http://www.opengis.net/ont/geosparql#sfWithin"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially touches the 
+    ///      object SpatialObject.
+    ///      DE-9IM: FT******* ^ F**T***** ^ F***T****
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfTouches"/>
+    ///</summary>
+    public static readonly Property sfTouches = new Property(new Uri("http://www.opengis.net/ont/geosparql#sfTouches"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is not spatially disjoint 
+    ///      from the object SpatialObject.
+    ///      DE-9IM: T******** ^ *T******* ^ ***T***** ^ ****T**** 
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfIntersects"/>
+    ///</summary>
+    public static readonly Property sfIntersects = new Property(new Uri("http://www.opengis.net/ont/geosparql#sfIntersects"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially crosses the 
+    ///      object SpatialObject. DE-9IM: T*T******
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfCrosses"/>
+    ///</summary>
+    public static readonly Property sfCrosses = new Property(new Uri("http://www.opengis.net/ont/geosparql#sfCrosses"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially contains the 
+    ///      object SpatialObject. DE-9IM: TTTFFTFFT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8ntppi"/>
+    ///</summary>
+    public static readonly Property rcc8ntppi = new Property(new Uri("http://www.opengis.net/ont/geosparql#rcc8ntppi"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially equals the 
+    ///      object SpatialObject. DE-9IM: TFFFTFFFT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8eq"/>
+    ///</summary>
+    public static readonly Property rcc8eq = new Property(new Uri("http://www.opengis.net/ont/geosparql#rcc8eq"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially meets the 
+    ///      object SpatialObject. 
+    ///      DE-9IM: FT******* ^ F**T***** ^ F***T****
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehMeet"/>
+    ///</summary>
+    public static readonly Property ehMeet = new Property(new Uri("http://www.opengis.net/ont/geosparql#ehMeet"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially disjoint 
+    ///      from the object SpatialObject. DE-9IM: FF*FF****
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfDisjoint"/>
+    ///</summary>
+    public static readonly Property sfDisjoint = new Property(new Uri("http://www.opengis.net/ont/geosparql#sfDisjoint"));    
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially inside 
+    ///      the object SpatialObject. DE-9IM: TFF*FFT**
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehInside"/>
+    ///</summary>
+    public static readonly Property ehInside = new Property(new Uri("http://www.opengis.net/ont/geosparql#ehInside"));    
+
+    ///<summary>
+    ///(
+    ///      The number of measurements or axes needed to describe the spatial position of 
+    ///      this geometry in a coordinate system.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#spatialDimension"/>
+    ///</summary>
+    public static readonly Property spatialDimension = new Property(new Uri("http://www.opengis.net/ont/geosparql#spatialDimension"));    
+
+    ///<summary>
+    ///(
+    ///      (true) if this geometric object is the empty Geometry. If 
+    ///      true, then this geometric object represents the empty point 
+    ///      set for the coordinate space.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#isEmpty"/>
+    ///</summary>
+    public static readonly Property isEmpty = new Property(new Uri("http://www.opengis.net/ont/geosparql#isEmpty"));    
+
+    ///<summary>
+    ///(
+    ///      The number of measurements or axes needed to describe the position of this
+    ///      geometry in a coordinate system.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#coordinateDimension"/>
+    ///</summary>
+    public static readonly Property coordinateDimension = new Property(new Uri("http://www.opengis.net/ont/geosparql#coordinateDimension"));    
+
+    ///<summary>
+    ///(
+    ///      The WKT serialization of a geometry
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#asWKT"/>
+    ///</summary>
+    public static readonly Property asWKT = new Property(new Uri("http://www.opengis.net/ont/geosparql#asWKT"));    
+
+    ///<summary>
+    ///(
+    ///      Connects a geometry object with its text-based serialization.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#hasSerialization"/>
+    ///</summary>
+    public static readonly Property hasSerialization = new Property(new Uri("http://www.opengis.net/ont/geosparql#hasSerialization"));    
+
+    ///<summary>
+    ///(
+    ///      The GML serialization of a geometry
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#asGML"/>
+    ///</summary>
+    public static readonly Property asGML = new Property(new Uri("http://www.opengis.net/ont/geosparql#asGML"));    
+
+    ///<summary>
+    ///(
+    ///      (true) if this geometric object has no anomalous geometric 
+    ///      points, such as self intersection or self tangency.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#isSimple"/>
+    ///</summary>
+    public static readonly Property isSimple = new Property(new Uri("http://www.opengis.net/ont/geosparql#isSimple"));    
+
+    ///<summary>
+    ///(
+    ///      The topological dimension of this geometric object, which 
+    ///      must be less than or equal to the coordinate dimension. 
+    ///      In non-homogeneous collections, this will return the largest 
+    ///      topological dimension of the contained objects.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#dimension"/>
+    ///</summary>
+    public static readonly Property dimension = new Property(new Uri("http://www.opengis.net/ont/geosparql#dimension"));
+}
+///<summary>
+///
+///
+///</summary>
+public static class GEO
+{
+    public static readonly Uri Namespace = new Uri("http://www.opengis.net/ont/geosparql#");
+    public static Uri GetNamespace() { return Namespace; }
+    
+    public static readonly string Prefix = "GEO";
+    public static string GetPrefix() { return Prefix; } 
+
+    ///<summary>
+    ///
+    ///<see cref="http://www.opengis.net/ont/geosparql"/>
+    ///</summary>
+    public const string geosparql = "http://www.opengis.net/ont/geosparql";
+
+    ///<summary>
+    ///(
+    ///      A Well-known Text serialization of a geometry object.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#wktLiteral"/>
+    ///</summary>
+    public const string wktLiteral = "http://www.opengis.net/ont/geosparql#wktLiteral";
+
+    ///<summary>
+    ///(
+    ///      A GML serialization of a geometry object.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#gmlLiteral"/>
+    ///</summary>
+    public const string gmlLiteral = "http://www.opengis.net/ont/geosparql#gmlLiteral";
+
+    ///<summary>
+    ///(
+    ///      The class spatial-object represents everything that can have 
+    ///      a spatial representation. It is superclass of feature and geometry.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#SpatialObject"/>
+    ///</summary>
+    public const string SpatialObject = "http://www.opengis.net/ont/geosparql#SpatialObject";
+
+    ///<summary>
+    ///(
+    ///      The class represents the top-level geometry type. This class is 
+    ///      equivalent to the UML class GM_Object defined in ISO 19107, and 
+    ///      it is superclass of all geometry types.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#Geometry"/>
+    ///</summary>
+    public const string Geometry = "http://www.opengis.net/ont/geosparql#Geometry";
+
+    ///<summary>
+    ///(
+    ///      This class represents the top-level feature type. This class is 
+    ///      equivalent to GFI_Feature defined in ISO 19156:2011, and it is 
+    ///      superclass of all feature types.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#Feature"/>
+    ///</summary>
+    public const string Feature = "http://www.opengis.net/ont/geosparql#Feature";
+
+    ///<summary>
+    ///(
+    ///      The default geometry to be used in spatial calculations.
+    ///      It is Usually the most detailed geometry.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#defaultGeometry"/>
+    ///</summary>
+    public const string defaultGeometry = "http://www.opengis.net/ont/geosparql#defaultGeometry";
+
+    ///<summary>
+    ///(
+    ///      A spatial representation for a given feature.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#hasGeometry"/>
+    ///</summary>
+    public const string hasGeometry = "http://www.opengis.net/ont/geosparql#hasGeometry";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially disjoint
+    ///      from the object SpatialObject. DE-9IM: FF*FF****
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehDisjoint"/>
+    ///</summary>
+    public const string ehDisjoint = "http://www.opengis.net/ont/geosparql#ehDisjoint";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially inside 
+    ///      the object SpatialObject. DE-9IM: TFFTFFTTT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8ntpp"/>
+    ///</summary>
+    public const string rcc8ntpp = "http://www.opengis.net/ont/geosparql#rcc8ntpp";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially contains the 
+    ///      object SpatialObject. DE-9IM: T*TFF*FF*
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehContains"/>
+    ///</summary>
+    public const string ehContains = "http://www.opengis.net/ont/geosparql#ehContains";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially covers the 
+    ///      object SpatialObject. DE-9IM: TTTFTTFFT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8tppi"/>
+    ///</summary>
+    public const string rcc8tppi = "http://www.opengis.net/ont/geosparql#rcc8tppi";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially meets the 
+    ///      object SpatialObject. DE-9IM: FFTFTTTTT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8ec"/>
+    ///</summary>
+    public const string rcc8ec = "http://www.opengis.net/ont/geosparql#rcc8ec";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially equals the 
+    ///      object SpatialObject. DE-9IM: TFFFTFFFT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfEquals"/>
+    ///</summary>
+    public const string sfEquals = "http://www.opengis.net/ont/geosparql#sfEquals";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially overlaps the 
+    ///      object SpatialObject. DE-9IM: T*T***T**
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehOverlap"/>
+    ///</summary>
+    public const string ehOverlap = "http://www.opengis.net/ont/geosparql#ehOverlap";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially disjoint
+    ///      from the object SpatialObject. DE-9IM: FFTFFTTTT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8dc"/>
+    ///</summary>
+    public const string rcc8dc = "http://www.opengis.net/ont/geosparql#rcc8dc";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially covers the 
+    ///      object SpatialObject. DE-9IM: T*TFT*FF*
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehCovers"/>
+    ///</summary>
+    public const string ehCovers = "http://www.opengis.net/ont/geosparql#ehCovers";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially covered 
+    ///      by the object SpatialObject. DE-9IM: TFF*TFT**
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehCoveredBy"/>
+    ///</summary>
+    public const string ehCoveredBy = "http://www.opengis.net/ont/geosparql#ehCoveredBy";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially contains the 
+    ///      object SpatialObject. DE-9IM: T*****FF*
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfContains"/>
+    ///</summary>
+    public const string sfContains = "http://www.opengis.net/ont/geosparql#sfContains";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially covered 
+    ///      by the object SpatialObject. DE-9IM: TFFTTFTTT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8tpp"/>
+    ///</summary>
+    public const string rcc8tpp = "http://www.opengis.net/ont/geosparql#rcc8tpp";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially equals the 
+    ///      object SpatialObject. DE-9IM: TFFFTFFFT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehEquals"/>
+    ///</summary>
+    public const string ehEquals = "http://www.opengis.net/ont/geosparql#ehEquals";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially overlaps the 
+    ///      object SpatialObject. DE-9IM: TTTTTTTTT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8po"/>
+    ///</summary>
+    public const string rcc8po = "http://www.opengis.net/ont/geosparql#rcc8po";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially overlaps the 
+    ///      object SpatialObject. DE-9IM: T*T***T** 
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfOverlaps"/>
+    ///</summary>
+    public const string sfOverlaps = "http://www.opengis.net/ont/geosparql#sfOverlaps";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially within the 
+    ///      object SpatialObject. DE-9IM: T*F**F***
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfWithin"/>
+    ///</summary>
+    public const string sfWithin = "http://www.opengis.net/ont/geosparql#sfWithin";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially touches the 
+    ///      object SpatialObject.
+    ///      DE-9IM: FT******* ^ F**T***** ^ F***T****
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfTouches"/>
+    ///</summary>
+    public const string sfTouches = "http://www.opengis.net/ont/geosparql#sfTouches";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is not spatially disjoint 
+    ///      from the object SpatialObject.
+    ///      DE-9IM: T******** ^ *T******* ^ ***T***** ^ ****T**** 
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfIntersects"/>
+    ///</summary>
+    public const string sfIntersects = "http://www.opengis.net/ont/geosparql#sfIntersects";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially crosses the 
+    ///      object SpatialObject. DE-9IM: T*T******
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfCrosses"/>
+    ///</summary>
+    public const string sfCrosses = "http://www.opengis.net/ont/geosparql#sfCrosses";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially contains the 
+    ///      object SpatialObject. DE-9IM: TTTFFTFFT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8ntppi"/>
+    ///</summary>
+    public const string rcc8ntppi = "http://www.opengis.net/ont/geosparql#rcc8ntppi";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially equals the 
+    ///      object SpatialObject. DE-9IM: TFFFTFFFT
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#rcc8eq"/>
+    ///</summary>
+    public const string rcc8eq = "http://www.opengis.net/ont/geosparql#rcc8eq";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject spatially meets the 
+    ///      object SpatialObject. 
+    ///      DE-9IM: FT******* ^ F**T***** ^ F***T****
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehMeet"/>
+    ///</summary>
+    public const string ehMeet = "http://www.opengis.net/ont/geosparql#ehMeet";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially disjoint 
+    ///      from the object SpatialObject. DE-9IM: FF*FF****
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#sfDisjoint"/>
+    ///</summary>
+    public const string sfDisjoint = "http://www.opengis.net/ont/geosparql#sfDisjoint";
+
+    ///<summary>
+    ///(
+    ///      Exists if the subject SpatialObject is spatially inside 
+    ///      the object SpatialObject. DE-9IM: TFF*FFT**
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#ehInside"/>
+    ///</summary>
+    public const string ehInside = "http://www.opengis.net/ont/geosparql#ehInside";
+
+    ///<summary>
+    ///(
+    ///      The number of measurements or axes needed to describe the spatial position of 
+    ///      this geometry in a coordinate system.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#spatialDimension"/>
+    ///</summary>
+    public const string spatialDimension = "http://www.opengis.net/ont/geosparql#spatialDimension";
+
+    ///<summary>
+    ///(
+    ///      (true) if this geometric object is the empty Geometry. If 
+    ///      true, then this geometric object represents the empty point 
+    ///      set for the coordinate space.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#isEmpty"/>
+    ///</summary>
+    public const string isEmpty = "http://www.opengis.net/ont/geosparql#isEmpty";
+
+    ///<summary>
+    ///(
+    ///      The number of measurements or axes needed to describe the position of this
+    ///      geometry in a coordinate system.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#coordinateDimension"/>
+    ///</summary>
+    public const string coordinateDimension = "http://www.opengis.net/ont/geosparql#coordinateDimension";
+
+    ///<summary>
+    ///(
+    ///      The WKT serialization of a geometry
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#asWKT"/>
+    ///</summary>
+    public const string asWKT = "http://www.opengis.net/ont/geosparql#asWKT";
+
+    ///<summary>
+    ///(
+    ///      Connects a geometry object with its text-based serialization.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#hasSerialization"/>
+    ///</summary>
+    public const string hasSerialization = "http://www.opengis.net/ont/geosparql#hasSerialization";
+
+    ///<summary>
+    ///(
+    ///      The GML serialization of a geometry
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#asGML"/>
+    ///</summary>
+    public const string asGML = "http://www.opengis.net/ont/geosparql#asGML";
+
+    ///<summary>
+    ///(
+    ///      (true) if this geometric object has no anomalous geometric 
+    ///      points, such as self intersection or self tangency.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#isSimple"/>
+    ///</summary>
+    public const string isSimple = "http://www.opengis.net/ont/geosparql#isSimple";
+
+    ///<summary>
+    ///(
+    ///      The topological dimension of this geometric object, which 
+    ///      must be less than or equal to the coordinate dimension. 
+    ///      In non-homogeneous collections, this will return the largest 
+    ///      topological dimension of the contained objects.
+    ///    , en)
+    ///<see cref="http://www.opengis.net/ont/geosparql#dimension"/>
+    ///</summary>
+    public const string dimension = "http://www.opengis.net/ont/geosparql#dimension";
+}
+///<summary>
+///
+///
+///</summary>
 public class art : Ontology
 {
-    public static readonly Uri Namespace = new Uri("http://semiodesk.com/artivity/1.0/");
+    public static readonly Uri Namespace = new Uri("http://w3id.org/art/terms/1.0/");
     public static Uri GetNamespace() { return Namespace; }
     
     public static readonly string Prefix = "art";
@@ -7259,375 +8001,345 @@ public class art : Ontology
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/"/>
     ///</summary>
-    public static readonly Resource _1_0 = new Resource(new Uri("http://semiodesk.com/artivity/1.0/"));    
+    public static readonly Resource _1_0 = new Resource(new Uri("http://w3id.org/art/terms/1.0/"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Database"/>
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#VectorImage"/>
     ///</summary>
-    public static readonly Class Database = new Class(new Uri("http://semiodesk.com/artivity/1.0/Database"));    
+    public static readonly Resource VectorImage = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#VectorImage"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/isMonitoringEnabled"/>
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage"/>
     ///</summary>
-    public static readonly Property isMonitoringEnabled = new Property(new Uri("http://semiodesk.com/artivity/1.0/isMonitoringEnabled"));    
+    public static readonly Resource RasterImage = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadState"/>
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Website"/>
     ///</summary>
-    public static readonly Property hadState = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadState"));    
+    public static readonly Resource Website = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Website"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/DatabaseState"/>
+    ///(An expression of the maximum extents of rdf:type 2-dimensional object (e.g. point, line, polygon) or set of objects within their 2-D coordinate system. In other words min(x), max(x), min(y), max(y)., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/BoundingRectangle"/>
     ///</summary>
-    public static readonly Class DatabaseState = new Class(new Uri("http://semiodesk.com/artivity/1.0/DatabaseState"));    
+    public static readonly Class BoundingRectangle = new Class(new Uri("http://w3id.org/art/terms/1.0/BoundingRectangle"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/atTime"/>
+    ///(An entity that defines the 2-dimensional extents of the printable or renderable region(s) of rdf:type document., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Canvas"/>
     ///</summary>
-    public static readonly Property atTime = new Property(new Uri("http://semiodesk.com/artivity/1.0/atTime"));    
+    public static readonly Class Canvas = new Class(new Uri("http://w3id.org/art/terms/1.0/Canvas"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/factsCount"/>
+    ///(A coordinate system that specifies each point uniquely using n Cartesian coordinates which specify the point in an n-dimensional Euclidean space for any dimension n. These coordinates are equal, up to sign, to distances from the point to n mutually perpendicular hyperplanes., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/CartesianCoordinateSystem"/>
     ///</summary>
-    public static readonly Property factsCount = new Property(new Uri("http://semiodesk.com/artivity/1.0/factsCount"));    
+    public static readonly Class CartesianCoordinateSystem = new Class(new Uri("http://w3id.org/art/terms/1.0/CartesianCoordinateSystem"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Browse"/>
+    ///(A system which uses one or more numbers (coordinates) to uniquely determine the position of rdf:type point or other geometric element on rdf:type manifold such as Euclidean space., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/CoordinateSystem"/>
     ///</summary>
-    public static readonly Class Browse = new Class(new Uri("http://semiodesk.com/artivity/1.0/Browse"));    
+    public static readonly Class CoordinateSystem = new Class(new Uri("http://w3id.org/art/terms/1.0/CoordinateSystem"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CreateFile"/>
+    ///(An activity which resulted in rdf:type new file being generated., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/CreateFile"/>
     ///</summary>
-    public static readonly Class CreateFile = new Class(new Uri("http://semiodesk.com/artivity/1.0/CreateFile"));    
+    public static readonly Class CreateFile = new Class(new Uri("http://w3id.org/art/terms/1.0/CreateFile"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/DeleteFile"/>
+    ///(An activity which may result in an existing file being revised and/or modified., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/EditFile"/>
     ///</summary>
-    public static readonly Class DeleteFile = new Class(new Uri("http://semiodesk.com/artivity/1.0/DeleteFile"));    
+    public static readonly Class EditFile = new Class(new Uri("http://w3id.org/art/terms/1.0/EditFile"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/EditFile"/>
+    ///(An activity which resulted in an existing file being deleted., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/DeleteFile"/>
     ///</summary>
-    public static readonly Class EditFile = new Class(new Uri("http://semiodesk.com/artivity/1.0/EditFile"));    
+    public static readonly Class DeleteFile = new Class(new Uri("http://w3id.org/art/terms/1.0/DeleteFile"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Add"/>
+    ///(A set of entities., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/EntityGroup"/>
     ///</summary>
-    public static readonly Class Add = new Class(new Uri("http://semiodesk.com/artivity/1.0/Add"));    
+    public static readonly Class EntityGroup = new Class(new Uri("http://w3id.org/art/terms/1.0/EntityGroup"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Edit"/>
+    ///(Establishes rdf:type depth hierarchy amongst separate entities of rdf:type 2-dimensional digital image., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Layer"/>
     ///</summary>
-    public static readonly Class Edit = new Class(new Uri("http://semiodesk.com/artivity/1.0/Edit"));    
+    public static readonly Class Layer = new Class(new Uri("http://w3id.org/art/terms/1.0/Layer"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Redo"/>
+    ///(Refers to any discrete, pre-established length or distance having rdf:type constant magnitude which is used as rdf:type reference or convention to express linear dimension., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/LengthUnit"/>
     ///</summary>
-    public static readonly Class Redo = new Class(new Uri("http://semiodesk.com/artivity/1.0/Redo"));    
+    public static readonly Class LengthUnit = new Class(new Uri("http://w3id.org/art/terms/1.0/LengthUnit"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Remove"/>
+    ///(Rasterized bitmap data of rdf:type specific region of an image., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/PartialRenderingDataObject"/>
     ///</summary>
-    public static readonly Class Remove = new Class(new Uri("http://semiodesk.com/artivity/1.0/Remove"));    
+    public static readonly Class PartialRenderingDataObject = new Class(new Uri("http://w3id.org/art/terms/1.0/PartialRenderingDataObject"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Undo"/>
+    ///(An entity that captures the notion of rdf:type unique location in Euclidean space., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Point"/>
     ///</summary>
-    public static readonly Class Undo = new Class(new Uri("http://semiodesk.com/artivity/1.0/Undo"));    
+    public static readonly Class Point = new Class(new Uri("http://w3id.org/art/terms/1.0/Point"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/View"/>
+    ///(A parallelogram containing rdf:type right angle., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Rectangle"/>
     ///</summary>
-    public static readonly Class View = new Class(new Uri("http://semiodesk.com/artivity/1.0/View"));    
+    public static readonly Class Rectangle = new Class(new Uri("http://w3id.org/art/terms/1.0/Rectangle"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Layer"/>
+    ///(The re-generation of rdf:type formerly undone entity influence., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Redo"/>
     ///</summary>
-    public static readonly Class Layer = new Class(new Uri("http://semiodesk.com/artivity/1.0/Layer"));    
+    public static readonly Class Redo = new Class(new Uri("http://w3id.org/art/terms/1.0/Redo"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
+    ///(Rasterized bitmap data of the entire extents of an image., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/RenderingDataObject"/>
     ///</summary>
-    public static readonly Property selectedLayer = new Property(new Uri("http://semiodesk.com/artivity/1.0/selectedLayer"));    
+    public static readonly Class RenderingDataObject = new Class(new Uri("http://w3id.org/art/terms/1.0/RenderingDataObject"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/layerZPosition"/>
+    ///(The invalidation of an existing entity influence., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Undo"/>
     ///</summary>
-    public static readonly Property layerZPosition = new Property(new Uri("http://semiodesk.com/artivity/1.0/layerZPosition"));    
+    public static readonly Class Undo = new Class(new Uri("http://w3id.org/art/terms/1.0/Undo"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
+    ///(An activity in which a file was viewed by one or more users., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/ViewFile"/>
     ///</summary>
-    public static readonly Property isCaptureEnabled = new Property(new Uri("http://semiodesk.com/artivity/1.0/isCaptureEnabled"));    
+    public static readonly Class ViewFile = new Class(new Uri("http://w3id.org/art/terms/1.0/ViewFile"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/executableName"/>
+    ///(A rectangle that represents the visible portion of rdf:type document., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Viewport"/>
     ///</summary>
-    public static readonly Property executableName = new Property(new Uri("http://semiodesk.com/artivity/1.0/executableName"));    
+    public static readonly Class Viewport = new Class(new Uri("http://w3id.org/art/terms/1.0/Viewport"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/executablePath"/>
+    ///(An activity in which one or more websites were viewed by one or more users., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/WebBrowsing"/>
     ///</summary>
-    public static readonly Property executablePath = new Property(new Uri("http://semiodesk.com/artivity/1.0/executablePath"));    
+    public static readonly Class WebBrowsing = new Class(new Uri("http://w3id.org/art/terms/1.0/WebBrowsing"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hasColourCode"/>
+    ///(Indicates that the contents of rdf:type layer are placed on top of the referenced layer., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/aboveLayer"/>
     ///</summary>
-    public static readonly Property hasColourCode = new Property(new Uri("http://semiodesk.com/artivity/1.0/hasColourCode"));    
+    public static readonly Property aboveLayer = new Property(new Uri("http://w3id.org/art/terms/1.0/aboveLayer"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateSystem"/>
+    ///(References rdf:type geometry that provides the minimum bounds for rdf:type geometry or group of geometries., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/boundaries"/>
     ///</summary>
-    public static readonly Property coordinateSystem = new Property(new Uri("http://semiodesk.com/artivity/1.0/coordinateSystem"));    
+    public static readonly Property boundaries = new Property(new Uri("http://w3id.org/art/terms/1.0/boundaries"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CoordinateSystem"/>
+    ///(References rdf:type rectangle that defines the printable or renderable region of rdf:type document., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/canvas"/>
     ///</summary>
-    public static readonly Class CoordinateSystem = new Class(new Uri("http://semiodesk.com/artivity/1.0/CoordinateSystem"));    
+    public static readonly Property canvas = new Property(new Uri("http://w3id.org/art/terms/1.0/canvas"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem"/>
+    ///(An associated color encoded in rdf:type RGB or ARGB hex string., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/colorCode"/>
     ///</summary>
-    public static readonly Class CartesianCoordinateSystem = new Class(new Uri("http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem"));    
+    public static readonly Property colorCode = new Property(new Uri("http://w3id.org/art/terms/1.0/colorCode"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/lengthUnit"/>
+    ///(The number of coordinates that are required to uniquely identify rdf:type position in rdf:type coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/coordinateDimension"/>
     ///</summary>
-    public static readonly Property lengthUnit = new Property(new Uri("http://semiodesk.com/artivity/1.0/lengthUnit"));    
+    public static readonly Property coordinateDimension = new Property(new Uri("http://w3id.org/art/terms/1.0/coordinateDimension"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/transformationMatrix"/>
+    ///(The coordinate system that is used to locate geometries in rdf:type document., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/coordinateSystem"/>
     ///</summary>
-    public static readonly Property transformationMatrix = new Property(new Uri("http://semiodesk.com/artivity/1.0/transformationMatrix"));    
+    public static readonly Property coordinateSystem = new Property(new Uri("http://w3id.org/art/terms/1.0/coordinateSystem"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Point"/>
+    ///(The extents of rdf:type geometry along the z-axis of rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/depth"/>
     ///</summary>
-    public static readonly Class Point = new Class(new Uri("http://semiodesk.com/artivity/1.0/Point"));    
+    public static readonly Property depth = new Property(new Uri("http://w3id.org/art/terms/1.0/depth"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/x"/>
+    ///(The executable program file data object of rdf:type software agent., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/executable"/>
     ///</summary>
-    public static readonly Property x = new Property(new Uri("http://semiodesk.com/artivity/1.0/x"));    
+    public static readonly Property executable = new Property(new Uri("http://w3id.org/art/terms/1.0/executable"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/y"/>
+    ///(The extents of rdf:type geometry along the y-axis of rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/height"/>
     ///</summary>
-    public static readonly Property y = new Property(new Uri("http://semiodesk.com/artivity/1.0/y"));    
+    public static readonly Property height = new Property(new Uri("http://w3id.org/art/terms/1.0/height"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/z"/>
+    ///(Establishes rdf:type relationship between an object an rdf:type layer., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/layer"/>
     ///</summary>
-    public static readonly Property z = new Property(new Uri("http://semiodesk.com/artivity/1.0/z"));    
+    public static readonly Property layer = new Property(new Uri("http://w3id.org/art/terms/1.0/layer"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Geometry"/>
+    ///(Specifies the length unit used for the coordinates in rdf:type coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/lengthUnit"/>
     ///</summary>
-    public static readonly Class Geometry = new Class(new Uri("http://semiodesk.com/artivity/1.0/Geometry"));    
+    public static readonly Property lengthUnit = new Property(new Uri("http://w3id.org/art/terms/1.0/lengthUnit"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateDimension"/>
+    ///(Indicates if the logging of activities is enabled for rdf:type software agent., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/loggingEnabled"/>
     ///</summary>
-    public static readonly Property coordinateDimension = new Property(new Uri("http://semiodesk.com/artivity/1.0/coordinateDimension"));    
+    public static readonly Property loggingEnabled = new Property(new Uri("http://w3id.org/art/terms/1.0/loggingEnabled"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/width"/>
+    ///(Indicates that rdf:type layer is logically contained in the referenced layer., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/parentLayer"/>
     ///</summary>
-    public static readonly Property width = new Property(new Uri("http://semiodesk.com/artivity/1.0/width"));    
+    public static readonly Property parentLayer = new Property(new Uri("http://w3id.org/art/terms/1.0/parentLayer"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/height"/>
+    ///(The file system folder containing the program extension (plugin) of the Artivity software agent., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/pluginFolder"/>
     ///</summary>
-    public static readonly Property height = new Property(new Uri("http://semiodesk.com/artivity/1.0/height"));    
+    public static readonly Property pluginFolder = new Property(new Uri("http://w3id.org/art/terms/1.0/pluginFolder"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/depth"/>
+    ///(Location of rdf:type geometry in Euclidean space., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/position"/>
     ///</summary>
-    public static readonly Property depth = new Property(new Uri("http://semiodesk.com/artivity/1.0/depth"));    
+    public static readonly Property position = new Property(new Uri("http://w3id.org/art/terms/1.0/position"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/position"/>
+    ///(Specifies the shape and location of something in Euclidean space., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/region"/>
     ///</summary>
-    public static readonly Property position = new Property(new Uri("http://semiodesk.com/artivity/1.0/position"));    
+    public static readonly Property region = new Property(new Uri("http://w3id.org/art/terms/1.0/region"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Rectangle"/>
+    ///(A rasterized portion of an image that provides bitmap data for an entity influence., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/renderedAs"/>
     ///</summary>
-    public static readonly Class Rectangle = new Class(new Uri("http://semiodesk.com/artivity/1.0/Rectangle"));    
+    public static readonly Property renderedAs = new Property(new Uri("http://w3id.org/art/terms/1.0/renderedAs"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Cube"/>
+    ///(Indicates that rdf:type entity influence invalidated another., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/reverted"/>
     ///</summary>
-    public static readonly Class Cube = new Class(new Uri("http://semiodesk.com/artivity/1.0/Cube"));    
+    public static readonly Property reverted = new Property(new Uri("http://w3id.org/art/terms/1.0/reverted"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/canvas"/>
+    ///(Indicates that rdf:type entity influence re-generated another., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/restored"/>
     ///</summary>
-    public static readonly Property canvas = new Property(new Uri("http://semiodesk.com/artivity/1.0/canvas"));    
+    public static readonly Property restored = new Property(new Uri("http://w3id.org/art/terms/1.0/restored"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Canvas"/>
+    ///(Marks rdf:type layer as selected within rdf:type given context., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/selectedLayer"/>
     ///</summary>
-    public static readonly Class Canvas = new Class(new Uri("http://semiodesk.com/artivity/1.0/Canvas"));    
+    public static readonly Property selectedLayer = new Property(new Uri("http://w3id.org/art/terms/1.0/selectedLayer"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadBoundaries"/>
+    ///(Defines the basis of rdf:type vector space or rdf:type linear transformation in form of rdf:type set of vectors which are represented by rdf:type matrix., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/transformationMatrix"/>
     ///</summary>
-    public static readonly Property hadBoundaries = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadBoundaries"));    
+    public static readonly Property transformationMatrix = new Property(new Uri("http://w3id.org/art/terms/1.0/transformationMatrix"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingRectangle"/>
+    ///(References rdf:type rectangle that represents the visible area of rdf:type document., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/viewport"/>
     ///</summary>
-    public static readonly Class BoundingRectangle = new Class(new Uri("http://semiodesk.com/artivity/1.0/BoundingRectangle"));    
+    public static readonly Property viewport = new Property(new Uri("http://w3id.org/art/terms/1.0/viewport"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingCube"/>
+    ///(The extents of rdf:type geometry along the x-axis of rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/width"/>
     ///</summary>
-    public static readonly Class BoundingCube = new Class(new Uri("http://semiodesk.com/artivity/1.0/BoundingCube"));    
+    public static readonly Property width = new Property(new Uri("http://w3id.org/art/terms/1.0/width"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadViewport"/>
+    ///(The x-coordinate value describing the position of rdf:type point in rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/x"/>
     ///</summary>
-    public static readonly Property hadViewport = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadViewport"));    
+    public static readonly Property x = new Property(new Uri("http://w3id.org/art/terms/1.0/x"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/thumbnailUrl"/>
+    ///(The y-coordinate value describing the position of rdf:type point in rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/y"/>
     ///</summary>
-    public static readonly Property thumbnailUrl = new Property(new Uri("http://semiodesk.com/artivity/1.0/thumbnailUrl"));    
+    public static readonly Property y = new Property(new Uri("http://w3id.org/art/terms/1.0/y"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/thumbnailPosition"/>
+    ///(The z-coordinate value describing the position of rdf:type point in rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/z"/>
     ///</summary>
-    public static readonly Property thumbnailPosition = new Property(new Uri("http://semiodesk.com/artivity/1.0/thumbnailPosition"));    
+    public static readonly Property z = new Property(new Uri("http://w3id.org/art/terms/1.0/z"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Viewport"/>
+    ///(An application specific value describing the magnification of the currently viewed geometries., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/zoomFactor"/>
     ///</summary>
-    public static readonly Class Viewport = new Class(new Uri("http://semiodesk.com/artivity/1.0/Viewport"));    
+    public static readonly Property zoomFactor = new Property(new Uri("http://w3id.org/art/terms/1.0/zoomFactor"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
+    ///(A unit of length in the metric system, equal to one hundredth of rdf:type metre., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/cm"/>
     ///</summary>
-    public static readonly Property zoomFactor = new Property(new Uri("http://semiodesk.com/artivity/1.0/zoomFactor"));    
+    public static readonly Resource cm = new Resource(new Uri("http://w3id.org/art/terms/1.0/cm"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/LengthUnit"/>
+    ///(A unit of length in the imperial and US customary systems of measurement. Since 1959, the international foot was defined as 0.3048 Wikipedia: meters exactly., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/ft"/>
     ///</summary>
-    public static readonly Class LengthUnit = new Class(new Uri("http://semiodesk.com/artivity/1.0/LengthUnit"));    
+    public static readonly Resource ft = new Resource(new Uri("http://w3id.org/art/terms/1.0/ft"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/m"/>
+    ///(A unit of length in the imperial and US customary systems of measurement. Since 1959, the international yard was defined as 0.9144 metres exactly., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/in"/>
     ///</summary>
-    public static readonly Class m = new Class(new Uri("http://semiodesk.com/artivity/1.0/m"));    
+    public static readonly Resource _in = new Resource(new Uri("http://w3id.org/art/terms/1.0/in"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/cm"/>
+    ///(The base unit of length in the International System of Units (SI), the modern form of the metric system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/m"/>
     ///</summary>
-    public static readonly Class cm = new Class(new Uri("http://semiodesk.com/artivity/1.0/cm"));    
+    public static readonly Resource m = new Resource(new Uri("http://w3id.org/art/terms/1.0/m"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/mm"/>
+    ///(A unit of length in the metric system, equal to one thousandth of rdf:type metre., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/mm"/>
     ///</summary>
-    public static readonly Class mm = new Class(new Uri("http://semiodesk.com/artivity/1.0/mm"));    
+    public static readonly Resource mm = new Resource(new Uri("http://w3id.org/art/terms/1.0/mm"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/pt"/>
+    ///(The smallest unit of measure in typography. The desktop publishing point is defined as 1⁄72 of an international inch (about 0.353 mm)., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/pt"/>
     ///</summary>
-    public static readonly Class pt = new Class(new Uri("http://semiodesk.com/artivity/1.0/pt"));    
+    public static readonly Resource pt = new Resource(new Uri("http://w3id.org/art/terms/1.0/pt"));    
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/in"/>
+    ///(A physical point in rdf:type raster image, or the smallest addressable element in an all points addressable display device., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/px"/>
     ///</summary>
-    public static readonly Class _in = new Class(new Uri("http://semiodesk.com/artivity/1.0/in"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/ft"/>
-    ///</summary>
-    public static readonly Class ft = new Class(new Uri("http://semiodesk.com/artivity/1.0/ft"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/px"/>
-    ///</summary>
-    public static readonly Class px = new Class(new Uri("http://semiodesk.com/artivity/1.0/px"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject"/>
-    ///</summary>
-    public static readonly Resource FileDataObject = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject"/>
-    ///</summary>
-    public static readonly Resource WebDataObject = new Resource(new Uri("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject"));    
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/OrcidAccount"/>
-    ///</summary>
-    public static readonly Class OrcidAccount = new Class(new Uri("http://semiodesk.com/artivity/1.0/OrcidAccount"));
+    public static readonly Resource px = new Resource(new Uri("http://w3id.org/art/terms/1.0/px"));
 }
 ///<summary>
 ///
@@ -7635,7 +8347,7 @@ public class art : Ontology
 ///</summary>
 public static class ART
 {
-    public static readonly Uri Namespace = new Uri("http://semiodesk.com/artivity/1.0/");
+    public static readonly Uri Namespace = new Uri("http://w3id.org/art/terms/1.0/");
     public static Uri GetNamespace() { return Namespace; }
     
     public static readonly string Prefix = "ART";
@@ -7643,375 +8355,345 @@ public static class ART
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/"/>
     ///</summary>
-    public const string _1_0 = "http://semiodesk.com/artivity/1.0/";
+    public const string _1_0 = "http://w3id.org/art/terms/1.0/";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Database"/>
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#VectorImage"/>
     ///</summary>
-    public const string Database = "http://semiodesk.com/artivity/1.0/Database";
+    public const string VectorImage = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#VectorImage";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/isMonitoringEnabled"/>
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage"/>
     ///</summary>
-    public const string isMonitoringEnabled = "http://semiodesk.com/artivity/1.0/isMonitoringEnabled";
+    public const string RasterImage = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadState"/>
+    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Website"/>
     ///</summary>
-    public const string hadState = "http://semiodesk.com/artivity/1.0/hadState";
+    public const string Website = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Website";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/DatabaseState"/>
+    ///(An expression of the maximum extents of rdf:type 2-dimensional object (e.g. point, line, polygon) or set of objects within their 2-D coordinate system. In other words min(x), max(x), min(y), max(y)., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/BoundingRectangle"/>
     ///</summary>
-    public const string DatabaseState = "http://semiodesk.com/artivity/1.0/DatabaseState";
+    public const string BoundingRectangle = "http://w3id.org/art/terms/1.0/BoundingRectangle";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/atTime"/>
+    ///(An entity that defines the 2-dimensional extents of the printable or renderable region(s) of rdf:type document., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Canvas"/>
     ///</summary>
-    public const string atTime = "http://semiodesk.com/artivity/1.0/atTime";
+    public const string Canvas = "http://w3id.org/art/terms/1.0/Canvas";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/factsCount"/>
+    ///(A coordinate system that specifies each point uniquely using n Cartesian coordinates which specify the point in an n-dimensional Euclidean space for any dimension n. These coordinates are equal, up to sign, to distances from the point to n mutually perpendicular hyperplanes., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/CartesianCoordinateSystem"/>
     ///</summary>
-    public const string factsCount = "http://semiodesk.com/artivity/1.0/factsCount";
+    public const string CartesianCoordinateSystem = "http://w3id.org/art/terms/1.0/CartesianCoordinateSystem";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Browse"/>
+    ///(A system which uses one or more numbers (coordinates) to uniquely determine the position of rdf:type point or other geometric element on rdf:type manifold such as Euclidean space., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/CoordinateSystem"/>
     ///</summary>
-    public const string Browse = "http://semiodesk.com/artivity/1.0/Browse";
+    public const string CoordinateSystem = "http://w3id.org/art/terms/1.0/CoordinateSystem";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CreateFile"/>
+    ///(An activity which resulted in rdf:type new file being generated., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/CreateFile"/>
     ///</summary>
-    public const string CreateFile = "http://semiodesk.com/artivity/1.0/CreateFile";
+    public const string CreateFile = "http://w3id.org/art/terms/1.0/CreateFile";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/DeleteFile"/>
+    ///(An activity which may result in an existing file being revised and/or modified., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/EditFile"/>
     ///</summary>
-    public const string DeleteFile = "http://semiodesk.com/artivity/1.0/DeleteFile";
+    public const string EditFile = "http://w3id.org/art/terms/1.0/EditFile";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/EditFile"/>
+    ///(An activity which resulted in an existing file being deleted., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/DeleteFile"/>
     ///</summary>
-    public const string EditFile = "http://semiodesk.com/artivity/1.0/EditFile";
+    public const string DeleteFile = "http://w3id.org/art/terms/1.0/DeleteFile";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Add"/>
+    ///(A set of entities., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/EntityGroup"/>
     ///</summary>
-    public const string Add = "http://semiodesk.com/artivity/1.0/Add";
+    public const string EntityGroup = "http://w3id.org/art/terms/1.0/EntityGroup";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Edit"/>
+    ///(Establishes rdf:type depth hierarchy amongst separate entities of rdf:type 2-dimensional digital image., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Layer"/>
     ///</summary>
-    public const string Edit = "http://semiodesk.com/artivity/1.0/Edit";
+    public const string Layer = "http://w3id.org/art/terms/1.0/Layer";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Redo"/>
+    ///(Refers to any discrete, pre-established length or distance having rdf:type constant magnitude which is used as rdf:type reference or convention to express linear dimension., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/LengthUnit"/>
     ///</summary>
-    public const string Redo = "http://semiodesk.com/artivity/1.0/Redo";
+    public const string LengthUnit = "http://w3id.org/art/terms/1.0/LengthUnit";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Remove"/>
+    ///(Rasterized bitmap data of rdf:type specific region of an image., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/PartialRenderingDataObject"/>
     ///</summary>
-    public const string Remove = "http://semiodesk.com/artivity/1.0/Remove";
+    public const string PartialRenderingDataObject = "http://w3id.org/art/terms/1.0/PartialRenderingDataObject";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Undo"/>
+    ///(An entity that captures the notion of rdf:type unique location in Euclidean space., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Point"/>
     ///</summary>
-    public const string Undo = "http://semiodesk.com/artivity/1.0/Undo";
+    public const string Point = "http://w3id.org/art/terms/1.0/Point";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/View"/>
+    ///(A parallelogram containing rdf:type right angle., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Rectangle"/>
     ///</summary>
-    public const string View = "http://semiodesk.com/artivity/1.0/View";
+    public const string Rectangle = "http://w3id.org/art/terms/1.0/Rectangle";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Layer"/>
+    ///(The re-generation of rdf:type formerly undone entity influence., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Redo"/>
     ///</summary>
-    public const string Layer = "http://semiodesk.com/artivity/1.0/Layer";
+    public const string Redo = "http://w3id.org/art/terms/1.0/Redo";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
+    ///(Rasterized bitmap data of the entire extents of an image., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/RenderingDataObject"/>
     ///</summary>
-    public const string selectedLayer = "http://semiodesk.com/artivity/1.0/selectedLayer";
+    public const string RenderingDataObject = "http://w3id.org/art/terms/1.0/RenderingDataObject";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/layerZPosition"/>
+    ///(The invalidation of an existing entity influence., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Undo"/>
     ///</summary>
-    public const string layerZPosition = "http://semiodesk.com/artivity/1.0/layerZPosition";
+    public const string Undo = "http://w3id.org/art/terms/1.0/Undo";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
+    ///(An activity in which a file was viewed by one or more users., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/ViewFile"/>
     ///</summary>
-    public const string isCaptureEnabled = "http://semiodesk.com/artivity/1.0/isCaptureEnabled";
+    public const string ViewFile = "http://w3id.org/art/terms/1.0/ViewFile";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/executableName"/>
+    ///(A rectangle that represents the visible portion of rdf:type document., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/Viewport"/>
     ///</summary>
-    public const string executableName = "http://semiodesk.com/artivity/1.0/executableName";
+    public const string Viewport = "http://w3id.org/art/terms/1.0/Viewport";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/executablePath"/>
+    ///(An activity in which one or more websites were viewed by one or more users., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/WebBrowsing"/>
     ///</summary>
-    public const string executablePath = "http://semiodesk.com/artivity/1.0/executablePath";
+    public const string WebBrowsing = "http://w3id.org/art/terms/1.0/WebBrowsing";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hasColourCode"/>
+    ///(Indicates that the contents of rdf:type layer are placed on top of the referenced layer., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/aboveLayer"/>
     ///</summary>
-    public const string hasColourCode = "http://semiodesk.com/artivity/1.0/hasColourCode";
+    public const string aboveLayer = "http://w3id.org/art/terms/1.0/aboveLayer";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateSystem"/>
+    ///(References rdf:type geometry that provides the minimum bounds for rdf:type geometry or group of geometries., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/boundaries"/>
     ///</summary>
-    public const string coordinateSystem = "http://semiodesk.com/artivity/1.0/coordinateSystem";
+    public const string boundaries = "http://w3id.org/art/terms/1.0/boundaries";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CoordinateSystem"/>
+    ///(References rdf:type rectangle that defines the printable or renderable region of rdf:type document., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/canvas"/>
     ///</summary>
-    public const string CoordinateSystem = "http://semiodesk.com/artivity/1.0/CoordinateSystem";
+    public const string canvas = "http://w3id.org/art/terms/1.0/canvas";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem"/>
+    ///(An associated color encoded in rdf:type RGB or ARGB hex string., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/colorCode"/>
     ///</summary>
-    public const string CartesianCoordinateSystem = "http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem";
+    public const string colorCode = "http://w3id.org/art/terms/1.0/colorCode";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/lengthUnit"/>
+    ///(The number of coordinates that are required to uniquely identify rdf:type position in rdf:type coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/coordinateDimension"/>
     ///</summary>
-    public const string lengthUnit = "http://semiodesk.com/artivity/1.0/lengthUnit";
+    public const string coordinateDimension = "http://w3id.org/art/terms/1.0/coordinateDimension";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/transformationMatrix"/>
+    ///(The coordinate system that is used to locate geometries in rdf:type document., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/coordinateSystem"/>
     ///</summary>
-    public const string transformationMatrix = "http://semiodesk.com/artivity/1.0/transformationMatrix";
+    public const string coordinateSystem = "http://w3id.org/art/terms/1.0/coordinateSystem";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Point"/>
+    ///(The extents of rdf:type geometry along the z-axis of rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/depth"/>
     ///</summary>
-    public const string Point = "http://semiodesk.com/artivity/1.0/Point";
+    public const string depth = "http://w3id.org/art/terms/1.0/depth";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/x"/>
+    ///(The executable program file data object of rdf:type software agent., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/executable"/>
     ///</summary>
-    public const string x = "http://semiodesk.com/artivity/1.0/x";
+    public const string executable = "http://w3id.org/art/terms/1.0/executable";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/y"/>
+    ///(The extents of rdf:type geometry along the y-axis of rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/height"/>
     ///</summary>
-    public const string y = "http://semiodesk.com/artivity/1.0/y";
+    public const string height = "http://w3id.org/art/terms/1.0/height";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/z"/>
+    ///(Establishes rdf:type relationship between an object an rdf:type layer., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/layer"/>
     ///</summary>
-    public const string z = "http://semiodesk.com/artivity/1.0/z";
+    public const string layer = "http://w3id.org/art/terms/1.0/layer";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Geometry"/>
+    ///(Specifies the length unit used for the coordinates in rdf:type coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/lengthUnit"/>
     ///</summary>
-    public const string Geometry = "http://semiodesk.com/artivity/1.0/Geometry";
+    public const string lengthUnit = "http://w3id.org/art/terms/1.0/lengthUnit";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateDimension"/>
+    ///(Indicates if the logging of activities is enabled for rdf:type software agent., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/loggingEnabled"/>
     ///</summary>
-    public const string coordinateDimension = "http://semiodesk.com/artivity/1.0/coordinateDimension";
+    public const string loggingEnabled = "http://w3id.org/art/terms/1.0/loggingEnabled";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/width"/>
+    ///(Indicates that rdf:type layer is logically contained in the referenced layer., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/parentLayer"/>
     ///</summary>
-    public const string width = "http://semiodesk.com/artivity/1.0/width";
+    public const string parentLayer = "http://w3id.org/art/terms/1.0/parentLayer";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/height"/>
+    ///(The file system folder containing the program extension (plugin) of the Artivity software agent., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/pluginFolder"/>
     ///</summary>
-    public const string height = "http://semiodesk.com/artivity/1.0/height";
+    public const string pluginFolder = "http://w3id.org/art/terms/1.0/pluginFolder";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/depth"/>
+    ///(Location of rdf:type geometry in Euclidean space., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/position"/>
     ///</summary>
-    public const string depth = "http://semiodesk.com/artivity/1.0/depth";
+    public const string position = "http://w3id.org/art/terms/1.0/position";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/position"/>
+    ///(Specifies the shape and location of something in Euclidean space., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/region"/>
     ///</summary>
-    public const string position = "http://semiodesk.com/artivity/1.0/position";
+    public const string region = "http://w3id.org/art/terms/1.0/region";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Rectangle"/>
+    ///(A rasterized portion of an image that provides bitmap data for an entity influence., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/renderedAs"/>
     ///</summary>
-    public const string Rectangle = "http://semiodesk.com/artivity/1.0/Rectangle";
+    public const string renderedAs = "http://w3id.org/art/terms/1.0/renderedAs";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Cube"/>
+    ///(Indicates that rdf:type entity influence invalidated another., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/reverted"/>
     ///</summary>
-    public const string Cube = "http://semiodesk.com/artivity/1.0/Cube";
+    public const string reverted = "http://w3id.org/art/terms/1.0/reverted";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/canvas"/>
+    ///(Indicates that rdf:type entity influence re-generated another., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/restored"/>
     ///</summary>
-    public const string canvas = "http://semiodesk.com/artivity/1.0/canvas";
+    public const string restored = "http://w3id.org/art/terms/1.0/restored";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Canvas"/>
+    ///(Marks rdf:type layer as selected within rdf:type given context., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/selectedLayer"/>
     ///</summary>
-    public const string Canvas = "http://semiodesk.com/artivity/1.0/Canvas";
+    public const string selectedLayer = "http://w3id.org/art/terms/1.0/selectedLayer";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadBoundaries"/>
+    ///(Defines the basis of rdf:type vector space or rdf:type linear transformation in form of rdf:type set of vectors which are represented by rdf:type matrix., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/transformationMatrix"/>
     ///</summary>
-    public const string hadBoundaries = "http://semiodesk.com/artivity/1.0/hadBoundaries";
+    public const string transformationMatrix = "http://w3id.org/art/terms/1.0/transformationMatrix";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingRectangle"/>
+    ///(References rdf:type rectangle that represents the visible area of rdf:type document., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/viewport"/>
     ///</summary>
-    public const string BoundingRectangle = "http://semiodesk.com/artivity/1.0/BoundingRectangle";
+    public const string viewport = "http://w3id.org/art/terms/1.0/viewport";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingCube"/>
+    ///(The extents of rdf:type geometry along the x-axis of rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/width"/>
     ///</summary>
-    public const string BoundingCube = "http://semiodesk.com/artivity/1.0/BoundingCube";
+    public const string width = "http://w3id.org/art/terms/1.0/width";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadViewport"/>
+    ///(The x-coordinate value describing the position of rdf:type point in rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/x"/>
     ///</summary>
-    public const string hadViewport = "http://semiodesk.com/artivity/1.0/hadViewport";
+    public const string x = "http://w3id.org/art/terms/1.0/x";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/thumbnailUrl"/>
+    ///(The y-coordinate value describing the position of rdf:type point in rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/y"/>
     ///</summary>
-    public const string thumbnailUrl = "http://semiodesk.com/artivity/1.0/thumbnailUrl";
+    public const string y = "http://w3id.org/art/terms/1.0/y";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/thumbnailPosition"/>
+    ///(The z-coordinate value describing the position of rdf:type point in rdf:type Cartesian coordinate system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/z"/>
     ///</summary>
-    public const string thumbnailPosition = "http://semiodesk.com/artivity/1.0/thumbnailPosition";
+    public const string z = "http://w3id.org/art/terms/1.0/z";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Viewport"/>
+    ///(An application specific value describing the magnification of the currently viewed geometries., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/zoomFactor"/>
     ///</summary>
-    public const string Viewport = "http://semiodesk.com/artivity/1.0/Viewport";
+    public const string zoomFactor = "http://w3id.org/art/terms/1.0/zoomFactor";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
+    ///(A unit of length in the metric system, equal to one hundredth of rdf:type metre., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/cm"/>
     ///</summary>
-    public const string zoomFactor = "http://semiodesk.com/artivity/1.0/zoomFactor";
+    public const string cm = "http://w3id.org/art/terms/1.0/cm";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/LengthUnit"/>
+    ///(A unit of length in the imperial and US customary systems of measurement. Since 1959, the international foot was defined as 0.3048 Wikipedia: meters exactly., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/ft"/>
     ///</summary>
-    public const string LengthUnit = "http://semiodesk.com/artivity/1.0/LengthUnit";
+    public const string ft = "http://w3id.org/art/terms/1.0/ft";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/m"/>
+    ///(A unit of length in the imperial and US customary systems of measurement. Since 1959, the international yard was defined as 0.9144 metres exactly., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/in"/>
     ///</summary>
-    public const string m = "http://semiodesk.com/artivity/1.0/m";
+    public const string _in = "http://w3id.org/art/terms/1.0/in";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/cm"/>
+    ///(The base unit of length in the International System of Units (SI), the modern form of the metric system., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/m"/>
     ///</summary>
-    public const string cm = "http://semiodesk.com/artivity/1.0/cm";
+    public const string m = "http://w3id.org/art/terms/1.0/m";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/mm"/>
+    ///(A unit of length in the metric system, equal to one thousandth of rdf:type metre., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/mm"/>
     ///</summary>
-    public const string mm = "http://semiodesk.com/artivity/1.0/mm";
+    public const string mm = "http://w3id.org/art/terms/1.0/mm";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/pt"/>
+    ///(The smallest unit of measure in typography. The desktop publishing point is defined as 1⁄72 of an international inch (about 0.353 mm)., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/pt"/>
     ///</summary>
-    public const string pt = "http://semiodesk.com/artivity/1.0/pt";
+    public const string pt = "http://w3id.org/art/terms/1.0/pt";
 
     ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/in"/>
+    ///(A physical point in rdf:type raster image, or the smallest addressable element in an all points addressable display device., en)
+    ///<see cref="http://w3id.org/art/terms/1.0/px"/>
     ///</summary>
-    public const string _in = "http://semiodesk.com/artivity/1.0/in";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/ft"/>
-    ///</summary>
-    public const string ft = "http://semiodesk.com/artivity/1.0/ft";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/px"/>
-    ///</summary>
-    public const string px = "http://semiodesk.com/artivity/1.0/px";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject"/>
-    ///</summary>
-    public const string FileDataObject = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject";
-
-    ///<summary>
-    ///
-    ///<see cref="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject"/>
-    ///</summary>
-    public const string WebDataObject = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#WebDataObject";
-
-    ///<summary>
-    ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/OrcidAccount"/>
-    ///</summary>
-    public const string OrcidAccount = "http://semiodesk.com/artivity/1.0/OrcidAccount";
+    public const string px = "http://w3id.org/art/terms/1.0/px";
 }
 ///<summary>
 ///Friend of a Friend (FOAF) vocabulary

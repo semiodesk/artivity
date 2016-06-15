@@ -39,18 +39,18 @@ namespace Artivity.DataModel
     {
 		#region Members
 
-        [RdfProperty(ART.isCaptureEnabled)]
-        public bool IsCaptureEnabled { get; set; }
+        [RdfProperty(ART.loggingEnabled)]
+        public bool IsLoggingEnabled { get; set; }
 
         [DefaultValue("#FF0000")]
-        [RdfProperty(ART.hasColourCode), NotifyPropertyChanged]
+        [RdfProperty(ART.colorCode), NotifyPropertyChanged]
         public string ColourCode { get; set; }
 
-        [RdfProperty(ART.executableName), NotifyPropertyChanged]
-        public string ExecutableName { get; set; }
+        [RdfProperty(ART.executable), NotifyPropertyChanged]
+        public FileDataObject Executable { get; set; }
 
-        [RdfProperty(ART.executablePath), NotifyPropertyChanged]
-        public string ExecutablePath { get; set; }
+        [RdfProperty(ART.pluginFolder), NotifyPropertyChanged]
+        public Folder PluginFolder { get; set; }
 
 		#endregion
 

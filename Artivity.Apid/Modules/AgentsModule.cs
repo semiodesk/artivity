@@ -66,7 +66,7 @@ namespace Artivity.Apid
 
     			foreach (SoftwareAgent agent in model.GetResources<SoftwareAgent>())
     			{
-    				agents.Add(new AgentParameters() { agent = agent.Uri.AbsoluteUri, enabled = agent.IsCaptureEnabled });
+    				agents.Add(new AgentParameters() { agent = agent.Uri.AbsoluteUri, enabled = agent.IsLoggingEnabled });
     			}
 
                 Logger.LogRequest(HttpStatusCode.OK, Request.Url, "GET", "");
@@ -124,7 +124,7 @@ namespace Artivity.Apid
 			}
 
 			// Capturing agent data is disabled by default.
-			p.enabled = agent != null ? agent.IsCaptureEnabled : false;
+			p.enabled = agent != null ? agent.IsLoggingEnabled : false;
 
             Logger.LogRequest(HttpStatusCode.OK, Request.Url + " " + p.agent, "GET", "");
 
@@ -157,7 +157,7 @@ namespace Artivity.Apid
     				agent = model.CreateResource<SoftwareAgent>(agentUri);
     			}
 
-    			agent.IsCaptureEnabled = Convert.ToBoolean(p.enabled);
+    			agent.IsLoggingEnabled = Convert.ToBoolean(p.enabled);
     			agent.Commit();
 
                 Logger.LogRequest(HttpStatusCode.OK, Request.Url + " " + p.agent, "POST", "");

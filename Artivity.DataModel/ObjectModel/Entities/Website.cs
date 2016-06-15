@@ -26,32 +26,24 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
+using System.Collections.Generic;
 using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
 {
-	[RdfClass(NFO.FileDataObject)]
-	public class FileDataObject : Entity
-	{
-		#region Members
+	[RdfClass(NFO.Website)]
+	public class Website : Entity
+    {
+        #region Members
 
-		[RdfProperty(NFO.fileCreated)]
-		public DateTime CreationTime { get; set; }
+		[RdfProperty(NIE.title)]
+		public string Title { get; set; }
 
-		[RdfProperty(NFO.fileLastAccessed)]
-		public DateTime LastAccessTime { get; set; }
+        #endregion
 
-		[RdfProperty(NFO.fileLastModified)]
-		public DateTime LastModificationTime { get; set; }
+        #region Constructors
 
-        [RdfProperty(NFO.belongsToContainer)]
-        public Folder Folder { get; set; }
-
-		#endregion
-
-		#region Constructors
-
-		public FileDataObject(Uri uri) : base(uri) {}
+        public Website(Uri uri) : base(uri) { }
 
 		#endregion
 	}

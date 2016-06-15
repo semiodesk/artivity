@@ -27,11 +27,13 @@
 
 using Artivity.DataModel;
 using Artivity.Apid.Parameters;
+using Artivity.Apid.Platforms;
 using Semiodesk.Trinity;
 using Semiodesk.Trinity.Store;
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -41,8 +43,6 @@ using Nancy;
 using Nancy.IO;
 using Nancy.ModelBinding;
 using VDS.RDF;
-using System.Threading.Tasks;
-using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {
@@ -50,7 +50,7 @@ namespace Artivity.Apid
 	{
         #region Members
 
-        private static readonly Dictionary<string, Browse> _activities = new Dictionary<string, Browse>();
+        private static readonly Dictionary<string, WebBrowsing> _activities = new Dictionary<string, WebBrowsing>();
 
         private static object _modelLock = new object();
 
@@ -84,8 +84,6 @@ namespace Artivity.Apid
             {
                 lock (_modelLock)
                 {
-                    UpdateMonitoring();
-
                     IModel model = ModelProvider.GetActivities();
 
                     if (model == null)
@@ -131,8 +129,6 @@ namespace Artivity.Apid
 		{
             try
             {
-                UpdateMonitoring();
-
                 if (string.IsNullOrEmpty(p.tab))
                 {
                     return Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
@@ -143,14 +139,14 @@ namespace Artivity.Apid
     				return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
     			}
 
-    			if (!IsCaptureEnabled(p))
+    			if (!IsLoggingEnabled(p))
     			{
                     return Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
     			}
 
                 IModel model = ModelProvider.GetWebActivities();
 
-                Browse activity;
+                WebBrowsing activity;
 
                 if (!_activities.ContainsKey(p.tab))
                 {
@@ -158,7 +154,7 @@ namespace Artivity.Apid
                     association.Agent = new SoftwareAgent(new UriRef(p.agent));
                     association.Commit();
 
-                    activity = model.CreateResource<Browse>();
+                    activity = model.CreateResource<WebBrowsing>();
                     activity.Associations.Add(association);
                     activity.StartTime = p.startTime != null ? (DateTime)p.startTime : DateTime.Now;
                     activity.Commit();
@@ -174,27 +170,27 @@ namespace Artivity.Apid
                 {
                     UriRef url = new UriRef(p.url);
 
-                    WebDataObject website;
+                    Website website;
 
                     if (!model.ContainsResource(url))
                     {
-                        website = model.CreateResource<WebDataObject>(url);
+                        website = model.CreateResource<Website>(url);
                         website.Title = p.title;
                         website.Commit();
                     }
                     else
                     {
-                        website = model.GetResource<WebDataObject>(url);
+                        website = model.GetResource<Website>(url);
                     }
 
                     DateTime time = p.time != null ? (DateTime)p.time : DateTime.Now;
 
-                    View view = model.CreateResource<View>();
-                    view.Entity = website;
-                    view.Time = time;
-                    view.Commit();
+                    Usage usage = model.CreateResource<Usage>();
+                    usage.Entity = website;
+                    usage.Time = time;
+                    usage.Commit();
 
-                    activity.Usages.Add(view);
+                    activity.Usages.Add(usage);
                     activity.Commit();
                 }
                 else if (p.endTime != null)
@@ -213,7 +209,7 @@ namespace Artivity.Apid
             }
 		}
 
-        private bool IsCaptureEnabled(ActivityParameters p)
+        private bool IsLoggingEnabled(ActivityParameters p)
         {
             IModel model = ModelProvider.GetAgents();
 
@@ -225,7 +221,7 @@ namespace Artivity.Apid
                 agent = model.GetResource<SoftwareAgent>(agentUri);
             }
 
-            return agent.IsCaptureEnabled;
+            return agent.IsLoggingEnabled;
         }
 
         private string ToString(RequestStream stream)
