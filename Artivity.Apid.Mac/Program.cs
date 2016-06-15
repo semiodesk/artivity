@@ -39,6 +39,9 @@ namespace Artivity.Apid.Mac
 
     public class Program : ProgramBase
     {
+        NSApplication app;
+
+
         public bool Run (Options opts)
         {
             var applicationData = Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
@@ -71,7 +74,11 @@ namespace Artivity.Apid.Mac
 
             Thread thread = new Thread (ServiceThread);
             thread.Start ();
-            DispatchQueue.MainIteration ();
+
+            app = NSApplication.SharedApplication;
+            app.Delegate = null;
+            app.Run();
+
             Console.WriteLine ("Waiting for service to end.");
             thread.Join ();
 
@@ -104,11 +111,11 @@ namespace Artivity.Apid.Mac
                 // When we are finished we tell the DispatcherQueue to stop.
 
                 Service.Stop (true);
-                DispatchQueue.MainQueue.Suspend();
 
-                DispatchQueue.MainQueue.DispatchSync(() =>
+
+                app.BeginInvokeOnMainThread(() =>
                 {
-                    DispatchQueue.MainQueue.Suspend();
+                    app.Terminate(app);
                 });
                 return;
 
