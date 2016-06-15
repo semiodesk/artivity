@@ -36,9 +36,8 @@ namespace Artivity.Apid
     {
         #region Members
 
-        private IInstallationWatchdog _watchdog;
 
-        private PluginChecker _pluginChecker;
+        private bool _loggingInitialized = false;
 
         protected string[] Args;
 
@@ -70,7 +69,6 @@ namespace Artivity.Apid
             }
 
             Service.Start();
-
             return true;
         }
 
@@ -108,18 +106,12 @@ namespace Artivity.Apid
             return true;
         }
 
-        protected void InitializePluginChecker()
-        {
-            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(new DirectoryInfo(Platform.PluginDir));
-            _pluginChecker.Check();
-
-            _watchdog = InstallationWatchdogFactory.CreateWatchdog();
-            _watchdog.ProgrammInstalledOrRemoved += (sender, e) => { _pluginChecker.Check(); };
-            _watchdog.Start();
-        }
 
         protected void InitializeLogging()
         {
+            if (_loggingInitialized)
+                return;
+            
             bool consoleLogging = true;
 
             string logFile = null;
@@ -161,6 +153,8 @@ namespace Artivity.Apid
 
                 log4net.Config.BasicConfigurator.Configure(appender);
             }
+
+            _loggingInitialized = true;
         }
 
         protected void InitializeService()
@@ -179,9 +173,6 @@ namespace Artivity.Apid
 
                 Service.Stop();
 
-#if !DEBUG
-                _watchdog.Stop();
-#endif
             };
         }
 

@@ -64,6 +64,11 @@ namespace Artivity.Api.Plugin.OSX
             _timer.Stop ();
             _timer.Elapsed -= TimerElapsed;
         }
+
+        public void Dispose ()
+        {
+            _timer.Dispose ();
+        }
         #endregion
     }
 }

@@ -10,7 +10,7 @@ namespace Artivity.Api.Plugin
 {
     public delegate void HandleProgramInstalledOrRemoved(object sender, EventArgs args);
 
-    public interface IInstallationWatchdog
+    public interface IInstallationWatchdog : IDisposable
     {
         void Start();
         event HandleProgramInstalledOrRemoved ProgrammInstalledOrRemoved;

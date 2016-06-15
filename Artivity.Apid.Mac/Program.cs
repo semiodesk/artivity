@@ -28,60 +28,91 @@
 using System;
 using System.IO;
 using System.Threading;
-using MonoMac.AppKit;
-using MonoMac.CoreFoundation;
+using AppKit;
+using CoreFoundation;
+using Mono.Unix;
+using Mono.Unix.Native;
+
 
 namespace Artivity.Apid.Mac
 {
+
     public class Program : ProgramBase
     {
-        public bool Run(Options opts)
+        public bool Run (Options opts)
         {
-            var applicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            var applicationData = Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
+            var userFolder = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
             var username = Environment.UserName;
 
-            Platform = new MacPlatformProvider(applicationData, userFolder, username);
-
+            Platform = new MacPlatformProvider (applicationData, userFolder, username);
+            
 #if DEBUG
-            LogConfigFile = Path.Combine(Platform.DeploymentDir, "log.config.debug");
+            LogConfigFile = Path.Combine (Platform.DeploymentDir, "log.config.debug");
 #else
             LogConfigFile = Path.Combine(Platform.DeploymentDir, "log.config");
 #endif
-
             Options = opts;
             OverwriteLogging = true;
+            InitializeLogging ();
 
-            if (!Initialize())
-            {
+            Thread signal_thread = new Thread (WaitSIGINT);
+            signal_thread.Start ();
+
+            if (!Initialize ()) {
                 return false;
             }
 
             // Initialize the Xamarin Mac application.
-            NSApplication.Init();
+            NSApplication.Init ();
 
             // Reigster the platform specific file system watcher.
-            FileSystemWatcherFactory.CreateHandler(() => { return new FSEventsFileSystemWatcher(); });
+            FileSystemWatcherFactory.CreateHandler (() => { return new FSEventsFileSystemWatcher (); });
 
-            Thread thread = new Thread(ServiceThread);
-            thread.Start();
+            Thread thread = new Thread (ServiceThread);
+            thread.Start ();
+            DispatchQueue.MainIteration ();
+            Console.WriteLine ("Waiting for service to end.");
+            thread.Join ();
 
-            DispatchQueue.MainIteration();
-            thread.Join();
-
+            Console.WriteLine ("Finished stopping all, Exiting...");
             return true;
         }
 
-        protected void ServiceThread()
+        protected void ServiceThread ()
         {
             // Start the service.
-            Run();
+            Run ();
+        }
 
-            // When we are finished we tell the DispatcherQueue to stop.
-            DispatchQueue.MainQueue.DispatchAsync(() =>
+        protected void WaitSIGINT ()
+        {
+            Logger.LogInfo("Establishing Signal interception...");
+            UnixSignal [] signals = new UnixSignal []
             {
-                DispatchQueue.CurrentQueue.Suspend();
-            });
+                new UnixSignal (Mono.Unix.Native.Signum.SIGINT),
+                new UnixSignal (Mono.Unix.Native.Signum.SIGUSR1),
+                new UnixSignal (Mono.Unix.Native.Signum.SIGTERM)
+            };
+            while (true) {
+                // Wait for a signal to be delivered
+                int index = UnixSignal.WaitAny (signals, -1);
+
+                Mono.Unix.Native.Signum signal = signals [index].Signum;
+                Logger.LogInfo(string.Format("Got signal {0}. Shutting down!", signal));
+
+                // When we are finished we tell the DispatcherQueue to stop.
+
+                Service.Stop (true);
+                DispatchQueue.MainQueue.Suspend();
+
+                DispatchQueue.MainQueue.DispatchSync(() =>
+                {
+                    DispatchQueue.MainQueue.Suspend();
+                });
+                return;
+
+            }
         }
     }
 }
