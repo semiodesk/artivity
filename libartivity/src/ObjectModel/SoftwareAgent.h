@@ -8,6 +8,9 @@
 
 namespace artivity
 {
+    class SoftwareAgent;
+    typedef boost::shared_ptr<SoftwareAgent> SoftwareAgentRef;
+
     class SoftwareAgent : public Agent
     {
     public:

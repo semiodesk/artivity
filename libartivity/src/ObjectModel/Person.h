@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Person;
+    typedef boost::shared_ptr<Person> PersonRef;
+
     class Person : public Resource
     {
     public:

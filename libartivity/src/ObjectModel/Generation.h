@@ -5,6 +5,9 @@
 
 namespace artivity
 {
+    class Generation;
+    typedef boost::shared_ptr<Generation> GenerationRef;
+
     class Generation : public ActivityInfluence
     {        
     public:

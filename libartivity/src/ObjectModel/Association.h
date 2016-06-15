@@ -10,11 +10,14 @@
 
 namespace artivity
 {
+    class Association;
+    typedef boost::shared_ptr<Association> AssociationRef;
+
     class Association : public Resource
     {
     private:
-        const Agent* _agent;
-        const Role* _role;
+        AgentRef _agent;
+        RoleRef _role;
         
     public:
         Association() : Resource(UriGenerator::getUri())
@@ -35,24 +38,24 @@ namespace artivity
         
         virtual ~Association() {}
         
-        const Agent* getAgent()
+        AgentRef getAgent()
         {
             return _agent;
         }
         
-        void setAgent(const Agent* agent)
+        void setAgent(AgentRef agent)
         {
             _agent = agent;
             
             setValue(prov::agent, agent);
         }
         
-        const Role* getRole()
+        RoleRef getRole()
         {
             return _role;
         }
         
-        void setRole(const Role* role)
+        void setRole(RoleRef role)
         {
             _role = role;
             

@@ -3,34 +3,35 @@
 
 #include <string>
 #include <typeinfo>
+#include <boost/shared_ptr.hpp>
 
-using namespace std;
 
 namespace artivity
 {
     class Resource;
+    typedef boost::shared_ptr<Resource> ResourceRef;
     
     class PropertyValue
     {
     public:
-        const Resource* Value;
+        ResourceRef Value;
         
-        string LiteralValue;
+        std::string LiteralValue;
         
         const char* LiteralType;
 
-        PropertyValue(const Resource* resource)
+        PropertyValue(ResourceRef resource)
         {
             Value = resource;
-            LiteralValue = string();
+            LiteralValue = std::string();
             LiteralType = NULL;
         }
 
         
-        PropertyValue(const string& value, const type_info& literalType)
+        PropertyValue(const std::string& value, const type_info& literalType)
         {
             Value = NULL;
-            LiteralValue = string(value);
+            LiteralValue = std::string(value);
             LiteralType = literalType.name();
 
         }

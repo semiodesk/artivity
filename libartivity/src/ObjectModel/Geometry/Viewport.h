@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Viewport;
+    typedef boost::shared_ptr<Viewport> ViewportRef;
+
     class Viewport : public Rectangle
     {
     private:

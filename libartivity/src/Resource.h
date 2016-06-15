@@ -6,13 +6,16 @@
 #include <cstring>
 #include <sstream>
 #include "PropertyMap.h"
+#include <boost/shared_ptr.hpp>
 
-using namespace std;
 
 namespace artivity
 {           
     class Property;
     class Serializer;
+
+    class Resource;
+    typedef boost::shared_ptr<Resource> ResourceRef;
     
     class Resource
     {
@@ -22,18 +25,17 @@ namespace artivity
         PropertyMap Properties;
                 
     public:                    
-        string Uri;
+        std::string Uri;
         
-        Resource(string uriref);
+        Resource(std::string uriref);
         Resource(const char* uriref);
         virtual ~Resource() {}
 
-        bool is(const Resource& type);
+        bool is(ResourceRef type);
         
         void clear();
 
-        bool hasProperty(const Property& property, const Resource* value);
-        bool hasProperty(const Property& property, const Resource& value);
+        bool hasProperty(const Property& property, ResourceRef value);
         bool hasProperty(const Property& property, const time_t* value);
         bool hasProperty(const Property& property, const char* value);
         bool hasProperty(const Property& property, int value);
@@ -41,8 +43,7 @@ namespace artivity
         bool hasProperty(const Property& property, float value);
         bool hasProperty(const Property& property, double value);
         
-        void addProperty(const Property& property, const Resource* value);
-        void addProperty(const Property& property, const Resource& value);
+        void addProperty(const Property& property, ResourceRef value);
         void addProperty(const Property& property, const time_t* value);
         void addProperty(const Property& property, const char* value);
         void addProperty(const Property& property, int value);
@@ -50,8 +51,7 @@ namespace artivity
         void addProperty(const Property& property, float value);
         void addProperty(const Property& property, double value);
 
-        void removeProperty(const Property& property, const Resource* value);        
-        void removeProperty(const Property& property, const Resource& value);
+        void removeProperty(const Property& property, ResourceRef value);        
         void removeProperty(const Property& property, const time_t* value);
         void removeProperty(const Property& property, const char* value);
         void removeProperty(const Property& property, int value);
@@ -59,8 +59,7 @@ namespace artivity
         void removeProperty(const Property& property, float value);
         void removeProperty(const Property& property, double value);
 
-        void setValue(const Property& property, const Resource* value);        
-        void setValue(const Property& property, const Resource& value);
+        void setValue(const Property& property, ResourceRef value);        
         void setValue(const Property& property, const time_t* value);
         void setValue(const Property& property, const char* value);
         void setValue(const Property& property, int value);
@@ -68,17 +67,17 @@ namespace artivity
         void setValue(const Property& property, float value);
         void setValue(const Property& property, double value);
         
-        void setType(const Resource* type);
+        void setType(ResourceRef type);
         void setType(const Resource& type);
         void setType(const char* value);
         
-        const Resource* getType();
+        const ResourceRef getType();
         
-        void setUri(string uriref);
+        void setUri(std::string uriref);
         
-        bool operator==(const Resource& other);
+        bool operator==(ResourceRef other);
         
-        friend ostream& operator<<(ostream& out, const Resource& resource);
+        friend std::ostream& operator<<(std::ostream& out, ResourceRef resource);
     };
 }
 

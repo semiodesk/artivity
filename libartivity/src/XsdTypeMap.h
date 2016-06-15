@@ -1,5 +1,5 @@
-#ifndef TYPEMAP_H
-#define TYPEMAP_H
+#ifndef __ART_TYPEMAP_H
+#define __ART_TYPEMAP_H
 
 #include <ctime>
 #include <typeinfo>

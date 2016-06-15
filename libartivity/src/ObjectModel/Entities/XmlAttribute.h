@@ -6,10 +6,13 @@
 
 namespace artivity
 {
+    class XmlAttribute;
+    typedef boost::shared_ptr<XmlAttribute> XmlAttributeRef;
+
     class XmlAttribute: public Entity
     {
     private:        
-        XmlElement* _ownerElement;
+        XmlElementRef _ownerElement;
         
         const char* _localName;
         
@@ -19,12 +22,12 @@ namespace artivity
             setType(xml::Attribute);
         }
         
-        XmlElement* getOwnerElement()
+        XmlElementRef getOwnerElement()
         {
             return _ownerElement;
         }
         
-        void setOwnerElement(XmlElement* ownerElement)
+        void setOwnerElement(XmlElementRef ownerElement)
         {
             _ownerElement = ownerElement;
             

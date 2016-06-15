@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Redo;
+    typedef boost::shared_ptr<Redo> RedoRef;
+
     class Redo : public Generation
     {
     public:

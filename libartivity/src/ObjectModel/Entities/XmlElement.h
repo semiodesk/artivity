@@ -6,6 +6,9 @@
 
 namespace artivity
 {
+    class XmlElement;
+    typedef boost::shared_ptr<XmlElement> XmlElementRef;
+
     class XmlElement : public Entity
     {
     public:        

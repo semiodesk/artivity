@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Undo;
+    typedef boost::shared_ptr<Undo> UndoRef;
+
     class Undo : public Invalidation
     {
     public:

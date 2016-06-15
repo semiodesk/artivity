@@ -25,14 +25,15 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef ACTIVITYLOG_H
-#define ACTIVITYLOG_H
+#ifndef _ART_ACTIVITYLOG_H
+#define _ART_ACTIVITYLOG_H
 
 #include <string>
 #include <algorithm>
 #include <deque>
 #include <vector>
 #include <curl/curl.h>
+#include <boost/shared_ptr.hpp>
 
 #include "Resource.h"
 #include "Serializer.h"
@@ -45,65 +46,66 @@
 #include "ObjectModel/Entities/FileDataObject.h"
 #include "ObjectModel/Geometry/Canvas.h"
 
-using namespace std;
 
 namespace artivity
 {
-    typedef deque<Activity*>::iterator ActivityLogIterator;
-    typedef list<Resource*>::iterator ResourceIterator;
-    typedef list<Agent*>::iterator AgentIterator;
+    typedef std::list<ResourceRef> ResourceList;
+    typedef ResourceList::iterator ResourceIterator;
+    typedef std::list<AgentRef>::iterator AgentIterator;
+
+    
     
     class ActivityLog
     {
     protected:
         CURL* _curl;
         
-        deque<Activity*> _activities;
+        ActivityRef _activities;
     
-        list<Resource*> _resources;
+        ResourceList _resources;
         
-        list<Agent*> _agents;
+        std::list<AgentRef> _agents;
         
-        string _fileUri;
+        std::string _fileUri;
         
-        string _filePath;
+        std::string _filePath;
         
-        string _canvasUri;
+        std::string _canvasUri;
         
         double _canvasWidth;
         
         double _canvasHeight;
         
-        const Resource* _canvasUnit;
+        ResourceRef _canvasUnit;
         
         CURL* initializeRequest();
         
-        long executeRequest(CURL* curl, string url, string postFields, string& response);
+        long executeRequest(CURL* curl, std::string url, std::string postFields, std::string& response);
         
-        void logError(CURLcode responseCode, string msg);
+        void logError(CURLcode responseCode, std::string msg);
         
-        void logInfo(CURLcode responseCode, string msg);
+        void logInfo(CURLcode responseCode, std::string msg);
         
-        string getTime();
+        std::string getTime();
 
-        string getFileUri(string path);
+        std::string getFileUri(std::string path);
 
-        string getCanvasUri(string path);
+        std::string getCanvasUri(std::string path);
         
-        string getLatestVersionUri(string path);
+        string getLatestVersionUri(std::string path);
         
-        void createCanvas(FileDataObject* file, double width, double height, const Resource* unit);
+        void createCanvas(FileDataObjectRef file, double width, double height, ResourceRef unit);
         
         ResourceIterator findResource(const char* uri);
         
-        const char* _server = "http://localhost:8262";
+        std::string _server;
         const char* _uriAPI = "/artivity/1.0/uri";
         const char* _activityAPI = "/artivity/1.0/activities";
         const char* _monitorAPI = "/artivity/1.0/monitor";
         const char* _API = "/artivity/api/1.0";
         
     public:
-        ActivityLog();
+        ActivityLog(string server);
         
         virtual ~ActivityLog();
         
@@ -112,34 +114,26 @@ namespace artivity
         
         // Indicates if there are any activities in the log.
         bool empty();
-
-        ActivityLogIterator begin();
-        
-        Activity* first();
-        
-        ActivityLogIterator end();
-        
-        Activity* last();
         
         void clear();
 
         // Create a new resource and add it the transmitted RDF output.
-        template <class T> T* createResource()
+        template <typename T> boost::shared_ptr<T> createResource()
         {
             return createResource<T>(UriGenerator::getUri().c_str());
         }
         
         // Create a new resource with a given URI ant add it to the transmitted RDF output.
-        template <class T> T* createResource(const char* uri)
+        template <typename T> boost::shared_ptr<T> createResource(const char* uri)
         {            
-            T* t = new T(uri);
+            boost::shared_ptr<T> t(new T(uri));
             
             addResource(t);
             
             return t;
         }
         
-        template <class T> T* getResource(const char* uri)
+        template <typename T> boost::shared_ptr<T> getResource(const char* uri)
         {
             ResourceIterator it = findResource(uri);
             
@@ -148,26 +142,26 @@ namespace artivity
                 return NULL;
             }
             
-            return dynamic_cast<T*>(*it);
+            return boost::dynamic_pointer_cast<T>(*it);
         }
         
         bool hasResource(const char* uri);
 
         // Create a new activity and add to the transmitted RDF output.
-        template <class T> T* createActivity()
+        template <typename T> boost::shared_ptr<T> createActivity()
         {
             time_t now;
             time(&now);
                 
-            T* activity = new T();
+            boost::shared_ptr<T> activity = boost::shared_ptr<T>( new T() );
             activity->setStartTime(now);
             
-            addActivity(activity);
+            setActivity(activity);
             
             return activity;
         }
         
-        template <class T> T* createEntityVersion(T* entity, Canvas* canvas)
+        template <typename T> boost::shared_ptr<T> createEntityVersion(T* entity, Canvas* canvas)
         {
             T* version = createResource<T>();
             version->setCanvas(canvas);
@@ -176,9 +170,9 @@ namespace artivity
             return version;
         }
         
-        template <class T> T* createEntityInfluence(time_t time, const Resource& type, Viewport* viewport)
+        template <typename T> shared_ptr<T> createEntityInfluence(time_t time, const Resource& type, Viewport* viewport)
         {
-            T* influence = createResource<T>();
+            shared_ptr<T> influence = createResource<T>();
             influence->setType(type);
             influence->setTime(time);
             influence->setViewport(viewport);
@@ -186,52 +180,52 @@ namespace artivity
             return influence;
         }
         
-        Activity* updateActivity(Activity* activity);
+        ActivityRef updateActivity(ActivityRef activity);
         
         // Add an activity to the transmitted RDF output.
-        void addActivity(Activity* activity);
+        void setActivity(ActivityRef activity);
 
         // Remove an activity
-        void removeActivity(Activity* activity);
+        void resetActivity();
         
         // Adds an associated agent to any activities which are being logged.
-        void addAgent(Agent* agent);
+        void addAgent(AgentRef agent);
         
         // Removes an associated agent to any activities which are being logged.
-        void removeAgent(Agent* agent);
+        void removeAgent(AgentRef agent);
         
         bool hasFile(string path);
         
-        EditFile* editFile(string path, double width, double height, const Resource* lengthUnit);
+        EditFileRef editFile(std::string path, double width, double height, ResourceRef lengthUnit);
         
-        CreateFile* createFile(double width, double height, const Resource* lengthUnit);
+        CreateFileRef createFile(double width, double height, ResourceRef lengthUnit);
         
-        FileDataObject* getFile();
+        FileDataObjectRef getFile();
 
         string getFilePath() { return _filePath; }
                         
-        bool hasCanvas(double width, double height, const Resource* lengthUnit);
+        bool hasCanvas(double width, double height, ResourceRef lengthUnit);
 
-        void updateCanvas(double width, double height, const Resource* lengthUnit);
+        void updateCanvas(double width, double height, ResourceRef lengthUnit);
 
-        Canvas* getCanvas();
+        CanvasRef getCanvas();
         
         // Send all items in the queue to the Artivity server.
         void transmit();
         
-		void enableMonitoring(string path, string uri);
+        void enableMonitoring(std::string path, std::string uri);
         
-        void disableMonitoring(string path);
+        void disableMonitoring(std::string path);
         
-        string escapePath(string path);
+        std::string escapePath(std::string path);
 
-        string getThumbnailPath(string uri);
+        std::string getThumbnailPath(std::string uri);
 
         // Add a referenced resource to the transmitted RDF output.
-        void addResource(Resource* resource);
+        void addResource(ResourceRef resource);
 
         // Remove a referenced resource to the transmitted RDF output.
-        void removeResource(Resource* resource);
+        void removeResource(ResourceRef resource);
 
     };
 }

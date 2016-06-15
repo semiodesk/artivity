@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Geometry;
+    typedef boost::shared_ptr<Geometry> GeometryRef;
+
     class Geometry : public Resource
     {        
     public:

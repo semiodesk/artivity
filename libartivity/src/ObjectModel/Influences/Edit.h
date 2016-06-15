@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Edit;
+    typedef boost::shared_ptr<Edit> EditRef;
+
     class Edit : public Generation
     {
     public:

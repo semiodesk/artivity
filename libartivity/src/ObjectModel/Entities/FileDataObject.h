@@ -8,6 +8,9 @@
 
 namespace artivity
 {
+    class FileDataObject;
+    typedef boost::shared_ptr<FileDataObject> FileDataObjectRef;
+
     class FileDataObject : public Entity
     {
     private:
@@ -21,7 +24,7 @@ namespace artivity
         
         long _size;
         
-        Canvas* _canvas;
+        CanvasRef _canvas;
         
     public:
         FileDataObject() : Entity()
@@ -98,12 +101,12 @@ namespace artivity
             setValue(nfo::fileSize, size);
         }
         
-        Canvas* getCanvas()
+        CanvasRef getCanvas()
         {
             return _canvas;
         }
         
-        void setCanvas(Canvas* canvas)
+        void setCanvas(CanvasRef canvas)
         {
             _canvas = canvas;
             

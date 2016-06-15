@@ -8,12 +8,15 @@
 
 namespace artivity
 {
+    class Canvas;
+    typedef boost::shared_ptr<Canvas> CanvasRef;
+
     class Canvas : public Rectangle
     {
     private:
-        CoordinateSystem* _coordinateSystem;
+        CoordinateSystemRef _coordinateSystem;
         
-        const Resource* _lengthUnit;
+        ResourceRef _lengthUnit;
         
     public:
         Canvas() : Rectangle()
@@ -26,24 +29,24 @@ namespace artivity
             setType(art::Canvas);
         }
         
-        CoordinateSystem* getCoordinateSystem()
+        CoordinateSystemRef getCoordinateSystem()
         {
             return _coordinateSystem;
         }
         
-        void setCoordinateSystem(CoordinateSystem* coordinateSystem)
+        void setCoordinateSystem(CoordinateSystemRef coordinateSystem)
         {
             _coordinateSystem = coordinateSystem;
             
             setValue(art::coordinateSystem, coordinateSystem);
         }
         
-        const Resource* getLengthUnit()
+        ResourceRef getLengthUnit()
         {
             return _lengthUnit;
         }
         
-        void setLengthUnit(const Resource* lengthUnit)
+        void setLengthUnit(ResourceRef lengthUnit)
         {
             _lengthUnit = lengthUnit;
             

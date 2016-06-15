@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class DeleteFile;
+    typedef boost::shared_ptr<DeleteFile> DeleteFileRef;
+
     class DeleteFile : public Activity
     {
     public:
