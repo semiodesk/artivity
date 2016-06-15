@@ -28,8 +28,8 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
-using MonoMac.CoreServices;
-using MonoMac.CoreFoundation;
+using CoreServices;
+using CoreFoundation;
 
 namespace Artivity.Apid.Mac
 {

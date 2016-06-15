@@ -68,6 +68,10 @@ namespace Artivity.Api.Plugin.Win
             if( _key64 != null)
                 _key64.Dispose();
         }
+
+        public void Dispose ()
+        {
+        }
         #endregion
 
 

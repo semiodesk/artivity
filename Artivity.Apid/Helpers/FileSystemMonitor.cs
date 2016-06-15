@@ -304,11 +304,13 @@ namespace Artivity.Apid
         public void Dispose()
         {
             Disable();
+            _driveWatchersTimer.Elapsed -= UpdateDriveWatchers;
 
             foreach(IFileSystemWatcher watcher in _watchers.Values)
             {
                 watcher.Dispose();
             }
+            _driveWatchersTimer.Dispose ();
         }
 
         /// <summary>

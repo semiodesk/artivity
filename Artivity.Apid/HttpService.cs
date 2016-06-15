@@ -200,6 +200,7 @@ namespace Artivity.Apid
 
         public void Stop(bool waitForEnd = true)
         {
+            Logger.LogInfo ("Stopping service.");
             StopWatchdog();
 
             if (ServiceThread != null && ServiceThread.IsAlive)
@@ -214,6 +215,7 @@ namespace Artivity.Apid
                 Logger.LogInfo("Stopped service on port {0}", _servicePort);
             }
             StopDatabase();
+
         }
 
         private void StartService()
@@ -257,6 +259,7 @@ namespace Artivity.Apid
                         _wait.WaitOne();
 
                         monitor.Disable();
+                        monitor.Dispose();
                     }
 
                     _serviceHost.Stop();
@@ -345,8 +348,11 @@ namespace Artivity.Apid
 
         private void StopWatchdog()
         {
-            if (_watchdog != null)
+            if (_watchdog != null) 
+            {
                 _watchdog.Stop();
+                _watchdog.Dispose();
+            }
         }
 
         private void StopDatabase()
