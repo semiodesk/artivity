@@ -161,18 +161,18 @@ namespace artivity
             return activity;
         }
         
-        template <typename T> boost::shared_ptr<T> createEntityVersion(T* entity, Canvas* canvas)
+        template <typename T> boost::shared_ptr<T> createEntityVersion(boost::shared_ptr<T> entity, CanvasRef canvas)
         {
-            T* version = createResource<T>();
+            boost::shared_ptr<T> version = createResource<T>();
             version->setCanvas(canvas);
             version->addGenericEntity(entity);
             
             return version;
         }
         
-        template <typename T> shared_ptr<T> createEntityInfluence(time_t time, const Resource& type, Viewport* viewport)
+        template <typename T> boost::shared_ptr<T> createEntityInfluence(time_t time, const Resource& type, ViewportRef viewport)
         {
-            shared_ptr<T> influence = createResource<T>();
+            boost::shared_ptr<T> influence = createResource<T>();
             influence->setType(type);
             influence->setTime(time);
             influence->setViewport(viewport);
