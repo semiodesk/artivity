@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class BoundingRectangle;
+    typedef boost::shared_ptr<BoundingRectangle> BoundingRectangleRef;
+
     class BoundingRectangle : public Rectangle
     {
     public:

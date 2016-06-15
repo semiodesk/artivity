@@ -5,6 +5,9 @@
 
 namespace artivity
 {
+    class Invalidation;
+    typedef boost::shared_ptr<Invalidation> InvalidationRef;
+
     class Invalidation : public ActivityInfluence
     {        
     public:

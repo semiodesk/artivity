@@ -9,30 +9,31 @@
 #include "Generation.h"
 #include "Invalidation.h"
 
-using namespace std;
-
 namespace artivity
 {
+    class Entity;
+    typedef boost::shared_ptr<Entity> EntityRef;
+
     class Entity : public Resource
     {
     private:
-        Generation* _generation;
+        GenerationRef _generation;
         
-        Invalidation* _invalidation;
+        InvalidationRef _invalidation;
         
-        list<Entity*>* _genericEntities;
+        std::list<EntityRef>* _genericEntities;
         
     public:
         Entity() : Resource(UriGenerator::getUri())
         {
-            _genericEntities = new list<Entity*>();
+            _genericEntities = new std::list<EntityRef>();
             
             setType(prov::Entity);
         }
         
         Entity(const char* uriref) : Resource(uriref)
         {
-            _genericEntities = new list<Entity*>();
+            _genericEntities = new std::list<EntityRef>();
             
             setType(prov::Entity);
         }
@@ -49,43 +50,43 @@ namespace artivity
             _genericEntities->clear();
         }
         
-        Generation* getGeneration()
+        GenerationRef getGeneration()
         {
             return _generation;
         }
         
-        void setGeneration(Generation* generation)
+        void setGeneration(GenerationRef generation)
         {
             _generation = generation;
             
             setValue(prov::qualifiedGeneration, generation);
         }
         
-        Invalidation* getInvalidation()
+        InvalidationRef getInvalidation()
         {
             return _invalidation;
         }
         
-        void setInvalidation(Invalidation* invalidation)
+        void setInvalidation(InvalidationRef invalidation)
         {
             _invalidation = invalidation;
             
             setValue(prov::qualifiedInvalidation, invalidation);
         }
         
-        list<Entity*> getGenericEntities()
+        std::list<EntityRef> getGenericEntities()
         {
             return *_genericEntities;
         }
         
-        void addGenericEntity(Entity* entity)
+        void addGenericEntity(EntityRef entity)
         {
             _genericEntities->push_back(entity);
             
             addProperty(prov::specializationOf, entity);
         }
         
-        void removeGenericEntity(Entity* entity)
+        void removeGenericEntity(EntityRef entity)
         {
             _genericEntities->remove(entity);
             

@@ -8,10 +8,13 @@
 
 namespace artivity
 {
+    class Rectangle;
+    typedef boost::shared_ptr<Rectangle> RectangleRef;
+
     class Rectangle : public Geometry
     {
     private:
-        Point* _position;
+        PointRef _position;
         
         double _width;
         
@@ -28,12 +31,12 @@ namespace artivity
             setType(art::Rectangle);
         }
         
-        Point* getPosition()
+        PointRef getPosition()
         {
             return _position;
         }
         
-        void setPosition(Point* position)
+        void setPosition(PointRef position)
         {
             _position = position;
             

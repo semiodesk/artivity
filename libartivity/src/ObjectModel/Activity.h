@@ -10,16 +10,19 @@
 
 namespace artivity
 {
+    class Activity;
+    typedef boost::shared_ptr<Activity> ActivityRef;
+
     class Activity : public Resource
     {
     private:        
-        list<Association*>* _associations;
+        std::list<AssociationRef>* _associations;
     
-        list<Entity*>* _usedEntities;
+        std::list<EntityRef>* _usedEntities;
                     
-        list<Entity*>* _invalidatedEntities;
+        std::list<EntityRef>* _invalidatedEntities;
                                 
-        list<Entity*>* _generatedEntities;
+        std::list<EntityRef>* _generatedEntities;
 
         time_t _startTime;
         
@@ -43,21 +46,21 @@ namespace artivity
         void setEndTime(time_t time);
         time_t getEndTime();
         
-        list<Association*> getAssociations();
-        void addAssociation(Association* association);
-        void removeAssociation(Association* association);
+        std::list<AssociationRef> getAssociations();
+        void addAssociation(AssociationRef association);
+        void removeAssociation(AssociationRef association);
         
-        list<Entity*> getUsedEntities();
-        void addUsedEntity(Entity* entity);
-        void removeUsedEntity(Entity* entity);
+        std::list<EntityRef> getUsedEntities();
+        void addUsedEntity(EntityRef entity);
+        void removeUsedEntity(EntityRef entity);
         
-        list<Entity*> getInvalidatedEntities();
-        void addInvalidatedEntity(Entity* entity);
-        void removeInvalidatedEntity(Entity* entity);
+        std::list<EntityRef> getInvalidatedEntities();
+        void addInvalidatedEntity(EntityRef entity);
+        void removeInvalidatedEntity(EntityRef entity);
         
-        list<Entity*> getGeneratedEntities();
-        void addGeneratedEntity(Entity* entity);
-        void removeGeneratedEntity(Entity* entity);
+        std::list<EntityRef> getGeneratedEntities();
+        void addGeneratedEntity(EntityRef entity);
+        void removeGeneratedEntity(EntityRef entity);
     };
 }
 

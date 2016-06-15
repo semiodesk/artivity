@@ -5,6 +5,7 @@
 
 namespace artivity
 {
+    using namespace std;
 
 	string UriGenerator::getRandomId(unsigned long length)
 	{

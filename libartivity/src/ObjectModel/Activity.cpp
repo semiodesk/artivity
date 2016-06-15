@@ -10,20 +10,20 @@ namespace artivity
 {
     Activity::Activity() : Resource(UriGenerator::getUri())
     {
-        _associations = new list<Association*>();
-        _usedEntities = new list<Entity*>();
-        _invalidatedEntities = new list<Entity*>();
-        _generatedEntities = new list<Entity*>();
+        _associations = new list<AssociationRef>();
+        _usedEntities = new list<EntityRef>();
+        _invalidatedEntities = new list<EntityRef>();
+        _generatedEntities = new list<EntityRef>();
         
         setType(prov::Activity);
     }
     
     Activity::Activity(const char* uriref) : Resource(uriref)
     {
-        _associations = new list<Association*>();
-        _usedEntities = new list<Entity*>();
-        _invalidatedEntities = new list<Entity*>();
-        _generatedEntities = new list<Entity*>();
+        _associations = new list<AssociationRef>();
+        _usedEntities = new list<EntityRef>();
+        _invalidatedEntities = new list<EntityRef>();
+        _generatedEntities = new list<EntityRef>();
         
         setType(prov::Activity);
     }
@@ -88,12 +88,12 @@ namespace artivity
         return _startTime;
     }
     
-    list<Association*> Activity::getAssociations()
+    list<AssociationRef> Activity::getAssociations()
     {
         return *_associations;
     }
     
-    void Activity::addAssociation(Association* association)
+    void Activity::addAssociation(AssociationRef association)
     {
         if(hasProperty(prov::qualifiedAssociation, association)) return;
         
@@ -102,19 +102,19 @@ namespace artivity
         addProperty(prov::qualifiedAssociation, association);
     }
     
-    void Activity::removeAssociation(Association* association)
+    void Activity::removeAssociation(AssociationRef association)
     {        
         _associations->remove(association);
         
         removeProperty(prov::qualifiedAssociation, association);
     }
     
-    list<Entity*> Activity::getUsedEntities()
+    list<EntityRef> Activity::getUsedEntities()
     {
         return *_usedEntities;
     }
     
-    void Activity::addUsedEntity(Entity* entity)
+    void Activity::addUsedEntity(EntityRef entity)
     {
         if(hasProperty(prov::used, entity)) return;
         
@@ -123,19 +123,19 @@ namespace artivity
         addProperty(prov::used, entity);
     }
     
-    void Activity::removeUsedEntity(Entity* entity)
+    void Activity::removeUsedEntity(EntityRef entity)
     {
         _usedEntities->remove(entity);
         
         removeProperty(prov::used, entity);
     }
     
-    list<Entity*> Activity::getInvalidatedEntities()
+    list<EntityRef> Activity::getInvalidatedEntities()
     {
         return *_invalidatedEntities;
     }
     
-    void Activity::addInvalidatedEntity(Entity* entity)
+    void Activity::addInvalidatedEntity(EntityRef entity)
     {
         if(hasProperty(prov::invalidated, entity)) return;
         
@@ -144,19 +144,19 @@ namespace artivity
         addProperty(prov::invalidated, entity);
     }
     
-    void Activity::removeInvalidatedEntity(Entity* entity)
+    void Activity::removeInvalidatedEntity(EntityRef entity)
     {       
         _invalidatedEntities->remove(entity);
         
         removeProperty(prov::invalidated, entity);
     }
     
-    list<Entity*> Activity::getGeneratedEntities()
+    list<EntityRef> Activity::getGeneratedEntities()
     {
         return *_generatedEntities;
     }
     
-    void Activity::addGeneratedEntity(Entity* entity)
+    void Activity::addGeneratedEntity(EntityRef entity)
     {
         if(hasProperty(prov::generated, entity)) return;
         
@@ -165,7 +165,7 @@ namespace artivity
         addProperty(prov::generated, entity);
     }
     
-    void Activity::removeGeneratedEntity(Entity* entity)
+    void Activity::removeGeneratedEntity(EntityRef entity)
     {        
         _generatedEntities->remove(entity);
         

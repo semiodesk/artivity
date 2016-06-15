@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class CreateFile;
+    typedef boost::shared_ptr<CreateFile> CreateFileRef;
+
     class CreateFile : public Activity
     {
     public:

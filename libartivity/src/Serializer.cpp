@@ -9,9 +9,9 @@
 namespace artivity
 {
   
-    string Serializer::toString(const Resource& value)
+    string Serializer::toString(ResourceRef value)
     {            
-        return value.Uri;
+        return value->Uri;
     }
     
     string Serializer::toString(const char* value)
@@ -70,7 +70,7 @@ namespace artivity
         return string(buf);
     }
     
-    string Serializer::serialize(Resource& resource, RdfSerializationFormat format)
+    string Serializer::serialize(ResourceRef resource, RdfSerializationFormat format)
     {
         stringstream s;
         
@@ -79,20 +79,20 @@ namespace artivity
         return s.str();
     }
     
-    stringstream& Serializer::serialize(stringstream& out, Resource& resource, RdfSerializationFormat format)
+    stringstream& Serializer::serialize(stringstream& out, ResourceRef resource, RdfSerializationFormat format)
     {
         if(format == N3)
         {               
-            if (resource.Properties.size() == 0)
+            if (resource->Properties.size() == 0)
                 return out;
 
             out << resource;
             
-            PropertyMapIterator it = resource.Properties.begin();
+            PropertyMapIterator it = resource->Properties.begin();
             
-            while(it != resource.Properties.end())
+            while(it != resource->Properties.end())
             {
-                if(it != resource.Properties.begin())
+                if(it != resource->Properties.begin())
                 {
                     out << ";" << endl;
                 }

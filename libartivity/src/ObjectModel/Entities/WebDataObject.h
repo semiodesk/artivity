@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class WebDataObject;
+    typedef boost::shared_ptr<WebDataObject> WebDataObjectRef;
+
     class WebDataObject : public Entity
     {
     public:

@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class BoundingCube;
+    typedef boost::shared_ptr<BoundingCube> BoundingCubeRef;
+
     class BoundingCube : public Cube
     {
     public:

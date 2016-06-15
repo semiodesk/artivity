@@ -35,11 +35,11 @@
 
 using namespace artivity;
 
-ActivityLog::ActivityLog() 
+ActivityLog::ActivityLog(std::string server) 
 {
+    _server = server;
     _curl = initializeRequest(); // For use with curl_easy_escape.
-    _activities = deque<Activity*>();
-    _resources = list<Resource*>();
+    _resources = ResourceList();
     _fileUri = "";
     _filePath = "";
     _canvasUri = "";
@@ -49,27 +49,10 @@ ActivityLog::~ActivityLog()
 {
     clear();
     
-    // Free all the activities in the log.
-    ActivityLogIterator ait = _activities.begin();
-    
-    while(ait != _activities.end())
-    {
-        delete *ait;
-        
-        ait++;
-    }
-    
-    _activities.clear();
-    
     // Free all the associated agents still in the log.
     AgentIterator agit = _agents.begin();
     
-    while(agit != _agents.end())
-    {
-        delete *agit;
-        
-        agit++;
-    }
+    _agents.clear();
 
 	curl_easy_cleanup(_curl);
 }
@@ -80,54 +63,14 @@ bool ActivityLog::connected()
     return true;
 }
 
-bool ActivityLog::empty()
-{
-    return _activities.empty() && _resources.empty();
-}
-
-ActivityLogIterator ActivityLog::begin()
-{
-    return _activities.begin();
-}
-
-Activity* ActivityLog::first()
-{
-    return _activities.empty() ? NULL : *(_activities.begin());
-}
-
-ActivityLogIterator ActivityLog::end()
-{
-    return _activities.end();
-}
-
-Activity* ActivityLog::last()
-{
-    return _activities.empty() ? NULL : *(_activities.end());
-}
 
 void ActivityLog::clear()
 {
-    ActivityLogIterator ait = _activities.begin();
-    
-    while(ait != _activities.end())
-    {
-        // Just clear the properties so that the activities
-        // can be reused at a later time.
-        (*ait)->clear();
-        
-        ait++;
-    }
-    
+
     // Free all the activities still in the log.
     ResourceIterator rit = _resources.begin();
     
-    while(rit != _resources.end())
-    {           
-        delete *rit;
-        
-        rit++;
-    }
-    
+   
     if (_resources.size() > 0)
         _resources.clear();
 }
@@ -154,66 +97,60 @@ bool ActivityLog::hasResource(const char* uri)
     return findResource(uri) != _resources.end();
 }
 
-void ActivityLog::addResource(Resource* resource)
+void ActivityLog::addResource(ResourceRef resource)
 {        
     _resources.push_back(resource);
 }
 
-void ActivityLog::removeResource(Resource* resource)
+void ActivityLog::removeResource(ResourceRef resource)
 {
     _resources.remove(resource);
 }
 
-void ActivityLog::addActivity(Activity* activity)
+void ActivityLog::setActivity(ActivityRef activity)
 {
-    _activities.push_back(activity);
-         
+    _activities = activity;
+
     AgentIterator agit = _agents.begin();
-    
-    while(agit != _agents.end())
+
+    while (agit != _agents.end())
     {
-        Association* association = createResource<Association>();
+        AssociationRef association = createResource<Association>();
         association->setAgent(*agit);
-        
+
         activity->addAssociation(association);
-        
+
         agit++;
     }
+    
 }
 
-void ActivityLog::removeActivity(Activity* activity)
+ActivityRef ActivityLog::updateActivity(ActivityRef activity)
 {
-    ActivityLogIterator it = std::find(_activities.begin(), _activities.end(), activity);
-    if (it != _activities.end())
-        _activities.erase(it);
-}
-
-Activity* ActivityLog::updateActivity(Activity* activity)
-{
-    Activity* a = createResource<Activity>(activity->Uri.c_str());
+    ActivityRef a = createResource<Activity>(activity->Uri.c_str());
     a->setType(activity->getType());
     
     return a;
 }
 
-void ActivityLog::addAgent(Agent* agent)
+void ActivityLog::addAgent(AgentRef agent)
 {
     _agents.push_back(agent);
 }
 
-void ActivityLog::removeAgent(Agent* agent)
+void ActivityLog::removeAgent(AgentRef agent)
 {
     _agents.remove(agent);
 }
 
 // Create a new file data object without a path. For use with unsaved new files.
-artivity::CreateFile* ActivityLog::createFile(double width, double height, const Resource* lengthUnit)
+CreateFileRef ActivityLog::createFile(double width, double height, ResourceRef lengthUnit)
 {        
     time_t now;
     time(&now);
     
     // Add the new file to the transmitted RDF output.
-    FileDataObject* file = createResource<FileDataObject>();
+    FileDataObjectRef file = createResource<FileDataObject>();
     file->setCreationTime(now);
     
     _fileUri = string(file->Uri);
@@ -222,13 +159,13 @@ artivity::CreateFile* ActivityLog::createFile(double width, double height, const
     // Add a canvas to the newly created file.
     createCanvas(file, width, height, lengthUnit);
       
-	artivity::CreateFile* activity = createActivity<artivity::CreateFile>();
+	CreateFileRef activity = createActivity<CreateFile>();
     activity->addUsedEntity(file);
     
     return activity;
 }
 
-EditFile* ActivityLog::editFile(string path, double width, double height, const Resource* lengthUnit)
+EditFileRef ActivityLog::editFile(string path, double width, double height, ResourceRef lengthUnit)
 {
     _fileUri = string(getFileUri(path));
     _filePath = path;
@@ -240,7 +177,7 @@ EditFile* ActivityLog::editFile(string path, double width, double height, const 
     _canvasHeight = height;
     _canvasUnit = lengthUnit;
     
-    FileDataObject* file = createResource<FileDataObject>(_fileUri.c_str());
+    FileDataObjectRef file = createResource<FileDataObject>(_fileUri.c_str());
 
     if (_canvasUri == "")
     {
@@ -248,7 +185,7 @@ EditFile* ActivityLog::editFile(string path, double width, double height, const 
     }
 
 
-    EditFile* activity = createActivity<EditFile>();
+    EditFileRef activity = createActivity<EditFile>();
     activity->addUsedEntity(file);
     
     return activity;
@@ -259,7 +196,7 @@ bool ActivityLog::hasFile(string path)
     return path != "" && path == _filePath;
 }
 
-FileDataObject* ActivityLog::getFile()
+FileDataObjectRef ActivityLog::getFile()
 {
     if(_fileUri == "")
     {
@@ -320,7 +257,7 @@ string ActivityLog::getThumbnailPath(string fileUri)
     jsonxx::Array a;
     bool valid = a.parse(result);
 
-    return valid ? a.get<jsonxx::String>(a.size() -1) : "";
+    return valid ? a.get<jsonxx::String>((int)a.size() -1) : "";
 }
 
 string ActivityLog::getCanvasUri(string path)
@@ -336,7 +273,7 @@ string ActivityLog::getCanvasUri(string path)
 }
 
 
-void ActivityLog::createCanvas(FileDataObject* file, double width, double height, const Resource* lengthUnit)
+void ActivityLog::createCanvas(FileDataObjectRef file, double width, double height, ResourceRef lengthUnit)
 {
     if(file == NULL)
     {
@@ -344,12 +281,12 @@ void ActivityLog::createCanvas(FileDataObject* file, double width, double height
     }
     
     // Transmit the coorindate system which is associated with the new canvas.
-    CoordinateSystem* coordinateSystem = createResource<CoordinateSystem>();
+    CoordinateSystemRef coordinateSystem  = createResource<CoordinateSystem>();
     coordinateSystem->setCoordinateDimension(2);
     coordinateSystem->setTransformationMatrix("[1 0 0; 0 1 0; 0 0 0]");
     
     // Transmit the new canvas.
-    Canvas* canvas = createResource<Canvas>();
+    CanvasRef canvas = createResource<Canvas>();
     canvas->setWidth(width);
     canvas->setHeight(height);
     canvas->setLengthUnit(lengthUnit);
@@ -364,19 +301,19 @@ void ActivityLog::createCanvas(FileDataObject* file, double width, double height
     file->setCanvas(canvas);
 }
 
-void ActivityLog::updateCanvas(double width, double height, const Resource* lengthUnit)
+void ActivityLog::updateCanvas(double width, double height, ResourceRef lengthUnit)
 {
     if(hasCanvas(width, height, lengthUnit))
     {
         return;
     }
             
-    FileDataObject* file = getFile();
+    FileDataObjectRef file = getFile();
 
     createCanvas(file, width, height, lengthUnit);
 }
 
-Canvas* ActivityLog::getCanvas()
+CanvasRef ActivityLog::getCanvas()
 {
     if (_canvasUri == "")
     {
@@ -396,7 +333,7 @@ Canvas* ActivityLog::getCanvas()
 
 }
 
-bool ActivityLog::hasCanvas(double width, double height, const Resource* lengthUnit)
+bool ActivityLog::hasCanvas(double width, double height, ResourceRef lengthUnit)
 {
     return _canvasUri != "" && _canvasWidth == width && _canvasHeight == height && _canvasUnit == lengthUnit;
 }
@@ -405,20 +342,16 @@ void ActivityLog::transmit()
 {        
     stringstream stream;
     
-    ActivityLogIterator ait = _activities.begin();
 	Serializer s;
-    while(ait != _activities.end())
-    {            
-        s.serialize(stream, **ait, N3);
-        
-        ait++;
-    }
+         
+    s.serialize(stream, _activities, N3);
+     
     
     ResourceIterator rit = _resources.begin();
     
     while(rit != _resources.end())
     {
-        s.serialize(stream, **rit, N3);
+        s.serialize(stream, *rit, N3);
         
         rit++;
     }
@@ -561,7 +494,7 @@ string ActivityLog::escapePath(string path)
         {            
             if(!token.empty())
             {
-                char* t = curl_easy_escape(_curl, token.c_str(), token.length());
+                char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
                 
                 result << string(t);
                 
@@ -583,7 +516,7 @@ string ActivityLog::escapePath(string path)
     
     if(!token.empty())
     {
-        char* t = curl_easy_escape(_curl, token.c_str(), token.length());
+        char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
         
         result << string(t);
         

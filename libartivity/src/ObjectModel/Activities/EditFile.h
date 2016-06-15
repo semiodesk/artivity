@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class EditFile;
+    typedef boost::shared_ptr<EditFile> EditFileRef;
+
     class EditFile : public Activity
     {
     public:

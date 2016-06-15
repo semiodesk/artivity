@@ -1,5 +1,5 @@
-#ifndef CUBE_H
-#define CUBE_H
+#ifndef _ART_CUBE_H
+#define _ART_CUBE_H
 
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
@@ -10,7 +10,7 @@ namespace artivity
     class Cube : public Geometry
     {
     private:
-        Point* _position;
+        PointRef _position;
         
         double _width;
         
@@ -29,12 +29,12 @@ namespace artivity
             setType(art::Cube);
         }
         
-        Point* getPosition()
+        PointRef getPosition()
         {
             return _position;
         }
         
-        void setPosition(Point* position)
+        void setPosition(PointRef position)
         {
             _position = position;
             

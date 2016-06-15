@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Agent;
+    typedef boost::shared_ptr<Agent> AgentRef;
+
     class Agent : public Resource
     {
     public:

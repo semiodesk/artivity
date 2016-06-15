@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Point;
+    typedef boost::shared_ptr<Point> PointRef;
+
     class Point : public Resource
     {
     private:

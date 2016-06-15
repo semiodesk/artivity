@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Browse;
+    typedef boost::shared_ptr<Browse> BrowseRef;
+
     class Browse : public Activity
     {
     public:

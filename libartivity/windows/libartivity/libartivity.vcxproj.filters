@@ -150,16 +150,10 @@
     <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Serializer.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\SoftwareAgent.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Influences\Undo.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\UriGenerator.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Viewport.h">
@@ -181,6 +175,12 @@
       <Filter>Header Files\Ontologies</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\JSON\jsonxx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Serializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\UriGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -206,5 +206,8 @@
     <ClCompile Include="..\..\src\JSON\jsonxx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

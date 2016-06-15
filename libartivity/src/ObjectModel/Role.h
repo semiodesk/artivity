@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Role;
+    typedef boost::shared_ptr<Role> RoleRef;
+
     class Role : public Resource
     {
     public:

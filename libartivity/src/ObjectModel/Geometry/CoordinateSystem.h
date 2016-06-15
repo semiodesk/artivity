@@ -9,6 +9,9 @@
 
 namespace artivity
 {
+    class CoordinateSystem;
+    typedef boost::shared_ptr<CoordinateSystem> CoordinateSystemRef;
+
     class CoordinateSystem : public Resource
     {
     private:

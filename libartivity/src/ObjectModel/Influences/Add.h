@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Add;
+    typedef boost::shared_ptr<Add> AddRef;
+
     class Add : public Generation
     {
     public:

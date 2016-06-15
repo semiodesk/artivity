@@ -7,6 +7,9 @@
 
 namespace artivity
 {
+    class Remove;
+    typedef boost::shared_ptr<Remove> RemoveRef;
+
     class Remove : public Generation
     {
     public:

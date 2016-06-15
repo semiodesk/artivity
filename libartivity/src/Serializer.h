@@ -1,5 +1,5 @@
-#ifndef SERIALIZER_H
-#define SERIALIZER_H
+#ifndef __ART_SERIALIZER_H
+#define __ART_SERIALIZER_H
 
 #include <map>
 #include <string>
@@ -22,7 +22,7 @@ namespace artivity
         Serializer() {}
         ~Serializer() {}
 
-        static string toString(const Resource& value);
+        static string toString(ResourceRef value);
         static string toString(const char* value);
 		static string toString(int value);
 		static string toString(long value);
@@ -30,8 +30,8 @@ namespace artivity
 		static string toString(double value);
 		static string toString(const time_t* value);
         
-        string serialize(Resource& resource, RdfSerializationFormat format);
-        stringstream& serialize(stringstream& out, Resource& resource, RdfSerializationFormat format);
+        string serialize(ResourceRef resource, RdfSerializationFormat format);
+        stringstream& serialize(stringstream& out, ResourceRef resource, RdfSerializationFormat format);
     };
 }
 

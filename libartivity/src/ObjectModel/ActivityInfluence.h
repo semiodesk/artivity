@@ -9,14 +9,17 @@
 
 namespace artivity
 {
+    class ActivityInfluence;
+    typedef boost::shared_ptr<ActivityInfluence> ActivityInfluenceRef;
+
     class ActivityInfluence : public Resource
     {
     private:
-        Viewport* _viewport;
+        ViewportRef _viewport;
         
-        Geometry* _boundaries;
+        GeometryRef _boundaries;
         
-        Resource* _location;
+        ResourceRef _location;
         
         time_t _time;
                 
@@ -35,36 +38,36 @@ namespace artivity
             setType(prov::ActivityInfluence);
         }
         
-        Viewport* getViewport()
+        ViewportRef getViewport()
         {
             return _viewport;
         }
         
-        void setViewport(Viewport* viewport)
+        void setViewport(ViewportRef viewport)
         {
             _viewport = viewport;
             
             Resource::setValue(art::hadViewport, viewport);
         }
         
-        Geometry* getBoundaries()
+        GeometryRef getBoundaries()
         {
             return _boundaries;
         }
         
-        void setBoundaries(Geometry* boundaries)
+        void setBoundaries(GeometryRef boundaries)
         {
             _boundaries = boundaries;
             
             Resource::setValue(art::hadBoundaries, boundaries);
         }
         
-        Resource* getLocation()
+        ResourceRef getLocation()
         {
             return _location;
         }
         
-        void setLocation(Resource* location)
+        void setLocation(ResourceRef location)
         {
             _location = location;
             

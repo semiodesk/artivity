@@ -16,7 +16,7 @@ namespace artivity
         PropertyMap() {}
         ~PropertyMap() {}
         
-        PropertyMapIterator findProperty(const string& property, const Resource* resource)
+        PropertyMapIterator findProperty(const string& property, ResourceRef resource)
         {
             if(resource == NULL) return end();
             
@@ -55,7 +55,7 @@ namespace artivity
             return it;
         }
         
-        bool hasProperty(const string& property, const Resource* resource)
+        bool hasProperty(const string& property, ResourceRef resource)
         {
             return findProperty(property, resource) != end();
         }
@@ -65,7 +65,7 @@ namespace artivity
             return findProperty(property, literalValue, typeInfo) != end();
         }
         
-        void addProperty(const string& property, const Resource* resource)
+        void addProperty(const string& property, ResourceRef resource)
         {
             if(resource == NULL || hasProperty(property, resource)) return;
             
@@ -79,7 +79,7 @@ namespace artivity
             insert(pair<string, PropertyValue>(property, PropertyValue(literalValue, typeInfo)));
         }
         
-        void removeProperty(const string& property, const Resource* resource)
+        void removeProperty(const string& property, ResourceRef resource)
         {
             PropertyMapIterator it = findProperty(property, resource);
             
@@ -97,7 +97,7 @@ namespace artivity
             erase(it);
         }
         
-        void setProperty(const string& property, const Resource* resource)
+        void setProperty(const string& property, ResourceRef resource)
         {
             erase(property);
             
