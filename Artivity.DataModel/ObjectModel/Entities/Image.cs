@@ -1,4 +1,4 @@
-﻿// LICENSE:
+// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,18 +25,30 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Semiodesk.Trinity;
 using System;
+using System.Collections.Generic;
+using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
 {
-	[RdfClass(ART.Browse)]
-	public class Browse : Activity
+	[RdfClass(NFO.Image)]
+	public class Image : Entity
     {
-        #region Constructors
+        #region Members
 
-        public Browse(Uri uri) : base(uri) {}
+        [RdfProperty(ART.canvas)]
+        public List<Canvas> Canvases { get; set; }
+
+        [RdfProperty(ART.coordinateSystem)]
+        public CoordinateSystem CoordinateSystem { get; set; }
 
         #endregion
-    }
+
+        #region Constructors
+
+        public Image(Uri uri) : base(uri) { }
+
+		#endregion
+	}
 }
+

@@ -34,13 +34,6 @@ namespace Artivity.DataModel
 	[RdfClass(NFO.WebDataObject)]
 	public class WebDataObject : Entity
 	{
-		#region Members
-
-		[RdfProperty(NIE.title)]
-		public string Title { get; set; }
-
-		#endregion
-
 		#region Constructors
 
 		public WebDataObject(Uri uri) : base(uri) {}

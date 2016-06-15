@@ -1,4 +1,4 @@
-﻿// LICENSE:
+// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,7 @@
 //
 // AUTHORS:
 //
+//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
@@ -29,27 +30,14 @@ using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.DatabaseState)]
-    public class DatabaseState : Resource
-    {
-        #region Members
+	[RdfClass(NFO.VectorImage)]
+	public class VectorImage : Entity
+	{
+		#region Constructors
 
-        [RdfProperty(ART.atTime)]
-        public DateTime Time { get; set; }
+        public VectorImage(Uri uri) : base(uri) { }
 
-        [RdfProperty(NFO.fileSize)]
-        public long FileSize { get; set; }
-
-        [RdfProperty(ART.factsCount)]
-        public long FactsCount { get; set; }
-
-        #endregion
-
-        #region Constructors
-
-        public DatabaseState(Uri uri) : base(uri) {}
-
-        #endregion
-    }
+		#endregion
+	}
 }
 

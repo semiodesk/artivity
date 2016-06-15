@@ -30,7 +30,7 @@ using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.Geometry)]
+    [RdfClass(GEO.Geometry)]
     public class Geometry : Resource
     {
         #region Constructors

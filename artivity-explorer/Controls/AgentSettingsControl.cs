@@ -35,7 +35,7 @@ namespace Artivity.Explorer
             DataStore = _agents;
 
             Columns.Add(new GridColumn {
-                DataCell = new CheckBoxCell { Binding = Binding.Property<SoftwareAgent, bool?>(a => a.IsCaptureEnabled) },
+                DataCell = new CheckBoxCell { Binding = Binding.Property<SoftwareAgent, bool?>(a => a.IsLoggingEnabled) },
                 Editable = true,
                 HeaderText = ""
             });

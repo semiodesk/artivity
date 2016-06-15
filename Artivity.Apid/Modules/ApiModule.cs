@@ -327,7 +327,7 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        public void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
+        public void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool loggingEnabled = false)
         {
             UriRef agentUri = new UriRef(uri);
 
@@ -335,10 +335,14 @@ namespace Artivity.Apid.Modules
             {
                 Logger.LogInfo("Installing agent {0}", name);
 
+                FileDataObject executable = model.CreateResource<FileDataObject>();
+                executable.Url = executableName;
+                executable.Commit();
+
                 SoftwareAgent agent = model.CreateResource<SoftwareAgent>(agentUri);
                 agent.Name = name;
-                agent.ExecutableName = executableName;
-                agent.IsCaptureEnabled = captureEnabled;
+                agent.Executable = executable;
+                agent.IsLoggingEnabled = loggingEnabled;
                 agent.ColourCode = colour;
                 agent.Commit();
             }

@@ -289,7 +289,7 @@ namespace Artivity.Explorer
                 SoftwareAgent agent = model.CreateResource<SoftwareAgent>(agentUri);
                 agent.Name = name;
                 agent.ExecutableName = executableName;
-                agent.IsCaptureEnabled = captureEnabled;
+                agent.IsLoggingEnabled = captureEnabled;
                 agent.ColourCode = colour;
                 agent.Commit();
             }

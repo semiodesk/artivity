@@ -1,4 +1,4 @@
-﻿// LICENSE:
+// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,30 +30,24 @@ using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.Cube)]
-    public class Cube : Geometry
-    {
-        #region Members
+	[RdfClass(NFO.Folder)]
+	public class Folder : Entity
+	{
+		#region Members
 
-        [RdfProperty(ART.position)]
-        public Point Position { get; set; }
+		[RdfProperty(NAO.created)]
+		public DateTime CreationTime { get; set; }
 
-        [RdfProperty(ART.width)]
-        public double Width { get; set; }
+		[RdfProperty(NAO.lastModified)]
+		public DateTime LastModificationTime { get; set; }
 
-        [RdfProperty(ART.height)]
-        public double Height { get; set; }
+		#endregion
 
-        [RdfProperty(ART.depth)]
-        public double Depth { get; set; }
+		#region Constructors
 
-        #endregion
+        public Folder(Uri uri) : base(uri) { }
 
-        #region Constructors
-
-        public Cube(Uri uri) : base(uri) {}
-
-        #endregion
-    }
+		#endregion
+	}
 }
 

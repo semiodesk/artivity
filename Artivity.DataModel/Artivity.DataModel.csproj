@@ -45,6 +45,12 @@
     <Compile Include="IModelProvider.cs" />
     <Compile Include="Journal\Journal.cs" />
     <Compile Include="Journal\JournalFile.cs" />
+    <Compile Include="ObjectModel\Activities\ViewFile.cs" />
+    <Compile Include="ObjectModel\Entities\Website.cs" />
+    <Compile Include="ObjectModel\Entities\RasterImage.cs" />
+    <Compile Include="ObjectModel\Entities\Image.cs" />
+    <Compile Include="ObjectModel\Entities\VectorImage.cs" />
+    <Compile Include="ObjectModel\Entities\Folder.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
     <Compile Include="ObjectModel\Person.cs" />
     <Compile Include="ObjectModel\Activity.cs" />
@@ -69,31 +75,24 @@
     <Compile Include="ObjectModel\EntityInfluence.cs" />
     <Compile Include="ObjectModel\Usage.cs" />
     <Compile Include="ObjectModel\Geometry\Canvas.cs" />
-    <Compile Include="ObjectModel\Geometry\BoundingCube.cs" />
     <Compile Include="ObjectModel\Geometry\BoundingRectangle.cs" />
     <Compile Include="ObjectModel\Geometry\CartesianCoordinateSystem.cs" />
     <Compile Include="ObjectModel\Geometry\CoordinateSystem.cs" />
-    <Compile Include="ObjectModel\Geometry\Cube.cs" />
     <Compile Include="ObjectModel\Geometry\Geometry.cs" />
     <Compile Include="ObjectModel\Geometry\Point.cs" />
     <Compile Include="ObjectModel\Geometry\Rectangle.cs" />
     <Compile Include="ObjectModel\Geometry\Viewport.cs" />
-    <Compile Include="ObjectModel\Activities\Browse.cs" />
+    <Compile Include="ObjectModel\Activities\WebBrowsing.cs" />
     <Compile Include="ObjectModel\Activities\CreateFile.cs" />
     <Compile Include="ObjectModel\Activities\EditFile.cs" />
-    <Compile Include="ObjectModel\Influences\Add.cs" />
     <Compile Include="ObjectModel\Influences\Redo.cs" />
-    <Compile Include="ObjectModel\Influences\Remove.cs" />
     <Compile Include="ObjectModel\Influences\Undo.cs" />
     <Compile Include="ObjectModel\Activities\DeleteFile.cs" />
-    <Compile Include="ObjectModel\Influences\Edit.cs" />
-    <Compile Include="ObjectModel\Influences\View.cs" />
-    <Compile Include="ObjectModel\Database.cs" />
-    <Compile Include="ObjectModel\DatabaseState.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Ontologies\geo.rdf" />
     <None Include="Ontologies\nao.rdf" />
     <None Include="Ontologies\prov.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

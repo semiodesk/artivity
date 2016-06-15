@@ -35,6 +35,10 @@ namespace Artivity.DataModel
 	{
 		#region Members
 
+        // TODO: Map into a URI, not a literal value. (Needs changing libartivity).
+        [RdfProperty(NIE.url)]
+        public string Url { get; set; }
+
 		[RdfProperty(PROV.qualifiedGeneration)]
 		public Generation Generation { get; set; }
 

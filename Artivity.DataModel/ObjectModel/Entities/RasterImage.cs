@@ -1,4 +1,4 @@
-﻿// LICENSE:
+// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,14 +30,14 @@ using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.BoundingCube)]
-    public class BoundingCube : Cube
-    {
-        #region Constructors
+	[RdfClass(NFO.RasterImage)]
+	public class RasterImage : Image
+	{
+		#region Constructors
 
-        public BoundingCube(Uri uri) : base(uri) {}
+        public RasterImage(Uri uri) : base(uri) { }
 
-        #endregion
-    }
+		#endregion
+	}
 }
 

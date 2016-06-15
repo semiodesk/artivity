@@ -20,10 +20,10 @@ namespace Artivity.DataModel
 		[RdfProperty(PROV.value)]
 		public string Value { get; set; }
 
-		[RdfProperty(ART.hadViewport)]
+		[RdfProperty(ART.viewport)]
 		public Viewport Viewport { get; set; }
 
-        [RdfProperty(ART.hadBoundaries)]
+        [RdfProperty(ART.boundaries)]
         public Geometry Boundaries { get; set; }
 
         [RdfProperty(DCES.description)]

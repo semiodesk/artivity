@@ -20,67 +20,23 @@
 //
 // AUTHORS:
 //
+//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Semiodesk.Trinity;
-using System.Linq;
+using System;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.Database)]
-    public class Database : Resource
+	[RdfClass(ART.ViewFile)]
+	public class ViewFile : Activity
     {
-        #region Members
-
-        [RdfProperty(NFO.fileUrl)]
-        public string Url { get; set; }
-
-        [RdfProperty(ART.isMonitoringEnabled)]
-        public bool IsMonitoringEnabled { get; set; }
-
-        [RdfProperty(ART.hadState)]
-        public ObservableCollection<DatabaseState> States { get; private set; }
-
-        #endregion
-
         #region Constructors
 
-        public Database(Uri uri) : base(uri) {}
-
-        #endregion
-
-        #region Methods
-
-        public long GetFileSize()
-        {
-            string path = new Uri(Url).AbsolutePath;
-
-            if (File.Exists(path))
-            {
-                return new FileInfo(path).Length;
-            }
-            else
-            {
-                return -1;
-            }
-        }
-
-        public long GetFactsCount(IModelProvider provider)
-        {
-            SparqlQuery query = new SparqlQuery("select count(?s) as ?factsCount where { ?s ?p ?o . }");
-
-            IEnumerable<BindingSet> bindings = provider.GetAllActivities().ExecuteQuery(query).GetBindings();
-
-            return bindings.Any() ? Convert.ToInt32(bindings.First()["factsCount"]) : -1;
-        }
+        public ViewFile(Uri uri) : base(uri) { }
 
         #endregion
     }
 }
-    
