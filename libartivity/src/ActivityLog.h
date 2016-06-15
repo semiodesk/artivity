@@ -113,7 +113,7 @@ namespace artivity
         bool connected();
         
         // Indicates if there are any activities in the log.
-        bool empty();
+        bool empty() { return _activities != NULL; }
         
         void clear();
 
@@ -170,7 +170,7 @@ namespace artivity
             return version;
         }
         
-        template <typename T> boost::shared_ptr<T> createEntityInfluence(time_t time, const Resource& type, ViewportRef viewport)
+        template <typename T> boost::shared_ptr<T> createEntityInfluence(time_t time, ResourceRef type, ViewportRef viewport)
         {
             boost::shared_ptr<T> influence = createResource<T>();
             influence->setType(type);
