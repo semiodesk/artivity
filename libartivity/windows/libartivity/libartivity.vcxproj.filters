@@ -45,9 +45,6 @@
     <ClInclude Include="..\..\src\ObjectModel\Association.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\BoundingCube.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Geometry\BoundingRectangle.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
@@ -87,19 +84,10 @@
     <ClInclude Include="..\..\src\Ontologies\unit.h">
       <Filter>Header Files\Ontologies</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Activities\Browse.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\Cube.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\curlresponse.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Activities\DeleteFile.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Edit.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Activities\EditFile.h">
@@ -138,16 +126,10 @@
     <ClInclude Include="..\..\src\ObjectModel\Influences\Redo.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Remove.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Resource.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Role.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\SoftwareAgent.h">
@@ -162,9 +144,6 @@
     <ClInclude Include="..\..\src\ObjectModel\Entities\WebDataObject.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Add.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Entities\XmlElement.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
@@ -174,14 +153,17 @@
     <ClInclude Include="..\..\src\Ontologies\dces.h">
       <Filter>Header Files\Ontologies</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\JSON\jsonxx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Serializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\UriGenerator.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\EntityInfluence.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Activities\WebBrowsing.h">
+      <Filter>Header Files\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -201,9 +183,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\UriGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\JSON\jsonxx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

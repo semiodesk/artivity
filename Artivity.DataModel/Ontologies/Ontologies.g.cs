@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 6/15/2016 10:40:38 AM
+// Date: 16.06.2016 18:08:04
 
 using System;
 using System.Collections.Generic;
@@ -2073,9 +2073,9 @@ public class prov : Ontology
 
     ///<summary>
     ///
-    ///<see cref="file://users/meberl/Projects/artivity/Artivity.DataModel/Ontologies/prov.ttl#"/>
+    ///<see cref="file:///D:/Projects/2016/Artivity/Artivity.DataModel/Ontologies/prov.ttl#"/>
     ///</summary>
-    public static readonly Resource prov_ttl = new Resource(new Uri("file://users/meberl/Projects/artivity/Artivity.DataModel/Ontologies/prov.ttl#"));    
+    public static readonly Resource prov_ttl = new Resource(new Uri("file:///D:/Projects/2016/Artivity/Artivity.DataModel/Ontologies/prov.ttl#"));    
 
     ///<summary>
     ///
@@ -3212,9 +3212,9 @@ public static class PROV
 
     ///<summary>
     ///
-    ///<see cref="file://users/meberl/Projects/artivity/Artivity.DataModel/Ontologies/prov.ttl#"/>
+    ///<see cref="file:///D:/Projects/2016/Artivity/Artivity.DataModel/Ontologies/prov.ttl#"/>
     ///</summary>
-    public const string prov_ttl = "file://users/meberl/Projects/artivity/Artivity.DataModel/Ontologies/prov.ttl#";
+    public const string prov_ttl = "file:///D:/Projects/2016/Artivity/Artivity.DataModel/Ontologies/prov.ttl#";
 
     ///<summary>
     ///
@@ -7463,6 +7463,12 @@ public class art : Ontology
 
     ///<summary>
     ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/USER"/>
+    ///</summary>
+    public static readonly Resource USER = new Resource(new Uri("http://semiodesk.com/artivity/1.0/USER"));    
+
+    ///<summary>
+    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/coordinateDimension"/>
     ///</summary>
     public static readonly Property coordinateDimension = new Property(new Uri("http://semiodesk.com/artivity/1.0/coordinateDimension"));    
@@ -7844,6 +7850,12 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/Geometry"/>
     ///</summary>
     public const string Geometry = "http://semiodesk.com/artivity/1.0/Geometry";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/USER"/>
+    ///</summary>
+    public const string USER = "http://semiodesk.com/artivity/1.0/USER";
 
     ///<summary>
     ///

@@ -38,6 +38,8 @@ namespace Artivity.DataModel
 
 		public Role(Uri uri) : base(uri) {}
 
+        public Role(Resource resource) : base(resource.Uri) { }
+
 		#endregion
 	}
 }

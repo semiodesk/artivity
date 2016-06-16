@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,7 @@ namespace Artivity.DataModel
         [RdfProperty(FOAF.img)]
         public string Photo { get; set; }
 
+        [JsonIgnore] // TODO: Implement support for serializing lists to JSON in Trinity.
         [RdfProperty(FOAF.account)]
         public List<OnlineAccount> Accounts { get; set; }
 

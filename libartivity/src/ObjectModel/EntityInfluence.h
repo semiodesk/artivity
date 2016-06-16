@@ -25,30 +25,34 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_URIGENERATOR_H
-#define _ART_URIGENERATOR_H
+#ifndef _ART_ENTITYINFLUENCE_H
+#define _ART_ENTITYINFLUENCE_H
 
-#include <stdlib.h>
-#include <string>
+#include "../Ontologies/rdf.h"
+#include "../Ontologies/prov.h"
+#include "../Ontologies/dces.h"
+#include "../UriGenerator.h"
+#include "../Resource.h"
 
 namespace artivity
 {
-	using namespace std;
+	class EntityInfluence;
 
-    class UriGenerator
-    {        
-        public:
-    
-            UriGenerator() {}
-            ~UriGenerator() {}
+	typedef boost::shared_ptr<EntityInfluence> EntityInfluenceRef;
 
-            static string getUri()
-            {
-                return string("http://semiodesk.com/id/" + getRandomId(10));
-            }
-        
-            static string getRandomId(unsigned long length);
-    };
+	class EntityInfluence : public Resource
+	{
+	public:
+		EntityInfluence() : Resource(UriGenerator::getUri())
+		{
+			setType(prov::EntityInfluence);
+		}
+
+		EntityInfluence(const char* uriref) : Resource(uriref)
+		{
+			setType(prov::EntityInfluence);
+		}
+	};
 }
 
-#endif // _ART_URIGENERATOR_H
+#endif // _ART_ENTITYINFLUENCE_H

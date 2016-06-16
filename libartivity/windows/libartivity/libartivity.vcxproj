@@ -180,8 +180,7 @@
     <ClInclude Include="..\..\src\ActivityLog.h" />
     <ClInclude Include="..\..\src\artivity.h" />
     <ClInclude Include="..\..\src\curlresponse.h" />
-    <ClInclude Include="..\..\src\JSON\jsonxx.h" />
-    <ClInclude Include="..\..\src\ObjectModel\Activities\Browse.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Activities\WebBrowsing.h" />
     <ClInclude Include="..\..\src\ObjectModel\Activities\CreateFile.h" />
     <ClInclude Include="..\..\src\ObjectModel\Activities\DeleteFile.h" />
     <ClInclude Include="..\..\src\ObjectModel\Activities\EditFile.h" />
@@ -194,22 +193,17 @@
     <ClInclude Include="..\..\src\ObjectModel\Entities\XmlAttribute.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\XmlElement.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entity.h" />
+    <ClInclude Include="..\..\src\ObjectModel\EntityInfluence.h" />
     <ClInclude Include="..\..\src\ObjectModel\Generation.h" />
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\BoundingCube.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\BoundingRectangle.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Canvas.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\CartesianCoordinateSystem.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\CoordinateSystem.h" />
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\Cube.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Geometry.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Point.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Rectangle.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Viewport.h" />
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Add.h" />
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Edit.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Redo.h" />
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Remove.h" />
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Undo.h" />
     <ClInclude Include="..\..\src\ObjectModel\Invalidation.h" />
     <ClInclude Include="..\..\src\ObjectModel\Person.h" />
@@ -235,7 +229,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\ActivityLog.cpp" />
     <ClCompile Include="..\..\src\curlresponse.cpp" />
-    <ClCompile Include="..\..\src\JSON\jsonxx.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp" />
     <ClCompile Include="..\..\src\Resource.cpp" />
     <ClCompile Include="..\..\src\Serializer.cpp" />

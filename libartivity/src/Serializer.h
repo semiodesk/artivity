@@ -6,8 +6,6 @@
 #include "Resource.h"
 #include "XsdTypeMap.h"
 
-using namespace std;
-
 namespace artivity
 {
     enum RdfSerializationFormat { N3 };
@@ -22,7 +20,7 @@ namespace artivity
         Serializer() {}
         ~Serializer() {}
 
-        static string toString(ResourceRef value);
+		static string toString(ResourceRef value);
         static string toString(const char* value);
 		static string toString(int value);
 		static string toString(long value);

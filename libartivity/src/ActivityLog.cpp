@@ -31,497 +31,283 @@
 
 #include "curlresponse.h"
 #include "ActivityLog.h"
-#include "JSON/jsonxx.h"
 
-using namespace artivity;
-
-ActivityLog::ActivityLog(std::string server) 
+namespace artivity
 {
-    _server = server;
-    _curl = initializeRequest(); // For use with curl_easy_escape.
-    _resources = ResourceList();
-    _fileUri = "";
-    _filePath = "";
-    _canvasUri = "";
-}
+	using namespace std;
 
-ActivityLog::~ActivityLog() 
-{
-    clear();
-    
-    // Free all the associated agents still in the log.
-    AgentIterator agit = _agents.begin();
-    
-    _agents.clear();
+	ActivityLog::ActivityLog(string endpoint)
+	{
+		_endpoint = endpoint;
+		_curl = initializeRequest();
+		_associations = new list<AssociationRef>();
+		_influences = new list<EntityInfluenceRef>();
+		_fileUri = "";
+		_fileUrl = "";
+	}
 
-	curl_easy_cleanup(_curl);
-}
+	ActivityLog::~ActivityLog()
+	{
+		// Dereference the activity.
+		_activity = NULL;
 
-bool ActivityLog::connected()
-{
-    // TODO: Implement CURL call to http://localhost:8890/artivity/1.0/activities
-    return true;
-}
+		// Free all remaining associations.
+		_associations->clear();
 
+		delete _associations;
 
-void ActivityLog::clear()
-{
+		_associations = NULL;
 
-    // Free all the activities still in the log.
-    ResourceIterator rit = _resources.begin();
-    
-   
-    if (_resources.size() > 0)
-        _resources.clear();
-}
+		// Free all remaining influences.
+		_influences->clear();
 
-ResourceIterator ActivityLog::findResource(const char* uri)
-{
-    ResourceIterator rit = _resources.begin();
-    
-    while(rit != _resources.end())
-    {
-        if((*rit)->Uri == uri)
-        {
-            return rit;
-        }
-        
-        rit++;
-    }
-    
-    return _resources.end();
-}
+		delete _influences;
 
-bool ActivityLog::hasResource(const char* uri)
-{        
-    return findResource(uri) != _resources.end();
-}
+		_influences = NULL;
 
-void ActivityLog::addResource(ResourceRef resource)
-{        
-    _resources.push_back(resource);
-}
+		curl_easy_cleanup(_curl);
+	}
 
-void ActivityLog::removeResource(ResourceRef resource)
-{
-    _resources.remove(resource);
-}
+	bool ActivityLog::connect()
+	{
+		CURL* curl = initializeRequest();
 
-void ActivityLog::setActivity(ActivityRef activity)
-{
-    _activities = activity;
+		stringstream url;
 
-    AgentIterator agit = _agents.begin();
+		url << _endpoint << "/user/association";
 
-    while (agit != _agents.end())
-    {
-        AssociationRef association = createResource<Association>();
-        association->setAgent(*agit);
+		string response;
 
-        activity->addAssociation(association);
+		executeRequest(curl, url.str(), "", response);
 
-        agit++;
-    }
-    
-}
+		cout << response << endl;
 
-ActivityRef ActivityLog::updateActivity(ActivityRef activity)
-{
-    ActivityRef a = createResource<Activity>(activity->Uri.c_str());
-    a->setType(activity->getType());
-    
-    return a;
-}
+		return !response.empty();
+	}
 
-void ActivityLog::addAgent(AgentRef agent)
-{
-    _agents.push_back(agent);
-}
+	void ActivityLog::initialize()
+	{
+		if (_fileUrl == "")
+		{
+			// A new file is being created.
+			_activity = CreateFileRef(new CreateFile());
+		}
+		else
+		{
+			// An existing file is being edited.
+			_activity = EditFileRef(new EditFile());
+		}
 
-void ActivityLog::removeAgent(AgentRef agent)
-{
-    _agents.remove(agent);
-}
+		time_t now;
+		time(&now);
 
-// Create a new file data object without a path. For use with unsaved new files.
-CreateFileRef ActivityLog::createFile(double width, double height, ResourceRef lengthUnit)
-{        
-    time_t now;
-    time(&now);
-    
-    // Add the new file to the transmitted RDF output.
-    FileDataObjectRef file = createResource<FileDataObject>();
-    file->setCreationTime(now);
-    
-    _fileUri = string(file->Uri);
-    _filePath = "";
+		_activity->setStartTime(now);
 
-    // Add a canvas to the newly created file.
-    createCanvas(file, width, height, lengthUnit);
-      
-	CreateFileRef activity = createActivity<CreateFile>();
-    activity->addUsedEntity(file);
-    
-    return activity;
-}
+		AssociationIterator it = _associations->begin();
 
-EditFileRef ActivityLog::editFile(string path, double width, double height, ResourceRef lengthUnit)
-{
-    _fileUri = string(getFileUri(path));
-    _filePath = path;
-    
-    cout << _fileUri << endl << flush;
+		while (it != _associations->end())
+		{
+			_activity->addAssociation(*it);
+		}
+	}
 
-    _canvasUri = string(getCanvasUri(path));
-    _canvasWidth = width;
-    _canvasHeight = height;
-    _canvasUnit = lengthUnit;
-    
-    FileDataObjectRef file = createResource<FileDataObject>(_fileUri.c_str());
+	void ActivityLog::addInfluence(EntityInfluenceRef influence)
+	{
+		_influences->push_back(influence);
+	}
 
-    if (_canvasUri == "")
-    {
-        createCanvas(file, width, height, lengthUnit);
-    }
+	void ActivityLog::removeInfluence(EntityInfluenceRef influence)
+	{
+		_influences->remove(influence);
+	}
 
+	string ActivityLog::getThumbnailPath(string fileUrl)
+	{
+		//CURL* curl = initializeRequest();
 
-    EditFileRef activity = createActivity<EditFile>();
-    activity->addUsedEntity(file);
-    
-    return activity;
-}
+		//stringstream url;
+		//url << _endpoint << "/thumbnails/path?fileUri=" << escapePath(fileUrl);
 
-bool ActivityLog::hasFile(string path)
-{
-    return path != "" && path == _filePath;
-}
+		//string response;
 
-FileDataObjectRef ActivityLog::getFile()
-{
-    if(_fileUri == "")
-    {
-        return NULL;
-    }
-    
-    const char* uri = _fileUri.c_str();
-    
-    if(hasResource(uri))
-    {
-        return getResource<FileDataObject>(uri);
-    }
-    else
-    {
-        return createResource<FileDataObject>(uri);
-    }
-}
+		//executeRequest(curl, url.str(), "", response);
 
-string ActivityLog::getLatestVersionUri(string path)
-{
-    string data;
-    stringstream url;
-    url << _server << _uriAPI << "?latestVersion=" << escapePath(path);
+		//jsonxx::Array a;
 
-    CURL* curl = initializeRequest();
-    executeRequest(curl, url.str(), "", data);
+		//bool isValid = a.parse(response);
 
-    jsonxx::Value val;
-    bool valid = val.parse(data);
+		//return isValid ? a.get<jsonxx::String>((int)a.size() - 1) : "";
 
-    return valid ? val.get<jsonxx::String>() : "";
-}
+		return "";
+	}
 
-string ActivityLog::getFileUri(string path)
-{
-    string data = "";
-    stringstream url;
-    url << _server << _uriAPI << "?file=" << escapePath(path);
-    
-    CURL* curl = initializeRequest();    
-    executeRequest(curl, url.str(), "", data);
-    
-    jsonxx::Value val;
-    bool valid = val.parse(data);
+	CURL* ActivityLog::initializeRequest()
+	{
+		CURL* curl = curl_easy_init();
 
-    return valid ? val.get<jsonxx::String>() : UriGenerator::getUri();
-}
+		if (!curl)
+		{
+			logError(CURLE_FAILED_INIT, "Failed to initialize CURL.");
+		}
 
+		return curl;
+	}
 
-string ActivityLog::getThumbnailPath(string fileUri)
-{
-    string result;
-    stringstream url;
-	url << _server << _API << "/thumbnails/path?fileUri=" << escapePath(fileUri);
-    CURL* curl = initializeRequest();
-    executeRequest(curl, url.str(), "", result);
+	long ActivityLog::executeRequest(CURL* curl, string url, string postFields, string& response)
+	{
+		if (!curl)
+		{
+			logError(CURLE_FAILED_INIT, "CURL not initialized.");
 
-    jsonxx::Array a;
-    bool valid = a.parse(result);
+			return CURLE_FAILED_INIT;
+		}
 
-    return valid ? a.get<jsonxx::String>((int)a.size() -1) : "";
-}
+		struct curl_slist *headers = NULL; // init to NULL is important
+		headers = curl_slist_append(headers, "charsets: utf-8");
 
-string ActivityLog::getCanvasUri(string path)
-{
-    string data = "";
-    stringstream url;
-    url << _server << _uriAPI << "?canvas=" << escapePath(path);
+		struct curl_string data;
+		curl_init_string(&data);
 
-    CURL* curl = initializeRequest();
-    executeRequest(curl, url.str(), "", data);
+		curl_easy_reset(curl);
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
 
-    return data.length() > 2 ? data.substr(1, data.length() - 2) : "";
-}
+		if (postFields.length() > 0)
+		{
+			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
+		}
 
+		CURLcode responseCode = curl_easy_perform(curl);
 
-void ActivityLog::createCanvas(FileDataObjectRef file, double width, double height, ResourceRef lengthUnit)
-{
-    if(file == NULL)
-    {
-        return;
-    }
-    
-    // Transmit the coorindate system which is associated with the new canvas.
-    CoordinateSystemRef coordinateSystem  = createResource<CoordinateSystem>();
-    coordinateSystem->setCoordinateDimension(2);
-    coordinateSystem->setTransformationMatrix("[1 0 0; 0 1 0; 0 0 0]");
-    
-    // Transmit the new canvas.
-    CanvasRef canvas = createResource<Canvas>();
-    canvas->setWidth(width);
-    canvas->setHeight(height);
-    canvas->setLengthUnit(lengthUnit);
-    canvas->setCoordinateSystem(coordinateSystem);
-            
-    // Store a copy of the canvas.
-    _canvasUri = canvas->Uri.c_str();
-    _canvasWidth = width;
-    _canvasHeight = height;
-    _canvasUnit = lengthUnit;
-    
-    file->setCanvas(canvas);
-}
+		if (data.len > 0)
+		{
+			response = data.ptr;
+		}
 
-void ActivityLog::updateCanvas(double width, double height, ResourceRef lengthUnit)
-{
-    if(hasCanvas(width, height, lengthUnit))
-    {
-        return;
-    }
-            
-    FileDataObjectRef file = getFile();
+		curl_easy_cleanup(curl);
 
-    createCanvas(file, width, height, lengthUnit);
-}
+		if (responseCode == CURLE_OK)
+		{
+			logInfo(responseCode, url);
+		}
+		else
+		{
+			logError(responseCode, url);
+		}
 
-CanvasRef ActivityLog::getCanvas()
-{
-    if (_canvasUri == "")
-    {
-        return NULL;
-    }
+		if (postFields.length() > 0)
+		{
+			cout << postFields << endl << flush;
+		}
 
-    const char* uri = _canvasUri.c_str();
+		return responseCode;
+	}
 
-    if (hasResource(uri))
-    {
-        return getResource<Canvas>(uri);
-    }
-    else
-    {
-        return createResource<Canvas>(uri);
-    }
+	void ActivityLog::transmit()
+	{
+		if (_influences->empty())
+		{
+			return;
+		}
 
-}
+		stringstream stream;
 
-bool ActivityLog::hasCanvas(double width, double height, ResourceRef lengthUnit)
-{
-    return _canvasUri != "" && _canvasWidth == width && _canvasHeight == height && _canvasUnit == lengthUnit;
-}
+		Serializer s;
 
-void ActivityLog::transmit()
-{        
-    stringstream stream;
-    
-	Serializer s;
-         
-    s.serialize(stream, _activities, N3);
-     
-    
-    ResourceIterator rit = _resources.begin();
-    
-    while(rit != _resources.end())
-    {
-        s.serialize(stream, *rit, N3);
-        
-        rit++;
-    }
-    
-    string requestData = stream.str();
-    string responseData;
-    
-    CURL* curl = initializeRequest();
-    stringstream url;
-    url << _server << _activityAPI;
-    executeRequest(curl, url.str(), requestData, responseData);
-    
-    // Cleanup after all resources have been serialized and transmitted.
-    clear();
-}
+		EntityInfluenceIterator it = _influences->begin();
 
-CURL* ActivityLog::initializeRequest()
-{
-    CURL* curl = curl_easy_init();
+		while (it != _influences->end())
+		{
+			s.serialize(stream, *it, N3);
 
-    if (!curl)
-    {
-        string msg = "Failed to initialize CURL.";
-        
-        logError(CURLE_FAILED_INIT, msg);
-    }
-    
-    return curl;
-}
+			it++;
+		}
 
-long ActivityLog::executeRequest(CURL* curl, string url, string postFields, string& response)
-{       
-    if(!curl)
-    {
-        return CURLE_FAILED_INIT;
-    }
-    
-    struct curl_slist *headers = NULL; // init to NULL is important
-    headers = curl_slist_append(headers, "charsets: utf-8");
-    
-    struct curl_string data;
-    curl_init_string(&data);
-    
-    curl_easy_reset(curl);
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
-    
-    if(postFields.length() > 0)
-    {
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
-    }
-    
-    CURLcode responseCode = curl_easy_perform(curl);
-    
-    if(data.len > 0)
-    {
-        response = data.ptr;
-    }
-    
-    curl_easy_cleanup(curl);
-    
-    if(responseCode == CURLE_OK)
-    {
-        logInfo(responseCode, url);
-    }
-    else
-    {
-        logError(responseCode, url);
-    }
-    
-    if(postFields.length() > 0)
-    {
-        cout << postFields << endl << flush;
-    }
-    
-    return responseCode;
-}
+		string requestData = stream.str();
+		string responseData;
 
-void ActivityLog::logError(CURLcode responseCode, string msg)
-{
-    cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
-}
+		CURL* curl = initializeRequest();
 
-void ActivityLog::logInfo(CURLcode responseCode, string msg)
-{
-    cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
-}
+		stringstream url;
+		url << _endpoint << "/activities";
 
-string ActivityLog::getTime()
-{
-    time_t t = time(NULL);
-    
-    char date_str[20];
-	#ifdef WIN32
-	tm* time = new tm();
-	localtime_s(time, &t);
-    strftime(date_str, 20, "%Y/%m/%d %H:%M:%S",time);
-	#else
-	strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
-	#endif
-    
-    return string(date_str);
-}
+		executeRequest(curl, url.str(), requestData, responseData);
 
-void ActivityLog::enableMonitoring(string path, string uri)
-{   
-    string data;
-    stringstream url;
+		clear();
+	}
 
-    url << _server << _monitorAPI << "/add?uri=" << uri << "&filePath=" << escapePath(path);
- 
-    CURL* curl = initializeRequest();   
-    executeRequest(curl, url.str(), "", data);
-}
+	void ActivityLog::logError(CURLcode responseCode, string msg)
+	{
+		cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
+	}
 
-void ActivityLog::disableMonitoring(string path)
-{
-    string data;  
-    stringstream url;
+	void ActivityLog::logInfo(CURLcode responseCode, string msg)
+	{
+		cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
+	}
 
-    url << _server << _monitorAPI << "/remove?filePath=" << escapePath(path);
- 
-    CURL* curl = initializeRequest();   
-    executeRequest(curl, url.str(), "", data);
-}
+	string ActivityLog::getTime()
+	{
+		time_t t = time(NULL);
 
-string ActivityLog::escapePath(string path)
-{
-    stringstream result;
-    string token;
-  
-    for(int i = 0; i < path.length(); i++)
-    {
-        char c = path[i];
-        
-        if(c == '/' || c == '\\' || c == ':')
-        {            
-            if(!token.empty())
-            {
-                char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
-                
-                result << string(t);
-                
-                curl_free(t);
-                
-                token = "";
-            }
-            
-            if (c == '\\')
-                result << '/';
-            else
-                result << c;
-        }
-        else
-        {
-            token += c;
-        }
-    }
-    
-    if(!token.empty())
-    {
-        char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
-        
-        result << string(t);
-        
-        curl_free(t);
-    }
-  
-    return result.str();
+		char date_str[20];
+
+#ifdef WIN32
+		tm* time = new tm();
+		localtime_s(time, &t);
+		strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", time);
+#else
+		strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
+#endif
+
+		return string(date_str);
+	}
+
+	string ActivityLog::escapePath(string path)
+	{
+		stringstream result;
+		string token;
+
+		for (int i = 0; i < path.length(); i++)
+		{
+			char c = path[i];
+
+			if (c == '/' || c == '\\' || c == ':')
+			{
+				if (!token.empty())
+				{
+					char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
+
+					result << string(t);
+
+					curl_free(t);
+
+					token = "";
+				}
+
+				if (c == '\\')
+					result << '/';
+				else
+					result << c;
+			}
+			else
+			{
+				token += c;
+			}
+		}
+
+		if (!token.empty())
+		{
+			char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
+
+			result << string(t);
+
+			curl_free(t);
+		}
+
+		return result.str();
+	}
 }
