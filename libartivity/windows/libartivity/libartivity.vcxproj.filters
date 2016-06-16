@@ -19,6 +19,9 @@
     <Filter Include="Header Files\Resources">
       <UniqueIdentifier>{fe1f3c05-29dc-4de2-9832-991adf67c0f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Resources">
+      <UniqueIdentifier>{d3f2cb3b-3207-4ac7-a5a9-60b9b8e7416b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ActivityLog.h">
@@ -159,11 +162,39 @@
     <ClInclude Include="..\..\src\UriGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\EditingSession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ProducerConsumer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\EntityInfluence.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Activities\WebBrowsing.h">
       <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+
+    <ClInclude Include="..\..\src\defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\Image.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\RasterImage.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\VectorImage.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\InformationElement.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\Media.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Ontologies\nie.h">
+      <Filter>Header Files\Ontologies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +216,15 @@
     <ClCompile Include="..\..\src\UriGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\EditingSession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Entities\FileDataObject.cpp">
+      <Filter>Source Files\Resources</Filter>
+	</ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

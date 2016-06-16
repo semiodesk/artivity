@@ -58,6 +58,20 @@ namespace artivity
         {
             setType(art::Rectangle);
         }
+
+        Rectangle(double top, double left, double right, double bottom)
+        {
+            _position = PointRef(new Point(top, left));
+            _width = right - left;
+            _height = top - bottom;
+        }
+
+        Rectangle(PointRef pos, double width, double height)
+        {
+            _position = pos;
+            _width = width;
+            _height = height;
+        }
         
         PointRef getPosition()
         {
