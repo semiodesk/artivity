@@ -33,7 +33,6 @@
 
 namespace artivity
 {
-	using namespace std;
 
     class UriGenerator
     {        
@@ -42,12 +41,12 @@ namespace artivity
             UriGenerator() {}
             ~UriGenerator() {}
 
-            static string getUri()
+            static std::string getUri()
             {
-                return string("http://semiodesk.com/id/" + getRandomId(10));
+                return std::string("http://semiodesk.com/id/" + getRandomId(10));
             }
         
-            static string getRandomId(unsigned long length);
+            static std::string getRandomId(unsigned long length);
     };
 }
 

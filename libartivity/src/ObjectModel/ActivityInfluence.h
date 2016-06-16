@@ -51,9 +51,9 @@ namespace artivity
         
         time_t _time;
                 
-        string _content;
+        std::string _content;
         
-        string _description;
+        std::string _description;
         
     public:
         ActivityInfluence() : Resource(UriGenerator::getUri())
@@ -114,26 +114,26 @@ namespace artivity
             Resource::setValue(prov::atTime, &time);
         }
         
-        string getContent()
+        std::string getContent()
         {
             return _content;
         }
         
-        void setContent(string content)
+        void setContent(std::string content)
         {
-            _content = string(content);
+            _content = std::string(content);
             
             setValue(prov::value, _content.c_str());
         }
         
-        string getDescription()
+        std::string getDescription()
         {
             return _description;
         }
         
-        void setDescription(string description)
+        void setDescription(std::string description)
         {
-            _description = string(description);
+            _description = std::string(description);
             
             setValue(dces::description, _description.c_str());
         }

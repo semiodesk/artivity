@@ -44,13 +44,13 @@ namespace artivity
     class Activity : public Resource
     {
     private:        
-        list<AssociationRef>* _associations;
+        std::list<AssociationRef>* _associations;
     
-        list<EntityRef>* _usedEntities;
+        std::list<EntityRef>* _usedEntities;
                     
-        list<EntityRef>* _invalidatedEntities;
+        std::list<EntityRef>* _invalidatedEntities;
                                 
-        list<EntityRef>* _generatedEntities;
+        std::list<EntityRef>* _generatedEntities;
 
         time_t _startTime;
         
@@ -74,19 +74,19 @@ namespace artivity
         void setEndTime(time_t time);
         time_t getEndTime();
         
-        list<AssociationRef> getAssociations();
+        std::list<AssociationRef> getAssociations();
         void addAssociation(AssociationRef association);
         void removeAssociation(AssociationRef association);
         
-        list<EntityRef> getUsedEntities();
+        std::list<EntityRef> getUsedEntities();
         void addUsedEntity(EntityRef entity);
         void removeUsedEntity(EntityRef entity);
         
-        list<EntityRef> getInvalidatedEntities();
+        std::list<EntityRef> getInvalidatedEntities();
         void addInvalidatedEntity(EntityRef entity);
         void removeInvalidatedEntity(EntityRef entity);
         
-        list<EntityRef> getGeneratedEntities();
+        std::list<EntityRef> getGeneratedEntities();
         void addGeneratedEntity(EntityRef entity);
         void removeGeneratedEntity(EntityRef entity);
     };

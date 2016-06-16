@@ -35,6 +35,7 @@
 #include <curl/curl.h>
 #include <boost/shared_ptr.hpp>
 
+#include "defines.h"
 #include "Resource.h"
 #include "Serializer.h"
 #include "ObjectModel/Agent.h"
@@ -48,8 +49,8 @@
 
 namespace artivity
 {
-    typedef list<AssociationRef>::iterator AssociationIterator;
-    typedef list<EntityInfluenceRef>::iterator EntityInfluenceIterator;
+    typedef std::list<AssociationRef>::iterator AssociationIterator;
+    typedef std::list<EntityInfluenceRef>::iterator EntityInfluenceIterator;
 
     class ActivityLog;
     typedef boost::shared_ptr<ActivityLog> ActivityLogRef;
@@ -58,41 +59,41 @@ namespace artivity
     class ActivityLog
     {
     protected:
-        string _endpoint;
+        std::string _endpoint;
 
         CURL* _curl;
         
         ActivityRef _activity;
             
-        list<AssociationRef>* _associations;
+        std::list<AssociationRef>* _associations;
     
-		list<EntityInfluenceRef>* _influences;
+        std::list<EntityInfluenceRef>* _influences;
 
-        string _fileUri;
+        std::string _fileUri;
         
-        string _fileUrl;
+        std::string _fileUrl;
         
         CURL* initializeRequest();
         
-        long executeRequest(CURL* curl, string url, string postFields, string& response);
+        long executeRequest(CURL* curl, std::string url, std::string postFields, std::string& response);
         
-        void logError(CURLcode responseCode, string msg);
+        void logError(CURLcode responseCode, std::string msg);
         
-        void logInfo(CURLcode responseCode, string msg);
+        void logInfo(CURLcode responseCode, std::string msg);
         
-        string getTime();
+        std::string getTime();
         
-		string escapePath(string path);
+        std::string escapePath(std::string path);
 
     public:
-		ActivityLog(string endpoint);
+        ActivityLog(std::string endpoint);
         
         virtual ~ActivityLog();
         
         // Indicates if there is a connection to the Artivity HTTP API.
         bool connect();
 
-		void initialize();
+        void initialize(std::string fileUrl);
         
         // Indicates if there are any entity influences in the log.
         bool empty() { return _influences->empty(); }
@@ -105,7 +106,10 @@ namespace artivity
 
 		ActivityRef getActivity() { return _activity; }
 
-		string getThumbnailPath(string fileUrl);
+        std::string getThumbnailPath();
+
+        // Add an association to the RDF stream.
+        void addAssociation(AssociationRef resource);
 
 		// Add an entity influence to the transmitted RDF stream.
 		void addInfluence(EntityInfluenceRef resource);

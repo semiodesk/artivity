@@ -32,282 +32,292 @@
 #include "curlresponse.h"
 #include "ActivityLog.h"
 
+using namespace std;
+
 namespace artivity
 {
-	using namespace std;
 
-	ActivityLog::ActivityLog(string endpoint)
-	{
-		_endpoint = endpoint;
-		_curl = initializeRequest();
-		_associations = new list<AssociationRef>();
-		_influences = new list<EntityInfluenceRef>();
-		_fileUri = "";
-		_fileUrl = "";
-	}
+    ActivityLog::ActivityLog(string endpoint)
+    {
+        _endpoint = endpoint;
+        _curl = initializeRequest();
+        _associations = new list<AssociationRef>();
+        _influences = new list<EntityInfluenceRef>();
+        _fileUri = "";
+        _fileUrl = "";
+    }
 
-	ActivityLog::~ActivityLog()
-	{
-		// Dereference the activity.
-		_activity = NULL;
+    ActivityLog::~ActivityLog()
+    {
+        // Dereference the activity.
+        _activity = NULL;
 
-		// Free all remaining associations.
-		_associations->clear();
+        // Free all remaining associations.
+        _associations->clear();
 
-		delete _associations;
+        delete _associations;
 
-		_associations = NULL;
+        _associations = NULL;
 
-		// Free all remaining influences.
-		_influences->clear();
+        // Free all remaining influences.
+        _influences->clear();
 
-		delete _influences;
+        delete _influences;
 
-		_influences = NULL;
+        _influences = NULL;
 
-		curl_easy_cleanup(_curl);
-	}
+        curl_easy_cleanup(_curl);
+    }
 
-	bool ActivityLog::connect()
-	{
-		CURL* curl = initializeRequest();
+    bool ActivityLog::connect()
+    {
+        CURL* curl = initializeRequest();
 
-		stringstream url;
+        stringstream url;
 
-		url << _endpoint << "/user/association";
+        url << _endpoint << "/user/association";
 
-		string response;
+        string response;
 
-		executeRequest(curl, url.str(), "", response);
+        executeRequest(curl, url.str(), "", response);
 
-		cout << response << endl;
+        cout << response << endl;
 
-		return !response.empty();
-	}
+        return !response.empty();
+    }
 
-	void ActivityLog::initialize()
-	{
-		if (_fileUrl == "")
-		{
-			// A new file is being created.
-			_activity = CreateFileRef(new CreateFile());
-		}
-		else
-		{
-			// An existing file is being edited.
-			_activity = EditFileRef(new EditFile());
-		}
+    void ActivityLog::initialize(string fileUrl)
+    {
+        _fileUrl = fileUrl;
 
-		time_t now;
-		time(&now);
+        if (_fileUrl == "")
+        {
+            // A new file is being created.
+            _activity = CreateFileRef(new CreateFile());
+        }
+        else
+        {
+            // An existing file is being edited.
+            _activity = EditFileRef(new EditFile());
+        }
 
-		_activity->setStartTime(now);
+        time_t now;
+        time(&now);
 
-		AssociationIterator it = _associations->begin();
+        _activity->setStartTime(now);
 
-		while (it != _associations->end())
-		{
-			_activity->addAssociation(*it);
-		}
-	}
+        AssociationIterator it = _associations->begin();
 
-	void ActivityLog::addInfluence(EntityInfluenceRef influence)
-	{
-		_influences->push_back(influence);
-	}
+        while (it != _associations->end())
+        {
+            _activity->addAssociation(*it);
+        }
+    }
 
-	void ActivityLog::removeInfluence(EntityInfluenceRef influence)
-	{
-		_influences->remove(influence);
-	}
+    void ActivityLog::addInfluence(EntityInfluenceRef influence)
+    {
+        _influences->push_back(influence);
+    }
 
-	string ActivityLog::getThumbnailPath(string fileUrl)
-	{
-		//CURL* curl = initializeRequest();
+    void ActivityLog::removeInfluence(EntityInfluenceRef influence)
+    {
+        _influences->remove(influence);
+    }
 
-		//stringstream url;
-		//url << _endpoint << "/thumbnails/path?fileUri=" << escapePath(fileUrl);
+    void ActivityLog::addAssociation(AssociationRef resource)
+    {
+        _associations->push_back(resource);
+    }
 
-		//string response;
 
-		//executeRequest(curl, url.str(), "", response);
+    string ActivityLog::getThumbnailPath()
+    {
+        //CURL* curl = initializeRequest();
 
-		//jsonxx::Array a;
+        //stringstream url;
+        //url << _endpoint << "/thumbnails/path?fileUri=" << escapePath(fileUrl);
 
-		//bool isValid = a.parse(response);
+        //string response;
 
-		//return isValid ? a.get<jsonxx::String>((int)a.size() - 1) : "";
+        //executeRequest(curl, url.str(), "", response);
 
-		return "";
-	}
+        //jsonxx::Array a;
 
-	CURL* ActivityLog::initializeRequest()
-	{
-		CURL* curl = curl_easy_init();
+        //bool isValid = a.parse(response);
 
-		if (!curl)
-		{
-			logError(CURLE_FAILED_INIT, "Failed to initialize CURL.");
-		}
+        //return isValid ? a.get<jsonxx::String>((int)a.size() - 1) : "";
 
-		return curl;
-	}
+        return "";
+    }
 
-	long ActivityLog::executeRequest(CURL* curl, string url, string postFields, string& response)
-	{
-		if (!curl)
-		{
-			logError(CURLE_FAILED_INIT, "CURL not initialized.");
+    CURL* ActivityLog::initializeRequest()
+    {
+        CURL* curl = curl_easy_init();
 
-			return CURLE_FAILED_INIT;
-		}
+        if (!curl)
+        {
+            logError(CURLE_FAILED_INIT, "Failed to initialize CURL.");
+        }
 
-		struct curl_slist *headers = NULL; // init to NULL is important
-		headers = curl_slist_append(headers, "charsets: utf-8");
+        return curl;
+    }
 
-		struct curl_string data;
-		curl_init_string(&data);
+    long ActivityLog::executeRequest(CURL* curl, string url, string postFields, string& response)
+    {
+        if (!curl)
+        {
+            logError(CURLE_FAILED_INIT, "CURL not initialized.");
 
-		curl_easy_reset(curl);
-		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+            return CURLE_FAILED_INIT;
+        }
 
-		if (postFields.length() > 0)
-		{
-			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
-		}
+        struct curl_slist *headers = NULL; // init to NULL is important
+        headers = curl_slist_append(headers, "charsets: utf-8");
 
-		CURLcode responseCode = curl_easy_perform(curl);
+        struct curl_string data;
+        curl_init_string(&data);
 
-		if (data.len > 0)
-		{
-			response = data.ptr;
-		}
+        curl_easy_reset(curl);
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
 
-		curl_easy_cleanup(curl);
+        if (postFields.length() > 0)
+        {
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
+        }
 
-		if (responseCode == CURLE_OK)
-		{
-			logInfo(responseCode, url);
-		}
-		else
-		{
-			logError(responseCode, url);
-		}
+        CURLcode responseCode = curl_easy_perform(curl);
 
-		if (postFields.length() > 0)
-		{
-			cout << postFields << endl << flush;
-		}
+        if (data.len > 0)
+        {
+            response = data.ptr;
+        }
 
-		return responseCode;
-	}
+        curl_easy_cleanup(curl);
 
-	void ActivityLog::transmit()
-	{
-		if (_influences->empty())
-		{
-			return;
-		}
+        if (responseCode == CURLE_OK)
+        {
+            logInfo(responseCode, url);
+        }
+        else
+        {
+            logError(responseCode, url);
+        }
 
-		stringstream stream;
+        if (postFields.length() > 0)
+        {
+            cout << postFields << endl << flush;
+        }
 
-		Serializer s;
+        return responseCode;
+    }
 
-		EntityInfluenceIterator it = _influences->begin();
+    void ActivityLog::transmit()
+    {
+        if (_influences->empty())
+        {
+            return;
+        }
 
-		while (it != _influences->end())
-		{
-			s.serialize(stream, *it, N3);
+        stringstream stream;
 
-			it++;
-		}
+        Serializer s;
 
-		string requestData = stream.str();
-		string responseData;
+        EntityInfluenceIterator it = _influences->begin();
 
-		CURL* curl = initializeRequest();
+        while (it != _influences->end())
+        {
+            s.serialize(stream, *it, N3);
 
-		stringstream url;
-		url << _endpoint << "/activities";
+            it++;
+        }
 
-		executeRequest(curl, url.str(), requestData, responseData);
+        string requestData = stream.str();
+        string responseData;
 
-		clear();
-	}
+        CURL* curl = initializeRequest();
 
-	void ActivityLog::logError(CURLcode responseCode, string msg)
-	{
-		cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
-	}
+        stringstream url;
+        url << _endpoint << "/activities";
 
-	void ActivityLog::logInfo(CURLcode responseCode, string msg)
-	{
-		cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
-	}
+        executeRequest(curl, url.str(), requestData, responseData);
 
-	string ActivityLog::getTime()
-	{
-		time_t t = time(NULL);
+        clear();
+    }
 
-		char date_str[20];
+    void ActivityLog::logError(CURLcode responseCode, string msg)
+    {
+        cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
+    }
+
+    void ActivityLog::logInfo(CURLcode responseCode, string msg)
+    {
+        cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
+    }
+
+    string ActivityLog::getTime()
+    {
+        time_t t = time(NULL);
+
+        char date_str[20];
 
 #ifdef WIN32
-		tm* time = new tm();
-		localtime_s(time, &t);
-		strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", time);
+        tm* time = new tm();
+        localtime_s(time, &t);
+        strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", time);
 #else
-		strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
+        strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
 #endif
 
-		return string(date_str);
-	}
+        return string(date_str);
+    }
 
-	string ActivityLog::escapePath(string path)
-	{
-		stringstream result;
-		string token;
+    string ActivityLog::escapePath(string path)
+    {
+        stringstream result;
+        string token;
 
-		for (int i = 0; i < path.length(); i++)
-		{
-			char c = path[i];
+        for (int i = 0; i < path.length(); i++)
+        {
+            char c = path[i];
 
-			if (c == '/' || c == '\\' || c == ':')
-			{
-				if (!token.empty())
-				{
-					char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
+            if (c == '/' || c == '\\' || c == ':')
+            {
+                if (!token.empty())
+                {
+                    char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
 
-					result << string(t);
+                    result << string(t);
 
-					curl_free(t);
+                    curl_free(t);
 
-					token = "";
-				}
+                    token = "";
+                }
 
-				if (c == '\\')
-					result << '/';
-				else
-					result << c;
-			}
-			else
-			{
-				token += c;
-			}
-		}
+                if (c == '\\')
+                    result << '/';
+                else
+                    result << c;
+            }
+            else
+            {
+                token += c;
+            }
+        }
 
-		if (!token.empty())
-		{
-			char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
+        if (!token.empty())
+        {
+            char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
 
-			result << string(t);
+            result << string(t);
 
-			curl_free(t);
-		}
+            curl_free(t);
+        }
 
-		return result.str();
-	}
+        return result.str();
+    }
+
 }

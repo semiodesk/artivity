@@ -47,7 +47,7 @@ namespace artivity
     class FileDataObject : public Entity
     {
     private:
-        string _url;
+    std::string _url;
 
         InformationElementRef _interpretedAs;
         
@@ -73,7 +73,7 @@ namespace artivity
         
         void setUrl(const char* url)
         {
-            _url = string(url);
+            _url = std::string(url);
             
             setValue(nfo::fileUrl, _url.c_str());
         }

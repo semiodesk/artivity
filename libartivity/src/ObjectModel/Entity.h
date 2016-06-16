@@ -49,19 +49,19 @@ namespace artivity
         
         InvalidationRef _invalidation;
         
-        list<EntityRef>* _genericEntities;
+        std::list<EntityRef>* _genericEntities;
         
     public:
         Entity() : Resource(UriGenerator::getUri())
         {
-            _genericEntities = new list<EntityRef>();
+            _genericEntities = new std::list<EntityRef>();
             
             setType(prov::Entity);
         }
         
         Entity(const char* uriref) : Resource(uriref)
         {
-            _genericEntities = new list<EntityRef>();
+            _genericEntities = new std::list<EntityRef>();
             
             setType(prov::Entity);
         }
@@ -102,7 +102,7 @@ namespace artivity
             setValue(prov::qualifiedInvalidation, invalidation);
         }
         
-        list<EntityRef> getGenericEntities()
+        std::list<EntityRef> getGenericEntities()
         {
             return *_genericEntities;
         }

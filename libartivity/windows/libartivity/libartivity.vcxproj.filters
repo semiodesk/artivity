@@ -174,7 +174,6 @@
     <ClInclude Include="..\..\src\ObjectModel\Activities\WebBrowsing.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
-
     <ClInclude Include="..\..\src\defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -195,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Ontologies\nie.h">
       <Filter>Header Files\Ontologies</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h">
+      <Filter>Header Files\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -224,7 +226,7 @@
     </ClCompile>
     <ClCompile Include="..\..\src\ObjectModel\Entities\FileDataObject.cpp">
       <Filter>Source Files\Resources</Filter>
-	</ClCompile>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

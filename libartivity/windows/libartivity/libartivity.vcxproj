@@ -211,6 +211,7 @@
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Rectangle.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Viewport.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Redo.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Undo.h" />
     <ClInclude Include="..\..\src\ObjectModel\Invalidation.h" />
     <ClInclude Include="..\..\src\ObjectModel\Person.h" />
