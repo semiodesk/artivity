@@ -39,21 +39,14 @@ namespace artivity
 
     class RasterImage : public Image
     {
-        private:
-        string _url;
-
         public:
         RasterImage() : Image()
         {
-            _url = "";
-
             setType(nfo::RasterImage);
         }
 
         RasterImage(const char* uriref) : Image(uriref)
         {
-            _url = "";
-
             setType(nfo::RasterImage);
         }
     };

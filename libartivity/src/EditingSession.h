@@ -4,9 +4,10 @@
 #include "ActivityLog.h"
 #include "ProducerConsumer.h"
 #include "defines.h"
-#include "ObjectModel\Influences\Undo.h"
-#include "ObjectModel\Influences\Redo.h"
-#include "ObjectModel\Influences\Save.h"
+#include "ObjectModel/Influences\Undo.h"
+#include "ObjectModel/Influences\Redo.h"
+#include "ObjectModel/Influences\Save.h"
+#include "ObjectModel/Revision.h"
 
 namespace artivity
 {
@@ -56,12 +57,12 @@ namespace artivity
         RedoRef createRedo() { return RedoRef(new Redo()); }
         InvalidationRef createInvalidation() { return InvalidationRef(new Invalidation()); }
         SaveRef createSave() { return SaveRef(new Save()); }
-        ResourceRef createRevision() { return ResourceRef(new Resource("")); }
+        RevisionRef createRevision() { return RevisionRef(new Revision()); }
 
 
         virtual GenerationRef onEventAdd() = 0;
         virtual InvalidationRef onEventDelete() = 0;
-        virtual ResourceRef onEventEdit() = 0;
+        virtual RevisionRef onEventEdit() = 0;
         virtual UndoRef onEventUndo() = 0;
         virtual RedoRef onEventRedo() = 0;
         virtual ResourceRef onEventClose() = 0;

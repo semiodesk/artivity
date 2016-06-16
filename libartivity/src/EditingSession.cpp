@@ -25,8 +25,7 @@ namespace artivity
         _consumer->start();
 
         _log = ActivityLogRef(new ActivityLog(server));
-        AssociationRef softwareAgentAssociation = AssociationRef(new Association());
-        softwareAgentAssociation->setAgent(SoftwareAgentRef(new SoftwareAgent(*(this->getSoftwareAgent()))));
+        AssociationRef softwareAgentAssociation = AssociationRef(new Association(this->getSoftwareAgent()->c_str()));
         _log->addAssociation(softwareAgentAssociation);
 
         _initialized = true;
@@ -55,7 +54,8 @@ namespace artivity
 
     void EditingSession::eventEdit()
     {
-        ResourceRef res = onEventEdit();
+        RevisionRef res = onEventEdit();
+        
         _consumer->push(res);
     }
 
