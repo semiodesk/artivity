@@ -53,7 +53,8 @@ namespace artivity
     typedef ResourceList::iterator ResourceIterator;
     typedef std::list<AgentRef>::iterator AgentIterator;
 
-    
+    class ActivityLog;
+    typedef boost::shared_ptr<artivity::ActivityLog> ActivityLogRef;
     
     class ActivityLog
     {

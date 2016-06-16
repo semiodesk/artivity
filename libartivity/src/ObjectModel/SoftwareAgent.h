@@ -23,6 +23,11 @@ namespace artivity
         {
             setType(prov::SoftwareAgent);
         }
+
+        SoftwareAgent(std::string uriref) : Agent(uriref.c_str())
+        {
+            setType(prov::SoftwareAgent);
+        }
     };
 }
 

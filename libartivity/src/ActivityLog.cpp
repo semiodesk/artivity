@@ -151,7 +151,6 @@ CreateFileRef ActivityLog::createFile(double width, double height, ResourceRef l
     
     // Add the new file to the transmitted RDF output.
     FileDataObjectRef file = createResource<FileDataObject>();
-    file->setCreationTime(now);
     
     _fileUri = string(file->Uri);
     _filePath = "";
@@ -279,26 +278,7 @@ void ActivityLog::createCanvas(FileDataObjectRef file, double width, double heig
     {
         return;
     }
-    
-    // Transmit the coorindate system which is associated with the new canvas.
-    CoordinateSystemRef coordinateSystem  = createResource<CoordinateSystem>();
-    coordinateSystem->setCoordinateDimension(2);
-    coordinateSystem->setTransformationMatrix("[1 0 0; 0 1 0; 0 0 0]");
-    
-    // Transmit the new canvas.
-    CanvasRef canvas = createResource<Canvas>();
-    canvas->setWidth(width);
-    canvas->setHeight(height);
-    canvas->setLengthUnit(lengthUnit);
-    canvas->setCoordinateSystem(coordinateSystem);
-            
-    // Store a copy of the canvas.
-    _canvasUri = canvas->Uri.c_str();
-    _canvasWidth = width;
-    _canvasHeight = height;
-    _canvasUnit = lengthUnit;
-    
-    file->setCanvas(canvas);
+
 }
 
 void ActivityLog::updateCanvas(double width, double height, ResourceRef lengthUnit)
