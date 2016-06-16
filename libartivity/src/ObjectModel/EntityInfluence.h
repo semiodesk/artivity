@@ -33,6 +33,7 @@
 #include "../Ontologies/dces.h"
 #include "../UriGenerator.h"
 #include "../Resource.h"
+#include "Entity.h"
 
 namespace artivity
 {
@@ -40,18 +41,36 @@ namespace artivity
 
 	typedef boost::shared_ptr<EntityInfluence> EntityInfluenceRef;
 
-	class EntityInfluence : public Resource
+	class EntityInfluence : public Influence
 	{
-	public:
-		EntityInfluence() : Resource(UriGenerator::getUri())
+
+        std::list<EntityRef> _entities;
+
+	    public:
+        EntityInfluence() : Influence()
 		{
 			setType(prov::EntityInfluence);
 		}
 
-		EntityInfluence(const char* uriref) : Resource(uriref)
+		EntityInfluence(const char* uriref) : Influence(uriref)
 		{
 			setType(prov::EntityInfluence);
 		}
+
+        void addEntity(EntityRef entity)
+        {
+            _entities.push_back(entity);
+        }
+
+        void removeEntity(EntityRef entity)
+        {
+            _entities.remove(entity);
+        }
+
+        void clearEntities(EntityRef entity)
+        {
+            _entities.clear();
+        }
 	};
 }
 

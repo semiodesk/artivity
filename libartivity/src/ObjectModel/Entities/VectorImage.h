@@ -12,21 +12,14 @@ namespace artivity
 
     class VectorImage : public Image
     {
-        private:
-        string _url;
-
         public:
         VectorImage() : Image()
         {
-            _url = "";
-
             setType(nfo::RasterImage);
         }
 
         VectorImage(const char* uriref) : Image(uriref)
         {
-            _url = "";
-
             setType(nfo::RasterImage);
         }
     };

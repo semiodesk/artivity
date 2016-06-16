@@ -39,14 +39,10 @@ namespace artivity
 
     class Media : public InformationElement
     {
-    private:
-        string _url;
-        
     public:
         Media() : InformationElement()
         {
-            _url = "";
-            
+
             setType(nfo::Media);
         }
         

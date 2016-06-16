@@ -39,21 +39,16 @@ namespace artivity
 
     class Image : public Media
     {
-    private:
-        string _url;
-        
     public:
         Image() : Media()
         {
-            _url = "";
-            
+
             setType(nfo::Image);
         }
         
         Image(const char* uriref) : Media(uriref)
         {
-            _url = "";
-            
+
             setType(nfo::Image);
         }
     };

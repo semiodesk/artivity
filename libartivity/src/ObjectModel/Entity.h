@@ -39,7 +39,6 @@
 namespace artivity
 {
     class Entity;
-
     typedef boost::shared_ptr<Entity> EntityRef;
 
     class Entity : public Resource
