@@ -72,7 +72,7 @@ namespace artivity
 
 
         EditingSession();
-        void initialize(string server, bool isNewDocument);
+        void initialize(std::string server, bool isNewDocument);
         virtual ~EditingSession();
 
         void transmitQueue();

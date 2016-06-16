@@ -20,16 +20,16 @@ namespace artivity
         Serializer() {}
         ~Serializer() {}
 
-		static string toString(ResourceRef value);
-        static string toString(const char* value);
-		static string toString(int value);
-		static string toString(long value);
-		static string toString(float value);
-		static string toString(double value);
-		static string toString(const time_t* value);
+        static std::string toString(ResourceRef value);
+        static std::string toString(const char* value);
+        static std::string toString(int value);
+        static std::string toString(long value);
+        static std::string toString(float value);
+        static std::string toString(double value);
+        static std::string toString(const time_t* value);
         
-        string serialize(ResourceRef resource, RdfSerializationFormat format);
-        stringstream& serialize(stringstream& out, ResourceRef resource, RdfSerializationFormat format);
+        std::string serialize(ResourceRef resource, RdfSerializationFormat format);
+        std::stringstream& serialize(std::stringstream& out, ResourceRef resource, RdfSerializationFormat format);
     };
 }
 

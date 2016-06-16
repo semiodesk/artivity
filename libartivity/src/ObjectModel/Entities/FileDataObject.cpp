@@ -1,17 +1,19 @@
 #include "FileDataObject.h"
 #include "InformationElement.h"
 
-using namespace artivity;
-
-void FileDataObject::setInterpretedAs(InformationElementRef ie)
+namespace artivity
 {
-    _interpretedAs = ie;
-    setValue(nie::interpretedAs, ie);
-}
 
-InformationElementRef FileDataObject::getInterpretedAs()
-{
-    return _interpretedAs;
+    void FileDataObject::setInterpretedAs(InformationElementRef ie)
+    {
+        _interpretedAs = ie;
+        setValue(nie::interpretedAs, ie);
+    }
+
+    InformationElementRef FileDataObject::getInterpretedAs()
+    {
+        return _interpretedAs;
+    }
+
 }
-        
    
