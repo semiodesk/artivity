@@ -154,6 +154,9 @@ art:Geometry a rdfs:Class ;
     rdfs:label "Geometry" ;
     owl:sameAs geo:Geometry .
 
+art:USER a prov:Role ;
+	rdfs:label "User" .
+
 art:coordinateDimension a rdf:Property ;
     rdfs:label "coordinateDimension" ;
     rdfs:domain art:Geometry ;

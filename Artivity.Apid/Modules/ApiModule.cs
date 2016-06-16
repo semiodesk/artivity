@@ -85,6 +85,33 @@ namespace Artivity.Apid.Modules
                 return HttpStatusCode.OK;
             };
 
+            Get["/user"] = parameters =>
+            {
+                return GetUserAgent();
+            };
+
+            Post["/user"] = parameters =>
+            {
+                return SetUserAgent(Request.Body);
+            };
+
+            Get["/user/association"] = parameters =>
+            {
+                return GetUserAgentAssociation();
+            };
+
+            Get["/user/photo"] = parameters =>
+            {
+                return GetUserAgentPhoto();
+            };
+
+            Post["/user/photo"] = parameters =>
+            {
+                RequestStream stream = Request.Body;
+
+                return SetUserAgentPhoto(stream);
+            };
+
             // Get a list of all installed online accounts.
             Get["/accounts"] = parameters =>
             {
@@ -154,46 +181,6 @@ namespace Artivity.Apid.Modules
                 }
 
                 return UninstallAccount(accountId);
-            };
-
-            Get["/user"] = parameters =>
-            {
-                return GetUserAgent();
-            };
-
-            Post["/user"] = parameters =>
-            {
-                try
-                {
-                    Person user = Bind<Person>(ModelProvider.Store, Request.Body);
-
-                    if (user == null)
-                    {
-                        return HttpStatusCode.BadRequest;
-                    }
-
-                    user.Commit();
-
-                    return HttpStatusCode.OK;
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-
-                    return HttpStatusCode.InternalServerError;
-                }
-            };
-
-            Get["/user/photo"] = parameters =>
-            {
-                return GetUserAgentPhoto();
-            };
-
-            Post["/user/photo"] = parameters =>
-            {
-                RequestStream stream = Request.Body;
-
-                return SetUserAgentPhoto(stream);
             };
 
             Get["/files"] = parameters =>
@@ -329,21 +316,19 @@ namespace Artivity.Apid.Modules
 
         #region Methods
 
-        public Response GetAgents()
+        private Response GetAgents()
         {
-            IModel model = ModelProvider.GetAgents();
-
-            IEnumerable<SoftwareAgent> agents = model.GetResources<SoftwareAgent>();
+            IEnumerable<SoftwareAgent> agents = ModelProvider.AgentsModel.GetResources<SoftwareAgent>();
 
             return Response.AsJson(agents.ToList());
         }
 
-        public Response GetAgent(string fileUrl)
+        private Response GetAgent(string fileUrl)
         {
-            IModel model = ModelProvider.GetAllActivities();
-
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?s ?p ?o WHERE 
+                SELECT
+                    ?s ?p ?o
+                WHERE 
                 {
                     ?s ?p ?o .
 
@@ -365,7 +350,7 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@fileUrl", fileUrl);
 
-            IEnumerable<IResource> agents = model.GetResources(query);
+            IEnumerable<IResource> agents = ModelProvider.GetAllActivities().GetResources(query);
 
             if (agents.Any())
             {
@@ -377,33 +362,114 @@ namespace Artivity.Apid.Modules
             }
         }
 
-
-
-        public Response GetUserAgent()
+        private Association CreateUserAssociation()
         {
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?s ?p ?o WHERE
+                SELECT
+                    ?s ?p ?o
+                WHERE
                 {
                     ?s ?p ?o .
+
                     ?s rdf:type prov:Person .
                 }
             ");
 
-            ISparqlQueryResult result = ModelProvider.AgentsModel.ExecuteQuery(query);
+            // See if there is already a person defined..
+            Person user = ModelProvider.AgentsModel.ExecuteQuery(query).GetResources<Person>().FirstOrDefault();
 
-            if (result.GetResources<Person>().Any())
+            if (user == null)
             {
-                return Response.AsJson(result.GetResources<Person>().First());
+                Logger.LogInfo("Creating new user profile..");
+
+                // If not, create one.
+                user = ModelProvider.AgentsModel.CreateResource<Person>();
+                user.Commit();
             }
             else
             {
-                Logger.LogInfo("Creating new profile because no existing user was found.");
-
-                Person user = ModelProvider.AgentsModel.CreateResource<Person>();
-                user.Commit();
-
-                return Response.AsJson(user);
+                Logger.LogInfo("Upgrading user profile..");
             }
+
+            // Add the user role association.
+            Association association = ModelProvider.AgentsModel.CreateResource<Association>();
+            association.Agent = user;
+            association.Role = new Role(art.USER);
+            association.Commit();
+
+            return association;
+        }
+
+        private Response GetUserAgent()
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?s ?p ?o
+                WHERE
+                {
+                    ?s ?p ?o .
+
+                    ?a rdf:type prov:Association .
+                    ?a prov:agent ?s .
+                    ?a prov:hadRole art:USER .
+                }
+            ");
+
+            IEnumerable<Person> persons = ModelProvider.AgentsModel.ExecuteQuery(query).GetResources<Person>();
+
+            if (persons.Any())
+            {
+                return Response.AsJson(persons.First());
+            }
+            else
+            {
+                Association association = CreateUserAssociation();
+
+                return Response.AsJson(association.Agent);
+            }
+        }
+
+        private Response GetUserAgentAssociation()
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?s ?p ?o
+                WHERE
+                {
+                    ?s ?p ?o .
+
+                    ?s rdf:type prov:Association .
+                    ?s prov:hadRole art:USER .
+                }
+            ");
+
+            Association association = ModelProvider.AgentsModel.ExecuteQuery(query).GetResources<Association>().FirstOrDefault();
+
+            // Testing .Agent and .Role lazy loads the resources before the database connection is closed.
+            if (association != null && association.Agent != null && association.Role != null)
+            {
+                return Response.AsJson(association);
+            }
+            else
+            {
+                association = CreateUserAssociation();
+
+                return Response.AsJson(association);
+            }
+        }
+
+        private Response SetUserAgent(RequestStream stream)
+        {
+            Person user = Bind<Person>(ModelProvider.Store, stream);
+
+            if (user == null)
+            {
+                return HttpStatusCode.BadRequest;
+            }
+
+            user.Commit();
+
+            return HttpStatusCode.OK;
         }
 
         private Response GetAccounts()
@@ -493,7 +559,7 @@ namespace Artivity.Apid.Modules
             return Logger.LogInfo(HttpStatusCode.OK, "Uninstalled account: {0}", accountId);
         }
 
-        public Response GetUserAgentPhoto()
+        private Response GetUserAgentPhoto()
         {
             string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
 
@@ -511,7 +577,7 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        public Response SetUserAgentPhoto(RequestStream stream)
+        private Response SetUserAgentPhoto(RequestStream stream)
         {
             try
             {
@@ -545,15 +611,17 @@ namespace Artivity.Apid.Modules
             return HttpStatusCode.OK;
         }
 
-        public Response GetRecentlyUsedFiles()
+        private Response GetRecentlyUsedFiles()
         {
-            IModel model = ModelProvider.ActivitiesModel;
-
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT MAX(?time) as ?time ?entity ?url WHERE
+                SELECT
+                    MAX(?time) as ?time ?entity ?url
+                WHERE
                 {
                     {
-                        SELECT MAX(?time) as ?time ?url WHERE
+                        SELECT
+                            MAX(?time) as ?time ?url
+                        WHERE
                         {
                             ?entity nfo:fileLastModified ?time .
                             ?entity nfo:fileUrl ?url .
@@ -566,15 +634,17 @@ namespace Artivity.Apid.Modules
                 }
                 ORDER BY DESC(?time) LIMIT 25");
 
-            return Response.AsJson(model.GetBindings(query));
+            var bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+
+            return Response.AsJson(bindings);
         }
 
-        public Response GetActivities(string fileUrl)
+        private Response GetActivities(string fileUrl)
         {
-            IModel model = ModelProvider.GetAll();
-
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?startTime ?endTime MAX(?time) as ?maxTime ?color ?name WHERE
+                SELECT
+                    ?startTime ?endTime MAX(?time) as ?maxTime ?color ?name
+                WHERE
                 {
                     ?file nfo:fileUrl @fileUrl .
 
@@ -599,22 +669,24 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
 
-            return Response.AsJson(model.GetBindings(query));
+            var bindings = ModelProvider.GetAll().GetBindings(query);
+
+            return Response.AsJson(bindings);
         }
 
-        public Response ClearActivities()
+        private Response ClearActivities()
         {
             ModelProvider.ActivitiesModel.Clear();
 
             return HttpStatusCode.OK;
         }
 
-        public Response GetInfluences(string fileUrl)
+        private Response GetInfluences(string fileUrl)
         {
-            IModel model = ModelProvider.GetAllActivities();
-
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?layer ?time ?uri ?type ?color ?description ?bounds ?thumbnailUrl ?x ?y WHERE 
+                SELECT
+                    ?layer ?time ?uri ?type ?color ?description ?bounds ?thumbnailUrl ?x ?y
+                WHERE 
                 {
                     ?file nfo:fileUrl @fileUrl .
 
@@ -649,13 +721,13 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
 
-            return Response.AsJson(model.GetBindings(query));
+            var bindings = ModelProvider.GetAllActivities().GetBindings(query);
+
+            return Response.AsJson(bindings);
         }
 
         private Response GetThumbnails(string fileUrl)
         {
-            IModel model = ModelProvider.ActivitiesModel;
-
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
                     ?layer ?layerZ ?time ?thumbnailUrl COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
@@ -707,13 +779,13 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
 
-            return Response.AsJson(model.GetBindings(query));
+            var bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+
+            return Response.AsJson(bindings);
         }
 
         private Response GetThumbnails(string fileUrl, DateTime time)
         {
-            IModel model = ModelProvider.ActivitiesModel;
-
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
                     ?layer ?layerZ ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
@@ -764,9 +836,9 @@ namespace Artivity.Apid.Modules
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
             query.Bind("@time", time);
 
-            var res = model.GetBindings(query);
+            var bindings = ModelProvider.ActivitiesModel.GetBindings(query);
 
-            return Response.AsJson(res);
+            return Response.AsJson(bindings);
         }
 
         private Response GetThumbnail(string thumbnailUrl)
@@ -864,7 +936,7 @@ namespace Artivity.Apid.Modules
                     ?generation a ?type .
                 }";
 
-            SparqlQuery query = new SparqlQuery(queryString);
+            ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
 
             IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
@@ -892,7 +964,7 @@ namespace Artivity.Apid.Modules
                     FILTER (?time <= @time)
                 }";
 
-            SparqlQuery query = new SparqlQuery(queryString);
+            ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
             query.Bind("@time", time);
 

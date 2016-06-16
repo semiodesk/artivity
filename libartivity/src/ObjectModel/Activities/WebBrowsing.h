@@ -25,30 +25,32 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_URIGENERATOR_H
-#define _ART_URIGENERATOR_H
+#ifndef _ART_WEBBROWSING_H
+#define _ART_WEBBROWSING_H
 
-#include <stdlib.h>
-#include <string>
+#include "../../Ontologies/rdf.h"
+#include "../../Ontologies/art.h"
+#include "../Activity.h"
 
 namespace artivity
 {
-	using namespace std;
+    class WebBrowsing;
 
-    class UriGenerator
-    {        
-        public:
-    
-            UriGenerator() {}
-            ~UriGenerator() {}
+    typedef boost::shared_ptr<WebBrowsing> WebBrowsingRef;
 
-            static string getUri()
-            {
-                return string("http://semiodesk.com/id/" + getRandomId(10));
-            }
+    class WebBrowsing : public Activity
+    {
+    public:
+        WebBrowsing() : Activity()
+        {
+            setType(art::WebBrowsing);
+        }
         
-            static string getRandomId(unsigned long length);
+        WebBrowsing(const char* uriref) : Activity(uriref)
+        {
+            setType(art::WebBrowsing);
+        }
     };
 }
 
-#endif // _ART_URIGENERATOR_H
+#endif // _ART_WEBBROWSING_H

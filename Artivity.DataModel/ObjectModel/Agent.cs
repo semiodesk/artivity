@@ -32,7 +32,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-
 namespace Artivity.DataModel
 {
     [RdfClass(PROV.Agent)]

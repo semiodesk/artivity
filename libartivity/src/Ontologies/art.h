@@ -17,7 +17,7 @@ namespace artivity
         #endif
 
         // http://www.w3.org/ns/activitystreams#View
-        static const char* Browse = ART("Browse");
+        static const char* WebBrowsing = ART("WebBrowsing");
         
         // No match in ActivityStreams
 		static const char* EditFile = ART("EditFile");
