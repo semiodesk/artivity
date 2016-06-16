@@ -128,7 +128,7 @@
       <AdditionalDependencies>libcurl_a_debug64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>..\libcurl\lib\static-debug;..\boost_1_61_0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\libcurl\lib\static-debug;..\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -180,6 +180,8 @@
     <ClInclude Include="..\..\src\ActivityLog.h" />
     <ClInclude Include="..\..\src\artivity.h" />
     <ClInclude Include="..\..\src\curlresponse.h" />
+    <ClInclude Include="..\..\src\defines.h" />
+    <ClInclude Include="..\..\src\EditingSession.h" />
     <ClInclude Include="..\..\src\JSON\jsonxx.h" />
     <ClInclude Include="..\..\src\ObjectModel\Activities\Browse.h" />
     <ClInclude Include="..\..\src\ObjectModel\Activities\CreateFile.h" />
@@ -190,6 +192,11 @@
     <ClInclude Include="..\..\src\ObjectModel\Agent.h" />
     <ClInclude Include="..\..\src\ObjectModel\Association.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\FileDataObject.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\Image.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\InformationElement.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\Media.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\RasterImage.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\VectorImage.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\WebDataObject.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\XmlAttribute.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\XmlElement.h" />
@@ -218,12 +225,14 @@
     <ClInclude Include="..\..\src\Ontologies\art.h" />
     <ClInclude Include="..\..\src\Ontologies\dces.h" />
     <ClInclude Include="..\..\src\Ontologies\nfo.h" />
+    <ClInclude Include="..\..\src\Ontologies\nie.h" />
     <ClInclude Include="..\..\src\Ontologies\prov.h" />
     <ClInclude Include="..\..\src\Ontologies\rdf.h" />
     <ClInclude Include="..\..\src\Ontologies\svg.h" />
     <ClInclude Include="..\..\src\Ontologies\unit.h" />
     <ClInclude Include="..\..\src\Ontologies\xml.h" />
     <ClInclude Include="..\..\src\Ontologies\xsd.h" />
+    <ClInclude Include="..\..\src\ProducerConsumer.h" />
     <ClInclude Include="..\..\src\Property.h" />
     <ClInclude Include="..\..\src\PropertyMap.h" />
     <ClInclude Include="..\..\src\PropertyValue.h" />
@@ -235,8 +244,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\ActivityLog.cpp" />
     <ClCompile Include="..\..\src\curlresponse.cpp" />
+    <ClCompile Include="..\..\src\EditingSession.cpp" />
     <ClCompile Include="..\..\src\JSON\jsonxx.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp" />
+    <ClCompile Include="..\..\src\ObjectModel\Entities\FileDataObject.cpp" />
+    <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp" />
     <ClCompile Include="..\..\src\Resource.cpp" />
     <ClCompile Include="..\..\src\Serializer.cpp" />
     <ClCompile Include="..\..\src\UriGenerator.cpp" />

@@ -7,6 +7,10 @@
 
 namespace artivity
 {
+    class Save;
+    typedef boost::shared_ptr<Save> SaveRef;
+
+
     class Save : public Generation
     {
     public:

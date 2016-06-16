@@ -29,6 +29,21 @@ namespace artivity
         {
             setType(art::Point);
         }
+
+        Point(double x, double y) : Resource(UriGenerator::getUri())
+        {
+            _x = x;
+            _y = y;
+            _z = 0;
+        }
+
+        Point(double x, double y, double z) : Resource(UriGenerator::getUri())
+        {
+            _x = x;
+            _y = y;
+            _z = z;
+        }
+
         
         double getX()
         {
