@@ -48,14 +48,17 @@
 
 namespace artivity
 {
-	typedef list<AssociationRef>::iterator AssociationIterator;
+    typedef list<AssociationRef>::iterator AssociationIterator;
+    typedef list<EntityInfluenceRef>::iterator EntityInfluenceIterator;
 
-	typedef list<EntityInfluenceRef>::iterator EntityInfluenceIterator;
+    class ActivityLog;
+    typedef boost::shared_ptr<ActivityLog> ActivityLogRef;
+
 
     class ActivityLog
     {
     protected:
-		string _endpoint;
+        string _endpoint;
 
         CURL* _curl;
         
