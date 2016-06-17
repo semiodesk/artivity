@@ -35,6 +35,8 @@
 namespace artivity
 {
 	using namespace std;
+	using namespace boost;
+	using namespace boost::property_tree;
 
 	ActivityLog::ActivityLog(string endpoint)
 	{
@@ -68,25 +70,97 @@ namespace artivity
 		curl_easy_cleanup(_curl);
 	}
 
-	bool ActivityLog::connect()
+	bool ActivityLog::setAgent(const char* uri, string version)
 	{
-		CURL* curl = initializeRequest();
+		AssociationRef user = getAssociation(art::USER);
 
-		stringstream url;
+		if (user == NULL)
+		{
+			return false;
+		}
 
-		url << _endpoint << "/user/association";
+		AssociationRef software = getAssociation(art::SOFTWARE, uri, version);
 
-		string response;
+		if (software == NULL)
+		{
+			return false;
+		}
 
-		executeRequest(curl, url.str(), "", response);
+		_associations->push_back(user);
+		_associations->push_back(software);
 
-		cout << response << endl;
-
-		return !response.empty();
+		return true;
 	}
 
-	void ActivityLog::initialize()
+	AssociationRef ActivityLog::getAssociation(const char* role, const char* agent, string version)
 	{
+		try
+		{
+			CURL* curl = initializeRequest();
+
+			stringstream url;
+			
+			url << _endpoint << "/agents/associations?role=" << role;
+
+			if (agent != NULL && agent[0] != '\0')
+			{
+				url << "&agent=" << agent;
+			}
+
+			if (!version.empty())
+			{
+				url << "&version=" << version;
+			}
+
+			string response;
+
+			executeRequest(curl, url.str(), "", response);
+
+			stringstream stream;
+			stream << response;
+
+			if (response.empty())
+			{
+				return NULL;
+			}
+
+			ptree tree;
+
+			read_json(stream, tree);
+
+			string uri = tree.get_child("association").get_value<string>();
+
+			if (uri.empty())
+			{
+				return NULL;
+			}
+
+			AssociationRef association = AssociationRef(new Association(uri));
+
+			_associations->push_back(association);
+
+			return association;
+		}
+		catch (std::exception const& e)
+		{
+			cerr << e.what() << endl;
+
+			return NULL;
+		}
+	}
+
+	void ActivityLog::setDocument(const char* typeUri, string path)
+	{
+		if (strcmp(typeUri, nfo::RasterImage) != 0 && strcmp(typeUri, nfo::VectorImage) != 0)
+		{
+			string msg = "Unsupported document type: ";
+			msg += typeUri;
+
+			throw std::exception(msg.c_str());
+		}
+
+		_fileUrl = "file://" + escapePath(path);
+
 		if (_fileUrl == "")
 		{
 			// A new file is being created.
@@ -108,7 +182,13 @@ namespace artivity
 		while (it != _associations->end())
 		{
 			_activity->addAssociation(*it);
+
+			it++;
 		}
+
+		Serializer* s = new Serializer();
+
+		cout << s->serialize(_activity, N3) << endl;
 	}
 
 	void ActivityLog::addInfluence(EntityInfluenceRef influence)
@@ -309,5 +389,17 @@ namespace artivity
 		}
 
 		return result.str();
+	}
+
+	void ActivityLog::print(ptree const& pt)
+	{
+		ptree::const_iterator end = pt.end();
+
+		for (ptree::const_iterator it = pt.begin(); it != end; ++it)
+		{
+			cout << it->first << ": " << it->second.get_value<string>() << endl;
+
+			print(it->second);
+		}
 	}
 }

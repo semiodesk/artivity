@@ -78,11 +78,41 @@ namespace Artivity.Apid.Modules
                 return HttpStatusCode.OK;
             };
 
-            Get["/agents/install"] = parameters =>
+            Get["/agents/initialize"] = parameters =>
             {
                 ModelProvider.InitializeAgents();
 
                 return HttpStatusCode.OK;
+            };
+
+            Get["/agents/associations"] = parameters =>
+            {
+                if(Request.Query.Count == 0)
+                {
+                    return GetAgentAssociations();
+                }
+
+                string role = Request.Query["role"];
+
+                if (string.IsNullOrEmpty(role) || !Uri.IsWellFormedUriString(role, UriKind.Absolute))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
+                string agent = Request.Query["agent"];
+                string version = Request.Query["version"];
+
+                if (string.IsNullOrEmpty(agent))
+                {
+                    return GetAgentAssociation(new UriRef(role));
+                }
+                
+                if (string.IsNullOrEmpty(version) || !Uri.IsWellFormedUriString(agent, UriKind.Absolute))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
+                return GetAgentAssociation(new UriRef(role), new UriRef(agent), version);
             };
 
             Get["/user"] = parameters =>
@@ -93,11 +123,6 @@ namespace Artivity.Apid.Modules
             Post["/user"] = parameters =>
             {
                 return SetUserAgent(Request.Body);
-            };
-
-            Get["/user/association"] = parameters =>
-            {
-                return GetUserAgentAssociation();
             };
 
             Get["/user/photo"] = parameters =>
@@ -429,33 +454,92 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response GetUserAgentAssociation()
+        private Response GetAgentAssociations()
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?s ?p ?o
+                    ?association ?agent ?role
                 WHERE
                 {
-                    ?s ?p ?o .
-
-                    ?s rdf:type prov:Association .
-                    ?s prov:hadRole art:USER .
+                    ?association rdf:type prov:Association .
+                    ?association prov:agent ?agent .
+                    ?association prov:hadRole ?role .
                 }
             ");
 
-            Association association = ModelProvider.AgentsModel.ExecuteQuery(query).GetResources<Association>().FirstOrDefault();
+            var bindings = ModelProvider.AgentsModel.ExecuteQuery(query, true).GetBindings();
 
-            // Testing .Agent and .Role lazy loads the resources before the database connection is closed.
-            if (association != null && association.Agent != null && association.Role != null)
-            {
-                return Response.AsJson(association);
-            }
-            else
-            {
-                association = CreateUserAssociation();
+            return Response.AsJson(bindings);
+        }
 
-                return Response.AsJson(association);
+        private Response GetAgentAssociation(UriRef role)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?association ?agent ?role
+                WHERE
+                {
+                    ?association rdf:type prov:Association .
+                    ?association prov:agent ?agent .
+                    ?association prov:hadRole @role .
+
+                    BIND(@role as ?role)
+                }
+            ");
+
+            query.Bind("@role", role);
+
+            var bindings = ModelProvider.AgentsModel.ExecuteQuery(query, true).GetBindings().FirstOrDefault();
+
+            return Response.AsJson(bindings);
+        }
+
+        private Response GetAgentAssociation(UriRef role, UriRef agent, string version)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?association ?agent ?role
+                WHERE
+                {
+                    ?association rdf:type art:SoftwareAssociation .
+                    ?association prov:agent @agent .
+                    ?association prov:hadRole @role .
+                    ?association art:version @version .
+
+                    BIND(@agent as ?agent)
+                    BIND(@role as ?role)
+                }
+            ");
+
+            query.Bind("@role", role);
+            query.Bind("@agent", agent);
+            query.Bind("@version", version);
+
+            var bindings = ModelProvider.AgentsModel.ExecuteQuery(query).GetBindings().FirstOrDefault();
+
+            if(bindings == null && ModelProvider.AgentsModel.ContainsResource(agent))
+            {
+                Logger.LogInfo("Creating association for agent {0} in version {1}", agent, version);
+
+                // The URI format of the new agent is always {AGENT_URI}#{VERSION}
+                UriRef uri = new UriRef(agent.AbsoluteUri + "#" + version.Replace(' ', '_').Trim());
+
+                SoftwareAssociation association = ModelProvider.AgentsModel.CreateResource<SoftwareAssociation>(uri);
+                association.Agent = new Agent(agent);
+                association.Role = new Role(role);
+                association.Version = version;
+                association.Commit();
+
+                // Return the bindings for the new agent association.
+                bindings = new BindingSet()
+                {
+                    { "association", uri },
+                    { "agent", agent },
+                    { "role", role },
+                };
             }
+
+            return Response.AsJson(bindings);
         }
 
         private Response SetUserAgent(RequestStream stream)

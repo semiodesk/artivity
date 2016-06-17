@@ -7,7 +7,9 @@ namespace artivity
 {
     namespace nfo
     {
-        
+		static const char* RasterImage = NFO("RasterImage");
+		static const char* VectorImage = NFO("VectorImage");
+
 		static const char* FileDataObject = NFO("FileDataObject");
         static const char* WebDataObject = NFO("WebDataObject");
 

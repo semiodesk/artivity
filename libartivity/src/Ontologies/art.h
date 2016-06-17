@@ -1,8 +1,6 @@
 #ifndef ART_H
 #define ART_H
 
-
-
 #define ART(label) "http://semiodesk.com/artivity/1.0/" label;
 
 namespace artivity
@@ -15,6 +13,9 @@ namespace artivity
         #ifdef DeleteFile
         #undef DeleteFile
         #endif
+
+		static const char* USER = ART("USER");
+		static const char* SOFTWARE = ART("SOFTWARE");
 
         // http://www.w3.org/ns/activitystreams#View
         static const char* WebBrowsing = ART("WebBrowsing");

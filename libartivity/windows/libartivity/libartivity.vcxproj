@@ -189,6 +189,8 @@
     <ClInclude Include="..\..\src\ObjectModel\Agent.h" />
     <ClInclude Include="..\..\src\ObjectModel\Association.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\FileDataObject.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\RasterImage.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\VectorImage.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\WebDataObject.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\XmlAttribute.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\XmlElement.h" />

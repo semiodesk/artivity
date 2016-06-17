@@ -1,10 +1,10 @@
 ﻿using Artivity.Apid;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,18 +13,17 @@ namespace Artivity.WinService
 {
     class Program
     {
-        #region Members
-
-        #endregion
-
         #region Constructor
+
         public Program()
         {
 
         }
+
         #endregion
 
         #region Methods
+
         public static FileInfo GetCurrentAssembly()
         {
             return new FileInfo(Assembly.GetExecutingAssembly().Location);
@@ -48,14 +47,18 @@ namespace Artivity.WinService
         {
             //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
             string ServiceName = "Artivity Service";
-            string logConfig = "log.config";
+
 #if DEBUG
-            logConfig = "debug.log.config";
+            string logConfig = "debug.log.config";
+#else
+            string logConfig = "log.config";
 #endif
+
             ArtivityService Service = new ArtivityService(ServiceName, logConfig);
-            Service.CreateInstaller(ServiceName, System.ServiceProcess.ServiceAccount.LocalSystem, System.ServiceProcess.ServiceStartMode.Automatic);
+            Service.CreateInstaller(ServiceName, ServiceAccount.LocalSystem, ServiceStartMode.Automatic);
 
             string opt = null;
+
             // check for argumenst
             if (args.Length > 0)
             {
@@ -73,18 +76,20 @@ namespace Artivity.WinService
                 {
                     // We don't want plugin checks in debug
                     Service.AutoPluginChecker = false;
-                    
-                    var  ServiceThread = new Thread(Service.Start);
+
+                    Thread ServiceThread = new Thread(Service.Start);
                     ServiceThread.Start();
-                    Console.WriteLine("Press a key to stop...");
+
                     Console.Read();
-                    
+
                     Service.Stop();
                     Service.Dispose();
+
                     ServiceThread.Join();
                 }
 
             }
+
             if (opt == null) // e.g. ,nothing on the command line
             {
                 Service.Run();
@@ -95,7 +100,6 @@ namespace Artivity.WinService
         {
             Logger.LogFatal("Unhandled Exception: \n" + e.ToString());
         }
-
 
         private void EnableLogging()
         {
