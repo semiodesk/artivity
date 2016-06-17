@@ -32,297 +32,419 @@
 #include "curlresponse.h"
 #include "ActivityLog.h"
 
-using namespace std;
-
 namespace artivity
 {
+	using namespace std;
+	using namespace boost;
+	using namespace boost::property_tree;
 
-    ActivityLog::ActivityLog(string endpoint)
-    {
-        _endpoint = endpoint;
-        _curl = initializeRequest();
-        _associations = new list<AssociationRef>();
-        _influences = new list<EntityInfluenceRef>();
-        _fileUri = "";
-        _fileUrl = "";
-    }
+	ActivityLog::ActivityLog()
+	{
+		_curl = initializeRequest();
+		_associations = new list<AssociationRef>();
+		_influences = new list<InfluenceRef>();
+		_fileUrl = "";
+	}
 
-    ActivityLog::~ActivityLog()
-    {
-        // Dereference the activity.
-        _activity = NULL;
+	ActivityLog::ActivityLog(const char* endpointUrl) : ActivityLog()
+	{
+		_endpoint = endpointUrl;
+	}
 
-        // Free all remaining associations.
-        _associations->clear();
+	ActivityLog::ActivityLog(std::string endpointUrl) : ActivityLog()
+	{
+		_endpoint = endpointUrl;
+	}
 
-        delete _associations;
+	ActivityLog::~ActivityLog()
+	{
+		// Dereference the activity.
+		_activity = NULL;
 
-        _associations = NULL;
+		// Free all remaining associations.
+		_associations->clear();
 
-        // Free all remaining influences.
-        _influences->clear();
+		delete _associations;
 
-        delete _influences;
+		_associations = NULL;
 
-        _influences = NULL;
+		// Free all remaining influences.
+		_influences->clear();
 
-        curl_easy_cleanup(_curl);
-    }
+		delete _influences;
 
-    bool ActivityLog::connect()
-    {
-        CURL* curl = initializeRequest();
+		_influences = NULL;
 
-        stringstream url;
+		curl_easy_cleanup(_curl);
+	}
 
-        url << _endpoint << "/user/association";
+	void ActivityLog::connect(const char* endpointUrl)
+	{
+		_endpoint = endpointUrl;
+	}
 
-        string response;
+	bool ActivityLog::setAgent(const char* uri, string version)
+	{
+		AssociationRef user = getAssociation(art::USER);
 
-        executeRequest(curl, url.str(), "", response);
+		if (user == NULL)
+		{
+			return false;
+		}
 
-        cout << response << endl;
+		AssociationRef software = getAssociation(art::SOFTWARE, uri, version);
 
-        return !response.empty();
-    }
+		if (software == NULL)
+		{
+			return false;
+		}
 
-    void ActivityLog::initialize(string fileUrl)
-    {
-        _fileUrl = fileUrl;
+		_associations->push_back(user);
+		_associations->push_back(software);
 
-        if (_fileUrl == "")
-        {
-            // A new file is being created.
-            _activity = CreateFileRef(new CreateFile());
-        }
-        else
-        {
-            // An existing file is being edited.
-            _activity = EditFileRef(new EditFile());
-        }
+		return true;
+	}
 
-        time_t now;
-        time(&now);
+	AssociationRef ActivityLog::getAssociation(const char* role, const char* agent, string version)
+	{
+		CURL* curl = initializeRequest();
 
-        _activity->setStartTime(now);
+		stringstream url;
+			
+		url << _endpoint << "/agents/associations?role=" << role;
 
-        AssociationIterator it = _associations->begin();
+		if (agent != NULL && agent[0] != '\0')
+		{
+			url << "&agent=" << agent;
+		}
 
-        while (it != _associations->end())
-        {
-            _activity->addAssociation(*it);
-        }
-    }
+		if (!version.empty())
+		{
+			url << "&version=" << version;
+		}
 
-    void ActivityLog::addInfluence(EntityInfluenceRef influence)
-    {
-        _influences->push_back(influence);
-    }
+		string response;
 
-    void ActivityLog::removeInfluence(EntityInfluenceRef influence)
-    {
-        _influences->remove(influence);
-    }
+		executeRequest(curl, url.str(), "", response);
 
-    void ActivityLog::addAssociation(AssociationRef resource)
-    {
-        _associations->push_back(resource);
-    }
+		stringstream stream;
+		stream << response;
 
+		if (response.empty())
+		{
+			return NULL;
+		}
 
-    string ActivityLog::getThumbnailPath()
-    {
-        //CURL* curl = initializeRequest();
+		ptree tree;
 
-        //stringstream url;
-        //url << _endpoint << "/thumbnails/path?fileUri=" << escapePath(fileUrl);
+		read_json(stream, tree);
 
-        //string response;
+		string uri = tree.get_child("association").get_value<string>();
 
-        //executeRequest(curl, url.str(), "", response);
+		if (uri.empty())
+		{
+			return NULL;
+		}
 
-        //jsonxx::Array a;
+		AssociationRef association = AssociationRef(new Association(uri));
 
-        //bool isValid = a.parse(response);
+		_associations->push_back(association);
 
-        //return isValid ? a.get<jsonxx::String>((int)a.size() - 1) : "";
+		return association;
+	}
 
-        return "";
-    }
+	void ActivityLog::setFile(ImageRef image, const char* path)
+	{
+		string p = path;
+
+		_fileUrl = "file://" + escapePath(p);
+		_entity = image;
+
+		string uri = getEntityUri(_fileUrl);
+
+		if (uri == "")
+		{
+			// A new file is being created.
+			_activity = CreateFileRef(new CreateFile());
+		}
+		else
+		{
+			image->Uri = uri;
+
+			// An existing file is being edited.
+			_activity = EditFileRef(new EditFile());
+			_activity->addUsedEntity(image);
+		}
+
+		time_t now;
+		time(&now);
+
+		_activity->setStartTime(now);
+
+		AssociationIterator it = _associations->begin();
+
+		while (it != _associations->end())
+		{
+			_activity->addAssociation(*it);
+
+			it++;
+		}
+	}
+
+	string ActivityLog::getEntityUri(string fileUrl)
+	{
+		CURL* curl = initializeRequest();
+
+		stringstream url;
+		url << _endpoint << "/uris?fileUrl=" << fileUrl;
+
+		string response;
+
+		executeRequest(curl, url.str(), "", response);
+
+		stringstream stream;
+		stream << response;
+
+		if (response.empty())
+		{
+			return "";
+		}
+
+		ptree tree;
+
+		read_json(stream, tree);
+
+		string uri = tree.get_child("uri").get_value<string>();
+
+		if (uri.empty())
+		{
+			return "";
+		}
+
+		return uri;
+	}
+
+	void ActivityLog::addInfluence(InfluenceRef influence)
+	{
+		_influences->push_back(influence);
+	}
+
+	void ActivityLog::removeInfluence(InfluenceRef influence)
+	{
+		_influences->remove(influence);
+	}
+
+	string ActivityLog::getRenderOutputPath()
+	{
+		//CURL* curl = initializeRequest();
+
+		//stringstream url;
+		//url << _endpoint << "/thumbnails/path?fileUri=" << escapePath(fileUrl);
+
+		//string response;
+
+		//executeRequest(curl, url.str(), "", response);
+
+		//jsonxx::Array a;
+
+		//bool isValid = a.parse(response);
+
+		//return isValid ? a.get<jsonxx::String>((int)a.size() - 1) : "";
+
+		return "";
+	}
 
     string ActivityLog::getFileUri()
     {
         return "http://example.com";
     }
 
-    CURL* ActivityLog::initializeRequest()
-    {
-        CURL* curl = curl_easy_init();
+	CURL* ActivityLog::initializeRequest()
+	{
+		CURL* curl = curl_easy_init();
 
-        if (!curl)
-        {
-            logError(CURLE_FAILED_INIT, "Failed to initialize CURL.");
-        }
+		if (!curl)
+		{
+			logError(CURLE_FAILED_INIT, "Failed to initialize CURL.");
+		}
 
-        return curl;
-    }
+		return curl;
+	}
 
-    long ActivityLog::executeRequest(CURL* curl, string url, string postFields, string& response)
-    {
-        if (!curl)
-        {
-            logError(CURLE_FAILED_INIT, "CURL not initialized.");
+	long ActivityLog::executeRequest(CURL* curl, string url, string postFields, string& response)
+	{
+		if (!curl)
+		{
+			logError(CURLE_FAILED_INIT, "CURL not initialized.");
 
-            return CURLE_FAILED_INIT;
-        }
+			return CURLE_FAILED_INIT;
+		}
 
-        struct curl_slist *headers = NULL; // init to NULL is important
-        headers = curl_slist_append(headers, "charsets: utf-8");
+		struct curl_slist *headers = NULL; // init to NULL is important
+		headers = curl_slist_append(headers, "charsets: utf-8");
 
-        struct curl_string data;
-        curl_init_string(&data);
+		struct curl_string data;
+		curl_init_string(&data);
 
-        curl_easy_reset(curl);
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
-        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+		curl_easy_reset(curl);
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
 
-        if (postFields.length() > 0)
-        {
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
-        }
+		if (postFields.length() > 0)
+		{
+			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
+		}
 
-        CURLcode responseCode = curl_easy_perform(curl);
+		CURLcode responseCode = curl_easy_perform(curl);
 
-        if (data.len > 0)
-        {
-            response = data.ptr;
-        }
+		if (data.len > 0)
+		{
+			response = data.ptr;
+		}
 
-        curl_easy_cleanup(curl);
+		curl_easy_cleanup(curl);
 
-        if (responseCode == CURLE_OK)
-        {
-            logInfo(responseCode, url);
-        }
-        else
-        {
-            logError(responseCode, url);
-        }
+		if (responseCode == CURLE_OK)
+		{
+			logInfo(responseCode, url);
+		}
+		else
+		{
+			logError(responseCode, url);
+		}
 
-        if (postFields.length() > 0)
-        {
-            cout << postFields << endl << flush;
-        }
+		if (postFields.length() > 0)
+		{
+			cout << postFields << endl << flush;
+		}
 
-        return responseCode;
-    }
+		return responseCode;
+	}
 
-    void ActivityLog::transmit()
-    {
-        if (_influences->empty())
-        {
-            return;
-        }
+	void ActivityLog::transmit()
+	{
+		if (_influences->empty())
+		{
+			return;
+		}
 
-        stringstream stream;
+		stringstream stream;
 
-        Serializer s;
+		Serializer s;
 
-        EntityInfluenceIterator it = _influences->begin();
+		InfluenceIterator it = _influences->begin();
 
-        while (it != _influences->end())
-        {
-            s.serialize(stream, *it, N3);
+		while (it != _influences->end())
+		{
+			s.serialize(stream, *it, N3);
 
-            it++;
-        }
+			it++;
+		}
 
-        string requestData = stream.str();
-        string responseData;
+		string requestData = stream.str();
+		string responseData;
 
-        CURL* curl = initializeRequest();
+		CURL* curl = initializeRequest();
 
-        stringstream url;
-        url << _endpoint << "/activities";
+		stringstream url;
+		url << _endpoint << "/activities";
 
-        executeRequest(curl, url.str(), requestData, responseData);
+		cout << requestData << endl;
 
-        clear();
-    }
+		//executeRequest(curl, url.str(), requestData, responseData);
 
-    void ActivityLog::logError(CURLcode responseCode, string msg)
-    {
-        cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
-    }
+		clear();
+	}
 
-    void ActivityLog::logInfo(CURLcode responseCode, string msg)
-    {
-        cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
-    }
+	void ActivityLog::logError(CURLcode responseCode, string msg)
+	{
+		cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
+	}
 
-    string ActivityLog::getTime()
-    {
-        time_t t = time(NULL);
+	void ActivityLog::logInfo(CURLcode responseCode, string msg)
+	{
+		cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
+	}
 
-        char date_str[20];
+	string ActivityLog::getTime()
+	{
+		time_t t = time(NULL);
+
+		char date_str[20];
 
 #ifdef WIN32
-        tm* time = new tm();
-        localtime_s(time, &t);
-        strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", time);
+		tm* time = new tm();
+		localtime_s(time, &t);
+		strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", time);
 #else
-        strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
+		strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
 #endif
 
-        return string(date_str);
-    }
+		return string(date_str);
+	}
 
-    string ActivityLog::escapePath(string path)
-    {
-        stringstream result;
-        string token;
+	string ActivityLog::escapePath(string path)
+	{
+		stringstream result;
+		string token;
 
-        for (int i = 0; i < path.length(); i++)
-        {
-            char c = path[i];
+		for (int i = 0; i < path.length(); i++)
+		{
+			char c = path[i];
 
-            if (c == '/' || c == '\\' || c == ':')
-            {
-                if (!token.empty())
-                {
-                    char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
+			if (c == '/' || c == '\\' || c == ':')
+			{
+				if (!token.empty())
+				{
+					char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
 
-                    result << string(t);
+					result << string(t);
 
-                    curl_free(t);
+					curl_free(t);
 
-                    token = "";
-                }
+					token = "";
+				}
 
-                if (c == '\\')
-                    result << '/';
-                else
-                    result << c;
-            }
-            else
-            {
-                token += c;
-            }
-        }
+				if (c == '\\')
+					result << '/';
+				else
+					result << c;
+			}
+			else
+			{
+				token += c;
+			}
+		}
 
-        if (!token.empty())
-        {
-            char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
+		if (!token.empty())
+		{
+			char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
 
-            result << string(t);
+			result << string(t);
 
-            curl_free(t);
-        }
+			curl_free(t);
+		}
 
-        return result.str();
-    }
+		return result.str();
+	}
 
+	void ActivityLog::print(ptree const& pt)
+	{
+		ptree::const_iterator end = pt.end();
+
+		for (ptree::const_iterator it = pt.begin(); it != end; ++it)
+		{
+			cout << it->first << ": " << it->second.get_value<string>() << endl;
+
+			print(it->second);
+		}
+	}
+
+	bool ActivityLog::ready()
+	{
+		return _activity != NULL && _entity != NULL && _associations->size() > 1;
+	}
 }

@@ -30,7 +30,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-
 namespace Artivity.DataModel
 {
     [RdfClass(PROV.Association)]

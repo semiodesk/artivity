@@ -126,12 +126,24 @@ namespace Artivity.DataModel
         {
             IModel model = GetAgents();
 
+            model.Clear();
+
+            // Create a default user..
+            Person user = model.CreateResource<Person>();
+            user.Commit();
+
+            Association association = model.CreateResource<Association>();
+            association.Agent = user;
+            association.Role = new Role(art.USER);
+            association.Commit();
+
+            // Create the default agents..
             InstallAgent(model, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
             InstallAgent(model, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
             InstallAgent(model, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
             InstallAgent(model, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
-            InstallAgent(model, "application://photoshop.desktop", "Adobe Photoshop", "photoshop", "#EE2000", true);
-            InstallAgent(model, "application://illustrator.desktop", "Adobe Illustrator", "illustrator", "#EE2000", true);
+            InstallAgent(model, "http://adobe.com/products/photoshop", "Adobe Photoshop", "photoshop.exe", "#EE2000", true);
+            InstallAgent(model, "http://adobe.com/products/illustrator", "Adobe Illustrator", "illustrator.exe", "#EE2000", true);
         }
 
         public void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
