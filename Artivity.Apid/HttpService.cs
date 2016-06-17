@@ -150,6 +150,7 @@ namespace Artivity.Apid
         private bool _started = false;
 
         private PluginChecker _pluginChecker = null;
+
         private IInstallationWatchdog _watchdog;
 
         #endregion
@@ -226,7 +227,6 @@ namespace Artivity.Apid
             customBootstrapper.ModelProvider = ModelProvider;
             customBootstrapper.PlatformProvider = PlatformProvider;
             customBootstrapper.PluginChecker = _pluginChecker;
-
 
             HostConfiguration config = new HostConfiguration();
             config.RewriteLocalhost = true;

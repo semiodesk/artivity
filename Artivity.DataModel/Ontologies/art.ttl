@@ -122,6 +122,13 @@ art:CartesianCoordinateSystem a rdfs:Class ;
     rdfs:label "CoordinateSystem" ;
     rdfs:subClassOf art:CoordinateSystem .
 
+art:SoftwareAssociation a rdfs:Class ;
+    rdfs:label "SoftwareAssociation" ;
+    rdfs:subClassOf prov:Association .
+
+art:version a rdf:Property ;
+    rdfs:label "version" .
+
 art:lengthUnit a rdf:Property ;
     rdfs:label "lengthUnit" ;
     rdfs:domain art:Canvas ;
