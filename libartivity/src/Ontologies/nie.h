@@ -38,6 +38,8 @@ namespace artivity
 
         static const char* isStoredAs = NIE("isStoredAs");
         static const char* interpretedAs = NIE("interpretedAs");
+        static const char* created = NIE("created");
+        static const char* lastModified = NIE("lastModified");
         
 
     }

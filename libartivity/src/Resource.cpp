@@ -201,24 +201,18 @@ namespace artivity
         Properties.setProperty(property.Uri, Serializer::toString(value), typeid(value));
     }
 
-    void Resource::setType(ResourceRef type)
-    {
-        Properties.setProperty(rdf::_type, type->Uri, typeid(Resource));
-    }
 
     void Resource::setType(const char* value)
     {
         Properties.setProperty(rdf::_type, Serializer::toString(value), typeid(Resource));
     }
     
-    const ResourceRef Resource::getType()
+    const char* Resource::getType()
     {
         if(Properties.find(rdf::_type) != Properties.end())
         {
-            return Properties.find(rdf::_type)->second.Value;
+            return Properties.find(rdf::_type)->second.LiteralValue.c_str();
         }
-        
-        return NULL;
     }
     
     void Resource::setUri(string uriref)

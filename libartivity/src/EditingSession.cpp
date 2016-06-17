@@ -29,15 +29,16 @@ namespace artivity
         _log->addAssociation(softwareAgentAssociation);
 
         _initialized = true;
+
+        _fileUri = stringRef(new string(_log->getFileUri()));
     }
 
 
     EditingSession::~EditingSession()
     {
-        if (_wasClosed)
-        {
-            throw std::exception("EditingSession was destroyed without EventClose(). This is not supposed to happen!");
-        }
+        time_t now;
+        time(&now);
+        _log->close(now);
     }
 
     void EditingSession::eventAdd()
@@ -83,15 +84,6 @@ namespace artivity
         _consumer->push(res);
     }
 
-    void EditingSession::eventClose()
-    {
-        ResourceRef res = onEventClose();
-        _consumer->push(res);
-        _consumer->stop();
-        _activity->clear();
-        _wasClosed = true;
-    }
-
     bool EditingSession::fileExists(const std::string& name)
     {
         return boost::filesystem::exists(name);
@@ -99,51 +91,32 @@ namespace artivity
 
     void EditingSession::consume(ResourceRef res)
     {
-        string type = res->getType()->Uri;
+        const char* type = res->getType();
 
-        if (type == prov::Generation)
+        if (strcmp(type, prov::Revision) == 0)
         {
-            handleEventAdd(res);
+            _log->addInfluence(boost::dynamic_pointer_cast<EntityInfluence>(res));
         }
-        if (type == prov::Revision)
+        else if (strcmp(type, prov::Derivation) == 0)
         {
-            handleEventEdit(res);
+            _log->addInfluence(boost::dynamic_pointer_cast<EntityInfluence>(res));
         }
-        else if (type == art::Undo)
+        else if (strcmp(type, prov::Generation) == 0)
         {
-            handleEventUndo(res);
+            //_log->addInfluence(boost::dynamic_pointer_cast<ActivityInfluence>(res));
         }
-        else if (type == art::Redo)
+        else if (strcmp(type, prov::Invalidation) == 0)
         {
-            handleEventRedo(res);
+            //_log->addInfluence(boost::dynamic_pointer_cast<ActivityInfluence>(res));
         }
-        else if (type == art::Save)
+        else if (strcmp(type, art::Undo) == 0)
         {
-            handleEventSave(res);
+            //_log->addInfluence(boost::dynamic_pointer_cast<ActivityInfluence>(res));
         }
-        //else if (type == art::SaveAs)//TODO art::SaveAs MISSING!
-        //{
-        //    handleEventSave(res);
-        //}
-        //else if (type == art::Close) //TODO art::Close MISSING!
-        //{
-        //    HandleEventClose(res);
-        //}
-        else if (type == prov::Invalidation)
+        else if (strcmp(type, art::Redo) == 0)
         {
-            handleEventDelete(res);
+            //_log->addInfluence(boost::dynamic_pointer_cast<ActivityInfluence>(res));
         }
-
     }
-
-    void EditingSession::handleEventAdd(ResourceRef data) {}
-    void EditingSession::handleEventDelete(ResourceRef data) {}
-    void EditingSession::handleEventEdit(ResourceRef data) {}
-    void EditingSession::handleEventUndo(ResourceRef data) {}
-    void EditingSession::handleEventRedo(ResourceRef data) {}
-    void EditingSession::handleEventClose(ResourceRef data) {}
-    void EditingSession::handleEventSave(ResourceRef data) {}
-    void EditingSession::handleEventSaveAs(ResourceRef data) {}
-    void EditingSession::handleTransmit() {}
 
 }

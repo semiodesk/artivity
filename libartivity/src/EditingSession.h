@@ -8,6 +8,7 @@
 #include "ObjectModel/Influences\Redo.h"
 #include "ObjectModel/Influences\Save.h"
 #include "ObjectModel/Revision.h"
+#include "ObjectModel/Derivation.h"
 
 namespace artivity
 {
@@ -26,28 +27,20 @@ namespace artivity
         bool contentChanged = false;
         ProducerConsumerRef _consumer;
         stringRef _imagePath;
+        stringRef _fileUri;
 
         bool _endTime = false;
         bool _initialTransmit = true;
         stringRef CurrentTool;
 
         bool _initialized = false;
-        bool _wasClosed = false;
 
         void createActivity();
         stringRef createImageFilePath(time_t time);
 
-        void handleEventAdd(ResourceRef data);
-        void handleEventDelete(ResourceRef data);
-        void handleEventEdit(ResourceRef data);
-        void handleEventUndo(ResourceRef data);
-        void handleEventRedo(ResourceRef data);
-        void handleEventClose(ResourceRef data);
-        void handleEventSave(ResourceRef data);
-        void handleEventSaveAs(ResourceRef data);
-        void handleTransmit();
-
         protected:
+
+        stringRef getFileUri() { return _fileUri; }
 
         virtual stringRef getDocumentFilePath() = 0;
         virtual stringRef getSoftwareAgent() = 0;
@@ -56,22 +49,18 @@ namespace artivity
         UndoRef createUndo() { return UndoRef(new Undo()); }
         RedoRef createRedo() { return RedoRef(new Redo()); }
         InvalidationRef createInvalidation() { return InvalidationRef(new Invalidation()); }
-        SaveRef createSave() { return SaveRef(new Save()); }
+        DerivationRef createDerivation() { return DerivationRef(new Derivation()); }
         RevisionRef createRevision() { return RevisionRef(new Revision()); }
-
 
         virtual GenerationRef onEventAdd() = 0;
         virtual InvalidationRef onEventDelete() = 0;
         virtual RevisionRef onEventEdit() = 0;
         virtual UndoRef onEventUndo() = 0;
         virtual RedoRef onEventRedo() = 0;
-        virtual ResourceRef onEventClose() = 0;
-        virtual SaveRef onEventSave() = 0;
-        virtual ResourceRef onEventSaveAs() = 0;
+        virtual RevisionRef onEventSave() = 0;
+        virtual DerivationRef onEventSaveAs() = 0;
 
         public:
-
-
         EditingSession();
         void initialize(std::string server, bool isNewDocument);
         virtual ~EditingSession();
@@ -89,7 +78,6 @@ namespace artivity
         void eventRedo();
         void eventSave();
         void eventSaveAs();
-        void eventClose();
 
         bool fileExists(const std::string& name);
 

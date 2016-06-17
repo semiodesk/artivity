@@ -25,51 +25,42 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_GENERATION_H
-#define _ART_GENERATION_H
+#ifndef _ART_TEXT_H
+#define _ART_TEXT_H
 
-#include "ActivityInfluence.h"
+#include "../../Ontologies/rdf.h"
+#include "../../Ontologies/art.h"
+#include "../Entity.h"
+#include "Geometry.h"
 
 namespace artivity
 {
-    class Generation;
+    class Text;
+    typedef boost::shared_ptr<Text> TextRef;
 
-    typedef boost::shared_ptr<Generation> GenerationRef;
-
-    class Generation : public ActivityInfluence
-    {
+    class Text : public Geometry
+    {   
         private:
-        std::list<EntityRef> _entities;
+        std::string _value;
 
         public:
-        Generation() : ActivityInfluence()
+        Text() : Geometry()
         {
-            Resource::setType(prov::Generation);
+            setType(art::Geometry);
         }
         
-        Generation(const char* uriref) : ActivityInfluence(uriref)
+        Text(const char* uriref) : Geometry(uriref)
         {
-            Resource::setType(prov::Generation);
+            setType(art::Geometry);
         }
 
-        void addGenerated(EntityRef entity)
+        void setText(std::string text)
         {
-            Properties.addProperty(prov::generated, entity);
-            _entities.push_back(entity);
-        }
+            _value = text;
+            setValue(prov::value, _value.c_str());
 
-        void removeGenerated(EntityRef entity)
-        {
-            Properties.removeProperty(prov::generated, entity);
-            _entities.remove(entity);
-        }
-
-        void clearGenerated(EntityRef entity)
-        {
-            Properties.erase(prov::generated);
-            _entities.clear();
         }
     };
 }
 
-#endif // _ART_GENERATION_H
+#endif // _ART_TEXT_H

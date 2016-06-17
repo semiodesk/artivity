@@ -190,6 +190,7 @@
     <ClInclude Include="..\..\src\ObjectModel\ActivityInfluence.h" />
     <ClInclude Include="..\..\src\ObjectModel\Agent.h" />
     <ClInclude Include="..\..\src\ObjectModel\Association.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Derivation.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\FileDataObject.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\Image.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\InformationElement.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Geometry.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Point.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Rectangle.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Text.h" />
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Viewport.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influence.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Redo.h" />
@@ -245,6 +247,7 @@
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Entities\FileDataObject.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp" />
+    <ClCompile Include="..\..\src\PropertyMap.cpp" />
     <ClCompile Include="..\..\src\Resource.cpp" />
     <ClCompile Include="..\..\src\Serializer.cpp" />
     <ClCompile Include="..\..\src\UriGenerator.cpp" />

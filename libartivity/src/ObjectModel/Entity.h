@@ -33,8 +33,9 @@
 #include "../Ontologies/rdf.h"
 #include "../Ontologies/prov.h"
 #include "../UriGenerator.h"
-#include "Generation.h"
-#include "Invalidation.h"
+#include "../Ontologies/nie.h"
+#include "../Ontologies/dces.h"
+#include "../Resource.h"
 
 namespace artivity
 {
@@ -43,81 +44,49 @@ namespace artivity
 
     class Entity : public Resource
     {
-    private:
-        GenerationRef _generation;
-        
-        InvalidationRef _invalidation;
-        
-        std::list<EntityRef>* _genericEntities;
-        
-    public:
+        private:
+        std::string _title;
+        time_t _created;
+        time_t _modified;
+
+        public:
         Entity() : Resource(UriGenerator::getUri())
         {
-            _genericEntities = new std::list<EntityRef>();
-            
             setType(prov::Entity);
         }
         
         Entity(const char* uriref) : Resource(uriref)
         {
-            _genericEntities = new std::list<EntityRef>();
-            
             setType(prov::Entity);
         }
-        
-        virtual ~Entity()
+
+        void setCreated(time_t created)
         {
-            delete _genericEntities;
+            _created = created;
+            setValue(nie::created, &_created);
         }
-        
-        void clear()
+
+        void resetCreated()
         {
-            Resource::clear();
-            
-            _genericEntities->clear();
+            removeProperty(nie::created, &_created);
+            _created = 0;
         }
-        
-        GenerationRef getGeneration()
+
+        void setModified(time_t modified)
         {
-            return _generation;
+            _modified = modified;
         }
-        
-        void setGeneration(GenerationRef generation)
+
+        void resetModified()
         {
-            _generation = generation;
-            
-            setValue(prov::qualifiedGeneration, generation);
+            removeProperty(nie::lastModified, &_modified);
+            _modified = 0;
         }
-        
-        InvalidationRef getInvalidation()
+
+        void setTitle(std::string title)
         {
-            return _invalidation;
-        }
-        
-        void setInvalidation(InvalidationRef invalidation)
-        {
-            _invalidation = invalidation;
-            
-            setValue(prov::qualifiedInvalidation, invalidation);
-        }
-        
-        std::list<EntityRef> getGenericEntities()
-        {
-            return *_genericEntities;
-        }
-        
-        void addGenericEntity(EntityRef entity)
-        {
-            _genericEntities->push_back(entity);
-            
-            addProperty(prov::specializationOf, entity);
-        }
-        
-        void removeGenericEntity(EntityRef entity)
-        {
-            _genericEntities->remove(entity);
-            
-            removeProperty(prov::specializationOf, entity);
+            _title = title;
+            setValue(dces::title, _title.c_str());
         }
     };
 }

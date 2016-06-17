@@ -150,6 +150,11 @@ namespace artivity
         return "";
     }
 
+    string ActivityLog::getFileUri()
+    {
+        return "http://example.com";
+    }
+
     CURL* ActivityLog::initializeRequest()
     {
         CURL* curl = curl_easy_init();
