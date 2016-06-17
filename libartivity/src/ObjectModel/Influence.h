@@ -60,11 +60,21 @@ namespace artivity
         Influence() : Resource(UriGenerator::getUri())
         {
             setType(prov::Influence);
+
+			time_t now;
+			time(&now);
+
+			setTime(now);
         }
         
         Influence(const char* uriref) : Resource(uriref)
         {
             setType(prov::Influence);
+
+			time_t now;
+			time(&now);
+
+			setTime(now);
         }
         
         ViewportRef getViewport()

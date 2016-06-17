@@ -28,12 +28,15 @@
 #ifndef ART_H
 #define ART_H
 
-#define ART(label) "http://semiodesk.com/artivity/1.0/" label;
+#define ART(label) "http://w3id.org/art/terms/1.0/" label;
 
 namespace artivity
 {
     namespace art
     {
+		static const char* NS_PREFIX = "art:";
+		static const char* NS_URI = "http://w3id.org/art/terms/1.0/";
+
         #ifdef CreateFile
         #undef CreateFile
         #endif

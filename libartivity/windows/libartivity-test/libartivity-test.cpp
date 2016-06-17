@@ -24,7 +24,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		// The log could not be set up to transmit properly.
 		// Either the agent is not properly installed or logging is disabled.
-		cout << "Log not ready." << endl;
+		cout << "Log not ready." << endl << endl;
+		cout << "Press any key to stop.." << endl;
+
+		string line;
+
+		getline(std::cin, line);
 
 		return -1;
 	}
@@ -37,7 +42,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	image->addCanvas(canvas);
 
 	GenerationRef generation = GenerationRef(new Generation());
+	generation->addGenerated(canvas);
 
+	log->addInfluence(generation);
 	log->transmit();
 
 	cout << "Press any key to stop.." << endl;

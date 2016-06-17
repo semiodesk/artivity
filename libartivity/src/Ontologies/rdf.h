@@ -36,6 +36,9 @@ namespace artivity
 {
     namespace rdf
     {
+		static const char* NS_PREFIX = "rdf:";
+		static const char* NS_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+
 		static const char* _type = RDF("type");
     }
 }

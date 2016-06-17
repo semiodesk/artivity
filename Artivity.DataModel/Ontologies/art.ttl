@@ -5,11 +5,11 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
-@prefix art: <http://semiodesk.com/artivity/1.0/> .
+@prefix art: <http://w3id.org/art/terms/1.0/> .
 @prefix geo: <http://www.opengis.net/ont/geosparql#> .
 @prefix qudt: <http://qudt.org/vocab/unit#> .
 
-<http://semiodesk.com/artivity/1.0/> a owl:Ontology .
+<http://w3id.org/art/terms/1.0/> a owl:Ontology .
 
 art:Database a rdfs:Class ;
     rdfs:label "Database" .
