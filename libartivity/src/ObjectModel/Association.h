@@ -56,7 +56,7 @@ namespace artivity
             setType(prov::Association);
         }
 
-		Association(string uriref) : Resource(uriref)
+		Association(std::string uriref) : Resource(uriref)
 		{
 			_agent = NULL;
 			_role = NULL;

@@ -37,7 +37,7 @@ namespace artivity
     typedef boost::shared_ptr<Generation> GenerationRef;
 
     class Generation : public ActivityInfluence
-    {        
+    {
     public:
         Generation() : ActivityInfluence()
         {
