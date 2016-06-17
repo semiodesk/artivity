@@ -16,6 +16,7 @@ namespace Artivity.Apid
         public WindowsService(string serviceName)
         {
             ServiceName = serviceName;
+
             InitialiseComponent();
         }
 
@@ -33,10 +34,11 @@ namespace Artivity.Apid
         {
             TransactedInstaller ti = new TransactedInstaller();
             ti.Installers.Add(installer);
-            String path = String.Format("/assemblypath={0}",
-                                        Assembly.GetExecutingAssembly().Location);
+
+            String path = String.Format("/assemblypath={0}", Assembly.GetExecutingAssembly().Location);
             String[] cmdline = { path };
             InstallContext ctx = new InstallContext("", cmdline);
+
             ti.Context = ctx;
             ti.Install(new Hashtable());
         }
@@ -47,6 +49,7 @@ namespace Artivity.Apid
             {
                 throw new Exception("Error: You need to either create an installer or supply your own.");
             }
+
             Uninstall(Installer);
         }
 
@@ -54,10 +57,11 @@ namespace Artivity.Apid
         {
             TransactedInstaller ti = new TransactedInstaller();
             ti.Installers.Add(installer);
-            String path = String.Format("/assemblypath={0}",
-                                        Assembly.GetExecutingAssembly().Location);
+
+            String path = String.Format("/assemblypath={0}", Assembly.GetExecutingAssembly().Location);
             String[] cmdline = { path };
             InstallContext ctx = new InstallContext("", cmdline);
+
             ti.Context = ctx;
             ti.Uninstall(null);
         }
@@ -65,8 +69,8 @@ namespace Artivity.Apid
 
         public void Run()
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] { this };
+            ServiceBase[] ServicesToRun = new ServiceBase[] { this };
+
             ServiceBase.Run(ServicesToRun);
         }
 
@@ -80,7 +84,6 @@ namespace Artivity.Apid
         /// </summary>
         public virtual void InitialiseComponent()
         {
-
         }
 
         public void CreateInstaller(string displayName, ServiceAccount account, ServiceStartMode startMode)
@@ -91,7 +94,6 @@ namespace Artivity.Apid
         [RunInstaller(true)]
         public class WindowsServiceInstaller : Installer
         {
-
             public WindowsServiceInstaller(string serviceName, string displayName, ServiceAccount account, ServiceStartMode startMode)
             {
                 ServiceProcessInstaller spi = new ServiceProcessInstaller();

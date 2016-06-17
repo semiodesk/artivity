@@ -35,6 +35,7 @@
 namespace artivity
 {
     class Media;
+
     typedef boost::shared_ptr<Media> MediaRef;
 
     class Media : public InformationElement
@@ -42,14 +43,11 @@ namespace artivity
     public:
         Media() : InformationElement()
         {
-
             setType(nfo::Media);
         }
         
         Media(const char* uriref) : InformationElement(uriref)
         {
-            _url = "";
-            
             setType(nfo::Media);
         }
 

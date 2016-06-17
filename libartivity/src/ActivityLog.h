@@ -28,12 +28,17 @@
 #ifndef _ART_ACTIVITYLOG_H
 #define _ART_ACTIVITYLOG_H
 
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <algorithm>
 #include <deque>
 #include <vector>
 #include <curl/curl.h>
 #include <boost/shared_ptr.hpp>
+#include <boost/format.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 #include "defines.h"
 #include "Resource.h"
@@ -46,17 +51,18 @@
 #include "ObjectModel/Entity.h"
 #include "ObjectModel/EntityInfluence.h"
 #include "ObjectModel/Entities/FileDataObject.h"
+#include "ObjectModel/Entities/Image.h"
 
 namespace artivity
 {
     typedef std::list<AssociationRef>::iterator AssociationIterator;
-    typedef std::list<EntityInfluenceRef>::iterator EntityInfluenceIterator;
+    typedef std::list<InfluenceRef>::iterator InfluenceIterator;
 
     class ActivityLog;
+
     typedef boost::shared_ptr<ActivityLog> ActivityLogRef;
 
-
-    class ActivityLog
+	class ActivityLog
     {
     protected:
         std::string _endpoint;
@@ -65,36 +71,45 @@ namespace artivity
         
         ActivityRef _activity;
             
+		EntityRef _entity;
+
         std::list<AssociationRef>* _associations;
     
-        std::list<EntityInfluenceRef>* _influences;
-
-        std::string _fileUri;
+        std::list<InfluenceRef>* _influences;
         
         std::string _fileUrl;
         
         CURL* initializeRequest();
         
-        long executeRequest(CURL* curl, std::string url, std::string postFields, std::string& response);
+		long executeRequest(CURL* curl, std::string url, std::string postFields, std::string& response);
         
-        void logError(CURLcode responseCode, std::string msg);
+		void logError(CURLcode responseCode, std::string msg);
         
-        void logInfo(CURLcode responseCode, std::string msg);
+		void logInfo(CURLcode responseCode, std::string msg);
         
-        std::string getTime();
+		std::string getTime();
         
-        std::string escapePath(std::string path);
+		std::string escapePath(std::string path);
+
+		AssociationRef getAssociation(const char* role, const char* uri = "", std::string version = "");
+
+		void print(boost::property_tree::ptree const& pt);
+
+		std::string getEntityUri(std::string path);
 
     public:
-        ActivityLog(std::string endpoint);
-        
-        virtual ~ActivityLog();
-        
-        // Indicates if there is a connection to the Artivity HTTP API.
-        bool connect();
+		ActivityLog();
 
-        void initialize(std::string fileUrl);
-        
+        ActivityLog(const char* endpointUrl);
+
+		ActivityLog(std::string endpointUrl);
+
+        virtual ~ActivityLog();
+
+		void connect(const char* endpointUrl);
+
+		bool ready();
+
         // Indicates if there are any entity influences in the log.
         bool empty() { return _influences->empty(); }
         
@@ -106,7 +121,11 @@ namespace artivity
 
 		ActivityRef getActivity() { return _activity; }
 
-        std::string getThumbnailPath();
+		// Indicates if there is a connection to the Artivity HTTP API.
+		bool setAgent(const char* agentUri, std::string version);
+
+		// Set the file being edited.
+		void setFile(ImageRef image, const char* path);
 
         std::string getFileUri();
 
@@ -114,16 +133,14 @@ namespace artivity
         void addAssociation(AssociationRef resource);
 
 		// Add an entity influence to the transmitted RDF stream.
-		void addInfluence(EntityInfluenceRef resource);
+		void addInfluence(InfluenceRef influence);
 
 		// Remove an entity influence to the transmitted RDF stream.
-		void removeInfluence(EntityInfluenceRef resource);
+		void removeInfluence(InfluenceRef resource);
 
         void close(time_t time) {} // close the activity here, if no prov:Revision with entity file is in influence list clear Influences first
 
-		//void addGeneration(GenerationRef generation);
-
-		//void addUsage(UsageRef usage);
+		std::string getRenderOutputPath();
     };
 }
 
