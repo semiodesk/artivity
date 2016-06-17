@@ -36,7 +36,6 @@ namespace Artivity.Apid
     {
         #region Members
 
-
         private bool _loggingInitialized = false;
 
         protected string[] Args;

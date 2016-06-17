@@ -28,12 +28,17 @@
 #ifndef _ART_ACTIVITYLOG_H
 #define _ART_ACTIVITYLOG_H
 
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <algorithm>
 #include <deque>
 #include <vector>
 #include <curl/curl.h>
 #include <boost/shared_ptr.hpp>
+#include <boost/format.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 #include "Resource.h"
 #include "Serializer.h"
@@ -55,7 +60,7 @@ namespace artivity
     class ActivityLog
     {
     protected:
-		string _endpoint;
+		std::string _endpoint;
 
         CURL* _curl;
         
@@ -65,21 +70,25 @@ namespace artivity
     
 		list<EntityInfluenceRef>* _influences;
 
-        string _fileUri;
+		std::string _fileUri;
         
-        string _fileUrl;
+		std::string _fileUrl;
         
         CURL* initializeRequest();
         
-        long executeRequest(CURL* curl, string url, string postFields, string& response);
+		long executeRequest(CURL* curl, std::string url, std::string postFields, std::string& response);
         
-        void logError(CURLcode responseCode, string msg);
+		void logError(CURLcode responseCode, std::string msg);
         
-        void logInfo(CURLcode responseCode, string msg);
+		void logInfo(CURLcode responseCode, std::string msg);
         
-        string getTime();
+		std::string getTime();
         
-		string escapePath(string path);
+		std::string escapePath(std::string path);
+
+		AssociationRef getAssociation(const char* role, const char* uri = "", std::string version = "");
+
+		void print(boost::property_tree::ptree const& pt);
 
     public:
 		ActivityLog(string endpoint);
@@ -87,9 +96,9 @@ namespace artivity
         virtual ~ActivityLog();
         
         // Indicates if there is a connection to the Artivity HTTP API.
-        bool connect();
+		bool setAgent(const char* agentUri, std::string version);
 
-		void initialize();
+		void setDocument(const char* typeUri, std::string path);
         
         // Indicates if there are any entity influences in the log.
         bool empty() { return _influences->empty(); }
@@ -102,7 +111,7 @@ namespace artivity
 
 		ActivityRef getActivity() { return _activity; }
 
-		string getThumbnailPath(string fileUrl);
+		std::string getThumbnailPath(std::string fileUrl);
 
 		// Add an entity influence to the transmitted RDF stream.
 		void addInfluence(EntityInfluenceRef resource);

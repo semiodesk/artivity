@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 16.06.2016 18:08:04
+// Date: 17.06.2016 12:02:13
 
 using System;
 using System.Collections.Generic;
@@ -7421,6 +7421,18 @@ public class art : Ontology
 
     ///<summary>
     ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/SoftwareAssociation"/>
+    ///</summary>
+    public static readonly Class SoftwareAssociation = new Class(new Uri("http://semiodesk.com/artivity/1.0/SoftwareAssociation"));    
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/version"/>
+    ///</summary>
+    public static readonly Property version = new Property(new Uri("http://semiodesk.com/artivity/1.0/version"));    
+
+    ///<summary>
+    ///
     ///<see cref="http://semiodesk.com/artivity/1.0/lengthUnit"/>
     ///</summary>
     public static readonly Property lengthUnit = new Property(new Uri("http://semiodesk.com/artivity/1.0/lengthUnit"));    
@@ -7808,6 +7820,18 @@ public static class ART
     ///<see cref="http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem"/>
     ///</summary>
     public const string CartesianCoordinateSystem = "http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/SoftwareAssociation"/>
+    ///</summary>
+    public const string SoftwareAssociation = "http://semiodesk.com/artivity/1.0/SoftwareAssociation";
+
+    ///<summary>
+    ///
+    ///<see cref="http://semiodesk.com/artivity/1.0/version"/>
+    ///</summary>
+    public const string version = "http://semiodesk.com/artivity/1.0/version";
 
     ///<summary>
     ///
