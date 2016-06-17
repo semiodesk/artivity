@@ -27,12 +27,12 @@
 
 #ifndef _ART_ARTIVITY_H
 #define _ART_ARTIVITY_H
-
 #include "Resource.h"
 #include "Property.h"
 #include "UriGenerator.h"
 #include "Serializer.h"
 #include "ActivityLog.h"
+#include "EditingSession.h"
 
 #include "Ontologies/rdf.h"
 #include "Ontologies/xsd.h"
@@ -43,14 +43,16 @@
 #include "Ontologies/dces.h"
 #include "Ontologies/unit.h"
 
+#include "ObjectModel/Influence.h"
 #include "ObjectModel/Activity.h"
 #include "ObjectModel/ActivityInfluence.h"
+#include "ObjectModel/EntityInfluence.h"
 #include "ObjectModel/Agent.h"
 #include "ObjectModel/Association.h"
 #include "ObjectModel/Generation.h"
+#include "ObjectModel/Revision.h"
 #include "ObjectModel/Invalidation.h"
 #include "ObjectModel/Entity.h"
-#include "ObjectModel/EntityInfluence.h"
 #include "ObjectModel/Person.h"
 #include "ObjectModel/Role.h"
 #include "ObjectModel/SoftwareAgent.h"
@@ -67,6 +69,7 @@
 #include "ObjectModel/Activities/EditFile.h"
 #include "ObjectModel/Influences/Redo.h"
 #include "ObjectModel/Influences/Undo.h"
+#include "ObjectModel/Influences/Redo.h"
 
 #include "ObjectModel/Entities/FileDataObject.h"
 #include "ObjectModel/Entities/WebDataObject.h"

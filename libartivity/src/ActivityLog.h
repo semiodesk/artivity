@@ -40,6 +40,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
+#include "defines.h"
 #include "Resource.h"
 #include "Serializer.h"
 #include "ObjectModel/Agent.h"
@@ -53,26 +54,29 @@
 
 namespace artivity
 {
-	typedef list<AssociationRef>::iterator AssociationIterator;
+    typedef std::list<AssociationRef>::iterator AssociationIterator;
+    typedef std::list<EntityInfluenceRef>::iterator EntityInfluenceIterator;
 
-	typedef list<EntityInfluenceRef>::iterator EntityInfluenceIterator;
+    class ActivityLog;
+    typedef boost::shared_ptr<ActivityLog> ActivityLogRef;
+
 
     class ActivityLog
     {
     protected:
-		std::string _endpoint;
+        std::string _endpoint;
 
         CURL* _curl;
         
         ActivityRef _activity;
             
-        list<AssociationRef>* _associations;
+        std::list<AssociationRef>* _associations;
     
-		list<EntityInfluenceRef>* _influences;
+        std::list<EntityInfluenceRef>* _influences;
 
-		std::string _fileUri;
+        std::string _fileUri;
         
-		std::string _fileUrl;
+        std::string _fileUrl;
         
         CURL* initializeRequest();
         
@@ -91,7 +95,7 @@ namespace artivity
 		void print(boost::property_tree::ptree const& pt);
 
     public:
-		ActivityLog(string endpoint);
+        ActivityLog(std::string endpoint);
         
         virtual ~ActivityLog();
         
@@ -111,7 +115,10 @@ namespace artivity
 
 		ActivityRef getActivity() { return _activity; }
 
-		std::string getThumbnailPath(std::string fileUrl);
+        std::string getThumbnailPath();
+
+        // Add an association to the RDF stream.
+        void addAssociation(AssociationRef resource);
 
 		// Add an entity influence to the transmitted RDF stream.
 		void addInfluence(EntityInfluenceRef resource);

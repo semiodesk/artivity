@@ -53,9 +53,9 @@ namespace artivity
         PropertyMap Properties;
                 
     public:                    
-        string Uri;
+        std::string Uri;
         
-        Resource(string uriref);
+        Resource(std::string uriref);
         Resource(const char* uriref);
         virtual ~Resource() {}
 
@@ -100,11 +100,11 @@ namespace artivity
         
         const ResourceRef getType();
         
-        void setUri(string uriref);
+        void setUri(std::string uriref);
         
         bool operator==(ResourceRef other);
         
-        friend ostream& operator<<(ostream& out, ResourceRef resource);
+        friend std::ostream& operator<<(std::ostream& out, ResourceRef resource);
     };
 }
 
