@@ -36,6 +36,9 @@ namespace artivity
 {
     namespace dces
     {
+		static const char* NS_PREFIX = "dc:";
+		static const char* NS_URI = "http://purl.org/dc/elements/1.1/";
+
         static const char* title = DCES("title");
         static const char* description = DCES("description");
     }

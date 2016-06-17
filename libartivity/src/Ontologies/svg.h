@@ -34,6 +34,9 @@ namespace artivity
 {
     namespace svg
     {
+		static const char* NS_PREFIX = "svg:";
+		static const char* NS_URI = "http://www.mathiswebs.com/ontology/svg_ont.owl#";
+
         static const char* Shape = SVG("Shape");
         
         static const char* Curved = SVG("Curved");

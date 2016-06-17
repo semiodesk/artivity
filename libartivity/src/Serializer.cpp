@@ -30,12 +30,33 @@
 #include <string>
 #include <typeinfo>
 
+#include "Ontologies/art.h"
+#include "Ontologies/dces.h"
+#include "Ontologies/nfo.h"
+#include "Ontologies/nie.h"
+#include "Ontologies/prov.h"
+#include "Ontologies/rdf.h"
+#include "Ontologies/svg.h"
+#include "Ontologies/xml.h"
 #include "Ontologies/xsd.h"
 #include "Serializer.h"
 
 namespace artivity
 {
 	using namespace std;
+
+	Serializer::Serializer()
+	{
+		PREFIX_MAP[art::NS_PREFIX] = art::NS_URI;
+		PREFIX_MAP[dces::NS_PREFIX] = dces::NS_URI;
+		PREFIX_MAP[nfo::NS_PREFIX] = nfo::NS_URI;
+		PREFIX_MAP[nie::NS_PREFIX] = nie::NS_URI;
+		PREFIX_MAP[prov::NS_PREFIX] = prov::NS_URI;
+		PREFIX_MAP[rdf::NS_PREFIX] = rdf::NS_URI;
+		PREFIX_MAP[svg::NS_PREFIX] = svg::NS_URI;
+		PREFIX_MAP[xml::NS_PREFIX] = xml::NS_URI;
+		PREFIX_MAP[xsd::NS_PREFIX] = xsd::NS_URI;
+	}
 
     string Serializer::toString(ResourceRef value)
     {            
@@ -129,7 +150,7 @@ namespace artivity
                 
                 string property = it->first;
                                     
-                out << " <" << property << "> " << flush;
+                out << property << flush;
                 
                 PropertyValue x = it->second;
                 
