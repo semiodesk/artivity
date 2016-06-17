@@ -22,6 +22,7 @@ namespace artivity
 
         _consumer = ProducerConsumerRef(new ProducerConsumer<EditingSession, ResourceRef>());
         _consumer->ConsumeHandler = &EditingSession::consume;
+        _consumer->setClassObject(this);
         _consumer->start();
 
         _log = ActivityLogRef(new ActivityLog(server));
