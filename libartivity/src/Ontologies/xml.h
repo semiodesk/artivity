@@ -34,6 +34,9 @@ namespace artivity
 {
     namespace xml
     {
+		static const char* NS_PREFIX = "xml:";
+		static const char* NS_URI = "http://www.w3.org/2001/04/infoset#";
+
         static const char* Element = XML("Element");
         static const char* Attribute = XML("Attribute");
         static const char* ownerElement = XML("ownerElement");

@@ -1,5 +1,5 @@
 // Attention: This file is generated. Any modifications will eventually be overwritten.
-// Date: 17.06.2016 12:02:13
+// Date: 17.06.2016 16:42:35
 
 using System;
 using System.Collections.Generic;
@@ -7251,7 +7251,7 @@ public static class NFO
 ///</summary>
 public class art : Ontology
 {
-    public static readonly Uri Namespace = new Uri("http://semiodesk.com/artivity/1.0/");
+    public static readonly Uri Namespace = new Uri("http://w3id.org/art/terms/1.0/");
     public static Uri GetNamespace() { return Namespace; }
     
     public static readonly string Prefix = "art";
@@ -7259,375 +7259,375 @@ public class art : Ontology
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/"/>
     ///</summary>
-    public static readonly Resource _1_0 = new Resource(new Uri("http://semiodesk.com/artivity/1.0/"));    
+    public static readonly Resource _1_0 = new Resource(new Uri("http://w3id.org/art/terms/1.0/"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Database"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Database"/>
     ///</summary>
-    public static readonly Class Database = new Class(new Uri("http://semiodesk.com/artivity/1.0/Database"));    
+    public static readonly Class Database = new Class(new Uri("http://w3id.org/art/terms/1.0/Database"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/isMonitoringEnabled"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/isMonitoringEnabled"/>
     ///</summary>
-    public static readonly Property isMonitoringEnabled = new Property(new Uri("http://semiodesk.com/artivity/1.0/isMonitoringEnabled"));    
+    public static readonly Property isMonitoringEnabled = new Property(new Uri("http://w3id.org/art/terms/1.0/isMonitoringEnabled"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadState"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/hadState"/>
     ///</summary>
-    public static readonly Property hadState = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadState"));    
+    public static readonly Property hadState = new Property(new Uri("http://w3id.org/art/terms/1.0/hadState"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/DatabaseState"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/DatabaseState"/>
     ///</summary>
-    public static readonly Class DatabaseState = new Class(new Uri("http://semiodesk.com/artivity/1.0/DatabaseState"));    
+    public static readonly Class DatabaseState = new Class(new Uri("http://w3id.org/art/terms/1.0/DatabaseState"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/atTime"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/atTime"/>
     ///</summary>
-    public static readonly Property atTime = new Property(new Uri("http://semiodesk.com/artivity/1.0/atTime"));    
+    public static readonly Property atTime = new Property(new Uri("http://w3id.org/art/terms/1.0/atTime"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/factsCount"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/factsCount"/>
     ///</summary>
-    public static readonly Property factsCount = new Property(new Uri("http://semiodesk.com/artivity/1.0/factsCount"));    
+    public static readonly Property factsCount = new Property(new Uri("http://w3id.org/art/terms/1.0/factsCount"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Browse"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Browse"/>
     ///</summary>
-    public static readonly Class Browse = new Class(new Uri("http://semiodesk.com/artivity/1.0/Browse"));    
+    public static readonly Class Browse = new Class(new Uri("http://w3id.org/art/terms/1.0/Browse"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CreateFile"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/CreateFile"/>
     ///</summary>
-    public static readonly Class CreateFile = new Class(new Uri("http://semiodesk.com/artivity/1.0/CreateFile"));    
+    public static readonly Class CreateFile = new Class(new Uri("http://w3id.org/art/terms/1.0/CreateFile"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/DeleteFile"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/DeleteFile"/>
     ///</summary>
-    public static readonly Class DeleteFile = new Class(new Uri("http://semiodesk.com/artivity/1.0/DeleteFile"));    
+    public static readonly Class DeleteFile = new Class(new Uri("http://w3id.org/art/terms/1.0/DeleteFile"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/EditFile"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/EditFile"/>
     ///</summary>
-    public static readonly Class EditFile = new Class(new Uri("http://semiodesk.com/artivity/1.0/EditFile"));    
+    public static readonly Class EditFile = new Class(new Uri("http://w3id.org/art/terms/1.0/EditFile"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Add"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Add"/>
     ///</summary>
-    public static readonly Class Add = new Class(new Uri("http://semiodesk.com/artivity/1.0/Add"));    
+    public static readonly Class Add = new Class(new Uri("http://w3id.org/art/terms/1.0/Add"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Edit"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Edit"/>
     ///</summary>
-    public static readonly Class Edit = new Class(new Uri("http://semiodesk.com/artivity/1.0/Edit"));    
+    public static readonly Class Edit = new Class(new Uri("http://w3id.org/art/terms/1.0/Edit"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Redo"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Redo"/>
     ///</summary>
-    public static readonly Class Redo = new Class(new Uri("http://semiodesk.com/artivity/1.0/Redo"));    
+    public static readonly Class Redo = new Class(new Uri("http://w3id.org/art/terms/1.0/Redo"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Remove"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Remove"/>
     ///</summary>
-    public static readonly Class Remove = new Class(new Uri("http://semiodesk.com/artivity/1.0/Remove"));    
+    public static readonly Class Remove = new Class(new Uri("http://w3id.org/art/terms/1.0/Remove"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Undo"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Undo"/>
     ///</summary>
-    public static readonly Class Undo = new Class(new Uri("http://semiodesk.com/artivity/1.0/Undo"));    
+    public static readonly Class Undo = new Class(new Uri("http://w3id.org/art/terms/1.0/Undo"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/View"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/View"/>
     ///</summary>
-    public static readonly Class View = new Class(new Uri("http://semiodesk.com/artivity/1.0/View"));    
+    public static readonly Class View = new Class(new Uri("http://w3id.org/art/terms/1.0/View"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Layer"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Layer"/>
     ///</summary>
-    public static readonly Class Layer = new Class(new Uri("http://semiodesk.com/artivity/1.0/Layer"));    
+    public static readonly Class Layer = new Class(new Uri("http://w3id.org/art/terms/1.0/Layer"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/selectedLayer"/>
     ///</summary>
-    public static readonly Property selectedLayer = new Property(new Uri("http://semiodesk.com/artivity/1.0/selectedLayer"));    
+    public static readonly Property selectedLayer = new Property(new Uri("http://w3id.org/art/terms/1.0/selectedLayer"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/layerZPosition"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/layerZPosition"/>
     ///</summary>
-    public static readonly Property layerZPosition = new Property(new Uri("http://semiodesk.com/artivity/1.0/layerZPosition"));    
+    public static readonly Property layerZPosition = new Property(new Uri("http://w3id.org/art/terms/1.0/layerZPosition"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/isCaptureEnabled"/>
     ///</summary>
-    public static readonly Property isCaptureEnabled = new Property(new Uri("http://semiodesk.com/artivity/1.0/isCaptureEnabled"));    
+    public static readonly Property isCaptureEnabled = new Property(new Uri("http://w3id.org/art/terms/1.0/isCaptureEnabled"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/executableName"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/executableName"/>
     ///</summary>
-    public static readonly Property executableName = new Property(new Uri("http://semiodesk.com/artivity/1.0/executableName"));    
+    public static readonly Property executableName = new Property(new Uri("http://w3id.org/art/terms/1.0/executableName"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/executablePath"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/executablePath"/>
     ///</summary>
-    public static readonly Property executablePath = new Property(new Uri("http://semiodesk.com/artivity/1.0/executablePath"));    
+    public static readonly Property executablePath = new Property(new Uri("http://w3id.org/art/terms/1.0/executablePath"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hasColourCode"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/hasColourCode"/>
     ///</summary>
-    public static readonly Property hasColourCode = new Property(new Uri("http://semiodesk.com/artivity/1.0/hasColourCode"));    
+    public static readonly Property hasColourCode = new Property(new Uri("http://w3id.org/art/terms/1.0/hasColourCode"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateSystem"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/coordinateSystem"/>
     ///</summary>
-    public static readonly Property coordinateSystem = new Property(new Uri("http://semiodesk.com/artivity/1.0/coordinateSystem"));    
+    public static readonly Property coordinateSystem = new Property(new Uri("http://w3id.org/art/terms/1.0/coordinateSystem"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CoordinateSystem"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/CoordinateSystem"/>
     ///</summary>
-    public static readonly Class CoordinateSystem = new Class(new Uri("http://semiodesk.com/artivity/1.0/CoordinateSystem"));    
+    public static readonly Class CoordinateSystem = new Class(new Uri("http://w3id.org/art/terms/1.0/CoordinateSystem"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/CartesianCoordinateSystem"/>
     ///</summary>
-    public static readonly Class CartesianCoordinateSystem = new Class(new Uri("http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem"));    
+    public static readonly Class CartesianCoordinateSystem = new Class(new Uri("http://w3id.org/art/terms/1.0/CartesianCoordinateSystem"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/SoftwareAssociation"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/SoftwareAssociation"/>
     ///</summary>
-    public static readonly Class SoftwareAssociation = new Class(new Uri("http://semiodesk.com/artivity/1.0/SoftwareAssociation"));    
+    public static readonly Class SoftwareAssociation = new Class(new Uri("http://w3id.org/art/terms/1.0/SoftwareAssociation"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/version"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/version"/>
     ///</summary>
-    public static readonly Property version = new Property(new Uri("http://semiodesk.com/artivity/1.0/version"));    
+    public static readonly Property version = new Property(new Uri("http://w3id.org/art/terms/1.0/version"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/lengthUnit"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/lengthUnit"/>
     ///</summary>
-    public static readonly Property lengthUnit = new Property(new Uri("http://semiodesk.com/artivity/1.0/lengthUnit"));    
+    public static readonly Property lengthUnit = new Property(new Uri("http://w3id.org/art/terms/1.0/lengthUnit"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/transformationMatrix"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/transformationMatrix"/>
     ///</summary>
-    public static readonly Property transformationMatrix = new Property(new Uri("http://semiodesk.com/artivity/1.0/transformationMatrix"));    
+    public static readonly Property transformationMatrix = new Property(new Uri("http://w3id.org/art/terms/1.0/transformationMatrix"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Point"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Point"/>
     ///</summary>
-    public static readonly Class Point = new Class(new Uri("http://semiodesk.com/artivity/1.0/Point"));    
+    public static readonly Class Point = new Class(new Uri("http://w3id.org/art/terms/1.0/Point"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/x"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/x"/>
     ///</summary>
-    public static readonly Property x = new Property(new Uri("http://semiodesk.com/artivity/1.0/x"));    
+    public static readonly Property x = new Property(new Uri("http://w3id.org/art/terms/1.0/x"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/y"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/y"/>
     ///</summary>
-    public static readonly Property y = new Property(new Uri("http://semiodesk.com/artivity/1.0/y"));    
+    public static readonly Property y = new Property(new Uri("http://w3id.org/art/terms/1.0/y"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/z"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/z"/>
     ///</summary>
-    public static readonly Property z = new Property(new Uri("http://semiodesk.com/artivity/1.0/z"));    
+    public static readonly Property z = new Property(new Uri("http://w3id.org/art/terms/1.0/z"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Geometry"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Geometry"/>
     ///</summary>
-    public static readonly Class Geometry = new Class(new Uri("http://semiodesk.com/artivity/1.0/Geometry"));    
+    public static readonly Class Geometry = new Class(new Uri("http://w3id.org/art/terms/1.0/Geometry"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/USER"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/USER"/>
     ///</summary>
-    public static readonly Resource USER = new Resource(new Uri("http://semiodesk.com/artivity/1.0/USER"));    
+    public static readonly Resource USER = new Resource(new Uri("http://w3id.org/art/terms/1.0/USER"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateDimension"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/coordinateDimension"/>
     ///</summary>
-    public static readonly Property coordinateDimension = new Property(new Uri("http://semiodesk.com/artivity/1.0/coordinateDimension"));    
+    public static readonly Property coordinateDimension = new Property(new Uri("http://w3id.org/art/terms/1.0/coordinateDimension"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/width"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/width"/>
     ///</summary>
-    public static readonly Property width = new Property(new Uri("http://semiodesk.com/artivity/1.0/width"));    
+    public static readonly Property width = new Property(new Uri("http://w3id.org/art/terms/1.0/width"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/height"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/height"/>
     ///</summary>
-    public static readonly Property height = new Property(new Uri("http://semiodesk.com/artivity/1.0/height"));    
+    public static readonly Property height = new Property(new Uri("http://w3id.org/art/terms/1.0/height"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/depth"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/depth"/>
     ///</summary>
-    public static readonly Property depth = new Property(new Uri("http://semiodesk.com/artivity/1.0/depth"));    
+    public static readonly Property depth = new Property(new Uri("http://w3id.org/art/terms/1.0/depth"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/position"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/position"/>
     ///</summary>
-    public static readonly Property position = new Property(new Uri("http://semiodesk.com/artivity/1.0/position"));    
+    public static readonly Property position = new Property(new Uri("http://w3id.org/art/terms/1.0/position"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Rectangle"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Rectangle"/>
     ///</summary>
-    public static readonly Class Rectangle = new Class(new Uri("http://semiodesk.com/artivity/1.0/Rectangle"));    
+    public static readonly Class Rectangle = new Class(new Uri("http://w3id.org/art/terms/1.0/Rectangle"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Cube"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Cube"/>
     ///</summary>
-    public static readonly Class Cube = new Class(new Uri("http://semiodesk.com/artivity/1.0/Cube"));    
+    public static readonly Class Cube = new Class(new Uri("http://w3id.org/art/terms/1.0/Cube"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/canvas"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/canvas"/>
     ///</summary>
-    public static readonly Property canvas = new Property(new Uri("http://semiodesk.com/artivity/1.0/canvas"));    
+    public static readonly Property canvas = new Property(new Uri("http://w3id.org/art/terms/1.0/canvas"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Canvas"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Canvas"/>
     ///</summary>
-    public static readonly Class Canvas = new Class(new Uri("http://semiodesk.com/artivity/1.0/Canvas"));    
+    public static readonly Class Canvas = new Class(new Uri("http://w3id.org/art/terms/1.0/Canvas"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadBoundaries"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/hadBoundaries"/>
     ///</summary>
-    public static readonly Property hadBoundaries = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadBoundaries"));    
+    public static readonly Property hadBoundaries = new Property(new Uri("http://w3id.org/art/terms/1.0/hadBoundaries"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingRectangle"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/BoundingRectangle"/>
     ///</summary>
-    public static readonly Class BoundingRectangle = new Class(new Uri("http://semiodesk.com/artivity/1.0/BoundingRectangle"));    
+    public static readonly Class BoundingRectangle = new Class(new Uri("http://w3id.org/art/terms/1.0/BoundingRectangle"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingCube"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/BoundingCube"/>
     ///</summary>
-    public static readonly Class BoundingCube = new Class(new Uri("http://semiodesk.com/artivity/1.0/BoundingCube"));    
+    public static readonly Class BoundingCube = new Class(new Uri("http://w3id.org/art/terms/1.0/BoundingCube"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadViewport"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/hadViewport"/>
     ///</summary>
-    public static readonly Property hadViewport = new Property(new Uri("http://semiodesk.com/artivity/1.0/hadViewport"));    
+    public static readonly Property hadViewport = new Property(new Uri("http://w3id.org/art/terms/1.0/hadViewport"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/thumbnailUrl"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/thumbnailUrl"/>
     ///</summary>
-    public static readonly Property thumbnailUrl = new Property(new Uri("http://semiodesk.com/artivity/1.0/thumbnailUrl"));    
+    public static readonly Property thumbnailUrl = new Property(new Uri("http://w3id.org/art/terms/1.0/thumbnailUrl"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/thumbnailPosition"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/thumbnailPosition"/>
     ///</summary>
-    public static readonly Property thumbnailPosition = new Property(new Uri("http://semiodesk.com/artivity/1.0/thumbnailPosition"));    
+    public static readonly Property thumbnailPosition = new Property(new Uri("http://w3id.org/art/terms/1.0/thumbnailPosition"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Viewport"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Viewport"/>
     ///</summary>
-    public static readonly Class Viewport = new Class(new Uri("http://semiodesk.com/artivity/1.0/Viewport"));    
+    public static readonly Class Viewport = new Class(new Uri("http://w3id.org/art/terms/1.0/Viewport"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/zoomFactor"/>
     ///</summary>
-    public static readonly Property zoomFactor = new Property(new Uri("http://semiodesk.com/artivity/1.0/zoomFactor"));    
+    public static readonly Property zoomFactor = new Property(new Uri("http://w3id.org/art/terms/1.0/zoomFactor"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/LengthUnit"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/LengthUnit"/>
     ///</summary>
-    public static readonly Class LengthUnit = new Class(new Uri("http://semiodesk.com/artivity/1.0/LengthUnit"));    
+    public static readonly Class LengthUnit = new Class(new Uri("http://w3id.org/art/terms/1.0/LengthUnit"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/m"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/m"/>
     ///</summary>
-    public static readonly Class m = new Class(new Uri("http://semiodesk.com/artivity/1.0/m"));    
+    public static readonly Class m = new Class(new Uri("http://w3id.org/art/terms/1.0/m"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/cm"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/cm"/>
     ///</summary>
-    public static readonly Class cm = new Class(new Uri("http://semiodesk.com/artivity/1.0/cm"));    
+    public static readonly Class cm = new Class(new Uri("http://w3id.org/art/terms/1.0/cm"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/mm"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/mm"/>
     ///</summary>
-    public static readonly Class mm = new Class(new Uri("http://semiodesk.com/artivity/1.0/mm"));    
+    public static readonly Class mm = new Class(new Uri("http://w3id.org/art/terms/1.0/mm"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/pt"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/pt"/>
     ///</summary>
-    public static readonly Class pt = new Class(new Uri("http://semiodesk.com/artivity/1.0/pt"));    
+    public static readonly Class pt = new Class(new Uri("http://w3id.org/art/terms/1.0/pt"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/in"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/in"/>
     ///</summary>
-    public static readonly Class _in = new Class(new Uri("http://semiodesk.com/artivity/1.0/in"));    
+    public static readonly Class _in = new Class(new Uri("http://w3id.org/art/terms/1.0/in"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/ft"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/ft"/>
     ///</summary>
-    public static readonly Class ft = new Class(new Uri("http://semiodesk.com/artivity/1.0/ft"));    
+    public static readonly Class ft = new Class(new Uri("http://w3id.org/art/terms/1.0/ft"));    
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/px"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/px"/>
     ///</summary>
-    public static readonly Class px = new Class(new Uri("http://semiodesk.com/artivity/1.0/px"));    
+    public static readonly Class px = new Class(new Uri("http://w3id.org/art/terms/1.0/px"));    
 
     ///<summary>
     ///
@@ -7643,9 +7643,9 @@ public class art : Ontology
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/OrcidAccount"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/OrcidAccount"/>
     ///</summary>
-    public static readonly Class OrcidAccount = new Class(new Uri("http://semiodesk.com/artivity/1.0/OrcidAccount"));
+    public static readonly Class OrcidAccount = new Class(new Uri("http://w3id.org/art/terms/1.0/OrcidAccount"));
 }
 ///<summary>
 ///
@@ -7653,7 +7653,7 @@ public class art : Ontology
 ///</summary>
 public static class ART
 {
-    public static readonly Uri Namespace = new Uri("http://semiodesk.com/artivity/1.0/");
+    public static readonly Uri Namespace = new Uri("http://w3id.org/art/terms/1.0/");
     public static Uri GetNamespace() { return Namespace; }
     
     public static readonly string Prefix = "ART";
@@ -7661,375 +7661,375 @@ public static class ART
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/"/>
     ///</summary>
-    public const string _1_0 = "http://semiodesk.com/artivity/1.0/";
+    public const string _1_0 = "http://w3id.org/art/terms/1.0/";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Database"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Database"/>
     ///</summary>
-    public const string Database = "http://semiodesk.com/artivity/1.0/Database";
+    public const string Database = "http://w3id.org/art/terms/1.0/Database";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/isMonitoringEnabled"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/isMonitoringEnabled"/>
     ///</summary>
-    public const string isMonitoringEnabled = "http://semiodesk.com/artivity/1.0/isMonitoringEnabled";
+    public const string isMonitoringEnabled = "http://w3id.org/art/terms/1.0/isMonitoringEnabled";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadState"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/hadState"/>
     ///</summary>
-    public const string hadState = "http://semiodesk.com/artivity/1.0/hadState";
+    public const string hadState = "http://w3id.org/art/terms/1.0/hadState";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/DatabaseState"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/DatabaseState"/>
     ///</summary>
-    public const string DatabaseState = "http://semiodesk.com/artivity/1.0/DatabaseState";
+    public const string DatabaseState = "http://w3id.org/art/terms/1.0/DatabaseState";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/atTime"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/atTime"/>
     ///</summary>
-    public const string atTime = "http://semiodesk.com/artivity/1.0/atTime";
+    public const string atTime = "http://w3id.org/art/terms/1.0/atTime";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/factsCount"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/factsCount"/>
     ///</summary>
-    public const string factsCount = "http://semiodesk.com/artivity/1.0/factsCount";
+    public const string factsCount = "http://w3id.org/art/terms/1.0/factsCount";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Browse"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Browse"/>
     ///</summary>
-    public const string Browse = "http://semiodesk.com/artivity/1.0/Browse";
+    public const string Browse = "http://w3id.org/art/terms/1.0/Browse";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CreateFile"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/CreateFile"/>
     ///</summary>
-    public const string CreateFile = "http://semiodesk.com/artivity/1.0/CreateFile";
+    public const string CreateFile = "http://w3id.org/art/terms/1.0/CreateFile";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/DeleteFile"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/DeleteFile"/>
     ///</summary>
-    public const string DeleteFile = "http://semiodesk.com/artivity/1.0/DeleteFile";
+    public const string DeleteFile = "http://w3id.org/art/terms/1.0/DeleteFile";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/EditFile"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/EditFile"/>
     ///</summary>
-    public const string EditFile = "http://semiodesk.com/artivity/1.0/EditFile";
+    public const string EditFile = "http://w3id.org/art/terms/1.0/EditFile";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Add"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Add"/>
     ///</summary>
-    public const string Add = "http://semiodesk.com/artivity/1.0/Add";
+    public const string Add = "http://w3id.org/art/terms/1.0/Add";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Edit"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Edit"/>
     ///</summary>
-    public const string Edit = "http://semiodesk.com/artivity/1.0/Edit";
+    public const string Edit = "http://w3id.org/art/terms/1.0/Edit";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Redo"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Redo"/>
     ///</summary>
-    public const string Redo = "http://semiodesk.com/artivity/1.0/Redo";
+    public const string Redo = "http://w3id.org/art/terms/1.0/Redo";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Remove"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Remove"/>
     ///</summary>
-    public const string Remove = "http://semiodesk.com/artivity/1.0/Remove";
+    public const string Remove = "http://w3id.org/art/terms/1.0/Remove";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Undo"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Undo"/>
     ///</summary>
-    public const string Undo = "http://semiodesk.com/artivity/1.0/Undo";
+    public const string Undo = "http://w3id.org/art/terms/1.0/Undo";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/View"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/View"/>
     ///</summary>
-    public const string View = "http://semiodesk.com/artivity/1.0/View";
+    public const string View = "http://w3id.org/art/terms/1.0/View";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Layer"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Layer"/>
     ///</summary>
-    public const string Layer = "http://semiodesk.com/artivity/1.0/Layer";
+    public const string Layer = "http://w3id.org/art/terms/1.0/Layer";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/selectedLayer"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/selectedLayer"/>
     ///</summary>
-    public const string selectedLayer = "http://semiodesk.com/artivity/1.0/selectedLayer";
+    public const string selectedLayer = "http://w3id.org/art/terms/1.0/selectedLayer";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/layerZPosition"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/layerZPosition"/>
     ///</summary>
-    public const string layerZPosition = "http://semiodesk.com/artivity/1.0/layerZPosition";
+    public const string layerZPosition = "http://w3id.org/art/terms/1.0/layerZPosition";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/isCaptureEnabled"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/isCaptureEnabled"/>
     ///</summary>
-    public const string isCaptureEnabled = "http://semiodesk.com/artivity/1.0/isCaptureEnabled";
+    public const string isCaptureEnabled = "http://w3id.org/art/terms/1.0/isCaptureEnabled";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/executableName"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/executableName"/>
     ///</summary>
-    public const string executableName = "http://semiodesk.com/artivity/1.0/executableName";
+    public const string executableName = "http://w3id.org/art/terms/1.0/executableName";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/executablePath"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/executablePath"/>
     ///</summary>
-    public const string executablePath = "http://semiodesk.com/artivity/1.0/executablePath";
+    public const string executablePath = "http://w3id.org/art/terms/1.0/executablePath";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hasColourCode"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/hasColourCode"/>
     ///</summary>
-    public const string hasColourCode = "http://semiodesk.com/artivity/1.0/hasColourCode";
+    public const string hasColourCode = "http://w3id.org/art/terms/1.0/hasColourCode";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateSystem"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/coordinateSystem"/>
     ///</summary>
-    public const string coordinateSystem = "http://semiodesk.com/artivity/1.0/coordinateSystem";
+    public const string coordinateSystem = "http://w3id.org/art/terms/1.0/coordinateSystem";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CoordinateSystem"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/CoordinateSystem"/>
     ///</summary>
-    public const string CoordinateSystem = "http://semiodesk.com/artivity/1.0/CoordinateSystem";
+    public const string CoordinateSystem = "http://w3id.org/art/terms/1.0/CoordinateSystem";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/CartesianCoordinateSystem"/>
     ///</summary>
-    public const string CartesianCoordinateSystem = "http://semiodesk.com/artivity/1.0/CartesianCoordinateSystem";
+    public const string CartesianCoordinateSystem = "http://w3id.org/art/terms/1.0/CartesianCoordinateSystem";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/SoftwareAssociation"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/SoftwareAssociation"/>
     ///</summary>
-    public const string SoftwareAssociation = "http://semiodesk.com/artivity/1.0/SoftwareAssociation";
+    public const string SoftwareAssociation = "http://w3id.org/art/terms/1.0/SoftwareAssociation";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/version"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/version"/>
     ///</summary>
-    public const string version = "http://semiodesk.com/artivity/1.0/version";
+    public const string version = "http://w3id.org/art/terms/1.0/version";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/lengthUnit"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/lengthUnit"/>
     ///</summary>
-    public const string lengthUnit = "http://semiodesk.com/artivity/1.0/lengthUnit";
+    public const string lengthUnit = "http://w3id.org/art/terms/1.0/lengthUnit";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/transformationMatrix"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/transformationMatrix"/>
     ///</summary>
-    public const string transformationMatrix = "http://semiodesk.com/artivity/1.0/transformationMatrix";
+    public const string transformationMatrix = "http://w3id.org/art/terms/1.0/transformationMatrix";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Point"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Point"/>
     ///</summary>
-    public const string Point = "http://semiodesk.com/artivity/1.0/Point";
+    public const string Point = "http://w3id.org/art/terms/1.0/Point";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/x"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/x"/>
     ///</summary>
-    public const string x = "http://semiodesk.com/artivity/1.0/x";
+    public const string x = "http://w3id.org/art/terms/1.0/x";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/y"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/y"/>
     ///</summary>
-    public const string y = "http://semiodesk.com/artivity/1.0/y";
+    public const string y = "http://w3id.org/art/terms/1.0/y";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/z"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/z"/>
     ///</summary>
-    public const string z = "http://semiodesk.com/artivity/1.0/z";
+    public const string z = "http://w3id.org/art/terms/1.0/z";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Geometry"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Geometry"/>
     ///</summary>
-    public const string Geometry = "http://semiodesk.com/artivity/1.0/Geometry";
+    public const string Geometry = "http://w3id.org/art/terms/1.0/Geometry";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/USER"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/USER"/>
     ///</summary>
-    public const string USER = "http://semiodesk.com/artivity/1.0/USER";
+    public const string USER = "http://w3id.org/art/terms/1.0/USER";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/coordinateDimension"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/coordinateDimension"/>
     ///</summary>
-    public const string coordinateDimension = "http://semiodesk.com/artivity/1.0/coordinateDimension";
+    public const string coordinateDimension = "http://w3id.org/art/terms/1.0/coordinateDimension";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/width"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/width"/>
     ///</summary>
-    public const string width = "http://semiodesk.com/artivity/1.0/width";
+    public const string width = "http://w3id.org/art/terms/1.0/width";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/height"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/height"/>
     ///</summary>
-    public const string height = "http://semiodesk.com/artivity/1.0/height";
+    public const string height = "http://w3id.org/art/terms/1.0/height";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/depth"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/depth"/>
     ///</summary>
-    public const string depth = "http://semiodesk.com/artivity/1.0/depth";
+    public const string depth = "http://w3id.org/art/terms/1.0/depth";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/position"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/position"/>
     ///</summary>
-    public const string position = "http://semiodesk.com/artivity/1.0/position";
+    public const string position = "http://w3id.org/art/terms/1.0/position";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Rectangle"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Rectangle"/>
     ///</summary>
-    public const string Rectangle = "http://semiodesk.com/artivity/1.0/Rectangle";
+    public const string Rectangle = "http://w3id.org/art/terms/1.0/Rectangle";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Cube"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Cube"/>
     ///</summary>
-    public const string Cube = "http://semiodesk.com/artivity/1.0/Cube";
+    public const string Cube = "http://w3id.org/art/terms/1.0/Cube";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/canvas"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/canvas"/>
     ///</summary>
-    public const string canvas = "http://semiodesk.com/artivity/1.0/canvas";
+    public const string canvas = "http://w3id.org/art/terms/1.0/canvas";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Canvas"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Canvas"/>
     ///</summary>
-    public const string Canvas = "http://semiodesk.com/artivity/1.0/Canvas";
+    public const string Canvas = "http://w3id.org/art/terms/1.0/Canvas";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadBoundaries"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/hadBoundaries"/>
     ///</summary>
-    public const string hadBoundaries = "http://semiodesk.com/artivity/1.0/hadBoundaries";
+    public const string hadBoundaries = "http://w3id.org/art/terms/1.0/hadBoundaries";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingRectangle"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/BoundingRectangle"/>
     ///</summary>
-    public const string BoundingRectangle = "http://semiodesk.com/artivity/1.0/BoundingRectangle";
+    public const string BoundingRectangle = "http://w3id.org/art/terms/1.0/BoundingRectangle";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/BoundingCube"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/BoundingCube"/>
     ///</summary>
-    public const string BoundingCube = "http://semiodesk.com/artivity/1.0/BoundingCube";
+    public const string BoundingCube = "http://w3id.org/art/terms/1.0/BoundingCube";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/hadViewport"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/hadViewport"/>
     ///</summary>
-    public const string hadViewport = "http://semiodesk.com/artivity/1.0/hadViewport";
+    public const string hadViewport = "http://w3id.org/art/terms/1.0/hadViewport";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/thumbnailUrl"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/thumbnailUrl"/>
     ///</summary>
-    public const string thumbnailUrl = "http://semiodesk.com/artivity/1.0/thumbnailUrl";
+    public const string thumbnailUrl = "http://w3id.org/art/terms/1.0/thumbnailUrl";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/thumbnailPosition"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/thumbnailPosition"/>
     ///</summary>
-    public const string thumbnailPosition = "http://semiodesk.com/artivity/1.0/thumbnailPosition";
+    public const string thumbnailPosition = "http://w3id.org/art/terms/1.0/thumbnailPosition";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/Viewport"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/Viewport"/>
     ///</summary>
-    public const string Viewport = "http://semiodesk.com/artivity/1.0/Viewport";
+    public const string Viewport = "http://w3id.org/art/terms/1.0/Viewport";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/zoomFactor"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/zoomFactor"/>
     ///</summary>
-    public const string zoomFactor = "http://semiodesk.com/artivity/1.0/zoomFactor";
+    public const string zoomFactor = "http://w3id.org/art/terms/1.0/zoomFactor";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/LengthUnit"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/LengthUnit"/>
     ///</summary>
-    public const string LengthUnit = "http://semiodesk.com/artivity/1.0/LengthUnit";
+    public const string LengthUnit = "http://w3id.org/art/terms/1.0/LengthUnit";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/m"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/m"/>
     ///</summary>
-    public const string m = "http://semiodesk.com/artivity/1.0/m";
+    public const string m = "http://w3id.org/art/terms/1.0/m";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/cm"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/cm"/>
     ///</summary>
-    public const string cm = "http://semiodesk.com/artivity/1.0/cm";
+    public const string cm = "http://w3id.org/art/terms/1.0/cm";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/mm"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/mm"/>
     ///</summary>
-    public const string mm = "http://semiodesk.com/artivity/1.0/mm";
+    public const string mm = "http://w3id.org/art/terms/1.0/mm";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/pt"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/pt"/>
     ///</summary>
-    public const string pt = "http://semiodesk.com/artivity/1.0/pt";
+    public const string pt = "http://w3id.org/art/terms/1.0/pt";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/in"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/in"/>
     ///</summary>
-    public const string _in = "http://semiodesk.com/artivity/1.0/in";
+    public const string _in = "http://w3id.org/art/terms/1.0/in";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/ft"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/ft"/>
     ///</summary>
-    public const string ft = "http://semiodesk.com/artivity/1.0/ft";
+    public const string ft = "http://w3id.org/art/terms/1.0/ft";
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/px"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/px"/>
     ///</summary>
-    public const string px = "http://semiodesk.com/artivity/1.0/px";
+    public const string px = "http://w3id.org/art/terms/1.0/px";
 
     ///<summary>
     ///
@@ -8045,9 +8045,9 @@ public static class ART
 
     ///<summary>
     ///
-    ///<see cref="http://semiodesk.com/artivity/1.0/OrcidAccount"/>
+    ///<see cref="http://w3id.org/art/terms/1.0/OrcidAccount"/>
     ///</summary>
-    public const string OrcidAccount = "http://semiodesk.com/artivity/1.0/OrcidAccount";
+    public const string OrcidAccount = "http://w3id.org/art/terms/1.0/OrcidAccount";
 }
 ///<summary>
 ///Friend of a Friend (FOAF) vocabulary

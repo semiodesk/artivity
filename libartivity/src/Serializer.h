@@ -15,9 +15,10 @@ namespace artivity
     class Serializer
     {  
     public:
+		std::map<std::string, std::string> PREFIX_MAP;
         XsdTypeMap TYPE_MAP;
                 
-        Serializer() {}
+		Serializer();
         ~Serializer() {}
 
         static std::string toString(ResourceRef value);

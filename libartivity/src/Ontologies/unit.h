@@ -37,6 +37,9 @@ namespace artivity
 {
     namespace unit
     {
+		static const char* NS_PREFIX = "unit:";
+		static const char* NS_URI = "http://qudt.org/vocab/unit#";
+
         static const char* Millimeter = UNIT("Millimeter");
         static const char* Centimeter = UNIT("Centimeter");
         static const char* Meter = UNIT("Meter");

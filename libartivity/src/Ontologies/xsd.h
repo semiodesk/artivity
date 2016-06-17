@@ -37,6 +37,9 @@ namespace artivity
 {
     namespace xsd
     {
+		static const char* NS_PREFIX = "xsd:";
+		static const char* NS_URI = "http://www.w3.org/2001/XMLSchema#";
+
         static const char* _int = XSD("int");
 		static const char* _long = XSD("long");
 		static const char* _float = XSD("float");
