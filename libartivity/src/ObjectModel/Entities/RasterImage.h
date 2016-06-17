@@ -23,34 +23,33 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2016
 
 #ifndef _ART_RASTERIMAGE_H
 #define _ART_RASTERIMAGE_H
 
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/nfo.h"
-#include "../Entity.h"
+#include "Image.h"
 
 namespace artivity
 {
-	class RasterImage;
+    class RasterImage;
+    typedef boost::shared_ptr<RasterImage> RasterImageRef;
 
-	typedef boost::shared_ptr<RasterImage> RasterImageRef;
+    class RasterImage : public Image
+    {
+        public:
+        RasterImage() : Image()
+        {
+            setType(nfo::RasterImage);
+        }
 
-	class RasterImage : public Entity
-	{
-	public:
-		RasterImage() : Entity()
-		{
-			setType(nfo::RasterImage);
-		}
-
-		RasterImage(const char* uriref) : Entity(uriref)
-		{
-			setType(nfo::RasterImage);
-		}
-	};
+        RasterImage(const char* uriref) : Image(uriref)
+        {
+            setType(nfo::RasterImage);
+        }
+    };
 }
 
 #endif // _ART_RASTERIMAGE_H

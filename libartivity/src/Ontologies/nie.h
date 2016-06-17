@@ -25,20 +25,22 @@
 //
 // Copyright (c) Semiodesk GmbH 2016
 
-#ifndef XML_H
-#define XML_H
+#ifndef _ART_NIE_H
+#define _ART_NIE_H
 
-#define XML(label) "http://www.w3.org/2001/04/infoset#" label;
+#define NIE(label) "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#" label;
 
 namespace artivity
 {
-    namespace xml
+    namespace nie
     {
-        static const char* Element = XML("Element");
-        static const char* Attribute = XML("Attribute");
-        static const char* ownerElement = XML("ownerElement");
-        static const char* localName = XML("localName");
+        static const char* InformationElement = NIE("InformationElement");
+
+        static const char* isStoredAs = NIE("isStoredAs");
+        static const char* interpretedAs = NIE("interpretedAs");
+        
+
     }
 }
 
-#endif // XML_H
+#endif // _ART_NIE_H

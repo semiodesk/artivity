@@ -25,20 +25,33 @@
 //
 // Copyright (c) Semiodesk GmbH 2016
 
-#ifndef XML_H
-#define XML_H
+#ifndef _ART_IMAGE_H
+#define _ART_IMAGE_H
 
-#define XML(label) "http://www.w3.org/2001/04/infoset#" label;
+#include "../../Ontologies/rdf.h"
+#include "../../Ontologies/nfo.h"
+#include "Media.h"
 
 namespace artivity
 {
-    namespace xml
+    class Image;
+    typedef boost::shared_ptr<Image> ImageRef;
+
+    class Image : public Media
     {
-        static const char* Element = XML("Element");
-        static const char* Attribute = XML("Attribute");
-        static const char* ownerElement = XML("ownerElement");
-        static const char* localName = XML("localName");
-    }
+    public:
+        Image() : Media()
+        {
+
+            setType(nfo::Image);
+        }
+        
+        Image(const char* uriref) : Media(uriref)
+        {
+
+            setType(nfo::Image);
+        }
+    };
 }
 
-#endif // XML_H
+#endif // _ART_IMAGE_H
