@@ -115,22 +115,22 @@ namespace Artivity.Apid.Modules
                 return GetAgentAssociation(new UriRef(role), new UriRef(agent), version);
             };
 
-            Get["/user"] = parameters =>
+            Get["/agents/user"] = parameters =>
             {
                 return GetUserAgent();
             };
 
-            Post["/user"] = parameters =>
+            Post["/agents/user"] = parameters =>
             {
                 return SetUserAgent(Request.Body);
             };
 
-            Get["/user/photo"] = parameters =>
+            Get["/agents/user/photo"] = parameters =>
             {
                 return GetUserAgentPhoto();
             };
 
-            Post["/user/photo"] = parameters =>
+            Post["/agents/user/photo"] = parameters =>
             {
                 RequestStream stream = Request.Body;
 
@@ -208,6 +208,18 @@ namespace Artivity.Apid.Modules
                 return UninstallAccount(accountId);
             };
 
+            Get["/uris"] = parameters =>
+            {
+                string fileUrl = Request.Query["fileUrl"];
+
+                if (string.IsNullOrEmpty(fileUrl) || !Uri.IsWellFormedUriString(fileUrl, UriKind.Absolute))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
+                return GetUri(new UriRef(fileUrl));
+            };
+
             Get["/files"] = parameters =>
             {
                 if(Request.Query.fileUrl)
@@ -225,6 +237,11 @@ namespace Artivity.Apid.Modules
                 return HttpStatusCode.NotImplemented;
             };
 
+            Get["/files/recent"] = parameters =>
+            {
+                return GetRecentlyUsedFiles();
+            };
+
             Get["/files/canvas"] = parameters =>
             {
                 string fileUrl = Request.Query.fileUrl;
@@ -235,11 +252,6 @@ namespace Artivity.Apid.Modules
                 }
                     
                 return GetCanvas(fileUrl);
-            };
-
-            Get["/files/recent"] = parameters =>
-            {
-                return GetRecentlyUsedFiles();
             };
 
             Get["/activities"] = parameters =>
@@ -1053,6 +1065,28 @@ namespace Artivity.Apid.Modules
             query.Bind("@time", time);
 
             IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+
+            return Response.AsJson(bindings);
+        }
+
+        private Response GetUri(Uri fileUrl)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?uri ?type
+                WHERE
+                {
+                    ?uri rdf:type ?type .
+                    ?uri nfo:storedAs ?file .
+
+                    ?file nfo:fileUrl @fileUrl .
+                    ?file nfo:fileLastModified ?time .
+                }
+                ORDER BY DESC(?time)");
+
+            query.Bind("@fileUrl", fileUrl);
+
+            var bindings = ModelProvider.ActivitiesModel.GetBindings(query);
 
             return Response.AsJson(bindings);
         }

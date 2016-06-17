@@ -38,14 +38,22 @@ namespace artivity
 	using namespace boost;
 	using namespace boost::property_tree;
 
-	ActivityLog::ActivityLog(string endpoint)
+	ActivityLog::ActivityLog()
 	{
-		_endpoint = endpoint;
 		_curl = initializeRequest();
 		_associations = new list<AssociationRef>();
-		_influences = new list<EntityInfluenceRef>();
-		_fileUri = "";
+		_influences = new list<InfluenceRef>();
 		_fileUrl = "";
+	}
+
+	ActivityLog::ActivityLog(const char* endpointUrl) : ActivityLog()
+	{
+		_endpoint = endpointUrl;
+	}
+
+	ActivityLog::ActivityLog(std::string endpointUrl) : ActivityLog()
+	{
+		_endpoint = endpointUrl;
 	}
 
 	ActivityLog::~ActivityLog()
@@ -68,6 +76,11 @@ namespace artivity
 		_influences = NULL;
 
 		curl_easy_cleanup(_curl);
+	}
+
+	void ActivityLog::connect(const char* endpointUrl)
+	{
+		_endpoint = endpointUrl;
 	}
 
 	bool ActivityLog::setAgent(const char* uri, string version)
@@ -94,82 +107,73 @@ namespace artivity
 
 	AssociationRef ActivityLog::getAssociation(const char* role, const char* agent, string version)
 	{
-		try
-		{
-			CURL* curl = initializeRequest();
+		CURL* curl = initializeRequest();
 
-			stringstream url;
+		stringstream url;
 			
-			url << _endpoint << "/agents/associations?role=" << role;
+		url << _endpoint << "/agents/associations?role=" << role;
 
-			if (agent != NULL && agent[0] != '\0')
-			{
-				url << "&agent=" << agent;
-			}
-
-			if (!version.empty())
-			{
-				url << "&version=" << version;
-			}
-
-			string response;
-
-			executeRequest(curl, url.str(), "", response);
-
-			stringstream stream;
-			stream << response;
-
-			if (response.empty())
-			{
-				return NULL;
-			}
-
-			ptree tree;
-
-			read_json(stream, tree);
-
-			string uri = tree.get_child("association").get_value<string>();
-
-			if (uri.empty())
-			{
-				return NULL;
-			}
-
-			AssociationRef association = AssociationRef(new Association(uri));
-
-			_associations->push_back(association);
-
-			return association;
-		}
-		catch (std::exception const& e)
+		if (agent != NULL && agent[0] != '\0')
 		{
-			cerr << e.what() << endl;
+			url << "&agent=" << agent;
+		}
 
+		if (!version.empty())
+		{
+			url << "&version=" << version;
+		}
+
+		string response;
+
+		executeRequest(curl, url.str(), "", response);
+
+		stringstream stream;
+		stream << response;
+
+		if (response.empty())
+		{
 			return NULL;
 		}
-	}
 
-	void ActivityLog::setDocument(const char* typeUri, string path)
-	{
-		if (strcmp(typeUri, nfo::RasterImage) != 0 && strcmp(typeUri, nfo::VectorImage) != 0)
+		ptree tree;
+
+		read_json(stream, tree);
+
+		string uri = tree.get_child("association").get_value<string>();
+
+		if (uri.empty())
 		{
-			string msg = "Unsupported document type: ";
-			msg += typeUri;
-
-			throw std::exception(msg.c_str());
+			return NULL;
 		}
 
-		_fileUrl = "file://" + escapePath(path);
+		AssociationRef association = AssociationRef(new Association(uri));
 
-		if (_fileUrl == "")
+		_associations->push_back(association);
+
+		return association;
+	}
+
+	void ActivityLog::setFile(ImageRef image, const char* path)
+	{
+		string p = path;
+
+		_fileUrl = "file://" + escapePath(p);
+		_entity = image;
+
+		string uri = getEntityUri(_fileUrl);
+
+		if (uri == "")
 		{
 			// A new file is being created.
 			_activity = CreateFileRef(new CreateFile());
 		}
 		else
 		{
+			image->Uri = uri;
+
 			// An existing file is being edited.
 			_activity = EditFileRef(new EditFile());
+			_activity->addUsedEntity(image);
 		}
 
 		time_t now;
@@ -185,23 +189,52 @@ namespace artivity
 
 			it++;
 		}
-
-		Serializer* s = new Serializer();
-
-		cout << s->serialize(_activity, N3) << endl;
 	}
 
-	void ActivityLog::addInfluence(EntityInfluenceRef influence)
+	string ActivityLog::getEntityUri(string fileUrl)
+	{
+		CURL* curl = initializeRequest();
+
+		stringstream url;
+		url << _endpoint << "/uris?fileUrl=" << fileUrl;
+
+		string response;
+
+		executeRequest(curl, url.str(), "", response);
+
+		stringstream stream;
+		stream << response;
+
+		if (response.empty())
+		{
+			return "";
+		}
+
+		ptree tree;
+
+		read_json(stream, tree);
+
+		string uri = tree.get_child("uri").get_value<string>();
+
+		if (uri.empty())
+		{
+			return "";
+		}
+
+		return uri;
+	}
+
+	void ActivityLog::addInfluence(InfluenceRef influence)
 	{
 		_influences->push_back(influence);
 	}
 
-	void ActivityLog::removeInfluence(EntityInfluenceRef influence)
+	void ActivityLog::removeInfluence(InfluenceRef influence)
 	{
 		_influences->remove(influence);
 	}
 
-	string ActivityLog::getThumbnailPath(string fileUrl)
+	string ActivityLog::getRenderOutputPath()
 	{
 		//CURL* curl = initializeRequest();
 
@@ -297,7 +330,7 @@ namespace artivity
 
 		Serializer s;
 
-		EntityInfluenceIterator it = _influences->begin();
+		InfluenceIterator it = _influences->begin();
 
 		while (it != _influences->end())
 		{
@@ -314,7 +347,9 @@ namespace artivity
 		stringstream url;
 		url << _endpoint << "/activities";
 
-		executeRequest(curl, url.str(), requestData, responseData);
+		cout << requestData << endl;
+
+		//executeRequest(curl, url.str(), requestData, responseData);
 
 		clear();
 	}
@@ -401,5 +436,10 @@ namespace artivity
 
 			print(it->second);
 		}
+	}
+
+	bool ActivityLog::ready()
+	{
+		return _activity != NULL && _entity != NULL && _associations->size() > 1;
 	}
 }

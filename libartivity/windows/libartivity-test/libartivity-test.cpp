@@ -9,16 +9,36 @@ using namespace artivity;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	VectorImageRef image = VectorImageRef(new VectorImage());
+
+	// We pass the server URL to the log upon creation.
 	ActivityLog* log = new ActivityLog("http://localhost:8262/artivity/api/1.0");
 
-	if (!log->setAgent("http://adobe.com/products/photoshop", "2015.1"))
+	// Set the agent association with the current agent version.
+	log->setAgent("http://adobe.com/products/photoshop", "2015.1");
+
+	// Set the file and retrive, if possible, the URI of the vector image.
+	log->setFile(image, "C:/Users/Sebastian/Desktop/Test.ai");
+
+	if (!log->ready())
 	{
-		// TODO: We cannot yet distinguish if an agent is disabled or not installed.
+		// The log could not be set up to transmit properly.
+		// Either the agent is not properly installed or logging is disabled.
+		cout << "Log not ready." << endl;
+
+		return -1;
 	}
 
-	string path = "C:\Users\Sebastian\Desktop\Test.ai";
+	CanvasRef canvas = CanvasRef(new Canvas());
+	canvas->setWidth(200);
+	canvas->setHeight(200);
+	canvas->setLengthUnit(ResourceRef(new Resource(art::mm)));
 
-	log->setDocument(nfo::VectorImage, path);
+	image->addCanvas(canvas);
+
+	GenerationRef generation = GenerationRef(new Generation());
+
+	log->transmit();
 
 	cout << "Press any key to stop.." << endl;
 

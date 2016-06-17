@@ -30,27 +30,52 @@
 
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/nfo.h"
+#include "../Geometry/Canvas.h"
 #include "Media.h"
 
 namespace artivity
 {
     class Image;
+
     typedef boost::shared_ptr<Image> ImageRef;
 
     class Image : public Media
     {
+		std::list<CanvasRef>* _canvases;
+
     public:
         Image() : Media()
         {
-
             setType(nfo::Image);
+
+			_canvases = new std::list<CanvasRef>();
         }
         
         Image(const char* uriref) : Media(uriref)
         {
-
             setType(nfo::Image);
+
+			_canvases = new std::list<CanvasRef>();
         }
+
+		std::list<CanvasRef> getCanvases()
+		{
+			return *_canvases;
+		}
+
+		void addCanvas(CanvasRef canvas)
+		{
+			_canvases->push_back(canvas);
+
+			addProperty(art::hadCanvas, canvas);
+		}
+
+		void removeCanvas(CanvasRef canvas)
+		{
+			_canvases->remove(canvas);
+
+			removeProperty(art::hadCanvas, canvas);
+		}
     };
 }
 

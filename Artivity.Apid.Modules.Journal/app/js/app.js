@@ -83,19 +83,19 @@ explorerApp.factory('api', function ($http) {
             return $http.post(endpoint + '/agents', data);
         },
         getUser: function () {
-            return $http.get(endpoint + '/user').then(
+            return $http.get(endpoint + '/agents/user').then(
                 function (response) {
                     return response.data;
                 })
         },
         setUser: function (data) {
-            return $http.post(endpoint + '/user', data);
+            return $http.post(endpoint + '/agents/user', data);
         },
         setUserPhoto: function (data) {
-            return $http.post(endpoint + '/user/photo', data);
+            return $http.post(endpoint + '/agents/user/photo', data);
         },
         getUserPhotoUrl: function () {
-            return endpoint + '/user/photo';
+            return endpoint + '/agents/user/photo';
         },
         getFile: function (fileUrl) {
             return $http.get(endpoint + '/files?fileUrl=' + fileUrl).then(

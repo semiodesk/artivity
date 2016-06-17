@@ -75,5 +75,7 @@
 #include "ObjectModel/Entities/WebDataObject.h"
 #include "ObjectModel/Entities/XmlElement.h"
 #include "ObjectModel/Entities/XmlAttribute.h"
+#include "ObjectModel/Entities/VectorImage.h"
+#include "ObjectModel/Entities/RasterImage.h"
 
 #endif // _ART_ARTIVITY_H

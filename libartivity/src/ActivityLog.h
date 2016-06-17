@@ -46,22 +46,23 @@
 #include "ObjectModel/Agent.h"
 #include "ObjectModel/Association.h"
 #include "ObjectModel/Activity.h"
-#include "ObjectModel/Activities/CreateFile.h";
-#include "ObjectModel/Activities/EditFile.h";
+#include "ObjectModel/Activities/CreateFile.h"
+#include "ObjectModel/Activities/EditFile.h"
 #include "ObjectModel/Entity.h"
 #include "ObjectModel/EntityInfluence.h"
 #include "ObjectModel/Entities/FileDataObject.h"
+#include "ObjectModel/Entities/Image.h"
 
 namespace artivity
 {
     typedef std::list<AssociationRef>::iterator AssociationIterator;
-    typedef std::list<EntityInfluenceRef>::iterator EntityInfluenceIterator;
+    typedef std::list<InfluenceRef>::iterator InfluenceIterator;
 
     class ActivityLog;
+
     typedef boost::shared_ptr<ActivityLog> ActivityLogRef;
 
-
-    class ActivityLog
+	class ActivityLog
     {
     protected:
         std::string _endpoint;
@@ -70,11 +71,11 @@ namespace artivity
         
         ActivityRef _activity;
             
+		EntityRef _entity;
+
         std::list<AssociationRef>* _associations;
     
-        std::list<EntityInfluenceRef>* _influences;
-
-        std::string _fileUri;
+        std::list<InfluenceRef>* _influences;
         
         std::string _fileUrl;
         
@@ -94,16 +95,21 @@ namespace artivity
 
 		void print(boost::property_tree::ptree const& pt);
 
-    public:
-        ActivityLog(std::string endpoint);
-        
-        virtual ~ActivityLog();
-        
-        // Indicates if there is a connection to the Artivity HTTP API.
-		bool setAgent(const char* agentUri, std::string version);
+		std::string getEntityUri(std::string path);
 
-		void setDocument(const char* typeUri, std::string path);
-        
+    public:
+		ActivityLog();
+
+        ActivityLog(const char* endpointUrl);
+
+		ActivityLog(std::string endpointUrl);
+
+        virtual ~ActivityLog();
+
+		void connect(const char* endpointUrl);
+
+		bool ready();
+
         // Indicates if there are any entity influences in the log.
         bool empty() { return _influences->empty(); }
         
@@ -115,20 +121,22 @@ namespace artivity
 
 		ActivityRef getActivity() { return _activity; }
 
-        std::string getThumbnailPath();
+		// Indicates if there is a connection to the Artivity HTTP API.
+		bool setAgent(const char* agentUri, std::string version);
+
+		// Set the file being edited.
+		void setFile(ImageRef image, const char* path);
 
         // Add an association to the RDF stream.
         void addAssociation(AssociationRef resource);
 
 		// Add an entity influence to the transmitted RDF stream.
-		void addInfluence(EntityInfluenceRef resource);
+		void addInfluence(InfluenceRef influence);
 
 		// Remove an entity influence to the transmitted RDF stream.
-		void removeInfluence(EntityInfluenceRef resource);
+		void removeInfluence(InfluenceRef resource);
 
-		//void addGeneration(GenerationRef generation);
-
-		//void addUsage(UsageRef usage);
+		std::string getRenderOutputPath();
     };
 }
 
