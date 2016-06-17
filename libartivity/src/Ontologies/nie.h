@@ -34,6 +34,9 @@ namespace artivity
 {
     namespace nie
     {
+		static const char* NS_PREFIX = "nie:";
+		static const char* NS_URI = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#";
+
         static const char* InformationElement = NIE("InformationElement");
 
         static const char* isStoredAs = NIE("isStoredAs");

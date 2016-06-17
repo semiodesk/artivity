@@ -34,6 +34,8 @@ namespace artivity
 {
     namespace nfo
     {
+		static const char* NS_PREFIX = "nfo:";
+		static const char* NS_URI = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#";
 
         static const char* Media = NFO("Media");
         static const char* Image = NFO("Image");
