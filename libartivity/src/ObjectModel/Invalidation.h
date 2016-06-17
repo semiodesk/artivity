@@ -37,8 +37,11 @@ namespace artivity
     typedef boost::shared_ptr<Invalidation> InvalidationRef;
 
     class Invalidation : public ActivityInfluence
-    {        
-    public:
+    {   
+        private:
+        std::list<EntityRef> _entities;
+
+        public:
         Invalidation() : ActivityInfluence()
         {
             setType(prov::Invalidation);
@@ -47,6 +50,24 @@ namespace artivity
         Invalidation(const char* uriref) : ActivityInfluence(uriref)
         {
             setType(prov::Invalidation);
+        }
+
+        void addInvalidated(EntityRef entity)
+        {
+            addProperty(prov::invalidated, entity);
+            _entities.push_back(entity);
+        }
+
+        void removeInvalidated(EntityRef entity)
+        {
+            removeProperty(prov::invalidated, entity);
+            _entities.remove(entity);
+        }
+
+        void clearInvalidated(EntityRef entity)
+        {
+            Properties.erase(prov::invalidated);
+            _entities.clear();
         }
     };
 }

@@ -55,3 +55,6 @@ build/*
 artivity-apid/TinyVirtuoso/*
 *.DS_Store
 libartivity/windows/boost_1_61_0/*
+libartivity/windows/ipch/*
+*.sdf
+*.opensdf

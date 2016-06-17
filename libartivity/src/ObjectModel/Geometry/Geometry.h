@@ -31,6 +31,7 @@
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
 #include "../../UriGenerator.h"
+#include "../Entity.h"
 
 namespace artivity
 {
@@ -38,15 +39,15 @@ namespace artivity
 
     typedef boost::shared_ptr<Geometry> GeometryRef;
 
-    class Geometry : public Resource
+    class Geometry : public Entity
     {        
-    public:
-        Geometry() : Resource(UriGenerator::getUri())
+        public:
+        Geometry() : Entity()
         {
             setType(art::Geometry);
         }
         
-        Geometry(const char* uriref) : Resource(uriref)
+        Geometry(const char* uriref) : Entity(uriref)
         {
             setType(art::Geometry);
         }

@@ -41,8 +41,8 @@
 #include "ObjectModel/Agent.h"
 #include "ObjectModel/Association.h"
 #include "ObjectModel/Activity.h"
-#include "ObjectModel/Activities/CreateFile.h";
-#include "ObjectModel/Activities/EditFile.h";
+#include "ObjectModel/Activities/CreateFile.h"
+#include "ObjectModel/Activities/EditFile.h"
 #include "ObjectModel/Entity.h"
 #include "ObjectModel/EntityInfluence.h"
 #include "ObjectModel/Entities/FileDataObject.h"
@@ -108,6 +108,8 @@ namespace artivity
 
         std::string getThumbnailPath();
 
+        std::string getFileUri();
+
         // Add an association to the RDF stream.
         void addAssociation(AssociationRef resource);
 
@@ -116,6 +118,8 @@ namespace artivity
 
 		// Remove an entity influence to the transmitted RDF stream.
 		void removeInfluence(EntityInfluenceRef resource);
+
+        void close(time_t time) {} // close the activity here, if no prov:Revision with entity file is in influence list clear Influences first
 
 		//void addGeneration(GenerationRef generation);
 

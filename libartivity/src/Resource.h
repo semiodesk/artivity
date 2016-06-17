@@ -95,10 +95,9 @@ namespace artivity
         void setValue(const Property& property, float value);
         void setValue(const Property& property, double value);
         
-        void setType(ResourceRef type);
         void setType(const char* value);
         
-        const ResourceRef getType();
+        const char* getType();
         
         void setUri(std::string uriref);
         

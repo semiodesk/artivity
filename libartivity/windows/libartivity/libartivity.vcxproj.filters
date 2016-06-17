@@ -204,6 +204,12 @@
     <ClInclude Include="..\..\src\ObjectModel\Influence.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Text.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Derivation.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp">
@@ -232,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\ObjectModel\Entities\FileDataObject.cpp">
       <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\PropertyMap.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

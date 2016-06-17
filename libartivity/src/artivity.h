@@ -51,12 +51,16 @@
 #include "ObjectModel/Association.h"
 #include "ObjectModel/Generation.h"
 #include "ObjectModel/Revision.h"
+#include "ObjectModel/Derivation.h"
 #include "ObjectModel/Invalidation.h"
 #include "ObjectModel/Entity.h"
 #include "ObjectModel/Person.h"
 #include "ObjectModel/Role.h"
 #include "ObjectModel/SoftwareAgent.h"
 
+
+#include "ObjectModel/Geometry/Geometry.h"
+#include "ObjectModel/Geometry/Text.h"
 #include "ObjectModel/Geometry/Point.h"
 #include "ObjectModel/Geometry/Canvas.h"
 #include "ObjectModel/Geometry/CartesianCoordinateSystem.h"

@@ -34,6 +34,7 @@
 #include "../UriGenerator.h"
 #include "../Resource.h"
 #include "Entity.h"
+#include "Influence.h"
 
 namespace artivity
 {
@@ -60,16 +61,19 @@ namespace artivity
         void addEntity(EntityRef entity)
         {
             _entities.push_back(entity);
+            addProperty(prov::entity, entity);
         }
 
         void removeEntity(EntityRef entity)
         {
             _entities.remove(entity);
+            removeProperty(prov::entity, entity);
         }
 
         void clearEntities(EntityRef entity)
         {
             _entities.clear();
+            
         }
 	};
 }

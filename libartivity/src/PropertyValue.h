@@ -60,7 +60,6 @@ namespace artivity
             Value = NULL;
 			LiteralValue = std::string(value);
             LiteralType = literalType.name();
-
         }
         
         virtual ~PropertyValue() {}
