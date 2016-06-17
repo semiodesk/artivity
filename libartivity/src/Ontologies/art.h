@@ -41,6 +41,9 @@ namespace artivity
         #undef DeleteFile
         #endif
 
+		static const char* USER = ART("USER");
+		static const char* SOFTWARE = ART("SOFTWARE");
+
         // http://www.w3.org/ns/activitystreams#View
         static const char* WebBrowsing = ART("WebBrowsing");
         

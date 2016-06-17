@@ -21,6 +21,7 @@ namespace Artivity.Apid
     public class ArtivityService :  WindowsService
     {
         #region Members
+
         protected AutoResetEvent _stopping;
         protected ILog _log;
         protected EventLog eventLog;
@@ -31,9 +32,11 @@ namespace Artivity.Apid
         PluginChecker _checker;
 
         private string _logConfigPath = "log.config";
+
         public string LogConfigPath { get { return _logConfigPath;} set{ _logConfigPath = value;} }
 
         public bool Debug { get; set; }
+
         #endregion
 
         #region Constructor
@@ -65,9 +68,11 @@ namespace Artivity.Apid
             //StopEvent = new EventWaitHandle(false, EventResetMode.ManualReset, string.Format("Global\\OrganiseMetaSync_StopEvent_{0}_{1}", mode, nameAdditon), out created, security);
             //_service = new HttpService();
         }
+
         #endregion
 
         #region Methods
+
         /// <summary>
         /// Install the service in the system.
         /// </summary>
@@ -96,10 +101,9 @@ namespace Artivity.Apid
             CanHandleSessionChangeEvent = false;
             CanHandlePowerEvent = false;
             AutoLog = false;
+
             _stopping = new AutoResetEvent(false);
             _services = new Dictionary<uint, HttpService>();
-
-            
         }
 
 
@@ -195,16 +199,23 @@ namespace Artivity.Apid
         protected void OnLogon(uint sessionId)
         {
             string user = Win32.GetUsernameBySessionId((int)sessionId, true);
+
             _log.InfoFormat("Logon Event. SessionId {0} Username {1}", sessionId, user);
+
             StartService(sessionId, user);  
         }
 
         protected void StartService(uint sessionId, string user)
         {
             _log.DebugFormat("Starting service for user {0}", user);
+
             try
             {
                 HttpService httpService = new HttpService();
+
+#if DEBUG
+                //httpService.UpdateOntologies = true;
+#endif
                
                 var action = new ParameterizedThreadStart(obj => 
                     {
@@ -219,11 +230,13 @@ namespace Artivity.Apid
                         httpService.Username = user.Split('\\')[1];
                         httpService.Start(false);
                     });
+
                 Thread starter = new Thread(action);
                 starter.Start();
 
                 _services.Add(sessionId, httpService);
-                _log.DebugFormat("Service running...");
+
+                _log.DebugFormat("Service running; Press a key to stop..");
             }
             catch (Exception e)
             {

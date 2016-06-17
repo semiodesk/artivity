@@ -31,14 +31,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Model.ObjectModel
+namespace Artivity.DataModel
 {
-    [RdfClass(PROV.Association)]
+    [RdfClass(ART.SoftwareAssociation)]
     public class SoftwareAssociation : Association
     {
 		#region Members
 
-
+        [RdfProperty(ART.version)]
+        public string Version { get; set; }
 
 		#endregion
 
