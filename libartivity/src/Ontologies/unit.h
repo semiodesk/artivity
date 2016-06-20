@@ -31,21 +31,23 @@
 #include "../Property.h"
 
 // Source: http://qudt.org/1.1/vocab/OVG_units-qudt-(v1.1).ttl
-#define UNIT(label) "http://qudt.org/vocab/unit#" label;
+
+#define unit(label) "unit:"label;
+#define UNIT(label) "http://qudt.org/vocab/unit#"label;
 
 namespace artivity
 {
     namespace unit
     {
-		static const char* NS_PREFIX = "unit:";
-		static const char* NS_URI = "http://qudt.org/vocab/unit#";
+		static const char* NS_PREFIX = unit();
+		static const char* NS_URI = UNIT();
 
-        static const char* Millimeter = UNIT("Millimeter");
-        static const char* Centimeter = UNIT("Centimeter");
-        static const char* Meter = UNIT("Meter");
-        static const char* Point = UNIT("Point");
-        static const char* Inch = UNIT("Inch");
-        static const char* Foot = UNIT("Foot");
+        static const char* Millimeter = unit("Millimeter");
+        static const char* Centimeter = unit("Centimeter");
+        static const char* Meter = unit("Meter");
+        static const char* Point = unit("Point");
+        static const char* Inch = unit("Inch");
+        static const char* Foot = unit("Foot");
     }
 }
 

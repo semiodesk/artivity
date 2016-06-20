@@ -25,23 +25,24 @@
 //
 // Copyright (c) Semiodesk GmbH 2016
 
-#ifndef DCES_H
-#define DCES_H
+#ifndef dces_H
+#define dces_H
 
 #include "../Property.h"
 
-#define DCES(label) "http://purl.org/dc/elements/1.1/" label;
+#define dces(label) "dc:"label;
+#define DCES(label) "http://purl.org/dc/elements/1.1/"label;
 
 namespace artivity
 {
     namespace dces
     {
-		static const char* NS_PREFIX = "dc:";
-		static const char* NS_URI = "http://purl.org/dc/elements/1.1/";
+		static const char* NS_PREFIX = dces();
+		static const char* NS_URI = DCES();
 
-        static const char* title = DCES("title");
-        static const char* description = DCES("description");
+        static const char* title = dces("title");
+        static const char* description = dces("description");
     }
 }
 
-#endif // DCES_H
+#endif // dces_H

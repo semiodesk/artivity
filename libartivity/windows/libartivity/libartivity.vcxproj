@@ -221,6 +221,7 @@
     <ClInclude Include="..\..\src\ObjectModel\Revision.h" />
     <ClInclude Include="..\..\src\ObjectModel\Role.h" />
     <ClInclude Include="..\..\src\ObjectModel\SoftwareAgent.h" />
+    <ClInclude Include="..\..\src\ObjectModel\SoftwareAssociation.h" />
     <ClInclude Include="..\..\src\Ontologies\art.h" />
     <ClInclude Include="..\..\src\Ontologies\dces.h" />
     <ClInclude Include="..\..\src\Ontologies\nfo.h" />

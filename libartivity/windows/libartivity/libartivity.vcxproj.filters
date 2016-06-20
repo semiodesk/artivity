@@ -210,6 +210,9 @@
     <ClInclude Include="..\..\src\ObjectModel\Derivation.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\SoftwareAssociation.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp">

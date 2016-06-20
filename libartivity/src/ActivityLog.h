@@ -37,6 +37,7 @@
 #include <curl/curl.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/format.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
@@ -45,18 +46,20 @@
 #include "Serializer.h"
 #include "ObjectModel/Agent.h"
 #include "ObjectModel/Association.h"
+#include "ObjectModel/SoftwareAssociation.h"
 #include "ObjectModel/Activity.h"
 #include "ObjectModel/Activities/CreateFile.h"
 #include "ObjectModel/Activities/EditFile.h"
 #include "ObjectModel/Entity.h"
-#include "ObjectModel/EntityInfluence.h"
+#include "ObjectModel/Generation.h"
+#include "ObjectModel/Invalidation.h"
+#include "ObjectModel/Revision.h"
 #include "ObjectModel/Entities/FileDataObject.h"
 #include "ObjectModel/Entities/Image.h"
 
 namespace artivity
 {
     typedef std::list<AssociationRef>::iterator AssociationIterator;
-    typedef std::list<InfluenceRef>::iterator InfluenceIterator;
 
     class ActivityLog;
 
@@ -65,7 +68,7 @@ namespace artivity
 	class ActivityLog
     {
     protected:
-        std::string _endpoint;
+        std::string _endpointUrl;
 
         CURL* _curl;
         
@@ -73,29 +76,23 @@ namespace artivity
             
 		EntityRef _entity;
 
-        std::list<AssociationRef>* _associations;
-    
-        std::list<InfluenceRef>* _influences;
+		std::list<AssociationRef> _associations;
         
         std::string _fileUrl;
         
+		bool fetchAssociationUri(AssociationRef association);
+
         CURL* initializeRequest();
         
 		long executeRequest(CURL* curl, std::string url, std::string postFields, std::string& response);
-        
-		void logError(CURLcode responseCode, std::string msg);
-        
-		void logInfo(CURLcode responseCode, std::string msg);
-        
+
 		std::string getTime();
-        
-		std::string escapePath(std::string path);
-
-		AssociationRef getAssociation(const char* role, const char* uri = "", std::string version = "");
-
-		void print(boost::property_tree::ptree const& pt);
 
 		std::string getEntityUri(std::string path);
+
+		std::string escapePath(std::string path);
+
+		void dump(boost::property_tree::ptree const& pt);
 
     public:
 		ActivityLog();
@@ -106,23 +103,22 @@ namespace artivity
 
         virtual ~ActivityLog();
 
-		void connect(const char* endpointUrl);
+		bool connect(const char* endpointUrl);
 
 		bool ready();
 
-        // Indicates if there are any entity influences in the log.
-        bool empty() { return _influences->empty(); }
+		bool empty() { return _activity->empty(); }
         
-		// Clears all untransmitted entity influences in the log.
-		void clear() { _influences->clear(); }
+		void clear() { _activity->clear(); }
         
+		void close();
+
+		void close(time_t time);
+
 		// Send all items in the queue to the Artivity server.
 		void transmit();
 
 		ActivityRef getActivity() { return _activity; }
-
-		// Indicates if there is a connection to the Artivity HTTP API.
-		bool setAgent(const char* agentUri, std::string version);
 
 		// Set the file being edited.
 		void setFile(ImageRef image, const char* path);
@@ -130,17 +126,25 @@ namespace artivity
         std::string getFileUri();
 
         // Add an association to the RDF stream.
-        void addAssociation(AssociationRef resource);
+        void addAssociation(const char* roleUri);
+		void addAssociation(const char* roleUri, const char* agentUri, const char* version);
+		void addAssociation(const char* roleUri, stringRef agentUri, stringRef version);
 
 		// Add an entity influence to the transmitted RDF stream.
-		void addInfluence(InfluenceRef influence);
+		void addInfluence(GenerationRef generation);
+		void addInfluence(InvalidationRef invalidation);
+		void addInfluence(EntityInfluenceRef influence);
 
 		// Remove an entity influence to the transmitted RDF stream.
-		void removeInfluence(InfluenceRef resource);
-
-        void close(time_t time) {} // close the activity here, if no prov:Revision with entity file is in influence list clear Influences first
+		void removeInfluence(GenerationRef generation);
+		void removeInfluence(InvalidationRef invalidation);
+		void removeInfluence(EntityInfluenceRef influence);
 
 		std::string getRenderOutputPath();
+
+		void logError(std::string msg);
+
+		void logInfo(std::string msg);
     };
 }
 

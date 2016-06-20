@@ -27,6 +27,7 @@
 
 #ifndef _ART_ARTIVITY_H
 #define _ART_ARTIVITY_H
+
 #include "Resource.h"
 #include "Property.h"
 #include "UriGenerator.h"

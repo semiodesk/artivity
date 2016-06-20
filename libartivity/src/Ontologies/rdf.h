@@ -30,16 +30,17 @@
 
 #include "../Property.h"
 
-#define RDF(label) "http://www.w3.org/1999/02/22-rdf-syntax-ns#" label;
+#define rdf(label) "rdf:"label;
+#define RDF(label) "http://www.w3.org/1999/02/22-rdf-syntax-ns#"label;
 
 namespace artivity
 {
     namespace rdf
     {
-		static const char* NS_PREFIX = "rdf:";
-		static const char* NS_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+		static const char* NS_PREFIX = rdf();
+		static const char* NS_URI = RDF();
 
-		static const char* _type = RDF("type");
+		static const char* _type = rdf("type");
     }
 }
 

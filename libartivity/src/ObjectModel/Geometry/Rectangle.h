@@ -78,6 +78,13 @@ namespace artivity
             return _position;
         }
         
+		void setPosition(double x, double y)
+		{
+			_position = PointRef(new Point(x, y));
+
+			setValue(art::position, _position);
+		}
+
         void setPosition(PointRef position)
         {
             _position = position;
