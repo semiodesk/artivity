@@ -171,9 +171,14 @@ namespace artivity
 
 			if (association->Uri.empty())
 			{
-				fetchAssociationUri(association);
-
-				_activity->addAssociation(association);
+				if(fetchAssociationUri(association))
+				{
+					_activity->addAssociation(association);
+				}
+				else
+				{
+					return false;
+				}
 			}
 
 			it++;
