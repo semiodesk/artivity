@@ -34,6 +34,9 @@
 
 #include "Entity.h"
 #include "Association.h"
+#include "Generation.h"
+#include "Invalidation.h"
+#include "EntityInfluence.h"
 
 namespace artivity
 {
@@ -44,13 +47,15 @@ namespace artivity
     class Activity : public Resource
     {
     private:        
+		std::list<EntityRef>* _usages;
+
         std::list<AssociationRef>* _associations;
-    
-        std::list<EntityRef>* _usedEntities;
-                    
-        std::list<EntityRef>* _invalidatedEntities;
-                                
-        std::list<EntityRef>* _generatedEntities;
+                                                      
+		std::list<GenerationRef>* _generations;
+
+		std::list<InvalidationRef>* _invalidations;
+
+		std::list<EntityInfluenceRef>* _influences;
 
         time_t _startTime;
         
@@ -60,9 +65,8 @@ namespace artivity
         Activity();
         Activity(const char* uriref);
         virtual ~Activity();
-        
-        bool isValid();
-        
+               
+		bool empty();
         void clear();
         
         void setTime(time_t time);
@@ -74,21 +78,25 @@ namespace artivity
         void setEndTime(time_t time);
         time_t getEndTime();
         
+		std::list<EntityRef> getUsedEntities();
+		void addUsage(EntityRef entity);
+		void removeUsage(EntityRef entity);
+
         std::list<AssociationRef> getAssociations();
         void addAssociation(AssociationRef association);
         void removeAssociation(AssociationRef association);
-        
-        std::list<EntityRef> getUsedEntities();
-        void addUsedEntity(EntityRef entity);
-        void removeUsedEntity(EntityRef entity);
-        
-        std::list<EntityRef> getInvalidatedEntities();
-        void addInvalidatedEntity(EntityRef entity);
-        void removeInvalidatedEntity(EntityRef entity);
-        
-        std::list<EntityRef> getGeneratedEntities();
-        void addGeneratedEntity(EntityRef entity);
-        void removeGeneratedEntity(EntityRef entity);
+               
+		std::list<GenerationRef> getGenerations();
+		void addInfluence(GenerationRef generation);
+		void removeInfluence(GenerationRef generation);
+
+		std::list<InvalidationRef> getInvalidations();
+		void addInfluence(InvalidationRef invalidation);
+		void removeInfluence(InvalidationRef invalidation);
+
+		std::list<EntityInfluenceRef> getEntityInfluences();
+		void addInfluence(EntityInfluenceRef influence);
+		void removeInfluence(EntityInfluenceRef influence);
     };
 }
 

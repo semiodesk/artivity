@@ -2,6 +2,8 @@
 #define __ART_SERIALIZER_H
 
 #include <map>
+#include <queue>
+#include <hash_set>
 #include <string>
 #include "Resource.h"
 #include "XsdTypeMap.h"
@@ -10,10 +12,31 @@ namespace artivity
 {
     enum RdfSerializationFormat { N3 };
     
-    class SerializerContext;
+	class SerializerContext
+	{
+	public:
+		// Reference to the target string stream.
+		std::stringstream out;
+
+		// Prefixes that need to be declared.
+		std::hash_set<std::string> prefixes;
+
+		// Resources which have already been serialized.
+		std::hash_set<std::string> track;
+
+		// Resources which need to be serialized.
+		std::queue<ResourceRef> queue;
+
+		SerializerContext() {}
+	};
     
     class Serializer
     {  
+	protected:
+		void serializeN3(SerializerContext& context, ResourceRef resource);
+		void serializeN3(SerializerContext& context, PropertyMapIterator it);
+		void serializeN3(SerializerContext& context, std::string uri);
+
     public:
 		std::map<std::string, std::string> PREFIX_MAP;
         XsdTypeMap TYPE_MAP;

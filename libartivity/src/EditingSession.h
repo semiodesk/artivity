@@ -44,6 +44,7 @@ namespace artivity
 
         virtual stringRef getDocumentFilePath() = 0;
         virtual stringRef getSoftwareAgent() = 0;
+		virtual stringRef getSoftwareVersion() = 0;
 
         GenerationRef createGeneration() { return GenerationRef(new Generation()); }
         UndoRef createUndo() { return UndoRef(new Undo()); }

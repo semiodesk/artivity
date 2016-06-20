@@ -35,6 +35,7 @@
 namespace artivity
 {
     class RasterImage;
+
     typedef boost::shared_ptr<RasterImage> RasterImageRef;
 
     class RasterImage : public Image

@@ -28,28 +28,28 @@
 #ifndef NFO_H
 #define NFO_H
 
-#define NFO(label) "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#" label;
+#define nfo(label) "nfo:"label;
+#define NFO(label) "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#"label;
 
 namespace artivity
 {
     namespace nfo
     {
-		static const char* NS_PREFIX = "nfo:";
-		static const char* NS_URI = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#";
+		static const char* NS_PREFIX = nfo();
+		static const char* NS_URI = NFO();
 
-        static const char* Media = NFO("Media");
-        static const char* Image = NFO("Image");
-        static const char* RasterImage = NFO("RasterImage");
-        static const char* VectorImage = NFO("VectorImage");
-        
-		static const char* FileDataObject = NFO("FileDataObject");
-        static const char* WebDataObject = NFO("WebDataObject");
+        static const char* Media = nfo("Media");
+        static const char* Image = nfo("Image");
+        static const char* RasterImage = nfo("RasterImage");
+        static const char* VectorImage = nfo("VectorImage");
+		static const char* FileDataObject = nfo("FileDataObject");
+        static const char* WebDataObject = nfo("WebDataObject");
 
-        static const char* fileLastAccessed = NFO("fileLastAccessed");
-        static const char* fileLastModified = NFO("fileLastModified");
-        static const char* fileCreated = NFO("fileCreated");
-        static const char* fileSize = NFO("fileSize");
-        static const char* fileUrl = NFO("fileUrl");
+        static const char* fileLastAccessed = nfo("fileLastAccessed");
+        static const char* fileLastModified = nfo("fileLastModified");
+        static const char* fileCreated = nfo("fileCreated");
+        static const char* fileSize = nfo("fileSize");
+        static const char* fileUrl = nfo("fileUrl");
     }
 }
 

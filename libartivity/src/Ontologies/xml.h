@@ -28,19 +28,20 @@
 #ifndef XML_H
 #define XML_H
 
-#define XML(label) "http://www.w3.org/2001/04/infoset#" label;
+#define xml(label) "xml:"label;
+#define XML(label) "http://www.w3.org/2001/04/infoset#"label;
 
 namespace artivity
 {
     namespace xml
     {
-		static const char* NS_PREFIX = "xml:";
-		static const char* NS_URI = "http://www.w3.org/2001/04/infoset#";
+		static const char* NS_PREFIX = xml();
+		static const char* NS_URI = XML();
 
-        static const char* Element = XML("Element");
-        static const char* Attribute = XML("Attribute");
-        static const char* ownerElement = XML("ownerElement");
-        static const char* localName = XML("localName");
+        static const char* Element = xml("Element");
+        static const char* Attribute = xml("Attribute");
+        static const char* ownerElement = xml("ownerElement");
+        static const char* localName = xml("localName");
     }
 }
 

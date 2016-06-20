@@ -60,16 +60,17 @@ namespace artivity
 
         Point(double x, double y) : Resource(UriGenerator::getUri())
         {
-            _x = x;
-            _y = y;
-            _z = 0;
+			setType(art::Point);
+			setX(x);
+			setY(y);
         }
 
         Point(double x, double y, double z) : Resource(UriGenerator::getUri())
         {
-            _x = x;
-            _y = y;
-            _z = z;
+			setType(art::Point);
+			setX(x);
+			setY(y);
+			setZ(z);
         }
 
         

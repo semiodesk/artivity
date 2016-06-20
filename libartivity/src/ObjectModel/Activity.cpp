@@ -39,47 +39,49 @@ namespace artivity
 
     Activity::Activity() : Resource(UriGenerator::getUri())
     {
+		setType(prov::Activity);
+
+		_usages = new list<EntityRef>();
         _associations = new list<AssociationRef>();
-        _usedEntities = new list<EntityRef>();
-        _invalidatedEntities = new list<EntityRef>();
-        _generatedEntities = new list<EntityRef>();
-        
-        setType(prov::Activity);
+		_generations = new list<GenerationRef>();
+		_invalidations = new list<InvalidationRef>();
+		_influences = new list<EntityInfluenceRef>();
     }
     
     Activity::Activity(const char* uriref) : Resource(uriref)
     {
-        _associations = new list<AssociationRef>();
-        _usedEntities = new list<EntityRef>();
-        _invalidatedEntities = new list<EntityRef>();
-        _generatedEntities = new list<EntityRef>();
-        
-        setType(prov::Activity);
+		setType(prov::Activity);
+
+		_usages = new list<EntityRef>();
+		_associations = new list<AssociationRef>();
+		_generations = new list<GenerationRef>();
+		_invalidations = new list<InvalidationRef>();
+		_influences = new list<EntityInfluenceRef>();
     }
 
     Activity::~Activity()
     {
-        delete _associations;
-        delete _usedEntities;
-        delete _invalidatedEntities;
-        delete _generatedEntities;
+		delete _usages;
+		delete _associations;
+        delete _generations;
+		delete _invalidations;
+		delete _influences;
     }
     
-    bool Activity::isValid()
-    {
-        // TODO: Check if type, actor, object and time is set.
-        // See: http://www.w3.org/TR/activitystreams-core/#example-1
-        return true;
-    }
-    
+	bool Activity::empty()
+	{
+		return Properties.empty();
+	}
+
     void Activity::clear()
     {
         Resource::clear();
         
-        _associations->clear();
-        _usedEntities->clear();
-        _invalidatedEntities->clear();
-        _generatedEntities->clear();
+		_usages->clear();
+		_associations->clear();
+		_generations->clear();
+		_invalidations->clear();
+		_influences->clear();
     }
     
     void Activity::setTime(time_t time)
@@ -140,65 +142,86 @@ namespace artivity
     
     list<EntityRef> Activity::getUsedEntities()
     {
-        return *_usedEntities;
+        return *_usages;
     }
     
-    void Activity::addUsedEntity(EntityRef entity)
+    void Activity::addUsage(EntityRef entity)
     {
         if(hasProperty(prov::used, entity)) return;
         
-        _usedEntities->push_back(entity);
+		_usages->push_back(entity);
         
         addProperty(prov::used, entity);
     }
     
-    void Activity::removeUsedEntity(EntityRef entity)
+    void Activity::removeUsage(EntityRef entity)
     {
-        _usedEntities->remove(entity);
+		_usages->remove(entity);
         
         removeProperty(prov::used, entity);
     }
     
-    list<EntityRef> Activity::getInvalidatedEntities()
+    list<InvalidationRef> Activity::getInvalidations()
     {
-        return *_invalidatedEntities;
+        return *_invalidations;
     }
     
-    void Activity::addInvalidatedEntity(EntityRef entity)
+    void Activity::addInfluence(InvalidationRef invalidation)
     {
-        if(hasProperty(prov::invalidated, entity)) return;
+		if (hasProperty(prov::qualifiedInvalidation, invalidation)) return;
         
-        _invalidatedEntities->push_back(entity);
+		_invalidations->push_back(invalidation);
         
-        addProperty(prov::invalidated, entity);
+		addProperty(prov::qualifiedInvalidation, invalidation);
     }
     
-    void Activity::removeInvalidatedEntity(EntityRef entity)
+	void Activity::removeInfluence(InvalidationRef invalidation)
     {       
-        _invalidatedEntities->remove(entity);
+		_invalidations->remove(invalidation);
         
-        removeProperty(prov::invalidated, entity);
+		removeProperty(prov::qualifiedInvalidation, invalidation);
     }
     
-    list<EntityRef> Activity::getGeneratedEntities()
+	list<GenerationRef> Activity::getGenerations()
     {
-        return *_generatedEntities;
+		return *_generations;
     }
     
-    void Activity::addGeneratedEntity(EntityRef entity)
+    void Activity::addInfluence(GenerationRef generation)
     {
-        if(hasProperty(prov::generated, entity)) return;
+		if (hasProperty(prov::qualifiedGeneration, generation)) return;
         
-        _generatedEntities->push_back(entity);
+		_generations->push_back(generation);
         
-        addProperty(prov::generated, entity);
+		addProperty(prov::qualifiedGeneration, generation);
     }
     
-    void Activity::removeGeneratedEntity(EntityRef entity)
+	void Activity::removeInfluence(GenerationRef generation)
     {        
-        _generatedEntities->remove(entity);
+		_generations->remove(generation);
         
-        removeProperty(prov::generated, entity);
+		removeProperty(prov::qualifiedGeneration, generation);
     }
+
+	list<EntityInfluenceRef> Activity::getEntityInfluences()
+	{
+		return *_influences;
+	}
+
+	void Activity::addInfluence(EntityInfluenceRef influence)
+	{
+		if (hasProperty(prov::qualifiedInfluence, influence)) return;
+
+		_influences->push_back(influence);
+
+		addProperty(prov::qualifiedInfluence, influence);
+	}
+
+	void Activity::removeInfluence(EntityInfluenceRef influence)
+	{
+		_influences->remove(influence);
+
+		removeProperty(prov::qualifiedInfluence, influence);
+	}
 }
 

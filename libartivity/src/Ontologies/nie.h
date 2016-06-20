@@ -28,23 +28,22 @@
 #ifndef _ART_NIE_H
 #define _ART_NIE_H
 
-#define NIE(label) "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#" label;
+#define nie(label) "nie:"label;
+#define NIE(label) "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#"label;
 
 namespace artivity
 {
     namespace nie
     {
-		static const char* NS_PREFIX = "nie:";
-		static const char* NS_URI = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#";
+		static const char* NS_PREFIX = nie();
+		static const char* NS_URI = NIE();
 
-        static const char* InformationElement = NIE("InformationElement");
+		static const char* InformationElement = nie("InformationElement");
 
-        static const char* isStoredAs = NIE("isStoredAs");
-        static const char* interpretedAs = NIE("interpretedAs");
-        static const char* created = NIE("created");
-        static const char* lastModified = NIE("lastModified");
-        
-
+		static const char* isStoredAs = nie("isStoredAs");
+		static const char* interpretedAs = nie("interpretedAs");
+		static const char* created = nie("created");
+		static const char* lastModified = nie("lastModified");
     }
 }
 

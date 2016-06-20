@@ -130,62 +130,163 @@ namespace artivity
     
     stringstream& Serializer::serialize(stringstream& out, ResourceRef resource, RdfSerializationFormat format)
     {
-        if(format == N3)
-        {
-			if (resource->Properties.size() == 0)
+		if (format == N3)
+		{
+			SerializerContext ctx;
+
+			ctx.queue.push(resource);
+
+			while (!ctx.queue.empty())
 			{
-				return out;
+				serializeN3(ctx, ctx.queue.front());
+
+				ctx.queue.pop();
 			}
 
-            out << resource;
-            
-            PropertyMapIterator it = resource->Properties.begin();
-            
-            while(it != resource->Properties.end())
-            {
-                if(it != resource->Properties.begin())
-                {
-                    out << ";" << endl;
-                }
-                
-                string property = it->first;
-                                    
-                out << property << flush;
-                
-                PropertyValue x = it->second;
-                
-                if(x.Value != NULL)
-                {                         
-                    out << "<" << x.Value->Uri << ">";
-                }
-                else if(x.LiteralType != NULL)
-                {
-                    if (x.LiteralType == typeid(Resource).name())
-                    {
-                        out << "<" << x.LiteralValue << ">";
-                    }
-                    else
-                    {
-                        out << "\"" << x.LiteralValue << "\"";
+			list<string>::const_iterator it = ctx.prefixes.begin();
 
-                        XsdTypeMapIterator it = TYPE_MAP.find(x.LiteralType);
+			while (it != ctx.prefixes.end())
+			{
+				out << "prefix " << *it << " <" << PREFIX_MAP.find(*it)->second << "> ." << endl;
 
-                        if (it != TYPE_MAP.end())
-                        {
-                            out << "^^<" << it->second << ">";
-                        }
-                    }
-                }
+				it++;
+			}
 
-                it++;
-            }
-            
-            out << "." << endl;
-            
-            return out;
-        }
-        
+			out << ctx.out.str();
+
+			return out;
+		}
+
         throw exception();
     }
+
+	void Serializer::serializeN3(SerializerContext& ctx, ResourceRef resource)
+	{
+		if (resource->Properties.size() == 0)
+		{
+			return;
+		}
+
+		int i = 0;
+		int n = resource->Properties.size();
+
+		// First, serialize the rdf:types of the resources.
+		PropertyMapIterator it = resource->Properties.find(rdf::_type);
+
+		if (n == 1 && it != resource->Properties.end())
+		{
+			// Do not serialize resources which only have asserted types and no other properties.
+			return;
+		}
+
+		// Output the initial subject (the resource URI).
+		ctx.out << endl << resource;
+
+		while (it != resource->Properties.end())
+		{
+			if (0 < i && i < n)
+			{
+				ctx.out << ";" << endl;
+			}
+
+			serializeN3(ctx, it);
+
+			i++;
+			it++;
+		}
+
+		// Then, serialize all other properties.
+		it = resource->Properties.begin();
+
+		while (it != resource->Properties.end())
+		{
+			if (0 < i && i < n)
+			{
+				ctx.out << ";" << endl;
+			}
+
+			if (it->first != rdf::_type)
+			{
+				serializeN3(ctx, it);
+			}
+
+			i++;
+			it++;
+		}
+
+		ctx.out << "." << endl;
+	}
+
+	void Serializer::serializeN3(SerializerContext& ctx, PropertyMapIterator it)
+	{
+		string property = it->first;
+
+		ctx.out << " ";
+
+		if (property == rdf::_type)
+		{
+			ctx.out << "a";
+		}
+		else
+		{
+			serializeN3(ctx, property);
+		}
+
+		ctx.out << " " << flush;
+
+		PropertyValue x = it->second;
+
+		if (x.Value != NULL)
+		{
+			serializeN3(ctx, x.Value->Uri);
+
+			ResourceRef r = x.Value;
+
+			if (ctx.track.find(r->Uri) == ctx.track.end())
+			{
+				ctx.track.insert(r->Uri);
+
+				ctx.queue.push(r);
+			}
+		}
+		else if (x.LiteralType != NULL)
+		{
+			if (x.LiteralType == typeid(Resource).name())
+			{
+				serializeN3(ctx, x.LiteralValue);
+			}
+			else
+			{
+				ctx.out << "\"" << x.LiteralValue << "\"";
+
+				XsdTypeMapIterator it = TYPE_MAP.find(x.LiteralType);
+
+				if (it != TYPE_MAP.end())
+				{
+					ctx.out << "^^" << it->second;
+				}
+			}
+		}
+	}
+
+	void Serializer::serializeN3(SerializerContext& ctx, string uri)
+	{
+		size_t i = uri.find(':');
+
+		if (i != -1)
+		{
+			string schema = uri.substr(0, i + 1);
+
+			if (PREFIX_MAP.find(schema) != PREFIX_MAP.end())
+			{
+				ctx.prefixes.insert(schema);
+				ctx.out << uri;
+
+				return;
+			}
+		}
+
+		ctx.out << "<" << uri << ">";
+	}
 }
 

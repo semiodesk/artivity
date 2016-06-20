@@ -28,181 +28,177 @@
 #ifndef ART_H
 #define ART_H
 
-#define ART(label) "http://w3id.org/art/terms/1.0/" label;
-
 namespace artivity
 {
+	#define art(label) "art:"label;
+	#define ART(label) "http://w3id.org/art/terms/1.0/"label;
+
     namespace art
     {
-		static const char* NS_PREFIX = "art:";
-		static const char* NS_URI = "http://w3id.org/art/terms/1.0/";
+		static const char* NS_PREFIX = art();
+		static const char* NS_URI = ART();
+       
+		static const char* EditFile = art("EditFile");
+        
+		#ifdef CreateFile
+		#undef CreateFile
+		#endif
 
-        #ifdef CreateFile
-        #undef CreateFile
-        #endif
-        #ifdef DeleteFile
-        #undef DeleteFile
-        #endif
+		static const char* CreateFile = art("CreateFile");
+        
+		#ifdef DeleteFile
+		#undef DeleteFile
+		#endif
 
-		static const char* USER = ART("USER");
-		static const char* SOFTWARE = ART("SOFTWARE");
+		static const char* DeleteFile = art("DeleteFile");
+        
+		static const char* WebBrowsing = art("WebBrowsing");
 
-        // http://www.w3.org/ns/activitystreams#View
-        static const char* WebBrowsing = ART("WebBrowsing");
-        
-        // No match in ActivityStreams
-		static const char* EditFile = ART("EditFile");
-        
-        // No match in ActivityStreams
-		static const char* CreateFile = ART("CreateFile");
-        
-        // No match in ActivityStreams
-		static const char* DeleteFile = ART("DeleteFile");
-        
         // --- ACTIVITIES ---
         // NOTE: There are very little predefined activity types in PROV.
         //       The following are inspired by the Activity Streams vocabulary.
         
-        // No match in ActivityStreams
-		static const char* Edit = ART("Edit");
+		static const char* Edit = art("Edit");
         
-        // http://www.w3.org/ns/activitystreams#Add
-		static const char* Add = ART("Add");
+		static const char* Add = art("Add");
         
-        // http://www.w3.org/ns/activitystreams#Remove
-        static const char* Remove = ART("Remove");
+        static const char* Remove = art("Remove");
         
-        // http://www.w3.org/ns/activitystreams#Undo
-		static const char* Undo = ART("Undo");
+		static const char* Undo = art("Undo");
         
-        // No match in ActivityStreams
-		static const char* Redo = ART("Redo");
+		static const char* Redo = art("Redo");
         
-        // No match in ActivityStreams
-		static const char* Save = ART("Save");
+		static const char* Save = art("Save");
         
-		static const char* selectedLayer = ART("selectedLayer");
+		static const char* selectedLayer = art("selectedLayer");
 
-        static const char* layerZPosition = ART("layerZPosition")
+        static const char* layerZPosition = art("layerZPosition")
         
-        // --- AGENT ---
-		static const char* isCaptureEnabled = ART("isCaptureEnabled");
+		static const char* isCaptureEnabled = art("isCaptureEnabled");
 
-        // --- THUMBNAIL ---
-        static const char* thumbnailUrl = ART("thumbnailUrl");
+        static const char* thumbnailUrl = art("thumbnailUrl");
 
-        static const char* thumbnailPos = ART("thumbnailPosition"); 
+        static const char* thumbnailPos = art("thumbnailPosition"); 
         
         // --- GEOMETRY ---
         // NOTE: We try to be compatible with OGC geometry vocabularies since
         //       many databases support spatial querying using this standard.
         
-		static const char* canvas = ART("canvas");
+		static const char* canvas = art("canvas");
                 
         // Subclass of :hadGeometry
-		static const char* hadCanvas = ART("hadCanvas");
+		static const char* hadCanvas = art("hadCanvas");
         
         // Subclass of :Rectangle
-		static const char* Canvas = ART("Canvas");
+		static const char* Canvas = art("Canvas");
         
         // No equivalent in GeoSPARQL
-		static const char* coordinateSystem = ART("coordinateSystem");
+		static const char* coordinateSystem = art("coordinateSystem");
         
         // No equivalent in GeoSPARQL
-		static const char* CoordinateSystem = ART("CoordinateSystem");
+		static const char* CoordinateSystem = art("CoordinateSystem");
         
         // WKT CS, Cartesian
         // https://en.wikipedia.org/wiki/Well-known_text
-		static const char* CartesianCoordinateSystem = ART("CartesianCoordinateSystem");
+		static const char* CartesianCoordinateSystem = art("CartesianCoordinateSystem");
         
         // No equivalent in GeoSPARQL
-		static const char* lengthUnit = ART("lengthUnit");
+		static const char* lengthUnit = art("lengthUnit");
         
         // No equivalent in GeoSPARL, MATLAB notation [1 0 0; 0 1 0; 0 0 1]
-		static const char* transformationMatrix = ART("transformationMatrix");
+		static const char* transformationMatrix = art("transformationMatrix");
         
         // http://www.opengis.net/ont/geosparql#hasGeometry
-		static const char* hadGeometry = ART("hadGeometry");
+		static const char* hadGeometry = art("hadGeometry");
         
         // WKT Geometry
         // http://www.opengis.net/ont/geosparql#Geometry
-		static const char* Geometry = ART("Geometry");
+		static const char* Geometry = art("Geometry");
         
+		static const char* SoftwareAssociation = art("SoftwareAssociation");
+
         // http://www.opengis.net/ont/geosparql#coordinateDimension
-		static const char* coordinateDimension = ART("coordinateDimension");
+		static const char* coordinateDimension = art("coordinateDimension");
         
         // No equivalent in GeoSPARQL
-        static const char* Rectangle = ART("Rectangle");
+        static const char* Rectangle = art("Rectangle");
         
         // No equivalent in GeoSPARQL
-        static const char* width = ART("width");
+        static const char* width = art("width");
         
         // No equivalent in GeoSPARQL
-        static const char* height = ART("height");
+        static const char* height = art("height");
         
         // No equivalent in GeoSPARQL
-        static const char* Cube = ART("Cube");
+        static const char* Cube = art("Cube");
         
         // No equivalent in GeoSPARQL
-        static const char* depth = ART("depth");
+        static const char* depth = art("depth");
         
         // No equivalent in GeoSPARQL
-        static const char* hadBoundaries = ART("hadBoundaries");
+        static const char* hadBoundaries = art("hadBoundaries");
         
         // Subclass of :Rectangle
-        static const char* BoundingRectangle = ART("BoundingRectangle");
+        static const char* BoundingRectangle = art("BoundingRectangle");
         
         // Subclass of :Cube
-        static const char* BoundingCube = ART("BoundingCube");
+        static const char* BoundingCube = art("BoundingCube");
         
         // No equivalent in GeoSPARQL
-        static const char* hadViewport = ART("hadViewport");
+        static const char* hadViewport = art("hadViewport");
         
         // Subclass of :Rectangle
-        static const char* Viewport = ART("Viewport");
+        static const char* Viewport = art("Viewport");
         
+		static const char* version = art("version");
+
         // No equivalent in GeoSPARQL
-        static const char* zoomFactor = ART("zoomFactor");
+        static const char* zoomFactor = art("zoomFactor");
         
         // http://www.opengis.net/ont/geosparql#coordinateDimension
-        static const char* position = ART("position");
+        static const char* position = art("position");
         
         // WKT Point
         // No equivalent in GeoSPARQL
-        static const char* Point = ART("Point");
+        static const char* Point = art("Point");
         
         // No equivalent in GeoSPARQL
-        static const char* x = ART("x");
+        static const char* x = art("x");
         
         // No equivalent in GeoSPARQL
-        static const char* y = ART("y");
+        static const char* y = art("y");
         
         // No equivalent in GeoSPARQL
-        static const char* z = ART("z");
+        static const char* z = art("z");
         
         // --- UNITS ---
         // NOTE: Except for px, all units are owl:sameAs their counterparts in the QUDT ontology.
         
         // http://qudt.org/vocab/unit#Millimeter
-        static const char* mm = ART("mm");
+        static const char* mm = art("mm");
         
         // http://qudt.org/vocab/unit#Centimeter
-        static const char* cm = ART("cm");
+        static const char* cm = art("cm");
         
         // http://qudt.org/vocab/unit#Meter
-        static const char* m = ART("m");
+        static const char* m = art("m");
         
         // http://qudt.org/vocab/unit#Point
-        static const char* pt = ART("pt");
+        static const char* pt = art("pt");
         
         // http://qudt.org/vocab/unit#Inch
-        static const char* in = ART("in");
+        static const char* in = art("in");
         
         // http://qudt.org/vocab/unit#Foot
-        static const char* ft = ART("ft");
+        static const char* ft = art("ft");
         
         // No equivalent in QUDT
-        static const char* px = ART("px");
+        static const char* px = art("px");
+
+		// NOTE: The following instances are absolute URLs!
+		static const char* USER = ART("USER");
+
+		static const char* SOFTWARE = ART("SOFTWARE");
     }
 }
 

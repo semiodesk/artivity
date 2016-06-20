@@ -28,39 +28,40 @@
 #ifndef SVG_H
 #define SVG_H
 
+#define svg(label) "svg:"label;
 #define SVG(label) "http://www.mathiswebs.com/ontology/svg_ont.owl#"label;
 
 namespace artivity
 {
     namespace svg
     {
-		static const char* NS_PREFIX = "svg:";
-		static const char* NS_URI = "http://www.mathiswebs.com/ontology/svg_ont.owl#";
+		static const char* NS_PREFIX = svg();
+		static const char* NS_URI = SVG();
 
-        static const char* Shape = SVG("Shape");
+        static const char* Shape = svg("Shape");
         
-        static const char* Curved = SVG("Curved");
-        static const char* Circle = SVG("Circle");
-        static const char* Ellipse = SVG("Ellipse");
+        static const char* Curved = svg("Curved");
+        static const char* Circle = svg("Circle");
+        static const char* Ellipse = svg("Ellipse");
         
-        static const char* Polygon = SVG("Polygon");
-        static const char* Triangle = SVG("Triangle");
-        static const char* Quadrate = SVG("Quadrate");
-        static const char* Trapezoid = SVG("Trapezoid");
-        static const char* Parallelogram = SVG("Parallelogram");
-        static const char* Diamond = SVG("Diamond");
-        static const char* Rectangle = SVG("Rectangle");
-        static const char* Square = SVG("Square");
-        static const char* Pentagon = SVG("Pentagon");
-        static const char* Hexagon = SVG("Hexagon");
+        static const char* Polygon = svg("Polygon");
+        static const char* Triangle = svg("Triangle");
+        static const char* Quadrate = svg("Quadrate");
+        static const char* Trapezoid = svg("Trapezoid");
+        static const char* Parallelogram = svg("Parallelogram");
+        static const char* Diamond = svg("Diamond");
+        static const char* Rectangle = svg("Rectangle");
+        static const char* Square = svg("Square");
+        static const char* Pentagon = svg("Pentagon");
+        static const char* Hexagon = svg("Hexagon");
         
-        static const char* Predefined = SVG("Predefined");
-        static const char* Star = SVG("Star");
-        static const char* Heart = SVG("Heart");
-        static const char* Crescent = SVG("Crescent");
-        static const char* Sun = SVG("Sun");
+        static const char* Predefined = svg("Predefined");
+        static const char* Star = svg("Star");
+        static const char* Heart = svg("Heart");
+        static const char* Crescent = svg("Crescent");
+        static const char* Sun = svg("Sun");
         
-        static const char* id = SVG("id");
+        static const char* id = svg("id");
     }
 }
 

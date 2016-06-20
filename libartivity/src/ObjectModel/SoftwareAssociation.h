@@ -25,32 +25,56 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_VECTORIMAGE_H
-#define _ART_VECTORIMAGE_H
+#ifndef _ART_SOFTWAREASSOCIATION_H
+#define _ART_SOFTWAREASSOCIATION_H
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/nfo.h"
-#include "Image.h"
+#include "../Ontologies/art.h"
+#include "../Ontologies/rdf.h"
+#include "../UriGenerator.h"
+
+#include "Association.h"
 
 namespace artivity
 {
-    class VectorImage;
+	class SoftwareAssociation;
 
-    typedef boost::shared_ptr<VectorImage> VectorImageRef;
+	typedef boost::shared_ptr<SoftwareAssociation> SoftwareAssociationRef;
 
-    class VectorImage : public Image
-    {
-        public:
-        VectorImage() : Image()
-        {
-            setType(nfo::VectorImage);
-        }
+	class SoftwareAssociation : public Association
+	{
+	private:
+		std::string _version;
 
-        VectorImage(const char* uriref) : Image(uriref)
-        {
-			setType(nfo::VectorImage);
-        }
-    };
+	public:
+		SoftwareAssociation() : Association(UriGenerator::getUri())
+		{
+			setType(art::SoftwareAssociation);
+		}
+
+		SoftwareAssociation(std::string uriref) : Association(uriref)
+		{
+			setType(art::SoftwareAssociation);
+		}
+
+		SoftwareAssociation(const char* uriref) : Association(uriref)
+		{
+			setType(art::SoftwareAssociation);
+		}
+
+		virtual ~SoftwareAssociation() {}
+
+		std::string getVersion()
+		{
+			return _version;
+		}
+
+		void setVersion(std::string version)
+		{
+			_version = version;
+
+			setValue(art::version, version.c_str());
+		}
+	};
 }
 
-#endif // _ART_VECTORIMAGE_H
+#endif // _ART_SOFTWAREASSOCIATION_H
