@@ -82,16 +82,16 @@ namespace artivity
             setValue(rdfs::label, _label.c_str());
         }
 
-        const char* getUrl()
+        std::string getUrl()
         {
-            return _url.c_str();
+            return _url;
         }
 
-        void setUrl(const char* url)
+        void setUrl(std::string url)
         {
-            _url = std::string(url);
+            _url = url;
 
-            setValue(nie::url, _url.c_str());
+            setValue(nie::url, _url);
         }
 
         FolderRef getContainer()
