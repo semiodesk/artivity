@@ -38,6 +38,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/chrono.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
@@ -138,9 +139,11 @@ namespace artivity
 
 		std::string getRenderOutputPath();
 
+#if _DEBUG
 		void logError(std::string msg);
 		void logInfo(std::string msg);
-        void logRequest(std::string url, std::string data);
+        void logRequest(std::string url, std::string time, std::string data);
+#endif
     };
 }
 

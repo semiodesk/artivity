@@ -36,6 +36,7 @@ namespace artivity
 {
 	using namespace std;
 	using namespace boost;
+    using namespace boost::chrono;
 	using namespace boost::property_tree;
 
 	ActivityLog::ActivityLog()
@@ -57,10 +58,12 @@ namespace artivity
 	{
 		CURL* curl = curl_easy_init();
 
+#if _DEBUG
 		if (!curl)
 		{
 			logError("Failed to initialize CURL.");
 		}
+#endif
 
 		return curl;
 	}
@@ -69,7 +72,9 @@ namespace artivity
 	{
 		if (!curl)
 		{
+#if _DEBUG
 			logError("CURL not initialized.");
+#endif
 
 			return CURLE_FAILED_INIT;
 		}
@@ -92,7 +97,15 @@ namespace artivity
 			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
 		}
 
+#if _DEBUG
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+#endif
+
 		CURLcode responseCode = curl_easy_perform(curl);
+
+#if _DEBUG
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
+#endif
 
 		if (data.len > 0)
 		{
@@ -101,19 +114,19 @@ namespace artivity
 
 		curl_easy_cleanup(curl);
 
+#if _DEBUG
 		if (responseCode == CURLE_OK)
 		{
-			logInfo(url);
+            stringstream time;
+            time << duration_cast<milliseconds>(t2 - t1).count() << "ms";
+
+			logRequest(url, time.str(), postFields);
 		}
 		else
 		{
 			logError(url);
 		}
-
-		if (postFields.length() > 0)
-		{
-			cout << postFields << endl << flush;
-		}
+#endif
 
 		return responseCode;
 	}
@@ -411,12 +424,15 @@ namespace artivity
         }
         else
         {
-            logRequest(url.str(), requestData);
+#if _DEBUG
+            logRequest(url.str(), "0", requestData);
+#endif
         }
 
 		clear();
 	}
 
+#if _DEBUG
 	void ActivityLog::logError(string msg)
 	{
 		cout << getTime() << " [ERROR] " << msg << endl << flush;
@@ -427,11 +443,16 @@ namespace artivity
 		cout << getTime() << " [INFO ] " << msg << endl << flush;
 	}
 
-    void ActivityLog::logRequest(string url, string data)
+    void ActivityLog::logRequest(string url, string time, string data)
     {
-        cout << getTime() << " [INFO ] " << url << endl << flush;
-        cout << data << endl << flush;
+        cout << getTime() << " [INFO ] " << time << " - " << url << endl << flush;
+
+        if (!data.empty())
+        {
+            cout << data << endl << flush;
+        }
     }
+#endif
 
 	string ActivityLog::getTime()
 	{
