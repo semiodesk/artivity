@@ -75,6 +75,7 @@ namespace artivity
         static const char* layerZPosition = art("layerZPosition")
         
         static const char* isCaptureEnabled = art("isCaptureEnabled");
+
         static const char* loggingEnabled = art("loggingEnabled");
 
         static const char* thumbnailUrl = art("thumbnailUrl");
@@ -209,11 +210,12 @@ namespace artivity
 
         // NOTE: The following instances are absolute URLs!
         static const char* USER = ART("USER");
+
         static const char* SOFTWARE = ART("SOFTWARE");
 
-        
         // --- CHANGES ---
         static const char* Change = art("Change");		
+
         static const char* qualifiedChange = art("qualifiedChange");
 
         static const char* property = art("property");
@@ -240,8 +242,7 @@ namespace artivity
 
         static const char* strokeWidth = art("strokeWidth");
 
-        static const char* unknown = art("unkown");
-        
+        static const char* unknown = art("unknown");
     }
 }
 

@@ -68,7 +68,7 @@ namespace artivity
 
 	class ActivityLog
     {
-        protected:
+    protected:
         std::string _endpointUrl;
 
         CURL* _curl;
@@ -80,8 +80,6 @@ namespace artivity
 		std::list<AssociationRef> _associations;
         
         std::string _fileUrl;
-
-        bool _createRenderDirectory;
         
 		bool fetchAssociationUri(AssociationRef association);
 
@@ -95,7 +93,7 @@ namespace artivity
 
 		void dump(boost::property_tree::ptree const& pt);
 
-        public:
+    public:
         bool debug;
 
         ActivityLog();
