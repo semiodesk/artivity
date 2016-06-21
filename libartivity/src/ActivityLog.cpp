@@ -412,7 +412,7 @@ namespace artivity
         }
         else
         {
-            logInfo(requestData);
+            logRequest(url.str(), requestData);
         }
 
 		clear();
@@ -427,6 +427,12 @@ namespace artivity
 	{
 		cout << getTime() << " [INFO ] " << msg << endl << flush;
 	}
+
+    void ActivityLog::logRequest(string url, string data)
+    {
+        cout << getTime() << " [INFO ] " << url << endl << flush;
+        cout << data << endl << flush;
+    }
 
 	string ActivityLog::getTime()
 	{

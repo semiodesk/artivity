@@ -95,6 +95,8 @@ namespace artivity
 		void dump(boost::property_tree::ptree const& pt);
 
     public:
+        bool debug;
+
 		ActivityLog();
 
         ActivityLog(const char* endpointUrl);
@@ -144,6 +146,7 @@ namespace artivity
 
 		void logError(std::string msg);
 		void logInfo(std::string msg);
+        void logRequest(std::string url, std::string data);
     };
 }
 
