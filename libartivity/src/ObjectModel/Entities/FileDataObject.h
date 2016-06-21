@@ -63,16 +63,16 @@ namespace artivity
             setType(nfo::FileDataObject);
         }
         
-        const char* getUrl()
+        std::string getUrl()
         {
-            return _url.c_str();
+            return _url;
         }
         
-        void setUrl(const char* url)
+        void setUrl(std::string url)
         {
-            _url = std::string(url);
+            _url = url;
             
-            setValue(nfo::fileUrl, _url.c_str());
+            setValue(nfo::fileUrl, _url);
         }
 
         void setInterpretedAs(InformationElementRef ie);
