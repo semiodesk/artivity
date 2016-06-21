@@ -44,6 +44,7 @@ namespace artivity
 		static const char* interpretedAs = nie("interpretedAs");
 		static const char* created = nie("created");
 		static const char* lastModified = nie("lastModified");
+        static const char* url = nie("url");
     }
 }
 

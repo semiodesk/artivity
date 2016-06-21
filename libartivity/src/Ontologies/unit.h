@@ -28,8 +28,6 @@
 #ifndef UO_H
 #define UO_H
 
-#include "../Property.h"
-
 // Source: http://qudt.org/1.1/vocab/OVG_units-qudt-(v1.1).ttl
 
 #define unit(label) "unit:"label;

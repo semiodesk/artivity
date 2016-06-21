@@ -31,54 +31,84 @@
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/nfo.h"
 #include "../Entity.h"
-#include "InformationElement.h"
-#include "../Geometry/Canvas.h"
+
+#include "Folder.h"
 
 namespace artivity
 {
+    class InformationElement;
+
+    typedef boost::shared_ptr<InformationElement> InformationElementRef;
+
     class FileDataObject;
 
     typedef boost::shared_ptr<FileDataObject> FileDataObjectRef;
 
-    class InformationElement;
-    typedef boost::shared_ptr<InformationElement> InformationElementRef;
-
     class FileDataObject : public Resource
     {
-        private:
+    private:
+        std::string _label;
+
         std::string _url;
 
-        InformationElementRef _interpretedAs;
+        FolderRef _container;
+
+        InformationElementRef _interpretation;
         
-        public:
+    public:
         FileDataObject() : Resource(UriGenerator::getUri())
         {
-            _url = "";         
             setType(nfo::FileDataObject);
+
+            _url = "";
         }
         
         FileDataObject(const char* uriref) : Resource(uriref)
         {
-            _url = "";
             setType(nfo::FileDataObject);
+
+            _url = "";
         }
         
+        const char* getLabel()
+        {
+            return _label.c_str();
+        }
+
+        void setLabel(std::string label)
+        {
+            _label = label;
+
+            setValue(rdfs::label, _label.c_str());
+        }
+
         const char* getUrl()
         {
             return _url.c_str();
         }
-        
+
         void setUrl(const char* url)
         {
             _url = std::string(url);
-            
-            setValue(nfo::fileUrl, _url.c_str());
+
+            setValue(nie::url, _url.c_str());
         }
 
-        void setInterpretedAs(InformationElementRef ie);
+        FolderRef getContainer()
+        {
+            return _container;
+        }
 
-        InformationElementRef getInterpretedAs();
-        
+        void setContainer(FolderRef folder)
+        {
+            _container = folder;
+
+            setValue(nfo::belongsToContainer, folder);
+        }
+
+        InformationElementRef getInterpretation();
+
+        void setInterpretation(InformationElementRef interpretation);
     };
 }
 

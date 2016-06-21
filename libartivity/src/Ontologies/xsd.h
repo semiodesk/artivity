@@ -28,9 +28,6 @@
 #ifndef XSD_H
 #define XSD_H
 
-#include "../Resource.h"
-#include "../Property.h"
-
 #define xsd(label) "xsd:"label;
 #define XSD(label) "http://www.w3.org/2001/XMLSchema#"label;
 
