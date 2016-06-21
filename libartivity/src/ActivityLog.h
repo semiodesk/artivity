@@ -80,6 +80,8 @@ namespace artivity
 		std::list<AssociationRef> _associations;
         
         std::string _fileUrl;
+
+        bool _createRenderDirectory;
         
 		bool fetchAssociationUri(AssociationRef association);
 
@@ -120,7 +122,7 @@ namespace artivity
 		ActivityRef getActivity() { return _activity; }
 
 		// Set the file being edited.
-		void setDocument(ImageRef image, std::string path);
+		void setDocument(ImageRef image, std::string path, bool create);
 
         ImageRef getDocument();
 
