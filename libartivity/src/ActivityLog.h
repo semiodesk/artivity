@@ -91,7 +91,7 @@ namespace artivity
         
 		std::string escapePath(std::string path);
 
-		AssociationRef getAssociation(const char* role, const char* uri = "", std::string version = "");
+		AssociationRef getAssociation(const char* role, std::string uri = "", std::string version = "");
 
 		void print(boost::property_tree::ptree const& pt);
 
@@ -122,15 +122,12 @@ namespace artivity
 		ActivityRef getActivity() { return _activity; }
 
 		// Indicates if there is a connection to the Artivity HTTP API.
-		bool setAgent(const char* agentUri, std::string version);
+		bool setAgent(std::string agentUri, std::string version);
 
 		// Set the file being edited.
-		void setFile(ImageRef image, const char* path);
+        void setFile(ImageRef image, std::string path);
 
         std::string getFileUri();
-
-        // Add an association to the RDF stream.
-        void addAssociation(AssociationRef resource);
 
 		// Add an entity influence to the transmitted RDF stream.
 		void addInfluence(InfluenceRef influence);

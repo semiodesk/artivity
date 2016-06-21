@@ -25,61 +25,33 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_FILEDATAOBJECT_H
-#define _ART_FILEDATAOBJECT_H
+#ifndef _ART_RENDERINGDATAOBJECT_H
+#define _ART_RENDERINGDATAOBJECT_H
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/nfo.h"
-#include "../Entity.h"
-#include "InformationElement.h"
-#include "../Geometry/Canvas.h"
+#include "Entities/FileDataObject.h"
 
 namespace artivity
 {
-    class FileDataObject;
+    class RenderingDataObject;
 
-    typedef boost::shared_ptr<FileDataObject> FileDataObjectRef;
+    typedef boost::shared_ptr<RenderingDataObject> RenderingDataObjectRef;
 
-    class InformationElement;
-    typedef boost::shared_ptr<InformationElement> InformationElementRef;
-
-    class FileDataObject : public Resource
+    class RenderingDataObject : public FileDataObject
     {
-        private:
-        std::string _url;
-
-        InformationElementRef _interpretedAs;
-        
         public:
-        FileDataObject() : Resource(UriGenerator::getUri())
+        RenderingDataObject() : FileDataObject()
         {
-            _url = "";         
-            setType(nfo::FileDataObject);
-        }
-        
-        FileDataObject(const char* uriref) : Resource(uriref)
-        {
-            _url = "";
-            setType(nfo::FileDataObject);
-        }
-        
-        const char* getUrl()
-        {
-            return _url.c_str();
-        }
-        
-        void setUrl(const char* url)
-        {
-            _url = std::string(url);
-            
-            setValue(nfo::fileUrl, _url.c_str());
+            setType(art::RenderingDataObject);
         }
 
-        void setInterpretedAs(InformationElementRef ie);
+        RenderingDataObject(const char* uriref) : FileDataObject(uriref)
+        {
+            setType(art::RenderingDataObject);
+        }
 
-        InformationElementRef getInterpretedAs();
-        
+
+        virtual ~RenderingDataObject() {}
     };
 }
 
-#endif // _ART_FILEDATAOBJECT_H
+#endif // _ART_RENDERINGDATAOBJECT_H

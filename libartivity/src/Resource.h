@@ -66,14 +66,17 @@ namespace artivity
         bool hasProperty(const Property& property, ResourceRef value);
         bool hasProperty(const Property& property, const time_t* value);
         bool hasProperty(const Property& property, const char* value);
+        bool hasProperty(const Property& property, std::string value);
         bool hasProperty(const Property& property, int value);
         bool hasProperty(const Property& property, long value);
         bool hasProperty(const Property& property, float value);
         bool hasProperty(const Property& property, double value);
+
         
         void addProperty(const Property& property, ResourceRef value);
         void addProperty(const Property& property, const time_t* value);
         void addProperty(const Property& property, const char* value);
+        void addProperty(const Property& property, std::string value);
         void addProperty(const Property& property, int value);
         void addProperty(const Property& property, long value);
         void addProperty(const Property& property, float value);
@@ -82,6 +85,7 @@ namespace artivity
         void removeProperty(const Property& property, ResourceRef value);        
         void removeProperty(const Property& property, const time_t* value);
         void removeProperty(const Property& property, const char* value);
+        void removeProperty(const Property& property, std::string value);
         void removeProperty(const Property& property, int value);
         void removeProperty(const Property& property, long value);
         void removeProperty(const Property& property, float value);
@@ -90,10 +94,14 @@ namespace artivity
         void setValue(const Property& property, ResourceRef value);        
         void setValue(const Property& property, const time_t* value);
         void setValue(const Property& property, const char* value);
+        void setValue(const Property& property, std::string value);
         void setValue(const Property& property, int value);
         void setValue(const Property& property, long value);
         void setValue(const Property& property, float value);
         void setValue(const Property& property, double value);
+
+        void setResourceValue(const Property& property, std::string value);
+        void addResourceProperty(const Property& property, std::string value);
         
         void setType(const char* value);
         

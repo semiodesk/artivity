@@ -25,8 +25,8 @@
 //
 // Copyright (c) Semiodesk GmbH 2016
 
-#ifndef ART_H
-#define ART_H
+#ifndef _ART_ART_H
+#define _ART_ART_H
 
 #define ART(label) "http://semiodesk.com/artivity/1.0/" label;
 
@@ -57,38 +57,41 @@ namespace artivity
 		static const char* DeleteFile = ART("DeleteFile");
         
         // --- ACTIVITIES ---
-        // NOTE: There are very little predefined activity types in PROV.
-        //       The following are inspired by the Activity Streams vocabulary.
-        
-        // No match in ActivityStreams
-		static const char* Edit = ART("Edit");
-        
-        // http://www.w3.org/ns/activitystreams#Add
-		static const char* Add = ART("Add");
-        
-        // http://www.w3.org/ns/activitystreams#Remove
-        static const char* Remove = ART("Remove");
-        
-        // http://www.w3.org/ns/activitystreams#Undo
+
+        // Indicates that a entity influence invalidated another.
+        static const char* reverted = ART("reverted");
+
+        // Indicates that a entity influence re-generated another.
+        static const char* restored = ART("restored");
+   
+        // The invalidation of a prior entity influence.
 		static const char* Undo = ART("Undo");
         
-        // No match in ActivityStreams
+        // The re-generation of a formerly invalidated entity influence.
 		static const char* Redo = ART("Redo");
-        
-        // No match in ActivityStreams
-		static const char* Save = ART("Save");
+
+        static const char* count = ART("count");
         
 		static const char* selectedLayer = ART("selectedLayer");
 
         static const char* layerZPosition = ART("layerZPosition")
         
         // --- AGENT ---
-		static const char* isCaptureEnabled = ART("isCaptureEnabled");
+        static const char* loggingEnabled = ART("loggingEnabled");
 
         // --- THUMBNAIL ---
-        static const char* thumbnailUrl = ART("thumbnailUrl");
+        // A rasterized portion of an image that provides bitmap data for an entity influence.
+        static const char* renderedAs = ART("renderedAs");
 
-        static const char* thumbnailPos = ART("thumbnailPosition"); 
+        // Specifies the shape and location of something in Euclidean space.
+        static const char* region = ART("region");
+
+        // Rasterized bitmap data of the entire extents of an image.
+        static const char* RenderingDataObject = ART("RenderingDataObject");
+
+        // Rasterized bitmap data of a specific region of an image.
+        static const char* PartialRenderingDataObject = ART("PartialRenderingDataObject");
+
         
         // --- GEOMETRY ---
         // NOTE: We try to be compatible with OGC geometry vocabularies since
@@ -200,7 +203,37 @@ namespace artivity
         
         // No equivalent in QUDT
         static const char* px = ART("px");
+
+        // --- CHANGES ---
+        static const char* Change = ART("Change");
+
+        static const char* qualifiedChange = ART("qualifiedChange");
+
+        static const char* property = ART("Property");
+
+        static const char* order = ART("order");
+
+        static const char* location = ART("location");
+
+        static const char* bounds = ART("bounds");
+
+        static const char* textValue = ART("textValue");
+
+        static const char* fontSize = ART("fontSize");
+
+        static const char* font = ART("font");
+
+        static const char* strokeColour = ART("strokeColour");
+
+        static const char* fillColour = ART("fillColour");
+
+        static const char* strokePattern = ART("strokePattern");
+        
+        static const char* fillPattern = ART("fillPattern");
+
+        static const char* strokeWidth = ART("strokeWidth");
+        
     }
 }
 
-#endif // ART_H
+#endif // _ART_ART_H

@@ -83,7 +83,7 @@ namespace artivity
 		_endpoint = endpointUrl;
 	}
 
-	bool ActivityLog::setAgent(const char* uri, string version)
+	bool ActivityLog::setAgent(string uri, string version)
 	{
 		AssociationRef user = getAssociation(art::USER);
 
@@ -105,7 +105,7 @@ namespace artivity
 		return true;
 	}
 
-	AssociationRef ActivityLog::getAssociation(const char* role, const char* agent, string version)
+	AssociationRef ActivityLog::getAssociation(const char* role, string agent, string version)
 	{
 		CURL* curl = initializeRequest();
 
@@ -113,7 +113,7 @@ namespace artivity
 			
 		url << _endpoint << "/agents/associations?role=" << role;
 
-		if (agent != NULL && agent[0] != '\0')
+		if (!agent.empty())
 		{
 			url << "&agent=" << agent;
 		}
@@ -153,11 +153,10 @@ namespace artivity
 		return association;
 	}
 
-	void ActivityLog::setFile(ImageRef image, const char* path)
+    void ActivityLog::setFile(ImageRef image, std::string path)
 	{
-		string p = path;
 
-		_fileUrl = "file://" + escapePath(p);
+		_fileUrl = "file://" + escapePath(path);
 		_entity = image;
 
 		string uri = getEntityUri(_fileUrl);

@@ -25,61 +25,42 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_FILEDATAOBJECT_H
-#define _ART_FILEDATAOBJECT_H
+#ifndef _ART_PARTIALRENDERINGDATAOBJECT_H
+#define _ART_PARTIALRENDERINGDATAOBJECT_H
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/nfo.h"
-#include "../Entity.h"
-#include "InformationElement.h"
-#include "../Geometry/Canvas.h"
+#include "RenderingDataObject.h"
 
 namespace artivity
 {
-    class FileDataObject;
+    class PartialRenderingDataObject;
 
-    typedef boost::shared_ptr<FileDataObject> FileDataObjectRef;
+    typedef boost::shared_ptr<PartialRenderingDataObject> PartialRenderingDataObjectRef;
 
-    class InformationElement;
-    typedef boost::shared_ptr<InformationElement> InformationElementRef;
-
-    class FileDataObject : public Resource
+    class PartialRenderingDataObject : public RenderingDataObject
     {
-        private:
-        std::string _url;
+        RectangleRef _region;
 
-        InformationElementRef _interpretedAs;
-        
         public:
-        FileDataObject() : Resource(UriGenerator::getUri())
+        PartialRenderingDataObject() : RenderingDataObject()
         {
-            _url = "";         
-            setType(nfo::FileDataObject);
-        }
-        
-        FileDataObject(const char* uriref) : Resource(uriref)
-        {
-            _url = "";
-            setType(nfo::FileDataObject);
-        }
-        
-        const char* getUrl()
-        {
-            return _url.c_str();
-        }
-        
-        void setUrl(const char* url)
-        {
-            _url = std::string(url);
-            
-            setValue(nfo::fileUrl, _url.c_str());
+            setType(art::PartialRenderingDataObject);
         }
 
-        void setInterpretedAs(InformationElementRef ie);
+        PartialRenderingDataObject(const char* uriref) : RenderingDataObject(uriref)
+        {
+            setType(art::PartialRenderingDataObject);
+        }
 
-        InformationElementRef getInterpretedAs();
-        
+
+        virtual ~PartialRenderingDataObject() {}
+
+        void setRegion(RectangleRef region)
+        {
+            _region = region;
+            setValue(art::region, _region);
+        }
+
     };
 }
 
-#endif // _ART_FILEDATAOBJECT_H
+#endif // _ART_PARTIALRENDERINGDATAOBJECT_H
