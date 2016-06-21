@@ -155,22 +155,22 @@ namespace artivity
 		while (it != _associations.end())
 		{
 			AssociationRef association = *it;
+            it++;
 
 			if (association->uri.empty())
 			{
                 if (!fetchAssociationUri(association))
                 {
-                    return false;
+                    continue;
                 }
+            }
+            // Do not add the association to the serialized output, 
+            // as it is already stored in the database.
+            association->serialize = false;
+            _activity->addAssociation(association);
+            
 
-				// Do not add the association to the serialized output, 
-				// as it is already stored in the database.
-				association->serialize = false;
-
-				_activity->addAssociation(association);
-			}
-
-			it++;
+			
 		}
 
 		return ready();
@@ -183,6 +183,7 @@ namespace artivity
 
 	void ActivityLog::close()
 	{
+        clear();
 		time_t now;
 		time(&now);
 
@@ -206,7 +207,10 @@ namespace artivity
 
 	void ActivityLog::addAssociation(const char* roleUri, const char* agentUri, const char* version)
 	{
-		SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(""));
+        stringstream str;
+        if (strcmp(roleUri, art::SOFTWARE) == 0)
+            str << agentUri << "#" << version;
+        SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(str.str()));
 		a->setAgent(AgentRef(new Agent(agentUri)));
 		a->setRole(RoleRef(new Role(roleUri)));
 		a->setVersion(version);
@@ -216,7 +220,10 @@ namespace artivity
 
 	void ActivityLog::addAssociation(const char* roleUri, string agentUri, string version)
 	{
-        SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(""));
+        stringstream str;
+        if (strcmp(roleUri, art::SOFTWARE) == 0)
+            str << agentUri << "#" << version;
+        SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(str.str()));
         a->setAgent(AgentRef(new Agent(agentUri)));
         a->setRole(RoleRef(new Role(roleUri)));
         a->setVersion(version);

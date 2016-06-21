@@ -239,6 +239,8 @@ namespace artivity
         static const char* fillPattern = art("fillPattern");
 
         static const char* strokeWidth = art("strokeWidth");
+
+        static const char* unknown = art("unkown");
         
     }
 }
