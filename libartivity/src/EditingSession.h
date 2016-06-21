@@ -33,12 +33,12 @@ namespace artivity
         ImageRef _document;
 
         bool _endTime = false;
-        bool _initialTransmit = true;
+        bool _initial = true;
 
         bool _initialized = false;
 
         void createActivity();
-        stringRef createImageFilePath(time_t time);
+
 
         std::vector<std::string> _changes;
         int _currentChangeIndex; 
@@ -46,7 +46,7 @@ namespace artivity
         void handleChanges(ResourceRef res);
 
         protected:
-
+        std::string createImageFilePath(time_t time);
         std::string getFileUri() { return _fileUri; }
 
         virtual ImageRef getDocument() = 0;
