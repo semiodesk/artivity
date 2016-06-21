@@ -42,11 +42,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
-	auto duration = duration_cast<milliseconds>(t2 - t1).count();
+	auto d1 = duration_cast<milliseconds>(t2 - t1).count();
 
 	string renderPath = log->getRenderOutputPath();
 
-	cout << "Initialization took " << duration << "ms" << endl << endl;
+	log->logInfo("Render output: " + renderPath);
+
+	cout << endl;
 
 	log->logInfo("http://localhost:8262/artivity/api/1.0/activities");
 
@@ -80,9 +82,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	high_resolution_clock::time_point t3 = high_resolution_clock::now();
 
-	duration = duration_cast<milliseconds>(t3 - t1).count();
+	auto d2 = duration_cast<milliseconds>(t3 - t1).count();
 
-	cout << "Total roundtrip took " << duration << "ms" << endl;
+	cout << "Session init time: " << d1 << "ms" << endl;
+	cout << "Session total time: " << d2 << "ms" << endl;
 	cout << "Press any key to stop.." << endl;
 
 	string line;

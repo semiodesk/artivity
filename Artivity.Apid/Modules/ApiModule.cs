@@ -302,7 +302,7 @@ namespace Artivity.Apid.Modules
                 return GetInfluences(Request.Query.fileUrl);
             };
 
-            Get["/thumbnails"] = parameters =>
+            Get["/renderings"] = parameters =>
             {
                 if(Request.Query.fileUrl)
                 {
@@ -314,7 +314,7 @@ namespace Artivity.Apid.Modules
 
                         if (DateTimeOffset.TryParse(time.Replace(' ', '+'), out timestamp))
                         {
-                            return GetThumbnails(Request.Query.fileUrl, timestamp.UtcDateTime);
+                            return GetRenderings(Request.Query.fileUrl, timestamp.UtcDateTime);
                         }
                         else
                         {
@@ -322,11 +322,11 @@ namespace Artivity.Apid.Modules
                         }
                     }
 
-                    return GetThumbnails(Request.Query.fileUrl);
+                    return GetRenderings(Request.Query.fileUrl);
                 }
-                else if(Request.Query.thumbnailUrl)
+                else if(Request.Query.renderingUrl)
                 {
-                    return GetThumbnail(Request.Query.thumbnailUrl);
+                    return GetRendering(Request.Query.renderingUrl);
                 }
                 else
                 {
@@ -334,14 +334,14 @@ namespace Artivity.Apid.Modules
                 }
             };
 
-            Get["/thumbnails/path"] = parameters =>
+            Get["/renderings/path"] = parameters =>
             {
                 if (string.IsNullOrEmpty(Request.Query.fileUri))
                 {
                     return HttpStatusCode.BadRequest;
                 }
 
-                return GetThumbnailPath(Request.Query.fileUri);
+                return GetRenderOutputPath(Request.Query.fileUri);
             };
 
             Get["/stats/influences"] = parameters =>
@@ -899,7 +899,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(bindings);
         }
 
-        private Response GetThumbnails(string fileUrl)
+        private Response GetRenderings(string fileUrl)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -957,7 +957,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(bindings);
         }
 
-        private Response GetThumbnails(string fileUrl, DateTime time)
+        private Response GetRenderings(string fileUrl, DateTime time)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -1014,7 +1014,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(bindings);
         }
 
-        private Response GetThumbnail(string thumbnailUrl)
+        private Response GetRendering(string thumbnailUrl)
         {
             string file = new Uri(thumbnailUrl).AbsolutePath;
 
@@ -1033,7 +1033,7 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response GetThumbnailPath(string fileUri)
+        private Response GetRenderOutputPath(string fileUri)
         {
             if (string.IsNullOrEmpty(fileUri))
             {
