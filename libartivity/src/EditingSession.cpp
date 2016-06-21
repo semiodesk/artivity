@@ -141,7 +141,7 @@ namespace artivity
     void EditingSession::eventSave()
     {
         RevisionRef res = onEventSave();
-        res->addResourceProperty(prov::entity, _fileUri);
+        res->addProperty(prov::entity, _fileUri, typeid(Resource));
         res->setIsSave(true);
         _consumer->push(res);
     }

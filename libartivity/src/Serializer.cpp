@@ -36,6 +36,7 @@
 #include "Ontologies/nie.h"
 #include "Ontologies/prov.h"
 #include "Ontologies/rdf.h"
+#include "Ontologies/rdfs.h"
 #include "Ontologies/svg.h"
 #include "Ontologies/xml.h"
 #include "Ontologies/xsd.h"
@@ -53,6 +54,7 @@ namespace artivity
 		PREFIX_MAP[nie::NS_PREFIX] = nie::NS_URI;
 		PREFIX_MAP[prov::NS_PREFIX] = prov::NS_URI;
 		PREFIX_MAP[rdf::NS_PREFIX] = rdf::NS_URI;
+        PREFIX_MAP[rdfs::NS_PREFIX] = rdfs::NS_URI;
 		PREFIX_MAP[svg::NS_PREFIX] = svg::NS_URI;
 		PREFIX_MAP[xml::NS_PREFIX] = xml::NS_URI;
 		PREFIX_MAP[xsd::NS_PREFIX] = xsd::NS_URI;
@@ -162,18 +164,20 @@ namespace artivity
 
 	void Serializer::serializeN3(SerializerContext& ctx, ResourceRef resource)
 	{
-		if (resource->properties.size() == 0)
+        PropertyMap properties = resource->properties;
+
+        size_t n = properties.size();
+
+		if (n == 0)
 		{
 			return;
 		}
 
-		int i = 0;
-		size_t n = resource->properties.size();
-
 		// First, serialize the rdf:types of the resources.
-		PropertyMapIterator it = resource->properties.find(rdf::_type);
+        PropertyMapIterator typeIt = properties.lower_bound(rdf::_type);
+        PropertyMapIterator typeItEnd = properties.upper_bound(rdf::_type);
 
-		if (n == 1 && it != resource->properties.end())
+		if (n == 1 && typeIt != properties.end())
 		{
 			// Do not serialize resources which only have asserted types and no other properties.
 			return;
@@ -182,45 +186,45 @@ namespace artivity
 		// Output the initial subject (the resource URI).
 		ctx.out << endl << resource;
 
-		while (it != resource->properties.end())
-		{
-			if (0 < i && i < n)
-			{
-				ctx.out << ";" << endl;
-			}
+        // Count the number of serialized properties.
+        int i = 0;
 
-			serializeN3(ctx, it);
+        while (typeIt != typeItEnd)
+        {
+            serializeN3(ctx, typeIt->first, typeIt->second);
 
-			i++;
-			it++;
-		}
+            ctx.out << ";" << endl;
+
+            i++;
+
+            typeIt++;
+        }
 
 		// Then, serialize all other properties.
-		it = resource->properties.begin();
+        PropertyMapIterator it = properties.begin();
 
-		while (it != resource->properties.end())
+        while (it != properties.end())
 		{
-			if (0 < i && i < n)
-			{
-				ctx.out << ";" << endl;
-			}
-
 			if (it->first != rdf::_type)
 			{
-				serializeN3(ctx, it);
+				serializeN3(ctx, it->first, it->second);
+
+                i++;
+
+                if (i < n)
+                {
+                    ctx.out << ";" << endl;
+                }
 			}
 
-			i++;
-			it++;
+            it++;
 		}
 
 		ctx.out << "." << endl;
 	}
 
-	void Serializer::serializeN3(SerializerContext& ctx, PropertyMapIterator it)
+	void Serializer::serializeN3(SerializerContext& ctx, string property, PropertyValue x)
 	{
-		string property = it->first;
-
 		ctx.out << " ";
 
 		if (property == rdf::_type)
@@ -233,8 +237,6 @@ namespace artivity
 		}
 
 		ctx.out << " " << flush;
-
-		PropertyValue x = it->second;
 
 		if (x.Value != NULL)
 		{

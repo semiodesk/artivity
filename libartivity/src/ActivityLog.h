@@ -93,8 +93,6 @@ namespace artivity
 
 		std::string getEntityUri(std::string path);
 
-		std::string escapePath(std::string path);
-
 		void dump(boost::property_tree::ptree const& pt);
 
         public:
