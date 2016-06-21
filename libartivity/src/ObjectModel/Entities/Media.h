@@ -50,7 +50,6 @@ namespace artivity
         {
             setType(nfo::Media);
         }
-
     };
 }
 

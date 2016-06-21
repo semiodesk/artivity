@@ -28,8 +28,6 @@
 #ifndef dces_H
 #define dces_H
 
-#include "../Property.h"
-
 #define dces(label) "dc:"label;
 #define DCES(label) "http://purl.org/dc/elements/1.1/"label;
 

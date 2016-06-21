@@ -31,6 +31,8 @@
 #include "../Ontologies/rdf.h"
 #include "../Ontologies/prov.h"
 #include "../UriGenerator.h"
+#include "../Resource.h"
+#include "../Property.h"
 
 #include "Agent.h"
 #include "Role.h"

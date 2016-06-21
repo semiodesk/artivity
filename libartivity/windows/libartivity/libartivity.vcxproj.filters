@@ -219,6 +219,12 @@
     <ClInclude Include="..\..\src\ObjectModel\SoftwareAssociation.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\Folder.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Ontologies\rdfs.h">
+      <Filter>Header Files\Ontologies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp">
@@ -242,14 +248,17 @@
     <ClCompile Include="..\..\src\EditingSession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp">
-      <Filter>Source Files\Resources</Filter>
+    <ClCompile Include="..\..\src\PropertyMap.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ObjectModel\Entities\FileDataObject.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\PropertyMap.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Entities\Image.cpp">
+      <Filter>Source Files\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

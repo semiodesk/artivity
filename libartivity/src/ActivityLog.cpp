@@ -158,7 +158,10 @@ namespace artivity
 
 			if (association->uri.empty())
 			{
-				fetchAssociationUri(association);
+                if (!fetchAssociationUri(association))
+                {
+                    return false;
+                }
 
 				// Do not add the association to the serialized output, 
 				// as it is already stored in the database.

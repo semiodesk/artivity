@@ -32,35 +32,39 @@
 #include "../../Ontologies/nfo.h"
 #include "../../Ontologies/nie.h"
 #include "../Entity.h"
+
 #include "FileDataObject.h"
 
 namespace artivity
 {
-    class InformationElement;
-    typedef boost::shared_ptr<InformationElement> InformationElementRef;
-
     class FileDataObject;
+
     typedef boost::shared_ptr<FileDataObject> FileDataObjectRef;
+
+    class InformationElement;
+
+    typedef boost::shared_ptr<InformationElement> InformationElementRef;
 
     class InformationElement : public Entity
     {
     private:
         std::string _url;
-        FileDataObjectRef _fileDataObject;
+
+        FileDataObjectRef _dataObject;
         
     public:
         InformationElement() : Entity()
         {
-            _url = "";
-            
             setType(nie::InformationElement);
+
+            _url = "";
         }
         
         InformationElement(const char* uriref) : Entity(uriref)
         {
-            _url = "";
-            
             setType(nie::InformationElement);
+
+            _url = "";
         }
         
         const char* getUrl()
@@ -71,11 +75,13 @@ namespace artivity
         void setUrl(const char* url)
         {
             _url = std::string(url);
+
+            setValue(nie::url, _url.c_str());
         }
 
-        void setStoredAs(FileDataObjectRef fdo);
+        FileDataObjectRef getDataObject();
 
-        FileDataObjectRef getStoredAs();
+        void setDataObject(FileDataObjectRef dataObject);
     };
 }
 

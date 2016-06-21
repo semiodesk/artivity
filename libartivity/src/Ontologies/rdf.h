@@ -28,8 +28,6 @@
 #ifndef RDF_H
 #define RDF_H
 
-#include "../Property.h"
-
 #define rdf(label) "rdf:"label;
 #define RDF(label) "http://www.w3.org/1999/02/22-rdf-syntax-ns#"label;
 

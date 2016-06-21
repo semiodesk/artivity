@@ -45,6 +45,7 @@ namespace artivity
 		static const char* FileDataObject = nfo("FileDataObject");
         static const char* WebDataObject = nfo("WebDataObject");
 
+        static const char* belongsToContainer = nfo("belongsToContainer");
         static const char* fileLastAccessed = nfo("fileLastAccessed");
         static const char* fileLastModified = nfo("fileLastModified");
         static const char* fileCreated = nfo("fileCreated");

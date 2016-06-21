@@ -30,8 +30,9 @@
 
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/nfo.h"
-#include "../Geometry/Canvas.h"
 #include "Media.h"
+#include "FileDataObject.h"
+#include "Folder.h"
 
 namespace artivity
 {
@@ -41,41 +42,23 @@ namespace artivity
 
     class Image : public Media
     {
-		std::list<CanvasRef>* _canvases;
+    private:
+        std::string _path;
+
+        FileDataObject _file;
+
+        Folder _folder;
 
     public:
         Image() : Media()
         {
             setType(nfo::Image);
-
-			_canvases = new std::list<CanvasRef>();
         }
         
         Image(const char* uriref) : Media(uriref)
         {
             setType(nfo::Image);
-
-			_canvases = new std::list<CanvasRef>();
         }
-
-		std::list<CanvasRef> getCanvases()
-		{
-			return *_canvases;
-		}
-
-		void addCanvas(CanvasRef canvas)
-		{
-			_canvases->push_back(canvas);
-
-			addProperty(art::hadCanvas, canvas);
-		}
-
-		void removeCanvas(CanvasRef canvas)
-		{
-			_canvases->remove(canvas);
-
-			removeProperty(art::hadCanvas, canvas);
-		}
     };
 }
 

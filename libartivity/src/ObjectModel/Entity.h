@@ -36,20 +36,24 @@
 #include "../Ontologies/nie.h"
 #include "../Ontologies/dces.h"
 #include "../Resource.h"
+#include "../Property.h"
 
 namespace artivity
 {
     class Entity;
+
     typedef boost::shared_ptr<Entity> EntityRef;
 
     class Entity : public Resource
     {
-        private:
+    private:
         std::string _title;
+
         time_t _created;
+
         time_t _modified;
 
-        public:
+    public:
         Entity() : Resource(UriGenerator::getUri())
         {
             setType(prov::Entity);
@@ -60,32 +64,48 @@ namespace artivity
             setType(prov::Entity);
         }
 
+        time_t getCreated()
+        {
+            return _created;
+        }
+
         void setCreated(time_t created)
         {
             _created = created;
+
             setValue(nie::created, &_created);
         }
 
         void resetCreated()
         {
-            removeProperty(nie::created, &_created);
             _created = 0;
+
+            removeProperty(nie::created, &_created);
+        }
+
+        time_t getModified()
+        {
+            return _modified;
         }
 
         void setModified(time_t modified)
         {
             _modified = modified;
+
+            setValue(nie::lastModified, &modified);
         }
 
         void resetModified()
         {
-            removeProperty(nie::lastModified, &_modified);
             _modified = 0;
+
+            removeProperty(nie::lastModified, &_modified);
         }
 
         void setTitle(std::string title)
         {
             _title = title;
+
             setValue(dces::title, _title.c_str());
         }
     };
