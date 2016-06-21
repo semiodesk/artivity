@@ -68,7 +68,7 @@ namespace artivity
         void setProperty(const char* prop)
         {
             _property = prop;
-            setValue(art::property, prop);
+            setResourceValue(art::property, prop);
         }
 
     };

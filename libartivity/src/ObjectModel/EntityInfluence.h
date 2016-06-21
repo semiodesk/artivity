@@ -47,15 +47,19 @@ namespace artivity
 	{
         private:
         std::list<ChangeRef> _changes;
+        std::list<EntityRef> _entities;
+        bool _isSave;
 
 	    public:
         EntityInfluence() : Influence()
 		{
+            _isSave = false;
 			setType(prov::EntityInfluence);
 		}
 
 		EntityInfluence(const char* uriref) : Influence(uriref)
 		{
+            _isSave = false;
 			setType(prov::EntityInfluence);
 		}
 
@@ -68,13 +72,40 @@ namespace artivity
         void removeChange(ChangeRef change)
         {
             _changes.remove(change);
-            removeProperty(prov::entity, change);
+            removeProperty(art::qualifiedChange, change);
+        }
+
+        void clearChanges()
+        {
+            _changes.clear();
+            
+        }
+
+        void addEntity(EntityRef entity)
+        {
+            _entities.push_back(entity);
+            addProperty(prov::entity, entity);
+        }
+
+        void removeChange(EntityRef entity)
+        {
+            _entities.remove(entity);
+            removeProperty(prov::entity, entity);
         }
 
         void clearEntities()
         {
-            _changes.clear();
-            
+            _entities.clear();
+        }
+
+        void setIsSave(bool val)
+        {
+            _isSave = val;
+        }
+
+        bool getIsSave()
+        {
+            return _isSave;
         }
 	};
 }
