@@ -13,6 +13,9 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
+	// Create the document handle.
+	VectorImageRef image = VectorImageRef(new VectorImage());
+
 	// We pass the server URL to the log upon creation.
 	ActivityLog* log = new ActivityLog();
 
@@ -20,10 +23,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	log->addAssociation(art::USER);
 	log->addAssociation(art::SOFTWARE, "http://adobe.com/products/photoshop", "2015.1");
 
-	VectorImageRef image = VectorImageRef(new VectorImage());
-
 	// Set the file and retrive, if possible, the URI of the vector image.
-	log->setFile(image, "C:/Users/Sebastian/Desktop/Hello 2.ai");
+	log->setDocument(image, "C:/Users/Sebastian/Desktop/Hello 2.ai");
 
 	if (!log->connect("http://localhost:8262/artivity/api/1.0"))
 	{

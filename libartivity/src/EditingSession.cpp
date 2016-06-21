@@ -40,6 +40,8 @@ namespace artivity
 
     void EditingSession::initialize(string server, bool isNewDocument)
     {
+		ImageRef document = this->getDocument();
+
         if (!isNewDocument)
         {
             _filePath = getDocumentFilePath();
@@ -51,11 +53,13 @@ namespace artivity
         _consumer->start();
 
         _log = ActivityLogRef(new ActivityLog(server));
+		_log->addAssociation(art::USER);
 		_log->addAssociation(art::SOFTWARE, this->getSoftwareAgent(), this->getSoftwareVersion());
+		_log->setDocument(document, _filePath->c_str());
 
 		if (_log->connect(server.c_str()))
 		{
-			_fileUri = stringRef(new string(_log->getFileUri()));
+			_fileUri = stringRef(new string(document->uri));
 
 			_initialized = true;
 		}

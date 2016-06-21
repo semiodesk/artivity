@@ -54,19 +54,19 @@ namespace artivity
 
         void addGenerated(EntityRef entity)
         {
-            Properties.addProperty(prov::generated, entity);
+            properties.addProperty(prov::generated, entity);
             _entities.push_back(entity);
         }
 
         void removeGenerated(EntityRef entity)
         {
-            Properties.removeProperty(prov::generated, entity);
+            properties.removeProperty(prov::generated, entity);
             _entities.remove(entity);
         }
 
         void clearGenerated(EntityRef entity)
         {
-            Properties.erase(prov::generated);
+            properties.erase(prov::generated);
             _entities.clear();
         }
     };

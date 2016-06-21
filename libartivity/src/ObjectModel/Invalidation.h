@@ -66,7 +66,7 @@ namespace artivity
 
         void clearInvalidated(EntityRef entity)
         {
-            Properties.erase(prov::invalidated);
+            properties.erase(prov::invalidated);
             _entities.clear();
         }
     };

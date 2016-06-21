@@ -42,6 +42,7 @@ namespace artivity
 
         stringRef getFileUri() { return _fileUri; }
 
+		virtual ImageRef getDocument() = 0;
         virtual stringRef getDocumentFilePath() = 0;
         virtual stringRef getSoftwareAgent() = 0;
 		virtual stringRef getSoftwareVersion() = 0;

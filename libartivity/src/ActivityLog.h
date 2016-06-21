@@ -74,7 +74,7 @@ namespace artivity
         
         ActivityRef _activity;
             
-		EntityRef _entity;
+		ImageRef _entity;
 
 		std::list<AssociationRef> _associations;
         
@@ -121,9 +121,9 @@ namespace artivity
 		ActivityRef getActivity() { return _activity; }
 
 		// Set the file being edited.
-		void setFile(ImageRef image, const char* path);
+		void setDocument(ImageRef image, const char* path);
 
-        std::string getFileUri();
+        ImageRef getDocument();
 
         // Add an association to the RDF stream.
         void addAssociation(const char* roleUri);
