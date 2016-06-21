@@ -216,7 +216,7 @@ namespace artivity
         static const char* Change = art("Change");		
         static const char* qualifiedChange = art("qualifiedChange");
 
-        static const char* property = art("Property");
+        static const char* property = art("property");
 
         static const char* order = art("order");
 
