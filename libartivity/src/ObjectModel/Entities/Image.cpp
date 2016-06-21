@@ -34,24 +34,24 @@ namespace artivity
 
     void Image::setPath(path p)
     {
-        //path folder = p.parent_path();
+        path folder = p.parent_path();
 
-        //if (_folder == NULL)
-        //{
-        //    _folder = FolderRef(new Folder());
-        //}
+        if (_folder == NULL)
+        {
+            _folder = FolderRef(new Folder());
+        }
 
-        //_folder->setLabel(folder.filename().string());
-        //_folder->setUrl(folder);
+        _folder->setLabel(folder.filename().string());
+        _folder->setUrl(folder);
 
-        //if (_file == NULL)
-        //{
-        //    _file = FileDataObjectRef(new FileDataObject());
-        //}
+        if (_file == NULL)
+        {
+            _file = FileDataObjectRef(new FileDataObject());
+        }
 
-        //_file->setLabel(p.filename().string());
-        //_file->setContainer(_folder);
-        //_file->setInterpretation(ImageRef(this));
+        _file->setLabel(p.filename().string());
+        _file->setContainer(_folder);
+        _file->setInterpretation(ImageRef(this));
     }
 }
 
