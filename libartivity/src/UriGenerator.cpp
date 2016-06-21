@@ -78,8 +78,25 @@ namespace artivity
 #endif
 	}
 
+    string UriGenerator::getUrl(string path)
+    {
+        stringstream stream;
+
+#if WIN32
+        stream << "file:///";
+#else
+        stream << "file://";
+#endif
+
+        stream << UriGenerator::escapePath(path);
+
+        return stream.str();
+    }
+
     string UriGenerator::escapePath(string path)
     {
+        CURL* curl = curl_easy_init();
+
         stringstream result;
         string token;
 
@@ -91,7 +108,7 @@ namespace artivity
             {
                 if (!token.empty())
                 {
-                    char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
+                    char* t = curl_easy_escape(curl, token.c_str(), (int)token.length());
 
                     result << string(t);
 
@@ -113,7 +130,7 @@ namespace artivity
 
         if (!token.empty())
         {
-            char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
+            char* t = curl_easy_escape(curl, token.c_str(), (int)token.length());
 
             result << string(t);
 

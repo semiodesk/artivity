@@ -79,7 +79,7 @@ namespace artivity
         {
             _label = label;
 
-            setValue(rdfs::label, _label.c_str());
+            setValue(rdfs::label, _label);
         }
 
         std::string getUrl()
@@ -91,7 +91,7 @@ namespace artivity
         {
             _url = url;
 
-            setValue(nie::url, _url);
+            setValue(nie::url, _url, typeid(Resource));
         }
 
         FolderRef getContainer()

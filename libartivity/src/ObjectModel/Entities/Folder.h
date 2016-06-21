@@ -53,13 +53,15 @@ namespace artivity
     public:
         Folder() : Resource(UriGenerator::getUri())
         {
-            setType(nfo::FileDataObject);
+            setType(nfo::Folder);
+
             _url = "";
         }
 
         Folder(const char* uriref) : Resource(uriref)
         {
-            setType(nfo::FileDataObject);
+            setType(nfo::Folder);
+
             _url = "";
         }
 
@@ -72,19 +74,19 @@ namespace artivity
         {
             _label = label;
 
-            setValue(rdfs::label, _label.c_str());
+            setValue(rdfs::label, _label);
         }
 
-        const char* getUrl()
+        std::string getUrl()
         {
-            return _url.c_str();
+            return _url;
         }
 
-        void setUrl(const char* url)
+        void setUrl(std::string url)
         {
-            _url = std::string(url);
+            _url = url;
 
-            setValue(nie::url, _url.c_str());
+            setValue(nie::url, _url, typeid(Resource));
         }
 
         FolderRef getContainer()

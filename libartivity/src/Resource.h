@@ -80,6 +80,7 @@ namespace artivity
         void addProperty(const Property& property, const time_t* value);
         void addProperty(const Property& property, const char* value);
         void addProperty(const Property& property, std::string value);
+        void addProperty(const Property& property, std::string value, const type_info& typeInfo);
         void addProperty(const Property& property, int value);
         void addProperty(const Property& property, long value);
         void addProperty(const Property& property, float value);
@@ -89,6 +90,7 @@ namespace artivity
         void removeProperty(const Property& property, const time_t* value);
         void removeProperty(const Property& property, const char* value);
         void removeProperty(const Property& property, std::string value);
+        void removeProperty(const Property& property, std::string value, const type_info& typeInfo);
         void removeProperty(const Property& property, int value);
         void removeProperty(const Property& property, long value);
         void removeProperty(const Property& property, float value);
@@ -98,13 +100,11 @@ namespace artivity
         void setValue(const Property& property, const time_t* value);
         void setValue(const Property& property, const char* value);
         void setValue(const Property& property, std::string value);
+        void setValue(const Property& property, std::string value, const type_info& typeInfo);
         void setValue(const Property& property, int value);
         void setValue(const Property& property, long value);
         void setValue(const Property& property, float value);
         void setValue(const Property& property, double value);
-
-        void setResourceValue(const Property& property, std::string value);
-        void addResourceProperty(const Property& property, std::string value);
         
         void setType(const char* value);
         

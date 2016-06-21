@@ -34,7 +34,6 @@
 
 namespace artivity
 {
-
     typedef std::multimap<std::string, PropertyValue>::iterator PropertyMapIterator;
     
     class PropertyMap : public std::multimap<std::string, PropertyValue>
