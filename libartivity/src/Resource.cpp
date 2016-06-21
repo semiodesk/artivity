@@ -111,6 +111,11 @@ namespace artivity
         properties.addProperty(property.uri, value, typeid(value));
     }
 
+    void Resource::addProperty(const Property& property, std::string value, const type_info& typeInfo)
+    {
+        properties.addProperty(property.uri, value, typeInfo);
+    }
+
     void Resource::addProperty(const Property& property, const char* value)
     {
         properties.addProperty(property.uri, Serializer::toString(value), typeid(value));
@@ -156,6 +161,11 @@ namespace artivity
         properties.removeProperty(property.uri, value, typeid(value));
     }
     
+    void Resource::removeProperty(const Property& property, std::string value, const type_info& typeInfo)
+    {
+        properties.removeProperty(property.uri, value, typeInfo);
+    }
+
     void Resource::removeProperty(const Property& property, int value)
     {
         properties.removeProperty(property.uri, Serializer::toString(value), typeid(value));
@@ -201,6 +211,11 @@ namespace artivity
         properties.setProperty(property.uri, value, typeid(value));
     }
 
+    void Resource::setValue(const Property& property, std::string value, const type_info& typeInfo)
+    {
+        properties.setProperty(property.uri, value, typeInfo);
+    }
+
     void Resource::setValue(const Property& property, int value)
     {
         properties.setProperty(property.uri, Serializer::toString(value), typeid(value));
@@ -219,16 +234,6 @@ namespace artivity
     void Resource::setValue(const Property& property, double value)
     {
         properties.setProperty(property.uri, Serializer::toString(value), typeid(value));
-    }
-
-    void Resource::setResourceValue(const Property& property, std::string value)
-    {
-        properties.setProperty(property.uri, value, typeid(Resource));
-    }
-
-    void Resource::addResourceProperty(const Property& property, std::string value)
-    {
-        properties.addProperty(property.uri, value, typeid(Resource));
     }
 
     void Resource::setType(const char* value)

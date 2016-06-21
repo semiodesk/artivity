@@ -77,4 +77,66 @@ namespace artivity
 		return str;
 #endif
 	}
+
+    string UriGenerator::getUrl(string path)
+    {
+        stringstream stream;
+
+#if WIN32
+        stream << "file:///";
+#else
+        stream << "file://";
+#endif
+
+        stream << UriGenerator::escapePath(path);
+
+        return stream.str();
+    }
+
+    string UriGenerator::escapePath(string path)
+    {
+        CURL* curl = curl_easy_init();
+
+        stringstream result;
+        string token;
+
+        for (int i = 0; i < path.length(); i++)
+        {
+            char c = path[i];
+
+            if (c == '/' || c == '\\' || c == ':')
+            {
+                if (!token.empty())
+                {
+                    char* t = curl_easy_escape(curl, token.c_str(), (int)token.length());
+
+                    result << string(t);
+
+                    curl_free(t);
+
+                    token = "";
+                }
+
+                if (c == '\\')
+                    result << '/';
+                else
+                    result << c;
+            }
+            else
+            {
+                token += c;
+            }
+        }
+
+        if (!token.empty())
+        {
+            char* t = curl_easy_escape(curl, token.c_str(), (int)token.length());
+
+            result << string(t);
+
+            curl_free(t);
+        }
+
+        return result.str();
+    }
 }

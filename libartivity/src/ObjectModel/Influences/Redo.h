@@ -58,12 +58,14 @@ namespace artivity
         void addRevision(std::string revisionUri)
         {
             _revisions.push_back(revisionUri);
-            addResourceProperty(art::reverted, revisionUri);
+
+            addProperty(art::reverted, revisionUri, typeid(Resource));
         }
 
         void setCount(int count)
         {
             _count = count;
+
             setValue(art::count, count);
         }
 

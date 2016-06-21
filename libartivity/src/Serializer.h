@@ -34,7 +34,7 @@ namespace artivity
     {  
 	protected:
 		void serializeN3(SerializerContext& context, ResourceRef resource);
-		void serializeN3(SerializerContext& context, PropertyMapIterator it);
+        void serializeN3(SerializerContext& context, std::string property, PropertyValue x);
 		void serializeN3(SerializerContext& context, std::string uri);
 
     public:

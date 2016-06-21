@@ -282,12 +282,7 @@ namespace artivity
     void ActivityLog::setDocument(ImageRef image, std::string path, bool create)
 	{
 		_entity = image;
-        #if WIN32
-        const char* prefix = "file:///";
-        #else
-        const char* prefix = "file://";
-        #endif
-		_fileUrl = prefix + escapePath(path);
+		_fileUrl = UriGenerator::getUrl(path);
 
         if (create)
         {
@@ -300,6 +295,9 @@ namespace artivity
 
             // Create an output directory for the renderings on the sever.
             _createRenderDirectory = true;
+
+            // Set up the file and folder data objects.
+            image->setPath(path);
         }
         else
         {
@@ -393,7 +391,7 @@ namespace artivity
 		CURL* curl = initializeRequest();
 
 		stringstream url;
-		url << _endpointUrl << "/renderings/path?fileUri=" << escapePath(_entity->uri);
+		url << _endpointUrl << "/renderings/path?fileUri=" << UriGenerator::escapePath(_entity->uri);
 
         if (_createRenderDirectory)
         {
@@ -495,51 +493,6 @@ namespace artivity
 #endif
 
 		return string(date_str);
-	}
-
-	string ActivityLog::escapePath(string path)
-	{
-		stringstream result;
-		string token;
-
-		for (int i = 0; i < path.length(); i++)
-		{
-			char c = path[i];
-
-			if (c == '/' || c == '\\' || c == ':')
-			{
-				if (!token.empty())
-				{
-					char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
-
-					result << string(t);
-
-					curl_free(t);
-
-					token = "";
-				}
-
-				if (c == '\\')
-					result << '/';
-				else
-					result << c;
-			}
-			else
-			{
-				token += c;
-			}
-		}
-
-		if (!token.empty())
-		{
-			char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
-
-			result << string(t);
-
-			curl_free(t);
-		}
-
-		return result.str();
 	}
 
 	void ActivityLog::dump(ptree const& pt)
