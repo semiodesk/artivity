@@ -40,17 +40,15 @@ int _tmain(int argc, _TCHAR* argv[])
 		return -1;
 	}
 
+    string renderPath = log->getRenderOutputPath();
+
+    log->logInfo("Render output: " + renderPath);
+
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
 	auto d1 = duration_cast<milliseconds>(t2 - t1).count();
 
-	string renderPath = log->getRenderOutputPath();
-
-	log->logInfo("Render output: " + renderPath);
-
 	cout << endl;
-
-	log->logInfo("http://localhost:8262/artivity/api/1.0/activities");
 
 	CanvasRef canvas = CanvasRef(new Canvas());
 	canvas->setWidth(200);
@@ -63,8 +61,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	log->addInfluence(generation);
 	log->transmit();
 
-	log->logInfo("http://localhost:8262/artivity/api/1.0/activities");
-
 	BoundingRectangleRef bounds = BoundingRectangleRef(new BoundingRectangle());
 	bounds->setWidth(100);
 	bounds->setHeight(100);
@@ -75,8 +71,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	log->addInfluence(undo);
 	log->transmit();
-
-	log->logInfo("http://localhost:8262/artivity/api/1.0/activities");
 
 	log->close();
 
