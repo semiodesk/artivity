@@ -36,6 +36,7 @@ namespace artivity
 {
 	using namespace std;
 	using namespace boost;
+    using namespace boost::chrono;
 	using namespace boost::property_tree;
 
 	ActivityLog::ActivityLog()
@@ -102,7 +103,11 @@ namespace artivity
 			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
 		}
 
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
 		CURLcode responseCode = curl_easy_perform(curl);
+
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
 		if (data.len > 0)
 		{
@@ -113,16 +118,14 @@ namespace artivity
 
 		if (responseCode == CURLE_OK)
 		{
-			logInfo(url);
+            stringstream time;
+            time << duration_cast<milliseconds>(t2 - t1).count() << "ms";
+
+			logRequest(url, time.str(), postFields);
 		}
 		else
 		{
 			logError(url);
-		}
-
-		if (postFields.length() > 0)
-		{
-			cout << postFields << endl << flush;
 		}
 
 		return responseCode;
@@ -412,7 +415,7 @@ namespace artivity
         }
         else
         {
-            logRequest(url.str(), requestData);
+            logRequest(url.str(), "0", requestData);
         }
 
 		clear();
@@ -428,10 +431,14 @@ namespace artivity
 		cout << getTime() << " [INFO ] " << msg << endl << flush;
 	}
 
-    void ActivityLog::logRequest(string url, string data)
+    void ActivityLog::logRequest(string url, string time, string data)
     {
-        cout << getTime() << " [INFO ] " << url << endl << flush;
-        cout << data << endl << flush;
+        cout << getTime() << " [INFO ] " << time << " - " << url << endl << flush;
+
+        if (!data.empty())
+        {
+            cout << data << endl << flush;
+        }
     }
 
 	string ActivityLog::getTime()
