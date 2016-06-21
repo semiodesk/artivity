@@ -30,7 +30,8 @@
 
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
-#include "../Invalidation.h"
+#include "../EntityInfluence.h"
+#include "../Revision.h"
 
 namespace artivity
 {
@@ -38,17 +39,40 @@ namespace artivity
 
     typedef boost::shared_ptr<Undo> UndoRef;
 
-    class Undo : public Invalidation
+    class Undo : public EntityInfluence
     {
-    public:
-        Undo() : Invalidation()
+        private:
+        std::list<std::string> _revisions;
+        int _count;
+
+        public:
+        Undo() : EntityInfluence()
         {
             setType(art::Undo);
         }
         
-        Undo(const char* uriref) : Invalidation(uriref)
+        Undo(const char* uriref) : EntityInfluence(uriref)
         {
             setType(art::Undo);
+        }
+
+
+        void addRevision(std::string revisionUri)
+        {
+            _revisions.push_back(revisionUri);
+            addResourceProperty(art::reverted, revisionUri);
+        }
+
+
+        void setCount(int count)
+        {
+            _count = count;
+            setValue(art::count, count);
+        }
+
+        int getCount()
+        {
+            return _count;
         }
     };
 }

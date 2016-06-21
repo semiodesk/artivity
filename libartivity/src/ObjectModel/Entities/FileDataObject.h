@@ -36,7 +36,6 @@
 
 namespace artivity
 {
-
     class FileDataObject;
 
     typedef boost::shared_ptr<FileDataObject> FileDataObjectRef;
@@ -44,25 +43,23 @@ namespace artivity
     class InformationElement;
     typedef boost::shared_ptr<InformationElement> InformationElementRef;
 
-    class FileDataObject : public Entity
+    class FileDataObject : public Resource
     {
-    private:
-    std::string _url;
+        private:
+        std::string _url;
 
         InformationElementRef _interpretedAs;
         
-    public:
-        FileDataObject() : Entity()
+        public:
+        FileDataObject() : Resource(UriGenerator::getUri())
         {
-            _url = "";
-            
+            _url = "";         
             setType(nfo::FileDataObject);
         }
         
-        FileDataObject(const char* uriref) : Entity(uriref)
+        FileDataObject(const char* uriref) : Resource(uriref)
         {
             _url = "";
-            
             setType(nfo::FileDataObject);
         }
         

@@ -195,9 +195,6 @@
     <ClInclude Include="..\..\src\Ontologies\nie.h">
       <Filter>Header Files\Ontologies</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Revision.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
@@ -208,6 +205,15 @@
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Derivation.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\RenderingDataObject.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\PartialRenderingDataObject.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Change.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\SoftwareAssociation.h">

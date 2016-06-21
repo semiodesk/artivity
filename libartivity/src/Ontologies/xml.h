@@ -35,8 +35,8 @@ namespace artivity
 {
     namespace xml
     {
-		static const char* NS_PREFIX = xml();
-		static const char* NS_URI = XML();
+		static const char* NS_PREFIX = xml("");
+		static const char* NS_URI = XML("");
 
         static const char* Element = xml("Element");
         static const char* Attribute = xml("Attribute");

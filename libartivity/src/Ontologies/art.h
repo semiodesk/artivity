@@ -25,8 +25,8 @@
 //
 // Copyright (c) Semiodesk GmbH 2016
 
-#ifndef ART_H
-#define ART_H
+#ifndef _ART_ART_H
+#define _ART_ART_H
 
 namespace artivity
 {
@@ -35,8 +35,8 @@ namespace artivity
 
     namespace art
     {
-		static const char* NS_PREFIX = art();
-		static const char* NS_URI = ART();
+		static const char* NS_PREFIX = art("");
+		static const char* NS_URI = ART("");
        
 		static const char* EditFile = art("EditFile");
         
@@ -55,36 +55,48 @@ namespace artivity
 		static const char* WebBrowsing = art("WebBrowsing");
 
         // --- ACTIVITIES ---
-        // NOTE: There are very little predefined activity types in PROV.
-        //       The following are inspired by the Activity Streams vocabulary.
+
+        // Indicates that a entity influence invalidated another.
+        static const char* reverted = art("reverted");
+
+        // Indicates that a entity influence re-generated another.
+        static const char* restored = art("restored");
+   
+        // The invalidation of a prior entity influence.
+        static const char* Undo = art("Undo");
         
-		static const char* Edit = art("Edit");
+        // The re-generation of a formerly invalidated entity influence.
+        static const char* Redo = art("Redo");
+
+        static const char* count = art("count");
         
-		static const char* Add = art("Add");
-        
-        static const char* Remove = art("Remove");
-        
-		static const char* Undo = art("Undo");
-        
-		static const char* Redo = art("Redo");
-        
-		static const char* Save = art("Save");
-        
-		static const char* selectedLayer = art("selectedLayer");
+        static const char* selectedLayer = art("selectedLayer");
 
         static const char* layerZPosition = art("layerZPosition")
         
-		static const char* isCaptureEnabled = art("isCaptureEnabled");
+        static const char* isCaptureEnabled = art("isCaptureEnabled");
+        static const char* loggingEnabled = art("loggingEnabled");
 
         static const char* thumbnailUrl = art("thumbnailUrl");
+        
+        // A rasterized portion of an image that provides bitmap data for an entity influence.
+        static const char* renderedAs =art("renderedAs");
 
-        static const char* thumbnailPos = art("thumbnailPosition"); 
+        // Specifies the shape and location of something in Euclidean space.
+        static const char* region = art("region");
+
+        // Rasterized bitmap data of the entire extents of an image.
+        static const char* RenderingDataObject = art("RenderingDataObject");
+
+        // Rasterized bitmap data of a specific region of an image.
+        static const char* PartialRenderingDataObject = art("PartialRenderingDataObject");
+
         
         // --- GEOMETRY ---
         // NOTE: We try to be compatible with OGC geometry vocabularies since
         //       many databases support spatial querying using this standard.
         
-		static const char* canvas = art("canvas");
+        static const char* canvas = art("canvas");
                 
         // Subclass of :hadGeometry
 		static const char* hadCanvas = art("hadCanvas");
@@ -195,11 +207,40 @@ namespace artivity
         // No equivalent in QUDT
         static const char* px = art("px");
 
-		// NOTE: The following instances are absolute URLs!
-		static const char* USER = ART("USER");
+        // NOTE: The following instances are absolute URLs!
+        static const char* USER = ART("USER");
+        static const char* SOFTWARE = ART("SOFTWARE");
 
-		static const char* SOFTWARE = ART("SOFTWARE");
+        
+        // --- CHANGES ---
+        static const char* Change = art("Change");		
+        static const char* qualifiedChange = art("qualifiedChange");
+
+        static const char* property = art("Property");
+
+        static const char* order = art("order");
+
+        static const char* location = art("location");
+
+        static const char* bounds = art("bounds");
+
+        static const char* textValue = art("textValue");
+
+        static const char* fontSize = art("fontSize");
+
+        static const char* font = art("font");
+
+        static const char* strokeColour = art("strokeColour");
+
+        static const char* fillColour = art("fillColour");
+
+        static const char* strokePattern = art("strokePattern");
+        
+        static const char* fillPattern = art("fillPattern");
+
+        static const char* strokeWidth = art("strokeWidth");
+        
     }
 }
 
-#endif // ART_H
+#endif // _ART_ART_H

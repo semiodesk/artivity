@@ -53,6 +53,14 @@ namespace artivity
         {
             setType(art::Viewport);
         }
+
+        Viewport(double top, double left, double right, double bottom) : Rectangle(top, left, right, bottom)
+        {
+        }
+
+        Viewport(PointRef pos, double width, double height) : Rectangle(pos, width, height)
+        {
+        }
         
         double getZoomFactor()
         {

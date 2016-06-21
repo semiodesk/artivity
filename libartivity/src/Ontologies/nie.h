@@ -35,8 +35,8 @@ namespace artivity
 {
     namespace nie
     {
-		static const char* NS_PREFIX = nie();
-		static const char* NS_URI = NIE();
+		static const char* NS_PREFIX = nie("");
+		static const char* NS_URI = NIE("");
 
 		static const char* InformationElement = nie("InformationElement");
 
