@@ -56,6 +56,8 @@ namespace artivity
         
         Rectangle(const char* uriref) : Geometry(uriref)
         {
+
+
             setType(art::Rectangle);
         }
 

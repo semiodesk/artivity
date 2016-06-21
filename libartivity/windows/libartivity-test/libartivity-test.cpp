@@ -24,10 +24,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	log->addAssociation(art::SOFTWARE, "http://adobe.com/products/photoshop", "2015.1");
 
 	// Set the file and retrive, if possible, the URI of the vector image.
-	log->setDocument(image, "C:/Users/Sebastian/Desktop/Hello 2.ai");
+	log->setDocument(image, "C:/Users/Sebastian/Desktop/Hello 2.ai", false);
 
 	if (!log->connect("http://localhost:8262/artivity/api/1.0"))
 	{
+
 		// The log could not be set up to transmit properly.
 		// Either the agent is not properly installed or logging is disabled.
 		cout << "Log not ready." << endl << endl;
@@ -42,7 +43,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
     string renderPath = log->getRenderOutputPath();
 
+#if _DEBUG
     log->logInfo("Render output: " + renderPath);
+#endif
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 

@@ -38,11 +38,11 @@ namespace artivity
     {
     }
 
-    void EditingSession::initialize(string server, bool isNewDocument)
+    void EditingSession::initialize(string server, bool newDocument)
     {
-		ImageRef document = this->getDocument();
+		ImageRef document = getDocument();
 
-        if (!isNewDocument)
+        if (!newDocument)
         {
             _filePath = getDocumentFilePath();
         }
@@ -54,8 +54,8 @@ namespace artivity
 
         _log = ActivityLogRef(new ActivityLog(server));
 		_log->addAssociation(art::USER);
-		_log->addAssociation(art::SOFTWARE, this->getSoftwareAgent(), this->getSoftwareVersion());
-		_log->setDocument(document, _filePath->c_str());
+		_log->addAssociation(art::SOFTWARE, getSoftwareAgent(), getSoftwareVersion());
+        _log->setDocument(document, _filePath->c_str(), newDocument);
 
 		if (_log->connect(server.c_str()))
 		{
