@@ -436,7 +436,7 @@ namespace artivity
         else
         {
 #if _DEBUG
-            logRequest(url.str(), "0", requestData);
+            logRequest(url.str(), "0ms", requestData);
 #endif
         }
 
