@@ -275,7 +275,12 @@ namespace artivity
     void ActivityLog::setDocument(ImageRef image, std::string path, bool create)
 	{
 		_entity = image;
-		_fileUrl = "file://" + escapePath(path);
+        #if WIN32
+        const char* prefix = "file:///";
+        #else
+        const char* prefix = "file://";
+        #endif
+		_fileUrl = prefix + escapePath(path);
 
         if (create)
         {

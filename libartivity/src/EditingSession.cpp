@@ -62,10 +62,11 @@ namespace artivity
         if (_log->connect(server + "/artivity/api/1.0"))
         {
             _fileUri = _document->uri;
-
+            _imagePath = _log->getRenderOutputPath();
             _initialized = true;
         }
         _currentChangeIndex = 0;
+
     }
 
     EditingSession::~EditingSession()
@@ -157,6 +158,11 @@ namespace artivity
         return boost::filesystem::exists(name);
     }
 
+    void EditingSession::transmitQueue()
+    {
+        _log->transmit();
+    }
+
     void EditingSession::consume(ResourceRef res)
     {
         const char* type = res->getType();
@@ -192,5 +198,31 @@ namespace artivity
             _log->addInfluence(boost::dynamic_pointer_cast<EntityInfluence>(res));
         }
     }
+
+    string EditingSession::createImageFilePath(time_t time)
+    {
+        string resPath = "";
+        if (!_imagePath.empty())
+        {
+
+
+            #ifdef WIN32
+            const char* sep = "\\\\";
+            #else
+            const char* sep = "//";
+            #endif
+            int count = 0;
+            stringstream ss;
+            do
+            {
+                ss << _imagePath << sep << time << "-" << count << ".png";
+                count++;
+            } while (boost::filesystem::exists(ss.str()));
+
+            resPath = ss.str();
+        }
+        return resPath;
+    }
+
 
 }
