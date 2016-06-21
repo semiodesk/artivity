@@ -30,10 +30,11 @@
 
 #include <stdlib.h>
 #include <string>
+#include <sstream>
+#include <curl/curl.h>
 
 namespace artivity
 {
-
     class UriGenerator
     {        
         public:
@@ -47,6 +48,8 @@ namespace artivity
             }
         
             static std::string getRandomId(unsigned long length);
+
+            static std::string escapePath(std::string path);
     };
 }
 

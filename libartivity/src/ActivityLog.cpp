@@ -490,51 +490,6 @@ namespace artivity
 		return string(date_str);
 	}
 
-	string ActivityLog::escapePath(string path)
-	{
-		stringstream result;
-		string token;
-
-		for (int i = 0; i < path.length(); i++)
-		{
-			char c = path[i];
-
-			if (c == '/' || c == '\\' || c == ':')
-			{
-				if (!token.empty())
-				{
-					char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
-
-					result << string(t);
-
-					curl_free(t);
-
-					token = "";
-				}
-
-				if (c == '\\')
-					result << '/';
-				else
-					result << c;
-			}
-			else
-			{
-				token += c;
-			}
-		}
-
-		if (!token.empty())
-		{
-			char* t = curl_easy_escape(_curl, token.c_str(), (int)token.length());
-
-			result << string(t);
-
-			curl_free(t);
-		}
-
-		return result.str();
-	}
-
 	void ActivityLog::dump(ptree const& pt)
 	{
 		ptree::const_iterator end = pt.end();
