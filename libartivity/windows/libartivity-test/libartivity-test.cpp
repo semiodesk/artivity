@@ -19,6 +19,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	// We pass the server URL to the log upon creation.
 	ActivityLog* log = new ActivityLog();
 
+#if DEBUG
+    log->debug = true;
+#endif
+
 	// Set the agent association with the current agent version.
 	log->addAssociation(art::USER);
 	log->addAssociation(art::SOFTWARE, "http://adobe.com/products/photoshop", "2015.1");
