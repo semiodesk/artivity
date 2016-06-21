@@ -34,6 +34,7 @@ namespace artivity
 
     void Image::setPath(path p)
     {
+        // Create the folder object.
         path folder = p.parent_path();
 
         if (_folder == NULL)
@@ -42,11 +43,14 @@ namespace artivity
         }
 
         _folder->setLabel(folder.filename().string());
-        _folder->setUrl(folder);
+        _folder->setUrl(UriGenerator::getUrl(folder.string()));
 
+        // Create the file data object object.
         if (_file == NULL)
         {
             _file = FileDataObjectRef(new FileDataObject());
+
+            setDataObject(_file);
         }
 
         _file->setLabel(p.filename().string());

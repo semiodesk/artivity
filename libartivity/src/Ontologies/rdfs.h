@@ -28,7 +28,7 @@
 #ifndef _ART_RDFS_H
 #define _ART_RDFS_H
 
-#define rdfs(label) "rdf:"label;
+#define rdfs(label) "rdfs:"label;
 #define RDFS(label) "http://www.w3.org/2000/01/rdf-schema#"label;
 
 namespace artivity

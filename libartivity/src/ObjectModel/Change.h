@@ -40,15 +40,17 @@
 namespace artivity
 {
     class Change;
+
     typedef boost::shared_ptr<Change> ChangeRef;
 
     class Change : public Resource
     {
-        private:
+    private:
         EntityRef _entity;
+
         const char* _property;
 
-        public:
+    public:
         Change() : Resource(UriGenerator::getUri())
         {
             setType(art::Change);
@@ -62,13 +64,15 @@ namespace artivity
         void setEntity(EntityRef entity)
         {
             _entity = entity;
+
             setValue(prov::entity, _entity);
         }
 
         void setProperty(const char* prop)
         {
             _property = prop;
-            setResourceValue(art::property, prop);
+
+            setValue(art::property, prop, typeid(Resource));
         }
 
     };

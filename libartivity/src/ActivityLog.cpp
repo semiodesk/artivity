@@ -156,19 +156,14 @@ namespace artivity
 		{
 			AssociationRef association = *it;
 
-			if (association->uri.empty())
+            // Do not add the association to the serialized output, 
+            // as it is already stored in the database.
+            association->serialize = false;
+
+            if (!association->uri.empty() || fetchAssociationUri(association))
 			{
-                if (!fetchAssociationUri(association))
-                {
-                    return false;
-                }
-
-				// Do not add the association to the serialized output, 
-				// as it is already stored in the database.
-				association->serialize = false;
-
-				_activity->addAssociation(association);
-			}
+                _activity->addAssociation(association);
+            }
 
 			it++;
 		}
@@ -275,12 +270,7 @@ namespace artivity
     void ActivityLog::setDocument(ImageRef image, std::string path, bool create)
 	{
 		_entity = image;
-        #if WIN32
-        const char* prefix = "file:///";
-        #else
-        const char* prefix = "file://";
-        #endif
-		_fileUrl = prefix + escapePath(path);
+		_fileUrl = UriGenerator::getUrl(path);
 
         if (create)
         {
@@ -293,6 +283,9 @@ namespace artivity
 
             // Create an output directory for the renderings on the sever.
             _createRenderDirectory = true;
+
+            // Set up the file and folder data objects.
+            image->setPath(path);
         }
         else
         {
@@ -386,7 +379,7 @@ namespace artivity
 		CURL* curl = initializeRequest();
 
 		stringstream url;
-		url << _endpointUrl << "/renderings/path?fileUri=" << escapePath(_entity->uri);
+		url << _endpointUrl << "/renderings/path?fileUri=" << UriGenerator::escapePath(_entity->uri);
 
         if (_createRenderDirectory)
         {

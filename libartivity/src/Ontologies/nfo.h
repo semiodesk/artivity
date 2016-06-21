@@ -42,6 +42,7 @@ namespace artivity
         static const char* Image = nfo("Image");
         static const char* RasterImage = nfo("RasterImage");
         static const char* VectorImage = nfo("VectorImage");
+        static const char* Folder = nfo("Folder");
 		static const char* FileDataObject = nfo("FileDataObject");
         static const char* WebDataObject = nfo("WebDataObject");
 
