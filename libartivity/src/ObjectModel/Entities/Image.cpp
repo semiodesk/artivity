@@ -23,56 +23,35 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2016
+// Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_IMAGE_H
-#define _ART_IMAGE_H
-
-#include <boost/filesystem.hpp>
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/nfo.h"
-#include "Media.h"
-#include "FileDataObject.h"
-#include "Folder.h"
+#include "Image.h"
 
 namespace artivity
 {
-    class Image;
+    using namespace std;
+    using namespace boost::filesystem;
 
-    typedef boost::shared_ptr<Image> ImageRef;
-
-    class Image : public Media
+    void Image::setPath(path p)
     {
-    private:
-        std::string _path;
+        //path folder = p.parent_path();
 
-        FileDataObjectRef _file;
+        //if (_folder == NULL)
+        //{
+        //    _folder = FolderRef(new Folder());
+        //}
 
-        FolderRef _folder;
+        //_folder->setLabel(folder.filename().string());
+        //_folder->setUrl(folder);
 
-    public:
-        Image() : Media()
-        {
-            setType(nfo::Image);
-        }
-        
-        Image(const char* uriref) : Media(uriref)
-        {
-            setType(nfo::Image);
-        }
+        //if (_file == NULL)
+        //{
+        //    _file = FileDataObjectRef(new FileDataObject());
+        //}
 
-        void setPath(boost::filesystem::path p);
-
-        FileDataObjectRef getFile()
-        {
-            return _file;
-        }
-
-        FolderRef getFolder()
-        {
-            return _folder;
-        }
-    };
+        //_file->setLabel(p.filename().string());
+        //_file->setContainer(_folder);
+        //_file->setInterpretation(ImageRef(this));
+    }
 }
 
-#endif // _ART_IMAGE_H

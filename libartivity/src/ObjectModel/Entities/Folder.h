@@ -23,56 +23,82 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2016
+// Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_IMAGE_H
-#define _ART_IMAGE_H
+#ifndef _ART_FOLDER_H
+#define _ART_FOLDER_H
 
-#include <boost/filesystem.hpp>
 #include "../../Ontologies/rdf.h"
+#include "../../Ontologies/rdfs.h"
 #include "../../Ontologies/nfo.h"
-#include "Media.h"
-#include "FileDataObject.h"
-#include "Folder.h"
+#include "../Entity.h"
+
+#include "InformationElement.h"
 
 namespace artivity
 {
-    class Image;
+    class Folder;
 
-    typedef boost::shared_ptr<Image> ImageRef;
+    typedef boost::shared_ptr<Folder> FolderRef;
 
-    class Image : public Media
+    class Folder : public Resource
     {
     private:
-        std::string _path;
+        std::string _label;
 
-        FileDataObjectRef _file;
+        std::string _url;
 
-        FolderRef _folder;
+        FolderRef _container;
 
     public:
-        Image() : Media()
+        Folder() : Resource(UriGenerator::getUri())
         {
-            setType(nfo::Image);
-        }
-        
-        Image(const char* uriref) : Media(uriref)
-        {
-            setType(nfo::Image);
+            setType(nfo::FileDataObject);
+            _url = "";
         }
 
-        void setPath(boost::filesystem::path p);
-
-        FileDataObjectRef getFile()
+        Folder(const char* uriref) : Resource(uriref)
         {
-            return _file;
+            setType(nfo::FileDataObject);
+            _url = "";
         }
 
-        FolderRef getFolder()
+        const char* getLabel()
         {
-            return _folder;
+            return _label.c_str();
+        }
+
+        void setLabel(std::string label)
+        {
+            _label = label;
+
+            setValue(rdfs::label, _label.c_str());
+        }
+
+        const char* getUrl()
+        {
+            return _url.c_str();
+        }
+
+        void setUrl(const char* url)
+        {
+            _url = std::string(url);
+
+            setValue(nie::url, _url.c_str());
+        }
+
+        FolderRef getContainer()
+        {
+            return _container;
+        }
+
+        void setContainer(FolderRef folder)
+        {
+            _container = folder;
+
+            setValue(nfo::belongsToContainer, folder);
         }
     };
 }
 
-#endif // _ART_IMAGE_H
+#endif // _ART_FOLDER_H
