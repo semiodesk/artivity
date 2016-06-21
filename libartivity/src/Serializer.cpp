@@ -60,7 +60,7 @@ namespace artivity
 
     string Serializer::toString(ResourceRef value)
     {            
-        return value->Uri;
+        return value->uri;
     }
     
     string Serializer::toString(const char* value)
@@ -162,18 +162,18 @@ namespace artivity
 
 	void Serializer::serializeN3(SerializerContext& ctx, ResourceRef resource)
 	{
-		if (resource->Properties.size() == 0)
+		if (resource->properties.size() == 0)
 		{
 			return;
 		}
 
 		int i = 0;
-		int n = resource->Properties.size();
+		int n = resource->properties.size();
 
 		// First, serialize the rdf:types of the resources.
-		PropertyMapIterator it = resource->Properties.find(rdf::_type);
+		PropertyMapIterator it = resource->properties.find(rdf::_type);
 
-		if (n == 1 && it != resource->Properties.end())
+		if (n == 1 && it != resource->properties.end())
 		{
 			// Do not serialize resources which only have asserted types and no other properties.
 			return;
@@ -182,7 +182,7 @@ namespace artivity
 		// Output the initial subject (the resource URI).
 		ctx.out << endl << resource;
 
-		while (it != resource->Properties.end())
+		while (it != resource->properties.end())
 		{
 			if (0 < i && i < n)
 			{
@@ -196,9 +196,9 @@ namespace artivity
 		}
 
 		// Then, serialize all other properties.
-		it = resource->Properties.begin();
+		it = resource->properties.begin();
 
-		while (it != resource->Properties.end())
+		while (it != resource->properties.end())
 		{
 			if (0 < i && i < n)
 			{
@@ -238,13 +238,13 @@ namespace artivity
 
 		if (x.Value != NULL)
 		{
-			serializeN3(ctx, x.Value->Uri);
+			serializeN3(ctx, x.Value->uri);
 
 			ResourceRef r = x.Value;
 
-			if (ctx.track.find(r->Uri) == ctx.track.end())
+			if (r->serialize && ctx.track.find(r->uri) == ctx.track.end())
 			{
-				ctx.track.insert(r->Uri);
+				ctx.track.insert(r->uri);
 
 				ctx.queue.push(r);
 			}

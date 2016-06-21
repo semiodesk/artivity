@@ -70,7 +70,7 @@ namespace artivity
     
 	bool Activity::empty()
 	{
-		return Properties.empty();
+		return properties.empty();
 	}
 
     void Activity::clear()

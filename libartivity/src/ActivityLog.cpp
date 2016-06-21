@@ -149,7 +149,7 @@ namespace artivity
 			if (uri != "")
 			{
 				// There is already a URI for the file.
-				_entity->Uri = uri;
+				_entity->uri = uri;
 			}
 
 			// An existing file is being edited.
@@ -169,9 +169,13 @@ namespace artivity
 		{
 			AssociationRef association = *it;
 
-			if (association->Uri.empty())
+			if (association->uri.empty())
 			{
 				fetchAssociationUri(association);
+
+				// Do not add the association to the serialized output, 
+				// as it is already stored in the database.
+				association->serialize = false;
 
 				_activity->addAssociation(association);
 			}
@@ -237,13 +241,13 @@ namespace artivity
 		{
 			SoftwareAssociationRef software = boost::dynamic_pointer_cast<SoftwareAssociation>(association);
 
-			url << "?role=" << software->getRole()->Uri;
-			url << "&agent=" << software->getAgent()->Uri;
+			url << "?role=" << software->getRole()->uri;
+			url << "&agent=" << software->getAgent()->uri;
 			url << "&version=" << software->getVersion();
 		}
 		else
 		{
-			url << "?role=" << association->getRole()->Uri;
+			url << "?role=" << association->getRole()->uri;
 		}
 
 		string response;
@@ -269,22 +273,22 @@ namespace artivity
 			return false;
 		}
 
-		association->Uri = uri;
+		association->uri = uri;
 
 		return true;
 	}
 
-	void ActivityLog::setFile(ImageRef image, const char* path)
+	void ActivityLog::setDocument(ImageRef image, const char* path)
 	{
 		string p = path;
 
-		_fileUrl = "file://" + escapePath(p);
 		_entity = image;
+		_fileUrl = "file://" + escapePath(p);
 	}
 
-	string ActivityLog::getFileUri()
+	ImageRef ActivityLog::getDocument()
 	{
-		return "http://example.com";
+		return _entity;
 	}
 
 	string ActivityLog::getEntityUri(string fileUrl)

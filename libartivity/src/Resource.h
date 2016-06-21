@@ -50,11 +50,13 @@ namespace artivity
         friend class Serializer;
         
     protected:
-        PropertyMap Properties;
+        PropertyMap properties;
                 
     public:                    
-        std::string Uri;
-        
+        std::string uri;
+
+		bool serialize;
+
         Resource(std::string uriref);
         Resource(const char* uriref);
         virtual ~Resource() {}
@@ -63,6 +65,7 @@ namespace artivity
         
         void clear();
 
+		bool hasProperties();
         bool hasProperty(const Property& property, ResourceRef value);
         bool hasProperty(const Property& property, const time_t* value);
         bool hasProperty(const Property& property, const char* value);
