@@ -60,7 +60,6 @@ namespace Artivity.Apid
 
         public ActivitiesModule(IModelProvider model, IPlatformProvider platform) : base("/artivity/1.0/activities", model, platform)
         {
-            Post["/"] = parameters => { return PostActivity(); };
             Post["/web/"] = parameters => { return PostActivity(this.Bind<ActivityParameters>()); };
         }
 
@@ -68,85 +67,24 @@ namespace Artivity.Apid
 
 		#region Methods
 
-		private HttpStatusCode PostActivity()
-		{
-            string data = ToString(Request.Body);
-
-            // We start a new task so that the agent can continue its work as fast as possible.
-            new Task(() => StoreData(data)).Start();
-
-            return HttpStatusCode.OK;
-		}
-
-        private void StoreData(string data)
+        private HttpStatusCode PostActivity(ActivityParameters p)
         {
             try
             {
-                lock (_modelLock)
-                {
-                    //UpdateMonitoring();
-
-                    IModel model = ModelProvider.GetActivities();
-
-                    if (model == null)
-                    {
-                        Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
-                    }
-
-                    AddResources(model, ToMemoryStream(data));
-                }
-                Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
-            }
-            catch (Exception e)
-            {
-                 Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e, data);
-            }
-        }
-
-        private void AddResources(IModel model, Stream stream)
-        {
-            string connectionString = ModelProvider.NativeConnectionString;
-
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                string data = reader.ReadToEnd();
-
-                using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
-                {
-                    using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
-                    {
-                        IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
-                        parser.Load(graph, new StringReader(data));
-
-                        graph.BaseUri = model.Uri;
-
-                        
-                        m.UpdateGraph(model.Uri, graph.Triples, new List<Triple>());
-                    }
-                }
-            }
-        }
-
-		private HttpStatusCode PostActivity(ActivityParameters p)
-		{
-            try
-            {
-                //UpdateMonitoring();
-
                 if (string.IsNullOrEmpty(p.tab))
                 {
                     return Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
                 }
 
                 if (string.IsNullOrEmpty(p.agent))
-    			{
-    				return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
-    			}
+                {
+                    return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
+                }
 
-    			if (!IsCaptureEnabled(p))
-    			{
+                if (!IsCaptureEnabled(p))
+                {
                     return Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
-    			}
+                }
 
                 IModel model = ModelProvider.GetWebActivities();
 
@@ -207,11 +145,11 @@ namespace Artivity.Apid
 
                 return Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Logger.LogError(HttpStatusCode.InternalServerError, "{0}: {1}", Request.Url, e.Message);
             }
-		}
+        }
 
         private bool IsCaptureEnabled(ActivityParameters p)
         {
@@ -227,26 +165,6 @@ namespace Artivity.Apid
 
             return agent.IsCaptureEnabled;
         }
-
-        private string ToString(RequestStream stream)
-        {
-            using (var reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
-        private Stream ToMemoryStream(string data)
-		{
-			MemoryStream stream = new MemoryStream();
-
-			StreamWriter writer = new StreamWriter(stream);
-			writer.Write(data);
-			writer.Flush();
-			stream.Position = 0;
-
-			return stream;
-		}
 
 		#endregion
 	}
