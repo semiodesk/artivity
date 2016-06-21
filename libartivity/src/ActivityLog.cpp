@@ -224,9 +224,14 @@ namespace artivity
 		_associations.push_back(a);
 	}
 
-	void ActivityLog::addAssociation(const char* roleUri, stringRef agentUri, stringRef version)
+	void ActivityLog::addAssociation(const char* roleUri, string agentUri, string version)
 	{
-		addAssociation(roleUri, agentUri->c_str(), version->c_str());
+        SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(""));
+        a->setAgent(AgentRef(new Agent(agentUri)));
+        a->setRole(RoleRef(new Role(roleUri)));
+        a->setVersion(version);
+
+        _associations.push_back(a);
 	}
 
 	bool ActivityLog::fetchAssociationUri(AssociationRef association)
@@ -277,12 +282,10 @@ namespace artivity
 		return true;
 	}
 
-	void ActivityLog::setDocument(ImageRef image, const char* path)
+    void ActivityLog::setDocument(ImageRef image, std::string path)
 	{
-		string p = path;
-
 		_entity = image;
-		_fileUrl = "file://" + escapePath(p);
+		_fileUrl = "file://" + escapePath(path);
 	}
 
 	ImageRef ActivityLog::getDocument()

@@ -23,26 +23,55 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2016
+// Copyright (c) Semiodesk GmbH 2015
 
-#ifndef dces_H
-#define dces_H
+#ifndef _ART_CHANGE_H
+#define _ART_CHANGE_H
 
-#include "../Property.h"
+#include <list>
 
-#define dces(label) "dc:"label;
-#define DCES(label) "http://purl.org/dc/elements/1.1/"label;
+#include "../Ontologies/rdf.h"
+#include "../Ontologies/prov.h"
+#include "../UriGenerator.h"
+#include "../Ontologies/art.h"
+#include "../Resource.h"
+#include "Entity.h"
 
 namespace artivity
 {
-    namespace dces
-    {
-		static const char* NS_PREFIX = dces("");
-		static const char* NS_URI = DCES("");
+    class Change;
+    typedef boost::shared_ptr<Change> ChangeRef;
 
-        static const char* title = dces("title");
-        static const char* description = dces("description");
-    }
+    class Change : public Resource
+    {
+        private:
+        EntityRef _entity;
+        const char* _property;
+
+        public:
+        Change() : Resource(UriGenerator::getUri())
+        {
+            setType(art::Change);
+        }
+        
+        Change(const char* uriref) : Resource(uriref)
+        {
+            setType(art::Change);
+        }
+
+        void setEntity(EntityRef entity)
+        {
+            _entity = entity;
+            setValue(prov::entity, _entity);
+        }
+
+        void setProperty(const char* prop)
+        {
+            _property = prop;
+            setValue(art::property, prop);
+        }
+
+    };
 }
 
-#endif // dces_H
+#endif // _ART_CHANGE_H

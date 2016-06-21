@@ -6,9 +6,11 @@
 #include "defines.h"
 #include "ObjectModel/Influences\Undo.h"
 #include "ObjectModel/Influences\Redo.h"
-#include "ObjectModel/Influences\Save.h"
 #include "ObjectModel/Revision.h"
+#include "ObjectModel/Invalidation.h"
+#include "ObjectModel/Generation.h"
 #include "ObjectModel/Derivation.h"
+#include "ObjectModel/Change.h"
 
 namespace artivity
 {
@@ -19,33 +21,37 @@ namespace artivity
     {
         private:
         ActivityRef _activity;
-        stringRef _filePath;
+        std::string _filePath;
         ActivityLogRef _log;
         //ResourceRef Unit; store in session or log?
 
         bool pathChanged = true;
         bool contentChanged = false;
         ProducerConsumerRef _consumer;
-        stringRef _imagePath;
-        stringRef _fileUri;
+        std::string _imagePath;
+        std::string _fileUri;
 
         bool _endTime = false;
         bool _initialTransmit = true;
-        stringRef CurrentTool;
 
         bool _initialized = false;
 
         void createActivity();
         stringRef createImageFilePath(time_t time);
 
+        std::vector<std::string> _changes;
+        int _currentChangeIndex; 
+
+        void handleChanges(ResourceRef res);
+
         protected:
 
-        stringRef getFileUri() { return _fileUri; }
+        std::string getFileUri() { return _fileUri; }
 
-		virtual ImageRef getDocument() = 0;
-        virtual stringRef getDocumentFilePath() = 0;
-        virtual stringRef getSoftwareAgent() = 0;
-		virtual stringRef getSoftwareVersion() = 0;
+        virtual ImageRef getDocument() = 0;
+        virtual std::string getDocumentFilePath() = 0;
+        virtual std::string getSoftwareAgent() = 0;
+        virtual std::string getSoftwareAgentVersion() = 0;
 
         GenerationRef createGeneration() { return GenerationRef(new Generation()); }
         UndoRef createUndo() { return UndoRef(new Undo()); }
@@ -53,6 +59,7 @@ namespace artivity
         InvalidationRef createInvalidation() { return InvalidationRef(new Invalidation()); }
         DerivationRef createDerivation() { return DerivationRef(new Derivation()); }
         RevisionRef createRevision() { return RevisionRef(new Revision()); }
+        ChangeRef createChange() { return ChangeRef(new Change()); }
 
         virtual GenerationRef onEventAdd() = 0;
         virtual InvalidationRef onEventDelete() = 0;

@@ -35,8 +35,8 @@ namespace artivity
 {
     namespace svg
     {
-		static const char* NS_PREFIX = svg();
-		static const char* NS_URI = SVG();
+		static const char* NS_PREFIX = svg("");
+		static const char* NS_URI = SVG("");
 
         static const char* Shape = svg("Shape");
         

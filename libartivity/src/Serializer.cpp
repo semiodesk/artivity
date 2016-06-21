@@ -168,7 +168,7 @@ namespace artivity
 		}
 
 		int i = 0;
-		int n = resource->properties.size();
+		size_t n = resource->properties.size();
 
 		// First, serialize the rdf:types of the resources.
 		PropertyMapIterator it = resource->properties.find(rdf::_type);

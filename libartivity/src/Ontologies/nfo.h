@@ -35,8 +35,8 @@ namespace artivity
 {
     namespace nfo
     {
-		static const char* NS_PREFIX = nfo();
-		static const char* NS_URI = NFO();
+		static const char* NS_PREFIX = nfo("");
+		static const char* NS_URI = NFO("");
 
         static const char* Media = nfo("Media");
         static const char* Image = nfo("Image");

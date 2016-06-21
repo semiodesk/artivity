@@ -34,6 +34,8 @@ using namespace std;
 
 namespace artivity
 {
+    typedef vector<string>::reverse_iterator rchangeIt;
+    typedef vector<string>::iterator changeIt;
     EditingSession::EditingSession()
     {
     }
@@ -53,16 +55,17 @@ namespace artivity
         _consumer->start();
 
         _log = ActivityLogRef(new ActivityLog(server));
-		_log->addAssociation(art::USER);
-		_log->addAssociation(art::SOFTWARE, this->getSoftwareAgent(), this->getSoftwareVersion());
-		_log->setDocument(document, _filePath->c_str());
+        _log->addAssociation(art::USER);
+        _log->addAssociation(art::SOFTWARE, this->getSoftwareAgent(), this->getSoftwareAgentVersion());
+        _log->setDocument(document, _filePath.c_str());
 
-		if (_log->connect(server.c_str()))
-		{
-			_fileUri = stringRef(new string(document->uri));
+        if (_log->connect(server.c_str()))
+        {
+            _fileUri = document->uri;
 
-			_initialized = true;
-		}
+            _initialized = true;
+        }
+        _currentChangeIndex = 0;
     }
 
     EditingSession::~EditingSession()
@@ -73,30 +76,64 @@ namespace artivity
     void EditingSession::eventAdd()
     {
         ResourceRef res = onEventAdd();
+        handleChanges(res);
+        
         _consumer->push(res);
     }
 
     void EditingSession::eventDelete()
     {
         ResourceRef res = onEventDelete();
+        handleChanges(res);
         _consumer->push(res);
+    }
+
+    void EditingSession::handleChanges(ResourceRef res)
+    {
+        if (_currentChangeIndex < _changes.size())
+        {
+            changeIt it = _changes.begin() + _currentChangeIndex;
+            _changes.erase(it);
+        }
+        _currentChangeIndex++;
+        _changes.push_back(res->uri);
     }
 
     void EditingSession::eventEdit()
     {
         RevisionRef res = onEventEdit();
+        handleChanges(res);
         _consumer->push(res);
     }
 
     void EditingSession::eventUndo()
     {
-        ResourceRef res = onEventUndo();
+        UndoRef res = onEventUndo();
+        int count = res->getCount();
+
+        changeIt current = _changes.begin() + _currentChangeIndex;
+        _currentChangeIndex -= count;
+        for (changeIt it = _changes.begin()+_currentChangeIndex;  it != current; it++)
+        {
+            res->addRevision(*it);
+        }
+
         _consumer->push(res);
     }
 
     void EditingSession::eventRedo()
     {
-        ResourceRef res = onEventRedo();
+        RedoRef res = onEventRedo();
+        int count = res->getCount();
+
+         int beforeIndex = _currentChangeIndex;
+        _currentChangeIndex += count;
+        changeIt current = _changes.begin() + _currentChangeIndex;
+        for (changeIt it = _changes.begin() + beforeIndex; it != current; it++)
+        {
+            res->addRevision(*it);
+        }
+
         _consumer->push(res);
     }
 
@@ -139,11 +176,11 @@ namespace artivity
         }
         else if (strcmp(type, art::Undo) == 0)
         {
-            //_log->addInfluence(boost::dynamic_pointer_cast<ActivityInfluence>(res));
+            _log->addInfluence(boost::dynamic_pointer_cast<EntityInfluence>(res));
         }
         else if (strcmp(type, art::Redo) == 0)
         {
-            //_log->addInfluence(boost::dynamic_pointer_cast<ActivityInfluence>(res));
+            _log->addInfluence(boost::dynamic_pointer_cast<EntityInfluence>(res));
         }
     }
 
