@@ -72,9 +72,12 @@
 #include "ObjectModel/Activities/CreateFile.h"
 #include "ObjectModel/Activities/DeleteFile.h"
 #include "ObjectModel/Activities/EditFile.h"
-#include "ObjectModel/Influences/Redo.h"
 #include "ObjectModel/Influences/Undo.h"
 #include "ObjectModel/Influences/Redo.h"
+
+#include "ObjectModel/Change.h"
+#include "ObjectModel/RenderingDataObject.h"
+#include "ObjectModel/PartialRenderingDataObject.h"
 
 #include "ObjectModel/Entities/FileDataObject.h"
 #include "ObjectModel/Entities/WebDataObject.h"

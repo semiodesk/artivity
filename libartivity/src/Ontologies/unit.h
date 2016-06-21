@@ -39,8 +39,8 @@ namespace artivity
 {
     namespace unit
     {
-		static const char* NS_PREFIX = unit();
-		static const char* NS_URI = UNIT();
+		static const char* NS_PREFIX = unit("");
+		static const char* NS_URI = UNIT("");
 
         static const char* Millimeter = unit("Millimeter");
         static const char* Centimeter = unit("Centimeter");

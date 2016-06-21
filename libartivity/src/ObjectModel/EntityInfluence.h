@@ -35,6 +35,7 @@
 #include "../Resource.h"
 #include "Entity.h"
 #include "Influence.h"
+#include "Change.h"
 
 namespace artivity
 {
@@ -44,8 +45,8 @@ namespace artivity
 
 	class EntityInfluence : public Influence
 	{
-
-        std::list<EntityRef> _entities;
+        private:
+        std::list<ChangeRef> _changes;
 
 	    public:
         EntityInfluence() : Influence()
@@ -58,21 +59,21 @@ namespace artivity
 			setType(prov::EntityInfluence);
 		}
 
-        void addEntity(EntityRef entity)
+        void addChange(ChangeRef change)
         {
-            _entities.push_back(entity);
-            addProperty(prov::entity, entity);
+            _changes.push_back(change);
+            addProperty(art::qualifiedChange, change);
         }
 
-        void removeEntity(EntityRef entity)
+        void removeChange(ChangeRef change)
         {
-            _entities.remove(entity);
-            removeProperty(prov::entity, entity);
+            _changes.remove(change);
+            removeProperty(prov::entity, change);
         }
 
-        void clearEntities(EntityRef entity)
+        void clearEntities()
         {
-            _entities.clear();
+            _changes.clear();
             
         }
 	};

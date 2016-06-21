@@ -33,7 +33,9 @@
 #include "../Ontologies/dces.h"
 #include "../UriGenerator.h"
 #include "Geometry/Viewport.h"
+#include "RenderingDataObject.h"
 #include <list>
+
 
 namespace artivity
 {
@@ -49,7 +51,9 @@ namespace artivity
         GeometryRef _boundaries;
         
         ResourceRef _location;
-        
+
+        RenderingDataObjectRef _rendering;
+
         time_t _time;
                 
         std::string _content;
@@ -147,6 +151,12 @@ namespace artivity
             _description = std::string(description);
             
             setValue(dces::description, _description.c_str());
+        }
+
+        void setRendering(RenderingDataObjectRef render)
+        {
+            _rendering = render;
+            setValue(art::renderedAs, _rendering);
         }
     };
 }
