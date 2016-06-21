@@ -44,6 +44,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	auto duration = duration_cast<milliseconds>(t2 - t1).count();
 
+	string renderPath = log->getRenderOutputPath();
+
 	cout << "Initialization took " << duration << "ms" << endl << endl;
 
 	log->logInfo("http://localhost:8262/artivity/api/1.0/activities");

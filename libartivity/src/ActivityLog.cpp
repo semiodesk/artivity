@@ -240,7 +240,6 @@ namespace artivity
 		if (strcmp(association->getType(), art::SoftwareAssociation) == 0)
 		{
 			SoftwareAssociationRef software = boost::dynamic_pointer_cast<SoftwareAssociation>(association);
-
 			url << "?role=" << software->getRole()->uri;
 			url << "&agent=" << software->getAgent()->uri;
 			url << "&version=" << software->getVersion();
@@ -356,22 +355,35 @@ namespace artivity
 
 	string ActivityLog::getRenderOutputPath()
 	{
-		//CURL* curl = initializeRequest();
+		if (_entity->uri.empty())
+		{
+			return "";
+		}
 
-		//stringstream url;
-		//url << _endpointUrl << "/thumbnails/path?fileUri=" << escapePath(fileUrl);
+		CURL* curl = initializeRequest();
 
-		//string response;
+		stringstream url;
+		url << _endpointUrl << "/thumbnails/path?fileUri=" << escapePath(_entity->uri);
 
-		//executeRequest(curl, url.str(), "", response);
+		string response;
 
-		//jsonxx::Array a;
+		executeRequest(curl, url.str(), "", response);
 
-		//bool isValid = a.parse(response);
+		stringstream stream;
+		stream << response;
 
-		//return isValid ? a.get<jsonxx::String>((int)a.size() - 1) : "";
+		if (response.empty())
+		{
+			return "";
+		}
 
-		return "";
+		ptree tree;
+
+		read_json(stream, tree);
+
+		string path = tree.front().second.get_value<string>();
+
+		return path;
 	}
 
 	void ActivityLog::transmit()

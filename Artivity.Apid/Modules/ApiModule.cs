@@ -32,22 +32,44 @@ using Nancy;
 using Nancy.Responses;
 using Nancy.IO;
 using Semiodesk.Trinity;
+using Semiodesk.Trinity.Store;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading.Tasks;
+using VDS.RDF;
 
 namespace Artivity.Apid.Modules
 {
     public class ApiModule : ModuleBase
     {
+        #region Members
+
+        private static object _modelLock = new object();
+
+        #endregion
+
         #region Constructors
 
         public ApiModule(IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0", modelProvider, platform)
         {
+            Post["/activities"] = parameters =>
+            {
+                using (var reader = new StreamReader(Request.Body))
+                {
+                    string data = reader.ReadToEnd();
+
+                    // We start a new task so that the agent can continue its work as fast as possible.
+                    new Task(() => PostActivities(data)).Start();
+
+                    return HttpStatusCode.OK;
+                }
+            };
+
             // Get a list of all installed agents.
             Get["/agents"] = paramters =>
             {
@@ -352,6 +374,61 @@ namespace Artivity.Apid.Modules
         #endregion
 
         #region Methods
+
+        private void PostActivities(string data)
+        {
+            try
+            {
+                lock (_modelLock)
+                {
+                    IModel model = ModelProvider.GetActivities();
+
+                    if (model == null)
+                    {
+                        Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
+                    }
+
+                    MemoryStream stream = new MemoryStream();
+
+                    StreamWriter writer = new StreamWriter(stream);
+                    writer.Write(data);
+                    writer.Flush();
+
+                    stream.Position = 0;
+
+                    LoadTurtle(model, stream);
+                }
+
+                Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e, data);
+            }
+        }
+
+        private void LoadTurtle(IModel model, Stream stream)
+        {
+            string connectionString = ModelProvider.NativeConnectionString;
+
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string data = reader.ReadToEnd();
+
+                using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
+                {
+                    using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
+                    {
+                        IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
+                        parser.Load(graph, new StringReader(data));
+
+                        graph.BaseUri = model.Uri;
+
+                        m.UpdateGraph(model.Uri, graph.Triples, new List<Triple>());
+                    }
+                }
+            }
+        }
 
         private Response GetAgents()
         {

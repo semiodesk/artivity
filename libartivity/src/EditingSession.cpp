@@ -67,10 +67,7 @@ namespace artivity
 
     EditingSession::~EditingSession()
     {
-        time_t now;
-        time(&now);
-
-        _log->close(now);
+        _log->close();
     }
 
     void EditingSession::eventAdd()

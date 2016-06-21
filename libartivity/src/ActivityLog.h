@@ -143,7 +143,6 @@ namespace artivity
 		std::string getRenderOutputPath();
 
 		void logError(std::string msg);
-
 		void logInfo(std::string msg);
     };
 }
