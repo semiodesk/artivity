@@ -71,6 +71,7 @@ namespace artivity
 
     EditingSession::~EditingSession()
     {
+        _consumer->stop();
         _log->close();
     }
 
