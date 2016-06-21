@@ -121,15 +121,13 @@ namespace artivity
 		ActivityRef getActivity() { return _activity; }
 
 		// Set the file being edited.
-		void setDocument(ImageRef image, const char* path);
+		void setDocument(ImageRef image, std::string path);
 
         ImageRef getDocument();
 
-        // Add an association to the RDF stream.
         void addAssociation(const char* roleUri);
 		void addAssociation(const char* roleUri, const char* agentUri, const char* version);
-		void addAssociation(const char* roleUri, stringRef agentUri, stringRef version);
-
+		void addAssociation(const char* roleUri, std::string agentUri, std::string version);
 		// Add an entity influence to the transmitted RDF stream.
 		void addInfluence(GenerationRef generation);
 		void addInfluence(InvalidationRef invalidation);

@@ -38,8 +38,8 @@ namespace artivity
 {
     namespace xsd
     {
-		static const char* NS_PREFIX = xsd();
-		static const char* NS_URI = XSD();
+		static const char* NS_PREFIX = xsd("");
+		static const char* NS_URI = XSD("");
 
         static const char* _int = xsd("int");
 		static const char* _long = xsd("long");

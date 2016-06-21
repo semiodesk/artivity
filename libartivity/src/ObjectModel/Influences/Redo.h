@@ -30,7 +30,7 @@
 
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
-#include "../Generation.h"
+#include "../EntityInfluence.h"
 
 namespace artivity
 {
@@ -38,17 +38,38 @@ namespace artivity
 
     typedef boost::shared_ptr<Redo> RedoRef;
 
-    class Redo : public Generation
+    class Redo : public EntityInfluence
     {
-    public:
-        Redo() : Generation()
+        private:
+        std::list<std::string> _revisions;
+        int _count;
+
+        public:
+        Redo() : EntityInfluence()
         {
             setType(art::Redo);
         }
         
-        Redo(const char* uriref) : Generation(uriref)
+        Redo(const char* uriref) : EntityInfluence(uriref)
         {
             setType(art::Redo);
+        }
+
+        void addRevision(std::string revisionUri)
+        {
+            _revisions.push_back(revisionUri);
+            addResourceProperty(art::reverted, revisionUri);
+        }
+
+        void setCount(int count)
+        {
+            _count = count;
+            setValue(art::count, count);
+        }
+
+        int getCount()
+        {
+            return _count;
         }
     };
 }

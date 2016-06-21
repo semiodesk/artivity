@@ -50,6 +50,11 @@ namespace artivity
         {
             setType(prov::Agent);
         }
+
+        Agent(std::string uriref) : Resource(uriref)
+        {
+            setType(prov::Agent);
+        }
     };
 }
 

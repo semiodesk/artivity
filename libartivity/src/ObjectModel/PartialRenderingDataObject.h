@@ -23,26 +23,44 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2016
+// Copyright (c) Semiodesk GmbH 2015
 
-#ifndef dces_H
-#define dces_H
+#ifndef _ART_PARTIALRENDERINGDATAOBJECT_H
+#define _ART_PARTIALRENDERINGDATAOBJECT_H
 
-#include "../Property.h"
-
-#define dces(label) "dc:"label;
-#define DCES(label) "http://purl.org/dc/elements/1.1/"label;
+#include "RenderingDataObject.h"
 
 namespace artivity
 {
-    namespace dces
-    {
-		static const char* NS_PREFIX = dces("");
-		static const char* NS_URI = DCES("");
+    class PartialRenderingDataObject;
 
-        static const char* title = dces("title");
-        static const char* description = dces("description");
-    }
+    typedef boost::shared_ptr<PartialRenderingDataObject> PartialRenderingDataObjectRef;
+
+    class PartialRenderingDataObject : public RenderingDataObject
+    {
+        RectangleRef _region;
+
+        public:
+        PartialRenderingDataObject() : RenderingDataObject()
+        {
+            setType(art::PartialRenderingDataObject);
+        }
+
+        PartialRenderingDataObject(const char* uriref) : RenderingDataObject(uriref)
+        {
+            setType(art::PartialRenderingDataObject);
+        }
+
+
+        virtual ~PartialRenderingDataObject() {}
+
+        void setRegion(RectangleRef region)
+        {
+            _region = region;
+            setValue(art::region, _region);
+        }
+
+    };
 }
 
-#endif // dces_H
+#endif // _ART_PARTIALRENDERINGDATAOBJECT_H

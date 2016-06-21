@@ -23,26 +23,35 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2016
+// Copyright (c) Semiodesk GmbH 2015
 
-#ifndef dces_H
-#define dces_H
+#ifndef _ART_RENDERINGDATAOBJECT_H
+#define _ART_RENDERINGDATAOBJECT_H
 
-#include "../Property.h"
-
-#define dces(label) "dc:"label;
-#define DCES(label) "http://purl.org/dc/elements/1.1/"label;
+#include "Entities/FileDataObject.h"
 
 namespace artivity
 {
-    namespace dces
-    {
-		static const char* NS_PREFIX = dces("");
-		static const char* NS_URI = DCES("");
+    class RenderingDataObject;
 
-        static const char* title = dces("title");
-        static const char* description = dces("description");
-    }
+    typedef boost::shared_ptr<RenderingDataObject> RenderingDataObjectRef;
+
+    class RenderingDataObject : public FileDataObject
+    {
+        public:
+        RenderingDataObject() : FileDataObject()
+        {
+            setType(art::RenderingDataObject);
+        }
+
+        RenderingDataObject(const char* uriref) : FileDataObject(uriref)
+        {
+            setType(art::RenderingDataObject);
+        }
+
+
+        virtual ~RenderingDataObject() {}
+    };
 }
 
-#endif // dces_H
+#endif // _ART_RENDERINGDATAOBJECT_H

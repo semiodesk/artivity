@@ -35,8 +35,8 @@ namespace artivity
 {
     namespace prov
     {
-		static const char* NS_PREFIX = prov();
-		static const char* NS_URI = PROV();
+		static const char* NS_PREFIX = prov("");
+		static const char* NS_URI = PROV("");
 
         static const char* Activity = prov("Activity");
         static const char* ActivityInfluence = prov("ActivityInfluence");
