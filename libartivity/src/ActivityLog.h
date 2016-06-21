@@ -67,11 +67,11 @@ namespace artivity
 
 	class ActivityLog
     {
-    protected:
+        protected:
         std::string _endpointUrl;
 
         CURL* _curl;
-        
+            
         ActivityRef _activity;
             
 		ImageRef _entity;
@@ -94,18 +94,14 @@ namespace artivity
 
 		void dump(boost::property_tree::ptree const& pt);
 
-    public:
+        public:
         bool debug;
 
-		ActivityLog();
-
-        ActivityLog(const char* endpointUrl);
-
-		ActivityLog(std::string endpointUrl);
+        ActivityLog();
 
         virtual ~ActivityLog();
 
-		bool connect(const char* endpointUrl);
+		bool connect(std::string endpointUrl);
 
 		bool ready();
 

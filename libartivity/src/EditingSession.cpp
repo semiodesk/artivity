@@ -42,7 +42,7 @@ namespace artivity
 
     void EditingSession::initialize(string server, bool isNewDocument)
     {
-		ImageRef document = this->getDocument();
+		_document = this->getDocument();
 
         if (!isNewDocument)
         {
@@ -54,14 +54,14 @@ namespace artivity
         _consumer->setClassObject(this);
         _consumer->start();
 
-        _log = ActivityLogRef(new ActivityLog(server));
+        _log = ActivityLogRef(new ActivityLog());
         _log->addAssociation(art::USER);
         _log->addAssociation(art::SOFTWARE, this->getSoftwareAgent(), this->getSoftwareAgentVersion());
-        _log->setDocument(document, _filePath.c_str());
+        _log->setDocument(_document, _filePath.c_str());
 
-        if (_log->connect(server.c_str()))
+        if (_log->connect(server + "/artivity/api/1.0"))
         {
-            _fileUri = document->uri;
+            _fileUri = _document->uri;
 
             _initialized = true;
         }
@@ -139,13 +139,16 @@ namespace artivity
 
     void EditingSession::eventSave()
     {
-        ResourceRef res = onEventSave();
+        RevisionRef res = onEventSave();
+        res->addResourceProperty(prov::entity, _fileUri);
+        res->setIsSave(true);
         _consumer->push(res);
     }
 
     void EditingSession::eventSaveAs()
     {
-        ResourceRef res = onEventSaveAs();
+        DerivationRef res = onEventSaveAs();
+        res->setIsSave(true);
         _consumer->push(res);
     }
 
@@ -160,11 +163,17 @@ namespace artivity
 
         if (strcmp(type, prov::Revision) == 0)
         {
-            _log->addInfluence(boost::dynamic_pointer_cast<EntityInfluence>(res));
+            EntityInfluenceRef influence = boost::dynamic_pointer_cast<EntityInfluence>(res);
+            _log->addInfluence(influence);
+            if (influence->getIsSave())
+                _log->transmit();
         }
         else if (strcmp(type, prov::Derivation) == 0)
         {
-            _log->addInfluence(boost::dynamic_pointer_cast<EntityInfluence>(res));
+            EntityInfluenceRef influence = boost::dynamic_pointer_cast<EntityInfluence>(res);
+            _log->addInfluence(influence);
+            if (influence->getIsSave())
+                _log->transmit();
         }
         else if (strcmp(type, prov::Generation) == 0)
         {

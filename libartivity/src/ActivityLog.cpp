@@ -45,16 +45,6 @@ namespace artivity
 		_fileUrl = "";
 	}
 
-	ActivityLog::ActivityLog(const char* endpointUrl) : ActivityLog()
-	{
-		_endpointUrl = endpointUrl;
-	}
-
-	ActivityLog::ActivityLog(std::string endpointUrl) : ActivityLog()
-	{
-		_endpointUrl = endpointUrl;
-	}
-
 	ActivityLog::~ActivityLog()
 	{
 		// Dereference the activity.
@@ -128,7 +118,7 @@ namespace artivity
 		return responseCode;
 	}
 
-	bool ActivityLog::connect(const char* endpointUrl)
+	bool ActivityLog::connect(string endpointUrl)
 	{
 		_endpointUrl = endpointUrl;
 
@@ -295,34 +285,40 @@ namespace artivity
 
 	string ActivityLog::getEntityUri(string fileUrl)
 	{
-		CURL* curl = initializeRequest();
+        string uri = "";
+        try
+        {
+            CURL* curl = initializeRequest();
 
-		stringstream url;
-		url << _endpointUrl << "/uris?fileUrl=" << fileUrl;
+            stringstream url;
+            url << _endpointUrl << "/uris?fileUrl=" << fileUrl;
 
-		string response;
+            string response;
 
-		executeRequest(curl, url.str(), "", response);
+            executeRequest(curl, url.str(), "", response);
 
-		stringstream stream;
-		stream << response;
+            stringstream stream;
+            stream << response;
 
-		if (response.empty())
-		{
-			return "";
-		}
+            if (response.empty())
+            {
+                return uri;
+            }
 
-		ptree tree;
+            ptree tree;
 
-		read_json(stream, tree);
+            read_json(stream, tree);
 
-		string uri = tree.get_child("uri").get_value<string>();
+            uri = tree.get_child("uri").get_value<string>();
 
-		if (uri.empty())
-		{
-			return "";
-		}
-
+            if (uri.empty())
+            {
+                return uri;
+            }
+        }
+        catch (...)
+        {
+        }
 		return uri;
 	}
 

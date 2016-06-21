@@ -30,6 +30,7 @@ namespace artivity
         ProducerConsumerRef _consumer;
         std::string _imagePath;
         std::string _fileUri;
+        ImageRef _document;
 
         bool _endTime = false;
         bool _initialTransmit = true;
