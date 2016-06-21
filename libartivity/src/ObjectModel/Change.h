@@ -25,61 +25,53 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_FILEDATAOBJECT_H
-#define _ART_FILEDATAOBJECT_H
+#ifndef _ART_CHANGE_H
+#define _ART_CHANGE_H
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/nfo.h"
-#include "../Entity.h"
-#include "InformationElement.h"
-#include "../Geometry/Canvas.h"
+#include <list>
+
+#include "../Ontologies/rdf.h"
+#include "../Ontologies/prov.h"
+#include "../UriGenerator.h"
+#include "../Ontologies/art.h"
+#include "../Resource.h"
+#include "Entity.h"
 
 namespace artivity
 {
-    class FileDataObject;
+    class Change;
+    typedef boost::shared_ptr<Change> ChangeRef;
 
-    typedef boost::shared_ptr<FileDataObject> FileDataObjectRef;
-
-    class InformationElement;
-    typedef boost::shared_ptr<InformationElement> InformationElementRef;
-
-    class FileDataObject : public Resource
+    class Change : public Resource
     {
         private:
-        std::string _url;
+        EntityRef _entity;
+        const char* _property;
 
-        InformationElementRef _interpretedAs;
-        
         public:
-        FileDataObject() : Resource(UriGenerator::getUri())
+        Change() : Resource(UriGenerator::getUri())
         {
-            _url = "";         
-            setType(nfo::FileDataObject);
+            setType(art::Change);
         }
         
-        FileDataObject(const char* uriref) : Resource(uriref)
+        Change(const char* uriref) : Resource(uriref)
         {
-            _url = "";
-            setType(nfo::FileDataObject);
-        }
-        
-        const char* getUrl()
-        {
-            return _url.c_str();
-        }
-        
-        void setUrl(const char* url)
-        {
-            _url = std::string(url);
-            
-            setValue(nfo::fileUrl, _url.c_str());
+            setType(art::Change);
         }
 
-        void setInterpretedAs(InformationElementRef ie);
+        void setEntity(EntityRef entity)
+        {
+            _entity = entity;
+            setValue(prov::entity, _entity);
+        }
 
-        InformationElementRef getInterpretedAs();
-        
+        void setProperty(const char* prop)
+        {
+            _property = prop;
+            setValue(art::property, prop);
+        }
+
     };
 }
 
-#endif // _ART_FILEDATAOBJECT_H
+#endif // _ART_CHANGE_H

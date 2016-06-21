@@ -101,6 +101,11 @@ namespace artivity
         Properties.addProperty(property.Uri, value);
     } 
 
+    void Resource::addProperty(const Property& property, std::string value)
+    {
+        Properties.addProperty(property.Uri, value, typeid(value));
+    }
+
     void Resource::addProperty(const Property& property, const char* value)
     {
         Properties.addProperty(property.Uri, Serializer::toString(value), typeid(value));
@@ -139,6 +144,11 @@ namespace artivity
     void Resource::removeProperty(const Property& property, const char* value)
     {
         Properties.removeProperty(property.Uri, Serializer::toString(value), typeid(value));
+    }
+
+    void Resource::removeProperty(const Property& property, std::string value)
+    {
+        Properties.removeProperty(property.Uri, value, typeid(value));
     }
     
     void Resource::removeProperty(const Property& property, int value)
@@ -181,6 +191,11 @@ namespace artivity
         Properties.setProperty(property.Uri, Serializer::toString(value), typeid(value));
     }
     
+    void Resource::setValue(const Property& property, std::string value)
+    {
+        Properties.setProperty(property.Uri, value, typeid(value));
+    }
+
     void Resource::setValue(const Property& property, int value)
     {
         Properties.setProperty(property.Uri, Serializer::toString(value), typeid(value));
@@ -201,6 +216,15 @@ namespace artivity
         Properties.setProperty(property.Uri, Serializer::toString(value), typeid(value));
     }
 
+    void Resource::setResourceValue(const Property& property, std::string value)
+    {
+        Properties.setProperty(property.Uri, value, typeid(Resource));
+    }
+
+    void Resource::addResourceProperty(const Property& property, std::string value)
+    {
+        Properties.addProperty(property.Uri, value, typeid(Resource));
+    }
 
     void Resource::setType(const char* value)
     {
@@ -213,6 +237,7 @@ namespace artivity
         {
             return Properties.find(rdf::_type)->second.LiteralValue.c_str();
         }
+        return NULL;
     }
     
     void Resource::setUri(string uriref)
