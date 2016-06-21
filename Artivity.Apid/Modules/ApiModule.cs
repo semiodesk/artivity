@@ -341,7 +341,9 @@ namespace Artivity.Apid.Modules
                     return HttpStatusCode.BadRequest;
                 }
 
-                return GetRenderOutputPath(Request.Query.fileUri);
+                bool create = Request.Query.create != null;
+
+                return GetRenderOutputPath(Request.Query.fileUri, create);
             };
 
             Get["/stats/influences"] = parameters =>
@@ -1033,7 +1035,7 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response GetRenderOutputPath(string fileUri)
+        private Response GetRenderOutputPath(string fileUri, bool createDirectory = false)
         {
             if (string.IsNullOrEmpty(fileUri))
             {
@@ -1043,17 +1045,14 @@ namespace Artivity.Apid.Modules
             var invalids = System.IO.Path.GetInvalidFileNameChars();
             var newName = String.Join("_", fileUri.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(PlatformProvider.ThumbnailFolder, newName));
+            string path = Path.Combine(PlatformProvider.ThumbnailFolder, newName);
 
-            if (!dir.Exists)
+            if (createDirectory && !Directory.Exists(path))
             {
-                dir.Create();
+                Directory.CreateDirectory(path);
             }
 
-            List<string> result = new List<string>()
-            {
-                dir.FullName
-            };
+            List<string> result = new List<string>() { path };
 
             return Response.AsJson(result);
         }

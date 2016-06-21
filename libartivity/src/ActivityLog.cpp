@@ -138,27 +138,11 @@ namespace artivity
 		// Initialize the entity.
 		string uri = getEntityUri(_fileUrl);
 
-		if (_fileUrl == "" || !filesystem::exists(_fileUrl))
-		{
-			GenerationRef generation = GenerationRef(new Generation());
-			generation->addGenerated(_entity);
-
-			// A new file is being created.
-			_activity = CreateFileRef(new CreateFile());
-			_activity->addInfluence(generation);
-		}
-		else
-		{
-			if (uri != "")
-			{
-				// There is already a URI for the file.
-				_entity->uri = uri;
-			}
-
-			// An existing file is being edited.
-			_activity = EditFileRef(new EditFile());
-			_activity->addUsage(_entity);
-		}
+        if (uri != "")
+        {
+            // There is already a URI for the file.
+            _entity->uri = uri;
+        }
 
 		time_t now;
 		time(&now);
@@ -285,10 +269,29 @@ namespace artivity
 		return true;
 	}
 
-    void ActivityLog::setDocument(ImageRef image, std::string path)
+    void ActivityLog::setDocument(ImageRef image, std::string path, bool create)
 	{
 		_entity = image;
 		_fileUrl = "file://" + escapePath(path);
+
+        if (create)
+        {
+            GenerationRef generation = GenerationRef(new Generation());
+            generation->addGenerated(_entity);
+
+            // A new file is being created.
+            _activity = CreateFileRef(new CreateFile());
+            _activity->addInfluence(generation);
+
+            // Create an output directory for the renderings on the sever.
+            _createRenderDirectory = true;
+        }
+        else
+        {
+            // An existing file is being edited.
+            _activity = EditFileRef(new EditFile());
+            _activity->addUsage(_entity);
+        }
 	}
 
 	ImageRef ActivityLog::getDocument()
@@ -377,6 +380,11 @@ namespace artivity
 		stringstream url;
 		url << _endpointUrl << "/renderings/path?fileUri=" << escapePath(_entity->uri);
 
+        if (_createRenderDirectory)
+        {
+            url << "&create";
+        }
+
 		string response;
 
 		executeRequest(curl, url.str(), "", response);
@@ -394,6 +402,9 @@ namespace artivity
 		read_json(stream, tree);
 
 		string path = tree.front().second.get_value<string>();
+
+        // If the directory was created, do not try the next time.
+        _createRenderDirectory = _createRenderDirectory & !path.empty();
 
 		return path;
 	}
