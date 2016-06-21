@@ -25,54 +25,21 @@
 //
 // Copyright (c) Semiodesk GmbH 2016
 
-#ifndef _ART_IMAGE_H
-#define _ART_IMAGE_H
+#ifndef _ART_RDFS_H
+#define _ART_RDFS_H
 
-#include <boost/filesystem.hpp>
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/nfo.h"
-#include "Media.h"
-#include "FileDataObject.h"
-#include "Folder.h"
+#define rdfs(label) "rdf:"label;
+#define RDFS(label) "http://www.w3.org/2000/01/rdf-schema#"label;
 
 namespace artivity
 {
-    class Image;
-
-    typedef boost::shared_ptr<Image> ImageRef;
-
-    class Image : public Media
+    namespace rdfs
     {
-    private:
-        std::string _path;
+        static const char* NS_PREFIX = rdfs("");
+        static const char* NS_URI = RDFS("");
 
-        FileDataObjectRef _file;
-
-        FolderRef _folder;
-
-    public:
-        Image() : Media()
-        {
-            setType(nfo::Image);
-        }
-        
-        Image(const char* uriref) : Media(uriref)
-        {
-            setType(nfo::Image);
-        }
-
-        void setPath(boost::filesystem::path p);
-
-        FileDataObjectRef getFile()
-        {
-            return _file;
-        }
-
-        FolderRef getFolder()
-        {
-            return _folder;
-        }
-    };
+        static const char* label = rdfs("label");
+    }
 }
 
-#endif // _ART_IMAGE_H
+#endif // _ART_RDFS_H
