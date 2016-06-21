@@ -363,7 +363,7 @@ namespace artivity
 		CURL* curl = initializeRequest();
 
 		stringstream url;
-		url << _endpointUrl << "/thumbnails/path?fileUri=" << escapePath(_entity->uri);
+		url << _endpointUrl << "/renderings/path?fileUri=" << escapePath(_entity->uri);
 
 		string response;
 
