@@ -147,7 +147,7 @@ namespace artivity
 
 			while (it != ctx.prefixes.end())
 			{
-				out << "prefix " << *it << " <" << PREFIX_MAP.find(*it)->second << "> ." << endl;
+				out << "@prefix " << *it << " <" << PREFIX_MAP.find(*it)->second << "> ." << endl;
 
 				it++;
 			}
@@ -263,7 +263,9 @@ namespace artivity
 
 				if (it != TYPE_MAP.end())
 				{
-					ctx.out << "^^" << it->second;
+                    ctx.out << "^^";
+
+                    serializeN3(ctx, it->second);
 				}
 			}
 		}

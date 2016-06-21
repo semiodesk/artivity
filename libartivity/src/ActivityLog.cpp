@@ -386,29 +386,34 @@ namespace artivity
 		return path;
 	}
 
-	void ActivityLog::transmit()
-	{
-		stringstream stream;
+    void ActivityLog::transmit()
+    {
+        stringstream stream;
 
-		Serializer s;
-		s.serialize(stream, _activity, N3);
+        Serializer s;
+        s.serialize(stream, _activity, N3);
 
-		if (stream.rdbuf()->in_avail() == 0)
-		{
-			return;
-		}
+        if (stream.rdbuf()->in_avail() == 0)
+        {
+            return;
+        }
 
-		string requestData = stream.str();
-		string responseData;
+        string requestData = stream.str();
+        string responseData;
 
-		CURL* curl = initializeRequest();
+        CURL* curl = initializeRequest();
 
-		stringstream url;
-		url << _endpointUrl << "/activities";
+        stringstream url;
+        url << _endpointUrl << "/activities";
 
-		cout << requestData << endl;
-
-		//executeRequest(curl, url.str(), requestData, responseData);
+        if (!debug)
+        {
+            executeRequest(curl, url.str(), requestData, responseData);
+        }
+        else
+        {
+            logInfo(requestData);
+        }
 
 		clear();
 	}
