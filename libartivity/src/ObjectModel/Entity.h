@@ -64,6 +64,8 @@ namespace artivity
             setType(prov::Entity);
         }
 
+        virtual ~Entity() {}
+
         time_t getCreated()
         {
             return _created;

@@ -40,14 +40,12 @@ namespace artivity
     Resource::Resource(string uriref)
     {
         uri = uriref;        
-        properties = PropertyMap();
 		serialize = true;
     }
     
     Resource::Resource(const char* uriref)
     {
         uri = string(uriref);      
-        properties = PropertyMap();
 		serialize = true;
     }
 
