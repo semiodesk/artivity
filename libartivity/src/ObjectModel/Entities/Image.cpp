@@ -58,7 +58,6 @@ namespace artivity
 
         _file->setLabel(p.filename().string());
         _file->setContainer(_folder);
-        _file->setInterpretation(ImageRef(this));
         _file->setCreated(now);
         _file->setModified(now);
     }

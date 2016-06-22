@@ -36,11 +36,16 @@ namespace artivity
 {
     typedef std::multimap<std::string, PropertyValue>::iterator PropertyMapIterator;
     
-    class PropertyMap : public std::multimap<std::string, PropertyValue>
+    class PropertyMap
     {
+        private:
+        std::multimap<std::string, PropertyValue> _map;
         public:
         PropertyMap() {}
-        ~PropertyMap() {}
+        ~PropertyMap() 
+        {
+            _map.clear();
+        }
         
         PropertyMapIterator findProperty(const std::string& property, ResourceRef resource);
         
@@ -62,7 +67,23 @@ namespace artivity
 
         void setProperty(const std::string& property, std::string literalValue, const type_info& typeInfo);
 
+        void erase(const std::string& property) { _map.erase(property); }
 
+        PropertyMapIterator find(const std::string& property) { return _map.find(property); }
+
+        PropertyMapIterator end() { return _map.end(); }
+
+        PropertyMapIterator begin() { return _map.end(); }
+
+        void clear() { _map.clear(); }
+
+        size_t size() { return _map.size(); }
+
+        bool empty() { return _map.empty(); }
+
+        PropertyMapIterator lower_bound(const std::string& property) { return _map.lower_bound(property); }
+
+        PropertyMapIterator upper_bound(const std::string& property) { return _map.upper_bound(property); }
     };
 }
 
