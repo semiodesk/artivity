@@ -790,22 +790,24 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    MAX(?time) as ?time ?entity ?url
+                    MAX(?time) as ?time ?entity ?label
                 WHERE
                 {
                     {
                         SELECT
-                            MAX(?time) as ?time ?url
+                            MAX(?time) as ?time ?label
                         WHERE
                         {
-                            ?entity nfo:fileLastModified ?time .
-                            ?entity nfo:fileUrl ?url .
+                            ?file rdfs:label ?label .
+                            ?file nie:lastModified ?time .
                         }
-                        GROUP BY ?url
+                        GROUP BY ?label
                     }
 
-                    ?entity nfo:fileLastModified ?time .
-                    ?entity nfo:fileUrl ?url .
+                    ?entity nie:isStoredAs ?file .
+
+                    ?file rdfs:label ?label .
+                    ?file nie:lastModified ?time .
                 }
                 ORDER BY DESC(?time) LIMIT 25");
 

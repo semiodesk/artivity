@@ -155,22 +155,17 @@ namespace artivity
 		while (it != _associations.end())
 		{
 			AssociationRef association = *it;
-            it++;
 
-			if (association->uri.empty())
-			{
-                if (!fetchAssociationUri(association))
-                {
-                    continue;
-                }
-            }
             // Do not add the association to the serialized output, 
             // as it is already stored in the database.
             association->serialize = false;
-            _activity->addAssociation(association);
-            
 
-			
+            if (!association->uri.empty() || fetchAssociationUri(association))
+			{
+                _activity->addAssociation(association);
+            }
+
+            it++;
 		}
 
 		return ready();
@@ -292,12 +287,6 @@ namespace artivity
             // A new file is being created.
             _activity = CreateFileRef(new CreateFile());
             _activity->addInfluence(generation);
-
-            // Create an output directory for the renderings on the sever.
-            _createRenderDirectory = true;
-
-            // Set up the file and folder data objects.
-            image->setPath(path);
         }
         else
         {
@@ -391,12 +380,7 @@ namespace artivity
 		CURL* curl = initializeRequest();
 
 		stringstream url;
-		url << _endpointUrl << "/renderings/path?fileUri=" << UriGenerator::escapePath(_entity->uri);
-
-        if (_createRenderDirectory)
-        {
-            url << "&create";
-        }
+        url << _endpointUrl << "/renderings/path?fileUri=" << UriGenerator::escapePath(_entity->uri) << "&create";
 
 		string response;
 
@@ -415,9 +399,6 @@ namespace artivity
 		read_json(stream, tree);
 
 		string path = tree.front().second.get_value<string>();
-
-        // If the directory was created, do not try the next time.
-        _createRenderDirectory = _createRenderDirectory & !path.empty();
 
 		return path;
 	}
