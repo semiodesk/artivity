@@ -73,15 +73,19 @@ namespace Artivity.Apid.Modules
             // Get a list of all installed agents.
             Get["/agents"] = paramters =>
             {
-                string fileUrl = Request.Query["fileUrl"];
+                string uri = Request.Query.uri;
 
-                if(string.IsNullOrEmpty(fileUrl))
+                if (string.IsNullOrEmpty(uri))
                 {
                     return GetAgents();
                 }
+                else if (Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                {
+                    return GetAgent(new UriRef(uri));
+                }
                 else
                 {
-                    return GetAgent(fileUrl);
+                    return HttpStatusCode.BadRequest;
                 }
             };
 
@@ -244,19 +248,18 @@ namespace Artivity.Apid.Modules
 
             Get["/files"] = parameters =>
             {
-                if(Request.Query.fileUrl)
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri))
                 {
-                    string fileUrl = Request.Query.fileUrl;
-
-                    if(string.IsNullOrEmpty(fileUrl))
-                    {
-                        return HttpStatusCode.BadRequest;
-                    }
-
-                    return GetFile(fileUrl);
+                    return HttpStatusCode.NotImplemented;
+                }
+                else if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                {
+                    return HttpStatusCode.BadRequest;
                 }
 
-                return HttpStatusCode.NotImplemented;
+                return GetFile(new UriRef(uri));
             };
 
             Get["/files/recent"] = parameters =>
@@ -266,24 +269,26 @@ namespace Artivity.Apid.Modules
 
             Get["/files/canvas"] = parameters =>
             {
-                string fileUrl = Request.Query.fileUrl;
+                string uri = Request.Query.uri;
 
-                if(string.IsNullOrEmpty(fileUrl))
+                if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
                 {
                     return HttpStatusCode.BadRequest;
                 }
-                    
-                return GetCanvas(fileUrl);
+
+                return GetCanvas(new UriRef(uri));
             };
 
             Get["/activities"] = parameters =>
             {
-                if (string.IsNullOrEmpty(Request.Query.fileUrl))
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
                 {
                     return HttpStatusCode.BadRequest;
                 }
 
-                return GetActivities(Request.Query.fileUrl);
+                return GetActivities(new UriRef(uri));
             };
 
             Get["/activities/clear"] = parameters =>
@@ -294,18 +299,27 @@ namespace Artivity.Apid.Modules
 
             Get["/influences"] = parameters =>
             {
-                if (string.IsNullOrEmpty(Request.Query.fileUrl))
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
                 {
                     return HttpStatusCode.BadRequest;
                 }
 
-                return GetInfluences(Request.Query.fileUrl);
+                return GetInfluences(new UriRef(uri));
             };
 
             Get["/renderings"] = parameters =>
             {
-                if(Request.Query.fileUrl)
+                if(Request.Query.uri)
                 {
+                    string uri = Request.Query.uri;
+
+                    if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+
                     if(Request.Query.timestamp)
                     {
                         string time = Request.Query.timestamp;
@@ -322,11 +336,18 @@ namespace Artivity.Apid.Modules
                         }
                     }
 
-                    return GetRenderings(Request.Query.fileUrl);
+                    return GetRenderings(new UriRef(uri));
                 }
-                else if(Request.Query.renderingUrl)
+                else if(Request.Query.url)
                 {
-                    return GetRendering(Request.Query.renderingUrl);
+                    string url = Request.Query.url;
+
+                    if (string.IsNullOrEmpty(url) || !Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+
+                    return GetRendering(new UriRef(url));
                 }
                 else
                 {
@@ -336,19 +357,23 @@ namespace Artivity.Apid.Modules
 
             Get["/renderings/path"] = parameters =>
             {
-                if (string.IsNullOrEmpty(Request.Query.fileUri))
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
                 {
                     return HttpStatusCode.BadRequest;
                 }
 
                 bool create = Request.Query.create != null;
 
-                return GetRenderOutputPath(Request.Query.fileUri, create);
+                return GetRenderOutputPath(new UriRef(uri), create);
             };
 
             Get["/stats/influences"] = parameters =>
             {
-                if (string.IsNullOrEmpty(Request.Query.fileUrl))
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
                 {
                     return HttpStatusCode.BadRequest;
                 }
@@ -361,7 +386,7 @@ namespace Artivity.Apid.Modules
 
                     if (DateTimeOffset.TryParse(time.Replace(' ', '+'), out timestamp))
                     {
-                        return GetCompositionStats(Request.Query.fileUrl, timestamp.UtcDateTime);
+                        return GetCompositionStats(new UriRef(uri), timestamp.UtcDateTime);
                     }
                     else
                     {
@@ -369,7 +394,7 @@ namespace Artivity.Apid.Modules
                     }
                 }
 
-                return GetCompositionStats(Request.Query.fileUrl);
+                return GetCompositionStats(new UriRef(uri));
             };
         }
 
@@ -439,7 +464,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(agents.ToList());
         }
 
-        private Response GetAgent(string fileUrl)
+        private Response GetAgent(UriRef entityUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -451,20 +476,17 @@ namespace Artivity.Apid.Modules
                     {
                         SELECT ?s WHERE
                         {
-                            ?file nfo:fileUrl @fileUrl .
+                            ?activity prov:used @entity;
+                            ?activity prov:qualifiedAssociation ?association .
 
-                            ?activity prov:used ?file;
-                                prov:qualifiedAssociation ?association .
-
+                            ?association prov:hadRole art:SOFTWARE .
                             ?association prov:agent ?s .
-
-                            ?s a prov:SoftwareAgent .
                         }
                         LIMIT 1
                     }
                 }");
 
-            query.Bind("@fileUrl", fileUrl);
+            query.Bind("@entity", entityUri);
 
             IEnumerable<IResource> agents = ModelProvider.GetAllActivities().GetResources(query);
 
@@ -475,6 +497,34 @@ namespace Artivity.Apid.Modules
             else
             {
                 return null;
+            }
+        }
+
+        private Response GetUserAgent()
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?s ?p ?o
+                WHERE
+                {
+                    ?s ?p ?o .
+
+                    ?a prov:agent ?s .
+                    ?a prov:hadRole art:USER .
+                }
+            ");
+
+            IEnumerable<Person> persons = ModelProvider.AgentsModel.GetResources<Person>(query);
+
+            if (persons.Any())
+            {
+                return Response.AsJson(persons.First());
+            }
+            else
+            {
+                Association association = CreateUserAssociation();
+
+                return Response.AsJson(association.Agent);
             }
         }
 
@@ -516,35 +566,6 @@ namespace Artivity.Apid.Modules
             return association;
         }
 
-        private Response GetUserAgent()
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?s ?p ?o
-                WHERE
-                {
-                    ?s ?p ?o .
-
-                    ?a rdf:type prov:Association .
-                    ?a prov:agent ?s .
-                    ?a prov:hadRole art:USER .
-                }
-            ");
-
-            IEnumerable<Person> persons = ModelProvider.AgentsModel.ExecuteQuery(query).GetResources<Person>();
-
-            if (persons.Any())
-            {
-                return Response.AsJson(persons.First());
-            }
-            else
-            {
-                Association association = CreateUserAssociation();
-
-                return Response.AsJson(association.Agent);
-            }
-        }
-
         private Response GetAgentAssociations()
         {
             ISparqlQuery query = new SparqlQuery(@"
@@ -552,13 +573,12 @@ namespace Artivity.Apid.Modules
                     ?association ?agent ?role
                 WHERE
                 {
-                    ?association rdf:type prov:Association .
                     ?association prov:agent ?agent .
                     ?association prov:hadRole ?role .
                 }
             ");
 
-            var bindings = ModelProvider.AgentsModel.ExecuteQuery(query, true).GetBindings();
+            var bindings = ModelProvider.AgentsModel.GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -570,7 +590,6 @@ namespace Artivity.Apid.Modules
                     ?association ?agent ?role
                 WHERE
                 {
-                    ?association rdf:type prov:Association .
                     ?association prov:agent ?agent .
                     ?association prov:hadRole @role .
 
@@ -580,7 +599,7 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@role", role);
 
-            var bindings = ModelProvider.AgentsModel.ExecuteQuery(query, true).GetBindings().FirstOrDefault();
+            var bindings = ModelProvider.AgentsModel.GetBindings(query).FirstOrDefault();
 
             return Response.AsJson(bindings);
         }
@@ -592,9 +611,8 @@ namespace Artivity.Apid.Modules
                     ?association ?agent ?role
                 WHERE
                 {
-                    ?association rdf:type art:SoftwareAssociation .
-                    ?association prov:agent @agent .
                     ?association prov:hadRole @role .
+                    ?association prov:agent @agent .
                     ?association art:version @version .
 
                     BIND(@agent as ?agent)
@@ -606,11 +624,11 @@ namespace Artivity.Apid.Modules
             query.Bind("@agent", agent);
             query.Bind("@version", version);
 
-            var bindings = ModelProvider.AgentsModel.ExecuteQuery(query).GetBindings().FirstOrDefault();
+            var bindings = ModelProvider.AgentsModel.GetBindings(query).FirstOrDefault();
 
-            if(bindings == null && ModelProvider.AgentsModel.ContainsResource(agent))
+            if(bindings == null)
             {
-                Logger.LogInfo("Creating association for agent {0} in version {1}", agent, version);
+                Logger.LogInfo("Creating association for agent {0} ; version {1}", agent, version);
 
                 // The URI format of the new agent is always {AGENT_URI}#{VERSION}
                 UriRef uri = new UriRef(agent.AbsoluteUri + "#" + version.Replace(' ', '_').Trim());
@@ -790,7 +808,7 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    MAX(?time) as ?time ?entity ?label
+                    MAX(?time) as ?time ?uri ?label
                 WHERE
                 {
                     {
@@ -804,7 +822,7 @@ namespace Artivity.Apid.Modules
                         GROUP BY ?label
                     }
 
-                    ?entity nie:isStoredAs ?file .
+                    ?uri nie:isStoredAs ?file .
 
                     ?file rdfs:label ?label .
                     ?file nie:lastModified ?time .
@@ -816,37 +834,31 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(bindings);
         }
 
-        private Response GetActivities(string fileUrl)
+        private Response GetActivities(UriRef entityUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?startTime ?endTime MAX(?time) as ?maxTime ?color ?name
+                    ?startTime ?endTime MAX(?time) as ?maxTime ?agent ?agentColor
                 WHERE
                 {
-                    ?file nfo:fileUrl @fileUrl .
+                    ?activity prov:generated | prov:used @entity .
+                    ?activity prov:startedAtTime ?startTime .
+                    ?activity prov:endedAtTime ?endTime .
+                    ?activity prov:qualifiedAssociation ?association .
+                    ?activity prov:qualifiedInfluence ?influence .
 
-                    ?activity prov:used ?file ;
-                        prov:qualifiedAssociation ?association ;
-                        prov:startedAtTime ?startTime ;
-                        prov:endedAtTime ?endTime ;
-                        prov:generated ?entity .
+                    ?association prov:role art:SOFTWARE .
+                    ?association prov:agent / foaf:name ?agent .
+                    ?association prov:agent / art:colorCode ?agentColor .
 
-                    ?association prov:agent ?agent .
-
-                    ?agent foaf:name ?name .
-
-                    ?entity prov:qualifiedGeneration ?generation .
-
-                    ?generation a ?type .
-                    ?generation prov:atTime ?time .
-
-                    OPTIONAL { ?agent art:hasColourCode ?color . }
+                    ?influence a ?type .
+                    ?influence prov:atTime ?time .
                 }
                 ORDER BY DESC(?startTime)");
 
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
 
-            var bindings = ModelProvider.GetAll().GetBindings(query);
+            var bindings = ModelProvider.GetAll().GetBindings(query, true);
 
             return Response.AsJson(bindings);
         }
@@ -858,169 +870,153 @@ namespace Artivity.Apid.Modules
             return HttpStatusCode.OK;
         }
 
-        private Response GetInfluences(string fileUrl)
+        private Response GetInfluences(UriRef entityUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?layer ?time ?uri ?type ?color ?description ?bounds ?thumbnailUrl ?x ?y
+                    ?time ?uri ?type ?description ?agentColor ?layerName ?bounds ?renderUrl ?renderX ?renderY
                 WHERE 
                 {
-                    ?file nfo:fileUrl @fileUrl .
+                    ?activity prov:generated | prov:used @entity .
+                    ?activity prov:qualifiedAssociation ?association .
+                    ?activity prov:qualifiedInfluence ?uri .
 
-                    ?activity prov:used ?file;
-                        prov:qualifiedAssociation ?association ;
-                        prov:generated ?entity .
+                    ?association prov:role art:SOFTWARE .
+                    ?association prov:agent / art:colorCode ?agentColor .
 
-                    ?association prov:agent ?agent .
+                    ?uri a ?type .
+                    ?uri prov:atTime ?time .
 
-                    ?agent art:hasColourCode ?color .
-
-                    ?entity prov:qualifiedGeneration ?generation .
-
-                    ?generation a ?type ;
-                        prov:atTime ?time .
-
-                    OPTIONAL { ?generation art:selectedLayer ?layer . }
-                    OPTIONAL { ?generation dces:description ?description . }
-                    OPTIONAL { ?generation art:hadBoundaries ?bounds . }
+                    OPTIONAL { ?uri dc:description ?description . }
+                    OPTIONAL { ?uri art:selectedLayer / rdfs:label ?layerName . }
+                    OPTIONAL { ?uri art:hadBoundaries ?bounds . }
                     OPTIONAL
                     {
-                        ?generation art:thumbnailUrl ?thumbnailUrl .
-                        ?generation art:thumbnailPosition ?rectangle .
+                        ?uri art:renderedAs ?rendering .
 
-                        ?rectangle art:position ?position .
-
-                        ?position art:x ?x .
-                        ?position art:y ?y .
+                        ?rendering nie:url ?renderUrl .
+                        ?rendering art:region / art:position / art:x ?renderX .
+                        ?rendering art:region / art:position / art:y ?renderY .
                     }
                 }
                 ORDER BY DESC(?time)");
 
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
 
-            var bindings = ModelProvider.GetAllActivities().GetBindings(query);
+            var bindings = ModelProvider.GetAllActivities().GetBindings(query, true);
 
             return Response.AsJson(bindings);
         }
 
-        private Response GetRenderings(string fileUrl)
+        private Response GetRenderings(UriRef entityUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?layer ?layerZ ?time ?thumbnailUrl COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+                    ?time ?url COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?layerName ?layerZ ?boundsX ?boundsY ?boundsWidth ?boundsHeight
                 WHERE 
                 {
                     {
-                        SELECT ?layer COALESCE(?layerZ, 0) AS ?layerZ ?generation ?time WHERE
+                        SELECT
+                            ?time ?influence ?layerName ?layerZ
+                        WHERE
                         {
-                            ?file nfo:fileUrl @fileUrl .
+                            ?activity prov:generated | prov:used @entity .
+                            ?activity prov:qualifiedInfluence ?influence .
 
-                            ?activity prov:used ?file .
-                            ?activity prov:generated ?entity .
+                            ?influence prov:atTime ?time .
+                            ?influence art:selectedLayer ?layer .
 
-                            ?entity prov:qualifiedGeneration ?generation .
-
-                            ?generation art:selectedLayer ?layer .
-                            ?generation prov:atTime ?time .
-
-                            OPTIONAL { ?generation art:layerZPosition ?layerZ . }
+                            ?layer rdfs:label ?layerName .
+                            ?layer art:position / art:z ?layerZ .
                         }
                         GROUP BY ?layerZ
                     }
 
-                    ?generation art:thumbnailUrl ?thumbnailUrl .
+                    ?influence art:renderedAs ?rendering .
+
+                    ?rendering nie:url ?url .
 
                     OPTIONAL
                     {
-                        ?generation art:thumbnailPosition ?rectangle .
-
-                        ?rectangle art:position ?position .
-
-                        ?position art:x ?x .
-                        ?position art:y ?y .
+                        ?rendering art:region / art:position / art:x ?x .
+                        ?rendering art:region / art:position / art:y ?y .
                     }
 
                     OPTIONAL
                     {
-                        ?generation art:hadBoundaries ?bounds .
+                        ?influence art:hadBoundaries ?bounds .
 
+                        ?bounds art:position / art:x ?boundsX .
+                        ?bounds art:position / art:y ?boundsY .
                         ?bounds art:width ?boundsWidth .
                         ?bounds art:height ?boundsHeight .
-                        ?bounds art:position ?p .
-
-                        ?p art:x ?boundsX .
-                        ?p art:y ?boundsY .
                     }
                 }
                 ORDER BY DESC(?time)");
 
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
 
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            var bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
 
             return Response.AsJson(bindings);
         }
 
-        private Response GetRenderings(string fileUrl, DateTime time)
+        private Response GetRenderings(UriRef entityUri, DateTime time)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?layer ?layerZ ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+                    ?time ?url ?x ?y ?layerName ?layerZ ?boundsX ?boundsY ?boundsWidth ?boundsHeight
                 WHERE 
                 {
                     {
-                        SELECT ?layer ?layerZ MAX(?time) AS ?time WHERE
+                        SELECT
+                            MAX(?time) AS ?time ?layer ?layerName ?layerZ
+                        WHERE
                         {
-                            ?file nfo:fileUrl @fileUrl .
+                            ?activity prov:generated | prov:used @entity .
+                            ?activity prov:qualifiedInfluence ?influence .
 
-                            ?activity prov:used ?file .
-                            ?activity prov:generated ?entity .
+                            ?influence prov:atTime ?time .
+                            ?influence art:selectedLayer ?layer .
 
-                            ?entity prov:qualifiedGeneration ?generation .
-
-                            ?generation art:selectedLayer ?layer .
-                            ?generation art:layerZPosition ?layerZ .
-                            ?generation prov:atTime ?time .
+                            ?layer rdfs:label ?layerName .
+                            ?layer art:position / art:z ?layerZ .
 
                             FILTER(?time <= @time)
                         }
                         GROUP BY ?layerZ
                     }
 
-                    ?generation prov:atTime ?time .
-                    ?generation art:selectedLayer ?layer .
-                    ?generation art:thumbnailUrl ?thumbnailUrl .
-                    ?generation art:thumbnailPosition ?rectangle .
+                    ?influence prov:atTime ?time .
+                    ?influence art:selectedLayer ?layer .
+                    ?influence art:renderedAs ?rendering .
 
-                    ?rectangle art:position ?position .
-
-                    ?position art:x ?x .
-                    ?position art:y ?y .
+                    ?rendering nie:url ?url .
+                    ?rendering art:region / art:position / art:x ?x .
+                    ?rendering art:region / art:position / art:y ?y .
 
                     OPTIONAL
                     {
-                        ?generation art:hadBoundaries ?bounds .
+                        ?influence art:hadBoundaries ?bounds .
 
+                        ?bounds art:position / art:x ?boundsX .
+                        ?bounds art:position / art:y ?boundsY .
                         ?bounds art:width ?boundsWidth .
                         ?bounds art:height ?boundsHeight .
-                        ?bounds art:position ?p .
-
-                        ?p art:x ?boundsX .
-                        ?p art:y ?boundsY .
                     }
                 }");
 
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            var bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
 
             return Response.AsJson(bindings);
         }
 
-        private Response GetRendering(string thumbnailUrl)
+        private Response GetRendering(UriRef url)
         {
-            string file = new Uri(thumbnailUrl).AbsolutePath;
+            string file = url.AbsolutePath;
 
             if (File.Exists(file))
             {
@@ -1037,15 +1033,10 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response GetRenderOutputPath(string fileUri, bool createDirectory = false)
+        private Response GetRenderOutputPath(UriRef entityUri, bool createDirectory = false)
         {
-            if (string.IsNullOrEmpty(fileUri))
-            {
-                return HttpStatusCode.InternalServerError;
-            }
-
             var invalids = System.IO.Path.GetInvalidFileNameChars();
-            var newName = String.Join("_", fileUri.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            var newName = String.Join("_", entityUri.AbsoluteUri.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 
             string path = Path.Combine(PlatformProvider.ThumbnailFolder, newName);
 
@@ -1059,7 +1050,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(result);
         }
 
-        private string GetFileUri(string path)
+        private string GetEntityUri(string path)
         {
             Uri fileUrl = new FileInfo(path).ToUriRef();
 
@@ -1068,8 +1059,10 @@ namespace Artivity.Apid.Modules
                     ?entity
                 WHERE
                 {
-                    ?entity nfo:fileUrl @fileUrl .
-                    ?entity nfo:fileLastModified ?time .
+                    ?entity nie:isStoredAs ?file .
+
+                    ?file nie:url @fileUrl .
+                    ?file nie:lastModified ?time .
                 }
                 ORDER BY DESC(?time) LIMIT 1
             ");
@@ -1093,56 +1086,48 @@ namespace Artivity.Apid.Modules
             return null;
         }
 
-        private Response GetCompositionStats(string fileUrl)
+        private Response GetCompositionStats(UriRef entityUri)
         {
             string queryString = @"
                 SELECT
                     ?type count(?type) as ?count
                 WHERE
                 {
-                    ?activity prov:used ?file .
-                    ?activity prov:generated ?version .
+                    ?activity prov:generated | prov:used @entity .
+                    ?activity prov:qualifiedInfluence ?influence .
 
-                    ?file nfo:fileUrl @fileUrl .
-
-                    ?version prov:qualifiedGeneration ?generation .
-                    
-                    ?generation a ?type .
+                    ?influence a ?type .
                 }";
 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
 
             return Response.AsJson(bindings);
         }
 
-        private Response GetCompositionStats(string fileUrl, DateTime time)
+        private Response GetCompositionStats(UriRef entityUri, DateTime time)
         {
             string queryString = @"
                 SELECT
                     ?type count(?type) AS ?count
                 WHERE
                 {
-                    ?activity prov:used ?file .
-                    ?activity prov:generated ?version .
-
-                    ?file nfo:fileUrl @fileUrl .
-
-                    ?version prov:qualifiedGeneration ?generation .
+                    ?activity prov:generated | prov:used @entity .
+                    ?activity prov:qualifiedInfluence ?influence .
                     
-                    ?generation a ?type .
-                    ?generation prov:atTime ?time .
+                    ?influence a ?type .
+                    ?influence prov:atTime ?time .
 
                     FILTER (?time <= @time)
                 }";
 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
 
             return Response.AsJson(bindings);
         }
@@ -1155,12 +1140,12 @@ namespace Artivity.Apid.Modules
                 WHERE
                 {
                     ?uri rdf:type ?type .
-                    ?uri nfo:storedAs ?file .
+                    ?uri nfo:isStoredAs ?file .
 
-                    ?file nfo:fileUrl @fileUrl .
-                    ?file nfo:fileLastModified ?time .
+                    ?file nie:url @fileUrl .
+                    ?file nie:lastModified ?time .
                 }
-                ORDER BY DESC(?time)");
+                ORDER BY DESC(?time) LIMIT 1");
 
             query.Bind("@fileUrl", fileUrl);
 
@@ -1169,8 +1154,11 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(bindings);
         }
 
-        private Response GetFile(string fileUrl)
+        private Response GetFile(Uri fileUrl)
         {
+            string fileName = Path.GetFileName(fileUrl.LocalPath);
+            Uri folderUrl = new Uri(fileUrl.AbsoluteUri.Substring(0, fileUrl.AbsoluteUri.LastIndexOf(fileName)));
+            
             string queryString = @"
                 SELECT
                     ?s ?p ?o
@@ -1183,18 +1171,19 @@ namespace Artivity.Apid.Modules
                             ?s
                         WHERE
                         {
-                            ?activity prov:used ?s .
+                            ?activity prov:generated | prov:used ?document.
                             ?activity prov:startedAtTime ?startTime .
 
-                            ?s rdf:type nfo:FileDataObject .
-                            ?s nfo:fileUrl @fileUrl .
+                            ?document nfo:isStoredAs | rdfs:label @fileName .
+                            ?document nfo:isStoredAs | nfo:belongsToContainer | nie:url @folderUrl .
                         }
                         ORDER BY DESC(?startTime) LIMIT 1
                     }
                 }";
 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@fileName", fileName);
+            query.Bind("@folderUrl", folderUrl);
 
             FileDataObject file = ModelProvider.ActivitiesModel.GetResources<FileDataObject>(query).FirstOrDefault();
 
@@ -1210,31 +1199,38 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(file);
         }
 
-        private Response GetCanvas(string fileUrl)
+        private Response GetCanvas(UriRef entityUri)
         {
             string queryString = @"
                 SELECT
-                    ?canvas ?width ?height ?lengthUnit
+                    DISTINCT ?canvas COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?width ?height ?lengthUnit
                 WHERE
                 {
-                    ?activity prov:used ?file .
-                    ?activity prov:startedAtTime ?startTime .
+                    ?activity prov:generated | prov:used @entity .
+                    ?activity prov:qualifiedInfluence ?influence .
 
-                    ?file rdf:type nfo:FileDataObject .
-                    ?file nfo:fileUrl @fileUrl .
-                    ?file art:canvas ?canvas .
+                    ?influence prov:entity ?canvas .
+                    ?influence prov:atTime ?time .
 
+                    FILTER NOT EXISTS { ?influence a prov:Invalidation . }
+
+                    ?canvas a art:Canvas .
                     ?canvas art:width ?width .
                     ?canvas art:height ?height .
+                    ?canvas art:lengthUnit ?lengthUnit .
 
-                    OPTIONAL { ?canvas art:lengthUnit ?lengthUnit . }
+                    OPTIONAL
+                    {
+                        ?canvas art:position / art:x ?x .
+                        ?canvas art:position / art:y ?y .
+                    }
                 }
-                ORDER BY DESC(?startTime) LIMIT 1";
+                ORDER BY DESC(?time)";
                 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
             
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
 
             return Response.AsJson(bindings.FirstOrDefault());
         }
