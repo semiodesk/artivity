@@ -73,6 +73,8 @@ namespace artivity
     {
         _consumer->stop();
         _log->close();
+        _log = NULL;
+
     }
 
     void EditingSession::eventAdd()

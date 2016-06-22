@@ -55,7 +55,6 @@ namespace artivity
 
         _file->setLabel(p.filename().string());
         _file->setContainer(_folder);
-        _file->setInterpretation(ImageRef(this));
     }
 }
 

@@ -36,9 +36,6 @@
 
 namespace artivity
 {
-    class InformationElement;
-
-    typedef boost::shared_ptr<InformationElement> InformationElementRef;
 
     class FileDataObject;
 
@@ -52,8 +49,6 @@ namespace artivity
         std::string _url;
 
         FolderRef _container;
-
-        InformationElementRef _interpretation;
         
     public:
         FileDataObject() : Resource(UriGenerator::getUri())
@@ -68,6 +63,10 @@ namespace artivity
             setType(nfo::FileDataObject);
 
             _url = "";
+        }
+
+        virtual ~FileDataObject() 
+        {   
         }
         
         const char* getLabel()
@@ -105,10 +104,6 @@ namespace artivity
 
             setValue(nfo::belongsToContainer, folder);
         }
-
-        InformationElementRef getInterpretation();
-
-        void setInterpretation(InformationElementRef interpretation);
     };
 }
 
