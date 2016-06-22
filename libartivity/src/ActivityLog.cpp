@@ -179,6 +179,7 @@ namespace artivity
 	void ActivityLog::close()
 	{
         clear();
+
 		time_t now;
 		time(&now);
 
@@ -304,6 +305,7 @@ namespace artivity
 	string ActivityLog::getEntityUri(string fileUrl)
 	{
         string uri = "";
+
         try
         {
             CURL* curl = initializeRequest();
@@ -337,6 +339,7 @@ namespace artivity
         catch (...)
         {
         }
+
 		return uri;
 	}
 

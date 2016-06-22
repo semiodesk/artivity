@@ -73,8 +73,8 @@ explorerApp.factory('api', function ($http) {
                     return response.data;
                 })
         },
-        getAgent: function (fileUrl) {
-            return $http.get(endpoint + '/agents?fileUrl=' + fileUrl).then(
+        getAgent: function (entityUri) {
+            return $http.get(endpoint + '/agents?uri=' + entityUri).then(
                 function (response) {
                     return response.data;
                 })
@@ -97,8 +97,8 @@ explorerApp.factory('api', function ($http) {
         getUserPhotoUrl: function () {
             return endpoint + '/agents/user/photo';
         },
-        getFile: function (fileUrl) {
-            return $http.get(endpoint + '/files?fileUrl=' + fileUrl).then(
+        getFile: function (entityUri) {
+            return $http.get(endpoint + '/files?uri=' + entityUri).then(
                 function (response) {
                     return response.data;
                 })
@@ -109,49 +109,49 @@ explorerApp.factory('api', function ($http) {
                     return response.data;
                 })
         },
-        getCanvas: function (fileUrl) {
-            return $http.get(endpoint + '/files/canvas?fileUrl=' + fileUrl).then(
+        getCanvas: function (entityUri) {
+            return $http.get(endpoint + '/files/canvas?uri=' + entityUri).then(
                 function (response) {
                     return response.data;
                 })
         },
-        getActivities: function (fileUrl) {
-            return $http.get(endpoint + '/activities?fileUrl=' + fileUrl).then(
+        getActivities: function (entityUri) {
+            return $http.get(endpoint + '/activities?uri=' + entityUri).then(
                 function (response) {
                     return response.data;
                 })
         },
-        getInfluences: function (fileUrl) {
-            return $http.get(endpoint + '/influences?fileUrl=' + fileUrl).then(
+        getInfluences: function (entityUri) {
+            return $http.get(endpoint + '/influences?uri=' + entityUri).then(
                 function (response) {
                     return response.data;
                 })
         },
-        getThumbnails: function (fileUrl, time) {
+        getThumbnails: function (entityUri, time) {
             if (time !== undefined) {
-                return $http.get(endpoint + '/thumbnails?fileUrl=' + fileUrl + '&timestamp=' + time).then(
+                return $http.get(endpoint + '/renderings?uri=' + entityUri + '&timestamp=' + time).then(
                     function (response) {
                         return response.data;
                     })
             } else {
-                return $http.get(endpoint + '/thumbnails?fileUrl=' + fileUrl).then(
+                return $http.get(endpoint + '/renderings?uri=' + entityUri).then(
                     function (response) {
                         return response.data;
                     })
             }
         },
-        getThumbnailUrl: function (thumbnailUrl) {
-            return endpoint + '/thumbnails?thumbnailUrl=' + thumbnailUrl;
+        getThumbnailUrl: function (renderingUrl) {
+            return endpoint + '/renderings?url=' + renderingUrl;
         },
-        getStats: function (fileUrl, time) {
+        getStats: function (entityUri, time) {
             if (time !== undefined) {
-                return $http.get(endpoint + '/stats/influences?fileUrl=' + fileUrl + '&timestamp=' + time).then(
+                return $http.get(endpoint + '/stats/influences?uri=' + entityUri + '&timestamp=' + time).then(
                     function (response) {
                         return response.data;
                     })
 
             } else {
-                return $http.get(endpoint + '/stats/influences?fileUrl=' + fileUrl).then(
+                return $http.get(endpoint + '/stats/influences?uri=' + entityUri).then(
                     function (response) {
                         return response.data;
                     })
