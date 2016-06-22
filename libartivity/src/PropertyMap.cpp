@@ -31,11 +31,11 @@ namespace artivity
 {
     PropertyMapIterator PropertyMap::findProperty(const std::string& property, ResourceRef resource)
     {
-        if (resource == NULL) return end();
+        if (resource == NULL) return _map.end();
 
-        PropertyMapIterator it = begin();
+        PropertyMapIterator it = _map.begin();
 
-        while (it != end())
+        while (it != _map.end())
         {
             PropertyValue x = it->second;
 
@@ -49,9 +49,9 @@ namespace artivity
 
     PropertyMapIterator PropertyMap::findProperty(const std::string& property, std::string literalValue, const type_info& typeInfo)
     {
-        PropertyMapIterator it = begin();
+        PropertyMapIterator it = _map.begin();
 
-        while (it != end())
+        while (it != _map.end())
         {
             std::string p = it->first;
             std::string value = it->second.LiteralValue;
@@ -70,49 +70,49 @@ namespace artivity
 
     bool PropertyMap::hasProperty(const std::string& property, ResourceRef resource)
     {
-        return findProperty(property, resource) != end();
+        return findProperty(property, resource) != _map.end();
     }
 
     bool PropertyMap::hasProperty(const std::string& property, std::string literalValue, const type_info& typeInfo)
     {
-        return findProperty(property, literalValue, typeInfo) != end();
+        return findProperty(property, literalValue, typeInfo) != _map.end();
     }
 
     void PropertyMap::addProperty(const std::string& property, ResourceRef resource)
     {
         if (resource == NULL || hasProperty(property, resource)) return;
 
-        insert(std::pair<std::string, PropertyValue>(property, PropertyValue(resource)));
+        _map.insert(std::pair<std::string, PropertyValue>(property, PropertyValue(resource)));
     }
 
     void PropertyMap::addProperty(const std::string& property, std::string literalValue, const type_info& typeInfo)
     {
         if (hasProperty(property, literalValue, typeInfo)) return;
 
-        insert(std::pair<std::string, PropertyValue>(property, PropertyValue(literalValue, typeInfo)));
+        _map.insert(std::pair<std::string, PropertyValue>(property, PropertyValue(literalValue, typeInfo)));
     }
 
     void PropertyMap::removeProperty(const std::string& property, ResourceRef resource)
     {
         PropertyMapIterator it = findProperty(property, resource);
 
-        if (it == end()) return;
+        if (it == _map.end()) return;
 
-        erase(it);
+        _map.erase(it);
     }
 
     void PropertyMap::removeProperty(const std::string& property, std::string literalValue, const type_info& typeInfo)
     {
         PropertyMapIterator it = findProperty(property, literalValue, typeInfo);
 
-        if (it == end()) return;
+        if (it == _map.end()) return;
 
-        erase(it);
+        _map.erase(it);
     }
 
     void PropertyMap::setProperty(const std::string& property, ResourceRef resource)
     {
-        erase(property);
+        _map.erase(property);
 
         if (resource == NULL) return;
 
@@ -121,7 +121,7 @@ namespace artivity
 
     void PropertyMap::setProperty(const std::string& property, std::string literalValue, const type_info& typeInfo)
     {
-        erase(property);
+        _map.erase(property);
 
         addProperty(property, literalValue, typeInfo);
     }

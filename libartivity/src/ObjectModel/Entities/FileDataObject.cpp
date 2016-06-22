@@ -29,16 +29,5 @@
 
 namespace artivity
 {
-    InformationElementRef FileDataObject::getInterpretation()
-    {
-        return _interpretation;
-    }
-
-    void FileDataObject::setInterpretation(InformationElementRef interpretation)
-    {
-        _interpretation = interpretation;
-
-        setValue(nie::interpretedAs, _interpretation);
-    }
 }
 
