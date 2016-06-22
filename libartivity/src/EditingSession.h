@@ -67,8 +67,8 @@ namespace artivity
         virtual RevisionRef onEventEdit() = 0;
         virtual UndoRef onEventUndo() = 0;
         virtual RedoRef onEventRedo() = 0;
-        virtual RevisionRef onEventSave() = 0;
-        virtual DerivationRef onEventSaveAs() = 0;
+        virtual RevisionRef onEventSave();
+        virtual DerivationRef onEventSaveAs();
 
         public:
         EditingSession();

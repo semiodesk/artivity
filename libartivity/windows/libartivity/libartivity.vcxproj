@@ -196,6 +196,7 @@
     <ClInclude Include="..\..\src\ObjectModel\Entities\Folder.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\Image.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\InformationElement.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Entities\Layer.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\Media.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\RasterImage.h" />
     <ClInclude Include="..\..\src\ObjectModel\Entities\VectorImage.h" />

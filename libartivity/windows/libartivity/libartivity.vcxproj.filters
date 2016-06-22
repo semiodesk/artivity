@@ -225,6 +225,9 @@
     <ClInclude Include="..\..\src\Ontologies\rdfs.h">
       <Filter>Header Files\Ontologies</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\Layer.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp">

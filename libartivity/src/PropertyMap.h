@@ -73,7 +73,7 @@ namespace artivity
 
         PropertyMapIterator end() { return _map.end(); }
 
-        PropertyMapIterator begin() { return _map.end(); }
+        PropertyMapIterator begin() { return _map.begin(); }
 
         void clear() { _map.clear(); }
 

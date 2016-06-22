@@ -250,5 +250,26 @@ namespace artivity
         return resPath;
     }
 
+    RevisionRef EditingSession::onEventSave()
+    {
+        time_t now;
+        time(&now);
+
+        auto rev = createRevision();
+        rev->setTime(now);
+
+        return rev;
+    }
+
+    DerivationRef EditingSession::onEventSaveAs()
+    {
+        time_t now;
+        time(&now);
+
+        auto der = createDerivation();
+        der->setTime(now);
+
+        return der;
+    }
 
 }
