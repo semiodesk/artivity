@@ -48,6 +48,10 @@ namespace artivity
 
         std::string _url;
 
+        time_t _created;
+
+        time_t _modified;
+
         FolderRef _container;
         
     public:
@@ -91,6 +95,30 @@ namespace artivity
             _url = url;
 
             setValue(nie::url, _url, typeid(Resource));
+        }
+
+        time_t getCreated()
+        {
+            return _created;
+        }
+
+        void setCreated(time_t created)
+        {
+            _created = created;
+
+            setValue(nie::created, &_created);
+        }
+
+        time_t getModified()
+        {
+            return _modified;
+        }
+
+        void setModified(time_t modified)
+        {
+            _modified = modified;
+
+            setValue(nie::lastModified, &modified);
         }
 
         FolderRef getContainer()

@@ -146,6 +146,23 @@ namespace artivity
         RevisionRef res = onEventSave();
         res->addProperty(prov::entity, _fileUri, typeid(Resource));
         res->setIsSave(true);
+
+        // TODO: Check if file paths match if not empty -> derivation.
+        if (_filePath.empty())
+        {
+            _filePath = getDocumentFilePath();
+
+            if (!_filePath.empty())
+            {
+                _document->setPath(_filePath);
+            }
+        }
+
+        time_t now;
+        time(&now);
+
+        _document->setModified(now);
+
         _consumer->push(res);
     }
 
@@ -153,6 +170,12 @@ namespace artivity
     {
         DerivationRef res = onEventSaveAs();
         res->setIsSave(true);
+
+        time_t now;
+        time(&now);
+
+        _document->setModified(now);
+
         _consumer->push(res);
     }
 

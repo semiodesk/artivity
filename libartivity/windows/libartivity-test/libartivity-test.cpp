@@ -32,7 +32,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (!log->connect("http://localhost:8262/artivity/api/1.0"))
 	{
-
 		// The log could not be set up to transmit properly.
 		// Either the agent is not properly installed or logging is disabled.
 		cout << "Log not ready." << endl << endl;

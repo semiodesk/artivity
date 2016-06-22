@@ -53,8 +53,13 @@ namespace artivity
             setDataObject(_file);
         }
 
+        time_t now;
+        time(&now);
+
         _file->setLabel(p.filename().string());
         _file->setContainer(_folder);
+        _file->setCreated(now);
+        _file->setModified(now);
     }
 }
 
