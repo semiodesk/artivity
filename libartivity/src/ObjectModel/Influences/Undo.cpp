@@ -46,18 +46,18 @@ namespace artivity
         setValue(art::count, count);
     }
 
-    void Undo::addRevision(ResourceRef influence)
+    void Undo::addRevision(string influenceUri)
     {
-        _influences.push_back(influence);
+        _influences.push_back(influenceUri);
 
-        addProperty(art::reverted, influence->uri, typeid(Resource));
+        addProperty(art::reverted, influenceUri, typeid(Resource));
     }
 
-    void Undo::removeRevision(ResourceRef influence)
+    void Undo::removeRevision(string influenceUri)
     {
-        _influences.remove(influence);
+        _influences.remove(influenceUri);
 
-        removeProperty(art::reverted, influence->uri, typeid(Resource));
+        removeProperty(art::reverted, influenceUri, typeid(Resource));
     }
 }
 

@@ -40,7 +40,7 @@ namespace artivity
         void createActivity();
 
 
-        std::vector<ResourceRef> _changes;
+        std::vector<std::string> _changes;
         int _currentChangeIndex; 
 
         void handleChanges(ResourceRef res);

@@ -37,8 +37,8 @@ using namespace std;
 
 namespace artivity
 {
-    typedef vector<ResourceRef>::reverse_iterator rchangeIt;
-    typedef vector<ResourceRef>::iterator changeIt;
+    typedef vector<std::string>::reverse_iterator rchangeIt;
+    typedef vector<std::string>::iterator changeIt;
 
     EditingSession::EditingSession()
     {
@@ -104,7 +104,7 @@ namespace artivity
             _changes.erase(it);
         }
         _currentChangeIndex++;
-        _changes.push_back(res);
+        _changes.push_back(res->uri);
     }
 
     void EditingSession::eventEdit()
