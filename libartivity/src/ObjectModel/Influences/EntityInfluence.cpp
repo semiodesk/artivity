@@ -25,46 +25,45 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_REDO_H
-#define _ART_REDO_H
-
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/art.h"
+#include "../../Resource.h"
+#include "../../Property.h"
 
 #include "EntityInfluence.h"
 
 namespace artivity
 {
-    class Redo;
+	using namespace std;
 
-    typedef boost::shared_ptr<Redo> RedoRef;
-
-    class Redo : public EntityInfluence
+    ActivityRef EntityInfluence::getActivity()
     {
-    private:
-        int _count;
+        return _activity;
+    }
 
-        std::list<ResourceRef> _influences;
+    void EntityInfluence::setActivity(ActivityRef activity)
+    {
+        _activity = activity;
 
-    public:
-        Redo() : EntityInfluence()
-        {
-            setType(art::Redo);
-        }
-        
-        Redo(const char* uriref) : EntityInfluence(uriref)
-        {
-            setType(art::Redo);
-        }
+        // Only set a reference to the activity; prevents the serializer from trying to serialize a cycle.
+        addProperty(prov::hadActivity, activity->uri, typeid(Resource));
+    }
 
-        int getCount();
+    void EntityInfluence::clearActivity()
+    {
+        if (_activity == NULL) return;
 
-        void setCount(int count);
+        removeProperty(prov::hadActivity, _activity->uri, typeid(Resource));
 
-        void addRevision(ResourceRef influence);
+        _activity = NULL;
+    }
 
-        void removeRevision(ResourceRef influence);
-    };
+    void EntityInfluence::setIsSave(bool val)
+    {
+        _isSave = val;
+    }
+
+    bool EntityInfluence::getIsSave()
+    {
+        return _isSave;
+    }
 }
 
-#endif // _ART_REDO_H

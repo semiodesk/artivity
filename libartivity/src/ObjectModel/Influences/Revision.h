@@ -25,9 +25,30 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#include "FileDataObject.h"
+#ifndef _ART_REVISION_H
+#define _ART_REVISION_H
+
+#include "Derivation.h"
 
 namespace artivity
 {
+    class Revision;
+
+    typedef boost::shared_ptr<Revision> RevisionRef;
+
+    class Revision : public Derivation
+    {        
+    public:
+        Revision() : Derivation()
+        {
+            setType(prov::Revision);
+        }
+        
+        Revision(const char* uriref) : Derivation(uriref)
+        {
+            setType(prov::Revision);
+        }
+    };
 }
 
+#endif // _ART_REVISION_H

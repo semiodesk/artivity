@@ -28,11 +28,9 @@
 #ifndef _ART_COORDINATESYSTEM_H
 #define _ART_COORDINATESYSTEM_H
 
-#include <string>
-#include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
-#include "../../Resource.h"
 #include "../../UriGenerator.h"
+#include "../../Resource.h"
 
 namespace artivity
 {

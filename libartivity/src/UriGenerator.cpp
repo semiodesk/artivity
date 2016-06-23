@@ -26,8 +26,8 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 #include <string>
-#include "UriGenerator.h"
 #include <random>
+#include "UriGenerator.h"
 
 namespace artivity
 {

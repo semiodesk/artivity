@@ -16,11 +16,23 @@
     <Filter Include="Header Files\Ontologies">
       <UniqueIdentifier>{c776c555-8bfc-4aba-9376-7e50d9e67f8f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Resources">
-      <UniqueIdentifier>{fe1f3c05-29dc-4de2-9832-991adf67c0f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Resources">
+    <Filter Include="Source Files\Influences">
       <UniqueIdentifier>{d3f2cb3b-3207-4ac7-a5a9-60b9b8e7416b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Influences">
+      <UniqueIdentifier>{1740a016-2862-45a1-a835-ae01f441ba16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{22b79b1c-604c-4220-aaf3-2a51d2922702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Geometry">
+      <UniqueIdentifier>{78d11d0f-1053-44fe-84a9-32fd325a539e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Activities">
+      <UniqueIdentifier>{af141406-f163-49cd-b025-e316ca5b9e38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DataObjects">
+      <UniqueIdentifier>{3d1507fa-c5d5-44a1-8172-2b2b2ab27fd0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -35,36 +47,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Ontologies\art.h">
       <Filter>Header Files\Ontologies</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Activity.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\ActivityInfluence.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Agent.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Association.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\BoundingRectangle.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\Canvas.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\CartesianCoordinateSystem.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\CoordinateSystem.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Activities\CreateFile.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entities\FileDataObject.h">
-      <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Ontologies\rdf.h">
       <Filter>Header Files\Ontologies</Filter>
@@ -87,72 +69,6 @@
     <ClInclude Include="..\..\src\Ontologies\unit.h">
       <Filter>Header Files\Ontologies</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\curlresponse.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Activities\DeleteFile.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Activities\EditFile.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entity.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Generation.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\Geometry.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Invalidation.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Person.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\Point.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\Property.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\PropertyMap.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\PropertyValue.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\Rectangle.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Redo.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\Resource.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Role.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\SoftwareAgent.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Undo.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\Viewport.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entities\WebDataObject.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entities\XmlElement.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entities\XmlAttribute.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Ontologies\dces.h">
       <Filter>Header Files\Ontologies</Filter>
     </ClInclude>
@@ -168,62 +84,155 @@
     <ClInclude Include="..\..\src\ProducerConsumer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\EntityInfluence.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Activities\WebBrowsing.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\defines.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entities\Image.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entities\RasterImage.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entities\VectorImage.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entities\InformationElement.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entities\Media.h">
-      <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Ontologies\nie.h">
       <Filter>Header Files\Ontologies</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Revision.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Influence.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Geometry\Text.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Derivation.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\RenderingDataObject.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\PartialRenderingDataObject.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Change.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\SoftwareAssociation.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Entities\Folder.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Ontologies\rdfs.h">
       <Filter>Header Files\Ontologies</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\ActivityInfluence.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\EntityInfluence.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Generation.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Invalidation.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Redo.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Revision.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Undo.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\XmlAttribute.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\XmlElement.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\Image.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\VectorImage.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\Media.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\InformationElement.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entities\RasterImage.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Geometry.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Canvas.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\CartesianCoordinateSystem.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\BoundingRectangle.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\CoordinateSystem.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influence.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Point.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Viewport.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Text.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Geometry\Rectangle.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Activity.h">
+      <Filter>Header Files\Activities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Activities\EditFile.h">
+      <Filter>Header Files\Activities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Activities\CreateFile.h">
+      <Filter>Header Files\Activities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Activities\DeleteFile.h">
+      <Filter>Header Files\Activities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Activities\WebBrowsing.h">
+      <Filter>Header Files\Activities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Agent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Association.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Change.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\curlresponse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Person.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Property.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\PropertyMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\PropertyValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Role.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\SoftwareAgent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\SoftwareAssociation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\PartialRenderingDataObject.h">
+      <Filter>Header Files\DataObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\RenderingDataObject.h">
+      <Filter>Header Files\DataObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\WebDataObject.h">
+      <Filter>Header Files\DataObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\FileDataObject.h">
+      <Filter>Header Files\DataObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Folder.h">
+      <Filter>Header Files\DataObjects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Entities\Layer.h">
       <Filter>Header Files\Resources</Filter>
@@ -254,14 +263,38 @@
     <ClCompile Include="..\..\src\PropertyMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ObjectModel\Entities\FileDataObject.cpp">
-      <Filter>Source Files\Resources</Filter>
+    <ClCompile Include="..\..\src\ObjectModel\Association.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp">
-      <Filter>Source Files\Resources</Filter>
+    <ClCompile Include="..\..\src\ObjectModel\Change.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\PartialRenderingDataObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ObjectModel\Entities\Image.cpp">
-      <Filter>Source Files\Resources</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Influence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Influences\ActivityInfluence.cpp">
+      <Filter>Source Files\Influences</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Influences\EntityInfluence.cpp">
+      <Filter>Source Files\Influences</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Influences\Redo.cpp">
+      <Filter>Source Files\Influences</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Influences\Undo.cpp">
+      <Filter>Source Files\Influences</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

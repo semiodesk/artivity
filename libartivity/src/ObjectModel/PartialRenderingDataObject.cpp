@@ -25,38 +25,25 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef ACTIVITYINFLUENCE_H
-#define ACTIVITYINFLUENCE_H
+#include "../Resource.h"
+#include "../Property.h"
 
-#include "../Ontologies/rdf.h"
-#include "../Ontologies/prov.h"
-#include "../Ontologies/dces.h"
-#include "../UriGenerator.h"
-#include "Geometry/Viewport.h"
-#include "Influence.h"
-#include <list>
+#include "PartialRenderingDataObject.h"
 
 namespace artivity
 {
-    class ActivityInfluence;
+	using namespace std;
 
-    typedef boost::shared_ptr<ActivityInfluence> ActivityInfluenceRef;
-
-    class ActivityInfluence : public Influence
+    RectangleRef PartialRenderingDataObject::getRegion()
     {
-        
-    public:
-        ActivityInfluence() : Influence()
-        {
-            setType( prov::ActivityInfluence);
-        }
-        
-    ActivityInfluence(const char* uriref) : Influence(uriref)
-        {
-            setType(prov::ActivityInfluence);
-        }
-     
-    };
+        return _region;
+    }
+
+    void PartialRenderingDataObject::setRegion(RectangleRef region)
+    {
+        _region = region;
+
+        setValue(art::region, _region);
+    }
 }
 
-#endif // ACTIVITYINFLUENCE_H

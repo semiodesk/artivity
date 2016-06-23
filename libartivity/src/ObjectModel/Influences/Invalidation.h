@@ -25,32 +25,30 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_WEBDATAOBJECT_H
-#define _ART_WEBDATAOBJECT_H
+#ifndef _ART_INVALIDATION_H
+#define _ART_INVALIDATION_H
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/nfo.h"
-#include "../Entity.h"
+#include "ActivityInfluence.h"
 
 namespace artivity
 {
-    class WebDataObject;
+    class Invalidation;
 
-    typedef boost::shared_ptr<WebDataObject> WebDataObjectRef;
+    typedef boost::shared_ptr<Invalidation> InvalidationRef;
 
-    class WebDataObject : public Entity
-    {
+    class Invalidation : public ActivityInfluence
+    {   
     public:
-        WebDataObject() : Entity()
+        Invalidation() : ActivityInfluence()
         {
-            setType(nfo::WebDataObject);
+            setType(prov::Invalidation);
         }
         
-        WebDataObject(const char* uriref) : Entity(uriref)
+        Invalidation(const char* uriref) : ActivityInfluence(uriref)
         {
-            setType(nfo::WebDataObject);
+            setType(prov::Invalidation);
         }
     };
 }
 
-#endif // _ART_WEBDATAOBJECT_H
+#endif // _ART_INVALIDATION_H

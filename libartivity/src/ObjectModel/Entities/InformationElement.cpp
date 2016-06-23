@@ -25,10 +25,25 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+#include "../../Resource.h"
+#include "../../Property.h"
+
 #include "InformationElement.h"
 
 namespace artivity
 {
+    const char* InformationElement::getUrl()
+    {
+        return _url.c_str();
+    }
+
+    void InformationElement::setUrl(const char* url)
+    {
+        _url = std::string(url);
+
+        setValue(nie::url, _url.c_str());
+    }
+
     FileDataObjectRef InformationElement::getDataObject()
     {
         return _dataObject;

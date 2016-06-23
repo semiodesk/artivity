@@ -28,8 +28,8 @@
 #ifndef _ART_BOUNDINGRECTANGLE_H
 #define _ART_BOUNDINGRECTANGLE_H
 
-#include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
+
 #include "Rectangle.h"
 
 namespace artivity

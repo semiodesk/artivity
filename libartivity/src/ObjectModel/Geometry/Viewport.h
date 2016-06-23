@@ -28,8 +28,8 @@
 #ifndef _ART_VIEWPORT_H
 #define _ART_VIEWPORT_H
 
-#include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
+
 #include "Rectangle.h"
 
 namespace artivity
@@ -55,10 +55,6 @@ namespace artivity
         }
 
         Viewport(double top, double left, double right, double bottom) : Rectangle(top, left, right, bottom)
-        {
-        }
-
-        Viewport(PointRef pos, double width, double height) : Rectangle(pos, width, height)
         {
         }
         

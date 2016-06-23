@@ -28,7 +28,8 @@
 #ifndef _ART_XMLATTRIBUTE_H
 #define _ART_XMLATTRIBUTE_H
 
-#include "../../Ontologies/rdf.h"
+#include "../../Ontologies/xml.h"
+
 #include "../Entity.h"
 
 namespace artivity
@@ -37,7 +38,7 @@ namespace artivity
 
     typedef boost::shared_ptr<XmlAttribute> XmlAttributeRef;
 
-    class XmlAttribute: public Entity
+    class XmlAttribute : public Entity
     {
     private:        
         XmlElementRef _ownerElement;

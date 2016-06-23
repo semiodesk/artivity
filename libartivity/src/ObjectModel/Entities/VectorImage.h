@@ -28,8 +28,8 @@
 #ifndef _ART_VECTORIMAGE_H
 #define _ART_VECTORIMAGE_H
 
-#include "../../Ontologies/rdf.h"
 #include "../../Ontologies/nfo.h"
+
 #include "Image.h"
 
 namespace artivity
@@ -40,7 +40,7 @@ namespace artivity
 
     class VectorImage : public Image
     {
-        public:
+    public:
         VectorImage() : Image()
         {
             setType(nfo::VectorImage);

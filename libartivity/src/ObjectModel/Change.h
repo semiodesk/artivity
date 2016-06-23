@@ -28,13 +28,8 @@
 #ifndef _ART_CHANGE_H
 #define _ART_CHANGE_H
 
-#include <list>
-
-#include "../Ontologies/rdf.h"
-#include "../Ontologies/prov.h"
-#include "../UriGenerator.h"
 #include "../Ontologies/art.h"
-#include "../Resource.h"
+
 #include "Entity.h"
 
 namespace artivity
@@ -61,20 +56,11 @@ namespace artivity
             setType(art::Change);
         }
 
-        void setEntity(EntityRef entity)
-        {
-            _entity = entity;
+        void setEntity(EntityRef entity);
 
-            setValue(prov::entity, _entity);
-        }
+        void setProperty(std::string property);
 
-        void setProperty(const char* prop)
-        {
-            _property = prop;
-
-            setValue(art::property, prop, typeid(Resource));
-        }
-
+        void setValue(PropertyValue value);
     };
 }
 

@@ -25,54 +25,48 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_FILEDATAOBJECT_H
-#define _ART_FILEDATAOBJECT_H
+#ifndef _ART_FOLDER_H
+#define _ART_FOLDER_H
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/nfo.h"
-#include "../Entity.h"
+#include "../Ontologies/rdf.h"
+#include "../Ontologies/rdfs.h"
+#include "../Ontologies/nie.h"
+#include "../Ontologies/nfo.h"
 
-#include "Folder.h"
+#include "../UriGenerator.h"
+#include "../Resource.h"
+#include "../Property.h"
 
 namespace artivity
 {
+    class Folder;
 
-    class FileDataObject;
+    typedef boost::shared_ptr<Folder> FolderRef;
 
-    typedef boost::shared_ptr<FileDataObject> FileDataObjectRef;
-
-    class FileDataObject : public Resource
+    class Folder : public Resource
     {
     private:
         std::string _label;
 
         std::string _url;
 
-        time_t _created;
-
-        time_t _modified;
-
         FolderRef _container;
-        
+
     public:
-        FileDataObject() : Resource(UriGenerator::getUri())
+        Folder() : Resource(UriGenerator::getUri())
         {
-            setType(nfo::FileDataObject);
-
-            _url = "";
-        }
-        
-        FileDataObject(const char* uriref) : Resource(uriref)
-        {
-            setType(nfo::FileDataObject);
+            setType(nfo::Folder);
 
             _url = "";
         }
 
-        virtual ~FileDataObject() 
-        {   
+        Folder(const char* uriref) : Resource(uriref)
+        {
+            setType(nfo::Folder);
+
+            _url = "";
         }
-        
+
         const char* getLabel()
         {
             return _label.c_str();
@@ -97,30 +91,6 @@ namespace artivity
             setValue(nie::url, _url, typeid(Resource));
         }
 
-        time_t getCreated()
-        {
-            return _created;
-        }
-
-        void setCreated(time_t created)
-        {
-            _created = created;
-
-            setValue(nie::created, &_created);
-        }
-
-        time_t getModified()
-        {
-            return _modified;
-        }
-
-        void setModified(time_t modified)
-        {
-            _modified = modified;
-
-            setValue(nie::lastModified, &modified);
-        }
-
         FolderRef getContainer()
         {
             return _container;
@@ -135,4 +105,4 @@ namespace artivity
     };
 }
 
-#endif // _ART_FILEDATAOBJECT_H
+#endif // _ART_FOLDER_H

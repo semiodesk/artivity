@@ -28,14 +28,13 @@
 #ifndef _ART_ENTITYINFLUENCE_H
 #define _ART_ENTITYINFLUENCE_H
 
-#include "../Ontologies/rdf.h"
-#include "../Ontologies/prov.h"
-#include "../Ontologies/dces.h"
-#include "../UriGenerator.h"
-#include "../Resource.h"
-#include "Entity.h"
-#include "Influence.h"
-#include "Change.h"
+#include "../../Ontologies/prov.h"
+
+#include "../../UriGenerator.h"
+#include "../../Resource.h"
+
+#include "../Activity.h"
+#include "../Influence.h"
 
 namespace artivity
 {
@@ -45,68 +44,35 @@ namespace artivity
 
 	class EntityInfluence : public Influence
 	{
-        private:
-        std::list<ChangeRef> _changes;
-        std::list<EntityRef> _entities;
+    private:
+        ActivityRef _activity;
+
         bool _isSave;
 
-	    public:
+	public:
         EntityInfluence() : Influence()
 		{
-            _isSave = false;
 			setType(prov::EntityInfluence);
+
+            _isSave = false;
 		}
 
 		EntityInfluence(const char* uriref) : Influence(uriref)
 		{
-            _isSave = false;
 			setType(prov::EntityInfluence);
+
+            _isSave = false;
 		}
 
-        void addChange(ChangeRef change)
-        {
-            _changes.push_back(change);
-            addProperty(art::qualifiedChange, change);
-        }
+        ActivityRef getActivity();
 
-        void removeChange(ChangeRef change)
-        {
-            _changes.remove(change);
-            removeProperty(art::qualifiedChange, change);
-        }
+        void setActivity(ActivityRef activity);
 
-        void clearChanges()
-        {
-            _changes.clear();
-            
-        }
+        void clearActivity();
 
-        void addEntity(EntityRef entity)
-        {
-            _entities.push_back(entity);
-            addProperty(prov::entity, entity);
-        }
+        void setIsSave(bool val);
 
-        void removeChange(EntityRef entity)
-        {
-            _entities.remove(entity);
-            removeProperty(prov::entity, entity);
-        }
-
-        void clearEntities()
-        {
-            _entities.clear();
-        }
-
-        void setIsSave(bool val)
-        {
-            _isSave = val;
-        }
-
-        bool getIsSave()
-        {
-            return _isSave;
-        }
+        bool getIsSave();
 	};
 }
 

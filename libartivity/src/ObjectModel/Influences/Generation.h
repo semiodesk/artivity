@@ -25,27 +25,31 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_DERIVATION_H
-#define _ART_DERIVATION_H
+#ifndef _ART_GENERATION_H
+#define _ART_GENERATION_H
 
-#include "EntityInfluence.h"
+#include "ActivityInfluence.h"
 
 namespace artivity
 {
-    class Derivation;
-    typedef boost::shared_ptr<Derivation> DerivationRef;
+    class Generation;
 
-    class Derivation : public EntityInfluence
-    {        
+    typedef boost::shared_ptr<Generation> GenerationRef;
+
+    class Generation : public ActivityInfluence
+    {
+    private:
+        std::list<EntityRef> _entities;
+
     public:
-        Derivation() : EntityInfluence()
+        Generation() : ActivityInfluence()
         {
-            Resource::setType(prov::Derivation);
+            setType(prov::Generation);
         }
         
-        Derivation(const char* uriref) : EntityInfluence(uriref)
+        Generation(const char* uriref) : ActivityInfluence(uriref)
         {
-            Resource::setType(prov::Derivation);
+            setType(prov::Generation);
         }
     };
 }

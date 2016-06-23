@@ -28,14 +28,18 @@
 #ifndef _ART_INFLUENCE_H
 #define _ART_INFLUENCE_H
 
-#include "../Ontologies/rdf.h"
-#include "../Ontologies/prov.h"
-#include "../Ontologies/dces.h"
-#include "../UriGenerator.h"
-#include "Geometry/Viewport.h"
-#include "RenderingDataObject.h"
 #include <list>
 
+#include "../Ontologies/prov.h"
+#include "../Ontologies/dces.h"
+
+#include "../UriGenerator.h"
+
+#include "Geometry/Geometry.h"
+#include "Geometry/Viewport.h"
+#include "Entity.h"
+#include "Change.h"
+#include "RenderingDataObject.h"
 
 namespace artivity
 {
@@ -46,20 +50,20 @@ namespace artivity
     class Influence : public Resource
     {
     private:
+        time_t _time;      
+        
+        std::string _description;
+
+        std::list<EntityRef> entities;
+
+        std::list<ChangeRef> changes;
+        
         ViewportRef _viewport;
-        
+
         GeometryRef _boundaries;
-        
-        ResourceRef _location;
 
         RenderingDataObjectRef _rendering;
 
-        time_t _time;
-                
-        std::string _content;
-        
-        std::string _description;
-        
     public:
         Influence() : Resource(UriGenerator::getUri())
         {
@@ -81,42 +85,6 @@ namespace artivity
 			setTime(now);
         }
         
-        ViewportRef getViewport()
-        {
-            return _viewport;
-        }
-        
-        void setViewport(ViewportRef viewport)
-        {
-            _viewport = viewport;
-            
-            Resource::setValue(art::hadViewport, viewport);
-        }
-        
-        GeometryRef getBoundaries()
-        {
-            return _boundaries;
-        }
-        
-        void setBoundaries(GeometryRef boundaries)
-        {
-            _boundaries = boundaries;
-            
-            Resource::setValue(art::hadBoundaries, boundaries);
-        }
-        
-        ResourceRef getLocation()
-        {
-            return _location;
-        }
-        
-        void setLocation(ResourceRef location)
-        {
-            _location = location;
-            
-            Resource::setValue(prov::atLocation, location);
-        }
-        
         time_t getTime()
         {
             return _time;
@@ -126,19 +94,7 @@ namespace artivity
         {
             _time = time;
             
-            Resource::setValue(prov::atTime, &time);
-        }
-        
-        std::string getContent()
-        {
-            return _content;
-        }
-        
-        void setContent(std::string content)
-        {
-            _content = std::string(content);
-            
-            setValue(prov::value, _content.c_str());
+            setValue(prov::atTime, &time);
         }
         
         std::string getDescription()
@@ -153,11 +109,29 @@ namespace artivity
             setValue(dces::description, _description.c_str());
         }
 
-        void setRendering(RenderingDataObjectRef render)
-        {
-            _rendering = render;
-            setValue(art::renderedAs, _rendering);
-        }
+        std::list<EntityRef> getEntities();
+
+        void addEntity(EntityRef entity);
+
+        void removeEntity(EntityRef entity);
+
+        void addChange(ChangeRef change);
+
+        void removeChange(ChangeRef change);
+
+        void clearChanges();
+
+        ViewportRef getViewport();
+
+        void setViewport(ViewportRef viewport);
+
+        GeometryRef getBoundaries();
+
+        void setBoundaries(GeometryRef boundaries);
+
+        RenderingDataObjectRef getRendering();
+
+        void setRendering(RenderingDataObjectRef render);
     };
 }
 
