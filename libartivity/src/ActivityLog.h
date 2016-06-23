@@ -52,10 +52,12 @@
 #include "ObjectModel/Activities/CreateFile.h"
 #include "ObjectModel/Activities/EditFile.h"
 #include "ObjectModel/Entity.h"
-#include "ObjectModel/Generation.h"
-#include "ObjectModel/Invalidation.h"
-#include "ObjectModel/Revision.h"
-#include "ObjectModel/Entities/FileDataObject.h"
+#include "ObjectModel/Influences/Generation.h"
+#include "ObjectModel/Influences/Invalidation.h"
+#include "ObjectModel/Influences/Revision.h"
+#include "ObjectModel/Influences/Undo.h"
+#include "ObjectModel/Influences/Redo.h"
+#include "ObjectModel/FileDataObject.h"
 #include "ObjectModel/Entities/Image.h"
 
 namespace artivity
@@ -125,15 +127,20 @@ namespace artivity
         void addAssociation(const char* roleUri);
 		void addAssociation(const char* roleUri, const char* agentUri, const char* version);
 		void addAssociation(const char* roleUri, std::string agentUri, std::string version);
+
 		// Add an entity influence to the transmitted RDF stream.
 		void addInfluence(GenerationRef generation);
-		void addInfluence(InvalidationRef invalidation);
-		void addInfluence(EntityInfluenceRef influence);
+        void addInfluence(InvalidationRef invalidation);
+        void addInfluence(EntityInfluenceRef influence);
+        void addInfluence(UndoRef influence);
+        void addInfluence(RedoRef influence);
 
 		// Remove an entity influence to the transmitted RDF stream.
 		void removeInfluence(GenerationRef generation);
-		void removeInfluence(InvalidationRef invalidation);
-		void removeInfluence(EntityInfluenceRef influence);
+        void removeInfluence(InvalidationRef invalidation);
+        void removeInfluence(EntityInfluenceRef influence);
+        void removeInfluence(UndoRef influence);
+        void removeInfluence(RedoRef influence);
 
 		std::string getRenderOutputPath();
 

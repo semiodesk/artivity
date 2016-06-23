@@ -30,16 +30,29 @@
 
 #include <list>
 
+#include "../Ontologies/dces.h"
 #include "../Ontologies/rdf.h"
 #include "../Ontologies/prov.h"
-#include "../UriGenerator.h"
 #include "../Ontologies/nie.h"
-#include "../Ontologies/dces.h"
+
+#include "../UriGenerator.h"
 #include "../Resource.h"
 #include "../Property.h"
 
 namespace artivity
 {
+    class EntityInfluence;
+
+    typedef boost::shared_ptr<EntityInfluence> EntityInfluenceRef;
+
+    class Derivation;
+
+    typedef boost::shared_ptr<Derivation> DerivationRef;
+
+    class Revision;
+
+    typedef boost::shared_ptr<Revision> RevisionRef;
+
     class Entity;
 
     typedef boost::shared_ptr<Entity> EntityRef;
@@ -48,6 +61,8 @@ namespace artivity
     {
     private:
         std::string _title;
+
+        std::list<EntityInfluenceRef> _influences;
 
         time_t _created;
 
@@ -66,50 +81,27 @@ namespace artivity
 
         virtual ~Entity() {}
 
-        time_t getCreated()
-        {
-            return _created;
-        }
+        void setTitle(std::string title);
 
-        void setCreated(time_t created)
-        {
-            _created = created;
+        time_t getCreated();
 
-            setValue(nie::created, &_created);
-        }
+        void setCreated(time_t created);
 
-        void resetCreated()
-        {
-            _created = 0;
+        void resetCreated();
 
-            removeProperty(nie::created, &_created);
-        }
+        time_t getModified();
 
-        time_t getModified()
-        {
-            return _modified;
-        }
+        void setModified(time_t modified);
 
-        void setModified(time_t modified)
-        {
-            _modified = modified;
+        void resetModified();
 
-            setValue(nie::lastModified, &modified);
-        }
+        std::list<EntityInfluenceRef> getInfluences();
 
-        void resetModified()
-        {
-            _modified = 0;
+        void addInfluence(EntityInfluenceRef influence);
 
-            removeProperty(nie::lastModified, &_modified);
-        }
+        void addInfluence(DerivationRef derivation);
 
-        void setTitle(std::string title)
-        {
-            _title = title;
-
-            setValue(dces::title, _title.c_str());
-        }
+        void addInfluence(RevisionRef revision);
     };
 }
 

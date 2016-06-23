@@ -25,46 +25,30 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_REDO_H
-#define _ART_REDO_H
+#ifndef _ART_WEBDATAOBJECT_H
+#define _ART_WEBDATAOBJECT_H
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/art.h"
-
-#include "EntityInfluence.h"
+#include "Entity.h"
 
 namespace artivity
 {
-    class Redo;
+    class WebDataObject;
 
-    typedef boost::shared_ptr<Redo> RedoRef;
+    typedef boost::shared_ptr<WebDataObject> WebDataObjectRef;
 
-    class Redo : public EntityInfluence
+    class WebDataObject : public Entity
     {
-    private:
-        int _count;
-
-        std::list<ResourceRef> _influences;
-
     public:
-        Redo() : EntityInfluence()
+        WebDataObject() : Entity()
         {
-            setType(art::Redo);
+            setType(nfo::WebDataObject);
         }
         
-        Redo(const char* uriref) : EntityInfluence(uriref)
+        WebDataObject(const char* uriref) : Entity(uriref)
         {
-            setType(art::Redo);
+            setType(nfo::WebDataObject);
         }
-
-        int getCount();
-
-        void setCount(int count);
-
-        void addRevision(ResourceRef influence);
-
-        void removeRevision(ResourceRef influence);
     };
 }
 
-#endif // _ART_REDO_H
+#endif // _ART_WEBDATAOBJECT_H

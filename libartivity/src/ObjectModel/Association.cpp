@@ -25,46 +25,38 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_REDO_H
-#define _ART_REDO_H
+#include "../Resource.h"
+#include "../Property.h"
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/art.h"
-
-#include "EntityInfluence.h"
+#include "Agent.h"
+#include "Association.h"
 
 namespace artivity
 {
-    class Redo;
-
-    typedef boost::shared_ptr<Redo> RedoRef;
-
-    class Redo : public EntityInfluence
+	using namespace std;
+   
+    AgentRef Association::getAgent()
     {
-    private:
-        int _count;
+        return _agent;
+    }
 
-        std::list<ResourceRef> _influences;
+    void Association::setAgent(AgentRef agent)
+    {
+        _agent = agent;
 
-    public:
-        Redo() : EntityInfluence()
-        {
-            setType(art::Redo);
-        }
-        
-        Redo(const char* uriref) : EntityInfluence(uriref)
-        {
-            setType(art::Redo);
-        }
+        setValue(prov::agent, agent);
+    }
 
-        int getCount();
+    RoleRef Association::getRole()
+	{
+        return _role;
+	}
 
-        void setCount(int count);
+    void Association::setRole(RoleRef role)
+    {
+        _role = role;
 
-        void addRevision(ResourceRef influence);
-
-        void removeRevision(ResourceRef influence);
-    };
+        setValue(prov::hadRole, role);
+    }
 }
 
-#endif // _ART_REDO_H

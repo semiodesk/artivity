@@ -28,7 +28,8 @@
 #ifndef _ART_XMLELEMENT_H
 #define _ART_XMLELEMENT_H
 
-#include "../../Ontologies/rdf.h"
+#include "../../Ontologies/xml.h"
+
 #include "../Entity.h"
 
 namespace artivity

@@ -28,6 +28,10 @@
 #ifndef _ART_PARTIALRENDERINGDATAOBJECT_H
 #define _ART_PARTIALRENDERINGDATAOBJECT_H
 
+#include "../Ontologies/art.h"
+
+#include "Geometry/Rectangle.h"
+
 #include "RenderingDataObject.h"
 
 namespace artivity
@@ -38,9 +42,10 @@ namespace artivity
 
     class PartialRenderingDataObject : public RenderingDataObject
     {
+    private:
         RectangleRef _region;
 
-        public:
+    public:
         PartialRenderingDataObject() : RenderingDataObject()
         {
             setType(art::PartialRenderingDataObject);
@@ -54,12 +59,9 @@ namespace artivity
 
         virtual ~PartialRenderingDataObject() {}
 
-        void setRegion(RectangleRef region)
-        {
-            _region = region;
-            setValue(art::region, _region);
-        }
+        RectangleRef getRegion();
 
+        void setRegion(RectangleRef region);
     };
 }
 

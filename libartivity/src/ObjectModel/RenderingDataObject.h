@@ -28,7 +28,7 @@
 #ifndef _ART_RENDERINGDATAOBJECT_H
 #define _ART_RENDERINGDATAOBJECT_H
 
-#include "Entities/FileDataObject.h"
+#include "FileDataObject.h"
 
 namespace artivity
 {
@@ -38,7 +38,7 @@ namespace artivity
 
     class RenderingDataObject : public FileDataObject
     {
-        public:
+    public:
         RenderingDataObject() : FileDataObject()
         {
             setType(art::RenderingDataObject);
@@ -48,7 +48,6 @@ namespace artivity
         {
             setType(art::RenderingDataObject);
         }
-
 
         virtual ~RenderingDataObject() {}
     };

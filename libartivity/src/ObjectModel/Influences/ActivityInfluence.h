@@ -25,46 +25,42 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_REDO_H
-#define _ART_REDO_H
+#ifndef ACTIVITYINFLUENCE_H
+#define ACTIVITYINFLUENCE_H
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/art.h"
+#include "../../Ontologies/prov.h"
 
-#include "EntityInfluence.h"
+#include "../Influence.h"
+#include "../Activity.h"
 
 namespace artivity
 {
-    class Redo;
+    class ActivityInfluence;
 
-    typedef boost::shared_ptr<Redo> RedoRef;
+    typedef boost::shared_ptr<ActivityInfluence> ActivityInfluenceRef;
 
-    class Redo : public EntityInfluence
+    class ActivityInfluence : public Influence
     {
-    private:
-        int _count;
-
-        std::list<ResourceRef> _influences;
+    protected:
+        ActivityRef activity;
 
     public:
-        Redo() : EntityInfluence()
+        ActivityInfluence() : Influence()
         {
-            setType(art::Redo);
+            setType(prov::ActivityInfluence);
         }
         
-        Redo(const char* uriref) : EntityInfluence(uriref)
+        ActivityInfluence(const char* uriref) : Influence(uriref)
         {
-            setType(art::Redo);
+            setType(prov::ActivityInfluence);
         }
 
-        int getCount();
+        ActivityRef getActivity();
 
-        void setCount(int count);
+        void setActivity(ActivityRef activity);
 
-        void addRevision(ResourceRef influence);
-
-        void removeRevision(ResourceRef influence);
+        void clearActivity();
     };
 }
 
-#endif // _ART_REDO_H
+#endif // ACTIVITYINFLUENCE_H

@@ -15,9 +15,9 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 });
 
 explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams) {
-    var fileUrl = $location.search().fileUrl;
+    var fileUri = $location.search().uri;
 
-    $scope.fileName = getFileName(fileUrl);
+    //$scope.fileName = getFileName(fileUrl);
     $scope.canvas = {};
     $scope.agent = {};
 
@@ -161,7 +161,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
         renderDocument(thumbnails);
 
-        api.getStats(fileUrl).then(function (data) {
+        api.getStats(fileUri).then(function (data) {
             $scope.updateStats(data);
         });
     }
@@ -202,11 +202,11 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
     };
 
     // Trigger loading the bitmaps.
-    api.getThumbnails(fileUrl).then(function (thumbnails) {
+    api.getThumbnails(fileUri).then(function (thumbnails) {
         loadItems(thumbnails, loadThumbnails, loadThumbnailsComplete);
     });
 
-    api.getCanvas(fileUrl).then(function (data) {
+    api.getCanvas(fileUri).then(function (data) {
         $scope.canvas = data;
         
         if($scope.selectedInfluence !== undefined) {
@@ -214,11 +214,11 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
         }
     });
 
-    api.getAgent(fileUrl).then(function (data) {
+    api.getAgent(fileUri).then(function (data) {
         $scope.agent = data;
     });
 
-    api.getActivities(fileUrl).then(function (data) {
+    api.getActivities(fileUri).then(function (data) {
         // Check if there is a plausable end time.
         for (var i = 0; i < data.length; i++) {
             var activity = data[i];
@@ -237,11 +237,11 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
         }
     });
 
-    api.getStats(fileUrl).then(function (data) {
+    api.getStats(fileUri).then(function (data) {
         $scope.updateStats(data);
     });
 
-    api.getInfluences(fileUrl).then(function (data) {
+    api.getInfluences(fileUri).then(function (data) {
         $scope.influences = data;
 
         if (data.length > 0) {
@@ -312,7 +312,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
         $scope.selectedInfluence = influence;
 
         if (influence.time !== undefined) {
-            api.getStats(fileUrl, influence.time).then(function (data) {
+            api.getStats(fileUri, influence.time).then(function (data) {
                 $scope.updateStats(data, influence.time);
             });
         }

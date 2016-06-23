@@ -25,51 +25,39 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_INVALIDATION_H
-#define _ART_INVALIDATION_H
+#include "../../Resource.h"
+#include "../../Property.h"
 
-#include "ActivityInfluence.h"
+#include "Undo.h"
 
 namespace artivity
 {
-    class Invalidation;
+	using namespace std;
 
-    typedef boost::shared_ptr<Invalidation> InvalidationRef;
+    int Undo::getCount()
+    {
+        return _count;
+    }
 
-    class Invalidation : public ActivityInfluence
-    {   
-        private:
-        std::list<EntityRef> _entities;
+    void Undo::setCount(int count)
+    {
+        _count = count;
 
-        public:
-        Invalidation() : ActivityInfluence()
-        {
-            setType(prov::Invalidation);
-        }
-        
-        Invalidation(const char* uriref) : ActivityInfluence(uriref)
-        {
-            setType(prov::Invalidation);
-        }
+        setValue(art::count, count);
+    }
 
-        void addInvalidated(EntityRef entity)
-        {
-            addProperty(prov::invalidated, entity);
-            _entities.push_back(entity);
-        }
+    void Undo::addRevision(ResourceRef influence)
+    {
+        _influences.push_back(influence);
 
-        void removeInvalidated(EntityRef entity)
-        {
-            removeProperty(prov::invalidated, entity);
-            _entities.remove(entity);
-        }
+        addProperty(art::reverted, influence->uri, typeid(Resource));
+    }
 
-        void clearInvalidated(EntityRef entity)
-        {
-            properties.erase(prov::invalidated);
-            _entities.clear();
-        }
-    };
+    void Undo::removeRevision(ResourceRef influence)
+    {
+        _influences.remove(influence);
+
+        removeProperty(art::reverted, influence->uri, typeid(Resource));
+    }
 }
 
-#endif // _ART_INVALIDATION_H

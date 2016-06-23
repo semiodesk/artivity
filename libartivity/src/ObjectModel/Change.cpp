@@ -25,29 +25,30 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_REVISION_H
-#define _ART_REVISION_H
+#include "../Resource.h"
+#include "../Property.h"
 
-#include "EntityInfluence.h"
+#include "Change.h"
 
 namespace artivity
 {
-    class Revision;
-    typedef boost::shared_ptr<Revision> RevisionRef;
+	using namespace std;
 
-    class Revision : public EntityInfluence
-    {        
-    public:
-        Revision() : EntityInfluence()
-        {
-            Resource::setType(prov::Revision);
-        }
-        
-        Revision(const char* uriref) : EntityInfluence(uriref)
-        {
-            Resource::setType(prov::Revision);
-        }
-    };
+    void Change::setEntity(EntityRef entity)
+    {
+        _entity = entity;
+
+        Resource::setValue(art::entity, _entity->uri, typeid(Resource));
+    }
+
+    void Change::setProperty(string property)
+    {
+        Resource::addProperty(art::property, property.c_str(), typeid(Resource));
+    }
+
+    void Change::setValue(PropertyValue value)
+    {
+        Resource::addProperty(art::value, value);
+    }
 }
 
-#endif // _ART_GENERATION_H

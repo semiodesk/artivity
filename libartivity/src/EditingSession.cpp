@@ -25,17 +25,21 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+#include <boost/filesystem/operations.hpp>
+
+#include "Resource.h"
+#include "Property.h"
 #include "EditingSession.h"
 
-#include <boost/filesystem/operations.hpp>
 #include "ObjectModel/SoftwareAgent.h"
 
 using namespace std;
 
 namespace artivity
 {
-    typedef vector<string>::reverse_iterator rchangeIt;
-    typedef vector<string>::iterator changeIt;
+    typedef vector<ResourceRef>::reverse_iterator rchangeIt;
+    typedef vector<ResourceRef>::iterator changeIt;
+
     EditingSession::EditingSession()
     {
     }
@@ -100,7 +104,7 @@ namespace artivity
             _changes.erase(it);
         }
         _currentChangeIndex++;
-        _changes.push_back(res->uri);
+        _changes.push_back(res);
     }
 
     void EditingSession::eventEdit()
@@ -117,6 +121,7 @@ namespace artivity
 
         changeIt current = _changes.begin() + _currentChangeIndex;
         _currentChangeIndex -= count;
+
         for (changeIt it = _changes.begin()+_currentChangeIndex;  it != current; it++)
         {
             res->addRevision(*it);
@@ -128,11 +133,14 @@ namespace artivity
     void EditingSession::eventRedo()
     {
         RedoRef res = onEventRedo();
-        int count = res->getCount();
 
-         int beforeIndex = _currentChangeIndex;
+        int count = res->getCount();
+        int beforeIndex = _currentChangeIndex;
+
         _currentChangeIndex += count;
+
         changeIt current = _changes.begin() + _currentChangeIndex;
+
         for (changeIt it = _changes.begin() + beforeIndex; it != current; it++)
         {
             res->addRevision(*it);
@@ -196,14 +204,18 @@ namespace artivity
         if (strcmp(type, prov::Revision) == 0)
         {
             EntityInfluenceRef influence = boost::dynamic_pointer_cast<EntityInfluence>(res);
+
             _log->addInfluence(influence);
+
             if (influence->getIsSave())
                 _log->transmit();
         }
         else if (strcmp(type, prov::Derivation) == 0)
         {
             EntityInfluenceRef influence = boost::dynamic_pointer_cast<EntityInfluence>(res);
+
             _log->addInfluence(influence);
+
             if (influence->getIsSave())
                 _log->transmit();
         }

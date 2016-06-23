@@ -38,18 +38,18 @@ namespace artivity
 		static const char* NS_PREFIX = art("");
 		static const char* NS_URI = ART("");
        
-		static const char* EditFile = art("EditFile");
-        
-		#ifdef CreateFile
-		#undef CreateFile
-		#endif
+#ifdef CreateFile
+#undef CreateFile
+#endif
 
+#ifdef DeleteFile
+#undef DeleteFile
+#endif
+
+		static const char* EditFile = art("EditFile");
+       
 		static const char* CreateFile = art("CreateFile");
         
-		#ifdef DeleteFile
-		#undef DeleteFile
-		#endif
-
 		static const char* DeleteFile = art("DeleteFile");
         
 		static const char* WebBrowsing = art("WebBrowsing");
@@ -74,16 +74,10 @@ namespace artivity
 
         static const char* Layer = art("Layer");
 
-        static const char* layerZPosition = art("layerZPosition")
-        
-        static const char* isCaptureEnabled = art("isCaptureEnabled");
-
         static const char* loggingEnabled = art("loggingEnabled");
-
-        static const char* thumbnailUrl = art("thumbnailUrl");
         
         // A rasterized portion of an image that provides bitmap data for an entity influence.
-        static const char* renderedAs =art("renderedAs");
+        static const char* renderedAs = art("renderedAs");
 
         // Specifies the shape and location of something in Euclidean space.
         static const char* region = art("region");
@@ -94,7 +88,10 @@ namespace artivity
         // Rasterized bitmap data of a specific region of an image.
         static const char* PartialRenderingDataObject = art("PartialRenderingDataObject");
 
-        
+        static const char* SoftwareAssociation = art("SoftwareAssociation");
+
+        static const char* version = art("version");
+
         // --- GEOMETRY ---
         // NOTE: We try to be compatible with OGC geometry vocabularies since
         //       many databases support spatial querying using this standard.
@@ -129,8 +126,6 @@ namespace artivity
         // WKT Geometry
         // http://www.opengis.net/ont/geosparql#Geometry
 		static const char* Geometry = art("Geometry");
-        
-		static const char* SoftwareAssociation = art("SoftwareAssociation");
 
         // http://www.opengis.net/ont/geosparql#coordinateDimension
 		static const char* coordinateDimension = art("coordinateDimension");
@@ -164,13 +159,10 @@ namespace artivity
         
         // Subclass of :Rectangle
         static const char* Viewport = art("Viewport");
-        
-		static const char* version = art("version");
 
         // No equivalent in GeoSPARQL
         static const char* zoomFactor = art("zoomFactor");
         
-        // http://www.opengis.net/ont/geosparql#coordinateDimension
         static const char* position = art("position");
         
         // WKT Point
@@ -216,17 +208,19 @@ namespace artivity
         static const char* SOFTWARE = ART("SOFTWARE");
 
         // --- CHANGES ---
-        static const char* Change = art("Change");		
+        static const char* Change = art("Change");
 
-        static const char* qualifiedChange = art("qualifiedChange");
+        static const char* hadChange = art("hadChange");
+
+        static const char* entity = art("entity");
 
         static const char* property = art("property");
 
+        static const char* value = art("value");
+
+        static const char* unknown = art("unknown");
+
         static const char* order = art("order");
-
-        static const char* location = art("location");
-
-        static const char* bounds = art("bounds");
 
         static const char* textValue = art("textValue");
 
@@ -236,15 +230,13 @@ namespace artivity
 
         static const char* strokeColour = art("strokeColour");
 
-        static const char* fillColour = art("fillColour");
-
         static const char* strokePattern = art("strokePattern");
+
+        static const char* fillColour = art("fillColour");
         
         static const char* fillPattern = art("fillPattern");
 
         static const char* strokeWidth = art("strokeWidth");
-
-        static const char* unknown = art("unknown");
     }
 }
 

@@ -25,49 +25,30 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_GENERATION_H
-#define _ART_GENERATION_H
+#ifndef _ART_DERIVATION_H
+#define _ART_DERIVATION_H
 
-#include "ActivityInfluence.h"
+#include "../../Ontologies/prov.h"
+
+#include "EntityInfluence.h"
 
 namespace artivity
 {
-    class Generation;
+    class Derivation;
 
-    typedef boost::shared_ptr<Generation> GenerationRef;
+    typedef boost::shared_ptr<Derivation> DerivationRef;
 
-    class Generation : public ActivityInfluence
-    {
-        private:
-        std::list<EntityRef> _entities;
-
-        public:
-        Generation() : ActivityInfluence()
+    class Derivation : public EntityInfluence
+    {        
+    public:
+        Derivation() : EntityInfluence()
         {
-            Resource::setType(prov::Generation);
+            setType(prov::Derivation);
         }
         
-        Generation(const char* uriref) : ActivityInfluence(uriref)
+        Derivation(const char* uriref) : EntityInfluence(uriref)
         {
-            Resource::setType(prov::Generation);
-        }
-
-        void addGenerated(EntityRef entity)
-        {
-            properties.addProperty(prov::generated, entity);
-            _entities.push_back(entity);
-        }
-
-        void removeGenerated(EntityRef entity)
-        {
-            properties.removeProperty(prov::generated, entity);
-            _entities.remove(entity);
-        }
-
-        void clearGenerated(EntityRef entity)
-        {
-            properties.erase(prov::generated);
-            _entities.clear();
+            setType(prov::Derivation);
         }
     };
 }
