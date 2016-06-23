@@ -43,7 +43,7 @@ namespace artivity
     private:
         int _count;
 
-        std::list<ResourceRef> _influences;
+        std::list<std::string> _influences;
 
     public:
         Undo() : EntityInfluence()
@@ -60,9 +60,9 @@ namespace artivity
 
         void setCount(int count);
 
-        void addRevision(ResourceRef influence);
+        void addRevision(std::string influenceUri);
 
-        void removeRevision(ResourceRef influence);
+        void removeRevision(std::string influenceUri);
     };
 }
 
