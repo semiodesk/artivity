@@ -25,9 +25,25 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#include "FileDataObject.h"
+#include "../Resource.h"
+#include "../Property.h"
+
+#include "PartialRenderingDataObject.h"
 
 namespace artivity
 {
+	using namespace std;
+
+    RectangleRef PartialRenderingDataObject::getRegion()
+    {
+        return _region;
+    }
+
+    void PartialRenderingDataObject::setRegion(RectangleRef region)
+    {
+        _region = region;
+
+        setValue(art::region, _region);
+    }
 }
 
