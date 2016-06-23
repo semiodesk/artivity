@@ -25,32 +25,32 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_WEBDATAOBJECT_H
-#define _ART_WEBDATAOBJECT_H
+#ifndef _ART_DERIVATION_H
+#define _ART_DERIVATION_H
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/nfo.h"
-#include "../Entity.h"
+#include "../../Ontologies/prov.h"
+
+#include "EntityInfluence.h"
 
 namespace artivity
 {
-    class WebDataObject;
+    class Derivation;
 
-    typedef boost::shared_ptr<WebDataObject> WebDataObjectRef;
+    typedef boost::shared_ptr<Derivation> DerivationRef;
 
-    class WebDataObject : public Entity
-    {
+    class Derivation : public EntityInfluence
+    {        
     public:
-        WebDataObject() : Entity()
+        Derivation() : EntityInfluence()
         {
-            setType(nfo::WebDataObject);
+            setType(prov::Derivation);
         }
         
-        WebDataObject(const char* uriref) : Entity(uriref)
+        Derivation(const char* uriref) : EntityInfluence(uriref)
         {
-            setType(nfo::WebDataObject);
+            setType(prov::Derivation);
         }
     };
 }
 
-#endif // _ART_WEBDATAOBJECT_H
+#endif // _ART_GENERATION_H

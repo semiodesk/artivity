@@ -25,82 +25,33 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef _ART_FOLDER_H
-#define _ART_FOLDER_H
+#ifndef _ART_GENERATION_H
+#define _ART_GENERATION_H
 
-#include "../../Ontologies/rdf.h"
-#include "../../Ontologies/rdfs.h"
-#include "../../Ontologies/nfo.h"
-#include "../Entity.h"
-
-#include "InformationElement.h"
+#include "ActivityInfluence.h"
 
 namespace artivity
 {
-    class Folder;
+    class Generation;
 
-    typedef boost::shared_ptr<Folder> FolderRef;
+    typedef boost::shared_ptr<Generation> GenerationRef;
 
-    class Folder : public Resource
+    class Generation : public ActivityInfluence
     {
     private:
-        std::string _label;
-
-        std::string _url;
-
-        FolderRef _container;
+        std::list<EntityRef> _entities;
 
     public:
-        Folder() : Resource(UriGenerator::getUri())
+        Generation() : ActivityInfluence()
         {
-            setType(nfo::Folder);
-
-            _url = "";
+            setType(prov::Generation);
         }
-
-        Folder(const char* uriref) : Resource(uriref)
+        
+        Generation(const char* uriref) : ActivityInfluence(uriref)
         {
-            setType(nfo::Folder);
-
-            _url = "";
-        }
-
-        const char* getLabel()
-        {
-            return _label.c_str();
-        }
-
-        void setLabel(std::string label)
-        {
-            _label = label;
-
-            setValue(rdfs::label, _label);
-        }
-
-        std::string getUrl()
-        {
-            return _url;
-        }
-
-        void setUrl(std::string url)
-        {
-            _url = url;
-
-            setValue(nie::url, _url, typeid(Resource));
-        }
-
-        FolderRef getContainer()
-        {
-            return _container;
-        }
-
-        void setContainer(FolderRef folder)
-        {
-            _container = folder;
-
-            setValue(nfo::belongsToContainer, folder);
+            setType(prov::Generation);
         }
     };
 }
 
-#endif // _ART_FOLDER_H
+#endif // _ART_GENERATION_H
