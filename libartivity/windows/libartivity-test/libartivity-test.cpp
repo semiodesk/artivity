@@ -56,21 +56,22 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	cout << endl;
 
+    BoundingRectangleRef bounds = BoundingRectangleRef(new BoundingRectangle());
+    bounds->setWidth(200);
+    bounds->setHeight(200);
+    bounds->setPosition(10, 10);
+
 	CanvasRef canvas = CanvasRef(new Canvas());
 	canvas->setWidth(200);
 	canvas->setHeight(200);
 	canvas->setLengthUnit(ResourceRef(new Resource(art::mm)));
 
-	GenerationRef generation = GenerationRef(new Generation());
-	generation->addGenerated(canvas);
+    GenerationRef generation = GenerationRef(new Generation());
+    generation->setBoundaries(bounds);
+    generation->addEntity(canvas);
 
 	log->addInfluence(generation);
 	log->transmit();
-
-	BoundingRectangleRef bounds = BoundingRectangleRef(new BoundingRectangle());
-	bounds->setWidth(100);
-	bounds->setHeight(100);
-	bounds->setPosition(50, 50);
 
 	UndoRef undo = UndoRef(new Undo());
 	undo->setBoundaries(bounds);

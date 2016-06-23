@@ -28,8 +28,11 @@
 #ifndef _ART_RECTANGLE_H
 #define _ART_RECTANGLE_H
 
+#include <math.h>
+
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
+
 #include "Geometry.h"
 #include "Point.h"
 
@@ -41,9 +44,7 @@ namespace artivity
 
     class Rectangle : public Geometry
     {
-    private:
-        PointRef _position;
-        
+    private:       
         double _width;
         
         double _height;
@@ -56,42 +57,14 @@ namespace artivity
         
         Rectangle(const char* uriref) : Geometry(uriref)
         {
-
-
             setType(art::Rectangle);
         }
 
         Rectangle(double top, double left, double right, double bottom)
         {
             setPosition(left, top);
-            setWidth(right - left);
-            setHeight(top - bottom);
-        }
-
-        Rectangle(PointRef pos, double width, double height)
-        {
-            setPosition(pos);
-            setWidth(width);
-            setHeight(height);
-        }
-        
-        PointRef getPosition()
-        {
-            return _position;
-        }
-        
-		void setPosition(double x, double y)
-		{
-			_position = PointRef(new Point(x, y));
-
-			setValue(art::position, _position);
-		}
-
-        void setPosition(PointRef position)
-        {
-            _position = position;
-            
-            setValue(art::position, position);
+            setWidth(fabs(right - left));
+            setHeight(fabs(top - bottom));
         }
         
         double getWidth()

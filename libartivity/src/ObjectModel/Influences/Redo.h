@@ -30,7 +30,8 @@
 
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
-#include "../EntityInfluence.h"
+
+#include "EntityInfluence.h"
 
 namespace artivity
 {
@@ -40,11 +41,12 @@ namespace artivity
 
     class Redo : public EntityInfluence
     {
-        private:
-        std::list<std::string> _revisions;
+    private:
         int _count;
 
-        public:
+        std::list<ResourceRef> _influences;
+
+    public:
         Redo() : EntityInfluence()
         {
             setType(art::Redo);
@@ -55,24 +57,13 @@ namespace artivity
             setType(art::Redo);
         }
 
-        void addRevision(std::string revisionUri)
-        {
-            _revisions.push_back(revisionUri);
+        int getCount();
 
-            addProperty(art::reverted, revisionUri, typeid(Resource));
-        }
+        void setCount(int count);
 
-        void setCount(int count)
-        {
-            _count = count;
+        void addRevision(ResourceRef influence);
 
-            setValue(art::count, count);
-        }
-
-        int getCount()
-        {
-            return _count;
-        }
+        void removeRevision(ResourceRef influence);
     };
 }
 

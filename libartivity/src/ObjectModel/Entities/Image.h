@@ -29,11 +29,10 @@
 #define _ART_IMAGE_H
 
 #include <boost/filesystem.hpp>
-#include "../../Ontologies/rdf.h"
+
 #include "../../Ontologies/nfo.h"
+
 #include "Media.h"
-#include "FileDataObject.h"
-#include "Folder.h"
 
 namespace artivity
 {
@@ -45,10 +44,6 @@ namespace artivity
     {
     private:
         std::string _path;
-
-        FileDataObjectRef _file;
-
-        FolderRef _folder;
 
     public:
         Image() : Media()
@@ -62,16 +57,6 @@ namespace artivity
         }
 
         void setPath(boost::filesystem::path p);
-
-        FileDataObjectRef getFile()
-        {
-            return _file;
-        }
-
-        FolderRef getFolder()
-        {
-            return _folder;
-        }
     };
 }
 

@@ -28,8 +28,8 @@
 #ifndef _ART_RASTERIMAGE_H
 #define _ART_RASTERIMAGE_H
 
-#include "../../Ontologies/rdf.h"
 #include "../../Ontologies/nfo.h"
+
 #include "Image.h"
 
 namespace artivity
@@ -40,7 +40,7 @@ namespace artivity
 
     class RasterImage : public Image
     {
-        public:
+    public:
         RasterImage() : Image()
         {
             setType(nfo::RasterImage);

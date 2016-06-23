@@ -30,20 +30,21 @@
 
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
-#include "../Entity.h"
+
 #include "Geometry.h"
 
 namespace artivity
 {
     class Text;
+
     typedef boost::shared_ptr<Text> TextRef;
 
     class Text : public Geometry
     {   
-        private:
+    private:
         std::string _value;
 
-        public:
+    public:
         Text() : Geometry()
         {
             setType(art::Geometry);
@@ -57,8 +58,8 @@ namespace artivity
         void setText(std::string text)
         {
             _value = text;
-            setValue(prov::value, _value.c_str());
 
+            setValue(prov::value, _value.c_str());
         }
     };
 }

@@ -30,6 +30,7 @@
 
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
+
 #include "Rectangle.h"
 #include "CoordinateSystem.h"
 

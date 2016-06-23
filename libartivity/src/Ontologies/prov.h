@@ -102,6 +102,7 @@ namespace artivity
         static const char* qualifiedAttribution = prov("qualifiedAttribution");
         static const char* qualifiedCommunication = prov("qualifiedCommunication");
         static const char* qualifiedDelegation = prov("qualifiedDelegation");
+        static const char* qualifiedDerivation = prov("qualifiedDerivation");
         static const char* qualifiedEnd = prov("qualifiedEnd");
         static const char* qualifiedForm = prov("qualifiedForm");
         static const char* qualifiedGeneration = prov("qualifiedGeneration");

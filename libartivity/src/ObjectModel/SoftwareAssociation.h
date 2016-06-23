@@ -29,8 +29,10 @@
 #define _ART_SOFTWAREASSOCIATION_H
 
 #include "../Ontologies/art.h"
-#include "../Ontologies/rdf.h"
+
 #include "../UriGenerator.h"
+#include "../Resource.h"
+#include "../Property.h"
 
 #include "Association.h"
 

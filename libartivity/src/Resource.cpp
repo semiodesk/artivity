@@ -99,6 +99,11 @@ namespace artivity
         return properties.hasProperty(property.uri, Serializer::toString(value), typeid(value));
     }
 
+    void Resource::addProperty(const Property& property, PropertyValue value)
+    {
+        properties.addProperty(property.uri, value);
+    }
+
     void Resource::addProperty(const Property& property, ResourceRef value)
     {
         properties.addProperty(property.uri, value);
@@ -144,6 +149,11 @@ namespace artivity
         properties.addProperty(property.uri, Serializer::toString(value), typeid(value));
     }
 
+    void Resource::removeProperty(const Property& property, PropertyValue value)
+    {
+        properties.removeProperty(property.uri, value);
+    }
+
     void Resource::removeProperty(const Property& property, ResourceRef value)
     {
         properties.removeProperty(property.uri, value);
@@ -187,6 +197,11 @@ namespace artivity
     void Resource::removeProperty(const Property& property, const time_t* value)
     {
         properties.removeProperty(property.uri, Serializer::toString(value), typeid(value));
+    }
+
+    void Resource::setValue(const Property& property, PropertyValue value)
+    {
+        properties.setProperty(property.uri, value);
     }
 
     void Resource::setValue(const Property& property, ResourceRef value)

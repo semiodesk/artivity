@@ -28,11 +28,7 @@
 #ifndef _ART_ASSOCIATION_H
 #define _ART_ASSOCIATION_H
 
-#include "../Ontologies/rdf.h"
 #include "../Ontologies/prov.h"
-#include "../UriGenerator.h"
-#include "../Resource.h"
-#include "../Property.h"
 
 #include "Agent.h"
 #include "Role.h"
@@ -51,54 +47,38 @@ namespace artivity
         
     public:
         Association() : Resource(UriGenerator::getUri())
-        {
+        {           
+            setType(prov::Association);
+
             _agent = NULL;
             _role = NULL;
-            
-            setType(prov::Association);
         }
 
 		Association(std::string uriref) : Resource(uriref)
 		{
-			_agent = NULL;
-			_role = NULL;
-
 			setType(prov::Association);
+
+            _agent = NULL;
+            _role = NULL;
 		}
 
         Association(const char* uriref) : Resource(uriref)
-        {
+        {          
+            setType(prov::Association);
+
             _agent = NULL;
             _role = NULL;
-            
-            setType(prov::Association);
         }
         
         virtual ~Association() {}
         
-        AgentRef getAgent()
-        {
-            return _agent;
-        }
+        AgentRef getAgent();
         
-        void setAgent(AgentRef agent)
-        {
-            _agent = agent;
-            
-            setValue(prov::agent, agent);
-        }
+        void setAgent(AgentRef agent);
         
-        RoleRef getRole()
-        {
-            return _role;
-        }
+        RoleRef getRole();
         
-        void setRole(RoleRef role)
-        {
-            _role = role;
-            
-            setValue(prov::hadRole, role);
-        }
+        void setRole(RoleRef role);
     };
 }
 

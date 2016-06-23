@@ -38,15 +38,19 @@ namespace artivity
     
     class PropertyMap
     {
-        private:
+    private:
         std::multimap<std::string, PropertyValue> _map;
-        public:
+
+    public:
         PropertyMap() {}
+
         ~PropertyMap() 
         {
             _map.clear();
         }
         
+        PropertyMapIterator findProperty(const std::string& property, PropertyValue value);
+
         PropertyMapIterator findProperty(const std::string& property, ResourceRef resource);
         
         PropertyMapIterator findProperty(const std::string& property, std::string literalValue, const type_info& typeInfo);
@@ -59,10 +63,16 @@ namespace artivity
         
         void addProperty(const std::string& property, std::string literalValue, const type_info& typeInfo);
         
+        void addProperty(const std::string& property, PropertyValue value);
+
+        void removeProperty(const std::string& property, PropertyValue value);
+
         void removeProperty(const std::string& property, ResourceRef resource);
         
         void removeProperty(const std::string& property, std::string literalValue, const type_info& typeInfo);
         
+        void setProperty(const std::string& property, PropertyValue value);
+
         void setProperty(const std::string& property, ResourceRef resource);
 
         void setProperty(const std::string& property, std::string literalValue, const type_info& typeInfo);
@@ -73,7 +83,7 @@ namespace artivity
 
         PropertyMapIterator end() { return _map.end(); }
 
-        PropertyMapIterator begin() { return _map.end(); }
+        PropertyMapIterator begin() { return _map.begin(); }
 
         void clear() { _map.clear(); }
 
@@ -84,6 +94,10 @@ namespace artivity
         PropertyMapIterator lower_bound(const std::string& property) { return _map.lower_bound(property); }
 
         PropertyMapIterator upper_bound(const std::string& property) { return _map.upper_bound(property); }
+
+        void insert(std::string key, PropertyValue value) { _map.insert(std::pair<std::string, PropertyValue>(key, value)); }
+
+        PropertyMapIterator erase(PropertyMapIterator it) { return _map.erase(it); }
     };
 }
 

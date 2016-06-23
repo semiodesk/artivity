@@ -48,11 +48,18 @@ namespace artivity
     class Resource
     {
         friend class Serializer;
-        
+        friend class Influence;
+
     protected:
         PropertyMap properties;
-                
-    public:                    
+
+        void addProperty(const Property& property, PropertyValue value);
+
+        void removeProperty(const Property& property, PropertyValue value);
+
+        void setValue(const Property& property, PropertyValue value);
+
+    public:
         std::string uri;
 
 		bool serialize;

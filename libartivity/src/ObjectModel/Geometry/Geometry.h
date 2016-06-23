@@ -28,10 +28,11 @@
 #ifndef _ART_GEOMETRY_H
 #define _ART_GEOMETRY_H
 
-#include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
-#include "../../UriGenerator.h"
+
 #include "../Entity.h"
+
+#include "Point.h"
 
 namespace artivity
 {
@@ -41,7 +42,14 @@ namespace artivity
 
     class Geometry : public Entity
     {        
-        public:
+    private:
+        double _x;
+
+        double _y;
+
+        double _z;
+
+    public:
         Geometry() : Entity()
         {
             setType(art::Geometry);
@@ -50,6 +58,48 @@ namespace artivity
         Geometry(const char* uriref) : Entity(uriref)
         {
             setType(art::Geometry);
+        }
+
+        void setPosition(double x, double y)
+        {
+            setX(x);
+            setY(y);
+        }
+
+        double getX()
+        {
+            return _x;
+        }
+
+        void setX(double x)
+        {
+            _x = x;
+
+            setValue(art::x, x);
+        }
+
+        double getY()
+        {
+            return _y;
+        }
+
+        void setY(double y)
+        {
+            _y = y;
+
+            setValue(art::y, y);
+        }
+
+        double getZ()
+        {
+            return _z;
+        }
+
+        void setZ(double z)
+        {
+            _z = z;
+
+            setValue(art::z, z);
         }
     };
 }
