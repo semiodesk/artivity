@@ -207,9 +207,11 @@ namespace artivity
 
 	void ActivityLog::addAssociation(const char* roleUri, const char* agentUri, const char* version)
 	{
+        if (strcmp(roleUri, art::SOFTWARE) != 0 || version == '\0') return;
+
         stringstream str;
-        if (strcmp(roleUri, art::SOFTWARE) == 0)
-            str << agentUri << "#" << version;
+        str << agentUri << "#" << version;
+
         SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(str.str()));
 		a->setAgent(AgentRef(new Agent(agentUri)));
 		a->setRole(RoleRef(new Role(roleUri)));
@@ -220,9 +222,11 @@ namespace artivity
 
 	void ActivityLog::addAssociation(const char* roleUri, string agentUri, string version)
 	{
+        if (strcmp(roleUri, art::SOFTWARE) != 0 || version.empty()) return;
+
         stringstream str;
-        if (strcmp(roleUri, art::SOFTWARE) == 0)
-            str << agentUri << "#" << version;
+        str << agentUri << "#" << version;
+
         SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(str.str()));
         a->setAgent(AgentRef(new Agent(agentUri)));
         a->setRole(RoleRef(new Role(roleUri)));

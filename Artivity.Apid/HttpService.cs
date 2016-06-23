@@ -236,10 +236,10 @@ namespace Artivity.Apid
             });
 
             // Make sure the database is started.
-            if (UpdateOntologies)
-            {
+            //if (UpdateOntologies)
+            //{
                 LoadOntologies();
-            }
+            //}
 
             using (_serviceHost = new NancyHost(customBootstrapper, config, new Uri("http://localhost:" + _servicePort)))
             {
