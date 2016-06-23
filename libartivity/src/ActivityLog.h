@@ -124,6 +124,8 @@ namespace artivity
 
         ImageRef getDocument();
 
+        bool createDataObject(std::string path);
+
         void addAssociation(const char* roleUri);
 		void addAssociation(const char* roleUri, const char* agentUri, const char* version);
 		void addAssociation(const char* roleUri, std::string agentUri, std::string version);
