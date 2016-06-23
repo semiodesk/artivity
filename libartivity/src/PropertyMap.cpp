@@ -29,6 +29,27 @@
 
 namespace artivity
 {
+    PropertyMapIterator PropertyMap::findProperty(const std::string& property, PropertyValue value)
+    {
+        PropertyMapIterator it = _map.begin();
+
+        while (it != _map.end())
+        {
+            PropertyValue x = it->second;
+
+            if (strcmp(x.LiteralType, value.LiteralType) == 0
+                && x.LiteralValue == value.LiteralValue
+                && x.Value == value.Value)
+            {
+                break;
+            }
+
+            it++;
+        }
+
+        return it;
+    }
+
     PropertyMapIterator PropertyMap::findProperty(const std::string& property, ResourceRef resource)
     {
         if (resource == NULL) return _map.end();
@@ -92,6 +113,15 @@ namespace artivity
         _map.insert(std::pair<std::string, PropertyValue>(property, PropertyValue(literalValue, typeInfo)));
     }
 
+    void PropertyMap::removeProperty(const std::string& property, PropertyValue value)
+    {
+        PropertyMapIterator it = findProperty(property, value);
+
+        if (it == _map.end()) return;
+
+        _map.erase(it);
+    }
+
     void PropertyMap::removeProperty(const std::string& property, ResourceRef resource)
     {
         PropertyMapIterator it = findProperty(property, resource);
@@ -110,6 +140,13 @@ namespace artivity
         _map.erase(it);
     }
 
+    void PropertyMap::setProperty(const std::string& property, PropertyValue value)
+    {
+        _map.erase(property);
+
+        addProperty(property, value);
+    }
+
     void PropertyMap::setProperty(const std::string& property, ResourceRef resource)
     {
         _map.erase(property);
@@ -126,4 +163,8 @@ namespace artivity
         addProperty(property, literalValue, typeInfo);
     }
 
+    void PropertyMap::addProperty(const std::string& property, PropertyValue value)
+    {
+        _map.insert(std::pair<std::string, PropertyValue>(property, value));
+    }
 }

@@ -28,19 +28,14 @@
 #ifndef _ART_INFORMATIONELEMENT_H
 #define _ART_INFORMATIONELEMENT_H
 
-#include "../../Ontologies/rdf.h"
 #include "../../Ontologies/nfo.h"
 #include "../../Ontologies/nie.h"
-#include "../Entity.h"
 
-#include "FileDataObject.h"
+#include "../Entity.h"
+#include "../FileDataObject.h"
 
 namespace artivity
 {
-    class FileDataObject;
-
-    typedef boost::shared_ptr<FileDataObject> FileDataObjectRef;
-
     class InformationElement;
 
     typedef boost::shared_ptr<InformationElement> InformationElementRef;
@@ -67,17 +62,9 @@ namespace artivity
             _url = "";
         }
         
-        const char* getUrl()
-        {
-            return _url.c_str();
-        }
+        const char* getUrl();
         
-        void setUrl(const char* url)
-        {
-            _url = std::string(url);
-
-            setValue(nie::url, _url.c_str());
-        }
+        void setUrl(const char* url);
 
         FileDataObjectRef getDataObject();
 

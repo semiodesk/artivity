@@ -28,8 +28,8 @@
 #ifndef _ART_EDITFILE_H
 #define _ART_EDITFILE_H
 
-#include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
+
 #include "../Activity.h"
 
 namespace artivity

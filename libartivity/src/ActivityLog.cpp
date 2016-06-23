@@ -30,7 +30,11 @@
 #endif
 
 #include "curlresponse.h"
+
 #include "ActivityLog.h"
+
+#include "ObjectModel/Activity.h"
+#include "ObjectModel/Influences/Generation.h"
 
 namespace artivity
 {
@@ -282,18 +286,19 @@ namespace artivity
 
         if (create)
         {
-            GenerationRef generation = GenerationRef(new Generation());
-            generation->addGenerated(_entity);
-
             // A new file is being created.
             _activity = CreateFileRef(new CreateFile());
-            _activity->addInfluence(generation);
+
+            GenerationRef generation = GenerationRef(new Generation());
+            generation->addEntity(_entity);
+
+            addInfluence(generation);
         }
         else
         {
             // An existing file is being edited.
             _activity = EditFileRef(new EditFile());
-            _activity->addUsage(_entity);
+            _activity->addUsed(_entity);
         }
 	}
 
@@ -345,33 +350,107 @@ namespace artivity
 
 	void ActivityLog::addInfluence(GenerationRef generation)
 	{
-		_activity->addInfluence(generation);
+        list<EntityRef> entities = generation->getEntities();
+
+        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+        {
+            EntityRef entity = *it;
+
+            entity->addProperty(prov::qualifiedGeneration, generation);
+
+            _activity->addGenerated(entity);
+        }
 	}
 
-	void ActivityLog::addInfluence(InvalidationRef invalidation)
+    void ActivityLog::addInfluence(InvalidationRef invalidation)
 	{
-		_activity->addInfluence(invalidation);
+        list<EntityRef> entities = invalidation->getEntities();
+
+        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+        {
+            EntityRef entity = *it;
+
+            entity->addProperty(prov::qualifiedInvalidation, invalidation);
+
+            _activity->addInvalidated(entity);
+        }
 	}
 
-	void ActivityLog::addInfluence(EntityInfluenceRef influence)
+    void ActivityLog::addInfluence(EntityInfluenceRef influence)
 	{
-		_activity->addInfluence(influence);
+        influence->setActivity(_activity);
+
+        list<EntityRef> entities = influence->getEntities();
+
+        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+        {
+            _activity->addUsed(*it);
+        }
 	}
+
+    void ActivityLog::addInfluence(UndoRef undo)
+    {
+        // TODO: Implement.
+    }
+
+    void ActivityLog::addInfluence(RedoRef undo)
+    {
+        // TODO: Implement.
+    }
 
 	void ActivityLog::removeInfluence(GenerationRef generation)
 	{
-		_activity->removeInfluence(generation);
+        generation->clearActivity();
+
+        list<EntityRef> entities = generation->getEntities();
+
+        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+        {
+            EntityRef entity = *it;
+
+            entity->removeProperty(prov::qualifiedGeneration, generation);
+
+            _activity->removeGenerated(entity);
+        }
 	}
 
 	void ActivityLog::removeInfluence(InvalidationRef invalidation)
 	{
-		_activity->removeInfluence(invalidation);
+        invalidation->clearActivity();
+
+        list<EntityRef> entities = invalidation->getEntities();
+
+        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+        {
+            EntityRef entity = *it;
+
+            entity->removeProperty(prov::qualifiedInvalidation, invalidation);
+
+            _activity->removeInvalidated(entity);
+        }
 	}
 
-	void ActivityLog::removeInfluence(EntityInfluenceRef influence)
+    void ActivityLog::removeInfluence(EntityInfluenceRef influence)
 	{
-		_activity->removeInfluence(influence);
+        influence->clearActivity();
+
+        list<EntityRef> entities = influence->getEntities();
+
+        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+        {
+            _activity->removeUsed(*it);
+        }
 	}
+
+    void ActivityLog::removeInfluence(UndoRef undo)
+    {
+        // TODO: Implement.
+    }
+
+    void ActivityLog::removeInfluence(RedoRef undo)
+    {
+        // TODO: Implement.
+    }
 
 	string ActivityLog::getRenderOutputPath()
 	{

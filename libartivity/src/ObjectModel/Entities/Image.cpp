@@ -25,6 +25,9 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+#include "../../Resource.h"
+#include "../../Property.h"
+
 #include "Image.h"
 
 namespace artivity
@@ -34,32 +37,32 @@ namespace artivity
 
     void Image::setPath(path p)
     {
-        // Create the folder object.
-        path folder = p.parent_path();
+        //// Create the folder object.
+        //path folder = p.parent_path();
 
-        if (_folder == NULL)
-        {
-            _folder = FolderRef(new Folder());
-        }
+        //if (_folder == NULL)
+        //{
+        //    _folder = FolderRef(new Folder());
+        //}
 
-        _folder->setLabel(folder.filename().string());
-        _folder->setUrl(UriGenerator::getUrl(folder.string()));
+        //_folder->setLabel(folder.filename().string());
+        //_folder->setUrl(UriGenerator::getUrl(folder.string()));
 
-        // Create the file data object object.
-        if (_file == NULL)
-        {
-            _file = FileDataObjectRef(new FileDataObject());
+        //// Create the file data object object.
+        //if (_file == NULL)
+        //{
+        //    _file = FileDataObjectRef(new FileDataObject());
 
-            setDataObject(_file);
-        }
+        //    setDataObject(_file);
+        //}
 
-        time_t now;
-        time(&now);
+        //time_t now;
+        //time(&now);
 
-        _file->setLabel(p.filename().string());
-        _file->setContainer(_folder);
-        _file->setCreated(now);
-        _file->setModified(now);
+        //_file->setLabel(p.filename().string());
+        //_file->setContainer(_folder);
+        //_file->setCreated(now);
+        //_file->setModified(now);
     }
 }
 

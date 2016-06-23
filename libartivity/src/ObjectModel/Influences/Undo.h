@@ -28,10 +28,9 @@
 #ifndef _ART_UNDO_H
 #define _ART_UNDO_H
 
-#include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
-#include "../EntityInfluence.h"
-#include "../Revision.h"
+
+#include "EntityInfluence.h"
 
 namespace artivity
 {
@@ -41,11 +40,12 @@ namespace artivity
 
     class Undo : public EntityInfluence
     {
-        private:
-        std::list<std::string> _revisions;
+    private:
         int _count;
 
-        public:
+        std::list<ResourceRef> _influences;
+
+    public:
         Undo() : EntityInfluence()
         {
             setType(art::Undo);
@@ -56,26 +56,13 @@ namespace artivity
             setType(art::Undo);
         }
 
+        int getCount();
 
-        void addRevision(std::string revisionUri)
-        {
-            _revisions.push_back(revisionUri);
+        void setCount(int count);
 
-            addProperty(art::reverted, revisionUri, typeid(Resource));
-        }
+        void addRevision(ResourceRef influence);
 
-
-        void setCount(int count)
-        {
-            _count = count;
-
-            setValue(art::count, count);
-        }
-
-        int getCount()
-        {
-            return _count;
-        }
+        void removeRevision(ResourceRef influence);
     };
 }
 

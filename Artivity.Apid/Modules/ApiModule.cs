@@ -476,7 +476,7 @@ namespace Artivity.Apid.Modules
                     {
                         SELECT ?s WHERE
                         {
-                            ?activity prov:used @entity;
+                            ?activity prov:used @entity .
                             ?activity prov:qualifiedAssociation ?association .
 
                             ?association prov:hadRole art:SOFTWARE .
@@ -887,7 +887,7 @@ namespace Artivity.Apid.Modules
                     ?uri a ?type .
                     ?uri prov:atTime ?time .
 
-                    OPTIONAL { ?uri dc:description ?description . }
+                    OPTIONAL { ?uri dces:description ?description . }
                     OPTIONAL { ?uri art:selectedLayer / rdfs:label ?layerName . }
                     OPTIONAL { ?uri art:hadBoundaries ?bounds . }
                     OPTIONAL

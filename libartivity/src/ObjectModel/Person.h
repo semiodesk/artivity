@@ -28,9 +28,10 @@
 #ifndef _ART_PERSON_H
 #define _ART_PERSON_H
 
-#include "../Ontologies/rdf.h"
 #include "../Ontologies/prov.h"
+
 #include "../UriGenerator.h"
+#include "../Resource.h"
 
 namespace artivity
 {

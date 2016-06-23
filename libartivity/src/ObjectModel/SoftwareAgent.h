@@ -28,7 +28,6 @@
 #ifndef _ART_SOFTWAREAGENT_H
 #define _ART_SOFTWAREAGENT_H
 
-#include "../Ontologies/rdf.h"
 #include "../Ontologies/prov.h"
 
 #include "Agent.h"

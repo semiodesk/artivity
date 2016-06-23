@@ -28,9 +28,9 @@
 #ifndef _ART_AGENT_H
 #define _ART_AGENT_H
 
-#include "../Ontologies/rdf.h"
 #include "../Ontologies/prov.h"
 #include "../UriGenerator.h"
+#include "../Resource.h"
 
 namespace artivity
 {

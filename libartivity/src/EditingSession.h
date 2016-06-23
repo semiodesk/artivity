@@ -1,16 +1,16 @@
 #ifndef _ART_EDITINGSESSION_H
 #define _ART_EDITINGSESSION_H
 
+#include "defines.h"
 #include "ActivityLog.h"
 #include "ProducerConsumer.h"
-#include "defines.h"
-#include "ObjectModel/Influences\Undo.h"
-#include "ObjectModel/Influences\Redo.h"
-#include "ObjectModel/Revision.h"
-#include "ObjectModel/Invalidation.h"
-#include "ObjectModel/Generation.h"
-#include "ObjectModel/Derivation.h"
 #include "ObjectModel/Change.h"
+#include "ObjectModel/Influences/Undo.h"
+#include "ObjectModel/Influences/Redo.h"
+#include "ObjectModel/Influences/Revision.h"
+#include "ObjectModel/Influences/Invalidation.h"
+#include "ObjectModel/Influences/Generation.h"
+#include "ObjectModel/Influences/Derivation.h"
 
 namespace artivity
 {
@@ -40,7 +40,7 @@ namespace artivity
         void createActivity();
 
 
-        std::vector<std::string> _changes;
+        std::vector<ResourceRef> _changes;
         int _currentChangeIndex; 
 
         void handleChanges(ResourceRef res);
