@@ -79,7 +79,7 @@ namespace Artivity.Apid.Modules
                 {
                     return GetAgents();
                 }
-                else if (Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                else if (IsUri(uri))
                 {
                     return GetAgent(new UriRef(uri));
                 }
@@ -190,7 +190,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(providerId))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetOAuth2AccountRedirectUrl(providerId);
@@ -203,7 +203,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(providerId) || string.IsNullOrEmpty(code))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return SendOAuth2AccessToken(providerId, code);
@@ -215,7 +215,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(providerId))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return InstallAccount(providerId);
@@ -228,7 +228,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(accountId))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return UninstallAccount(accountId);
@@ -238,9 +238,9 @@ namespace Artivity.Apid.Modules
             {
                 string fileUrl = Request.Query["fileUrl"];
 
-                if (string.IsNullOrEmpty(fileUrl) || !Uri.IsWellFormedUriString(fileUrl, UriKind.Absolute))
+                if (string.IsNullOrEmpty(fileUrl) || !IsUri(fileUrl))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetUri(new UriRef(fileUrl));
@@ -249,17 +249,26 @@ namespace Artivity.Apid.Modules
             Get["/files"] = parameters =>
             {
                 string uri = Request.Query.uri;
+                string url = Request.Query.url;
+                string create = Request.Query.create;
 
                 if (string.IsNullOrEmpty(uri))
                 {
                     return HttpStatusCode.NotImplemented;
                 }
-                else if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                else if (IsUri(uri))
                 {
-                    return HttpStatusCode.BadRequest;
+                    if (string.IsNullOrEmpty(url))
+                    {
+                        return GetFile(new UriRef(uri));
+                    }
+                    else if(url.StartsWith("file://") && !string.IsNullOrEmpty(create))
+                    {
+                        return CreateFile(new UriRef(uri), new Uri(url));
+                    }
                 }
 
-                return GetFile(new UriRef(uri));
+                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             };
 
             Get["/files/recent"] = parameters =>
@@ -271,9 +280,9 @@ namespace Artivity.Apid.Modules
             {
                 string uri = Request.Query.uri;
 
-                if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetCanvas(new UriRef(uri));
@@ -283,9 +292,9 @@ namespace Artivity.Apid.Modules
             {
                 string uri = Request.Query.uri;
 
-                if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetActivities(new UriRef(uri));
@@ -301,9 +310,9 @@ namespace Artivity.Apid.Modules
             {
                 string uri = Request.Query.uri;
 
-                if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetInfluences(new UriRef(uri));
@@ -315,9 +324,9 @@ namespace Artivity.Apid.Modules
                 {
                     string uri = Request.Query.uri;
 
-                    if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                    if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                     {
-                        return HttpStatusCode.BadRequest;
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
 
                     if(Request.Query.timestamp)
@@ -332,7 +341,7 @@ namespace Artivity.Apid.Modules
                         }
                         else
                         {
-                            return HttpStatusCode.BadRequest;
+                            return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                         }
                     }
 
@@ -342,16 +351,16 @@ namespace Artivity.Apid.Modules
                 {
                     string url = Request.Query.url;
 
-                    if (string.IsNullOrEmpty(url) || !Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                    if (string.IsNullOrEmpty(url) || !IsUri(url))
                     {
-                        return HttpStatusCode.BadRequest;
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
 
                     return GetRendering(new UriRef(url));
                 }
                 else
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
             };
 
@@ -359,7 +368,7 @@ namespace Artivity.Apid.Modules
             {
                 string uri = Request.Query.uri;
 
-                if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
                     return HttpStatusCode.BadRequest;
                 }
@@ -373,9 +382,9 @@ namespace Artivity.Apid.Modules
             {
                 string uri = Request.Query.uri;
 
-                if (string.IsNullOrEmpty(uri) || !Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 if(Request.Query.timestamp)
@@ -390,7 +399,7 @@ namespace Artivity.Apid.Modules
                     }
                     else
                     {
-                        return HttpStatusCode.BadRequest;
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
                 }
 
@@ -1191,12 +1200,19 @@ namespace Artivity.Apid.Modules
             {
                 Dictionary<string, Resource> result = new Dictionary<string, Resource>();
                 result["file"] = file;
-                result["canvas"] = file.Canvases.First();
+                //result["canvas"] = file.Canvases.First();
 
                 return Response.AsJson(result);
             }
 
             return Response.AsJson(file);
+        }
+
+        private Response CreateFile(UriRef uri, Uri url)
+        {
+            FileSystemMonitor.Instance.AddFile(uri, url);
+
+            return HttpStatusCode.OK;
         }
 
         private Response GetCanvas(UriRef entityUri)
@@ -1233,6 +1249,11 @@ namespace Artivity.Apid.Modules
             IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
 
             return Response.AsJson(bindings.FirstOrDefault());
+        }
+
+        private bool IsUri(string uri, UriKind kind = UriKind.Absolute)
+        {
+            return Uri.IsWellFormedUriString(uri, kind);
         }
 
         #endregion

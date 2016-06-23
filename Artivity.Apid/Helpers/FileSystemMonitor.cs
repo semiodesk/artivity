@@ -562,14 +562,64 @@ namespace Artivity.Apid
             }
         }
 
-        public void AddFile(string path, string uri)
+        public void AddFile(UriRef uri, Uri url)
         {
-            FileInfoCache file = new FileInfoCache(path);
+            FileInfoCache file = new FileInfoCache(url.LocalPath);
 
             _monitoredFiles[file.Url.LocalPath] = file;
-            _monitoredFileUris[file.Url.LocalPath] = new UriRef(uri);
+            _monitoredFileUris[file.Url.LocalPath] = uri;
 
-            Logger.LogInfo("Enabled monitoring {0}", file.Url.LocalPath);
+            Logger.LogInfo("Enabled monitoring {0}", url.LocalPath);
+
+            // Create the file and folder data objects.
+            DirectoryInfo folderInfo = new DirectoryInfo(Path.GetDirectoryName(url.LocalPath));
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?uri ?time
+                WHERE
+                {
+                    ?uri a nfo:Folder .
+                    ?uri nie:url @url .
+                    ?uri nie:lastModified ?time .
+                }
+                ORDER BY DESC(?time) LIMIT 1
+            ");
+
+            query.Bind("@url", folderInfo.ToUriRef());
+
+            BindingSet bindings = _model.GetBindings(query).FirstOrDefault();
+
+            Folder folderObject;
+
+            if(bindings == null)
+            {
+                folderObject = _model.CreateResource<Folder>();
+                folderObject.Url = new Resource(folderInfo.ToUriRef());
+                folderObject.CreationTime = folderInfo.CreationTime;
+                folderObject.LastModificationTime = folderInfo.LastWriteTime;
+
+                folderObject.Commit();
+
+                Logger.LogInfo("Created: {0}", folderInfo.FullName);
+            }
+            else
+            {
+                folderObject = new Folder(new UriRef(bindings["uri"].ToString()));
+            }
+
+            FileDataObject fileObject = _model.CreateResource<FileDataObject>(uri);
+            fileObject.Name = file.Name;
+            fileObject.Folder = folderObject;
+            fileObject.CreationTime = file.CreationTime;
+            fileObject.LastModificationTime = file.LastWriteTime;
+            fileObject.LastAccessTime = file.LastAccessTime;
+            fileObject.Commit();
+
+            Console.WriteLine(SparqlSerializer.SerializeResource(folderObject));
+            Console.WriteLine(SparqlSerializer.SerializeResource(fileObject));
+
+            Logger.LogInfo("Created: {0}", file.FullName);
         }
 
         public void RemoveFile(string path)
@@ -598,10 +648,10 @@ namespace Artivity.Apid
                 ASK WHERE
                 {
                     ?entity a nfo:FileDataObject .
-                    ?entity nfo:fileUrl @fileUrl . 
+                    ?entity nie:url @fileUrl . 
                 }");
 
-            query.Bind("@fileUrl", file.Url.AbsoluteUri);
+            query.Bind("@fileUrl", file.Url);
 
             ISparqlQueryResult result = _model.ExecuteQuery(query);
 
@@ -614,10 +664,10 @@ namespace Artivity.Apid
             {
                 // Create and register a new file data object.
                 FileDataObject f = _model.CreateResource<FileDataObject>();
+                f.Name = file.Name;
                 f.CreationTime = file.CreationTime;
                 f.LastAccessTime = file.LastAccessTime;
                 f.LastModificationTime = file.LastWriteTime;
-                f.Url = file.Url.AbsoluteUri;
                 f.Commit();
 
                 _monitoredFileUris[file.Url.LocalPath] = f.Uri;
@@ -641,7 +691,6 @@ namespace Artivity.Apid
                 try
                 {
                     FileDataObject file = _model.GetResource<FileDataObject>(uri);
-                    file.Url = url.AbsoluteUri;
                     file.LastModificationTime = DateTime.UtcNow;
                     file.Commit();
 
@@ -676,7 +725,6 @@ namespace Artivity.Apid
                 {
                     // Get the file data object from the database and update the metadata.
                     FileDataObject file = _model.GetResource<FileDataObject>(uri);
-                    file.Url = newUrl.AbsoluteUri;
                     file.LastModificationTime = DateTime.UtcNow;
                     file.Commit();
 

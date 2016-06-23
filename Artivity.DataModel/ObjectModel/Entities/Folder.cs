@@ -1,4 +1,4 @@
-// LICENSE:
+﻿// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,36 +31,27 @@ using System.Collections.Generic;
 
 namespace Artivity.DataModel
 {
-	[RdfClass(NFO.FileDataObject)]
-	public class FileDataObject : Entity
-	{
-		#region Members
+    [RdfClass(NFO.Folder)]
+    public class Folder : Entity
+    {
+        #region Members
 
-        [RdfProperty(RDFS.label)]
-        public string Name { get; set; }
+        // TODO: Map into a URI, not a literal value. (Needs changing libartivity).
+        [RdfProperty(NIE.url)]
+        public Resource Url { get; set; }
 
-		[RdfProperty(NFO.fileSize)]
-		public long ByteSize { get; set; }
+        [RdfProperty(NIE.created)]
+        public DateTime CreationTime { get; set; }
 
-		[RdfProperty(NIE.created)]
-		public DateTime CreationTime { get; set; }
+        [RdfProperty(NIE.lastModified)]
+        public DateTime LastModificationTime { get; set; }
 
-		[RdfProperty(NFO.fileLastAccessed)]
-		public DateTime LastAccessTime { get; set; }
+        #endregion
 
-		[RdfProperty(NIE.lastModified)]
-		public DateTime LastModificationTime { get; set; }
+        #region Constructors
 
-        [RdfProperty(NFO.belongsToContainer)]
-        public Folder Folder { get; set; }
+        public Folder(Uri uri) : base(uri) { }
 
-		#endregion
-
-		#region Constructors
-
-		public FileDataObject(Uri uri) : base(uri) {}
-
-		#endregion
-	}
+        #endregion
+    }
 }
-

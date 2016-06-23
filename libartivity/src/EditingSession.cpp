@@ -162,7 +162,7 @@ namespace artivity
 
             if (!_filePath.empty())
             {
-                _document->setPath(_filePath);
+                _log->createDataObject(_filePath);
             }
         }
 
@@ -178,6 +178,17 @@ namespace artivity
     {
         DerivationRef res = onEventSaveAs();
         res->setIsSave(true);
+
+        // TODO: Check if file paths match if not empty -> derivation.
+        if (_filePath.empty())
+        {
+            _filePath = getDocumentFilePath();
+
+            if (!_filePath.empty())
+            {
+                _log->createDataObject(_filePath);
+            }
+        }
 
         time_t now;
         time(&now);

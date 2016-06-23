@@ -38,35 +38,12 @@ namespace Artivity.Apid
         public MonitoringModule(IModelProvider model, IPlatformProvider platform)
             : base("/artivity/1.0/monitor", model, platform)
         {
-            Get["/add"] = parameters => { return AddFile(); };
             Get["/remove"] = parameters => { return RemoveFile(); };
         }
 
         #endregion
 
         #region Methods
-
-        private Response AddFile()
-        {
-            try
-            {
-                if (Request.Query.uri && Request.Query.filePath)
-                {
-                    string path = Request.Query.filePath;
-                    string uri = Request.Query.uri;
-
-                    FileSystemMonitor.Instance.AddFile(path, uri);
-
-                    return Logger.LogRequest(HttpStatusCode.OK, Request);
-                }
-
-                return Logger.LogError(HttpStatusCode.BadRequest, Request.Url, "");
-            }
-            catch (Exception e)
-            {
-                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
-            }
-        }
 
         private Response RemoveFile()
         {

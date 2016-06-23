@@ -569,4 +569,26 @@ namespace artivity
 			dump(it->second);
 		}
 	}
+
+    bool ActivityLog::createDataObject(std::string path)
+    {
+        std::string fileUri = UriGenerator::getUri();
+        std::string fileUrl = UriGenerator::getUrl(path);
+
+        CURL* curl = initializeRequest();
+
+        stringstream url;
+        url << _endpointUrl << "/files?uri=" << fileUri << "&url=" << fileUrl << "&create";
+
+        string response;
+
+        executeRequest(curl, url.str(), "", response);
+
+        stringstream stream;
+        stream << response;
+
+        _entity->setDataObject(FileDataObjectRef(new FileDataObject(fileUri.c_str())));
+
+        return !response.empty();
+    }
 }
