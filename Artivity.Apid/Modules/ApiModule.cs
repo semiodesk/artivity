@@ -238,7 +238,7 @@ namespace Artivity.Apid.Modules
             {
                 string fileUrl = Request.Query["fileUrl"];
 
-                if (string.IsNullOrEmpty(fileUrl) || !IsUri(fileUrl))
+                if (!IsFileUrl(fileUrl))
                 {
                     return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
@@ -262,7 +262,7 @@ namespace Artivity.Apid.Modules
                     {
                         return GetFile(new UriRef(uri));
                     }
-                    else if(url.StartsWith("file://") && !string.IsNullOrEmpty(create))
+                    else if(IsFileUrl(url) && !string.IsNullOrEmpty(create))
                     {
                         return CreateFile(new UriRef(uri), new Uri(url));
                     }
@@ -351,7 +351,7 @@ namespace Artivity.Apid.Modules
                 {
                     string url = Request.Query.url;
 
-                    if (string.IsNullOrEmpty(url) || !IsUri(url))
+                    if (!IsFileUrl(url))
                     {
                         return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
@@ -883,15 +883,16 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?time ?uri ?type ?description ?agentColor ?layerName ?bounds ?renderUrl ?renderX ?renderY
+                    DISTINCT ?time ?uri ?type ?description ?agentColor ?layerName ?bounds ?renderUrl ?renderX ?renderY
                 WHERE 
                 {
                     ?activity prov:generated | prov:used @entity .
                     ?activity prov:qualifiedAssociation ?association .
-                    ?activity prov:qualifiedInfluence ?uri .
 
-                    ?association prov:role art:SOFTWARE .
-                    ?association prov:agent / art:colorCode ?agentColor .
+                    ?association prov:hadRole art:SOFTWARE .
+                    ?association prov:agent / art:hasColourCode ?agentColor .
+
+                    @entity ?qualifiedInfluence ?uri .
 
                     ?uri a ?type .
                     ?uri prov:atTime ?time .
@@ -904,15 +905,15 @@ namespace Artivity.Apid.Modules
                         ?uri art:renderedAs ?rendering .
 
                         ?rendering nie:url ?renderUrl .
-                        ?rendering art:region / art:position / art:x ?renderX .
-                        ?rendering art:region / art:position / art:y ?renderY .
+                        ?rendering art:region / art:x ?renderX .
+                        ?rendering art:region / art:y ?renderY .
                     }
                 }
                 ORDER BY DESC(?time)");
 
             query.Bind("@entity", entityUri);
 
-            var bindings = ModelProvider.GetAllActivities().GetBindings(query, true);
+            var bindings = ModelProvider.GetAllActivities().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -1254,6 +1255,12 @@ namespace Artivity.Apid.Modules
         private bool IsUri(string uri, UriKind kind = UriKind.Absolute)
         {
             return Uri.IsWellFormedUriString(uri, kind);
+        }
+
+        private bool IsFileUrl(string url)
+        {
+            // TODO: Proper implementation.
+            return !string.IsNullOrEmpty(url) && url.StartsWith("file://");
         }
 
         #endregion

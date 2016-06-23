@@ -143,7 +143,10 @@ namespace Artivity.DataModel
             InstallAgent(model, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
             InstallAgent(model, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
             InstallAgent(model, "http://adobe.com/products/photoshop", "Adobe Photoshop", "photoshop.exe", "#EE2000", true);
+            InstallSoftwareAssociation(model, "http://adobe.com/products/illustrator", "2015.1");
             InstallAgent(model, "http://adobe.com/products/illustrator", "Adobe Illustrator", "illustrator.exe", "#EE2000", true);
+            InstallSoftwareAssociation(model, "http://adobe.com/products/illustrator", "2015.1");
+            InstallSoftwareAssociation(model, "http://adobe.com/products/illustrator", "2015.2");
         }
 
         public void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
@@ -187,6 +190,19 @@ namespace Artivity.DataModel
 
                     agent.Commit();
                 }
+            }
+        }
+
+        public void InstallSoftwareAssociation(IModel model, string uri, string version)
+        {
+            UriRef associationUri = new UriRef(uri + "#" + version);
+
+            if (!model.ContainsResource(associationUri))
+            {
+                SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(associationUri);
+                association.Agent = new SoftwareAgent(new UriRef(uri));
+                association.Role = new Role(new UriRef(ART.SOFTWARE));
+                association.Commit();
             }
         }
 

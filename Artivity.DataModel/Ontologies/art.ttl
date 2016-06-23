@@ -293,3 +293,6 @@ nfo:WebDataObject rdfs:subClassOf prov:Entity.
 art:OrcidAccount a rdfs:Class ;
 	rdfs:label "OrcidAccount" ;
 	rdfs:subClassOf foaf:OnlineAccount .
+
+art:SOFTWARE rdf:type prov:Role ;
+	rdfs:label "SOFTWARE" .
