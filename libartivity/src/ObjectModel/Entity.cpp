@@ -103,7 +103,7 @@ namespace artivity
 
         _influences.push_back(derivation);
 
-        addProperty(prov::used, derivation);
+        addProperty(prov::qualifiedDerivation, derivation);
     }
 
     void Entity::addInfluence(RevisionRef revision)
@@ -112,7 +112,7 @@ namespace artivity
 
         _influences.push_back(revision);
 
-        addProperty(prov::used, revision);
+        addProperty(prov::qualifiedRevision, revision);
     }
 }
 

@@ -44,27 +44,6 @@ namespace artivity
     void Influence::addEntity(EntityRef entity)
     {
         entities.push_back(entity);
-
-        PropertyMapIterator it = entity->properties.begin();
-
-        while (it != entity->properties.end())
-        {
-            if (it->first != rdf::_type)
-            {
-                ChangeRef change = ChangeRef(new Change());
-                //change->setEntity(entity);
-                change->setProperty(it->first);
-                change->setValue(it->second);
-
-                addChange(change);
-
-                it = entity->properties.erase(it);
-            }
-            else
-            {
-                it++;
-            }
-        }
     }
 
     ActivityRef Influence::getActivity()
