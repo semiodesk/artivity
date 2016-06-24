@@ -978,7 +978,7 @@ namespace Artivity.Apid.Modules
 				                ?influence art:selectedLayer ?layer .
 
 				                ?layer rdfs:label ?layerName .
-				                ?layer art:position / art:z ?layerZ .
+				                ?layer art:z ?layerZ .
 			                }
 		                }
 		                GROUP BY ?layerZ
@@ -1026,13 +1026,13 @@ namespace Artivity.Apid.Modules
                         WHERE
                         {
                             ?activity prov:generated | prov:used @entity .
-                            ?activity prov:qualifiedInfluence ?influence .
 
-                            ?influence prov:atTime ?time .
-                            ?influence art:selectedLayer ?layer .
+			                ?influence prov:activity | prov:hadActivity ?activity .
+			                ?influence prov:atTime ?time .
+				            ?influence art:selectedLayer ?layer .
 
-                            ?layer rdfs:label ?layerName .
-                            ?layer art:position / art:z ?layerZ .
+				            ?layer rdfs:label ?layerName .
+				            ?layer art:z ?layerZ .
 
                             FILTER(?time <= @time)
                         }
@@ -1044,15 +1044,15 @@ namespace Artivity.Apid.Modules
                     ?influence art:renderedAs ?rendering .
 
                     ?rendering nie:url ?url .
-                    ?rendering art:region / art:position / art:x ?x .
-                    ?rendering art:region / art:position / art:y ?y .
+                    ?rendering art:region / art:x ?x .
+                    ?rendering art:region / art:y ?y .
 
                     OPTIONAL
                     {
                         ?influence art:hadBoundaries ?bounds .
 
-                        ?bounds art:position / art:x ?boundsX .
-                        ?bounds art:position / art:y ?boundsY .
+                        ?bounds art:x ?boundsX .
+                        ?bounds art:y ?boundsY .
                         ?bounds art:width ?boundsWidth .
                         ?bounds art:height ?boundsHeight .
                     }
@@ -1151,15 +1151,15 @@ namespace Artivity.Apid.Modules
                 WHERE
                 {
                     ?activity prov:generated | prov:used @entity .
-                    ?activity prov:qualifiedInfluence ?influence .
 
-                    ?influence a ?type .
+	                ?influence a ?type .
+	                ?influence prov:activity | prov:hadActivity ?activity .
                 }";
 
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@entity", entityUri);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
+            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -1172,10 +1172,10 @@ namespace Artivity.Apid.Modules
                 WHERE
                 {
                     ?activity prov:generated | prov:used @entity .
-                    ?activity prov:qualifiedInfluence ?influence .
-                    
-                    ?influence a ?type .
-                    ?influence prov:atTime ?time .
+
+	                ?influence a ?type .
+	                ?influence prov:activity | prov:hadActivity ?activity .
+	                ?influence prov:atTime ?time .
 
                     FILTER (?time <= @time)
                 }";
@@ -1184,7 +1184,7 @@ namespace Artivity.Apid.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
+            List<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
         }
