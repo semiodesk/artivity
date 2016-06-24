@@ -28,6 +28,10 @@
 #ifndef _ART_URIGENERATOR_H
 #define _ART_URIGENERATOR_H
 
+#ifdef WIN32 
+#define CURL_STATICLIB
+#endif
+
 #include <stdlib.h>
 #include <string>
 #include <sstream>
@@ -39,8 +43,8 @@ namespace artivity
     {        
         public:
     
-            UriGenerator() {}
-            ~UriGenerator() {}
+            //UriGenerator() {}
+            //~UriGenerator() {}
 
             static std::string getRandomId(unsigned long length);
 
