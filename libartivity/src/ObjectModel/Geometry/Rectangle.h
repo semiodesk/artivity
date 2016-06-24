@@ -62,7 +62,9 @@ namespace artivity
 
         Rectangle(double top, double left, double right, double bottom)
         {
-            setPosition(left, top);
+            setType(art::Rectangle);
+            setX(left);
+            setY(top);
             setWidth(fabs(right - left));
             setHeight(fabs(top - bottom));
         }

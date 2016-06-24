@@ -62,7 +62,7 @@
 
 namespace artivity
 {
-    typedef std::list<AssociationRef>::iterator AssociationIterator;
+    typedef std::list<InfluenceRef>::iterator InfluenceIterator;
 
     class ActivityLog;
 
@@ -76,11 +76,16 @@ namespace artivity
         CURL* _curl;
             
         ActivityRef _activity;
-            
-		ImageRef _entity;
 
-		std::list<AssociationRef> _associations;
-        
+        ImageRef _entity;
+
+		std::vector<AssociationRef> _associations;
+
+        // Influences which need to be transmitted separatly, because they have 
+        // no relation with either the activity or an entity. Currently this
+        // is undo and redos.
+        std::list<InfluenceRef> _influences;
+
         std::string _fileUrl;
         
 		bool fetchAssociationUri(AssociationRef association);
@@ -108,7 +113,11 @@ namespace artivity
 
 		bool empty() { return _activity->empty(); }
         
-		void clear() { _activity->clear(); }
+		void clear()
+        {
+            _activity->clear();
+            _influences.clear();
+        }
         
 		void close();
 
@@ -132,13 +141,9 @@ namespace artivity
 
 		// Add an entity influence to the transmitted RDF stream.
 		void addInfluence(InfluenceRef influence);
-        void addInfluence(UndoRef influence);
-        void addInfluence(RedoRef influence);
 
 		// Remove an entity influence to the transmitted RDF stream.
         void removeInfluence(InfluenceRef influence);
-        void removeInfluence(UndoRef influence);
-        void removeInfluence(RedoRef influence);
 
 		std::string getRenderOutputPath();
 

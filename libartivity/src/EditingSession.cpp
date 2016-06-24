@@ -115,18 +115,20 @@ namespace artivity
 
     void EditingSession::eventUndo()
     {
-        UndoRef res = onEventUndo();
-        int count = res->getCount();
+        UndoRef undo = onEventUndo();
+
+        int count = undo->getCount();
 
         changeIt current = _changes.begin() + _currentChangeIndex;
+
         _currentChangeIndex -= count;
 
         for (changeIt it = _changes.begin()+_currentChangeIndex;  it != current; it++)
         {
-            res->addRevision(*it);
+            undo->addRevision(*it);
         }
 
-        _consumer->push(res);
+        _consumer->push(undo);
     }
 
     void EditingSession::eventRedo()
