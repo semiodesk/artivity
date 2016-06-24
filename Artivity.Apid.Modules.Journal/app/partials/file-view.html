@@ -1,191 +1,203 @@
 <div ng-controller="FileViewController as fileView">
-    <div id="header">
-        <div class="row">
-            <div class="col">
-                <a class="btn" href="#/files"><i class="zmdi zmdi-hc-fw"></i></a>
-            </div>
+	<div id="header">
+		<div class="row">
+			<div class="col">
+				<a class="btn" href="#/files"><i class="zmdi zmdi-hc-fw"></i></a>
+			</div>
 
-            <div class="col">
-                <div class="icn" style="background-color: {{agent.ColourCode}}; width: 30px; height: 30px; position: relative; top: 10px; left: 5px;"></div>
-            </div>
+			<div class="col">
+				<div class="icn" style="background-color: {{agent.ColourCode}}; width: 30px; height: 30px; position: relative; top: 10px; left: 5px;"></div>
+			</div>
 
-            <div class="col expand">
-                <h5 class="title">{{fileName}}</h5>
-            </div>
-        </div>
-    </div>
-    <div id="body">
-        <div class="content text-center">
-            <div id="canvas-header">
-                <label>{{ getFormattedDate(selectedInfluence.time) }}, {{ getFormattedTime(selectedInfluence.time) }}</label>
-                
-                <label class="pull-right">{{ getFormattedTimeFromNow(selectedInfluence.time) }}</label>
-            </div>
-            
-            <canvas id="canvas" class="buffer" style="margin: 1px;" loaded="updateCanvas()"></canvas>
-            
-            <script>
-                $(function() {
-                    updateCanvas();
+			<div class="col expand">
+				<h5 class="title">{{fileName}}</h5>
+			</div>
+		</div>
+	</div>
+	<div id="body">
+		<div class="content text-center">
+			<div id="canvas-header">
+				<label>{{ getFormattedDate(selectedInfluence.time) }}, {{ getFormattedTime(selectedInfluence.time) }}</label>
 
-                    // Update the canvas every time the window is resized.
-                    window.addEventListener('resize', updateCanvas, false);
-                });
+				<label class="pull-right">{{ getFormattedTimeFromNow(selectedInfluence.time) }}</label>
+			</div>
 
-                function updateCanvas() {
-                    console.log("Updating canvas..");
-                    
-                    var buffer = document.getElementsByClassName("buffer")[0];
+			<canvas id="canvas" class="buffer" style="margin: 1px;" loaded="updateCanvas()"></canvas>
 
-                    // To prevent flickering, store the current context before setting the size.
-                    var bufferContext = buffer.getContext('2d');
+			<script>
+				$(function () {
+					updateCanvas();
 
-                    // Create temp canvas and context
-                    var temp = document.createElement('canvas');
-                    temp.width = $('.content').width();
-                    temp.height = $('.content').height();
+					// Update the canvas every time the window is resized.
+					window.addEventListener('resize', updateCanvas, false);
+				});
 
-                    // Draw current canvas to temp canvas.
-                    var tempContext = temp.getContext("2d");
-                    tempContext.drawImage(bufferContext.canvas, 0, 0);
+				function updateCanvas() {
+					console.log("Updating canvas..");
 
-                    // Now resize the canvas.					
-                    buffer.width = $('.content').width();
-                    buffer.height = $('.content').height();
+					var buffer = document.getElementsByClassName("buffer")[0];
 
-                    // Update the buffer if now.
-                    var scope = angular.element(buffer).scope();
-                    
-                    // Draw temp canvas back to the current canvas
-                    bufferContext.drawImage(tempContext.canvas, 0, 0);
-                    
-                    if (scope.selectedInfluence) {
-                        scope.renderInfluence(scope.selectedInfluence);
-                    }
-                }
-            </script>
-        </div>
-        <div class="sidebar left">
-            <ul class="nav nav-tabs tablist" id="tabs" role="tablist">
-                <li role="presentation" class="active"><a data-target="#history" role="tab" data-toggle="tab">History</a></li>
-            </ul>
+					// To prevent flickering, store the current context before setting the size.
+					var bufferContext = buffer.getContext('2d');
 
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade active in" id="history">
-                    <ul class="list-unstyled">
-                        <li ng-repeat="influence in influences" ng-class="{selected: influence == selectedInfluence}">
-                            <a title="{{influence.time}}" ng-click="selectInfluence(influence)" ng-mouseenter="previewInfluence(influence)" style="padding: 3px;">
-                                <i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{influence.description}}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="sidebar right">
-            <ul class="nav nav-tabs tablist" id="tabs" role="tablist">
-                <li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">Stats</a></li>
-                <li role="presentation"><a data-target="#comments" role="tab" data-toggle="tab">Comments</a></li>
-            </ul>
+					// Create temp canvas and context
+					var temp = document.createElement('canvas');
+					temp.width = $('.content').width();
+					temp.height = $('.content').height();
 
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade active in" id="statistics">
-                    <h5>Editing</h5>
-                    <table style="width: 90%;">
-                        <tr>
-                            <td>
-                                <label>Confidence</label>
-                            </td>
-                            <td><span class="pull-right">{{stats.confidence}}</span></td>
-                            <td width="20">&nbsp;%</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Steps</label>
-                            </td>
-                            <td><span class="pull-right">{{stats.steps}}</span></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Undos</label>
-                            </td>
-                            <td><span class="pull-right">{{stats.undos}}</span></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Redos</label>
-                            </td>
-                            <td><span class="pull-right">{{stats.redos}}</span></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                    
-                    <h5 style="margin-top: 1em;">Composition</h5>
-                    <table style="width: 90%;">
-                        <tr>
-                            <td>
-                                <label>Layers</label>
-                            </td>
-                            <td><span class="pull-right">{{stats.layers.length}}</span></td>
-                            <td width="20"></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Groups</label>
-                            </td>
-                            <td><span class="pull-right">0</span></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Masked</label>
-                            </td>
-                            <td><span class="pull-right">0</span></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Clipped</label>
-                            </td>
-                            <td><span class="pull-right">0</span></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                    
-                    <h5 style="margin-top: 1em;">Colors</h5>
-                    <ul class="list-unstyled">
-                        <li ng-repeat="color in palette">
-                            <div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
-                        </li>
-                    </ul>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="comments">
-                    <div class="under-construction"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="footer">
-        <div class="playback-toolbar">
-            <div class="col-playback-controls">
-                <div class="center-parent">
-                    <div class="btn btn-skip-prev" ng-click="skipPrev()"><i class="zmdi zmdi-hc-fw"></i></div>
-                    <div class="btn btn-play" ng-click="togglePlay()"><i class="zmdi zmdi-hc-fw"></i></div>
-                    <div class="btn btn-skip-next" ng-click="skipNext()"><i class="zmdi zmdi-hc-fw"></i></div>
-                </div>
-            </div>
-            <div class="col-playback-chart">
-                <div gantt-chart chart-data="activities"></div>
-            </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-        $('.tablist a').click(function(e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
+					// Draw current canvas to temp canvas.
+					var tempContext = temp.getContext("2d");
+					tempContext.drawImage(bufferContext.canvas, 0, 0);
 
-    </script>
+					// Now resize the canvas.					
+					buffer.width = $('.content').width();
+					buffer.height = $('.content').height();
+
+					// Update the buffer if now.
+					var scope = angular.element(buffer).scope();
+
+					// Draw temp canvas back to the current canvas
+					bufferContext.drawImage(tempContext.canvas, 0, 0);
+
+					if (scope.selectedInfluence) {
+						scope.renderInfluence(scope.selectedInfluence);
+					}
+				}
+			</script>
+		</div>
+		<div class="sidebar left">
+			<ul class="nav nav-tabs tablist" id="tabs" role="tablist">
+				<li role="presentation" class="active"><a data-target="#history" role="tab" data-toggle="tab">History</a></li>
+			</ul>
+
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane fade active in" id="history">
+					<ul class="list-unstyled">
+						<li ng-repeat="influence in influences" ng-class="{selected: influence == selectedInfluence}">
+							<a title="{{influence.time}}" ng-click="selectInfluence(influence)" ng-mouseenter="previewInfluence(influence)" style="padding: 3px;">
+								<div ng-switch on="influence.type">
+									<div ng-switch-when="http://w3id.org/art/terms/1.0/Undo">
+										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> Undo
+									</div>
+									<div ng-switch-when="http://w3id.org/art/terms/1.0/Redo">
+										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> Redo
+									</div>
+									<div ng-switch-when="http://www.w3.org/ns/prov#Invalidation">
+										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{influence.description}}
+									</div>
+									<div ng-switch-default>
+										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{influence.description}}
+									</div>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="sidebar right">
+			<ul class="nav nav-tabs tablist" id="tabs" role="tablist">
+				<li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">Stats</a></li>
+				<li role="presentation"><a data-target="#comments" role="tab" data-toggle="tab">Comments</a></li>
+			</ul>
+
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane fade active in" id="statistics">
+					<h5>Editing</h5>
+					<table style="width: 90%;">
+						<tr>
+							<td>
+								<label>Confidence</label>
+							</td>
+							<td><span class="pull-right">{{stats.confidence}}</span></td>
+							<td width="20">&nbsp;%</td>
+						</tr>
+						<tr>
+							<td>
+								<label>Steps</label>
+							</td>
+							<td><span class="pull-right">{{stats.steps}}</span></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>
+								<label>Undos</label>
+							</td>
+							<td><span class="pull-right">{{stats.undos}}</span></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>
+								<label>Redos</label>
+							</td>
+							<td><span class="pull-right">{{stats.redos}}</span></td>
+							<td></td>
+						</tr>
+					</table>
+
+					<h5 style="margin-top: 1em;">Composition</h5>
+					<table style="width: 90%;">
+						<tr>
+							<td>
+								<label>Layers</label>
+							</td>
+							<td><span class="pull-right">{{stats.layers.length}}</span></td>
+							<td width="20"></td>
+						</tr>
+						<tr>
+							<td>
+								<label>Groups</label>
+							</td>
+							<td><span class="pull-right">0</span></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>
+								<label>Masked</label>
+							</td>
+							<td><span class="pull-right">0</span></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>
+								<label>Clipped</label>
+							</td>
+							<td><span class="pull-right">0</span></td>
+							<td></td>
+						</tr>
+					</table>
+
+					<h5 style="margin-top: 1em;">Colors</h5>
+					<ul class="list-unstyled">
+						<li ng-repeat="color in palette">
+							<div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
+						</li>
+					</ul>
+				</div>
+				<div role="tabpanel" class="tab-pane fade" id="comments">
+					<div class="under-construction"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="footer">
+		<div class="playback-toolbar">
+			<div class="col-playback-controls">
+				<div class="center-parent">
+					<div class="btn btn-skip-prev" ng-click="skipPrev()"><i class="zmdi zmdi-hc-fw"></i></div>
+					<div class="btn btn-play" ng-click="togglePlay()"><i class="zmdi zmdi-hc-fw"></i></div>
+					<div class="btn btn-skip-next" ng-click="skipNext()"><i class="zmdi zmdi-hc-fw"></i></div>
+				</div>
+			</div>
+			<div class="col-playback-chart">
+				<div gantt-chart chart-data="activities"></div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$('.tablist a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+	</script>
 </div>
