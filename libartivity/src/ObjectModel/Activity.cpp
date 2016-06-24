@@ -131,10 +131,14 @@ namespace artivity
     {
         return _usedEntites;
     }
+
     
     void Activity::addUsed(EntityRef entity)
     {
-        if(hasProperty(prov::used, entity)) return;
+        if (hasProperty(prov::used, entity))
+        {
+            return;
+        }
         
 		_usedEntites.push_back(entity);
         
@@ -188,6 +192,36 @@ namespace artivity
         _generatedEntities.remove(entity);
         
         removeProperty(prov::generated, entity);
+    }
+
+    struct by_Uri
+    {
+        by_Uri(std::string x) : x(x) {}
+        bool operator()(ResourceRef const & r) const
+        {
+            return x == r->uri;
+        }
+        const std::string x;
+    };
+
+    EntityRef Activity::getEntity(std::string uri)
+    {
+        std::list<EntityRef>::iterator e = std::find_if(_usedEntites.begin(), _usedEntites.end(), by_Uri(uri));
+        if (e != _usedEntites.end())
+        {
+            return *e;
+        }
+        e = std::find_if(_generatedEntities.begin(), _generatedEntities.end(), by_Uri(uri));
+        if (e != _generatedEntities.end())
+        {
+            return *e;
+        }
+        e = std::find_if(_invalidatedEntities.begin(), _invalidatedEntities.end(), by_Uri(uri));
+        if (e != _invalidatedEntities.end())
+        {
+            return *e;
+        }
+        return NULL;
     }
 }
 

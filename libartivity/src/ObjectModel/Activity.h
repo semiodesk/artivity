@@ -93,6 +93,8 @@ namespace artivity
         std::list<EntityRef> getInvalidatedEntities();
         void addInvalidated(EntityRef invalidation);
         void removeInvalidated(EntityRef invalidation);
+
+        EntityRef getEntity(std::string uri);
     };
 }
 

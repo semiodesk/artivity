@@ -38,8 +38,6 @@ namespace artivity
 
     class Generation : public ActivityInfluence
     {
-    private:
-        std::list<EntityRef> _entities;
 
     public:
         Generation() : ActivityInfluence()
