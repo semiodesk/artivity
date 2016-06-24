@@ -43,7 +43,7 @@ namespace artivity
     {
         _count = count;
 
-        setValue(art::count, count);
+        //setValue(art::count, count);
     }
 
     void Undo::addRevision(string influenceUri)

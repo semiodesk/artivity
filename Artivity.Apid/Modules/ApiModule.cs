@@ -426,7 +426,7 @@ namespace Artivity.Apid.Modules
             {
                 lock (_modelLock)
                 {
-                    IModel model = ModelProvider.GetActivities();
+                    IModel model = ModelProvider.GetAll();
 
                     if (model == null)
                     {
@@ -446,6 +446,15 @@ namespace Artivity.Apid.Modules
             catch (Exception e)
             {
                 Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+
+                List<string> messages = new List<string>() { e.Message };
+
+                if(e.InnerException != null)
+                {
+                    messages.Add(e.InnerException.Message);
+                }
+
+                return Response.AsJson(messages);
             }
             return null;
         }
@@ -890,23 +899,24 @@ namespace Artivity.Apid.Modules
                 WHERE
                 {
                     ?activity prov:generated | prov:used @entity .
-                    ?activity prov:startedAtTime ?startTime .
-                    ?activity prov:endedAtTime ?endTime .
-                    ?activity prov:qualifiedAssociation ?association .
-                    ?activity prov:qualifiedInfluence ?influence .
-
-                    ?association prov:role art:SOFTWARE .
-                    ?association prov:agent / foaf:name ?agent .
-                    ?association prov:agent / art:colorCode ?agentColor .
-
-                    ?influence a ?type .
+	                ?activity prov:startedAtTime ?startTime .
+	                ?activity prov:endedAtTime ?endTime .
+	                ?activity prov:qualifiedAssociation ?association .
+	
+	                ?association prov:hadRole art:SOFTWARE .
+                    ?association prov:agent ?agent .
+	                
+                    ?agent art:hasColourCode ?agentColor .
+	
+	                ?influence prov:activity | prov:hadActivity ?activity .
+	                ?influence a ?type .
                     ?influence prov:atTime ?time .
                 }
                 ORDER BY DESC(?startTime)");
 
             query.Bind("@entity", entityUri);
 
-            var bindings = ModelProvider.GetAll().GetBindings(query, true);
+            var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
         }
