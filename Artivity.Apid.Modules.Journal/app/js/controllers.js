@@ -662,3 +662,29 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
         $scope.agentForm.reset();
     };
 });
+
+explorerControllers.controller('QueryController', function (api, $scope) {
+	var defaultPrefixes = "\
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n\
+@prefix art: <http://w3id.org/art/terms/1.0/> .\n\
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .\n\
+@prefix nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#> .\n\
+@prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .\n\
+@prefix prov: <http://www.w3.org/ns/prov#> .\n\
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n\n";
+	
+    $scope.queryString = defaultPrefixes;
+	
+	$scope.executeQuery = function()
+	{	
+		api.executeQuery($scope.queryString).then(function (data) {
+			document.getElementById('result').innerHTML = data;
+		});
+	}
+	
+	$scope.resetQuery = function()
+	{	
+		$scope.queryString = defaultPrefixes;
+	}
+});

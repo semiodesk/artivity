@@ -131,16 +131,12 @@ namespace artivity
 		void addAssociation(const char* roleUri, std::string agentUri, std::string version);
 
 		// Add an entity influence to the transmitted RDF stream.
-		void addInfluence(GenerationRef generation);
-        void addInfluence(InvalidationRef invalidation);
-        void addInfluence(EntityInfluenceRef influence);
+		void addInfluence(InfluenceRef influence);
         void addInfluence(UndoRef influence);
         void addInfluence(RedoRef influence);
 
 		// Remove an entity influence to the transmitted RDF stream.
-		void removeInfluence(GenerationRef generation);
-        void removeInfluence(InvalidationRef invalidation);
-        void removeInfluence(EntityInfluenceRef influence);
+        void removeInfluence(InfluenceRef influence);
         void removeInfluence(UndoRef influence);
         void removeInfluence(RedoRef influence);
 

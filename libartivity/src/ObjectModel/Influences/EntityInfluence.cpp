@@ -34,14 +34,9 @@ namespace artivity
 {
 	using namespace std;
 
-    ActivityRef EntityInfluence::getActivity()
+    void EntityInfluence::setActivity(ActivityRef a)
     {
-        return _activity;
-    }
-
-    void EntityInfluence::setActivity(ActivityRef activity)
-    {
-        _activity = activity;
+        activity = a;
 
         // Only set a reference to the activity; prevents the serializer from trying to serialize a cycle.
         addProperty(prov::hadActivity, activity->uri, typeid(Resource));
@@ -49,11 +44,11 @@ namespace artivity
 
     void EntityInfluence::clearActivity()
     {
-        if (_activity == NULL) return;
+        if (activity == NULL) return;
 
-        removeProperty(prov::hadActivity, _activity->uri, typeid(Resource));
+        removeProperty(prov::hadActivity, activity->uri, typeid(Resource));
 
-        _activity = NULL;
+        activity = NULL;
     }
 
     void EntityInfluence::setIsSave(bool val)

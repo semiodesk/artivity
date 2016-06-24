@@ -235,7 +235,7 @@
       <Filter>Header Files\DataObjects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ObjectModel\Entities\Layer.h">
-      <Filter>Header Files\Resources</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\ObjectModel\Influences\Undo.cpp">
       <Filter>Source Files\Influences</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\RenderingDataObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

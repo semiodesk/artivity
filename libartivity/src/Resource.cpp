@@ -49,9 +49,9 @@ namespace artivity
 		serialize = true;
     }
 
-    bool Resource::is(ResourceRef type)
+    bool Resource::is(const char* type)
     {
-        return properties.hasProperty(rdf::_type, type);
+        return properties.hasProperty(rdf::_type, type, typeid(Resource));
     }
     
     void Resource::clear()
@@ -260,6 +260,7 @@ namespace artivity
         {
             return properties.find(rdf::_type)->second.LiteralValue.c_str();
         }
+
         return NULL;
     }
     
