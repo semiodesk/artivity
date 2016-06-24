@@ -28,6 +28,9 @@ explorerApp.config(['$routeProvider',
         when('/settings', {
             templateUrl: 'partials/settings.html'
         }).
+		when('/query', {
+            templateUrl: 'partials/query.html'
+        }).
         when('/error-no-apid-connection', {
             templateUrl: 'partials/error-no-apid-connection.html'
         }).
@@ -156,7 +159,13 @@ explorerApp.factory('api', function ($http) {
                         return response.data;
                     })
             }
-        }
+        },
+		getQueryResults(query) {
+			return $http.get(endpoint + '/query?queryString=' + query).then(
+				function (response) {
+					return response.data;
+				})
+		}
     };
 });
 

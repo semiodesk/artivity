@@ -28,6 +28,10 @@
 #ifndef _ART_RENDERINGDATAOBJECT_H
 #define _ART_RENDERINGDATAOBJECT_H
 
+#include <boost/filesystem.hpp>
+
+#include "../Ontologies/art.h"
+
 #include "FileDataObject.h"
 
 namespace artivity
@@ -50,6 +54,8 @@ namespace artivity
         }
 
         virtual ~RenderingDataObject() {}
+
+        void setPath(std::string path);
     };
 }
 

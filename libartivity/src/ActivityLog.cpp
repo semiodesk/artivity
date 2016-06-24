@@ -31,6 +31,9 @@
 
 #include "curlresponse.h"
 
+#include "Ontologies/prov.h"
+#include "Resource.h"
+
 #include "ActivityLog.h"
 
 #include "ObjectModel/Activity.h"
@@ -352,43 +355,44 @@ namespace artivity
 		return uri;
 	}
 
-	void ActivityLog::addInfluence(GenerationRef generation)
+	void ActivityLog::addInfluence(InfluenceRef influence)
 	{
-        list<EntityRef> entities = generation->getEntities();
-
-        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
-        {
-            EntityRef entity = *it;
-
-            entity->addProperty(prov::qualifiedGeneration, generation);
-
-            _activity->addGenerated(entity);
-        }
-	}
-
-    void ActivityLog::addInfluence(InvalidationRef invalidation)
-	{
-        list<EntityRef> entities = invalidation->getEntities();
-
-        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
-        {
-            EntityRef entity = *it;
-
-            entity->addProperty(prov::qualifiedInvalidation, invalidation);
-
-            _activity->addInvalidated(entity);
-        }
-	}
-
-    void ActivityLog::addInfluence(EntityInfluenceRef influence)
-	{
-        influence->setActivity(_activity);
-
         list<EntityRef> entities = influence->getEntities();
 
         for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
         {
-            _activity->addUsed(*it);
+            EntityRef entity = *it;
+
+            if (influence->is(prov::Generation))
+            {
+                _activity->addGenerated(entity);
+
+                entity->addProperty(prov::qualifiedGeneration, influence);
+            }
+            else if (influence->is(prov::Derivation))
+            {
+                _activity->addUsed(entity);
+
+                entity->addProperty(prov::qualifiedDerivation, influence);
+            }
+            else if (influence->is(prov::Revision))
+            {
+                _activity->addUsed(entity);
+
+                entity->addProperty(prov::qualifiedRevision, influence);
+            }
+            else if (influence->is(prov::Invalidation))
+            {
+                _activity->addInvalidated(entity);
+
+                entity->addProperty(prov::qualifiedInvalidation, influence);
+            }
+            else
+            {
+                entity->addProperty(prov::qualifiedInfluence, influence);
+            }
+
+            influence->setActivity(_activity);
         }
 	}
 
@@ -402,47 +406,44 @@ namespace artivity
         // TODO: Implement.
     }
 
-	void ActivityLog::removeInfluence(GenerationRef generation)
+	void ActivityLog::removeInfluence(InfluenceRef influence)
 	{
-        generation->clearActivity();
-
-        list<EntityRef> entities = generation->getEntities();
-
-        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
-        {
-            EntityRef entity = *it;
-
-            entity->removeProperty(prov::qualifiedGeneration, generation);
-
-            _activity->removeGenerated(entity);
-        }
-	}
-
-	void ActivityLog::removeInfluence(InvalidationRef invalidation)
-	{
-        invalidation->clearActivity();
-
-        list<EntityRef> entities = invalidation->getEntities();
-
-        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
-        {
-            EntityRef entity = *it;
-
-            entity->removeProperty(prov::qualifiedInvalidation, invalidation);
-
-            _activity->removeInvalidated(entity);
-        }
-	}
-
-    void ActivityLog::removeInfluence(EntityInfluenceRef influence)
-	{
-        influence->clearActivity();
-
         list<EntityRef> entities = influence->getEntities();
 
         for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
         {
-            _activity->removeUsed(*it);
+            EntityRef entity = *it;
+
+            if (influence->is(prov::Generation))
+            {
+                _activity->removeGenerated(entity);
+
+                entity->removeProperty(prov::qualifiedGeneration, influence);
+            }
+            else if (influence->is(prov::Derivation))
+            {
+                _activity->removeUsed(entity);
+
+                entity->removeProperty(prov::qualifiedDerivation, influence);
+            }
+            else if (influence->is(prov::Revision))
+            {
+                _activity->removeUsed(entity);
+
+                entity->removeProperty(prov::qualifiedRevision, influence);
+            }
+            else if (influence->is(prov::Invalidation))
+            {
+                _activity->removeInvalidated(entity);
+
+                entity->removeProperty(prov::qualifiedInvalidation, influence);
+            }
+            else
+            {
+                entity->removeProperty(prov::qualifiedInfluence, influence);
+            }
+
+            influence->clearActivity();
         }
 	}
 
@@ -466,7 +467,7 @@ namespace artivity
 		CURL* curl = initializeRequest();
 
 		stringstream url;
-        url << _endpointUrl << "/renderings/path?fileUri=" << UriGenerator::escapePath(_entity->uri) << "&create";
+        url << _endpointUrl << "/renderings/path?uri=" << UriGenerator::escapePath(_entity->uri) << "&create";
 
 		string response;
 

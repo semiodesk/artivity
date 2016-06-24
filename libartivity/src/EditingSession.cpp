@@ -69,8 +69,8 @@ namespace artivity
             _imagePath = _log->getRenderOutputPath();
             _initialized = true;
         }
-        _currentChangeIndex = 0;
 
+        _currentChangeIndex = 0;
     }
 
     EditingSession::~EditingSession()
@@ -78,7 +78,6 @@ namespace artivity
         _consumer->stop();
         _log->close();
         _log = NULL;
-
     }
 
     void EditingSession::eventAdd()

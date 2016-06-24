@@ -29,6 +29,7 @@
 #include "../Property.h"
 #include "../PropertyMap.h"
 
+#include "Activity.h"
 #include "Influence.h"
 
 namespace artivity
@@ -64,6 +65,11 @@ namespace artivity
                 it++;
             }
         }
+    }
+
+    ActivityRef Influence::getActivity()
+    {
+        return activity;
     }
 
     void Influence::removeEntity(EntityRef entity)
