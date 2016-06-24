@@ -161,7 +161,7 @@ explorerApp.factory('api', function ($http) {
             }
         },
 		getQueryResults(query) {
-			return $http.get(endpoint + '/query?queryString=' + query).then(
+			return $http.post(endpoint + '/query', query).then(
 				function (response) {
 					return response.data;
 				})

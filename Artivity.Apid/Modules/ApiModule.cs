@@ -400,14 +400,19 @@ namespace Artivity.Apid.Modules
                 return GetCompositionStats(new UriRef(uri));
             };
 
-            Get["/query"] = parameters =>
+            Post["/query"] = parameters =>
             {
-                string query = Request.Query.queryString;
-                if (string.IsNullOrEmpty(query) )
+                using (var reader = new StreamReader(Request.Body))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    string query = reader.ReadToEnd();
+
+                    if (string.IsNullOrEmpty(query))
+                    {
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+
+                    return ExecuteQuery(query);
                 }
-                return Query(query);
             };
         }
 
@@ -415,7 +420,7 @@ namespace Artivity.Apid.Modules
 
         #region Methods
 
-        private Response Query(string query)
+        private Response ExecuteQuery(string queryString)
         {
             try
             {
@@ -428,10 +433,14 @@ namespace Artivity.Apid.Modules
                         Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
                     }
 
-                    SparqlQuery q = new SparqlQuery(query, false);
-                    var b = model.ExecuteQuery(q, true).GetBindings();
-                    if( b!= null )
-                        return Response.AsJson(b.ToList()); 
+                    SparqlQuery query = new SparqlQuery(queryString, false);
+
+                    var bindings = model.ExecuteQuery(query, true).GetBindings();
+
+                    if (bindings != null)
+                    {
+                        return Response.AsJson(bindings.ToList());
+                    }
                 }
             }
             catch (Exception e)
@@ -1191,7 +1200,7 @@ namespace Artivity.Apid.Modules
                     ?uri
                 WHERE
                 {
-                    ?uri nfo:isStoredAs ?file .
+                    ?uri nie:isStoredAs ?file .
 
                     ?file rdfs:label @fileName .
                     ?file nie:lastModified ?time .

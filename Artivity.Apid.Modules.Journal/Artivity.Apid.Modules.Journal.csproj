@@ -52,6 +52,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="app\partials\query.html" />
     <EmbeddedResource Include="app\css\roboto.css" />
     <Content Include="app\img\heart-broken.svg" />
     <Content Include="app\img\heart.svg" />
