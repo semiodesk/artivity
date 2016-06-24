@@ -1213,7 +1213,7 @@ namespace Artivity.Apid.Modules
             query.Bind("@fileName", file);
             query.Bind("@folderUrl", new Uri(folder));
 
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            var bindings = ModelProvider.ActivitiesModel.GetBindings(query).FirstOrDefault();
 
             return Response.AsJson(bindings);
         }
