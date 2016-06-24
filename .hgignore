@@ -58,3 +58,6 @@ libartivity/windows/boost_1_61_0/*
 libartivity/windows/ipch/*
 *.sdf
 *.opensdf
+*.obj
+*.tlog
+*.pdb
