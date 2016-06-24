@@ -26,6 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 #include "PropertyMap.h"
+#include "Resource.h"
 
 namespace artivity
 {
@@ -56,13 +57,16 @@ namespace artivity
 
         PropertyMapIterator it = _map.begin();
 
-        while (it != _map.end())
+        for (; it != _map.end(); it++)
         {
             PropertyValue x = it->second;
 
-            if (x.Value == resource) break;
+            if (it->first.compare(property) != 0)
+                continue;
+            
+            if (x.Value && x.Value->uri.compare(resource->uri) == 0) break;
 
-            it++;
+            
         }
 
         return it;
