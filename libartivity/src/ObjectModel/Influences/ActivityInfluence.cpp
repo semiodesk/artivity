@@ -36,14 +36,9 @@ namespace artivity
 {
 	using namespace std;
 
-    ActivityRef ActivityInfluence::getActivity()
+    void ActivityInfluence::setActivity(ActivityRef a)
     {
-        return activity;
-    }
-
-    void ActivityInfluence::setActivity(ActivityRef activity)
-    {
-        activity = activity;
+        activity = a;
 
         // Only set a reference to the activity; prevents the serializer from trying to serialize a cycle.
         addProperty(prov::activity, activity->uri, typeid(Resource));
@@ -53,7 +48,7 @@ namespace artivity
     {
         if (activity == NULL) return;
 
-        removeProperty(prov::hadActivity, activity->uri, typeid(Resource));
+        removeProperty(prov::activity, activity->uri, typeid(Resource));
 
         activity = NULL;
     }

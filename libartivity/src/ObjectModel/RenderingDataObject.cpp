@@ -25,40 +25,23 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef ACTIVITYINFLUENCE_H
-#define ACTIVITYINFLUENCE_H
+#include "../Resource.h"
+#include "../Property.h"
 
-#include "../../Ontologies/prov.h"
-
-#include "../Influence.h"
-#include "../Activity.h"
+#include "RenderingDataObject.h"
 
 namespace artivity
 {
-    class ActivityInfluence;
+    using namespace std;
 
-    typedef boost::shared_ptr<ActivityInfluence> ActivityInfluenceRef;
-
-    class ActivityInfluence : public Influence
+    void RenderingDataObject::setPath(std::string path)
     {
-    protected:
-        ActivityRef activity;
+        boost::filesystem::path p(path);
 
-    public:
-        ActivityInfluence() : Influence()
+        if (!p.empty())
         {
-            setType(prov::ActivityInfluence);
+            setLabel(p.filename().string());
         }
-        
-        ActivityInfluence(const char* uriref) : Influence(uriref)
-        {
-            setType(prov::ActivityInfluence);
-        }
-
-        void setActivity(ActivityRef activity);
-
-        void clearActivity();
-    };
+    }
 }
 
-#endif // ACTIVITYINFLUENCE_H

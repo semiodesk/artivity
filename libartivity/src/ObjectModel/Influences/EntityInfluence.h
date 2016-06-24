@@ -45,8 +45,6 @@ namespace artivity
 	class EntityInfluence : public Influence
 	{
     private:
-        ActivityRef _activity;
-
         bool _isSave;
 
 	public:
@@ -63,8 +61,6 @@ namespace artivity
 
             _isSave = false;
 		}
-
-        ActivityRef getActivity();
 
         void setActivity(ActivityRef activity);
 
