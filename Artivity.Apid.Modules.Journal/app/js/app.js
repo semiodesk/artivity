@@ -143,8 +143,8 @@ explorerApp.factory('api', function ($http) {
                     })
             }
         },
-        getThumbnailUrl: function (renderingUrl) {
-            return endpoint + '/renderings?url=' + renderingUrl;
+        getThumbnailUrl: function (entityUri, fileName) {
+            return endpoint + '/renderings?uri=' + entityUri + '&file=' + fileName;
         },
         getStats: function (entityUri, time) {
             if (time !== undefined) {

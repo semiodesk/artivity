@@ -198,7 +198,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
         };
 
         t.crossOrigin = 'Anonymous'; // Needed for color thief.
-        t.src = api.getThumbnailUrl(thumbnails[i].thumbnailUrl);
+        t.src = api.getThumbnailUrl(fileUri, thumbnails[i].fileName);
     };
 
     // Trigger loading the bitmaps.
@@ -332,7 +332,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
             for (var i = T.length - 1; i > 0; i--) {
                 var t = T[i];
 
-                if (t.layer == influence.layer && t.time == influence.time) {
+                if (t.layer !== undefined && t.layer == influence.layer && t.time == influence.time) {
                     // Extract colors from the current image.
                     var palette = thief.getPalette(t.image, 16);
 
