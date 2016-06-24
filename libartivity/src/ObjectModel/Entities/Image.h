@@ -55,8 +55,6 @@ namespace artivity
         {
             setType(nfo::Image);
         }
-
-        void setPath(boost::filesystem::path p);
     };
 }
 

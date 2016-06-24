@@ -228,8 +228,6 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
             }
         }
 
-        console.log(data);
-
         $scope.activities = data;
 
         if (data.length > 0) {
