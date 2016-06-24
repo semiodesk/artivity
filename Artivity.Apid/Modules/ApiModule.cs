@@ -960,45 +960,49 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?time ?url COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?layerName ?layerZ ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+	                ?time ?fileName COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?layerName ?layerZ ?boundsX ?boundsY ?boundsWidth ?boundsHeight
                 WHERE 
                 {
-                    {
-                        SELECT
-                            ?time ?influence ?layerName ?layerZ
-                        WHERE
-                        {
-                            ?activity prov:generated | prov:used @entity .
-                            ?activity prov:qualifiedInfluence ?influence .
+	                {
+		                SELECT
+			                ?time ?influence ?layerName COALESCE(?layerZ, 0)
+		                WHERE
+		                {
+			                ?activity prov:generated | prov:used @entity .
 
-                            ?influence prov:atTime ?time .
-                            ?influence art:selectedLayer ?layer .
+			                ?influence prov:activity | prov:hadActivity ?activity .
+			                ?influence prov:atTime ?time .
+			
+			                OPTIONAL
+			                {
+				                ?influence art:selectedLayer ?layer .
 
-                            ?layer rdfs:label ?layerName .
-                            ?layer art:position / art:z ?layerZ .
-                        }
-                        GROUP BY ?layerZ
-                    }
+				                ?layer rdfs:label ?layerName .
+				                ?layer art:position / art:z ?layerZ .
+			                }
+		                }
+		                GROUP BY ?layerZ
+	                }
 
-                    ?influence art:renderedAs ?rendering .
+	                ?influence art:renderedAs ?rendering .
 
-                    ?rendering nie:url ?url .
+	                ?rendering rdfs:label ?fileName .
 
-                    OPTIONAL
-                    {
-                        ?rendering art:region / art:position / art:x ?x .
-                        ?rendering art:region / art:position / art:y ?y .
-                    }
+	                OPTIONAL
+	                {
+		                ?rendering art:region / art:x ?x .
+		                ?rendering art:region / art:y ?y .
+	                }
 
-                    OPTIONAL
-                    {
-                        ?influence art:hadBoundaries ?bounds .
+	                OPTIONAL
+	                {
+		                ?influence art:hadBoundaries ?bounds .
 
-                        ?bounds art:position / art:x ?boundsX .
-                        ?bounds art:position / art:y ?boundsY .
-                        ?bounds art:width ?boundsWidth .
-                        ?bounds art:height ?boundsHeight .
-                    }
+		                ?bounds art:x ?boundsX .
+		                ?bounds art:y ?boundsY .
+		                ?bounds art:width ?boundsWidth .
+		                ?bounds art:height ?boundsHeight .
+	                }
                 }
                 ORDER BY DESC(?time)");
 
