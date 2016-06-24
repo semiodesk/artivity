@@ -102,14 +102,18 @@ namespace artivity
             changeIt it = _changes.begin() + _currentChangeIndex;
             _changes.erase(it);
         }
+
         _currentChangeIndex++;
+
         _changes.push_back(res->uri);
     }
 
     void EditingSession::eventEdit()
     {
         RevisionRef res = onEventEdit();
+
         handleChanges(res);
+
         _consumer->push(res);
     }
 
@@ -252,10 +256,9 @@ namespace artivity
     string EditingSession::createImageFilePath(time_t time)
     {
         string resPath = "";
+
         if (!_imagePath.empty())
         {
-
-
             #ifdef WIN32
             const char* sep = "\\\\";
             #else
@@ -271,6 +274,7 @@ namespace artivity
 
             resPath = ss.str();
         }
+
         return resPath;
     }
 
@@ -295,5 +299,4 @@ namespace artivity
 
         return der;
     }
-
 }

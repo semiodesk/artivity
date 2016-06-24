@@ -355,8 +355,8 @@ namespace artivity
 		return uri;
 	}
 
-	void ActivityLog::addInfluence(InfluenceRef influence)
-	{
+    void ActivityLog::addInfluence(InfluenceRef influence)
+    {
         list<EntityRef> entities = influence->getEntities();
 
         if (influence->is(art::Undo) || influence->is(art::Redo))
@@ -373,62 +373,71 @@ namespace artivity
 
                 if (influence->is(prov::Generation))
                 {
+                    EntityRef r = _activity->getEntity(entity->uri);
 
-                EntityRef r = _activity->getEntity(entity->uri);
-                
-                if (r)
-                {
-                    _activity->addGenerated(r);
-                    r->addProperty(prov::qualifiedGeneration, influence);
+                    if (r)
+                    {
+                        _activity->addGenerated(r);
+
+                        r->addProperty(prov::qualifiedGeneration, influence);
+                    }
+                    else
+                    {
+                        _activity->addGenerated(entity);
+
+                        entity->addProperty(prov::qualifiedGeneration, influence);
+                    }
                 }
-                else
-                {
-                    _activity->addGenerated(entity);
-                    entity->addProperty(prov::qualifiedGeneration, influence);
-                }
-            }
                 else if (influence->is(prov::Derivation))
                 {
-                EntityRef r = _activity->getEntity(entity->uri);
-                
-                if (r)
-                {
-                    _activity->addUsed(r);
-                    r->addProperty(prov::qualifiedDerivation, influence);
-                }
-                else
-                {
-                    entity->addProperty(prov::qualifiedDerivation, influence);
-                    _activity->addUsed(entity);
-                }
+                    EntityRef r = _activity->getEntity(entity->uri);
+
+                    if (r)
+                    {
+                        _activity->addUsed(r);
+
+                        r->addProperty(prov::qualifiedDerivation, influence);
+                    }
+                    else
+                    {
+                        _activity->addUsed(entity);
+
+                        entity->addProperty(prov::qualifiedDerivation, influence);
+                    }
                 }
                 else if (influence->is(prov::Revision))
                 {
-                EntityRef r = _activity->getEntity(entity->uri);
-                if (r)
-                {
-                    _activity->addUsed(r);
-                    r->addProperty(prov::qualifiedRevision, influence);
-                }
-                else
-                {
-                    entity->addProperty(prov::qualifiedRevision, influence);
-                    _activity->addUsed(entity);
-                }
+                    EntityRef r = _activity->getEntity(entity->uri);
+
+                    if (r)
+                    {
+                        _activity->addUsed(r);
+
+                        r->addProperty(prov::qualifiedRevision, influence);
+                    }
+                    else
+                    {
+                        _activity->addUsed(entity);
+
+                        entity->addProperty(prov::qualifiedRevision, influence);
+                    }
                 }
                 else if (influence->is(prov::Invalidation))
                 {
-                EntityRef r = _activity->getEntity(entity->uri);
-                if (r)
-                {
-                    _activity->addInvalidated(r);
-                    r->addProperty(prov::qualifiedInvalidation, influence);
-                }
-                else
-                {
-                    _activity->addInvalidated(entity);
-                    entity->addProperty(prov::qualifiedInvalidation, influence);
-                }
+                    EntityRef r = _activity->getEntity(entity->uri);
+
+                    if (r)
+                    {
+                        _activity->addInvalidated(r);
+
+                        r->addProperty(prov::qualifiedInvalidation, influence);
+                    }
+                    else
+                    {
+                        _activity->addInvalidated(entity);
+
+                        entity->addProperty(prov::qualifiedInvalidation, influence);
+                    }
                 }
                 else
                 {
@@ -438,7 +447,7 @@ namespace artivity
                 influence->setActivity(_activity);
             }
         }
-	}
+    }
 
 	void ActivityLog::removeInfluence(InfluenceRef influence)
 	{
