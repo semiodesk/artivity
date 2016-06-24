@@ -68,7 +68,7 @@ namespace artivity
         Resource(const char* uriref);
         virtual ~Resource() {}
 
-        bool is(ResourceRef type);
+        bool is(const char* type);
         
         void clear();
 

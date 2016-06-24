@@ -37,6 +37,7 @@
 
 #include "Geometry/Geometry.h"
 #include "Geometry/Viewport.h"
+#include "Activity.h"
 #include "Entity.h"
 #include "Change.h"
 #include "RenderingDataObject.h"
@@ -63,6 +64,9 @@ namespace artivity
         GeometryRef _boundaries;
 
         RenderingDataObjectRef _rendering;
+
+    protected:
+        ActivityRef activity;
 
     public:
         Influence() : Resource(UriGenerator::getUri())
@@ -108,6 +112,12 @@ namespace artivity
             
             setValue(dces::description, _description.c_str());
         }
+
+        ActivityRef getActivity();
+
+        virtual void setActivity(ActivityRef activity) = 0;
+
+        virtual void clearActivity() = 0;
 
         std::list<EntityRef> getEntities();
 

@@ -323,13 +323,18 @@ namespace Artivity.Apid.Modules
                 if(Request.Query.uri)
                 {
                     string uri = Request.Query.uri;
+                    string file = Request.Query.file;
 
                     if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                     {
                         return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
 
-                    if(Request.Query.timestamp)
+                    if(!string.IsNullOrEmpty(file))
+                    {
+                        return GetRendering(new UriRef(uri), file);
+                    }
+                    else if(Request.Query.timestamp)
                     {
                         string time = Request.Query.timestamp;
 
@@ -346,17 +351,6 @@ namespace Artivity.Apid.Modules
                     }
 
                     return GetRenderings(new UriRef(uri));
-                }
-                else if(Request.Query.url)
-                {
-                    string url = Request.Query.url;
-
-                    if (!IsFileUrl(url))
-                    {
-                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                    }
-
-                    return GetRendering(new UriRef(url));
                 }
                 else
                 {
@@ -892,9 +886,8 @@ namespace Artivity.Apid.Modules
                     ?association prov:hadRole art:SOFTWARE .
                     ?association prov:agent / art:hasColourCode ?agentColor .
 
-                    @entity ?qualifiedInfluence ?uri .
-
                     ?uri a ?type .
+                    ?uri prov:activity | prov:hadActivity ?activity .
                     ?uri prov:atTime ?time .
 
                     OPTIONAL { ?uri dces:description ?description . }
@@ -1024,9 +1017,9 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(bindings);
         }
 
-        private Response GetRendering(UriRef url)
+        private Response GetRendering(UriRef uri, string fileName)
         {
-            string file = url.AbsolutePath;
+            string file = Path.Combine(GetRenderOutputPath(uri), fileName);
 
             if (File.Exists(file))
             {
@@ -1043,12 +1036,17 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response GetRenderOutputPath(UriRef entityUri, bool createDirectory = false)
+        private string GetRenderOutputPath(UriRef entityUri)
         {
             var invalids = System.IO.Path.GetInvalidFileNameChars();
             var newName = String.Join("_", entityUri.AbsoluteUri.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 
-            string path = Path.Combine(PlatformProvider.ThumbnailFolder, newName);
+            return Path.Combine(PlatformProvider.ThumbnailFolder, newName);
+        }
+
+        private Response GetRenderOutputPath(UriRef entityUri, bool createDirectory = false)
+        {
+            string path = GetRenderOutputPath(entityUri);
 
             if (createDirectory && !Directory.Exists(path))
             {
@@ -1144,20 +1142,31 @@ namespace Artivity.Apid.Modules
 
         private Response GetUri(Uri fileUrl)
         {
+            string file = Path.GetFileName(fileUrl.LocalPath);
+            string folder = Path.GetDirectoryName(fileUrl.LocalPath);
+
+            if(string.IsNullOrEmpty(file) || string.IsNullOrEmpty(folder))
+            {
+                return Response.AsJson(new { });
+            }
+
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?uri ?type
+                    ?uri
                 WHERE
                 {
-                    ?uri rdf:type ?type .
                     ?uri nfo:isStoredAs ?file .
 
-                    ?file nie:url @fileUrl .
+                    ?file rdfs:label @fileName .
                     ?file nie:lastModified ?time .
+                    ?file nfo:belongsToContainer ?folder .
+
+                    ?folder nie:url @folderUrl .
                 }
                 ORDER BY DESC(?time) LIMIT 1");
 
-            query.Bind("@fileUrl", fileUrl);
+            query.Bind("@fileName", file);
+            query.Bind("@folderUrl", new Uri(folder));
 
             var bindings = ModelProvider.ActivitiesModel.GetBindings(query);
 
@@ -1259,8 +1268,7 @@ namespace Artivity.Apid.Modules
 
         private bool IsFileUrl(string url)
         {
-            // TODO: Proper implementation.
-            return !string.IsNullOrEmpty(url) && url.StartsWith("file://");
+            return IsUri(url) | IsUri(Uri.EscapeUriString(url));
         }
 
         #endregion
