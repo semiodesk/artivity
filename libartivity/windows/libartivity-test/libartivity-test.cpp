@@ -74,7 +74,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	log->transmit();
 
 	UndoRef undo = UndoRef(new Undo());
-	undo->setBoundaries(bounds);
+    undo->addRevision(generation->uri);
 
 	log->addInfluence(undo);
 	log->transmit();

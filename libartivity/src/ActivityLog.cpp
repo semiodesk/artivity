@@ -157,7 +157,7 @@ namespace artivity
 		_activity->setStartTime(now);
 
 		// Initialize the associations.
-		list<AssociationRef>::iterator it = _associations.begin();
+		vector<AssociationRef>::iterator it = _associations.begin();
 
 		while (it != _associations.end())
 		{
@@ -359,103 +359,101 @@ namespace artivity
 	{
         list<EntityRef> entities = influence->getEntities();
 
-        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+        if (influence->is(art::Undo) || influence->is(art::Redo))
         {
-            EntityRef entity = *it;
-
-            if (influence->is(prov::Generation))
-            {
-                _activity->addGenerated(entity);
-
-                entity->addProperty(prov::qualifiedGeneration, influence);
-            }
-            else if (influence->is(prov::Derivation))
-            {
-                _activity->addUsed(entity);
-
-                entity->addProperty(prov::qualifiedDerivation, influence);
-            }
-            else if (influence->is(prov::Revision))
-            {
-                _activity->addUsed(entity);
-
-                entity->addProperty(prov::qualifiedRevision, influence);
-            }
-            else if (influence->is(prov::Invalidation))
-            {
-                _activity->addInvalidated(entity);
-
-                entity->addProperty(prov::qualifiedInvalidation, influence);
-            }
-            else
-            {
-                entity->addProperty(prov::qualifiedInfluence, influence);
-            }
+            _influences.push_back(influence);
 
             influence->setActivity(_activity);
         }
+        else
+        {
+            for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+            {
+                EntityRef entity = *it;
+
+                if (influence->is(prov::Generation))
+                {
+                    _activity->addGenerated(entity);
+
+                    entity->addProperty(prov::qualifiedGeneration, influence);
+                }
+                else if (influence->is(prov::Derivation))
+                {
+                    _activity->addUsed(entity);
+
+                    entity->addProperty(prov::qualifiedDerivation, influence);
+                }
+                else if (influence->is(prov::Revision))
+                {
+                    _activity->addUsed(entity);
+
+                    entity->addProperty(prov::qualifiedRevision, influence);
+                }
+                else if (influence->is(prov::Invalidation))
+                {
+                    _activity->addInvalidated(entity);
+
+                    entity->addProperty(prov::qualifiedInvalidation, influence);
+                }
+                else
+                {
+                    entity->addProperty(prov::qualifiedInfluence, influence);
+                }
+
+                influence->setActivity(_activity);
+            }
+        }
 	}
-
-    void ActivityLog::addInfluence(UndoRef undo)
-    {
-        // TODO: Implement.
-    }
-
-    void ActivityLog::addInfluence(RedoRef undo)
-    {
-        // TODO: Implement.
-    }
 
 	void ActivityLog::removeInfluence(InfluenceRef influence)
 	{
         list<EntityRef> entities = influence->getEntities();
 
-        for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+        if (influence->is(art::Undo) || influence->is(art::Redo))
         {
-            EntityRef entity = *it;
-
-            if (influence->is(prov::Generation))
-            {
-                _activity->removeGenerated(entity);
-
-                entity->removeProperty(prov::qualifiedGeneration, influence);
-            }
-            else if (influence->is(prov::Derivation))
-            {
-                _activity->removeUsed(entity);
-
-                entity->removeProperty(prov::qualifiedDerivation, influence);
-            }
-            else if (influence->is(prov::Revision))
-            {
-                _activity->removeUsed(entity);
-
-                entity->removeProperty(prov::qualifiedRevision, influence);
-            }
-            else if (influence->is(prov::Invalidation))
-            {
-                _activity->removeInvalidated(entity);
-
-                entity->removeProperty(prov::qualifiedInvalidation, influence);
-            }
-            else
-            {
-                entity->removeProperty(prov::qualifiedInfluence, influence);
-            }
+            _influences.remove(influence);
 
             influence->clearActivity();
         }
+        else
+        {
+            for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+            {
+                EntityRef entity = *it;
+
+                if (influence->is(prov::Generation))
+                {
+                    _activity->removeGenerated(entity);
+
+                    entity->removeProperty(prov::qualifiedGeneration, influence);
+                }
+                else if (influence->is(prov::Derivation))
+                {
+                    _activity->removeUsed(entity);
+
+                    entity->removeProperty(prov::qualifiedDerivation, influence);
+                }
+                else if (influence->is(prov::Revision))
+                {
+                    _activity->removeUsed(entity);
+
+                    entity->removeProperty(prov::qualifiedRevision, influence);
+                }
+                else if (influence->is(prov::Invalidation))
+                {
+                    _activity->removeInvalidated(entity);
+
+                    entity->removeProperty(prov::qualifiedInvalidation, influence);
+                }
+                else
+                {
+                    entity->removeProperty(prov::qualifiedInfluence, influence);
+                }
+
+                influence->clearActivity();
+            }
+        }
 	}
-
-    void ActivityLog::removeInfluence(UndoRef undo)
-    {
-        // TODO: Implement.
-    }
-
-    void ActivityLog::removeInfluence(RedoRef undo)
-    {
-        // TODO: Implement.
-    }
 
 	string ActivityLog::getRenderOutputPath()
 	{
@@ -495,13 +493,23 @@ namespace artivity
         stringstream stream;
 
         Serializer s;
+
+        // Recursively serialize the activity and all related resources..
         s.serialize(stream, _activity, N3);
+
+        // Additionally, serialize the influences which are not directly
+        // referenced in any entities in the activity..
+        for (InfluenceIterator it = _influences.begin(); it != _influences.end(); ++it)
+        {
+            s.serialize(stream, *it, N3);
+        }
 
         if (stream.rdbuf()->in_avail() == 0)
         {
             return;
         }
 
+        // Transmit the RDF output.
         string requestData = stream.str();
         string responseData;
 
