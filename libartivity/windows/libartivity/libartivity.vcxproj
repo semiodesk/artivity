@@ -252,7 +252,6 @@
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Association.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Change.cpp" />
-    <ClCompile Include="..\..\src\ObjectModel\Entities\Image.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Entity.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Influence.cpp" />

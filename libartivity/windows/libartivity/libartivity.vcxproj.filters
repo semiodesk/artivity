@@ -275,9 +275,6 @@
     <ClCompile Include="..\..\src\ObjectModel\PartialRenderingDataObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ObjectModel\Entities\Image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

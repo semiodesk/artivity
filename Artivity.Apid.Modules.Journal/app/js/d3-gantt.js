@@ -146,7 +146,7 @@ d3.gantt = function () {
 			.attr("transform", rectTransform)
 			.attr("height", function () { return 20; })
 			.attr("width", function (task) { return (_x(new Date(task.endTime)) - _x(new Date(task.startTime))); })
-			.attr("fill", function (task) { return task.color; });
+			.attr("fill", function (task) { return task.agentColor; });
 
 		body.append("g")
 			.attr("class", "axis x")
@@ -200,13 +200,13 @@ d3.gantt = function () {
 			.attr("transform", rectTransform)
 			.attr("height", function () { return _y.rangeBand(); })
 			.attr("width", function (task) { return (_x(new Date(task.endTime)) - _x(new Date(task.startTime))); })
-			.attr("fill", function (task) { return task.color; });
+			.attr("fill", function (task) { return task.agentColor; });
 
 		rect.transition()
 			.attr("transform", rectTransform)
 			.attr("height", function() { return _y.rangeBand(); })
 			.attr("width", function(task) { return (_x(new Date(task.endTime)) - _x(new Date(task.startTime))); })
-			.attr("fill", function (task) { return task.color; });
+			.attr("fill", function (task) { return task.agentColor; });
 
 		rect.exit().remove();
 
