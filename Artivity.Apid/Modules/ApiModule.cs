@@ -405,11 +405,47 @@ namespace Artivity.Apid.Modules
 
                 return GetCompositionStats(new UriRef(uri));
             };
+
+            Get["/query"] = parameters =>
+            {
+                string query = Request.Query.queryString;
+                if (string.IsNullOrEmpty(query) )
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+                return Query(query);
+            };
         }
 
         #endregion
 
         #region Methods
+
+        private Response Query(string query)
+        {
+            try
+            {
+                lock (_modelLock)
+                {
+                    IModel model = ModelProvider.GetActivities();
+
+                    if (model == null)
+                    {
+                        Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
+                    }
+
+                    SparqlQuery q = new SparqlQuery(query, false);
+                    var b = model.ExecuteQuery(q, true).GetBindings();
+                    if( b!= null )
+                        return Response.AsJson(b.ToList()); 
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+            }
+            return null;
+        }
 
         private void PostActivities(string data)
         {
