@@ -28,7 +28,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	log->addAssociation(art::SOFTWARE, "http://adobe.com/products/photoshop", "2015.1");
 
 	// Set the file and retrive, if possible, the URI of the vector image.
-	log->setDocument(image, "C:/Users/Sebastian/Desktop/Hello 2.ai", true);
+	log->setDocument(image, "C:/Users/Sebastian/Desktop/Test 1.ai", true);
 
 	if (!log->connect("http://localhost:8262/artivity/api/1.0"))
 	{
