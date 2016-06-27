@@ -4,6 +4,7 @@
 #include "defines.h"
 #include "ActivityLog.h"
 #include "ProducerConsumer.h"
+#include "ObjectModel/Geometry/Canvas.h"
 #include "ObjectModel/Change.h"
 #include "ObjectModel/Influences/Start.h"
 #include "ObjectModel/Influences/End.h"
@@ -59,6 +60,9 @@ namespace artivity
         virtual std::string getSoftwareAgent() = 0;
         virtual std::string getSoftwareAgentVersion() = 0;
 
+        CanvasRef createCanvas(std::string uri, double x, double y, double width, double height);
+        CanvasRef updateCanvas(std::string uri, double x, double y, double width, double height);
+
         GenerationRef createGeneration() { return GenerationRef(new Generation()); }
         UndoRef createUndo() { return UndoRef(new Undo()); }
         RedoRef createRedo() { return RedoRef(new Redo()); }
@@ -103,10 +107,7 @@ namespace artivity
         void eventSaveAs();
 
         bool fileExists(const std::string& name);
-
     };
-
-
 }
 
 #endif //_ART_EDITINGSESSION_H

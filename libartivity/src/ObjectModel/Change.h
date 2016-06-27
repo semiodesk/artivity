@@ -56,6 +56,30 @@ namespace artivity
             setType(art::Change);
         }
 
+        Change(EntityRef entity, const char* property, std::string value) : Resource(UriGenerator::getUri())
+        {
+            setType(art::Change);
+            addProperty(art::entity, entity);
+            addProperty(art::property, property, typeid(Resource));
+            addProperty(art::value, value);
+        }
+
+        Change(EntityRef entity, const char* property, int value) : Resource(UriGenerator::getUri())
+        {
+            setType(art::Change);
+            addProperty(art::entity, entity);
+            addProperty(art::property, property, typeid(Resource));
+            addProperty(art::value, value);
+        }
+
+        Change(EntityRef entity, const char* property, double value) : Resource(UriGenerator::getUri())
+        {
+            setType(art::Change);
+            addProperty(art::entity, entity);
+            addProperty(art::property, property, typeid(Resource));
+            addProperty(art::value, value);
+        }
+
         void setEntity(EntityRef entity);
 
         void setProperty(std::string property);

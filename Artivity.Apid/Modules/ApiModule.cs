@@ -276,18 +276,6 @@ namespace Artivity.Apid.Modules
                 return GetRecentlyUsedFiles();
             };
 
-            Get["/files/canvas"] = parameters =>
-            {
-                string uri = Request.Query.uri;
-
-                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
-                {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                }
-
-                return GetCanvas(new UriRef(uri));
-            };
-
             Get["/activities"] = parameters =>
             {
                 string uri = Request.Query.uri;
@@ -316,6 +304,36 @@ namespace Artivity.Apid.Modules
                 }
 
                 return GetInfluences(new UriRef(uri));
+            };
+
+            Get["/influences/canvas"] = parameters =>
+            {
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                if (Request.Query.timestamp)
+                {
+                    string time = Request.Query.timestamp;
+
+                    DateTimeOffset timestamp;
+
+                    if (DateTimeOffset.TryParse(time.Replace(' ', '+'), out timestamp))
+                    {
+                        return GetCanvases(new UriRef(uri), timestamp.UtcDateTime);
+                    }
+                    else
+                    {
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+                }
+                else
+                {
+                    return GetCanvases(new UriRef(uri), DateTime.UtcNow);
+                }
             };
 
             Get["/renderings"] = parameters =>
@@ -1277,7 +1295,6 @@ namespace Artivity.Apid.Modules
             {
                 Dictionary<string, Resource> result = new Dictionary<string, Resource>();
                 result["file"] = file;
-                //result["canvas"] = file.Canvases.First();
 
                 return Response.AsJson(result);
             }
@@ -1292,40 +1309,55 @@ namespace Artivity.Apid.Modules
             return HttpStatusCode.OK;
         }
 
-        private Response GetCanvas(UriRef entityUri)
+        private Response GetCanvases(UriRef entityUri, DateTime time)
         {
             string queryString = @"
                 SELECT
-                    DISTINCT ?canvas COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?width ?height ?lengthUnit
+	                ?canvas COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?width ?height ?lengthUnit
                 WHERE
                 {
-                    ?activity prov:generated | prov:used @entity .
-                    ?activity prov:qualifiedInfluence ?influence .
+	                {
+		                SELECT
+			                ?canvas MAX(?t) AS ?time
+		                WHERE
+		                {
+			                ?activity prov:generated | prov:used @entity .
 
-                    ?influence prov:entity ?canvas .
-                    ?influence prov:atTime ?time .
+			                ?canvas a art:Canvas .
+			                ?canvas ?qualifiedInfluence ?influence .
 
-                    FILTER NOT EXISTS { ?influence a prov:Invalidation . }
+			                ?influence prov:activity | prov:hadActivity ?activity .
+			                ?influence prov:atTime ?t .
+			                ?influence art:hadBoundaries ?bounds .
+			
+			                FILTER(?t <= @time) .
+		                }
+	                }
+	
+	                ?canvas ?qualifiedInfluence ?influence .
+	
+	                ?influence prov:atTime ?time .
+	                ?influence art:hadBoundaries / art:width ?width .
+	                ?influence art:hadBoundaries / art:height ?height .
+	                ?influence art:hadBoundaries / art:x ?x .
+	                ?influence art:hadBoundaries / art:y ?y .
+	                ?influence art:hadChange ?u .
 
-                    ?canvas a art:Canvas .
-                    ?canvas art:width ?width .
-                    ?canvas art:height ?height .
-                    ?canvas art:lengthUnit ?lengthUnit .
-
-                    OPTIONAL
-                    {
-                        ?canvas art:position / art:x ?x .
-                        ?canvas art:position / art:y ?y .
-                    }
+	                OPTIONAL
+	                {
+		                ?u art:property art:lengthUnit .
+		                ?u art:value ?lengthUnit .
+	                }
                 }
                 ORDER BY DESC(?time)";
                 
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@entity", entityUri);
+            query.Bind("@time", time);
             
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
+            List<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query).ToList();
 
-            return Response.AsJson(bindings.FirstOrDefault());
+            return Response.AsJson(bindings);
         }
 
         private bool IsUri(string uri, UriKind kind = UriKind.Absolute)

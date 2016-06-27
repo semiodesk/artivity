@@ -129,6 +129,10 @@ namespace artivity
 
         void addChange(ChangeRef change);
 
+        void addChange(EntityRef entity, const char* property, ResourceRef resource);
+
+        void addChange(EntityRef entity, const char* property, double value);
+
         void removeChange(ChangeRef change);
 
         void clearChanges();

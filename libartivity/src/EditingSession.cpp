@@ -282,6 +282,48 @@ namespace artivity
         return resPath;
     }
 
+    CanvasRef EditingSession::createCanvas(string uri, double x, double y, double width, double height)
+    {
+        CanvasRef canvas = CanvasRef(new Canvas(uri.c_str()));
+
+        ChangeRef unit = ChangeRef(new Change(canvas, art::lengthUnit, ResourceRef(new Resource(art::px))));
+
+        RectangleRef bounds = RectangleRef(new Rectangle());
+        bounds->setWidth(width);
+        bounds->setHeight(height);
+        bounds->setX(x);
+        bounds->setY(y);
+
+        GenerationRef generation = GenerationRef(new Generation());
+        generation->setBoundaries(bounds);
+        generation->addEntity(canvas);
+        generation->addChange(unit);
+
+        _consumer->push(generation);
+
+        return canvas;
+    }
+
+    CanvasRef EditingSession::updateCanvas(string uri, double x, double y, double width, double height)
+    {
+        CanvasRef canvas = CanvasRef(new Canvas(uri.c_str()));
+
+        RectangleRef bounds = RectangleRef(new Rectangle());
+        bounds->setWidth(width);
+        bounds->setHeight(height);
+        bounds->setX(x);
+        bounds->setY(y);
+
+        RevisionRef generation = RevisionRef(new Revision());
+        generation->setBoundaries(bounds);
+        generation->addEntity(canvas);
+        generation->addChange(canvas, art::lengthUnit, ResourceRef(new Resource(art::px)));
+
+        _consumer->push(generation);
+
+        return canvas;
+    }
+
     SaveRef EditingSession::onEventSave()
     {
         time_t now;
