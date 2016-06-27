@@ -68,6 +68,11 @@ namespace artivity
             setWidth(fabs(right - left));
             setHeight(fabs(top - bottom));
         }
+
+        Rectangle(double x, double y)
+        {
+            setPosition(x, y);
+        }
         
         double getWidth()
         {
