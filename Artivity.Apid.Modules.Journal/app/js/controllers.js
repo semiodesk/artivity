@@ -275,9 +275,9 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
             stats.steps += influence.count;
 
-            if (influence.type == 'http://semiodesk.com/artivity/1.0/Undo') {
+            if (influence.type == 'http://w3id.org/art/terms/1.0/Undo') {
                 stats.undos += influence.count;
-            } else if (influence.type == 'http://semiodesk.com/artivity/1.0/Redo') {
+            } else if (influence.type == 'http://w3id.org/art/terms/1.0/Redo') {
                 stats.redos += influence.count;
             }
         }

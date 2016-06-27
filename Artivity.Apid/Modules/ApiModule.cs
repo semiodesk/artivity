@@ -411,7 +411,14 @@ namespace Artivity.Apid.Modules
                         return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
 
-                    return ExecuteQuery(query);
+                    if (Request.Query.inference)
+                    {
+                        return ExecuteQuery(query, true);
+                    }
+                    else
+                    {
+                        return ExecuteQuery(query);
+                    }
                 }
             };
         }
@@ -420,7 +427,7 @@ namespace Artivity.Apid.Modules
 
         #region Methods
 
-        private Response ExecuteQuery(string queryString)
+        private Response ExecuteQuery(string queryString, bool inferenceEnabled = false)
         {
             try
             {
@@ -435,7 +442,7 @@ namespace Artivity.Apid.Modules
 
                     SparqlQuery query = new SparqlQuery(queryString, false);
 
-                    var bindings = model.ExecuteQuery(query, true).GetBindings();
+                    var bindings = model.ExecuteQuery(query, inferenceEnabled).GetBindings();
 
                     if (bindings != null)
                     {
@@ -456,6 +463,7 @@ namespace Artivity.Apid.Modules
 
                 return Response.AsJson(messages);
             }
+
             return null;
         }
 
