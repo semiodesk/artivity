@@ -71,6 +71,7 @@ namespace artivity
 
         Rectangle(double x, double y)
         {
+            setType(art::Rectangle);
             setPosition(x, y);
         }
         
