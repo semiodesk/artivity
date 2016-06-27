@@ -46,7 +46,7 @@ namespace artivity
 
     void EditingSession::initialize(string server, bool newDocument)
     {
-		_document = getDocument();
+		document = getDocument();
 
         if (!newDocument)
         {
@@ -61,16 +61,28 @@ namespace artivity
         _log = ActivityLogRef(new ActivityLog());
         _log->addAssociation(art::USER);
         _log->addAssociation(art::SOFTWARE, getSoftwareAgent(), getSoftwareAgentVersion());
-        _log->setDocument(_document, _filePath, newDocument);
+        _log->setDocument(document, _filePath, newDocument);
 
         if (_log->connect(server + "/artivity/api/1.0"))
         {
-            _fileUri = _document->uri;
+            _fileUri = document->uri;
             _imagePath = _log->getRenderOutputPath();
             _initialized = true;
+
+            eventStart();
         }
 
         _currentChangeIndex = 0;
+    }
+
+    void EditingSession::finalize()
+    {
+        if (_initialized)
+        {
+            eventEnd();
+
+            _initialized = false;
+        }
     }
 
     EditingSession::~EditingSession()
@@ -78,6 +90,26 @@ namespace artivity
         _consumer->stop();
         _log->close();
         _log = NULL;
+    }
+
+    void EditingSession::eventStart()
+    {
+        StartRef res = onEventStart();
+
+        if (res != NULL)
+        {
+            _consumer->push(res);
+        }
+    }
+
+    void EditingSession::eventEnd()
+    {
+        EndRef res = onEventEnd();
+
+        if (res != NULL)
+        {
+            _consumer->push(res);
+        }
     }
 
     void EditingSession::eventAdd()
@@ -92,6 +124,7 @@ namespace artivity
     {
         ResourceRef res = onEventDelete();
         handleChanges(res);
+
         _consumer->push(res);
     }
 
@@ -156,9 +189,7 @@ namespace artivity
 
     void EditingSession::eventSave()
     {
-        RevisionRef res = onEventSave();
-        res->addProperty(prov::entity, _fileUri, typeid(Resource));
-        res->setIsSave(true);
+        SaveRef save = onEventSave();
 
         // TODO: Check if file paths match if not empty -> derivation.
         if (_filePath.empty())
@@ -174,15 +205,14 @@ namespace artivity
         time_t now;
         time(&now);
 
-        _document->setModified(now);
+        document->setModified(now);
 
-        _consumer->push(res);
+        _consumer->push(save);
     }
 
     void EditingSession::eventSaveAs()
     {
-        DerivationRef res = onEventSaveAs();
-        res->setIsSave(true);
+        SaveAsRef saveAs = onEventSaveAs();
 
         // TODO: Check if file paths match if not empty -> derivation.
         if (_filePath.empty())
@@ -198,9 +228,9 @@ namespace artivity
         time_t now;
         time(&now);
 
-        _document->setModified(now);
+        document->setModified(now);
 
-        _consumer->push(res);
+        _consumer->push(saveAs);
     }
 
     bool EditingSession::fileExists(const std::string& name)
@@ -217,39 +247,13 @@ namespace artivity
     {
         const char* type = res->getType();
 
-        if (strcmp(type, prov::Revision) == 0)
-        {
-            EntityInfluenceRef influence = boost::dynamic_pointer_cast<EntityInfluence>(res);
+        InfluenceRef influence = boost::dynamic_pointer_cast<Influence>(res);
 
-            _log->addInfluence(influence);
+        _log->addInfluence(influence);
 
-            if (influence->getIsSave())
-                _log->transmit();
-        }
-        else if (strcmp(type, prov::Derivation) == 0)
+        if (influence->getIsSave())
         {
-            EntityInfluenceRef influence = boost::dynamic_pointer_cast<EntityInfluence>(res);
-
-            _log->addInfluence(influence);
-
-            if (influence->getIsSave())
-                _log->transmit();
-        }
-        else if (strcmp(type, prov::Generation) == 0)
-        {
-            _log->addInfluence(boost::dynamic_pointer_cast<Generation>(res));
-        }
-        else if (strcmp(type, prov::Invalidation) == 0)
-        {
-            _log->addInfluence(boost::dynamic_pointer_cast<Invalidation>(res));
-        }
-        else if (strcmp(type, art::Undo) == 0)
-        {
-            _log->addInfluence(boost::dynamic_pointer_cast<EntityInfluence>(res));
-        }
-        else if (strcmp(type, art::Redo) == 0)
-        {
-            _log->addInfluence(boost::dynamic_pointer_cast<EntityInfluence>(res));
+            _log->transmit();
         }
     }
 
@@ -278,25 +282,25 @@ namespace artivity
         return resPath;
     }
 
-    RevisionRef EditingSession::onEventSave()
+    SaveRef EditingSession::onEventSave()
     {
         time_t now;
         time(&now);
 
-        auto rev = createRevision();
-        rev->setTime(now);
+        auto save = createSave();
+        save->setTime(now);
 
-        return rev;
+        return save;
     }
 
-    DerivationRef EditingSession::onEventSaveAs()
+    SaveAsRef EditingSession::onEventSaveAs()
     {
         time_t now;
         time(&now);
 
-        auto der = createDerivation();
-        der->setTime(now);
+        auto saveAs = createSaveAs();
+        saveAs->setTime(now);
 
-        return der;
+        return saveAs;
     }
 }

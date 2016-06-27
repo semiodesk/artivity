@@ -143,9 +143,9 @@ namespace Artivity.DataModel
             InstallAgent(model, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
             InstallAgent(model, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
             InstallAgent(model, "http://adobe.com/products/photoshop", "Adobe Photoshop", "photoshop.exe", "#EE2000", true);
-            InstallSoftwareAssociation(model, "http://adobe.com/products/illustrator", "2015.1");
+            InstallSoftwareAssociation(model, "http://adobe.com/products/photoshop", "2015");
             InstallAgent(model, "http://adobe.com/products/illustrator", "Adobe Illustrator", "illustrator.exe", "#EE2000", true);
-            InstallSoftwareAssociation(model, "http://adobe.com/products/illustrator", "2015.1");
+            InstallSoftwareAssociation(model, "http://adobe.com/products/illustrator", "2015");
             InstallSoftwareAssociation(model, "http://adobe.com/products/illustrator", "2015.2");
         }
 

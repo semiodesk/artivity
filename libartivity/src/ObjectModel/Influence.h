@@ -101,6 +101,8 @@ namespace artivity
             setValue(prov::atTime, &time);
         }
         
+        virtual bool getIsSave() { return false; }
+
         std::string getDescription()
         {
             return _description;

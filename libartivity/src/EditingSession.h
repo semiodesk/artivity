@@ -5,12 +5,16 @@
 #include "ActivityLog.h"
 #include "ProducerConsumer.h"
 #include "ObjectModel/Change.h"
+#include "ObjectModel/Influences/Start.h"
+#include "ObjectModel/Influences/End.h"
 #include "ObjectModel/Influences/Undo.h"
 #include "ObjectModel/Influences/Redo.h"
 #include "ObjectModel/Influences/Revision.h"
 #include "ObjectModel/Influences/Invalidation.h"
 #include "ObjectModel/Influences/Generation.h"
 #include "ObjectModel/Influences/Derivation.h"
+#include "ObjectModel/Influences/Save.h"
+#include "ObjectModel/Influences/SaveAs.h"
 
 namespace artivity
 {
@@ -30,7 +34,6 @@ namespace artivity
         ProducerConsumerRef _consumer;
         std::string _imagePath;
         std::string _fileUri;
-        ImageRef _document;
 
         bool _endTime = false;
         bool _initial = true;
@@ -46,6 +49,8 @@ namespace artivity
         void handleChanges(ResourceRef res);
 
         protected:
+        ImageRef document;
+
         std::string createImageFilePath(time_t time);
         std::string getFileUri() { return _fileUri; }
 
@@ -61,26 +66,34 @@ namespace artivity
         DerivationRef createDerivation() { return DerivationRef(new Derivation()); }
         RevisionRef createRevision() { return RevisionRef(new Revision()); }
         ChangeRef createChange() { return ChangeRef(new Change()); }
+        SaveRef createSave() { return SaveRef(new Save()); }
+        SaveAsRef createSaveAs() { return SaveAsRef(new SaveAs()); }
 
+        virtual StartRef onEventStart() = 0;
+        virtual EndRef onEventEnd() = 0;
         virtual GenerationRef onEventAdd() = 0;
         virtual InvalidationRef onEventDelete() = 0;
         virtual RevisionRef onEventEdit() = 0;
         virtual UndoRef onEventUndo() = 0;
         virtual RedoRef onEventRedo() = 0;
-        virtual RevisionRef onEventSave();
-        virtual DerivationRef onEventSaveAs();
+        virtual SaveRef onEventSave();
+        virtual SaveAsRef onEventSaveAs();
 
         public:
         EditingSession();
-        void initialize(std::string server, bool isNewDocument);
         virtual ~EditingSession();
+
+        void initialize(std::string server, bool isNewDocument);
+        void finalize();
 
         void transmitQueue();
 
-        bool safeToRemove() { return _endTime && _consumer->empty(); }
+        bool safeToRemove() { return _consumer != NULL && _consumer->empty(); }
 
         void consume(ResourceRef data);
 
+        void eventStart();
+        void eventEnd();
         void eventAdd();
         void eventDelete();
         void eventEdit();

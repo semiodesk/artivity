@@ -365,6 +365,14 @@ namespace artivity
 
             influence->setActivity(_activity);
         }
+        else if (influence->is(prov::Start))
+        {
+            _activity->addProperty(prov::qualifiedStart, influence);
+        }
+        else if (influence->is(prov::End))
+        {
+            _activity->addProperty(prov::qualifiedEnd, influence);
+        }
         else
         {
             for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
@@ -405,7 +413,7 @@ namespace artivity
                         entity->addProperty(prov::qualifiedDerivation, influence);
                     }
                 }
-                else if (influence->is(prov::Revision))
+                else if (influence->is(prov::Revision) || influence->is(art::Save) || influence->is(art::SaveAs))
                 {
                     EntityRef r = _activity->getEntity(entity->uri);
 

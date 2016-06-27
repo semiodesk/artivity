@@ -68,6 +68,10 @@ namespace artivity
         // The re-generation of a formerly invalidated entity influence.
         static const char* Redo = art("Redo");
 
+        static const char* Save = art("Save");
+
+        static const char* SaveAs = art("SaveAs");
+
         static const char* count = art("count");
         
         static const char* selectedLayer = art("selectedLayer");

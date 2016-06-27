@@ -237,6 +237,21 @@
     <ClInclude Include="..\..\src\ObjectModel\Entities\Layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Start.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\End.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Derivation.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ObjectModel\Influences\SaveAs.h">
+      <Filter>Header Files\Influences</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp">
@@ -278,9 +293,6 @@
     <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ObjectModel\Influence.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\ObjectModel\Influences\ActivityInfluence.cpp">
       <Filter>Source Files\Influences</Filter>
     </ClCompile>
@@ -295,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\ObjectModel\RenderingDataObject.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Influence.cpp">
+      <Filter>Source Files\Influences</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

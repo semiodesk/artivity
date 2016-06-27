@@ -212,11 +212,16 @@
     <ClInclude Include="..\..\src\ObjectModel\Geometry\Viewport.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influence.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\ActivityInfluence.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Derivation.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\End.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\EntityInfluence.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Generation.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Invalidation.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Redo.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Revision.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\SaveAs.h" />
+    <ClInclude Include="..\..\src\ObjectModel\Influences\Start.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Undo.h" />
     <ClInclude Include="..\..\src\ObjectModel\PartialRenderingDataObject.h" />
     <ClInclude Include="..\..\src\ObjectModel\Person.h" />
