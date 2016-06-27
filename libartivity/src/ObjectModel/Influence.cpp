@@ -63,6 +63,30 @@ namespace artivity
         addProperty(art::hadChange, change);
     }
 
+    void Influence::addChange(EntityRef entity, const char* property, ResourceRef resource)
+    {
+        ChangeRef change = ChangeRef(new Change());
+        change->setEntity(entity);
+        change->addProperty(art::property, property, typeid(Resource));
+        change->addProperty(art::value, resource);
+
+        changes.push_back(change);
+
+        addProperty(art::hadChange, change);
+    }
+
+    void Influence::addChange(EntityRef entity, const char* property, double value)
+    {
+        ChangeRef change = ChangeRef(new Change());
+        change->setEntity(entity);
+        change->addProperty(art::property, property, typeid(Resource));
+        change->addProperty(art::value, value);
+
+        changes.push_back(change);
+
+        addProperty(art::hadChange, change);
+    }
+
     void Influence::removeChange(ChangeRef change)
     {
         changes.remove(change);
