@@ -1331,6 +1331,15 @@ namespace Artivity.Apid.Modules
 			                ?influence art:hadBoundaries ?bounds .
 			
 			                FILTER(?t <= @time) .
+
+			                FILTER NOT EXISTS
+			                {
+				                ?canvas prov:qualifiedInvalidation ?invalidation .
+				
+				                ?invalidation prov:atTime ?t2 .
+				
+				                FILTER(?t2 <= @time) .
+			                }
 		                }
 	                }
 	
