@@ -42,9 +42,6 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 	$scope.playloop = undefined;
 
-	// Used for extracting colors from images.
-	var thief = new ColorThief();
-
 	// The canvas.
 	var buffer = document.getElementsByClassName('buffer')[0];
 
@@ -56,41 +53,57 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	var Tindex = {};
 
 	// Renders all loaded images onto the canvas.
-	var renderDocument = function (thumbnails, time) {		
+	var renderDocument = function (thumbnails, time) {
 		context.clearRect(0, 0, buffer.width, buffer.height);
 
 		// Save the untransformed canvas state.
 		context.save();
 
-		// Render the canvases at the current time.
+		var extents = {
+			width: 0,
+			height: 0
+		};
+
+		var zoom = 1.0;
+
+		// Measure the extents of the drawing.
 		for (var i = 0; i < $scope.canvases.length; i++) {
 			var canvas = $scope.canvases[i];
-			
+
 			// Fit the rendered document into the available viewport.
 			var shadowOffsetX = 3;
 			var shadowOffsetY = 3;
 
 			var width = canvas.width + shadowOffsetX;
 			var height = canvas.height + shadowOffsetY;
-			
-			var zoom = 1.0;
 
-			if (width > buffer.width) {
-				zoom = Math.min(zoom, buffer.width / width);
-			}
+			extents.width = Math.max(extents.width, canvas.x + canvas.width);
+			extents.height = Math.max(extents.height, canvas.y + canvas.height);
+		}
 
-			if (height > buffer.height) {
-				zoom = Math.min(zoom, buffer.height / height);
-			}
+		// After measuring, determine the zoom level to contain all the canvases.
+		if (extents.width > buffer.width) {
+			zoom = Math.min(zoom, buffer.width / extents.width);
+		}
 
-			console.log(width, height);
-			
-			context.scale(zoom, zoom);
+		if (extents.height > buffer.height) {
+			zoom = Math.min(zoom, buffer.height / extents.height);
+		}
 
-			// Translate the document to be centered on the canvas.            
-			if (buffer.width !== undefined && buffer.width > canvas.width) {
-				context.translate((buffer.width - canvas.width) / 2, 0);
-			}
+		// Translate the document to be centered on the canvas.            
+		if (buffer.width !== undefined && buffer.width > extents.width) {
+			context.translate((buffer.width - extents.width) / 2, 0);
+		}
+
+		context.scale(zoom, zoom);
+
+		// Render the canvases at the current time.
+		for (var i = 0; i < $scope.canvases.length; i++) {
+			var canvas = $scope.canvases[i];
+
+			// Fit the rendered document into the available viewport.
+			var shadowOffsetX = 3;
+			var shadowOffsetY = 3;
 
 			context.save();
 
@@ -111,7 +124,9 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		for (var j = T.length - 1; j > 0; j--) {
 			var t = T[j];
 
-			if (time !== undefined && t.time > time || t.layerZ !== undefined && t.layerZ in renderedLayers) {
+			var z = t.layerZ === null ? 0 : t.layerZ;
+
+			if (time !== undefined && t.time > time || z in renderedLayers) {
 				continue;
 			}
 
@@ -144,11 +159,43 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 				context.strokeRect(t.boundsX, -t.boundsY, t.boundsWidth, t.boundsHeight);
 			}
 
-			renderedLayers[t.layerZ] = t;
+			renderedLayers[z] = t;
 		}
-		
+
 		// Restore the untransformed canvas state.
 		context.restore();
+
+		// Used for extracting colors from images.
+		var thief = new ColorThief();
+
+		// Extract the color palette from the rendered layers.
+		var palette = [];
+
+		for (var j in renderedLayers) {
+			var t = renderedLayers[j];
+
+			// Extract colors from the current image.
+			var p = thief.getPalette(t.image, 8);
+
+			palette = palette.concat(p);
+
+			// Remove duplicate colors.
+			palette = palette.filter(function (val, j, array) {
+				for (var i = 0; i < p.length; i++) {
+					var c = p[i];
+
+					// Remove all other values with equal color, except the color itself.
+					if (c !== val && c.equals(val)) {
+						return false;
+					}
+				}
+
+				return true;
+			});
+		}
+
+		// Assign the palette and update the UI.
+		$scope.palette = palette;
 	};
 
 	var loadThumbnailsComplete = function (thumbnails) {
@@ -165,7 +212,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		/*
 		renderDocument(thumbnails);
 		*/
-		
+
 		api.getStats(fileUri).then(function (data) {
 			$scope.updateStats(data);
 		});
@@ -211,10 +258,10 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		loadItems(thumbnails, loadThumbnails, loadThumbnailsComplete);
 	});
 
-	api.getCanvases(fileUri).then(function (data) {		
+	api.getCanvases(fileUri).then(function (data) {
 		$scope.canvases = data;
 
-		if ($scope.selectedInfluence !== undefined) {			
+		if ($scope.selectedInfluence !== undefined) {
 			renderDocument(T, $scope.selectedInfluence.time);
 		}
 	});
@@ -331,37 +378,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		} else if (influence.time !== undefined) {
 			api.getCanvases(fileUri, influence.time).then(function (data) {
 				$scope.canvases = data;
-				
+
 				renderDocument(T, influence.time);
-
-				// Extract the palette from the current influence render.     
-				for (var i = T.length - 1; i > 0; i--) {
-					var t = T[i];
-
-					if (t.layer !== undefined && t.layer == influence.layer && t.time == influence.time) {
-						// Extract colors from the current image.
-						var palette = thief.getPalette(t.image, 16);
-
-						// Remove duplicate colors.
-						palette = palette.filter(function (val, j, array) {
-							for (var i = 0; i < palette.length; i++) {
-								var c = palette[i];
-
-								// Remove all other values with equal color, except the color itself.
-								if (c !== val && c.equals(val)) {
-									return false;
-								}
-							}
-
-							return true;
-						});
-
-						// Assign the palette and update the UI.
-						$scope.palette = palette;
-
-						break;
-					}
-				}
 			});
 		}
 	};
@@ -429,6 +447,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		template: '<div class="chart"><svg class="canvas"></svg></div>',
 		link: function (scope, element, attributes) {
 			var gantt = d3.gantt();
+
 			gantt.init(element, getValue(scope, attributes.chartData));
 
 			scope.$watchCollection(attributes.chartData, function () {
