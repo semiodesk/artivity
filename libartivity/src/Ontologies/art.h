@@ -241,6 +241,13 @@ namespace artivity
         static const char* fillPattern = art("fillPattern");
 
         static const char* strokeWidth = art("strokeWidth");
+
+        static const char* aboveLayer = art("aboveLayer");
+
+        static const char* parentLayer = art("parentLayer");
+
+        // Resource
+        static const char* noLayer = art("noLayer");
     }
 }
 
