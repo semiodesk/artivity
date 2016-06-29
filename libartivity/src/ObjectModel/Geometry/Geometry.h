@@ -53,11 +53,17 @@ namespace artivity
         Geometry() : Entity()
         {
             setType(art::Geometry);
+            _x = 0;
+            _y = 0;
+            _z = 0;
         }
         
         Geometry(const char* uriref) : Entity(uriref)
         {
             setType(art::Geometry);
+            _x = 0;
+            _y = 0;
+            _z = 0;
         }
 
         void setPosition(double x, double y)
