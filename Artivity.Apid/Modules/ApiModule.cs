@@ -70,99 +70,6 @@ namespace Artivity.Apid.Modules
                 }
             };
 
-            // Get a list of all installed agents.
-            Get["/agents"] = paramters =>
-            {
-                string uri = Request.Query.uri;
-
-                if (string.IsNullOrEmpty(uri))
-                {
-                    return GetAgents();
-                }
-                else if (IsUri(uri))
-                {
-                    return GetAgent(new UriRef(uri));
-                }
-                else
-                {
-                    return HttpStatusCode.BadRequest;
-                }
-            };
-
-            // Install a new or update an existing agent.
-            Post["/agents"] = parameters =>
-            {
-                Agent agent = Bind<Agent>(ModelProvider.Store, Request.Body);
-
-                if (agent == null)
-                {
-                    return HttpStatusCode.BadRequest;
-                }
-
-                agent.Commit();
-
-                return HttpStatusCode.OK;
-            };
-
-            Get["/agents/initialize"] = parameters =>
-            {
-                ModelProvider.InitializeAgents();
-
-                return HttpStatusCode.OK;
-            };
-
-            Get["/agents/associations"] = parameters =>
-            {
-                if(Request.Query.Count == 0)
-                {
-                    return GetAgentAssociations();
-                }
-
-                string role = Request.Query["role"];
-
-                if (string.IsNullOrEmpty(role) || !Uri.IsWellFormedUriString(role, UriKind.Absolute))
-                {
-                    return HttpStatusCode.BadRequest;
-                }
-
-                string agent = Request.Query["agent"];
-                string version = Request.Query["version"];
-
-                if (string.IsNullOrEmpty(agent))
-                {
-                    return GetAgentAssociation(new UriRef(role));
-                }
-                
-                if (string.IsNullOrEmpty(version) || !Uri.IsWellFormedUriString(agent, UriKind.Absolute))
-                {
-                    return HttpStatusCode.BadRequest;
-                }
-
-                return GetAgentAssociation(new UriRef(role), new UriRef(agent), version);
-            };
-
-            Get["/agents/user"] = parameters =>
-            {
-                return GetUserAgent();
-            };
-
-            Post["/agents/user"] = parameters =>
-            {
-                return SetUserAgent(Request.Body);
-            };
-
-            Get["/agents/user/photo"] = parameters =>
-            {
-                return GetUserAgentPhoto();
-            };
-
-            Post["/agents/user/photo"] = parameters =>
-            {
-                RequestStream stream = Request.Body;
-
-                return SetUserAgentPhoto(stream);
-            };
-
             // Get a list of all installed online accounts.
             Get["/accounts"] = parameters =>
             {
@@ -540,219 +447,11 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response GetAgents()
-        {
-            IEnumerable<SoftwareAgent> agents = ModelProvider.AgentsModel.GetResources<SoftwareAgent>();
-
-            return Response.AsJson(agents.ToList());
-        }
-
-        private Response GetAgent(UriRef entityUri)
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?s ?p ?o
-                WHERE 
-                {
-                    ?s ?p ?o .
-
-                    {
-                        SELECT ?s WHERE
-                        {
-                            ?activity prov:used @entity .
-                            ?activity prov:qualifiedAssociation ?association .
-
-                            ?association prov:hadRole art:SOFTWARE .
-                            ?association prov:agent ?s .
-                        }
-                        LIMIT 1
-                    }
-                }");
-
-            query.Bind("@entity", entityUri);
-
-            IEnumerable<IResource> agents = ModelProvider.GetAllActivities().GetResources(query);
-
-            if (agents.Any())
-            {
-                return Response.AsJson(agents.FirstOrDefault());
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private Response GetUserAgent()
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?s ?p ?o
-                WHERE
-                {
-                    ?s ?p ?o .
-
-                    ?a prov:agent ?s .
-                    ?a prov:hadRole art:USER .
-                }
-            ");
-
-            IEnumerable<Person> persons = ModelProvider.AgentsModel.GetResources<Person>(query);
-
-            if (persons.Any())
-            {
-                return Response.AsJson(persons.First());
-            }
-            else
-            {
-                Association association = CreateUserAssociation();
-
-                return Response.AsJson(association.Agent);
-            }
-        }
-
-        private Association CreateUserAssociation()
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?s ?p ?o
-                WHERE
-                {
-                    ?s ?p ?o .
-
-                    ?s rdf:type prov:Person .
-                }
-            ");
-
-            // See if there is already a person defined..
-            Person user = ModelProvider.AgentsModel.ExecuteQuery(query).GetResources<Person>().FirstOrDefault();
-
-            if (user == null)
-            {
-                Logger.LogInfo("Creating new user profile..");
-
-                // If not, create one.
-                user = ModelProvider.AgentsModel.CreateResource<Person>();
-                user.Commit();
-            }
-            else
-            {
-                Logger.LogInfo("Upgrading user profile..");
-            }
-
-            // Add the user role association.
-            Association association = ModelProvider.AgentsModel.CreateResource<Association>();
-            association.Agent = user;
-            association.Role = new Role(art.USER);
-            association.Commit();
-
-            return association;
-        }
-
-        private Response GetAgentAssociations()
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?association ?agent ?role
-                WHERE
-                {
-                    ?association prov:agent ?agent .
-                    ?association prov:hadRole ?role .
-                }
-            ");
-
-            var bindings = ModelProvider.AgentsModel.GetBindings(query);
-
-            return Response.AsJson(bindings);
-        }
-
-        private Response GetAgentAssociation(UriRef role)
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?association ?agent ?role
-                WHERE
-                {
-                    ?association prov:agent ?agent .
-                    ?association prov:hadRole @role .
-
-                    BIND(@role as ?role)
-                }
-            ");
-
-            query.Bind("@role", role);
-
-            var bindings = ModelProvider.AgentsModel.GetBindings(query).FirstOrDefault();
-
-            return Response.AsJson(bindings);
-        }
-
-        private Response GetAgentAssociation(UriRef role, UriRef agent, string version)
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?association ?agent ?role
-                WHERE
-                {
-                    ?association prov:hadRole @role .
-                    ?association prov:agent @agent .
-                    ?association art:version @version .
-
-                    BIND(@agent as ?agent)
-                    BIND(@role as ?role)
-                }
-            ");
-
-            query.Bind("@role", role);
-            query.Bind("@agent", agent);
-            query.Bind("@version", version);
-
-            var bindings = ModelProvider.AgentsModel.GetBindings(query).FirstOrDefault();
-
-            if(bindings == null)
-            {
-                Logger.LogInfo("Creating association for agent {0} ; version {1}", agent, version);
-
-                // The URI format of the new agent is always {AGENT_URI}#{VERSION}
-                UriRef uri = new UriRef(agent.AbsoluteUri + "#" + version.Replace(' ', '_').Trim());
-
-                SoftwareAssociation association = ModelProvider.AgentsModel.CreateResource<SoftwareAssociation>(uri);
-                association.Agent = new Agent(agent);
-                association.Role = new Role(role);
-                association.Version = version;
-                association.Commit();
-
-                // Return the bindings for the new agent association.
-                bindings = new BindingSet()
-                {
-                    { "association", uri },
-                    { "agent", agent },
-                    { "role", role },
-                };
-            }
-
-            return Response.AsJson(bindings);
-        }
-
-        private Response SetUserAgent(RequestStream stream)
-        {
-            Person user = Bind<Person>(ModelProvider.Store, stream);
-
-            if (user == null)
-            {
-                return HttpStatusCode.BadRequest;
-            }
-
-            user.Commit();
-
-            return HttpStatusCode.OK;
-        }
-
         private Response GetAccounts()
         {
             IModel model = ModelProvider.GetAgents();
 
-            IEnumerable<OnlineAccount> accounts = model.GetResources<OnlineAccount>(true);
+            List<OnlineAccount> accounts = model.GetResources<OnlineAccount>(true).ToList();
 
             return Response.AsJson(accounts);
         }
@@ -833,58 +532,6 @@ namespace Artivity.Apid.Modules
             user.Commit();
 
             return Logger.LogInfo(HttpStatusCode.OK, "Uninstalled account: {0}", accountId);
-        }
-
-        private Response GetUserAgentPhoto()
-        {
-            string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
-
-            if (File.Exists(file))
-            {
-                FileStream fileStream = new FileStream(file, FileMode.Open);
-
-                StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
-
-                return response.AsAttachment(file);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private Response SetUserAgentPhoto(RequestStream stream)
-        {
-            try
-            {
-                string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
-
-                Bitmap source = new Bitmap(stream);
-
-                // Always resize the image to the given size.
-                int width = 160;
-                int height = 160;
-
-                Bitmap target = new Bitmap(width, height);
-
-                using (Graphics g = Graphics.FromImage(target))
-                {
-                    g.DrawImage(source, 0, 0, width, height);
-
-                    using (FileStream fileStream = File.Create(file))
-                    {
-                        target.Save(fileStream, ImageFormat.Jpeg);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-
-                return HttpStatusCode.InternalServerError;
-            }
-
-            return HttpStatusCode.OK;
         }
 
         private Response GetRecentlyUsedFiles()
@@ -1258,48 +905,27 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(bindings);
         }
 
-        private Response GetFile(Uri fileUrl)
+        private Response GetFile(Uri entityUri)
         {
-            string fileName = Path.GetFileName(fileUrl.LocalPath);
-            Uri folderUrl = new Uri(fileUrl.AbsoluteUri.Substring(0, fileUrl.AbsoluteUri.LastIndexOf(fileName)));
-            
             string queryString = @"
                 SELECT
-                    ?s ?p ?o
+                    ?uri ?folder ?label ?created ?lastModified
                 WHERE
                 {
-                    ?s ?p ?o .
+                    @entity nie:isStoredAs ?uri .
 
-                    {
-                        SELECT
-                            ?s
-                        WHERE
-                        {
-                            ?activity prov:generated | prov:used ?document.
-                            ?activity prov:startedAtTime ?startTime .
-
-                            ?document nfo:isStoredAs | rdfs:label @fileName .
-                            ?document nfo:isStoredAs | nfo:belongsToContainer | nie:url @folderUrl .
-                        }
-                        ORDER BY DESC(?startTime) LIMIT 1
-                    }
+                    ?uri rdfs:label ?label .
+                    ?uri nie:created ?created .
+                    ?uri nie:lastModified ?lastModified .
+                    ?uri nfo:belongsToContainer / nie:url ?folder .
                 }";
 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@fileName", fileName);
-            query.Bind("@folderUrl", folderUrl);
+            query.Bind("@entity", entityUri);
 
-            FileDataObject file = ModelProvider.ActivitiesModel.GetResources<FileDataObject>(query).FirstOrDefault();
+            BindingSet bindings = ModelProvider.ActivitiesModel.GetBindings(query).FirstOrDefault();
 
-            if (file != null)
-            {
-                Dictionary<string, Resource> result = new Dictionary<string, Resource>();
-                result["file"] = file;
-
-                return Response.AsJson(result);
-            }
-
-            return Response.AsJson(file);
+            return Response.AsJson(bindings);
         }
 
         private Response CreateFile(UriRef uri, Uri url)
@@ -1367,16 +993,6 @@ namespace Artivity.Apid.Modules
             List<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
-        }
-
-        private bool IsUri(string uri, UriKind kind = UriKind.Absolute)
-        {
-            return Uri.IsWellFormedUriString(uri, kind);
-        }
-
-        private bool IsFileUrl(string url)
-        {
-            return IsUri(url) | IsUri(Uri.EscapeUriString(url));
         }
 
         #endregion

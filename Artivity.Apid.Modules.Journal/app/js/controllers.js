@@ -1,4 +1,32 @@
-var explorerControllers = angular.module('explorerControllers', ['ngInputModified']);
+var explorerControllers = angular.module('explorerControllers', ['ngInputModified', 'ui.bootstrap', 'ui.grid']);
+
+explorerControllers.directive('bootstrapSwitch', [
+        function () {
+		return {
+			restrict: 'A',
+			require: '?ngModel',
+			link: function (scope, element, attrs, ngModel) {
+				element.bootstrapSwitch();
+
+				element.on('switchChange.bootstrapSwitch', function (event, state) {
+					if (ngModel) {
+						scope.$apply(function () {
+							ngModel.$setViewValue(state);
+						});
+					}
+				});
+
+				scope.$watch(attrs.ngModel, function (newValue, oldValue) {
+					if (newValue) {
+						element.bootstrapSwitch('state', true, true);
+					} else {
+						element.bootstrapSwitch('state', false, true);
+					}
+				});
+			}
+		};
+        }
+    ]);
 
 explorerControllers.controller('FileListController', function (api, $scope) {
 	api.getUser().then(function (data) {
@@ -17,9 +45,16 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams) {
 	var fileUri = $location.search().uri;
 
+	$scope.file = {};
+
+	api.getFile(fileUri).then(function (data) {
+		$scope.file = data;
+	});
+
 	//$scope.fileName = getFileName(fileUrl);
 	$scope.canvases = [];
 	$scope.agent = {};
+	$scope.agentIcon;
 
 	$scope.activities = [];
 	$scope.selectedActivity;
@@ -165,6 +200,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		// Restore the untransformed canvas state.
 		context.restore();
 
+		/*
 		// Used for extracting colors from images.
 		var thief = new ColorThief();
 
@@ -196,6 +232,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		// Assign the palette and update the UI.
 		$scope.palette = palette;
+		*/
 	};
 
 	var loadThumbnailsComplete = function (thumbnails) {
@@ -268,6 +305,10 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 	api.getAgent(fileUri).then(function (data) {
 		$scope.agent = data;
+
+		console.log($scope.agent.association);
+
+		$scope.agentIconUrl = api.getAgentIconUrl($scope.agent.association);
 	});
 
 	api.getActivities(fileUri).then(function (data) {
@@ -671,10 +712,39 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
 	// Register the controller with its parent for global apply/cancel.
 	$scope.$parent.children.push(this);
 
+	$scope.agents = [];
+
+	$scope.visible = false;
+
 	api.getAgents().then(function (data) {
-		$scope.agents = data;
+		$scope.agents = [];
+
+		for (var i = 0; i < data.length; i++) {
+			var agent = data[i];
+
+			if (agent.IsSoftwareInstalled) {
+				$scope.agents.push({
+					uri: agent.AssociationUri,
+					name: agent.AgentName,
+					color: agent.AgentColor,
+					iconSrc: api.getAgentIconUrl(agent.AssociationUri),
+					installed: agent.IsPluginInstalled,
+					softwareVersion: agent.ExecutableVersion,
+					pluginVersion: agent.PluginVersion
+				});
+			}
+		}
+
 		$scope.agentForm.$setPristine();
 	});
+
+	$scope.toggleInstall = function (agent) {
+		if (agent.installed) {
+			api.installAgent(agent.uri);
+		} else {
+			api.uninstallAgent(agent.uri);
+		}
+	};
 
 	this.submit = function () {
 		if ($scope.agents.length > 0) {

@@ -19,37 +19,30 @@
 // THE SOFTWARE.
 //
 // AUTHORS:
-//
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Semiodesk.Trinity;
+using Artivity.Api.Plugin;
+using Artivity.DataModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.DataModel
+namespace Artivity.Apid.Plugin
 {
-    [RdfClass(ART.SoftwareAssociation)]
-    public class SoftwareAssociation : Association
+    public class PluginCheckerFactory
     {
-		#region Members
-
-        [RdfProperty(ART.version)]
-        public string ExecutableVersion { get; set; }
-
-        [RdfProperty(ART.executablePath), NotifyPropertyChanged]
-        public string ExecutablePath { get; set; }
-
-		#endregion
-
-        #region Constructor
-
-		public SoftwareAssociation(Uri uri) : base(uri) {}
-
-        #endregion
+        public static PluginChecker CreatePluginChecker(IModelProvider modelProvider, DirectoryInfo dir)
+        {
+#if WIN
+            return new Artivity.Api.Plugin.Win.WinPluginChecker(modelProvider, dir);
+#elif OSX
+            return new Artivity.Api.Plugin.OSX.OsxPluginChecker(modelProvider, dir);
+#endif
+        }
     }
 }

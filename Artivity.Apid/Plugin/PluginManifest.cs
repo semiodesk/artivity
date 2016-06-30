@@ -23,10 +23,10 @@
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-//
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -65,7 +65,11 @@ namespace Artivity.Api.Plugin
 
         private string execPath;
 
+        public string iconPath;
+
         private List<PluginManifestPluginFile> pluginFileField = new List<PluginManifestPluginFile>();
+
+        private string color;
 
         /// <remarks/>
         public string DisplayName
@@ -212,6 +216,18 @@ namespace Artivity.Api.Plugin
             }
         }
 
+        public string IconPath
+        {
+            get
+            {
+                return this.iconPath;
+            }
+            set
+            {
+                this.iconPath = value;
+            }
+        }
+
         /// <remarks/>
         [XmlElement("PluginFile")]
         public List<PluginManifestPluginFile> PluginFile
@@ -223,6 +239,18 @@ namespace Artivity.Api.Plugin
             set
             {
                 this.pluginFileField = value;
+            }
+        }
+
+        public string Color
+        {
+            get
+            {
+                return this.color;
+            }
+            set
+            {
+                this.color = value;
             }
         }
     }
@@ -277,51 +305,6 @@ namespace Artivity.Api.Plugin
         public string GetPluginSource(PluginManifest manifest)
         {
             return Path.Combine(manifest.ManifestFile.Directory.FullName, Value);
-        }
-    }
-
-    public class PluginManifestReader
-    {
-        private static log4net.ILog _logger;
-        private static log4net.ILog Logger
-        {
-            get
-            {
-                if (_logger == null)
-                {
-                    Type type = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType;
-                    _logger = log4net.LogManager.GetLogger(type);
-                }
-                return _logger;
-            }
-        }
-
-        public static PluginManifest ReadManifest(FileInfo manifestFile)
-        {
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(PluginManifest));
-
-                StreamReader reader = new StreamReader(manifestFile.FullName);
-                PluginManifest manifest = (PluginManifest)serializer.Deserialize(reader);
-                reader.Close();
-                manifest.ManifestFile = manifestFile;
-                return manifest;
-            }catch(Exception e)
-            {
-                Logger.ErrorFormat("Manifest {0} could not be read. {1}", manifestFile, e);
-                return null;
-            }
-        }
-
-        public static PluginManifest ReadManifest(DirectoryInfo puginFolder)
-        {
-            var x = puginFolder.GetFiles("manifest.xml");
-            if (x.Length > 0)
-            {
-                return ReadManifest(x[0]);
-            }
-            return null;
         }
     }
 }

@@ -146,6 +146,16 @@ namespace Artivity.Apid
             }
         }
 
+        protected bool IsUri(string uri, UriKind kind = UriKind.Absolute)
+        {
+            return Uri.IsWellFormedUriString(uri, kind);
+        }
+
+        protected bool IsFileUrl(string url)
+        {
+            return IsUri(url) | IsUri(Uri.EscapeUriString(url));
+        }
+
         #endregion
 	}
 }

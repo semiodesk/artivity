@@ -2,8 +2,8 @@
 	<script type="text/ng-template" id="addAccountDialog.html">
 		<div style="background: #222">
 			<div class="modal-header">
-				<button class="btn btn-default pull-right" type="button" ng-click="cancel()"><i class="zmdi zmdi-hc-fw"></i></button>
-				
+				<button class="btn btn-default btn-header pull-right" type="button" ng-click="cancel()"><i class="zmdi zmdi-hc-fw"></i></button>
+
 				<h4 class="modal-title">Choose Account Provider</h4>
 			</div>
 			<div class="modal-body">
@@ -14,9 +14,10 @@
 								<div class="account pull-left"><i class="zmdi zmdi-hc-fw"></i></div>
 								<div class="loader pull-left collapse"></div>
 								<div class="ok pull-left collapse"><i class="zmdi zmdi-hc-fw"></i></div>
-								
-								<b>{{provider.Title}}</b><br>
-								
+
+								<b>{{provider.Title}}</b>
+								<br>
+
 								<span class="description">{{provider.Description}}</span>
 								<span class="status collapse">{{provider.Status}}</span>
 							</div>
@@ -30,23 +31,27 @@
 	<div id="header">
 		<div class="row">
 			<div class="col">
-				<a href="#/files" class="btn"><i class="zmdi zmdi-hc-fw"></i></a>
+				<button class="btn btn-default btn-icn btn-header" ng-click="submit()"><i class="zmdi zmdi-hc-fw"></i></button>
 			</div>
 
 			<div class="col expand">
 				<h5 class="title">Preferences</h5>
 			</div>
+
+			<div class="col">
+				<button class="btn btn-default btn-icn btn-header" onclick="history.back()"><i class="zmdi zmdi-hc-fw"></i></button>
+			</div>
 		</div>
 	</div>
 
 	<div id="body">
-		<ul class="nav nav-tabs" role="tablist" id="tabs">
-			<li role="presentation" class="active"><a data-target="#user-panel" role="tab" data-toggle="tab">Profile</a></li>
-			<li role="presentation"><a data-target="#applications-panel" role="tab" data-toggle="tab">Applications</a></li>
-			<li role="presentation"><a data-target="#database-panel" role="tab" data-toggle="tab">Database</a></li>
+		<ul class="nav nav-pills nav-stacked col-md-3" role="tablist" id="tabs">
+			<li role="presentation" class="active"><a data-target="#user-panel" role="tab" data-toggle="tab"><i class="zmdi zmdi-hc-fw zdmi-lg"></i> Profile</a></li>
+			<li role="presentation"><a data-target="#applications-panel" role="tab" data-toggle="tab"><i class="zmdi zmdi-hc-fw zdmi-lg"></i> Apps</a></li>
+			<li role="presentation"><a data-target="#accounts-panel" role="tab" data-toggle="tab"><i class="zmdi zmdi-hc-fw zdmi-lg"></i> Accounts</a></li>
 		</ul>
 
-		<div class="tab-content">
+		<div class="tab-content col-md-9">
 			<!-- PROFILE -->
 			<div role="tabpanel" class="tab-pane fade active in" id="user-panel">
 				<form name="userForm" ng-controller="UserSettingsController as userSettings" ng-submit="submit()">
@@ -54,7 +59,7 @@
 						<div class="col-md-6">
 							<!-- USER -->
 							<div class="form-group">
-								<input type="file" accept="image/*" id="photo" name="photo" ng-model="userPhoto" style="display: none;" ng-photo-picker onchange="angular.element(this).scope().onPhotoChanged(this)"/>
+								<input type="file" accept="image/*" id="photo" name="photo" ng-model="userPhoto" style="display: none;" ng-photo-picker onchange="angular.element(this).scope().onPhotoChanged(this)" />
 
 								<button id="photo-btn" class="btn img-avatar img-avatar-lg">
 									<img id="photo-img" src="{{userPhotoUrl}}" width="100" height="100">
@@ -86,44 +91,64 @@
 								</div>
 							</div>
 						</div>
-						<!-- ACCOUNTS -->
-						<div class="col-md-6">
-							<h4 class="pull-left">Accounts</h4>
-
-							<button class="btn btn-default pull-right" target="_blank" ng-click="selectAccountProvider()"><i class="zmdi zmdi-hc-fw"></i></button>
-
-							<ul class="list-view" style="clear:both">
-								<li ng-repeat="account in accounts">
-									<div class="row list-item">
-										<img src="/app/img/orcid_64x64.png" class="pull-left" style="margin: 7px 14px;" width="48" height="48" />
-										<b>{{account.Title}}</b>
-										<br>
-										<span>{{account.Description}}</span>
-										<button class="btn btn-default pull-right" ng-click="uninstallAccount(account)"><i class="zmdi zmdi-hc-fw"></i></button>
-									</div>
-								</li>
-							</ul>
-						</div>
 					</div>
 				</form>
 			</div>
 			<!-- AGENTS -->
 			<div role="tabpanel" class="tab-pane fade" id="applications-panel">
-				<form name="agentForm" ng-controller="AgentSettingsController as agentSettings">
+				<form name="agentForm" ng-controller="AgentSettingsController as agentSettings" style="max-width: 800px;">
+
+					<div class="text-right">
+						<button class="btn btn-default btn-icn" style="margin: 10px 0;"><i class="zmdi zmdi-hc-fw"></i></button>
+					</div>
+
 					<ul class="list-view">
 						<li ng-repeat="agent in agents">
-							<div class="row list-item">
-								<div class="icn pull-left"></div>
-								<span>{{agent.Name}}</span>
-								<ng-color-picker selected-color="agent.ColourCode" class="pull-right"></ng-color-picker>
+							<div class="row" style="padding: 15px 10px; margin-bottom: 10px; border-top: 1px solid #333333;">
+								<div class="pull-left" style="background-color: {{agent.color}};">
+									<img ng-src="{{agent.iconSrc}}" width="48" height="48" />
+								</div>
+
+								<div class="pull-left" style="padding-left: 15px;">
+									<h4 style="margin-top: 0px">{{agent.name}}</h4>
+									<label>Software version: {{agent.softwareVersion}}</label>
+									<br>
+									<label>Plugin version: {{agent.pluginVersion}}</label>
+								</div>
+
+								<div class="pull-right">
+									<input type="checkbox" ng-model="agent.installed" ng-change="toggleInstall(agent)" data-size="small" bootstrap-switch/>
+								</div>
+
+								<div class="clearfix"></div>
 							</div>
 						</li>
 					</ul>
 				</form>
 			</div>
-			<!-- DATABASE -->
-			<div role="tabpanel" class="tab-pane fade" id="database-panel">
-				<div class="under-construction"></div>
+			<!-- ACCOUNTS -->
+			<div role="tabpanel" class="tab-pane fade" id="accounts-panel">
+				<!--
+				<form name="agentForm" ng-controller="AgentSettingsController as agentSettings">
+					<div class="row">
+					</div>
+					<div class="col-md-12">
+						<button class="btn btn-default pull-right" target="_blank" ng-click="selectAccountProvider()"><i class="zmdi zmdi-hc-fw"></i></button>
+
+						<ul class="list-view" style="clear:both">
+							<li ng-repeat="account in accounts">
+								<div class="row list-item">
+									<img src="/app/img/orcid_64x64.png" class="pull-left" style="margin: 7px 14px;" width="48" height="48" />
+									<b>{{account.Title}}</b>
+									<br>
+									<span>{{account.Description}}</span>
+									<button class="btn btn-default pull-right" ng-click="uninstallAccount(account)"><i class="zmdi zmdi-hc-fw"></i></button>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</form>
+				-->
 			</div>
 		</div>
 
@@ -133,12 +158,5 @@
 				$(this).tab('show');
 			});
 		</script>
-	</div>
-
-	<div id="footer">
-		<div class="toolbar">
-			<button class="btn btn-default" ng-click="submit()"><i class="zmdi zmdi-hc-fw"></i></button>
-			<button class="btn btn-default" ng-click="reset()"><i class="zmdi zmdi-hc-fw"></i></button>
-		</div>
 	</div>
 </div>

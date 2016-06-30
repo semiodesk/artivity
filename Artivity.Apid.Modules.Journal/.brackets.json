@@ -6,7 +6,7 @@
                 "imagePath": null,
                 "outputStyle": "compressed"
             },
-            "linting.collapsed": false
+            "linting.collapsed": true
         }
     }
 }

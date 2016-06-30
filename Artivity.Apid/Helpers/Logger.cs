@@ -14,6 +14,12 @@ namespace Artivity.Apid
                 Log.InfoFormat(msg, p);
         }
 
+        public static void LogDebug(string msg, params object[] p)
+        {
+            if (Log.IsDebugEnabled)
+                Log.DebugFormat(msg, p);
+        }
+
         public static void LogError(string msg, params object[] p)
         {
             if (Log.IsErrorEnabled)

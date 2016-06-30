@@ -1,25 +1,24 @@
-$textFont: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-$textColor: #fff;
+$textFont: 'Roboto',
+'Helvetica',
+'Arial',
+sans-serif;
+$textColor: #FFFFFF;
 $labelColor: darken($textColor, 30%);
-$accentColor: #F94C00;
+$accentColor: #FFFFFF;
+$accentTextColor: #1D1D1D;
 $iconFontSize: 25px;
-
 $selectionTextColor: white;
 $selectionBorderColor: transparent;
 $selectionBackgroundColor: rgba($textColor, .1);
-
-$windowBackgroundColor: #191919;
-
-$headerBackgroundColor: #343434;
+$windowBackgroundColor: #1D1D1D;
+$headerBackgroundColor: #333333;
 $headerTextColor: $textColor;
 $headerHeight: 50px;
-
 $toolbarBackgroundColor: $headerBackgroundColor;
 $toolbarTextColor: $headerTextColor;
-
-$buttonBackgroundColor: rgba($textColor, .1);
-$buttonHoverBackgroundColor: rgba($textColor, .2);
-$buttonTextColor: $textColor;
+$buttonBackgroundColor: $headerBackgroundColor;
+$buttonHoverBackgroundColor: lighten($headerBackgroundColor, 10%);
+$buttonTextColor: $headerTextColor;
 
 /* GENERAL STYLES */
 
@@ -46,6 +45,11 @@ a:hover {
 	text-decoration: none;
 }
 
+.pull-center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .accent-fill {
 	fill: $accentColor;
 }
@@ -58,29 +62,46 @@ a:hover {
 	color: $accentColor;
 }
 
+button,
 .btn-default {
-	font-size: $iconFontSize;
-	text-shadow: none;
 	border: none;
-	background: $toolbarBackgroundColor;
-	color: $toolbarTextColor;
-	width: 45px;
-	height: 45px;
-	padding: 0;
+	border-radius: 3px;
+	background: $buttonBackgroundColor;
+	color: $buttonTextColor;
+	padding: .7em;
 	margin: 0 5px;
 	outline: none;
+	text-shadow: none;
 	box-shadow: none;
 	-webkit-box-shadow: none;
 }
- 
+
+button:hover,
 .btn-default:hover {
-	background: lighten($toolbarBackgroundColor, 10);
-    color: $toolbarTextColor;
+	background: $buttonHoverBackgroundColor;
+	color: $buttonTextColor;
 }
 
 .btn-lg {
 	width: 90px;
 	height: 90px;
+}
+
+.btn-icn {
+	padding: 0;
+	font-size: $iconFontSize;
+	font-weight: 100;
+	width: 45px;
+	height: 45px;
+}
+
+.btn-header {
+	margin: 0 !important;
+	border-radius: 0 !important;
+	width: 50px;
+	height: 50px;
+	background: none;
+	color: $labelColor;
 }
 
 .modal-header,
@@ -145,7 +166,8 @@ a:hover {
 	background: $headerBackgroundColor;
 }
 
-.label, .text-label {
+.label,
+.text-label {
 	color: $labelColor;
 }
 
@@ -162,10 +184,15 @@ a:hover {
 }
 
 .icn-transparent {
-    background: transparent;
+	background: transparent;
 }
 
-.account, .ok {
+zmdi-lg {
+	font-size: 32px !important;
+}
+
+.account,
+.ok {
 	font-size: $iconFontSize;
 	text-shadow: none;
 	border: none;
@@ -177,6 +204,11 @@ a:hover {
 	outline: none;
 	box-shadow: none;
 }
+
+h4 {
+	font-size: 1.1em;
+}
+
 
 /* HEADER */
 
@@ -193,17 +225,14 @@ a:hover {
 }
 
 #header .row {
-    display: table-row;
+	display: table-row;
 }
 
 #header .col {
-    display: table-cell;
+	display: table-cell;
 	box-sizing: border-box;
 	padding: 0;
 	margin: 0;
-}
-
-#header .col {
 	width: 50px;
 	text-align: center;
 }
@@ -241,7 +270,7 @@ a:hover {
 }
 
 #header a.btn:hover {
-	background: rgba(255,255,255,.2);
+	background: rgba(255, 255, 255, .2);
 	color: rgba($textColor, 1);
 }
 
@@ -275,10 +304,11 @@ a:hover {
 	top: 65px;
 }
 
+
 /* BODY */
 
 #body {
-    position: absolute;
+	position: absolute;
 	left: 0;
 	right: 0;
 	top: 50px;
@@ -291,22 +321,22 @@ a:hover {
 	left: 350px;
 	right: 250px;
 	bottom: 0;
-    padding: 50px 10px 10px 10px;
-    box-sizing: content-box;
+	padding: 50px 10px 10px 10px;
+	box-sizing: content-box;
 }
 
 #canvas {
-    padding: 0;
+	padding: 0;
 }
 
 #canvas-header {
 	position: absolute;
 	left: 0;
 	top: 0;
-    height: 50px;
-    width: 100%;
-    padding: 12px 30px;
-    text-align: left;
+	height: 50px;
+	width: 100%;
+	padding: 12px 30px;
+	text-align: left;
 }
 
 .sidebar.left {
@@ -358,6 +388,7 @@ a:hover {
 	color: $accentColor;
 }
 
+
 /* FOOTER */
 
 #footer {
@@ -368,6 +399,7 @@ a:hover {
 	padding: 0;
 	margin: 0;
 }
+
 
 /* TOOLBARS */
 
@@ -444,6 +476,7 @@ a:hover {
 	border: 2px solid rgba(255, 255, 255, 1);
 }
 
+
 /* DIRECTIVES */
 
 .btn-colorpicker {
@@ -501,7 +534,7 @@ a:hover {
 	width: 45px;
 }
 
-.img-avatar-md img{
+.img-avatar-md img {
 	width: 45px;
 	height: 45px;
 	border-radius: 50%;
@@ -518,13 +551,15 @@ a:hover {
 }
 
 .img-thumbnail {
-	border: 1px solid darken($buttonBackgroundColor, 20);
+	border: none;
 	border-radius: 0;
-	background: $buttonBackgroundColor url('../img/placeholder-img.png') center center no-repeat;
+	box-shadow: none;
+	background: transparent url('../img/placeholder-img.png') center center no-repeat;
 	background-size: 100px 80px;
 	width: 100%;
 	height: 150px;
 }
+
 
 /* GANTT CHART */
 
@@ -583,6 +618,7 @@ a:hover {
 	fill: #ffbb33;
 }
 
+
 /* CARDS */
 
 .cards {
@@ -612,6 +648,7 @@ a:hover {
 	padding: 0;
 }
 
+
 /* FORMS */
 
 label {
@@ -632,53 +669,58 @@ input.form-control:focus {
 	border-color: $accentColor;
 	box-shadow: none;
 	outline: 0px !important;
-	-webkit-appearance:none;
+	-webkit-appearance: none;
 }
+
 
 /* LOADING SPINNER */
 
 .loader {
-  margin: .5em 1.5em;
-  font-size: 10px;
-  position: relative;
-  text-indent: -9999em;
-  background: transparent;
-  border-top: .6em solid rgba($textColor, 0.2);
-  border-right: .6em solid rgba($textColor, 0.2);
-  border-bottom: .6em solid rgba($textColor, 0.2);
-  border-left: .6em solid $textColor;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-animation: load8 1.1s infinite linear;
-  animation: load8 1.1s infinite linear;
+	margin: .5em 1.5em;
+	font-size: 10px;
+	position: relative;
+	text-indent: -9999em;
+	background: transparent;
+	border-top: .6em solid rgba($textColor, 0.2);
+	border-right: .6em solid rgba($textColor, 0.2);
+	border-bottom: .6em solid rgba($textColor, 0.2);
+	border-left: .6em solid $textColor;
+	-webkit-transform: translateZ(0);
+	-ms-transform: translateZ(0);
+	transform: translateZ(0);
+	-webkit-animation: load8 1.1s infinite linear;
+	animation: load8 1.1s infinite linear;
 }
+
 .loader,
 .loader:after {
-  border-radius: 50%;
-  width: 5em;
-  height: 5em;
+	border-radius: 50%;
+	width: 5em;
+	height: 5em;
 }
+
 @-webkit-keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
+
 @keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
+
 
 /* MISC */
 
@@ -691,18 +733,62 @@ input.form-control:focus {
 	opacity: .2;
 }
 
-::-webkit-scrollbar
-{
-  width: 12px;  /* for vertical scrollbars */
-  height: 12px; /* for horizontal scrollbars */
+::-webkit-scrollbar {
+	width: 12px;
+	/* for vertical scrollbars */
+	height: 12px;
+	/* for horizontal scrollbars */
 }
 
-::-webkit-scrollbar-track
-{
-  background: transparent;
+::-webkit-scrollbar-track {
+	background: transparent;
 }
 
-::-webkit-scrollbar-thumb
-{
-  background: $headerBackgroundColor;
+::-webkit-scrollbar-thumb {
+	background: $headerBackgroundColor;
+}
+
+.bootstrap-switch {
+	background: $toolbarBackgroundColor;
+	outline: none;
+	border: none;
+}
+
+.bootstrap-switch-label {
+	background: $toolbarBackgroundColor !important;
+}
+
+.bootstrap-switch-focused {
+	outline: none;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+.bootstrap-switch-handle-on {
+	background: green !important;
+}
+
+.bootstrap-switch-handle-off {
+	background: #666 !important;
+	color: white !important;
+}
+
+.nav-pills > li > a {
+	cursor: pointer;
+	border-radius: 0;
+	background: transparent;
+	color: $textColor;
+}
+
+.nav-pills > li.active > a {
+	background: $accentColor;
+	color: $accentTextColor;
+}
+
+.nav-pills > li > a:hover,
+.nav-pills > li.active > a:hover{
+	cursor: pointer;
+	background: $accentColor;
+	color: $accentTextColor;
+	border-radius: 0;
 }
