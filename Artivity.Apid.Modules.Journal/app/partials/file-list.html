@@ -1,15 +1,17 @@
-<div id="document" ng-controller="FileListController as fileList" class="jumbo-header">
-	<div id="header" class="row">
-		<div class="col">
-			<img class="icn icn-circle" src="{{userPhotoUrl}}"/>
-		</div>
+<div id="document" ng-controller="FileListController as fileList">
+	<div id="header">
+		<div class="row">
+			<div class="col">
+				<img class="icn icn-circle" src="{{userPhotoUrl}}"/>
+			</div>
 
-		<div class="col expand">
-			<h5 class="title title-lg">{{user.Name}}</h5>
-		</div>
+			<div class="col expand">
+				<h5 class="title">{{user.Name}}</h5>
+			</div>
 
-		<div class="col">
-			<a class="btn" href="#/settings"><i class="zmdi zmdi-hc-fw"></i></a>
+			<div class="col">
+				<a class="btn btn-default btn-header" href="#/settings"><i class="zmdi zmdi-hc-fw"></i></a>
+			</div>
 		</div>
 	</div>
 

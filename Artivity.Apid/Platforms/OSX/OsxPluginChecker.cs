@@ -23,37 +23,50 @@
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-//
+
+using Artivity.DataModel;
 using System;
-using MonoDevelop.MacInterop;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Mono.Unix;
-using System.Diagnostics;
+using MonoDevelop.MacInterop;
 
 namespace Artivity.Api.Plugin.OSX
 {
     public class OsxPluginChecker : PluginChecker
     {
-        public OsxPluginChecker(DirectoryInfo dir)
-            : base(dir)
+        #region Constructors
+
+        public OsxPluginChecker(IModelProvider modelProvider, DirectoryInfo dir)
+            : base(modelProvider, dir)
         {
         }
+
+        #endregion
+
+        #region Methods
 
         protected override DirectoryInfo GetApplicationLocation (PluginManifest manifest)
         {
             string example = Path.Combine (manifest.ManifestFile.Directory.FullName, manifest.ExampleFile);
+
             string[] list = CoreFoundation.GetApplicationUrls (example, CoreFoundation.LSRolesMask.All);
 
             string location = (from x in list where x.Contains(manifest.FilterName) select x).FirstOrDefault();
-            if (string.IsNullOrEmpty (location))
+
+            if (string.IsNullOrEmpty(location))
+            {
                 return null;
+            }
+
             return new DirectoryInfo (location);
         }
 
-        protected override void CreateLink (string target, string source)
+        protected override void CreateLink(string target, string source)
         {
             UnixFileInfo f = new UnixFileInfo (source);
+
             f.CreateSymbolicLink (target);
         }
 
@@ -64,14 +77,16 @@ namespace Artivity.Api.Plugin.OSX
             if (app is FileInfo)
             {
                 var fi = app as FileInfo;
+
                 var info = FileVersionInfo.GetVersionInfo(fi.FullName);
+
                 return info.ProductVersion;
             }
 
-
             return res;
-
         }
+
+        #endregion
     }
 }
 

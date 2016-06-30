@@ -49,9 +49,34 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <EmbeddedResource Include="app\fonts\Roboto-Bold.ttf" />
+    <EmbeddedResource Include="app\fonts\Roboto-Bold.woff" />
+    <EmbeddedResource Include="app\fonts\Roboto-Bold.woff2" />
+    <EmbeddedResource Include="app\fonts\Roboto-BoldItalic.ttf" />
+    <EmbeddedResource Include="app\fonts\Roboto-BoldItalic.woff" />
+    <EmbeddedResource Include="app\fonts\Roboto-BoldItalic.woff2" />
+    <EmbeddedResource Include="app\fonts\Roboto-Italic.ttf" />
+    <EmbeddedResource Include="app\fonts\Roboto-Italic.woff" />
+    <EmbeddedResource Include="app\fonts\Roboto-Italic.woff2" />
+    <EmbeddedResource Include="app\fonts\Roboto-Light.ttf" />
+    <EmbeddedResource Include="app\fonts\Roboto-Light.woff" />
+    <EmbeddedResource Include="app\fonts\Roboto-Light.woff2" />
+    <EmbeddedResource Include="app\fonts\Roboto-LightItalic.ttf" />
+    <EmbeddedResource Include="app\fonts\Roboto-LightItalic.woff" />
+    <EmbeddedResource Include="app\fonts\Roboto-LightItalic.woff2" />
+    <EmbeddedResource Include="app\fonts\Roboto-Medium.ttf" />
+    <EmbeddedResource Include="app\fonts\Roboto-Medium.woff" />
+    <EmbeddedResource Include="app\fonts\Roboto-Medium.woff2" />
+    <EmbeddedResource Include="app\fonts\Roboto-MediumItalic.ttf" />
+    <EmbeddedResource Include="app\fonts\Roboto-MediumItalic.woff" />
+    <EmbeddedResource Include="app\fonts\Roboto-MediumItalic.woff2" />
+    <EmbeddedResource Include="app\fonts\Roboto-Regular.ttf" />
+    <EmbeddedResource Include="app\fonts\Roboto-Regular.woff" />
+    <EmbeddedResource Include="app\fonts\Roboto-Regular.woff2" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="app\js\color-thief.js" />
     <EmbeddedResource Include="app\partials\query.html" />
     <EmbeddedResource Include="app\css\roboto.css" />
     <Content Include="app\img\heart-broken.svg" />

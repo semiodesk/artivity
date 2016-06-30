@@ -46,12 +46,6 @@ namespace Artivity.DataModel
         [RdfProperty(ART.hasColourCode), NotifyPropertyChanged]
         public string ColourCode { get; set; }
 
-        [RdfProperty(ART.executableName), NotifyPropertyChanged]
-        public string ExecutableName { get; set; }
-
-        [RdfProperty(ART.executablePath), NotifyPropertyChanged]
-        public string ExecutablePath { get; set; }
-
 		#endregion
 
         #region Constructors

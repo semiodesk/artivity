@@ -39,6 +39,7 @@ using Nancy.TinyIoc;
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
 using Artivity.Api.Plugin;
+using Artivity.Apid.Plugin;
 
 namespace Artivity.Apid
 {
@@ -192,7 +193,6 @@ namespace Artivity.Apid
             ServiceThread = new Thread(StartService);
             ServiceThread.Start();
 
-
             if (blocking)
             {
                 ServiceThread.Join();
@@ -236,10 +236,10 @@ namespace Artivity.Apid
             });
 
             // Make sure the database is started.
-            //if (UpdateOntologies)
-            //{
+            if (UpdateOntologies)
+            {
                 LoadOntologies();
-            //}
+            }
 
             using (_serviceHost = new NancyHost(customBootstrapper, config, new Uri("http://localhost:" + _servicePort)))
             {
@@ -301,7 +301,7 @@ namespace Artivity.Apid
 
                 ModelProvider = ModelProviderFactory.CreateModelProvider(connectionString, nativeConnectionString);
 
-                Logger.LogInfo("Database connection: {0}", nativeConnectionString);
+                Logger.LogDebug("Database connection: {0}", nativeConnectionString);
                 Logger.LogInfo("Started database on port {0}", _virtuosoPort);
             }
             else
@@ -312,8 +312,6 @@ namespace Artivity.Apid
 
             if (!ModelProvider.CheckAgents())
             {
-                Logger.LogInfo("Installing agents..");
-
                 ModelProvider.InitializeAgents();
             }
 
@@ -324,13 +322,18 @@ namespace Artivity.Apid
 
         private void InitializeSoftwareAgentPlugins()
         {
+            Logger.LogInfo("Installing software agents..");
 
-            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(new DirectoryInfo(PlatformProvider.PluginDir));
+            DirectoryInfo pluginDirectory = new DirectoryInfo(PlatformProvider.PluginDir);
+
+            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(ModelProvider, pluginDirectory);
             _pluginChecker.Check();
+
             if (PlatformProvider.CheckForNewSoftwareAgents)
             {
                 _watchdog = InstallationWatchdogFactory.CreateWatchdog();
                 _watchdog.ProgrammInstalledOrRemoved += OnProgramInstalled;
+
                 StartWatchdog();
             }
         }
@@ -342,8 +345,10 @@ namespace Artivity.Apid
 
         private void StartWatchdog()
         {
-            if( _watchdog != null)
+            if (_watchdog != null)
+            {
                 _watchdog.Start();
+            }
         }
 
         private void StopWatchdog()

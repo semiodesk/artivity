@@ -14,6 +14,7 @@
         <xs:element type="xs:string" name="HostVersion"/>
         <xs:element type="xs:byte" name="Arch"/>
         <xs:element type="xs:string" name="Uri"/>
+        <xs:element type="xs:string" name="Color"/>
         <xs:element name="PluginFile">
           <xs:complexType>
             <xs:simpleContent>

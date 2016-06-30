@@ -11,4 +11,5 @@
   <art:Arch>64</art:Arch>
   <art:PluginFile Link="true">Artivity64.8li</art:PluginFile>
   <art:PluginFile Link="true">ArtivityExport64.8be</art:PluginFile>
+  <art:Color>#3FC2FC</art:Color>
 </art:PluginManifest>

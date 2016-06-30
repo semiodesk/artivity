@@ -23,10 +23,11 @@
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-//
-using System;
+
+using Artivity.DataModel;
 using Artivity.Api.Plugin;
 using Artivity.Api.Plugin.Win;
+using System;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -35,16 +36,14 @@ using System.Text;
 namespace Artivity.Api.Plugin.Win
 {
     public class WinPluginChecker : PluginChecker
-    {
-        #region Members
-
-        #endregion
-        
+    {       
         #region Constructor
-        public WinPluginChecker(DirectoryInfo dir) : base(dir)
+
+        public WinPluginChecker(IModelProvider modelProvider, DirectoryInfo dir) : base(modelProvider, dir)
         {
             
         }
+
         #endregion
         
         #region implemented abstract members of PluginChecker
@@ -52,8 +51,11 @@ namespace Artivity.Api.Plugin.Win
         protected override DirectoryInfo GetApplicationLocation (PluginManifest manifest)
         {
             RegistryEntry entry = InstalledPrograms.FindInstalledProgram(manifest.ID);
-            if( entry != null)
-                return new DirectoryInfo (entry.InstallLocation);
+
+            if (entry != null)
+            {
+                return new DirectoryInfo(entry.InstallLocation);
+            }
 
             return null;
         }
@@ -117,9 +119,8 @@ namespace Artivity.Api.Plugin.Win
             void Resolve(IntPtr hwnd, int fFlags);
             void SetPath([MarshalAs(UnmanagedType.LPWStr)] string pszFile);
         }
+
         #endregion
-
-
     }
 }
 

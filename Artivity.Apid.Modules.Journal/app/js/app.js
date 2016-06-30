@@ -3,6 +3,7 @@ var explorerApp = angular.module('explorerApp', [
     'explorerControllers',
     'ui.bootstrap'
 ]).config(function ($httpProvider) {
+	/*
 	$httpProvider.interceptors.push(function ($q) {
 		return {
 			responseError: function (rejection) {
@@ -14,6 +15,7 @@ var explorerApp = angular.module('explorerApp', [
 			}
 		};
 	});
+	*/
 });
 
 explorerApp.config(['$routeProvider',
@@ -77,13 +79,22 @@ explorerApp.factory('api', function ($http) {
 				})
 		},
 		getAgent: function (entityUri) {
-			return $http.get(endpoint + '/agents?uri=' + entityUri).then(
+			return $http.get(endpoint + '/agents?entityUri=' + entityUri).then(
 				function (response) {
 					return response.data;
 				})
 		},
+		getAgentIconUrl: function (associationUri) {
+			return endpoint + '/agents/software/icon?uri=' + associationUri;
+		},
 		setAgent: function (data) {
 			return $http.post(endpoint + '/agents', data);
+		},
+		installAgent: function (associationUri) {
+			return $http.get(endpoint + '/agents/software/install?uri=' + associationUri);
+		},
+		uninstallAgent: function (associationUri) {
+			return $http.get(endpoint + '/agents/software/uninstall?uri=' + associationUri);
 		},
 		getUser: function () {
 			return $http.get(endpoint + '/agents/user').then(
@@ -167,7 +178,7 @@ explorerApp.factory('api', function ($http) {
 					})
 			}
 		},
-		getQueryResults(query) {
+		getQueryResults: function(query) {
 			return $http.post(endpoint + '/query', query).then(
 				function (response) {
 					return response.data;
