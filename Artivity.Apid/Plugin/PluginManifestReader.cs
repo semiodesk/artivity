@@ -31,6 +31,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using System.Xml.Serialization;
 
 namespace Artivity.Apid.Plugin
@@ -45,7 +46,7 @@ namespace Artivity.Apid.Plugin
             {
                 if (_logger == null)
                 {
-                    Type type = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType;
+                    Type type = MethodBase.GetCurrentMethod().DeclaringType;
 
                     _logger = log4net.LogManager.GetLogger(type);
                 }

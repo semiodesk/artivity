@@ -32,12 +32,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Artivity.Apid.Plugin;
 
 namespace Artivity.Api.Plugin
 {
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.artivity.io/plugins/manifest/", IsNullable = false)]
+    [XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]
+    [XmlRootAttribute(Namespace = "http://www.artivity.io/plugins/manifest/", IsNullable = false)]
     public partial class PluginManifest
     {
         [XmlIgnore]
@@ -68,6 +69,8 @@ namespace Artivity.Api.Plugin
         public string iconPath;
 
         private List<PluginManifestPluginFile> pluginFileField = new List<PluginManifestPluginFile>();
+
+        private List<PluginManifestRegistryKey> pluginRegistryKeysField = new List<PluginManifestRegistryKey>();
 
         private string color;
 
@@ -242,6 +245,19 @@ namespace Artivity.Api.Plugin
             }
         }
 
+        [XmlElement("RegistryKey")]
+        public List<PluginManifestRegistryKey> RegistryKeys
+        {
+            get
+            {
+                return this.pluginRegistryKeysField;
+            }
+            set
+            {
+                this.pluginRegistryKeysField = value;
+            }
+        }
+
         public string Color
         {
             get
@@ -252,59 +268,6 @@ namespace Artivity.Api.Plugin
             {
                 this.color = value;
             }
-        }
-    }
-
-    /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]
-    public partial class PluginManifestPluginFile
-    {
-
-        private bool linkField;
-
-        private string valueField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public bool Link
-        {
-            get
-            {
-                return this.linkField;
-            }
-            set
-            {
-                this.linkField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string Value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
-            }
-        }
-
-        public string GetName()
-        {
-            #if WIN
-            if (Link)
-                return string.Format("{0}.lnk", Value);
-            else
-            #endif
-                return Value;
-        }
-
-        public string GetPluginSource(PluginManifest manifest)
-        {
-            return Path.Combine(manifest.ManifestFile.Directory.FullName, Value);
         }
     }
 }

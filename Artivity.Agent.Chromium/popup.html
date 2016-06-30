@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+
+<head>
+	<link rel="stylesheet" href="css/roboto.css">
+	<link rel="stylesheet" href="css/material-design-iconic-font.css">
+	<link rel="stylesheet" href="css/popup.css" type="text/css">
+</head>
+
+<body>
+	<div id="body">
+		<div id="settings-box">
+			<h4>Artivity</h4>
+
+			<div class="row">
+				<div class="onoffswitch pull-left">
+					<input id="logging-switch" name="settings-option-enabled" type="checkbox" class="onoffswitch-checkbox">
+					
+					<label class="onoffswitch-label" for="logging-switch">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+					</label>
+				</div>
+
+				<label>Capture browsing history</label>
+			</div>
+		</div>
+		<div id="warning-box">
+			<i class="zmdi zmdi-hc-fw"></i> Cannot connect with local Artivity service.
+		</div>
+	</div>
+
+	<div id="debug"></div>
+
+	<script src="popup.js" type="text/javascript"></script>
+</body>
+
+</html>

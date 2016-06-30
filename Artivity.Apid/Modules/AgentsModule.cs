@@ -270,9 +270,25 @@ namespace Artivity.Apid.Modules
 
         public Response InstallAgent(Uri uri)
         {
-            _checker.InstallPlugin(uri);
+            try
+            {
+                if (_checker.InstallPlugin(uri))
+                {
+                    return HttpStatusCode.OK;
+                }
+                else
+                {
+                    return HttpStatusCode.NotModified;
+                }
+            }
+            catch(Exception e)
+            {
+                Dictionary<string, string> error = new Dictionary<string, string>();
+                error["type"] = e.GetType().ToString();
+                error["message"] = e.Message;
 
-            return HttpStatusCode.OK;
+                return Response.AsJson(error, HttpStatusCode.InternalServerError);
+            }
         }
 
         public Response UninstallAgent(Uri uri)
