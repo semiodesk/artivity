@@ -14,11 +14,11 @@ namespace Artivity.Api.Plugin
 
         internal PluginManifest Manifest { get; private set;}
 
-        public bool IsPluginInstalled { get; set; }
-
         public bool IsSoftwareInstalled { get; set; }
 
-        public bool IsLoggingEnabled { get; set; }
+        public bool IsPluginInstalled { get; set; }
+
+        public bool IsPluginEnabled { get; set; }
 
         public string PluginVersion { get { return Manifest.Version; } }
 

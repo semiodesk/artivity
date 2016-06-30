@@ -6,6 +6,8 @@ $textColor: #FFFFFF;
 $labelColor: darken($textColor, 30%);
 $accentColor: #FFFFFF;
 $accentTextColor: #1D1D1D;
+$errorColor: #ED3E44;
+$errorTextColor: #FFFFFF;
 $iconFontSize: 25px;
 $selectionTextColor: white;
 $selectionBorderColor: transparent;
@@ -62,6 +64,45 @@ a:hover {
 	color: $accentColor;
 }
 
+.msg-error {
+	background: $errorColor;
+	color: $errorTextColor;
+	padding: 1em;
+	margin: 0;
+}
+
+.msg-error label {
+	color: rgba($errorTextColor, .7);
+}
+
+.animate-show {
+	line-height: 1em;
+	opacity: 1;
+	padding: 10px;
+}
+
+.animate-show.ng-hide {
+	line-height: 0;
+	opacity: 0;
+	padding: 0 10px;
+}
+
+.animate-show.ng-hide-add,
+.animate-show.ng-hide-remove {
+	transition: 0s linear all;
+}
+
+.animate-show.ng-hide-add-active,
+.animate-show.ng-hide-remove-active {
+	transition: 1s linear all;
+}
+
+.disabled {
+	-webkit-filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	filter: grayscale(100%);
+}
+
 button,
 .btn-default {
 	border: none;
@@ -107,6 +148,18 @@ button:hover,
 .modal-header,
 .modal-footer {
 	border: none;
+}
+
+.nav-pills {
+	border: 1px solid $headerBackgroundColor;
+	border-radius: 2px;
+	margin: 15px;
+}
+
+.nav-pills li a {
+	margin: 0;
+	padding: 5px;
+	min-width: 150px;
 }
 
 .nav-tabs {
@@ -261,9 +314,9 @@ h4 {
 
 #header a.btn i {
 	display: block;
-	width: 40px;
-	height: 40px;
-	line-height: 40px;
+	width: 50px;
+	height: 50px;
+	line-height: 50px;
 	font-size: $iconFontSize;
 	vertical-align: middle;
 	text-align: center;
@@ -480,9 +533,9 @@ h4 {
 /* DIRECTIVES */
 
 .btn-colorpicker {
-	border-radius: 50%;
-	width: 30px;
-	height: 30px;
+	border-radius: 3px;
+	width: 32px;
+	height: 32px;
 	padding: 2px;
 	background: transparent;
 }
@@ -495,7 +548,7 @@ h4 {
 	display: block;
 	width: 100%;
 	height: 100%;
-	border-radius: 50%;
+	border-radius: 3px;
 }
 
 .colorpicker-lg .colorpicker-saturation {
@@ -505,13 +558,13 @@ h4 {
 
 .colorpicker-lg .colorpicker-hue,
 .colorpicker-lg .colorpicker-alpha {
-	width: 30px;
+	width: 32px;
 	height: 200px;
 }
 
 .colorpicker-lg .colorpicker-color,
 .colorpicker-lg .colorpicker-color div {
-	height: 30px;
+	height: 32px;
 }
 
 .img-icon {
@@ -786,7 +839,7 @@ input.form-control:focus {
 }
 
 .nav-pills > li > a:hover,
-.nav-pills > li.active > a:hover{
+.nav-pills > li.active > a:hover {
 	cursor: pointer;
 	background: $accentColor;
 	color: $accentTextColor;

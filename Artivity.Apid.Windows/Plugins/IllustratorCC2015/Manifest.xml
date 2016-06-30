@@ -3,10 +3,10 @@
   <art:DisplayName>Adobe Illustrator CC 2015</art:DisplayName>
   <art:Uri>http://adobe.com/products/illustrator</art:Uri>
   <art:ProcessName>Illustrator.exe</art:ProcessName>
-  <art:ID>ILST_19_2_1</art:ID>
+  <art:ID>ILST_19_2_0</art:ID>
   <art:TargetPath>Plug-ins\Extensions</art:TargetPath>
   <art:ExecPath>Support Files\Contents\Windows\Illustrator.exe</art:ExecPath>
-  <art:Version>0.5</art:Version>
+  <art:Version>0.8</art:Version>
   <art:HostVersion>19.2.0</art:HostVersion>
   <art:Arch>64</art:Arch>
   <art:PluginFile Link="true">Artivity64_2015.aip</art:PluginFile>

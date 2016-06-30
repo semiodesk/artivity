@@ -43,8 +43,11 @@ namespace Artivity.Api.Plugin.Win
         public static RegistryEntry FindInstalledProgram(string key)
         {
             RegistryEntry entry = FindInstalledProgramFromRegistry(RegistryView.Registry32, key);
+
             if (entry == null)
+            {
                 entry = FindInstalledProgramFromRegistry(RegistryView.Registry64, key);
+            }
 
             return entry;
         }
@@ -52,14 +55,17 @@ namespace Artivity.Api.Plugin.Win
         public static List<string> GetInstalledPrograms()
         {
             var result = new List<string>();
+
             result.AddRange(GetInstalledProgramsFromRegistry(RegistryView.Registry32));
             result.AddRange(GetInstalledProgramsFromRegistry(RegistryView.Registry64));
+
             return result;
         }
 
         private static RegistryEntry FindInstalledProgramFromRegistry(RegistryView view, string id)
         {
             RegistryEntry entry = null;
+
             using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view).OpenSubKey(RegistryKeyString))
             {
                 using (RegistryKey subkey = key.OpenSubKey(id))
@@ -73,6 +79,7 @@ namespace Artivity.Api.Plugin.Win
                     }
                 }
             }
+
             return entry;
         }
 

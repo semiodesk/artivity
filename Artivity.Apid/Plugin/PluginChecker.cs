@@ -34,6 +34,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Artivity.Api.Plugin
@@ -142,7 +143,7 @@ namespace Artivity.Api.Plugin
             {
                 if(agents.ContainsKey(plugin.AgentUri))
                 {
-                    plugin.IsLoggingEnabled = agents[plugin.AgentUri];
+                    plugin.IsPluginEnabled = agents[plugin.AgentUri];
                 }
             }
         }
@@ -153,19 +154,16 @@ namespace Artivity.Api.Plugin
             {
                 bool? res = IsPluginInstalled(p);
 
+                p.IsSoftwareInstalled = true;
+
                 if (res.HasValue)
                 {
                     p.IsPluginInstalled = res.Value;
-                    p.IsSoftwareInstalled = true;
 
                     if (!p.IsPluginInstalled && autoInstall)
                     {
                         InstallPlugin(p.Manifest);
                     }
-                }
-                else
-                {
-                    p.IsSoftwareInstalled = false;
                 }
             }
         }
@@ -176,9 +174,9 @@ namespace Artivity.Api.Plugin
 
         protected abstract string GetApplicationVersion(FileSystemInfo app);
 
-        public bool? IsPluginInstalled(PluginManifest manifest)
+        public bool IsPluginInstalled(PluginManifest manifest)
         {
-            DirectoryInfo location = GetApplicationLocation (manifest);
+            DirectoryInfo location = GetApplicationLocation(manifest);
 
             if(location != null && location.Exists)
             {
@@ -195,9 +193,9 @@ namespace Artivity.Api.Plugin
 
                 var version = GetApplicationVersion(info);
 
-                if (version != manifest.HostVersion)
+                if (!version.StartsWith(manifest.HostVersion))
                 {
-                    return null;
+                    return false;
                 }
 
                 bool exists = true;
@@ -212,10 +210,10 @@ namespace Artivity.Api.Plugin
                 return exists;
             }
 
-            return null;
+            return false;
         }
 
-        public bool? IsPluginInstalled(SoftwareAgentPlugin plugin)
+        public bool IsPluginInstalled(SoftwareAgentPlugin plugin)
         {
             return IsPluginInstalled(plugin.Manifest);
         }
@@ -253,6 +251,8 @@ namespace Artivity.Api.Plugin
             catch(Exception e)
             {
                 Logger.Error("Failed to install software agent plugin.", e);
+
+                throw e;
             }
 
             return false;

@@ -514,7 +514,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	}
 });
 
-explorerControllers.controller('SettingsController', function (api, $scope, $rootScope, $routeParams) {
+explorerControllers.controller('SettingsController', function (api, $scope, $location, $rootScope, $routeParams) {
 	$scope.children = [];
 
 	$scope.submit = function () {
@@ -523,6 +523,9 @@ explorerControllers.controller('SettingsController', function (api, $scope, $roo
 				child.submit();
 			}
 		});
+
+		// Navigate to dasboard.
+		$location.path('/');
 	};
 
 	$scope.reset = function () {
@@ -653,6 +656,8 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
 	};
 
 	this.submit = function () {
+		console.log("Submitting user..");
+
 		api.setUser($scope.user);
 
 		if ($scope.userPhoto) {
@@ -699,6 +704,10 @@ explorerControllers.controller('AccountDialogController', function (api, $scope,
 		}, 500);
 	};
 
+	this.submit = function () {
+		console.log("Submitting accounts..");
+	};
+
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');
 
@@ -714,45 +723,62 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
 
 	$scope.agents = [];
 
-	$scope.visible = false;
-
-	api.getAgents().then(function (data) {
-		$scope.agents = [];
-
-		for (var i = 0; i < data.length; i++) {
-			var agent = data[i];
-
-			if (agent.IsSoftwareInstalled) {
-				$scope.agents.push({
-					uri: agent.AssociationUri,
-					name: agent.AgentName,
-					color: agent.AgentColor,
-					iconSrc: api.getAgentIconUrl(agent.AssociationUri),
-					installed: agent.IsPluginInstalled,
-					softwareVersion: agent.ExecutableVersion,
-					pluginVersion: agent.PluginVersion
-				});
-			}
-		}
-
-		$scope.agentForm.$setPristine();
-	});
+	$scope.hasError = false;
+	$scope.errorType = '';
+	$scope.errorMessage = '';
 
 	$scope.toggleInstall = function (agent) {
-		if (agent.installed) {
-			api.installAgent(agent.uri);
-		} else {
-			api.uninstallAgent(agent.uri);
-		}
-	};
+		if (agent.pluginInstalled) {
+			api.installAgent(agent.uri).then(function (response) {
+				agent.pluginInstalled = response.success;
 
-	this.submit = function () {
-		if ($scope.agents.length > 0) {
-			$scope.agents.forEach(function (agent) {
-				api.setAgent(agent);
+				$scope.hasError = !response.success;
+				$scope.errorType = response.error.data.type;
+				$scope.errorMessage = response.error.data.message;
+			});
+		} else {
+			api.uninstallAgent(agent.uri).then(function (response) {
+				agent.pluginInstalled = response.success;
+
+				$scope.hasError = !response.success;
+				$scope.errorType = response.error.data.type;
+				$scope.errorMessage = response.error.data.message;
 			});
 		}
 	};
+
+	$scope.reload = function () {
+		$scope.hasError = false;
+		
+		api.getAgents().then(function (data) {
+			$scope.agents = [];
+
+			for (var i = 0; i < data.length; i++) {
+				var agent = data[i];
+
+				if (agent.IsSoftwareInstalled) {
+					$scope.agents.push({
+						uri: agent.AgentUri,
+						name: agent.AgentName,
+						color: agent.AgentColor,
+						associationUri: agent.AssociationUri,
+						iconSrc: api.getAgentIconUrl(agent.AssociationUri),
+						softwareInstalled: agent.IsSoftwareInstalled,
+						softwareVersion: agent.ExecutableVersion,
+						pluginInstalled: agent.IsPluginInstalled,
+						pluginVersion: agent.PluginVersion,
+						pluginEnabled: agent.IsPluginEnabled
+					});
+				}
+			}
+
+			$scope.agentForm.$setPristine();
+		});
+	}
+
+	$scope.reload();
+
+	this.submit = function () {};
 
 	this.reset = function () {
 		$scope.agentForm.reset();

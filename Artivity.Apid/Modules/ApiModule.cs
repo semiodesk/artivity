@@ -30,6 +30,7 @@ using Artivity.Apid.Accounts;
 using Artivity.Apid.Platforms;
 using Nancy;
 using Nancy.Responses;
+using Nancy.ModelBinding;
 using Nancy.IO;
 using Semiodesk.Trinity;
 using Semiodesk.Trinity.Store;
@@ -41,6 +42,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using VDS.RDF;
+using Artivity.Apid.Parameters;
 
 namespace Artivity.Apid.Modules
 {
@@ -50,6 +52,8 @@ namespace Artivity.Apid.Modules
 
         private static object _modelLock = new object();
 
+        private static readonly Dictionary<string, Browse> _activities = new Dictionary<string, Browse>();
+
         #endregion
 
         #region Constructors
@@ -57,6 +61,18 @@ namespace Artivity.Apid.Modules
         public ApiModule(IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0", modelProvider, platform)
         {
+            Get["/activities"] = parameters =>
+            {
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return GetActivities(new UriRef(uri));
+            };
+
             Post["/activities"] = parameters =>
             {
                 using (var reader = new StreamReader(Request.Body))
@@ -68,6 +84,19 @@ namespace Artivity.Apid.Modules
 
                     return HttpStatusCode.OK;
                 }
+            };
+
+            Post["/activities/web"] = parameters =>
+            {
+                ActivityParameters p = this.Bind<ActivityParameters>();
+
+                return PostActivity(p);
+            };
+
+            Get["/activities/clear"] = parameters =>
+            {
+                // TODO: We definitely need to add some kind of security here, i.e. a token.
+                return ClearActivities();
             };
 
             // Get a list of all installed online accounts.
@@ -181,24 +210,6 @@ namespace Artivity.Apid.Modules
             Get["/files/recent"] = parameters =>
             {
                 return GetRecentlyUsedFiles();
-            };
-
-            Get["/activities"] = parameters =>
-            {
-                string uri = Request.Query.uri;
-
-                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
-                {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                }
-
-                return GetActivities(new UriRef(uri));
-            };
-
-            Get["/activities/clear"] = parameters =>
-            {
-                // TODO: We definitely need to add some kind of security here, i.e. a token.
-                return ClearActivities();
             };
 
             Get["/influences"] = parameters =>
@@ -352,6 +363,137 @@ namespace Artivity.Apid.Modules
 
         #region Methods
 
+        private void PostActivities(string data)
+        {
+            try
+            {
+                lock (_modelLock)
+                {
+                    IModel model = ModelProvider.GetActivities();
+
+                    if (model == null)
+                    {
+                        Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
+                    }
+
+                    MemoryStream stream = new MemoryStream();
+
+                    StreamWriter writer = new StreamWriter(stream);
+                    writer.Write(data);
+                    writer.Flush();
+
+                    stream.Position = 0;
+
+                    LoadTurtle(model, stream);
+                }
+
+                Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e, data);
+            }
+        }
+
+        private HttpStatusCode PostActivity(ActivityParameters p)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(p.tab))
+                {
+                    return Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
+                }
+
+                if (string.IsNullOrEmpty(p.agent))
+                {
+                    return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
+                }
+
+                if (!IsCaptureEnabled(p))
+                {
+                    return Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
+                }
+
+                IModel model = ModelProvider.GetWebActivities();
+
+                Browse activity;
+
+                if (!_activities.ContainsKey(p.tab))
+                {
+                    Association association = model.CreateResource<Association>();
+                    association.Agent = new SoftwareAgent(new UriRef(p.agent));
+                    association.Commit();
+
+                    activity = model.CreateResource<Browse>();
+                    activity.Associations.Add(association);
+                    activity.StartTime = p.startTime != null ? (DateTime)p.startTime : DateTime.Now;
+                    activity.Commit();
+
+                    _activities[p.tab] = activity;
+                }
+                else
+                {
+                    activity = _activities[p.tab];
+                }
+
+                if (!string.IsNullOrEmpty(p.url) && Uri.IsWellFormedUriString(p.url, UriKind.Absolute))
+                {
+                    UriRef url = new UriRef(p.url);
+
+                    WebDataObject website;
+
+                    if (!model.ContainsResource(url))
+                    {
+                        website = model.CreateResource<WebDataObject>(url);
+                        website.Title = p.title;
+                        website.Commit();
+                    }
+                    else
+                    {
+                        website = model.GetResource<WebDataObject>(url);
+                    }
+
+                    DateTime time = p.time != null ? (DateTime)p.time : DateTime.Now;
+
+                    View view = model.CreateResource<View>();
+                    view.Entity = website;
+                    view.Time = time;
+                    view.Commit();
+
+                    activity.Usages.Add(view);
+                    activity.Commit();
+                }
+                else if (p.endTime != null)
+                {
+                    activity.EndTime = (DateTime)p.endTime;
+                    activity.Commit();
+
+                    _activities.Remove(p.tab);
+                }
+
+                return Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
+            }
+            catch (Exception e)
+            {
+                return Logger.LogError(HttpStatusCode.InternalServerError, "{0}: {1}", Request.Url, e.Message);
+            }
+        }
+
+        private bool IsCaptureEnabled(ActivityParameters p)
+        {
+            IModel model = ModelProvider.GetAgents();
+
+            SoftwareAgent agent = null;
+            Uri agentUri = new Uri(p.agent);
+
+            if (model.ContainsResource(agentUri))
+            {
+                agent = model.GetResource<SoftwareAgent>(agentUri);
+            }
+
+            return agent.IsCaptureEnabled;
+        }
+
         private Response ExecuteQuery(string queryString, bool inferenceEnabled = false)
         {
             try
@@ -390,38 +532,6 @@ namespace Artivity.Apid.Modules
             }
 
             return null;
-        }
-
-        private void PostActivities(string data)
-        {
-            try
-            {
-                lock (_modelLock)
-                {
-                    IModel model = ModelProvider.GetActivities();
-
-                    if (model == null)
-                    {
-                        Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
-                    }
-
-                    MemoryStream stream = new MemoryStream();
-
-                    StreamWriter writer = new StreamWriter(stream);
-                    writer.Write(data);
-                    writer.Flush();
-
-                    stream.Position = 0;
-
-                    LoadTurtle(model, stream);
-                }
-
-                Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e, data);
-            }
         }
 
         private void LoadTurtle(IModel model, Stream stream)

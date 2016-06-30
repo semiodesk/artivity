@@ -91,10 +91,26 @@ explorerApp.factory('api', function ($http) {
 			return $http.post(endpoint + '/agents', data);
 		},
 		installAgent: function (associationUri) {
-			return $http.get(endpoint + '/agents/software/install?uri=' + associationUri);
+			return $http.get(endpoint + '/agents/software/install?uri=' + associationUri).then(
+				function(response) {
+					console.log(response);
+					
+					return { success: true, error: '' };
+				},
+				function(response) {
+					return { success: false, error: response };
+				}
+			);
 		},
 		uninstallAgent: function (associationUri) {
-			return $http.get(endpoint + '/agents/software/uninstall?uri=' + associationUri);
+			return $http.get(endpoint + '/agents/software/uninstall?uri=' + associationUri).then(
+				function(response) {
+					return { success: true, error: '' };
+				},
+				function(response) {
+					return { success: false, error: response };
+				}
+			);
 		},
 		getUser: function () {
 			return $http.get(endpoint + '/agents/user').then(

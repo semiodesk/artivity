@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<art:PluginManifest xmlns:art="http://www.artivity.io/plugins/manifest/">
+  <art:Uri>http://www.google.com/chrome/browser/desktop</art:Uri>
+  <art:DisplayName>Google Chrome</art:DisplayName>
+  <art:ProcessName>chrome.exe</art:ProcessName>
+  <art:ID>Google Chrome</art:ID>
+  <art:TargetPath>Application\51.0.2704.103\Extensions</art:TargetPath>
+  <art:ExecPath>chrome.exe</art:ExecPath>
+  <art:Version>0.8</art:Version>
+  <art:HostVersion>51.0.2704</art:HostVersion>
+  <art:Arch>64</art:Arch>
+  <art:Color>#4C8CF5</art:Color>
+  <art:RegistryKey Path="HKEY_LOCAL_MACHINE\Software\Wow6432Node\Google\Chrome\Extensions" Name="lfpdclalfidmgoedibkdihkbiclfoebh">
+    <art:RegistryItem Name="update_url" Value="https://clients2.google.com/service/update2/crx"/>
+  </art:RegistryKey>
+  <art:RegistryKey Path="HKEY_LOCAL_MACHINE\Software\Google\Chrome\Extensions" Name="lfpdclalfidmgoedibkdihkbiclfoebh">
+    <art:RegistryItem Name="update_url" Value="https://clients2.google.com/service/update2/crx"/>
+  </art:RegistryKey>
+</art:PluginManifest>
