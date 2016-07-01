@@ -5,9 +5,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{18E3ACB7-2958-43C7-B201-EA31F542F22C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Artivity.Apid</RootNamespace>
+    <RootNamespace>Artivity.Api</RootNamespace>
     <ReleaseVersion>1.5</ReleaseVersion>
-    <AssemblyName>Artivity.Apid.Mac</AssemblyName>
+    <AssemblyName>Artivity.Apid</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -185,6 +185,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\user.jpg" />
     <Content Include="TinyVirtuoso\virtuoso\win\CtrlCSender.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

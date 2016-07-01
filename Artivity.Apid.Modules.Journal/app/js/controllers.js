@@ -29,16 +29,20 @@ explorerControllers.directive('bootstrapSwitch', [
     ]);
 
 explorerControllers.controller('FileListController', function (api, $scope) {
-	api.getUser().then(function (data) {
-		$scope.user = data;
-	});
-
+	$scope.hasFiles = false;
+	
 	$scope.userPhotoUrl = api.getUserPhotoUrl();
 
 	$scope.getFileName = getFileName;
 
+	api.getUser().then(function (data) {
+		$scope.user = data;
+	});
+	
 	api.getRecentFiles().then(function (data) {
 		$scope.files = data;
+		
+		$scope.hasFiles = data.length > 0;
 	});
 });
 
