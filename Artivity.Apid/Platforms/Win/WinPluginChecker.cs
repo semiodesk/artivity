@@ -31,24 +31,40 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using Microsoft.Win32;
 
 namespace Artivity.Api.Plugin.Win
 {
     public class WinPluginChecker : PluginChecker
     {       
-        #region Constructor
+        #region Constructors
 
         public WinPluginChecker(IModelProvider modelProvider, DirectoryInfo dir) : base(modelProvider, dir)
         {
-            
         }
 
         #endregion
         
-        #region implemented abstract members of PluginChecker
+        #region Methods
 
-        protected override DirectoryInfo GetApplicationLocation (PluginManifest manifest)
+        protected override string GetApplicationVersion(FileSystemInfo app)
+        {
+            string result = null;
+
+            if(app is FileInfo && app.Exists)
+            {
+                var file = app as FileInfo;
+                var info = FileVersionInfo.GetVersionInfo(file.FullName);
+
+                return info.ProductVersion;
+            }
+
+            return result;
+        }
+
+        protected override DirectoryInfo GetApplicationLocation(PluginManifest manifest)
         {
             RegistryEntry entry = InstalledPrograms.FindInstalledProgram(manifest.ID);
 
@@ -60,7 +76,7 @@ namespace Artivity.Api.Plugin.Win
             return null;
         }
 
-        protected override void CreateLink (string target, string source)
+        protected override void CreateLink(string target, string source)
         {
             IShellLink link = (IShellLink)new ShellLink();
 
@@ -69,24 +85,188 @@ namespace Artivity.Api.Plugin.Win
             link.SetPath(source);
 
             // save it
-            System.Runtime.InteropServices.ComTypes.IPersistFile file = (System.Runtime.InteropServices.ComTypes.IPersistFile)link;
+            IPersistFile file = (System.Runtime.InteropServices.ComTypes.IPersistFile)link;
             file.Save(target, false);
         }
 
-        protected override string GetApplicationVersion(FileSystemInfo app)
+        // TODO: We definitly need to add some security mechanism here - i.e. by adding a signature to the plugin Manifest.
+        protected override bool CreateRegistryKey(PluginManifestRegistryKey key)
         {
-            string res = null;
+            string root = "HKEY_LOCAL_MACHINE\\SOFTWARE\\";
 
-            if( app is FileInfo && app.Exists )
+            if (!key.Path.StartsWith(root))
             {
-                var fi = app as FileInfo;
-                var info = FileVersionInfo.GetVersionInfo(fi.FullName);
-                return info.ProductVersion;
+                // We currently do not support any other hives..
+                Logger.ErrorFormat("Registry key must be rooted in: {0}", root);
+
+                return false;
             }
 
+            RegistryKey localMachine = null;
 
-            return res;
+            try
+            {
+                if (Environment.Is64BitOperatingSystem)
+                {
+                    localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                }
+                else
+                {
+                    localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+                }
 
+                // Remove HKEY_LOCAL_MACHINE from the start of the string.
+                string path = key.Path.Substring(19);
+
+                using (RegistryKey k = localMachine.OpenSubKey(path, true))
+                {
+                    if (k == null)
+                    {
+                        return false;
+                    }
+
+                    RegistryKey sk = k.OpenSubKey(key.Name);
+
+                    if (sk == null)
+                    {
+                        sk = k.CreateSubKey(key.Name);
+                    }
+
+                    foreach (PluginManifestRegistryItem item in key.Items)
+                    {
+                        sk.SetValue(item.Name, item.Value);
+                    }
+
+                    sk.Dispose();
+
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+            }
+            finally
+            {
+                localMachine.Dispose();
+            }
+
+            return false;
+        }
+
+
+        // TODO: We definitly need to add some security mechanism here - i.e. by adding a signature to the plugin Manifest.
+        protected override bool DeleteRegistryKey(PluginManifestRegistryKey key)
+        {
+            string root = "HKEY_LOCAL_MACHINE\\SOFTWARE\\";
+
+            if (!key.Path.StartsWith(root))
+            {
+                // We currently do not support any other hives..
+                Logger.ErrorFormat("Registry key must be rooted in: {0}", root);
+
+                return false;
+            }
+
+            RegistryKey localMachine = null;
+
+            try
+            {
+                if (Environment.Is64BitOperatingSystem)
+                {
+                    localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                }
+                else
+                {
+                    localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+                }
+
+                // Remove HKEY_LOCAL_MACHINE from the start of the string.
+                string path = key.Path.Substring(19);
+
+                using (RegistryKey k = localMachine.OpenSubKey(path, true))
+                {
+                    if (k != null)
+                    {
+                        k.DeleteSubKeyTree(key.Name);
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+            }
+            finally
+            {
+                localMachine.Dispose();
+            }
+
+            return false;
+        }
+
+        protected override bool HasRegistryKey(PluginManifestRegistryKey key)
+        {
+            string root = "HKEY_LOCAL_MACHINE\\SOFTWARE\\";
+
+            if (!key.Path.StartsWith(root))
+            {
+                return false;
+            }
+
+            RegistryKey localMachine = null;
+
+            try
+            {
+                if (Environment.Is64BitOperatingSystem)
+                {
+                    localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                }
+                else
+                {
+                    localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+                }
+
+                // Remove HKEY_LOCAL_MACHINE from the start of the string.
+                string path = key.Path.Substring(19);
+
+                using (RegistryKey k = localMachine.OpenSubKey(path))
+                {
+                    if (k == null)
+                    {
+                        return false;
+                    }
+
+                    using (RegistryKey sk = k.OpenSubKey(key.Name))
+                    {
+                        if (sk == null)
+                        {
+                            return false;
+                        }
+
+                        foreach (PluginManifestRegistryItem item in key.Items)
+                        {
+                            if (sk.GetValue(item.Name, null) == null)
+                            {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+            }
+            finally
+            {
+                localMachine.Dispose();
+            }
+
+            return false;
         }
 
         [ComImport]

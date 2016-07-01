@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Artivity.Apid.Plugin
+namespace Artivity.Api.Plugin
 {
     [XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]
     public partial class PluginManifestRegistryKey
@@ -38,6 +38,8 @@ namespace Artivity.Apid.Plugin
         private string nameField;
 
         private string pathField;
+
+        private string platformField;
 
         private List<PluginManifestRegistryItem> itemsField = new List<PluginManifestRegistryItem>();
 
@@ -64,6 +66,19 @@ namespace Artivity.Apid.Plugin
             set
             {
                 this.pathField = value;
+            }
+        }
+
+        [XmlAttributeAttribute()]
+        public string Platform
+        {
+            get
+            {
+                return this.platformField;
+            }
+            set
+            {
+                this.platformField = value;
             }
         }
 

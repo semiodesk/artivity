@@ -39,7 +39,6 @@ using Nancy.TinyIoc;
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
 using Artivity.Api.Plugin;
-using Artivity.Apid.Plugin;
 
 namespace Artivity.Apid
 {
@@ -327,7 +326,7 @@ namespace Artivity.Apid
             DirectoryInfo pluginDirectory = new DirectoryInfo(PlatformProvider.PluginDir);
 
             _pluginChecker = PluginCheckerFactory.CreatePluginChecker(ModelProvider, pluginDirectory);
-            _pluginChecker.Check();
+            _pluginChecker.CheckPlugins();
 
             if (PlatformProvider.CheckForNewSoftwareAgents)
             {
@@ -340,7 +339,7 @@ namespace Artivity.Apid
 
         private void OnProgramInstalled(object sender, EventArgs entry)
         {
-            _pluginChecker.Check(PlatformProvider.AutomaticallyInstallSoftwareAgentPlugins);
+            _pluginChecker.CheckPlugins(PlatformProvider.AutomaticallyInstallSoftwareAgentPlugins);
         }
 
         private void StartWatchdog()

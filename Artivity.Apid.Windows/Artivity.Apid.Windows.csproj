@@ -97,7 +97,9 @@
     <Content Include="Plugins\Chrome\Manifest.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Plugins\IllustratorCC2015.2\Manifest.xml" />
+    <Content Include="Plugins\IllustratorCC2015.2\Manifest.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Plugins\IllustratorCC2015\Manifest.xml">
       <SubType>Designer</SubType>
     </Content>

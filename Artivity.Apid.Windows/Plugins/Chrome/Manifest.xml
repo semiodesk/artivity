@@ -10,10 +10,10 @@
   <art:HostVersion>51.0.2704</art:HostVersion>
   <art:Arch>64</art:Arch>
   <art:Color>#4C8CF5</art:Color>
-  <art:RegistryKey Path="HKEY_LOCAL_MACHINE\Software\Wow6432Node\Google\Chrome\Extensions" Name="lfpdclalfidmgoedibkdihkbiclfoebh">
+  <art:RegistryKey Platform="Win64" Path="HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Google\Chrome\Extensions" Name="lfpdclalfidmgoedibkdihkbiclfoebh">
     <art:RegistryItem Name="update_url" Value="https://clients2.google.com/service/update2/crx"/>
   </art:RegistryKey>
-  <art:RegistryKey Path="HKEY_LOCAL_MACHINE\Software\Google\Chrome\Extensions" Name="lfpdclalfidmgoedibkdihkbiclfoebh">
+  <art:RegistryKey Platform="Win32" Path="HKEY_LOCAL_MACHINE\SOFTWARE\Google\Chrome\Extensions" Name="lfpdclalfidmgoedibkdihkbiclfoebh">
     <art:RegistryItem Name="update_url" Value="https://clients2.google.com/service/update2/crx"/>
   </art:RegistryKey>
 </art:PluginManifest>

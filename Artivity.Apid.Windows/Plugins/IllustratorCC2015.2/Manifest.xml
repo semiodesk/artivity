@@ -6,7 +6,7 @@
   <art:ID>ILST_19_2_1</art:ID>
   <art:TargetPath>Plug-ins\Extensions</art:TargetPath>
   <art:ExecPath>Support Files\Contents\Windows\Illustrator.exe</art:ExecPath>
-  <art:Version>0.5</art:Version>
+  <art:Version>0.8</art:Version>
   <art:HostVersion>19.2.1</art:HostVersion>
   <art:Arch>64</art:Arch>
   <art:PluginFile Link="true">Artivity64_2015.2.aip</art:PluginFile>

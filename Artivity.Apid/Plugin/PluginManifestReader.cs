@@ -34,7 +34,7 @@ using System.Text;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace Artivity.Apid.Plugin
+namespace Artivity.Api.Plugin
 {
     public class PluginManifestReader
     {

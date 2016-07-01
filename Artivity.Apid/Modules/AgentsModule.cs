@@ -215,11 +215,15 @@ namespace Artivity.Apid.Modules
 
         public Response GetAgents()
         {
+            _checker.CheckPlugins();
+
             return Response.AsJson(_checker.Plugins);
         }
 
         public Response GetAgent(Uri uri)
         {
+            _checker.CheckPlugins();
+
             return Response.AsJson(_checker.Plugins.FirstOrDefault(p => p.AssociationUri == uri));
         }
 
@@ -293,7 +297,25 @@ namespace Artivity.Apid.Modules
 
         public Response UninstallAgent(Uri uri)
         {
-            return HttpStatusCode.NotImplemented;
+            try
+            {
+                if (_checker.UninstallPlugin(uri))
+                {
+                    return HttpStatusCode.OK;
+                }
+                else
+                {
+                    return HttpStatusCode.NotModified;
+                }
+            }
+            catch (Exception e)
+            {
+                Dictionary<string, string> error = new Dictionary<string, string>();
+                error["type"] = e.GetType().ToString();
+                error["message"] = e.Message;
+
+                return Response.AsJson(error, HttpStatusCode.InternalServerError);
+            }
         }
 
         private Response GetUserAgent()
