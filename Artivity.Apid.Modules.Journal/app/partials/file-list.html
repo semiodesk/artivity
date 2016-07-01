@@ -2,7 +2,7 @@
 	<div id="header">
 		<div class="row">
 			<div class="col">
-				<img class="icn icn-circle" src="{{userPhotoUrl}}"/>
+				<img class="icn icn-circle" src="{{userPhotoUrl}}" />
 			</div>
 
 			<div class="col expand">
@@ -16,15 +16,22 @@
 	</div>
 
 	<div id="body">
-		<ul id="file-list" class="cards">
-			<li class="card" ng-repeat="file in files">
-				<a href="#/files/view?uri={{file.uri}}">
-					<div>
-						<div class="img-thumbnail"></div>
-						<div class="title">{{file.label}}</div>
-					</div>
-				</a>
-			</li>
-		</ul>
+		<div ng-switch on="hasFiles">
+			<div class="pull-left" ng-switch-when="true">
+				<ul id="file-list" class="cards">
+					<li class="card" ng-repeat="file in files">
+						<a href="#/files/view?uri={{file.uri}}">
+							<div>
+								<div class="img-thumbnail"></div>
+								<div class="title">{{file.label}}</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div ng-switch-when="false" class="text-center">
+				<h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+			</div>
+		</div>
 	</div>
 </div>
