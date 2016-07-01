@@ -24,9 +24,8 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Apid.Plugin;
-using Artivity.DataModel;
 using log4net;
+using Artivity.DataModel;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -36,6 +35,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Artivity.Api.Plugin
 {
@@ -51,15 +51,17 @@ namespace Artivity.Api.Plugin
 
         private static ILog _logger;
 
-        private static ILog Logger
+        protected static ILog Logger
         {
             get
             {
                 if (_logger == null)
                 {
-                    Type type = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType;
-                    _logger = log4net.LogManager.GetLogger(type);
+                    Type type = MethodBase.GetCurrentMethod().DeclaringType;
+
+                    _logger = LogManager.GetLogger(type);
                 }
+
                 return _logger;
             }
         }
@@ -148,37 +150,35 @@ namespace Artivity.Api.Plugin
             }
         }
 
-        public void Check(bool autoInstall = false)
+        public void CheckPlugins(bool installPlugins = false)
         {
-            foreach (var p in Plugins)
+            foreach (SoftwareAgentPlugin plugin in Plugins)
             {
-                bool? res = IsPluginInstalled(p);
+                plugin.IsSoftwareInstalled = GetApplicationLocation(plugin.Manifest) != null;
 
-                p.IsSoftwareInstalled = true;
-
-                if (res.HasValue)
+                if (plugin.IsSoftwareInstalled)
                 {
-                    p.IsPluginInstalled = res.Value;
+                    plugin.IsPluginInstalled = IsPluginInstalled(plugin);
 
-                    if (!p.IsPluginInstalled && autoInstall)
+                    if (!plugin.IsPluginInstalled && installPlugins)
                     {
-                        InstallPlugin(p.Manifest);
+                        plugin.IsPluginInstalled = InstallPlugin(plugin.Manifest);
+                        plugin.IsPluginEnabled = plugin.IsPluginInstalled;
                     }
+                }
+                else
+                {
+                    plugin.IsPluginInstalled = false;
+                    plugin.IsPluginEnabled = false;
                 }
             }
         }
-
-        protected abstract void CreateLink(string target, string source);
-
-        protected abstract DirectoryInfo GetApplicationLocation (PluginManifest manifest);
-
-        protected abstract string GetApplicationVersion(FileSystemInfo app);
 
         public bool IsPluginInstalled(PluginManifest manifest)
         {
             DirectoryInfo location = GetApplicationLocation(manifest);
 
-            if(location != null && location.Exists)
+            if (location != null && location.Exists)
             {
                 FileSystemInfo info;
 
@@ -198,16 +198,33 @@ namespace Artivity.Api.Plugin
                     return false;
                 }
 
-                bool exists = true;
+                bool installed = true;
 
                 foreach (var pluginFile in manifest.PluginFile)
                 {
                     var pluginPath = Path.Combine(location.FullName, manifest.TargetPath, pluginFile.GetName());
 
-                    exists = exists && ( File.Exists(pluginPath) || Directory.Exists(pluginPath) );
+                    installed = installed && (File.Exists(pluginPath) || Directory.Exists(pluginPath));
                 }
 
-                return exists;
+#if WIN
+                bool is64Bit = Environment.Is64BitOperatingSystem;
+
+                foreach (PluginManifestRegistryKey key in manifest.RegistryKeys)
+                {
+                    if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
+                    {
+                        continue;
+                    }
+
+                    if(!HasRegistryKey(key))
+                    {
+                        return false;
+                    }
+                }
+#endif
+
+                return installed;
             }
 
             return false;
@@ -226,31 +243,48 @@ namespace Artivity.Api.Plugin
 
                 if (location != null && location.Exists)
                 {
-                    foreach (var pluginFile in manifest.PluginFile)
+                    foreach (PluginManifestPluginFile file in manifest.PluginFile)
                     {
-                        var pluginPath = Path.Combine(location.FullName, manifest.TargetPath, pluginFile.GetName());
+                        var path = Path.Combine(location.FullName, manifest.TargetPath, file.GetName());
 
-                        string source = pluginFile.GetPluginSource(manifest);
+                        string source = file.GetPluginSource(manifest);
 
                         if (File.Exists(source) || Directory.Exists(source))
                         {
-                            if (pluginFile.Link)
+                            if (file.Link)
                             {
-                                CreateLink(pluginPath, source);
+                                CreateLink(path, source);
                             }
                             else
                             {
-                                File.Copy(source, pluginPath);
+                                File.Copy(source, path);
                             }
                         }
                     }
+
+#if WIN
+                    bool is64Bit = Environment.Is64BitOperatingSystem;
+
+                    foreach (PluginManifestRegistryKey key in manifest.RegistryKeys)
+                    {
+                        if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
+                        {
+                            continue;
+                        }
+
+                        if(!CreateRegistryKey(key))
+                        {
+                            return false;
+                        }
+                    }
+#endif
 
                     return true;
                 }
             }
             catch(Exception e)
             {
-                Logger.Error("Failed to install software agent plugin.", e);
+                Logger.ErrorFormat("Failed to install plugin {0}: {1}", manifest.Uri, e);
 
                 throw e;
             }
@@ -258,19 +292,14 @@ namespace Artivity.Api.Plugin
             return false;
         }
 
-        public bool InstallPlugin(SoftwareAgentPlugin plugin)
-        {
-            return InstallPlugin(plugin.Manifest);
-        }
-
         public bool InstallPlugin(Uri uri)
         {
-            var p = Plugins.First((x) => x.AgentUri == uri);
+            SoftwareAgentPlugin p = Plugins.First((x) => x.AgentUri == uri);
 
-            return p != null ? InstallPlugin(p) : false;
+            return p != null ? InstallPlugin(p.Manifest) : false;
         }
 
-        public void InstallAgent(IModel model, SoftwareAgentPlugin plugin, bool captureEnabled = false)
+        public void InstallAgent(IModel model, SoftwareAgentPlugin plugin, bool pluginEnabled = false)
         {
             if (!model.ContainsResource(plugin.AgentUri))
             {
@@ -279,7 +308,7 @@ namespace Artivity.Api.Plugin
                 SoftwareAgent agent = model.CreateResource<SoftwareAgent>(plugin.AgentUri);
                 agent.Name = plugin.AgentName;
                 agent.ColourCode = plugin.AgentColor;
-                agent.IsCaptureEnabled = captureEnabled;
+                agent.IsCaptureEnabled = pluginEnabled;
                 agent.Commit();
             }
             else
@@ -319,6 +348,98 @@ namespace Artivity.Api.Plugin
                 association.ExecutablePath = plugin.ExecutablePath;
                 association.Commit();
             }
+        }
+
+        public bool UninstallPlugin(Uri uri)
+        {
+            SoftwareAgentPlugin p = Plugins.First((x) => x.AgentUri == uri);
+
+            return p != null ? UninstallPlugin(p.Manifest) : false;
+        }
+
+        public bool UninstallPlugin(PluginManifest manifest)
+        {
+            try
+            {
+                DirectoryInfo location = GetApplicationLocation(manifest);
+
+                if (location != null && location.Exists)
+                {
+                    foreach (PluginManifestPluginFile file in manifest.PluginFile)
+                    {
+                        var path = Path.Combine(location.FullName, manifest.TargetPath, file.GetName());
+
+                        string source = file.GetPluginSource(manifest);
+
+                        if (File.Exists(path))
+                        {
+                            File.Delete(path);
+                        }
+                    }
+
+#if WIN
+                    bool is64Bit = Environment.Is64BitOperatingSystem;
+
+                    foreach (PluginManifestRegistryKey key in manifest.RegistryKeys)
+                    {
+                        if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
+                        {
+                            continue;
+                        }
+
+                        DeleteRegistryKey(key);
+                    }
+#endif
+
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.ErrorFormat("Failed to uninstall plugin {0}: {1}", manifest.Uri, e);
+
+                throw e;
+            }
+
+            return false;
+        }
+
+        public void UninstallAgent(IModel model, SoftwareAgentPlugin plugin)
+        {
+            if (model.ContainsResource(plugin.AssociationUri))
+            {
+                Logger.InfoFormat("Uninstalling agent association {0}", plugin.AgentUri);
+
+                model.DeleteResource(plugin.AssociationUri);
+            }
+
+            if (model.ContainsResource(plugin.AgentUri))
+            {
+                Logger.InfoFormat("Uninstalling agent {0}", plugin.AgentUri);
+
+                model.DeleteResource(plugin.AgentUri);
+            }
+        }
+
+        protected abstract DirectoryInfo GetApplicationLocation(PluginManifest manifest);
+
+        protected abstract string GetApplicationVersion(FileSystemInfo app);
+
+        protected abstract void CreateLink(string target, string source);
+
+        protected virtual bool HasRegistryKey(PluginManifestRegistryKey key)
+        {
+            return false;
+        }
+
+        protected virtual bool CreateRegistryKey(PluginManifestRegistryKey key)
+        {
+            return false;
+        }
+
+        protected virtual bool DeleteRegistryKey(PluginManifestRegistryKey key)
+        {
+            return false;
         }
 
         #endregion

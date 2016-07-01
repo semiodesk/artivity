@@ -32,7 +32,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using Artivity.Apid.Plugin;
 
 namespace Artivity.Api.Plugin
 {
@@ -74,7 +73,6 @@ namespace Artivity.Api.Plugin
 
         private string color;
 
-        /// <remarks/>
         public string DisplayName
         {
             get
@@ -87,7 +85,6 @@ namespace Artivity.Api.Plugin
             }
         }
 
-        /// <remarks/>
         public string ProcessName
         {
             get
@@ -100,10 +97,10 @@ namespace Artivity.Api.Plugin
             }
         }
 
+
         /// <summary>
-        /// This is the ID of a software. 
-        /// Windows:
-        /// Here we look for this id in the registry
+        /// The ID of a software. 
+        /// Windows: Here we look for this id in the registry
         /// </summary>
         public string ID
         {
@@ -117,7 +114,6 @@ namespace Artivity.Api.Plugin
             }
         }
 
-        /// <remarks/>
         public string TargetPath
         {
             get

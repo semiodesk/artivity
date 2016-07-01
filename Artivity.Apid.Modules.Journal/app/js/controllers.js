@@ -738,7 +738,7 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
 			});
 		} else {
 			api.uninstallAgent(agent.uri).then(function (response) {
-				agent.pluginInstalled = response.success;
+				agent.pluginInstalled = !response.success;
 
 				$scope.hasError = !response.success;
 				$scope.errorType = response.error.data.type;

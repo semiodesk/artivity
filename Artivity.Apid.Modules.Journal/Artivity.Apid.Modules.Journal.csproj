@@ -76,9 +76,16 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="app\js\ui-bootstrap-tpls-1.3.3.min.js" />
+    <EmbeddedResource Include="app\js\ui-grid.min.js" />
+    <EmbeddedResource Include="app\js\bootstrap-switch.js" />
+    <EmbeddedResource Include="app\js\bootstrap-switch.min.js" />
     <EmbeddedResource Include="app\js\color-thief.js" />
     <EmbeddedResource Include="app\partials\query.html" />
     <EmbeddedResource Include="app\css\roboto.css" />
+    <EmbeddedResource Include="app\css\bootstrap-switch.css" />
+    <EmbeddedResource Include="app\css\bootstrap-switch.min.css" />
+    <EmbeddedResource Include="app\css\ui-grid.min.css" />
     <Content Include="app\img\heart-broken.svg" />
     <Content Include="app\img\heart.svg" />
     <Content Include="app\img\orcid_64x64.png" />

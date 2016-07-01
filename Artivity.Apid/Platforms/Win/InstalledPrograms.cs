@@ -37,8 +37,15 @@ namespace Artivity.Api.Plugin.Win
 {
     public class InstalledPrograms
     {
+        #region Members
+
         public const string RegistryKeyString = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+
         const string registry_key2 = @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall";
+
+        #endregion
+
+        #region Methods
 
         public static RegistryEntry FindInstalledProgram(string key)
         {
@@ -109,16 +116,38 @@ namespace Artivity.Api.Plugin.Win
         private static bool IsProgramVisible(RegistryKey subkey)
         {
             var name = (string)subkey.GetValue("DisplayName");
+
+            if (string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+
             var releaseType = (string)subkey.GetValue("ReleaseType");
+
+            if (!string.IsNullOrEmpty(releaseType))
+            {
+                return false;
+            }
+
             //var unistallString = (string)subkey.GetValue("UninstallString");
-            var systemComponent = subkey.GetValue("SystemComponent");
+
             var parentName = (string)subkey.GetValue("ParentDisplayName");
 
-            return
-                !string.IsNullOrEmpty(name)
-                && string.IsNullOrEmpty(releaseType)
-                && string.IsNullOrEmpty(parentName)
-                && (systemComponent == null);
+            if (!string.IsNullOrEmpty(releaseType))
+            {
+                return false;
+            }
+
+            var systemComponent = subkey.GetValue("SystemComponent");
+
+            if (systemComponent != null)
+            {
+                return false;
+            }
+
+            return true;
         }
+
+        #endregion
     }
 }
