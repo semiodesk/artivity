@@ -136,7 +136,6 @@
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\hue.png" />
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\saturation.png" />
     <EmbeddedResource Include="app\img\construction.svg" />
-    <EmbeddedResource Include="app\img\placeholder-avatar.png" />
     <EmbeddedResource Include="app\img\placeholder-img.png" />
     <EmbeddedResource Include="app\index.html" />
     <EmbeddedResource Include="app\js\angular-input-modified.js" />
