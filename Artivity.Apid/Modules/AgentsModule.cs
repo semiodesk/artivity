@@ -46,6 +46,7 @@ using System.Globalization;
 using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Reflection;
 
 namespace Artivity.Apid.Modules
 {
@@ -579,18 +580,24 @@ namespace Artivity.Apid.Modules
         {
             string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
 
-            if (File.Exists(file))
+            if (!File.Exists(file))
             {
-                FileStream fileStream = new FileStream(file, FileMode.Open);
+                Assembly assembly = Assembly.GetExecutingAssembly();
 
-                StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
+                using (Stream source = assembly.GetManifestResourceStream("Artivity.Api.Resources.user.jpg"))
+                {
+                    using (FileStream target = File.Create(file))
+                    {
+                        source.CopyTo(target);
+                    }
+                }
+            }
 
-                return response.AsAttachment(file);
-            }
-            else
-            {
-                return null;
-            }
+            FileStream fileStream = new FileStream(file, FileMode.Open);
+
+            StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
+
+            return response.AsAttachment(file);
         }
 
         private Response SetUserAgentPhoto(RequestStream stream)
