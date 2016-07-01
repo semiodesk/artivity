@@ -52,7 +52,7 @@ namespace artivity
         protected:
         ImageRef document;
 
-        std::string createImageFilePath(time_t time);
+        std::string createImageFilePath(time_t time, int count);
         std::string getFileUri() { return _fileUri; }
 
         virtual ImageRef getDocument() = 0;

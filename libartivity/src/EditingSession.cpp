@@ -257,7 +257,7 @@ namespace artivity
         }
     }
 
-    string EditingSession::createImageFilePath(time_t time)
+    string EditingSession::createImageFilePath(time_t time, int count)
     {
         string resPath = "";
 
@@ -268,10 +268,10 @@ namespace artivity
             #else
             const char* sep = "//";
             #endif
-            int count = 0;
             stringstream ss;
             do
             {
+                ss.str(string()); // empty string
                 ss << _imagePath << sep << time << "-" << count << ".png";
                 count++;
             } while (boost::filesystem::exists(ss.str()));
