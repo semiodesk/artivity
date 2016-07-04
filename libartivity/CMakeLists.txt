@@ -6,6 +6,8 @@ set (libartivity_MAJOR_VERSION 0)
 set (libartivity_MINOR_VERSION 9)
 set (libartivity_MICRO_VERSION 5)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 # Find Boost
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  

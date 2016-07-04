@@ -28,8 +28,8 @@
 #ifndef RDF_H
 #define RDF_H
 
-#define rdf(label) "rdf:"label;
-#define RDF(label) "http://www.w3.org/1999/02/22-rdf-syntax-ns#"label;
+#define rdf(label) "rdf:" label;
+#define RDF(label) "http://www.w3.org/1999/02/22-rdf-syntax-ns#" label;
 
 namespace artivity
 {
