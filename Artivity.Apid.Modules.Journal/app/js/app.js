@@ -164,6 +164,12 @@ explorerApp.factory('api', function ($http) {
 					})
 			}
 		},
+		getLayers: function (entityUri) {
+			return $http.get(endpoint + '/influences/layers?uri=' + entityUri).then(
+				function (response) {
+					return response.data;
+				})
+		},
 		getThumbnails: function (entityUri, time) {
 			if (time !== undefined) {
 				return $http.get(endpoint + '/renderings?uri=' + entityUri + '&timestamp=' + time).then(

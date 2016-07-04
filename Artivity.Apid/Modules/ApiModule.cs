@@ -254,6 +254,18 @@ namespace Artivity.Apid.Modules
                 }
             };
 
+            Get["/influences/layers"] = parameters =>
+            {
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return GetLayers(new UriRef(uri));
+            };
+
             Get["/renderings"] = parameters =>
             {
                 if(Request.Query.uri)
@@ -1101,6 +1113,41 @@ namespace Artivity.Apid.Modules
             query.Bind("@time", time);
             
             List<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query).ToList();
+
+            return Response.AsJson(bindings);
+        }
+
+        private Response GetLayers(UriRef uriRef)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+	                ?time ?type ?uri ?property ?value
+                WHERE
+                {
+	                ?activity prov:generated | prov:used @entity.
+	
+	                ?uri a art:Layer .
+
+                    ?influence a ?type ;
+                        prov:atTime ?time ;
+                        prov:activity | prov:hadActivity ?activity ;
+                        art:hadChange ?change .
+
+                    ?change art:entity ?uri ;
+                        art:property ?property .
+	
+                    OPTIONAL
+                    {
+			            ?change art:value ?value .
+                    }
+
+	                FILTER(?property = art:aboveLayer || ?property = dces:title)
+                }
+                ORDER BY DESC(?time)");
+
+            query.Bind("@entity", uriRef);
+
+            IList<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
         }
