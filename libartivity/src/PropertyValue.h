@@ -55,9 +55,9 @@ namespace artivity
         }
 
         
-		PropertyValue(const std::string& value, const type_info& literalType)
+		PropertyValue(const std::string& value, const std::type_info& literalType)
         {
-            Value = NULL;
+            Value= ResourceRef();
 			LiteralValue = std::string(value);
             LiteralType = literalType.name();
         }

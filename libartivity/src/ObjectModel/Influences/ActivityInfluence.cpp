@@ -50,7 +50,7 @@ namespace artivity
 
         removeProperty(prov::activity, activity->uri, typeid(Resource));
 
-        activity = NULL;
+        activity = ActivityRef();
     }
 }
 

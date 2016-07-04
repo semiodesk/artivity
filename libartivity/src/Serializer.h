@@ -3,7 +3,7 @@
 
 #include <map>
 #include <queue>
-#include <hash_set>
+#include <unordered_set>
 #include <string>
 #include "Resource.h"
 #include "XsdTypeMap.h"
@@ -19,10 +19,10 @@ namespace artivity
 		std::stringstream out;
 
 		// Prefixes that need to be declared.
-		std::hash_set<std::string> prefixes;
+		std::unordered_set<std::string> prefixes;
 
 		// Resources which have already been serialized.
-		std::hash_set<std::string> track;
+		std::unordered_set<std::string> track;
 
 		// Resources which need to be serialized.
 		std::queue<ResourceRef> queue;

@@ -40,6 +40,11 @@ template <class C, typename T>
 class ProducerConsumer
 {
     public:
+    ProducerConsumer() 
+    { 
+        stopExecution = false;
+    }
+
     typedef boost::function<void(C*, T)> Consume;
 
     bool empty()
@@ -96,6 +101,7 @@ class ProducerConsumer
         cond_.notify_one();
     }
 
+#ifdef CXX11
     void push(T&& item)
     {
         if (stopExecution == true)
@@ -105,6 +111,7 @@ class ProducerConsumer
         mlock.unlock();
         cond_.notify_one();
     }
+#endif
 
     void stop()
     {
@@ -133,7 +140,7 @@ class ProducerConsumer
     boost::mutex mutex_;
     boost::condition_variable cond_;
     boost::thread consumerThread;
-    bool stopExecution = false;
+    bool stopExecution;
 
 
     void execute()

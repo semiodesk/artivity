@@ -56,7 +56,7 @@ namespace artivity
 	ActivityLog::~ActivityLog()
 	{
 		// Dereference the activity.
-		_activity = NULL;
+		_activity = ActivityRef();
 
 		curl_easy_cleanup(_curl);
 	}
