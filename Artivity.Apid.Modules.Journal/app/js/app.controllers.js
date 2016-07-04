@@ -30,7 +30,7 @@ explorerControllers.directive('bootstrapSwitch', [
 
 explorerControllers.controller('FileListController', function (api, $scope) {
 	$scope.hasFiles = false;
-	
+
 	$scope.userPhotoUrl = api.getUserPhotoUrl();
 
 	$scope.getFileName = getFileName;
@@ -38,10 +38,10 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 	api.getUser().then(function (data) {
 		$scope.user = data;
 	});
-	
+
 	api.getRecentFiles().then(function (data) {
 		$scope.files = data;
-		
+
 		$scope.hasFiles = data.length > 0;
 	});
 });
@@ -49,16 +49,75 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams) {
 	var fileUri = $location.search().uri;
 
+	// File metadata
 	$scope.file = {};
 
 	api.getFile(fileUri).then(function (data) {
 		$scope.file = data;
 	});
 
-	//$scope.fileName = getFileName(fileUrl);
-	$scope.canvases = [];
+	// Agent metadata
 	$scope.agent = {};
 	$scope.agentIcon;
+
+	api.getAgent(fileUri).then(function (data) {
+		$scope.agent = data;
+
+		console.log($scope.agent);
+
+		$scope.agentIconUrl = api.getAgentIconUrl($scope.agent.association);
+	});
+
+	// Canvases in the file
+	$scope.canvases = [];
+
+	api.getCanvases(fileUri).then(function (data) {
+		$scope.canvases = data;
+
+		if ($scope.selectedInfluence !== undefined) {
+			renderDocument(T, $scope.selectedInfluence.time);
+		}
+	});
+
+	// Layers in the file
+	$scope.layers = {};
+	$scope.layerCache = new LayerCache();
+
+	api.getLayers(fileUri).then(function (data) {
+		var time = new Date();
+		
+		$scope.layers = {};
+		$scope.layerCache.load(data);
+		$scope.layerCache.getAll(time, function(layer) {
+			layer.label = layer.getLabel(time);
+			
+			$scope.layers.push(layer);
+		});
+	});
+
+	$scope.getLayers = function (time) {
+		var result = [];
+
+		for (var key in $scope.layers) {
+			var layer = $scope.layers[key];
+
+			if (time >= layer.creationTime) {
+				var label;
+				
+				for(var i = 0; i < layer.label.length; i++) {
+					var l = layer.label[i];
+					
+					if(l.time > time) break;
+					
+					label = l.value;
+				}
+				
+				result.push(label);
+			}
+		}
+			
+		$scope.layerNames = result;
+	};
 
 	$scope.activities = [];
 	$scope.selectedActivity;
@@ -299,22 +358,6 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		loadItems(thumbnails, loadThumbnails, loadThumbnailsComplete);
 	});
 
-	api.getCanvases(fileUri).then(function (data) {
-		$scope.canvases = data;
-
-		if ($scope.selectedInfluence !== undefined) {
-			renderDocument(T, $scope.selectedInfluence.time);
-		}
-	});
-
-	api.getAgent(fileUri).then(function (data) {
-		$scope.agent = data;
-
-		console.log($scope.agent.association);
-
-		$scope.agentIconUrl = api.getAgentIconUrl($scope.agent.association);
-	});
-
 	api.getActivities(fileUri).then(function (data) {
 		// Check if there is a plausable end time.
 		for (var i = 0; i < data.length; i++) {
@@ -407,6 +450,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		$scope.selectedInfluence = influence;
 
 		if (influence.time !== undefined) {
+			$scope.getLayers(influence.time);
+
 			api.getStats(fileUri, influence.time).then(function (data) {
 				$scope.updateStats(data, influence.time);
 			});
@@ -753,7 +798,7 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
 
 	$scope.reload = function () {
 		$scope.hasError = false;
-		
+
 		api.getAgents().then(function (data) {
 			$scope.agents = [];
 

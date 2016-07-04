@@ -7,7 +7,7 @@
 
 			<div class="col">
 				<div class="icn" style="background-color: {{agentColor}}; width: 32px; height: 32px; margin-top: 10px; margin-left: 5px;">
-					<img src="{{agentIconUrl}}" width="32" height="32"/>
+					<img src="{{agentIconUrl}}" width="32" height="32" />
 				</div>
 			</div>
 
@@ -107,13 +107,24 @@
 				</div>
 			</div>
 		</div>
-		<div class="sidebar right">
+		<div class="sidebar right" style="width: 350px;">
 			<ul class="nav nav-tabs tablist" id="tabs" role="tablist">
-				<li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">Stats</a></li>
+				<li role="presentation" class="active"><a data-target="#layers" role="tab" data-toggle="tab">Layers</a></li>
+				<li role="presentation"><a data-target="#statistics" role="tab" data-toggle="tab">Analytics</a></li>
 			</ul>
 
 			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane fade active in" id="statistics">
+				<div role="tabpanel" class="tab-pane fade active in" id="layers">
+					<ul class="list-unstyled">
+						<li ng-repeat="layer in layers">
+							<label>{{layer.label}}</label>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane fade" id="statistics">
 					<h5>Editing</h5>
 					<table style="width: 90%;">
 						<tr>

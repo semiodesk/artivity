@@ -235,7 +235,7 @@ namespace Artivity.Apid.Modules
                     ?agent ?association
                 WHERE 
                 {
-                    ?activity prov:used @entity .
+                    ?activity prov:used | prov:generated @entity .
                     ?activity prov:qualifiedAssociation ?association .
 
                     ?association prov:hadRole art:SOFTWARE .
