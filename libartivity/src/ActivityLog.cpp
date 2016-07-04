@@ -210,7 +210,7 @@ namespace artivity
 
 	void ActivityLog::addAssociation(const char* roleUri, const char* agentUri, const char* version)
 	{
-        if (strcmp(roleUri, art::SOFTWARE) != 0 || version == '\0') return;
+        if (strcmp(roleUri, art::SOFTWARE) != 0 || strcmp(version, "\0") == 0) return;
 
         stringstream str;
         str << agentUri << "#" << version;
