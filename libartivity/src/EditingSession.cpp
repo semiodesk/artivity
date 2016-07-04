@@ -42,6 +42,11 @@ namespace artivity
 
     EditingSession::EditingSession()
     {
+        pathChanged = true;
+        contentChanged = false;
+        _endTime = false;
+        _initial = true;
+        _initialized = false;
     }
 
     void EditingSession::initialize(string server, bool newDocument)
@@ -89,7 +94,7 @@ namespace artivity
     {
         _consumer->stop();
         _log->close();
-        _log = NULL;
+        _log = ActivityLogRef();
     }
 
     void EditingSession::eventStart()
@@ -329,7 +334,7 @@ namespace artivity
         time_t now;
         time(&now);
 
-        auto save = createSave();
+        SaveRef save = createSave();
         save->setTime(now);
 
         return save;
@@ -340,7 +345,7 @@ namespace artivity
         time_t now;
         time(&now);
 
-        auto saveAs = createSaveAs();
+        SaveAsRef saveAs = createSaveAs();
         saveAs->setTime(now);
 
         return saveAs;

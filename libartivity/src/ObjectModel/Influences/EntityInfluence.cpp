@@ -48,7 +48,7 @@ namespace artivity
 
         removeProperty(prov::hadActivity, activity->uri, typeid(Resource));
 
-        activity = NULL;
+        activity = ActivityRef();
     }
 
     void EntityInfluence::setIsSave(bool val)

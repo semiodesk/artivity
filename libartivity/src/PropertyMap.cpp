@@ -72,7 +72,7 @@ namespace artivity
         return it;
     }
 
-    PropertyMapIterator PropertyMap::findProperty(const std::string& property, std::string literalValue, const type_info& typeInfo)
+    PropertyMapIterator PropertyMap::findProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo)
     {
         PropertyMapIterator it = _map.begin();
 
@@ -98,7 +98,7 @@ namespace artivity
         return findProperty(property, resource) != _map.end();
     }
 
-    bool PropertyMap::hasProperty(const std::string& property, std::string literalValue, const type_info& typeInfo)
+    bool PropertyMap::hasProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo)
     {
         return findProperty(property, literalValue, typeInfo) != _map.end();
     }
@@ -110,7 +110,7 @@ namespace artivity
         _map.insert(std::pair<std::string, PropertyValue>(property, PropertyValue(resource)));
     }
 
-    void PropertyMap::addProperty(const std::string& property, std::string literalValue, const type_info& typeInfo)
+    void PropertyMap::addProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo)
     {
         if (hasProperty(property, literalValue, typeInfo)) return;
 
@@ -135,7 +135,7 @@ namespace artivity
         _map.erase(it);
     }
 
-    void PropertyMap::removeProperty(const std::string& property, std::string literalValue, const type_info& typeInfo)
+    void PropertyMap::removeProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo)
     {
         PropertyMapIterator it = findProperty(property, literalValue, typeInfo);
 
@@ -160,7 +160,7 @@ namespace artivity
         addProperty(property, resource);
     }
 
-    void PropertyMap::setProperty(const std::string& property, std::string literalValue, const type_info& typeInfo)
+    void PropertyMap::setProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo)
     {
         _map.erase(property);
 

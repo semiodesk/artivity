@@ -50,24 +50,24 @@ namespace artivity
         {           
             setType(prov::Association);
 
-            _agent = NULL;
-            _role = NULL;
+            _agent = AgentRef();
+            _role = RoleRef();
         }
 
 		Association(std::string uriref) : Resource(uriref)
 		{
 			setType(prov::Association);
 
-            _agent = NULL;
-            _role = NULL;
+            _agent = AgentRef();
+            _role = RoleRef();
 		}
 
         Association(const char* uriref) : Resource(uriref)
         {          
             setType(prov::Association);
 
-            _agent = NULL;
-            _role = NULL;
+            _agent = AgentRef();
+            _role = RoleRef();
         }
         
         virtual ~Association() {}
