@@ -28,8 +28,8 @@
 #ifndef PROV_H
 #define PROV_H
 
-#define prov(label) "prov:"label;
-#define PROV(label) "http://www.w3.org/ns/prov#"label;
+#define prov(label) "prov:" label;
+#define PROV(label) "http://www.w3.org/ns/prov#" label;
 
 namespace artivity
 {

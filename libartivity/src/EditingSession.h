@@ -20,7 +20,7 @@
 namespace artivity
 {
     class EditingSession;
-    typedef boost::shared_ptr<ProducerConsumer<EditingSession, ResourceRef>> ProducerConsumerRef;
+    typedef boost::shared_ptr< ProducerConsumer<EditingSession, ResourceRef> > ProducerConsumerRef;
 
     class EditingSession
     {
@@ -30,16 +30,16 @@ namespace artivity
         ActivityLogRef _log;
         //ResourceRef Unit; store in session or log?
 
-        bool pathChanged = true;
-        bool contentChanged = false;
+        bool pathChanged;
+        bool contentChanged;
         ProducerConsumerRef _consumer;
         std::string _imagePath;
         std::string _fileUri;
 
-        bool _endTime = false;
-        bool _initial = true;
+        bool _endTime;
+        bool _initial;
 
-        bool _initialized = false;
+        bool _initialized;
 
         void createActivity();
 

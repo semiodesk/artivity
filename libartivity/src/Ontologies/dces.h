@@ -28,8 +28,8 @@
 #ifndef dces_H
 #define dces_H
 
-#define dces(label) "dc:"label;
-#define DCES(label) "http://purl.org/dc/elements/1.1/"label;
+#define dces(label) "dc:" label;
+#define DCES(label) "http://purl.org/dc/elements/1.1/" label;
 
 namespace artivity
 {

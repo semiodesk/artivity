@@ -28,8 +28,8 @@
 #ifndef SVG_H
 #define SVG_H
 
-#define svg(label) "svg:"label;
-#define SVG(label) "http://www.mathiswebs.com/ontology/svg_ont.owl#"label;
+#define svg(label) "svg:" label;
+#define SVG(label) "http://www.mathiswebs.com/ontology/svg_ont.owl#" label;
 
 namespace artivity
 {

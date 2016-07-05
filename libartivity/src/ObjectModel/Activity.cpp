@@ -221,7 +221,7 @@ namespace artivity
         {
             return *e;
         }
-        return NULL;
+        return EntityRef();
     }
 }
 
