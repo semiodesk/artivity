@@ -129,7 +129,7 @@ namespace Artivity.Api.Plugin
                 }
             ");
 
-            List<BindingSet> bindings = _modelProvider.AgentsModel.GetBindings(query).ToList();
+            List<BindingSet> bindings = _modelProvider.GetAgents().GetBindings(query).ToList();
 
             Dictionary<Uri, bool> agents = new Dictionary<Uri, bool>();
 

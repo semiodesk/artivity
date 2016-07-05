@@ -166,8 +166,6 @@ namespace Artivity.Apid
 
             AppDomain current = AppDomain.CurrentDomain;
             current.UnhandledException += current_UnhandledException;
-
-            _log.Info("Service Initialized");
         }
 
         private string GetCurrentDirectory()

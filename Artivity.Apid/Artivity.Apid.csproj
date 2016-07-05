@@ -117,6 +117,7 @@
     <Compile Include="Modules\ApiModule.cs" />
     <Compile Include="Modules\AgentsModule.cs" />
     <Compile Include="Parameters\ActivityParameters.cs" />
+    <Compile Include="Platforms\UserConfig.cs" />
     <Compile Include="Platforms\IPlatformProvider.cs" />
     <Compile Include="Platforms\OSX\ThumbnailProvider.cs" />
     <Compile Include="Platforms\IThumbnailProvider.cs" />
