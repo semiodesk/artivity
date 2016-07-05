@@ -250,7 +250,7 @@ namespace Artivity.Apid.Modules
                 }
                 else
                 {
-                    return GetCanvases(new UriRef(uri), DateTime.UtcNow);
+                    return GetCanvases(new UriRef(uri));
                 }
             };
 
@@ -660,24 +660,21 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    MAX(?time) as ?time ?uri ?label
+	                ?time
+	                ?uri
+	                ?label
                 WHERE
                 {
-                    {
-                        SELECT
-                            MAX(?time) as ?time ?label
-                        WHERE
-                        {
-                            ?file rdfs:label ?label .
-                            ?file nie:lastModified ?time .
-                        }
-                        GROUP BY ?label
-                    }
-
-                    ?uri nie:isStoredAs ?file .
-
-                    ?file rdfs:label ?label .
-                    ?file nie:lastModified ?time .
+	                ?uri nie:isStoredAs [ rdfs:label ?label ; nie:lastModified ?time ] .
+	
+	                OPTIONAL
+	                {
+		                [ nie:isStoredAs [ rdfs:label ?label ; nie:lastModified ?t2 ] ].
+		
+		                FILTER(?time > ?t2)
+	                }
+	
+	                FILTER(!BOUND(?t2))
                 }
                 ORDER BY DESC(?time) LIMIT 25");
 
@@ -726,30 +723,50 @@ namespace Artivity.Apid.Modules
         private Response GetInfluences(UriRef entityUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    DISTINCT ?time ?uri ?type ?description ?agentColor ?layerName ?bounds ?renderUrl ?renderX ?renderY
+                SELECT DISTINCT
+                    ?time
+                    ?uri
+                    ?type
+                    ?description
+                    ?agentColor
+                    ?layer
+                    ?x
+                    ?y
+                    ?w
+                    ?h
                 WHERE 
                 {
                     ?activity prov:generated | prov:used @entity .
-                    ?activity prov:qualifiedAssociation ?association .
+                    ?activity prov:qualifiedAssociation [
+                        prov:hadRole art:SOFTWARE ;
+                        prov:agent / art:hasColourCode ?agentColor 
+                    ] .
 
-                    ?association prov:hadRole art:SOFTWARE .
-                    ?association prov:agent / art:hasColourCode ?agentColor .
+                    ?uri
+                        rdf:type ?type ;
+                        prov:activity | prov:hadActivity ?activity ;
+                        prov:atTime ?time .
 
-                    ?uri a ?type .
-                    ?uri prov:activity | prov:hadActivity ?activity .
-                    ?uri prov:atTime ?time .
-
-                    OPTIONAL { ?uri dces:description ?description . }
-                    OPTIONAL { ?uri art:selectedLayer / rdfs:label ?layerName . }
-                    OPTIONAL { ?uri art:hadBoundaries ?bounds . }
                     OPTIONAL
                     {
-                        ?uri art:renderedAs ?rendering .
+                        ?uri dces:description ?description .
+                    }
 
-                        ?rendering nie:url ?renderUrl .
-                        ?rendering art:region / art:x ?renderX .
-                        ?rendering art:region / art:y ?renderY .
+                    OPTIONAL
+                    {
+                        ?uri art:hadBoundaries [
+                            art:x ?x ;
+                            art:y ?y ;
+                            art:width ?w ;
+                            art:height?h
+                        ] .
+                    }
+
+                    OPTIONAL
+                    {
+                        ?uri art:renderedAs [
+                            art:depictedLayer ?layer ;
+                        ] .
                     }
                 }
                 ORDER BY DESC(?time)");
@@ -763,105 +780,52 @@ namespace Artivity.Apid.Modules
 
         private Response GetRenderings(UriRef entityUri)
         {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-	                ?time ?fileName COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?layerName ?layerZ ?boundsX ?boundsY ?boundsWidth ?boundsHeight
-                WHERE 
-                {
-	                {
-		                SELECT
-			                ?time ?influence ?layerName COALESCE(?layerZ, 0)
-		                WHERE
-		                {
-			                ?activity prov:generated | prov:used @entity .
-
-			                ?influence prov:activity | prov:hadActivity ?activity .
-			                ?influence prov:atTime ?time .
-			
-			                OPTIONAL
-			                {
-				                ?influence art:selectedLayer ?layer .
-
-				                ?layer rdfs:label ?layerName .
-				                ?layer art:z ?layerZ .
-			                }
-		                }
-		                GROUP BY ?layerZ
-	                }
-
-	                ?influence art:renderedAs ?rendering .
-
-	                ?rendering rdfs:label ?fileName .
-
-	                OPTIONAL
-	                {
-		                ?rendering art:region / art:x ?x .
-		                ?rendering art:region / art:y ?y .
-	                }
-
-	                OPTIONAL
-	                {
-		                ?influence art:hadBoundaries ?bounds .
-
-		                ?bounds art:x ?boundsX .
-		                ?bounds art:y ?boundsY .
-		                ?bounds art:width ?boundsWidth .
-		                ?bounds art:height ?boundsHeight .
-	                }
-                }
-                ORDER BY DESC(?time)");
-
-            query.Bind("@entity", entityUri);
-
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
-
-            return Response.AsJson(bindings);
+            return GetRenderings(entityUri, DateTime.UtcNow);
         }
 
         private Response GetRenderings(UriRef entityUri, DateTime time)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?time ?url ?x ?y ?layerName ?layerZ ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+	                ?time
+                    ?type
+                    ?file
+                    ?layer
+                    COALESCE(?x, 0) AS ?x
+                    COALESCE(?y, 0) AS ?y
+                    COALESCE(?w, 0) AS ?w
+                    COALESCE(?h, 0) AS ?h
                 WHERE 
                 {
-                    {
-                        SELECT
-                            MAX(?time) AS ?time ?layer ?layerName ?layerZ
-                        WHERE
-                        {
-                            ?activity prov:generated | prov:used @entity .
+			        ?activity prov:generated | prov:used @entity .
 
-			                ?influence prov:activity | prov:hadActivity ?activity .
-			                ?influence prov:atTime ?time .
-				            ?influence art:selectedLayer ?layer .
-
-				            ?layer rdfs:label ?layerName .
-				            ?layer art:z ?layerZ .
-
-                            FILTER(?time <= @time)
-                        }
-                        GROUP BY ?layerZ
-                    }
-
-                    ?influence prov:atTime ?time .
-                    ?influence art:selectedLayer ?layer .
-                    ?influence art:renderedAs ?rendering .
-
-                    ?rendering nie:url ?url .
-                    ?rendering art:region / art:x ?x .
-                    ?rendering art:region / art:y ?y .
+			        ?influence
+                        prov:activity | prov:hadActivity ?activity ;
+                        prov:atTime ?time ;
+                        art:renderedAs ?rendering .
 
                     OPTIONAL
                     {
-                        ?influence art:hadBoundaries ?bounds .
-
-                        ?bounds art:x ?boundsX .
-                        ?bounds art:y ?boundsY .
-                        ?bounds art:width ?boundsWidth .
-                        ?bounds art:height ?boundsHeight .
+                        ?influence art:hadBoundaries [
+                            art:x ?x ;
+                            art:y ?y ;
+                            art:width ?w ;
+                            art:height ?h
+                        ] .
                     }
-                }");
+
+                    ?rendering
+                        rdf:type ?type ;
+                        rdfs:label ?file .
+
+                    OPTIONAL
+                    {
+                        ?rendering art:depictedLayer ?layer .
+                    }
+
+                    FILTER(?time <= @time)
+                }
+                ORDER BY DESC(?time)");
 
             query.Bind("@entity", entityUri);
             query.Bind("@time", time);
@@ -1057,54 +1021,46 @@ namespace Artivity.Apid.Modules
             return HttpStatusCode.OK;
         }
 
+        private Response GetCanvases(UriRef entityUri)
+        {
+            return GetCanvases(entityUri, DateTime.UtcNow);
+        }
+
         private Response GetCanvases(UriRef entityUri, DateTime time)
         {
             string queryString = @"
-                SELECT
-	                ?canvas COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?width ?height ?lengthUnit
+                SELECT DISTINCT
+	                ?time
+	                ?type
+	                ?uri
+	                ?property
+	                ?value
+	                COALESCE(?x, 0) AS ?x
+	                COALESCE(?y, 0) AS ?y
+	                COALESCE(?w, 0) AS ?w
+	                COALESCE(?h, 0) AS ?h
                 WHERE
                 {
-	                {
-		                SELECT
-			                ?canvas MAX(?t) AS ?time
-		                WHERE
-		                {
-			                ?activity prov:generated | prov:used @entity .
+	                ?activity prov:generated | prov:used @entity.
 
-			                ?canvas a art:Canvas .
-			                ?canvas ?qualifiedInfluence ?influence .
-
-			                ?influence prov:activity | prov:hadActivity ?activity .
-			                ?influence prov:atTime ?t .
-			                ?influence art:hadBoundaries ?bounds .
-			
-			                FILTER(?t <= @time) .
-
-			                FILTER NOT EXISTS
-			                {
-				                ?canvas prov:qualifiedInvalidation ?invalidation .
-				
-				                ?invalidation prov:atTime ?t2 .
-				
-				                FILTER(?t2 <= @time) .
-			                }
-		                }
-	                }
+	                ?influence a ?type ;
+		                prov:activity | prov:hadActivity ?activity ;
+		                prov:atTime ?time ;
+		                art:hadChange ?change ;
+		                art:hadBoundaries [
+			                art:x ?x ;
+			                art:y ?y ;
+			                art:width ?w ;
+			                art:height ?h
+		                ].
 	
-	                ?canvas ?qualifiedInfluence ?influence .
-	
-	                ?influence prov:atTime ?time .
-	                ?influence art:hadBoundaries / art:width ?width .
-	                ?influence art:hadBoundaries / art:height ?height .
-	                ?influence art:hadBoundaries / art:x ?x .
-	                ?influence art:hadBoundaries / art:y ?y .
-	                ?influence art:hadChange ?u .
+	                ?change art:entity ?uri ;
+		                art:property ?property ;
+		                art:value ?value .
 
-	                OPTIONAL
-	                {
-		                ?u art:property art:lengthUnit .
-		                ?u art:value ?lengthUnit .
-	                }
+	                ?uri a art:Canvas .
+
+                    FILTER (?time <= @time)
                 }
                 ORDER BY DESC(?time)";
                 
@@ -1120,28 +1076,28 @@ namespace Artivity.Apid.Modules
         private Response GetLayers(UriRef uriRef)
         {
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-	                ?time ?type ?uri ?property ?value
+                SELECT DISTINCT
+                    ?time
+                    ?type
+                    ?uri
+                    ?property
+                    ?value
                 WHERE
                 {
 	                ?activity prov:generated | prov:used @entity.
-	
+
+	                ?influence a ?type ;
+		                prov:activity | prov:hadActivity ?activity ;
+		                prov:atTime ?time ;
+		                art:hadChange ?change .
+
+	                ?change art:entity ?uri ;
+		                art:property ?property ;
+		                art:value ?value .
+
 	                ?uri a art:Layer .
 
-                    ?influence a ?type ;
-                        prov:atTime ?time ;
-                        prov:activity | prov:hadActivity ?activity ;
-                        art:hadChange ?change .
-
-                    ?change art:entity ?uri ;
-                        art:property ?property .
-	
-                    OPTIONAL
-                    {
-			            ?change art:value ?value .
-                    }
-
-	                FILTER(?property = art:aboveLayer || ?property = dces:title)
+	                FILTER(?property = art:aboveLayer || ?property = rdfs:label)
                 }
                 ORDER BY DESC(?time)");
 
