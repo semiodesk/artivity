@@ -616,9 +616,6 @@ namespace Artivity.Apid
             fileObject.LastAccessTime = file.LastAccessTime;
             fileObject.Commit();
 
-            Console.WriteLine(SparqlSerializer.SerializeResource(folderObject));
-            Console.WriteLine(SparqlSerializer.SerializeResource(fileObject));
-
             Logger.LogInfo("Created: {0}", file.FullName);
         }
 

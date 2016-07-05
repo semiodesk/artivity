@@ -389,7 +389,7 @@ namespace Artivity.Apid.Modules
 
                     stream.Position = 0;
 
-                    LoadTurtle(ModelProvider.GetActivities(), stream);
+                    LoadTurtle(ModelProvider.Activities, stream);
                 }
 
                 Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
@@ -540,7 +540,7 @@ namespace Artivity.Apid.Modules
             return null;
         }
 
-        private void LoadTurtle(IModel model, Stream stream)
+        private void LoadTurtle(Uri modelUri, Stream stream)
         {
             string connectionString = ModelProvider.NativeConnectionString;
 
@@ -555,9 +555,9 @@ namespace Artivity.Apid.Modules
                         IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
                         parser.Load(graph, new StringReader(data));
 
-                        graph.BaseUri = model.Uri;
+                        graph.BaseUri = modelUri;
 
-                        m.UpdateGraph(model.Uri, graph.Triples, new List<Triple>());
+                        m.UpdateGraph(modelUri, graph.Triples, new List<Triple>());
                     }
                 }
             }
@@ -720,19 +720,25 @@ namespace Artivity.Apid.Modules
                     ?uri
                     ?type
                     ?description
-                    ?agentColor
                     ?layer
-                    ?x
-                    ?y
-                    ?w
-                    ?h
+                    COALESCE(?agentColor, '#FF0000') AS ?agentColor
+                    COALESCE(?x, 0) AS ?x
+                    COALESCE(?y, 0) AS ?y
+                    COALESCE(?w, 0) AS ?w
+                    COALESCE(?h, 0) AS ?h
                 WHERE 
                 {
-                    ?activity prov:generated | prov:used @entity .
-                    ?activity prov:qualifiedAssociation [
-                        prov:hadRole art:SOFTWARE ;
-                        prov:agent / art:hasColourCode ?agentColor 
-                    ] .
+                    ?activity
+                        prov:generated | prov:used @entity ;
+                        prov:qualifiedAssociation ?association .
+
+                    ?association
+                        prov:hadRole art:SOFTWARE .
+
+                    OPTIONAL
+                    {
+                        ?association prov:agent / art:hasColourCode ?agentColor .
+                    }
 
                     ?uri
                         rdf:type ?type ;
@@ -757,7 +763,7 @@ namespace Artivity.Apid.Modules
                     OPTIONAL
                     {
                         ?uri art:renderedAs [
-                            art:depictedLayer ?layer ;
+                            art:renderedLayer ?layer ;
                         ] .
                     }
                 }
@@ -765,7 +771,7 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@entity", entityUri);
 
-            var bindings = ModelProvider.GetAllActivities().GetBindings(query);
+            var bindings = ModelProvider.GetAll().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -812,7 +818,7 @@ namespace Artivity.Apid.Modules
 
                     OPTIONAL
                     {
-                        ?rendering art:depictedLayer ?layer .
+                        ?rendering art:renderedLayer ?layer .
                     }
 
                     FILTER(?time <= @time)
