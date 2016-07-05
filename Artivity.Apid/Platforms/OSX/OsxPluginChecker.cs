@@ -31,6 +31,8 @@ using System.IO;
 using System.Linq;
 using Mono.Unix;
 using MonoDevelop.MacInterop;
+using System.Xml;
+using System.Xml.XPath;
 
 namespace Artivity.Api.Plugin.OSX
 {
@@ -47,43 +49,64 @@ namespace Artivity.Api.Plugin.OSX
 
         #region Methods
 
-        protected override DirectoryInfo GetApplicationLocation (PluginManifest manifest)
+        protected override DirectoryInfo GetApplicationLocation(PluginManifest manifest)
         {
-            string example = Path.Combine (manifest.ManifestFile.Directory.FullName, manifest.ExampleFile);
+            if (string.IsNullOrEmpty(manifest.ExampleFile))
+            {
+                throw new Exception("No value set for ExampleFile in manifest.");
+            }
 
-            string[] list = CoreFoundation.GetApplicationUrls (example, CoreFoundation.LSRolesMask.All);
+            string sample = Path.Combine(manifest.ManifestFile.Directory.FullName, manifest.ExampleFile);
 
-            string location = (from x in list where x.Contains(manifest.FilterName) select x).FirstOrDefault();
+            if (!File.Exists(sample))
+            {
+                throw new Exception("Sample file does not exist: " + sample);
+            }
 
-            if (string.IsNullOrEmpty(location))
+            string[] list = CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All);
+
+            if (list.Any())
+            {
+                string location = (from app in list where app.Contains(manifest.FilterName) select app).FirstOrDefault();
+
+                return string.IsNullOrEmpty(location) ? null : new DirectoryInfo(location);
+            }
+            else
             {
                 return null;
             }
-
-            return new DirectoryInfo (location);
         }
 
         protected override void CreateLink(string target, string source)
         {
             UnixFileInfo f = new UnixFileInfo (source);
 
-            f.CreateSymbolicLink (target);
+            f.CreateSymbolicLink(target);
         }
 
         protected override string GetApplicationVersion(FileSystemInfo app)
         {
-            string res = null;
-
-            if (app is FileInfo)
+            if (app is DirectoryInfo)
             {
-                var fi = app as FileInfo;
+                var appBundle = app as DirectoryInfo;
 
-                var info = FileVersionInfo.GetVersionInfo(fi.FullName);
+                var plist = Path.Combine(appBundle.FullName, "Contents", "Info.plist");
 
-                return info.ProductVersion;
+                if (File.Exists(plist))
+                {
+                    XPathDocument document = new XPathDocument(plist);
+
+                    XPathNavigator root = document.CreateNavigator();
+
+                    XPathNavigator value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleShortVersionString']");
+
+                    value.MoveToNext();
+
+                    return value.InnerXml;
+                }
             }
 
-            return res;
+            return null;
         }
 
         #endregion
