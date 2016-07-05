@@ -6,8 +6,8 @@
 			</div>
 
 			<div class="col">
-				<div class="icn" style="background-color: {{agentColor}}; width: 32px; height: 32px; margin-top: 10px; margin-left: 5px;">
-					<img src="{{agentIconUrl}}" width="32" height="32" />
+				<div class="icn" style="width: 32px; height: 32px; margin-top: 10px; margin-left: 5px;">
+					<img src="{{agent.iconUrl}}" width="32" height="32" />
 				</div>
 			</div>
 
@@ -18,11 +18,7 @@
 	</div>
 	<div id="body">
 		<div class="content text-center">
-			<div id="canvas-header">
-				<label>{{ getFormattedDate(selectedInfluence.time) }}, {{ getFormattedTime(selectedInfluence.time) }}</label>
-			</div>
-
-			<canvas id="canvas" class="buffer" style="margin: 1px;" loaded="updateCanvas()"></canvas>
+			<canvas id="canvas" style="margin: 1px;" loaded="updateCanvas()"></canvas>
 
 			<script>
 				$(function () {
@@ -33,7 +29,7 @@
 				});
 
 				function updateCanvas() {
-					var buffer = document.getElementsByClassName("buffer")[0];
+					var buffer = document.getElementById("canvas");
 
 					// To prevent flickering, store the current context before setting the size.
 					var bufferContext = buffer.getContext('2d');
@@ -64,13 +60,17 @@
 			</script>
 		</div>
 		<div class="sidebar left">
-			<ul class="nav nav-tabs tablist" id="tabs" role="tablist">
-				<li role="presentation" class="active"><a data-target="#history" role="tab" data-toggle="tab"><i class="zmdi zmdi-hc-fw"></i> History</a></li>
-				<li role="presentation"><a data-target="#comments" role="tab" data-toggle="tab"><i class="zmdi zmdi-hc-fw"></i> Comments</a></li>
+			<ul class="nav nav-tabs tablist" id="tabs-left" role="tablist">
+				<li role="presentation" class="active"><a data-target="#history" role="tab" data-toggle="tab">History</a></li>
+				<li role="presentation"><a data-target="#comments" role="tab" data-toggle="tab">Comments</a></li>
 			</ul>
 
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane fade active in" id="history">
+					<div class="text-center">
+						<label>{{ getFormattedDate(selectedInfluence.time) }}</label>
+					</div>
+
 					<ul class="list-unstyled">
 						<li ng-repeat="influence in influences" ng-class="{selected: influence == selectedInfluence}">
 							<a title="{{influence.time}}" ng-click="selectInfluence(influence)" ng-mouseenter="previewInfluence(influence)" style="padding: 0 3px;">
@@ -95,7 +95,7 @@
 									</div>
 								</div>
 
-								<label class="pull-right small">{{getFormattedTimeFromNow(influence.time)}}</label>
+								<label class="pull-right small">{{getFormattedTime(influence.time)}}</label>
 
 								<div class="clearfix"></div>
 							</a>
@@ -107,24 +107,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="sidebar right" style="width: 350px;">
-			<ul class="nav nav-tabs tablist" id="tabs" role="tablist">
-				<li role="presentation" class="active"><a data-target="#layers" role="tab" data-toggle="tab">Layers</a></li>
-				<li role="presentation"><a data-target="#statistics" role="tab" data-toggle="tab">Analytics</a></li>
+		<div class="sidebar right">
+			<ul class="nav nav-tabs tablist" id="tabs-right" role="tablist">
+				<li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">Statistics</a></li>
 			</ul>
 
 			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane fade active in" id="layers">
-					<ul class="list-unstyled">
-						<li ng-repeat="layer in layers">
-							<label>{{layer.label}}</label>
-						</li>
-					</ul>
-				</div>
-			</div>
-			
-			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane fade" id="statistics">
+				<div role="tabpanel" class="tab-pane fade active in" id="statistics">
 					<h5>Editing</h5>
 					<table style="width: 90%;">
 						<tr>
@@ -193,6 +182,15 @@
 					<ul class="list-unstyled">
 						<li ng-repeat="color in palette">
 							<div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
+						</li>
+						
+						<div class="clearfix"></div>
+					</ul>
+					
+					<h5 style="margin-top: 1em;">Layers</h5>
+					<ul class="list-unstyled">
+						<li ng-repeat="layer in layers | reverse">
+							<label><i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{layer.label}}</label>
 						</li>
 					</ul>
 				</div>

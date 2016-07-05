@@ -170,7 +170,7 @@ explorerApp.factory('api', function ($http) {
 					return response.data;
 				})
 		},
-		getThumbnails: function (entityUri, time) {
+		getRenderings: function (entityUri, time) {
 			if (time !== undefined) {
 				return $http.get(endpoint + '/renderings?uri=' + entityUri + '&timestamp=' + time).then(
 					function (response) {
@@ -183,8 +183,8 @@ explorerApp.factory('api', function ($http) {
 					})
 			}
 		},
-		getThumbnailUrl: function (entityUri, fileName) {
-			return endpoint + '/renderings?uri=' + entityUri + '&file=' + fileName;
+		getRenderingUrl: function (entityUri) {
+			return endpoint + '/renderings?uri=' + entityUri + '&file=';
 		},
 		getStats: function (entityUri, time) {
 			if (time !== undefined) {

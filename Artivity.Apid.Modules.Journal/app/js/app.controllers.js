@@ -1,5 +1,11 @@
 var explorerControllers = angular.module('explorerControllers', ['ngInputModified', 'ui.bootstrap', 'ui.grid']);
 
+explorerControllers.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+});
+
 explorerControllers.directive('bootstrapSwitch', [
         function () {
 		return {
@@ -48,317 +54,74 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 
 explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams) {
 	var fileUri = $location.search().uri;
+	
+	console.log(fileUri);
 
 	// File metadata
 	$scope.file = {};
 
-	api.getFile(fileUri).then(function (data) {
+	api.getFile(fileUri).then(function(data) {
 		$scope.file = data;
 	});
 
 	// Agent metadata
-	$scope.agent = {};
-	$scope.agentIcon;
+	$scope.agent = { iconUrl: '' };
 
-	api.getAgent(fileUri).then(function (data) {
+	api.getAgent(fileUri).then(function(data) {		
+		data.iconUrl = api.getAgentIconUrl(data.association);
+		
 		$scope.agent = data;
-
-		console.log($scope.agent);
-
-		$scope.agentIconUrl = api.getAgentIconUrl($scope.agent.association);
 	});
 
+	// RENDERING
+	var canvas = document.getElementById('canvas');
+
+	var renderer = new DocumentRenderer(canvas, api.getRenderingUrl(fileUri));
+	
 	// Canvases in the file
-	$scope.canvases = [];
-
-	api.getCanvases(fileUri).then(function (data) {
-		$scope.canvases = data;
-
-		if ($scope.selectedInfluence !== undefined) {
-			renderDocument(T, $scope.selectedInfluence.time);
-		}
+	api.getCanvases(fileUri).then(function(data) {
+		renderer.canvasCache.load(data, function() {		
+			console.log("Loaded canvases: ", renderer.canvasCache);
+			
+			if($scope.selectedInfluence !== undefined) {
+				$scope.renderInfluence($scope.selectedInfluence);
+			}
+		});
+	});
+	
+	// Trigger loading the bitmaps.
+	api.getRenderings(fileUri).then(function (data) {
+		renderer.renderCache.load(data, function() {			
+			console.log("Loaded renderings: ", renderer.renderCache);
+		});
 	});
 
 	// Layers in the file
-	$scope.layers = {};
-	$scope.layerCache = new LayerCache();
-
-	api.getLayers(fileUri).then(function (data) {
-		var time = new Date();
-		
-		$scope.layers = {};
-		$scope.layerCache.load(data);
-		$scope.layerCache.getAll(time, function(layer) {
-			layer.label = layer.getLabel(time);
-			
-			$scope.layers.push(layer);
+	$scope.layers = [];
+	
+	api.getLayers(fileUri).then(function(data) {			
+		renderer.layerCache.load(data, function(layers) {	
+			console.log("Loaded layers: ", layers);
 		});
 	});
 
-	$scope.getLayers = function (time) {
-		var result = [];
-
-		for (var key in $scope.layers) {
-			var layer = $scope.layers[key];
-
-			if (time >= layer.creationTime) {
-				var label;
+	var getLayers = function(influence) {		
+		var time = new Date(influence.time);
+		var layers = [];
 				
-				for(var i = 0; i < layer.label.length; i++) {
-					var l = layer.label[i];
-					
-					if(l.time > time) break;
-					
-					label = l.value;
-				}
-				
-				result.push(label);
-			}
-		}
-			
-		$scope.layerNames = result;
+		renderer.layerCache.getAll(time, function(layer) {
+			layer.label = layer.getLabel(time);
+			layers.push(layer);
+		});
+		
+		$scope.layers = layers;
 	};
-
+	
+	// ACTIVITIES
 	$scope.activities = [];
 	$scope.selectedActivity;
-
-	$scope.influences = [];
-	$scope.previousInfluence = undefined;
-	$scope.selectedInfluence = {
-		layer: "",
-		name: "",
-		time: new Date()
-	};
-
-	$scope.stats = {
-		confidence: 100,
-		steps: 10,
-		undos: 0,
-		redos: 0,
-		layers: []
-	};
-
-	$scope.playloop = undefined;
-
-	// The canvas.
-	var buffer = document.getElementsByClassName('buffer')[0];
-
-	// The drawing context.
-	var context = buffer.getContext('2d');
-
-	// A list with all loaded bitmaps.
-	var T = [];
-	var Tindex = {};
-
-	// Renders all loaded images onto the canvas.
-	var renderDocument = function (thumbnails, time) {
-		context.clearRect(0, 0, buffer.width, buffer.height);
-
-		// Save the untransformed canvas state.
-		context.save();
-
-		var extents = {
-			width: 0,
-			height: 0
-		};
-
-		var zoom = 1.0;
-
-		// Measure the extents of the drawing.
-		for (var i = 0; i < $scope.canvases.length; i++) {
-			var canvas = $scope.canvases[i];
-
-			// Fit the rendered document into the available viewport.
-			var shadowOffsetX = 3;
-			var shadowOffsetY = 3;
-
-			var width = canvas.width + shadowOffsetX;
-			var height = canvas.height + shadowOffsetY;
-
-			extents.width = Math.max(extents.width, canvas.x + canvas.width);
-			extents.height = Math.max(extents.height, canvas.y + canvas.height);
-		}
-
-		// After measuring, determine the zoom level to contain all the canvases.
-		if (extents.width > buffer.width) {
-			zoom = Math.min(zoom, buffer.width / extents.width);
-		}
-
-		if (extents.height > buffer.height) {
-			zoom = Math.min(zoom, buffer.height / extents.height);
-		}
-
-		// Translate the document to be centered on the canvas.            
-		if (buffer.width !== undefined && buffer.width > extents.width) {
-			context.translate((buffer.width - extents.width) / 2, 0);
-		}
-
-		context.scale(zoom, zoom);
-
-		// Render the canvases at the current time.
-		for (var i = 0; i < $scope.canvases.length; i++) {
-			var canvas = $scope.canvases[i];
-
-			// Fit the rendered document into the available viewport.
-			var shadowOffsetX = 3;
-			var shadowOffsetY = 3;
-
-			context.save();
-
-			context.shadowBlur = 10;
-			context.shadowOffsetX = shadowOffsetX;
-			context.shadowOffsetY = shadowOffsetY;
-			context.shadowColor = "black";
-
-			context.fillStyle = 'white';
-			context.fillRect(canvas.x, canvas.y, canvas.width, canvas.height);
-
-			context.restore();
-		};
-
-		// Only render the newest version of every layer.
-		var renderedLayers = {};
-
-		for (var j = T.length - 1; j > 0; j--) {
-			var t = T[j];
-
-			var z = t.layerZ === null ? 0 : t.layerZ;
-
-			if (time !== undefined && t.time > time || z in renderedLayers) {
-				continue;
-			}
-
-			context.drawImage(t.image, t.x, -t.y, t.w, t.h);
-
-			if (t.layer == $scope.selectedInfluence.layer) {
-				context.font = "1em Roboto";
-				context.fillStyle = "blue";
-				context.textAlign = "left";
-				context.fillText(t.layer, t.x, -t.y - 10);
-
-				// Draw a line around the layer bounds.
-				if (t.boundsX === null) {
-					context.lineJoin = 'miter';
-					context.lineWidth = 1;
-					context.strokeStyle = 'red';
-					context.setLineDash([1, 2]);
-
-					context.strokeRect(t.x, -t.y, t.w, t.h);
-				}
-			}
-
-			// Draw a line around the current influence bounds.
-			if (t.boundsX !== null) {
-				context.lineJoin = 'miter';
-				context.lineWidth = 1;
-				context.strokeStyle = 'blue';
-				context.setLineDash([]);
-
-				context.strokeRect(t.boundsX, -t.boundsY, t.boundsWidth, t.boundsHeight);
-			}
-
-			renderedLayers[z] = t;
-		}
-
-		// Restore the untransformed canvas state.
-		context.restore();
-
-		/*
-		// Used for extracting colors from images.
-		var thief = new ColorThief();
-
-		// Extract the color palette from the rendered layers.
-		var palette = [];
-
-		for (var j in renderedLayers) {
-			var t = renderedLayers[j];
-
-			// Extract colors from the current image.
-			var p = thief.getPalette(t.image, 8);
-
-			palette = palette.concat(p);
-
-			// Remove duplicate colors.
-			palette = palette.filter(function (val, j, array) {
-				for (var i = 0; i < p.length; i++) {
-					var c = p[i];
-
-					// Remove all other values with equal color, except the color itself.
-					if (c !== val && c.equals(val)) {
-						return false;
-					}
-				}
-
-				return true;
-			});
-		}
-
-		// Assign the palette and update the UI.
-		$scope.palette = palette;
-		*/
-	};
-
-	var loadThumbnailsComplete = function (thumbnails) {
-		T.sort(function (a, b) {
-			if (a.time > b.time) {
-				return 1;
-			} else if (a.time == b.time) {
-				return 0;
-			} else {
-				return -1;
-			}
-		});
-
-		/*
-		renderDocument(thumbnails);
-		*/
-
-		api.getStats(fileUri).then(function (data) {
-			$scope.updateStats(data);
-		});
-	}
-
-	// Loads a single bitmap and pushes it into the list when loading is complete.
-	var loadThumbnails = function (thumbnails, i, complete) {
-		var t = new Image();
-
-		t.onerror = function () {
-			complete(thumbnails, i);
-		};
-
-		t.onload = function () {
-			t.onload = undefined;
-
-			var data = thumbnails[i];
-
-			T.splice(i, 0, {
-				layer: data.layer,
-				layerZ: data.layerZ,
-				time: data.time,
-				image: t,
-				x: data.x,
-				y: data.y,
-				w: t.width,
-				h: t.height,
-				boundsX: data.boundsX,
-				boundsY: data.boundsY,
-				boundsWidth: data.boundsWidth,
-				boundsHeight: data.boundsHeight
-			});
-
-			complete(thumbnails, i);
-		};
-
-		t.crossOrigin = 'Anonymous'; // Needed for color thief.
-		t.src = api.getThumbnailUrl(fileUri, thumbnails[i].fileName);
-	};
-
-	// Trigger loading the bitmaps.
-	api.getThumbnails(fileUri).then(function (thumbnails) {
-		loadItems(thumbnails, loadThumbnails, loadThumbnailsComplete);
-	});
-
-	api.getActivities(fileUri).then(function (data) {
+	
+	api.getActivities(fileUri).then(function (data) {		
 		// Check if there is a plausable end time.
 		for (var i = 0; i < data.length; i++) {
 			var activity = data[i];
@@ -370,37 +133,77 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		$scope.activities = data;
 
+		console.log("Loaded activities: ", $scope.activities);
+		
 		if (data.length > 0) {
 			$scope.selectedActivity = data[0];
 		}
 	});
-
-	api.getStats(fileUri).then(function (data) {
-		$scope.updateStats(data);
-	});
-
-	api.getInfluences(fileUri).then(function (data) {
+	
+	// INFLUENCES
+	$scope.influences = [];
+	$scope.previousInfluence;
+	$scope.selectedInfluence;
+	
+	api.getInfluences(fileUri).then(function (data) {		
 		$scope.influences = data;
 
+		console.log("Loaded influences:", $scope.influences);
+		
 		if (data.length > 0) {
 			$scope.selectedInfluence = data[0];
+			
+			$scope.renderInfluence(data[0]);
 		}
 	});
-
-	$scope.getFormattedTime = function (time) {
-		return moment(time).format('hh:mm:ss');
+	
+	$scope.selectInfluence = function (influence) {
+		$scope.selectedInfluence = influence;
+		$scope.previousInfluence = undefined;
 	};
 
-	$scope.getFormattedDate = function (time) {
-		return moment(time).format('dddd, Do MMMM YYYY');
+	$scope.previewInfluence = function (influence) {
+		$scope.previousInfluence = $scope.selectedInfluence;
+		$scope.selectedInfluence = influence;
+
+		if (influence.time !== undefined) {			
+			$scope.renderInfluence(influence);
+		}
 	};
 
-	$scope.getFormattedTimeFromNow = function (time) {
-		var result = moment(time).fromNow();
+	$scope.renderInfluence = function (influence) {
+		if(influence !== undefined) {
+			renderer.render(influence);
 
-		return result;
+			getLayers(influence);
+
+			api.getStats(fileUri, influence.time).then(function (data) {
+				$scope.updateStats(data, influence.time);
+			});
+
+			// Warning: this is slow.
+			$scope.palette = renderer.getPalette();
+		}
 	};
 
+	$scope.resetInfluence = function () {
+		if ($scope.previousInfluence) {
+			$scope.selectedInfluence = $scope.previousInfluence;
+			$scope.previousInfluence = undefined;
+
+			$scope.renderInfluence($scope.selectedInfluence);
+		}
+	};
+	
+	// STATISTICS
+	$scope.stats = {
+		confidence: 100,
+		steps: 10,
+		undos: 0,
+		redos: 0,
+		layers: []
+	};
+	
 	$scope.updateStats = function (data, time) {
 		var stats = {
 			confidence: 100,
@@ -422,79 +225,17 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			}
 		}
 
-		for (var i = 0; i < $scope.influences.length; i++) {
-			var influence = $scope.influences[i];
-
-			if (time !== undefined && influence.time > time) {
-				continue;
-			}
-
-			if (influence.layer !== null && stats.layers.indexOf(influence.layer) == -1) {
-				stats.layers.push(influence.layer);
-				stats.layers.sort();
-			}
-		}
-
 		stats.confidence = (100 * (stats.steps - stats.undos - stats.redos) / stats.steps).toFixed(0);
-
+		stats.layers = renderer.renderedLayers;
+		
 		$scope.stats = stats;
 	};
 
-	$scope.selectInfluence = function (influence) {
-		$scope.selectedInfluence = influence;
-		$scope.previousInfluence = undefined;
-	};
-
-	$scope.previewInfluence = function (influence) {
-		$scope.previousInfluence = $scope.selectedInfluence;
-		$scope.selectedInfluence = influence;
-
-		if (influence.time !== undefined) {
-			$scope.getLayers(influence.time);
-
-			api.getStats(fileUri, influence.time).then(function (data) {
-				$scope.updateStats(data, influence.time);
-			});
-		}
-
-		$scope.renderInfluence(influence);
-	};
-
-	$scope.renderInfluence = function (influence) {
-		if (influence === undefined) {
-			var context = buffer.getContext('2d');
-
-			context.clearRect(0, 0, buffer.width, buffer.height);
-		} else if (influence.time !== undefined) {
-			api.getCanvases(fileUri, influence.time).then(function (data) {
-				$scope.canvases = data;
-
-				renderDocument(T, influence.time);
-			});
-		}
-	};
-
-	$scope.resetInfluence = function () {
-		if ($scope.previousInfluence) {
-			$scope.selectedInfluence = $scope.previousInfluence;
-			$scope.previousInfluence = undefined;
-
-			$scope.renderInfluence($scope.selectedInfluence);
-		}
-	};
-
-	$scope.skipPrev = function () {
-		var i = $scope.influences.indexOf($scope.selectedInfluence);
-
-		if (0 < i) {
-			$scope.selectedInfluence = $scope.influences[i - 1];
-
-			renderDocument(T, $scope.selectedInfluence.time);
-		}
-	};
-
+	// PLAYBACK
+	var playloop = undefined;
+	
 	$scope.togglePlay = function () {
-		if ($scope.playloop) {
+		if (playloop) {
 			$scope.pause();
 		} else {
 			$scope.play();
@@ -502,16 +243,16 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	};
 
 	$scope.play = function () {
-		if (!$scope.playloop) {
-			$scope.playloop = setInterval($scope.skipNext, 500);
+		if (!playloop) {
+			playloop = setInterval($scope.skipNext, 500);
 		}
 	};
 
 	$scope.pause = function () {
-		if ($scope.playloop) {
-			clearInterval($scope.playloop);
+		if (playloop) {
+			clearInterval(playloop);
 
-			$scope.playloop = undefined;
+			playloop = undefined;
 		}
 	};
 
@@ -521,16 +262,41 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		if (0 < i && i < $scope.influences.length) {
 			$scope.selectedInfluence = $scope.influences[i];
 
-			renderDocument(T, $scope.selectedInfluence.time);
+			$scope.renderInfluence($scope.selectedInfluence);
 		}
 
-		if ($scope.playloop) {
+		if (playloop) {
 			$scope.$digest();
 
 			if (i == $scope.influences.length) {
 				$scope.pause();
 			}
 		}
+	};
+	
+	$scope.skipPrev = function () {
+		var i = $scope.influences.indexOf($scope.selectedInfluence);
+
+		if (0 < i) {
+			$scope.selectedInfluence = $scope.influences[i - 1];
+
+			$scope.renderInfluence($scope.selectedInfluence);
+		}
+	};
+	
+	// FORMATTING
+	$scope.getFormattedTime = function (time) {
+		return moment(time).format('hh:mm:ss');
+	};
+
+	$scope.getFormattedDate = function (time) {
+		return moment(time).format('dddd, Do MMMM YYYY');
+	};
+
+	$scope.getFormattedTimeFromNow = function (time) {
+		var result = moment(time).fromNow();
+
+		return result;
 	};
 }).directive('ganttChart', function () {
 	return {

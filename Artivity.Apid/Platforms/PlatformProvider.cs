@@ -80,7 +80,7 @@ namespace Artivity.Apid.Platforms
             ArtivityUserDataFolder = Path.Combine(AppDataFolder, "Artivity");
             EnsureFolderExists(ArtivityUserDataFolder);
 
-            ThumbnailFolder = Path.Combine(ArtivityUserDataFolder, "Thumbnails");
+            ThumbnailFolder = Path.Combine(ArtivityUserDataFolder, "Renderings");
             EnsureFolderExists(ThumbnailFolder);
 
             DatabaseName = "Data";
