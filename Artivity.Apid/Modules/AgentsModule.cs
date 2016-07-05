@@ -235,7 +235,7 @@ namespace Artivity.Apid.Modules
                     ?agent ?association
                 WHERE 
                 {
-                    ?activity prov:used @entity .
+                    ?activity prov:used | prov:generated @entity .
                     ?activity prov:qualifiedAssociation ?association .
 
                     ?association prov:hadRole art:SOFTWARE .
@@ -245,7 +245,7 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@entity", entityUri);
 
-            BindingSet bindings = ModelProvider.GetAllActivities().GetBindings(query).FirstOrDefault();
+            BindingSet bindings = ModelProvider.GetAll().GetBindings(query).FirstOrDefault();
 
             return Response.AsJson(bindings);
         }
@@ -333,7 +333,7 @@ namespace Artivity.Apid.Modules
                 }
             ");
 
-            IEnumerable<Person> persons = ModelProvider.AgentsModel.GetResources<Person>(query);
+            IEnumerable<Person> persons = ModelProvider.GetAgents().GetResources<Person>(query);
 
             if (persons.Any())
             {
@@ -360,15 +360,17 @@ namespace Artivity.Apid.Modules
                 }
             ");
 
+            IModel model = ModelProvider.GetAgents();
+
             // See if there is already a person defined..
-            Person user = ModelProvider.AgentsModel.ExecuteQuery(query).GetResources<Person>().FirstOrDefault();
+            Person user = model.ExecuteQuery(query).GetResources<Person>().FirstOrDefault();
 
             if (user == null)
             {
                 Logger.LogInfo("Creating new user profile..");
 
                 // If not, create one.
-                user = ModelProvider.AgentsModel.CreateResource<Person>();
+                user = model.CreateResource<Person>();
                 user.Commit();
             }
             else
@@ -377,7 +379,7 @@ namespace Artivity.Apid.Modules
             }
 
             // Add the user role association.
-            Association association = ModelProvider.AgentsModel.CreateResource<Association>();
+            Association association = model.CreateResource<Association>();
             association.Agent = user;
             association.Role = new Role(art.USER);
             association.Commit();
@@ -397,7 +399,7 @@ namespace Artivity.Apid.Modules
                 }
             ");
 
-            var bindings = ModelProvider.AgentsModel.GetBindings(query);
+            var bindings = ModelProvider.GetAgents().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -418,7 +420,7 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@role", role);
 
-            var bindings = ModelProvider.AgentsModel.GetBindings(query).FirstOrDefault();
+            var bindings = ModelProvider.GetAgents().GetBindings(query).FirstOrDefault();
 
             return Response.AsJson(bindings);
         }
@@ -443,7 +445,9 @@ namespace Artivity.Apid.Modules
             query.Bind("@agent", agent);
             query.Bind("@version", version);
 
-            var bindings = ModelProvider.AgentsModel.GetBindings(query).FirstOrDefault();
+            IModel model = ModelProvider.GetAgents();
+
+            var bindings = model.GetBindings(query).FirstOrDefault();
 
             if (bindings == null)
             {
@@ -452,7 +456,7 @@ namespace Artivity.Apid.Modules
                 // The URI format of the new agent is always {AGENT_URI}#{VERSION}
                 UriRef uri = new UriRef(agent.AbsoluteUri + "#" + version.Replace(' ', '_').Trim());
 
-                SoftwareAssociation association = ModelProvider.AgentsModel.CreateResource<SoftwareAssociation>(uri);
+                SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(uri);
                 association.Agent = new Agent(agent);
                 association.Role = new Role(role);
                 association.ExecutableVersion = version;
@@ -578,7 +582,8 @@ namespace Artivity.Apid.Modules
 
         private Response GetUserAgentPhoto()
         {
-            string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
+            string uid = PlatformProvider.Config.GetUserId();
+            string file = Path.Combine(PlatformProvider.AvatarsFolder, uid + ".jpg");
 
             if (!File.Exists(file))
             {
@@ -604,7 +609,8 @@ namespace Artivity.Apid.Modules
         {
             try
             {
-                string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
+                string uid = PlatformProvider.Config.GetUserId();
+                string file = Path.Combine(PlatformProvider.AvatarsFolder, uid + ".jpg");
 
                 Bitmap source = new Bitmap(stream);
 

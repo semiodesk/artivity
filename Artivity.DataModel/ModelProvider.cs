@@ -25,16 +25,18 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using System;
 using Semiodesk.Trinity;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace Artivity.DataModel
 {
-    public class ModelProvider : Artivity.DataModel.IModelProvider
+    public class ModelProvider : IModelProvider
     {
         #region Members
+
+        private bool _initialized = false;
 
         private Dictionary<int, IStore> _stores = new Dictionary<int, IStore>();
 
@@ -63,25 +65,13 @@ namespace Artivity.DataModel
 
         public string NativeConnectionString { get; set; }
 
-        public Uri Agents { get; set; }
+        public string Uid { get; set; }
 
-        public IModel AgentsModel { get { return Store.GetModel(Agents); } }
+        public Uri Agents { get; set; }
 
         public Uri Activities { get; set; }
 
-        public IModel ActivitiesModel { get { return Store.GetModel(Activities); } }
-
         public Uri WebActivities { get; set; }
-
-        public IModel WebActivitiesModel { get { return Store.GetModel(WebActivities); } }
-
-        public Uri Monitoring { get; set; }
-
-        public IModel MonitoringModel { get { return Store.GetModel(Monitoring); } }
-
-        public string Username { get; set; }
-
-        private bool UrisLoaded = false;
 
         #endregion
 
@@ -93,33 +83,21 @@ namespace Artivity.DataModel
 
         #region Methods
 
-        void LoadModelUris()
-        {
-            if (string.IsNullOrEmpty(Username))
-            {
-                Username = Environment.UserName;
-            }
-
-            Agents = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/agents", Username));
-            Activities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities", Username));
-            WebActivities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities/web", Username));
-            Monitoring = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/monitoring", Username));
-            UrisLoaded = true;
-        }
-
         public void InitializeStore()
         {
-            if (!UrisLoaded)
+            if (!_initialized)
             {
-                LoadModelUris();
+                if (string.IsNullOrEmpty(Uid))
+                {
+                    throw new Exception("Cannot initialize RDF store: UID must not be empty. Is your config.json valid?");
+                }
+
+                Agents = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/agents", Uid));
+                Activities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities", Uid));
+                WebActivities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities/web", Uid));
+
+                _initialized = true;
             }
-        }
-
-        public bool CheckAgents()
-        {
-            IModel model = GetAgents();
-
-            return !model.IsEmpty;
         }
 
         public void InitializeAgents()
@@ -140,13 +118,7 @@ namespace Artivity.DataModel
             // Create the default agents..
             InstallAgent(model, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
             InstallAgent(model, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
-            InstallAgent(model, "application://chromium-browser.desktop/", "Chromium", "chromium-browser", "#1F75FE");
             InstallAgent(model, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
-            //InstallAgent(model, "http://adobe.com/products/photoshop", "Adobe Photoshop", "photoshop.exe", "#EE2000", true);
-            //InstallSoftwareAssociation(model, "http://adobe.com/products/photoshop", "2015");
-            //InstallAgent(model, "http://adobe.com/products/illustrator", "Adobe Illustrator", "illustrator.exe", "#EE2000", true);
-            //InstallSoftwareAssociation(model, "http://adobe.com/products/illustrator", "2015");
-            //InstallSoftwareAssociation(model, "http://adobe.com/products/illustrator", "2015.2");
         }
 
         public void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
@@ -192,17 +164,53 @@ namespace Artivity.DataModel
             }
         }
 
-        public void InstallSoftwareAssociation(IModel model, string uri, string version)
+        public bool CheckOntologies()
         {
-            UriRef associationUri = new UriRef(uri + "#" + version);
+            IModel model = Store.GetModel(art.Namespace);
 
-            if (!model.ContainsResource(associationUri))
-            {
-                SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(associationUri);
-                association.Agent = new SoftwareAgent(new UriRef(uri));
-                association.Role = new Role(new UriRef(ART.SOFTWARE));
-                association.Commit();
-            }
+            return !model.IsEmpty;
+        }
+
+        public bool CheckAgents()
+        {
+            IModel model = GetAgents();
+
+            return !model.IsEmpty;
+        }
+
+        public IModelGroup GetAll()
+        {
+            IModelGroup result = Store.CreateModelGroup();
+            result.Add(GetAgents());
+            result.Add(GetActivities());
+            result.Add(GetWebActivities());
+
+            return result;
+        }
+
+        public IModelGroup GetAllActivities()
+        {
+            IModelGroup result = Store.CreateModelGroup();
+            result.Add(GetAgents());
+            result.Add(GetActivities());
+            result.Add(GetWebActivities());
+
+            return result;
+        }
+
+        public IModel GetAgents()
+        {
+            return Store.GetModel(Agents);
+        }
+
+        public IModel GetActivities()
+        {
+            return Store.GetModel(Activities);
+        }
+
+        public IModel GetWebActivities()
+        {
+            return Store.GetModel(WebActivities);
         }
 
         public void ReleaseStore()
@@ -211,53 +219,14 @@ namespace Artivity.DataModel
 
             if (_stores.ContainsKey(id))
             {
-                var x = _stores[id];
-                x.Dispose();
+                IStore store = _stores[id];
+
+                store.Dispose();
+
                 _stores.Remove(id);
             }
         }
 
-        public IModelGroup GetAll()
-        {
-            IModelGroup result = Store.CreateModelGroup();
-            result.Add(GetAgents(Store));
-            result.Add(GetActivities(Store));
-            result.Add(GetWebActivities(Store));
-            result.Add(GetMonitoring());
-
-            return result;
-        }
-
-        public IModel GetAllActivities()
-        {
-            IModelGroup result = Store.CreateModelGroup();
-            result.Add(GetAgents(Store));
-            result.Add(GetActivities(Store));
-            result.Add(GetWebActivities(Store));
-
-            return result;
-        }
-
-        public IModel GetAgents(IStore store = null)
-        {
-            return AgentsModel;
-        }
-
-        public IModel GetActivities(IStore store = null)
-        {
-            return ActivitiesModel;
-        }
-
-        public IModel GetWebActivities(IStore store = null)
-        {
-            return WebActivitiesModel;
-        }
-
-        public IModel GetMonitoring(IStore store = null)
-        {
-            return MonitoringModel;
-        }
-         
         #endregion
     }
 }

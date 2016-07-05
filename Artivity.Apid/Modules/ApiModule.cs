@@ -250,8 +250,20 @@ namespace Artivity.Apid.Modules
                 }
                 else
                 {
-                    return GetCanvases(new UriRef(uri), DateTime.UtcNow);
+                    return GetCanvases(new UriRef(uri));
                 }
+            };
+
+            Get["/influences/layers"] = parameters =>
+            {
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return GetLayers(new UriRef(uri));
             };
 
             Get["/renderings"] = parameters =>
@@ -369,13 +381,6 @@ namespace Artivity.Apid.Modules
             {
                 lock (_modelLock)
                 {
-                    IModel model = ModelProvider.GetActivities();
-
-                    if (model == null)
-                    {
-                        Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
-                    }
-
                     MemoryStream stream = new MemoryStream();
 
                     StreamWriter writer = new StreamWriter(stream);
@@ -384,7 +389,7 @@ namespace Artivity.Apid.Modules
 
                     stream.Position = 0;
 
-                    LoadTurtle(model, stream);
+                    LoadTurtle(ModelProvider.Activities, stream);
                 }
 
                 Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
@@ -481,10 +486,11 @@ namespace Artivity.Apid.Modules
 
         private bool IsCaptureEnabled(ActivityParameters p)
         {
-            IModel model = ModelProvider.GetAgents();
-
             SoftwareAgent agent = null;
+
             Uri agentUri = new Uri(p.agent);
+
+            IModel model = ModelProvider.GetAgents();
 
             if (model.ContainsResource(agentUri))
             {
@@ -534,7 +540,7 @@ namespace Artivity.Apid.Modules
             return null;
         }
 
-        private void LoadTurtle(IModel model, Stream stream)
+        private void LoadTurtle(Uri modelUri, Stream stream)
         {
             string connectionString = ModelProvider.NativeConnectionString;
 
@@ -549,9 +555,9 @@ namespace Artivity.Apid.Modules
                         IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
                         parser.Load(graph, new StringReader(data));
 
-                        graph.BaseUri = model.Uri;
+                        graph.BaseUri = modelUri;
 
-                        m.UpdateGraph(model.Uri, graph.Triples, new List<Triple>());
+                        m.UpdateGraph(modelUri, graph.Triples, new List<Triple>());
                     }
                 }
             }
@@ -559,9 +565,7 @@ namespace Artivity.Apid.Modules
 
         private Response GetAccounts()
         {
-            IModel model = ModelProvider.GetAgents();
-
-            List<OnlineAccount> accounts = model.GetResources<OnlineAccount>(true).ToList();
+            List<OnlineAccount> accounts = ModelProvider.GetAgents().GetResources<OnlineAccount>(true).ToList();
 
             return Response.AsJson(accounts);
         }
@@ -605,7 +609,7 @@ namespace Artivity.Apid.Modules
 
             if (provider != null)
             {
-                provider.Authorize(ModelProvider.AgentsModel, code);
+                provider.Authorize(ModelProvider.GetAgents(), code);
 
                 return HttpStatusCode.Accepted;
             }
@@ -622,7 +626,7 @@ namespace Artivity.Apid.Modules
 
         private Response UninstallAccount(string accountId)
         {
-            Person user = ModelProvider.AgentsModel.GetResources<Person>().FirstOrDefault();
+            Person user = ModelProvider.GetAgents().GetResources<Person>().FirstOrDefault();
 
             if (user == null)
             {
@@ -636,7 +640,7 @@ namespace Artivity.Apid.Modules
                 return Logger.LogInfo(HttpStatusCode.BadRequest, "Did not find account with id {0}", accountId);
             }
 
-            ModelProvider.AgentsModel.DeleteResource(account);
+            ModelProvider.GetAgents().DeleteResource(account);
 
             user.Accounts.Remove(account);
             user.Commit();
@@ -648,28 +652,25 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    MAX(?time) as ?time ?uri ?label
+	                ?time
+	                ?uri
+	                ?label
                 WHERE
                 {
-                    {
-                        SELECT
-                            MAX(?time) as ?time ?label
-                        WHERE
-                        {
-                            ?file rdfs:label ?label .
-                            ?file nie:lastModified ?time .
-                        }
-                        GROUP BY ?label
-                    }
-
-                    ?uri nie:isStoredAs ?file .
-
-                    ?file rdfs:label ?label .
-                    ?file nie:lastModified ?time .
+	                ?uri nie:isStoredAs [ rdfs:label ?label ; nie:lastModified ?time ] .
+	
+	                OPTIONAL
+	                {
+		                [ nie:isStoredAs [ rdfs:label ?label ; nie:lastModified ?t2 ] ].
+		
+		                FILTER(?time > ?t2)
+	                }
+	
+	                FILTER(!BOUND(?t2))
                 }
                 ORDER BY DESC(?time) LIMIT 25");
 
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            var bindings = ModelProvider.GetActivities().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -706,7 +707,7 @@ namespace Artivity.Apid.Modules
 
         private Response ClearActivities()
         {
-            ModelProvider.ActivitiesModel.Clear();
+            ModelProvider.GetActivities().Clear();
 
             return HttpStatusCode.OK;
         }
@@ -714,147 +715,120 @@ namespace Artivity.Apid.Modules
         private Response GetInfluences(UriRef entityUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    DISTINCT ?time ?uri ?type ?description ?agentColor ?layerName ?bounds ?renderUrl ?renderX ?renderY
+                SELECT DISTINCT
+                    ?time
+                    ?uri
+                    ?type
+                    ?description
+                    ?layer
+                    COALESCE(?agentColor, '#FF0000') AS ?agentColor
+                    COALESCE(?x, 0) AS ?x
+                    COALESCE(?y, 0) AS ?y
+                    COALESCE(?w, 0) AS ?w
+                    COALESCE(?h, 0) AS ?h
                 WHERE 
                 {
-                    ?activity prov:generated | prov:used @entity .
-                    ?activity prov:qualifiedAssociation ?association .
+                    ?activity
+                        prov:generated | prov:used @entity ;
+                        prov:qualifiedAssociation ?association .
 
-                    ?association prov:hadRole art:SOFTWARE .
-                    ?association prov:agent / art:hasColourCode ?agentColor .
+                    ?association
+                        prov:hadRole art:SOFTWARE .
 
-                    ?uri a ?type .
-                    ?uri prov:activity | prov:hadActivity ?activity .
-                    ?uri prov:atTime ?time .
-
-                    OPTIONAL { ?uri dces:description ?description . }
-                    OPTIONAL { ?uri art:selectedLayer / rdfs:label ?layerName . }
-                    OPTIONAL { ?uri art:hadBoundaries ?bounds . }
                     OPTIONAL
                     {
-                        ?uri art:renderedAs ?rendering .
+                        ?association prov:agent / art:hasColourCode ?agentColor .
+                    }
 
-                        ?rendering nie:url ?renderUrl .
-                        ?rendering art:region / art:x ?renderX .
-                        ?rendering art:region / art:y ?renderY .
+                    ?uri
+                        rdf:type ?type ;
+                        prov:activity | prov:hadActivity ?activity ;
+                        prov:atTime ?time .
+
+                    OPTIONAL
+                    {
+                        ?uri dces:description ?description .
+                    }
+
+                    OPTIONAL
+                    {
+                        ?uri art:hadBoundaries [
+                            art:x ?x ;
+                            art:y ?y ;
+                            art:width ?w ;
+                            art:height?h
+                        ] .
+                    }
+
+                    OPTIONAL
+                    {
+                        ?uri art:renderedAs [
+                            art:renderedLayer ?layer ;
+                        ] .
                     }
                 }
                 ORDER BY DESC(?time)");
 
             query.Bind("@entity", entityUri);
 
-            var bindings = ModelProvider.GetAllActivities().GetBindings(query);
+            var bindings = ModelProvider.GetAll().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
 
         private Response GetRenderings(UriRef entityUri)
         {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-	                ?time ?fileName COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?layerName ?layerZ ?boundsX ?boundsY ?boundsWidth ?boundsHeight
-                WHERE 
-                {
-	                {
-		                SELECT
-			                ?time ?influence ?layerName COALESCE(?layerZ, 0)
-		                WHERE
-		                {
-			                ?activity prov:generated | prov:used @entity .
-
-			                ?influence prov:activity | prov:hadActivity ?activity .
-			                ?influence prov:atTime ?time .
-			
-			                OPTIONAL
-			                {
-				                ?influence art:selectedLayer ?layer .
-
-				                ?layer rdfs:label ?layerName .
-				                ?layer art:z ?layerZ .
-			                }
-		                }
-		                GROUP BY ?layerZ
-	                }
-
-	                ?influence art:renderedAs ?rendering .
-
-	                ?rendering rdfs:label ?fileName .
-
-	                OPTIONAL
-	                {
-		                ?rendering art:region / art:x ?x .
-		                ?rendering art:region / art:y ?y .
-	                }
-
-	                OPTIONAL
-	                {
-		                ?influence art:hadBoundaries ?bounds .
-
-		                ?bounds art:x ?boundsX .
-		                ?bounds art:y ?boundsY .
-		                ?bounds art:width ?boundsWidth .
-		                ?bounds art:height ?boundsHeight .
-	                }
-                }
-                ORDER BY DESC(?time)");
-
-            query.Bind("@entity", entityUri);
-
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
-
-            return Response.AsJson(bindings);
+            return GetRenderings(entityUri, DateTime.UtcNow);
         }
 
         private Response GetRenderings(UriRef entityUri, DateTime time)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?time ?url ?x ?y ?layerName ?layerZ ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+	                ?time
+                    ?type
+                    ?file
+                    ?layer
+                    COALESCE(?x, 0) AS ?x
+                    COALESCE(?y, 0) AS ?y
+                    COALESCE(?w, 0) AS ?w
+                    COALESCE(?h, 0) AS ?h
                 WHERE 
                 {
-                    {
-                        SELECT
-                            MAX(?time) AS ?time ?layer ?layerName ?layerZ
-                        WHERE
-                        {
-                            ?activity prov:generated | prov:used @entity .
+			        ?activity prov:generated | prov:used @entity .
 
-			                ?influence prov:activity | prov:hadActivity ?activity .
-			                ?influence prov:atTime ?time .
-				            ?influence art:selectedLayer ?layer .
-
-				            ?layer rdfs:label ?layerName .
-				            ?layer art:z ?layerZ .
-
-                            FILTER(?time <= @time)
-                        }
-                        GROUP BY ?layerZ
-                    }
-
-                    ?influence prov:atTime ?time .
-                    ?influence art:selectedLayer ?layer .
-                    ?influence art:renderedAs ?rendering .
-
-                    ?rendering nie:url ?url .
-                    ?rendering art:region / art:x ?x .
-                    ?rendering art:region / art:y ?y .
+			        ?influence
+                        prov:activity | prov:hadActivity ?activity ;
+                        prov:atTime ?time ;
+                        art:renderedAs ?rendering .
 
                     OPTIONAL
                     {
-                        ?influence art:hadBoundaries ?bounds .
-
-                        ?bounds art:x ?boundsX .
-                        ?bounds art:y ?boundsY .
-                        ?bounds art:width ?boundsWidth .
-                        ?bounds art:height ?boundsHeight .
+                        ?influence art:hadBoundaries [
+                            art:x ?x ;
+                            art:y ?y ;
+                            art:width ?w ;
+                            art:height ?h
+                        ] .
                     }
-                }");
+
+                    ?rendering
+                        rdf:type ?type ;
+                        rdfs:label ?file .
+
+                    OPTIONAL
+                    {
+                        ?rendering art:renderedLayer ?layer .
+                    }
+
+                    FILTER(?time <= @time)
+                }
+                ORDER BY DESC(?time)");
 
             query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
+            var bindings = ModelProvider.GetActivities().GetBindings(query, true);
 
             return Response.AsJson(bindings);
         }
@@ -880,10 +854,10 @@ namespace Artivity.Apid.Modules
 
         private string GetRenderOutputPath(UriRef entityUri)
         {
-            var invalids = System.IO.Path.GetInvalidFileNameChars();
+            var invalids = Path.GetInvalidFileNameChars();
             var newName = String.Join("_", entityUri.AbsoluteUri.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 
-            return Path.Combine(PlatformProvider.ThumbnailFolder, newName);
+            return Path.Combine(PlatformProvider.RenderingsFolder, newName);
         }
 
         private Response GetRenderOutputPath(UriRef entityUri, bool createDirectory = false)
@@ -919,7 +893,7 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@fileUrl", fileUrl.AbsoluteUri);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
 
             if (bindings.Any())
             {
@@ -952,7 +926,7 @@ namespace Artivity.Apid.Modules
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@entity", entityUri);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -977,7 +951,7 @@ namespace Artivity.Apid.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            List<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query).ToList();
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
         }
@@ -1010,7 +984,7 @@ namespace Artivity.Apid.Modules
             query.Bind("@fileName", file);
             query.Bind("@folderUrl", new Uri(folder));
 
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query).FirstOrDefault();
+            var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
             return Response.AsJson(bindings);
         }
@@ -1033,7 +1007,7 @@ namespace Artivity.Apid.Modules
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@entity", entityUri);
 
-            BindingSet bindings = ModelProvider.ActivitiesModel.GetBindings(query).FirstOrDefault();
+            BindingSet bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
             return Response.AsJson(bindings);
         }
@@ -1045,54 +1019,46 @@ namespace Artivity.Apid.Modules
             return HttpStatusCode.OK;
         }
 
+        private Response GetCanvases(UriRef entityUri)
+        {
+            return GetCanvases(entityUri, DateTime.UtcNow);
+        }
+
         private Response GetCanvases(UriRef entityUri, DateTime time)
         {
             string queryString = @"
-                SELECT
-	                ?canvas COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?width ?height ?lengthUnit
+                SELECT DISTINCT
+	                ?time
+	                ?type
+	                ?uri
+	                ?property
+	                ?value
+	                COALESCE(?x, 0) AS ?x
+	                COALESCE(?y, 0) AS ?y
+	                COALESCE(?w, 0) AS ?w
+	                COALESCE(?h, 0) AS ?h
                 WHERE
                 {
-	                {
-		                SELECT
-			                ?canvas MAX(?t) AS ?time
-		                WHERE
-		                {
-			                ?activity prov:generated | prov:used @entity .
+	                ?activity prov:generated | prov:used @entity.
 
-			                ?canvas a art:Canvas .
-			                ?canvas ?qualifiedInfluence ?influence .
-
-			                ?influence prov:activity | prov:hadActivity ?activity .
-			                ?influence prov:atTime ?t .
-			                ?influence art:hadBoundaries ?bounds .
-			
-			                FILTER(?t <= @time) .
-
-			                FILTER NOT EXISTS
-			                {
-				                ?canvas prov:qualifiedInvalidation ?invalidation .
-				
-				                ?invalidation prov:atTime ?t2 .
-				
-				                FILTER(?t2 <= @time) .
-			                }
-		                }
-	                }
+	                ?influence a ?type ;
+		                prov:activity | prov:hadActivity ?activity ;
+		                prov:atTime ?time ;
+		                art:hadChange ?change ;
+		                art:hadBoundaries [
+			                art:x ?x ;
+			                art:y ?y ;
+			                art:width ?w ;
+			                art:height ?h
+		                ].
 	
-	                ?canvas ?qualifiedInfluence ?influence .
-	
-	                ?influence prov:atTime ?time .
-	                ?influence art:hadBoundaries / art:width ?width .
-	                ?influence art:hadBoundaries / art:height ?height .
-	                ?influence art:hadBoundaries / art:x ?x .
-	                ?influence art:hadBoundaries / art:y ?y .
-	                ?influence art:hadChange ?u .
+	                ?change art:entity ?uri ;
+		                art:property ?property ;
+		                art:value ?value .
 
-	                OPTIONAL
-	                {
-		                ?u art:property art:lengthUnit .
-		                ?u art:value ?lengthUnit .
-	                }
+	                ?uri a art:Canvas .
+
+                    FILTER (?time <= @time)
                 }
                 ORDER BY DESC(?time)";
                 
@@ -1100,7 +1066,42 @@ namespace Artivity.Apid.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@time", time);
             
-            List<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query).ToList();
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
+
+            return Response.AsJson(bindings);
+        }
+
+        private Response GetLayers(UriRef uriRef)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT DISTINCT
+                    ?time
+                    ?type
+                    ?uri
+                    ?property
+                    ?value
+                WHERE
+                {
+	                ?activity prov:generated | prov:used @entity.
+
+	                ?influence a ?type ;
+		                prov:activity | prov:hadActivity ?activity ;
+		                prov:atTime ?time ;
+		                art:hadChange ?change .
+
+	                ?change art:entity ?uri ;
+		                art:property ?property ;
+		                art:value ?value .
+
+	                ?uri a art:Layer .
+
+	                FILTER(?property = art:aboveLayer || ?property = rdfs:label)
+                }
+                ORDER BY DESC(?time)");
+
+            query.Bind("@entity", uriRef);
+
+            IList<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
         }
