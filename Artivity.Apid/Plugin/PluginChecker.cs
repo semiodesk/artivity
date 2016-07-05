@@ -163,27 +163,34 @@ namespace Artivity.Api.Plugin
         {
             foreach (SoftwareAgentPlugin plugin in Plugins)
             {
-                plugin.IsSoftwareInstalled = GetApplicationLocation(plugin.Manifest) != null;
-
-                if (plugin.IsSoftwareInstalled)
+                try
                 {
-                    plugin.IsPluginInstalled = IsPluginInstalled(plugin);
+                    plugin.IsSoftwareInstalled = IsSoftwareInstalled(plugin.Manifest);
 
-                    if (!plugin.IsPluginInstalled && installPlugins)
+                    if (plugin.IsSoftwareInstalled)
                     {
-                        plugin.IsPluginInstalled = InstallPlugin(plugin.Manifest);
-                        plugin.IsPluginEnabled = plugin.IsPluginInstalled;
+                        plugin.IsPluginInstalled = IsPluginInstalled(plugin.Manifest);
+
+                        if (!plugin.IsPluginInstalled && installPlugins)
+                        {
+                            plugin.IsPluginInstalled = InstallPlugin(plugin.Manifest);
+                            plugin.IsPluginEnabled = plugin.IsPluginInstalled;
+                        }
+                    }
+                    else
+                    {
+                        plugin.IsPluginInstalled = false;
+                        plugin.IsPluginEnabled = false;
                     }
                 }
-                else
+                catch (Exception e)
                 {
-                    plugin.IsPluginInstalled = false;
-                    plugin.IsPluginEnabled = false;
+                    Logger.Error(e.Message);
                 }
             }
         }
 
-        public bool IsPluginInstalled(PluginManifest manifest)
+        public bool IsSoftwareInstalled(PluginManifest manifest)
         {
             DirectoryInfo location = GetApplicationLocation(manifest);
 
@@ -202,11 +209,18 @@ namespace Artivity.Api.Plugin
 
                 var version = GetApplicationVersion(info);
 
-                if (!version.StartsWith(manifest.HostVersion))
-                {
-                    return false;
-                }
+                return version.StartsWith(manifest.HostVersion, StringComparison.InvariantCulture);
+            }
 
+            return false;
+        }
+
+        public bool IsPluginInstalled(PluginManifest manifest)
+        {
+            DirectoryInfo location = GetApplicationLocation(manifest);
+
+            if (location != null && location.Exists)
+            {
                 bool installed = true;
 
                 foreach (var pluginFile in manifest.PluginFile)
@@ -254,19 +268,20 @@ namespace Artivity.Api.Plugin
                 {
                     foreach (PluginManifestPluginFile file in manifest.PluginFile)
                     {
-                        var path = Path.Combine(location.FullName, manifest.TargetPath, file.GetName());
+                        var targetFolder = Path.Combine(location.FullName, manifest.TargetPath);
+                        var targetFile = Path.Combine(targetFolder, file.GetName());
 
                         string source = file.GetPluginSource(manifest);
 
-                        if (File.Exists(source) || Directory.Exists(source))
+                        if (File.Exists(source) && Directory.Exists(targetFolder))
                         {
                             if (file.Link)
                             {
-                                CreateLink(path, source);
+                                CreateLink(targetFile, source);
                             }
                             else
                             {
-                                File.Copy(source, path);
+                                File.Copy(source, targetFile);
                             }
                         }
                     }

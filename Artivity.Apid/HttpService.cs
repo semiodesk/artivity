@@ -399,7 +399,14 @@ namespace Artivity.Apid
             {
                 Logger.LogInfo("Loading ontologies..");
 
-                store.LoadOntologySettings();
+                try
+                {
+                    store.LoadOntologySettings();
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError(e.Message);
+                }
             }
         }
 

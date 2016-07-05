@@ -57,7 +57,7 @@ namespace Artivity.Api.Plugin
 
         public static PluginManifest ReadManifest(DirectoryInfo pluginFolder)
         {
-            FileInfo[] manifestFiles = pluginFolder.GetFiles("manifest.xml");
+            FileInfo[] manifestFiles = pluginFolder.GetFiles("Manifest.xml");
 
             return manifestFiles.Any() ? ReadManifest(manifestFiles[0]) : null;
         }
@@ -74,7 +74,7 @@ namespace Artivity.Api.Plugin
 
                     manifest.ManifestFile = manifestFile;
 
-                    FileInfo[] iconFiles = manifestFile.Directory.GetFiles("icon.png");
+                    FileInfo[] iconFiles = manifestFile.Directory.GetFiles("Icon.png");
 
                     if (iconFiles.Any())
                     {
