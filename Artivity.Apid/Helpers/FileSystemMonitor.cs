@@ -143,7 +143,7 @@ namespace Artivity.Apid
             {
                 Logger.LogInfo("Starting file system monitor.");
 
-                _model = provider.ActivitiesModel;
+                _model = provider.GetActivities();
                 _platform = platform;
 
                 InitializeFileWatchers();

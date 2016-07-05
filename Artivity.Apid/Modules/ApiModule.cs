@@ -381,13 +381,6 @@ namespace Artivity.Apid.Modules
             {
                 lock (_modelLock)
                 {
-                    IModel model = ModelProvider.GetActivities();
-
-                    if (model == null)
-                    {
-                        Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
-                    }
-
                     MemoryStream stream = new MemoryStream();
 
                     StreamWriter writer = new StreamWriter(stream);
@@ -396,7 +389,7 @@ namespace Artivity.Apid.Modules
 
                     stream.Position = 0;
 
-                    LoadTurtle(model, stream);
+                    LoadTurtle(ModelProvider.GetActivities(), stream);
                 }
 
                 Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
@@ -493,10 +486,11 @@ namespace Artivity.Apid.Modules
 
         private bool IsCaptureEnabled(ActivityParameters p)
         {
-            IModel model = ModelProvider.GetAgents();
-
             SoftwareAgent agent = null;
+
             Uri agentUri = new Uri(p.agent);
+
+            IModel model = ModelProvider.GetAgents();
 
             if (model.ContainsResource(agentUri))
             {
@@ -571,9 +565,7 @@ namespace Artivity.Apid.Modules
 
         private Response GetAccounts()
         {
-            IModel model = ModelProvider.GetAgents();
-
-            List<OnlineAccount> accounts = model.GetResources<OnlineAccount>(true).ToList();
+            List<OnlineAccount> accounts = ModelProvider.GetAgents().GetResources<OnlineAccount>(true).ToList();
 
             return Response.AsJson(accounts);
         }
@@ -617,7 +609,7 @@ namespace Artivity.Apid.Modules
 
             if (provider != null)
             {
-                provider.Authorize(ModelProvider.AgentsModel, code);
+                provider.Authorize(ModelProvider.GetAgents(), code);
 
                 return HttpStatusCode.Accepted;
             }
@@ -634,7 +626,7 @@ namespace Artivity.Apid.Modules
 
         private Response UninstallAccount(string accountId)
         {
-            Person user = ModelProvider.AgentsModel.GetResources<Person>().FirstOrDefault();
+            Person user = ModelProvider.GetAgents().GetResources<Person>().FirstOrDefault();
 
             if (user == null)
             {
@@ -648,7 +640,7 @@ namespace Artivity.Apid.Modules
                 return Logger.LogInfo(HttpStatusCode.BadRequest, "Did not find account with id {0}", accountId);
             }
 
-            ModelProvider.AgentsModel.DeleteResource(account);
+            ModelProvider.GetAgents().DeleteResource(account);
 
             user.Accounts.Remove(account);
             user.Commit();
@@ -678,7 +670,7 @@ namespace Artivity.Apid.Modules
                 }
                 ORDER BY DESC(?time) LIMIT 25");
 
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            var bindings = ModelProvider.GetActivities().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -715,7 +707,7 @@ namespace Artivity.Apid.Modules
 
         private Response ClearActivities()
         {
-            ModelProvider.ActivitiesModel.Clear();
+            ModelProvider.GetActivities().Clear();
 
             return HttpStatusCode.OK;
         }
@@ -830,7 +822,7 @@ namespace Artivity.Apid.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query, true);
+            var bindings = ModelProvider.GetActivities().GetBindings(query, true);
 
             return Response.AsJson(bindings);
         }
@@ -856,10 +848,10 @@ namespace Artivity.Apid.Modules
 
         private string GetRenderOutputPath(UriRef entityUri)
         {
-            var invalids = System.IO.Path.GetInvalidFileNameChars();
+            var invalids = Path.GetInvalidFileNameChars();
             var newName = String.Join("_", entityUri.AbsoluteUri.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 
-            return Path.Combine(PlatformProvider.ThumbnailFolder, newName);
+            return Path.Combine(PlatformProvider.RenderingsFolder, newName);
         }
 
         private Response GetRenderOutputPath(UriRef entityUri, bool createDirectory = false)
@@ -895,7 +887,7 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@fileUrl", fileUrl.AbsoluteUri);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
 
             if (bindings.Any())
             {
@@ -928,7 +920,7 @@ namespace Artivity.Apid.Modules
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@entity", entityUri);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -953,7 +945,7 @@ namespace Artivity.Apid.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            List<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query).ToList();
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
         }
@@ -986,7 +978,7 @@ namespace Artivity.Apid.Modules
             query.Bind("@fileName", file);
             query.Bind("@folderUrl", new Uri(folder));
 
-            var bindings = ModelProvider.ActivitiesModel.GetBindings(query).FirstOrDefault();
+            var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
             return Response.AsJson(bindings);
         }
@@ -1009,7 +1001,7 @@ namespace Artivity.Apid.Modules
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@entity", entityUri);
 
-            BindingSet bindings = ModelProvider.ActivitiesModel.GetBindings(query).FirstOrDefault();
+            BindingSet bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
             return Response.AsJson(bindings);
         }
@@ -1068,7 +1060,7 @@ namespace Artivity.Apid.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@time", time);
             
-            List<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query).ToList();
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
         }
@@ -1103,7 +1095,7 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@entity", uriRef);
 
-            IList<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query).ToList();
+            IList<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
         }
