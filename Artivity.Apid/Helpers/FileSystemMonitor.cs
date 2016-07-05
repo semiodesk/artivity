@@ -143,7 +143,7 @@ namespace Artivity.Apid
             {
                 Logger.LogInfo("Starting file system monitor.");
 
-                _model = provider.ActivitiesModel;
+                _model = provider.GetActivities();
                 _platform = platform;
 
                 InitializeFileWatchers();
@@ -615,9 +615,6 @@ namespace Artivity.Apid
             fileObject.LastModificationTime = file.LastWriteTime;
             fileObject.LastAccessTime = file.LastAccessTime;
             fileObject.Commit();
-
-            Console.WriteLine(SparqlSerializer.SerializeResource(folderObject));
-            Console.WriteLine(SparqlSerializer.SerializeResource(fileObject));
 
             Logger.LogInfo("Created: {0}", file.FullName);
         }

@@ -213,7 +213,7 @@ namespace artivity
         if (strcmp(roleUri, art::SOFTWARE) != 0 || strcmp(version, "\0") == 0) return;
 
         stringstream str;
-        str << agentUri << "#" << version;
+        str << agentUri << "/" << version;
 
         SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(str.str()));
 		a->setAgent(AgentRef(new Agent(agentUri)));
@@ -228,7 +228,7 @@ namespace artivity
         if (strcmp(roleUri, art::SOFTWARE) != 0 || version.empty()) return;
 
         stringstream str;
-        str << agentUri << "#" << version;
+        str << agentUri << "/" << version;
 
         SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(str.str()));
         a->setAgent(AgentRef(new Agent(agentUri)));

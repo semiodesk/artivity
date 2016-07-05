@@ -49,7 +49,7 @@ namespace Artivity.Api.Plugin
             {
                 if(_associationUri == null)
                 {
-                    _associationUri = new UriRef(string.Format("{0}#{1}", AgentUri, Manifest.HostVersion));
+                    _associationUri = new UriRef(string.Format("{0}/{1}", AgentUri, Manifest.HostVersion));
                 }
 
                 return _associationUri;

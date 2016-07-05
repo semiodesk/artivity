@@ -76,7 +76,7 @@ namespace artivity
         
         static const char* selectedLayer = art("selectedLayer");
 
-        static const char* depictedLayer = art("depictedLayer");
+        static const char* renderedLayer = art("renderedLayer");
 
         static const char* usingTool = art("usingTool");
 

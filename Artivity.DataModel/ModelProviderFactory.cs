@@ -34,7 +34,7 @@ namespace Artivity.DataModel
             ModelProvider p = new ModelProvider();
             p.ConnectionString = connectionString;
             p.NativeConnectionString = nativeConectionString;
-            p.Username = username;
+            p.Uid = username;
             p.InitializeStore();
 
             return p;

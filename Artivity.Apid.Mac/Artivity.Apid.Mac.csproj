@@ -20,7 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <EnableCodeSigning>true</EnableCodeSigning>
+    <EnableCodeSigning>false</EnableCodeSigning>
     <CodeSigningKey>Developer ID Application: Semiodesk GmbH (3F9DU688H9)</CodeSigningKey>
     <CreatePackage>false</CreatePackage>
     <EnablePackageSigning>false</EnablePackageSigning>
@@ -106,6 +106,15 @@
     <BundleResource Include="TinyVirtuoso\database\virtuoso.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>
+    <BundleResource Include="Plugins\IllustratorCC2015\Icon.png" />
+    <BundleResource Include="Plugins\IllustratorCC2015.2\Icon.png" />
+    <BundleResource Include="Plugins\PhotoshopCC2015\Icon.png" />
+    <BundleResource Include="Plugins\IllustratorCC2015\Manifest.xml" />
+    <BundleResource Include="Plugins\IllustratorCC2015\Sample.ai" />
+    <BundleResource Include="Plugins\IllustratorCC2015.2\Manifest.xml" />
+    <BundleResource Include="Plugins\IllustratorCC2015.2\Sample.ai" />
+    <BundleResource Include="Plugins\PhotoshopCC2015\Manifest.xml" />
+    <BundleResource Include="Plugins\PhotoshopCC2015\Sample.psd" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="$(ProjectDir)\CopyToOutput.targets" />

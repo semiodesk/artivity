@@ -68,6 +68,7 @@ namespace Artivity.Apid
             }
 
             Service.Start();
+
             return true;
         }
 

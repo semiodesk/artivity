@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Artivity.Api.Platforms;
+using Newtonsoft.Json;
+using Semiodesk.Trinity;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,57 +13,32 @@ namespace Artivity.Apid.Platforms
     public class PlatformProvider : IPlatformProvider
     {
         #region Members
-        public string AppDataFolder
-        {
-            get;
-            private set;
-        }
 
-        public string ArtivityUserDataFolder
-        {
-            get;
-            private set;
-        }
+        public string AppDataFolder { get; private set; }
 
-        public string ThumbnailFolder
-        {
-            get;
-            private set;
-        }
+        public string ArtivityDataFolder { get; private set; }
 
-        public string UserFolder
-        {
-            get;
-            private set;
-        }
+        public string AvatarsFolder { get; private set; }
+
+        public string ConfigFile { get; private set; }
+
+        public UserConfig Config { get; private set; }
+
+        public string UserName { get; private set; }
+
+        public string UserFolder { get; private set; }
 
         public string DatabaseName { get; private set; }
 
         public string DatabaseFolder { get; private set; }
 
-        public string UserName
-        {
-            get;
-            private set;
-        }
+        public string RenderingsFolder { get; private set; }
 
-        public bool IsLinux
-        {
-            get;
-            protected set;
-        }
+        public bool IsLinux { get; protected set; }
 
-        public bool IsMac
-        {
-            get;
-            protected set;
-        }
+        public bool IsMac { get; protected set; }
 
-        public bool IsWindows
-        {
-            get;
-            protected set;
-        }
+        public bool IsWindows { get; protected set; }
 
         public string PluginDir { get; set; }
 
@@ -77,14 +55,21 @@ namespace Artivity.Apid.Platforms
         public PlatformProvider(string appDataFolder, string userFolder, string userName)
         {
             AppDataFolder = appDataFolder;
-            ArtivityUserDataFolder = Path.Combine(AppDataFolder, "Artivity");
-            EnsureFolderExists(ArtivityUserDataFolder);
 
-            ThumbnailFolder = Path.Combine(ArtivityUserDataFolder, "Thumbnails");
-            EnsureFolderExists(ThumbnailFolder);
+            ArtivityDataFolder = Path.Combine(AppDataFolder, "Artivity");
+            EnsureFolderExists(ArtivityDataFolder);
+
+            ConfigFile = Path.Combine(ArtivityDataFolder, "config.json");
+            Config = GetUserConfig(ConfigFile);
+
+            AvatarsFolder = Path.Combine(ArtivityDataFolder, "Avatars");
+            EnsureFolderExists(AvatarsFolder);
+
+            RenderingsFolder = Path.Combine(ArtivityDataFolder, "Renderings");
+            EnsureFolderExists(RenderingsFolder);
 
             DatabaseName = "Data";
-            DatabaseFolder = Path.Combine(ArtivityUserDataFolder, DatabaseName);
+            DatabaseFolder = Path.Combine(ArtivityDataFolder, DatabaseName);
             EnsureFolderExists(DatabaseFolder);
 
             UserFolder = userFolder;
@@ -96,9 +81,6 @@ namespace Artivity.Apid.Platforms
 
             DeploymentDir = Environment.CurrentDirectory;
             PluginDir = Path.Combine(DeploymentDir, "Plugins");
-
-            CheckForNewSoftwareAgents = false;
-            AutomaticallyInstallSoftwareAgentPlugins = false;
         }
 
         #endregion
@@ -107,9 +89,12 @@ namespace Artivity.Apid.Platforms
 
         protected void EnsureFolderExists(string folder)
         {
-            DirectoryInfo dir = new DirectoryInfo(folder);
-            if (!dir.Exists )
-                dir.Create();
+            DirectoryInfo directory = new DirectoryInfo(folder);
+
+            if (!directory.Exists)
+            {
+                directory.Create();
+            }
         }
 
         public bool TestLinux()
@@ -159,6 +144,38 @@ namespace Artivity.Apid.Platforms
         {
             return Environment.OSVersion.Platform == PlatformID.Win32NT;
         }
+
+        private UserConfig GetUserConfig(string configFile)
+        {
+            UserConfig config;
+
+            if(File.Exists(configFile))
+            {
+                Logger.LogInfo("Reading config file: {0}", configFile);
+
+                using (StreamReader reader = new StreamReader(configFile))
+                {
+                    string json = reader.ReadToEnd();
+
+                    config = JsonConvert.DeserializeObject<UserConfig>(json);
+                }
+            }
+            else
+            {
+                Logger.LogInfo("Creating config file: {0}", configFile);
+
+                config = new UserConfig();
+                config.IsNew = true;
+                config.Uid = "urn:art:uid:" + Guid.NewGuid();
+
+                string json = JsonConvert.SerializeObject(config);
+
+                File.WriteAllText(configFile, json);
+            }
+
+            return config;
+        }
+
         #endregion
     }
 }

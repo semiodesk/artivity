@@ -1,9 +1,38 @@
-﻿using Semiodesk.Trinity;
+﻿// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
+
+using Semiodesk.Trinity;
 using System;
+
 namespace Artivity.DataModel
 {
     public interface IModelProvider
     {
+        #region Members
+
         IStore Store { get; }
 
         string ConnectionString { get; set; }
@@ -12,40 +41,36 @@ namespace Artivity.DataModel
 
         Uri Agents { get; set; }
 
-        IModel AgentsModel { get; }
-
         Uri Activities { get; set; }
-
-        IModel ActivitiesModel { get; }
 
         Uri WebActivities { get; set; }
 
-        IModel WebActivitiesModel { get; }
+        string Uid { get; set; }
 
-        Uri Monitoring { get; set; }
+        #endregion
 
-        IModel MonitoringModel { get; }
-
-        string Username { get; set; }
+        #region Methods
 
         bool CheckAgents();
 
+        bool CheckOntologies();
+
         void InitializeAgents();
-
-        Semiodesk.Trinity.IModel GetActivities(Semiodesk.Trinity.IStore store = null);
-
-        Semiodesk.Trinity.IModel GetAgents(Semiodesk.Trinity.IStore store = null);
-
-        Semiodesk.Trinity.IModelGroup GetAll();
-
-        Semiodesk.Trinity.IModel GetAllActivities();
-
-        Semiodesk.Trinity.IModel GetMonitoring(Semiodesk.Trinity.IStore store = null);
-
-        Semiodesk.Trinity.IModel GetWebActivities(Semiodesk.Trinity.IStore store = null);
 
         void InitializeStore();
 
         void ReleaseStore();
+
+        IModelGroup GetAll();
+
+        IModelGroup GetAllActivities();
+
+        IModel GetAgents();
+
+        IModel GetActivities();
+
+        IModel GetWebActivities();
+
+        #endregion
     }
 }
