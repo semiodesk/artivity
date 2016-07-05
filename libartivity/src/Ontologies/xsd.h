@@ -28,8 +28,8 @@
 #ifndef XSD_H
 #define XSD_H
 
-#define xsd(label) "xsd:"label;
-#define XSD(label) "http://www.w3.org/2001/XMLSchema#"label;
+#define xsd(label) "xsd:" label;
+#define XSD(label) "http://www.w3.org/2001/XMLSchema#" label;
 
 namespace artivity
 {

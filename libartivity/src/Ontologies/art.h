@@ -30,8 +30,8 @@
 
 namespace artivity
 {
-	#define art(label) "art:"label;
-	#define ART(label) "http://w3id.org/art/terms/1.0/"label;
+	#define art(label) "art:" label;
+	#define ART(label) "http://w3id.org/art/terms/1.0/" label;
 
     namespace art
     {

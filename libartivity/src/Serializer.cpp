@@ -28,6 +28,7 @@
 #include <exception>
 #include <ctime>
 #include <string>
+#include <list>
 #include <typeinfo>
 
 #include "Ontologies/art.h"
@@ -145,7 +146,7 @@ namespace artivity
 				ctx.queue.pop();
 			}
 
-			list<string>::const_iterator it = ctx.prefixes.begin();
+			unordered_set<string>::const_iterator it = ctx.prefixes.begin();
 
 			while (it != ctx.prefixes.end())
 			{

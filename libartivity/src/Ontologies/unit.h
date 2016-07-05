@@ -30,8 +30,8 @@
 
 // Source: http://qudt.org/1.1/vocab/OVG_units-qudt-(v1.1).ttl
 
-#define unit(label) "unit:"label;
-#define UNIT(label) "http://qudt.org/vocab/unit#"label;
+#define unit(label) "unit:" label;
+#define UNIT(label) "http://qudt.org/vocab/unit#" label;
 
 namespace artivity
 {

@@ -53,15 +53,15 @@ namespace artivity
 
         PropertyMapIterator findProperty(const std::string& property, ResourceRef resource);
         
-        PropertyMapIterator findProperty(const std::string& property, std::string literalValue, const type_info& typeInfo);
+        PropertyMapIterator findProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
 
         bool hasProperty(const std::string& property, ResourceRef resource);
         
-        bool hasProperty(const std::string& property, std::string literalValue, const type_info& typeInfo);
+        bool hasProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
         
         void addProperty(const std::string& property, ResourceRef resource);
         
-        void addProperty(const std::string& property, std::string literalValue, const type_info& typeInfo);
+        void addProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
         
         void addProperty(const std::string& property, PropertyValue value);
 
@@ -69,13 +69,13 @@ namespace artivity
 
         void removeProperty(const std::string& property, ResourceRef resource);
         
-        void removeProperty(const std::string& property, std::string literalValue, const type_info& typeInfo);
+        void removeProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
         
         void setProperty(const std::string& property, PropertyValue value);
 
         void setProperty(const std::string& property, ResourceRef resource);
 
-        void setProperty(const std::string& property, std::string literalValue, const type_info& typeInfo);
+        void setProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
 
         void erase(const std::string& property) { _map.erase(property); }
 

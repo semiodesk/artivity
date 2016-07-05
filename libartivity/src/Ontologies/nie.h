@@ -28,8 +28,8 @@
 #ifndef _ART_NIE_H
 #define _ART_NIE_H
 
-#define nie(label) "nie:"label;
-#define NIE(label) "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#"label;
+#define nie(label) "nie:" label;
+#define NIE(label) "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#" label;
 
 namespace artivity
 {
