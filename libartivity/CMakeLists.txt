@@ -22,9 +22,9 @@ if(Boost_FOUND)
     add_subdirectory (src)
     message( status " Found sources " ${SOURCE})
 
-    add_library(libartivity STATIC ${SOURCE} ${HEADER})
+    add_library(artivity STATIC ${SOURCE} ${HEADER})
 
-    target_link_libraries(libartivity curl ${Boost_LIBRARIES})
+    target_link_libraries(artivity curl ${Boost_LIBRARIES})
 
 endif()
 
