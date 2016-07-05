@@ -245,7 +245,7 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@entity", entityUri);
 
-            BindingSet bindings = ModelProvider.GetAllActivities().GetBindings(query).FirstOrDefault();
+            BindingSet bindings = ModelProvider.GetAll().GetBindings(query).FirstOrDefault();
 
             return Response.AsJson(bindings);
         }
@@ -360,15 +360,17 @@ namespace Artivity.Apid.Modules
                 }
             ");
 
+            IModel model = ModelProvider.GetAgents();
+
             // See if there is already a person defined..
-            Person user = ModelProvider.GetAgents().ExecuteQuery(query).GetResources<Person>().FirstOrDefault();
+            Person user = model.ExecuteQuery(query).GetResources<Person>().FirstOrDefault();
 
             if (user == null)
             {
                 Logger.LogInfo("Creating new user profile..");
 
                 // If not, create one.
-                user = ModelProvider.GetAgents().CreateResource<Person>();
+                user = model.CreateResource<Person>();
                 user.Commit();
             }
             else
@@ -377,7 +379,7 @@ namespace Artivity.Apid.Modules
             }
 
             // Add the user role association.
-            Association association = ModelProvider.GetAgents().CreateResource<Association>();
+            Association association = model.CreateResource<Association>();
             association.Agent = user;
             association.Role = new Role(art.USER);
             association.Commit();
@@ -443,7 +445,9 @@ namespace Artivity.Apid.Modules
             query.Bind("@agent", agent);
             query.Bind("@version", version);
 
-            var bindings = ModelProvider.GetAgents().GetBindings(query).FirstOrDefault();
+            IModel model = ModelProvider.GetAgents();
+
+            var bindings = model.GetBindings(query).FirstOrDefault();
 
             if (bindings == null)
             {
@@ -452,7 +456,7 @@ namespace Artivity.Apid.Modules
                 // The URI format of the new agent is always {AGENT_URI}#{VERSION}
                 UriRef uri = new UriRef(agent.AbsoluteUri + "#" + version.Replace(' ', '_').Trim());
 
-                SoftwareAssociation association = ModelProvider.GetAgents().CreateResource<SoftwareAssociation>(uri);
+                SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(uri);
                 association.Agent = new Agent(agent);
                 association.Role = new Role(role);
                 association.ExecutableVersion = version;

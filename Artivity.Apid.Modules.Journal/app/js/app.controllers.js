@@ -182,7 +182,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			});
 
 			// Warning: this is slow.
-			$scope.palette = renderer.getPalette();
+			// $scope.palette = renderer.getPalette();
 		}
 	};
 
