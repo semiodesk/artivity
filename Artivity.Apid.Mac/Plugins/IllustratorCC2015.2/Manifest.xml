@@ -4,7 +4,7 @@
   <art:Uri>http://adobe.com/products/illustrator</art:Uri>
   <art:ProcessName>Adobe Illustrator</art:ProcessName>
   <art:ID>ILST_19_2_1</art:ID>
-  <art:TargetPath>../Plug-ins/</art:TargetPath>
+  <art:TargetPath>../Plug-ins.localized/</art:TargetPath>
   <art:ExecPath></art:ExecPath>
   <art:Version>0.8</art:Version>
   <art:HostVersion>19.2.1</art:HostVersion>

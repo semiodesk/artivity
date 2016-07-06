@@ -76,17 +76,110 @@ namespace Artivity.Api.Plugin.Win
             return null;
         }
 
-        protected override void CreateLink(string target, string source)
+        public override bool IsPluginInstalled(PluginManifest manifest)
         {
-            IShellLink link = (IShellLink)new ShellLink();
+            DirectoryInfo location = GetApplicationLocation(manifest);
 
-            // setup shortcut information
+            if (location == null || !location.Exists)
+            {
+                return false;
+            }
+
+            foreach (PluginManifestPluginFile file in manifest.PluginFile)
+            {
+                var targetFolder = Path.Combine(location.FullName, manifest.TargetPath);
+                var targetFile = Path.Combine(targetFolder, file.GetName());
+
+                if (!File.Exists(targetFile))
+                {
+                    return false;
+                }
+            }
+
+            bool is64Bit = Environment.Is64BitOperatingSystem;
+
+            foreach (PluginManifestRegistryKey key in manifest.RegistryKeys)
+            {
+                if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
+                {
+                    continue;
+                }
+
+                if(!HasRegistryKey(key))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override bool InstallPlugin(PluginManifest manifest)
+        {
+            if (base.InstallPlugin(manifest))
+            {
+                bool is64Bit = Environment.Is64BitOperatingSystem;
+
+                foreach (PluginManifestRegistryKey key in manifest.RegistryKeys)
+                {
+                    if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
+                    {
+                        continue;
+                    }
+
+                    if (!CreateRegistryKey(key))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool UninstallPlugin(PluginManifest manifest)
+        {
+            if (base.UninstallPlugin(manifest))
+            {
+                bool is64Bit = Environment.Is64BitOperatingSystem;
+
+                foreach (PluginManifestRegistryKey key in manifest.RegistryKeys)
+                {
+                    if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
+                    {
+                        continue;
+                    }
+
+                    DeleteRegistryKey(key);
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        protected override bool CreateLink(string source, string target)
+        {
+            // Shortcut informationn
+            IShellLink link = (IShellLink)new ShellLink();
             link.SetDescription("Artivity Plugin");
             link.SetPath(source);
 
-            // save it
-            IPersistFile file = (System.Runtime.InteropServices.ComTypes.IPersistFile)link;
+            IPersistFile file = (IPersistFile)link;
             file.Save(target, false);
+
+            return File.Exists(target);
+        }
+
+        protected override void DeleteLink(string target)
+        {
+            if (File.Exists(target))
+            {
+                File.Delete(target);
+            }
         }
 
         // TODO: We definitly need to add some security mechanism here - i.e. by adding a signature to the plugin Manifest.
