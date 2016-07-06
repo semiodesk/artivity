@@ -66,14 +66,9 @@ namespace Artivity.Api.Plugin
         {
             get
             {
-                if(_executableIconUrl == null)
-                {
-                    FileInfo file = new FileInfo(Manifest.IconPath);
+                FileInfo file = new FileInfo(Manifest.IconPath);
 
-                    _executableIconUrl = file.ToUriRef();
-                }
-
-                return _executableIconUrl.IsAbsoluteUri ? _executableIconUrl : null;
+                return file.Exists ? file.ToUriRef() : null;
             }
         }
 

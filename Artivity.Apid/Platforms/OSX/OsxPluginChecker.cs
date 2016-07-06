@@ -40,8 +40,8 @@ namespace Artivity.Api.Plugin.OSX
     {
         #region Constructors
 
-        public OsxPluginChecker(IModelProvider modelProvider, DirectoryInfo dir)
-            : base(modelProvider, dir)
+        public OsxPluginChecker(IModelProvider modelProvider, DirectoryInfo folder)
+            : base(modelProvider, folder)
         {
         }
 
@@ -77,36 +77,94 @@ namespace Artivity.Api.Plugin.OSX
             }
         }
 
-        protected override void CreateLink(string target, string source)
-        {
-            UnixFileInfo f = new UnixFileInfo (source);
-
-            f.CreateSymbolicLink(target);
-        }
-
         protected override string GetApplicationVersion(FileSystemInfo app)
         {
             if (app is DirectoryInfo)
             {
                 var appBundle = app as DirectoryInfo;
 
-                var plist = Path.Combine(appBundle.FullName, "Contents", "Info.plist");
+                var infoPlist = Path.Combine(appBundle.FullName, "Contents", "Info.plist");
 
-                if (File.Exists(plist))
+                if (File.Exists(infoPlist))
                 {
-                    XPathDocument document = new XPathDocument(plist);
+                    try
+                    {
+                        XPathDocument document = new XPathDocument(infoPlist);
 
-                    XPathNavigator root = document.CreateNavigator();
+                        XPathNavigator root = document.CreateNavigator();
 
-                    XPathNavigator value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleShortVersionString']");
+                        XPathNavigator value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleShortVersionString']");
 
-                    value.MoveToNext();
+                        value.MoveToNext();
 
-                    return value.InnerXml;
+                        return value.InnerXml;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex.Message);
+
+                        Logger.Debug("Failed to parse Info.plist. May be the file is in binary format?");
+                    }
                 }
             }
 
             return null;
+        }
+
+        public override bool IsPluginInstalled(PluginManifest manifest)
+        {
+            DirectoryInfo location = GetApplicationLocation(manifest);
+
+            if (location == null || !location.Exists)
+            {
+                return false;
+            }
+
+            foreach (PluginManifestPluginFile file in manifest.PluginFile)
+            {
+                DirectoryInfo targetFolder = TryGetPluginTargetDirectory(location, manifest);
+
+                if (!targetFolder.Exists)
+                {
+                    return false;
+                }
+
+                var targetFile = Path.Combine(targetFolder.FullName, file.GetName());
+
+                if (file.Link)
+                {
+                    UnixSymbolicLinkInfo link = new UnixSymbolicLinkInfo(targetFile);
+
+                    if (!link.Exists)
+                    {
+                        return false;
+                    }
+                }
+                else if (!File.Exists(targetFile))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        protected override bool CreateLink(string source, string target)
+        {
+            UnixFileInfo file = new UnixFileInfo(source);
+
+            file.CreateSymbolicLink(target);
+
+            UnixSymbolicLinkInfo link = new UnixSymbolicLinkInfo(target);
+
+            return link.Exists;
+        }
+
+        protected override void DeleteLink(string target)
+        {
+            UnixFileInfo link = new UnixFileInfo(target);
+
+            link.Delete();
         }
 
         #endregion
