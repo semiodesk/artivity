@@ -828,7 +828,7 @@ namespace Artivity.Apid.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            var bindings = ModelProvider.GetActivities().GetBindings(query, true);
+            var bindings = ModelProvider.GetActivities().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -854,10 +854,12 @@ namespace Artivity.Apid.Modules
 
         private string GetRenderOutputPath(UriRef entityUri)
         {
-            var invalids = Path.GetInvalidFileNameChars();
-            var newName = String.Join("_", entityUri.AbsoluteUri.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            char[] uri = entityUri.AbsoluteUri.Replace("//","-").Replace('/','-').Replace(':','-').ToCharArray();
 
-            return Path.Combine(PlatformProvider.RenderingsFolder, newName);
+            // Only allow letters or digits.
+            string entityName = new string(Array.FindAll<char>(uri, c => char.IsLetterOrDigit(c) || c == '-' || c == '.'));
+
+            return Path.Combine(PlatformProvider.RenderingsFolder, entityName);
         }
 
         private Response GetRenderOutputPath(UriRef entityUri, bool createDirectory = false)
