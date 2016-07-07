@@ -30,6 +30,7 @@ using System.IO;
 using AppKit;
 using WebKit;
 using Foundation;
+using System.Collections.Generic;
 
 namespace Artivity.Journal.Mac
 {
@@ -72,6 +73,30 @@ namespace Artivity.Journal.Mac
                 Browser.MainFrame.LoadRequest(e.Request);
             };
 
+
+
+            Browser.UIRunOpenPanelForFileButton += (object sender, WebViewRunOpenPanelEventArgs e) =>
+            {
+                var dlg = NSOpenPanel.OpenPanel;
+                dlg.CanChooseFiles = true;
+                dlg.CanChooseDirectories = false;
+                dlg.AllowedFileTypes = new string[] { "png", "jpg", "jpeg" };
+                dlg.AllowsMultipleSelection = false;
+
+
+                if (dlg.RunModal() == 1)
+                {
+                    List<string> result = new List<string>();
+                    foreach (var x in dlg.Urls)
+                    {
+                        result.Add(x.AbsoluteString);
+                    }
+                    e.ResultListener.ChooseFilenames(result.ToArray());
+                }else
+                    e.ResultListener.Cancel();
+
+            };
+
             // Initially try to load the journal app.
             Browser.MainFrame.LoadRequest(new NSUrlRequest(new NSUrl(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", Port))));
         }
@@ -94,9 +119,18 @@ namespace Artivity.Journal.Mac
                     string html = reader.ReadToEnd();
 
                     Browser.MainFrame.LoadHtmlString(html, new NSUrl("http://localhost/"));
+                    Browser.UIMouseDidMoveOverElement += (s, a) =>
+                    {
+                        NSEvent ev = NSApplication.SharedApplication.CurrentEvent;
+                        if (ev.Type == NSEventType.LeftMouseUp)
+                        {
+                            ViewDidLoad();
+                        }
+                    };
                 }
             }
         }
+
 
         #endregion
     }

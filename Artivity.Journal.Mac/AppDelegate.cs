@@ -48,7 +48,7 @@ namespace Artivity.Journal.Mac
 
             _updater = new SUUpdater();
             _updater.Delegate = new SparkleDelegate();
-            _updater.AutomaticallyChecksForUpdates = false;
+            _updater.AutomaticallyChecksForUpdates = true;
         }
 
         public override void DidFinishLaunching(NSNotification notification)
@@ -82,7 +82,7 @@ namespace Artivity.Journal.Mac
 
         partial void CheckForUpdate(NSObject sender)
         {
-            Console.WriteLine("Checking for updates..");
+            //Console.WriteLine("Checking for updates..");
 
             _updater.CheckForUpdates(sender);
         }
