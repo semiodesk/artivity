@@ -114,13 +114,13 @@ namespace Artivity.Api.Plugin.Win
             return true;
         }
 
-        public override bool InstallPlugin(PluginManifest manifest)
+        public override bool InstallPlugin(SoftwareAgentPlugin plugin)
         {
-            if (base.InstallPlugin(manifest))
+            if (base.InstallPlugin(plugin))
             {
                 bool is64Bit = Environment.Is64BitOperatingSystem;
 
-                foreach (PluginManifestRegistryKey key in manifest.RegistryKeys)
+                foreach (PluginManifestRegistryKey key in plugin.Manifest.RegistryKeys)
                 {
                     if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
                     {
@@ -139,13 +139,13 @@ namespace Artivity.Api.Plugin.Win
             return false;
         }
 
-        public override bool UninstallPlugin(PluginManifest manifest)
+        public override bool UninstallPlugin(SoftwareAgentPlugin plugin)
         {
-            if (base.UninstallPlugin(manifest))
+            if (base.UninstallPlugin(plugin))
             {
                 bool is64Bit = Environment.Is64BitOperatingSystem;
 
-                foreach (PluginManifestRegistryKey key in manifest.RegistryKeys)
+                foreach (PluginManifestRegistryKey key in plugin.Manifest.RegistryKeys)
                 {
                     if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
                     {
