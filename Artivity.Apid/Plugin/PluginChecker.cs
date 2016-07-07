@@ -29,12 +29,8 @@ using Artivity.DataModel;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Reflection;
 
 namespace Artivity.Api.Plugin
@@ -305,11 +301,12 @@ namespace Artivity.Api.Plugin
 
                 foreach (PluginManifestPluginFile pluginFile in manifest.PluginFile)
                 {
-                    string sourceFile = pluginFile.GetPluginSource(manifest);
+                    // This may also be an app bundle /directory on macOS.
+                    string sourcePath = pluginFile.GetPluginSource(manifest);
 
-                    if (!File.Exists(sourceFile))
+                    if (!File.Exists(sourcePath) && !Directory.Exists(sourcePath))
                     {
-                        Logger.ErrorFormat("Plugin file does not exist: {0}", sourceFile);
+                        Logger.ErrorFormat("Plugin file does not exist: {0}", sourcePath);
 
                         return false;
                     }
@@ -321,19 +318,26 @@ namespace Artivity.Api.Plugin
                         return false;
                     }
 
-                    var targetFile = Path.Combine(targetFolder.FullName, pluginFile.GetName());
+                    var targetPath = Path.Combine(targetFolder.FullName, pluginFile.GetName());
 
                     if (pluginFile.Link)
                     {
-                        Logger.InfoFormat("Linking plugin file: {0} -> {1}", sourceFile, targetFile);
+                        Logger.InfoFormat("Linking plugin: {0}", targetPath);
 
-                        CreateLink(sourceFile, targetFile);
+                        CreateLink(sourcePath, targetPath);
                     }
                     else
                     {
-                        Logger.InfoFormat("Copying plugin file: {0} -> {1}", sourceFile, targetFile);
+                        Logger.InfoFormat("Copying plugin: {0}", targetPath);
 
-                        File.Copy(sourceFile, targetFile);
+                        if (File.Exists(sourcePath))
+                        {
+                            File.Copy(sourcePath, targetPath);
+                        }
+                        else if (Directory.Exists(sourcePath))
+                        {
+                            CopyDirectory(sourcePath, targetPath, true);
+                        }
                     }
                 }
 
@@ -374,15 +378,19 @@ namespace Artivity.Api.Plugin
                         return false;
                     }
 
-                    var targetFile = Path.Combine(targetFolder.FullName, pluginFile.GetName());
+                    var targetPath = Path.Combine(targetFolder.FullName, pluginFile.GetName());
 
                     if (pluginFile.Link)
                     {
-                        DeleteLink(targetFile);
+                        DeleteLink(targetPath);
                     }
-                    else if (File.Exists(targetFile))
+                    else if (File.Exists(targetPath))
                     {
-                        File.Delete(targetFile);
+                        File.Delete(targetPath);
+                    }
+                    else if (Directory.Exists(targetPath))
+                    {
+                        Directory.Delete(targetPath);
                     }
                 }
 
@@ -443,6 +451,46 @@ namespace Artivity.Api.Plugin
             return folder;
         }
 
+        protected void CopyDirectory(string sourceDirName, string destDirName, bool recursive)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException("Source directory does not exist or could not be found: " + sourceDirName);
+            }
+
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // If the destination directory doesn't exist, create it.
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+
+            foreach (FileInfo file in files)
+            {
+                string temppath = Path.Combine(destDirName, file.Name);
+
+                file.CopyTo(temppath, false);
+            }
+
+            // If copying subdirectories, copy them and their contents to new location.
+            if (recursive)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(destDirName, subdir.Name);
+
+                    CopyDirectory(subdir.FullName, temppath, recursive);
+                }
+            }
+        }
+                                
         protected abstract bool CreateLink(string source, string target);
 
         protected abstract void DeleteLink(string target);
