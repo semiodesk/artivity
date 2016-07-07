@@ -10,7 +10,7 @@
     <AssemblyName>Artivity</AssemblyName>
 	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
-    <ReleaseVersion>1.5</ReleaseVersion>
+    <ReleaseVersion>1.6</ReleaseVersion>
     <StartupObject>Artivity.Journal.Mac.MainClass</StartupObject>
     <UseXamMacFullFramework>true</UseXamMacFullFramework>
   </PropertyGroup>

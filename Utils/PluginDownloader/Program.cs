@@ -34,7 +34,7 @@ namespace PluginDownloader
                     return;
 
                 Downloader.DownloadPlugins(host, dir);
-            }catch(Exception e)
+            }catch(Exception)
             {
 
             }
