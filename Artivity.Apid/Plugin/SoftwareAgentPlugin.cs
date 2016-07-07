@@ -60,8 +60,6 @@ namespace Artivity.Api.Plugin
 
         public string ExecutableVersion { get { return Manifest.HostVersion; } }
 
-        Uri _executableIconUrl;
-
         public Uri ExecutableIcon
         {
             get

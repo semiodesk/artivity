@@ -129,18 +129,19 @@ namespace Artivity.Api.Plugin.OSX
                     return false;
                 }
 
-                var targetFile = Path.Combine(targetFolder.FullName, file.GetName());
+                // This may be a file or app bundle / directory.
+                var targetPath = Path.Combine(targetFolder.FullName, file.GetName());
 
                 if (file.Link)
                 {
-                    UnixSymbolicLinkInfo link = new UnixSymbolicLinkInfo(targetFile);
+                    UnixSymbolicLinkInfo link = new UnixSymbolicLinkInfo(targetPath);
 
                     if (!link.Exists)
                     {
                         return false;
                     }
                 }
-                else if (!File.Exists(targetFile))
+                else if (!File.Exists(targetPath) && !Directory.Exists(targetPath))
                 {
                     return false;
                 }

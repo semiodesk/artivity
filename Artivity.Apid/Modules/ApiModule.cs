@@ -679,22 +679,35 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?startTime ?endTime MAX(?time) as ?maxTime ?agent ?agentColor
+                    ?startTime 
+                    ?endTime
+                    MAX(?time) as ?maxTime
+                    ?agent
+                    COALESCE(?agentColor, '#FF0000') AS ?agentColor
                 WHERE
                 {
-                    ?activity prov:generated | prov:used @entity .
-	                ?activity prov:startedAtTime ?startTime .
-	                ?activity prov:endedAtTime ?endTime .
-	                ?activity prov:qualifiedAssociation ?association .
-	
-	                ?association prov:hadRole art:SOFTWARE .
-                    ?association prov:agent ?agent .
-	                
+                  ?activity
+                    prov:generated | prov:used @entity ;
+                    prov:startedAtTime ?startTime .
+
+                  OPTIONAL
+                  {
+                    ?activity prov:endedAtTime ?endTime .
+                  }
+
+                  OPTIONAL
+                  {
+                    ?activity prov:qualifiedAssociation [
+                      prov:hadRole art:SOFTWARE ;
+                      prov:agent ?agent
+                    ] .
+
                     ?agent art:hasColourCode ?agentColor .
-	
-	                ?influence prov:activity | prov:hadActivity ?activity .
-	                ?influence a ?type .
-                    ?influence prov:atTime ?time .
+                  }
+
+                  ?influence a ?type ;
+                    prov:activity | prov:hadActivity ?activity ;
+                    prov:atTime ?time.
                 }
                 ORDER BY DESC(?startTime)");
 
@@ -828,7 +841,7 @@ namespace Artivity.Apid.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            var bindings = ModelProvider.GetActivities().GetBindings(query, true);
+            var bindings = ModelProvider.GetActivities().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -854,10 +867,12 @@ namespace Artivity.Apid.Modules
 
         private string GetRenderOutputPath(UriRef entityUri)
         {
-            var invalids = Path.GetInvalidFileNameChars();
-            var newName = String.Join("_", entityUri.AbsoluteUri.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            char[] uri = entityUri.AbsoluteUri.Replace("//","-").Replace('/','-').Replace(':','-').ToCharArray();
 
-            return Path.Combine(PlatformProvider.RenderingsFolder, newName);
+            // Only allow letters or digits.
+            string entityName = new string(Array.FindAll<char>(uri, c => char.IsLetterOrDigit(c) || c == '-' || c == '.'));
+
+            return Path.Combine(PlatformProvider.RenderingsFolder, entityName);
         }
 
         private Response GetRenderOutputPath(UriRef entityUri, bool createDirectory = false)

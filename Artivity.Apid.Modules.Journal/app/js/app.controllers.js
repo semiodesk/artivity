@@ -311,7 +311,9 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			});
 
 			scope.$watch('selectedInfluence', function () {
-				gantt.position(scope.selectedInfluence.time);
+                if(scope.selectedInfluence !== undefined) {
+				    gantt.position(scope.selectedInfluence.time);
+                }
 			});
 
 			$(window).resize(function () {
