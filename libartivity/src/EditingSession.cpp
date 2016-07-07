@@ -176,20 +176,24 @@ namespace artivity
     void EditingSession::eventRedo()
     {
         RedoRef res = onEventRedo();
-
         int count = res->getCount();
-        int beforeIndex = _currentChangeIndex;
 
-        _currentChangeIndex += count;
 
-        changeIt current = _changes.begin() + _currentChangeIndex;
-
-        for (changeIt it = _changes.begin() + beforeIndex; it != current; it++)
+        if (_changes.size() > _currentChangeIndex + count) 
         {
-            res->addRevision(*it);
-        }
+            int beforeIndex = _currentChangeIndex;
 
-        _consumer->push(res);
+            _currentChangeIndex += count;
+
+            changeIt current = _changes.begin() + _currentChangeIndex;
+
+            for (changeIt it = _changes.begin() + beforeIndex; it != current; it++)
+            {
+                res->addRevision(*it);
+            }
+
+            _consumer->push(res);
+        }
     }
 
     void EditingSession::eventSave()
