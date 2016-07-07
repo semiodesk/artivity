@@ -35,6 +35,7 @@ namespace Artivity.Apid.Mac
         {
             var current = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
             DeploymentDir = Path.Combine(current, "..", "Resources");
+            OntologyDir = DeploymentDir;
         }
     }
 }

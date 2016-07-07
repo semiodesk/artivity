@@ -48,6 +48,8 @@ namespace Artivity.Apid.Platforms
 
         public bool AutomaticallyInstallSoftwareAgentPlugins { get; set; }
 
+        public string OntologyDir { get; set; }
+
         #endregion
 
         #region Constructors

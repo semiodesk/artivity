@@ -40,6 +40,7 @@ using Artivity.DataModel;
 using Artivity.Apid.Platforms;
 using Artivity.Api.Plugin;
 using Artivity.Api.Platforms;
+using Semiodesk.Trinity.Configuration;
 
 namespace Artivity.Apid
 {
@@ -399,9 +400,15 @@ namespace Artivity.Apid
             {
                 Logger.LogInfo("Loading ontologies..");
 
+                FileInfo f = new FileInfo(System.Reflection.Assembly.GetAssembly(typeof(HttpService)).Location);
+
+                var dir = f.Directory;
+
+                string config = Path.Combine(dir.FullName, string.Format("{0}.config", f.Name));
+
                 try
                 {
-                    store.LoadOntologySettings();
+                    store.LoadOntologySettings(config, PlatformProvider.OntologyDir);
                 }
                 catch (Exception e)
                 {

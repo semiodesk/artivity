@@ -100,6 +100,8 @@ namespace Artivity.Api.Plugin
             {
                 var manifest = PluginManifestReader.ReadManifest(plugin);
 
+                Logger.InfoFormat("Found <{0}> wiht version {1}", manifest.Uri, manifest.Version);
+
                 if (manifest != null)
                 {
                     _manifests.Add(manifest);
@@ -215,7 +217,9 @@ namespace Artivity.Api.Plugin
 
         protected void InstallAgentAssociation(IModel model, SoftwareAgentPlugin plugin)
         {
-            SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(plugin.AssociationUri);
+            var uri = plugin.AssociationUri;
+            Logger.InfoFormat("Installing association <{0}>", uri);
+            SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(uri);
             association.Agent = new SoftwareAgent(plugin.AgentUri);
             association.Role = new Role(new UriRef(ART.SOFTWARE));
             association.ExecutableVersion = plugin.ExecutableVersion;
@@ -235,6 +239,11 @@ namespace Artivity.Api.Plugin
                     {
                         plugin.IsPluginInstalled = IsPluginInstalled(plugin.Manifest);
 
+                        if (plugin.IsPluginInstalled)
+                            Logger.InfoFormat("Software and plugin installed for <{0}>", plugin.AssociationUri);
+                        else
+                            Logger.InfoFormat("Software installed for <{0}>", plugin.AssociationUri);
+                        
                         if (!plugin.IsPluginInstalled && installPlugins)
                         {
                             plugin.IsPluginInstalled = InstallPlugin(plugin);
@@ -243,6 +252,7 @@ namespace Artivity.Api.Plugin
                     }
                     else
                     {
+                        Logger.InfoFormat("Software not installed for <{0}>", plugin.AssociationUri);
                         plugin.IsPluginInstalled = false;
                         plugin.IsPluginEnabled = false;
                     }
