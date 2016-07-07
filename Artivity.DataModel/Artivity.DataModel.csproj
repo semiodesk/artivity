@@ -10,7 +10,7 @@
     <RootNamespace>Artivity.DataModel</RootNamespace>
     <AssemblyName>Artivity.DataModel</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>e771faeb</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>d3ac82ba</NuGetPackageImportStamp>
     <TargetFrameworkProfile />
     <ReleaseVersion>1.5</ReleaseVersion>
   </PropertyGroup>
@@ -40,12 +40,15 @@
     <Compile Include="IViewModule.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />
+    <Compile Include="ObjectModel\Entities\Folder.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
     <Compile Include="ObjectModel\Person.cs" />
     <Compile Include="ObjectModel\Activity.cs" />
+    <Compile Include="ObjectModel\SoftwareAssociation.cs" />
     <Compile Include="Ontologies\Ontologies.g.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Ontologies\Ontologies.i.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObjectModel\SoftwareAgent.cs" />
     <Compile Include="ObjectModel\Agent.cs" />
@@ -85,19 +88,29 @@
     <Compile Include="ObjectModel\Influences\View.cs" />
     <Compile Include="ObjectModel\Database.cs" />
     <Compile Include="ObjectModel\DatabaseState.cs" />
-    <Compile Include="Ontologies\Ontologies.i.cs" />
     <Compile Include="ModelProviderFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Ontologies\nao.rdf" />
-    <None Include="Ontologies\prov.ttl">
+    <None Include="Ontologies\nao.rdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ontologies\owl.n3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ontologies\art.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ontologies\nfo.rdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ontologies\prov.rdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ontologies\rdf.rdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ontologies\rdfs.n3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ontologies\xml.rdf">
@@ -114,38 +127,40 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="Ontologies\owl.n3" />
-    <None Include="Ontologies\rdf.rdf" />
-    <None Include="Ontologies\rdfs.n3" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="dotNetRDF, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\dotNetRDF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dotNetRDF.Data.Virtuoso, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OpenLink.Data.Virtuoso, Version=7.2.3215.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity, Version=0.9.147.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="dotNetRDF.Data.Virtuoso">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="dotNetRDF">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\dotNetRDF.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenLink.Data.Virtuoso">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-    </Reference>
-    <Reference Include="VDS.Common">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\VDS.Common.dll</HintPath>
+    <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\VDS.Common.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Semiodesk.Trinity.Modelling.0.9.142-rc\build\net40\Semiodesk.Trinity.Modelling.targets" Condition="Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.142-rc\build\net40\Semiodesk.Trinity.Modelling.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -154,4 +169,11 @@
   </Target>
   -->
   <ItemGroup />
+  <Import Project="..\packages\Semiodesk.Trinity.Modelling.0.9.147-rc\build\net40\Semiodesk.Trinity.Modelling.targets" Condition="Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.147-rc\build\net40\Semiodesk.Trinity.Modelling.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.147-rc\build\net40\Semiodesk.Trinity.Modelling.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Semiodesk.Trinity.Modelling.0.9.147-rc\build\net40\Semiodesk.Trinity.Modelling.targets'))" />
+  </Target>
 </Project>

@@ -37,14 +37,24 @@ namespace Artivity.Api.Plugin.Win
 {
     public class InstalledPrograms
     {
+        #region Members
+
         public const string RegistryKeyString = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+
         const string registry_key2 = @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall";
+
+        #endregion
+
+        #region Methods
 
         public static RegistryEntry FindInstalledProgram(string key)
         {
             RegistryEntry entry = FindInstalledProgramFromRegistry(RegistryView.Registry32, key);
+
             if (entry == null)
+            {
                 entry = FindInstalledProgramFromRegistry(RegistryView.Registry64, key);
+            }
 
             return entry;
         }
@@ -52,14 +62,17 @@ namespace Artivity.Api.Plugin.Win
         public static List<string> GetInstalledPrograms()
         {
             var result = new List<string>();
+
             result.AddRange(GetInstalledProgramsFromRegistry(RegistryView.Registry32));
             result.AddRange(GetInstalledProgramsFromRegistry(RegistryView.Registry64));
+
             return result;
         }
 
         private static RegistryEntry FindInstalledProgramFromRegistry(RegistryView view, string id)
         {
             RegistryEntry entry = null;
+
             using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view).OpenSubKey(RegistryKeyString))
             {
                 using (RegistryKey subkey = key.OpenSubKey(id))
@@ -73,6 +86,7 @@ namespace Artivity.Api.Plugin.Win
                     }
                 }
             }
+
             return entry;
         }
 
@@ -102,16 +116,38 @@ namespace Artivity.Api.Plugin.Win
         private static bool IsProgramVisible(RegistryKey subkey)
         {
             var name = (string)subkey.GetValue("DisplayName");
+
+            if (string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+
             var releaseType = (string)subkey.GetValue("ReleaseType");
+
+            if (!string.IsNullOrEmpty(releaseType))
+            {
+                return false;
+            }
+
             //var unistallString = (string)subkey.GetValue("UninstallString");
-            var systemComponent = subkey.GetValue("SystemComponent");
+
             var parentName = (string)subkey.GetValue("ParentDisplayName");
 
-            return
-                !string.IsNullOrEmpty(name)
-                && string.IsNullOrEmpty(releaseType)
-                && string.IsNullOrEmpty(parentName)
-                && (systemComponent == null);
+            if (!string.IsNullOrEmpty(releaseType))
+            {
+                return false;
+            }
+
+            var systemComponent = subkey.GetValue("SystemComponent");
+
+            if (systemComponent != null)
+            {
+                return false;
+            }
+
+            return true;
         }
+
+        #endregion
     }
 }

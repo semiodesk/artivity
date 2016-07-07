@@ -23,10 +23,10 @@
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-//
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -36,8 +36,8 @@ using System.Xml.Serialization;
 namespace Artivity.Api.Plugin
 {
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.artivity.io/plugins/manifest/", IsNullable = false)]
+    [XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]
+    [XmlRootAttribute(Namespace = "http://www.artivity.io/plugins/manifest/", IsNullable = false)]
     public partial class PluginManifest
     {
         [XmlIgnore]
@@ -65,9 +65,14 @@ namespace Artivity.Api.Plugin
 
         private string execPath;
 
+        public string iconPath;
+
         private List<PluginManifestPluginFile> pluginFileField = new List<PluginManifestPluginFile>();
 
-        /// <remarks/>
+        private List<PluginManifestRegistryKey> pluginRegistryKeysField = new List<PluginManifestRegistryKey>();
+
+        private string color;
+
         public string DisplayName
         {
             get
@@ -80,7 +85,6 @@ namespace Artivity.Api.Plugin
             }
         }
 
-        /// <remarks/>
         public string ProcessName
         {
             get
@@ -93,10 +97,10 @@ namespace Artivity.Api.Plugin
             }
         }
 
+
         /// <summary>
-        /// This is the ID of a software. 
-        /// Windows:
-        /// Here we look for this id in the registry
+        /// The ID of a software. 
+        /// Windows: Here we look for this id in the registry
         /// </summary>
         public string ID
         {
@@ -110,7 +114,6 @@ namespace Artivity.Api.Plugin
             }
         }
 
-        /// <remarks/>
         public string TargetPath
         {
             get
@@ -212,6 +215,18 @@ namespace Artivity.Api.Plugin
             }
         }
 
+        public string IconPath
+        {
+            get
+            {
+                return this.iconPath;
+            }
+            set
+            {
+                this.iconPath = value;
+            }
+        }
+
         /// <remarks/>
         [XmlElement("PluginFile")]
         public List<PluginManifestPluginFile> PluginFile
@@ -225,103 +240,30 @@ namespace Artivity.Api.Plugin
                 this.pluginFileField = value;
             }
         }
-    }
 
-    /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]
-    public partial class PluginManifestPluginFile
-    {
-
-        private bool linkField;
-
-        private string valueField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public bool Link
+        [XmlElement("RegistryKey")]
+        public List<PluginManifestRegistryKey> RegistryKeys
         {
             get
             {
-                return this.linkField;
+                return this.pluginRegistryKeysField;
             }
             set
             {
-                this.linkField = value;
+                this.pluginRegistryKeysField = value;
             }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string Value
+        public string Color
         {
             get
             {
-                return this.valueField;
+                return this.color;
             }
             set
             {
-                this.valueField = value;
+                this.color = value;
             }
-        }
-
-        public string GetName()
-        {
-            #if WIN
-            if (Link)
-                return string.Format("{0}.lnk", Value);
-            else
-            #endif
-                return Value;
-        }
-
-        public string GetPluginSource(PluginManifest manifest)
-        {
-            return Path.Combine(manifest.ManifestFile.Directory.FullName, Value);
-        }
-    }
-
-    public class PluginManifestReader
-    {
-        private static log4net.ILog _logger;
-        private static log4net.ILog Logger
-        {
-            get
-            {
-                if (_logger == null)
-                {
-                    Type type = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType;
-                    _logger = log4net.LogManager.GetLogger(type);
-                }
-                return _logger;
-            }
-        }
-
-        public static PluginManifest ReadManifest(FileInfo manifestFile)
-        {
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(PluginManifest));
-
-                StreamReader reader = new StreamReader(manifestFile.FullName);
-                PluginManifest manifest = (PluginManifest)serializer.Deserialize(reader);
-                reader.Close();
-                manifest.ManifestFile = manifestFile;
-                return manifest;
-            }catch(Exception e)
-            {
-                Logger.ErrorFormat("Manifest {0} could not be read. {1}", manifestFile, e);
-                return null;
-            }
-        }
-
-        public static PluginManifest ReadManifest(DirectoryInfo puginFolder)
-        {
-            var x = puginFolder.GetFiles("manifest.xml");
-            if (x.Length > 0)
-            {
-                return ReadManifest(x[0]);
-            }
-            return null;
         }
     }
 }

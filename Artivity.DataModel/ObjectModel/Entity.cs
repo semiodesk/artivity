@@ -54,6 +54,6 @@ namespace Artivity.DataModel
 		public Entity(Uri uri) : base(uri) {}
 
 		#endregion
-	}
+    }
 }
 

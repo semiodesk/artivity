@@ -47,7 +47,6 @@ namespace Artivity.Apid
 
         public IPlatformProvider PlatformProvider { get; set; }
         
-
         protected string ArtivityModulePath { get; set; }
 
         #endregion
@@ -65,7 +64,6 @@ namespace Artivity.Apid
             };
         }
 
-
         public ModuleBase(string modulePath, IModelProvider model, IPlatformProvider platform) : base(modulePath)
         {
             ModelProvider = model;
@@ -82,58 +80,6 @@ namespace Artivity.Apid
 
         #region Methods
 
-        protected void UpdateMonitoring()
-        {
-            if (!IsMonitoringRequired()) return;
-
-            IModel monitoring = ModelProvider.GetMonitoring();
-
-            Database database = monitoring.GetResources<Database>().FirstOrDefault();
-
-            DatabaseState state = monitoring.CreateResource<DatabaseState>();
-            state.Time = DateTime.Now;
-            state.FileSize = database.GetFileSize();
-            state.FactsCount = database.GetFactsCount(ModelProvider);
-            state.Commit();
-
-            database.States.Add(state);
-            database.Commit();
-        }
-
-        private bool IsMonitoringRequired()
-        {
-            SparqlQuery query = new SparqlQuery(@"
-                PREFIX art: <http://semiodesk.com/artivity/1.0/>
-
-                select ?enabled ?time where
-                {
-                   ?database art:isMonitoringEnabled ?enabled .
-
-                   optional
-                   {
-                      ?database art:hadState ?state .
-                      ?state art:atTime ?time .
-                   }
-                }
-                order by desc(?time) limit 1");
-
-            IEnumerable<BindingSet> bindings = ModelProvider.GetMonitoring().ExecuteQuery(query).GetBindings();
-
-            if(bindings.Any())
-            {
-                BindingSet binding = bindings.First();
-
-                var enabled = Convert.ToBoolean(binding["enabled"]);
-                var lastTime = binding["time"].ToString();
-
-                return enabled && (string.IsNullOrEmpty(lastTime) || (DateTime.Now - DateTime.Parse(lastTime)).Minutes >= 1);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         public T Bind<T>(IStore store, RequestStream stream) where T : Resource
         {
             using (var reader = new StreamReader(stream))
@@ -144,6 +90,16 @@ namespace Artivity.Apid
 
                 return JsonConvert.DeserializeObject<T>(value, settings);
             }
+        }
+
+        protected bool IsUri(string uri, UriKind kind = UriKind.Absolute)
+        {
+            return Uri.IsWellFormedUriString(uri, kind);
+        }
+
+        protected bool IsFileUrl(string url)
+        {
+            return IsUri(url) | IsUri(Uri.EscapeUriString(url));
         }
 
         #endregion

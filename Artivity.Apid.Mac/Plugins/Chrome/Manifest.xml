@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<art:PluginManifest xmlns:art="http://www.artivity.io/plugins/manifest/">
+  <art:Uri>http://www.google.com/chrome/browser/desktop</art:Uri>
+  <art:DisplayName>Google Chrome</art:DisplayName>
+  <art:ProcessName>Google Chrome</art:ProcessName>
+  <art:ID>Google Chrome</art:ID>
+  <art:TargetPath>%HOME%/Library/Application Support/Google/Chrome/External Extensions/</art:TargetPath>
+  <art:ExecPath></art:ExecPath>
+  <art:Version>0.8</art:Version>
+  <art:HostVersion>51.0.2704</art:HostVersion>
+  <art:PluginFile>lfpdclalfidmgoedibkdihkbiclfoebh.json</art:PluginFile>
+  <art:Arch>64</art:Arch>
+  <art:Color>#4C8CF5</art:Color>
+  <art:ExampleFile>Sample.html</art:ExampleFile>
+  <art:FilterName>Chrome</art:FilterName>
+</art:PluginManifest>

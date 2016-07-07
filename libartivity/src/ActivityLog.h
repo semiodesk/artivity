@@ -25,215 +25,134 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#ifndef ACTIVITYLOG_H
-#define ACTIVITYLOG_H
+#ifndef _ART_ACTIVITYLOG_H
+#define _ART_ACTIVITYLOG_H
 
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <algorithm>
 #include <deque>
 #include <vector>
 #include <curl/curl.h>
+#include <boost/shared_ptr.hpp>
+#include <boost/format.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/chrono.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
+#include "defines.h"
 #include "Resource.h"
 #include "Serializer.h"
 #include "ObjectModel/Agent.h"
 #include "ObjectModel/Association.h"
+#include "ObjectModel/SoftwareAssociation.h"
 #include "ObjectModel/Activity.h"
 #include "ObjectModel/Activities/CreateFile.h"
 #include "ObjectModel/Activities/EditFile.h"
 #include "ObjectModel/Entity.h"
-#include "ObjectModel/Entities/FileDataObject.h"
-#include "ObjectModel/Geometry/Canvas.h"
-
-using namespace std;
+#include "ObjectModel/Influences/Generation.h"
+#include "ObjectModel/Influences/Invalidation.h"
+#include "ObjectModel/Influences/Revision.h"
+#include "ObjectModel/Influences/Undo.h"
+#include "ObjectModel/Influences/Redo.h"
+#include "ObjectModel/FileDataObject.h"
+#include "ObjectModel/Entities/Image.h"
 
 namespace artivity
 {
-    typedef deque<Activity*>::iterator ActivityLogIterator;
-    typedef list<Resource*>::iterator ResourceIterator;
-    typedef list<Agent*>::iterator AgentIterator;
-    
-    class ActivityLog
+    typedef std::list<InfluenceRef>::iterator InfluenceIterator;
+
+    class ActivityLog;
+
+    typedef boost::shared_ptr<ActivityLog> ActivityLogRef;
+
+	class ActivityLog
     {
     protected:
+        std::string _endpointUrl;
+
         CURL* _curl;
+            
+        ActivityRef _activity;
+
+        ImageRef _entity;
+
+		std::vector<AssociationRef> _associations;
+
+        // Influences which need to be transmitted separatly, because they have 
+        // no relation with either the activity or an entity. Currently this
+        // is undo and redos.
+        std::list<InfluenceRef> _influences;
+
+        std::string _fileUrl;
         
-        deque<Activity*> _activities;
-    
-        list<Resource*> _resources;
-        
-        list<Agent*> _agents;
-        
-        string _fileUri;
-        
-        string _filePath;
-        
-        string _canvasUri;
-        
-        double _canvasWidth;
-        
-        double _canvasHeight;
-        
-        const Resource* _canvasUnit;
-        
+		bool fetchAssociationUri(AssociationRef association);
+
         CURL* initializeRequest();
         
-        long executeRequest(CURL* curl, string url, string postFields, string& response);
-        
-        void logError(CURLcode responseCode, string msg);
-        
-        void logInfo(CURLcode responseCode, string msg);
-        
-        string getTime();
+		long executeRequest(CURL* curl, std::string url, std::string postFields, std::string& response);
 
-        string getFileUri(string path);
+		std::string getTime();
 
-        string getCanvasUri(string path);
-        
-        string getLatestVersionUri(string path);
-        
-        void createCanvas(FileDataObject* file, double width, double height, const Resource* unit);
-        
-        ResourceIterator findResource(const char* uri);
-        
-        const char* _server = "http://localhost:8262";
-        const char* _uriAPI = "/artivity/1.0/uri";
-        const char* _activityAPI = "/artivity/1.0/activities";
-        const char* _monitorAPI = "/artivity/1.0/monitor";
-        const char* _API = "/artivity/api/1.0";
-        
+		std::string getEntityUri(std::string path);
+
+		void dump(boost::property_tree::ptree const& pt);
+
     public:
+        bool debug;
+
         ActivityLog();
-        
+
         virtual ~ActivityLog();
-        
-        // Indicates if there is a connection to the Artivity HTTP API.
-        bool connected();
-        
-        // Indicates if there are any activities in the log.
-        bool empty();
 
-        ActivityLogIterator begin();
-        
-        Activity* first();
-        
-        ActivityLogIterator end();
-        
-        Activity* last();
-        
-        void clear();
+		bool connect(std::string endpointUrl);
 
-        // Create a new resource and add it the transmitted RDF output.
-        template <class T> T* createResource()
+		bool ready();
+
+		bool empty() { return _activity->empty(); }
+        
+		void clear()
         {
-            return createResource<T>(UriGenerator::getUri().c_str());
+            _activity->clear();
+            _influences.clear();
         }
         
-        // Create a new resource with a given URI ant add it to the transmitted RDF output.
-        template <class T> T* createResource(const char* uri)
-        {            
-            T* t = new T(uri);
-            
-            addResource(t);
-            
-            return t;
-        }
-        
-        template <class T> T* getResource(const char* uri)
-        {
-            ResourceIterator it = findResource(uri);
-            
-            if(it == _resources.end())
-            {
-                return NULL;
-            }
-            
-            return dynamic_cast<T*>(*it);
-        }
-        
-        bool hasResource(const char* uri);
+		void close();
 
-        // Create a new activity and add to the transmitted RDF output.
-        template <class T> T* createActivity()
-        {
-            time_t now;
-            time(&now);
-                
-            T* activity = new T();
-            activity->setStartTime(now);
-            
-            addActivity(activity);
-            
-            return activity;
-        }
-        
-        template <class T> T* createEntityVersion(T* entity, Canvas* canvas)
-        {
-            T* version = createResource<T>();
-            version->setCanvas(canvas);
-            version->addGenericEntity(entity);
-            
-            return version;
-        }
-        
-        template <class T> T* createEntityInfluence(time_t time, const Resource& type, Viewport* viewport)
-        {
-            T* influence = createResource<T>();
-            influence->setType(type);
-            influence->setTime(time);
-            influence->setViewport(viewport);
-            
-            return influence;
-        }
-        
-        Activity* updateActivity(Activity* activity);
-        
-        // Add an activity to the transmitted RDF output.
-        void addActivity(Activity* activity);
+		void close(time_t time);
 
-        // Remove an activity
-        void removeActivity(Activity* activity);
-        
-        // Adds an associated agent to any activities which are being logged.
-        void addAgent(Agent* agent);
-        
-        // Removes an associated agent to any activities which are being logged.
-        void removeAgent(Agent* agent);
-        
-        bool hasFile(string path);
-        
-        EditFile* editFile(string path, double width, double height, const Resource* lengthUnit);
-        
-        CreateFile* createFile(double width, double height, const Resource* lengthUnit);
-        
-        FileDataObject* getFile();
+		// Send all items in the queue to the Artivity server.
+		void transmit();
 
-        string getFilePath() { return _filePath; }
-                        
-        bool hasCanvas(double width, double height, const Resource* lengthUnit);
+		ActivityRef getActivity() { return _activity; }
 
-        void updateCanvas(double width, double height, const Resource* lengthUnit);
+		// Set the file being edited.
+		void setDocument(ImageRef image, std::string path, bool create);
 
-        Canvas* getCanvas();
-        
-        // Send all items in the queue to the Artivity server.
-        void transmit();
-        
-		void enableMonitoring(string path, string uri);
-        
-        void disableMonitoring(string path);
-        
-        string escapePath(string path);
+        ImageRef getDocument();
 
-        string getThumbnailPath(string uri);
+        bool createDataObject(std::string path);
 
-        // Add a referenced resource to the transmitted RDF output.
-        void addResource(Resource* resource);
+        void addAssociation(const char* roleUri);
+		void addAssociation(const char* roleUri, const char* agentUri, const char* version);
+		void addAssociation(const char* roleUri, std::string agentUri, std::string version);
 
-        // Remove a referenced resource to the transmitted RDF output.
-        void removeResource(Resource* resource);
+		// Add an entity influence to the transmitted RDF stream.
+		void addInfluence(InfluenceRef influence);
 
+		// Remove an entity influence to the transmitted RDF stream.
+        void removeInfluence(InfluenceRef influence);
+
+		std::string getRenderOutputPath();
+
+#if _DEBUG
+		void logError(std::string msg);
+		void logInfo(std::string msg);
+        void logRequest(std::string url, std::string time, std::string data);
+#endif
     };
 }
 
-#endif // ACTIVITYLOG_H
+#endif // _ART_ACTIVITYLOG_H

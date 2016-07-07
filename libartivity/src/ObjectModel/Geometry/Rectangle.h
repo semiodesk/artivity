@@ -1,18 +1,50 @@
-#ifndef RECTANGLE_H
-#define RECTANGLE_H
+// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
+
+#ifndef _ART_RECTANGLE_H
+#define _ART_RECTANGLE_H
+
+#include <math.h>
 
 #include "../../Ontologies/rdf.h"
 #include "../../Ontologies/art.h"
+
 #include "Geometry.h"
 #include "Point.h"
 
 namespace artivity
 {
+    class Rectangle;
+
+    typedef boost::shared_ptr<Rectangle> RectangleRef;
+
     class Rectangle : public Geometry
     {
-    private:
-        Point* _position;
-        
+    private:       
         double _width;
         
         double _height;
@@ -27,17 +59,20 @@ namespace artivity
         {
             setType(art::Rectangle);
         }
-        
-        Point* getPosition()
+
+        Rectangle(double top, double left, double right, double bottom)
         {
-            return _position;
+            setType(art::Rectangle);
+            setX(left);
+            setY(top);
+            setWidth(fabs(right - left));
+            setHeight(fabs(top - bottom));
         }
-        
-        void setPosition(Point* position)
+
+        Rectangle(double x, double y)
         {
-            _position = position;
-            
-            setValue(art::position, position);
+            setType(art::Rectangle);
+            setPosition(x, y);
         }
         
         double getWidth()
@@ -66,4 +101,4 @@ namespace artivity
     };
 }
 
-#endif // RECTANGLE_H
+#endif // _ART_RECTANGLE_H

@@ -1,37 +1,59 @@
-#ifndef SERIALIZER_H
-#define SERIALIZER_H
+#ifndef __ART_SERIALIZER_H
+#define __ART_SERIALIZER_H
 
 #include <map>
+#include <queue>
+#include <unordered_set>
 #include <string>
 #include "Resource.h"
 #include "XsdTypeMap.h"
-
-using namespace std;
 
 namespace artivity
 {
     enum RdfSerializationFormat { N3 };
     
-    class SerializerContext;
+	class SerializerContext
+	{
+	public:
+		// Reference to the target string stream.
+		std::stringstream out;
+
+		// Prefixes that need to be declared.
+		std::unordered_set<std::string> prefixes;
+
+		// Resources which have already been serialized.
+		std::unordered_set<std::string> track;
+
+		// Resources which need to be serialized.
+		std::queue<ResourceRef> queue;
+
+		SerializerContext() {}
+	};
     
     class Serializer
     {  
+	protected:
+		void serializeN3(SerializerContext& context, ResourceRef resource);
+        void serializeN3(SerializerContext& context, std::string property, PropertyValue x);
+		void serializeN3(SerializerContext& context, std::string uri);
+
     public:
+		std::map<std::string, std::string> PREFIX_MAP;
         XsdTypeMap TYPE_MAP;
                 
-        Serializer() {}
+		Serializer();
         ~Serializer() {}
 
-        static string toString(const Resource& value);
-        static string toString(const char* value);
-		static string toString(int value);
-		static string toString(long value);
-		static string toString(float value);
-		static string toString(double value);
-		static string toString(const time_t* value);
+        static std::string toString(ResourceRef value);
+        static std::string toString(const char* value);
+        static std::string toString(int value);
+        static std::string toString(long value);
+        static std::string toString(float value);
+        static std::string toString(double value);
+        static std::string toString(const time_t* value);
         
-        string serialize(Resource& resource, RdfSerializationFormat format);
-        stringstream& serialize(stringstream& out, Resource& resource, RdfSerializationFormat format);
+        std::string serialize(ResourceRef resource, RdfSerializationFormat format);
+        std::stringstream& serialize(std::stringstream& out, ResourceRef resource, RdfSerializationFormat format);
     };
 }
 

@@ -5,9 +5,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{18E3ACB7-2958-43C7-B201-EA31F542F22C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Artivity.Apid</RootNamespace>
+    <RootNamespace>Artivity.Api</RootNamespace>
     <ReleaseVersion>1.5</ReleaseVersion>
-    <AssemblyName>Artivity.Apid.Mac</AssemblyName>
+    <AssemblyName>Artivity.Apid</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -42,6 +42,26 @@
     <DefineConstants>OSX</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="dotNetRDF, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\dotNetRDF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dotNetRDF.Data.Virtuoso, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OpenLink.Data.Virtuoso, Version=7.2.3215.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity, Version=0.9.147.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -78,25 +98,11 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.5\lib\net40-client\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="dotNetRDF.Data.Virtuoso">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="dotNetRDF">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\dotNetRDF.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenLink.Data.Virtuoso">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-    </Reference>
-    <Reference Include="VDS.Common">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.142-rc\lib\Net40\VDS.Common.dll</HintPath>
-    </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\VDS.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounts\IOAuth2AccountProvider.cs" />
@@ -109,25 +115,28 @@
     <Compile Include="HttpService.cs" />
     <Compile Include="Helpers\FileSystemWatcherInfo.cs" />
     <Compile Include="Modules\ApiModule.cs" />
-    <Compile Include="Modules\PluginModule.cs" />
+    <Compile Include="Modules\AgentsModule.cs" />
     <Compile Include="Parameters\ActivityParameters.cs" />
+    <Compile Include="Platforms\UserConfig.cs" />
     <Compile Include="Platforms\IPlatformProvider.cs" />
     <Compile Include="Platforms\OSX\ThumbnailProvider.cs" />
     <Compile Include="Platforms\IThumbnailProvider.cs" />
     <Compile Include="Platforms\Win\ThumbnailProvider.cs" />
     <Compile Include="Platforms\PlatformProvider.cs" />
+    <Compile Include="Plugin\PluginCheckerFactory.cs" />
+    <Compile Include="Plugin\PluginManifestPluginFile.cs" />
+    <Compile Include="Plugin\PluginManifestReader.cs" />
+    <Compile Include="Plugin\PluginManifestRegistryItem.cs" />
+    <Compile Include="Plugin\PluginManifestRegistryKey.cs" />
     <Compile Include="Plugin\SoftwareAgentPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modules\ModuleBase.cs" />
     <Compile Include="Parameters\AgentParameters.cs" />
-    <Compile Include="Modules\ActivitiesModule.cs" />
-    <Compile Include="Modules\AgentsModule.cs" />
     <Compile Include="Helpers\FileSystemMonitor.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Parameters\UriParameters.cs" />
     <Compile Include="Modules\UriModule.cs" />
-    <Compile Include="Modules\MonitorModule.cs" />
     <Compile Include="Helpers\FileInfoCache.cs" />
     <Compile Include="Platforms\OSX\CoreFoundation.cs" />
     <Compile Include="Plugin\PluginChecker.cs" />
@@ -177,6 +186,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\user.jpg" />
     <Content Include="TinyVirtuoso\virtuoso\win\CtrlCSender.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

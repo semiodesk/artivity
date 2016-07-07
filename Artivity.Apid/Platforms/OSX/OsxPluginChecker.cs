@@ -23,55 +23,152 @@
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-//
+
+using Artivity.DataModel;
 using System;
-using MonoDevelop.MacInterop;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Mono.Unix;
-using System.Diagnostics;
+using MonoDevelop.MacInterop;
+using System.Xml;
+using System.Xml.XPath;
 
 namespace Artivity.Api.Plugin.OSX
 {
     public class OsxPluginChecker : PluginChecker
     {
-        public OsxPluginChecker(DirectoryInfo dir)
-            : base(dir)
+        #region Constructors
+
+        public OsxPluginChecker(IModelProvider modelProvider, DirectoryInfo folder)
+            : base(modelProvider, folder)
         {
         }
 
-        protected override DirectoryInfo GetApplicationLocation (PluginManifest manifest)
-        {
-            string example = Path.Combine (manifest.ManifestFile.Directory.FullName, manifest.ExampleFile);
-            string[] list = CoreFoundation.GetApplicationUrls (example, CoreFoundation.LSRolesMask.All);
+        #endregion
 
-            string location = (from x in list where x.Contains(manifest.FilterName) select x).FirstOrDefault();
-            if (string.IsNullOrEmpty (location))
+        #region Methods
+
+        protected override DirectoryInfo GetApplicationLocation(PluginManifest manifest)
+        {
+            if (string.IsNullOrEmpty(manifest.ExampleFile))
+            {
+                throw new Exception("No value set for ExampleFile in manifest.");
+            }
+
+            string sample = Path.Combine(manifest.ManifestFile.Directory.FullName, manifest.ExampleFile);
+
+            if (!File.Exists(sample))
+            {
+                throw new Exception("Sample file does not exist: " + sample);
+            }
+
+            string[] list = CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All);
+
+            if (list.Any())
+            {
+                string location = (from app in list where app.Contains(manifest.FilterName) select app).FirstOrDefault();
+
+                return string.IsNullOrEmpty(location) ? null : new DirectoryInfo(location);
+            }
+            else
+            {
                 return null;
-            return new DirectoryInfo (location);
-        }
-
-        protected override void CreateLink (string target, string source)
-        {
-            UnixFileInfo f = new UnixFileInfo (source);
-            f.CreateSymbolicLink (target);
+            }
         }
 
         protected override string GetApplicationVersion(FileSystemInfo app)
         {
-            string res = null;
-
-            if (app is FileInfo)
+            if (app is DirectoryInfo)
             {
-                var fi = app as FileInfo;
-                var info = FileVersionInfo.GetVersionInfo(fi.FullName);
-                return info.ProductVersion;
+                var appBundle = app as DirectoryInfo;
+
+                var infoPlist = Path.Combine(appBundle.FullName, "Contents", "Info.plist");
+
+                if (File.Exists(infoPlist))
+                {
+                    try
+                    {
+                        XPathDocument document = new XPathDocument(infoPlist);
+
+                        XPathNavigator root = document.CreateNavigator();
+
+                        XPathNavigator value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleShortVersionString']");
+
+                        value.MoveToNext();
+
+                        return value.InnerXml;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex.Message);
+
+                        Logger.Debug("Failed to parse Info.plist. May be the file is in binary format?");
+                    }
+                }
             }
 
-
-            return res;
-
+            return null;
         }
+
+        public override bool IsPluginInstalled(PluginManifest manifest)
+        {
+            DirectoryInfo location = GetApplicationLocation(manifest);
+
+            if (location == null || !location.Exists)
+            {
+                return false;
+            }
+
+            foreach (PluginManifestPluginFile file in manifest.PluginFile)
+            {
+                DirectoryInfo targetFolder = TryGetPluginTargetDirectory(location, manifest);
+
+                if (!targetFolder.Exists)
+                {
+                    return false;
+                }
+
+                // This may be a file or app bundle / directory.
+                var targetPath = Path.Combine(targetFolder.FullName, file.GetName());
+
+                if (file.Link)
+                {
+                    UnixSymbolicLinkInfo link = new UnixSymbolicLinkInfo(targetPath);
+
+                    if (!link.Exists)
+                    {
+                        return false;
+                    }
+                }
+                else if (!File.Exists(targetPath) && !Directory.Exists(targetPath))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        protected override bool CreateLink(string source, string target)
+        {
+            UnixFileInfo file = new UnixFileInfo(source);
+
+            file.CreateSymbolicLink(target);
+
+            UnixSymbolicLinkInfo link = new UnixSymbolicLinkInfo(target);
+
+            return link.Exists;
+        }
+
+        protected override void DeleteLink(string target)
+        {
+            UnixFileInfo link = new UnixFileInfo(target);
+
+            link.Delete();
+        }
+
+        #endregion
     }
 }
 

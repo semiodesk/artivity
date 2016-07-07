@@ -48,13 +48,14 @@ namespace Artivity.Apid.Mac
             var userFolder = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
             var username = Environment.UserName;
 
-            Platform = new MacPlatformProvider (applicationData, userFolder, username);
+            Platform = new MacPlatformProvider(applicationData, userFolder, username);
             
 #if DEBUG
-            LogConfigFile = Path.Combine (Platform.DeploymentDir, "log.config.debug");
+            LogConfigFile = Path.Combine(Platform.DeploymentDir, "log.config.debug");
 #else
             LogConfigFile = Path.Combine(Platform.DeploymentDir, "log.config");
 #endif
+
             Options = opts;
             OverwriteLogging = true;
             InitializeLogging ();

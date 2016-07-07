@@ -72,15 +72,14 @@ namespace Artivity.Apid
         {
             _container = container;
 
+            if (PlatformProvider != null)
+            {
+                _container.Register(PlatformProvider);
+            }
 
             if (ModelProvider != null)
             {
                 _container.Register(ModelProvider);
-            }
-
-            if (PlatformProvider != null)
-            {
-                _container.Register(PlatformProvider);
             }
 
             if (PluginChecker != null)

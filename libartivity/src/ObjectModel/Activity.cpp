@@ -1,56 +1,74 @@
+// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
+
 #include <algorithm>
 
 #include "../Ontologies/rdf.h"
 #include "../Ontologies/prov.h"
-#include "../UriGenerator.h"
 
+#include "../UriGenerator.h"
+#include "../Resource.h"
+#include "../Property.h"
+
+#include "Entity.h"
+#include "Association.h"
 #include "Activity.h"
 
 namespace artivity
 {
+	using namespace std;
+
     Activity::Activity() : Resource(UriGenerator::getUri())
     {
-        _associations = new list<Association*>();
-        _usedEntities = new list<Entity*>();
-        _invalidatedEntities = new list<Entity*>();
-        _generatedEntities = new list<Entity*>();
-        
-        setType(prov::Activity);
+		setType(prov::Activity);
     }
     
     Activity::Activity(const char* uriref) : Resource(uriref)
     {
-        _associations = new list<Association*>();
-        _usedEntities = new list<Entity*>();
-        _invalidatedEntities = new list<Entity*>();
-        _generatedEntities = new list<Entity*>();
-        
-        setType(prov::Activity);
+		setType(prov::Activity);
     }
 
     Activity::~Activity()
     {
-        delete _associations;
-        delete _usedEntities;
-        delete _invalidatedEntities;
-        delete _generatedEntities;
     }
     
-    bool Activity::isValid()
-    {
-        // TODO: Check if type, actor, object and time is set.
-        // See: http://www.w3.org/TR/activitystreams-core/#example-1
-        return true;
-    }
-    
+	bool Activity::empty()
+	{
+		return properties.empty();
+	}
+
     void Activity::clear()
     {
         Resource::clear();
         
-        _associations->clear();
-        _usedEntities->clear();
-        _invalidatedEntities->clear();
-        _generatedEntities->clear();
+		_associations.clear();
+        _usedEntites.clear();
+        _generatedEntities.clear();
+        _invalidatedEntities.clear();
     }
     
     void Activity::setTime(time_t time)
@@ -88,88 +106,122 @@ namespace artivity
         return _startTime;
     }
     
-    list<Association*> Activity::getAssociations()
+    list<AssociationRef> Activity::getAssociations()
     {
-        return *_associations;
+        return _associations;
     }
     
-    void Activity::addAssociation(Association* association)
+    void Activity::addAssociation(AssociationRef association)
     {
         if(hasProperty(prov::qualifiedAssociation, association)) return;
         
-        _associations->push_back(association);
+        _associations.push_back(association);
         
         addProperty(prov::qualifiedAssociation, association);
     }
     
-    void Activity::removeAssociation(Association* association)
+    void Activity::removeAssociation(AssociationRef association)
     {        
-        _associations->remove(association);
+        _associations.remove(association);
         
         removeProperty(prov::qualifiedAssociation, association);
     }
     
-    list<Entity*> Activity::getUsedEntities()
+    list<EntityRef> Activity::getUsedEntities()
     {
-        return *_usedEntities;
+        return _usedEntites;
     }
+
     
-    void Activity::addUsedEntity(Entity* entity)
+    void Activity::addUsed(EntityRef entity)
     {
-        if(hasProperty(prov::used, entity)) return;
+        if (hasProperty(prov::used, entity))
+        {
+            return;
+        }
         
-        _usedEntities->push_back(entity);
+		_usedEntites.push_back(entity);
         
         addProperty(prov::used, entity);
     }
     
-    void Activity::removeUsedEntity(Entity* entity)
+    void Activity::removeUsed(EntityRef entity)
     {
-        _usedEntities->remove(entity);
+        _usedEntites.remove(entity);
         
         removeProperty(prov::used, entity);
     }
     
-    list<Entity*> Activity::getInvalidatedEntities()
+    list<EntityRef> Activity::getInvalidatedEntities()
     {
-        return *_invalidatedEntities;
+        return _invalidatedEntities;
     }
     
-    void Activity::addInvalidatedEntity(Entity* entity)
+    void Activity::addInvalidated(EntityRef entity)
     {
-        if(hasProperty(prov::invalidated, entity)) return;
+        if (hasProperty(prov::invalidated, entity)) return;
         
-        _invalidatedEntities->push_back(entity);
+        _invalidatedEntities.push_back(entity);
         
         addProperty(prov::invalidated, entity);
     }
     
-    void Activity::removeInvalidatedEntity(Entity* entity)
+    void Activity::removeInvalidated(EntityRef entity)
     {       
-        _invalidatedEntities->remove(entity);
+        _invalidatedEntities.remove(entity);
         
         removeProperty(prov::invalidated, entity);
     }
     
-    list<Entity*> Activity::getGeneratedEntities()
+	list<EntityRef> Activity::getGeneratedEntities()
     {
-        return *_generatedEntities;
+		return _generatedEntities;
     }
     
-    void Activity::addGeneratedEntity(Entity* entity)
+    void Activity::addGenerated(EntityRef entity)
     {
-        if(hasProperty(prov::generated, entity)) return;
+        if (hasProperty(prov::generated, entity)) return;
         
-        _generatedEntities->push_back(entity);
+        _generatedEntities.push_back(entity);
         
         addProperty(prov::generated, entity);
     }
     
-    void Activity::removeGeneratedEntity(Entity* entity)
+    void Activity::removeGenerated(EntityRef entity)
     {        
-        _generatedEntities->remove(entity);
+        _generatedEntities.remove(entity);
         
         removeProperty(prov::generated, entity);
+    }
+
+    struct by_Uri
+    {
+        by_Uri(std::string x) : x(x) {}
+        bool operator()(ResourceRef const & r) const
+        {
+            return x == r->uri;
+        }
+        const std::string x;
+    };
+
+    EntityRef Activity::getEntity(std::string uri)
+    {
+        std::list<EntityRef>::iterator e = std::find_if(_usedEntites.begin(), _usedEntites.end(), by_Uri(uri));
+        if (e != _usedEntites.end())
+        {
+            return *e;
+        }
+        e = std::find_if(_generatedEntities.begin(), _generatedEntities.end(), by_Uri(uri));
+        if (e != _generatedEntities.end())
+        {
+            return *e;
+        }
+        e = std::find_if(_invalidatedEntities.begin(), _invalidatedEntities.end(), by_Uri(uri));
+        if (e != _invalidatedEntities.end())
+        {
+            return *e;
+        }
+        return EntityRef();
     }
 }
 
