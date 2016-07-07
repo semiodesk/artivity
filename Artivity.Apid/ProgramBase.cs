@@ -81,10 +81,6 @@ namespace Artivity.Apid
 
             InitializeLogging();
 
-#if !DEBUG
-            InitializePluginChecker();
-#endif
-
             InitializeService();
 
             EnableShutdownOnSigInt();
