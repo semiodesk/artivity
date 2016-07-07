@@ -155,8 +155,8 @@
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
     <EmbeddedResource Include="app\js\app.conf.release.js" >
-    <LogicalName>Artivity.Apid.Modules.Journal.app.js.conf.js</LogicalName>
-  </EmbeddedResource>
+      <LogicalName>Artivity.Apid.Modules.Journal.app.js.app.conf.js</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <EmbeddedResource Include="app\js\app.conf.js" />
