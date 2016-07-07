@@ -36,27 +36,23 @@ namespace Artivity.DataModel
 	{
 		#region Members
 
-        // TODO: Map into a URI, not a literal value. (Needs changing libartivity).
-		[RdfProperty(NFO.fileUrl)]
-		public string Url { get; set; }
+        [RdfProperty(RDFS.label)]
+        public string Name { get; set; }
 
 		[RdfProperty(NFO.fileSize)]
 		public long ByteSize { get; set; }
 
-		[RdfProperty(NFO.fileCreated)]
+		[RdfProperty(NIE.created)]
 		public DateTime CreationTime { get; set; }
 
 		[RdfProperty(NFO.fileLastAccessed)]
 		public DateTime LastAccessTime { get; set; }
 
-		[RdfProperty(NFO.fileLastModified)]
+		[RdfProperty(NIE.lastModified)]
 		public DateTime LastModificationTime { get; set; }
 
-		[RdfProperty(PROV.value)]
-		public string RevisedValue { get; set; }
-
-        [RdfProperty(ART.canvas)]
-        public List<Canvas> Canvases { get; set; }
+        [RdfProperty(NFO.belongsToContainer)]
+        public Folder Folder { get; set; }
 
 		#endregion
 

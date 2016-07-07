@@ -1,118 +1,104 @@
-#ifndef PROPERTYMAP_H
-#define PROPERTYMAP_H
+// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
+
+#ifndef _ART_PROPERTYMAP_H
+#define _ART_PROPERTYMAP_H
 
 #include <iostream>
+#include <map>
 #include "PropertyValue.h"
-
-using namespace std;
 
 namespace artivity
 {
-    typedef multimap<string, PropertyValue>::iterator PropertyMapIterator;
+    typedef std::multimap<std::string, PropertyValue>::iterator PropertyMapIterator;
     
-    class PropertyMap : public multimap<string, PropertyValue>
+    class PropertyMap
     {
+    private:
+        std::multimap<std::string, PropertyValue> _map;
+
     public:
         PropertyMap() {}
-        ~PropertyMap() {}
-        
-        PropertyMapIterator findProperty(const string& property, const Resource* resource)
+
+        ~PropertyMap() 
         {
-            if(resource == NULL) return end();
-            
-            PropertyMapIterator it = begin();
-        
-            while(it != end())
-            {
-                PropertyValue x = it->second;
-                
-                if(x.Value == resource) break;
-                
-                it++;
-            }
-            
-            return it;
+            _map.clear();
         }
         
-        PropertyMapIterator findProperty(const string& property, string literalValue, const type_info& typeInfo)
-        {                                    
-            PropertyMapIterator it = begin();
-                            
-            while(it != end())
-            {
-                string p = it->first;
-                string value = it->second.LiteralValue;
-                const char* type = it->second.LiteralType;
-                
-                if(p == property && value == literalValue && type == typeInfo.name())
-                {
-                    break;
-                }
-                
-                it++;
-            }
-                            
-            return it;
-        }
+        PropertyMapIterator findProperty(const std::string& property, PropertyValue value);
+
+        PropertyMapIterator findProperty(const std::string& property, ResourceRef resource);
         
-        bool hasProperty(const string& property, const Resource* resource)
-        {
-            return findProperty(property, resource) != end();
-        }
+        PropertyMapIterator findProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
+
+        bool hasProperty(const std::string& property, ResourceRef resource);
         
-        bool hasProperty(const string& property, string literalValue, const type_info& typeInfo)
-        {
-            return findProperty(property, literalValue, typeInfo) != end();
-        }
+        bool hasProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
         
-        void addProperty(const string& property, const Resource* resource)
-        {
-            if(resource == NULL || hasProperty(property, resource)) return;
-            
-            insert(pair<string, PropertyValue>(property, PropertyValue(resource)));
-        }
+        void addProperty(const std::string& property, ResourceRef resource);
         
-        void addProperty(const string& property, string literalValue, const type_info& typeInfo)
-        {
-            if(hasProperty(property, literalValue, typeInfo)) return;
-            
-            insert(pair<string, PropertyValue>(property, PropertyValue(literalValue, typeInfo)));
-        }
+        void addProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
         
-        void removeProperty(const string& property, const Resource* resource)
-        {
-            PropertyMapIterator it = findProperty(property, resource);
-            
-            if(it == end()) return;
-            
-            erase(it);
-        }
+        void addProperty(const std::string& property, PropertyValue value);
+
+        void removeProperty(const std::string& property, PropertyValue value);
+
+        void removeProperty(const std::string& property, ResourceRef resource);
         
-        void removeProperty(const string& property, string literalValue, const type_info& typeInfo)
-        {
-            PropertyMapIterator it = findProperty(property, literalValue, typeInfo);
-            
-            if(it == end()) return;
-            
-            erase(it);
-        }
+        void removeProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
         
-        void setProperty(const string& property, const Resource* resource)
-        {
-            erase(property);
-            
-            if(resource == NULL) return;
-            
-            addProperty(property, resource);
-        }
-        
-        void setProperty(const string& property, string literalValue, const type_info& typeInfo)
-        {
-            erase(property);
-            
-            addProperty(property, literalValue, typeInfo);
-        }
+        void setProperty(const std::string& property, PropertyValue value);
+
+        void setProperty(const std::string& property, ResourceRef resource);
+
+        void setProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
+
+        void erase(const std::string& property) { _map.erase(property); }
+
+        PropertyMapIterator find(const std::string& property) { return _map.find(property); }
+
+        PropertyMapIterator end() { return _map.end(); }
+
+        PropertyMapIterator begin() { return _map.begin(); }
+
+        void clear() { _map.clear(); }
+
+        size_t size() { return _map.size(); }
+
+        bool empty() { return _map.empty(); }
+
+        PropertyMapIterator lower_bound(const std::string& property) { return _map.lower_bound(property); }
+
+        PropertyMapIterator upper_bound(const std::string& property) { return _map.upper_bound(property); }
+
+        void insert(std::string key, PropertyValue value) { _map.insert(std::pair<std::string, PropertyValue>(key, value)); }
+
+        PropertyMapIterator erase(PropertyMapIterator it) { return _map.erase(it); }
     };
 }
 
-#endif // PROPERTYMAP_H
+#endif // _ART_PROPERTYMAP_H

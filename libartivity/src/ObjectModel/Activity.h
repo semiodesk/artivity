@@ -1,25 +1,61 @@
-#ifndef ACTIVITY_H
-#define ACTIVITY_H
+// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
+
+#ifndef _ART_ACTIVITY_H
+#define _ART_ACTIVITY_H
 
 #include <list>
 
 #include "../Resource.h"
 
-#include "Entity.h"
-#include "Association.h"
-
 namespace artivity
 {
+    class Entity;
+
+    typedef boost::shared_ptr<Entity> EntityRef;
+
+    class Association;
+
+    typedef boost::shared_ptr<Association> AssociationRef;
+
+    class Activity;
+
+    typedef boost::shared_ptr<Activity> ActivityRef;
+
     class Activity : public Resource
     {
     private:        
-        list<Association*>* _associations;
-    
-        list<Entity*>* _usedEntities;
-                    
-        list<Entity*>* _invalidatedEntities;
-                                
-        list<Entity*>* _generatedEntities;
+        std::list<AssociationRef> _associations;
+
+        std::list<EntityRef> _usedEntites;
+
+        std::list<EntityRef> _generatedEntities;
+
+        std::list<EntityRef> _invalidatedEntities;
 
         time_t _startTime;
         
@@ -29,9 +65,8 @@ namespace artivity
         Activity();
         Activity(const char* uriref);
         virtual ~Activity();
-        
-        bool isValid();
-        
+               
+		bool empty();
         void clear();
         
         void setTime(time_t time);
@@ -43,22 +78,24 @@ namespace artivity
         void setEndTime(time_t time);
         time_t getEndTime();
         
-        list<Association*> getAssociations();
-        void addAssociation(Association* association);
-        void removeAssociation(Association* association);
-        
-        list<Entity*> getUsedEntities();
-        void addUsedEntity(Entity* entity);
-        void removeUsedEntity(Entity* entity);
-        
-        list<Entity*> getInvalidatedEntities();
-        void addInvalidatedEntity(Entity* entity);
-        void removeInvalidatedEntity(Entity* entity);
-        
-        list<Entity*> getGeneratedEntities();
-        void addGeneratedEntity(Entity* entity);
-        void removeGeneratedEntity(Entity* entity);
+        std::list<AssociationRef> getAssociations();
+        void addAssociation(AssociationRef association);
+        void removeAssociation(AssociationRef association);
+
+		std::list<EntityRef> getUsedEntities();
+		void addUsed(EntityRef entity);
+		void removeUsed(EntityRef entity);
+               
+        std::list<EntityRef> getGeneratedEntities();
+        void addGenerated(EntityRef generation);
+        void removeGenerated(EntityRef generation);
+
+        std::list<EntityRef> getInvalidatedEntities();
+        void addInvalidated(EntityRef invalidation);
+        void removeInvalidated(EntityRef invalidation);
+
+        EntityRef getEntity(std::string uri);
     };
 }
 
-#endif // ACTIVITY_H
+#endif // _ART_ACTIVITY_H

@@ -1,15 +1,47 @@
-#ifndef XMLATTRIBUTE_H
-#define XMLATTRIBUTE_H
+// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
 
-#include "../../Ontologies/rdf.h"
+#ifndef _ART_XMLATTRIBUTE_H
+#define _ART_XMLATTRIBUTE_H
+
+#include "../../Ontologies/xml.h"
+
 #include "../Entity.h"
 
 namespace artivity
 {
-    class XmlAttribute: public Entity
+    class XmlAttribute;
+
+    typedef boost::shared_ptr<XmlAttribute> XmlAttributeRef;
+
+    class XmlAttribute : public Entity
     {
     private:        
-        XmlElement* _ownerElement;
+        XmlElementRef _ownerElement;
         
         const char* _localName;
         
@@ -19,12 +51,12 @@ namespace artivity
             setType(xml::Attribute);
         }
         
-        XmlElement* getOwnerElement()
+        XmlElementRef getOwnerElement()
         {
             return _ownerElement;
         }
         
-        void setOwnerElement(XmlElement* ownerElement)
+        void setOwnerElement(XmlElementRef ownerElement)
         {
             _ownerElement = ownerElement;
             
@@ -45,4 +77,4 @@ namespace artivity
     };
 }
 
-#endif // XMLATTRIBUTE_H
+#endif // _ART_XMLATTRIBUTE_H

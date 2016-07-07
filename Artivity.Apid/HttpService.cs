@@ -39,6 +39,7 @@ using Nancy.TinyIoc;
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
 using Artivity.Api.Plugin;
+using Artivity.Api.Platforms;
 
 namespace Artivity.Apid
 {
@@ -150,6 +151,7 @@ namespace Artivity.Apid
         private bool _started = false;
 
         private PluginChecker _pluginChecker = null;
+
         private IInstallationWatchdog _watchdog;
 
         #endregion
@@ -170,11 +172,11 @@ namespace Artivity.Apid
 
         public void Start(bool blocking = true)
         {
-            SemiodeskDiscovery.Discover();
-
             string version = typeof(HttpService).Assembly.GetName().Version.ToString();
 
-            Logger.LogInfo("Artivity Logging Service, Version {0}", version);
+            Logger.LogInfo("Artivity API Service, Version {0}", version);
+
+            SemiodeskDiscovery.Discover();
 
             if (PlatformProvider == null)
             {
@@ -184,13 +186,17 @@ namespace Artivity.Apid
             // Make sure the database is started.
             StartDatabase();
 
+            if (PlatformProvider.Config.IsNew || UpdateOntologies)
+            {
+                LoadOntologies();
+            }
+
             // Test for SoftwareAgents 
             InitializeSoftwareAgentPlugins();
 
             // Start the daemon in a new thread.
             ServiceThread = new Thread(StartService);
             ServiceThread.Start();
-
 
             if (blocking)
             {
@@ -201,6 +207,7 @@ namespace Artivity.Apid
         public void Stop(bool waitForEnd = true)
         {
             Logger.LogInfo ("Stopping service.");
+
             StopWatchdog();
 
             if (ServiceThread != null && ServiceThread.IsAlive)
@@ -213,35 +220,32 @@ namespace Artivity.Apid
                 }
 
                 Logger.LogInfo("Stopped service on port {0}", _servicePort);
+
             }
+
             StopDatabase();
 
         }
 
         private void StartService()
         {
-            ModelProvider.Username = Username;
+            UserConfig userConfig = PlatformProvider.Config;
+
+            ModelProvider.Uid = userConfig.GetUserId();
 
             Bootstrapper customBootstrapper = new Bootstrapper();
-            customBootstrapper.ModelProvider = ModelProvider;
             customBootstrapper.PlatformProvider = PlatformProvider;
+            customBootstrapper.ModelProvider = ModelProvider;
             customBootstrapper.PluginChecker = _pluginChecker;
 
-
-            HostConfiguration config = new HostConfiguration();
-            config.RewriteLocalhost = true;
-            config.UnhandledExceptionCallback = new Action<Exception>((ex) =>
+            HostConfiguration hostConfig = new HostConfiguration();
+            hostConfig.RewriteLocalhost = true;
+            hostConfig.UnhandledExceptionCallback = new Action<Exception>((ex) =>
             {
                 Logger.LogError(ex.Message, ex);
             });
 
-            // Make sure the database is started.
-            if (UpdateOntologies)
-            {
-                LoadOntologies();
-            }
-
-            using (_serviceHost = new NancyHost(customBootstrapper, config, new Uri("http://localhost:" + _servicePort)))
+            using (_serviceHost = new NancyHost(customBootstrapper, hostConfig, new Uri("http://localhost:" + _servicePort)))
             {
                 try
                 {
@@ -277,6 +281,8 @@ namespace Artivity.Apid
 
         private void StartDatabase()
         {
+            string uid = PlatformProvider.Config.GetUserId();
+
             if (PlatformProvider.IsWindows || PlatformProvider.IsMac)
             {
                 string deploymentDir = PlatformProvider.DeploymentDir;
@@ -286,7 +292,7 @@ namespace Artivity.Apid
                 Logger.LogInfo("Database folder: {0}", PlatformProvider.DatabaseFolder);
 
                 // The database is started in the user's application data folder on port 8273..
-                _virtuoso = new TinyVirtuoso(PlatformProvider.ArtivityUserDataFolder, deploymentDir);
+                _virtuoso = new TinyVirtuoso(PlatformProvider.ArtivityDataFolder, deploymentDir);
                 _virtuosoInstance = _virtuoso.GetOrCreateInstance(PlatformProvider.DatabaseName);
                 _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("localhost:{0}", _virtuosoPort);
                 _virtuosoInstance.Configuration.SaveConfigFile();
@@ -299,21 +305,24 @@ namespace Artivity.Apid
                 string connectionString = _virtuosoInstance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";
                 string nativeConnectionString = _virtuosoInstance.GetAdoNetConnectionString();
 
-                ModelProvider = ModelProviderFactory.CreateModelProvider(connectionString, nativeConnectionString);
+                ModelProvider = ModelProviderFactory.CreateModelProvider(connectionString, nativeConnectionString, uid);
 
-                Logger.LogInfo("Database connection: {0}", nativeConnectionString);
+                if (!ModelProvider.CheckOntologies())
+                {
+                    LoadOntologies();
+                }
+
+                Logger.LogDebug("Database connection: {0}", nativeConnectionString);
                 Logger.LogInfo("Started database on port {0}", _virtuosoPort);
             }
             else
             {
                 // We are running on Linux..
-                ModelProvider = ModelProviderFactory.CreateModelProvider(GetConnectionStringFromConfiguration(), null);
+                ModelProvider = ModelProviderFactory.CreateModelProvider(GetConnectionStringFromConfiguration(), uid);
             }
 
             if (!ModelProvider.CheckAgents())
             {
-                Logger.LogInfo("Installing agents..");
-
                 ModelProvider.InitializeAgents();
             }
 
@@ -324,26 +333,33 @@ namespace Artivity.Apid
 
         private void InitializeSoftwareAgentPlugins()
         {
+            Logger.LogInfo("Installing software agents..");
 
-            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(new DirectoryInfo(PlatformProvider.PluginDir));
-            _pluginChecker.Check();
+            DirectoryInfo pluginDirectory = new DirectoryInfo(PlatformProvider.PluginDir);
+
+            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(ModelProvider, pluginDirectory);
+            _pluginChecker.CheckPlugins();
+
             if (PlatformProvider.CheckForNewSoftwareAgents)
             {
                 _watchdog = InstallationWatchdogFactory.CreateWatchdog();
                 _watchdog.ProgrammInstalledOrRemoved += OnProgramInstalled;
+
                 StartWatchdog();
             }
         }
 
         private void OnProgramInstalled(object sender, EventArgs entry)
         {
-            _pluginChecker.Check(PlatformProvider.AutomaticallyInstallSoftwareAgentPlugins);
+            _pluginChecker.CheckPlugins(PlatformProvider.AutomaticallyInstallSoftwareAgentPlugins);
         }
 
         private void StartWatchdog()
         {
-            if( _watchdog != null)
+            if (_watchdog != null)
+            {
                 _watchdog.Start();
+            }
         }
 
         private void StopWatchdog()
@@ -357,7 +373,7 @@ namespace Artivity.Apid
 
         private void StopDatabase()
         {
-            Logger.LogInfo("Stopping Database");
+            Logger.LogInfo("Stopping Database..");
 
             _virtuosoInstance.Stop(false);
         }
@@ -381,9 +397,16 @@ namespace Artivity.Apid
         {
             using (IStore store = StoreFactory.CreateStore(ModelProvider.ConnectionString))
             {
-                Logger.LogInfo("Updating ontologies..");
+                Logger.LogInfo("Loading ontologies..");
 
-                store.LoadOntologySettings();
+                try
+                {
+                    store.LoadOntologySettings();
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError(e.Message);
+                }
             }
         }
 
@@ -403,6 +426,5 @@ namespace Artivity.Apid
         }
 
         #endregion
-
     }
 }

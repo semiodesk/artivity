@@ -30,565 +30,630 @@
 #endif
 
 #include "curlresponse.h"
+
+#include "Ontologies/prov.h"
+#include "Resource.h"
+
 #include "ActivityLog.h"
-#include "JSON/jsonxx.h"
 
-using namespace artivity;
+#include "ObjectModel/Activity.h"
+#include "ObjectModel/Influences/Generation.h"
 
-ActivityLog::ActivityLog() 
+namespace artivity
 {
-    _curl = initializeRequest(); // For use with curl_easy_escape.
-    _activities = deque<Activity*>();
-    _resources = list<Resource*>();
-    _fileUri = "";
-    _filePath = "";
-    _canvasUri = "";
-}
+	using namespace std;
+	using namespace boost;
+    using namespace boost::chrono;
+	using namespace boost::property_tree;
 
-ActivityLog::~ActivityLog() 
-{
-    clear();
-    
-    // Free all the activities in the log.
-    ActivityLogIterator ait = _activities.begin();
-    
-    while(ait != _activities.end())
-    {
-        delete *ait;
-        
-        ait++;
-    }
-    
-    _activities.clear();
-    
-    // Free all the associated agents still in the log.
-    AgentIterator agit = _agents.begin();
-    
-    while(agit != _agents.end())
-    {
-        delete *agit;
-        
-        agit++;
-    }
+	ActivityLog::ActivityLog()
+	{
+		_curl = initializeRequest();
 
-	curl_easy_cleanup(_curl);
-}
+		_fileUrl = "";
+	}
 
-bool ActivityLog::connected()
-{
-    // TODO: Implement CURL call to http://localhost:8890/artivity/1.0/activities
-    return true;
-}
+	ActivityLog::~ActivityLog()
+	{
+		// Dereference the activity.
+		_activity = ActivityRef();
 
-bool ActivityLog::empty()
-{
-    return _activities.empty() && _resources.empty();
-}
+		curl_easy_cleanup(_curl);
+	}
 
-ActivityLogIterator ActivityLog::begin()
-{
-    return _activities.begin();
-}
+	CURL* ActivityLog::initializeRequest()
+	{
+		CURL* curl = curl_easy_init();
 
-Activity* ActivityLog::first()
-{
-    return _activities.empty() ? NULL : *(_activities.begin());
-}
+#if _DEBUG
+		if (!curl)
+		{
+			logError("Failed to initialize CURL.");
+		}
+#endif
 
-ActivityLogIterator ActivityLog::end()
-{
-    return _activities.end();
-}
+		return curl;
+	}
 
-Activity* ActivityLog::last()
-{
-    return _activities.empty() ? NULL : *(_activities.end());
-}
+	long ActivityLog::executeRequest(CURL* curl, string url, string postFields, string& response)
+	{
+		if (!curl)
+		{
+#if _DEBUG
+			logError("CURL not initialized.");
+#endif
 
-void ActivityLog::clear()
-{
-    ActivityLogIterator ait = _activities.begin();
-    
-    while(ait != _activities.end())
-    {
-        // Just clear the properties so that the activities
-        // can be reused at a later time.
-        (*ait)->clear();
-        
-        ait++;
-    }
-    
-    // Free all the activities still in the log.
-    ResourceIterator rit = _resources.begin();
-    
-    while(rit != _resources.end())
-    {           
-        delete *rit;
-        
-        rit++;
-    }
-    
-    if (_resources.size() > 0)
-        _resources.clear();
-}
+			return CURLE_FAILED_INIT;
+		}
 
-ResourceIterator ActivityLog::findResource(const char* uri)
-{
-    ResourceIterator rit = _resources.begin();
-    
-    while(rit != _resources.end())
-    {
-        if((*rit)->Uri == uri)
+		struct curl_slist *headers = NULL; // init to NULL is important
+		headers = curl_slist_append(headers, "charsets: utf-8");
+
+		struct curl_string data;
+		curl_init_string(&data);
+
+		curl_easy_reset(curl);
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+
+		if (postFields.length() > 0)
+		{
+			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
+		}
+
+#if _DEBUG
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+#endif
+
+		CURLcode responseCode = curl_easy_perform(curl);
+
+#if _DEBUG
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
+#endif
+
+		if (data.len > 0)
+		{
+			response = data.ptr;
+		}
+
+		curl_easy_cleanup(curl);
+
+#if _DEBUG
+		if (responseCode == CURLE_OK)
+		{
+            stringstream time;
+            time << duration_cast<milliseconds>(t2 - t1).count() << "ms";
+
+			logRequest(url, time.str(), postFields);
+		}
+		else
+		{
+			logError(url);
+		}
+#endif
+
+		return responseCode;
+	}
+
+	bool ActivityLog::connect(string endpointUrl)
+	{
+		_endpointUrl = endpointUrl;
+
+		// Initialize the entity.
+		string uri = getEntityUri(_fileUrl);
+
+        if (uri != "")
         {
-            return rit;
+            // There is already a URI for the file.
+            _entity->uri = uri;
         }
-        
-        rit++;
-    }
-    
-    return _resources.end();
-}
 
-bool ActivityLog::hasResource(const char* uri)
-{        
-    return findResource(uri) != _resources.end();
-}
+		time_t now;
+		time(&now);
 
-void ActivityLog::addResource(Resource* resource)
-{        
-    _resources.push_back(resource);
-}
+		_activity->setStartTime(now);
 
-void ActivityLog::removeResource(Resource* resource)
-{
-    _resources.remove(resource);
-}
+		// Initialize the associations.
+		vector<AssociationRef>::iterator it = _associations.begin();
 
-void ActivityLog::addActivity(Activity* activity)
-{
-    _activities.push_back(activity);
-         
-    AgentIterator agit = _agents.begin();
-    
-    while(agit != _agents.end())
-    {
-        Association* association = createResource<Association>();
-        association->setAgent(*agit);
-        
-        activity->addAssociation(association);
-        
-        agit++;
-    }
-}
+		while (it != _associations.end())
+		{
+			AssociationRef association = *it;
 
-void ActivityLog::removeActivity(Activity* activity)
-{
-    ActivityLogIterator it = std::find(_activities.begin(), _activities.end(), activity);
-    if (it != _activities.end())
-        _activities.erase(it);
-}
+            // Do not add the association to the serialized output, 
+            // as it is already stored in the database.
+            association->serialize = false;
 
-Activity* ActivityLog::updateActivity(Activity* activity)
-{
-    Activity* a = createResource<Activity>(activity->Uri.c_str());
-    a->setType(activity->getType());
-    
-    return a;
-}
-
-void ActivityLog::addAgent(Agent* agent)
-{
-    _agents.push_back(agent);
-}
-
-void ActivityLog::removeAgent(Agent* agent)
-{
-    _agents.remove(agent);
-}
-
-// Create a new file data object without a path. For use with unsaved new files.
-artivity::CreateFile* ActivityLog::createFile(double width, double height, const Resource* lengthUnit)
-{        
-    time_t now;
-    time(&now);
-    
-    // Add the new file to the transmitted RDF output.
-    FileDataObject* file = createResource<FileDataObject>();
-    file->setCreationTime(now);
-    
-    _fileUri = string(file->Uri);
-    _filePath = "";
-
-    // Add a canvas to the newly created file.
-    createCanvas(file, width, height, lengthUnit);
-      
-	artivity::CreateFile* activity = createActivity<artivity::CreateFile>();
-    activity->addUsedEntity(file);
-    
-    return activity;
-}
-
-EditFile* ActivityLog::editFile(string path, double width, double height, const Resource* lengthUnit)
-{
-    _fileUri = string(getFileUri(path));
-    _filePath = path;
-    
-    cout << _fileUri << endl << flush;
-
-    _canvasUri = string(getCanvasUri(path));
-    _canvasWidth = width;
-    _canvasHeight = height;
-    _canvasUnit = lengthUnit;
-    
-    FileDataObject* file = createResource<FileDataObject>(_fileUri.c_str());
-
-    if (_canvasUri == "")
-    {
-        createCanvas(file, width, height, lengthUnit);
-    }
-
-
-    EditFile* activity = createActivity<EditFile>();
-    activity->addUsedEntity(file);
-    
-    return activity;
-}
-
-bool ActivityLog::hasFile(string path)
-{
-    return path != "" && path == _filePath;
-}
-
-FileDataObject* ActivityLog::getFile()
-{
-    if(_fileUri == "")
-    {
-        return NULL;
-    }
-    
-    const char* uri = _fileUri.c_str();
-    
-    if(hasResource(uri))
-    {
-        return getResource<FileDataObject>(uri);
-    }
-    else
-    {
-        return createResource<FileDataObject>(uri);
-    }
-}
-
-string ActivityLog::getLatestVersionUri(string path)
-{
-    string data;
-    stringstream url;
-    url << _server << _uriAPI << "?latestVersion=" << escapePath(path);
-
-    CURL* curl = initializeRequest();
-    executeRequest(curl, url.str(), "", data);
-
-    jsonxx::Value val;
-    bool valid = val.parse(data);
-
-    return valid ? val.get<jsonxx::String>() : "";
-}
-
-string ActivityLog::getFileUri(string path)
-{
-    string data = "";
-    stringstream url;
-    url << _server << _uriAPI << "?file=" << escapePath(path);
-    
-    CURL* curl = initializeRequest();    
-    executeRequest(curl, url.str(), "", data);
-    
-    jsonxx::Value val;
-    bool valid = val.parse(data);
-
-    return valid ? val.get<jsonxx::String>() : UriGenerator::getUri();
-}
-
-
-string ActivityLog::getThumbnailPath(string fileUri)
-{
-    string result;
-    stringstream url;
-	url << _server << _API << "/thumbnails/path?fileUri=" << escapePath(fileUri);
-    CURL* curl = initializeRequest();
-    executeRequest(curl, url.str(), "", result);
-
-    jsonxx::Array a;
-    bool valid = a.parse(result);
-
-    return valid ? a.get<jsonxx::String>(a.size() -1) : "";
-}
-
-string ActivityLog::getCanvasUri(string path)
-{
-    string data = "";
-    stringstream url;
-    url << _server << _uriAPI << "?canvas=" << escapePath(path);
-
-    CURL* curl = initializeRequest();
-    executeRequest(curl, url.str(), "", data);
-
-    return data.length() > 2 ? data.substr(1, data.length() - 2) : "";
-}
-
-
-void ActivityLog::createCanvas(FileDataObject* file, double width, double height, const Resource* lengthUnit)
-{
-    if(file == NULL)
-    {
-        return;
-    }
-    
-    // Transmit the coorindate system which is associated with the new canvas.
-    CoordinateSystem* coordinateSystem = createResource<CoordinateSystem>();
-    coordinateSystem->setCoordinateDimension(2);
-    coordinateSystem->setTransformationMatrix("[1 0 0; 0 1 0; 0 0 0]");
-    
-    // Transmit the new canvas.
-    Canvas* canvas = createResource<Canvas>();
-    canvas->setWidth(width);
-    canvas->setHeight(height);
-    canvas->setLengthUnit(lengthUnit);
-    canvas->setCoordinateSystem(coordinateSystem);
-            
-    // Store a copy of the canvas.
-    _canvasUri = canvas->Uri.c_str();
-    _canvasWidth = width;
-    _canvasHeight = height;
-    _canvasUnit = lengthUnit;
-    
-    file->setCanvas(canvas);
-}
-
-void ActivityLog::updateCanvas(double width, double height, const Resource* lengthUnit)
-{
-    if(hasCanvas(width, height, lengthUnit))
-    {
-        return;
-    }
-            
-    FileDataObject* file = getFile();
-
-    createCanvas(file, width, height, lengthUnit);
-}
-
-Canvas* ActivityLog::getCanvas()
-{
-    if (_canvasUri == "")
-    {
-        return NULL;
-    }
-
-    const char* uri = _canvasUri.c_str();
-
-    if (hasResource(uri))
-    {
-        return getResource<Canvas>(uri);
-    }
-    else
-    {
-        return createResource<Canvas>(uri);
-    }
-
-}
-
-bool ActivityLog::hasCanvas(double width, double height, const Resource* lengthUnit)
-{
-    return _canvasUri != "" && _canvasWidth == width && _canvasHeight == height && _canvasUnit == lengthUnit;
-}
-
-void ActivityLog::transmit()
-{        
-    stringstream stream;
-    
-    ActivityLogIterator ait = _activities.begin();
-	Serializer s;
-    while(ait != _activities.end())
-    {            
-        s.serialize(stream, **ait, N3);
-        
-        ait++;
-    }
-    
-    ResourceIterator rit = _resources.begin();
-    
-    while(rit != _resources.end())
-    {
-        s.serialize(stream, **rit, N3);
-        
-        rit++;
-    }
-    
-    string requestData = stream.str();
-    string responseData;
-    
-    CURL* curl = initializeRequest();
-    stringstream url;
-    url << _server << _activityAPI;
-    executeRequest(curl, url.str(), requestData, responseData);
-    
-    // Cleanup after all resources have been serialized and transmitted.
-    clear();
-}
-
-CURL* ActivityLog::initializeRequest()
-{
-    CURL* curl = curl_easy_init();
-
-    if (!curl)
-    {
-        string msg = "Failed to initialize CURL.";
-        
-        logError(CURLE_FAILED_INIT, msg);
-    }
-    
-    return curl;
-}
-
-long ActivityLog::executeRequest(CURL* curl, string url, string postFields, string& response)
-{       
-    if(!curl)
-    {
-        return CURLE_FAILED_INIT;
-    }
-    
-    struct curl_slist *headers = NULL; // init to NULL is important
-    headers = curl_slist_append(headers, "charsets: utf-8");
-    
-    struct curl_string data;
-    curl_init_string(&data);
-    
-    curl_easy_reset(curl);
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
-    
-    if(postFields.length() > 0)
-    {
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
-    }
-    
-    CURLcode responseCode = curl_easy_perform(curl);
-    
-    if(data.len > 0)
-    {
-        response = data.ptr;
-    }
-    
-    curl_easy_cleanup(curl);
-    
-    if(responseCode == CURLE_OK)
-    {
-        logInfo(responseCode, url);
-    }
-    else
-    {
-        logError(responseCode, url);
-    }
-    
-    if(postFields.length() > 0)
-    {
-        cout << postFields << endl << flush;
-    }
-    
-    return responseCode;
-}
-
-void ActivityLog::logError(CURLcode responseCode, string msg)
-{
-    cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
-}
-
-void ActivityLog::logInfo(CURLcode responseCode, string msg)
-{
-    cout << "[" << getTime() << "] " << responseCode << " " << msg << endl << flush;
-}
-
-string ActivityLog::getTime()
-{
-    time_t t = time(NULL);
-    
-    char date_str[20];
-	#ifdef WIN32
-	tm* time = new tm();
-	localtime_s(time, &t);
-    strftime(date_str, 20, "%Y/%m/%d %H:%M:%S",time);
-	#else
-	strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
-	#endif
-    
-    return string(date_str);
-}
-
-void ActivityLog::enableMonitoring(string path, string uri)
-{   
-    string data;
-    stringstream url;
-
-    url << _server << _monitorAPI << "/add?uri=" << uri << "&filePath=" << escapePath(path);
- 
-    CURL* curl = initializeRequest();   
-    executeRequest(curl, url.str(), "", data);
-}
-
-void ActivityLog::disableMonitoring(string path)
-{
-    string data;  
-    stringstream url;
-
-    url << _server << _monitorAPI << "/remove?filePath=" << escapePath(path);
- 
-    CURL* curl = initializeRequest();   
-    executeRequest(curl, url.str(), "", data);
-}
-
-string ActivityLog::escapePath(string path)
-{
-    stringstream result;
-    string token;
-  
-    for(int i = 0; i < path.length(); i++)
-    {
-        char c = path[i];
-        
-        if(c == '/' || c == '\\' || c == ':')
-        {            
-            if(!token.empty())
-            {
-                char* t = curl_easy_escape(_curl, token.c_str(), token.length());
-                
-                result << string(t);
-                
-                curl_free(t);
-                
-                token = "";
+            if (!association->uri.empty() || fetchAssociationUri(association))
+			{
+                _activity->addAssociation(association);
             }
-            
-            if (c == '\\')
-                result << '/';
-            else
-                result << c;
+
+            it++;
+		}
+
+		return ready();
+	}
+
+	bool ActivityLog::ready()
+	{
+		return !_endpointUrl.empty() && _entity != NULL && _activity != NULL && !_activity->empty();
+	}
+
+	void ActivityLog::close()
+	{
+        clear();
+
+		time_t now;
+		time(&now);
+
+		close(now);
+	}
+
+	void ActivityLog::close(time_t time)
+	{
+		_activity->setEndTime(time);
+
+		transmit();
+	}
+
+	void ActivityLog::addAssociation(const char* roleUri)
+	{
+		AssociationRef a = AssociationRef(new Association(""));
+		a->setRole(RoleRef(new Role(roleUri)));
+
+		_associations.push_back(a);
+	}
+
+	void ActivityLog::addAssociation(const char* roleUri, const char* agentUri, const char* version)
+	{
+        if (strcmp(roleUri, art::SOFTWARE) != 0 || strcmp(version, "\0") == 0) return;
+
+        stringstream str;
+        str << agentUri << "/" << version;
+
+        SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(str.str()));
+		a->setAgent(AgentRef(new Agent(agentUri)));
+		a->setRole(RoleRef(new Role(roleUri)));
+		a->setVersion(version);
+
+		_associations.push_back(a);
+	}
+
+	void ActivityLog::addAssociation(const char* roleUri, string agentUri, string version)
+	{
+        if (strcmp(roleUri, art::SOFTWARE) != 0 || version.empty()) return;
+
+        stringstream str;
+        str << agentUri << "/" << version;
+
+        SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(str.str()));
+        a->setAgent(AgentRef(new Agent(agentUri)));
+        a->setRole(RoleRef(new Role(roleUri)));
+        a->setVersion(version);
+
+        _associations.push_back(a);
+	}
+
+	bool ActivityLog::fetchAssociationUri(AssociationRef association)
+	{
+		CURL* curl = initializeRequest();
+
+		stringstream url;
+
+		url << _endpointUrl << "/agents/associations";
+
+		if (strcmp(association->getType(), art::SoftwareAssociation) == 0)
+		{
+			SoftwareAssociationRef software = boost::dynamic_pointer_cast<SoftwareAssociation>(association);
+			url << "?role=" << software->getRole()->uri;
+			url << "&agent=" << software->getAgent()->uri;
+			url << "&version=" << software->getVersion();
+		}
+		else
+		{
+			url << "?role=" << association->getRole()->uri;
+		}
+
+		string response;
+
+		executeRequest(curl, url.str(), "", response);
+
+		stringstream stream;
+		stream << response;
+
+		if (response.empty())
+		{
+			return false;
+		}
+
+		ptree tree;
+
+		read_json(stream, tree);
+
+		string uri = tree.get_child("association").get_value<string>();
+
+		if (uri.empty())
+		{
+			return false;
+		}
+
+		association->uri = uri;
+
+		return true;
+	}
+
+    void ActivityLog::setDocument(ImageRef image, std::string path, bool create)
+	{
+		_entity = image;
+		_fileUrl = UriGenerator::getUrl(path);
+
+        if (create)
+        {
+            // A new file is being created.
+            _activity = CreateFileRef(new CreateFile());
+
+            GenerationRef generation = GenerationRef(new Generation());
+            generation->addEntity(_entity);
+
+            addInfluence(generation);
         }
         else
         {
-            token += c;
+            // An existing file is being edited.
+            _activity = EditFileRef(new EditFile());
+            _activity->addUsed(_entity);
+        }
+	}
+
+	ImageRef ActivityLog::getDocument()
+	{
+		return _entity;
+	}
+
+	string ActivityLog::getEntityUri(string fileUrl)
+	{
+        string uri = "";
+
+        try
+        {
+            CURL* curl = initializeRequest();
+
+            stringstream url;
+            url << _endpointUrl << "/uris?fileUrl=" << fileUrl;
+
+            string response;
+
+            executeRequest(curl, url.str(), "", response);
+
+            stringstream stream;
+            stream << response;
+
+            if (response.empty())
+            {
+                return uri;
+            }
+
+            ptree tree;
+
+            read_json(stream, tree);
+
+            uri = tree.get_child("uri").get_value<string>();
+
+            if (uri.empty())
+            {
+                return uri;
+            }
+        }
+        catch (...)
+        {
+        }
+
+		return uri;
+	}
+
+    void ActivityLog::addInfluence(InfluenceRef influence)
+    {
+        list<EntityRef> entities = influence->getEntities();
+
+        if (influence->is(art::Undo) || influence->is(art::Redo))
+        {
+            _influences.push_back(influence);
+
+            influence->setActivity(_activity);
+        }
+        else if (influence->is(prov::Start))
+        {
+            _activity->addProperty(prov::qualifiedStart, influence);
+        }
+        else if (influence->is(prov::End))
+        {
+            _activity->addProperty(prov::qualifiedEnd, influence);
+        }
+        else
+        {
+            for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+            {
+                EntityRef entity = *it;
+
+                if (influence->is(prov::Generation))
+                {
+                    EntityRef r = _activity->getEntity(entity->uri);
+
+                    if (r)
+                    {
+                        _activity->addGenerated(r);
+
+                        r->addProperty(prov::qualifiedGeneration, influence);
+                    }
+                    else
+                    {
+                        _activity->addGenerated(entity);
+
+                        entity->addProperty(prov::qualifiedGeneration, influence);
+                    }
+                }
+                else if (influence->is(prov::Derivation))
+                {
+                    EntityRef r = _activity->getEntity(entity->uri);
+
+                    if (r)
+                    {
+                        _activity->addUsed(r);
+
+                        r->addProperty(prov::qualifiedDerivation, influence);
+                    }
+                    else
+                    {
+                        _activity->addUsed(entity);
+
+                        entity->addProperty(prov::qualifiedDerivation, influence);
+                    }
+                }
+                else if (influence->is(prov::Revision) || influence->is(art::Save) || influence->is(art::SaveAs))
+                {
+                    EntityRef r = _activity->getEntity(entity->uri);
+
+                    if (r)
+                    {
+                        _activity->addUsed(r);
+
+                        r->addProperty(prov::qualifiedRevision, influence);
+                    }
+                    else
+                    {
+                        _activity->addUsed(entity);
+
+                        entity->addProperty(prov::qualifiedRevision, influence);
+                    }
+                }
+                else if (influence->is(prov::Invalidation))
+                {
+                    EntityRef r = _activity->getEntity(entity->uri);
+
+                    if (r)
+                    {
+                        _activity->addInvalidated(r);
+
+                        r->addProperty(prov::qualifiedInvalidation, influence);
+                    }
+                    else
+                    {
+                        _activity->addInvalidated(entity);
+
+                        entity->addProperty(prov::qualifiedInvalidation, influence);
+                    }
+                }
+                else
+                {
+                    entity->addProperty(prov::qualifiedInfluence, influence);
+                }
+
+                influence->setActivity(_activity);
+            }
         }
     }
-    
-    if(!token.empty())
+
+	void ActivityLog::removeInfluence(InfluenceRef influence)
+	{
+        list<EntityRef> entities = influence->getEntities();
+
+        if (influence->is(art::Undo) || influence->is(art::Redo))
+        {
+            _influences.remove(influence);
+
+            influence->clearActivity();
+        }
+        else
+        {
+            for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
+            {
+                EntityRef entity = *it;
+
+                if (influence->is(prov::Generation))
+                {
+                    _activity->removeGenerated(entity);
+
+                    entity->removeProperty(prov::qualifiedGeneration, influence);
+                }
+                else if (influence->is(prov::Derivation))
+                {
+                    _activity->removeUsed(entity);
+
+                    entity->removeProperty(prov::qualifiedDerivation, influence);
+                }
+                else if (influence->is(prov::Revision))
+                {
+                    _activity->removeUsed(entity);
+
+                    entity->removeProperty(prov::qualifiedRevision, influence);
+                }
+                else if (influence->is(prov::Invalidation))
+                {
+                    _activity->removeInvalidated(entity);
+
+                    entity->removeProperty(prov::qualifiedInvalidation, influence);
+                }
+                else
+                {
+                    entity->removeProperty(prov::qualifiedInfluence, influence);
+                }
+
+                influence->clearActivity();
+            }
+        }
+	}
+
+	string ActivityLog::getRenderOutputPath()
+	{
+		if (_entity->uri.empty())
+		{
+			return "";
+		}
+
+		CURL* curl = initializeRequest();
+
+		stringstream url;
+        url << _endpointUrl << "/renderings/path?uri=" << UriGenerator::escapePath(_entity->uri) << "&create";
+
+		string response;
+
+		executeRequest(curl, url.str(), "", response);
+
+		stringstream stream;
+		stream << response;
+
+		if (response.empty())
+		{
+			return "";
+		}
+
+		ptree tree;
+
+		read_json(stream, tree);
+
+		string path = tree.front().second.get_value<string>();
+
+		return path;
+	}
+
+    void ActivityLog::transmit()
     {
-        char* t = curl_easy_escape(_curl, token.c_str(), token.length());
-        
-        result << string(t);
-        
-        curl_free(t);
+        stringstream stream;
+
+        Serializer s;
+
+        // Recursively serialize the activity and all related resources..
+        s.serialize(stream, _activity, N3);
+
+        // Additionally, serialize the influences which are not directly
+        // referenced in any entities in the activity..
+        for (InfluenceIterator it = _influences.begin(); it != _influences.end(); ++it)
+        {
+            s.serialize(stream, *it, N3);
+        }
+
+        if (stream.rdbuf()->in_avail() == 0)
+        {
+            return;
+        }
+
+        // Transmit the RDF output.
+        string requestData = stream.str();
+        string responseData;
+
+        CURL* curl = initializeRequest();
+
+        stringstream url;
+        url << _endpointUrl << "/activities";
+
+        if (!debug)
+        {
+            executeRequest(curl, url.str(), requestData, responseData);
+        }
+        else
+        {
+#if _DEBUG
+            logRequest(url.str(), "0ms", requestData);
+#endif
+        }
+
+		clear();
+	}
+
+#if _DEBUG
+	void ActivityLog::logError(string msg)
+	{
+		cout << getTime() << " [ERROR] " << msg << endl << flush;
+	}
+
+	void ActivityLog::logInfo(string msg)
+	{
+		cout << getTime() << " [INFO ] " << msg << endl << flush;
+	}
+
+    void ActivityLog::logRequest(string url, string time, string data)
+    {
+        cout << getTime() << " [INFO ] " << time << " - " << url << endl << flush;
+
+        if (!data.empty())
+        {
+            cout << data << endl << flush;
+        }
     }
-  
-    return result.str();
+#endif
+
+	string ActivityLog::getTime()
+	{
+		time_t t = time(NULL);
+
+		char date_str[20];
+
+#ifdef WIN32
+		tm* time = new tm();
+		localtime_s(time, &t);
+		strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", time);
+#else
+		strftime(date_str, 20, "%Y/%m/%d %H:%M:%S", localtime(&t));
+#endif
+
+		return string(date_str);
+	}
+
+	void ActivityLog::dump(ptree const& pt)
+	{
+		ptree::const_iterator end = pt.end();
+
+		for (ptree::const_iterator it = pt.begin(); it != end; ++it)
+		{
+			cout << it->first << ": " << it->second.get_value<string>() << endl;
+
+			dump(it->second);
+		}
+	}
+
+    bool ActivityLog::createDataObject(std::string path)
+    {
+        std::string fileUri = UriGenerator::getUri();
+        std::string fileUrl = UriGenerator::getUrl(path);
+
+        CURL* curl = initializeRequest();
+
+        stringstream url;
+        url << _endpointUrl << "/files?uri=" << fileUri << "&url=" << fileUrl << "&create";
+
+        string response;
+
+        executeRequest(curl, url.str(), "", response);
+
+        stringstream stream;
+        stream << response;
+
+        _entity->setDataObject(FileDataObjectRef(new FileDataObject(fileUri.c_str())));
+
+        return !response.empty();
+    }
 }

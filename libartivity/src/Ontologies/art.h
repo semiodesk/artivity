@@ -1,178 +1,260 @@
-#ifndef ART_H
-#define ART_H
+// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2016
 
-
-
-#define ART(label) "http://semiodesk.com/artivity/1.0/" label;
+#ifndef _ART_ART_H
+#define _ART_ART_H
 
 namespace artivity
 {
+	#define art(label) "art:" label;
+	#define ART(label) "http://w3id.org/art/terms/1.0/" label;
+
     namespace art
     {
-        #ifdef CreateFile
-        #undef CreateFile
-        #endif
-        #ifdef DeleteFile
-        #undef DeleteFile
-        #endif
+		static const char* NS_PREFIX = art("");
+		static const char* NS_URI = ART("");
+       
+#ifdef CreateFile
+#undef CreateFile
+#endif
 
-        // http://www.w3.org/ns/activitystreams#View
-        static const char* Browse = ART("Browse");
+#ifdef DeleteFile
+#undef DeleteFile
+#endif
+
+		static const char* EditFile = art("EditFile");
+       
+		static const char* CreateFile = art("CreateFile");
         
-        // No match in ActivityStreams
-		static const char* EditFile = ART("EditFile");
+		static const char* DeleteFile = art("DeleteFile");
         
-        // No match in ActivityStreams
-		static const char* CreateFile = ART("CreateFile");
-        
-        // No match in ActivityStreams
-		static const char* DeleteFile = ART("DeleteFile");
-        
+		static const char* WebBrowsing = art("WebBrowsing");
+
         // --- ACTIVITIES ---
-        // NOTE: There are very little predefined activity types in PROV.
-        //       The following are inspired by the Activity Streams vocabulary.
-        
-        // No match in ActivityStreams
-		static const char* Edit = ART("Edit");
-        
-        // http://www.w3.org/ns/activitystreams#Add
-		static const char* Add = ART("Add");
-        
-        // http://www.w3.org/ns/activitystreams#Remove
-        static const char* Remove = ART("Remove");
-        
-        // http://www.w3.org/ns/activitystreams#Undo
-		static const char* Undo = ART("Undo");
-        
-        // No match in ActivityStreams
-		static const char* Redo = ART("Redo");
-        
-        // No match in ActivityStreams
-		static const char* Save = ART("Save");
-        
-		static const char* selectedLayer = ART("selectedLayer");
 
-        static const char* layerZPosition = ART("layerZPosition")
-        
-        // --- AGENT ---
-		static const char* isCaptureEnabled = ART("isCaptureEnabled");
+        // Indicates that a entity influence invalidated another.
+        static const char* reverted = art("reverted");
 
-        // --- THUMBNAIL ---
-        static const char* thumbnailUrl = ART("thumbnailUrl");
-
-        static const char* thumbnailPos = ART("thumbnailPosition"); 
+        // Indicates that a entity influence re-generated another.
+        static const char* restored = art("restored");
+   
+        // The invalidation of a prior entity influence.
+        static const char* Undo = art("Undo");
         
+        // The re-generation of a formerly invalidated entity influence.
+        static const char* Redo = art("Redo");
+
+        static const char* Save = art("Save");
+
+        static const char* SaveAs = art("SaveAs");
+
+        static const char* count = art("count");
+        
+        static const char* selectedLayer = art("selectedLayer");
+
+        static const char* renderedLayer = art("renderedLayer");
+
+        static const char* usingTool = art("usingTool");
+
+        static const char* usingToolSettings = art("usingToolSettings");
+
+        static const char* Layer = art("Layer");
+
+        static const char* loggingEnabled = art("loggingEnabled");
+        
+        // A rasterized portion of an image that provides bitmap data for an entity influence.
+        static const char* renderedAs = art("renderedAs");
+
+        // Specifies the shape and location of something in Euclidean space.
+        static const char* region = art("region");
+
+        // Rasterized bitmap data of the entire extents of an image.
+        static const char* RenderingDataObject = art("RenderingDataObject");
+
+        // Rasterized bitmap data of a specific region of an image.
+        static const char* PartialRenderingDataObject = art("PartialRenderingDataObject");
+
+        static const char* SoftwareAssociation = art("SoftwareAssociation");
+
+        static const char* version = art("version");
+
         // --- GEOMETRY ---
         // NOTE: We try to be compatible with OGC geometry vocabularies since
         //       many databases support spatial querying using this standard.
         
-		static const char* canvas = ART("canvas");
+        static const char* canvas = art("canvas");
                 
         // Subclass of :hadGeometry
-		static const char* hadCanvas = ART("hadCanvas");
+		static const char* hadCanvas = art("hadCanvas");
         
         // Subclass of :Rectangle
-		static const char* Canvas = ART("Canvas");
+		static const char* Canvas = art("Canvas");
         
         // No equivalent in GeoSPARQL
-		static const char* coordinateSystem = ART("coordinateSystem");
+		static const char* coordinateSystem = art("coordinateSystem");
         
         // No equivalent in GeoSPARQL
-		static const char* CoordinateSystem = ART("CoordinateSystem");
+		static const char* CoordinateSystem = art("CoordinateSystem");
         
         // WKT CS, Cartesian
         // https://en.wikipedia.org/wiki/Well-known_text
-		static const char* CartesianCoordinateSystem = ART("CartesianCoordinateSystem");
+		static const char* CartesianCoordinateSystem = art("CartesianCoordinateSystem");
         
         // No equivalent in GeoSPARQL
-		static const char* lengthUnit = ART("lengthUnit");
+		static const char* lengthUnit = art("lengthUnit");
         
         // No equivalent in GeoSPARL, MATLAB notation [1 0 0; 0 1 0; 0 0 1]
-		static const char* transformationMatrix = ART("transformationMatrix");
+		static const char* transformationMatrix = art("transformationMatrix");
         
         // http://www.opengis.net/ont/geosparql#hasGeometry
-		static const char* hadGeometry = ART("hadGeometry");
+		static const char* hadGeometry = art("hadGeometry");
         
         // WKT Geometry
         // http://www.opengis.net/ont/geosparql#Geometry
-		static const char* Geometry = ART("Geometry");
-        
+		static const char* Geometry = art("Geometry");
+
         // http://www.opengis.net/ont/geosparql#coordinateDimension
-		static const char* coordinateDimension = ART("coordinateDimension");
+		static const char* coordinateDimension = art("coordinateDimension");
         
         // No equivalent in GeoSPARQL
-        static const char* Rectangle = ART("Rectangle");
+        static const char* Rectangle = art("Rectangle");
         
         // No equivalent in GeoSPARQL
-        static const char* width = ART("width");
+        static const char* width = art("width");
         
         // No equivalent in GeoSPARQL
-        static const char* height = ART("height");
+        static const char* height = art("height");
         
         // No equivalent in GeoSPARQL
-        static const char* Cube = ART("Cube");
+        static const char* Cube = art("Cube");
         
         // No equivalent in GeoSPARQL
-        static const char* depth = ART("depth");
+        static const char* depth = art("depth");
         
         // No equivalent in GeoSPARQL
-        static const char* hadBoundaries = ART("hadBoundaries");
+        static const char* hadBoundaries = art("hadBoundaries");
         
         // Subclass of :Rectangle
-        static const char* BoundingRectangle = ART("BoundingRectangle");
+        static const char* BoundingRectangle = art("BoundingRectangle");
         
         // Subclass of :Cube
-        static const char* BoundingCube = ART("BoundingCube");
+        static const char* BoundingCube = art("BoundingCube");
         
         // No equivalent in GeoSPARQL
-        static const char* hadViewport = ART("hadViewport");
+        static const char* hadViewport = art("hadViewport");
         
         // Subclass of :Rectangle
-        static const char* Viewport = ART("Viewport");
-        
+        static const char* Viewport = art("Viewport");
+
         // No equivalent in GeoSPARQL
-        static const char* zoomFactor = ART("zoomFactor");
+        static const char* zoomFactor = art("zoomFactor");
         
-        // http://www.opengis.net/ont/geosparql#coordinateDimension
-        static const char* position = ART("position");
+        static const char* position = art("position");
         
         // WKT Point
         // No equivalent in GeoSPARQL
-        static const char* Point = ART("Point");
+        static const char* Point = art("Point");
         
         // No equivalent in GeoSPARQL
-        static const char* x = ART("x");
+        static const char* x = art("x");
         
         // No equivalent in GeoSPARQL
-        static const char* y = ART("y");
+        static const char* y = art("y");
         
         // No equivalent in GeoSPARQL
-        static const char* z = ART("z");
+        static const char* z = art("z");
         
         // --- UNITS ---
         // NOTE: Except for px, all units are owl:sameAs their counterparts in the QUDT ontology.
         
         // http://qudt.org/vocab/unit#Millimeter
-        static const char* mm = ART("mm");
+        static const char* mm = art("mm");
         
         // http://qudt.org/vocab/unit#Centimeter
-        static const char* cm = ART("cm");
+        static const char* cm = art("cm");
         
         // http://qudt.org/vocab/unit#Meter
-        static const char* m = ART("m");
+        static const char* m = art("m");
         
         // http://qudt.org/vocab/unit#Point
-        static const char* pt = ART("pt");
+        static const char* pt = art("pt");
         
         // http://qudt.org/vocab/unit#Inch
-        static const char* in = ART("in");
+        static const char* in = art("in");
         
         // http://qudt.org/vocab/unit#Foot
-        static const char* ft = ART("ft");
+        static const char* ft = art("ft");
         
         // No equivalent in QUDT
-        static const char* px = ART("px");
+        static const char* px = art("px");
+
+        // NOTE: The following instances are absolute URLs!
+        static const char* USER = ART("USER");
+
+        static const char* SOFTWARE = ART("SOFTWARE");
+
+        // --- CHANGES ---
+        static const char* Change = art("Change");
+
+        static const char* hadChange = art("hadChange");
+
+        static const char* entity = art("entity");
+
+        static const char* property = art("property");
+
+        static const char* value = art("value");
+
+        static const char* unknown = art("unknown");
+
+        static const char* order = art("order");
+
+        static const char* textValue = art("textValue");
+
+        static const char* fontSize = art("fontSize");
+
+        static const char* font = art("font");
+
+        static const char* strokeColour = art("strokeColour");
+
+        static const char* strokePattern = art("strokePattern");
+
+        static const char* fillColour = art("fillColour");
+        
+        static const char* fillPattern = art("fillPattern");
+
+        static const char* strokeWidth = art("strokeWidth");
+
+        static const char* aboveLayer = art("aboveLayer");
+
+        static const char* parentLayer = art("parentLayer");
+
+        // Resource
+        static const char* noLayer = art("noLayer");
     }
 }
 
-#endif // ART_H
+#endif // _ART_ART_H

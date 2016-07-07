@@ -36,7 +36,6 @@ namespace Artivity.Apid
     {
         #region Members
 
-
         private bool _loggingInitialized = false;
 
         protected string[] Args;
@@ -69,6 +68,7 @@ namespace Artivity.Apid
             }
 
             Service.Start();
+
             return true;
         }
 
@@ -80,10 +80,6 @@ namespace Artivity.Apid
             }
 
             InitializeLogging();
-
-#if !DEBUG
-            InitializePluginChecker();
-#endif
 
             InitializeService();
 

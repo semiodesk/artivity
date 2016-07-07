@@ -30,59 +30,73 @@ using Artivity.Apid.Accounts;
 using Artivity.Apid.Platforms;
 using Nancy;
 using Nancy.Responses;
+using Nancy.ModelBinding;
 using Nancy.IO;
 using Semiodesk.Trinity;
+using Semiodesk.Trinity.Store;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading.Tasks;
+using VDS.RDF;
+using Artivity.Apid.Parameters;
 
 namespace Artivity.Apid.Modules
 {
     public class ApiModule : ModuleBase
     {
+        #region Members
+
+        private static object _modelLock = new object();
+
+        private static readonly Dictionary<string, Browse> _activities = new Dictionary<string, Browse>();
+
+        #endregion
+
         #region Constructors
 
         public ApiModule(IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0", modelProvider, platform)
         {
-            // Get a list of all installed agents.
-            Get["/agents"] = paramters =>
+            Get["/activities"] = parameters =>
             {
-                string fileUrl = Request.Query["fileUrl"];
+                string uri = Request.Query.uri;
 
-                if(string.IsNullOrEmpty(fileUrl))
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return GetAgents();
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
-                else
+
+                return GetActivities(new UriRef(uri));
+            };
+
+            Post["/activities"] = parameters =>
+            {
+                using (var reader = new StreamReader(Request.Body))
                 {
-                    return GetAgent(fileUrl);
+                    string data = reader.ReadToEnd();
+
+                    // We start a new task so that the agent can continue its work as fast as possible.
+                    new Task(() => PostActivities(data)).Start();
+
+                    return HttpStatusCode.OK;
                 }
             };
 
-            // Install a new or update an existing agent.
-            Post["/agents"] = parameters =>
+            Post["/activities/web"] = parameters =>
             {
-                Agent agent = Bind<Agent>(ModelProvider.Store, Request.Body);
+                ActivityParameters p = this.Bind<ActivityParameters>();
 
-                if (agent == null)
-                {
-                    return HttpStatusCode.BadRequest;
-                }
-
-                agent.Commit();
-
-                return HttpStatusCode.OK;
+                return PostActivity(p);
             };
 
-            Get["/agents/install"] = parameters =>
+            Get["/activities/clear"] = parameters =>
             {
-                ModelProvider.InitializeAgents();
-
-                return HttpStatusCode.OK;
+                // TODO: We definitely need to add some kind of security here, i.e. a token.
+                return ClearActivities();
             };
 
             // Get a list of all installed online accounts.
@@ -112,7 +126,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(providerId))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetOAuth2AccountRedirectUrl(providerId);
@@ -125,7 +139,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(providerId) || string.IsNullOrEmpty(code))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return SendOAuth2AccessToken(providerId, code);
@@ -137,7 +151,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(providerId))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return InstallAccount(providerId);
@@ -150,79 +164,47 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(accountId))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return UninstallAccount(accountId);
             };
 
-            Get["/user"] = parameters =>
+            Get["/uris"] = parameters =>
             {
-                return GetUserAgent();
-            };
+                string fileUrl = Request.Query["fileUrl"];
 
-            Post["/user"] = parameters =>
-            {
-                try
+                if (!IsFileUrl(fileUrl))
                 {
-                    Person user = Bind<Person>(ModelProvider.Store, Request.Body);
-
-                    if (user == null)
-                    {
-                        return HttpStatusCode.BadRequest;
-                    }
-
-                    user.Commit();
-
-                    return HttpStatusCode.OK;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
 
-                    return HttpStatusCode.InternalServerError;
-                }
-            };
-
-            Get["/user/photo"] = parameters =>
-            {
-                return GetUserAgentPhoto();
-            };
-
-            Post["/user/photo"] = parameters =>
-            {
-                RequestStream stream = Request.Body;
-
-                return SetUserAgentPhoto(stream);
+                return GetUri(new UriRef(fileUrl));
             };
 
             Get["/files"] = parameters =>
             {
-                if(Request.Query.fileUrl)
-                {
-                    string fileUrl = Request.Query.fileUrl;
+                string uri = Request.Query.uri;
+                string url = Request.Query.url;
+                string create = Request.Query.create;
 
-                    if(string.IsNullOrEmpty(fileUrl))
+                if (string.IsNullOrEmpty(uri))
+                {
+                    return HttpStatusCode.NotImplemented;
+                }
+                else if (IsUri(uri))
+                {
+                    if (string.IsNullOrEmpty(url))
                     {
-                        return HttpStatusCode.BadRequest;
+                        return GetFile(new UriRef(uri));
                     }
-
-                    return GetFile(fileUrl);
+                    else if(IsFileUrl(url) && !string.IsNullOrEmpty(create))
+                    {
+                        return CreateFile(new UriRef(uri), new Uri(url));
+                    }
                 }
 
-                return HttpStatusCode.NotImplemented;
-            };
-
-            Get["/files/canvas"] = parameters =>
-            {
-                string fileUrl = Request.Query.fileUrl;
-
-                if(string.IsNullOrEmpty(fileUrl))
-                {
-                    return HttpStatusCode.BadRequest;
-                }
-                    
-                return GetCanvas(fileUrl);
+                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             };
 
             Get["/files/recent"] = parameters =>
@@ -230,37 +212,77 @@ namespace Artivity.Apid.Modules
                 return GetRecentlyUsedFiles();
             };
 
-            Get["/activities"] = parameters =>
-            {
-                if (string.IsNullOrEmpty(Request.Query.fileUrl))
-                {
-                    return HttpStatusCode.BadRequest;
-                }
-
-                return GetActivities(Request.Query.fileUrl);
-            };
-
-            Get["/activities/clear"] = parameters =>
-            {
-                // TODO: We definitely need to add some kind of security here, i.e. a token.
-                return ClearActivities();
-            };
-
             Get["/influences"] = parameters =>
             {
-                if (string.IsNullOrEmpty(Request.Query.fileUrl))
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return GetInfluences(Request.Query.fileUrl);
+                return GetInfluences(new UriRef(uri));
             };
 
-            Get["/thumbnails"] = parameters =>
+            Get["/influences/canvas"] = parameters =>
             {
-                if(Request.Query.fileUrl)
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    if(Request.Query.timestamp)
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                if (Request.Query.timestamp)
+                {
+                    string time = Request.Query.timestamp;
+
+                    DateTimeOffset timestamp;
+
+                    if (DateTimeOffset.TryParse(time.Replace(' ', '+'), out timestamp))
+                    {
+                        return GetCanvases(new UriRef(uri), timestamp.UtcDateTime);
+                    }
+                    else
+                    {
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+                }
+                else
+                {
+                    return GetCanvases(new UriRef(uri));
+                }
+            };
+
+            Get["/influences/layers"] = parameters =>
+            {
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return GetLayers(new UriRef(uri));
+            };
+
+            Get["/renderings"] = parameters =>
+            {
+                if(Request.Query.uri)
+                {
+                    string uri = Request.Query.uri;
+                    string file = Request.Query.file;
+
+                    if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                    {
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+
+                    if(!string.IsNullOrEmpty(file))
+                    {
+                        return GetRendering(new UriRef(uri), file);
+                    }
+                    else if(Request.Query.timestamp)
                     {
                         string time = Request.Query.timestamp;
 
@@ -268,41 +290,43 @@ namespace Artivity.Apid.Modules
 
                         if (DateTimeOffset.TryParse(time.Replace(' ', '+'), out timestamp))
                         {
-                            return GetThumbnails(Request.Query.fileUrl, timestamp.UtcDateTime);
+                            return GetRenderings(Request.Query.fileUrl, timestamp.UtcDateTime);
                         }
                         else
                         {
-                            return HttpStatusCode.BadRequest;
+                            return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                         }
                     }
 
-                    return GetThumbnails(Request.Query.fileUrl);
-                }
-                else if(Request.Query.thumbnailUrl)
-                {
-                    return GetThumbnail(Request.Query.thumbnailUrl);
+                    return GetRenderings(new UriRef(uri));
                 }
                 else
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
             };
 
-            Get["/thumbnails/path"] = parameters =>
+            Get["/renderings/path"] = parameters =>
             {
-                if (string.IsNullOrEmpty(Request.Query.fileUri))
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
                     return HttpStatusCode.BadRequest;
                 }
 
-                return GetThumbnailPath(Request.Query.fileUri);
+                bool create = Request.Query.create != null;
+
+                return GetRenderOutputPath(new UriRef(uri), create);
             };
 
             Get["/stats/influences"] = parameters =>
             {
-                if (string.IsNullOrEmpty(Request.Query.fileUrl))
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return HttpStatusCode.BadRequest;
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 if(Request.Query.timestamp)
@@ -313,15 +337,37 @@ namespace Artivity.Apid.Modules
 
                     if (DateTimeOffset.TryParse(time.Replace(' ', '+'), out timestamp))
                     {
-                        return GetCompositionStats(Request.Query.fileUrl, timestamp.UtcDateTime);
+                        return GetCompositionStats(new UriRef(uri), timestamp.UtcDateTime);
                     }
                     else
                     {
-                        return HttpStatusCode.BadRequest;
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
                 }
 
-                return GetCompositionStats(Request.Query.fileUrl);
+                return GetCompositionStats(new UriRef(uri));
+            };
+
+            Post["/query"] = parameters =>
+            {
+                using (var reader = new StreamReader(Request.Body))
+                {
+                    string query = reader.ReadToEnd();
+
+                    if (string.IsNullOrEmpty(query))
+                    {
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+
+                    if (Request.Query.inference)
+                    {
+                        return ExecuteQuery(query, true);
+                    }
+                    else
+                    {
+                        return ExecuteQuery(query);
+                    }
+                }
             };
         }
 
@@ -329,88 +375,197 @@ namespace Artivity.Apid.Modules
 
         #region Methods
 
-        public Response GetAgents()
+        private void PostActivities(string data)
         {
+            try
+            {
+                lock (_modelLock)
+                {
+                    MemoryStream stream = new MemoryStream();
+
+                    StreamWriter writer = new StreamWriter(stream);
+                    writer.Write(data);
+                    writer.Flush();
+
+                    stream.Position = 0;
+
+                    LoadTurtle(ModelProvider.Activities, stream);
+                }
+
+                Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e, data);
+            }
+        }
+
+        private HttpStatusCode PostActivity(ActivityParameters p)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(p.tab))
+                {
+                    return Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
+                }
+
+                if (string.IsNullOrEmpty(p.agent))
+                {
+                    return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
+                }
+
+                if (!IsCaptureEnabled(p))
+                {
+                    return Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
+                }
+
+                IModel model = ModelProvider.GetWebActivities();
+
+                Browse activity;
+
+                if (!_activities.ContainsKey(p.tab))
+                {
+                    Association association = model.CreateResource<Association>();
+                    association.Agent = new SoftwareAgent(new UriRef(p.agent));
+                    association.Commit();
+
+                    activity = model.CreateResource<Browse>();
+                    activity.Associations.Add(association);
+                    activity.StartTime = p.startTime != null ? (DateTime)p.startTime : DateTime.Now;
+                    activity.Commit();
+
+                    _activities[p.tab] = activity;
+                }
+                else
+                {
+                    activity = _activities[p.tab];
+                }
+
+                if (!string.IsNullOrEmpty(p.url) && Uri.IsWellFormedUriString(p.url, UriKind.Absolute))
+                {
+                    UriRef url = new UriRef(p.url);
+
+                    WebDataObject website;
+
+                    if (!model.ContainsResource(url))
+                    {
+                        website = model.CreateResource<WebDataObject>(url);
+                        website.Title = p.title;
+                        website.Commit();
+                    }
+                    else
+                    {
+                        website = model.GetResource<WebDataObject>(url);
+                    }
+
+                    DateTime time = p.time != null ? (DateTime)p.time : DateTime.Now;
+
+                    View view = model.CreateResource<View>();
+                    view.Entity = website;
+                    view.Time = time;
+                    view.Commit();
+
+                    activity.Usages.Add(view);
+                    activity.Commit();
+                }
+                else if (p.endTime != null)
+                {
+                    activity.EndTime = (DateTime)p.endTime;
+                    activity.Commit();
+
+                    _activities.Remove(p.tab);
+                }
+
+                return Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
+            }
+            catch (Exception e)
+            {
+                return Logger.LogError(HttpStatusCode.InternalServerError, "{0}: {1}", Request.Url, e.Message);
+            }
+        }
+
+        private bool IsCaptureEnabled(ActivityParameters p)
+        {
+            SoftwareAgent agent = null;
+
+            Uri agentUri = new Uri(p.agent);
+
             IModel model = ModelProvider.GetAgents();
 
-            IEnumerable<SoftwareAgent> agents = model.GetResources<SoftwareAgent>();
+            if (model.ContainsResource(agentUri))
+            {
+                agent = model.GetResource<SoftwareAgent>(agentUri);
+            }
 
-            return Response.AsJson(agents.ToList());
+            return agent.IsCaptureEnabled;
         }
 
-        public Response GetAgent(string fileUrl)
+        private Response ExecuteQuery(string queryString, bool inferenceEnabled = false)
         {
-            IModel model = ModelProvider.GetAllActivities();
-
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?s ?p ?o WHERE 
+            try
+            {
+                lock (_modelLock)
                 {
-                    ?s ?p ?o .
+                    IModel model = ModelProvider.GetAll();
 
+                    if (model == null)
                     {
-                        SELECT ?s WHERE
-                        {
-                            ?file nfo:fileUrl @fileUrl .
-
-                            ?activity prov:used ?file;
-                                prov:qualifiedAssociation ?association .
-
-                            ?association prov:agent ?s .
-
-                            ?s a prov:SoftwareAgent .
-                        }
-                        LIMIT 1
+                        Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
                     }
-                }");
 
-            query.Bind("@fileUrl", fileUrl);
+                    SparqlQuery query = new SparqlQuery(queryString, false);
 
-            IEnumerable<IResource> agents = model.GetResources(query);
+                    var bindings = model.ExecuteQuery(query, inferenceEnabled).GetBindings();
 
-            if (agents.Any())
-            {
-                return Response.AsJson(agents.FirstOrDefault());
+                    if (bindings != null)
+                    {
+                        return Response.AsJson(bindings.ToList());
+                    }
+                }
             }
-            else
+            catch (Exception e)
             {
-                return null;
+                Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+
+                List<string> messages = new List<string>() { e.Message };
+
+                if(e.InnerException != null)
+                {
+                    messages.Add(e.InnerException.Message);
+                }
+
+                return Response.AsJson(messages);
             }
+
+            return null;
         }
 
-
-
-        public Response GetUserAgent()
+        private void LoadTurtle(Uri modelUri, Stream stream)
         {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?s ?p ?o WHERE
+            string connectionString = ModelProvider.NativeConnectionString;
+
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string data = reader.ReadToEnd();
+
+                using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
                 {
-                    ?s ?p ?o .
-                    ?s rdf:type prov:Person .
+                    using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
+                    {
+                        IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
+                        parser.Load(graph, new StringReader(data));
+
+                        graph.BaseUri = modelUri;
+
+                        m.UpdateGraph(modelUri, graph.Triples, new List<Triple>());
+                    }
                 }
-            ");
-
-            ISparqlQueryResult result = ModelProvider.AgentsModel.ExecuteQuery(query);
-
-            if (result.GetResources<Person>().Any())
-            {
-                return Response.AsJson(result.GetResources<Person>().First());
-            }
-            else
-            {
-                Logger.LogInfo("Creating new profile because no existing user was found.");
-
-                Person user = ModelProvider.AgentsModel.CreateResource<Person>();
-                user.Commit();
-
-                return Response.AsJson(user);
             }
         }
 
         private Response GetAccounts()
         {
-            IModel model = ModelProvider.GetAgents();
-
-            IEnumerable<OnlineAccount> accounts = model.GetResources<OnlineAccount>(true);
+            List<OnlineAccount> accounts = ModelProvider.GetAgents().GetResources<OnlineAccount>(true).ToList();
 
             return Response.AsJson(accounts);
         }
@@ -454,7 +609,7 @@ namespace Artivity.Apid.Modules
 
             if (provider != null)
             {
-                provider.Authorize(ModelProvider.AgentsModel, code);
+                provider.Authorize(ModelProvider.GetAgents(), code);
 
                 return HttpStatusCode.Accepted;
             }
@@ -471,7 +626,7 @@ namespace Artivity.Apid.Modules
 
         private Response UninstallAccount(string accountId)
         {
-            Person user = ModelProvider.AgentsModel.GetResources<Person>().FirstOrDefault();
+            Person user = ModelProvider.GetAgents().GetResources<Person>().FirstOrDefault();
 
             if (user == null)
             {
@@ -485,7 +640,7 @@ namespace Artivity.Apid.Modules
                 return Logger.LogInfo(HttpStatusCode.BadRequest, "Did not find account with id {0}", accountId);
             }
 
-            ModelProvider.AgentsModel.DeleteResource(account);
+            ModelProvider.GetAgents().DeleteResource(account);
 
             user.Accounts.Remove(account);
             user.Commit();
@@ -493,285 +648,207 @@ namespace Artivity.Apid.Modules
             return Logger.LogInfo(HttpStatusCode.OK, "Uninstalled account: {0}", accountId);
         }
 
-        public Response GetUserAgentPhoto()
+        private Response GetRecentlyUsedFiles()
         {
-            string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
-
-            if (File.Exists(file))
-            {
-                FileStream fileStream = new FileStream(file, FileMode.Open);
-
-                StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
-
-                return response.AsAttachment(file);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public Response SetUserAgentPhoto(RequestStream stream)
-        {
-            try
-            {
-                string file = Path.Combine(PlatformProvider.ArtivityUserDataFolder, "user.jpg");
-
-                Bitmap source = new Bitmap(stream);
-
-                // Always resize the image to the given size.
-                int width = 160;
-                int height = 160;
-
-                Bitmap target = new Bitmap(width, height);
-
-                using (Graphics g = Graphics.FromImage(target))
-                {
-                    g.DrawImage(source, 0, 0, width, height);
-
-                    using (FileStream fileStream = File.Create(file))
-                    {
-                        target.Save(fileStream, ImageFormat.Jpeg);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-
-                return HttpStatusCode.InternalServerError;
-            }
-
-            return HttpStatusCode.OK;
-        }
-
-        public Response GetRecentlyUsedFiles()
-        {
-            IModel model = ModelProvider.ActivitiesModel;
-
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT MAX(?time) as ?time ?entity ?url WHERE
+                SELECT
+	                ?time
+	                ?uri
+	                ?label
+                WHERE
                 {
-                    {
-                        SELECT MAX(?time) as ?time ?url WHERE
-                        {
-                            ?entity nfo:fileLastModified ?time .
-                            ?entity nfo:fileUrl ?url .
-                        }
-                        GROUP BY ?url
-                    }
-
-                    ?entity nfo:fileLastModified ?time .
-                    ?entity nfo:fileUrl ?url .
+	                ?uri nie:isStoredAs [ rdfs:label ?label ; nie:lastModified ?time ] .
+	
+	                OPTIONAL
+	                {
+		                [ nie:isStoredAs [ rdfs:label ?label ; nie:lastModified ?t2 ] ].
+		
+		                FILTER(?time > ?t2)
+	                }
+	
+	                FILTER(!BOUND(?t2))
                 }
                 ORDER BY DESC(?time) LIMIT 25");
 
-            return Response.AsJson(model.GetBindings(query));
+            var bindings = ModelProvider.GetActivities().GetBindings(query);
+
+            return Response.AsJson(bindings);
         }
 
-        public Response GetActivities(string fileUrl)
+        private Response GetActivities(UriRef entityUri)
         {
-            IModel model = ModelProvider.GetAll();
-
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?startTime ?endTime MAX(?time) as ?maxTime ?color ?name WHERE
+                SELECT
+                    ?startTime 
+                    ?endTime
+                    MAX(?time) as ?maxTime
+                    ?agent
+                    COALESCE(?agentColor, '#FF0000') AS ?agentColor
+                WHERE
                 {
-                    ?file nfo:fileUrl @fileUrl .
+                  ?activity
+                    prov:generated | prov:used @entity ;
+                    prov:startedAtTime ?startTime .
 
-                    ?activity prov:used ?file ;
-                        prov:qualifiedAssociation ?association ;
-                        prov:startedAtTime ?startTime ;
-                        prov:endedAtTime ?endTime ;
-                        prov:generated ?entity .
+                  OPTIONAL
+                  {
+                    ?activity prov:endedAtTime ?endTime .
+                  }
 
-                    ?association prov:agent ?agent .
+                  OPTIONAL
+                  {
+                    ?activity prov:qualifiedAssociation [
+                      prov:hadRole art:SOFTWARE ;
+                      prov:agent ?agent
+                    ] .
 
-                    ?agent foaf:name ?name .
+                    ?agent art:hasColourCode ?agentColor .
+                  }
 
-                    ?entity prov:qualifiedGeneration ?generation .
-
-                    ?generation a ?type .
-                    ?generation prov:atTime ?time .
-
-                    OPTIONAL { ?agent art:hasColourCode ?color . }
+                  ?influence a ?type ;
+                    prov:activity | prov:hadActivity ?activity ;
+                    prov:atTime ?time.
                 }
                 ORDER BY DESC(?startTime)");
 
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
 
-            return Response.AsJson(model.GetBindings(query));
+            var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
+
+            return Response.AsJson(bindings);
         }
 
-        public Response ClearActivities()
+        private Response ClearActivities()
         {
-            ModelProvider.ActivitiesModel.Clear();
+            ModelProvider.GetActivities().Clear();
 
             return HttpStatusCode.OK;
         }
 
-        public Response GetInfluences(string fileUrl)
+        private Response GetInfluences(UriRef entityUri)
         {
-            IModel model = ModelProvider.GetAllActivities();
-
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?layer ?time ?uri ?type ?color ?description ?bounds ?thumbnailUrl ?x ?y WHERE 
+                SELECT DISTINCT
+                    ?time
+                    ?uri
+                    ?type
+                    ?description
+                    ?layer
+                    COALESCE(?agentColor, '#FF0000') AS ?agentColor
+                    COALESCE(?x, 0) AS ?x
+                    COALESCE(?y, 0) AS ?y
+                    COALESCE(?w, 0) AS ?w
+                    COALESCE(?h, 0) AS ?h
+                WHERE 
                 {
-                    ?file nfo:fileUrl @fileUrl .
+                    ?activity
+                        prov:generated | prov:used @entity ;
+                        prov:qualifiedAssociation ?association .
 
-                    ?activity prov:used ?file;
-                        prov:qualifiedAssociation ?association ;
-                        prov:generated ?entity .
+                    ?association
+                        prov:hadRole art:SOFTWARE .
 
-                    ?association prov:agent ?agent .
+                    OPTIONAL
+                    {
+                        ?association prov:agent / art:hasColourCode ?agentColor .
+                    }
 
-                    ?agent art:hasColourCode ?color .
-
-                    ?entity prov:qualifiedGeneration ?generation .
-
-                    ?generation a ?type ;
+                    ?uri
+                        rdf:type ?type ;
+                        prov:activity | prov:hadActivity ?activity ;
                         prov:atTime ?time .
 
-                    OPTIONAL { ?generation art:selectedLayer ?layer . }
-                    OPTIONAL { ?generation dces:description ?description . }
-                    OPTIONAL { ?generation art:hadBoundaries ?bounds . }
                     OPTIONAL
                     {
-                        ?generation art:thumbnailUrl ?thumbnailUrl .
-                        ?generation art:thumbnailPosition ?rectangle .
+                        ?uri dces:description ?description .
+                    }
 
-                        ?rectangle art:position ?position .
+                    OPTIONAL
+                    {
+                        ?uri art:hadBoundaries [
+                            art:x ?x ;
+                            art:y ?y ;
+                            art:width ?w ;
+                            art:height?h
+                        ] .
+                    }
 
-                        ?position art:x ?x .
-                        ?position art:y ?y .
+                    OPTIONAL
+                    {
+                        ?uri art:renderedAs [
+                            art:renderedLayer ?layer ;
+                        ] .
                     }
                 }
                 ORDER BY DESC(?time)");
 
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
 
-            return Response.AsJson(model.GetBindings(query));
+            var bindings = ModelProvider.GetAll().GetBindings(query);
+
+            return Response.AsJson(bindings);
         }
 
-        private Response GetThumbnails(string fileUrl)
+        private Response GetRenderings(UriRef entityUri)
         {
-            IModel model = ModelProvider.ActivitiesModel;
+            return GetRenderings(entityUri, DateTime.UtcNow);
+        }
 
+        private Response GetRenderings(UriRef entityUri, DateTime time)
+        {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?layer ?layerZ ?time ?thumbnailUrl COALESCE(?x, 0) AS ?x COALESCE(?y, 0) AS ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
+	                ?time
+                    ?type
+                    ?file
+                    ?layer
+                    COALESCE(?x, 0) AS ?x
+                    COALESCE(?y, 0) AS ?y
+                    COALESCE(?w, 0) AS ?w
+                    COALESCE(?h, 0) AS ?h
                 WHERE 
                 {
-                    {
-                        SELECT ?layer COALESCE(?layerZ, 0) AS ?layerZ ?generation ?time WHERE
-                        {
-                            ?file nfo:fileUrl @fileUrl .
+			        ?activity prov:generated | prov:used @entity .
 
-                            ?activity prov:used ?file .
-                            ?activity prov:generated ?entity .
-
-                            ?entity prov:qualifiedGeneration ?generation .
-
-                            ?generation art:selectedLayer ?layer .
-                            ?generation prov:atTime ?time .
-
-                            OPTIONAL { ?generation art:layerZPosition ?layerZ . }
-                        }
-                        GROUP BY ?layerZ
-                    }
-
-                    ?generation art:thumbnailUrl ?thumbnailUrl .
+			        ?influence
+                        prov:activity | prov:hadActivity ?activity ;
+                        prov:atTime ?time ;
+                        art:renderedAs ?rendering .
 
                     OPTIONAL
                     {
-                        ?generation art:thumbnailPosition ?rectangle .
-
-                        ?rectangle art:position ?position .
-
-                        ?position art:x ?x .
-                        ?position art:y ?y .
+                        ?influence art:hadBoundaries [
+                            art:x ?x ;
+                            art:y ?y ;
+                            art:width ?w ;
+                            art:height ?h
+                        ] .
                     }
+
+                    ?rendering
+                        rdf:type ?type ;
+                        rdfs:label ?file .
 
                     OPTIONAL
                     {
-                        ?generation art:hadBoundaries ?bounds .
-
-                        ?bounds art:width ?boundsWidth .
-                        ?bounds art:height ?boundsHeight .
-                        ?bounds art:position ?p .
-
-                        ?p art:x ?boundsX .
-                        ?p art:y ?boundsY .
+                        ?rendering art:renderedLayer ?layer .
                     }
+
+                    FILTER(?time <= @time)
                 }
                 ORDER BY DESC(?time)");
 
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
-
-            return Response.AsJson(model.GetBindings(query));
-        }
-
-        private Response GetThumbnails(string fileUrl, DateTime time)
-        {
-            IModel model = ModelProvider.ActivitiesModel;
-
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?layer ?layerZ ?time ?thumbnailUrl ?x ?y ?boundsX ?boundsY ?boundsWidth ?boundsHeight
-                WHERE 
-                {
-                    {
-                        SELECT ?layer ?layerZ MAX(?time) AS ?time WHERE
-                        {
-                            ?file nfo:fileUrl @fileUrl .
-
-                            ?activity prov:used ?file .
-                            ?activity prov:generated ?entity .
-
-                            ?entity prov:qualifiedGeneration ?generation .
-
-                            ?generation art:selectedLayer ?layer .
-                            ?generation art:layerZPosition ?layerZ .
-                            ?generation prov:atTime ?time .
-
-                            FILTER(?time <= @time)
-                        }
-                        GROUP BY ?layerZ
-                    }
-
-                    ?generation prov:atTime ?time .
-                    ?generation art:selectedLayer ?layer .
-                    ?generation art:thumbnailUrl ?thumbnailUrl .
-                    ?generation art:thumbnailPosition ?rectangle .
-
-                    ?rectangle art:position ?position .
-
-                    ?position art:x ?x .
-                    ?position art:y ?y .
-
-                    OPTIONAL
-                    {
-                        ?generation art:hadBoundaries ?bounds .
-
-                        ?bounds art:width ?boundsWidth .
-                        ?bounds art:height ?boundsHeight .
-                        ?bounds art:position ?p .
-
-                        ?p art:x ?boundsX .
-                        ?p art:y ?boundsY .
-                    }
-                }");
-
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            var res = model.GetBindings(query);
+            var bindings = ModelProvider.GetActivities().GetBindings(query);
 
-            return Response.AsJson(res);
+            return Response.AsJson(bindings);
         }
 
-        private Response GetThumbnail(string thumbnailUrl)
+        private Response GetRendering(UriRef uri, string fileName)
         {
-            string file = new Uri(thumbnailUrl).AbsolutePath;
+            string file = Path.Combine(GetRenderOutputPath(uri), fileName);
 
             if (File.Exists(file))
             {
@@ -788,32 +865,31 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response GetThumbnailPath(string fileUri)
+        private string GetRenderOutputPath(UriRef entityUri)
         {
-            if (string.IsNullOrEmpty(fileUri))
+            char[] uri = entityUri.AbsoluteUri.Replace("//","-").Replace('/','-').Replace(':','-').ToCharArray();
+
+            // Only allow letters or digits.
+            string entityName = new string(Array.FindAll<char>(uri, c => char.IsLetterOrDigit(c) || c == '-' || c == '.'));
+
+            return Path.Combine(PlatformProvider.RenderingsFolder, entityName);
+        }
+
+        private Response GetRenderOutputPath(UriRef entityUri, bool createDirectory = false)
+        {
+            string path = GetRenderOutputPath(entityUri);
+
+            if (createDirectory && !Directory.Exists(path))
             {
-                return HttpStatusCode.InternalServerError;
+                Directory.CreateDirectory(path);
             }
 
-            var invalids = System.IO.Path.GetInvalidFileNameChars();
-            var newName = String.Join("_", fileUri.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
-
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(PlatformProvider.ThumbnailFolder, newName));
-
-            if (!dir.Exists)
-            {
-                dir.Create();
-            }
-
-            List<string> result = new List<string>()
-            {
-                dir.FullName
-            };
+            List<string> result = new List<string>() { path };
 
             return Response.AsJson(result);
         }
 
-        private string GetFileUri(string path)
+        private string GetEntityUri(string path)
         {
             Uri fileUrl = new FileInfo(path).ToUriRef();
 
@@ -822,15 +898,17 @@ namespace Artivity.Apid.Modules
                     ?entity
                 WHERE
                 {
-                    ?entity nfo:fileUrl @fileUrl .
-                    ?entity nfo:fileLastModified ?time .
+                    ?entity nie:isStoredAs ?file .
+
+                    ?file nie:url @fileUrl .
+                    ?file nie:lastModified ?time .
                 }
                 ORDER BY DESC(?time) LIMIT 1
             ");
 
             query.Bind("@fileUrl", fileUrl.AbsoluteUri);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
 
             if (bindings.Any())
             {
@@ -847,128 +925,200 @@ namespace Artivity.Apid.Modules
             return null;
         }
 
-        private Response GetCompositionStats(string fileUrl)
+        private Response GetCompositionStats(UriRef entityUri)
         {
             string queryString = @"
                 SELECT
                     ?type count(?type) as ?count
                 WHERE
                 {
-                    ?activity prov:used ?file .
-                    ?activity prov:generated ?version .
+                    ?activity prov:generated | prov:used @entity .
 
-                    ?file nfo:fileUrl @fileUrl .
-
-                    ?version prov:qualifiedGeneration ?generation .
-                    
-                    ?generation a ?type .
+	                ?influence a ?type .
+	                ?influence prov:activity | prov:hadActivity ?activity .
                 }";
 
-            SparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            ISparqlQuery query = new SparqlQuery(queryString);
+            query.Bind("@entity", entityUri);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
 
-        private Response GetCompositionStats(string fileUrl, DateTime time)
+        private Response GetCompositionStats(UriRef entityUri, DateTime time)
         {
             string queryString = @"
                 SELECT
                     ?type count(?type) AS ?count
                 WHERE
                 {
-                    ?activity prov:used ?file .
-                    ?activity prov:generated ?version .
+                    ?activity prov:generated | prov:used @entity .
 
-                    ?file nfo:fileUrl @fileUrl .
-
-                    ?version prov:qualifiedGeneration ?generation .
-                    
-                    ?generation a ?type .
-                    ?generation prov:atTime ?time .
+	                ?influence a ?type .
+	                ?influence prov:activity | prov:hadActivity ?activity .
+	                ?influence prov:atTime ?time .
 
                     FILTER (?time <= @time)
                 }";
 
-            SparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            ISparqlQuery query = new SparqlQuery(queryString);
+            query.Bind("@entity", entityUri);
             query.Bind("@time", time);
 
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
         }
 
-        private Response GetFile(string fileUrl)
+        private Response GetUri(Uri fileUrl)
+        {
+            string file = Path.GetFileName(fileUrl.LocalPath);
+            string folder = Path.GetDirectoryName(fileUrl.LocalPath);
+
+            if(string.IsNullOrEmpty(file) || string.IsNullOrEmpty(folder))
+            {
+                return Response.AsJson(new { });
+            }
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?uri
+                WHERE
+                {
+                    ?uri nie:isStoredAs ?file .
+
+                    ?file rdfs:label @fileName .
+                    ?file nie:lastModified ?time .
+                    ?file nfo:belongsToContainer ?folder .
+
+                    ?folder nie:url @folderUrl .
+                }
+                ORDER BY DESC(?time) LIMIT 1");
+
+            query.Bind("@fileName", file);
+            query.Bind("@folderUrl", new Uri(folder));
+
+            var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
+
+            return Response.AsJson(bindings);
+        }
+
+        private Response GetFile(Uri entityUri)
         {
             string queryString = @"
                 SELECT
-                    ?s ?p ?o
+                    ?uri ?folder ?label ?created ?lastModified
                 WHERE
                 {
-                    ?s ?p ?o .
+                    @entity nie:isStoredAs ?uri .
 
-                    {
-                        SELECT
-                            ?s
-                        WHERE
-                        {
-                            ?activity prov:used ?s .
-                            ?activity prov:startedAtTime ?startTime .
-
-                            ?s rdf:type nfo:FileDataObject .
-                            ?s nfo:fileUrl @fileUrl .
-                        }
-                        ORDER BY DESC(?startTime) LIMIT 1
-                    }
+                    ?uri rdfs:label ?label .
+                    ?uri nie:created ?created .
+                    ?uri nie:lastModified ?lastModified .
+                    ?uri nfo:belongsToContainer / nie:url ?folder .
                 }";
 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
 
-            FileDataObject file = ModelProvider.ActivitiesModel.GetResources<FileDataObject>(query).FirstOrDefault();
+            BindingSet bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
-            if (file != null)
-            {
-                Dictionary<string, Resource> result = new Dictionary<string, Resource>();
-                result["file"] = file;
-                result["canvas"] = file.Canvases.First();
-
-                return Response.AsJson(result);
-            }
-
-            return Response.AsJson(file);
+            return Response.AsJson(bindings);
         }
 
-        private Response GetCanvas(string fileUrl)
+        private Response CreateFile(UriRef uri, Uri url)
+        {
+            FileSystemMonitor.Instance.AddFile(uri, url);
+
+            return HttpStatusCode.OK;
+        }
+
+        private Response GetCanvases(UriRef entityUri)
+        {
+            return GetCanvases(entityUri, DateTime.UtcNow);
+        }
+
+        private Response GetCanvases(UriRef entityUri, DateTime time)
         {
             string queryString = @"
-                SELECT
-                    ?canvas ?width ?height ?lengthUnit
+                SELECT DISTINCT
+	                ?time
+	                ?type
+	                ?uri
+	                ?property
+	                ?value
+	                COALESCE(?x, 0) AS ?x
+	                COALESCE(?y, 0) AS ?y
+	                COALESCE(?w, 0) AS ?w
+	                COALESCE(?h, 0) AS ?h
                 WHERE
                 {
-                    ?activity prov:used ?file .
-                    ?activity prov:startedAtTime ?startTime .
+	                ?activity prov:generated | prov:used @entity.
 
-                    ?file rdf:type nfo:FileDataObject .
-                    ?file nfo:fileUrl @fileUrl .
-                    ?file art:canvas ?canvas .
+	                ?influence a ?type ;
+		                prov:activity | prov:hadActivity ?activity ;
+		                prov:atTime ?time ;
+		                art:hadChange ?change ;
+		                art:hadBoundaries [
+			                art:x ?x ;
+			                art:y ?y ;
+			                art:width ?w ;
+			                art:height ?h
+		                ].
+	
+	                ?change art:entity ?uri ;
+		                art:property ?property ;
+		                art:value ?value .
 
-                    ?canvas art:width ?width .
-                    ?canvas art:height ?height .
+	                ?uri a art:Canvas .
 
-                    OPTIONAL { ?canvas art:lengthUnit ?lengthUnit . }
+                    FILTER (?time <= @time)
                 }
-                ORDER BY DESC(?startTime) LIMIT 1";
+                ORDER BY DESC(?time)";
                 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@fileUrl", Uri.EscapeUriString(fileUrl));
+            query.Bind("@entity", entityUri);
+            query.Bind("@time", time);
             
-            IEnumerable<BindingSet> bindings = ModelProvider.ActivitiesModel.GetBindings(query);
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings.FirstOrDefault());
+            return Response.AsJson(bindings);
+        }
+
+        private Response GetLayers(UriRef uriRef)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT DISTINCT
+                    ?time
+                    ?type
+                    ?uri
+                    ?property
+                    ?value
+                WHERE
+                {
+	                ?activity prov:generated | prov:used @entity.
+
+	                ?influence a ?type ;
+		                prov:activity | prov:hadActivity ?activity ;
+		                prov:atTime ?time ;
+		                art:hadChange ?change .
+
+	                ?change art:entity ?uri ;
+		                art:property ?property ;
+		                art:value ?value .
+
+	                ?uri a art:Layer .
+
+	                FILTER(?property = art:aboveLayer || ?property = rdfs:label)
+                }
+                ORDER BY DESC(?time)");
+
+            query.Bind("@entity", uriRef);
+
+            IList<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
+
+            return Response.AsJson(bindings);
         }
 
         #endregion

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <art:PluginManifest xmlns:art="http://www.artivity.io/plugins/manifest/">
-  <art:Uri>http://adobe.com/products/illustrator</art:Uri>
   <art:DisplayName>Adobe Illustrator CC 2015</art:DisplayName>
-  <art:ProcessName>Illustrator.exe</art:ProcessName>
-  <art:ExecPath>Support Files\Contents\Windows\Illustrator.exe</art:ExecPath>
-  <art:ID>ILST_19_2_1</art:ID>
-  <art:TargetPath>Plug-ins\Extensions</art:TargetPath>
-  <art:Version>0.5</art:Version>
+  <art:Uri>http://adobe.com/products/illustrator</art:Uri>
+  <art:ProcessName>Adobe Illustrator</art:ProcessName>
+  <art:ID>ILST_19_2_0</art:ID>
+  <art:TargetPath>../Plug-ins.localized/</art:TargetPath>
+  <art:ExecPath></art:ExecPath>
+  <art:Version>0.8</art:Version>
   <art:HostVersion>19.2.0</art:HostVersion>
   <art:Arch>64</art:Arch>
   <art:PluginFile Link="true">Artivity64_2015.aip</art:PluginFile>
+  <art:Color>#F27200</art:Color>
+  <art:ExampleFile>Sample.ai</art:ExampleFile>
+  <art:FilterName></art:FilterName>
 </art:PluginManifest>

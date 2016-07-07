@@ -35,9 +35,10 @@ namespace Artivity.Api.Plugin.Win
 {
     public class RegistryEntry
     {
-        public string Name;
         public string Id;
-        public string InstallLocation;
 
+        public string Name;
+
+        public string InstallLocation;
     }
 }
