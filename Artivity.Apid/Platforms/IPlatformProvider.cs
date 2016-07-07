@@ -30,6 +30,8 @@ namespace Artivity.Apid.Platforms
 
         string PluginDir { get; }
 
+        string OntologyDir { get; }
+
         #endregion
 
         #region Platform

@@ -101,8 +101,6 @@
     <EmbeddedResource Include="app\js\lib\ui-bootstrap-tpls-1.3.3.min.js" />
     <EmbeddedResource Include="app\js\lib\ui-grid.min.js" />
     <EmbeddedResource Include="app\js\app.classes.js" />
-    <EmbeddedResource Include="app\js\app.conf.debug.js" />
-    <EmbeddedResource Include="app\js\app.conf.js" />
     <EmbeddedResource Include="app\js\app.controllers.js" />
     <EmbeddedResource Include="app\partials\query.html" />
     <EmbeddedResource Include="app\css\roboto.css" />
@@ -154,6 +152,14 @@
     <EmbeddedResource Include="app\js\app.js" />
     <EmbeddedResource Include="app\partials\file-list.html" />
     <EmbeddedResource Include="app\partials\settings.html" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <EmbeddedResource Include="app\js\app.conf.release.js" >
+    <LogicalName>Artivity.Apid.Modules.Journal.app.js.conf.js</LogicalName>
+  </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <EmbeddedResource Include="app\js\app.conf.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
