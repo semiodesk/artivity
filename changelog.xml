@@ -5,7 +5,7 @@
 	<source>https://static.semiodesk.com/artivity/osx/appcast.xml</source>
 	<!-- Base directory for the upload, version number is appended -->
 	<dest>https://static.semiodesk.com/artivity/osx</dest>
-	
+
 	<!-- The title can be static or extended with the version number by inserting %s -->
 	<notes id="1" title="Artivity %s Update - Hello World!">
 		<note>This is the initial release of Artivity.</note>
@@ -15,7 +15,21 @@
 		<note>This is a bugfix release of Artivity.</note>
 		<note>Update the Software with Help->Check for updates...</note>
 	</notes>
+	<notes id="3" title="Artivity %s Update - Altamira!">
+		<description>With this release we decided to finally go public with Artivity.
+	  We have put in a lot of time and work and it turned out to be an awesome piece of software.
+		But please keep in mind that this is only the first release and the edges are still a bit rough.
+		This is the reason why we named this release after the cave drawings of <a href='https://en.wikipedia.org/wiki/Cave_of_Altamira'>Altamira</a>.
+	  <p/>
+		Thank you for helping us test Artivity and please report any problems to our <a href='https://bitbucket.org/semiodesk/artivity/issues'>issue tracker</a>.
+		</description>
+		<note>Added an installation mechanism form plugins.</note>
+		<note>Completed major restructuring of the data model.</note>
+		<note>Improved data capture mechanisms in all plugins.</note>
+	</notes>
 </channel>
+
+
 
 <channel os="win">
 </channel>

@@ -12,7 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>d3ac82ba</NuGetPackageImportStamp>
     <TargetFrameworkProfile />
-    <ReleaseVersion>1.5</ReleaseVersion>
+    <ReleaseVersion>1.6</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
