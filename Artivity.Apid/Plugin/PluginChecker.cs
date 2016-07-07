@@ -237,7 +237,7 @@ namespace Artivity.Api.Plugin
 
                         if (!plugin.IsPluginInstalled && installPlugins)
                         {
-                            plugin.IsPluginInstalled = InstallPlugin(plugin.Manifest);
+                            plugin.IsPluginInstalled = InstallPlugin(plugin);
                             plugin.IsPluginEnabled = plugin.IsPluginInstalled;
                         }
                     }
@@ -285,11 +285,13 @@ namespace Artivity.Api.Plugin
         {
             SoftwareAgentPlugin plugin = Plugins.First((p) => p.AgentUri == uri && IsSoftwareInstalled(p.Manifest));
 
-            return plugin != null ? InstallPlugin(plugin.Manifest) : false;
+            return plugin != null ? InstallPlugin(plugin) : false;
         }
 
-        public virtual bool InstallPlugin(PluginManifest manifest)
+        public virtual bool InstallPlugin(SoftwareAgentPlugin plugin)
         {
+            PluginManifest manifest = plugin.Manifest;
+
             try
             {
                 DirectoryInfo location = GetApplicationLocation(manifest);
@@ -341,6 +343,13 @@ namespace Artivity.Api.Plugin
                     }
                 }
 
+                IModel model = ModelProvider.GetAgents();
+
+                if (!HasAgentAssociation(model, plugin))
+                {
+                    InstallAgent(model, plugin);
+                }
+
                 return true;
             }
             catch(Exception e)
@@ -355,11 +364,13 @@ namespace Artivity.Api.Plugin
         {
             SoftwareAgentPlugin plugin = Plugins.First((p) => p.AgentUri == uri && IsSoftwareInstalled(p.Manifest));
 
-            return plugin != null ? UninstallPlugin(plugin.Manifest) : false;
+            return plugin != null ? UninstallPlugin(plugin) : false;
         }
 
-        public virtual bool UninstallPlugin(PluginManifest manifest)
+        public virtual bool UninstallPlugin(SoftwareAgentPlugin plugin)
         {
+            PluginManifest manifest = plugin.Manifest;
+
             try
             {
                 DirectoryInfo location = GetApplicationLocation(manifest);

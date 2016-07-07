@@ -124,6 +124,7 @@
     </BundleResource>
     <BundleResource Include="Plugins\Chrome\Icon.png" />
     <BundleResource Include="Plugins\Chrome\Sample.html" />
+    <BundleResource Include="Plugins\IllustratorCC2015.2\Artivity64_2015.2.aip" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="$(ProjectDir)\CopyToOutput.targets" />

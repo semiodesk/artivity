@@ -679,22 +679,35 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?startTime ?endTime MAX(?time) as ?maxTime ?agent ?agentColor
+                    ?startTime 
+                    ?endTime
+                    MAX(?time) as ?maxTime
+                    ?agent
+                    COALESCE(?agentColor, '#FF0000') AS ?agentColor
                 WHERE
                 {
-                    ?activity prov:generated | prov:used @entity .
-	                ?activity prov:startedAtTime ?startTime .
-	                ?activity prov:endedAtTime ?endTime .
-	                ?activity prov:qualifiedAssociation ?association .
-	
-	                ?association prov:hadRole art:SOFTWARE .
-                    ?association prov:agent ?agent .
-	                
+                  ?activity
+                    prov:generated | prov:used @entity ;
+                    prov:startedAtTime ?startTime .
+
+                  OPTIONAL
+                  {
+                    ?activity prov:endedAtTime ?endTime .
+                  }
+
+                  OPTIONAL
+                  {
+                    ?activity prov:qualifiedAssociation [
+                      prov:hadRole art:SOFTWARE ;
+                      prov:agent ?agent
+                    ] .
+
                     ?agent art:hasColourCode ?agentColor .
-	
-	                ?influence prov:activity | prov:hadActivity ?activity .
-	                ?influence a ?type .
-                    ?influence prov:atTime ?time .
+                  }
+
+                  ?influence a ?type ;
+                    prov:activity | prov:hadActivity ?activity ;
+                    prov:atTime ?time.
                 }
                 ORDER BY DESC(?startTime)");
 
