@@ -117,7 +117,6 @@
     <BundleResource Include="Plugins\PhotoshopCC2015\Manifest.xml" />
     <BundleResource Include="Plugins\PhotoshopCC2015\Sample.psd" />
     <BundleResource Include="Plugins\IllustratorCC2015\Artivity64_2015.aip" />
-    <BundleResource Include="Plugins\IllustratorCC2015.2\Artivity64_2015.2.aip" />
     <BundleResource Include="Plugins\PhotoshopCC2015\Artivity64.8li" />
     <BundleResource Include="Plugins\Chrome\lfpdclalfidmgoedibkdihkbiclfoebh.json" />
     <BundleResource Include="Plugins\Chrome\Manifest.xml">
@@ -125,6 +124,7 @@
     </BundleResource>
     <BundleResource Include="Plugins\Chrome\Icon.png" />
     <BundleResource Include="Plugins\Chrome\Sample.html" />
+    <BundleResource Include="Plugins\IllustratorCC2015.2\Artivity64_2015.2.aip" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="$(ProjectDir)\CopyToOutput.targets" />

@@ -82,20 +82,22 @@ EntityCache.prototype.load = function(data, complete) {
     var t = this;
 
     each(data, function(i, influence) {
-		var time = new Date(influence.time);
-        var entity = t.entities[influence.uri];
-        
-        if(entity === undefined) {
-            entity = new Entity(influence.uri);
-            
-            t.entities[influence.uri] = entity;
-        };
-        		
-        if(influence.type === 'http://www.w3.org/ns/prov#Generation') {
-            entity.creationTime = time;
+        if(influence.time !== undefined && influence.uri !== undefined) {
+            var time = new Date(influence.time);
+            var entity = t.entities[influence.uri];
+
+            if(entity === undefined) {
+                entity = new Entity(influence.uri);
+
+                t.entities[influence.uri] = entity;
+            };
+
+            if(influence.type === 'http://www.w3.org/ns/prov#Generation') {
+                entity.creationTime = time;
+            }
+
+            entity.pushValue(time, influence.property, influence.value);
         }
-        
-        entity.pushValue(time, influence.property, influence.value);
     });
 	
 	if(complete !== undefined) {
@@ -210,9 +212,11 @@ LayerCache.prototype.getAll = function(time, fn) {
     while (i < count) {
         var next = t.entities[map.get(current)];
 		
-        fn(next);
+        if(next !== undefined) {
+            fn(next);
 		
-        current = next.uri;
+            current = next.uri;
+        }
 
         i++;
     }
@@ -460,7 +464,7 @@ DocumentRendererCache.prototype.loadRender = function (data, i, complete) {
 DocumentRendererCache.prototype.get = function(time, layer, fn) {
 	var t = this;
 	
-    if(layer.uri in t.renders) {
+    if(layer !== undefined && layer.uri in t.renders) {
         var R = t.renders[layer.uri];
 		
         for(var i = 0; i < R.length; i++) {
