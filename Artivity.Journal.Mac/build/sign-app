@@ -27,7 +27,7 @@ done
 
 
 # grab code signing id from the keychain
-codeSignID=$(security find-identity -v -p codesigning | grep ".*Developer ID Application: Semiodesk GmbH.*" | awk -F'"' '$0=$2' )
+codeSignID=$(security find-identity -v -p codesigning | grep -m1 ".*Developer ID Application: Semiodesk GmbH.*" | awk -F'"' '$0=$2' )
 echo ${codeSignID}
 # codesign all frameworks including sparkle
 codesign --verbose --force --sign "${codeSignID}" "${DIR}"
