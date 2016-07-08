@@ -3,6 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:c="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:m="http://firstfloorsoftware.com/ModernUI"
-        Icon="Icon.ico" Title="Artivity Explorer" Width="800" Height="600" Style="{StaticResource JournalWindow}">
-    <c:ChromiumWebBrowser x:Name="Browser" Address="http://localhost:8262/artivity/app/journal/1.0/"/>
+        Icon="Icon.ico" Title="Artivity Explorer" Width="1100" Height="700" Style="{StaticResource JournalWindow}">
+    <c:ChromiumWebBrowser x:Name="Browser"/>
 </m:ModernWindow>
