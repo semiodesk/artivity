@@ -70,6 +70,8 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="packages.config" />
+    <None Include="error\error-no-apid-connection.html" />
+    <None Include="error\wait-for-connection.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

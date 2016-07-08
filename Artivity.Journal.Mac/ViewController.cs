@@ -44,6 +44,8 @@ namespace Artivity.Journal.Mac
         string Port = "8272";
 #endif
 
+        bool errorHandler = false;
+
         #endregion
 
         #region Constructors
@@ -57,22 +59,21 @@ namespace Artivity.Journal.Mac
 
         #region Methods
 
-        public override void ViewDidLoad()
+        public override void AwakeFromNib()
         {
-            base.ViewDidLoad();
-
             // Handle connection errors.
             Browser.FailedProvisionalLoad += OnBrowserLoadError;
 
             // Allow to open new browser windows.
-            Browser.DecidePolicyForNavigation += (object sender, WebNavigationPolicyEventArgs e) => {
+            Browser.DecidePolicyForNavigation += (object sender, WebNavigationPolicyEventArgs e) =>
+            {
                 WebView.DecideUse(e.DecisionToken);
             };
 
-            Browser.DecidePolicyForNewWindow += (object sender, WebNewWindowPolicyEventArgs e) => {
+            Browser.DecidePolicyForNewWindow += (object sender, WebNewWindowPolicyEventArgs e) =>
+            {
                 Browser.MainFrame.LoadRequest(e.Request);
             };
-
 
 
             Browser.UIRunOpenPanelForFileButton += (object sender, WebViewRunOpenPanelEventArgs e) =>
@@ -92,16 +93,58 @@ namespace Artivity.Journal.Mac
                         result.Add(x.AbsoluteString);
                     }
                     e.ResultListener.ChooseFilenames(result.ToArray());
-                }else
+
+                }
+                else
                     e.ResultListener.Cancel();
 
             };
 
+            Browser.WantsLayer = false;
+        }
+
+        public override void ViewDidLayout()
+        {
+            
+
+        }
+ 
+        public override void ViewDidLoad()
+        {
+            
             // Initially try to load the journal app.
+            OpenJournal();
+        }
+
+        private void OpenJournal()
+        { 
             Browser.MainFrame.LoadRequest(new NSUrlRequest(new NSUrl(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", Port))));
         }
 
         private void OnBrowserLoadError(object sender, WebFrameErrorEventArgs e)
+        {
+            if (!errorHandler)
+            {
+                Browser.UIMouseDidMoveOverElement += MouseMove;
+                errorHandler = true;
+            }
+            NSUrl url = NSBundle.MainBundle.GetUrlForResource("error-no-apid-connection", "html", "error");
+            Browser.MainFrame.LoadRequest(new NSUrlRequest(url));
+        }
+
+        void MouseMove(object sender, WebViewMouseMovedEventArgs args)
+        {
+            NSEvent ev = NSApplication.SharedApplication.CurrentEvent;
+            if (ev.Type == NSEventType.LeftMouseUp)
+            {
+                Browser.UIMouseDidMoveOverElement -= MouseMove;
+                errorHandler = false;
+                OpenJournal();
+            }
+        }
+
+
+        private void ShowStaticPage(string name)
         {
             // NOTE: This somehow only works the first time. Any subsequent requests to the
             // registered URL fail for an unknown reason.
@@ -109,26 +152,20 @@ namespace Artivity.Journal.Mac
 
             // Read the connection error page from the artivity journal module assembly.
             Assembly assembly = Assembly.Load(assemblyName);
-            string resourceName = assemblyName + ".app.partials.error-no-apid-connection.html";
+            string resourceName = assemblyName + "." + name;
 
             // Read the page into a stream and display it in the browser window.
-            using(Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             {
-                using(StreamReader reader = new StreamReader(stream))
+                using (StreamReader reader = new StreamReader(stream))
                 {
                     string html = reader.ReadToEnd();
 
                     Browser.MainFrame.LoadHtmlString(html, new NSUrl("http://localhost/"));
-                    Browser.UIMouseDidMoveOverElement += (s, a) =>
-                    {
-                        NSEvent ev = NSApplication.SharedApplication.CurrentEvent;
-                        if (ev.Type == NSEventType.LeftMouseUp)
-                        {
-                            ViewDidLoad();
-                        }
-                    };
+                    //Browser.
+
                 }
-            }
+            } 
         }
 
 
