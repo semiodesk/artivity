@@ -30,7 +30,7 @@ namespace Artivity.Journal.Windows
         {
             InitializeComponent();
 
-            AppearanceManager.Current.AccentColor = Color.FromRgb(249, 76, 0);
+            AppearanceManager.Current.AccentColor = Color.FromRgb(29, 29, 29);
 
             Browser.Loaded += OnBrowserLoaded;
         }
@@ -38,6 +38,7 @@ namespace Artivity.Journal.Windows
         void OnBrowserLoaded(object sender, RoutedEventArgs e)
         {
             Browser.WebBrowser.LoadError += WebBrowser_LoadError;
+            Browser.Address = "http://localhost:8262/artivity/app/journal/1.0/";
         }
 
         void WebBrowser_LoadError(object sender, CefSharp.LoadErrorEventArgs e)
