@@ -1,7 +1,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<!-- These targets will fire after mmp creates your bundle but before code signing -->
 	<PropertyGroup>
-		<CreateAppBundleDependsOn>$(CreateAppBundleDependsOn);CopySparkle;CopyApid;CopyErrorPages;SignSparkle</CreateAppBundleDependsOn>
+		<CreateAppBundleDependsOn>$(CreateAppBundleDependsOn);CopySparkle;CopyApid;CopyErrorPages</CreateAppBundleDependsOn>
 	</PropertyGroup>
 
 
@@ -17,10 +17,6 @@
 
 	</Target>
 
-	<Target Name="SignSparkle" DependsOnTargets="CopySparkle" BeforeTargets="Codesign">
-		<Message Text="Signing Sparkle..." />
-		<Exec Condition=" '$(Configuration)' == 'Release' "  Command="'$(ProjectDir)/build/sign-app' -d=&quot;$([System.IO.Path]::GetFullPath('$(AppBundleDir)/Contents/Frameworks/Sparkle.framework')&quot;" />
-	</Target>
 
 	<!-- Since this has inputs/outputs, it will fire only when the inputs are changed or the output does not exist -->
 	<Target Name="CopyApid">
