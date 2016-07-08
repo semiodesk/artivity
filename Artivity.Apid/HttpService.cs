@@ -291,6 +291,7 @@ namespace Artivity.Apid
                 // We are running on Windows or Mac. Start the database using TinyVirtuoso..
                 Logger.LogInfo("Starting the OpenLink Virtuoso database..");
                 Logger.LogInfo("Database folder: {0}", PlatformProvider.DatabaseFolder);
+                Logger.LogInfo("Deployment folder: {0}", PlatformProvider.DeploymentDir);
 
                 // The database is started in the user's application data folder on port 8273..
                 _virtuoso = new TinyVirtuoso(PlatformProvider.ArtivityDataFolder, deploymentDir);

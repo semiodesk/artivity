@@ -59,7 +59,13 @@ namespace Artivity.Journal.Mac
 
         #region Methods
 
-        public override void AwakeFromNib()
+        public override void ViewDidLayout()
+        {
+            
+
+        }
+ 
+        public override void ViewDidLoad()
         {
             // Handle connection errors.
             Browser.FailedProvisionalLoad += OnBrowserLoadError;
@@ -78,39 +84,33 @@ namespace Artivity.Journal.Mac
 
             Browser.UIRunOpenPanelForFileButton += (object sender, WebViewRunOpenPanelEventArgs e) =>
             {
-                var dlg = NSOpenPanel.OpenPanel;
-                dlg.CanChooseFiles = true;
-                dlg.CanChooseDirectories = false;
-                dlg.AllowedFileTypes = new string[] { "png", "jpg", "jpeg" };
-                dlg.AllowsMultipleSelection = false;
+                var panel = NSOpenPanel.OpenPanel;
+                panel.CanChooseFiles = true;
+                panel.CanChooseDirectories = false;
+                panel.AllowedFileTypes = new string[] { "png", "jpg", "jpeg" };
+                panel.AllowsMultipleSelection = false;
+                panel.ParentWindow = this.View.Window;
 
-
-                if (dlg.RunModal() == 1)
+                if (panel.RunModal() == 1)
                 {
-                    List<string> result = new List<string>();
-                    foreach (var x in dlg.Urls)
-                    {
-                        result.Add(x.AbsoluteString);
-                    }
-                    e.ResultListener.ChooseFilenames(result.ToArray());
+                    string[] result = new string[panel.Urls.Length];
 
+                    for (int i = 0; i < panel.Urls.Length; i++)
+                    {
+                        NSUrl url = panel.Urls[i];
+
+                        result[i] = url.Path;
+                    }
+
+                    e.ResultListener.ChooseFilename(result[0]);
                 }
                 else
+                {
                     e.ResultListener.Cancel();
-
+                }
             };
 
             Browser.WantsLayer = false;
-        }
-
-        public override void ViewDidLayout()
-        {
-            
-
-        }
- 
-        public override void ViewDidLoad()
-        {
             
             // Initially try to load the journal app.
             OpenJournal();
