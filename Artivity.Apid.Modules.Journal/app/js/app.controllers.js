@@ -349,7 +349,7 @@ explorerControllers.controller('SettingsController', function (api, $scope, $loc
         $scope.submit();
         
         // Navigate to dasboard and refresh the page.
-        window.location.replace("/");
+        $location.path('/');
     };
 
     $scope.reset = function () {
