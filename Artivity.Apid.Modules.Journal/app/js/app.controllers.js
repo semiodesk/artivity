@@ -346,11 +346,10 @@ explorerControllers.controller('SettingsController', function (api, $scope, $loc
     };
 
     $scope.submitAndReturn = function () {
-        $scope.submit().then(function () {
-            // Navigate to dasboard.
-            // $location.path('/'); 
-            history.back();
-        });
+        $scope.submit();
+        
+        // Navigate to dasboard and refresh the page.
+        window.location.replace("/");
     };
 
     $scope.reset = function () {
@@ -459,8 +458,6 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
     $scope.onPhotoChanged = function (e) {
         // Update the preview image..
         var files = window.event.srcElement.files;
-
-        document.getElementById('photo-debug').value = "Hallo";
 
         if (FileReader && files.length) {
             var reader = new FileReader();
