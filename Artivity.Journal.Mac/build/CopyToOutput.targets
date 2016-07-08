@@ -1,8 +1,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<!-- These targets will fire after mmp creates your bundle but before code signing -->
 	<PropertyGroup>
-		<CreateAppBundleDependsOn>$(CreateAppBundleDependsOn);CopySparkle</CreateAppBundleDependsOn>
-		<CreateAppBundleDependsOn>$(CreateAppBundleDependsOn);CopyApid</CreateAppBundleDependsOn>
+		<CreateAppBundleDependsOn>$(CreateAppBundleDependsOn);CopySparkle;CopyApid;CopyErrorPages</CreateAppBundleDependsOn>
 	</PropertyGroup>
 
 	<!-- Since this has inputs/outputs, it will fire only when the inputs are changed or the output does not exist -->
@@ -30,4 +29,17 @@
 		<!-- See: http://stackoverflow.com/questions/1274480/two-executables-in-one-bundle-on-mac -->
     		<Copy SourceFiles="@(ApidBundleFiles)" DestinationFiles="@(ApidBundleFiles->'$(AppBundleDir)/Contents/Applications/artivity-apid.app/%(RecursiveDir)%(Filename)%(Extension)')" />
   	</Target>
+
+
+			<!-- Since this has inputs/outputs, it will fire only when the inputs are changed or the output does not exist -->
+		<Target Name="CopyErrorPages">
+				<Message Text="Copying error pages to app bundle.." />
+
+				<ItemGroup>
+					<ErrorBundleFiles Include="$(ProjectDir)/error/**/*.*"/>
+				</ItemGroup>
+
+				<MakeDir Directories="$(AppBundleDir)/Contents/Resources/error"/>
+		    <Copy SourceFiles="@(ErrorBundleFiles)" DestinationFiles="@(ErrorBundleFiles->'$(AppBundleDir)/Contents/Resources/error/%(RecursiveDir)%(Filename)%(Extension)')" />
+		  </Target>
 </Project>

@@ -1,0 +1,60 @@
+ <!DOCTYPE html> 
+<html>
+<head>
+
+<style type="text/css">
+	body {
+		font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+		color: #fff;
+        background: #343434;
+		padding: 20px;
+	}
+	
+	.text-label {
+		color: #999;
+	}
+	
+	#body {
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 650px;
+	}
+	
+	button {
+		padding: 10px 15px;
+		background: none;
+		border: 1px solid #fff;
+		border-radius: 3px;
+		margin-top: 2em;
+		color: white;
+	}
+</style>
+</head>
+<body>
+	<div id="body">
+		<div id="no-connection">
+			<div style="float: left; margin-right: 2em; margin-bottom: 10em;">
+				<!-- NOTE: The image is embedded so that it can be displayed without a server connection. -->
+				<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" x="0px" y="0px" viewBox="0 0 99.884766 91.537112" enable-background="new 0 0 100 91.46" xml:space="preserve" id="svg2" inkscape:version="0.91 r13725" sodipodi:docname="brokenheart.svg" width="100">
+					<defs id="defs14" />
+					<sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="1017" id="namedview12" showgrid="false" showguides="true" inkscape:guide-bbox="true" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0" inkscape:zoom="5.6568543" inkscape:cx="16.315363" inkscape:cy="34.303655" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="svg2"></sodipodi:namedview>
+					<path style="opacity:1;fill:#f94c00;fill-opacity:1;stroke:none;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M 29.11524,2.0997633e-8 C 13.03554,4.75021e-4 4.8e-4,13.035531 0,29.115234 c 0.004,7.656267 3.0232,15.002918 8.4043,20.44922 l -0.0137,0 41.55078,41.972655 0.002,0 L 60.816411,80.552734 45.31055,65.048828 61.630864,48.730469 47.6211,34.720703 61.751958,20.589843 49.94336,8.7792966 l -0.002,0 C 44.65409,3.365822 37.28005,-3.06979e-4 29.11519,2.0997633e-8 Z m 41.654296,0 C 64.409108,-2.38979e-4 58.53409,2.049747 53.7461,5.5117186 L 68.82227,20.589843 54.69141,34.720703 68.701176,48.730469 52.38282,65.048828 64.333989,77 91.494145,49.564454 l -0.01367,0 C 96.861574,44.118152 99.880968,36.771501 99.884768,29.115234 99.884298,13.035531 86.849241,4.75021e-4 70.769538,2.0997633e-8 Z M 49.94336,49.423829 c 0.045,0.04626 0.0874,0.0947 0.13282,0.140625 l -0.13282,0 -0.002,0 -0.13281,0 c 0.0458,-0.04624 0.0894,-0.09407 0.13476,-0.140625 z" id="path4144" inkscape:connector-curvature="0" />
+				</svg>
+			</div>
+
+			<div>
+				<div style="margin: 2em 0;">
+					<h2>No database connection</h2>
+					
+					<p class="description">Artivity Explorer was unable to connect to the local Artivity database. We're sorry for this.
+						Please try to log out of your current desktop session and log in again to restart the local Artivity service.</p>
+				</div>
+
+				<p class="text-label">ERR_NO_APID_CONNECTION</p>
+
+                <button onclick="javascript:history.back()">Retry</button>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

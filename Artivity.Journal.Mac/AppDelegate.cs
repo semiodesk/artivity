@@ -49,11 +49,24 @@ namespace Artivity.Journal.Mac
             _updater = new SUUpdater();
             _updater.Delegate = new SparkleDelegate();
             _updater.AutomaticallyChecksForUpdates = true;
+
+
+
         }
 
         public override void DidFinishLaunching(NSNotification notification)
         {
             // Insert code here to initialize your application
+        }
+
+        public override void WillFinishLaunching(NSNotification notification)
+        {
+            #if DEBUG
+            var defaults = NSUserDefaults.StandardUserDefaults;
+            defaults.SetBool(true, "WebKitDeveloperExtras");
+            defaults.Synchronize();
+            #endif
+
         }
 
         public override bool ApplicationShouldHandleReopen(NSApplication sender, bool hasVisibleWindows)
