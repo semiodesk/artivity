@@ -19,7 +19,7 @@
 
 	<Target Name="SignSparkle" DependsOnTargets="CopySparkle" BeforeTargets="Codesign">
 		<Message Text="Signing Sparkle..." />
-		<Exec Condition=" '$(Configuration)' == 'Release' "  Command="$(ProjectDir)/build/sign-app -d=&quot;$(AppBundleDir)/Contents/Frameworks/Sparkle.framework&quot;" />
+		<Exec Condition=" '$(Configuration)' == 'Release' "  Command="$(ProjectDir)/build/sign-app -d=&quot;$([System.IO.Path]::GetFullPath('$(AppBundleDir)/Contents/Frameworks/Sparkle.framework')&quot;" />
 	</Target>
 
 	<!-- Since this has inputs/outputs, it will fire only when the inputs are changed or the output does not exist -->
