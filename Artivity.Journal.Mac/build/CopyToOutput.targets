@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<!-- Since this has inputs/outputs, it will fire only when the inputs are changed or the output does not exist -->
-	<Target Name="CopySparkle">
+	<Target Name="CopySparkle" Condition=" '$(Configuration)' == 'Debug' ">
 		<Message Text="Copying Sparkle to app bundle.." />
 
 		<RemoveDir Directories="$(AppBundleDir)/Contents/Frameworks/Sparkle.framework"/>
