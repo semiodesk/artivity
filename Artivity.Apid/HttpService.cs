@@ -338,7 +338,7 @@ namespace Artivity.Apid
 
             DirectoryInfo pluginDirectory = new DirectoryInfo(PlatformProvider.PluginDir);
 
-            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(ModelProvider, pluginDirectory);
+            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(PlatformProvider, ModelProvider, pluginDirectory);
             _pluginChecker.CheckPlugins();
 
             if (PlatformProvider.CheckForNewSoftwareAgents)
