@@ -74,6 +74,7 @@
     <EmbeddedResource Include="app\fonts\Roboto-Regular.woff" />
     <EmbeddedResource Include="app\fonts\Roboto-Regular.woff2" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="error\index.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="app\js\lib\angular-input-modified.js" />
@@ -154,7 +155,7 @@
     <EmbeddedResource Include="app\partials\settings.html" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <EmbeddedResource Include="app\js\app.conf.release.js" >
+    <EmbeddedResource Include="app\js\app.conf.release.js">
       <LogicalName>Artivity.Apid.Modules.Journal.app.js.app.conf.js</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
@@ -174,5 +175,8 @@
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
       <Name>Artivity.DataModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="error\" />
   </ItemGroup>
 </Project>

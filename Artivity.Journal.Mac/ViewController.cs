@@ -31,6 +31,8 @@ using AppKit;
 using WebKit;
 using Foundation;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Artivity.Journal.Mac
 {
@@ -38,11 +40,13 @@ namespace Artivity.Journal.Mac
     {
         #region Members
 
-#if DEBUG
-        string Port = "8262";
-#else
-        string Port = "8272";
-#endif
+        #if DEBUG
+        public static string Port = "8262";
+        #else
+        public static string Port = "8272";
+        #endif
+
+        RetryListener retryListener;
 
         bool errorHandler = false;
 
@@ -59,14 +63,12 @@ namespace Artivity.Journal.Mac
 
         #region Methods
 
-        public override void ViewDidLayout()
-        {
-            
-
-        }
- 
         public override void ViewDidLoad()
         {
+
+            retryListener = new RetryListener();
+            retryListener.Controller = this;
+
             // Handle connection errors.
             Browser.FailedProvisionalLoad += OnBrowserLoadError;
 
@@ -110,39 +112,91 @@ namespace Artivity.Journal.Mac
                 }
             };
 
-            Browser.WantsLayer = false;
+            Browser.DrawsBackground = false;
+
+            if (Program.IsApidAvailable(Port))
+            {
+
+                // Initially try to load the journal app.
+                OpenJournal();
+            }
+            else
+            {
+                OpenLoadingPage();
+            }
             
-            // Initially try to load the journal app.
-            OpenJournal();
+
         }
+
+        public override void ViewDidAppear()
+        {
+            base.ViewDidAppear();
+
+            if (View.Layer.BackgroundColor == null)
+            {
+                var c2 = new CoreGraphics.CGColor(CoreGraphics.CGColorSpace.CreateDeviceRGB(), new nfloat[] { new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(1.0) });
+                View.Layer.BackgroundColor = c2;
+            }
+                //Browser.Layer.BackgroundColor = new CoreGraphics.CGColor(new nfloat(29.0/255), new nfloat(29.0/255), new nfloat(29.0/255), new nfloat(1.0));
+
+        }
+
+        private async void TestForServer(TimeSpan interval, int count, CancellationToken cancellationToken)
+        {
+            try
+            {
+                bool available = false;
+                for (int i = 0; i < count; i++)
+                {
+                    available = Program.IsApidAvailable(Port);
+                    if (available)
+                        break;
+                    
+                    Task task = Task.Delay(interval, cancellationToken);
+                    await task;
+                }
+
+
+                this.InvokeOnMainThread(() => 
+                {
+                    if (available)
+                    {
+                        OpenJournal();
+                    }
+                    else
+                    {
+                        ShowError();
+                    }
+                });
+
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+        }
+
 
         private void OpenJournal()
         { 
             Browser.MainFrame.LoadRequest(new NSUrlRequest(new NSUrl(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", Port))));
         }
 
+        private void OpenLoadingPage()
+        {
+            ShowStaticPage("error.index.html");
+            CancellationToken token = new CancellationToken();
+            TestForServer(TimeSpan.FromSeconds(5), 4, token);
+
+        }
+
         private void OnBrowserLoadError(object sender, WebFrameErrorEventArgs e)
         {
-            if (!errorHandler)
-            {
-                Browser.UIMouseDidMoveOverElement += MouseMove;
-                errorHandler = true;
-            }
-            NSUrl url = NSBundle.MainBundle.GetUrlForResource("error-no-apid-connection", "html", "error");
-            Browser.MainFrame.LoadRequest(new NSUrlRequest(url));
-        }
+            ShowStaticPage("error.index.html");
+            CancellationToken token = new CancellationToken();
+            TestForServer(TimeSpan.FromSeconds(5), 1, token);
 
-        void MouseMove(object sender, WebViewMouseMovedEventArgs args)
-        {
-            NSEvent ev = NSApplication.SharedApplication.CurrentEvent;
-            if (ev.Type == NSEventType.LeftMouseUp)
-            {
-                Browser.UIMouseDidMoveOverElement -= MouseMove;
-                errorHandler = false;
-                OpenJournal();
-            }
         }
-
 
         private void ShowStaticPage(string name)
         {
@@ -162,13 +216,38 @@ namespace Artivity.Journal.Mac
                     string html = reader.ReadToEnd();
 
                     Browser.MainFrame.LoadHtmlString(html, new NSUrl("http://localhost/"));
-                    //Browser.
-
                 }
             } 
         }
 
 
+        private void ShowError()
+        {
+            Browser.MainFrame.WindowObject.CallWebScriptMethod("showConnectionError", new NSObject[] { });
+
+            var dom = Browser.MainFrameDocument;
+            var elem = dom.GetElementById("retry");
+            elem.AddEventListener("click", retryListener, true);
+        }
+
+
+        public void Retry()
+        {
+            OpenLoadingPage();
+        }
+
+
         #endregion
+    }
+
+    public class RetryListener : DomEventListener
+    {
+        public ViewController Controller { get; set; }
+        
+        public override void HandleEvent(DomEvent evt)
+        {
+            if( Controller != null )
+                Controller.Retry();
+        }
     }
 }

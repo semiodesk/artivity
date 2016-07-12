@@ -37,6 +37,7 @@ namespace Artivity.Journal.Mac
 {
     public class Program
     {
+
         #region Methods
 
         public void Run(string[] args)
@@ -226,6 +227,22 @@ namespace Artivity.Journal.Mac
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.RedirectStandardOutput = true;
             proc.Start();
+        }
+
+        public static bool IsApidAvailable(string port)
+        {
+            try
+            {
+                System.Net.WebClient client = new System.Net.WebClient();
+                string r = client.DownloadString(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", port));
+                return true;
+            }
+            catch (System.Net.WebException e)
+            {
+                return false;
+            }
+
+
         }
 
         #endregion
