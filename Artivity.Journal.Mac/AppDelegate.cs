@@ -51,12 +51,24 @@ namespace Artivity.Journal.Mac
             _updater.AutomaticallyChecksForUpdates = true;
 
 
-
         }
 
         public override void DidFinishLaunching(NSNotification notification)
         {
             // Insert code here to initialize your application
+
+            if (NSApplication.SharedApplication.Windows.Length > 0)
+            {
+                var window = NSApplication.SharedApplication.Windows[0];
+                if (window != null)
+                {
+                    window.TitlebarAppearsTransparent = true;
+                    window.Appearance = NSAppearance.GetAppearance(NSAppearance.NameVibrantDark);
+
+                    //window.BackgroundColor = NSColor.FromRgba(new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(1.0));
+                    //window.BackgroundColor = NSColor.White;
+                }
+            }
         }
 
         public override void WillFinishLaunching(NSNotification notification)
