@@ -95,8 +95,6 @@ namespace Artivity.Journal.Mac
 
         partial void CheckForUpdate(NSObject sender)
         {
-            //Console.WriteLine("Checking for updates..");
-
             _updater.CheckForUpdates(sender);
         }
 

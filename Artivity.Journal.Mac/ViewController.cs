@@ -31,6 +31,8 @@ using AppKit;
 using WebKit;
 using Foundation;
 using System.Collections.Generic;
+using CoreGraphics;
+using ObjCRuntime;
 
 namespace Artivity.Journal.Mac
 {
@@ -39,9 +41,9 @@ namespace Artivity.Journal.Mac
         #region Members
 
 #if DEBUG
-        string Port = "8262";
+        public const string Port = "8262";
 #else
-        string Port = "8272";
+        public const string Port = "8272";
 #endif
 
         bool errorHandler = false;
@@ -53,20 +55,17 @@ namespace Artivity.Journal.Mac
         public ViewController(IntPtr handle)
             : base(handle)
         {
-        }
+}
 
         #endregion
 
         #region Methods
 
-        public override void ViewDidLayout()
-        {
-            
-
-        }
  
         public override void ViewDidLoad()
         {
+            base.ViewDidLoad();
+            
             // Handle connection errors.
             Browser.FailedProvisionalLoad += OnBrowserLoadError;
 
@@ -84,7 +83,7 @@ namespace Artivity.Journal.Mac
 
             Browser.UIRunOpenPanelForFileButton += (object sender, WebViewRunOpenPanelEventArgs e) =>
             {
-                var panel = NSOpenPanel.OpenPanel;
+                NSOpenPanel panel = NSOpenPanel.OpenPanel;
                 panel.CanChooseFiles = true;
                 panel.CanChooseDirectories = false;
                 panel.AllowedFileTypes = new string[] { "png", "jpg", "jpeg" };
@@ -167,7 +166,6 @@ namespace Artivity.Journal.Mac
                 }
             } 
         }
-
 
         #endregion
     }
