@@ -26,6 +26,7 @@
 
 using log4net;
 using Artivity.DataModel;
+using Artivity.Apid.Platforms;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -39,11 +40,13 @@ namespace Artivity.Api.Plugin
     {
         #region Members
 
-        List<PluginManifest> _manifests = new List<PluginManifest>();
+        private List<PluginManifest> _manifests = new List<PluginManifest>();
 
-        List<string> _manifestErrors = new List<string>();
+        private List<string> _manifestErrors = new List<string>();
 
-        private IModelProvider ModelProvider;
+        protected IPlatformProvider PlatformProvider;
+
+        protected IModelProvider ModelProvider;
 
         public List<SoftwareAgentPlugin> Plugins { get; private set;}
 
@@ -70,11 +73,12 @@ namespace Artivity.Api.Plugin
 
         #region Constructors
 
-        public PluginChecker(IModelProvider modelProvider, DirectoryInfo pluginDir)
+        public PluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo pluginDir)
         {
             Plugins = new List<SoftwareAgentPlugin>();
             PluginDirectory = pluginDir;
 
+            PlatformProvider = platformProvider;
             ModelProvider = modelProvider;
 
             IModel agents = ModelProvider.GetAgents();
@@ -98,9 +102,9 @@ namespace Artivity.Api.Plugin
 
             foreach (var plugin in PluginDirectory.EnumerateDirectories())
             {
-                var manifest = PluginManifestReader.ReadManifest(plugin);
+                PluginManifest manifest = PluginManifestReader.ReadManifest(plugin);
 
-                Logger.InfoFormat("Found <{0}> wiht version {1}", manifest.Uri, manifest.Version);
+                Logger.InfoFormat("Found <{0}> with version {1}", manifest.Uri, manifest.Version);
 
                 if (manifest != null)
                 {
@@ -240,9 +244,13 @@ namespace Artivity.Api.Plugin
                         plugin.IsPluginInstalled = IsPluginInstalled(plugin.Manifest);
 
                         if (plugin.IsPluginInstalled)
-                            Logger.InfoFormat("Software and plugin installed for <{0}>", plugin.AssociationUri);
+                        {
+                            Logger.InfoFormat("Software and plugin installed: <{0}>", plugin.AssociationUri);
+                        }
                         else
-                            Logger.InfoFormat("Software installed for <{0}>", plugin.AssociationUri);
+                        {
+                            Logger.InfoFormat("Software installed: <{0}>", plugin.AssociationUri);
+                        }
                         
                         if (!plugin.IsPluginInstalled && installPlugins)
                         {
@@ -252,7 +260,8 @@ namespace Artivity.Api.Plugin
                     }
                     else
                     {
-                        Logger.InfoFormat("Software not installed for <{0}>", plugin.AssociationUri);
+                        Logger.InfoFormat("Software not installed: <{0}>", plugin.AssociationUri);
+
                         plugin.IsPluginInstalled = false;
                         plugin.IsPluginEnabled = false;
                     }
