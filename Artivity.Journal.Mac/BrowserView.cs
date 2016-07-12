@@ -72,11 +72,9 @@ namespace Artivity.Journal.Mac
                 {
                     NSUrl url = new NSUrl(pasteboardItems[i].GetStringForType("public.file-url"));
 
-                    foreach (string d in Directory.GetDirectories(url.Path, "*.app"))
+                    if(url.Path.EndsWith(".app"))
                     {
-                        Console.WriteLine(d);
-
-                        RegisterSoftwareAgent(new Uri("file://" + d));
+                        RegisterSoftwareAgent(new Uri("file://" + url.Path));
                     }
                 }
             }
