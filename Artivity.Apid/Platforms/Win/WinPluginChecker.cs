@@ -25,8 +25,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
-using Artivity.Api.Plugin;
-using Artivity.Api.Plugin.Win;
+using Artivity.Apid.Platforms;
 using System;
 using System.IO;
 using System.Diagnostics;
@@ -41,7 +40,8 @@ namespace Artivity.Api.Plugin.Win
     {       
         #region Constructors
 
-        public WinPluginChecker(IModelProvider modelProvider, DirectoryInfo dir) : base(modelProvider, dir)
+        public WinPluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo dir)
+            : base(platformProvider, modelProvider, dir)
         {
         }
 

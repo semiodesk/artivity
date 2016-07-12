@@ -180,6 +180,16 @@ namespace Artivity.Apid.Platforms
             return config;
         }
 
+        public void WriteConfig(UserConfig config)
+        {
+            if (File.Exists(ConfigFile))
+            {
+                string json = JsonConvert.SerializeObject(config);
+
+                File.WriteAllText(ConfigFile, json);
+            }
+        }
+
         #endregion
     }
 }
