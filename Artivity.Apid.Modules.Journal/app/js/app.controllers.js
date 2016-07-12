@@ -609,6 +609,26 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
     };
 });
 
+explorerControllers.directive("ngDropzone", function() {
+    return {
+        restrict : "A",
+        link: function (scope, elem) {
+            elem.bind('drop', function(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+
+                var files = evt.dataTransfer.files;
+                
+                alert(files);
+                
+                for (var i = 0, f; f = files[i]; i++) {
+                    alert(f);
+                }
+            });
+        }
+    }
+});
+
 explorerControllers.controller('QueryController', function (api, $scope) {
     var defaultPrefixes = "\
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\

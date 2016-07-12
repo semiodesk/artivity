@@ -154,7 +154,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="1100" height="700"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <webView translatesAutoresizingMaskIntoConstraints="NO" id="ytq-eV-Q0m">
+                            <webView translatesAutoresizingMaskIntoConstraints="NO" id="ytq-eV-Q0m" customClass="BrowserView">
                                 <rect key="frame" x="0.0" y="0.0" width="1100" height="680"/>
                                 <webPreferences key="preferences" defaultFontSize="16" defaultFixedFontSize="13" minimumFontSize="0" plugInsEnabled="NO" javaEnabled="NO">
                                     <nil key="identifier"/>
@@ -174,7 +174,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="204" y="1114"/>
+            <point key="canvasLocation" x="264" y="1200"/>
         </scene>
     </scenes>
 </document>

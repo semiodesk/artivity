@@ -25,14 +25,14 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
+using Artivity.Apid.Platforms;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Mono.Unix;
 using MonoDevelop.MacInterop;
-using System.Xml;
 using System.Xml.XPath;
+using System.Collections.Generic;
 
 namespace Artivity.Api.Plugin.OSX
 {
@@ -40,8 +40,8 @@ namespace Artivity.Api.Plugin.OSX
     {
         #region Constructors
 
-        public OsxPluginChecker(IModelProvider modelProvider, DirectoryInfo folder)
-            : base(modelProvider, folder)
+        public OsxPluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo folder)
+            : base(platformProvider, modelProvider, folder)
         {
         }
 
@@ -63,7 +63,12 @@ namespace Artivity.Api.Plugin.OSX
                 throw new Exception("Sample file does not exist: " + sample);
             }
 
-            string[] list = CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All);
+            List<string> list = CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All).ToList();
+
+            if (PlatformProvider != null && PlatformProvider.Config != null)
+            {
+                list.InsertRange(0, PlatformProvider.Config.SoftwarePaths);
+            }
 
             if (list.Any())
             {

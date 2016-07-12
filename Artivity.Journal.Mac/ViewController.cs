@@ -1,4 +1,4 @@
-﻿// LICENSE:
+// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,7 @@
 //
 // AUTHORS:
 //
+//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
@@ -33,6 +34,8 @@ using Foundation;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using CoreGraphics;
+using ObjCRuntime;
 
 namespace Artivity.Journal.Mac
 {
@@ -57,7 +60,7 @@ namespace Artivity.Journal.Mac
         public ViewController(IntPtr handle)
             : base(handle)
         {
-        }
+}
 
         #endregion
 
@@ -86,7 +89,7 @@ namespace Artivity.Journal.Mac
 
             Browser.UIRunOpenPanelForFileButton += (object sender, WebViewRunOpenPanelEventArgs e) =>
             {
-                var panel = NSOpenPanel.OpenPanel;
+                NSOpenPanel panel = NSOpenPanel.OpenPanel;
                 panel.CanChooseFiles = true;
                 panel.CanChooseDirectories = false;
                 panel.AllowedFileTypes = new string[] { "png", "jpg", "jpeg" };

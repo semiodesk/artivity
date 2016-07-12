@@ -159,6 +159,7 @@
     <Compile Include="Helpers\JsonNetBodyDeserializer.cs" />
     <Compile Include="Helpers\JsonNetSerializer.cs" />
     <Compile Include="Helpers\NancyHelpers.cs" />
+    <Compile Include="Modules\ActivitiesModule.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

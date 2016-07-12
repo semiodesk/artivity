@@ -51,5 +51,11 @@ namespace Artivity.Apid.Platforms
         bool AutomaticallyInstallSoftwareAgentPlugins { get; set; }
 
         #endregion
+
+        #region Methods
+
+        void WriteConfig(UserConfig config);
+
+        #endregion
     }
 }
