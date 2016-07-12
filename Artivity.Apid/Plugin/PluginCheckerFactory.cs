@@ -24,24 +24,22 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.Plugin;
 using Artivity.DataModel;
-using System;
-using System.Collections.Generic;
+using Artivity.Api.Plugin.Win;
+using Artivity.Api.Plugin.OSX;
+using Artivity.Apid.Platforms;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Artivity.Api.Plugin
 {
     public class PluginCheckerFactory
     {
-        public static PluginChecker CreatePluginChecker(IModelProvider modelProvider, DirectoryInfo dir)
+        public static PluginChecker CreatePluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo dir)
         {
 #if WIN
-            return new Artivity.Api.Plugin.Win.WinPluginChecker(modelProvider, dir);
+            return new WinPluginChecker(platformProvider, modelProvider, dir);
 #elif OSX
-            return new Artivity.Api.Plugin.OSX.OsxPluginChecker(modelProvider, dir);
+            return new OsxPluginChecker(platformProvider, modelProvider, dir);
 #endif
         }
     }

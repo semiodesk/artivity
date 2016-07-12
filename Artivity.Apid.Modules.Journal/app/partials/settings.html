@@ -51,7 +51,7 @@
             <li role="presentation"><a data-target="#accounts-panel" role="tab" data-toggle="tab"><i class="zmdi zmdi-hc-fw zdmi-lg"></i> Accounts</a></li>
         </ul>
 
-        <div class="tab-content" style="float: left; width: 600px;">
+        <div class="tab-content">
             <!-- PROFILE -->
             <div role="tabpanel" class="tab-pane fade active in" id="user-panel">
                 <form name="userForm" ng-controller="UserSettingsController as userSettings" ng-submit="submit()">
@@ -99,17 +99,26 @@
             <div role="tabpanel" class="tab-pane fade" id="applications-panel">
                 <form name="agentForm" ng-controller="AgentSettingsController as agentSettings">
 
-                    <div>
-                        <button class="btn btn-default btn-icn pull-right" style="margin: 0 -5px 15px 0;" ng-click="reload()"><i class="zmdi zmdi-hc-fw"></i></button>
-
-                        <div class="clearfix"></div>
-
-                        <div class="msg-error animate-show" ng-show="hasError" style="margin: 0 -5px 15px -5px;">
-                            <h5>{{errorType}}</h5>
-                            <label>{{errorMessage}}</label>
+                    <div class="row">
+                        <div class="col-xs-11">
+                            <div class="hint">
+                                <label><i class="zmdi zmdi-hc-fw"></i> You can drag undetected applications into this window.</label>
+                            </div>
+                        </div>
+                        <div class="col-xs-1">
+                            <button class="btn btn-default btn-icn pull-right" style="margin: 0 -5px 15px 0;" ng-click="reload()"><i class="zmdi zmdi-hc-fw"></i></button>
                         </div>
                     </div>
-
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="msg-error animate-show" ng-show="hasError" style="margin: 0 -5px 15px -5px;">
+                                <h5>{{errorType}}</h5>
+                                <label>{{errorMessage}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <ul class="list-view">
                         <li ng-repeat="agent in agents">
                             <div class="row" style="padding: 15px 10px; margin-bottom: 10px; border-top: 1px solid #333333;">
@@ -123,7 +132,7 @@
                                     </div>
 
                                     <div class="pull-left" style="padding-left: 15px;">
-                                        <h4 style="margin-top: 0px">{{agent.name}}</h4>
+                                        <h4 style="margin-top: 0px; color: white;">{{agent.name}}</h4>
                                         <label>Software version: {{agent.softwareVersion}}</label>
                                         <br>
                                         <label>Plugin version: {{agent.pluginVersion}}</label>
