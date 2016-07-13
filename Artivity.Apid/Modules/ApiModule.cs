@@ -28,6 +28,8 @@
 using Artivity.DataModel;
 using Artivity.Apid.Accounts;
 using Artivity.Apid.Platforms;
+using Artivity.Apid.Parameters;
+using Artivity.Api.Extensions;
 using Nancy;
 using Nancy.Responses;
 using Nancy.IO;
@@ -41,7 +43,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using VDS.RDF;
-using Artivity.Apid.Parameters;
 
 namespace Artivity.Apid.Modules
 {
@@ -374,8 +375,6 @@ namespace Artivity.Apid.Modules
             return null;
         }
 
-
-
         private Response GetAccounts()
         {
             List<OnlineAccount> accounts = ModelProvider.GetAgents().GetResources<OnlineAccount>(true).ToList();
@@ -630,10 +629,7 @@ namespace Artivity.Apid.Modules
 
         private string GetRenderOutputPath(UriRef entityUri)
         {
-            char[] uri = entityUri.AbsoluteUri.Replace("//","-").Replace('/','-').Replace(':','-').ToCharArray();
-
-            // Only allow letters or digits.
-            string entityName = new string(Array.FindAll<char>(uri, c => char.IsLetterOrDigit(c) || c == '-' || c == '.'));
+            string entityName = entityUri.ToFileName();
 
             return Path.Combine(PlatformProvider.RenderingsFolder, entityName);
         }

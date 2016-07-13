@@ -221,11 +221,9 @@ namespace Artivity.Apid
                 }
 
                 Logger.LogInfo("Stopped service on port {0}", _servicePort);
-
             }
 
             StopDatabase();
-
         }
 
         private void StartService()
