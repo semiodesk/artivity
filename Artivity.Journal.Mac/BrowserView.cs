@@ -31,16 +31,25 @@ using AppKit;
 using WebKit;
 using Foundation;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace Artivity.Journal.Mac
 {
     [Register("BrowserView")]
     public class BrowserView : WebView
     {
+        #region Constructors
+
         public BrowserView(IntPtr handle) : base(handle)
         {
             RegisterForDraggedTypes(new string[] { "NSFilenamesPboardType" });
         }
+
+        #endregion
+
+        #region Methods
 
         public override NSDragOperation DraggingEntered(NSDraggingInfo sender)
         {
@@ -50,7 +59,22 @@ namespace Artivity.Journal.Mac
 
             if (typeExists)
             {
-                return NSDragOperation.Link;
+                NSPasteboardItem[] items = pasteboard.PasteboardItems;
+
+                if (GetAppBundles(items).Any())
+                {
+                    MainFrame.WindowObject.CallWebScriptMethod("showOverlay", new NSObject[] { new NSString("#msg-add-app") });
+
+                    sender.AnimatesToDestination = true;
+
+                    return NSDragOperation.Link;
+                }
+                else
+                {
+                    MainFrame.WindowObject.CallWebScriptMethod("showOverlay", new NSObject[] { new NSString("#msg-unsupported-file-type") });
+
+                    return NSDragOperation.None;
+                }
             }
             else
             {
@@ -58,24 +82,49 @@ namespace Artivity.Journal.Mac
             }
         }
 
+        public override void DraggingExited(NSDraggingInfo sender)
+        {
+            if (!Frame.Contains(sender.DraggingLocation))
+            {
+                MainFrame.WindowObject.CallWebScriptMethod("hideOverlays", new NSObject[] { });
+            }
+        }
+
         public override void DraggingEnded(NSDraggingInfo sender)
         {
-            NSPasteboard pasteboard = sender.DraggingPasteboard;
-
-            bool typeExists = (Array.IndexOf(pasteboard.Types, "NSFilenamesPboardType") >= 0);
-
-            if (typeExists)
+            if (Frame.Contains(sender.DraggingLocation))
             {
-                NSPasteboardItem[] pasteboardItems = pasteboard.PasteboardItems;
+                NSPasteboard pasteboard = sender.DraggingPasteboard;
 
-                for (int i = 0; i < pasteboardItems.Length; i++)
+                bool typeExists = (Array.IndexOf(pasteboard.Types, "NSFilenamesPboardType") >= 0);
+
+                if (typeExists)
                 {
-                    NSUrl url = new NSUrl(pasteboardItems[i].GetStringForType("public.file-url"));
+                    MainFrame.WindowObject.CallWebScriptMethod("showOverlay", new NSObject[] { new NSString("#msg-add-app-success") });
 
-                    if(url.Path.EndsWith(".app"))
+                    NSPasteboardItem[] items = pasteboard.PasteboardItems;
+
+                    foreach (NSUrl url in GetAppBundles(items))
                     {
                         RegisterSoftwareAgent(new Uri("file://" + url.Path));
                     }
+
+                    Thread.Sleep(1000);
+
+                    MainFrame.WindowObject.CallWebScriptMethod("hideOverlays", new NSObject[] { });
+                }
+            }
+        }
+
+        private IEnumerable<NSUrl> GetAppBundles(NSPasteboardItem[] items)
+        {
+            for (int i = 0; i < items.Length; i++)
+            {
+                NSUrl url = new NSUrl(items[i].GetStringForType("public.file-url"));
+
+                if (url.Path.EndsWith(".app", StringComparison.InvariantCulture))
+                {
+                    yield return url;
                 }
             }
         }
@@ -89,8 +138,8 @@ namespace Artivity.Journal.Mac
 
             WebResponse response = request.GetResponse();
             response.Close();
-
-            MainFrame.LoadRequest(new NSUrlRequest(new NSUrl(string.Format("http://localhost:{0}/artivity/app/journal/1.0/#/settings", ViewController.Port))));
         }
+
+        #endregion
     }
 }

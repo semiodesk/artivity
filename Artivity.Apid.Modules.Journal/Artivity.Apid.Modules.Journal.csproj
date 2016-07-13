@@ -75,6 +75,7 @@
     <EmbeddedResource Include="app\fonts\Roboto-Regular.woff2" />
     <None Include="packages.config" />
     <EmbeddedResource Include="error\index.html" />
+    <EmbeddedResource Include="app\js\app.overlay.js" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="app\js\lib\angular-input-modified.js" />
