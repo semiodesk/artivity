@@ -104,10 +104,11 @@ namespace Artivity.Api.Plugin
             {
                 PluginManifest manifest = PluginManifestReader.ReadManifest(plugin);
 
-                Logger.InfoFormat("Found <{0}> with version {1}", manifest.Uri, manifest.Version);
 
                 if (manifest != null)
                 {
+                    Logger.InfoFormat("Found <{0}> with version {1}", manifest.Uri, manifest.Version);
+
                     _manifests.Add(manifest);
 
                     SoftwareAgentPlugin p = new SoftwareAgentPlugin(manifest);
