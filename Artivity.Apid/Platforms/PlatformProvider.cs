@@ -58,8 +58,8 @@ namespace Artivity.Apid.Platforms
         {
             AppDataFolder = appDataFolder;
 
-            // Don't create the folder if it doesn't exist. TinyVirtuoso does that properly.
             ArtivityDataFolder = Path.Combine(AppDataFolder, "Artivity");
+            EnsureFolderExists(ArtivityDataFolder);
 
             ConfigFile = Path.Combine(ArtivityDataFolder, "config.json");
             Config = GetUserConfig(ConfigFile);
@@ -70,9 +70,9 @@ namespace Artivity.Apid.Platforms
             RenderingsFolder = Path.Combine(ArtivityDataFolder, "Renderings");
             EnsureFolderExists(RenderingsFolder);
 
+            // Don't create the folder if it doesn't exist. TinyVirtuoso does that properly.
             DatabaseName = "Data";
             DatabaseFolder = Path.Combine(ArtivityDataFolder, DatabaseName);
-            EnsureFolderExists(DatabaseFolder);
 
             UserFolder = userFolder;
             UserName = userName;
