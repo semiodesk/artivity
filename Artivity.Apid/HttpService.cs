@@ -320,7 +320,7 @@ namespace Artivity.Apid
             else
             {
                 // We are running on Linux..
-                ModelProvider = ModelProviderFactory.CreateModelProvider(GetConnectionStringFromConfiguration(), uid);
+                ModelProvider = ModelProviderFactory.CreateModelProvider(GetConnectionStringFromConfiguration(), "", uid);
             }
 
             if (!ModelProvider.CheckAgents())
