@@ -34,6 +34,10 @@ namespace Artivity.Apid.Platforms
 
         public string RenderingsFolder { get; private set; }
 
+        public string ExportFolder { get; private set; }
+
+        public string ImportFolder { get; private set; }
+
         public bool IsLinux { get; protected set; }
 
         public bool IsMac { get; protected set; }
@@ -44,11 +48,11 @@ namespace Artivity.Apid.Platforms
 
         public string DeploymentDir { get; set; }
 
+        public string OntologyDir { get; set; }
+
         public bool CheckForNewSoftwareAgents { get; set; }
 
         public bool AutomaticallyInstallSoftwareAgentPlugins { get; set; }
-
-        public string OntologyDir { get; set; }
 
         #endregion
 
@@ -70,6 +74,12 @@ namespace Artivity.Apid.Platforms
             RenderingsFolder = Path.Combine(ArtivityDataFolder, "Renderings");
             EnsureFolderExists(RenderingsFolder);
 
+            ExportFolder = Path.Combine(ArtivityDataFolder, "Export");
+            EnsureFolderExists(ExportFolder);
+
+            ImportFolder = Path.Combine(ArtivityDataFolder, "Import");
+            EnsureFolderExists(ImportFolder);
+
             // Don't create the folder if it doesn't exist. TinyVirtuoso does that properly.
             DatabaseName = "Data";
             DatabaseFolder = Path.Combine(ArtivityDataFolder, DatabaseName);
@@ -83,8 +93,6 @@ namespace Artivity.Apid.Platforms
 
             DeploymentDir = Environment.CurrentDirectory;
             PluginDir = Path.Combine(DeploymentDir, "Plugins");
-
-
         }
 
         #endregion
