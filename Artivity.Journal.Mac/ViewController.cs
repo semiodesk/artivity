@@ -51,8 +51,6 @@ namespace Artivity.Journal.Mac
 
         RetryListener retryListener;
 
-        bool errorHandler = false;
-
         #endregion
 
         #region Constructors
@@ -60,7 +58,7 @@ namespace Artivity.Journal.Mac
         public ViewController(IntPtr handle)
             : base(handle)
         {
-}
+        }
 
         #endregion
 
@@ -68,7 +66,6 @@ namespace Artivity.Journal.Mac
 
         public override void ViewDidLoad()
         {
-
             retryListener = new RetryListener();
             retryListener.Controller = this;
 
@@ -85,7 +82,6 @@ namespace Artivity.Journal.Mac
             {
                 Browser.MainFrame.LoadRequest(e.Request);
             };
-
 
             Browser.UIRunOpenPanelForFileButton += (object sender, WebViewRunOpenPanelEventArgs e) =>
             {
@@ -119,7 +115,6 @@ namespace Artivity.Journal.Mac
 
             if (Program.IsApidAvailable(Port))
             {
-
                 // Initially try to load the journal app.
                 OpenJournal();
             }
@@ -127,8 +122,6 @@ namespace Artivity.Journal.Mac
             {
                 OpenLoadingPage();
             }
-            
-
         }
 
         public override void ViewDidAppear()
@@ -137,11 +130,12 @@ namespace Artivity.Journal.Mac
 
             if (View.Layer.BackgroundColor == null)
             {
-                var c2 = new CoreGraphics.CGColor(CoreGraphics.CGColorSpace.CreateDeviceRGB(), new nfloat[] { new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(1.0) });
+                var c2 = new CGColor(CGColorSpace.CreateDeviceRGB(), new nfloat[] { new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(1.0) });
+
                 View.Layer.BackgroundColor = c2;
             }
-                //Browser.Layer.BackgroundColor = new CoreGraphics.CGColor(new nfloat(29.0/255), new nfloat(29.0/255), new nfloat(29.0/255), new nfloat(1.0));
 
+            //Browser.Layer.BackgroundColor = new CoreGraphics.CGColor(new nfloat(29.0/255), new nfloat(29.0/255), new nfloat(29.0/255), new nfloat(1.0));
         }
 
         private async void TestForServer(TimeSpan interval, int count, CancellationToken cancellationToken)
@@ -149,16 +143,18 @@ namespace Artivity.Journal.Mac
             try
             {
                 bool available = false;
+
                 for (int i = 0; i < count; i++)
                 {
                     available = Program.IsApidAvailable(Port);
+
                     if (available)
                         break;
                     
                     Task task = Task.Delay(interval, cancellationToken);
+
                     await task;
                 }
-
 
                 this.InvokeOnMainThread(() => 
                 {
@@ -179,7 +175,6 @@ namespace Artivity.Journal.Mac
             }
         }
 
-
         private void OpenJournal()
         { 
             Browser.MainFrame.LoadRequest(new NSUrlRequest(new NSUrl(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", Port))));
@@ -188,17 +183,19 @@ namespace Artivity.Journal.Mac
         private void OpenLoadingPage()
         {
             ShowStaticPage("error.index.html");
-            CancellationToken token = new CancellationToken();
-            TestForServer(TimeSpan.FromSeconds(5), 4, token);
 
+            CancellationToken token = new CancellationToken();
+
+            TestForServer(TimeSpan.FromSeconds(5), 4, token);
         }
 
         private void OnBrowserLoadError(object sender, WebFrameErrorEventArgs e)
         {
             ShowStaticPage("error.index.html");
-            CancellationToken token = new CancellationToken();
-            TestForServer(TimeSpan.FromSeconds(5), 1, token);
 
+            CancellationToken token = new CancellationToken();
+
+            TestForServer(TimeSpan.FromSeconds(5), 1, token);
         }
 
         private void ShowStaticPage(string name)
@@ -223,22 +220,20 @@ namespace Artivity.Journal.Mac
             } 
         }
 
-
         private void ShowError()
         {
             Browser.MainFrame.WindowObject.CallWebScriptMethod("showConnectionError", new NSObject[] { });
 
             var dom = Browser.MainFrameDocument;
             var elem = dom.GetElementById("retry");
+
             elem.AddEventListener("click", retryListener, true);
         }
-
 
         public void Retry()
         {
             OpenLoadingPage();
         }
-
 
         #endregion
     }
@@ -249,8 +244,10 @@ namespace Artivity.Journal.Mac
         
         public override void HandleEvent(DomEvent evt)
         {
-            if( Controller != null )
+            if (Controller != null)
+            {
                 Controller.Retry();
+            }
         }
     }
 }
