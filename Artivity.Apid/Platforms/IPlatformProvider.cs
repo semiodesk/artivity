@@ -22,6 +22,10 @@ namespace Artivity.Apid.Platforms
 
         string RenderingsFolder { get; }
 
+        string ExportFolder { get; }
+
+        string ImportFolder { get; }
+
         string DatabaseFolder { get; }
 
         string DatabaseName { get; }
