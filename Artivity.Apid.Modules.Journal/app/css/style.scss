@@ -1,7 +1,4 @@
-$textFont: 'Roboto',
-'Helvetica',
-'Arial',
-sans-serif;
+$textFont: 'Roboto','Helvetica','Arial', sans-serif;
 $textColor: #FFFFFF;
 $labelColor: darken($textColor, 30%);
 $accentColor: #FFFFFF;
@@ -21,6 +18,8 @@ $toolbarTextColor: $headerTextColor;
 $buttonBackgroundColor: $headerBackgroundColor;
 $buttonHoverBackgroundColor: lighten($headerBackgroundColor, 10%);
 $buttonTextColor: $headerTextColor;
+$overlayTextColor: white;
+$overlayBackgroundColor: rgba(0,0,0,.5);
 
 /* GENERAL STYLES */
 
@@ -28,6 +27,15 @@ html,
 body {
 	height: 100%; // Make the body fill the browser window.
 }
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.7em;
+}
+
 
 h3 {
 	font-size: 1.4em;
@@ -871,4 +879,52 @@ input.form-control:focus {
     padding: 10px;
     box-sizing: border-box;
     width: 100%;
+}
+
+.zdmi-xl {
+    font-size: 48px;
+}
+
+.overlay {
+    position: absolute;
+    top: $headerHeight;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    color: $overlayTextColor;
+    background: $overlayBackgroundColor;
+}
+
+.overlay.invisible,
+.msg.invisible {
+    opacity: 0;
+}
+
+.msg {
+    min-width: 600px;
+}
+
+.msg h1,
+.msg h2,
+.msg h3 {
+    margin-top: 0;
+}
+
+.center-x {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.center-y {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.center-xy {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -100%);
 }
