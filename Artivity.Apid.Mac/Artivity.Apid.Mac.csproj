@@ -128,6 +128,6 @@
     <BundleResource Include="Plugins\IllustratorCC2015.2\Sample.ai" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
-  <Import Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " Project="$(ProjectDir)\Build\CopyToOutput.targets" />
-  <Import Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Project="$(ProjectDir)\Build\DownloadPlugins.targets" />
+  <Import Condition=" '$(Configuration)' == 'Debug OSX' " Project="$(ProjectDir)\Build\CopyToOutput.targets" />
+  <Import Condition=" '$(Configuration)' == 'Release OSX'" Project="$(ProjectDir)\Build\DownloadPlugins.targets" />
 </Project>

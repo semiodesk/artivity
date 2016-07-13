@@ -172,12 +172,12 @@
     <EmbeddedResource Include="app\partials\file-list.html" />
     <EmbeddedResource Include="app\partials\settings.html" />
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+  <ItemGroup Condition="'$(Configuration)' == 'Release' OR '$(Configuration)' == 'Release OSX'">
     <EmbeddedResource Include="app\js\app.conf.release.js">
       <LogicalName>Artivity.Apid.Modules.Journal.app.js.app.conf.js</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+  <ItemGroup Condition="'$(Configuration)' == 'Debug' OR '$(Configuration)' == 'Debug OSX'">
     <EmbeddedResource Include="app\js\app.conf.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
