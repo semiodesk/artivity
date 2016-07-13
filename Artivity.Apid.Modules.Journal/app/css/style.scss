@@ -19,7 +19,7 @@ $buttonBackgroundColor: $headerBackgroundColor;
 $buttonHoverBackgroundColor: lighten($headerBackgroundColor, 10%);
 $buttonTextColor: $headerTextColor;
 $overlayTextColor: white;
-$overlayBackgroundColor: rgba(0,0,0,.5);
+$overlayBackgroundColor: rgba($windowBackgroundColor,.95);
 
 /* GENERAL STYLES */
 

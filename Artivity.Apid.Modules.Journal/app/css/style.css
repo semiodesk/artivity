@@ -842,7 +842,7 @@ input.form-control:focus {
   left: 0;
   bottom: 0;
   color: white;
-  background: rgba(0, 0, 0, 0.5); }
+  background: rgba(29, 29, 29, 0.95); }
 
 /* line 899, /Users/sebastian/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .overlay.invisible,
