@@ -2,41 +2,83 @@
 <html ng-app="explorerApp">
 
 <head>
-	<meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
 
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
-	<link rel="stylesheet" href="css/bootstrap-colorpicker.min.css">
-	<link rel="stylesheet" href="css/bootstrap-switch.min.css">
-	<link ref="stylesheet" href="css/ui-grid.min.css">
-	<link rel='stylesheet' href='css/roboto.css' type='text/css'>
-	<link rel="stylesheet" href="css/material-design-iconic-font.min.css">
-	<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/bootstrap-colorpicker.min.css">
+    <link rel="stylesheet" href="css/bootstrap-switch.min.css">
+    <link ref="stylesheet" href="css/ui-grid.min.css">
+    <link rel='stylesheet' href='css/roboto.css' type='text/css'>
+    <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="css/style.css">
 
-	<script src="js/lib/jquery-2.2.2.min.js"></script>
-	<script src="js/lib/moment.min.js"></script>
-	<script src="js/lib/bootstrap.min.js"></script>
-	<script src="js/lib/bootstrap-colorpicker.min.js"></script>
-	<script src="js/lib/bootstrap-switch.min.js"></script>
-	<script src="js/lib/angular.min.js"></script>
-	<script src="js/lib/angular-route.min.js"></script>
-	<script src="js/lib/angular-input-modified.js"></script>
-	<script src="js/lib/angular-ui.min.js"></script>
-	<script src="js/lib/ui-grid.min.js"></script>
-	<script src="js/lib/quantize.js"></script>
-	<script src="js/lib/color-thief.js"></script>
-	<script src="js/lib/base64.js"></script>
-	<script src="js/lib/d3.min.js"></script>
-	<script src="js/lib/d3-gantt.js"></script>
+    <script src="js/lib/jquery-2.2.2.min.js"></script>
+    <script src="js/lib/moment.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/bootstrap-colorpicker.min.js"></script>
+    <script src="js/lib/bootstrap-switch.min.js"></script>
+    <script src="js/lib/angular.min.js"></script>
+    <script src="js/lib/angular-route.min.js"></script>
+    <script src="js/lib/angular-input-modified.js"></script>
+    <script src="js/lib/angular-ui.min.js"></script>
+    <script src="js/lib/ui-grid.min.js"></script>
+    <script src="js/lib/quantize.js"></script>
+    <script src="js/lib/color-thief.js"></script>
+    <script src="js/lib/base64.js"></script>
+    <script src="js/lib/d3.min.js"></script>
+    <script src="js/lib/d3-gantt.js"></script>
 
-	<script src="js/app.conf.js"></script>
-	<script src="js/app.js"></script>
-	<script src="js/app.classes.js"></script>
-	<script src="js/app.controllers.js"></script>
+    <script src="js/app.conf.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/app.classes.js"></script>
+    <script src="js/app.controllers.js"></script>
+    <script src="js/app.overlay.js"></script>
 </head>
 
 <body>
-	<div ng-view></div>
+    <div ng-view></div>
+
+    <div class="overlay collapse" id="overlay">
+        <div class="msg center-xy invisible" id="msg-add-app">
+            <div class="row">
+                <div class="col-xs-2">
+                    <i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
+                </div>
+                <div class="col-xs-10">
+                    <h1>Add Application</h1>
+
+                    <label>Drop the application icon here to register it with the plugin installer.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="msg center-xy invisible" id="msg-add-app-success">
+            <div class="row">
+                <div class="col-xs-2">
+                    <i class="zmdi zmdi-hc-fw zmdi-check-circle zdmi-xl pull-right"></i>
+                </div>
+                <div class="col-xs-10">
+                    <h1>Application Installed</h1>
+
+                    <label>Go to the application preferences to enable the plugin.</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="msg center-xy invisible" id="msg-unsupported-file-type">
+            <div class="row">
+                <div class="col-xs-2">
+                    <i class="zmdi zmdi-hc-fw zmdi-info zdmi-xl pull-right"></i>
+                </div>
+                <div class="col-xs-10">
+                    <h1>Unsupported File Format</h1>
+
+                    <label>Currently you can only drop applications here to register them with the plugin installer.</label>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
