@@ -4,14 +4,14 @@
   <art:Uri>http://adobe.com/products/photoshop</art:Uri>
   <art:ProcessName>Adobe Photoshop CC 2015</art:ProcessName>
   <art:ID>{793C2BF7-A4FE-4608-91C9-9282C5801C21}</art:ID>
-  <art:TargetPath>../Plug-ins.localized/</art:TargetPath>
+  <art:TargetPath>../Plug-ins/</art:TargetPath>
   <art:ExecPath></art:ExecPath>
   <art:Version>0.8</art:Version>
-  <art:HostVersion>16.1.2</art:HostVersion>
+  <art:HostVersion>16.1</art:HostVersion>
   <art:Arch>64</art:Arch>
   <art:PluginFile Link="true">Artivity64.8li</art:PluginFile>
   <!--<art:PluginFile Link="true">ArtivityExport64.8be</art:PluginFile>-->
   <art:Color>#3FC2FC</art:Color>
   <art:ExampleFile>Sample.psd</art:ExampleFile>
-  <art:FilterName></art:FilterName>
+  <art:FilterName>Photoshop</art:FilterName>
 </art:PluginManifest>

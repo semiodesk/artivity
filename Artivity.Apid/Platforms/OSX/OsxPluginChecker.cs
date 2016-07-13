@@ -63,23 +63,71 @@ namespace Artivity.Api.Plugin.OSX
                 throw new Exception("Sample file does not exist: " + sample);
             }
 
-            List<string> list = CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All).ToList();
+            List<string> list = new List<string>();
+            foreach (var l in CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All))
+            {
+                if (l.Contains(manifest.FilterName))
+                    list.Add(l);
+            }
 
             if (PlatformProvider != null && PlatformProvider.Config != null)
             {
                 list.InsertRange(0, PlatformProvider.Config.SoftwarePaths);
             }
 
-            if (list.Any())
+            string location = null;
+            foreach(var app in list)
             {
-                string location = (from app in list where app.Contains(manifest.FilterName) select app).FirstOrDefault();
+                if (Directory.Exists(app))
+                {
+                    string name;
+                    string version;
+                    if (GetApplicationNameAndVersion(app, out name, out version))
+                    {
+                        if (name.Contains(manifest.FilterName) && version.StartsWith(manifest.HostVersion, StringComparison.InvariantCulture))
+                        {
+                            location = app;
+                            break;
+                        }
+                    }
 
-                return string.IsNullOrEmpty(location) ? null : new DirectoryInfo(location);
+                }
             }
-            else
+            return string.IsNullOrEmpty(location) ? null : new DirectoryInfo(location);
+        }
+
+        protected bool GetApplicationNameAndVersion(string app, out string name, out string version)
+        {
+            name = null;
+            version = null;
+            if (Directory.Exists(app))
             {
-                return null;
+
+                var infoPlist = Path.Combine(app, "Contents", "Info.plist");
+
+                if (File.Exists(infoPlist))
+                {
+                    try
+                    {
+                        XPathDocument document = new XPathDocument(infoPlist);
+
+                        XPathNavigator root = document.CreateNavigator();
+
+                        XPathNavigator value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleShortVersionString']");
+                        value.MoveToNext();
+                        version = value.InnerXml;
+
+                        value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleExecutable']");
+                        value.MoveToNext();
+                        name = value.InnerXml;
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
             }
+            return false;
         }
 
         protected override string GetApplicationVersion(FileSystemInfo app)

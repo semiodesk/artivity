@@ -12,5 +12,5 @@
   <art:PluginFile Link="true">Artivity64_2015.aip</art:PluginFile>
   <art:Color>#F27200</art:Color>
   <art:ExampleFile>Sample.ai</art:ExampleFile>
-  <art:FilterName></art:FilterName>
+  <art:FilterName>Illustrator</art:FilterName>
 </art:PluginManifest>
