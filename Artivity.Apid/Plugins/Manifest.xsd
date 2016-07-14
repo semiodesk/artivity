@@ -3,18 +3,28 @@
   <xs:element name="PluginManifest">
     <xs:complexType>
       <xs:sequence>
-        <xs:element type="xs:string" name="Uri"/>
+        <xs:element type="xs:string" name="AgentUri"/>
+        <xs:element type="xs:string" name="DefaultColor"/>
         <xs:element type="xs:string" name="DisplayName"/>
         <xs:element type="xs:string" name="ProcessName"/>
-        <xs:element type="xs:string" name="ID"/>
-        <xs:element type="xs:string" name="TargetPath"/>
-        <xs:element type="xs:string" name="ExecPath"/>
-        <xs:element type="xs:string" name="ExampleFile"/>
-        <xs:element type="xs:string" name="FilterName"/>
-        <xs:element type="xs:string" name="Version"/>
-        <xs:element type="xs:string" name="HostVersion"/>
-        <xs:element type="xs:byte" name="Arch"/>
-        <xs:element type="xs:string" name="Color"/>
+        <xs:element type="xs:string" name="ExecutablePath"/>
+		<xs:element type="xs:string" name="ExecutableVersion"/>
+		<xs:element type="xs:string" name="MinExecutableVersion"/>
+		<xs:element type="xs:string" name="MaxExecutableVersion"/>
+		<xs:element name="DefaultPath" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute type="xs:boolean" name="Link"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+		<xs:element type="xs:string" name="SampleFile"/>
+        <xs:element type="xs:string" name="SampleResultFilter"/>
+        <xs:element type="xs:byte" name="PluginArch"/>
+        <xs:element type="xs:string" name="PluginVersion"/>
+		<xs:element type="xs:string" name="PluginInstallPath"/>
         <xs:element name="PluginFile" maxOccurs="unbounded" minOccurs="0">
           <xs:complexType>
             <xs:simpleContent>
@@ -24,6 +34,7 @@
             </xs:simpleContent>
           </xs:complexType>
         </xs:element>
+		<xs:element type="xs:string" name="RegistryId"/>
         <xs:element name="RegistryKey" maxOccurs="unbounded" minOccurs="0">
           <xs:complexType>
             <xs:attribute type="xs:string" name="Platform"/>

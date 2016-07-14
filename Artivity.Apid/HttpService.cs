@@ -333,7 +333,7 @@ namespace Artivity.Apid
 
         private void InitializeSoftwareAgentPlugins()
         {
-            Logger.LogInfo("Installing software agents..");
+            Logger.LogInfo("Initializing software agent plugins..");
 
             DirectoryInfo pluginDirectory = new DirectoryInfo(PlatformProvider.PluginDir);
 

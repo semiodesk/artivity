@@ -32,6 +32,7 @@ using System.Reflection;
 using System.Diagnostics;
 using ObjCRuntime;
 using System.Xml.XPath;
+using System.Net;
 
 namespace Artivity.Journal.Mac
 {
@@ -193,7 +194,6 @@ namespace Artivity.Journal.Mac
             return nav.SelectSingleNode (xPath).Value;             
         }
 
-
         private static FileInfo GetLocalPlist()
         {
             var home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
@@ -233,16 +233,16 @@ namespace Artivity.Journal.Mac
         {
             try
             {
-                System.Net.WebClient client = new System.Net.WebClient();
-                string r = client.DownloadString(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", port));
+                WebClient client = new WebClient();
+
+                client.DownloadString(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", port));
+
                 return true;
             }
-            catch (System.Net.WebException e)
+            catch (WebException)
             {
                 return false;
             }
-
-
         }
 
         #endregion
