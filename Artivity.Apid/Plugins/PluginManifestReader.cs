@@ -24,13 +24,9 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.Plugin;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.Xml.Serialization;
 
@@ -73,13 +69,6 @@ namespace Artivity.Api.Plugin
                     PluginManifest manifest = (PluginManifest)serializer.Deserialize(reader);
 
                     manifest.ManifestFile = manifestFile;
-
-                    FileInfo[] iconFiles = manifestFile.Directory.GetFiles("Icon.png");
-
-                    if (iconFiles.Any())
-                    {
-                        manifest.IconPath = iconFiles[0].FullName;
-                    }
 
                     return manifest;
                 }

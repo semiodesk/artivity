@@ -66,7 +66,7 @@ namespace Artivity.Api.Plugin.Win
 
         protected override DirectoryInfo GetApplicationLocation(PluginManifest manifest)
         {
-            RegistryEntry entry = InstalledPrograms.FindInstalledProgram(manifest.ID);
+            RegistryEntry entry = InstalledPrograms.FindInstalledProgram(manifest.RegistryId);
 
             if (entry != null)
             {
@@ -87,7 +87,7 @@ namespace Artivity.Api.Plugin.Win
 
             foreach (PluginManifestPluginFile file in manifest.PluginFile)
             {
-                var targetFolder = Path.Combine(location.FullName, manifest.TargetPath);
+                var targetFolder = Path.Combine(location.FullName, manifest.PluginInstallPath);
                 var targetFile = Path.Combine(targetFolder, file.GetName());
 
                 if (!File.Exists(targetFile))

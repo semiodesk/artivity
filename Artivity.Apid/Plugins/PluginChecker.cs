@@ -104,21 +104,32 @@ namespace Artivity.Api.Plugin
             {
                 PluginManifest manifest = PluginManifestReader.ReadManifest(plugin);
 
-
                 if (manifest != null)
                 {
-                    Logger.InfoFormat("Found <{0}> with version {1}", manifest.Uri, manifest.Version);
+                    string msg = string.Format("Registered plugin for agent <{0}>", manifest.AgentUri);
+
+                    if (!string.IsNullOrEmpty(manifest.ExecutableVersion))
+                    {
+                        msg += " ; version " + manifest.ExecutableVersion;
+                    }
+
+                    if (!string.IsNullOrEmpty(manifest.MinExecutableVersion))
+                    {
+                        msg += " ; min version " + manifest.MinExecutableVersion;
+                    }
+
+                    if (!string.IsNullOrEmpty(manifest.MaxExecutableVersion))
+                    {
+                        msg += " ; max version " + manifest.MaxExecutableVersion;
+                    }
+
+                    Logger.Info(msg);
 
                     _manifests.Add(manifest);
 
                     SoftwareAgentPlugin p = new SoftwareAgentPlugin(manifest);
 
                     Plugins.Add(p);
-
-                    if(!HasAgentAssociation(model, p))
-                    {
-                        InstallAgentAssociation(model, p);
-                    }
                 }
                 else
                 {
@@ -155,22 +166,26 @@ namespace Artivity.Api.Plugin
 
             foreach(SoftwareAgentPlugin plugin in Plugins)
             {
-                if(agents.ContainsKey(plugin.AgentUri))
+                UriRef agentUri = new UriRef(plugin.Manifest.AgentUri);
+
+                if(agents.ContainsKey(agentUri))
                 {
-                    plugin.IsPluginEnabled = agents[plugin.AgentUri];
+                    plugin.IsPluginEnabled = agents[agentUri];
                 }
             }
         }
 
         public void InstallAgent(IModel model, SoftwareAgentPlugin plugin, bool pluginEnabled = false)
         {
-            if (!model.ContainsResource(plugin.AgentUri))
-            {
-                Logger.InfoFormat("Installing agent {0}", plugin.AgentUri);
+            UriRef agentUri = new UriRef(plugin.Manifest.AgentUri);
 
-                SoftwareAgent agent = model.CreateResource<SoftwareAgent>(plugin.AgentUri);
-                agent.Name = plugin.AgentName;
-                agent.ColourCode = plugin.AgentColor;
+            if (!model.ContainsResource(agentUri))
+            {
+                Logger.InfoFormat("Installing agent {0}", agentUri);
+
+                SoftwareAgent agent = model.CreateResource<SoftwareAgent>(agentUri);
+                agent.Name = plugin.Manifest.DisplayName;
+                agent.ColourCode = plugin.Manifest.DefaultColor;
                 agent.IsCaptureEnabled = pluginEnabled;
                 agent.Commit();
             }
@@ -178,33 +193,28 @@ namespace Artivity.Api.Plugin
             {
                 bool modified = false;
 
-                SoftwareAgent agent = model.GetResource<SoftwareAgent>(plugin.AgentUri);
+                SoftwareAgent agent = model.GetResource<SoftwareAgent>(agentUri);
 
-                if (agent.Name != plugin.AgentName)
+                if (agent.Name != plugin.Manifest.DisplayName)
                 {
-                    agent.Name = plugin.AgentName;
+                    agent.Name = plugin.Manifest.DisplayName;
 
                     modified = true;
                 }
 
                 if (string.IsNullOrEmpty(agent.ColourCode))
                 {
-                    agent.ColourCode = plugin.AgentColor;
+                    agent.ColourCode = plugin.Manifest.DefaultColor;
 
                     modified = true;
                 }
 
                 if (modified)
                 {
-                    Logger.InfoFormat("Updating agent {0}", plugin.AgentUri);
+                    Logger.InfoFormat("Updating agent {0}", plugin.Manifest.AgentUri);
 
                     agent.Commit();
                 }
-            }
-
-            if (!HasAgentAssociation(model, plugin))
-            {
-                InstallAgentAssociation(model, plugin);
             }
         }
 
@@ -212,8 +222,8 @@ namespace Artivity.Api.Plugin
         {
             ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @association prov:agent @agent . }");
 
-            query.Bind("@agent", plugin.AgentUri);
-            query.Bind("@association", plugin.AssociationUri);
+            query.Bind("@agent", plugin.Manifest.AgentUri);
+            query.Bind("@association", plugin.GetAssociationUri());
 
             ISparqlQueryResult result = model.ExecuteQuery(query);
 
@@ -222,23 +232,32 @@ namespace Artivity.Api.Plugin
 
         protected void InstallAgentAssociation(IModel model, SoftwareAgentPlugin plugin)
         {
-            var uri = plugin.AssociationUri;
-            Logger.InfoFormat("Installing association <{0}>", uri);
-            SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(uri);
-            association.Agent = new SoftwareAgent(plugin.AgentUri);
-            association.Role = new Role(new UriRef(ART.SOFTWARE));
-            association.ExecutableVersion = plugin.ExecutableVersion;
-            association.ExecutablePath = plugin.ExecutablePath;
-            association.Commit();
+            var uri = plugin.GetAssociationUri();
+
+            if (!model.ContainsResource(uri))
+            {
+                Logger.InfoFormat("Installing agent association <{0}>", uri);
+
+                SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(uri);
+                association.Agent = new SoftwareAgent(new UriRef(plugin.Manifest.AgentUri));
+                association.Role = new Role(new UriRef(ART.SOFTWARE));
+                association.ExecutableVersion = plugin.Manifest.ExecutableVersion;
+                association.ExecutablePath = plugin.Manifest.ExecutablePath;
+                association.Commit();
+            }
         }
 
         public void CheckPlugins(bool installPlugins = false)
         {
+            IModel model = ModelProvider.GetAgents();
+
             foreach (SoftwareAgentPlugin plugin in Plugins)
             {
                 try
                 {
-                    plugin.IsSoftwareInstalled = IsSoftwareInstalled(plugin.Manifest);
+                    plugin.DetectedVersion = TryGetInstalledSoftwareVersion(plugin.Manifest);
+
+                    plugin.IsSoftwareInstalled = !string.IsNullOrEmpty(plugin.DetectedVersion);
 
                     if (plugin.IsSoftwareInstalled)
                     {
@@ -246,11 +265,11 @@ namespace Artivity.Api.Plugin
 
                         if (plugin.IsPluginInstalled)
                         {
-                            Logger.InfoFormat("Software and plugin installed: <{0}>", plugin.AssociationUri);
+                            Logger.InfoFormat("Software and plugin installed: <{0}>", plugin.GetAssociationUri());
                         }
                         else
                         {
-                            Logger.InfoFormat("Software installed: <{0}>", plugin.AssociationUri);
+                            Logger.InfoFormat("Software installed: <{0}>", plugin.GetAssociationUri());
                         }
                         
                         if (!plugin.IsPluginInstalled && installPlugins)
@@ -258,10 +277,15 @@ namespace Artivity.Api.Plugin
                             plugin.IsPluginInstalled = InstallPlugin(plugin);
                             plugin.IsPluginEnabled = plugin.IsPluginInstalled;
                         }
+
+                        if (!HasAgentAssociation(model, plugin))
+                        {
+                            InstallAgentAssociation(model, plugin);
+                        }
                     }
                     else
                     {
-                        Logger.InfoFormat("Software not installed: <{0}>", plugin.AssociationUri);
+                        Logger.InfoFormat("Software not installed: <{0}>", plugin.GetAssociationUri());
 
                         plugin.IsPluginInstalled = false;
                         plugin.IsPluginEnabled = false;
@@ -274,7 +298,7 @@ namespace Artivity.Api.Plugin
             }
         }
 
-        public bool IsSoftwareInstalled(PluginManifest manifest)
+        public string TryGetInstalledSoftwareVersion(PluginManifest manifest)
         {
             DirectoryInfo location = GetApplicationLocation(manifest);
 
@@ -282,28 +306,36 @@ namespace Artivity.Api.Plugin
             {
                 FileSystemInfo info;
 
-                if (!string.IsNullOrEmpty(manifest.ExecPath))
+                if (!string.IsNullOrEmpty(manifest.ExecutablePath))
                 {
-                    info = new FileInfo(Path.Combine(location.FullName, manifest.ExecPath));
+                    info = new FileInfo(Path.Combine(location.FullName, manifest.ExecutablePath));
                 }
                 else
                 {
                     info = location;
                 }
 
-                var version = GetApplicationVersion(info);
+                string version = GetApplicationVersion(info);
 
-                return version.StartsWith(manifest.HostVersion, StringComparison.InvariantCulture);
+                if (manifest.IsMatch(version))
+                {
+                    return version;
+                }
             }
 
-            return false;
+            return null;
+        }
+
+        public bool IsSoftwareInstalled(PluginManifest manifest)
+        {
+            return !string.IsNullOrEmpty(TryGetInstalledSoftwareVersion(manifest));
         }
 
         public abstract bool IsPluginInstalled(PluginManifest manifest);
 
         public bool InstallPlugin(Uri uri)
         {
-            SoftwareAgentPlugin plugin = Plugins.First((p) => p.AgentUri == uri && IsSoftwareInstalled(p.Manifest));
+            SoftwareAgentPlugin plugin = Plugins.First((p) => p.Manifest.AgentUri == uri.AbsoluteUri && IsSoftwareInstalled(p.Manifest));
 
             return plugin != null ? InstallPlugin(plugin) : false;
         }
@@ -374,7 +406,7 @@ namespace Artivity.Api.Plugin
             }
             catch(Exception e)
             {
-                Logger.ErrorFormat("Failed to install plugin {0}: {1}", manifest.Uri, e);
+                Logger.ErrorFormat("Failed to install plugin {0}: {1}", manifest.AgentUri, e);
 
                 throw e;
             }
@@ -382,7 +414,7 @@ namespace Artivity.Api.Plugin
 
         public bool UninstallPlugin(Uri uri)
         {
-            SoftwareAgentPlugin plugin = Plugins.First((p) => p.AgentUri == uri && IsSoftwareInstalled(p.Manifest));
+            SoftwareAgentPlugin plugin = Plugins.First((p) => p.Manifest.AgentUri == uri.AbsoluteUri && IsSoftwareInstalled(p.Manifest));
 
             return plugin != null ? UninstallPlugin(plugin) : false;
         }
@@ -429,7 +461,7 @@ namespace Artivity.Api.Plugin
             }
             catch (Exception e)
             {
-                Logger.ErrorFormat("Failed to uninstall plugin {0}: {1}", manifest.Uri, e);
+                Logger.ErrorFormat("Failed to uninstall plugin {0}: {1}", manifest.AgentUri, e);
 
                 throw e;
             }
@@ -437,18 +469,20 @@ namespace Artivity.Api.Plugin
 
         public void UninstallAgent(IModel model, SoftwareAgentPlugin plugin)
         {
-            if (model.ContainsResource(plugin.AssociationUri))
+            if (model.ContainsResource(plugin.GetAssociationUri()))
             {
-                Logger.InfoFormat("Uninstalling agent association {0}", plugin.AgentUri);
+                Logger.InfoFormat("Uninstalling agent association {0}", plugin.Manifest.AgentUri);
 
-                model.DeleteResource(plugin.AssociationUri);
+                model.DeleteResource(plugin.GetAssociationUri());
             }
 
-            if (model.ContainsResource(plugin.AgentUri))
-            {
-                Logger.InfoFormat("Uninstalling agent {0}", plugin.AgentUri);
+            UriRef agentUri = new UriRef(plugin.Manifest.AgentUri);
 
-                model.DeleteResource(plugin.AgentUri);
+            if (model.ContainsResource(agentUri))
+            {
+                Logger.InfoFormat("Uninstalling agent {0}", plugin.Manifest.AgentUri);
+
+                model.DeleteResource(agentUri);
             }
         }
 
@@ -458,7 +492,7 @@ namespace Artivity.Api.Plugin
 
         protected DirectoryInfo TryGetPluginTargetDirectory(DirectoryInfo location, PluginManifest manifest)
         {
-            string targetFolder = Environment.ExpandEnvironmentVariables(manifest.TargetPath);
+            string targetFolder = Environment.ExpandEnvironmentVariables(manifest.PluginInstallPath);
 
             if (!Path.IsPathRooted(targetFolder))
             {

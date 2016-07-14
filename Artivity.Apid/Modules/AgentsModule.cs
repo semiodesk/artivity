@@ -249,7 +249,7 @@ namespace Artivity.Apid.Modules
         {
             _checker.CheckPlugins();
 
-            return Response.AsJson(_checker.Plugins.FirstOrDefault(p => p.AssociationUri == uri));
+            return Response.AsJson(_checker.Plugins.FirstOrDefault(p => p.Manifest.AgentUri == uri.AbsoluteUri));
         }
 
         private Response GetAgentFromEntity(Uri entityUri)
@@ -276,14 +276,21 @@ namespace Artivity.Apid.Modules
 
         public Response GetAgentIcon(Uri uri)
         {
-            SoftwareAgentPlugin plugin = _checker.Plugins.FirstOrDefault(p => p.AssociationUri == uri);
+            SoftwareAgentPlugin plugin = _checker.Plugins.FirstOrDefault(p => p.Manifest.AgentUri == uri.AbsoluteUri);
 
-            if (plugin == null || plugin.ExecutableIcon == null)
+            if (plugin == null)
             {
                 return null;
             }
 
-            string iconPath = plugin.ExecutableIcon.LocalPath;
+            Uri iconUrl = plugin.GetIcon();
+
+            if (iconUrl == null)
+            {
+                return null;
+            }
+
+            string iconPath = iconUrl.LocalPath;
 
             if (File.Exists(iconPath))
             {

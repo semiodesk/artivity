@@ -51,12 +51,12 @@ namespace Artivity.Api.Plugin.OSX
 
         protected override DirectoryInfo GetApplicationLocation(PluginManifest manifest)
         {
-            if (string.IsNullOrEmpty(manifest.ExampleFile))
+            if (string.IsNullOrEmpty(manifest.SampleFile))
             {
-                throw new Exception("No value set for ExampleFile in manifest.");
+                throw new Exception("No sample file set in manifest.");
             }
 
-            string sample = Path.Combine(manifest.ManifestFile.Directory.FullName, manifest.ExampleFile);
+            string sample = Path.Combine(manifest.ManifestFile.Directory.FullName, manifest.SampleFile);
 
             if (!File.Exists(sample))
             {
@@ -64,10 +64,13 @@ namespace Artivity.Api.Plugin.OSX
             }
 
             List<string> list = new List<string>();
+
             foreach (var l in CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All))
             {
-                if (l.Contains(manifest.FilterName))
+                if (l.Contains(manifest.SampleResultFilter))
+                {
                     list.Add(l);
+                }
             }
 
             if (PlatformProvider != null && PlatformProvider.Config != null)
@@ -76,23 +79,26 @@ namespace Artivity.Api.Plugin.OSX
             }
 
             string location = null;
+
             foreach(var app in list)
             {
                 if (Directory.Exists(app))
                 {
                     string name;
                     string version;
+
                     if (GetApplicationNameAndVersion(app, out name, out version))
                     {
-                        if (name.Contains(manifest.FilterName) && version.StartsWith(manifest.HostVersion, StringComparison.InvariantCulture))
+                        if (name.Contains(manifest.SampleResultFilter) && manifest.IsMatch(version))
                         {
                             location = app;
+
                             break;
                         }
                     }
-
                 }
             }
+
             return string.IsNullOrEmpty(location) ? null : new DirectoryInfo(location);
         }
 

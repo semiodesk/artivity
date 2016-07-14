@@ -163,10 +163,6 @@ namespace artivity
 		{
 			AssociationRef association = *it;
 
-            // Do not add the association to the serialized output, 
-            // as it is already stored in the database.
-            association->serialize = false;
-
             if (!association->uri.empty() || fetchAssociationUri(association))
 			{
                 _activity->addAssociation(association);
