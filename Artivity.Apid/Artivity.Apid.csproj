@@ -164,7 +164,11 @@
     <Compile Include="Helpers\NancyHelpers.cs" />
     <Compile Include="Modules\ActivitiesModule.cs" />
     <Compile Include="Modules\ExportModule.cs" />
-    <Compile Include="Extensions\UriExtensions.cs" />
+    <Compile Include="Modules\ImportModule.cs" />
+    <Compile Include="IO\ArchiveManifest.cs" />
+    <Compile Include="IO\ArchiveWriter.cs" />
+    <Compile Include="IO\ArchiveReader.cs" />
+    <Compile Include="Helpers\FileNameEncoder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -291,6 +295,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Extensions\" />
+    <Folder Include="IO\" />
   </ItemGroup>
 </Project>
