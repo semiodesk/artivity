@@ -42,7 +42,7 @@ namespace Artivity.Api.Plugin
 
         public Uri GetIcon()
         {
-            FileInfo file = new FileInfo("Icon.png");
+            FileInfo file = new FileInfo(Path.Combine(Manifest.ManifestFile.DirectoryName, "Icon.png"));
 
             return file.Exists ? file.ToUriRef() : null;
         }
