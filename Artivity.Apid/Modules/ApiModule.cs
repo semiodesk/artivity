@@ -28,8 +28,7 @@
 using Artivity.DataModel;
 using Artivity.Apid.Accounts;
 using Artivity.Apid.Platforms;
-using Artivity.Apid.Parameters;
-using Artivity.Api.Extensions;
+using Artivity.Api.Helpers;
 using Nancy;
 using Nancy.Responses;
 using Nancy.IO;
@@ -629,7 +628,7 @@ namespace Artivity.Apid.Modules
 
         private string GetRenderOutputPath(UriRef entityUri)
         {
-            string entityName = entityUri.ToFileName();
+            string entityName = FileNameEncoder.Encode(entityUri.AbsoluteUri);
 
             return Path.Combine(PlatformProvider.RenderingsFolder, entityName);
         }

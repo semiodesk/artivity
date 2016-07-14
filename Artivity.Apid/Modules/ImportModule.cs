@@ -25,18 +25,57 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
+using Artivity.Api.IO;
+using Artivity.Api.Plugin;
+using Artivity.Apid;
+using Artivity.Apid.Platforms;
+using Artivity.DataModel;
+using Nancy;
 
-namespace Artivity.Api.Extensions
+namespace Artivity.Api
 {
-    public static class UriExtensions
+    public class ImportModule : ModuleBase
     {
-        public static string ToFileName(this Uri uri)
-        {
-            char[] name = uri.AbsoluteUri.Replace("//", "-").Replace('/', '-').Replace(':', '-').ToCharArray();
+        #region Constructors
 
-            // Only allow letters or digits.
-            return new string(Array.FindAll<char>(name, c => char.IsLetterOrDigit(c) || c == '-' || c == '.'));
+        public ImportModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform)
+            : base("/artivity/api/1.0/import", modelProvider, platform)
+        {
+            Get["/"] = parameters =>
+            {
+                string fileUrl = Request.Query.fileUrl;
+
+                if (!IsFileUrl(fileUrl))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return Import(new Uri(fileUrl));
+            };
         }
+
+        #endregion
+
+        #region Methods
+
+        private Response Import(Uri fileUrl)
+        {
+            try
+            {
+                ArchiveReader importer = new ArchiveReader(PlatformProvider, ModelProvider);
+                importer.Read(fileUrl);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message);
+
+                return HttpStatusCode.InternalServerError;
+            }
+
+            return HttpStatusCode.OK;
+        }
+
+        #endregion
     }
 }
 

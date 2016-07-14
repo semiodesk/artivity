@@ -292,6 +292,7 @@ h4 {
 
 #header {
 	display: table;
+    border-top: 1px solid $windowBackgroundColor;
 	background: $headerBackgroundColor;
 	color: $headerTextColor;
 	width: 100%;

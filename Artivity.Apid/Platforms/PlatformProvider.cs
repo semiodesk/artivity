@@ -180,7 +180,7 @@ namespace Artivity.Apid.Platforms
                 config.IsNew = true;
                 config.Uid = "urn:art:uid:" + Guid.NewGuid();
 
-                string json = JsonConvert.SerializeObject(config);
+                string json = JsonConvert.SerializeObject(config, Formatting.Indented);
 
                 File.WriteAllText(configFile, json);
             }
@@ -192,7 +192,7 @@ namespace Artivity.Apid.Platforms
         {
             if (File.Exists(ConfigFile))
             {
-                string json = JsonConvert.SerializeObject(config);
+                string json = JsonConvert.SerializeObject(config, Formatting.Indented);
 
                 File.WriteAllText(ConfigFile, json);
             }
