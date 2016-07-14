@@ -69,8 +69,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
         iconUrl: ''
     };
 
-    api.getAgent(fileUri).then(function (data) {
-        data.iconUrl = api.getAgentIconUrl(data.association);
+    api.getAgent(fileUri).then(function (data) {		
+        data.iconUrl = api.getAgentIconUrl(data.agent);
 
         $scope.agent = data;
     });
@@ -582,15 +582,15 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
 
                 if (agent.IsSoftwareInstalled) {
                     $scope.agents.push({
-                        uri: agent.AgentUri,
-                        name: agent.AgentName,
-                        color: agent.AgentColor,
+                        uri: agent.Manifest.AgentUri,
+                        name: agent.Manifest.DisplayName,
+                        color: agent.Manifest.DefaultColor,
                         associationUri: agent.AssociationUri,
-                        iconSrc: api.getAgentIconUrl(agent.AssociationUri),
+                        iconSrc: api.getAgentIconUrl(agent.Manifest.AgentUri),
                         softwareInstalled: agent.IsSoftwareInstalled,
-                        softwareVersion: agent.ExecutableVersion,
+                        softwareVersion: agent.DetectedVersion,
                         pluginInstalled: agent.IsPluginInstalled,
-                        pluginVersion: agent.PluginVersion,
+                        pluginVersion: agent.Manifest.PluginVersion,
                         pluginEnabled: agent.IsPluginEnabled
                     });
                 }

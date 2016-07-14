@@ -24,6 +24,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,6 +38,7 @@ namespace Artivity.Api.Plugin
     {
         #region Members
 
+        [JsonIgnore]
         [XmlIgnore]
         public FileInfo ManifestFile { get; set; }
 
@@ -46,18 +48,24 @@ namespace Artivity.Api.Plugin
 
         public string DisplayName { get; set; }
 
+        [JsonIgnore]
         public string ProcessName { get; set; }
 
+        [JsonIgnore]
         public string ExecutablePath { get; set; }
 
+        [JsonIgnore]
         public string ExecutableVersion { get; set; }
 
+        [JsonIgnore]
         public string MinExecutableVersion { get; set; }
 
+        [JsonIgnore]
         public string MaxExecutableVersion { get; set; }
 
         private List<string> _defaultPaths = new List<string>();
 
+        [JsonIgnore]
         [XmlElement("DefaultPath")]
         public List<string> DefaultPaths
         {
@@ -65,18 +73,22 @@ namespace Artivity.Api.Plugin
             set { _defaultPaths = value; }
         }
 
+        [JsonIgnore]
         public string SampleFile { get; set; }
 
+        [JsonIgnore]
         public string SampleResultFilter { get; set; }
 
         public byte PluginArch { get; set; }
 
         public string PluginVersion { get; set; }
 
+        [JsonIgnore]
         public string PluginInstallPath { get; set; }
 
         private List<PluginManifestPluginFile> _pluginFile = new List<PluginManifestPluginFile>();
 
+        [JsonIgnore]
         [XmlElement("PluginFile")]
         public List<PluginManifestPluginFile> PluginFile
         {
@@ -87,10 +99,12 @@ namespace Artivity.Api.Plugin
         /// <summary>
         /// Windows: Here we look for this key in the registry
         /// </summary>
+        [JsonIgnore]
         public string RegistryId { get; set; }
 
         private List<PluginManifestRegistryKey> _registryKeys = new List<PluginManifestRegistryKey>();
 
+        [JsonIgnore]
         [XmlElement("RegistryKey")]
         public List<PluginManifestRegistryKey> RegistryKeys
         {

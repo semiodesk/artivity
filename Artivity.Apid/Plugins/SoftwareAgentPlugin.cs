@@ -12,7 +12,7 @@ namespace Artivity.Api.Plugin
     {
         #region Members
 
-        internal PluginManifest Manifest { get; private set;}
+        public PluginManifest Manifest { get; private set;}
 
         public bool IsSoftwareInstalled { get; set; }
 
@@ -21,6 +21,11 @@ namespace Artivity.Api.Plugin
         public bool IsPluginEnabled { get; set; }
 
         public string DetectedVersion { get; set; }
+
+        public UriRef AssociationUri
+        {
+            get { return GetAssociationUri(); }
+        }
 
         #endregion
 

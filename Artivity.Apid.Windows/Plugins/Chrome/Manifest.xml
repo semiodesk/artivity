@@ -4,14 +4,14 @@
   <DefaultColor>#4C8CF5</DefaultColor>
   <DisplayName>Google Chrome</DisplayName>
   <ProcessName>chrome.exe</ProcessName>
-  <ExecutablePath></ExecutablePath>
+  <ExecutablePath>chrome.exe</ExecutablePath>
   <MinExecutableVersion>41.0.0</MinExecutableVersion>
   <SampleFile>Sample.html</SampleFile>
   <SampleResultFilter>Chrome</SampleResultFilter>
   <PluginArch>64</PluginArch>
   <PluginFile>lfpdclalfidmgoedibkdihkbiclfoebh.json</PluginFile>
   <PluginVersion>0.8</PluginVersion>
-  <PluginInstallPath>Application\51.0.2704.103\Extensions</PluginInstallPath>
+  <PluginInstallPath>51.0.2704.103\Extensions</PluginInstallPath>
   <RegistryId>Google Chrome</RegistryId>
   <RegistryKey Platform="Win64" Path="HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Google\Chrome\Extensions" Name="lfpdclalfidmgoedibkdihkbiclfoebh">
     <RegistryItem Name="update_url" Value="https://clients2.google.com/service/update2/crx"/>
