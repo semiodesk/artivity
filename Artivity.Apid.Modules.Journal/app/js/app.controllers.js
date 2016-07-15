@@ -1,4 +1,4 @@
-var explorerControllers = angular.module('explorerControllers', ['ngInputModified', 'ui.bootstrap', 'ui.grid']);
+var explorerControllers = angular.module('explorerControllers', ['ngInputModified', 'ui.bootstrap']);
 
 explorerControllers.filter('reverse', function () {
     return function (items) {
