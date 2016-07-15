@@ -135,12 +135,14 @@ namespace Artivity.Apid
                         resourceId = resourceId.Replace(' ', '_');
                         resourceId = resourceId.Trim('.');
 
+                        #if !OSX
                         string[] segments = resourceId.Split('.');
                         for (int i = 0; i < segments.Length-3; i++)
                         {
                             segments[i] = segments[i].Replace('-', '_');
                         }
                         resourceId = string.Join(".", segments);
+                        #endif
                     }
 
                     string fileName = Path.GetFileName(context.Request.Path);
