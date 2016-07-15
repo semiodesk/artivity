@@ -134,6 +134,13 @@ namespace Artivity.Apid
                         resourceId = resourceId.Replace('\\', '.');
                         resourceId = resourceId.Replace(' ', '_');
                         resourceId = resourceId.Trim('.');
+
+                        string[] segments = resourceId.Split('.');
+                        for (int i = 0; i < segments.Length-3; i++)
+                        {
+                            segments[i] = segments[i].Replace('-', '_');
+                        }
+                        resourceId = string.Join(".", segments);
                     }
 
                     string fileName = Path.GetFileName(context.Request.Path);
