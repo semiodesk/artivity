@@ -494,6 +494,8 @@ namespace Artivity.Apid.Modules
                     ?uri
                     ?type
                     ?description
+                    ?change
+                    ?changeCount
                     ?layer
                     COALESCE(?agentColor, '#FF0000') AS ?agentColor
                     COALESCE(?x, 0) AS ?x
@@ -533,6 +535,18 @@ namespace Artivity.Apid.Modules
                             art:height?h
                         ] .
                     }
+
+                    OPTIONAL
+                    {
+						SELECT DISTINCT ?uri ?change (COUNT(?entity) as ?changeCount)  WHERE
+						{
+							?uri art:hadChange [
+							art:property ?change ;
+							art:entity ?entity ;
+							] .
+						 }
+                    }
+
 
                     OPTIONAL
                     {

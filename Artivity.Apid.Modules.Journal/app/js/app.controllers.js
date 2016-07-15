@@ -639,6 +639,7 @@ PREFIX nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#>\n\
 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>\n\
 PREFIX prov: <http://www.w3.org/ns/prov#>\n\
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n\n\
+PREFIX dces: <http://purl.org/dc/elements/1.1/>\n\n\
 SELECT ?s ?p ?o WHERE { ?s ?p ?o }";
 
     $scope.queryString = defaultPrefixes;
