@@ -26,24 +26,19 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
-using Artivity.Apid.Accounts;
 using Artivity.Apid.Parameters;
 using Artivity.Apid.Platforms;
 using Artivity.Api.Plugin;
+using Artivity.Api.Platforms;
 using Nancy;
 using Nancy.Responses;
 using Nancy.ModelBinding;
 using Nancy.IO;
-using Nancy.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Globalization;
-using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
@@ -199,6 +194,35 @@ namespace Artivity.Apid.Modules
                 return UninstallAgent(new Uri(uri));
             };
 
+            Get["/software/paths"] = paramters =>
+            {
+                return GetDirectories();
+            };
+
+            Get["/software/paths/add"] = paramters =>
+            {
+                string url = Request.Query["url"];
+
+                if (!IsFileUrl(url))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
+                return AddDirectory(new Uri(url));
+            };
+
+            Get["/software/paths/remove"] = paramters =>
+            {
+                string url = Request.Query["url"];
+
+                if (!IsFileUrl(url))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
+                return RemoveDirectory(new Uri(url));
+            };
+
             Get["/status"] = parameters =>
             {
                 return GetAgentStatus();
@@ -225,7 +249,7 @@ namespace Artivity.Apid.Modules
         {
             _checker.CheckPlugins();
 
-            return Response.AsJson(_checker.Plugins.FirstOrDefault(p => p.AssociationUri == uri));
+            return Response.AsJson(_checker.Plugins.FirstOrDefault(p => p.Manifest.AgentUri == uri.AbsoluteUri));
         }
 
         private Response GetAgentFromEntity(Uri entityUri)
@@ -252,14 +276,21 @@ namespace Artivity.Apid.Modules
 
         public Response GetAgentIcon(Uri uri)
         {
-            SoftwareAgentPlugin plugin = _checker.Plugins.FirstOrDefault(p => p.AssociationUri == uri);
+            SoftwareAgentPlugin plugin = _checker.Plugins.FirstOrDefault(p => p.Manifest.AgentUri == uri.AbsoluteUri);
 
-            if (plugin == null || plugin.ExecutableIcon == null)
+            if (plugin == null)
             {
                 return null;
             }
 
-            string iconPath = plugin.ExecutableIcon.LocalPath;
+            Uri iconUrl = plugin.GetIcon();
+
+            if (iconUrl == null)
+            {
+                return null;
+            }
+
+            string iconPath = iconUrl.LocalPath;
 
             if (File.Exists(iconPath))
             {
@@ -636,6 +667,43 @@ namespace Artivity.Apid.Modules
 
                 return HttpStatusCode.InternalServerError;
             }
+
+            return HttpStatusCode.OK;
+        }
+
+        Response GetDirectories()
+        {
+            return Response.AsJson(PlatformProvider.Config.SoftwarePaths);
+        }
+
+        Response AddDirectory(Uri url)
+        {
+            UserConfig config = PlatformProvider.Config;
+
+            if (!config.SoftwarePaths.Contains(url.LocalPath))
+            {
+                config.SoftwarePaths.Add(url.LocalPath);
+
+                PlatformProvider.WriteConfig(config);
+            }
+
+            Logger.LogInfo("Added software agent search path: {0}", url.LocalPath);
+
+            return HttpStatusCode.OK;
+        }
+
+        Response RemoveDirectory(Uri url)
+        {
+            UserConfig config = PlatformProvider.Config;
+
+            if (config.SoftwarePaths.Contains(url.LocalPath))
+            {
+                config.SoftwarePaths.Remove(url.LocalPath);
+
+                PlatformProvider.WriteConfig(config);
+            }
+
+            Logger.LogInfo("Removed software agent search path: {0}", url.LocalPath);
 
             return HttpStatusCode.OK;
         }

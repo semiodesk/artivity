@@ -27,11 +27,12 @@ namespace PluginDownloader
                     client.DownloadFile(v.Value, temp.FullName);
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     if (log != null)
                     {
                         log.LogError("Could not load from url {0}", v.Value);
+
                         continue;
                     }
                 }
@@ -59,20 +60,24 @@ namespace PluginDownloader
                                         }
                                     }
                                 }
-                                catch (Exception e)
+                                catch (Exception)
                                 {
                                     if (log != null)
+                                    {
                                         log.LogError("Error while writing file {0} from archive {1}.", name, v.Value);
+                                    }
                                 }
                             }
                         }
                     }
                     temp.Delete();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     if (log != null)
+                    {
                         log.LogError("Could not open temp zip file {0} downloaded from {1}", temp.FullName, v.Value);
+                    }
                 }
             }
         
