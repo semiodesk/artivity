@@ -22,6 +22,10 @@ namespace Artivity.Apid.Platforms
 
         string RenderingsFolder { get; }
 
+        string ExportFolder { get; }
+
+        string ImportFolder { get; }
+
         string DatabaseFolder { get; }
 
         string DatabaseName { get; }
@@ -49,6 +53,12 @@ namespace Artivity.Apid.Platforms
         bool CheckForNewSoftwareAgents { get; set; }
 
         bool AutomaticallyInstallSoftwareAgentPlugins { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        void WriteConfig(UserConfig config);
 
         #endregion
     }

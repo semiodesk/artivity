@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -34,7 +34,7 @@
     <XamMacArch>x86_64</XamMacArch>
     <Externalconsole>true</Externalconsole>
     <StartupObject>Artivity.Journal.Mac.MainClass</StartupObject>
-    <Commandlineparameters></Commandlineparameters>
+    <Commandlineparameters />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -49,7 +49,7 @@
     <IncludeMonoRuntime>true</IncludeMonoRuntime>
     <CreatePackage>false</CreatePackage>
     <CodeSigningKey>Developer ID Application: Semiodesk GmbH (3F9DU688H9)</CodeSigningKey>
-    <EnableCodeSigning>true</EnableCodeSigning>
+    <EnableCodeSigning>false</EnableCodeSigning>
     <EnablePackageSigning>false</EnablePackageSigning>
     <StartupObject>Artivity.Journal.Mac.MainClass</StartupObject>
     <PackageSigningKey>Developer ID Installer</PackageSigningKey>
@@ -83,6 +83,7 @@
     <Compile Include="ViewController.designer.cs">
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="BrowserView.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

@@ -25,14 +25,14 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
+using Artivity.Apid.Platforms;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Mono.Unix;
 using MonoDevelop.MacInterop;
-using System.Xml;
 using System.Xml.XPath;
+using System.Collections.Generic;
 
 namespace Artivity.Api.Plugin.OSX
 {
@@ -40,8 +40,8 @@ namespace Artivity.Api.Plugin.OSX
     {
         #region Constructors
 
-        public OsxPluginChecker(IModelProvider modelProvider, DirectoryInfo folder)
-            : base(modelProvider, folder)
+        public OsxPluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo folder)
+            : base(platformProvider, modelProvider, folder)
         {
         }
 
@@ -51,30 +51,89 @@ namespace Artivity.Api.Plugin.OSX
 
         protected override DirectoryInfo GetApplicationLocation(PluginManifest manifest)
         {
-            if (string.IsNullOrEmpty(manifest.ExampleFile))
+            if (string.IsNullOrEmpty(manifest.SampleFile))
             {
-                throw new Exception("No value set for ExampleFile in manifest.");
+                throw new Exception("No sample file set in manifest.");
             }
 
-            string sample = Path.Combine(manifest.ManifestFile.Directory.FullName, manifest.ExampleFile);
+            string sample = Path.Combine(manifest.ManifestFile.Directory.FullName, manifest.SampleFile);
 
             if (!File.Exists(sample))
             {
                 throw new Exception("Sample file does not exist: " + sample);
             }
 
-            string[] list = CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All);
+            List<string> list = new List<string>();
 
-            if (list.Any())
+            foreach (var l in CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All))
             {
-                string location = (from app in list where app.Contains(manifest.FilterName) select app).FirstOrDefault();
+                if (l.Contains(manifest.SampleResultFilter))
+                {
+                    list.Add(l);
+                }
+            }
 
-                return string.IsNullOrEmpty(location) ? null : new DirectoryInfo(location);
-            }
-            else
+            if (PlatformProvider != null && PlatformProvider.Config != null)
             {
-                return null;
+                list.InsertRange(0, PlatformProvider.Config.SoftwarePaths);
             }
+
+            string location = null;
+
+            foreach(var app in list)
+            {
+                if (Directory.Exists(app))
+                {
+                    string name;
+                    string version;
+
+                    if (GetApplicationNameAndVersion(app, out name, out version))
+                    {
+                        if (name.Contains(manifest.SampleResultFilter) && manifest.IsMatch(version))
+                        {
+                            location = app;
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return string.IsNullOrEmpty(location) ? null : new DirectoryInfo(location);
+        }
+
+        protected bool GetApplicationNameAndVersion(string app, out string name, out string version)
+        {
+            name = null;
+            version = null;
+            if (Directory.Exists(app))
+            {
+
+                var infoPlist = Path.Combine(app, "Contents", "Info.plist");
+
+                if (File.Exists(infoPlist))
+                {
+                    try
+                    {
+                        XPathDocument document = new XPathDocument(infoPlist);
+
+                        XPathNavigator root = document.CreateNavigator();
+
+                        XPathNavigator value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleShortVersionString']");
+                        value.MoveToNext();
+                        version = value.InnerXml;
+
+                        value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleExecutable']");
+                        value.MoveToNext();
+                        name = value.InnerXml;
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
+            }
+            return false;
         }
 
         protected override string GetApplicationVersion(FileSystemInfo app)

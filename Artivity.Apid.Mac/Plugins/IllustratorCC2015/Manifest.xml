@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<art:PluginManifest xmlns:art="http://www.artivity.io/plugins/manifest/">
-  <art:DisplayName>Adobe Illustrator CC 2015</art:DisplayName>
-  <art:Uri>http://adobe.com/products/illustrator</art:Uri>
-  <art:ProcessName>Adobe Illustrator</art:ProcessName>
-  <art:ID>ILST_19_2_0</art:ID>
-  <art:TargetPath>../Plug-ins.localized/</art:TargetPath>
-  <art:ExecPath></art:ExecPath>
-  <art:Version>0.8</art:Version>
-  <art:HostVersion>19.2.0</art:HostVersion>
-  <art:Arch>64</art:Arch>
-  <art:PluginFile Link="true">Artivity64_2015.aip</art:PluginFile>
-  <art:Color>#F27200</art:Color>
-  <art:ExampleFile>Sample.ai</art:ExampleFile>
-  <art:FilterName></art:FilterName>
-</art:PluginManifest>
+<PluginManifest xmlns="http://www.artivity.io/plugins/manifest/">
+  <AgentUri>http://adobe.com/products/illustrator</AgentUri>
+  <DefaultColor>#F27200</DefaultColor>
+  <DisplayName>Adobe Illustrator CC 2015</DisplayName>
+  <ProcessName>Adobe Illustrator</ProcessName>
+  <ExecutablePath></ExecutablePath>
+  <ExecutableVersion>19.1.0</ExecutableVersion>
+  <SampleFile>Sample.ai</SampleFile>
+  <SampleResultFilter>Illustrator</SampleResultFilter>
+  <PluginArch>64</PluginArch>
+  <PluginVersion>0.8.1</PluginVersion>
+  <PluginFile Link="true">Artivity64_2015.aip</PluginFile>
+  <PluginInstallPath>../Plug-ins.localized/</PluginInstallPath>
+</PluginManifest>

@@ -133,7 +133,7 @@ namespace Artivity.Api.Plugin.Win
 
             var parentName = (string)subkey.GetValue("ParentDisplayName");
 
-            if (!string.IsNullOrEmpty(releaseType))
+            if (!string.IsNullOrEmpty(parentName))
             {
                 return false;
             }

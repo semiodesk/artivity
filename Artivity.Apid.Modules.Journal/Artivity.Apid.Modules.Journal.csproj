@@ -31,6 +31,23 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug OSX|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug OSX</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release OSX|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release OSX</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -74,6 +91,8 @@
     <EmbeddedResource Include="app\fonts\Roboto-Regular.woff" />
     <EmbeddedResource Include="app\fonts\Roboto-Regular.woff2" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="error\index.html" />
+    <EmbeddedResource Include="app\js\app.overlay.js" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="app\js\lib\angular-input-modified.js" />
@@ -153,12 +172,12 @@
     <EmbeddedResource Include="app\partials\file-list.html" />
     <EmbeddedResource Include="app\partials\settings.html" />
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <EmbeddedResource Include="app\js\app.conf.release.js" >
+  <ItemGroup Condition="'$(Configuration)' == 'Release' OR '$(Configuration)' == 'Release OSX'">
+    <EmbeddedResource Include="app\js\app.conf.release.js">
       <LogicalName>Artivity.Apid.Modules.Journal.app.js.app.conf.js</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+  <ItemGroup Condition="'$(Configuration)' == 'Debug' OR '$(Configuration)' == 'Debug OSX'">
     <EmbeddedResource Include="app\js\app.conf.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -174,5 +193,8 @@
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
       <Name>Artivity.DataModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="error\" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="4.0">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug OSX</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}</ProjectGuid>
     <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -11,12 +11,12 @@
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <ReleaseVersion>1.6</ReleaseVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug OSX|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\build\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>__UNIFIED__;DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -32,13 +32,13 @@
     <LinkMode>None</LinkMode>
     <Commandlineparameters>´</Commandlineparameters>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release OSX|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>..\build\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <EnableCodeSigning>true</EnableCodeSigning>
+    <EnableCodeSigning>false</EnableCodeSigning>
     <CodeSigningKey>Developer ID Application: Semiodesk GmbH (3F9DU688H9)</CodeSigningKey>
     <CreatePackage>false</CreatePackage>
     <EnablePackageSigning>false</EnablePackageSigning>
@@ -128,6 +128,6 @@
     <BundleResource Include="Plugins\IllustratorCC2015.2\Sample.ai" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
-  <Import Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " Project="$(ProjectDir)\Build\CopyToOutput.targets" />
-  <Import Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Project="$(ProjectDir)\Build\DownloadPlugins.targets" />
+  <Import Condition=" '$(Configuration)' == 'Debug OSX' " Project="$(ProjectDir)\Build\CopyToOutput.targets" />
+  <Import Condition=" '$(Configuration)' == 'Release OSX'" Project="$(ProjectDir)\Build\DownloadPlugins.targets" />
 </Project>

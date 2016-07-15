@@ -69,8 +69,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
         iconUrl: ''
     };
 
-    api.getAgent(fileUri).then(function (data) {
-        data.iconUrl = api.getAgentIconUrl(data.association);
+    api.getAgent(fileUri).then(function (data) {		
+        data.iconUrl = api.getAgentIconUrl(data.agent);
 
         $scope.agent = data;
     });
@@ -349,7 +349,7 @@ explorerControllers.controller('SettingsController', function (api, $scope, $loc
         $scope.submit();
         
         // Navigate to dasboard and refresh the page.
-        window.location.replace("/");
+        $location.path('/');
     };
 
     $scope.reset = function () {
@@ -582,15 +582,15 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
 
                 if (agent.IsSoftwareInstalled) {
                     $scope.agents.push({
-                        uri: agent.AgentUri,
-                        name: agent.AgentName,
-                        color: agent.AgentColor,
+                        uri: agent.Manifest.AgentUri,
+                        name: agent.Manifest.DisplayName,
+                        color: agent.Manifest.DefaultColor,
                         associationUri: agent.AssociationUri,
-                        iconSrc: api.getAgentIconUrl(agent.AssociationUri),
+                        iconSrc: api.getAgentIconUrl(agent.Manifest.AgentUri),
                         softwareInstalled: agent.IsSoftwareInstalled,
-                        softwareVersion: agent.ExecutableVersion,
+                        softwareVersion: agent.DetectedVersion,
                         pluginInstalled: agent.IsPluginInstalled,
-                        pluginVersion: agent.PluginVersion,
+                        pluginVersion: agent.Manifest.PluginVersion,
                         pluginEnabled: agent.IsPluginEnabled
                     });
                 }
@@ -607,6 +607,26 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
     this.reset = function () {
         $scope.agentForm.reset();
     };
+});
+
+explorerControllers.directive("ngDropzone", function() {
+    return {
+        restrict : "A",
+        link: function (scope, elem) {
+            elem.bind('drop', function(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+
+                var files = evt.dataTransfer.files;
+                
+                alert(files);
+                
+                for (var i = 0, f; f = files[i]; i++) {
+                    alert(f);
+                }
+            });
+        }
+    }
 });
 
 explorerControllers.controller('QueryController', function (api, $scope) {

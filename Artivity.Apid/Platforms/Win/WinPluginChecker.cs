@@ -25,8 +25,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
-using Artivity.Api.Plugin;
-using Artivity.Api.Plugin.Win;
+using Artivity.Apid.Platforms;
 using System;
 using System.IO;
 using System.Diagnostics;
@@ -41,7 +40,8 @@ namespace Artivity.Api.Plugin.Win
     {       
         #region Constructors
 
-        public WinPluginChecker(IModelProvider modelProvider, DirectoryInfo dir) : base(modelProvider, dir)
+        public WinPluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo dir)
+            : base(platformProvider, modelProvider, dir)
         {
         }
 
@@ -66,7 +66,7 @@ namespace Artivity.Api.Plugin.Win
 
         protected override DirectoryInfo GetApplicationLocation(PluginManifest manifest)
         {
-            RegistryEntry entry = InstalledPrograms.FindInstalledProgram(manifest.ID);
+            RegistryEntry entry = InstalledPrograms.FindInstalledProgram(manifest.RegistryId);
 
             if (entry != null)
             {
@@ -87,7 +87,7 @@ namespace Artivity.Api.Plugin.Win
 
             foreach (PluginManifestPluginFile file in manifest.PluginFile)
             {
-                var targetFolder = Path.Combine(location.FullName, manifest.TargetPath);
+                var targetFolder = Path.Combine(location.FullName, manifest.PluginInstallPath);
                 var targetFile = Path.Combine(targetFolder, file.GetName());
 
                 if (!File.Exists(targetFile))
