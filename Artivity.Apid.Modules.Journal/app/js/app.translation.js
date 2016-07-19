@@ -3,35 +3,89 @@ angular.module('explorerApp').config(function ($translateProvider) {
     $translateProvider.useSanitizeValueStrategy('escape');
 
     $translateProvider.translations('en', {
-        SETTINGS_TITLE: 'Preferences',
 
-        SETTINGS_PROFILE: 'Profile',
-        SETTINGS_APPS: 'Apps',
-        SETTINGS_ACCOUNTS: 'Accounts',
-        SETTINGS_PROFILE_PICTURE: 'Click to select your profile picture.',
-        SETTINGS_NAME: 'Name',
-        SETTINGS_EMAIL: 'E-Mail Address',
-        SETTINGS_ORGANIZATION: 'Organization',
 
-        'http://w3id.org/art/terms/1.0/position': 'Moved',
-        'http://w3id.org/art/terms/1.0/hadBoundaries': 'Scaled',
-        'http://www.w3.org/2000/01/rdf-schema#label': 'Renamed'
+        FILELIST : {
+            NOFILES: 'Your recent files will appear here.',
 
+        },
+
+        SETTINGS : {
+            TITLE: 'Preferences',
+
+            PROFILE: 'Profile',
+            APPS: 'Apps',
+            ACCOUNTS: 'Accounts',
+            PROFILE_PICTURE: 'Click to select your profile picture.',
+            NAME: 'Name',
+            EMAIL: 'E-Mail Address',
+            ORGANIZATION: 'Organization',
+        },
+
+        FILEVIEW: {
+            'HISTORY': 'History',
+            'COMMENTS': 'Comments',
+            'STATISTICS': 'Statistics',
+            'EDITING': 'Editing',
+            'CONFIDENCE': 'Confidence',
+            'STEPS': 'Steps',
+            'UNDOS': 'Undos',
+            'REDOS': 'Redos',
+            'COMPOSITION': 'Composition',
+            'LAYERS': 'Layers',
+            'GROUPS': 'Groups',
+            'MASKED': 'Masked',
+            'CLIPPED': 'Clipped',
+            'COLOURS': 'Colours',
+            'http://www.w3.org/ns/prov#Generation': 'Element created',
+            'http://www.w3.org/ns/prov#Invalidation': 'Element removed',
+            'http://w3id.org/art/terms/1.0/position': 'Moved',
+            'http://w3id.org/art/terms/1.0/hadBoundaries': 'Scaled',
+            'http://www.w3.org/2000/01/rdf-schema#label': 'Renamed',
+            'http://w3id.org/art/terms/1.0/textValue': 'Text changed',
+        }
     });
 
     $translateProvider.translations('de', {
-        SETTINGS_TITLE: 'Einstellungen',
 
-        SETTINGS_PROFILE: 'Profil',
-        SETTINGS_APPS: 'Apps',
-        SETTINGS_ACCOUNTS: 'Konten',
-        SETTINGS_PROFILE_PICTURE: 'Klicken Sie hier um Ihr Profilbild auszuwählen.',
-        SETTINGS_NAME: 'Name',
-        SETTINGS_EMAIL: 'E-Mail Adresse',
-        SETTINGS_ORGANIZATION: 'Organisation',
-        'http://w3id.org/art/terms/1.0/position': 'Verschoben',
-        'http://w3id.org/art/terms/1.0/hadBoundaries': 'Skaliert',
-        'http://www.w3.org/2000/01/rdf-schema#label': 'Umbenannt'
+        FILELIST: {
+            NOFILES: 'Die zuletzt verwendeten Dateien erscheinen hier.',
+
+        },
+
+        SETTINGS: {
+            TITLE: 'Einstellungen',
+            PROFILE: 'Profil',
+            APPS: 'Apps',
+            ACCOUNTS: 'Konten',
+            PROFILE_PICTURE: 'Klicken Sie hier um Ihr Profilbild auszuwählen.',
+            NAME: 'Name',
+            EMAIL: 'E-Mail Adresse',
+            ORGANIZATION: 'Organisation',
+        },
+
+        FILEVIEW: {
+            'HISTORY': 'Verlauf',
+            'COMMENTS': 'Kommentare',
+            'STATISTICS': 'Statistik',
+            'EDITING': 'Bearbeitung',
+            'CONFIDENCE': 'Confidence',
+            'STEPS': 'Schritte',
+            'UNDOS': 'Undos',
+            'REDOS': 'Redos',
+            'COMPOSITION': 'Komposition',
+            'LAYERS': 'Ebenen',
+            'GROUPS': 'Gruppen',
+            'MASKED': 'Maskiert',
+            'CLIPPED': 'Clipped',
+            'COLOURS': 'Farben',
+            'http://www.w3.org/ns/prov#Generation': 'Element erzeugt',
+            'http://www.w3.org/ns/prov#Invalidation': 'Element entfernt',
+            'http://w3id.org/art/terms/1.0/position': 'Verschoben',
+            'http://w3id.org/art/terms/1.0/hadBoundaries': 'Skaliert',
+            'http://www.w3.org/2000/01/rdf-schema#label': 'Umbenannt',
+            'http://w3id.org/art/terms/1.0/textValue': 'Text geändert',
+        }
     });
 
     //$translateProvider.determinePreferredLanguage();
