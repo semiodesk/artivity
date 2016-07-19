@@ -37,12 +37,13 @@ angular.module('explorerApp').config(function ($translateProvider) {
             'MASKED': 'Masked',
             'CLIPPED': 'Clipped',
             'COLOURS': 'Colours',
-            'http://www.w3.org/ns/prov#Generation': 'Element created',
-            'http://www.w3.org/ns/prov#Invalidation': 'Element removed',
+            'http://www.w3.org/ns/prov#Generation': 'Created Element',
+            'http://www.w3.org/ns/prov#Invalidation': 'Removed Element',
             'http://w3id.org/art/terms/1.0/position': 'Moved',
             'http://w3id.org/art/terms/1.0/hadBoundaries': 'Scaled',
             'http://www.w3.org/2000/01/rdf-schema#label': 'Renamed',
-            'http://w3id.org/art/terms/1.0/textValue': 'Text changed',
+            'http://w3id.org/art/terms/1.0/textValue': 'Changed Text',
+            'http://w3id.org/art/terms/1.0/aboveLayer': 'Moved Layer',
         }
     });
 
@@ -85,6 +86,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
             'http://w3id.org/art/terms/1.0/hadBoundaries': 'Skaliert',
             'http://www.w3.org/2000/01/rdf-schema#label': 'Umbenannt',
             'http://w3id.org/art/terms/1.0/textValue': 'Text geändert',
+            'http://w3id.org/art/terms/1.0/aboveLayer': 'Ebene verschoben',
         }
     });
 
