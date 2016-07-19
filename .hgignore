@@ -61,3 +61,4 @@ libartivity/windows/ipch/*
 *.obj
 *.tlog
 *.pdb
+Artivity.Apid.Modules.Journal/app/bower_components/*

@@ -90,42 +90,71 @@
     <EmbeddedResource Include="app\fonts\Roboto-Regular.ttf" />
     <EmbeddedResource Include="app\fonts\Roboto-Regular.woff" />
     <EmbeddedResource Include="app\fonts\Roboto-Regular.woff2" />
+    <EmbeddedResource Include="app\bower_components\bootstrap-colorpicker\dist\css\bootstrap-colorpicker.css.map" />
+    <EmbeddedResource Include="app\bower_components\bootstrap-colorpicker\dist\css\bootstrap-colorpicker.min.css.map" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\css\bootstrap-theme.css.map" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\css\bootstrap-theme.min.css.map" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\css\bootstrap.css.map" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\css\bootstrap.min.css.map" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <EmbeddedResource Include="app\bower_components\jquery\dist\jquery.min.map" />
+    <EmbeddedResource Include="app\bower_components\light-grid\dist\light-grid.min.js.map" />
+    <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.eot" />
+    <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.ttf" />
+    <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.woff" />
+    <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.woff2" />
     <None Include="packages.config" />
     <EmbeddedResource Include="error\index.html" />
     <EmbeddedResource Include="app\js\app.overlay.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="app\js\lib\angular-input-modified.js" />
-    <EmbeddedResource Include="app\js\lib\angular-route.min.js" />
-    <EmbeddedResource Include="app\js\lib\angular-ui.min.js" />
-    <EmbeddedResource Include="app\js\lib\angular.min.js" />
-    <EmbeddedResource Include="app\js\lib\base64.js" />
-    <EmbeddedResource Include="app\js\lib\base64.min.js" />
-    <EmbeddedResource Include="app\js\lib\bootstrap-colorpicker.js" />
-    <EmbeddedResource Include="app\js\lib\bootstrap-colorpicker.min.js" />
-    <EmbeddedResource Include="app\js\lib\bootstrap-switch.js" />
-    <EmbeddedResource Include="app\js\lib\bootstrap-switch.min.js" />
-    <EmbeddedResource Include="app\js\lib\bootstrap.js" />
-    <EmbeddedResource Include="app\js\lib\bootstrap.min.js" />
-    <EmbeddedResource Include="app\js\lib\color-thief.js" />
-    <EmbeddedResource Include="app\js\lib\color-thief.min.js" />
+    <EmbeddedResource Include="app\js\app.translation.js" />
     <EmbeddedResource Include="app\js\lib\d3-gantt.js" />
-    <EmbeddedResource Include="app\js\lib\d3.min.js" />
-    <EmbeddedResource Include="app\js\lib\jquery-2.2.2.min.js" />
-    <EmbeddedResource Include="app\js\lib\light-grid.js" />
-    <EmbeddedResource Include="app\js\lib\light-grid.min.js" />
-    <EmbeddedResource Include="app\js\lib\moment.min.js" />
-    <EmbeddedResource Include="app\js\lib\npm.js" />
     <EmbeddedResource Include="app\js\lib\quantize.js" />
-    <EmbeddedResource Include="app\js\lib\ui-bootstrap-tpls-1.3.3.min.js" />
-    <EmbeddedResource Include="app\js\lib\ui-grid.min.js" />
     <EmbeddedResource Include="app\js\app.classes.js" />
     <EmbeddedResource Include="app\js\app.controllers.js" />
     <EmbeddedResource Include="app\partials\query.html" />
     <EmbeddedResource Include="app\css\roboto.css" />
-    <EmbeddedResource Include="app\css\bootstrap-switch.css" />
-    <EmbeddedResource Include="app\css\bootstrap-switch.min.css" />
     <EmbeddedResource Include="app\css\ui-grid.min.css" />
+    <EmbeddedResource Include="app\bower_components\angular-input-modified\dist\angular-input-modified.min.js" />
+    <EmbeddedResource Include="app\bower_components\angular-route\angular-route.min.js" />
+    <EmbeddedResource Include="app\bower_components\angular-translate\angular-translate.min.js" />
+    <EmbeddedResource Include="app\bower_components\angular-ui\build\angular-ui.min.js" />
+    <EmbeddedResource Include="app\bower_components\angular\angular.min.js" />
+    <EmbeddedResource Include="app\bower_components\base64\base64.js" />
+    <EmbeddedResource Include="app\bower_components\base64\base64.min.js" />
+    <EmbeddedResource Include="app\bower_components\bootstrap-colorpicker\dist\css\bootstrap-colorpicker.css" />
+    <EmbeddedResource Include="app\bower_components\bootstrap-colorpicker\dist\css\bootstrap-colorpicker.min.css" />
+    <EmbeddedResource Include="app\bower_components\bootstrap-colorpicker\dist\js\bootstrap-colorpicker.js" />
+    <EmbeddedResource Include="app\bower_components\bootstrap-colorpicker\dist\js\bootstrap-colorpicker.min.js" />
+    <EmbeddedResource Include="app\bower_components\bootstrap-switch\dist\css\bootstrap3\bootstrap-switch.css" />
+    <EmbeddedResource Include="app\bower_components\bootstrap-switch\dist\css\bootstrap3\bootstrap-switch.min.css" />
+    <EmbeddedResource Include="app\bower_components\bootstrap-switch\dist\js\bootstrap-switch.js" />
+    <EmbeddedResource Include="app\bower_components\bootstrap-switch\dist\js\bootstrap-switch.min.js" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\css\bootstrap-theme.css" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\css\bootstrap-theme.min.css" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\css\bootstrap.css" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\css\bootstrap.min.css" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\js\bootstrap.js" />
+    <EmbeddedResource Include="app\bower_components\bootstrap\dist\js\bootstrap.min.js" />
+    <EmbeddedResource Include="app\bower_components\color-thief\dist\color-thief.min.js" />
+    <EmbeddedResource Include="app\bower_components\d3\d3.js" />
+    <EmbeddedResource Include="app\bower_components\d3\d3.min.js" />
+    <EmbeddedResource Include="app\bower_components\jquery\dist\jquery.js" />
+    <EmbeddedResource Include="app\bower_components\jquery\dist\jquery.min.js" />
+    <EmbeddedResource Include="app\bower_components\light-grid\dist\light-grid.js" />
+    <EmbeddedResource Include="app\bower_components\light-grid\dist\light-grid.min.js" />
+    <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\css\material-design-iconic-font.css" />
+    <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\css\material-design-iconic-font.min.css" />
+    <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.svg" />
+    <EmbeddedResource Include="app\bower_components\moment\moment.js" />
+    <EmbeddedResource Include="app\bower_components\angular\angular.js" />
+    <EmbeddedResource Include="app\bower_components\angular-bootstrap\ui-bootstrap.js" />
+    <EmbeddedResource Include="app\bower_components\angular-bootstrap\ui-bootstrap.min.js" />
     <Content Include="app\img\heart-broken.svg" />
     <Content Include="app\img\heart.svg" />
     <Content Include="app\img\orcid_64x64.png" />
@@ -133,20 +162,6 @@
     <EmbeddedResource Include="app\partials\error-no-apid-connection.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="app\css\bootstrap-colorpicker.css" />
-    <EmbeddedResource Include="app\css\bootstrap-colorpicker.css.map" />
-    <EmbeddedResource Include="app\css\bootstrap-colorpicker.min.css" />
-    <EmbeddedResource Include="app\css\bootstrap-colorpicker.min.css.map" />
-    <EmbeddedResource Include="app\css\bootstrap-theme.css" />
-    <EmbeddedResource Include="app\css\bootstrap-theme.css.map" />
-    <EmbeddedResource Include="app\css\bootstrap-theme.min.css" />
-    <EmbeddedResource Include="app\css\bootstrap-theme.min.css.map" />
-    <EmbeddedResource Include="app\css\bootstrap.css" />
-    <EmbeddedResource Include="app\css\bootstrap.css.map" />
-    <EmbeddedResource Include="app\css\bootstrap.min.css" />
-    <EmbeddedResource Include="app\css\bootstrap.min.css.map" />
-    <EmbeddedResource Include="app\css\material-design-iconic-font.css" />
-    <EmbeddedResource Include="app\css\material-design-iconic-font.min.css" />
     <EmbeddedResource Include="app\css\style.css" />
     <EmbeddedResource Include="app\css\style.css.map" />
     <EmbeddedResource Include="app\css\style.scss" />
@@ -194,7 +209,5 @@
       <Name>Artivity.DataModel</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="error\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
