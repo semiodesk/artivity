@@ -432,6 +432,8 @@ namespace Artivity.Apid.Modules
 
             var bindings = ModelProvider.GetAgents().GetBindings(query);
 
+            Logger.LogRequest(HttpStatusCode.OK, Request);
+
             return Response.AsJson(bindings);
         }
 
@@ -452,6 +454,8 @@ namespace Artivity.Apid.Modules
             query.Bind("@role", role);
 
             var bindings = ModelProvider.GetAgents().GetBindings(query).FirstOrDefault();
+
+            Logger.LogRequest(HttpStatusCode.OK, Request);
 
             return Response.AsJson(bindings);
         }
@@ -501,6 +505,8 @@ namespace Artivity.Apid.Modules
                     { "role", role },
                 };
             }
+
+            Logger.LogRequest(HttpStatusCode.OK, Request);
 
             return Response.AsJson(bindings);
         }

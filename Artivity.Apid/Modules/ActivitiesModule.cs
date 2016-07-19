@@ -56,7 +56,7 @@ namespace Artivity.Apid.Modules
         public ActivitiesModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0/activities", modelProvider, platform)
         {
-            Get["/activities"] = parameters =>
+            Get["/"] = parameters =>
             {
                 string uri = Request.Query.uri;
 
