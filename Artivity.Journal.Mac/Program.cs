@@ -72,6 +72,14 @@ namespace Artivity.Journal.Mac
 #endif
         }
 
+        private static void EnsureLaunchAgentDirExists()
+        {
+            var plist = GetLocalPlist();
+            if (!plist.Directory.Exists)
+                plist.Directory.Create();
+        }
+
+
         private void TestApid ()
         {
             Console.WriteLine ("Testing if APID is installed..");
@@ -97,6 +105,8 @@ namespace Artivity.Journal.Mac
             DirectoryInfo contentPath = new DirectoryInfo (Path.Combine (current, ".."));
 
             FileInfo agentFile = new FileInfo (Path.Combine (current, "..", "Resources", "com.semiodesk.artivity.plist"));
+
+            EnsureLaunchAgentDirExists();
 
             if (userAgent.Exists) 
             {
@@ -217,6 +227,7 @@ namespace Artivity.Journal.Mac
         public static void StartApid()
         {
             Console.WriteLine(string.Format("Starting APID.."));
+            EnsureLaunchAgentDirExists();
 
             FileInfo userAgent = GetLocalPlist();
 
