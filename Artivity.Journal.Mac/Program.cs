@@ -38,7 +38,6 @@ namespace Artivity.Journal.Mac
 {
     public class Program
     {
-
         #region Methods
 
         public void Run(string[] args)

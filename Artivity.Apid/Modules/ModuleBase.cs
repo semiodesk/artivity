@@ -99,7 +99,7 @@ namespace Artivity.Apid
 
         protected bool IsFileUrl(string url)
         {
-            return (!string.IsNullOrEmpty(url)) && IsUri(url) && IsUri(Uri.EscapeUriString(url));
+            return (!string.IsNullOrEmpty(url)) && IsUri(Uri.EscapeUriString(url));
         }
 
         #endregion

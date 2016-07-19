@@ -781,7 +781,9 @@ namespace Artivity.Apid.Modules
 
             if(string.IsNullOrEmpty(file) || string.IsNullOrEmpty(folder))
             {
-                return Response.AsJson(new { });
+                Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+
+                return Response.AsJson(new {});
             }
 
             ISparqlQuery query = new SparqlQuery(@"
@@ -803,6 +805,8 @@ namespace Artivity.Apid.Modules
             query.Bind("@folderUrl", new Uri(folder));
 
             var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
+
+            Logger.LogRequest(HttpStatusCode.OK, Request);
 
             return Response.AsJson(bindings);
         }
