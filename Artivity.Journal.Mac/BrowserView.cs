@@ -69,6 +69,14 @@ namespace Artivity.Journal.Mac
 
                     return NSDragOperation.Link;
                 }
+                else if (GetArchiveFiles(items).Any())
+                {
+                    MainFrame.WindowObject.CallWebScriptMethod("showOverlay", new NSObject[] { new NSString("#msg-import") });
+
+                    sender.AnimatesToDestination = true;
+
+                    return NSDragOperation.Link;
+                }
                 else
                 {
                     MainFrame.WindowObject.CallWebScriptMethod("showOverlay", new NSObject[] { new NSString("#msg-unsupported-file-type") });
@@ -100,18 +108,34 @@ namespace Artivity.Journal.Mac
 
                 if (typeExists)
                 {
-                    MainFrame.WindowObject.CallWebScriptMethod("showOverlay", new NSObject[] { new NSString("#msg-add-app-success") });
-
                     NSPasteboardItem[] items = pasteboard.PasteboardItems;
 
-                    foreach (NSUrl url in GetAppBundles(items))
+                    if (GetAppBundles(items).Any())
                     {
-                        RegisterSoftwareAgent(new Uri("file://" + url.Path));
+                        MainFrame.WindowObject.CallWebScriptMethod("showOverlay", new NSObject[] { new NSString("#msg-add-app-success") });
+
+                        foreach (NSUrl url in GetAppBundles(items))
+                        {
+                            RegisterSoftwareAgent(new Uri("file://" + url.Path));
+                        }
+
+                        Thread.Sleep(1000);
+
+                        MainFrame.WindowObject.CallWebScriptMethod("hideOverlays", new NSObject[] { });
                     }
+                    else if (GetArchiveFiles(items).Any())
+                    {
+                        MainFrame.WindowObject.CallWebScriptMethod("showOverlay", new NSObject[] { new NSString("#msg-import-success") });
 
-                    Thread.Sleep(1000);
+                        foreach (NSUrl url in GetArchiveFiles(items))
+                        {
+                            ImportArchiveFile(new Uri("file://" + url.Path));
+                        }
 
-                    MainFrame.WindowObject.CallWebScriptMethod("hideOverlays", new NSObject[] { });
+                        Thread.Sleep(1000);
+
+                        MainFrame.WindowObject.CallWebScriptMethod("hideOverlays", new NSObject[] { });
+                    }
                 }
             }
         }
@@ -129,9 +153,33 @@ namespace Artivity.Journal.Mac
             }
         }
 
+        private IEnumerable<NSUrl> GetArchiveFiles(NSPasteboardItem[] items)
+        {
+            for (int i = 0; i < items.Length; i++)
+            {
+                NSUrl url = new NSUrl(items[i].GetStringForType("public.file-url"));
+
+                if (url.Path.EndsWith(".arty", StringComparison.InvariantCulture))
+                {
+                    yield return url;
+                }
+            }
+        }
+
         private void RegisterSoftwareAgent(Uri url)
         {
             string endpoint = string.Format("http://localhost:{0}/artivity/api/1.0/agents/software/paths/add?url={1}", ViewController.Port, url.AbsoluteUri);
+
+            WebRequest request = WebRequest.Create(endpoint);
+            request.Method = "GET";
+
+            WebResponse response = request.GetResponse();
+            response.Close();
+        }
+
+        private void ImportArchiveFile(Uri url)
+        {
+            string endpoint = string.Format("http://localhost:{0}/artivity/api/1.0/import?fileUrl={1}", ViewController.Port, url.AbsoluteUri);
 
             WebRequest request = WebRequest.Create(endpoint);
             request.Method = "GET";
