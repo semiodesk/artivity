@@ -102,6 +102,7 @@ namespace Artivity.Apid.Mac
             {
                 new UnixSignal (Signum.SIGINT),
                 new UnixSignal (Signum.SIGUSR1),
+                new UnixSignal (Signum.SIGHUP),
                 new UnixSignal (Signum.SIGTERM)
             };
 

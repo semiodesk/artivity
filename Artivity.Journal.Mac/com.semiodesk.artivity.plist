@@ -12,5 +12,7 @@
 	</array>
 	<key>WorkingDirectory</key>
 	<string>{0}/Applications/artivity-apid.app/Contents/Resources</string>
+	<key>ExitTimeOut</key>
+	<integer>60</integer>
 </dict>
 </plist>
