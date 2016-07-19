@@ -61,8 +61,8 @@
 		</div>
 		<div class="sidebar left">
 			<ul class="nav nav-tabs tablist" id="tabs-left" role="tablist">
-				<li role="presentation" class="active"><a data-target="#history" role="tab" data-toggle="tab">History</a></li>
-				<li role="presentation"><a data-target="#comments" role="tab" data-toggle="tab">Comments</a></li>
+				<li role="presentation" class="active"><a data-target="#history" role="tab" data-toggle="tab">{{ 'FILEVIEW.HISTORY' | translate }}</a></li>
+				<li role="presentation"><a data-target="#comments" role="tab" data-toggle="tab">{{ 'FILEVIEW.COMMENTS' | translate }}</a></li>
 			</ul>
 
 			<div class="tab-content">
@@ -91,7 +91,7 @@
 										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> Delete
 									</div>
 									<div ng-switch-default>
-										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{ influence.change | translate }}
+										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{ getLabel(influence) }}
 									</div>
 								</div>
 
@@ -109,76 +109,76 @@
 		</div>
 		<div class="sidebar right">
 			<ul class="nav nav-tabs tablist" id="tabs-right" role="tablist">
-				<li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">Statistics</a></li>
+				<li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">{{ 'FILEVIEW.STATISTICS' | translate }}</a></li>
 			</ul>
 
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane fade active in" id="statistics">
-					<h5>Editing</h5>
+					<h5>{{ 'FILEVIEW.EDITING' | translate }}</h5>
 					<table style="width: 90%;">
 						<tr>
 							<td>
-								<label>Confidence</label>
+								<label>{{ 'FILEVIEW.CONFIDENCE' | translate }}</label>
 							</td>
 							<td><span class="pull-right">{{stats.confidence}}</span></td>
 							<td width="20">&nbsp;%</td>
 						</tr>
 						<tr>
 							<td>
-								<label>Steps</label>
+								<label>{{ 'FILEVIEW.STEPS' | translate }}</label>
 							</td>
 							<td><span class="pull-right">{{stats.steps}}</span></td>
 							<td></td>
 						</tr>
 						<tr>
 							<td>
-								<label>Undos</label>
+								<label>{{ 'FILEVIEW.UNDOS' | translate }}</label>
 							</td>
 							<td><span class="pull-right">{{stats.undos}}</span></td>
 							<td></td>
 						</tr>
 						<tr>
 							<td>
-								<label>Redos</label>
+								<label>{{ 'FILEVIEW.REDOS' | translate }}</label>
 							</td>
 							<td><span class="pull-right">{{stats.redos}}</span></td>
 							<td></td>
 						</tr>
 					</table>
 
-					<h5 style="margin-top: 1em;">Composition</h5>
+					<h5 style="margin-top: 1em;">{{ 'FILEVIEW.COMPOSITION' | translate }}</h5>
 					<table style="width: 90%;">
 						<tr>
 							<td>
-								<label>Layers</label>
+								<label>{{ 'FILEVIEW.LAYERS' | translate }}</label>
 							</td>
 							<td><span class="pull-right">{{stats.layers.length}}</span></td>
 							<td width="20"></td>
 						</tr>
 						<tr>
 							<td>
-								<label>Groups</label>
+								<label>{{ 'FILEVIEW.GROUPS' | translate }}</label>
 							</td>
 							<td><span class="pull-right">0</span></td>
 							<td></td>
 						</tr>
 						<tr>
 							<td>
-								<label>Masked</label>
+								<label>{{ 'FILEVIEW.MASKED' | translate }}</label>
 							</td>
 							<td><span class="pull-right">0</span></td>
 							<td></td>
 						</tr>
 						<tr>
 							<td>
-								<label>Clipped</label>
+								<label>{{ 'FILEVIEW.CLIPPED' | translate }}</label>
 							</td>
 							<td><span class="pull-right">0</span></td>
 							<td></td>
 						</tr>
 					</table>
 
-					<h5 style="margin-top: 1em;">Colors</h5>
+					<h5 style="margin-top: 1em;">{{ 'FILEVIEW.COLOURS' | translate }}</h5>
 					<ul class="list-unstyled">
 						<li ng-repeat="color in palette">
 							<div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
@@ -187,7 +187,7 @@
 						<div class="clearfix"></div>
 					</ul>
 					
-					<h5 style="margin-top: 1em;">Layers</h5>
+					<h5 style="margin-top: 1em;">{{ 'FILEVIEW.LAYERS' | translate }}</h5>
 					<ul class="list-unstyled">
 						<li ng-repeat="layer in layers | reverse">
 							<label><i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{layer.label}}</label>
