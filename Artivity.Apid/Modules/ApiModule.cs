@@ -495,7 +495,8 @@ namespace Artivity.Apid.Modules
                     ?type
                     ?description
                     ?change
-                    ?changeCount
+					?entity
+					?entityType
                     ?layer
                     COALESCE(?agentColor, '#FF0000') AS ?agentColor
                     COALESCE(?x, 0) AS ?x
@@ -538,13 +539,10 @@ namespace Artivity.Apid.Modules
 
                     OPTIONAL
                     {
-						SELECT DISTINCT ?uri ?change (COUNT(?entity) as ?changeCount)  WHERE
-						{
-							?uri art:hadChange [
-							art:property ?change ;
-							art:entity ?entity ;
-							] .
-						 }
+						?uri art:hadChange ?c .
+						?c art:property ?change ;
+						art:entity ?entity .
+						?entity a ?entityType .
                     }
 
 
@@ -561,7 +559,40 @@ namespace Artivity.Apid.Modules
 
             var bindings = ModelProvider.GetAll().GetBindings(query);
 
-            return Response.AsJson(bindings);
+            var influences = new Dictionary<string, Dictionary<object, object>>();
+            foreach (BindingSet x in bindings)
+            {
+                string key = ((Uri)x["uri"]).AbsoluteUri;
+                Dictionary<object, object> dict;
+                if (!influences.ContainsKey(key))
+                {
+                    dict = new Dictionary<object, object>();
+                    foreach (var kv in x)
+                    {
+                        if (kv.Key != "change" &&
+                            kv.Key != "entity" &&
+                            kv.Key != "entityType")
+                        {
+                            dict.Add(kv.Key, kv.Value);
+                        }
+                    }
+                    dict.Add("entity", new List<Dictionary<string, object>>());
+                    influences.Add(key, dict);
+                }
+                else
+                {
+                    dict = influences[key];
+                }
+
+                Dictionary<string, object> change = new Dictionary<string, object>();
+                
+                change.Add("change", x["change"]);
+                change.Add("entity", x["entity"]);
+                change.Add("entityType", x["entityType"]);
+                ((List<Dictionary<string, object>>)dict["entity"]).Add(change);
+
+            }
+            return Response.AsJson(influences);
         }
 
         private Response GetRenderings(UriRef entityUri)
