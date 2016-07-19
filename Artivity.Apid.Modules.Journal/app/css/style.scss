@@ -292,7 +292,7 @@ h4 {
 
 #header {
 	display: table;
-    border-top: 1px solid $windowBackgroundColor;
+    border-top: 1px solid darken($headerBackgroundColor, 5%);
 	background: $headerBackgroundColor;
 	color: $headerTextColor;
 	width: 100%;
