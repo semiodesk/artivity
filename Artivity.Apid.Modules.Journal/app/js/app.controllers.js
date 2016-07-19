@@ -52,7 +52,7 @@ explorerControllers.controller('FileListController', function (api, $scope) {
     });
 });
 
-explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams) {
+explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams, $translate) {
     var fileUri = $location.search().uri;
 
     console.log(fileUri);
@@ -301,6 +301,38 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
         return result;
     };
+
+    // PRINT LABEL
+    $scope.getLabel = function (influence) {
+        if (influence.type == "http://www.w3.org/ns/prov#Generation") {
+            var key = 'FILEVIEW'.concat('.http://www.w3.org/ns/prov#Generation');
+            return $translate.instant(key);
+        } else if (influence.type == "http://www.w3.org/ns/prov#Invalidation")
+        {
+            var key = 'FILEVIEW'.concat('.http://www.w3.org/ns/prov#Invalidation');
+            return $translate.instant(key);
+        } else
+        {
+            if (influence.entity.length > 1) {
+                for (var entity in influence.entity)
+                {
+                    var e = influence.entity[entity];
+                    if (e.entityType != 'http://w3id.org/art/terms/1.0/Layer') {
+                        var key = 'FILEVIEW'.concat('.').concat(e.change);
+                        return $translate.instant(key);
+                    }
+                }
+                // TODO pluralize
+                var key = 'FILEVIEW'.concat('.').concat(influence.change);
+                return $translate.instant(key);
+            } else {
+                var key = 'FILEVIEW'.concat('.').concat(influence.entity[0].change);
+                return $translate.instant(key);
+            }
+         
+        }
+    };
+
 }).directive('ganttChart', function () {
     return {
         template: '<div class="chart"><svg class="canvas"></svg></div>',
