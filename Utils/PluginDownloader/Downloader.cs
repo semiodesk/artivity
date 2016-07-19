@@ -80,7 +80,6 @@ namespace PluginDownloader
                     }
                 }
             }
-        
         }
     }
 }

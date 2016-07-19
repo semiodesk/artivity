@@ -3,10 +3,10 @@
 
 	"name": "Artivity",
 	"description": "Allows for tracking the webpages you visit in the Artivity Journal.",
-	"version": "1.0.0",
+	"version": "1.0.2",
 
 	"agent": "http://www.google.com/chrome/browser/desktop",
-	"endpoint": "http://localhost:8262/artivity/api/1.0",
+	"endpoint": "http://localhost:8272/artivity/api/1.0",
 
 	"icons": {
 		"16": "icon16.png",
@@ -27,6 +27,6 @@
     "tabs",
     "activeTab",
     "http://localhost/",
-    "http://localhost:8262/"
+    "http://localhost:8272/"
   ]
 }

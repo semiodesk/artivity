@@ -51,6 +51,8 @@ namespace artivity
 		_curl = initializeRequest();
 
 		_fileUrl = "";
+
+		_transmitCount = 0;
 	}
 
 	ActivityLog::~ActivityLog()
@@ -145,11 +147,13 @@ namespace artivity
 		// Initialize the entity.
 		string uri = getEntityUri(_fileUrl);
 
-        if (uri != "")
-        {
-            // There is already a URI for the file.
-            _entity->uri = uri;
-        }
+		if(!uri.empty())
+		{
+        	_entity->uri = uri;
+		}
+
+		// Remember that we need to add the file to the index.
+		_hasDataObject = !uri.empty();
 
 		time_t now;
 		time(&now);
@@ -176,7 +180,7 @@ namespace artivity
 
 	bool ActivityLog::ready()
 	{
-		return !_endpointUrl.empty() && _entity != NULL && _activity != NULL && !_activity->empty();
+		return !_endpointUrl.empty() && _entity != NULL && _activity != NULL;
 	}
 
 	void ActivityLog::close()
@@ -191,9 +195,14 @@ namespace artivity
 
 	void ActivityLog::close(time_t time)
 	{
-		_activity->setEndTime(time);
+		// Only transmit the session end if there has already been transmitted data
+		// or there is transmittable activity data available.
+		if(_transmitCount > 0 || !_activity->empty())
+		{
+			_activity->setEndTime(time);
 
-		transmit();
+			transmit();
+		}
 	}
 
 	void ActivityLog::addAssociation(const char* roleUri)
@@ -338,14 +347,10 @@ namespace artivity
             read_json(stream, tree);
 
             uri = tree.get_child("uri").get_value<string>();
-
-            if (uri.empty())
-            {
-                return uri;
-            }
         }
         catch (...)
         {
+			uri = "";
         }
 
 		return uri;
@@ -577,6 +582,8 @@ namespace artivity
 #endif
         }
 
+		_transmitCount++;
+
 		clear();
 	}
 
@@ -650,6 +657,8 @@ namespace artivity
 
         _entity->setDataObject(FileDataObjectRef(new FileDataObject(fileUri.c_str())));
 
-        return !response.empty();
+		_hasDataObject = !response.empty();
+
+        return _hasDataObject;
     }
 }

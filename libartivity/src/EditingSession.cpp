@@ -210,6 +210,11 @@ namespace artivity
                 _log->createDataObject(_filePath);
             }
         }
+		else if (!_log->hasDataObject())
+		{
+			// Create a data object if we edit a non-indexed file.
+			_log->createDataObject(_filePath);
+		}
 
         time_t now;
         time(&now);
@@ -233,6 +238,11 @@ namespace artivity
                 _log->createDataObject(_filePath);
             }
         }
+		else if (!_log->hasDataObject())
+		{
+			// Create a data object if we edit a non-indexed file.
+			_log->createDataObject(_filePath);
+		}
 
         time_t now;
         time(&now);

@@ -494,6 +494,8 @@ namespace Artivity.Apid.Modules
                     ?uri
                     ?type
                     ?description
+                    ?change
+                    ?changeCount
                     ?layer
                     COALESCE(?agentColor, '#FF0000') AS ?agentColor
                     COALESCE(?x, 0) AS ?x
@@ -533,6 +535,18 @@ namespace Artivity.Apid.Modules
                             art:height?h
                         ] .
                     }
+
+                    OPTIONAL
+                    {
+						SELECT DISTINCT ?uri ?change (COUNT(?entity) as ?changeCount)  WHERE
+						{
+							?uri art:hadChange [
+							art:property ?change ;
+							art:entity ?entity ;
+							] .
+						 }
+                    }
+
 
                     OPTIONAL
                     {
@@ -736,7 +750,9 @@ namespace Artivity.Apid.Modules
 
             if(string.IsNullOrEmpty(file) || string.IsNullOrEmpty(folder))
             {
-                return Response.AsJson(new { });
+                Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+
+                return Response.AsJson(new {});
             }
 
             ISparqlQuery query = new SparqlQuery(@"
@@ -758,6 +774,8 @@ namespace Artivity.Apid.Modules
             query.Bind("@folderUrl", new Uri(folder));
 
             var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
+
+            Logger.LogRequest(HttpStatusCode.OK, Request);
 
             return Response.AsJson(bindings);
         }

@@ -100,6 +100,10 @@ namespace artivity
 
 		void dump(boost::property_tree::ptree const& pt);
 
+		int _transmitCount;
+
+		bool _hasDataObject;
+
     public:
         bool debug;
 
@@ -132,6 +136,8 @@ namespace artivity
 		void setDocument(ImageRef image, std::string path, bool create);
 
         ImageRef getDocument();
+
+		bool hasDataObject() { return _hasDataObject; }
 
         bool createDataObject(std::string path);
 
