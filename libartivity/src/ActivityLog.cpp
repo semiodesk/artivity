@@ -574,16 +574,21 @@ namespace artivity
 
         if (!debug)
         {
-            executeRequest(curl, url.str(), requestData, responseData);
+            long status = executeRequest(curl, url.str(), requestData, responseData);
+
+            if (status == CURLE_OK)
+            {
+                _transmitCount++;
+            }
         }
         else
         {
 #if _DEBUG
             logRequest(url.str(), "0ms", requestData);
+
+            _transmitCount++;
 #endif
         }
-
-		_transmitCount++;
 
 		clear();
 	}
@@ -651,14 +656,14 @@ namespace artivity
 
         string response;
 
-        executeRequest(curl, url.str(), "", response);
+        long status = executeRequest(curl, url.str(), "", response);
 
         stringstream stream;
         stream << response;
 
         _entity->setDataObject(FileDataObjectRef(new FileDataObject(fileUri.c_str())));
 
-		_hasDataObject = !response.empty();
+		_hasDataObject = (status == CURLE_OK);
 
         return _hasDataObject;
     }
