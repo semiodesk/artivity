@@ -340,6 +340,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
     return {
         template: '<div class="chart"><svg class="canvas"></svg></div>',
         link: function (scope, element, attributes) {
+        /*
             var gantt = d3.gantt();
 
             gantt.init(element, getValue(scope, attributes.chartData));
@@ -365,7 +366,9 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
                 gantt.width(container.innerWidth());
                 gantt.update();
             });
+            */
         }
+
     }
 });
 

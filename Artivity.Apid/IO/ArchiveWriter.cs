@@ -64,9 +64,9 @@ namespace Artivity.Api.IO
 
         #region Methods
 
-        public void Write(UriRef entityUri, Uri targetUrl)
+        public void Write(UriRef entityUri, string targetPath, DateTime minTime)
         {
-            FileInfo targetFile = new FileInfo(targetUrl.LocalPath);
+            FileInfo targetFile = new FileInfo(targetPath);
 
             if (!targetFile.Directory.Exists)
             {
@@ -76,20 +76,20 @@ namespace Artivity.Api.IO
             DirectoryInfo appFolder = new DirectoryInfo(_platformProvider.ArtivityDataFolder);
             DirectoryInfo exportFolder = CreateExportFolder(entityUri);
 
-            ExportData(entityUri, appFolder, exportFolder);
-            ExportRenderings(entityUri, appFolder, exportFolder);
+            ExportData(entityUri, appFolder, exportFolder, minTime);
+            ExportRenderings(entityUri, appFolder, exportFolder, minTime);
             ExportAvatars(entityUri, appFolder, exportFolder);
 
             WriteManifest(entityUri, exportFolder);
 
             FileInfo archiveFile = CompressExportFolder(entityUri, exportFolder);
 
-            //DeleteExportFolder(exportFolder);
+            DeleteExportFolder(exportFolder);
 
             File.Move(archiveFile.FullName, targetFile.FullName);
         }
 
-        private void ExportData(UriRef entityUri, DirectoryInfo appFolder, DirectoryInfo exportFolder)
+        private void ExportData(UriRef entityUri, DirectoryInfo appFolder, DirectoryInfo exportFolder, DateTime minTime)
         {
             string dataExport = _platformProvider.DatabaseFolder;
 
@@ -101,7 +101,7 @@ namespace Artivity.Api.IO
             }
 
             ExportAgents(entityUri, dataExport);
-            ExportActivities(entityUri, dataExport);
+            ExportActivities(entityUri, dataExport, minTime);
         }
 
         private void ExportAgents(UriRef entityUri, string targetDir)
@@ -123,7 +123,7 @@ namespace Artivity.Api.IO
             WriteTurtle(query, targetDir, "agents.ttl");
         }
 
-        private void ExportActivities(UriRef entityUri, string targetDir)
+        private void ExportActivities(UriRef entityUri, string targetDir, DateTime minTime)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
@@ -140,6 +140,9 @@ namespace Artivity.Api.IO
                 WHERE
                 {
                   ?activity prov:generated | prov:used @entity .
+                  ?activity prov:startedAtTime ?startTime .
+
+                  FILTER(@minTime >= ?startTime) .
 
                   @entity nie:isStoredAs ?file .
 
@@ -160,11 +163,12 @@ namespace Artivity.Api.IO
                 }");
 
             query.Bind("@entity", entityUri);
+            query.Bind("@minTime", minTime);
 
             WriteTurtle(query, targetDir, "activities.ttl");
         }
 
-        private void ExportRenderings(UriRef entityUri, DirectoryInfo appFolder, DirectoryInfo exportFolder)
+        private void ExportRenderings(UriRef entityUri, DirectoryInfo appFolder, DirectoryInfo exportFolder, DateTime minTime)
         {
             string renderingsEntity = Path.Combine(_platformProvider.RenderingsFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri));
 
@@ -179,9 +183,14 @@ namespace Artivity.Api.IO
                 }
 
                 // Copy all the files in the renderings folder to the export directory.
-                foreach (string file in Directory.GetFiles(renderingsEntity, "*.png"))
+                foreach (string fileName in Directory.GetFiles(renderingsEntity, "*.png"))
                 {
-                    File.Copy(file, file.Replace(renderingsEntity, renderingsExport), true);
+                    FileInfo file = new FileInfo(fileName);
+
+                    if (minTime < file.CreationTimeUtc)
+                    {
+                        File.Copy(file.FullName, file.FullName.Replace(renderingsEntity, renderingsExport), true);
+                    }
                 }
             }
         }
@@ -237,7 +246,7 @@ namespace Artivity.Api.IO
 
         private FileInfo CompressExportFolder(UriRef entityUri, DirectoryInfo exportFolder)
         {
-            string exportArchive = Path.Combine(_platformProvider.ExportFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri) + ".arty");
+            string exportArchive = Path.Combine(_platformProvider.ExportFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri) + ".artx");
 
             if (File.Exists(exportArchive))
             {
