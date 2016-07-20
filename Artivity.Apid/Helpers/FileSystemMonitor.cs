@@ -388,17 +388,12 @@ namespace Artivity.Apid
         /// <param name="e">File system event arguments.</param>
         private void OnFileSystemObjectCreated(object sender, FileSystemEventArgs e)
         {
-            FileInfo file = new FileInfo(e.FullPath);
-
-            if (!file.Exists || file.CreationTime == DateTime.MinValue)
-            {
-                return;
-            }
-
             try
             {
-                // Accessing the file attributes may cause exceptions.
-                if(file.Attributes.HasFlag(_createdFileMask))
+                FileInfo file = new FileInfo(e.FullPath);
+
+                // NOTE: Accessing the file attributes may cause exceptions; that's why it is the last condition.
+                if (!file.Exists || file.CreationTime == DateTime.MinValue || file.Attributes.HasFlag(_createdFileMask))
                 {
                     return;
                 }
