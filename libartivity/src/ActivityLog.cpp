@@ -53,6 +53,7 @@ namespace artivity
 		_fileUrl = "";
 
 		_transmitCount = 0;
+        debug = false;
 	}
 
 	ActivityLog::~ActivityLog()
