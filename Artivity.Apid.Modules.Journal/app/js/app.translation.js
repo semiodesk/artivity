@@ -37,6 +37,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
             'MASKED': 'Masked',
             'CLIPPED': 'Clipped',
             'COLOURS': 'Colours',
+            'UNKNOWN': 'Unknown',
             'http://www.w3.org/ns/prov#Generation': 'Created Element',
             'http://www.w3.org/ns/prov#Invalidation': 'Removed Element',
             'http://w3id.org/art/terms/1.0/position': 'Moved',
@@ -44,6 +45,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
             'http://www.w3.org/2000/01/rdf-schema#label': 'Renamed',
             'http://w3id.org/art/terms/1.0/textValue': 'Changed Text',
             'http://w3id.org/art/terms/1.0/aboveLayer': 'Moved Layer',
+
         }
     });
 
@@ -80,6 +82,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
             'MASKED': 'Maskiert',
             'CLIPPED': 'Clipped',
             'COLOURS': 'Farben',
+            'UNKNOWN': 'Unbekannt',
             'http://www.w3.org/ns/prov#Generation': 'Element erzeugt',
             'http://www.w3.org/ns/prov#Invalidation': 'Element entfernt',
             'http://w3id.org/art/terms/1.0/position': 'Verschoben',
