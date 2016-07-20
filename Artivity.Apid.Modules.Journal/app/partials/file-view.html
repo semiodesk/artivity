@@ -14,6 +14,10 @@
 			<div class="col expand">
 				<h5 class="title">{{file.label}}</h5>
 			</div>
+
+			<div class="col" style="width: 100px;">
+				<div id="export-btn" class="btn btn-default" ng-click="exportFile()"><i class="zmdi zmdi-hc-fw zmdi-archive"></i> Export</div>
+			</div>
 		</div>
 	</div>
 	<div id="body">
@@ -183,10 +187,10 @@
 						<li ng-repeat="color in palette">
 							<div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
 						</li>
-						
+
 						<div class="clearfix"></div>
 					</ul>
-					
+
 					<h5 style="margin-top: 1em;">{{ 'FILEVIEW.LAYERS' | translate }}</h5>
 					<ul class="list-unstyled">
 						<li ng-repeat="layer in layers | reverse">
