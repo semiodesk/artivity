@@ -206,6 +206,12 @@ explorerApp.factory('api', function ($http) {
 				function (response) {
 					return response.data;
 				})
+		},
+		exportFile: function(entityUri, fileName) {
+			return $http.get(endpoint + '/export?entityUri=' + entityUri + '&fileName=' + fileName).then(
+				function (response) {
+					return response.data;
+				})
 		}
 	};
 });
