@@ -40,6 +40,12 @@ namespace Artivity.Journal.Mac
     [Register("BrowserView")]
     public class BrowserView : WebView
     {
+        #region Members
+
+        public NSUrl HomeUrl { get; set; }
+
+        #endregion
+
         #region Constructors
 
         public BrowserView(IntPtr handle) : base(handle)
@@ -50,6 +56,11 @@ namespace Artivity.Journal.Mac
         #endregion
 
         #region Methods
+
+        public void NavigateHome()
+        {
+            MainFrame.LoadRequest(new NSUrlRequest(HomeUrl));
+        }
 
         public override NSDragOperation DraggingEntered(NSDraggingInfo sender)
         {
@@ -135,6 +146,9 @@ namespace Artivity.Journal.Mac
                         Thread.Sleep(1000);
 
                         MainFrame.WindowObject.CallWebScriptMethod("hideOverlays", new NSObject[] { });
+
+                        // Navigate to the dashboard or reload it to show the now file..
+                        NavigateHome();
                     }
                 }
             }
@@ -159,7 +173,11 @@ namespace Artivity.Journal.Mac
             {
                 NSUrl url = new NSUrl(items[i].GetStringForType("public.file-url"));
 
-                if (url.Path.EndsWith(".arty", StringComparison.InvariantCulture))
+                if (url.Path.EndsWith(".artx", StringComparison.InvariantCulture))
+                {
+                    yield return url;
+                }
+                else if (url.Path.EndsWith(".arty", StringComparison.InvariantCulture))
                 {
                     yield return url;
                 }
