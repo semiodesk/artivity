@@ -307,15 +307,22 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
         if (influence.type == "http://www.w3.org/ns/prov#Generation") {
             var key = 'FILEVIEW'.concat('.http://www.w3.org/ns/prov#Generation');
             return $translate.instant(key);
-        } else if (influence.type == "http://www.w3.org/ns/prov#Invalidation")
-        {
+        } else if (influence.type == "http://www.w3.org/ns/prov#Invalidation") {
             var key = 'FILEVIEW'.concat('.http://www.w3.org/ns/prov#Invalidation');
             return $translate.instant(key);
-        } else
-        {
-            if (influence.entity.length > 1) {
-                for (var entity in influence.entity)
-                {
+        } else {
+            if ( !influence.entity || influence.entity.length == 0 ) {
+            	if( influence.description )
+            		return influence.description;
+
+                return $translate.instant('FILEVIEW.UNKNOWN');
+            } 
+            else if( influence.entity.length == 1 ) {
+                var key = 'FILEVIEW'.concat('.').concat(influence.entity[0].change);
+                return $translate.instant(key);
+            }
+            else if (influence.entity.length > 1) {
+                for (var entity in influence.entity) {
                     var e = influence.entity[entity];
                     if (e.entityType != 'http://w3id.org/art/terms/1.0/Layer') {
                         var key = 'FILEVIEW'.concat('.').concat(e.change);
@@ -325,11 +332,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
                 // TODO pluralize
                 var key = 'FILEVIEW'.concat('.').concat(influence.change);
                 return $translate.instant(key);
-            } else {
-                var key = 'FILEVIEW'.concat('.').concat(influence.entity[0].change);
-                return $translate.instant(key);
-            }
-         
+            } 
         }
     };
 

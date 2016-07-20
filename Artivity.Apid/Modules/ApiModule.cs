@@ -576,7 +576,6 @@ namespace Artivity.Apid.Modules
                             dict.Add(kv.Key, kv.Value);
                         }
                     }
-                    dict.Add("entity", new List<Dictionary<string, object>>());
                     influences.Add(key, dict);
                 }
                 else
@@ -585,11 +584,22 @@ namespace Artivity.Apid.Modules
                 }
 
                 Dictionary<string, object> change = new Dictionary<string, object>();
-                
-                change.Add("change", x["change"]);
-                change.Add("entity", x["entity"]);
-                change.Add("entityType", x["entityType"]);
-                ((List<Dictionary<string, object>>)dict["entity"]).Add(change);
+                object c = x["change"];
+                object e = x["entity"];
+                object t = x["entityType"];
+                if (c != DBNull.Value && e != DBNull.Value && t != DBNull.Value)
+                {
+                    change.Add("change", c);
+                    change.Add("entity", e);
+                    change.Add("entityType", t);
+
+                    if (!dict.ContainsKey("entity"))
+                    {
+                        dict.Add("entity", new List<Dictionary<string, object>>());
+                    }
+
+                    ((List<Dictionary<string, object>>)dict["entity"]).Add(change);
+                }
 
             }
             return Response.AsJson(influences);
