@@ -31,6 +31,7 @@ using Artivity.Api.IO;
 using Semiodesk.Trinity;
 using System;
 using Nancy;
+using System.IO;
 
 namespace Artivity.Apid.Modules
 {
@@ -44,14 +45,32 @@ namespace Artivity.Apid.Modules
             Get["/"] = parameters =>
             {
                 string entityUri = Request.Query.entityUri;
-                string targetUrl = Request.Query.targetUrl;
+                string fileName = Request.Query.fileName;
 
-                if (!IsUri(entityUri) || !IsFileUrl(targetUrl))
+                if (!IsUri(entityUri) || string.IsNullOrEmpty(fileName))
                 {
                     return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return Export(new UriRef(entityUri), new Uri(targetUrl));
+                string minStartTime = Request.Query.minStartTime;
+
+                if(!string.IsNullOrEmpty(minStartTime))
+                {
+                    DateTimeOffset timestamp;
+
+                    if (DateTimeOffset.TryParse(minStartTime.Replace(' ', '+'), out timestamp))
+                    {
+                        return Export(new UriRef(entityUri), fileName, timestamp.UtcDateTime);
+                    }
+                    else
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+                }
+                else
+                {
+                    return Export(new UriRef(entityUri), fileName, DateTime.MinValue);
+                }
             };
         }
 
@@ -59,12 +78,15 @@ namespace Artivity.Apid.Modules
 
         #region Methods
 
-        protected Response Export(UriRef entityUri, Uri targetUrl)
+        protected Response Export(UriRef entityUri, string fileName, DateTime minTime)
         {
             try
             {
+                string targetFile = Path.GetFileNameWithoutExtension(fileName) + ".artx";
+                string targetFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+
                 ArchiveWriter exporter = new ArchiveWriter(PlatformProvider, ModelProvider);
-                exporter.Write(entityUri, targetUrl);
+                exporter.Write(entityUri, Path.Combine(targetFolder, targetFile), minTime);
             }
             catch (Exception e)
             {

@@ -55,13 +55,12 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams, $translate) {
     var fileUri = $location.search().uri;
 
-    console.log(fileUri);
-
     // File metadata
     $scope.file = {};
-
+	
     api.getFile(fileUri).then(function (data) {
         $scope.file = data;
+		$scope.fileExportUrl = api.getExportUrl(fileUri, data.label);
     });
 
     // Agent metadata
@@ -302,6 +301,11 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
         return result;
     };
 
+	// EXPORT
+	$scope.exportFile = function() {
+		api.exportFile(fileUri, $scope.file.label);
+	};
+	
     // PRINT LABEL
     $scope.getLabel = function (influence) {
         if (influence.type == "http://www.w3.org/ns/prov#Generation") {
@@ -337,6 +341,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
     return {
         template: '<div class="chart"><svg class="canvas"></svg></div>',
         link: function (scope, element, attributes) {
+			/*
             var gantt = d3.gantt();
 
             gantt.init(element, getValue(scope, attributes.chartData));
@@ -362,6 +367,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
                 gantt.width(container.innerWidth());
                 gantt.update();
             });
+			*/
         }
     }
 });
