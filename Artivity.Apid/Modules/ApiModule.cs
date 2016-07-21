@@ -494,9 +494,9 @@ namespace Artivity.Apid.Modules
                     ?uri
                     ?type
                     ?description
-                    ?change
 					?entity
 					?entityType
+                    ?property
                     ?layer
                     COALESCE(?agentColor, '#FF0000') AS ?agentColor
                     COALESCE(?x, 0) AS ?x
@@ -539,9 +539,11 @@ namespace Artivity.Apid.Modules
 
                     OPTIONAL
                     {
-						?uri art:hadChange ?c .
-						?c art:property ?change ;
-						art:entity ?entity .
+						?uri art:hadChange [
+                            art:entity ?entity;
+                            art:property ?property ;
+                        ] .
+
 						?entity a ?entityType .
                     }
 
@@ -557,41 +559,55 @@ namespace Artivity.Apid.Modules
 
             query.Bind("@entity", entityUri);
 
-            var bindings = ModelProvider.GetAll().GetBindings(query);
+            IEnumerable<BindingSet> bindings = ModelProvider.GetAll().GetBindings(query);
 
-            var influences = new Dictionary<string, Dictionary<object, object>>();
-            foreach (BindingSet x in bindings)
+            // Since SPARQL does not support to return nested values (1 influence -> n-changes)
+            // we consolidate the changes made in an influence into a list.
+            IList<Influence> influences = new List<Influence>();
+
+            Influence lastInfluence = null;
+
+            foreach (BindingSet b in bindings)
             {
-                string key = ((Uri)x["uri"]).AbsoluteUri;
-                Dictionary<object, object> dict;
-                if (!influences.ContainsKey(key))
-                {
-                    dict = new Dictionary<object, object>();
-                    foreach (var kv in x)
-                    {
-                        if (kv.Key != "change" &&
-                            kv.Key != "entity" &&
-                            kv.Key != "entityType")
-                        {
-                            dict.Add(kv.Key, kv.Value);
-                        }
-                    }
-                    dict.Add("entity", new List<Dictionary<string, object>>());
-                    influences.Add(key, dict);
-                }
-                else
-                {
-                    dict = influences[key];
-                }
+                string uri = b["uri"].ToString();
 
-                Dictionary<string, object> change = new Dictionary<string, object>();
+                // Initialize the last influence.
+                if(lastInfluence == null || lastInfluence.uri != uri)
+                {
+                    lastInfluence = new Influence();
+                    lastInfluence.uri = uri;
+                    lastInfluence.type = b["type"];
+                    lastInfluence.time = b["time"];
+                    lastInfluence.description = b["description"];
+                    lastInfluence.layer = b["layer"];
+                    lastInfluence.agentColor = b["agentColor"];
+                    lastInfluence.x = b["x"];
+                    lastInfluence.y = b["y"];
+                    lastInfluence.w = b["w"];
+                    lastInfluence.h = b["h"];
+
+                    influences.Add(lastInfluence);
+                }
                 
-                change.Add("change", x["change"]);
-                change.Add("entity", x["entity"]);
-                change.Add("entityType", x["entityType"]);
-                ((List<Dictionary<string, object>>)dict["entity"]).Add(change);
+                // Add the current change to the last influence.
+                object entity = b["entity"];
 
+                if (entity != null)
+                {
+                    object entityType = b["entityType"];
+                    object property = b["property"];
+
+                    Change change = new Change()
+                    {
+                        entity = entity.ToString(),
+                        entityType = entityType.ToString(),
+                        property = property.ToString()
+                    };
+
+                    lastInfluence.changes.Add(change);
+                }
             }
+
             return Response.AsJson(influences);
         }
 
@@ -929,5 +945,39 @@ namespace Artivity.Apid.Modules
         }
 
         #endregion
+    }
+
+    class Influence
+    {
+        public string uri;
+
+        public object time;
+
+        public object type;
+
+        public object description;
+
+        public object layer;
+
+        public object agentColor;
+
+        public object x;
+
+        public object y;
+
+        public object w;
+
+        public object h;
+
+        public List<Change> changes = new List<Change>();
+    }
+
+    struct Change
+    {
+        public string entity;
+
+        public string entityType;
+
+        public string property;
     }
 }
