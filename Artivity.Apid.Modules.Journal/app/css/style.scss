@@ -644,6 +644,19 @@ h4 {
 
 /* GANTT CHART */
 
+.timeline-control {
+	width: 100%;
+	height: 100%;
+}
+
+.timeline-track {
+	fill: rgba($accentColor, .2);
+}
+
+.timeline-track-indicator {
+	fill: $accentColor;
+}
+
 .chart {
 	display: block;
 	margin: 0;
@@ -657,48 +670,6 @@ h4 {
 	fill: $labelColor;
 	width: 100%;
 }
-
-.axis path,
-.axis line {
-	fill: none;
-	stroke: $labelColor;
-	shape-rendering: crispEdges;
-}
-
-.y.axis .tick {
-	position: relative;
-	left: -5px;
-}
-
-.x.axis {
-	stroke-width: 0;
-}
-
-.x.axis .tick {
-	stroke-width: 1px;
-}
-
-.bar {
-	fill: #33b5e5;
-}
-
-.bar-failed {
-	fill: #CC0000;
-}
-
-.bar-running {
-	fill: #669900;
-	width: 100px;
-}
-
-.bar-succeeded {
-	fill: #33b5e5;
-}
-
-.bar-killed {
-	fill: #ffbb33;
-}
-
 
 /* CARDS */
 

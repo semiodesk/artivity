@@ -608,68 +608,40 @@ h4 {
 
 /* GANTT CHART */
 /* line 647, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+.timeline-control {
+  width: 100%;
+  height: 100%; }
+
+/* line 652, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+.timeline-track {
+  fill: rgba(255, 255, 255, 0.2); }
+
+/* line 656, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+.timeline-track-indicator {
+  fill: #FFFFFF; }
+
+/* line 660, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .chart {
   display: block;
   margin: 0;
   height: 100%;
   width: 100%; }
 
-/* line 654, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 667, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .chart .canvas {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-size: 13px;
   fill: #b3b3b3;
   width: 100%; }
 
-/* line 662, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #b3b3b3;
-  shape-rendering: crispEdges; }
-
-/* line 668, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
-.y.axis .tick {
-  position: relative;
-  left: -5px; }
-
-/* line 673, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
-.x.axis {
-  stroke-width: 0; }
-
-/* line 677, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
-.x.axis .tick {
-  stroke-width: 1px; }
-
-/* line 681, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
-.bar {
-  fill: #33b5e5; }
-
-/* line 685, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
-.bar-failed {
-  fill: #CC0000; }
-
-/* line 689, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
-.bar-running {
-  fill: #669900;
-  width: 100px; }
-
-/* line 694, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
-.bar-succeeded {
-  fill: #33b5e5; }
-
-/* line 698, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
-.bar-killed {
-  fill: #ffbb33; }
-
 /* CARDS */
-/* line 705, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 676, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .cards {
   list-style: none;
   padding: 5px;
   margin: 0; }
 
-/* line 711, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 682, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .card {
   float: left;
   width: 200px;
@@ -677,32 +649,32 @@ h4 {
   padding: 0;
   background: #333333; }
 
-/* line 719, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 690, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .card .title {
   padding: 10px; }
 
-/* line 723, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 694, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .card:hover {
   background: #4d4d4d; }
 
-/* line 727, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 698, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .card a {
   margin: 0;
   padding: 0; }
 
 /* FORMS */
-/* line 735, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 706, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 label {
   font-weight: 400;
   color: #b3b3b3; }
 
-/* line 740, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 711, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 input.form-control {
   border-radius: 0;
   border-color: white;
   box-shadow: none; }
 
-/* line 749, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 720, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 textarea.form-control:active,
 textarea.form-control:focus,
 input.form-control:active,
@@ -713,7 +685,7 @@ input.form-control:focus {
   -webkit-appearance: none; }
 
 /* LOADING SPINNER */
-/* line 759, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 730, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .loader {
   margin: 0.5em 1.5em;
   font-size: 10px;
@@ -730,7 +702,7 @@ input.form-control:focus {
   -webkit-animation: load8 1.1s infinite linear;
   animation: load8 1.1s infinite linear; }
 
-/* line 777, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 748, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .loader,
 .loader:after {
   border-radius: 50%;
@@ -754,7 +726,7 @@ input.form-control:focus {
     transform: rotate(360deg); } }
 
 /* MISC */
-/* line 808, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 779, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .under-construction {
   position: relative;
   height: 300px;
@@ -763,59 +735,59 @@ input.form-control:focus {
   background-size: 100px 100px;
   opacity: .2; }
 
-/* line 817, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 788, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 ::-webkit-scrollbar {
   width: 12px;
   /* for vertical scrollbars */
   height: 12px;
   /* for horizontal scrollbars */ }
 
-/* line 824, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 795, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 ::-webkit-scrollbar-track {
   background: transparent; }
 
-/* line 828, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 799, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 ::-webkit-scrollbar-thumb {
   background: #333333; }
 
-/* line 832, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 803, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .bootstrap-switch {
   background: #333333;
   outline: none;
   border: none; }
 
-/* line 838, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 809, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .bootstrap-switch-label {
   background: #333333 !important; }
 
-/* line 842, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 813, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .bootstrap-switch-focused {
   outline: none;
   border: none !important;
   box-shadow: none !important; }
 
-/* line 848, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 819, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .bootstrap-switch-handle-on {
   background: green !important; }
 
-/* line 852, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 823, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .bootstrap-switch-handle-off {
   background: #666 !important;
   color: white !important; }
 
-/* line 857, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 828, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .nav-pills > li > a {
   cursor: pointer;
   border-radius: 0;
   background: transparent;
   color: #FFFFFF; }
 
-/* line 864, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 835, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .nav-pills > li.active > a {
   background: #FFFFFF;
   color: #1D1D1D; }
 
-/* line 870, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 841, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .nav-pills > li > a:hover,
 .nav-pills > li.active > a:hover {
   cursor: pointer;
@@ -823,7 +795,7 @@ input.form-control:focus {
   color: #1D1D1D;
   border-radius: 0; }
 
-/* line 877, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 848, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .hint {
   background: #333333;
   border-radius: 3px;
@@ -831,11 +803,11 @@ input.form-control:focus {
   box-sizing: border-box;
   width: 100%; }
 
-/* line 885, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 856, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .zdmi-xl {
   font-size: 48px; }
 
-/* line 889, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 860, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .overlay {
   position: absolute;
   top: 50px;
@@ -845,34 +817,34 @@ input.form-control:focus {
   color: white;
   background: rgba(29, 29, 29, 0.95); }
 
-/* line 900, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 871, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .overlay.invisible,
 .msg.invisible {
   opacity: 0; }
 
-/* line 904, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 875, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .msg {
   min-width: 600px; }
 
-/* line 910, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 881, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .msg h1,
 .msg h2,
 .msg h3 {
   margin-top: 0; }
 
-/* line 914, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 885, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .center-x {
   position: absolute;
   left: 50%;
   transform: translateX(-50%); }
 
-/* line 920, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 891, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .center-y {
   position: absolute;
   top: 50%;
   transform: translateY(-50%); }
 
-/* line 926, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
+/* line 897, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .center-xy {
   position: absolute;
   top: 50%;

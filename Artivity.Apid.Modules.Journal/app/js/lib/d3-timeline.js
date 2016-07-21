@@ -49,6 +49,7 @@ TimelineControl.prototype.setWidth = function (width) {
 
 	t.svg.style("width", width);
 	t.track.attr("width", width);
+	t.trackIndicator.attr("x", width - t.trackIndicator.attr("width"));
 
 	// Update the x time scale to the new width.
 	if (width) {
@@ -72,10 +73,15 @@ TimelineControl.prototype.setHeight = function (height) {
 TimelineControl.prototype.setPosition = function (pos) {
 	var t = this;
 	var time = new Date(pos);
-
+	
 	if (t.xScale) {
-		t.trackIndicator.transition().attr("width", t.xScale(time));
+		var trackWidth = t.track.attr("width");
+		var indicatorWidth = t.xScale(time);
+		
+		t.trackIndicator.transition().attr("width", indicatorWidth).attr("x", trackWidth - indicatorWidth);
 	} else {
+		console.log("Warning: Timline data not initialized:", t.data);
+		
 		t.trackIndicator.transition().attr("width", 0);
 	}
 };
