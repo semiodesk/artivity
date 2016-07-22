@@ -25,6 +25,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
+using System.Net;
 using AppKit;
 using Foundation;
 using Sparkle;
@@ -49,17 +50,15 @@ namespace Artivity.Journal.Mac
             _updater = new SUUpdater();
             _updater.Delegate = new SparkleDelegate();
             _updater.AutomaticallyChecksForUpdates = true;
-
-
         }
 
         public override void DidFinishLaunching(NSNotification notification)
         {
             // Insert code here to initialize your application
-
             if (NSApplication.SharedApplication.Windows.Length > 0)
             {
                 var window = NSApplication.SharedApplication.Windows[0];
+
                 if (window != null)
                 {
                     window.TitlebarAppearsTransparent = true;
@@ -78,7 +77,6 @@ namespace Artivity.Journal.Mac
             defaults.SetBool(true, "WebKitDeveloperExtras");
             defaults.Synchronize();
             #endif
-
         }
 
         public override bool ApplicationShouldHandleReopen(NSApplication sender, bool hasVisibleWindows)
@@ -107,7 +105,14 @@ namespace Artivity.Journal.Mac
 
         partial void CheckForUpdate(NSObject sender)
         {
-            _updater.CheckForUpdates(sender);
+            try
+            {
+                _updater.CheckForUpdates(sender);
+            }
+            catch (WebException ex)
+            {
+                Logger.LogError(ex);
+            }
         }
 
         #endregion
