@@ -35,6 +35,7 @@ using System.Xml.XPath;
 using System.Net;
 using log4net.Layout;
 using log4net.Appender;
+using System.Xml;
 
 namespace Artivity.Journal.Mac
 {
@@ -52,9 +53,7 @@ namespace Artivity.Journal.Mac
         {
             InitializeLogging();
 
-            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-            Logger.LogInfo("--- Artivity Journal, Version {0} ---", version);
+            Logger.LogInfo("--- Artivity Journal, Version 1.5.0 ---");
         }
 
         #endregion
@@ -286,13 +285,26 @@ namespace Artivity.Journal.Mac
 
         private string GetAgentPath()
         {
-            XPathDocument document = new XPathDocument(GetUserAgentPlist().FullName);
+            using (TextReader textReader = File.OpenText(GetUserAgentPlist().FullName))
+            {
+                // See: http://todotnet.com/archive/2006/07/27/8248.aspx
+                // Prevent the XPathDocument from issueing a HTTP-Request to
+                // resolve the document DTD. This causes exceptions if there is no
+                // network connection.
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.XmlResolver = null;
+                settings.DtdProcessing = DtdProcessing.Ignore;
 
-            XPathNavigator navigator = document.CreateNavigator();
+                XmlReader reader = XmlReader.Create(textReader, settings);
 
-            string path = "//plist/dict/array/string";
+                XPathDocument document = new XPathDocument(reader);
 
-            return navigator.SelectSingleNode(path).Value;             
+                XPathNavigator navigator = document.CreateNavigator();
+
+                string path = "//plist/dict/array/string";
+
+                return navigator.SelectSingleNode(path).Value;
+            }
         }
 
         private static FileInfo GetUserAgentPlist()
@@ -338,7 +350,7 @@ namespace Artivity.Journal.Mac
             {
                 WebClient client = new WebClient();
 
-                client.DownloadString(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", port));
+                client.DownloadString(string.Format("http://127.0.0.1:{0}/artivity/app/journal/1.0/", port));
 
                 return true;
             }

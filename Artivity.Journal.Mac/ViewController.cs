@@ -177,7 +177,7 @@ namespace Artivity.Journal.Mac
 
         private void OpenJournal()
         {
-            Browser.HomeUrl = new NSUrl(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", Port));                         
+            Browser.HomeUrl = new NSUrl(string.Format("http://127.0.0.1:{0}/artivity/app/journal/1.0/", Port));                         
             Browser.NavigateHome();
         }
 
@@ -218,7 +218,7 @@ namespace Artivity.Journal.Mac
                 {
                     string html = reader.ReadToEnd();
 
-                    Browser.MainFrame.LoadHtmlString(html, new NSUrl("http://localhost/"));
+                    Browser.MainFrame.LoadHtmlString(html, new NSUrl("http://127.0.0.1/"));
                 }
             } 
         }
