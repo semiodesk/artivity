@@ -59,6 +59,8 @@ namespace Artivity.Journal.Mac
 
         public void NavigateHome()
         {
+            Logger.LogInfo("Navigating to: {0}", HomeUrl);
+
             MainFrame.LoadRequest(new NSUrlRequest(HomeUrl));
         }
 
@@ -186,6 +188,8 @@ namespace Artivity.Journal.Mac
 
         private void RegisterSoftwareAgent(Uri url)
         {
+            Logger.LogInfo("Registering software agent: {0}", url);
+
             string endpoint = string.Format("http://localhost:{0}/artivity/api/1.0/agents/software/paths/add?url={1}", ViewController.Port, url.AbsoluteUri);
 
             WebRequest request = WebRequest.Create(endpoint);
@@ -197,6 +201,8 @@ namespace Artivity.Journal.Mac
 
         private void ImportArchiveFile(Uri url)
         {
+            Logger.LogInfo("Importing archive file: {0}", url);
+
             string endpoint = string.Format("http://localhost:{0}/artivity/api/1.0/import?fileUrl={1}", ViewController.Port, url.AbsoluteUri);
 
             WebRequest request = WebRequest.Create(endpoint);

@@ -25,19 +25,40 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using ObjCRuntime;
 using AppKit;
 using System.IO;
 using System;
 using System.Reflection;
 using System.Diagnostics;
-using ObjCRuntime;
 using System.Xml.XPath;
 using System.Net;
+using log4net.Layout;
+using log4net.Appender;
 
 namespace Artivity.Journal.Mac
 {
     public class Program
     {
+        #region Members
+
+        private bool _logInitialized;
+
+        #endregion
+
+        #region Constructors
+
+        public Program()
+        {
+            InitializeLogging();
+
+            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            Logger.LogInfo("--- Artivity Journal, Version {0} ---", version);
+        }
+
+        #endregion
+
         #region Methods
 
         public void Run(string[] args)
@@ -46,24 +67,73 @@ namespace Artivity.Journal.Mac
             NSApplication.Main(args);
         }
 
-        public void InitSparkle()
+        protected void InitializeLogging()
         {
-            var baseAppPath = Directory.GetParent(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).ToString());
+            if (_logInitialized)
+            {
+                return;
+            }
 
-            var sparklePath = baseAppPath + "/Frameworks/Sparkle.Framework/Sparkle";
+            bool consoleLogging = true;
+
+#if DEBUG
+            string logFile = Path.Combine(Environment.CurrentDirectory, "log.config.debug");
+#else
+            string logFile = Path.Combine(Environment.CurrentDirectory, "log.config");
+#endif
+
+            if (File.Exists(logFile))
+            {
+                try
+                {
+                    FileInfo logFileConfig = new FileInfo(logFile);
+
+                    log4net.Config.XmlConfigurator.Configure(logFileConfig);
+
+                    consoleLogging = false;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex.Message);
+                }
+            }
+
+            if (consoleLogging)
+            {
+                PatternLayout layout = new PatternLayout();
+                layout.ConversionPattern = layout.ConversionPattern = "%date{g} [%-5level] – %message%newline";
+                layout.ActivateOptions();
+
+                ConsoleAppender appender = new ConsoleAppender();
+                appender.Name = "ConsoleAppender";
+                appender.Layout = layout;
+
+                log4net.Config.BasicConfigurator.Configure(appender);
+            }
+
+            _logInitialized = true;
+        }
+
+        public void InitializeSparkle()
+        {
+            Logger.LogInfo("Initializing Sparkle..");
+
+            DirectoryInfo appBundleFolder = Directory.GetParent(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).ToString());
+
+            string sparklePath = appBundleFolder + "/Frameworks/Sparkle.Framework/Sparkle";
 
             if (Dlfcn.dlopen(sparklePath, 0) == IntPtr.Zero)
             {
-                Console.Error.WriteLine(string.Format("Unable to load the dynamic library for Sparkle: {0}", sparklePath));
+                Logger.LogError("Unable to load the dynamic library for Sparkle: {0}", sparklePath);
 
                 Environment.Exit(1);
             }
         }
 
-        public void InitApid()
+        public void InitializeApid()
         {
 #if !DEBUG
-            TestApid();
+            CheckApid();
 
             if (!IsApidRunning())
             {
@@ -72,93 +142,107 @@ namespace Artivity.Journal.Mac
 #endif
         }
 
-        private static void EnsureLaunchAgentDirExists()
+        private void CheckApid()
         {
-            var plist = GetLocalPlist();
-            if (!plist.Directory.Exists)
-                plist.Directory.Create();
+            try
+            {
+                Logger.LogInfo("Initializing APID..");
+
+                if (!CheckSystemApid())
+                {
+                    CheckUserApid();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
         }
 
-
-        private void TestApid ()
+        public bool CheckSystemApid()
         {
-            Console.WriteLine ("Testing if APID is installed..");
+            // 1. Check for a globally installed APID.
+            string path = "/Library/LaunchAgents/com.semiodesk.artivity.plist";
 
-            string username = Environment.UserName;
+            FileInfo agent = new FileInfo(path);
 
-            string globalApidPath = "/Library/LaunchAgents/com.semiodesk.artivity.plist";
-
-            FileInfo globalAgent = new FileInfo (globalApidPath);
-
-            if (globalAgent.Exists) 
+            if (agent.Exists)
             {
-                Console.WriteLine (string.Format ("Global launch agent found in {0}", globalApidPath));
+                Logger.LogInfo("Global launch agent found in {0}", path);
 
                 // The plist for a global agent exists, so we assume everything is fine and people know what they are doing...
-                return;
+                return true;
             }
 
-            FileInfo userAgent = GetLocalPlist ();
+            return false;
+        }
 
-            var current = Environment.CurrentDirectory;
+        public bool CheckUserApid()
+        {
+            // 2. Check for a user installed APID.
+            FileInfo plist = GetUserAgentPlist();
 
-            DirectoryInfo contentPath = new DirectoryInfo (Path.Combine (current, ".."));
+            // Ensure that the $HOME/Library/LaunchAgents directory exists..
+            EnsureDirectoryExists(plist.Directory);
 
-            FileInfo agentFile = new FileInfo (Path.Combine (current, "..", "Resources", "com.semiodesk.artivity.plist"));
+            DirectoryInfo appBundle = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, ".."));
 
-            EnsureLaunchAgentDirExists();
-
-            if (userAgent.Exists) 
+            if (plist.Exists)
             {
                 // Test if current plist file contains this apid
-                string currentApid = GetAgentPath ();
-                string thisApid = contentPath.FullName;
-                int sameApid = string.Compare (thisApid, 0, currentApid, 0, thisApid.Length);
+                string currentApid = GetAgentPath();
+                string thisApid = appBundle.FullName;
 
-                if (sameApid == 0) 
+                int sameApid = string.Compare(thisApid, 0, currentApid, 0, thisApid.Length);
+
+                if (sameApid == 0)
                 {
-                    Console.WriteLine (string.Format ("Existing launch agent found in {0}", userAgent.FullName));
-                    return;
+                    Logger.LogInfo(string.Format("Launch agent found in {0}", plist.FullName));
+
+                    return true;
                 }
             }
 
             Process process;
 
-            if (!userAgent.Exists) 
+            if (!plist.Exists)
             {
-                Console.WriteLine (string.Format ("Creating launch agent in {0}", userAgent.FullName));
-            } else 
+                Logger.LogInfo("Creating launch agent in {0}", plist.FullName);
+            }
+            else
             {
-                Console.WriteLine (string.Format ("Replacing launch agent in {0}", userAgent.FullName));
+                Logger.LogInfo("Replacing launch agent in {0}", plist.FullName);
 
-                process = new Process ();
+                process = new Process();
                 process.StartInfo.FileName = "/bin/bash";
-                process.StartInfo.Arguments = string.Format ("-c \"launchctl unload {0}\"", userAgent.FullName);
+                process.StartInfo.Arguments = string.Format("-c \"launchctl unload {0}\"", plist.FullName);
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
-                process.Start ();
+                process.Start();
 
-                Console.WriteLine (string.Format ("Unloaded launch agent: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
+                Logger.LogInfo("Unloaded launch agent: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments);
             }
 
-            var text = File.ReadAllText (agentFile.FullName);
+            FileInfo templateFile = new FileInfo(Path.Combine(Environment.CurrentDirectory, "..", "Resources", "com.semiodesk.artivity.plist"));
 
-            File.WriteAllText (userAgent.FullName, string.Format (text, contentPath.FullName));
+            string template = File.ReadAllText(templateFile.FullName);
 
-            process = new Process ();
+            File.WriteAllText(plist.FullName, string.Format(template, appBundle.FullName));
+
+            process = new Process();
             process.StartInfo.FileName = "/bin/bash";
-            process.StartInfo.Arguments = string.Format ("-c \"launchctl bootstrap gui/$UID {0}\"", userAgent.FullName);
+            process.StartInfo.Arguments = string.Format("-c \"launchctl bootstrap gui/$UID {0}\"", plist.FullName);
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
-            process.Start ();
+            process.Start();
 
-            Console.WriteLine (string.Format ("Bootstrapped launch agent: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
+            Logger.LogInfo("Bootstrapped launch agent: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments);
 
+            return true;
         }
 
         public static bool IsApidRunning()
         {
-            //launchctl list | grep 'com.semiodesk.artivity$' | awk '{print $2}'
             Process process = new Process();
             process.StartInfo.FileName = "/bin/bash";
             process.StartInfo.Arguments = "-c \"launchctl list | grep 'com.semiodesk.artivity$' | awk '{print $2}'\"";
@@ -172,15 +256,25 @@ namespace Artivity.Journal.Mac
 
                 if (line == "0")
                 {
-                    Console.WriteLine(string.Format("Found running APID."));
+                    Logger.LogInfo("Running APID reported by launchctl..");
 
                     return true;
                 }
             }
 
-            Console.WriteLine(string.Format("No running APID found."));
+            Logger.LogInfo("No running APID reported by launchctl..");
 
             return false;
+        }
+
+        protected static void EnsureDirectoryExists(DirectoryInfo directory)
+        {
+            if (!directory.Exists)
+            {
+                directory.Create();
+
+                Logger.LogInfo("Created directory: {0}", directory.FullName);
+            }
         }
 
         private string GetCurrentExecutingDirectory()
@@ -190,31 +284,29 @@ namespace Artivity.Journal.Mac
             return Path.GetDirectoryName(filePath);
         }
 
-        private string GetAgentPath ()
+        private string GetAgentPath()
         {
-            XPathNavigator nav;
-            XPathDocument docNav;
-            string xPath;
+            XPathDocument document = new XPathDocument(GetUserAgentPlist().FullName);
 
-            docNav = new XPathDocument (GetLocalPlist().FullName);
-            nav = docNav.CreateNavigator ();
-            xPath = "//plist/dict/array/string";
+            XPathNavigator navigator = document.CreateNavigator();
 
-            return nav.SelectSingleNode (xPath).Value;             
+            string path = "//plist/dict/array/string";
+
+            return navigator.SelectSingleNode(path).Value;             
         }
 
-        private static FileInfo GetLocalPlist()
+        private static FileInfo GetUserAgentPlist()
         {
-            var home = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string userHome = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
-            return new FileInfo(Path.Combine(home, "Library/LaunchAgents/com.semiodesk.artivity.plist"));
+            return new FileInfo(Path.Combine(userHome, "Library/LaunchAgents/com.semiodesk.artivity.plist"));
         }
 
         public static void StopApid()
         {
-            Console.WriteLine(string.Format("Stopping APID.."));
+            Logger.LogInfo(string.Format("Unloading APID with launchctl.."));
 
-            FileInfo userAgent = GetLocalPlist();
+            FileInfo userAgent = GetUserAgentPlist();
 
             Process proc = new Process();
             proc.StartInfo.FileName = "/bin/bash";
@@ -226,14 +318,15 @@ namespace Artivity.Journal.Mac
 
         public static void StartApid()
         {
-            Console.WriteLine(string.Format("Starting APID.."));
-            EnsureLaunchAgentDirExists();
+            Logger.LogInfo(string.Format("Loading APID with launchctl.."));
 
-            FileInfo userAgent = GetLocalPlist();
+            FileInfo plist = GetUserAgentPlist();
+
+            EnsureDirectoryExists(plist.Directory);
 
             Process proc = new Process();
             proc.StartInfo.FileName = "/bin/bash";
-            proc.StartInfo.Arguments = string.Format("-c \"launchctl load {0}\"", userAgent.FullName);
+            proc.StartInfo.Arguments = string.Format("-c \"launchctl load {0}\"", plist.FullName);
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.RedirectStandardOutput = true;
             proc.Start();

@@ -29,18 +29,14 @@ using System;
 using System.IO;
 using System.Configuration;
 using System.Threading;
-using System.Linq;
-using CommandLine;
 using Semiodesk.Trinity;
 using Semiodesk.TinyVirtuoso;
-using log4net;
 using Nancy.Hosting.Self;
 using Nancy.TinyIoc;
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
 using Artivity.Api.Plugin;
 using Artivity.Api.Platforms;
-using Semiodesk.Trinity.Configuration;
 
 namespace Artivity.Apid
 {
@@ -175,7 +171,7 @@ namespace Artivity.Apid
         {
             string version = typeof(HttpService).Assembly.GetName().Version.ToString();
 
-            Logger.LogInfo("Artivity API Service, Version {0}", version);
+            Logger.LogInfo("--- Artivity API Service, Version {0} ---", version);
 
             SemiodeskDiscovery.Discover();
 
@@ -207,7 +203,7 @@ namespace Artivity.Apid
 
         public void Stop(bool waitForEnd = true)
         {
-            Logger.LogInfo ("Stopping service.");
+            Logger.LogInfo("Stopping service.");
 
             StopWatchdog();
 
@@ -266,6 +262,10 @@ namespace Artivity.Apid
                     }
 
                     _serviceHost.Stop();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
                 }
                 finally
                 {

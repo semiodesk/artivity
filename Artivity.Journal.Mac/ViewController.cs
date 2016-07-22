@@ -134,8 +134,6 @@ namespace Artivity.Journal.Mac
 
                 View.Layer.BackgroundColor = c2;
             }
-
-            //Browser.Layer.BackgroundColor = new CoreGraphics.CGColor(new nfloat(29.0/255), new nfloat(29.0/255), new nfloat(29.0/255), new nfloat(1.0));
         }
 
         private async void TestForServer(TimeSpan interval, int count, CancellationToken cancellationToken)
@@ -169,16 +167,17 @@ namespace Artivity.Journal.Mac
                 });
 
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
+                Logger.LogError(ex);
+
                 return;
             }
         }
 
         private void OpenJournal()
         {
-            Browser.HomeUrl = new NSUrl(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", Port));
-                                        
+            Browser.HomeUrl = new NSUrl(string.Format("http://localhost:{0}/artivity/app/journal/1.0/", Port));                         
             Browser.NavigateHome();
         }
 
@@ -193,6 +192,8 @@ namespace Artivity.Journal.Mac
 
         private void OnBrowserLoadError(object sender, WebFrameErrorEventArgs e)
         {
+            Logger.LogError("Error loading page: {0}", e.Error.Description);
+
             ShowStaticPage("error.index.html");
 
             CancellationToken token = new CancellationToken();
@@ -234,6 +235,8 @@ namespace Artivity.Journal.Mac
 
         public void Retry()
         {
+            Logger.LogInfo("Retrying to load home page: {0}", Browser.HomeUrl);
+
             OpenLoadingPage();
         }
 
