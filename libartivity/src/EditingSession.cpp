@@ -264,8 +264,6 @@ namespace artivity
 
     void EditingSession::consume(ResourceRef res)
     {
-        const char* type = res->getType();
-
         InfluenceRef influence = boost::dynamic_pointer_cast<Influence>(res);
 
         _log->addInfluence(influence);
