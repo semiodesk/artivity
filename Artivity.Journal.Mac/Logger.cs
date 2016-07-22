@@ -19,35 +19,51 @@
 // THE SOFTWARE.
 //
 // AUTHORS:
+//
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using AppKit;
+using log4net;
 
 namespace Artivity.Journal.Mac
 {
-    static class MainClass
+    public class Logger
     {
-        #region Methods
+        public static readonly ILog Log = LogManager.GetLogger("Journal");
 
-        private static void Main(string[] args)
+        public static void LogInfo(string msg, params object[] p)
         {
-            try
+            if (Log.IsInfoEnabled)
             {
-                Program program = new Program();
-                program.InitializeApid();
-                program.InitializeSparkle();
-                program.Run(args);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
+                Log.InfoFormat(msg, p);
             }
         }
 
-        #endregion
+        public static void LogDebug(string msg, params object[] p)
+        {
+            if (Log.IsDebugEnabled)
+            {
+                Log.DebugFormat(msg, p);
+            }
+        }
+
+        public static void LogError(string msg, params object[] p)
+        {
+            if (Log.IsErrorEnabled)
+            {
+                Log.ErrorFormat(msg, p);
+            }
+        }
+
+        public static void LogError(Exception ex)
+        {
+            if (Log.IsErrorEnabled)
+            {
+                Log.ErrorFormat("{0}, {1}\n\n{2}", ex.GetType(), ex.Message, ex.StackTrace);
+            }
+        }
     }
 }
