@@ -294,7 +294,7 @@ namespace Artivity.Apid
                 // The database is started in the user's application data folder on port 8273..
                 _virtuoso = new TinyVirtuoso(PlatformProvider.ArtivityDataFolder, deploymentDir);
                 _virtuosoInstance = _virtuoso.GetOrCreateInstance(PlatformProvider.DatabaseName);
-                _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("localhost:{0}", _virtuosoPort);
+                _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("127.0.0.1:{0}", _virtuosoPort);
                 _virtuosoInstance.Configuration.SaveConfigFile();
                 _virtuosoInstance.RemoveLock();
                 _virtuosoInstance.Start(false);
@@ -303,7 +303,9 @@ namespace Artivity.Apid
                 Thread.Sleep(5000);
 
                 string connectionString = _virtuosoInstance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";
+                connectionString = connectionString.Replace("localhost", "127.0.0.1");
                 string nativeConnectionString = _virtuosoInstance.GetAdoNetConnectionString();
+                nativeConnectionString = nativeConnectionString.Replace("localhost", "127.0.0.1");
 
                 ModelProvider = ModelProviderFactory.CreateModelProvider(connectionString, nativeConnectionString, uid);
 
