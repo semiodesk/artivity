@@ -107,13 +107,13 @@ namespace artivity
 			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
 		}
 
-#if _DEBUG
+#ifdef _DEBUG
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
 #endif
 
 		CURLcode responseCode = curl_easy_perform(curl);
 
-#if _DEBUG
+#ifdef _DEBUG
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
 #endif
 
@@ -124,7 +124,7 @@ namespace artivity
 
 		curl_easy_cleanup(curl);
 
-#if _DEBUG
+#ifdef _DEBUG
 		if (responseCode == CURLE_OK)
 		{
             stringstream time;
