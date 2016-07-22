@@ -190,7 +190,7 @@ namespace Artivity.Journal.Mac
         {
             Logger.LogInfo("Registering software agent: {0}", url);
 
-            string endpoint = string.Format("http://localhost:{0}/artivity/api/1.0/agents/software/paths/add?url={1}", ViewController.Port, url.AbsoluteUri);
+            string endpoint = string.Format("http://127.0.0.1:{0}/artivity/api/1.0/agents/software/paths/add?url={1}", ViewController.Port, url.AbsoluteUri);
 
             WebRequest request = WebRequest.Create(endpoint);
             request.Method = "GET";
@@ -203,7 +203,7 @@ namespace Artivity.Journal.Mac
         {
             Logger.LogInfo("Importing archive file: {0}", url);
 
-            string endpoint = string.Format("http://localhost:{0}/artivity/api/1.0/import?fileUrl={1}", ViewController.Port, url.AbsoluteUri);
+            string endpoint = string.Format("http://127.0.0.1:{0}/artivity/api/1.0/import?fileUrl={1}", ViewController.Port, url.AbsoluteUri);
 
             WebRequest request = WebRequest.Create(endpoint);
             request.Method = "GET";
