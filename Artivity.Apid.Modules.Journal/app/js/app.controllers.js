@@ -169,6 +169,10 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
         if (influence.time !== undefined) {
             $scope.renderInfluence(influence);
+            
+            // Note: this is experimental.
+            //var heatmap = new HeatmapRenderer(canvas);
+            //heatmap.render($scope.influences);
         }
     };
 
