@@ -186,6 +186,7 @@ namespace artivity
 
 	void ActivityLog::close()
 	{
+        // TODO: Investigate, is this called before save? Race condition?
         clear();
 
 		time_t now;
@@ -314,6 +315,22 @@ namespace artivity
             _activity->addUsed(_entity);
         }
 	}
+    
+    void ActivityLog::createDerivation(ImageRef image, std::string path)
+    {
+        // Get time from last save for end/begin of activities
+        //Entity oldEntity = _entity;
+
+        
+        
+        
+        
+        // TODO:
+        // - close old activity
+        // - create new activity
+        // - set new entity
+        // - set entity derived from old entity
+    }
 
 	ImageRef ActivityLog::getDocument()
 	{
