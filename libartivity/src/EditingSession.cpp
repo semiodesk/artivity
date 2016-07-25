@@ -228,7 +228,7 @@ namespace artivity
     {
         SaveAsRef saveAs = onEventSaveAs();
 
-        // TODO: Check if file paths match if not empty -> derivation.
+
         if (_filePath.empty())
         {
             _filePath = getDocumentFilePath();
@@ -238,9 +238,11 @@ namespace artivity
                 _log->createDataObject(_filePath);
             }
         }
-		else if (!_log->hasDataObject())
-		{
-			// Create a data object if we edit a non-indexed file.
+		else
+        {
+            string oldPath = _filePath;
+            _filePath = getDocumentFilePath();
+            
 			_log->createDataObject(_filePath);
 		}
 
