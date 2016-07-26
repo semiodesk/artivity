@@ -55,7 +55,7 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams, $translate) {
 	var fileUri = $location.search().uri;
 
-    console.log(fileUri);
+	console.log(fileUri);
 
 	// File metadata
 	$scope.file = {};
@@ -174,10 +174,10 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		if (influence.time !== undefined) {
 			$scope.renderInfluence(influence);
-            
-            // Note: this is experimental.
-            //var heatmap = new HeatmapRenderer(canvas);
-            //heatmap.render($scope.influences);
+
+			// Note: this is experimental.
+			//var heatmap = new HeatmapRenderer(canvas);
+			//heatmap.render($scope.influences);
 		}
 	};
 
@@ -316,7 +316,10 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		return result;
 	};
 
+	// EXPORT
 	$scope.exportFile = function () {
+		api.exportFile(fileUri, $scope.file.label);
+	};
 
 	// PRINT LABEL
 	$scope.getLabel = function (influence) {
