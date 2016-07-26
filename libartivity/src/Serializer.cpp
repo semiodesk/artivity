@@ -59,6 +59,8 @@ namespace artivity
 		PREFIX_MAP[svg::NS_PREFIX] = svg::NS_URI;
 		PREFIX_MAP[xml::NS_PREFIX] = xml::NS_URI;
 		PREFIX_MAP[xsd::NS_PREFIX] = xsd::NS_URI;
+
+        _context = new SerializerContext();
 	}
 
     string Serializer::toString(ResourceRef value)
@@ -135,27 +137,25 @@ namespace artivity
     {
 		if (format == N3)
 		{
-			SerializerContext ctx;
+			_context->queue.push(resource);
 
-			ctx.queue.push(resource);
-
-			while (!ctx.queue.empty())
+			while (!_context->queue.empty())
 			{
-				serializeN3(ctx, ctx.queue.front());
+				serializeN3(_context->queue.front());
 
-				ctx.queue.pop();
+				_context->queue.pop();
 			}
 
-			unordered_set<string>::const_iterator it = ctx.prefixes.begin();
+			unordered_set<string>::const_iterator it = _context->prefixes.begin();
 
-			while (it != ctx.prefixes.end())
+			while (it != _context->prefixes.end())
 			{
 				out << "@prefix " << *it << " <" << PREFIX_MAP.find(*it)->second << "> ." << endl;
 
 				it++;
 			}
 
-			out << ctx.out.str();
+			out << _context->out.str();
 
 			return out;
 		}
@@ -163,7 +163,7 @@ namespace artivity
         throw exception();
     }
 
-	void Serializer::serializeN3(SerializerContext& ctx, ResourceRef resource)
+	void Serializer::serializeN3(ResourceRef resource)
 	{
         PropertyMap properties = resource->properties;
 
@@ -185,16 +185,16 @@ namespace artivity
 		}
 
 		// Output the initial subject (the resource URI).
-		ctx.out << endl << resource;
+		_context->out << endl << resource;
 
         // Count the number of serialized properties.
         int i = 0;
 
         while (typeIt != typeItEnd)
         {
-            serializeN3(ctx, typeIt->first, typeIt->second);
+            serializeN3(typeIt->first, typeIt->second);
 
-            ctx.out << ";" << endl;
+            _context->out << ";" << endl;
 
             i++;
 
@@ -208,73 +208,73 @@ namespace artivity
 		{
 			if (it->first != rdf::_type)
 			{
-				serializeN3(ctx, it->first, it->second);
+				serializeN3(it->first, it->second);
 
                 i++;
 
                 if (i < n)
                 {
-                    ctx.out << ";" << endl;
+                    _context->out << ";" << endl;
                 }
 			}
 
             it++;
 		}
 
-		ctx.out << "." << endl;
+		_context->out << "." << endl;
 	}
 
-	void Serializer::serializeN3(SerializerContext& ctx, string property, PropertyValue x)
+	void Serializer::serializeN3(string property, PropertyValue x)
 	{
-		ctx.out << " ";
+		_context->out << " ";
 
 		if (property == rdf::_type)
 		{
-			ctx.out << "a";
+			_context->out << "a";
 		}
 		else
 		{
-			serializeN3(ctx, property);
+			serializeN3(property);
 		}
 
-		ctx.out << " " << flush;
+		_context->out << " " << flush;
 
 		if (x.Value != NULL)
 		{
-			serializeN3(ctx, x.Value->uri);
+			serializeN3(x.Value->uri);
 
 			ResourceRef r = x.Value;
 
-			if (r->serialize && ctx.track.find(r->uri) == ctx.track.end())
+			if (r->serialize && _context->track.find(r->uri) == _context->track.end())
 			{
-				ctx.track.insert(r->uri);
+				_context->track.insert(r->uri);
 
-				ctx.queue.push(r);
+				_context->queue.push(r);
 			}
 		}
 		else if (x.LiteralType != NULL)
 		{
 			if (x.LiteralType == typeid(Resource).name())
 			{
-				serializeN3(ctx, x.LiteralValue);
+				serializeN3(x.LiteralValue);
 			}
 			else
 			{
-				ctx.out << "\"" << x.LiteralValue << "\"";
+				_context->out << "\"" << x.LiteralValue << "\"";
 
 				XsdTypeMapIterator it = TYPE_MAP.find(x.LiteralType);
 
 				if (it != TYPE_MAP.end())
 				{
-                    ctx.out << "^^";
+                    _context->out << "^^";
 
-                    serializeN3(ctx, it->second);
+                    serializeN3(it->second);
 				}
 			}
 		}
 	}
 
-	void Serializer::serializeN3(SerializerContext& ctx, string uri)
+	void Serializer::serializeN3(string uri)
 	{
 		size_t i = uri.find(':');
 
@@ -284,14 +284,14 @@ namespace artivity
 
 			if (PREFIX_MAP.find(schema) != PREFIX_MAP.end())
 			{
-				ctx.prefixes.insert(schema);
-				ctx.out << uri;
+				_context->prefixes.insert(schema);
+				_context->out << uri;
 
 				return;
 			}
 		}
 
-		ctx.out << "<" << uri << ">";
+		_context->out << "<" << uri << ">";
 	}
 }
 

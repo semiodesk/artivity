@@ -587,6 +587,14 @@ namespace Artivity.Apid
         /// <param name="url">URL of the file.</param>
         public void AddFile(UriRef uri, Uri url)
         {
+            if (_monitoredFileUris.ContainsKey(url.LocalPath))
+            {
+                // Do not create a new file data object for an already existing file..
+                UpdateFileDataObject(url);
+
+                return;
+            }
+
             try
             {
                 FileInfoCache file = new FileInfoCache(url.LocalPath);
@@ -681,8 +689,12 @@ namespace Artivity.Apid
 
                 try
                 {
+                    FileInfo info = new FileInfo(url.LocalPath);
+
                     FileDataObject file = _model.GetResource<FileDataObject>(uri);
-                    file.LastModificationTime = DateTime.UtcNow;
+                    file.CreationTime = info.CreationTimeUtc;
+                    file.LastAccessTime = info.LastAccessTimeUtc;
+                    file.LastModificationTime = info.LastWriteTimeUtc;
                     file.Commit();
 
                     _monitoredFiles[url.LocalPath] = new FileInfoCache(url.LocalPath);
@@ -714,9 +726,13 @@ namespace Artivity.Apid
 
                 try
                 {
+                    FileInfo info = new FileInfo(newUrl.LocalPath);
+
                     // Get the file data object from the database and update the metadata.
                     FileDataObject file = _model.GetResource<FileDataObject>(uri);
-                    file.LastModificationTime = DateTime.UtcNow;
+                    file.CreationTime = info.CreationTimeUtc;
+                    file.LastAccessTime = info.LastAccessTimeUtc;
+                    file.LastModificationTime = info.LastWriteTimeUtc;
                     file.Commit();
 
                     // Unregister the old file from monitoring.

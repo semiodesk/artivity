@@ -51,8 +51,6 @@ namespace artivity
         friend class Influence;
 
     protected:
-        PropertyMap properties;
-
         void addProperty(const Property& property, PropertyValue value);
 
         void removeProperty(const Property& property, PropertyValue value);
@@ -61,6 +59,8 @@ namespace artivity
 
     public:
         std::string uri;
+
+        PropertyMap properties;
 
 		bool serialize;
 

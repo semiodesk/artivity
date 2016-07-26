@@ -31,18 +31,28 @@ namespace artivity
 	};
     
     class Serializer
-    {  
+    {
+    private:
+        SerializerContext* _context;
+
 	protected:
-		void serializeN3(SerializerContext& context, ResourceRef resource);
-        void serializeN3(SerializerContext& context, std::string property, PropertyValue x);
-		void serializeN3(SerializerContext& context, std::string uri);
+		void serializeN3(ResourceRef resource);
+        void serializeN3(std::string property, PropertyValue x);
+		void serializeN3(std::string uri);
 
     public:
 		std::map<std::string, std::string> PREFIX_MAP;
         XsdTypeMap TYPE_MAP;
                 
-		Serializer();
-        ~Serializer() {}
+        Serializer();
+
+        virtual ~Serializer()
+        {
+            if (_context != NULL)
+            {
+                delete _context;
+            }
+        }
 
         static std::string toString(ResourceRef value);
         static std::string toString(const char* value);

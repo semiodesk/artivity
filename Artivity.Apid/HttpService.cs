@@ -299,9 +299,9 @@ namespace Artivity.Apid
                 _virtuosoInstance.RemoveLock();
                 _virtuosoInstance.Start(true, TimeSpan.FromSeconds(30));
 
-
                 string connectionString = _virtuosoInstance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";
                 connectionString = connectionString.Replace("localhost", "127.0.0.1");
+
                 string nativeConnectionString = _virtuosoInstance.GetAdoNetConnectionString();
                 nativeConnectionString = nativeConnectionString.Replace("localhost", "127.0.0.1");
 
