@@ -591,18 +591,6 @@ namespace Artivity.Apid.Modules
                 
                 // Add the current change to the last influence.
                 object entity = b["entity"];
-                object e = x["entity"];
-                object t = x["entityType"];
-                if (c != DBNull.Value && e != DBNull.Value && t != DBNull.Value)
-                {
-                    change.Add("change", c);
-                    change.Add("entity", e);
-                    change.Add("entityType", t);
-
-                    if (!dict.ContainsKey("entity"))
-                    {
-                        dict.Add("entity", new List<Dictionary<string, object>>());
-                    }
 
                 if (entity != null)
                 {

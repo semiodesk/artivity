@@ -88,6 +88,10 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net40-client\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="TinyVirtuoso, Version=0.3.30.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TinyVirtuoso.0.3.30\lib\Net35\TinyVirtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\VDS.Common.dll</HintPath>
       <Private>True</Private>
@@ -102,9 +106,6 @@
     </Reference>
     <Reference Include="INIFileParser">
       <HintPath>..\packages\ini-parser.2.3.0\lib\net20\INIFileParser.dll</HintPath>
-    </Reference>
-    <Reference Include="TinyVirtuoso">
-      <HintPath>..\packages\TinyVirtuoso.0.3.29\lib\Net35\TinyVirtuoso.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +182,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="TinyVirtuoso\database\virtuoso.ini" />
     <None Include="TinyVirtuoso\virtuoso\doc\AUTHORS" />
     <None Include="TinyVirtuoso\virtuoso\doc\COPYING" />
     <None Include="TinyVirtuoso\virtuoso\doc\CREDITS" />
@@ -191,7 +193,6 @@
     <None Include="Plugins\Manifest.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="TinyVirtuoso\database\virtuoso.ini" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\user.jpg" />
@@ -292,7 +293,5 @@
       <Name>Artivity.Apid.Modules.Journal</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="IO\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
