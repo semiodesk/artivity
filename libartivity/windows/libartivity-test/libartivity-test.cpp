@@ -28,7 +28,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	log->addAssociation(art::SOFTWARE, "http://adobe.com/products/photoshop", "2015.1");
 
 	// Set the file and retrive, if possible, the URI of the vector image.
-	log->setDocument(image, "C:/Users/Sebastian/Desktop/Test 1.ai", true);
+	log->setDocument(image, "C:/Users/Hans/Desktop/Test 1.ai", true);
 
 	if (!log->connect("http://localhost:8262/artivity/api/1.0"))
 	{
@@ -77,8 +77,12 @@ int _tmain(int argc, _TCHAR* argv[])
     undo->addRevision(generation->uri);
 
 	log->addInfluence(undo);
-	log->transmit();
 
+    VectorImageRef image2 = VectorImageRef(new VectorImage());
+
+    log->createDerivation(image2, "C:/Users/Hans/Desktop/Test 2.ai");
+
+	log->transmit();
 	log->close();
 
 	high_resolution_clock::time_point t3 = high_resolution_clock::now();

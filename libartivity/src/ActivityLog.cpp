@@ -316,20 +316,78 @@ namespace artivity
         }
 	}
     
-    void ActivityLog::createDerivation(ImageRef image, std::string path)
+    void ActivityLog::createDerivation(ImageRef targetImage, std::string targetPath)
     {
-        // Get time from last save for end/begin of activities
-        //Entity oldEntity = _entity;
+        // We cannot create derivations of newly created files or overwritten files.
+        if (_fileUrl.empty() || _fileUrl == UriGenerator::getUrl(targetPath))
+        {
+            return;
+        }
 
-        
-        
-        
-        
-        // TODO:
-        // - close old activity
-        // - create new activity
-        // - set new entity
-        // - set entity derived from old entity
+        ImageRef sourceImage = _entity;
+
+        // Temporarily store a copy of the untransmitted influences.
+        std::list<InfluenceRef> influences = _influences;
+
+        for (auto it = influences.begin(); it != influences.end(); it++)
+        {
+            removeInfluence(*it);
+        }
+
+        // Clear the list of all untransmitted influences for the old activity.
+        _influences.clear();
+
+        // Close and transmit the current activity.
+        time_t now;
+        time(&now);
+
+        _activity->setEndTime(now);
+
+        transmit();
+
+        // Assert a qualified derivation of the new file from the old one.
+        DerivationRef derivation = DerivationRef(new Derivation());
+        derivation->addEntity(_entity);
+        derivation->setActivity(_activity);
+        derivation->setTime(now);
+
+        // Get document creates a new instance of the plugin's entity type.
+        targetImage->addInfluence(derivation);
+
+        // Check if there is already a file at the given location.
+        string uri = getEntityUri(targetPath);
+
+        if (!uri.empty())
+        {
+            targetImage->uri = uri;
+        }
+
+        // Create a new activity for the new image.
+        setDocument(targetImage, targetPath, true);
+
+        _activity->setStartTime(now);
+        _activity->addUsed(sourceImage);
+
+        // Do not serialize the old image as it should already be stored in the database.
+        sourceImage->serialize = false;
+
+        // NOTE: This assumes that the file system monitor will update any existing file data objects.
+        createDataObject(targetPath);
+
+        // Transfer the current associations to the new activity.
+        for (auto it = _associations.begin(); it != _associations.end(); it++)
+        {
+            // Note: only adds triples which are not already stored.
+            _activity->addAssociation(*it);
+        }
+
+        // Associated all untransmitted activities with the new activity.
+        for (auto it = influences.begin(); it != influences.end(); it++)
+        {
+            (*it)->setActivity(_activity);
+
+            addInfluence(*it);
+        }
     }
 
 	ImageRef ActivityLog::getDocument()

@@ -36,6 +36,11 @@ namespace artivity
 
     void EntityInfluence::setActivity(ActivityRef a)
     {
+        if (activity != NULL)
+        {
+            removeProperty(prov::hadActivity, activity->uri, typeid(Resource));
+        }
+
         activity = a;
 
         // Only set a reference to the activity; prevents the serializer from trying to serialize a cycle.

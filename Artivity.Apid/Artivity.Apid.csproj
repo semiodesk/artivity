@@ -88,9 +88,9 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net40-client\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="TinyVirtuoso, Version=0.3.30.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TinyVirtuoso.0.3.30\lib\Net35\TinyVirtuoso.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="TinyVirtuoso, Version=0.3.25.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TinyVirtuoso.0.3.29\lib\Net35\TinyVirtuoso.dll</HintPath>
     </Reference>
     <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\VDS.Common.dll</HintPath>
@@ -182,7 +182,9 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="TinyVirtuoso\database\virtuoso.ini" />
+    <None Include="TinyVirtuoso\database\virtuoso.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TinyVirtuoso\virtuoso\doc\AUTHORS" />
     <None Include="TinyVirtuoso\virtuoso\doc\COPYING" />
     <None Include="TinyVirtuoso\virtuoso\doc\CREDITS" />
