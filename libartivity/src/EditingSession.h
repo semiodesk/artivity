@@ -104,7 +104,7 @@ namespace artivity
         void eventUndo();
         void eventRedo();
         void eventSave();
-        void eventSaveAs();
+        void eventSaveAs(std::string targetPath);
 
         bool fileExists(const std::string& name);
     };
