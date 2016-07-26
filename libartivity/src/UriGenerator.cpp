@@ -46,7 +46,6 @@ namespace artivity
 
 		for (size_t i = 0; i < length; ++i)
 		{
-			int res = 0;
 			str += alphanum[dis(gen)];
 		}
 

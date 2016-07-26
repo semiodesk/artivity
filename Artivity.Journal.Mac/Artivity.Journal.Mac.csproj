@@ -66,6 +66,9 @@
       <HintPath>Sparkle.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.5\lib\net40-client\log4net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -84,6 +87,7 @@
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="BrowserView.cs" />
+    <Compile Include="Logger.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
@@ -94,6 +98,8 @@
       <DeployService-Deploy>True</DeployService-Deploy>
     </BundleResource>
     <BundleResource Include="dsa_pub.pem" />
+    <BundleResource Include="log.config" />
+    <BundleResource Include="log.config.debug" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="startAgent.sh">

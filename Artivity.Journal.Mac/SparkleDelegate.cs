@@ -34,17 +34,17 @@ namespace Artivity.Journal.Mac
     {
         public override void UpdaterDidNotFindUpdate(SUUpdater updater)
         {
-            Console.WriteLine("No update found.");
+            Logger.LogInfo("No update found.");
         }
 
         public override void UserDidCancelDownload(SUUpdater updater)
         {
-            Console.WriteLine("Update download canceled by user.");
+            Logger.LogInfo("Update download canceled by user.");
         }
 
         public override void WillInstallUpdate(SUUpdater updater, SUAppcastItem item)
         {
-            Console.WriteLine(string.Format("Found update {0}, preparing install..", item.DisplayVersionString));
+            Logger.LogInfo("Found update {0}, preparing install..", item.DisplayVersionString);
 
             if (Program.IsApidRunning())
             {

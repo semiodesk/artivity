@@ -134,6 +134,8 @@ namespace artivity
 
 		// Set the file being edited.
 		void setDocument(ImageRef image, std::string path, bool create);
+        
+        void createDerivation(ImageRef image, std::string path);
 
         ImageRef getDocument();
 
@@ -153,7 +155,7 @@ namespace artivity
 
 		std::string getRenderOutputPath();
 
-#if _DEBUG
+#ifdef _DEBUG
 		void logError(std::string msg);
 		void logInfo(std::string msg);
         void logRequest(std::string url, std::string time, std::string data);

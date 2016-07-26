@@ -165,9 +165,9 @@ namespace Artivity.Apid.Modules
 
                 Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e, data);
+                Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, ex, data);
             }
         }
 

@@ -13,7 +13,7 @@ namespace Artivity.Journal.Mac
 	partial class ViewController
 	{
 		[Outlet]
-		WebKit.WebView Browser { get; set; }
+        BrowserView Browser { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

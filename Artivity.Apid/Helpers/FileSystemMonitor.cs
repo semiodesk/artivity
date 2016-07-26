@@ -93,7 +93,7 @@ namespace Artivity.Apid
             DriveType.Network,
             DriveType.Removable
         };
-            
+
         /// <summary>
         /// A log of previously created files; used for locating moved files.
         /// </summary>
@@ -102,7 +102,7 @@ namespace Artivity.Apid
         /// <summary>
         /// Files with these attributes are ignored by the drive watchers' create event handler.
         /// </summary>
-        private readonly FileAttributes _createdFileMask = FileAttributes.System 
+        private readonly FileAttributes _createdFileMask = FileAttributes.System
             | FileAttributes.Temporary
             | FileAttributes.Hidden
             | FileAttributes.ReadOnly
@@ -129,7 +129,7 @@ namespace Artivity.Apid
         #region Constructors
 
         // Private because of singleton.
-        private FileSystemMonitor() 
+        private FileSystemMonitor()
         {
         }
 
@@ -157,27 +157,39 @@ namespace Artivity.Apid
         {
             // We order by start time so that we get the latest version of a file, 
             // just in case there exist previous (deleted) versions.
-            SparqlQuery query = new SparqlQuery(@"
-                SELECT DISTINCT ?entity ?url WHERE
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT DISTINCT
+                    ?entity ?folderUrl ?fileName
+                WHERE
                 {
-                    ?entity a nfo:FileDataObject .
-                    ?entity nfo:fileUrl ?url .
-                    ?entity nfo:fileLastModified ?time .
-
-                    FILTER(!ISIRI(?url))
-                }
-                ORDER BY DESC(?time)");
+                    ?entity nie:isStoredAs
+                    [
+                        rdfs:label ?fileName;
+                        nfo:belongsToContainer / nie:url ?folderUrl
+                    ]
+                }");
 
             foreach (BindingSet binding in _model.GetBindings(query))
             {
-                string u = binding["url"].ToString();
+                string folderUrl = binding["folderUrl"].ToString();
 
-                if (!Uri.IsWellFormedUriString(u, UriKind.Absolute))
+                if (!Uri.IsWellFormedUriString(folderUrl, UriKind.Absolute))
+                {
+                    continue;
+                }
+                else if (folderUrl[folderUrl.Length - 1] != Path.DirectorySeparatorChar)
+                {
+                    folderUrl += Path.DirectorySeparatorChar;
+                }
+
+                string fileName = binding["fileName"].ToString();
+
+                if (string.IsNullOrEmpty(fileName))
                 {
                     continue;
                 }
 
-                Uri url = new Uri(u);
+                Uri url = new Uri(folderUrl + fileName);
 
                 if (_monitoredFileUris.ContainsKey(url.LocalPath) || !File.Exists(url.LocalPath))
                 {
@@ -211,7 +223,7 @@ namespace Artivity.Apid
                 InstallMonitoring(_platform.UserFolder);
             }
 
-            foreach(DriveInfo drive in DriveInfo.GetDrives().Where(drive => drive.IsReady))
+            foreach (DriveInfo drive in DriveInfo.GetDrives().Where(drive => drive.IsReady))
             {
                 if (!_driveTypes.Contains(drive.DriveType))
                 {
@@ -220,7 +232,7 @@ namespace Artivity.Apid
 
                 string root = drive.RootDirectory.FullName;
 
-                if(!_watchers.ContainsKey(root))
+                if (!_watchers.ContainsKey(root))
                 {
                     InstallMonitoring(root);
                 }
@@ -249,7 +261,7 @@ namespace Artivity.Apid
                 {
                     InstallMonitoring(drive.RootDirectory.FullName);
                 }
-                else if(!drive.IsReady && _watchers.ContainsKey(root))
+                else if (!drive.IsReady && _watchers.ContainsKey(root))
                 {
                     InstallMonitoring(drive.RootDirectory.FullName);
                 }
@@ -265,21 +277,33 @@ namespace Artivity.Apid
 
             foreach (IFileSystemWatcher watcher in _watchers.Values)
             {
-                try
-                {
-                    watcher.EnableRaisingEvents = IsEnabled;
-
-                    Logger.LogInfo("Enabled device monitoring: {0}", watcher.Path);
-                }
-                catch(Exception ex)
-                {
-                    Logger.LogError(ex.Message);
-                }
+                TryEnable(watcher);
             }
 
             _driveWatchersTimer.Enabled = IsEnabled;
 
             Logger.LogInfo("Started file system monitor.");
+        }
+
+        /// <summary>
+        /// Enable raising events for a give file system watcher.
+        /// </summary>
+        public bool TryEnable(IFileSystemWatcher watcher)
+        {
+            try
+            {
+                watcher.EnableRaisingEvents = IsEnabled;
+
+                Logger.LogInfo("Enabled device monitoring: {0}", watcher.Path);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+
+                return false;
+            }
         }
 
         /// <summary>
@@ -304,13 +328,14 @@ namespace Artivity.Apid
         public void Dispose()
         {
             Disable();
+
             _driveWatchersTimer.Elapsed -= UpdateDriveWatchers;
+            _driveWatchersTimer.Dispose();
 
             foreach(IFileSystemWatcher watcher in _watchers.Values)
             {
                 watcher.Dispose();
             }
-            _driveWatchersTimer.Dispose ();
         }
 
         /// <summary>
@@ -337,9 +362,7 @@ namespace Artivity.Apid
 
             if (IsEnabled)
             {
-                watcher.EnableRaisingEvents = true;
-
-                Logger.LogInfo("Enabled device monitoring: {0}", watcher.Path);
+                TryEnable(watcher);
             }
         }
 
@@ -442,7 +465,7 @@ namespace Artivity.Apid
             }
             catch(Exception ex)
             {
-                Logger.LogError(ex.Message);
+                Logger.LogError(ex);
             }
         }
 
@@ -453,21 +476,21 @@ namespace Artivity.Apid
         /// <param name="e">Rename event parameters.</param>
         private void OnFileSystemObjectRenamed(object sender, RenamedEventArgs e)
         {
-            FileInfoCache file = new FileInfoCache(e.FullPath);
-
-            if (!file.Exists || file.CreationTime == DateTime.MinValue)
-            {
-                // The new file does not exist. It's probably in a virtual file system.
-                if (IsLogging)
-                {
-                    Logger.LogInfo("Rename ignored: {0}", file.Url.LocalPath);
-                }
-
-                return;
-            }
-
             try
             {
+                FileInfoCache file = new FileInfoCache(e.FullPath);
+
+                if (!file.Exists || file.CreationTime == DateTime.MinValue)
+                {
+                    // The new file does not exist. It's probably in a virtual file system.
+                    if (IsLogging)
+                    {
+                        Logger.LogInfo("Rename ignored: {0}", file.Url.LocalPath);
+                    }
+
+                    return;
+                }
+
                 FileInfoCache oldFile = new FileInfoCache(e.OldFullPath);
 
                 if (IsLogging)
@@ -496,7 +519,7 @@ namespace Artivity.Apid
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Message);
+                Logger.LogError(ex);
             }
         }
 
@@ -553,121 +576,97 @@ namespace Artivity.Apid
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Message);
-            }
-        }
-
-        public void AddFile(UriRef uri, Uri url)
-        {
-            FileInfoCache file = new FileInfoCache(url.LocalPath);
-
-            _monitoredFiles[file.Url.LocalPath] = file;
-            _monitoredFileUris[file.Url.LocalPath] = uri;
-
-            Logger.LogInfo("Enabled monitoring {0}", url.LocalPath);
-
-            // Create the file and folder data objects.
-            DirectoryInfo folderInfo = new DirectoryInfo(Path.GetDirectoryName(url.LocalPath));
-
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?uri ?time
-                WHERE
-                {
-                    ?uri a nfo:Folder .
-                    ?uri nie:url @url .
-                    ?uri nie:lastModified ?time .
-                }
-                ORDER BY DESC(?time) LIMIT 1
-            ");
-
-            query.Bind("@url", folderInfo.ToUriRef());
-
-            BindingSet bindings = _model.GetBindings(query).FirstOrDefault();
-
-            Folder folderObject;
-
-            if(bindings == null)
-            {
-                folderObject = _model.CreateResource<Folder>();
-                folderObject.Url = new Resource(folderInfo.ToUriRef());
-                folderObject.CreationTime = folderInfo.CreationTime;
-                folderObject.LastModificationTime = folderInfo.LastWriteTime;
-
-                folderObject.Commit();
-
-                Logger.LogInfo("Created: {0}", folderInfo.FullName);
-            }
-            else
-            {
-                folderObject = new Folder(new UriRef(bindings["uri"].ToString()));
-            }
-
-            FileDataObject fileObject = _model.CreateResource<FileDataObject>(uri);
-            fileObject.Name = file.Name;
-            fileObject.Folder = folderObject;
-            fileObject.CreationTime = file.CreationTime;
-            fileObject.LastModificationTime = file.LastWriteTime;
-            fileObject.LastAccessTime = file.LastAccessTime;
-            fileObject.Commit();
-
-            Logger.LogInfo("Created: {0}", file.FullName);
-        }
-
-        public void RemoveFile(string path)
-        {
-            // Normalize the file path.
-            path = new FileInfoCache(path).Url.LocalPath;
-
-            if (_monitoredFiles.ContainsKey(path))
-            {
-                _monitoredFiles.Remove(path);
-
-                Logger.LogInfo("Disabled monitoring {0}", path);
+                Logger.LogError(ex);
             }
         }
 
         /// <summary>
         /// Create a new file data object or update an existing object in the database at the given URL.
         /// </summary>
+        /// <param name="url">URI of the information element / entity.</param>
         /// <param name="url">URL of the file.</param>
-        /// <returns>A FileInfoCache object.</returns>
-        private FileInfoCache CreateFileDataObject(Uri url)
+        public void AddFile(UriRef uri, Uri url)
         {
-            FileInfoCache file = new FileInfoCache(url.LocalPath);
+            try
+            {
+                FileInfoCache file = new FileInfoCache(url.LocalPath);
 
-            ISparqlQuery query = new SparqlQuery(@"
-                ASK WHERE
+                _monitoredFiles[file.Url.LocalPath] = file;
+                _monitoredFileUris[file.Url.LocalPath] = uri;
+
+                Logger.LogInfo("Enabled monitoring {0}", url.LocalPath);
+
+                // Create the file and folder data objects.
+                DirectoryInfo folderInfo = new DirectoryInfo(Path.GetDirectoryName(url.LocalPath));
+
+                ISparqlQuery query = new SparqlQuery(@"
+                    SELECT
+                        ?uri ?time
+                    WHERE
+                    {
+                        ?uri a nfo:Folder .
+                        ?uri nie:url @url .
+                        ?uri nie:lastModified ?time .
+                    }
+                    ORDER BY DESC(?time) LIMIT 1
+                ");
+
+                query.Bind("@url", folderInfo.ToUriRef());
+
+                BindingSet bindings = _model.GetBindings(query).FirstOrDefault();
+
+                Folder folderObject;
+
+                if(bindings == null)
                 {
-                    ?entity a nfo:FileDataObject .
-                    ?entity nie:url @fileUrl . 
-                }");
+                    folderObject = _model.CreateResource<Folder>();
+                    folderObject.Url = new Resource(folderInfo.ToUriRef());
+                    folderObject.CreationTime = folderInfo.CreationTime;
+                    folderObject.LastModificationTime = folderInfo.LastWriteTime;
 
-            query.Bind("@fileUrl", file.Url);
+                    folderObject.Commit();
 
-            ISparqlQueryResult result = _model.ExecuteQuery(query);
+                    Logger.LogInfo("Created: {0}", folderInfo.FullName);
+                }
+                else
+                {
+                    folderObject = new Folder(new UriRef(bindings["uri"].ToString()));
+                }
 
-            if (result.GetAnwser())
-            {
-                // Update the existring file data object at the given URL.
-                UpdateFileDataObject(url);
+                FileDataObject fileObject = _model.CreateResource<FileDataObject>(uri);
+                fileObject.Name = file.Name;
+                fileObject.Folder = folderObject;
+                fileObject.CreationTime = file.CreationTime;
+                fileObject.LastModificationTime = file.LastWriteTime;
+                fileObject.LastAccessTime = file.LastAccessTime;
+                fileObject.Commit();
+
+                Logger.LogInfo("Created: {0}", file.FullName);
             }
-            else
+            catch (Exception ex)
             {
-                // Create and register a new file data object.
-                FileDataObject f = _model.CreateResource<FileDataObject>();
-                f.Name = file.Name;
-                f.CreationTime = file.CreationTime;
-                f.LastAccessTime = file.LastAccessTime;
-                f.LastModificationTime = file.LastWriteTime;
-                f.Commit();
-
-                _monitoredFileUris[file.Url.LocalPath] = f.Uri;
-
-                Logger.LogInfo("Created {0}", file.Url.LocalPath);
+                Logger.LogError(ex);
             }
+        }
 
-            return file;
+        public void RemoveFile(string path)
+        {
+            try
+            {
+                // Normalize the file path.
+                path = new FileInfoCache(path).Url.LocalPath;
+
+                if (_monitoredFiles.ContainsKey(path))
+                {
+                    _monitoredFiles.Remove(path);
+
+                    Logger.LogInfo("Disabled monitoring {0}", path);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
         }
 
         /// <summary>
