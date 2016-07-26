@@ -64,7 +64,7 @@
       <HintPath>..\packages\ini-parser.2.3.0\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
     <Reference Include="TinyVirtuoso">
-      <HintPath>..\packages\TinyVirtuoso.0.3.29\lib\Net35\TinyVirtuoso.dll</HintPath>
+      <HintPath>..\packages\TinyVirtuoso.0.3.30\lib\Net35\TinyVirtuoso.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -106,7 +106,6 @@
     <None Include="Plugins\PhotoshopCC2015\Manifest.xml" />
     <None Include="Plugins\PhotoshopCC2015\Sample.psd" />
     <None Include="app.config" />
-    <None Include="TinyVirtuoso\database\virtuoso.ini" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Artivity.Apid\Artivity.Apid.csproj">
@@ -124,6 +123,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>
     <BundleResource Include="Plugins\IllustratorCC2015.2\Sample.ai" />
+    <BundleResource Include="TinyVirtuoso\database\virtuoso.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="$(ProjectDir)\Build\CopyToOutput.targets" />
