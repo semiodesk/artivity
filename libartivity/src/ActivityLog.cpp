@@ -388,6 +388,8 @@ namespace artivity
 
             addInfluence(*it);
         }
+
+        transmit();
     }
 
 	ImageRef ActivityLog::getDocument()
@@ -621,7 +623,7 @@ namespace artivity
     {
         stringstream stream;
 
-        Serializer s;
+        Serializer s = Serializer();
 
         // Recursively serialize the activity and all related resources..
         s.serialize(stream, _activity, N3);

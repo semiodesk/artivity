@@ -198,60 +198,67 @@ namespace artivity
 
     void EditingSession::eventSave()
     {
-        SaveRef save = onEventSave();
+        string filePath = getDocumentFilePath();
 
-        // TODO: Check if file paths match if not empty -> derivation.
         if (_filePath.empty())
         {
-            _filePath = getDocumentFilePath();
-
-            if (!_filePath.empty())
+            if (!filePath.empty())
             {
+                // A new document was saved.
+                _log->createDataObject(_filePath);
+            }
+            else
+            {
+                // We got a save without a new file name?
+                // Something's definitly wrong on this planet..
+
+                return;
+            }
+        }
+        else if (_filePath == filePath)
+        {
+            if (!_log->hasDataObject())
+            {
+                // Create a data object if we edit a non-indexed file.
                 _log->createDataObject(_filePath);
             }
         }
-		else if (!_log->hasDataObject())
-		{
-			// Create a data object if we edit a non-indexed file.
-			_log->createDataObject(_filePath);
-		}
+        else
+        {
+            // We're saving an existing file under a new name.
+            eventSaveAs();
 
-        time_t now;
-        time(&now);
+            return;
+        }
 
-        document->setModified(now);
+        SaveRef save = onEventSave();
 
         _consumer->push(save);
     }
 
     void EditingSession::eventSaveAs()
     {
-        SaveAsRef saveAs = onEventSaveAs();
-
-
-        if (_filePath.empty())
+        if (!_filePath.empty())
         {
-            _filePath = getDocumentFilePath();
-
-            if (!_filePath.empty())
-            {
-                _log->createDataObject(_filePath);
-            }
-        }
-		else
-        {
-            string oldPath = _filePath;
-            _filePath = getDocumentFilePath();
+            // Read the new file path.
+            string targetPath = getDocumentFilePath();
             
-			_log->createDataObject(_filePath);
+            if (_filePath != targetPath)
+            {
+                SaveAsRef saveAs = onEventSaveAs();
+
+                // Push the 'SaveAs' event to the current activity.. 
+                _consumer->push(saveAs);
+
+                ImageRef targetImage = ImageRef(new Image());
+                targetImage->setType(document->getType());
+
+                _log->createDerivation(targetImage, targetPath);
+
+                // Update the new document handle.
+                document = targetImage;
+            }
 		}
-
-        time_t now;
-        time(&now);
-
-        document->setModified(now);
-
-        _consumer->push(saveAs);
     }
 
     bool EditingSession::fileExists(const std::string& name)
