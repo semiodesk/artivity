@@ -226,7 +226,7 @@ namespace artivity
         else
         {
             // We're saving an existing file under a new name.
-            eventSaveAs();
+            eventSaveAs(filePath);
 
             return;
         }
@@ -236,28 +236,22 @@ namespace artivity
         _consumer->push(save);
     }
 
-    void EditingSession::eventSaveAs()
+    void EditingSession::eventSaveAs(string targetPath)
     {
-        if (!_filePath.empty())
-        {
-            // Read the new file path.
-            string targetPath = getDocumentFilePath();
-            
-            if (_filePath != targetPath)
-            {
-                SaveAsRef saveAs = onEventSaveAs();
+        if (!_filePath.empty() && !targetPath.empty() && _filePath != targetPath)
+        {           
+            SaveAsRef saveAs = onEventSaveAs();
 
-                // Push the 'SaveAs' event to the current activity.. 
-                _consumer->push(saveAs);
+            // Push the 'SaveAs' event to the current activity.. 
+            _consumer->push(saveAs);
 
-                ImageRef targetImage = ImageRef(new Image());
-                targetImage->setType(document->getType());
+            ImageRef targetImage = ImageRef(new Image());
+            targetImage->setType(document->getType());
 
-                _log->createDerivation(targetImage, targetPath);
+            _log->createDerivation(targetImage, targetPath);
 
-                // Update the new document handle.
-                document = targetImage;
-            }
+            // Update the new document handle.
+            document = targetImage;
 		}
     }
 
