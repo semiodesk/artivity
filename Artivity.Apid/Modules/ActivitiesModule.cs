@@ -121,12 +121,16 @@ namespace Artivity.Apid.Modules
 
                   OPTIONAL
                   {
-                    ?activity prov:qualifiedAssociation [
+                    ?activity prov:qualifiedAssociation
+                    [
                       prov:hadRole art:SOFTWARE ;
                       prov:agent ?agent
                     ] .
 
-                    ?agent art:hasColourCode ?agentColor .
+                    OPTIONAL
+                    {
+                        ?agent art:hasColourCode ?agentColor .
+                    }
                   }
 
                   ?influence a ?type ;

@@ -42,6 +42,7 @@ using System.Linq;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace Artivity.Apid.Modules
 {
@@ -87,16 +88,17 @@ namespace Artivity.Apid.Modules
             // Install a new or update an existing agent.
             Post["/"] = parameters =>
             {
-                Agent agent = Bind<Agent>(ModelProvider.Store, Request.Body);
-
-                if (agent == null)
+                using (var reader = new StreamReader(Request.Body))
                 {
-                    return HttpStatusCode.BadRequest;
+                    string data = reader.ReadToEnd();
+
+                    if(string.IsNullOrEmpty(data))
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+
+                    return SetAgents(data);
                 }
-
-                agent.Commit();
-
-                return HttpStatusCode.OK;
             };
 
             Get["/associations"] = parameters =>
@@ -243,6 +245,35 @@ namespace Artivity.Apid.Modules
             _checker.CheckPlugins();
 
             return Response.AsJson(_checker.Plugins);
+        }
+
+        public Response SetAgents(string data)
+        {
+            IModel model = ModelProvider.GetAgents();
+
+            AgentParameter[] agents = JsonConvert.DeserializeObject<AgentParameter[]>(data);
+
+            foreach (AgentParameter agent in agents)
+            {
+                Uri agentUri = new Uri(agent.uri);
+
+                SoftwareAgent a;
+
+                if (model.ContainsResource(agentUri))
+                {
+                    a = model.GetResource<SoftwareAgent>(agentUri);
+                }
+                else
+                {
+                    a = model.CreateResource<SoftwareAgent>(agentUri);
+                }
+
+                a.Name = agent.name;
+                a.ColourCode = agent.color;
+                a.Commit();
+            }
+
+            return HttpStatusCode.OK;
         }
 
         public Response GetAgent(Uri uri)
@@ -638,6 +669,7 @@ namespace Artivity.Apid.Modules
             FileStream fileStream = new FileStream(file, FileMode.Open);
 
             StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
+            response.Headers["Allow-Control-Allow-Origin"] = "127.0.0.1";
 
             return response.AsAttachment(file);
         }
@@ -715,5 +747,16 @@ namespace Artivity.Apid.Modules
         }
 
         #endregion
+    }
+
+    class AgentParameter
+    {
+        public string uri { get; set; }
+
+        public string name { get; set; }
+
+        public string color { get; set; }
+
+        public bool pluginEnabled { get; set; }
     }
 }
