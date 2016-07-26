@@ -25,6 +25,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
+using Artivity.Apid;
 using Artivity.Apid.Platforms;
 using System;
 using System.IO;
@@ -33,6 +34,7 @@ using Mono.Unix;
 using MonoDevelop.MacInterop;
 using System.Xml.XPath;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace Artivity.Api.Plugin.OSX
 {
@@ -106,30 +108,47 @@ namespace Artivity.Api.Plugin.OSX
         {
             name = null;
             version = null;
+
             if (Directory.Exists(app))
             {
-
                 var infoPlist = Path.Combine(app, "Contents", "Info.plist");
 
                 if (File.Exists(infoPlist))
                 {
                     try
                     {
-                        XPathDocument document = new XPathDocument(infoPlist);
+                        using (TextReader textReader = File.OpenText(infoPlist))
+                        {
+                            // See: http://todotnet.com/archive/2006/07/27/8248.aspx
+                            // Prevent the XPathDocument from issueing a HTTP-Request to
+                            // resolve the document DTD. This causes exceptions if there is no
+                            // network connection.
+                            XmlReaderSettings settings = new XmlReaderSettings();
+                            settings.XmlResolver = null;
+                            settings.DtdProcessing = DtdProcessing.Ignore;
 
-                        XPathNavigator root = document.CreateNavigator();
+                            XmlReader reader = XmlReader.Create(textReader, settings);
 
-                        XPathNavigator value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleShortVersionString']");
-                        value.MoveToNext();
-                        version = value.InnerXml;
+                            XPathDocument document = new XPathDocument(reader);
 
-                        value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleExecutable']");
-                        value.MoveToNext();
-                        name = value.InnerXml;
-                        return true;
+                            XPathNavigator root = document.CreateNavigator();
+
+                            XPathNavigator value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleShortVersionString']");
+                            value.MoveToNext();
+
+                            version = value.InnerXml;
+
+                            value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleExecutable']");
+                            value.MoveToNext();
+
+                            name = value.InnerXml;
+
+                            return true;
+                        }
                     }
                     catch (Exception ex)
                     {
+                        Artivity.Apid.Logger.LogError(ex);
                     }
                 }
             }
@@ -148,15 +167,28 @@ namespace Artivity.Api.Plugin.OSX
                 {
                     try
                     {
-                        XPathDocument document = new XPathDocument(infoPlist);
+                        using (TextReader textReader = File.OpenText(infoPlist))
+                        {
+                            // See: http://todotnet.com/archive/2006/07/27/8248.aspx
+                            // Prevent the XPathDocument from issueing a HTTP-Request to
+                            // resolve the document DTD. This causes exceptions if there is no
+                            // network connection.
+                            XmlReaderSettings settings = new XmlReaderSettings();
+                            settings.XmlResolver = null;
+                            settings.DtdProcessing = DtdProcessing.Ignore;
 
-                        XPathNavigator root = document.CreateNavigator();
+                            XmlReader reader = XmlReader.Create(textReader, settings);
 
-                        XPathNavigator value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleShortVersionString']");
+                            XPathDocument document = new XPathDocument(reader);
 
-                        value.MoveToNext();
+                            XPathNavigator root = document.CreateNavigator();
 
-                        return value.InnerXml;
+                            XPathNavigator value = root.SelectSingleNode("/plist/dict/key[text()='CFBundleShortVersionString']");
+
+                            value.MoveToNext();
+
+                            return value.InnerXml;
+                        }
                     }
                     catch (Exception ex)
                     {

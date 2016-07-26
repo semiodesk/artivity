@@ -107,13 +107,13 @@ namespace artivity
 			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
 		}
 
-#if _DEBUG
+#ifdef _DEBUG
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
 #endif
 
 		CURLcode responseCode = curl_easy_perform(curl);
 
-#if _DEBUG
+#ifdef _DEBUG
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
 #endif
 
@@ -124,7 +124,7 @@ namespace artivity
 
 		curl_easy_cleanup(curl);
 
-#if _DEBUG
+#ifdef _DEBUG
 		if (responseCode == CURLE_OK)
 		{
             stringstream time;
@@ -186,6 +186,7 @@ namespace artivity
 
 	void ActivityLog::close()
 	{
+        // TODO: Investigate, is this called before save? Race condition?
         clear();
 
 		time_t now;
@@ -314,6 +315,22 @@ namespace artivity
             _activity->addUsed(_entity);
         }
 	}
+    
+    void ActivityLog::createDerivation(ImageRef image, std::string path)
+    {
+        // Get time from last save for end/begin of activities
+        //Entity oldEntity = _entity;
+
+        
+        
+        
+        
+        // TODO:
+        // - close old activity
+        // - create new activity
+        // - set new entity
+        // - set entity derived from old entity
+    }
 
 	ImageRef ActivityLog::getDocument()
 	{

@@ -55,6 +55,8 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams, $translate) {
 	var fileUri = $location.search().uri;
 
+    console.log(fileUri);
+
 	// File metadata
 	$scope.file = {};
 
@@ -172,6 +174,10 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		if (influence.time !== undefined) {
 			$scope.renderInfluence(influence);
+            
+            // Note: this is experimental.
+            //var heatmap = new HeatmapRenderer(canvas);
+            //heatmap.render($scope.influences);
 		}
 	};
 
@@ -310,10 +316,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		return result;
 	};
 
-	// EXPORT
 	$scope.exportFile = function () {
-		api.exportFile(fileUri, $scope.file.label);
-	};
 
 	// PRINT LABEL
 	$scope.getLabel = function (influence) {
@@ -353,37 +356,6 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			return influence.type;
 		}
 	};
-}).directive('artTimeline', function () {
-	return {
-		template: '<div class="timeline-control"><svg class="canvas"></svg></div>',
-		link: function (scope, element, attributes) {
-			var timline = new TimelineControl(element);
-
-			timline.setData(getValue(scope, attributes.artData));
-
-			scope.$watchCollection(attributes.artData, function () {
-				timline.setData(getValue(scope, attributes.artData));
-			});
-
-			scope.$watch('selectedInfluence', function () {
-				if (scope.selectedInfluence !== undefined) {
-					timline.setPosition(scope.selectedInfluence.time);
-				}
-			});
-
-			$(window).resize(function () {
-				var container = $('.col-playback-chart');
-
-				timline.setWidth(container.innerWidth());
-			});
-
-			$(document).ready(function () {
-				var container = $('.col-playback-chart');
-
-				timline.setWidth(container.innerWidth());
-			});
-		}
-	}
 });
 
 explorerControllers.controller('SettingsController', function (api, $scope, $location, $rootScope, $routeParams) {

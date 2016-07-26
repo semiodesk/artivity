@@ -10,6 +10,6 @@
   <SampleResultFilter>Chrome</SampleResultFilter>
   <PluginArch>64</PluginArch>
   <PluginFile>lfpdclalfidmgoedibkdihkbiclfoebh.json</PluginFile>
-  <PluginVersion>0.8</PluginVersion>
+  <PluginVersion>1.0.2</PluginVersion>
   <PluginInstallPath>%HOME%/Library/Application Support/Google/Chrome/External Extensions/</PluginInstallPath>
 </PluginManifest>

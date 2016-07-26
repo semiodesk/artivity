@@ -29,18 +29,14 @@ using System;
 using System.IO;
 using System.Configuration;
 using System.Threading;
-using System.Linq;
-using CommandLine;
 using Semiodesk.Trinity;
 using Semiodesk.TinyVirtuoso;
-using log4net;
 using Nancy.Hosting.Self;
 using Nancy.TinyIoc;
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
 using Artivity.Api.Plugin;
 using Artivity.Api.Platforms;
-using Semiodesk.Trinity.Configuration;
 
 namespace Artivity.Apid
 {
@@ -175,7 +171,7 @@ namespace Artivity.Apid
         {
             string version = typeof(HttpService).Assembly.GetName().Version.ToString();
 
-            Logger.LogInfo("Artivity API Service, Version {0}", version);
+            Logger.LogInfo("--- Artivity API Service, Version {0} ---", version);
 
             SemiodeskDiscovery.Discover();
 
@@ -207,7 +203,7 @@ namespace Artivity.Apid
 
         public void Stop(bool waitForEnd = true)
         {
-            Logger.LogInfo ("Stopping service.");
+            Logger.LogInfo("Stopping service.");
 
             StopWatchdog();
 
@@ -267,6 +263,10 @@ namespace Artivity.Apid
 
                     _serviceHost.Stop();
                 }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                }
                 finally
                 {
                     Logger.LogInfo("Stopped service on port {0}", _servicePort);
@@ -292,18 +292,18 @@ namespace Artivity.Apid
                 Logger.LogInfo("Deployment folder: {0}", PlatformProvider.DeploymentDir);
 
                 // The database is started in the user's application data folder on port 8273..
-                _virtuoso = new TinyVirtuoso(PlatformProvider.ArtivityDataFolder, deploymentDir);
+                _virtuoso = new TinyVirtuoso(PlatformProvider.ArtivityDataFolder, deploymentDir, false);
                 _virtuosoInstance = _virtuoso.GetOrCreateInstance(PlatformProvider.DatabaseName);
-                _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("localhost:{0}", _virtuosoPort);
+                _virtuosoInstance.Configuration.Parameters.ServerPort = string.Format("127.0.0.1:{0}", _virtuosoPort);
                 _virtuosoInstance.Configuration.SaveConfigFile();
                 _virtuosoInstance.RemoveLock();
-                _virtuosoInstance.Start(false);
+                _virtuosoInstance.Start(true, TimeSpan.FromSeconds(30));
 
-                // Wait for 5 seconds to make sure the database is started..
-                Thread.Sleep(5000);
 
                 string connectionString = _virtuosoInstance.GetTrinityConnectionString() + ";rule=urn:semiodesk/ruleset";
+                connectionString = connectionString.Replace("localhost", "127.0.0.1");
                 string nativeConnectionString = _virtuosoInstance.GetAdoNetConnectionString();
+                nativeConnectionString = nativeConnectionString.Replace("localhost", "127.0.0.1");
 
                 ModelProvider = ModelProviderFactory.CreateModelProvider(connectionString, nativeConnectionString, uid);
 
