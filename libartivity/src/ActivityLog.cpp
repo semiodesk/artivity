@@ -68,7 +68,7 @@ namespace artivity
 	{
 		CURL* curl = curl_easy_init();
 
-#if _DEBUG
+#ifdef _DEBUG
 		if (!curl)
 		{
 			logError("Failed to initialize CURL.");
@@ -82,7 +82,7 @@ namespace artivity
 	{
 		if (!curl)
 		{
-#if _DEBUG
+#ifdef _DEBUG
 			logError("CURL not initialized.");
 #endif
 
@@ -682,7 +682,7 @@ namespace artivity
         }
         else
         {
-#if _DEBUG
+#ifdef _DEBUG
             logRequest(url.str(), "0ms", requestData);
 
             _transmitCount++;
@@ -692,7 +692,7 @@ namespace artivity
 		clear();
 	}
 
-#if _DEBUG
+#ifdef _DEBUG
 	void ActivityLog::logError(string msg)
 	{
 		cout << getTime() << " [ERROR] " << msg << endl << flush;
