@@ -206,6 +206,8 @@ namespace artivity
             {
                 // A new document was saved.
                 _log->createDataObject(filePath);
+                
+                _filePath = filePath;
             }
             else
             {
@@ -227,7 +229,7 @@ namespace artivity
         {
             // We're saving an existing file under a new name.
             eventSaveAs(filePath);
-
+            
             return;
         }
 
@@ -247,10 +249,14 @@ namespace artivity
             ImageRef targetImage = ImageRef(new Image());
             targetImage->setType(document->getType());
 
+            // Replace the current activity with a new one.
             _log->createDerivation(saveAs, targetImage, targetPath);
 
             // Update the new document handle.
             document = targetImage;
+            
+            // Udpate the new file path.
+            _filePath = targetPath;
             
             _consumer->start();
 		}
