@@ -356,7 +356,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		if (key) {
 			return $translate.instant(key)
 		} else {
-			return influence.type;
+			return influence.description ? influence.description : influence.type;
 		}
 	};
 });
