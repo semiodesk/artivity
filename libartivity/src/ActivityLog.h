@@ -57,6 +57,7 @@
 #include "ObjectModel/Influences/Revision.h"
 #include "ObjectModel/Influences/Undo.h"
 #include "ObjectModel/Influences/Redo.h"
+#include "ObjectModel/Influences/SaveAs.h"
 #include "ObjectModel/FileDataObject.h"
 #include "ObjectModel/Entities/Image.h"
 
@@ -135,7 +136,7 @@ namespace artivity
 		// Set the file being edited.
 		void setDocument(ImageRef image, std::string path, bool create);
         
-        void createDerivation(ImageRef image, std::string path);
+        void createDerivation(SaveAsRef saveAs, ImageRef image, std::string path);
 
         ImageRef getDocument();
 

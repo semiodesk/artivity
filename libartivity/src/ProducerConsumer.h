@@ -120,6 +120,7 @@ class ProducerConsumer
         mlock.unlock();
         cond_.notify_one();
         consumerThread.join();
+        stopExecution = false;
     }
 
     void start()
