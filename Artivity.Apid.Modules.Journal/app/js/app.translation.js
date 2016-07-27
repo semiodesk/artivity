@@ -1,4 +1,4 @@
-﻿
+
 angular.module('explorerApp').config(function ($translateProvider) {
     $translateProvider.useSanitizeValueStrategy('escape');
 
@@ -45,7 +45,8 @@ angular.module('explorerApp').config(function ($translateProvider) {
             'http://www.w3.org/2000/01/rdf-schema#label': 'Renamed',
             'http://w3id.org/art/terms/1.0/textValue': 'Changed Text',
             'http://w3id.org/art/terms/1.0/aboveLayer': 'Moved Layer',
-
+            'http://w3id.org/art/terms/1.0/strokeWidth': 'Chagned Stroke',
+            'http://w3id.org/art/terms/1.0/lengthUnit': 'Chagned Length Unit'
         }
     });
 
@@ -90,6 +91,8 @@ angular.module('explorerApp').config(function ($translateProvider) {
             'http://www.w3.org/2000/01/rdf-schema#label': 'Umbenannt',
             'http://w3id.org/art/terms/1.0/textValue': 'Text geändert',
             'http://w3id.org/art/terms/1.0/aboveLayer': 'Ebene verschoben',
+            'http://w3id.org/art/terms/1.0/strokeWidth': 'Strichsträke geändert',
+            'http://w3id.org/art/terms/1.0/lengthUnit': 'Einheit geändert'
         }
     });
 
