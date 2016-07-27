@@ -353,7 +353,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			}
 		}
 
-		if (key) {
+		if (key && key !== "FILEVIEW.") {
 			return $translate.instant(key)
 		} else {
 			return influence.description ? influence.description : influence.type;
