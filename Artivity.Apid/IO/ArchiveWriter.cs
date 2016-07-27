@@ -246,7 +246,7 @@ namespace Artivity.Api.IO
 
         private FileInfo CompressExportFolder(UriRef entityUri, DirectoryInfo exportFolder)
         {
-            string exportArchive = Path.Combine(_platformProvider.ExportFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri) + ".artx");
+            string exportArchive = Path.Combine(_platformProvider.ExportFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri) + ".arta");
 
             if (File.Exists(exportArchive))
             {

@@ -82,7 +82,7 @@ namespace Artivity.Apid.Modules
         {
             try
             {
-                string targetFile = Path.GetFileNameWithoutExtension(fileName) + ".artx";
+                string targetFile = Path.GetFileNameWithoutExtension(fileName) + ".arta";
                 string targetFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
 
                 ArchiveWriter exporter = new ArchiveWriter(PlatformProvider, ModelProvider);

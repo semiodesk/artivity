@@ -175,7 +175,7 @@ namespace Artivity.Journal.Mac
             {
                 NSUrl url = new NSUrl(items[i].GetStringForType("public.file-url"));
 
-                if (url.Path.EndsWith(".artx", StringComparison.InvariantCulture))
+                if (url.Path.EndsWith(".arta", StringComparison.InvariantCulture))
                 {
                     yield return url;
                 }
