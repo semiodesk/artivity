@@ -37,6 +37,10 @@ namespace artivity
     class Entity;
 
     typedef boost::shared_ptr<Entity> EntityRef;
+    
+    class Influence;
+    
+    typedef boost::shared_ptr<Influence> InfluenceRef;
 
     class Association;
 
@@ -50,6 +54,8 @@ namespace artivity
     {
     private:        
         std::list<AssociationRef> _associations;
+        
+        std::list<InfluenceRef> _influences;
 
         std::list<EntityRef> _usedEntites;
 
@@ -78,19 +84,24 @@ namespace artivity
         void setEndTime(time_t time);
         time_t getEndTime();
         
+        std::list<InfluenceRef> getInfluences();
+        
         std::list<AssociationRef> getAssociations();
         void addAssociation(AssociationRef association);
         void removeAssociation(AssociationRef association);
 
 		std::list<EntityRef> getUsedEntities();
+        void clearUsedEntities();
 		void addUsed(EntityRef entity);
 		void removeUsed(EntityRef entity);
                
         std::list<EntityRef> getGeneratedEntities();
+        void clearGeneratedEntities();
         void addGenerated(EntityRef generation);
         void removeGenerated(EntityRef generation);
 
         std::list<EntityRef> getInvalidatedEntities();
+        void clearInvalidatedEntities();
         void addInvalidated(EntityRef invalidation);
         void removeInvalidated(EntityRef invalidation);
 

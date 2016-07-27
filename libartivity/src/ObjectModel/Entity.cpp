@@ -28,6 +28,8 @@
 #include "../Resource.h"
 #include "../Property.h"
 
+#include "Influences/Generation.h"
+#include "Influences/Invalidation.h"
 #include "Influences/Revision.h"
 #include "Influences/Derivation.h"
 #include "Influences/EntityInfluence.h"
@@ -83,11 +85,29 @@ namespace artivity
         setValue(dces::title, _title.c_str());
     }
 
-    list<EntityInfluenceRef> Entity::getInfluences()
+    list<InfluenceRef> Entity::getInfluences()
     {
         return _influences;
     }
 
+    void Entity::addInfluence(GenerationRef generation)
+    {
+        if (hasProperty(prov::qualifiedGeneration, generation)) return;
+        
+        _influences.push_back(generation);
+        
+        addProperty(prov::qualifiedGeneration, generation);
+    }
+    
+    void Entity::addInfluence(InvalidationRef invalidation)
+    {
+        if (hasProperty(prov::qualifiedInvalidation, invalidation)) return;
+        
+        _influences.push_back(invalidation);
+        
+        addProperty(prov::qualifiedInvalidation, invalidation);
+    }
+    
     void Entity::addInfluence(EntityInfluenceRef influence)
     {
         if (hasProperty(prov::qualifiedInfluence, influence)) return;
@@ -113,6 +133,51 @@ namespace artivity
         _influences.push_back(revision);
 
         addProperty(prov::qualifiedRevision, revision);
+    }
+    
+    void Entity::removeInfluence(GenerationRef generation)
+    {
+        if (!hasProperty(prov::qualifiedGeneration, generation)) return;
+        
+        _influences.remove(generation);
+        
+        removeProperty(prov::qualifiedGeneration, generation);
+    }
+    
+    void Entity::removeInfluence(InvalidationRef invalidation)
+    {
+        if (!hasProperty(prov::qualifiedInvalidation, invalidation)) return;
+        
+        _influences.remove(invalidation);
+        
+        removeProperty(prov::qualifiedInvalidation, invalidation);
+    }
+    
+    void Entity::removeInfluence(EntityInfluenceRef influence)
+    {
+        if (!hasProperty(prov::qualifiedInfluence, influence)) return;
+        
+        _influences.remove(influence);
+        
+        removeProperty(prov::qualifiedInfluence, influence);
+    }
+    
+    void Entity::removeInfluence(DerivationRef derivation)
+    {
+        if (!hasProperty(prov::qualifiedDerivation, derivation)) return;
+        
+        _influences.remove(derivation);
+        
+        removeProperty(prov::qualifiedDerivation, derivation);
+    }
+    
+    void Entity::removeInfluence(RevisionRef revision)
+    {
+        if (!hasProperty(prov::qualifiedRevision, revision)) return;
+        
+        _influences.remove(revision);
+        
+        removeProperty(prov::qualifiedRevision, revision);
     }
 }
 

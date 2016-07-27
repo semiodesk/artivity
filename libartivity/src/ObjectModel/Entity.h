@@ -41,6 +41,22 @@
 
 namespace artivity
 {
+    class Influence;
+    
+    typedef boost::shared_ptr<Influence> InfluenceRef;
+    
+    class Generation;
+    
+    typedef boost::shared_ptr<Generation> GenerationRef;
+    
+    class Invalidation;
+    
+    typedef boost::shared_ptr<Invalidation> InvalidationRef;
+    
+    class Derivation;
+    
+    typedef boost::shared_ptr<Derivation> DerivationRef;
+    
     class EntityInfluence;
 
     typedef boost::shared_ptr<EntityInfluence> EntityInfluenceRef;
@@ -56,13 +72,13 @@ namespace artivity
     class Entity;
 
     typedef boost::shared_ptr<Entity> EntityRef;
-
+    
     class Entity : public Resource
     {
     private:
         std::string _title;
 
-        std::list<EntityInfluenceRef> _influences;
+        std::list<InfluenceRef> _influences;
 
         time_t _created;
 
@@ -95,13 +111,27 @@ namespace artivity
 
         void resetModified();
 
-        std::list<EntityInfluenceRef> getInfluences();
+        std::list<InfluenceRef> getInfluences();
 
+        void addInfluence(GenerationRef generation);
+        
+        void addInfluence(InvalidationRef invalidation);
+        
         void addInfluence(EntityInfluenceRef influence);
 
         void addInfluence(DerivationRef derivation);
 
         void addInfluence(RevisionRef revision);
+        
+        void removeInfluence(GenerationRef generation);
+        
+        void removeInfluence(InvalidationRef invalidation);
+        
+        void removeInfluence(EntityInfluenceRef influence);
+        
+        void removeInfluence(DerivationRef derivation);
+        
+        void removeInfluence(RevisionRef revision);
     };
 }
 

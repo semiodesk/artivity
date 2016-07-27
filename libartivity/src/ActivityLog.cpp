@@ -316,7 +316,7 @@ namespace artivity
         }
 	}
     
-    void ActivityLog::createDerivation(ImageRef targetImage, std::string targetPath)
+    void ActivityLog::createDerivation(SaveAsRef saveAs, ImageRef targetImage, std::string targetPath)
     {
         // We cannot create derivations of newly created files or overwritten files.
         if (_fileUrl.empty() || _fileUrl == UriGenerator::getUrl(targetPath))
@@ -326,21 +326,25 @@ namespace artivity
 
         ImageRef sourceImage = _entity;
 
-        // Temporarily store a copy of the untransmitted influences.
-        std::list<InfluenceRef> influences = _influences;
-
+        // Temporarily store a copy of all untransmitted influences.
+        std::list<InfluenceRef> influences = _activity->getInfluences();
+        
+        // NOTE: These are only influences which are not directly associated with
+        // an Entity such as undos and redos.
+        influences.insert(influences.end(), _influences.begin(), _influences.end());
+        
         for (auto it = influences.begin(); it != influences.end(); it++)
         {
             removeInfluence(*it);
         }
 
-        // Clear the list of all untransmitted influences for the old activity.
-        _influences.clear();
-
+        // Add the SaveAs event to the old activity.
+        addInfluence(saveAs);
+        
         // Close and transmit the current activity.
         time_t now;
         time(&now);
-
+        
         _activity->setEndTime(now);
 
         transmit();
@@ -384,8 +388,6 @@ namespace artivity
         // Associated all untransmitted activities with the new activity.
         for (auto it = influences.begin(); it != influences.end(); it++)
         {
-            (*it)->setActivity(_activity);
-
             addInfluence(*it);
         }
 
@@ -462,72 +464,82 @@ namespace artivity
                 {
                     EntityRef r = _activity->getEntity(entity->uri);
 
+                    GenerationRef generation = dynamic_pointer_cast<Generation>(influence);
+                    
                     if (r)
                     {
+                        r->addInfluence(generation);
+                        
                         _activity->addGenerated(r);
-
-                        r->addProperty(prov::qualifiedGeneration, influence);
                     }
                     else
                     {
+                        entity->addInfluence(generation);
+                        
                         _activity->addGenerated(entity);
-
-                        entity->addProperty(prov::qualifiedGeneration, influence);
+                    }
+                }
+                else if (influence->is(prov::Invalidation))
+                {
+                    EntityRef r = _activity->getEntity(entity->uri);
+                    
+                    InvalidationRef invalidation = dynamic_pointer_cast<Invalidation>(influence);
+                    
+                    if (r)
+                    {
+                        r->addInfluence(invalidation);
+                        
+                        _activity->addInvalidated(r);
+                    }
+                    else
+                    {
+                        entity->addInfluence(invalidation);
+                        
+                        _activity->addInvalidated(entity);
                     }
                 }
                 else if (influence->is(prov::Derivation))
                 {
                     EntityRef r = _activity->getEntity(entity->uri);
 
+                    DerivationRef derivation = dynamic_pointer_cast<Derivation>(influence);
+                    
                     if (r)
                     {
+                        r->addInfluence(derivation);
+                        
                         _activity->addUsed(r);
-
-                        r->addProperty(prov::qualifiedDerivation, influence);
                     }
                     else
                     {
+                        entity->addInfluence(derivation);
+                        
                         _activity->addUsed(entity);
-
-                        entity->addProperty(prov::qualifiedDerivation, influence);
                     }
                 }
                 else if (influence->is(prov::Revision) || influence->is(art::Save) || influence->is(art::SaveAs))
                 {
                     EntityRef r = _activity->getEntity(entity->uri);
+                    
+                    RevisionRef revision = dynamic_pointer_cast<Revision>(influence);
 
                     if (r)
                     {
+                        r->addInfluence(revision);
+                        
                         _activity->addUsed(r);
-
-                        r->addProperty(prov::qualifiedRevision, influence);
                     }
                     else
                     {
+                        entity->addInfluence(revision);
+                        
                         _activity->addUsed(entity);
-
-                        entity->addProperty(prov::qualifiedRevision, influence);
-                    }
-                }
-                else if (influence->is(prov::Invalidation))
-                {
-                    EntityRef r = _activity->getEntity(entity->uri);
-
-                    if (r)
-                    {
-                        _activity->addInvalidated(r);
-
-                        r->addProperty(prov::qualifiedInvalidation, influence);
-                    }
-                    else
-                    {
-                        _activity->addInvalidated(entity);
-
-                        entity->addProperty(prov::qualifiedInvalidation, influence);
                     }
                 }
                 else
                 {
+                    // TODO: Handle this error case properly. Adding a generic Influence to an entity might be wrong;
+                    // it's only allowed to add EntityInfluences to entities.
                     entity->addProperty(prov::qualifiedInfluence, influence);
                 }
 
@@ -556,28 +568,38 @@ namespace artivity
                 {
                     _activity->removeGenerated(entity);
 
-                    entity->removeProperty(prov::qualifiedGeneration, influence);
+                    GenerationRef generation = dynamic_pointer_cast<Generation>(influence);
+                    
+                    entity->removeInfluence(generation);
+                }
+                else if (influence->is(prov::Invalidation))
+                {
+                    _activity->removeInvalidated(entity);
+                    
+                    InvalidationRef invalidation = dynamic_pointer_cast<Invalidation>(influence);
+                    
+                    entity->removeInfluence(invalidation);
                 }
                 else if (influence->is(prov::Derivation))
                 {
                     _activity->removeUsed(entity);
 
-                    entity->removeProperty(prov::qualifiedDerivation, influence);
+                    DerivationRef derivation = dynamic_pointer_cast<Derivation>(influence);
+                    
+                    entity->removeInfluence(derivation);
                 }
                 else if (influence->is(prov::Revision))
                 {
                     _activity->removeUsed(entity);
 
-                    entity->removeProperty(prov::qualifiedRevision, influence);
-                }
-                else if (influence->is(prov::Invalidation))
-                {
-                    _activity->removeInvalidated(entity);
-
-                    entity->removeProperty(prov::qualifiedInvalidation, influence);
+                    RevisionRef revision = dynamic_pointer_cast<Revision>(influence);
+                    
+                    entity->removeInfluence(revision);
                 }
                 else
                 {
+                    // TODO: Handle this error case properly. Removing a generic Influence to an entity might be wrong;
+                    // it's only allowed to add EntityInfluences to entities.
                     entity->removeProperty(prov::qualifiedInfluence, influence);
                 }
 

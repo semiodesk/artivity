@@ -691,16 +691,23 @@ namespace Artivity.Apid
                 {
                     FileInfo info = new FileInfo(url.LocalPath);
 
-                    FileDataObject file = _model.GetResource<FileDataObject>(uri);
-                    file.CreationTime = info.CreationTimeUtc;
-                    file.LastAccessTime = info.LastAccessTimeUtc;
-                    file.LastModificationTime = info.LastWriteTimeUtc;
-                    file.Commit();
+                    if (info.Exists)
+                    {
+                        FileDataObject file = _model.GetResource<FileDataObject>(uri);
+                        file.CreationTime = info.CreationTimeUtc;
+                        file.LastAccessTime = info.LastAccessTimeUtc;
+                        file.LastModificationTime = info.LastWriteTimeUtc;
+                        file.Commit();
 
-                    _monitoredFiles[url.LocalPath] = new FileInfoCache(url.LocalPath);
-                    _monitoredFileUris[url.LocalPath] = file.Uri;
+                        _monitoredFiles[url.LocalPath] = new FileInfoCache(url.LocalPath);
+                        _monitoredFileUris[url.LocalPath] = file.Uri;
 
-                    Logger.LogInfo("Updated {0}: {1}", file.Uri, url.LocalPath);
+                        Logger.LogInfo("Updated {0}: {1}", file.Uri, url.LocalPath);
+                    }
+                    else
+                    {
+                        _monitoredFileUris.Remove(url.LocalPath);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -728,25 +735,32 @@ namespace Artivity.Apid
                 {
                     FileInfo info = new FileInfo(newUrl.LocalPath);
 
-                    // Get the file data object from the database and update the metadata.
-                    FileDataObject file = _model.GetResource<FileDataObject>(uri);
-                    file.CreationTime = info.CreationTimeUtc;
-                    file.LastAccessTime = info.LastAccessTimeUtc;
-                    file.LastModificationTime = info.LastWriteTimeUtc;
-                    file.Commit();
-
-                    // Unregister the old file from monitoring.
-                    if (_monitoredFiles.ContainsKey(oldUrl.LocalPath))
+                    if (info.Exists)
                     {
-                        _monitoredFiles.Remove(oldUrl.LocalPath);
+                        // Get the file data object from the database and update the metadata.
+                        FileDataObject file = _model.GetResource<FileDataObject>(uri);
+                        file.CreationTime = info.CreationTimeUtc;
+                        file.LastAccessTime = info.LastAccessTimeUtc;
+                        file.LastModificationTime = info.LastWriteTimeUtc;
+                        file.Commit();
+
+                        // Unregister the old file from monitoring.
+                        if (_monitoredFiles.ContainsKey(oldUrl.LocalPath))
+                        {
+                            _monitoredFiles.Remove(oldUrl.LocalPath);
+                            _monitoredFileUris.Remove(oldUrl.LocalPath);
+                        }
+
+                        // Register the new file for monitoring.
+                        _monitoredFiles[newUrl.LocalPath] = new FileInfoCache(newUrl.LocalPath);
+                        _monitoredFileUris[newUrl.LocalPath] = file.Uri;
+
+                        Logger.LogInfo("Moved {0} -> {1} ; Updated {2}", oldUrl.LocalPath, newUrl.LocalPath, file.Uri);
+                    }
+                    else
+                    {
                         _monitoredFileUris.Remove(oldUrl.LocalPath);
                     }
-
-                    // Register the new file for monitoring.
-                    _monitoredFiles[newUrl.LocalPath] = new FileInfoCache(newUrl.LocalPath);
-                    _monitoredFileUris[newUrl.LocalPath] = file.Uri;
-
-                    Logger.LogInfo("Moved {0} -> {1} ; Updated {2}", oldUrl.LocalPath, newUrl.LocalPath, file.Uri);
                 }
                 catch (Exception e)
                 {

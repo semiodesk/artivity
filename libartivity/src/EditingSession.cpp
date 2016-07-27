@@ -205,7 +205,7 @@ namespace artivity
             if (!filePath.empty())
             {
                 // A new document was saved.
-                _log->createDataObject(_filePath);
+                _log->createDataObject(filePath);
             }
             else
             {
@@ -215,12 +215,12 @@ namespace artivity
                 return;
             }
         }
-        else if (_filePath == filePath)
+        else if (_filePath.compare(filePath) == 0)
         {
             if (!_log->hasDataObject())
             {
                 // Create a data object if we edit a non-indexed file.
-                _log->createDataObject(_filePath);
+                _log->createDataObject(filePath);
             }
         }
         else
@@ -238,20 +238,21 @@ namespace artivity
 
     void EditingSession::eventSaveAs(string targetPath)
     {
-        if (!_filePath.empty() && !targetPath.empty() && _filePath != targetPath)
-        {           
+        if (!_filePath.empty() && !targetPath.empty() && _filePath.compare(targetPath) != 0)
+        {
+            _consumer->stop();
+            
             SaveAsRef saveAs = onEventSaveAs();
-
-            // Push the 'SaveAs' event to the current activity.. 
-            _consumer->push(saveAs);
 
             ImageRef targetImage = ImageRef(new Image());
             targetImage->setType(document->getType());
 
-            _log->createDerivation(targetImage, targetPath);
+            _log->createDerivation(saveAs, targetImage, targetPath);
 
             // Update the new document handle.
             document = targetImage;
+            
+            _consumer->start();
 		}
     }
 
@@ -350,6 +351,7 @@ namespace artivity
         time(&now);
 
         SaveRef save = createSave();
+        save->addEntity(document);
         save->setTime(now);
 
         return save;
@@ -361,6 +363,7 @@ namespace artivity
         time(&now);
 
         SaveAsRef saveAs = createSaveAs();
+        saveAs->addEntity(document);
         saveAs->setTime(now);
 
         return saveAs;

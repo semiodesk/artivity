@@ -35,6 +35,7 @@
 #include "../Property.h"
 
 #include "Entity.h"
+#include "Influence.h"
 #include "Association.h"
 #include "Activity.h"
 
@@ -65,6 +66,7 @@ namespace artivity
     {
         Resource::clear();
         
+        _influences.clear();
 		_associations.clear();
         _usedEntites.clear();
         _generatedEntities.clear();
@@ -106,6 +108,11 @@ namespace artivity
         return _startTime;
     }
     
+    list<InfluenceRef> Activity::getInfluences()
+    {
+        return _influences;
+    }
+    
     list<AssociationRef> Activity::getAssociations()
     {
         return _associations;
@@ -132,17 +139,25 @@ namespace artivity
         return _usedEntites;
     }
 
+    void Activity::clearUsedEntities()
+    {
+        for(auto entity = _usedEntites.begin(); entity != _usedEntites.end(); entity++)
+        {
+            removeUsed(*entity);
+        }
+    }
     
     void Activity::addUsed(EntityRef entity)
     {
-        if (hasProperty(prov::used, entity))
-        {
-            return;
-        }
+        if (hasProperty(prov::used, entity)) return;
         
 		_usedEntites.push_back(entity);
         
         addProperty(prov::used, entity);
+        
+        list<InfluenceRef> influences = entity->getInfluences();
+        
+        _influences.insert(_influences.end(), influences.begin(), influences.end());
     }
     
     void Activity::removeUsed(EntityRef entity)
@@ -150,11 +165,26 @@ namespace artivity
         _usedEntites.remove(entity);
         
         removeProperty(prov::used, entity);
+        
+        list<InfluenceRef> influences = entity->getInfluences();
+        
+        for(auto influence = influences.begin(); influence != influences.end(); influence++)
+        {
+            _influences.remove(*influence);
+        }
     }
     
     list<EntityRef> Activity::getInvalidatedEntities()
     {
         return _invalidatedEntities;
+    }
+    
+    void Activity::clearInvalidatedEntities()
+    {
+        for(auto entity = _invalidatedEntities.begin(); entity != _invalidatedEntities.end(); entity++)
+        {
+            removeInvalidated(*entity);
+        }
     }
     
     void Activity::addInvalidated(EntityRef entity)
@@ -164,6 +194,10 @@ namespace artivity
         _invalidatedEntities.push_back(entity);
         
         addProperty(prov::invalidated, entity);
+        
+        list<InfluenceRef> influences = entity->getInfluences();
+        
+        _influences.insert(_influences.end(), influences.begin(), influences.end());
     }
     
     void Activity::removeInvalidated(EntityRef entity)
@@ -171,11 +205,26 @@ namespace artivity
         _invalidatedEntities.remove(entity);
         
         removeProperty(prov::invalidated, entity);
+        
+        list<InfluenceRef> influences = entity->getInfluences();
+        
+        for(auto influence = influences.begin(); influence != influences.end(); influence++)
+        {
+            _influences.remove(*influence);
+        }
     }
     
 	list<EntityRef> Activity::getGeneratedEntities()
     {
 		return _generatedEntities;
+    }
+    
+    void Activity::clearGeneratedEntities()
+    {
+        for(auto entity = _generatedEntities.begin(); entity != _generatedEntities.end(); entity++)
+        {
+            removeGenerated(*entity);
+        }
     }
     
     void Activity::addGenerated(EntityRef entity)
@@ -185,6 +234,10 @@ namespace artivity
         _generatedEntities.push_back(entity);
         
         addProperty(prov::generated, entity);
+        
+        list<InfluenceRef> influences = entity->getInfluences();
+        
+        _influences.insert(_influences.end(), influences.begin(), influences.end());
     }
     
     void Activity::removeGenerated(EntityRef entity)
@@ -192,35 +245,50 @@ namespace artivity
         _generatedEntities.remove(entity);
         
         removeProperty(prov::generated, entity);
+        
+        list<InfluenceRef> influences = entity->getInfluences();
+        
+        for(auto influence = influences.begin(); influence != influences.end(); influence++)
+        {
+            _influences.remove(*influence);
+        }
     }
 
     struct by_Uri
     {
         by_Uri(std::string x) : x(x) {}
+        
         bool operator()(ResourceRef const & r) const
         {
             return x == r->uri;
         }
+        
         const std::string x;
     };
 
     EntityRef Activity::getEntity(std::string uri)
     {
         std::list<EntityRef>::iterator e = std::find_if(_usedEntites.begin(), _usedEntites.end(), by_Uri(uri));
+        
         if (e != _usedEntites.end())
         {
             return *e;
         }
+        
         e = std::find_if(_generatedEntities.begin(), _generatedEntities.end(), by_Uri(uri));
+        
         if (e != _generatedEntities.end())
         {
             return *e;
         }
+        
         e = std::find_if(_invalidatedEntities.begin(), _invalidatedEntities.end(), by_Uri(uri));
+        
         if (e != _invalidatedEntities.end())
         {
             return *e;
         }
+        
         return EntityRef();
     }
 }
