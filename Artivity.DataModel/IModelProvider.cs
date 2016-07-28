@@ -59,7 +59,7 @@ namespace Artivity.DataModel
 
         void InitializeStore();
 
-        void ReleaseStore();
+        int ReleaseStore();
 
         IModelGroup GetAll();
 
