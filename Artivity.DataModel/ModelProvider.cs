@@ -54,7 +54,7 @@ namespace Artivity.DataModel
                 {
                     var store = StoreFactory.CreateStore(ConnectionString);
 
-                    _stores[id] = store;
+                    _stores.Add(id, store);
 
                     return store;
                 }
@@ -213,7 +213,7 @@ namespace Artivity.DataModel
             return Store.GetModel(WebActivities);
         }
 
-        public void ReleaseStore()
+        public int ReleaseStore()
         {
             int id = Thread.CurrentThread.ManagedThreadId;
 
@@ -221,10 +221,18 @@ namespace Artivity.DataModel
             {
                 IStore store = _stores[id];
 
-                store.Dispose();
+                try
+                {
+                    store.Dispose();
+                }
+                catch(Exception)
+                {
+                }
 
                 _stores.Remove(id);
             }
+
+            return id;
         }
 
         #endregion

@@ -64,6 +64,10 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		$scope.file = data;
 	});
 
+	$scope.user = {
+		photoUrl: api.getUserPhotoUrl()
+	};
+
 	// Agent metadata
 	$scope.agent = {
 		iconUrl: ''
@@ -159,7 +163,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		if (data.length > 0) {
 			$scope.selectedInfluence = data[0];
 
-			$scope.renderInfluence(data[0]);
+			$scope.previewInfluence(data[0]);
 		}
 	});
 
@@ -242,6 +246,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	};
 
 	// PLAYBACK
+	$scope.playing = false;
+
 	var playloop = undefined;
 
 	$scope.togglePlay = function () {
@@ -253,25 +259,33 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	};
 
 	$scope.play = function () {
-		if (!playloop) {
+		var end = $scope.influences.indexOf($scope.selectedInfluence) === 0;
+
+		if (!playloop && !end) {
 			playloop = setInterval($scope.skipNext, 500);
+
+			$scope.playing = playloop !== undefined;
 		}
 	};
 
 	$scope.pause = function () {
+		console.log(playloop);
+
 		if (playloop) {
 			clearInterval(playloop);
 
 			playloop = undefined;
+
+			$scope.playing = playloop !== undefined;
+
+			$scope.$digest();
 		}
 	};
 
-	$scope.skipNext = function () {
+	$scope.skipPrev = function () {
 		if ($scope.influences === undefined) {
 			return;
 		}
-
-		console.log($scope.influences.indexOf);
 
 		var i = $scope.influences.indexOf($scope.selectedInfluence) + 1;
 
@@ -284,19 +298,27 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		if (playloop) {
 			$scope.$digest();
 
-			if (i == $scope.influences.length) {
+			if (i === $scope.influences.length) {
 				$scope.pause();
 			}
 		}
 	};
 
-	$scope.skipPrev = function () {
+	$scope.skipNext = function () {
 		var i = $scope.influences.indexOf($scope.selectedInfluence);
 
-		if (0 < i) {
+		if (0 < i && i < $scope.influences.length) {
 			$scope.selectedInfluence = $scope.influences[i - 1];
 
 			$scope.renderInfluence($scope.selectedInfluence);
+		}
+
+		if (playloop) {
+			$scope.$digest();
+
+			if (i === 0) {
+				$scope.pause();
+			}
 		}
 	};
 
@@ -341,9 +363,9 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 				for (var i = 0; i < influence.changes.length; i++) {
 					var change = influence.changes[i];
 
-					if (change.entityType != 'http://w3id.org/art/terms/1.0/Layer') {
+					if (change.entityType != 'http://w3id.org/art/terms/1.0/Layer' && change.property !== undefined) {
 						// TODO: pluralize
-						key = 'FILEVIEW'.concat('.').concat(change.property);
+						key = 'FILEVIEW.'.concat(change.property);
 
 						break;
 					}
@@ -353,12 +375,60 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			}
 		}
 
-		if (key && key !== "FILEVIEW.") {
-			return $translate.instant(key)
+		var result;
+
+		// Only translate if we actually found a property in the previous loop.
+		if (key && key !== 'FILEVIEW.') {
+			result = $translate.instant(key)
+		} else if (influence.description) {
+			result = influence.description;
 		} else {
-			return influence.description ? influence.description : influence.type;
+			result = $translate.instant('FILEVIEW.' + influence.type);
 		}
+
+		return result;
 	};
+}).directive('artTimeline', function () {
+	return {
+		template: '\
+		<div class="timeline">\
+			<div class="timeline-control"> \
+				<div class="position"><label></label></div> \
+				<div class="duration"><label></label></div> \
+				<div class="track-container"> \
+					<div class="track"></div> \
+					<div class="track-indicator"></div> \
+					<div class="thumb draggable"></div> \
+				</div> \
+				<div class="comments"></div> \
+				<div class="activities"></div> \
+			</div> \
+		</div>',
+		link: function (scope, element, attributes) {
+			var timeline = new TimelineControl(element);
+
+			timeline.setActivities(getValue(scope, attributes.artActivities));
+			timeline.setInfluences(getValue(scope, attributes.artInfluences));
+
+			timeline.selectedInfluenceChanged = function (influence) {
+				scope.previewInfluence(influence);
+			};
+
+			scope.$watchCollection(attributes.artActivities, function () {
+				timeline.setActivities(getValue(scope, attributes.artActivities));
+			});
+
+			scope.$watchCollection(attributes.artInfluences, function () {
+				timeline.setInfluences(getValue(scope, attributes.artInfluences));
+			});
+
+			scope.$watch('selectedInfluence', function () {
+				if (scope.selectedInfluence !== undefined) {
+					timeline.setPosition(scope.selectedInfluence);
+				}
+			});
+		}
+	}
 });
 
 explorerControllers.controller('SettingsController', function (api, $scope, $location, $rootScope, $routeParams) {
@@ -371,6 +441,12 @@ explorerControllers.controller('SettingsController', function (api, $scope, $loc
 			}
 		});
 	};
+
+	scope.$watch('agent.iconUrl', function () {
+		if (scope.agent.iconUrl !== "") {
+			timeline.setUserPhotoUrl(scope.user.photoUrl);
+		}
+	});
 
 	$scope.submitAndReturn = function () {
 		$scope.submit();
@@ -629,7 +705,11 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
 
 	$scope.reload();
 
-	this.submit = function () {};
+	this.submit = function () {
+		if ($scope.agents.length > 0) {
+			api.setAgents($scope.agents);
+		}
+	};
 
 	this.reset = function () {
 		$scope.agentForm.reset();

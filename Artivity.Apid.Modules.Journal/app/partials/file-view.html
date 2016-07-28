@@ -4,22 +4,20 @@
 			<div class="col">
 				<a class="btn btn-header" href="#/files"><i class="zmdi zmdi-hc-fw"></i></a>
 			</div>
-
 			<div class="col">
 				<div class="icn" style="width: 32px; height: 32px; margin-top: 10px; margin-left: 5px;">
 					<img ng-src="{{agent.iconUrl}}" width="32" height="32" />
 				</div>
 			</div>
-
 			<div class="col expand">
 				<h5 class="title">{{file.label}}</h5>
 			</div>
-
 			<div class="col">
 				<a id="export-btn" class="btn btn-header" ng-click="exportFile()"><i class="zmdi zmdi-hc-fw zmdi-archive"></i></a>
 			</div>
 		</div>
 	</div>
+
 	<div id="body">
 		<div class="content text-center">
 			<canvas id="canvas" style="margin: 1px;" loaded="updateCanvas()"></canvas>
@@ -71,13 +69,13 @@
 
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane fade active in" id="history">
-					<div class="text-center">
+					<div class="activity-header text-center">
 						<label>{{ getFormattedDate(selectedInfluence.time) }}</label>
 					</div>
 
 					<ul class="list-unstyled">
 						<li ng-repeat="influence in influences" ng-class="{selected: influence == selectedInfluence}">
-							<a title="{{influence.time}}" ng-click="selectInfluence(influence)" ng-mouseenter="previewInfluence(influence)" style="padding: 0 3px;">
+							<a title="{{influence.time}}" ng-click="previewInfluence(influence)" style="padding: 0 3px;">
 								<div class="pull-left" ng-switch on="influence.type">
 									<div ng-switch-when="http://w3id.org/art/terms/1.0/Undo">
 										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> Undo
@@ -202,16 +200,18 @@
 		</div>
 	</div>
 	<div id="footer">
-		<div class="playback-toolbar">
-			<div class="col-playback-controls">
-				<div class="center-parent">
-					<div class="btn btn-skip-prev" ng-click="skipPrev()"><i class="zmdi zmdi-hc-fw"></i></div>
-					<div class="btn btn-play" ng-click="togglePlay()"><i class="zmdi zmdi-hc-fw"></i></div>
-					<div class="btn btn-skip-next" ng-click="skipNext()"><i class="zmdi zmdi-hc-fw"></i></div>
-				</div>
+		<div class="row">
+			<div class="col">
+				<a class="btn btn-skip-prev" ng-click="skipNext()"><i class="zmdi zmdi-skip-previous"></i></a>
 			</div>
-			<div class="col-playback-chart">
-				<div art-timeline art-data="activities"></div>
+			<div class="col">
+				<a class="btn btn-toggle-play" ng-click="togglePlay()"><i class="zmdi" ng-class="{'zmdi-pause': playing, 'zmdi-play': !playing}"></i></a>
+			</div>
+			<div class="col">
+				<a class="btn btn-skip-next" ng-click="skipPrev()"><i class="zmdi zmdi-skip-next"></i></a>
+			</div>
+			<div class="col expand">
+				<div art-timeline art-activities="activities" art-influences="influences"></div>
 			</div>
 		</div>
 	</div>

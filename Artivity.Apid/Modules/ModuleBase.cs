@@ -58,10 +58,21 @@ namespace Artivity.Apid
             ModelProvider = model;
             PlatformProvider = platform;
 
-            After += ctx =>
+            After.AddItemToEndOfPipeline((ctx) =>
             {
-                model.ReleaseStore();
-            };
+                int id = ModelProvider.ReleaseStore();
+
+                Logger.LogDebug("Released store with thread id {0} in pipeline post handler.", id);
+            });
+
+            OnError.AddItemToEndOfPipeline((ctx, ex) =>
+            {
+                int id = ModelProvider.ReleaseStore();
+
+                Logger.LogDebug("Released store with thread id {0} in pipeline error handler.", id);
+
+                return null;
+            });
         }
 
         public ModuleBase(string modulePath, IModelProvider model, IPlatformProvider platform) : base(modulePath)
@@ -70,10 +81,21 @@ namespace Artivity.Apid
             PlatformProvider = platform;
             ArtivityModulePath = modulePath;
 
-            After += ctx =>
+            After.AddItemToEndOfPipeline((ctx) =>
             {
-                model.ReleaseStore();
-            };
+                int id = ModelProvider.ReleaseStore();
+
+                Logger.LogDebug("Released store with thread id {0} in pipeline post handler.", id);
+            });
+
+            OnError.AddItemToEndOfPipeline((ctx, ex) =>
+            {
+                int id = ModelProvider.ReleaseStore();
+
+                Logger.LogDebug("Released store with thread id {0} in pipeline error handler.", id);
+
+                return null;
+            });
         }
 
 		#endregion

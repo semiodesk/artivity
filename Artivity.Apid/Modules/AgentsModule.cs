@@ -650,28 +650,37 @@ namespace Artivity.Apid.Modules
 
         private Response GetUserAgentPhoto()
         {
-            string uid = PlatformProvider.Config.GetUserId();
-            string file = Path.Combine(PlatformProvider.AvatarsFolder, uid + ".jpg");
-
-            if (!File.Exists(file))
+            try
             {
-                Assembly assembly = Assembly.GetExecutingAssembly();
+                string uid = PlatformProvider.Config.GetUserId();
+                string file = Path.Combine(PlatformProvider.AvatarsFolder, uid + ".jpg");
 
-                using (Stream source = assembly.GetManifestResourceStream("Artivity.Api.Resources.user.jpg"))
+                if (!File.Exists(file))
                 {
-                    using (FileStream target = File.Create(file))
+                    Assembly assembly = Assembly.GetExecutingAssembly();
+
+                    using (Stream source = assembly.GetManifestResourceStream("Artivity.Api.Resources.user.jpg"))
                     {
-                        source.CopyTo(target);
+                        using (FileStream target = File.Create(file))
+                        {
+                            source.CopyTo(target);
+                        }
                     }
                 }
+
+                FileStream fileStream = new FileStream(file, FileMode.Open);
+
+                StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
+                response.Headers["Allow-Control-Allow-Origin"] = "127.0.0.1";
+
+                return response.AsAttachment(file);
             }
+            catch(IOException ex)
+            {
+                Logger.LogError(ex);
 
-            FileStream fileStream = new FileStream(file, FileMode.Open);
-
-            StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
-            response.Headers["Allow-Control-Allow-Origin"] = "127.0.0.1";
-
-            return response.AsAttachment(file);
+                return HttpStatusCode.InternalServerError;
+            }
         }
 
         private Response SetUserAgentPhoto(RequestStream stream)

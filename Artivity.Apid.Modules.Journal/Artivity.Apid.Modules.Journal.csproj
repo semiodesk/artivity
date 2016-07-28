@@ -106,6 +106,11 @@
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.ttf" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.woff" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.woff2" />
+    <None Include="app\bower_components\moment-duration-format\.bower.json" />
+    <None Include="app\bower_components\moment-duration-format\bower.json" />
+    <None Include="app\bower_components\moment-duration-format\LICENSE" />
+    <None Include="app\bower_components\moment-duration-format\package.json" />
+    <None Include="app\bower_components\moment-duration-format\README.md" />
     <None Include="packages.config" />
     <EmbeddedResource Include="error\index.html" />
     <EmbeddedResource Include="app\js\app.overlay.js" />
@@ -156,6 +161,10 @@
     <EmbeddedResource Include="app\bower_components\angular\angular.js" />
     <EmbeddedResource Include="app\bower_components\angular-bootstrap\ui-bootstrap.js" />
     <EmbeddedResource Include="app\bower_components\angular-bootstrap\ui-bootstrap.min.js" />
+    <EmbeddedResource Include="app\bower_components\moment-duration-format\lib\moment-duration-format.js" />
+    <EmbeddedResource Include="app\bower_components\jquery-ui\jquery-ui.js" />
+    <EmbeddedResource Include="app\bower_components\jquery-ui\jquery-ui.min.js" />
+    <EmbeddedResource Include="app\bower_components\jquery-ui\ui\widgets\draggable.js" />
     <Content Include="app\img\heart-broken.svg" />
     <Content Include="app\img\heart.svg" />
     <Content Include="app\img\orcid_64x64.png" />

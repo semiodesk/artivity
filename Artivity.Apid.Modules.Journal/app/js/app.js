@@ -79,6 +79,9 @@ explorerApp.factory('api', function ($http) {
 					return response.data;
 				})
 		},
+		setAgents: function(agents) {
+			return $http.post(endpoint + '/agents', agents);
+		},
 		getAgent: function (entityUri) {
 			return $http.get(endpoint + '/agents?entityUri=' + entityUri).then(
 				function (response) {
