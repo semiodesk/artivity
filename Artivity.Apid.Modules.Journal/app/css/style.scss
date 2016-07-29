@@ -448,7 +448,7 @@ h4 {
 	top: 0;
 	left: 0;
 	bottom: 0;
-	width: 300px;
+	width: 325px;
 }
 
 .sidebar.right {
@@ -1060,8 +1060,9 @@ input.form-control:focus {
 .influences-list .time {}
 
 .comment {
+    box-sizing: border-box;
 	position: relative;
-	margin: 0 0 10px 32px;
+	margin: 0 0 10px 28px;
 }
 
 .tip {
@@ -1090,7 +1091,8 @@ input.form-control:focus {
 	background: $headerBackgroundColor;
 	padding: 10px;
 	color: white;
-	min-height: 2em;
+	padding-bottom: 2em;
+    border-right: 1px solid $windowBackgroundColor;
 }
 
 .comment .message .time {
