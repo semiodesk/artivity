@@ -232,7 +232,7 @@ namespace Artivity.Apid.Modules
 
             Post["/status"] = parameters =>
             {
-                return PostAgentStatus(this.Bind<AgentParameters>());
+                return PostAgentStatus(this.Bind<AgentParameter>());
             };
         }
 
@@ -251,9 +251,9 @@ namespace Artivity.Apid.Modules
         {
             IModel model = ModelProvider.GetAgents();
 
-            AgentParameter[] agents = JsonConvert.DeserializeObject<AgentParameter[]>(data);
+            AgentSettingsParameter[] agents = JsonConvert.DeserializeObject<AgentSettingsParameter[]>(data);
 
-            foreach (AgentParameter agent in agents)
+            foreach (AgentSettingsParameter agent in agents)
             {
                 Uri agentUri = new Uri(agent.uri);
 
@@ -548,14 +548,14 @@ namespace Artivity.Apid.Modules
             {
                 if (Request.Query.agent)
                 {
-                    AgentParameters p = new AgentParameters();
+                    AgentParameter p = new AgentParameter();
                     p.agent = Request.Query.agent.ToString();
 
                     return GetAgentStatus(p);
                 }
                 else
                 {
-                    return GetAgentStatus(this.Bind<AgentParameters>());
+                    return GetAgentStatus(this.Bind<AgentParameter>());
                 }
             }
             catch (Exception e)
@@ -564,7 +564,7 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        protected Response GetAgentStatus(AgentParameters p)
+        protected Response GetAgentStatus(AgentParameter p)
         {
             if (p.agent == null)
             {
@@ -594,7 +594,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(p);
         }
 
-        protected Response PostAgentStatus(AgentParameters p)
+        protected Response PostAgentStatus(AgentParameter p)
         {
             try
             {
@@ -603,7 +603,7 @@ namespace Artivity.Apid.Modules
                     Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
 
                     // Return disabled state so that the browsers properly indicate disabled logging.
-                    return Response.AsJson(new AgentParameters() { agent = p.agent, enabled = false });
+                    return Response.AsJson(new AgentParameter() { agent = p.agent, enabled = false });
                 }
 
                 IModel model = ModelProvider.GetAgents();
@@ -758,7 +758,7 @@ namespace Artivity.Apid.Modules
         #endregion
     }
 
-    class AgentParameter
+    class AgentSettingsParameter
     {
         public string uri { get; set; }
 

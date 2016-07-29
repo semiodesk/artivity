@@ -64,10 +64,14 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		$scope.file = data;
 	});
 
-	$scope.user = {
-		photoUrl: api.getUserPhotoUrl()
-	};
-
+	// Load the user data.
+	$scope.user = {};
+	
+	api.getUser().then(function (data) {
+		$scope.user = data;
+		$scope.user.photoUrl = api.getUserPhotoUrl();
+	});
+	
 	// Agent metadata
 	$scope.agent = {
 		iconUrl: ''
@@ -84,36 +88,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 	var renderer = new DocumentRenderer(canvas, api.getRenderingUrl(fileUri));
 
-	// Canvases in the file
-	api.getCanvases(fileUri).then(function (data) {
-		renderer.canvasCache.load(data, function () {
-			console.log("Loaded canvases: ", renderer.canvasCache);
-
-			if ($scope.selectedInfluence !== undefined) {
-				$scope.renderInfluence($scope.selectedInfluence);
-			}
-		});
-	});
-
-	// Trigger loading the bitmaps.
-	api.getRenderings(fileUri).then(function (data) {
-		renderer.renderCache.load(data, function () {
-			console.log("Loaded renderings: ", renderer.renderCache);
-
-			if ($scope.selectedInfluence !== undefined) {
-				$scope.renderInfluence($scope.selectedInfluence);
-			}
-		});
-	});
-
 	// Layers in the file
 	$scope.layers = [];
-
-	api.getLayers(fileUri).then(function (data) {
-		renderer.layerCache.load(data, function (layers) {
-			console.log("Loaded layers: ", layers);
-		});
-	});
 
 	var getLayers = function (influence) {
 		var time = new Date(influence.time);
@@ -127,43 +103,77 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		$scope.layers = layers;
 	};
 
-	// ACTIVITIES
-	$scope.activities = [];
-	$scope.selectedActivity;
-
-	api.getActivities(fileUri).then(function (data) {
-		// Check if there is a plausable end time.
-		for (var i = 0; i < data.length; i++) {
-			var activity = data[i];
-
-			if (activity.endTime < activity.maxTime) {
-				activity.endTime = activity.maxTime;
-			}
-		}
-
-		$scope.activities = data;
-
-		console.log("Loaded activities: ", $scope.activities);
-
-		if (data.length > 0) {
-			$scope.selectedActivity = data[0];
-		}
-	});
-
 	// INFLUENCES
 	$scope.influences = [];
 	$scope.previousInfluence;
 	$scope.selectedInfluence;
 
-	api.getInfluences(fileUri).then(function (data) {
-		$scope.influences = data;
+	// ACTIVITIES
+	$scope.activities = [];
 
-		console.log("Loaded influences:", data.length, $scope.influences);
+	api.getActivities(fileUri).then(function (data) {
+		console.log("Loaded activities: ", data);
+
+		$scope.activities = data;
 
 		if (data.length > 0) {
-			$scope.selectedInfluence = data[0];
+			api.getInfluences(fileUri).then(function (data) {
+				console.log("Loaded influences:", data.length, data);
 
-			$scope.previewInfluence(data[0]);
+				$scope.influences = data;
+
+				if (data.length > 0) {
+					$scope.previewInfluence(data[0]);
+
+					// Canvases in the file.
+					api.getCanvases(fileUri).then(function (data) {
+						renderer.canvasCache.load(data, function () {
+							console.log("Loaded canvases: ", renderer.canvasCache);
+
+							$scope.renderInfluence($scope.selectedInfluence);
+
+							api.getLayers(fileUri).then(function (data) {
+								renderer.layerCache.load(data, function (layers) {
+									console.log("Loaded layers: ", layers);
+
+									// Trigger loading the bitmaps.
+									api.getRenderings(fileUri).then(function (data) {
+										renderer.renderCache.load(data, function () {
+											console.log("Loaded renderings: ", renderer.renderCache);
+
+											$scope.renderInfluence($scope.selectedInfluence);
+										});
+									});
+								});
+							});
+						});
+					});
+
+					// Add the loaded influences to the activities for easier acccess in the frontend.
+					var i = 0;
+
+					var activity = $scope.activities[i];
+					activity.influences = [];
+
+					// NOTE: We assume that the influences and activities are ordered by descending time.
+					for (var j = 0; j < data.length; j++) {
+						var influence = data[j];
+
+						while (activity.uri !== influence.activity && i < $scope.activities.length - 1) {
+							activity = $scope.activities[++i];
+							activity.influences = [];
+						}
+
+						if (influence.activity === activity.uri) {
+							activity.influences.push(influence);
+						}
+
+						if (activity.endTime < activity.maxTime) {
+							activity.endTime = activity.maxTime;
+						}
+					}
+				}
+			});
 		}
 	});
 
@@ -344,33 +354,37 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	};
 
 	// PRINT LABEL
+
+	var getChangedProperty = function (influence) {
+		for (var i = 0; i < influence.changes.length; i++) {
+			var change = influence.changes[i];
+
+			if (change.entityType !== 'http://w3id.org/art/terms/1.0/Layer' && change.property) {
+				return change.property;
+			}
+		}
+
+		return '';
+	};
+
 	$scope.getLabel = function (influence) {
 		var key;
 
 		switch (influence.type) {
 		case 'http://www.w3.org/ns/prov#Generation':
 			{
-				key = 'FILEVIEW'.concat('.http://www.w3.org/ns/prov#Generation');
+				key = 'FILEVIEW.http://www.w3.org/ns/prov#Generation';
 				break;
 			}
 		case 'http://www.w3.org/ns/prov#Invalidation':
 			{
-				key = 'FILEVIEW'.concat('.http://www.w3.org/ns/prov#Invalidation');
+				key = 'FILEVIEW.http://www.w3.org/ns/prov#Invalidation';
 				break;
 			}
 		default:
 			{
-				for (var i = 0; i < influence.changes.length; i++) {
-					var change = influence.changes[i];
-
-					if (change.entityType != 'http://w3id.org/art/terms/1.0/Layer' && change.property !== undefined) {
-						// TODO: pluralize
-						key = 'FILEVIEW.'.concat(change.property);
-
-						break;
-					}
-				}
-
+				// TODO: pluralize
+				key = 'FILEVIEW.' + getChangedProperty(influence);
 				break;
 			}
 		}
@@ -388,6 +402,65 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		return result;
 	};
+
+	$scope.getIcon = function (influence) {
+		switch (influence.type) {
+			/*
+			case 'http://www.w3.org/ns/prov#Generation':
+				return 'zmdi-plus';
+			case 'http://www.w3.org/ns/prov#Invalidation':
+				return 'zmdi-delete';
+			*/
+		case 'http://www.w3.org/ns/prov#Derivation':
+			return 'zmdi-arrow-split';
+		case 'http://www.w3.org/ns/prov#Undo':
+			return 'zmdi-undo';
+		case 'http://www.w3.org/ns/prov#Redo':
+			return 'zmdi-redo';
+		case 'http://w3id.org/art/terms/1.0/Save':
+			return 'zmdi-floppy';
+		case 'http://w3id.org/art/terms/1.0/SaveAs':
+			return 'zmdi-floppy';
+		}
+
+		/*
+		var property = getChangedProperty(influence);
+
+		if (property !== '') {
+			switch (property) {
+			case 'http://w3id.org/art/terms/1.0/position':
+				return 'zmdi-arrows';
+			case 'http://w3id.org/art/terms/1.0/hadBoundaries':
+				return 'zmdi-border-style';
+			case 'http://www.w3.org/2000/01/rdf-schema#label':
+				return 'zmdi-format-color-text';
+			case 'http://w3id.org/art/terms/1.0/textValue':
+				return 'zmdi-format-color-text';
+			case 'http://w3id.org/art/terms/1.0/strokeWidth':
+				return 'zmdi-border-color';
+			}
+		}
+		*/
+
+		return 'zmdi-brush';
+	};
+
+	$scope.comment = {
+		text: ""
+	};
+
+	$scope.postComment = function () {
+		$scope.comment.activity = $scope.activities[0].uri;
+		$scope.comment.agent = $scope.user.Uri;
+		$scope.comment.creationTime = new Date();
+		
+		if ($scope.comment.agent && $scope.comment.text) {
+			api.postComment($scope.comment).then(function (data) {
+				$scope.comment = "";
+			});
+		}
+	};
+
 }).directive('artTimeline', function () {
 	return {
 		template: '\
@@ -395,13 +468,16 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			<div class="timeline-control"> \
 				<div class="position"><label></label></div> \
 				<div class="duration"><label></label></div> \
-				<div class="track-container"> \
-					<div class="track"></div> \
-					<div class="track-indicator"></div> \
-					<div class="thumb draggable"></div> \
+				<div class="track-col"> \
+					<div class="track-container"> \
+						<div class="track"></div> \
+						<div class="track-preview"></div> \
+						<div class="track-indicator"></div> \
+						<div class="thumb draggable"></div> \
+					</div> \
+					<div class="comments"></div> \
+					<div class="activities"></div> \
 				</div> \
-				<div class="comments"></div> \
-				<div class="activities"></div> \
 			</div> \
 		</div>',
 		link: function (scope, element, attributes) {

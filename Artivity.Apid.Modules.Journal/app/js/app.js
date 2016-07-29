@@ -79,7 +79,7 @@ explorerApp.factory('api', function ($http) {
 					return response.data;
 				})
 		},
-		setAgents: function(agents) {
+		setAgents: function (agents) {
 			return $http.post(endpoint + '/agents', agents);
 		},
 		getAgent: function (entityUri) {
@@ -96,23 +96,35 @@ explorerApp.factory('api', function ($http) {
 		},
 		installAgent: function (associationUri) {
 			return $http.get(endpoint + '/agents/software/install?uri=' + associationUri).then(
-				function(response) {
+				function (response) {
 					console.log(response);
-					
-					return { success: true, error: '' };
+
+					return {
+						success: true,
+						error: ''
+					};
 				},
-				function(response) {
-					return { success: false, error: response };
+				function (response) {
+					return {
+						success: false,
+						error: response
+					};
 				}
 			);
 		},
 		uninstallAgent: function (associationUri) {
 			return $http.get(endpoint + '/agents/software/uninstall?uri=' + associationUri).then(
-				function(response) {
-					return { success: true, error: '' };
+				function (response) {
+					return {
+						success: true,
+						error: ''
+					};
 				},
-				function(response) {
-					return { success: false, error: response };
+				function (response) {
+					return {
+						success: false,
+						error: response
+					};
 				}
 			);
 		},
@@ -204,14 +216,20 @@ explorerApp.factory('api', function ($http) {
 					})
 			}
 		},
-		getQueryResults: function(query) {
+		getQueryResults: function (query) {
 			return $http.post(endpoint + '/query', query).then(
 				function (response) {
 					return response.data;
 				})
 		},
-		exportFile: function(entityUri, fileName) {
+		exportFile: function (entityUri, fileName) {
 			return $http.get(endpoint + '/export?entityUri=' + entityUri + '&fileName=' + fileName).then(
+				function (response) {
+					return response.data;
+				})
+		},
+		postComment: function (comment) {
+			return $http.post(endpoint + '/activities/comments', comment).then(
 				function (response) {
 					return response.data;
 				})

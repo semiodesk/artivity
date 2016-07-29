@@ -31,9 +31,10 @@ using System.Text;
 
 namespace Artivity.Apid.Parameters
 {
-    public class AgentParameters
+    public class AgentParameter
     {
         public string agent { get; set; }
+
         public bool? enabled { get; set; }
     }
 }

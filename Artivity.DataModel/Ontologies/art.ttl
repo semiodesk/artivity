@@ -14,6 +14,9 @@
 art:Database a rdfs:Class ;
     rdfs:label "Database" .
 
+art:Comment a rdfs:Class ;
+    rdfs:label "Comment" .
+
 art:isMonitoringEnabled a rdf:Property ;
     rdfs:label "isMonitoringEnabled" ;
     rdfs:domain art:Database ;

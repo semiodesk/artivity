@@ -41,6 +41,9 @@ namespace Artivity.DataModel
 		[RdfProperty(PROV.qualifiedAssociation)]
 		public List<Association> Associations { get; private set; }
 
+        [RdfProperty(PROV.qualifiedCommunication)]
+        public List<Communication> Communications { get; private set; }
+
         [RdfProperty(PROV.qualifiedUsage)]
 		public List<Usage> Usages { get; private set; }
 

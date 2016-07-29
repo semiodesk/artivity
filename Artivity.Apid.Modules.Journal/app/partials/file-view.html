@@ -69,43 +69,55 @@
 
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane fade active in" id="history">
-					<div class="activity-header text-center">
-						<label>{{ getFormattedDate(selectedInfluence.time) }}</label>
-					</div>
-
-					<ul class="list-unstyled">
-						<li ng-repeat="influence in influences" ng-class="{selected: influence == selectedInfluence}">
-							<a title="{{influence.time}}" ng-click="previewInfluence(influence)" style="padding: 0 3px;">
-								<div class="pull-left" ng-switch on="influence.type">
-									<div ng-switch-when="http://w3id.org/art/terms/1.0/Undo">
-										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> Undo
-									</div>
-									<div ng-switch-when="http://w3id.org/art/terms/1.0/Redo">
-										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> Redo
-									</div>
-									<div ng-switch-when="http://w3id.org/art/terms/1.0/Save">
-										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> Save
-									</div>
-									<div ng-switch-when="http://w3id.org/art/terms/1.0/SaveAs">
-										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> Save as
-									</div>
-									<div ng-switch-when="http://www.w3.org/ns/prov#Invalidation">
-										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> Delete
-									</div>
-									<div ng-switch-default>
-										<i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{ getLabel(influence) }}
-									</div>
+					<ul class="activities-list list-unstyled">
+						<li ng-repeat="activity in activities">
+							<div class="activity-header">
+								<div class="connection"></div>
+								<div class="agent"><img ng-src="{{user.photoUrl}}"></div>
+								<div class="time">
+									<label>{{ getFormattedDate(activity.startTime) }}</label>
 								</div>
+							</div>
 
-								<label class="pull-right small">{{getFormattedTime(influence.time)}}</label>
+							<ul class="influences-list list-unstyled">
+								<li ng-repeat="influence in activity.influences" ng-class="{selected: influence == selectedInfluence}">
+									<div ng-switch="influence.type">
+										<div ng-switch-when="http://w3id.org/art/terms/1.0/Comment">
+											<div class="comment">
+												<div class="message">
+													{{ influence.comment }}
+													
+													<label class="time pull-right small">{{getFormattedTime(influence.time)}}</label>
+												</div>
+												<span class="tip tip-left"></span>
+											</div>
+										</div>
+										<div ng-switch-default>
+											<a ng-click="previewInfluence(influence)">
+												<div class="connection"></div>
 
-								<div class="clearfix"></div>
-							</a>
+												<label class="type">
+													<span class="node"></span> <i class="zmdi icn icn-transparent" ng-class="getIcon(influence)"></i> {{ getLabel(influence) }}
+												</label>
+
+												<label class="time pull-right small">{{getFormattedTime(influence.time)}}</label>
+											</a>
+										</div>
+									</div>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</div>
 				<div role="tabpanel" class="tab-pane fade" id="comments">
-					<div class="under-construction"></div>
+					<div class="comment-box">
+						<div class="row">
+							<textarea id="message" ng-model="comment.text" required></textarea>
+						</div>
+						<div class="row">
+							<input class="btn btn-default" type="button" ng-click="postComment()" value="Post" ng-disabled="signInForm.$invalid">
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -202,13 +214,13 @@
 	<div id="footer">
 		<div class="row">
 			<div class="col">
-				<a class="btn btn-skip-prev" ng-click="skipNext()"><i class="zmdi zmdi-skip-previous"></i></a>
+				<a class="btn btn-skip-prev" ng-click="skipPrev()"><i class="zmdi zmdi-skip-previous"></i></a>
 			</div>
 			<div class="col">
 				<a class="btn btn-toggle-play" ng-click="togglePlay()"><i class="zmdi" ng-class="{'zmdi-pause': playing, 'zmdi-play': !playing}"></i></a>
 			</div>
 			<div class="col">
-				<a class="btn btn-skip-next" ng-click="skipPrev()"><i class="zmdi zmdi-skip-next"></i></a>
+				<a class="btn btn-skip-next" ng-click="skipNext()"><i class="zmdi zmdi-skip-next"></i></a>
 			</div>
 			<div class="col expand">
 				<div art-timeline art-activities="activities" art-influences="influences"></div>
