@@ -26,19 +26,12 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Artivity.Apid.Parameters
 {
-    public class ActivityParameters
+    public class UriParameter
     {
-        public string agent { get; set; }
-        public string tab { get; set; }
-        public string title { get; set; }
-        public string url { get; set; }
-        public DateTime? time { get; set; }
-        public DateTime? startTime { get; set; }
-        public DateTime? endTime { get; set; }
+        public string fileUrl { get; set; }
     }
 }
+

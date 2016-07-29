@@ -38,6 +38,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using VDS.RDF;
+using Artivity.Api.Parameters;
+using Newtonsoft.Json;
 
 namespace Artivity.Apid.Modules
 {
@@ -83,9 +85,33 @@ namespace Artivity.Apid.Modules
 
             Post["/web"] = parameters =>
             {
-                ActivityParameters p = this.Bind<ActivityParameters>();
+                ActivityParameter p = this.Bind<ActivityParameter>();
 
                 return PostActivity(p);
+            };
+
+            Get["/comments"] = parameters =>
+            {
+                string uri = Request.Query.entityUri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return GetComments(new UriRef(uri));
+            };
+
+            Post["/comments"] = parameters =>
+            {
+                using (var reader = new StreamReader(Request.Body))
+                {
+                    string data = reader.ReadToEnd();
+
+                    CommentParameter comment = JsonConvert.DeserializeObject<CommentParameter>(data);
+
+                    return PostComment(comment);
+                }
             };
 
             Get["/clear"] = parameters =>
@@ -103,6 +129,7 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
+                    ?activity AS ?uri
                     ?startTime 
                     ?endTime
                     MAX(?time) as ?maxTime
@@ -171,7 +198,7 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private HttpStatusCode PostActivity(ActivityParameters p)
+        private HttpStatusCode PostActivity(ActivityParameter p)
         {
             try
             {
@@ -255,7 +282,7 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private bool IsCaptureEnabled(ActivityParameters p)
+        private bool IsCaptureEnabled(ActivityParameter p)
         {
             SoftwareAgent agent = null;
 
@@ -299,6 +326,79 @@ namespace Artivity.Apid.Modules
             ModelProvider.GetActivities().Clear();
 
             return HttpStatusCode.OK;
+        }
+
+        private Response GetComments(UriRef entityUri)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?time 
+                    ?activity
+                    ?agent
+                    ?message
+                WHERE
+                {
+                  ?activity
+                    prov:generated | prov:used @entity ;
+                    prov:qualifiedCommunication ?comment .
+
+                  ?comment
+                    nao:created ?time ;
+                    nao:creator ?agent ;
+                    rdfs:comment ?message .
+                }
+                ORDER BY DESC(?time)");
+
+            query.Bind("@entity", entityUri);
+
+            var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
+
+            return Response.AsJson(bindings);
+        }
+
+        private Response PostComment(CommentParameter parameter)
+        {
+            if(!Uri.IsWellFormedUriString(parameter.activity, UriKind.Absolute))
+            {
+                Logger.LogError("Invalid URI for parameter 'activity': {0}", parameter.activity);
+
+                return HttpStatusCode.BadRequest;
+            }
+
+            UriRef activityUri = new UriRef(parameter.activity);
+
+            if (!Uri.IsWellFormedUriString(parameter.agent, UriKind.Absolute))
+            {
+                Logger.LogError("Invalid URI for parameter 'agent': {0}", parameter.agent);
+
+                return HttpStatusCode.BadRequest;
+            }
+
+            UriRef agentUri = new UriRef(parameter.agent);
+
+            IModel model = ModelProvider.GetActivities();
+
+            if (model.ContainsResource(activityUri))
+            {
+                Comment comment = model.CreateResource<Comment>();
+                comment.Activity = new Activity(activityUri);
+                comment.Author = new Agent(agentUri);
+                comment.CreationTime = parameter.creationTime;
+                comment.Message = parameter.text;
+                comment.Commit();
+                
+                Activity activity = model.GetResource<Activity>(activityUri);
+                activity.Communications.Add(comment);
+                activity.Commit();
+
+                return HttpStatusCode.OK;
+            }
+            else
+            {
+                Logger.LogError("Activity not found in model: {0}", activityUri);
+
+                return HttpStatusCode.BadRequest;
+            }
         }
 
         #endregion

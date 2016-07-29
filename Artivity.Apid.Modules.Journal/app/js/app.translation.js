@@ -26,6 +26,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			'UNKNOWN': 'Unknown',
 			'http://www.w3.org/ns/prov#Generation': 'Created Element',
 			'http://www.w3.org/ns/prov#Invalidation': 'Removed Element',
+			'http://w3id.org/art/terms/1.0/Save': 'Saved',
 			'http://www.w3.org/ns/prov#Derivation': 'Saved Copy',
 			'http://w3id.org/art/terms/1.0/position': 'Moved',
 			'http://w3id.org/art/terms/1.0/hadBoundaries': 'Scaled',
@@ -33,7 +34,8 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			'http://w3id.org/art/terms/1.0/textValue': 'Changed Text',
 			'http://w3id.org/art/terms/1.0/aboveLayer': 'Moved Layer',
 			'http://w3id.org/art/terms/1.0/strokeWidth': 'Chagned Stroke',
-			'http://w3id.org/art/terms/1.0/lengthUnit': 'Chagned Length Unit'
+			'http://w3id.org/art/terms/1.0/lengthUnit': 'Chagned Length Unit',
+			'http://w3id.org/art/terms/1.0/Comment': 'Comment'
 		},
 		
 		SETTINGS: {
@@ -81,7 +83,9 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			'http://w3id.org/art/terms/1.0/textValue': 'Text geändert',
 			'http://w3id.org/art/terms/1.0/aboveLayer': 'Ebene verschoben',
 			'http://w3id.org/art/terms/1.0/strokeWidth': 'Strichsträke geändert',
-			'http://w3id.org/art/terms/1.0/lengthUnit': 'Einheit geändert'
+			'http://w3id.org/art/terms/1.0/lengthUnit': 'Einheit geändert',
+			'http://w3id.org/art/terms/1.0/Comment': 'Kommentar',
+			'http://w3id.org/art/terms/1.0/Save': 'Gespeichert',
 		},
 
 		SETTINGS: {

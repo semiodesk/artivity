@@ -42,6 +42,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using VDS.RDF;
+using Newtonsoft.Json;
 
 namespace Artivity.Apid.Modules
 {
@@ -490,10 +491,12 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT DISTINCT
-                    ?time
                     ?uri
+                    ?activity
+                    ?time
                     ?type
                     ?description
+                    ?comment
 					?entity
 					?entityType
                     ?property
@@ -525,6 +528,11 @@ namespace Artivity.Apid.Modules
                     OPTIONAL
                     {
                         ?uri dces:description ?description .
+                    }
+
+                    OPTIONAL
+                    {
+                        ?uri rdfs:comment ?comment .
                     }
 
                     OPTIONAL
@@ -576,9 +584,11 @@ namespace Artivity.Apid.Modules
                 {
                     lastInfluence = new Influence();
                     lastInfluence.uri = uri;
+                    lastInfluence.activity = b["activity"];
                     lastInfluence.type = b["type"];
                     lastInfluence.time = b["time"];
                     lastInfluence.description = b["description"];
+                    lastInfluence.comment = b["comment"];
                     lastInfluence.layer = b["layer"];
                     lastInfluence.agentColor = b["agentColor"];
                     lastInfluence.x = b["x"];
@@ -949,13 +959,18 @@ namespace Artivity.Apid.Modules
 
     class Influence
     {
+        [JsonIgnore]
         public string uri;
+
+        public object activity;
 
         public object time;
 
         public object type;
 
         public object description;
+
+        public object comment;
 
         public object layer;
 

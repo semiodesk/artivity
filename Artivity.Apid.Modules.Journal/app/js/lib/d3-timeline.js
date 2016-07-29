@@ -28,21 +28,22 @@ function TimelineControl(element) {
 		var x = parseInt($(e.target).css('left'));
 
 		if (x) {
-			var c = Math.ceil(parseInt(t.thumb.css('width')) / 2);
+			var c = Math.ceil(t.thumb.outerWidth() / 2);
 
 			t.trackIndicator.css('width', (x + c) + 'px');
+			t.trackPreview.css('visibility', 'collapse');
 
 			var y = t.track.innerWidth() / t.influences.length;
 			var i = t.influences.length - Math.ceil(x / y);
 
-			if (i > -1 && i != t.selectedIndex) {
+			if (i > -1 && i !== t.selectedIndex) {
 				t.selectedIndex = i;
 
 				var influence = t.influences[t.selectedIndex];
 
 				// Snap the thumb to the position of the currently selected influence.
 				t.updatePositionLabels(influence);
-				t.updatePositionIndicator(influence);
+				t.updateTrackPreview(influence);
 
 				if (t.selectedInfluenceChanged) {
 					t.selectedInfluenceChanged(t.influences[i]);
@@ -56,35 +57,92 @@ function TimelineControl(element) {
 
 		t.thumb.addClass('no-transition');
 		t.trackIndicator.addClass('no-transition');
-		
-		var x = parseInt($(e.target).css('left'));
+		t.trackPreview.css('visibility', 'collapse');
+
+		var x = e.clientX - t.track.offset().left;
 
 		if (x) {
-			var c = Math.ceil(parseInt(t.thumb.css('width')) / 2);
+			var c = Math.ceil(t.thumb.outerWidth() / 2);
 
 			t.trackIndicator.css('width', (x + c) + 'px');
 		}
 	};
 
 	var dragStop = function (e) {
-		var x = parseInt($(e.target).css('left'));
+		var x = e.clientX - t.track.offset().left;
 
 		if (x) {
-			var c = Math.ceil(parseInt(t.thumb.css('width')) / 2);
+			var c = Math.ceil(t.thumb.outerWidth() / 2);
 
 			t.trackIndicator.css('width', (x + c) + 'px');
 		}
 
 		t.thumb.removeClass('no-transition');
 		t.trackIndicator.removeClass('no-transition');
-		
+		t.trackPreview.css('visibility', 'visible');
+
 		var influence = t.influences[t.selectedIndex];
 
 		// Snap the thumb to the position of the currently selected influence.
 		t.updatePositionLabels(influence);
-		t.updatePositionIndicator(influence);
+		t.updateTrackPreview(influence);
 
 		t.dragging = false;
+	};
+
+	var trackMouseMove = function (e) {
+		if (!t.dragging) {
+			// e.offsetX does for some reason deliver unsteady values.
+			var x = e.clientX - t.track.offset().left;
+
+			if (x > 0 && x <= t.track.innerWidth()) {
+				var influence = t.getInfluence(x);
+
+				t.updatePositionLabels(influence);
+
+				t.trackPreview.css('visibility', 'visible');
+				t.trackPreview.css('width', x + "px");
+			}
+		}
+	};
+
+	var trackMouseEnter = function (e) {
+		if (!t.dragging) {
+			t.trackPreview.css('visibility', 'visible');
+		}
+	};
+
+	var trackMouseOut = function (e) {
+		if (!t.dragging) {
+			t.trackPreview.css('visibility', 'collapse');
+		}
+	};
+
+	var trackClick = function (e) {
+		if (!t.dragging) {
+			// e.offsetX does for some reason deliver unsteady values.
+			var x = e.clientX - t.track.offset().left;
+
+			var influence = t.getInfluence(x);
+
+			var i = t.influences.indexOf(influence);
+
+			if (i > -1 && i !== t.selectedIndex) {
+				t.setPosition(influence);
+
+				if (t.selectedInfluenceChanged) {
+					t.selectedInfluenceChanged(influence);
+				}
+			}
+		}
+	};
+
+	var thumbMouseEnter = function () {
+		t.trackPreview.css('visibility', 'collapse');
+	}
+
+	var thumbMouseOut = function () {
+		t.trackPreview.css('visibility', 'visible');
 	};
 
 	t.spacing = {
@@ -100,10 +158,18 @@ function TimelineControl(element) {
 	t.timeRange = new Array(2);
 
 	t.control = $(element);
+	t.trackColumn = $(t.control.find(".track-col")[0]);
+	t.trackColumn.mouseenter(trackMouseEnter);
+	t.trackColumn.mousemove(trackMouseMove);
+	t.trackColumn.mouseout(trackMouseOut);
+	t.trackColumn.click(trackClick);
 	t.trackContainer = $(t.control.find(".track-container")[0]);
 	t.track = $(t.control.find(".track")[0]);
+	t.trackPreview = $(t.control.find(".track-preview")[0]);
 	t.trackIndicator = $(t.control.find(".track-indicator")[0]);
 	t.thumb = $(t.control.find(".thumb")[0]);
+	t.thumb.mouseenter(thumbMouseEnter);
+	t.thumb.mouseout(thumbMouseOut);
 	t.thumb.draggable({
 		axis: 'x',
 		containment: '.track-container',
@@ -176,6 +242,21 @@ TimelineControl.prototype.setInfluences = function (influences) {
 	t.influences = influences;
 };
 
+TimelineControl.prototype.getInfluence = function (x) {
+	var t = this;
+
+	if (x > 0 && x <= t.track.innerWidth()) {
+		var y = t.track.innerWidth() / t.influences.length;
+		var i = t.influences.length - Math.ceil(x / y);
+
+		if (i > -1 && i != t.selectedIndex) {
+			var influence = t.influences[i];
+
+			return influence;
+		}
+	}
+};
+
 TimelineControl.prototype.setPosition = function (influence) {
 	var t = this;
 
@@ -187,7 +268,7 @@ TimelineControl.prototype.setPosition = function (influence) {
 		t.selectedIndex = t.influences.indexOf(influence);
 
 		t.updatePositionLabels(influence);
-		t.updatePositionIndicator(influence);
+		t.updateTrackPreview(influence);
 	} else {
 		console.log('Warning: Timline activities are not initialized:', t.activities);
 
@@ -214,20 +295,31 @@ TimelineControl.prototype.updatePositionLabels = function (influence) {
 	}
 };
 
-TimelineControl.prototype.updatePositionIndicator = function (influence) {
+TimelineControl.prototype.getTrackPosition = function (influence) {
 	var t = this;
+	var i = t.influences.indexOf(influence);
 
-	if (t.selectedIndex > -1) {
+	if (i > -1) {
 		// We subtract 1 from the number of influences to receive values 
 		// between 0 and 1 when calculating the progress percentage.
 		var I = t.influences.length - 1;
 
-		var x = Math.ceil(((I - t.selectedIndex) / I) * 100);
+		var x = Math.ceil(t.track.innerWidth() * (I - i) / I);
 
-		t.thumb.css('background', influence.agentColor);
-		t.thumb.css('left', x + '%');
-
-		t.trackIndicator.css('background', influence.agentColor);
-		t.trackIndicator.css('width', x + '%');
+		return x;
 	}
+
+	return 0;
+};
+
+TimelineControl.prototype.updateTrackPreview = function (influence) {
+	var t = this;
+
+	var x = t.getTrackPosition(influence);
+
+	t.thumb.css('background', influence.agentColor);
+	t.thumb.css('left', (x - Math.ceil(t.thumb.outerWidth() / 2)) + 'px');
+
+	t.trackIndicator.css('background', influence.agentColor);
+	t.trackIndicator.css('width', x + 'px');
 };
