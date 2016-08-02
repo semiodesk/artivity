@@ -118,7 +118,6 @@
   <ItemGroup>
     <EmbeddedResource Include="app\js\lib\d3-timeline.js" />
     <EmbeddedResource Include="app\js\app.translation.js" />
-    <EmbeddedResource Include="app\js\lib\d3-gantt.js" />
     <EmbeddedResource Include="app\js\lib\quantize.js" />
     <EmbeddedResource Include="app\js\app.classes.js" />
     <EmbeddedResource Include="app\js\app.controllers.js" />

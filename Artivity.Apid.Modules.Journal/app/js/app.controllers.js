@@ -55,32 +55,39 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams, $translate) {
 	var fileUri = $location.search().uri;
 
-	console.log(fileUri);
-
+	$scope.entity = {
+		uri: fileUri	
+	};
+	
 	// File metadata
 	$scope.file = {};
 
 	api.getFile(fileUri).then(function (data) {
 		$scope.file = data;
+		
+		console.log("Entity: ", $scope.file);
 	});
 
 	// Load the user data.
 	$scope.user = {};
-	
+
 	api.getUser().then(function (data) {
 		$scope.user = data;
 		$scope.user.photoUrl = api.getUserPhotoUrl();
 	});
-	
+
 	// Agent metadata
 	$scope.agent = {
 		iconUrl: ''
 	};
 
 	api.getAgent(fileUri).then(function (data) {
-		data.iconUrl = api.getAgentIconUrl(data.agent);
-
 		$scope.agent = data;
+		$scope.agent.iconUrl = api.getAgentIconUrl(data.agent);
+	});
+
+	api.getAgentAssociations().then(function (data) {
+		console.log("Associations: ", data);
 	});
 
 	// RENDERING
@@ -111,71 +118,75 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	// ACTIVITIES
 	$scope.activities = [];
 
-	api.getActivities(fileUri).then(function (data) {
-		console.log("Loaded activities: ", data);
+	$scope.loadActivities = function () {
+		api.getActivities(fileUri).then(function (data) {
+			console.log("Loaded activities: ", data);
 
-		$scope.activities = data;
+			$scope.activities = data;
 
-		if (data.length > 0) {
-			api.getInfluences(fileUri).then(function (data) {
-				console.log("Loaded influences:", data.length, data);
+			if (data.length > 0) {
+				api.getInfluences(fileUri).then(function (data) {
+					console.log("Loaded influences:", data.length, data);
 
-				$scope.influences = data;
+					$scope.influences = data;
 
-				if (data.length > 0) {
-					$scope.previewInfluence(data[0]);
+					if (data.length > 0) {
+						$scope.previewInfluence(data[0]);
 
-					// Canvases in the file.
-					api.getCanvases(fileUri).then(function (data) {
-						renderer.canvasCache.load(data, function () {
-							console.log("Loaded canvases: ", renderer.canvasCache);
+						// Canvases in the file.
+						api.getCanvases(fileUri).then(function (data) {
+							renderer.canvasCache.load(data, function () {
+								console.log("Loaded canvases: ", renderer.canvasCache);
 
-							$scope.renderInfluence($scope.selectedInfluence);
+								$scope.renderInfluence($scope.selectedInfluence);
 
-							api.getLayers(fileUri).then(function (data) {
-								renderer.layerCache.load(data, function (layers) {
-									console.log("Loaded layers: ", layers);
+								api.getLayers(fileUri).then(function (data) {
+									renderer.layerCache.load(data, function (layers) {
+										console.log("Loaded layers: ", layers);
 
-									// Trigger loading the bitmaps.
-									api.getRenderings(fileUri).then(function (data) {
-										renderer.renderCache.load(data, function () {
-											console.log("Loaded renderings: ", renderer.renderCache);
+										// Trigger loading the bitmaps.
+										api.getRenderings(fileUri).then(function (data) {
+											renderer.renderCache.load(data, function () {
+												console.log("Loaded renderings: ", renderer.renderCache);
 
-											$scope.renderInfluence($scope.selectedInfluence);
+												$scope.renderInfluence($scope.selectedInfluence);
+											});
 										});
 									});
 								});
 							});
 						});
-					});
 
-					// Add the loaded influences to the activities for easier acccess in the frontend.
-					var i = 0;
+						// Add the loaded influences to the activities for easier acccess in the frontend.
+						var i = 0;
 
-					var activity = $scope.activities[i];
-					activity.influences = [];
+						var activity = $scope.activities[i];
+						activity.influences = [];
 
-					// NOTE: We assume that the influences and activities are ordered by descending time.
-					for (var j = 0; j < data.length; j++) {
-						var influence = data[j];
+						// NOTE: We assume that the influences and activities are ordered by descending time.
+						for (var j = 0; j < data.length; j++) {
+							var influence = data[j];
 
-						while (activity.uri !== influence.activity && i < $scope.activities.length - 1) {
-							activity = $scope.activities[++i];
-							activity.influences = [];
-						}
+							while (activity.uri !== influence.activity && i < $scope.activities.length - 1) {
+								activity = $scope.activities[++i];
+								activity.influences = [];
+							}
 
-						if (influence.activity === activity.uri) {
-							activity.influences.push(influence);
-						}
+							if (influence.activity === activity.uri) {
+								activity.influences.push(influence);
+							}
 
-						if (activity.endTime < activity.maxTime) {
-							activity.endTime = activity.maxTime;
+							if (activity.endTime < activity.maxTime) {
+								activity.endTime = activity.maxTime;
+							}
 						}
 					}
-				}
-			});
-		}
-	});
+				});
+			}
+		})
+	};
+
+	$scope.loadActivities();
 
 	$scope.selectInfluence = function (influence) {
 		$scope.selectedInfluence = influence;
@@ -446,21 +457,71 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	};
 
 	$scope.comment = {
-		text: ""
+		text: ''
+	};
+
+	$scope.updateComment = function () {
+		if (!$scope.comment.startTime) {
+			$scope.comment.activity = $scope.activities[0].uri;
+			$scope.comment.agent = $scope.user.Uri;
+			$scope.comment.entity = $scope.entity.uri;
+			$scope.comment.startTime = new Date();
+
+			console.log("Start comment: ", $scope.comment);
+		}
+	};
+
+	$scope.resetComment = function (clearText) {
+		if (clearText) {
+			$scope.comment.text = '';
+		}
+
+		if ($scope.comment.text === '') {
+			$scope.comment.startTime = undefined;
+			$scope.comment.endTime = undefined;
+		}
+
+		console.log("Reset comment: ", $scope.comment);
 	};
 
 	$scope.postComment = function () {
-		$scope.comment.activity = $scope.activities[0].uri;
-		$scope.comment.agent = $scope.user.Uri;
-		$scope.comment.creationTime = new Date();
-		
-		if ($scope.comment.agent && $scope.comment.text) {
+		$scope.comment.endTime = new Date();
+
+		if ($scope.comment.agent && $scope.comment.text !== '') {
+			console.log("Post comment: ", $scope.comment);
+
 			api.postComment($scope.comment).then(function (data) {
 				$scope.comment = "";
+
+				$scope.loadActivities();
 			});
 		}
 	};
 
+}).directive('ngEnter', function () {
+	return function (scope, element, attrs) {
+		element.bind("keydown keypress", function (event) {
+			if (event.which === 13) { // 13 = enter key
+				scope.$apply(function () {
+					scope.$eval(attrs.ngEnter);
+				});
+
+				event.preventDefault();
+			}
+		});
+	};
+}).directive('ngEsc', function () {
+	return function (scope, element, attrs) {
+		element.bind('keydown keypress', function (event) {
+			if (event.which === 27) { // 27 = esc key
+				scope.$apply(function () {
+					scope.$eval(attrs.ngEsc);
+				});
+
+				event.preventDefault();
+			}
+		});
+	};
 }).directive('artTimeline', function () {
 	return {
 		template: '\
@@ -502,6 +563,21 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 				if (scope.selectedInfluence !== undefined) {
 					timeline.setPosition(scope.selectedInfluence);
 				}
+			});
+		}
+	}
+}).directive('artChartDonut', function () {
+	return {
+		template: '<div class="chart-donut"></div>',
+		link: function (scope, element, attributes) {
+			var chart = new DonutChart(element);
+
+			console.log("Confidence: ", scope.stats.confidence);
+			chart.draw(element, scope.stats.confidence);
+			
+			scope.$watch('stats.confidence', function () {
+				console.log("Confidence: ", scope.stats.confidence);
+				chart.draw(element, scope.stats.confidence);
 			});
 		}
 	}

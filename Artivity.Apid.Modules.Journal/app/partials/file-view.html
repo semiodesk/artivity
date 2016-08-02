@@ -18,199 +18,153 @@
 		</div>
 	</div>
 
-	<div id="body">
-		<div class="content text-center">
-			<canvas id="canvas" style="margin: 1px;" loaded="updateCanvas()"></canvas>
-
-			<script>
-				$(function () {
-					updateCanvas();
-
-					// Update the canvas every time the window is resized.
-					window.addEventListener('resize', updateCanvas, false);
-				});
-
-				function updateCanvas() {
-					var buffer = document.getElementById("canvas");
-
-					// To prevent flickering, store the current context before setting the size.
-					var bufferContext = buffer.getContext('2d');
-
-					// Create temp canvas and context
-					var temp = document.createElement('canvas');
-					temp.width = $('.content').width();
-					temp.height = $('.content').height();
-
-					// Draw current canvas to temp canvas.
-					var tempContext = temp.getContext("2d");
-					tempContext.drawImage(bufferContext.canvas, 0, 0);
-
-					// Now resize the canvas.					
-					buffer.width = $('.content').width();
-					buffer.height = $('.content').height();
-
-					// Update the buffer if now.
-					var scope = angular.element(buffer).scope();
-
-					// Draw temp canvas back to the current canvas
-					bufferContext.drawImage(tempContext.canvas, 0, 0);
-
-					if (scope.selectedInfluence) {
-						scope.renderInfluence(scope.selectedInfluence);
-					}
-				}
-			</script>
-		</div>
-		<div class="sidebar left">
-			<ul class="nav nav-tabs tablist" id="tabs-left" role="tablist">
-				<li role="presentation" class="active"><a data-target="#history" role="tab" data-toggle="tab">{{ 'FILEVIEW.HISTORY' | translate }}</a></li>
-				<li role="presentation"><a data-target="#comments" role="tab" data-toggle="tab">{{ 'FILEVIEW.COMMENTS' | translate }}</a></li>
-			</ul>
-
-			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane fade active in" id="history">
-					<ul class="activities-list list-unstyled">
-						<li ng-repeat="activity in activities">
-							<div class="activity-header">
-								<div class="connection"></div>
-								<div class="agent"><img ng-src="{{user.photoUrl}}"></div>
-								<div class="time">
-									<label>{{ getFormattedDate(activity.startTime) }}</label>
+	<div id="body-wrapper">
+		<div id="body">
+			<div class="ui-resizable ui-pane ui-pane-left">
+				<div class="pane-content">
+					<div class="ctl-history">
+						<ul class="lst-activities list-unstyled">
+							<li ng-repeat="activity in activities">
+								<div class="activity-header">
+									<div class="connection"></div>
+									<div class="agent"><img ng-src="{{user.photoUrl}}"></div>
+									<div class="time">
+										<label>{{getFormattedDate(activity.startTime)}}</label>
+									</div>
 								</div>
-							</div>
 
-							<ul class="influences-list list-unstyled">
-								<li ng-repeat="influence in activity.influences" ng-class="{selected: influence == selectedInfluence}">
-									<div ng-switch="influence.type">
-										<div ng-switch-when="http://w3id.org/art/terms/1.0/Comment">
-											<div class="comment">
-												<div class="message">
-													{{ influence.comment }}
-													
-													<label class="time pull-right small">{{getFormattedTime(influence.time)}}</label>
+								<ul class="lst-influences list-unstyled">
+									<li ng-repeat="influence in activity.influences" ng-class="{selected: influence == selectedInfluence}">
+										<div ng-switch="influence.type">
+											<div ng-switch-when="http://w3id.org/art/terms/1.0/Comment">
+												<div class="comment">
+													<div class="txt">
+														{{influence.comment}}
+
+														<label class="time pull-right small">{{getFormattedTime(influence.time)}}</label>
+													</div>
+													<span class="tip tip-left"></span>
 												</div>
-												<span class="tip tip-left"></span>
+											</div>
+											<div ng-switch-default>
+												<a ng-click="previewInfluence(influence)">
+													<div class="connection"></div>
+
+													<label class="type">
+														<span class="node"></span> <i class="zmdi icn icn-transparent" ng-class="getIcon(influence)"></i> {{getLabel(influence)}}
+													</label>
+
+													<label class="time pull-right small">{{getFormattedTime(influence.time)}}</label>
+												</a>
 											</div>
 										</div>
-										<div ng-switch-default>
-											<a ng-click="previewInfluence(influence)">
-												<div class="connection"></div>
-
-												<label class="type">
-													<span class="node"></span> <i class="zmdi icn icn-transparent" ng-class="getIcon(influence)"></i> {{ getLabel(influence) }}
-												</label>
-
-												<label class="time pull-right small">{{getFormattedTime(influence.time)}}</label>
-											</a>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</li>
-					</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+					<div class="ctl-comment">
+						<textarea id="msg-txt" ng-model="comment.text" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-change="updateComment()" ng-enter="postComment()" ng-esc="resetComment(true)" ng-blur="resetComment(false)" required></textarea>
+					</div>
 				</div>
-				<div role="tabpanel" class="tab-pane fade" id="comments">
-					<div class="comment-box">
-						<div class="row">
-							<textarea id="message" ng-model="comment.text" required></textarea>
-						</div>
-						<div class="row">
-							<input class="btn btn-default" type="button" ng-click="postComment()" value="Post" ng-disabled="signInForm.$invalid">
-						</div>
+			</div>
+
+			<div class="ui-resizable ui-pane ui-pane-center">
+				<canvas id="canvas" class="ui-ui-pane ui-layout-center"></canvas>
+			</div>
+
+			<div class="ui-resizable ui-pane ui-pane-right">
+				<ul class="nav nav-tabs tablist" id="tabs-right" role="tablist">
+					<li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">{{'FILEVIEW.STATISTICS' | translate}}</a></li>
+				</ul>
+
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane padded fade active in" id="statistics">
+						<h5>{{'FILEVIEW.EDITING' | translate}}</h5>
+						<table style="width: 90%;">
+							<tr>
+								<td>
+									<label>{{'FILEVIEW.CONFIDENCE' | translate}}</label>
+								</td>
+								<td><span class="pull-right">{{stats.confidence}}</span></td>
+								<td width="20">&nbsp;%</td>
+							</tr>
+							<tr>
+								<td>
+									<label>{{'FILEVIEW.STEPS' | translate}}</label>
+								</td>
+								<td><span class="pull-right">{{stats.steps}}</span></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>
+									<label>{{'FILEVIEW.UNDOS' | translate}}</label>
+								</td>
+								<td><span class="pull-right">{{stats.undos}}</span></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>
+									<label>{{'FILEVIEW.REDOS' | translate}}</label>
+								</td>
+								<td><span class="pull-right">{{stats.redos}}</span></td>
+								<td></td>
+							</tr>
+						</table>
+
+						<h5 style="margin-top: 1em;">{{'FILEVIEW.COMPOSITION' | translate}}</h5>
+						<table style="width: 90%;">
+							<tr>
+								<td>
+									<label>{{'FILEVIEW.LAYERS' | translate}}</label>
+								</td>
+								<td><span class="pull-right">{{stats.layers.length}}</span></td>
+								<td width="20"></td>
+							</tr>
+							<tr>
+								<td>
+									<label>{{'FILEVIEW.GROUPS' | translate}}</label>
+								</td>
+								<td><span class="pull-right">0</span></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>
+									<label>{{'FILEVIEW.MASKED' | translate}}</label>
+								</td>
+								<td><span class="pull-right">0</span></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>
+									<label>{{'FILEVIEW.CLIPPED' | translate}}</label>
+								</td>
+								<td><span class="pull-right">0</span></td>
+								<td></td>
+							</tr>
+						</table>
+
+						<h5 style="margin-top: 1em;">{{'FILEVIEW.COLOURS' | translate}}</h5>
+						<ul class="list-unstyled">
+							<li ng-repeat="color in palette">
+								<div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
+							</li>
+
+							<div class="clearfix"></div>
+						</ul>
+
+						<h5 style="margin-top: 1em;">{{'FILEVIEW.LAYERS' | translate}}</h5>
+						<ul class="list-unstyled">
+							<li ng-repeat="layer in layers | reverse">
+								<label><i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{layer.label}}</label>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="sidebar right">
-			<ul class="nav nav-tabs tablist" id="tabs-right" role="tablist">
-				<li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">{{ 'FILEVIEW.STATISTICS' | translate }}</a></li>
-			</ul>
-
-			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane fade active in" id="statistics">
-					<h5>{{ 'FILEVIEW.EDITING' | translate }}</h5>
-					<table style="width: 90%;">
-						<tr>
-							<td>
-								<label>{{ 'FILEVIEW.CONFIDENCE' | translate }}</label>
-							</td>
-							<td><span class="pull-right">{{stats.confidence}}</span></td>
-							<td width="20">&nbsp;%</td>
-						</tr>
-						<tr>
-							<td>
-								<label>{{ 'FILEVIEW.STEPS' | translate }}</label>
-							</td>
-							<td><span class="pull-right">{{stats.steps}}</span></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td>
-								<label>{{ 'FILEVIEW.UNDOS' | translate }}</label>
-							</td>
-							<td><span class="pull-right">{{stats.undos}}</span></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td>
-								<label>{{ 'FILEVIEW.REDOS' | translate }}</label>
-							</td>
-							<td><span class="pull-right">{{stats.redos}}</span></td>
-							<td></td>
-						</tr>
-					</table>
-
-					<h5 style="margin-top: 1em;">{{ 'FILEVIEW.COMPOSITION' | translate }}</h5>
-					<table style="width: 90%;">
-						<tr>
-							<td>
-								<label>{{ 'FILEVIEW.LAYERS' | translate }}</label>
-							</td>
-							<td><span class="pull-right">{{stats.layers.length}}</span></td>
-							<td width="20"></td>
-						</tr>
-						<tr>
-							<td>
-								<label>{{ 'FILEVIEW.GROUPS' | translate }}</label>
-							</td>
-							<td><span class="pull-right">0</span></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td>
-								<label>{{ 'FILEVIEW.MASKED' | translate }}</label>
-							</td>
-							<td><span class="pull-right">0</span></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td>
-								<label>{{ 'FILEVIEW.CLIPPED' | translate }}</label>
-							</td>
-							<td><span class="pull-right">0</span></td>
-							<td></td>
-						</tr>
-					</table>
-
-					<h5 style="margin-top: 1em;">{{ 'FILEVIEW.COLOURS' | translate }}</h5>
-					<ul class="list-unstyled">
-						<li ng-repeat="color in palette">
-							<div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
-						</li>
-
-						<div class="clearfix"></div>
-					</ul>
-
-					<h5 style="margin-top: 1em;">{{ 'FILEVIEW.LAYERS' | translate }}</h5>
-					<ul class="list-unstyled">
-						<li ng-repeat="layer in layers | reverse">
-							<label><i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{layer.label}}</label>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
 	</div>
+
 	<div id="footer">
 		<div class="row">
 			<div class="col">
@@ -227,10 +181,71 @@
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript">
-		$('.tablist a').click(function (e) {
-			e.preventDefault();
-			$(this).tab('show');
+
+	<script>
+		$(function () {
+			$(document).ready(updateCanvas);
+
+			// Update the canvas every time the window is resized.
+			window.addEventListener('resize', updateCanvas, false);
+
+			// Make the left and right panes resizable.
+			$(".ui-pane-left").resizable({
+				handles: "e"
+			});
+			$(".ui-pane-left").resize(updateCanvas);
+			$(".ui-pane-right").resizable({
+				handles: "w",
+				resize: function (event, ui) {
+					// Only resize the width of the element.
+					if (ui.position.left < 0) {
+						ui.size.width = ui.originalSize.width + Math.abs(ui.position.left);
+					}
+
+					// Do not use the left CSS property at all because it breaks the table layout.
+					ui.position.left = 0;
+				}
+			});
+			$(".ui-pane-right").resize(updateCanvas);
+
+			// Prevent navigation when the user clicks on tab headers.
+			$('.tablist a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
 		});
+
+		function updateCanvas() {
+			var buffer = document.getElementById("canvas");
+
+			// To prevent flickering, store the current context before setting the size.
+			var bufferContext = buffer.getContext('2d');
+
+			// Fit the canvas into its parent.
+			var container = $(buffer);
+
+			// Create temp canvas and context
+			var temp = document.createElement('canvas');
+			temp.width = $(buffer).width();
+			temp.height = $(buffer).height();
+
+			// Draw current canvas to temp canvas.
+			var tempContext = temp.getContext("2d");
+			tempContext.drawImage(bufferContext.canvas, 0, 0);
+
+			// Now resize the canvas.					
+			buffer.width = $(buffer).width();
+			buffer.height = $(buffer).height();
+
+			// Update the buffer if now.
+			var scope = angular.element(buffer).scope();
+
+			// Draw temp canvas back to the current canvas
+			bufferContext.drawImage(tempContext.canvas, 0, 0);
+
+			if (scope.selectedInfluence) {
+				scope.renderInfluence(scope.selectedInfluence);
+			}
+		}
 	</script>
 </div>

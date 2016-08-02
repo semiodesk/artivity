@@ -10,9 +10,13 @@ namespace Artivity.Api.Parameters
     {
         public string activity { get; set; }
 
-        public string agent { get; set; }
+        public DateTime startTime { get; set; }
 
-        public DateTime creationTime { get; set; }
+        public DateTime endTime { get; set; }
+
+        public string entity { get; set; }
+
+        public string agent { get; set; }
 
         public string text { get; set; }
     }
