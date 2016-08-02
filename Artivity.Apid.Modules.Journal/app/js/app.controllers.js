@@ -594,7 +594,7 @@ explorerControllers.controller('SettingsController', function (api, $scope, $loc
 		});
 	};
 
-	scope.$watch('agent.iconUrl', function () {
+	$scope.$watch('agent.iconUrl', function () {
 		if (scope.agent.iconUrl !== "") {
 			timeline.setUserPhotoUrl(scope.user.photoUrl);
 		}
