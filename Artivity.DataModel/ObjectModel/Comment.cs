@@ -15,7 +15,7 @@ namespace Artivity.DataModel
         public Agent Author { get; set; }
 
         [RdfProperty(PROV.atTime)]
-        public DateTime CreationTime { get; set; }
+        public DateTime Time { get; set; }
 
         [RdfProperty(RDFS.comment)]
         public string Message { get; set; }

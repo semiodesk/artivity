@@ -53,6 +53,9 @@ namespace Artivity.DataModel
 		[RdfProperty(PROV.generated)]
 		public List<Entity> GeneratedEntities { get; set; }
 
+        [RdfProperty(PROV.used)]
+        public List<Entity> UsedEntities { get; set; }
+
 		[RdfProperty(PROV.startedAtTime)]
 		public DateTime StartTime { get; set; }
 

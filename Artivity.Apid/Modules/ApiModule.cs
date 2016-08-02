@@ -512,12 +512,11 @@ namespace Artivity.Apid.Modules
                         prov:generated | prov:used @entity ;
                         prov:qualifiedAssociation ?association .
 
-                    ?association
-                        prov:hadRole art:SOFTWARE .
-
                     OPTIONAL
                     {
-                        ?association prov:agent / art:hasColourCode ?agentColor .
+                        ?association
+                            prov:hadRole art:SOFTWARE ;
+                            prov:agent / art:hasColourCode ?agentColor .
                     }
 
                     ?uri

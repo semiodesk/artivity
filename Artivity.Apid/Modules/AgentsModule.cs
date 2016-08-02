@@ -452,7 +452,7 @@ namespace Artivity.Apid.Modules
         private Response GetAgentAssociations()
         {
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT
+                SELECT DISTINCT
                     ?association ?agent ?role
                 WHERE
                 {

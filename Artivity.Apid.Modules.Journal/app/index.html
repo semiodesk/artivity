@@ -2,115 +2,119 @@
 <html ng-app="explorerApp">
 
 <head>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css">
-    <link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
-    <link rel="stylesheet" href="bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css">
+	<link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
+	<link rel="stylesheet" href="bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css">
 
-    <link rel='stylesheet' href='css/roboto.css' type='text/css'>
-    <link rel="stylesheet" href="css/style.css">
 
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<link rel='stylesheet' href='css/roboto.css' type='text/css'>
+	<link rel="stylesheet" href="css/style.css">
+
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 	<script src="bower_components/jquery-ui/ui/widgets/draggable.js"></script>
-    <script src="bower_components/moment/moment.js"></script>
-    <script src="bower_components/moment-duration-format/lib/moment-duration-format.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
-    <script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-translate/angular-translate.min.js"></script>
-    <script src="bower_components/angular-route/angular-route.min.js"></script>
-    <script src="bower_components/angular-input-modified/dist/angular-input-modified.min.js"></script>
-    <script src="bower_components/angular-ui/build/angular-ui.min.js"></script>
-    <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
-    <script src="bower_components/color-thief/dist/color-thief.min.js"></script>
-    <script src="bower_components/base64/base64.min.js"></script>
-    <script src="bower_components/d3/d3.min.js"></script>
-    <script src="js/lib/quantize.js"></script>
-    <!--<script src="js/lib/d3-gantt.js"></script>-->
+	<script src="bower_components/jquery-ui/ui/widgets/resizable.js"></script>
+	<script src="bower_components/moment/moment.js"></script>
+	<script src="bower_components/moment-duration-format/lib/moment-duration-format.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+	<script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/angular-translate/angular-translate.min.js"></script>
+	<script src="bower_components/angular-route/angular-route.min.js"></script>
+	<script src="bower_components/angular-input-modified/dist/angular-input-modified.min.js"></script>
+	<script src="bower_components/angular-ui/build/angular-ui.min.js"></script>
+	<script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+	<script src="bower_components/color-thief/dist/color-thief.min.js"></script>
+	<script src="bower_components/base64/base64.min.js"></script>
+	<script src="bower_components/d3/d3.min.js"></script>
+	<script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
+	<script src="js/lib/quantize.js"></script>
 	<script src="js/lib/d3-timeline.js"></script>
-
-    <script src="js/app.conf.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/app.classes.js"></script>
-    <script src="js/app.controllers.js"></script>
-    <script src="js/app.overlay.js"></script>
-    <script src="js/app.translation.js"></script>
+	<script src="js/lib/d3-chart-donut.js"></script>
+	
+	<script src="js/app.conf.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/app.classes.js"></script>
+	<script src="js/app.controllers.js"></script>
+	<script src="js/app.overlay.js"></script>
+	<script src="js/app.translation.js"></script>
 </head>
 
 <body>
-    <div ng-view></div>
+	<div ng-view></div>
 
-    <div class="overlay collapse" id="overlay">
-        <div class="msg center-xy invisible" id="msg-add-app">
-            <div class="row">
-                <div class="col-xs-2">
-                    <i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
-                </div>
-                <div class="col-xs-10">
-                    <h1>Add Application</h1>
+	<div class="overlay collapse" id="overlay">
+		<div class="msg center-xy invisible" id="msg-add-app">
+			<div class="row">
+				<div class="col-xs-2">
+					<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
+				</div>
+				<div class="col-xs-10">
+					<h1>Add Application</h1>
 
-                    <label>Drop the application icon here to register it with the plugin installer.</label>
-                </div>
-            </div>
-        </div>
+					<label>Drop the application icon here to register it with the plugin installer.</label>
+				</div>
+			</div>
+		</div>
 
-        <div class="msg center-xy invisible" id="msg-add-app-success">
-            <div class="row">
-                <div class="col-xs-2">
-                    <i class="zmdi zmdi-hc-fw zmdi-check-circle zdmi-xl pull-right"></i>
-                </div>
-                <div class="col-xs-10">
-                    <h1>Application Installed</h1>
+		<div class="msg center-xy invisible" id="msg-add-app-success">
+			<div class="row">
+				<div class="col-xs-2">
+					<i class="zmdi zmdi-hc-fw zmdi-check-circle zdmi-xl pull-right"></i>
+				</div>
+				<div class="col-xs-10">
+					<h1>Application Installed</h1>
 
-                    <label>Go to the application preferences to enable the plugin.</label>
-                </div>
-            </div>
-        </div>
-        
-        <div class="msg center-xy invisible" id="msg-import">
-            <div class="row">
-                <div class="col-xs-2">
-                    <i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
-                </div>
-                <div class="col-xs-10">
-                    <h1>Import File</h1>
+					<label>Go to the application preferences to enable the plugin.</label>
+				</div>
+			</div>
+		</div>
 
-                    <label>Drop the file here to import the Artivity archive.</label>
-                </div>
-            </div>
-        </div>
-        
-        <div class="msg center-xy invisible" id="msg-import-success">
-            <div class="row">
-                <div class="col-xs-2">
-                    <i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
-                </div>
-                <div class="col-xs-10">
-                    <h1>Import Success</h1>
+		<div class="msg center-xy invisible" id="msg-import">
+			<div class="row">
+				<div class="col-xs-2">
+					<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
+				</div>
+				<div class="col-xs-10">
+					<h1>Import File</h1>
 
-                    <label>The Artivity archive was sucessfully imported.</label>
-                </div>
-            </div>
-        </div>
-        
-        <div class="msg center-xy invisible" id="msg-unsupported-file-type">
-            <div class="row">
-                <div class="col-xs-2">
-                    <i class="zmdi zmdi-hc-fw zmdi-info zdmi-xl pull-right"></i>
-                </div>
-                <div class="col-xs-10">
-                    <h1>Unsupported File Format</h1>
+					<label>Drop the file here to import the Artivity archive.</label>
+				</div>
+			</div>
+		</div>
 
-                    <label>Currently you can only drop applications here to register them with the plugin installer.</label>
-                </div>
-            </div>
-        </div>
-    </div>
+		<div class="msg center-xy invisible" id="msg-import-success">
+			<div class="row">
+				<div class="col-xs-2">
+					<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
+				</div>
+				<div class="col-xs-10">
+					<h1>Import Success</h1>
+
+					<label>The Artivity archive was sucessfully imported.</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="msg center-xy invisible" id="msg-unsupported-file-type">
+			<div class="row">
+				<div class="col-xs-2">
+					<i class="zmdi zmdi-hc-fw zmdi-info zdmi-xl pull-right"></i>
+				</div>
+				<div class="col-xs-10">
+					<h1>Unsupported File Format</h1>
+
+					<label>Currently you can only drop applications here to register them with the plugin installer.</label>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 
 </html>

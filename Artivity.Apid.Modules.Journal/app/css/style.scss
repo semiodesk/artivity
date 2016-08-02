@@ -1,3 +1,5 @@
+/* NOTE: If Brackets refuses to compile SASS files, check for syntax errors! */
+
 $textFont: 'Roboto',
 'Helvetica',
 'Arial',
@@ -21,6 +23,8 @@ $toolbarTextColor: $headerTextColor;
 $buttonBackgroundColor: $headerBackgroundColor;
 $buttonHoverBackgroundColor: lighten($headerBackgroundColor, 10%);
 $buttonTextColor: $headerTextColor;
+$inputBackgroundColor: #FFFFFF;
+$inputTextColor: #000000;
 $overlayTextColor: white;
 $overlayBackgroundColor: rgba($windowBackgroundColor, .95);
 
@@ -29,6 +33,7 @@ $overlayBackgroundColor: rgba($windowBackgroundColor, .95);
 html,
 body {
 	height: 100%; // Make the body fill the browser window.
+	width: 100%;
 }
 
 h1 {
@@ -407,59 +412,122 @@ h4 {
 
 /* BODY */
 
-#body {
+#body-wrapper {
 	position: absolute;
 	left: 0;
 	right: 0;
-	top: 50px;
-	bottom: 75px,
+	bottom: 50px;
+	top: 52px;
 }
 
-#body.offset-subheader {
-	top: 90px;
-}
-
-.content {
-	position: absolute;
-	top: 0;
-	left: 300px;
-	right: 300px;
-	bottom: 0;
-	padding: 20px 10px 10px 10px;
-	box-sizing: content-box;
+#body {
+	display: table;
+	width: 100%;
+	height: 100%;
 }
 
 #canvas {
-	padding: 0;
-}
-
-#canvas-header {
-	position: absolute;
-	left: 0;
-	top: 0;
-	height: 50px;
+	padding: 15px;
 	width: 100%;
-	padding: 12px 30px;
-	text-align: left;
+	height: 100%;
 }
 
-.sidebar.left {
+.ui-resizable {
+	position: relative;
+}
+
+.ui-resizable-handle {
 	position: absolute;
-	top: 0;
+	font-size: 0.1px;
+	display: block;
+}
+
+.ui-resizable-disabled .ui-resizable-handle,
+.ui-resizable-autohide .ui-resizable-handle {
+	display: none;
+}
+
+.ui-resizable-n {
+	cursor: n-resize;
+	height: 7px;
+	width: 100%;
+	top: -5px;
 	left: 0;
-	bottom: 0;
-	width: 300px;
 }
 
-.sidebar.right {
-	position: absolute;
+.ui-resizable-s {
+	cursor: s-resize;
+	height: 7px;
+	width: 100%;
+	bottom: -5px;
+	left: 0;
+}
+
+.ui-resizable-e {
+	cursor: e-resize;
+	width: 7px;
+	right: -5px;
 	top: 0;
-	right: 0;
-	bottom: 0;
-	width: 300px;
+	height: 100%;
 }
 
-.sidebar .tab-content {
+.ui-resizable-w {
+	cursor: w-resize;
+	width: 7px;
+	left: -5px;
+	top: 0;
+	height: 100%;
+}
+
+.ui-resizable-se {
+	cursor: se-resize;
+	width: 12px;
+	height: 12px;
+	right: 1px;
+	bottom: 1px;
+}
+
+.ui-resizable-sw {
+	cursor: sw-resize;
+	width: 9px;
+	height: 9px;
+	left: -5px;
+	bottom: -5px;
+}
+
+.ui-resizable-nw {
+	cursor: nw-resize;
+	width: 9px;
+	height: 9px;
+	left: -5px;
+	top: -5px;
+}
+
+.ui-resizable-ne {
+	cursor: ne-resize;
+	width: 9px;
+	height: 9px;
+	right: -5px;
+	top: -5px;
+}
+
+.ui-pane {
+	background: $windowBackgroundColor;
+	display: table-cell;
+}
+
+.ui-pane.ui-pane-left {
+	width: 370px;
+	min-width: 300px;
+	border-right: 1px solid $headerBackgroundColor;
+}
+
+.ui-pane.ui-pane-right {
+	width: 300px;
+	border-left: 1px solid $headerBackgroundColor;
+}
+
+.ui-pane .tab-content {
 	overflow-y: scroll;
 	position: absolute;
 	top: 50px;
@@ -469,28 +537,23 @@ h4 {
 	padding: 0;
 }
 
-.sidebar .tab-pane {
+.ui-pane .tab-pane {
 	margin: 0;
 	padding: 0;
 	padding: 0;
 }
 
-.sidebar .tab-content li {
-	color: $labelColor;
+.ui-pane .tab-pane.padded {
+	padding: 15px;
 }
 
-.sidebar .tab-content li a {
-	cursor: pointer;
-	display: block;
-	width: 100%;
-	margin-bottom: 1px;
-	padding: 5px 5px 5px 15px !important;
-}
-
-.sidebar .tab-content li a:hover,
-.sidebar .tab-content li.ng-scope.selected a {
-	color: $accentColor;
-	background: rgba($accentColor, .1);
+.ui-pane .pane-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 15px;
 }
 
 
@@ -838,7 +901,6 @@ input.form-control:focus {
 	}
 }
 
-
 /* MISC */
 
 .under-construction {
@@ -966,11 +1028,17 @@ input.form-control:focus {
 	transform: translate(-50%, -100%);
 }
 
-.activities-list {}
-
+.ctl-history {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 59px;
+	overflow-y: scroll;
+}
 
 /*
-.activities-list .connection {
+.lst-activities .connection {
 	position: absolute;
 	top: 0;
 	left: 27px;
@@ -983,7 +1051,7 @@ input.form-control:focus {
 }
 */
 
-.activities-list label {
+.lst-activities label {
 	margin: 0;
 }
 
@@ -1000,7 +1068,7 @@ input.form-control:focus {
 	background: $headerBackgroundColor;
 	background: #E96F02;
 	border-radius: 50%;
-	margin: 0 15px;
+	margin: 0 10px 0 7px;
 	float: left;
 	overflow: hidden;
 }
@@ -1014,12 +1082,30 @@ input.form-control:focus {
 	vertical-align: middle;
 }
 
-.influences-list {
+.lst-activities li {
+	color: $labelColor;
+}
+
+.lst-activities li a {
+	cursor: pointer;
+	display: block;
+	width: 100%;
+	margin-bottom: 1px;
+	padding: 5px 5px 5px 5px !important;
+}
+
+.lst-activities li a:hover,
+.lst-activities li.ng-scope.selected a {
+	color: $accentColor;
+	background: rgba($accentColor, .1);
+}
+
+.lst-influences {
 	display: block;
 	position: relative;
 }
 
-.influences-list a {
+.lst-influences a {
 	display: block;
 	line-height: 22px;
 	vertical-align: middle;
@@ -1028,7 +1114,7 @@ input.form-control:focus {
 
 
 /*
-.influences-list a .node {
+.lst-influences a .node {
 	display: inline-block;
 	width: 10px;
 	height: 10px;
@@ -1044,7 +1130,7 @@ input.form-control:focus {
 }
 */
 
-.influences-list a i.zmdi {
+.lst-influences a i.zmdi {
 	display: inline-block;
 	text-align: center;
 	width: 26px;
@@ -1053,18 +1139,18 @@ input.form-control:focus {
 	margin: 0;
 }
 
-.influences-list .type {
+.lst-influences .type {
 	color: white;
 }
 
-.influences-list .time {}
+.lst-influences .time {}
 
 .comment {
 	position: relative;
-	margin: 0 0 10px 32px;
+	margin: 0 0 10px 0px;
 }
 
-.tip {
+.comment .tip {
 	width: 0px;
 	height: 0px;
 	position: absolute;
@@ -1072,54 +1158,90 @@ input.form-control:focus {
 	border: 5px solid $headerBackgroundColor;
 }
 
-.tip.tip-right {
+.comment .tip.tip-right {
 	top: 0px;
 	right: -10px;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
 }
 
-.tip.tip-left {
+.comment .tip.tip-left {
 	top: 0;
 	left: -10px;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
 }
 
-.comment .message {
+.comment .txt {
 	background: $headerBackgroundColor;
 	padding: 10px;
 	color: white;
 	min-height: 2em;
 }
 
-.comment .message .time {
+.comment .txt .time {
 	position: absolute;
 	bottom: 5px;
 	right: 5px;
 	z-index: 0;
 }
 
-.comment-box {
-	margin: 0 25px;
+.ctl-comment {
+	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	border-top: 1px solid $headerBackgroundColor;
+	padding: 10px;
 }
 
-.comment-box textarea {
+.ctl-comment textarea,
+.ctl-comment input {
+	display: block;
+}
+
+.ctl-comment textarea {
 	line-height: 1.3em;
 	border: none;
 	width: 100%;
-	min-height: 75px;
-	color: black;
-	vertical-align: top !important;
-	text-align: left;
-	padding: 5px;
+	padding: 10px;
+	color: $inputTextColor;
+	resize: none;
+	height: 2.7em;
+	background: rgba($inputBackgroundColor, .66);
 }
 
-.comment-box textarea,
-.comment-box input {
+.ctl-comment textarea::-webkit-input-placeholder {
+	color: $inputTextColor;
+}
+
+.ctl-comment textarea:focus {
+	color: $inputTextColor;
+	background: $inputBackgroundColor;
+}
+
+.ctl-comment textarea:focus::-webkit-input-placeholder {
+	color: $labelColor;
+}
+
+.ctl-comment input[type=button] {
+	float: right;
 	margin: 5px;
 }
 
-.comment-box input[type=button] {
-	float: right;
+/* STATS */
+
+.chart-donut {
+  width: 29rem;
+  height: 29rem;
+  margin: 0 auto;
+}
+
+path.color0 {
+  fill: #1072b8;
+}
+
+path.color1 {
+  fill: #35526b;
 }

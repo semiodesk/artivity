@@ -102,6 +102,11 @@ namespace Artivity.Apid.Modules
                 return GetComments(new UriRef(uri));
             };
 
+            Get["/comments/clean"] = parameters =>
+            {
+                return CleanComments();
+            };
+
             Post["/comments"] = parameters =>
             {
                 using (var reader = new StreamReader(Request.Body))
@@ -109,6 +114,11 @@ namespace Artivity.Apid.Modules
                     string data = reader.ReadToEnd();
 
                     CommentParameter comment = JsonConvert.DeserializeObject<CommentParameter>(data);
+
+                    if(string.IsNullOrEmpty(comment.text))
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
 
                     return PostComment(comment);
                 }
@@ -356,16 +366,43 @@ namespace Artivity.Apid.Modules
             return Response.AsJson(bindings);
         }
 
+        private Response CleanComments()
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?comment
+                WHERE
+                {
+                    ?comment rdf:type art:Comment ;
+                        prov:activity | prov:hadActivity ?activity .
+
+                    FILTER NOT EXISTS { ?comment rdfs:comment ?value . }
+                }");
+
+            IModel model = ModelProvider.GetActivities();
+
+            List<BindingSet> bindings = model.GetBindings(query).ToList();
+
+            foreach(BindingSet b in bindings)
+            {
+                Uri uri = new Uri(b["comment"].ToString());
+
+                model.DeleteResource(uri);
+            }
+
+            return HttpStatusCode.OK;
+        }
+
         private Response PostComment(CommentParameter parameter)
         {
-            if(!Uri.IsWellFormedUriString(parameter.activity, UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
             {
-                Logger.LogError("Invalid URI for parameter 'activity': {0}", parameter.activity);
+                Logger.LogError("Invalid URI for parameter 'entity': {0}", parameter.entity);
 
                 return HttpStatusCode.BadRequest;
             }
 
-            UriRef activityUri = new UriRef(parameter.activity);
+            UriRef entityUri = new UriRef(parameter.entity);
 
             if (!Uri.IsWellFormedUriString(parameter.agent, UriKind.Absolute))
             {
@@ -378,16 +415,26 @@ namespace Artivity.Apid.Modules
 
             IModel model = ModelProvider.GetActivities();
 
-            if (model.ContainsResource(activityUri))
+            if (model.ContainsResource(entityUri))
             {
+                Association association = model.CreateResource<Association>();
+                association.Agent = new Agent(agentUri);
+                association.Role = new Role(new UriRef(ART.USER));
+                association.Commit();
+
+                Activity activity = model.CreateResource<Activity>();
+                activity.StartTime = parameter.startTime;
+                activity.EndTime = parameter.endTime;
+                activity.Associations.Add(association);
+                activity.UsedEntities.Add(new Entity(entityUri));
+
                 Comment comment = model.CreateResource<Comment>();
-                comment.Activity = new Activity(activityUri);
-                comment.Author = new Agent(agentUri);
-                comment.CreationTime = parameter.creationTime;
+                comment.Activity = activity;
+                comment.Author = association.Agent;
+                comment.Time = parameter.endTime;
                 comment.Message = parameter.text;
                 comment.Commit();
-                
-                Activity activity = model.GetResource<Activity>(activityUri);
+
                 activity.Communications.Add(comment);
                 activity.Commit();
 
@@ -395,7 +442,7 @@ namespace Artivity.Apid.Modules
             }
             else
             {
-                Logger.LogError("Activity not found in model: {0}", activityUri);
+                Logger.LogError("Model does not contain entity {0}", entityUri);
 
                 return HttpStatusCode.BadRequest;
             }
