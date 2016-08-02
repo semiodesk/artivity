@@ -27,15 +27,19 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			'WRITE_MSG': 'Write a message',
 			'http://www.w3.org/ns/prov#Generation': 'Created Element',
 			'http://www.w3.org/ns/prov#Invalidation': 'Removed Element',
+			'http://www.w3.org/ns/prov#Revision': 'Changed Element',
 			'http://w3id.org/art/terms/1.0/Save': 'Saved',
+			'http://w3id.org/art/terms/1.0/SaveAs': 'Saved Copy',
 			'http://www.w3.org/ns/prov#Derivation': 'Saved Copy',
+            'http://w3id.org/art/terms/1.0/Undo': 'Undo',
+            'http://w3id.org/art/terms/1.0/Redo': 'Redo',
 			'http://w3id.org/art/terms/1.0/position': 'Moved',
 			'http://w3id.org/art/terms/1.0/hadBoundaries': 'Scaled',
 			'http://www.w3.org/2000/01/rdf-schema#label': 'Renamed',
 			'http://w3id.org/art/terms/1.0/textValue': 'Changed Text',
 			'http://w3id.org/art/terms/1.0/aboveLayer': 'Moved Layer',
 			'http://w3id.org/art/terms/1.0/strokeWidth': 'Chagned Stroke',
-			'http://w3id.org/art/terms/1.0/lengthUnit': 'Chagned Length Unit',
+			'http://w3id.org/art/terms/1.0/lengthUnit': 'Changed Length Unit',
 			'http://w3id.org/art/terms/1.0/Comment': 'Comment'
 		},
 		
@@ -88,6 +92,10 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			'http://w3id.org/art/terms/1.0/lengthUnit': 'Einheit geändert',
 			'http://w3id.org/art/terms/1.0/Comment': 'Kommentar',
 			'http://w3id.org/art/terms/1.0/Save': 'Gespeichert',
+			'http://w3id.org/art/terms/1.0/SaveAs': 'Kopie gespeichert',
+			'http://www.w3.org/ns/prov#Derivation': 'Kopie gespeichert',
+            'http://w3id.org/art/terms/1.0/Undo': 'Rückgängig',
+            'http://w3id.org/art/terms/1.0/Redo': 'Wiederhergestellt',
 		},
 
 		SETTINGS: {
