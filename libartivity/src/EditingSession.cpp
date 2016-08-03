@@ -176,8 +176,8 @@ namespace artivity
     void EditingSession::eventRedo()
     {
         RedoRef res = onEventRedo();
-        int count = res->getCount();
 
+        int count = res->getCount();
 
         if (_changes.size() > _currentChangeIndex + count) 
         {

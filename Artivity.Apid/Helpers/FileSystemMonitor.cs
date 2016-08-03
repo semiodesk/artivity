@@ -595,6 +595,13 @@ namespace Artivity.Apid
                 return;
             }
 
+            if(string.IsNullOrEmpty(url.LocalPath) || !File.Exists(url.LocalPath))
+            {
+                Logger.LogError("File does not exist: {0}", url);
+
+                return;
+            }
+
             try
             {
                 FileInfoCache file = new FileInfoCache(url.LocalPath);
@@ -602,10 +609,10 @@ namespace Artivity.Apid
                 _monitoredFiles[file.Url.LocalPath] = file;
                 _monitoredFileUris[file.Url.LocalPath] = uri;
 
-                Logger.LogInfo("Enabled monitoring {0}", url.LocalPath);
+                Logger.LogInfo("Enabled monitoring {0}", file.Url.LocalPath);
 
                 // Create the file and folder data objects.
-                DirectoryInfo folderInfo = new DirectoryInfo(Path.GetDirectoryName(url.LocalPath));
+                DirectoryInfo folderInfo = new DirectoryInfo(Path.GetDirectoryName(file.Url.LocalPath));
 
                 ISparqlQuery query = new SparqlQuery(@"
                     SELECT
