@@ -187,7 +187,7 @@ LayerCache.prototype = Object.create(EntityCache.prototype);
 LayerCache.prototype.getAll = function(time, fn) {
     var t = this;
 
-    var map = new Map();   
+    var map = new Map();
     var count = 0;
     var current = null;
 
@@ -229,7 +229,6 @@ function DocumentRenderer(canvas, endpointUrl) {
     var t = this;
 	
 	t.canvas = canvas;
-	
 	t.canvasCache = new CanvasCache();
 	
 	t.layerCache = new LayerCache();
@@ -404,11 +403,11 @@ DocumentRendererCache.prototype.load = function(data, complete) {
 	
 	var count = data.length;
 
-	// This callback counts down the things to do.
+	// This callback counts down the items to be loaded.
 	var completed = function (data, i) {
 		count--;
 
-		if (0 == count && complete !== undefined) {
+		if (0 === count && complete !== undefined) {
             t.loading = false;
             t.loaded = true;
 
@@ -453,6 +452,9 @@ DocumentRendererCache.prototype.loadRender = function (data, i, complete) {
         };
 		
         R.push(render);
+		
+		// Ensure that the array is sorted for quicker access when rendering.
+		R.sort(function(a,b) { return b.time - a.time; });
 
         complete(data, i);
     };
@@ -466,6 +468,8 @@ DocumentRendererCache.prototype.get = function(time, layer, fn) {
 	
     if(layer !== undefined && layer.uri in t.renders) {
         var R = t.renders[layer.uri];
+		
+		console.log(R);
 		
         for(var i = 0; i < R.length; i++) {
             var r = R[i];

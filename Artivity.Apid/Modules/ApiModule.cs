@@ -463,24 +463,30 @@ namespace Artivity.Apid.Modules
         private Response GetRecentlyUsedFiles()
         {
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-	                ?time
-	                ?uri
+                SELECT DISTINCT
+	                ?t1 AS ?time
+	                ?entity AS ?uri
 	                ?label
                 WHERE
                 {
-	                ?uri nie:isStoredAs [ rdfs:label ?label ; nie:lastModified ?time ] .
+                    ?a1
+                        prov:generated | prov:used ?entity ;
+                        prov:endedAtTime ?t1 .
+
+	                ?entity nie:isStoredAs [ rdfs:label ?label ] .
 	
 	                OPTIONAL
 	                {
-		                [ nie:isStoredAs [ rdfs:label ?label ; nie:lastModified ?t2 ] ].
+                        ?a2
+                            prov:generated | prov:used ?entity ;
+                            prov:endedAtTime ?t2 .
 		
-		                FILTER(?time > ?t2)
+		                FILTER(?t1 > ?t2)
 	                }
 	
 	                FILTER(!BOUND(?t2))
                 }
-                ORDER BY DESC(?time) LIMIT 25");
+                ORDER BY DESC(?t1) LIMIT 25");
 
             var bindings = ModelProvider.GetActivities().GetBindings(query);
 
