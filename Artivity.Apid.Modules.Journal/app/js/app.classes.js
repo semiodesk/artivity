@@ -477,8 +477,6 @@ DocumentRendererCache.prototype.get = function(time, layer, fn) {
     if(layer !== undefined && layer.uri in t.renders) {
         var R = t.renders[layer.uri];
 		
-		console.log(R);
-		
         for(var i = 0; i < R.length; i++) {
             var r = R[i];
 			

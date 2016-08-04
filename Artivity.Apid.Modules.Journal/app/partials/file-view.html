@@ -1,4 +1,6 @@
 <div ng-controller="FileViewController as fileView">
+	<style type="text/css">{{styleOverides}}</style>
+
 	<div id="header">
 		<div class="row">
 			<div class="col">
@@ -29,7 +31,7 @@
 									<div class="time" ng-class="{collapsed: !activity.showDate}">
 										<label>{{getFormattedDate(activity.startTime)}}</label>
 									</div>
-									
+
 									<div class="session" ng-class="{collapsed: activity.isComment}">
 										<label>{{'FILEVIEW.EDITING_SESSION' | translate}}</label>
 									</div>

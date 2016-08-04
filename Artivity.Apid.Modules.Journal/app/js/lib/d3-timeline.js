@@ -2,8 +2,10 @@ function Activity(activity, timeOffset) {
 	var t = this;
 
 	t.color = activity.agentColor;
+	t.lastColor = t.color;
+
 	t.startTime = new Date(activity.startTime);
-	t.endTime = new Date(activity.endTime == undefined ? activity.maxTime : activity.endTime);
+	t.endTime = new Date(activity.endTime === undefined ? activity.maxTime : activity.endTime);
 
 	t.timeRange = {};
 	t.timeRange.start = timeOffset;
@@ -205,8 +207,8 @@ TimelineControl.prototype.setActivities = function (data) {
 		t.firstActivity = t.activities[t.activities.length - 1];
 		t.lastActivity = t.activities[0];
 
-		t.timeRange[0] = t.firstActivity.startTime;
-		t.timeRange[1] = t.lastActivity.endTime;
+		t.timeRange[0] = 0;
+		t.timeRange[1] = t.totalTime;
 
 		// Update x time scale to current range and control size.
 		t.xScale = d3.scaleTime().domain(t.timeRange).range([0, t.control.innerWidth()]).clamp(true);
@@ -218,18 +220,6 @@ TimelineControl.prototype.setActivities = function (data) {
 
 		t.durationLabel.text(time);
 		t.positionLabel.text(time);
-
-		// TODO: Could be combined with previous loop.
-		t.activitiesContainer.empty();
-
-		for (var i = 0; i < t.activities.length - 1; i++) {
-			var x = (Math.ceil(t.xScale(t.activities[i].startTime)) / t.totalTime) * 100;
-
-			var d = $('<div class="activity"></div>');
-			d.css('left', x + '%');
-
-			t.activitiesContainer.append(d);
-		}
 	} else {
 		data = undefined;
 		t.xScale = undefined;
@@ -272,7 +262,7 @@ TimelineControl.prototype.setPosition = function (influence) {
 	} else {
 		console.log('Warning: Timline activities are not initialized:', t.activities);
 
-		t.trackIndicator.css('background', influence.agentColor);
+		t.trackIndicator.css('background', t.getColor(influence));
 		t.trackIndicator.css('width', 0);
 	}
 };
@@ -281,17 +271,30 @@ TimelineControl.prototype.updatePositionLabels = function (influence) {
 	var t = this;
 
 	if (influence) {
-		var position = new Date(influence.time) - t.firstActivity.startTime;
+		var time = new Date(influence.time);
+		var position = 0;
+		
+		for (var i = 0; i < t.activities.length; i++) {
+			var a = t.activities[i];
+			
+			if(a.endTime >= time && time >= a.startTime) {
+				position += (time - a.startTime);
+			} else if(time >= a.startTime) {
+				position += a.timeRange.length;
+			}
+		}
 
 		t.positionLabel.text(moment.duration(position, 'milliseconds').format('hh:mm:ss', {
 			trim: false
 		}));
 
+		/*
 		var duration = t.lastActivity.endTime - t.firstActivity.startTime;
 
 		t.durationLabel.text(moment.duration(duration, 'milliseconds').format('hh:mm:ss', {
 			trim: false
 		}));
+		*/
 	}
 };
 
@@ -317,9 +320,21 @@ TimelineControl.prototype.updateTrackPreview = function (influence) {
 
 	var x = t.getTrackPosition(influence);
 
-	t.thumb.css('background', influence.agentColor);
+	t.thumb.css('background', t.getColor(influence));
 	t.thumb.css('left', (x - Math.ceil(t.thumb.outerWidth() / 2)) + 'px');
 
-	t.trackIndicator.css('background', influence.agentColor);
+	t.trackIndicator.css('background', t.getColor(influence));
 	t.trackIndicator.css('width', x + 'px');
+};
+
+TimelineControl.prototype.getColor = function (influence) {
+	var t = this;
+
+	if (influence.agentColor === '#FF0000') {
+		return t.lastColor;
+	}
+
+	t.lastColor = influence.agentColor;
+
+	return t.lastColor;
 };
