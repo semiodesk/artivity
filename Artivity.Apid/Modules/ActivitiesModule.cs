@@ -138,13 +138,13 @@ namespace Artivity.Apid.Modules
         private Response GetActivities(UriRef entityUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT
+                SELECT DISTINCT
                     ?activity AS ?uri
                     ?startTime 
                     ?endTime
                     MAX(?time) as ?maxTime
                     ?agent
-                    COALESCE(?agentColor, '#FF0000') AS ?agentColor
+                    SAMPLE(COALESCE(?agentColor,'#FF0000')) AS ?agentColor
                 WHERE
                 {
                   ?activity
@@ -170,7 +170,7 @@ namespace Artivity.Apid.Modules
                     }
                   }
 
-                  ?influence a ?type ;
+                  ?influence
                     prov:activity | prov:hadActivity ?activity ;
                     prov:atTime ?time.
                 }

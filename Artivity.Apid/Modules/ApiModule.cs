@@ -930,25 +930,31 @@ namespace Artivity.Apid.Modules
                 SELECT DISTINCT
                     ?time
                     ?type
-                    ?uri
+                    ?layer AS ?uri
                     ?property
                     ?value
                 WHERE
                 {
-	                ?activity prov:generated | prov:used @entity.
+	                ?activity
+                        prov:generated | prov:used @entity .
+
+	                ?layer a art:Layer ;
+                        ?qualifiedInfluence ?influence .
 
 	                ?influence a ?type ;
 		                prov:activity | prov:hadActivity ?activity ;
-		                prov:atTime ?time ;
-		                art:hadChange ?change .
+		                prov:atTime ?time .
 
-	                ?change art:entity ?uri ;
-		                art:property ?property ;
-		                art:value ?value .
+                    OPTIONAL
+                    {
+		                ?influence art:hadChange ?change .
 
-	                ?uri a art:Layer .
+	                    ?change art:entity ?layer ;
+		                    art:property ?property ;
+		                    art:value ?value .
 
-	                FILTER(?property = art:aboveLayer || ?property = rdfs:label)
+	                    FILTER(?property = art:aboveLayer || ?property = rdfs:label)
+                    }
                 }
                 ORDER BY DESC(?time)");
 
