@@ -56,7 +56,6 @@ namespace artivity
             setType(art::PartialRenderingDataObject);
         }
 
-
         virtual ~PartialRenderingDataObject() {}
 
         RectangleRef getRegion();

@@ -56,15 +56,15 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	var fileUri = $location.search().uri;
 
 	$scope.entity = {
-		uri: fileUri	
+		uri: fileUri
 	};
-	
+
 	// File metadata
 	$scope.file = {};
 
 	api.getFile(fileUri).then(function (data) {
 		$scope.file = data;
-		
+
 		console.log("Entity: ", $scope.file);
 	});
 
@@ -161,6 +161,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 						var i = 0;
 
 						var activity = $scope.activities[i];
+						activity.showDate = true;
 						activity.influences = [];
 
 						// NOTE: We assume that the influences and activities are ordered by descending time.
@@ -168,9 +169,20 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 							var influence = data[j];
 
 							while (activity.uri !== influence.activity && i < $scope.activities.length - 1) {
-								activity = $scope.activities[++i];
+								var a = $scope.activities[++i];
+								
+								var t1 = new Date(a.startTime);
+								var t2 = new Date(activity.startTime);
+								
+								a.showDate = t1.getDay() != t2.getDay() || t1.getMonth() != t2.getMonth() || t1.getYear() != t2.getYear();
+								
+								console.log(a.showDate);
+								
+								activity = a;
 								activity.influences = [];
 							}
+
+							activity.isComment = influence.comment != null;
 
 							if (influence.activity === activity.uri) {
 								activity.influences.push(influence);
@@ -423,7 +435,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 				return 'zmdi-delete';
 			*/
 		case 'http://www.w3.org/ns/prov#Derivation':
-			return 'zmdi-arrow-split';
+			return 'zmdi-floppy';
 		case 'http://www.w3.org/ns/prov#Undo':
 			return 'zmdi-undo';
 		case 'http://www.w3.org/ns/prov#Redo':
@@ -574,7 +586,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 			console.log("Confidence: ", scope.stats.confidence);
 			chart.draw(element, scope.stats.confidence);
-			
+
 			scope.$watch('stats.confidence', function () {
 				console.log("Confidence: ", scope.stats.confidence);
 				chart.draw(element, scope.stats.confidence);
