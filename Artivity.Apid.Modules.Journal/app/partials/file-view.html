@@ -26,10 +26,12 @@
 						<ul class="lst-activities list-unstyled">
 							<li ng-repeat="activity in activities">
 								<div class="activity-header">
-									<div class="connection"></div>
-									<div class="agent"><img ng-src="{{user.photoUrl}}"></div>
-									<div class="time">
+									<div class="time" ng-class="{collapsed: !activity.showDate}">
 										<label>{{getFormattedDate(activity.startTime)}}</label>
+									</div>
+									
+									<div class="session" ng-class="{collapsed: activity.isComment}">
+										<label>{{'FILEVIEW.EDITING_SESSION' | translate}}</label>
 									</div>
 								</div>
 
@@ -37,21 +39,19 @@
 									<li ng-repeat="influence in activity.influences" ng-class="{selected: influence == selectedInfluence}">
 										<div ng-switch="influence.type">
 											<div ng-switch-when="http://w3id.org/art/terms/1.0/Comment">
-												<div class="comment">
-													<div class="txt">
-														{{influence.comment}}
-
-														<label class="time pull-right small">{{getFormattedTime(influence.time)}}</label>
+												<a class="comment" ng-click="previewInfluence(influence)">
+													<div class="comment">
+														<div class="txt">{{influence.comment}}</div>
+														<span class="tip tip-right"></span>
 													</div>
-													<span class="tip tip-left"></span>
-												</div>
+
+													<label class="time pull-right small">{{getFormattedTime(influence.time)}}</label>
+												</a>
 											</div>
 											<div ng-switch-default>
-												<a ng-click="previewInfluence(influence)">
-													<div class="connection"></div>
-
+												<a class="default" ng-click="previewInfluence(influence)">
 													<label class="type">
-														<span class="node"></span> <i class="zmdi icn icn-transparent" ng-class="getIcon(influence)"></i> {{getLabel(influence)}}
+														<i class="zmdi icn icn-transparent" ng-class="getIcon(influence)"></i> {{getLabel(influence)}}
 													</label>
 
 													<label class="time pull-right small">{{getFormattedTime(influence.time)}}</label>

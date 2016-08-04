@@ -71,6 +71,10 @@ a:hover {
 	text-decoration: none;
 }
 
+.collapsed {
+	display: none;
+}
+
 .text-center {
 	text-align: center;
 }
@@ -1055,31 +1059,29 @@ input.form-control:focus {
 	margin: 0;
 }
 
-.activity-header {
+.lst-activities .activity-header {
 	position: relative;
-	padding: 8px 0;
+	padding: 10px 0 0 0;
 	line-height: 28px;
 }
 
-.activity-header .agent {
-	display: block;
-	width: 28px;
-	height: 28px;
-	background: $headerBackgroundColor;
-	background: #E96F02;
-	border-radius: 50%;
-	margin: 0 10px 0 7px;
-	float: left;
-	overflow: hidden;
-}
-
-.activity-header .agent img {
-	width: 28px;
-	height: auto;
-}
-
-.activitiy-header .time {
+.lst-activities .activity-header .time {
+	clear: both;
 	vertical-align: middle;
+	text-align: center;
+	font-weight: bold;
+}
+
+.lst-activities .activity-header .session {
+	margin-left: 30px;
+	background: $headerBackgroundColor;
+	padding: 0 10px;
+	margin-bottom: 1px;
+	margin-right: 15px;
+}
+
+.lst-activities {
+	margin-right: 1px;
 }
 
 .lst-activities li {
@@ -1089,15 +1091,26 @@ input.form-control:focus {
 .lst-activities li a {
 	cursor: pointer;
 	display: block;
-	width: 100%;
-	margin-bottom: 1px;
-	padding: 5px 5px 5px 5px !important;
+	margin-bottom: 1px !important;
 }
 
-.lst-activities li a:hover,
-.lst-activities li.ng-scope.selected a {
-	color: $accentColor;
-	background: rgba($accentColor, .1);
+.lst-activities li a.default {
+	margin-left: 60px;
+	background: $headerBackgroundColor;
+	padding: 5px;
+	margin-right: 15px;
+}
+
+.lst-activities li a.default:hover,
+.lst-activities li.selected a.default {
+	background: $accentColor;
+}
+
+.lst-activities li a.default:hover label,
+.lst-activities li a.default:hover i,
+.lst-activities li.selected a.default label,
+.lst-activities li.selected a.default i,{
+	color: $windowBackgroundColor;
 }
 
 .lst-influences {
@@ -1111,7 +1124,6 @@ input.form-control:focus {
 	vertical-align: middle;
 	margin-bottom: 0 !important;
 }
-
 
 /*
 .lst-influences a .node {
@@ -1143,47 +1155,67 @@ input.form-control:focus {
 	color: white;
 }
 
-.lst-influences .time {}
-
-.comment {
+.lst-activities li a.comment {
 	position: relative;
-	margin: 0 0 10px 0px;
+	margin: 0 15px 10px 30px;
 }
 
-.comment .tip {
+.lst-activities li a.comment .time {
+	padding-right: 5px;
+}
+
+.lst-activities li a.comment .tip {
 	width: 0px;
 	height: 0px;
 	position: absolute;
 	background: transparent;
-	border: 5px solid $headerBackgroundColor;
+	border: 10px solid $headerBackgroundColor;
 }
 
-.comment .tip.tip-right {
+.lst-activities li a.comment .tip.tip-right {
 	top: 0px;
-	right: -10px;
+	right: -15px;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
 }
 
-.comment .tip.tip-left {
+.lst-activities li a.comment .tip.tip-left {
 	top: 0;
-	left: -10px;
+	left: -15px;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
 }
 
-.comment .txt {
+.lst-activities li a.comment .txt {
 	background: $headerBackgroundColor;
 	padding: 10px;
 	color: white;
 	min-height: 2em;
 }
 
-.comment .txt .time {
+.lst-activities li a.comment .txt .time {
 	position: absolute;
 	bottom: 5px;
 	right: 5px;
 	z-index: 0;
+}
+
+.lst-activities li a.comment:hover .txt,
+.lst-activities li.selected a.comment .txt {
+	background: $accentColor;
+	color: black !important;
+}
+
+.lst-activities li a.comment:hover .tip.tip-left,
+.lst-activities li.selected a.comment .tip.tip-left {
+	border-top-color: $accentColor;
+	border-right-color: $accentColor;
+}
+
+.lst-activities li a.comment:hover .tip.tip-right,
+.lst-activities li.selected a.comment .tip.tip-right {
+	border-top-color: $accentColor;
+	border-left-color: $accentColor;
 }
 
 .ctl-comment {
@@ -1209,20 +1241,6 @@ input.form-control:focus {
 	color: $inputTextColor;
 	resize: none;
 	height: 2.7em;
-	background: rgba($inputBackgroundColor, .66);
-}
-
-.ctl-comment textarea::-webkit-input-placeholder {
-	color: $inputTextColor;
-}
-
-.ctl-comment textarea:focus {
-	color: $inputTextColor;
-	background: $inputBackgroundColor;
-}
-
-.ctl-comment textarea:focus::-webkit-input-placeholder {
-	color: $labelColor;
 }
 
 .ctl-comment input[type=button] {

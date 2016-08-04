@@ -652,19 +652,19 @@ namespace Artivity.Apid.Modules
                         prov:atTime ?time ;
                         art:renderedAs ?rendering .
 
+                    ?rendering
+                        rdf:type ?type ;
+                        rdfs:label ?file .
+
                     OPTIONAL
                     {
-                        ?influence art:hadBoundaries [
+                        ?rendering art:region [
                             art:x ?x ;
                             art:y ?y ;
                             art:width ?w ;
                             art:height ?h
                         ] .
                     }
-
-                    ?rendering
-                        rdf:type ?type ;
-                        rdfs:label ?file .
 
                     OPTIONAL
                     {
