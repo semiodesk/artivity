@@ -507,7 +507,7 @@ namespace Artivity.Apid.Modules
 					?entityType
                     ?property
                     ?layer
-                    COALESCE(?agentColor, '#FF0000') AS ?agentColor
+                    SAMPLE(COALESCE(?agentColor, '#FF0000')) AS ?agentColor
                     COALESCE(?x, 0) AS ?x
                     COALESCE(?y, 0) AS ?y
                     COALESCE(?w, 0) AS ?w
@@ -520,9 +520,7 @@ namespace Artivity.Apid.Modules
 
                     OPTIONAL
                     {
-                        ?association
-                            prov:hadRole art:SOFTWARE ;
-                            prov:agent / art:hasColourCode ?agentColor .
+                        ?association prov:agent / art:hasColourCode ?agentColor .
                     }
 
                     ?uri
@@ -558,6 +556,8 @@ namespace Artivity.Apid.Modules
                         ] .
 
 						?entity a ?entityType .
+
+                        FILTER(?entityType != prov:Entity)
                     }
 
 
