@@ -23,6 +23,7 @@ function Entity(uri) {
     t.uri = uri;
     t.properties = {};
     t.creationTime = undefined;
+	t.deletionTime = new Date();
 };
 
 Entity.prototype.pushValue = function (time, property, value) {
@@ -95,8 +96,13 @@ EntityCache.prototype.load = function(data, complete) {
             if(influence.type === 'http://www.w3.org/ns/prov#Generation') {
                 entity.creationTime = time;
             }
+			else if(influence.type === 'http://www.w3.org/ns/prov#Invalidation') {
+				entity.deletionTime = time;
+			}
 
-            entity.pushValue(time, influence.property, influence.value);
+			if(influence.property !== undefined) {
+            	entity.pushValue(time, influence.property, influence.value);
+			}
         }
     });
 	
@@ -149,7 +155,9 @@ CanvasCache.prototype.load = function(data, complete) {
             canvas.creationTime = time;
         }
         
-		canvas.pushValue(time, influence.property, influence.value);
+		if(influence.property !== undefined) {
+			canvas.pushValue(time, influence.property, influence.value);
+		}
 		
 		canvas.x = influence.x;
 		canvas.y = influence.y;
@@ -192,7 +200,7 @@ LayerCache.prototype.getAll = function(time, fn) {
     var current = null;
 
     values(t.entities, function(uri, layer) {	
-        if(time >= layer.creationTime) {    			
+        if(layer.creationTime <= time && time < layer.deletionTime) {    			
             var lowerLayer = layer.getValue(time, 'http://w3id.org/art/terms/1.0/aboveLayer');
 						
             if(lowerLayer !== undefined) {

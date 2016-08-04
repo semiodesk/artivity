@@ -58,10 +58,10 @@ namespace artivity
             _filePath = getDocumentFilePath();
         }
 
-        _consumer = ProducerConsumerRef(new ProducerConsumer<EditingSession, ResourceRef>());
-        _consumer->ConsumeHandler = &EditingSession::consume;
-        _consumer->setClassObject(this);
-        _consumer->start();
+        consumer = ProducerConsumerRef(new ProducerConsumer<EditingSession, ResourceRef>());
+        consumer->ConsumeHandler = &EditingSession::consume;
+        consumer->setClassObject(this);
+        consumer->start();
 
         _log = ActivityLogRef(new ActivityLog());
         _log->addAssociation(art::USER);
@@ -92,7 +92,7 @@ namespace artivity
 
     EditingSession::~EditingSession()
     {
-        _consumer->stop();
+        consumer->stop();
         _log->close();
         _log = ActivityLogRef();
     }
@@ -103,7 +103,7 @@ namespace artivity
 
         if (res != NULL)
         {
-            _consumer->push(res);
+            consumer->push(res);
         }
     }
 
@@ -113,7 +113,7 @@ namespace artivity
 
         if (res != NULL)
         {
-            _consumer->push(res);
+            consumer->push(res);
         }
     }
 
@@ -122,7 +122,7 @@ namespace artivity
         ResourceRef res = onEventAdd();
         handleChanges(res);
         
-        _consumer->push(res);
+        consumer->push(res);
     }
 
     void EditingSession::eventDelete()
@@ -130,7 +130,7 @@ namespace artivity
         ResourceRef res = onEventDelete();
         handleChanges(res);
 
-        _consumer->push(res);
+        consumer->push(res);
     }
 
     void EditingSession::handleChanges(ResourceRef res)
@@ -152,7 +152,7 @@ namespace artivity
 
         handleChanges(res);
 
-        _consumer->push(res);
+        consumer->push(res);
     }
 
     void EditingSession::eventUndo()
@@ -170,7 +170,7 @@ namespace artivity
             undo->addRevision(*it);
         }
 
-        _consumer->push(undo);
+        consumer->push(undo);
     }
 
     void EditingSession::eventRedo()
@@ -192,7 +192,7 @@ namespace artivity
                 res->addRevision(*it);
             }
 
-            _consumer->push(res);
+            consumer->push(res);
         }
     }
 
@@ -235,14 +235,14 @@ namespace artivity
 
         SaveRef save = onEventSave();
 
-        _consumer->push(save);
+        consumer->push(save);
     }
 
     void EditingSession::eventSaveAs(string targetPath)
     {
         if (!_filePath.empty() && !targetPath.empty() && _filePath.compare(targetPath) != 0)
         {
-            _consumer->stop();
+            consumer->stop();
             
             SaveAsRef saveAs = onEventSaveAs();
 
@@ -258,7 +258,7 @@ namespace artivity
             // Udpate the new file path.
             _filePath = targetPath;
             
-            _consumer->start();
+            consumer->start();
 		}
     }
 
@@ -326,7 +326,7 @@ namespace artivity
         generation->addEntity(canvas);
         generation->addChange(unit);
 
-        _consumer->push(generation);
+        consumer->push(generation);
 
         return canvas;
     }
@@ -346,7 +346,7 @@ namespace artivity
         generation->addEntity(canvas);
         generation->addChange(canvas, art::lengthUnit, ResourceRef(new Resource(art::px)));
 
-        _consumer->push(generation);
+        consumer->push(generation);
 
         return canvas;
     }

@@ -20,36 +20,45 @@
 namespace artivity
 {
     class EditingSession;
+
     typedef boost::shared_ptr< ProducerConsumer<EditingSession, ResourceRef> > ProducerConsumerRef;
 
     class EditingSession
     {
-        private:
+    private:
         ActivityRef _activity;
-        std::string _filePath;
+
         ActivityLogRef _log;
+
         //ResourceRef Unit; store in session or log?
 
         bool pathChanged;
+
         bool contentChanged;
-        ProducerConsumerRef _consumer;
+
         std::string _imagePath;
+
+        std::string _filePath;
+
         std::string _fileUri;
 
         bool _endTime;
+
         bool _initial;
 
         bool _initialized;
 
+        std::vector<std::string> _changes;
+
+        int _currentChangeIndex; 
+
         void createActivity();
 
-
-        std::vector<std::string> _changes;
-        int _currentChangeIndex; 
+    protected:
+        ProducerConsumerRef consumer;
 
         void handleChanges(ResourceRef res);
 
-        protected:
         ImageRef document;
 
         std::string createImageFilePath(time_t time, int count);
@@ -83,7 +92,7 @@ namespace artivity
         virtual SaveRef onEventSave();
         virtual SaveAsRef onEventSaveAs();
 
-        public:
+    public:
         EditingSession();
         virtual ~EditingSession();
 
@@ -92,7 +101,7 @@ namespace artivity
 
         void transmitQueue();
 
-        bool safeToRemove() { return _consumer != NULL && _consumer->empty(); }
+        bool safeToRemove() { return consumer != NULL && consumer->empty(); }
 
         void consume(ResourceRef data);
 

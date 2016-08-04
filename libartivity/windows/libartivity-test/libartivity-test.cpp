@@ -80,7 +80,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     VectorImageRef image2 = VectorImageRef(new VectorImage());
 
-    log->createDerivation(image2, "C:/Users/Hans/Desktop/Test 2.ai");
+    //log->createDerivation(image2, "C:/Users/Hans/Desktop/Test 2.ai");
 
 	log->transmit();
 	log->close();
