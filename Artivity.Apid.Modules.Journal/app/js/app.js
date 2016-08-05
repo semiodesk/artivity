@@ -2,7 +2,8 @@ var explorerApp = angular.module('explorerApp', [
     'ngRoute',
     'explorerControllers',
     'ui.bootstrap',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+	'angularMoment'
 ]).config(function ($httpProvider) {
 	/*
 	$httpProvider.interceptors.push(function ($q) {

@@ -72,7 +72,11 @@
 									</div>
 
 									<div class="session" ng-class="{collapsed: activity.isComment}">
+										<!--<img class="icn" ng-src="{{agent.iconUrl}}" width="24" height="24">-->
+										
 										<label>{{'FILEVIEW.EDITING_SESSION' | translate}}</label>
+										
+										<!--<label class="time pull-right small">{{activity.totalTime | amDateFormat:'h[h] m[m]'}}</label>-->
 									</div>
 								</div>
 
@@ -82,6 +86,7 @@
 											<div ng-switch-when="http://w3id.org/art/terms/1.0/Comment">
 												<a class="comment" ng-click="previewInfluence(influence)">
 													<div>
+														<div class="avatar"><img ng-src="{{user.photoUrl}}"/></div>
 														<div class="txt">{{influence.comment}}</div>
 														<span class="tip tip-right"></span>
 													</div>
