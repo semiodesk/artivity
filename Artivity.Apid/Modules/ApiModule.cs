@@ -943,17 +943,18 @@ namespace Artivity.Apid.Modules
 
 	                ?influence a ?type ;
 		                prov:activity | prov:hadActivity ?activity ;
-		                prov:atTime ?time .
+		                prov:atTime ?time ;
+                        art:hadChange ?change .
 
-                    OPTIONAL
+	                ?change art:entity ?layer ;
+		                art:property ?property ;
+		                art:value ?value .
+
+                    VALUES ?property
                     {
-		                ?influence art:hadChange ?change .
-
-	                    ?change art:entity ?layer ;
-		                    art:property ?property ;
-		                    art:value ?value .
-
-	                    FILTER(?property = art:aboveLayer || ?property = rdfs:label)
+                        rdfs:label
+                        art:aboveLayer
+                        art:parentLayer
                     }
                 }
                 ORDER BY DESC(?time)");
