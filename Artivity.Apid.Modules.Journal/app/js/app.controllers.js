@@ -68,14 +68,6 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		console.log("Entity: ", $scope.file);
 	});
 
-	// Load the user data.
-	$scope.user = {};
-
-	api.getUser().then(function (data) {
-		$scope.user = data;
-		$scope.user.photoUrl = api.getUserPhotoUrl();
-	});
-
 	// Agent metadata
 	$scope.agent = {
 		iconUrl: ''
@@ -84,10 +76,18 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	api.getAgent(fileUri).then(function (data) {
 		$scope.agent = data;
 		$scope.agent.iconUrl = api.getAgentIconUrl(data.agent);
-	});
 
-	api.getAgentAssociations().then(function (data) {
-		console.log("Associations: ", data);
+		console.log("Agent: ", $scope.agent);
+	});
+	
+	// Load the user data.
+	$scope.user = {};
+
+	api.getUser().then(function (data) {
+		$scope.user = data;
+		$scope.user.photoUrl = api.getUserPhotoUrl();
+
+		console.log("User: ", $scope.user);
 	});
 
 	// RENDERING
@@ -170,14 +170,12 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 							while (activity.uri !== influence.activity && i < $scope.activities.length - 1) {
 								var a = $scope.activities[++i];
-								
+
 								var t1 = new Date(a.startTime);
 								var t2 = new Date(activity.startTime);
-								
+
 								a.showDate = t1.getDay() != t2.getDay() || t1.getMonth() != t2.getMonth() || t1.getYear() != t2.getYear();
-								
-								console.log(a.showDate);
-								
+
 								activity = a;
 								activity.influences = [];
 							}
@@ -212,7 +210,6 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		if (influence.time !== undefined) {
 			$scope.renderInfluence(influence);
 
-			console.log($scope.selectedInfluence.agentColor);
 			// Note: this is experimental.
 			//var heatmap = new HeatmapRenderer(canvas);
 			//heatmap.render($scope.influences);
@@ -325,6 +322,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		if (0 < i && i < $scope.influences.length) {
 			$scope.selectedInfluence = $scope.influences[i];
+			
+			console.log($scope.selectedInfluence.offsetTop);
 
 			$scope.renderInfluence($scope.selectedInfluence);
 		}
@@ -356,6 +355,18 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		}
 	};
 
+	$scope.historyKeyDown = function(e) {
+		if(e.which == 40) { // Arrow key down
+			$scope.skipPrev();
+			
+			e.preventDefault();
+		} else if (e.which === 38) { // Arrow up
+			$scope.skipNext();
+			
+			e.preventDefault();
+		}
+	};
+	
 	// FORMATTING
 	$scope.getFormattedTime = function (time) {
 		return moment(time).format('hh:mm:ss');
@@ -510,7 +521,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			});
 		}
 	};
-
+	
 }).directive('ngEnter', function () {
 	return function (scope, element, attrs) {
 		element.bind("keydown keypress", function (event) {
@@ -591,6 +602,22 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			scope.$watch('stats.confidence', function () {
 				console.log("Confidence: ", scope.stats.confidence);
 				chart.draw(element, scope.stats.confidence);
+			});
+		}
+	}
+}).directive('artStyleBinder', function () {
+	return {
+		link: function (scope, element, attributes) {
+			var template = $(element).text();
+
+			scope.$watch(attributes.artAccentColor, function () {
+				var accentColor = getValue(scope, attributes.artAccentColor);
+
+				if (accentColor !== undefined && accentColor !== "#FF0000") {
+					var text = template.replace(/\$accentColor/g, accentColor);
+					
+					$(element).text(text);
+				}
 			});
 		}
 	}

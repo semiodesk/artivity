@@ -287,7 +287,7 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?agent ?association
+                    ?agent ?color ?association
                 WHERE 
                 {
                     ?activity prov:used | prov:generated @entity .
@@ -295,6 +295,8 @@ namespace Artivity.Apid.Modules
 
                     ?association prov:hadRole art:SOFTWARE .
                     ?association prov:agent ?agent .
+
+                    OPTIONAL { ?agent art:hasColourCode ?color . }
                 }
                 LIMIT 1");
 

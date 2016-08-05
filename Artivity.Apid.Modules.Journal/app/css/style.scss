@@ -557,9 +557,11 @@ h4 {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	padding: 15px;
 }
 
+.ui-pane .pane-content.padded {
+	padding: 15px;
+}
 
 /* FOOTER */
 
@@ -1041,6 +1043,10 @@ input.form-control:focus {
 	overflow-y: scroll;
 }
 
+.ctl-history:focus {
+	outline: none;
+}
+
 /*
 .lst-activities .connection {
 	position: absolute;
@@ -1109,7 +1115,7 @@ input.form-control:focus {
 .lst-activities li a.default:hover label,
 .lst-activities li a.default:hover i,
 .lst-activities li.selected a.default label,
-.lst-activities li.selected a.default i,{
+.lst-activities li.selected a.default i {
 	color: $windowBackgroundColor;
 }
 
@@ -1203,7 +1209,7 @@ input.form-control:focus {
 .lst-activities li a.comment:hover .txt,
 .lst-activities li.selected a.comment .txt {
 	background: $accentColor;
-	color: black !important;
+	color: black;
 }
 
 .lst-activities li a.comment:hover .tip.tip-left,
