@@ -79,7 +79,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		console.log("Agent: ", $scope.agent);
 	});
-	
+
 	// Load the user data.
 	$scope.user = {};
 
@@ -163,6 +163,9 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 						var activity = $scope.activities[i];
 						activity.showDate = true;
 						activity.influences = [];
+						activity.startTime = new Date(activity.startTime);
+						activity.endTime = new Date(activity.endTime);
+						activity.totalTime = moment(activity.endTime) - moment(activity.startTime);
 
 						// NOTE: We assume that the influences and activities are ordered by descending time.
 						for (var j = 0; j < data.length; j++) {
@@ -172,7 +175,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 								var a = $scope.activities[++i];
 
 								var t1 = new Date(a.startTime);
-								var t2 = new Date(activity.startTime);
+								var t2 = activity.startTime;
 
 								a.showDate = t1.getDay() != t2.getDay() || t1.getMonth() != t2.getMonth() || t1.getYear() != t2.getYear();
 
@@ -189,6 +192,10 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 							if (activity.endTime < activity.maxTime) {
 								activity.endTime = activity.maxTime;
 							}
+
+							activity.startTime = new Date(activity.startTime);
+							activity.endTime = new Date(activity.endTime);
+							activity.totalTime = moment(activity.endTime) - moment(activity.startTime);
 						}
 					}
 				});
@@ -322,7 +329,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		if (0 < i && i < $scope.influences.length) {
 			$scope.selectedInfluence = $scope.influences[i];
-			
+
 			console.log($scope.selectedInfluence.offsetTop);
 
 			$scope.renderInfluence($scope.selectedInfluence);
@@ -355,18 +362,18 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		}
 	};
 
-	$scope.historyKeyDown = function(e) {
-		if(e.which == 40) { // Arrow key down
+	$scope.historyKeyDown = function (e) {
+		if (e.which == 40) { // Arrow key down
 			$scope.skipPrev();
-			
+
 			e.preventDefault();
 		} else if (e.which === 38) { // Arrow up
 			$scope.skipNext();
-			
+
 			e.preventDefault();
 		}
 	};
-	
+
 	// FORMATTING
 	$scope.getFormattedTime = function (time) {
 		return moment(time).format('hh:mm:ss');
@@ -521,7 +528,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 			});
 		}
 	};
-	
+
 }).directive('ngEnter', function () {
 	return function (scope, element, attrs) {
 		element.bind("keydown keypress", function (event) {
@@ -615,7 +622,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 				if (accentColor !== undefined && accentColor !== "#FF0000") {
 					var text = template.replace(/\$accentColor/g, accentColor);
-					
+
 					$(element).text(text);
 				}
 			});

@@ -1086,6 +1086,12 @@ input.form-control:focus {
 	margin-right: 15px;
 }
 
+.lst-activities .activity-header .session .icn {
+	float: left;
+	height: 26px;
+	width: 26px;
+}
+
 .lst-activities {
 	margin-right: 1px;
 }
@@ -1105,6 +1111,10 @@ input.form-control:focus {
 	background: $headerBackgroundColor;
 	padding: 5px;
 	margin-right: 15px;
+}
+
+.lst-activities li a.default .time {
+	padding-right: 5px;
 }
 
 .lst-activities li a.default:hover,
@@ -1166,8 +1176,19 @@ input.form-control:focus {
 	margin: 0 15px 10px 30px;
 }
 
+.lst-activities li a.comment .avatar {
+	float: left;
+	margin-right: 15px;
+	margin-bottom: 15px;
+}
+
+.lst-activities li a.comment .avatar img {
+	width: 42px;
+	height: 42px;
+}
+
 .lst-activities li a.comment .time {
-	padding-right: 5px;
+	padding-right: 10px;
 }
 
 .lst-activities li a.comment .tip {

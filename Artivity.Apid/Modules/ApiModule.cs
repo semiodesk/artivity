@@ -512,6 +512,10 @@ namespace Artivity.Apid.Modules
                     COALESCE(?y, 0) AS ?y
                     COALESCE(?w, 0) AS ?w
                     COALESCE(?h, 0) AS ?h
+                    ?vx
+                    ?vy
+                    ?vw
+                    ?vh
                 WHERE 
                 {
                     ?activity
@@ -550,6 +554,16 @@ namespace Artivity.Apid.Modules
 
                     OPTIONAL
                     {
+                        ?uri art:hadViewport [
+                            art:x ?vx ;
+                            art:y ?vy ;
+                            art:width ?vw ;
+                            art:height?vh
+                        ] .
+                    }
+
+                    OPTIONAL
+                    {
 						?uri art:hadChange [
                             art:entity ?entity;
                             art:property ?property ;
@@ -559,7 +573,6 @@ namespace Artivity.Apid.Modules
 
                         FILTER(?entityType != prov:Entity)
                     }
-
 
                     OPTIONAL
                     {
@@ -600,6 +613,10 @@ namespace Artivity.Apid.Modules
                     lastInfluence.y = b["y"];
                     lastInfluence.w = b["w"];
                     lastInfluence.h = b["h"];
+                    lastInfluence.vx = b["vx"];
+                    lastInfluence.vy = b["vy"];
+                    lastInfluence.vw = b["vw"];
+                    lastInfluence.vh = b["vh"];
 
                     influences.Add(lastInfluence);
                 }
@@ -995,6 +1012,14 @@ namespace Artivity.Apid.Modules
         public object w;
 
         public object h;
+
+        public object vx;
+
+        public object vy;
+
+        public object vw;
+
+        public object vh;
 
         public List<Change> changes = new List<Change>();
     }
