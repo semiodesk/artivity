@@ -183,6 +183,7 @@
     <Content Include="app\bower_components\angular-moment\Gruntfile.js" />
     <Content Include="app\bower_components\angular-moment\karma.conf.js" />
     <Content Include="app\bower_components\angular-moment\tests.js" />
+    <EmbeddedResource Include="app\bower_components\jquery-ui\ui\widgets\resizable.js" />
     <Content Include="app\img\heart-broken.svg" />
     <Content Include="app\img\heart.svg" />
     <Content Include="app\img\orcid_64x64.png" />

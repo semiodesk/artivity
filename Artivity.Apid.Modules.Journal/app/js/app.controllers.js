@@ -163,9 +163,6 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 						var activity = $scope.activities[i];
 						activity.showDate = true;
 						activity.influences = [];
-						activity.startTime = new Date(activity.startTime);
-						activity.endTime = new Date(activity.endTime);
-						activity.totalTime = moment(activity.endTime) - moment(activity.startTime);
 
 						// NOTE: We assume that the influences and activities are ordered by descending time.
 						for (var j = 0; j < data.length; j++) {
@@ -175,7 +172,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 								var a = $scope.activities[++i];
 
 								var t1 = new Date(a.startTime);
-								var t2 = activity.startTime;
+								var t2 = new Date(activity.startTime);
 
 								a.showDate = t1.getDay() != t2.getDay() || t1.getMonth() != t2.getMonth() || t1.getYear() != t2.getYear();
 
@@ -193,9 +190,11 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 								activity.endTime = activity.maxTime;
 							}
 
+							/*
 							activity.startTime = new Date(activity.startTime);
 							activity.endTime = new Date(activity.endTime);
 							activity.totalTime = moment(activity.endTime) - moment(activity.startTime);
+							*/
 						}
 					}
 				});
