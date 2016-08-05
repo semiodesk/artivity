@@ -1,5 +1,11 @@
 <div ng-controller="FileViewController as fileView">
-	<style type="text/css">{{styleOverides}}</style>
+	<style type="text/css">
+		{
+			{
+				styleOverides
+			}
+		}
+	</style>
 
 	<div id="header">
 		<div class="row">
@@ -23,8 +29,41 @@
 	<div id="body-wrapper">
 		<div id="body">
 			<div class="ui-resizable ui-pane ui-pane-left">
-				<div class="pane-content">
-					<div class="ctl-history">
+				<div class="pane-content padded">
+					<!-- Note: The tabindex is required for the div to be focusable. -->
+					<div class="ctl-history" ng-keydown="historyKeyDown($event)" tabindex="0">
+						<style type="text/css" art-style-binder art-accent-color="agent.color">
+							.lst-activities li a.default:hover,
+							.lst-activities li.selected a.default {
+								background: $accentColor;
+							}
+							
+							.lst-activities li a.default:hover label,
+							.lst-activities li a.default:hover i,
+							.lst-activities li.selected a.default label,
+							.lst-activities li.selected a.default i {
+								color: white;
+							}
+							
+							.lst-activities li a.comment:hover .txt,
+							.lst-activities li.selected a.comment .txt {
+								background: $accentColor;
+								color: white;
+							}
+							
+							.lst-activities li a.comment:hover .tip.tip-left,
+							.lst-activities li.selected a.comment .tip.tip-left {
+								border-top-color: $accentColor;
+								border-right-color: $accentColor;
+							}
+							
+							.lst-activities li a.comment:hover .tip.tip-right,
+							.lst-activities li.selected a.comment .tip.tip-right {
+								border-top-color: $accentColor;
+								border-left-color: $accentColor;
+							}
+						</style>
+
 						<ul class="lst-activities list-unstyled">
 							<li ng-repeat="activity in activities">
 								<div class="activity-header">
@@ -42,7 +81,7 @@
 										<div ng-switch="influence.type">
 											<div ng-switch-when="http://w3id.org/art/terms/1.0/Comment">
 												<a class="comment" ng-click="previewInfluence(influence)">
-													<div class="comment">
+													<div>
 														<div class="txt">{{influence.comment}}</div>
 														<span class="tip tip-right"></span>
 													</div>
@@ -76,91 +115,93 @@
 			</div>
 
 			<div class="ui-resizable ui-pane ui-pane-right">
-				<ul class="nav nav-tabs tablist" id="tabs-right" role="tablist">
-					<li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">{{'FILEVIEW.STATISTICS' | translate}}</a></li>
-				</ul>
+				<div class="pane-content">
+					<ul class="nav nav-tabs tablist" id="tabs-right" role="tablist">
+						<li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">{{'FILEVIEW.STATISTICS' | translate}}</a></li>
+					</ul>
 
-				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane padded fade active in" id="statistics">
-						<h5>{{'FILEVIEW.EDITING' | translate}}</h5>
-						<table style="width: 90%;">
-							<tr>
-								<td>
-									<label>{{'FILEVIEW.CONFIDENCE' | translate}}</label>
-								</td>
-								<td><span class="pull-right">{{stats.confidence}}</span></td>
-								<td width="20">&nbsp;%</td>
-							</tr>
-							<tr>
-								<td>
-									<label>{{'FILEVIEW.STEPS' | translate}}</label>
-								</td>
-								<td><span class="pull-right">{{stats.steps}}</span></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>
-									<label>{{'FILEVIEW.UNDOS' | translate}}</label>
-								</td>
-								<td><span class="pull-right">{{stats.undos}}</span></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>
-									<label>{{'FILEVIEW.REDOS' | translate}}</label>
-								</td>
-								<td><span class="pull-right">{{stats.redos}}</span></td>
-								<td></td>
-							</tr>
-						</table>
+					<div class="tab-content">
+						<div role="tabpanel" class="tab-pane padded fade active in" id="statistics">
+							<h5>{{'FILEVIEW.EDITING' | translate}}</h5>
+							<table style="width: 90%;">
+								<tr>
+									<td>
+										<label>{{'FILEVIEW.CONFIDENCE' | translate}}</label>
+									</td>
+									<td><span class="pull-right">{{stats.confidence}}</span></td>
+									<td width="20">&nbsp;%</td>
+								</tr>
+								<tr>
+									<td>
+										<label>{{'FILEVIEW.STEPS' | translate}}</label>
+									</td>
+									<td><span class="pull-right">{{stats.steps}}</span></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<label>{{'FILEVIEW.UNDOS' | translate}}</label>
+									</td>
+									<td><span class="pull-right">{{stats.undos}}</span></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<label>{{'FILEVIEW.REDOS' | translate}}</label>
+									</td>
+									<td><span class="pull-right">{{stats.redos}}</span></td>
+									<td></td>
+								</tr>
+							</table>
 
-						<h5 style="margin-top: 1em;">{{'FILEVIEW.COMPOSITION' | translate}}</h5>
-						<table style="width: 90%;">
-							<tr>
-								<td>
-									<label>{{'FILEVIEW.LAYERS' | translate}}</label>
-								</td>
-								<td><span class="pull-right">{{stats.layers.length}}</span></td>
-								<td width="20"></td>
-							</tr>
-							<tr>
-								<td>
-									<label>{{'FILEVIEW.GROUPS' | translate}}</label>
-								</td>
-								<td><span class="pull-right">0</span></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>
-									<label>{{'FILEVIEW.MASKED' | translate}}</label>
-								</td>
-								<td><span class="pull-right">0</span></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>
-									<label>{{'FILEVIEW.CLIPPED' | translate}}</label>
-								</td>
-								<td><span class="pull-right">0</span></td>
-								<td></td>
-							</tr>
-						</table>
+							<h5 style="margin-top: 1em;">{{'FILEVIEW.COMPOSITION' | translate}}</h5>
+							<table style="width: 90%;">
+								<tr>
+									<td>
+										<label>{{'FILEVIEW.LAYERS' | translate}}</label>
+									</td>
+									<td><span class="pull-right">{{stats.layers.length}}</span></td>
+									<td width="20"></td>
+								</tr>
+								<tr>
+									<td>
+										<label>{{'FILEVIEW.GROUPS' | translate}}</label>
+									</td>
+									<td><span class="pull-right">0</span></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<label>{{'FILEVIEW.MASKED' | translate}}</label>
+									</td>
+									<td><span class="pull-right">0</span></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<label>{{'FILEVIEW.CLIPPED' | translate}}</label>
+									</td>
+									<td><span class="pull-right">0</span></td>
+									<td></td>
+								</tr>
+							</table>
 
-						<h5 style="margin-top: 1em;">{{'FILEVIEW.COLOURS' | translate}}</h5>
-						<ul class="list-unstyled">
-							<li ng-repeat="color in palette">
-								<div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
-							</li>
+							<h5 style="margin-top: 1em;">{{'FILEVIEW.COLOURS' | translate}}</h5>
+							<ul class="list-unstyled">
+								<li ng-repeat="color in palette">
+									<div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
+								</li>
 
-							<div class="clearfix"></div>
-						</ul>
+								<div class="clearfix"></div>
+							</ul>
 
-						<h5 style="margin-top: 1em;">{{'FILEVIEW.LAYERS' | translate}}</h5>
-						<ul class="list-unstyled">
-							<li ng-repeat="layer in layers | reverse">
-								<label><i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{layer.label}}</label>
-							</li>
-						</ul>
+							<h5 style="margin-top: 1em;">{{'FILEVIEW.LAYERS' | translate}}</h5>
+							<ul class="list-unstyled">
+								<li ng-repeat="layer in layers | reverse">
+									<label><i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{layer.label}}</label>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -186,7 +227,11 @@
 
 	<script>
 		$(function () {
-			$(document).ready(updateCanvas);
+			$(document).ready(function () {
+				updateCanvas();
+
+				$(".ctl-history").focus();
+			});
 
 			// Update the canvas every time the window is resized.
 			window.addEventListener('resize', updateCanvas, false);
