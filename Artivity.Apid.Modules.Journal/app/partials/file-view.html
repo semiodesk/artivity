@@ -1,12 +1,4 @@
 <div ng-controller="FileViewController as fileView">
-	<style type="text/css">
-		{
-			{
-				styleOverides
-			}
-		}
-	</style>
-
 	<div id="header">
 		<div class="row">
 			<div class="col">
@@ -93,6 +85,8 @@
 
 													<label class="time pull-right small">{{getFormattedTime(influence.time)}}</label>
 												</a>
+                                                
+                                                <div class="clearfix"></div>
 											</div>
 											<div ng-switch-default>
 												<a class="default" ng-click="previewInfluence(influence)">
