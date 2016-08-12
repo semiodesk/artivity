@@ -883,7 +883,8 @@ namespace Artivity.Apid.Modules
                     ?uri rdfs:label ?label .
                     ?uri nie:created ?created .
                     ?uri nie:lastModified ?lastModified .
-                    ?uri nfo:belongsToContainer / nie:url ?folder .
+
+                    OPTIONAL { ?uri nfo:belongsToContainer / nie:url ?folder . }
                 }";
 
             ISparqlQuery query = new SparqlQuery(queryString);
@@ -972,18 +973,22 @@ namespace Artivity.Apid.Modules
 
 	                ?influence a ?type ;
 		                prov:activity | prov:hadActivity ?activity ;
-		                prov:atTime ?time ;
-                        art:hadChange ?change .
+		                prov:atTime ?time .
 
-	                ?change art:entity ?layer ;
-		                art:property ?property ;
-		                art:value ?value .
-
-                    VALUES ?property
+                    OPTIONAL
                     {
-                        rdfs:label
-                        art:aboveLayer
-                        art:parentLayer
+                        ?influence art:hadChange ?change .
+
+    	                ?change art:entity ?layer ;
+    		                art:property ?property ;
+    		                art:value ?value .
+
+                        VALUES ?property
+                        {
+                            rdfs:label
+                            art:aboveLayer
+                            art:parentLayer
+                        }
                     }
                 }
                 ORDER BY DESC(?time)");

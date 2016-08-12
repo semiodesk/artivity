@@ -137,6 +137,7 @@ namespace Artivity.Api.IO
                     ?bounds
                     ?change
                     ?render
+                    ?renderRegion
                 WHERE
                 {
                   ?activity prov:generated | prov:used @entity .
@@ -148,7 +149,13 @@ namespace Artivity.Api.IO
 
                   ?influence prov:activity | prov:hadActivity ?activity .
 
-                  OPTIONAL { ?influence art:renderedAs ?render . }
+                  OPTIONAL
+                  {
+                     ?influence art:renderedAs ?render .
+
+                     OPTIONAL { ?render art:region ?renderRegion . }
+                  }
+
                   OPTIONAL { ?influence art:hadViewport ?viewport . }
                   OPTIONAL { ?influence art:hadBoundaries ?bounds . }
                   OPTIONAL
