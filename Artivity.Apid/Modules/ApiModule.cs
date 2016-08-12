@@ -329,18 +329,6 @@ namespace Artivity.Apid.Modules
                     }
                 }
             };
-
-            Get["/delete"] = parameters =>
-            {
-                string uri = Request.Query.entityUri;
-
-                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
-                {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                }
-
-                return DeleteEntity(new UriRef(uri));
-            };
         }
 
         #endregion
@@ -907,13 +895,13 @@ namespace Artivity.Apid.Modules
             return GetCanvases(entityUri, DateTime.UtcNow);
         }
 
-        private Response GetCanvases(UriRef entityUri, DateTime time)
+        private Response GetCanvases(UriRef entityUri, DateTime maxTime)
         {
             string queryString = @"
                 SELECT DISTINCT
 	                ?time
 	                ?type
-	                ?uri
+	                ?canvas AS ?uri
 	                ?property
 	                ?value
 	                COALESCE(?x, 0) AS ?x
@@ -922,32 +910,41 @@ namespace Artivity.Apid.Modules
 	                COALESCE(?h, 0) AS ?h
                 WHERE
                 {
-	                ?activity prov:generated | prov:used @entity.
+	                ?activity
+                        prov:generated | prov:used @entity.
+
+                    ?canvas a art:Canvas ;
+                        ?qualifiedInfluence ?influence .
 
 	                ?influence a ?type ;
 		                prov:activity | prov:hadActivity ?activity ;
-		                prov:atTime ?time ;
-		                art:hadChange ?change ;
-		                art:hadBoundaries [
-			                art:x ?x ;
-			                art:y ?y ;
-			                art:width ?w ;
-			                art:height ?h
-		                ].
+		                prov:atTime ?time .
 	
-	                ?change art:entity ?uri ;
-		                art:property ?property ;
-		                art:value ?value .
+                    FILTER (?time <= @maxTime)
 
-	                ?uri a art:Canvas .
+                    OPTIONAL
+                    {
+                        ?influence art:hadChange [ 
+                            art:property ?property ;
+                            art:value ?value
+                        ] .
+                    }
 
-                    FILTER (?time <= @time)
+                    OPTIONAL
+                    {
+                        ?influence art:hadBoundaries [
+                            art:x ?x ;
+                            art:y ?y ;
+                            art:width ?w ;
+                            art:height ?h
+                        ] .
+                    }
                 }
                 ORDER BY DESC(?time)";
                 
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@entity", entityUri);
-            query.Bind("@time", time);
+            query.Bind("@maxTime", maxTime);
             
             List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
@@ -998,40 +995,6 @@ namespace Artivity.Apid.Modules
             IList<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
-        }
-
-        Response DeleteEntity(UriRef uri)
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT DISTINCT
-                    ?s
-                WHERE
-                {
-                  ?s ?p ?o
-
-                  {
-                      SELECT ?o WHERE { @entity ?p ?o . }
-                  }
-                  UNION
-                  {
-                      SELECT ?s WHERE { ?s ?p @entity .  }
-                  }
-                }");
-
-            query.Bind("@entity", uri);
-
-            IModel model = ModelProvider.GetActivities();
-
-            IList<BindingSet> bindings = model.GetBindings(query).ToList();
-
-            foreach (BindingSet b in bindings)
-            {
-                UriRef s = new UriRef(b["s"].ToString());
-
-                model.DeleteResource(s);
-            }
-
-            return HttpStatusCode.OK;
         }
 
         #endregion
