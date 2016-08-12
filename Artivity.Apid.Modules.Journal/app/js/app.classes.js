@@ -204,6 +204,8 @@ function LayerTreeNode(tree, parent, layer) {
 
     t.layer = layer;
     t.parent = parent;
+    
+    // The layer children in rendering order, from bottom to top.
     t.children = [];
 
     // Register the node in the tree.
@@ -297,12 +299,20 @@ LayerTree.prototype.insertLayerAbove = function (layer, lowerLayer) {
         lower = t.insertLayer(lowerLayer);
     }
 
+    console.log("insertLayerAbove: ", lower, lowerLayer.uri);
+    
     if (layer != null && lower !== undefined) {
         var parent = lower.parent;
 
         node = new LayerTreeNode(t, parent, layer);
+        
+        var i = parent.children.indexOf(lower);
 
-        parent.children.splice(parent.children.indexOf(lower) - 1, 0, node);
+        if(i === 0) {
+            parent.children.splice(0, 0, node);
+        } else if(i > 0) {
+            parent.children.splice(i - 1, 0, node);
+        }
     }
 
     return node;
@@ -363,7 +373,7 @@ LayerCache.prototype.getAll = function (time, fn) {
                     }
                 }
 
-                if (lowerUri !== undefined) {
+                if (lowerUri !== undefined && lowerUri !== 'http://w3id.org/art/terms/1.0/noLayer') {
                     var lowerLayer = t.entities[lowerUri];
 
                     if (lowerLayer !== undefined) {
