@@ -68,6 +68,8 @@ namespace Artivity.Apid
 
         private IModel _model;
 
+        private IModelProvider _modelProvider;
+
         private IPlatformProvider _platform;
 
         public bool IsLogging { get; set; }
@@ -144,6 +146,7 @@ namespace Artivity.Apid
                 Logger.LogInfo("Starting file system monitor.");
 
                 _model = provider.GetActivities();
+                _modelProvider = provider;
                 _platform = platform;
 
                 InitializeFileWatchers();
@@ -159,14 +162,14 @@ namespace Artivity.Apid
             // just in case there exist previous (deleted) versions.
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT DISTINCT
-                    ?entity ?folderUrl ?fileName
+                    ?fileUri ?fileName ?folderUrl
                 WHERE
                 {
-                    ?entity nie:isStoredAs
-                    [
+                    ?entity nie:isStoredAs ?file .
+
+                    ?fileUri
                         rdfs:label ?fileName;
-                        nfo:belongsToContainer / nie:url ?folderUrl
-                    ]
+                        nfo:belongsToContainer / nie:url ?folderUrl .
                 }");
 
             foreach (BindingSet binding in _model.GetBindings(query))
@@ -198,7 +201,7 @@ namespace Artivity.Apid
                     continue;
                 }
 
-                Uri uri = new Uri(binding["entity"].ToString());
+                Uri uri = new Uri(binding["fileUri"].ToString());
 
                 FileInfoCache file = new FileInfoCache(url.LocalPath);
 
@@ -746,6 +749,7 @@ namespace Artivity.Apid
                     {
                         // Get the file data object from the database and update the metadata.
                         FileDataObject file = _model.GetResource<FileDataObject>(uri);
+                        file.Name = info.Name;
                         file.CreationTime = info.CreationTimeUtc;
                         file.LastAccessTime = info.LastAccessTimeUtc;
                         file.LastModificationTime = info.LastWriteTimeUtc;
