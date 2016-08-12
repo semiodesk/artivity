@@ -142,7 +142,7 @@ namespace Artivity.Api.IO
                   ?activity prov:generated | prov:used @entity .
                   ?activity prov:startedAtTime ?startTime .
 
-                  FILTER(@minTime >= ?startTime) .
+                  FILTER(@minTime <= ?startTime) .
 
                   @entity nie:isStoredAs ?file .
 

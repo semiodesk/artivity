@@ -329,6 +329,18 @@ namespace Artivity.Apid.Modules
                     }
                 }
             };
+
+            Get["/delete"] = parameters =>
+            {
+                string uri = Request.Query.entityUri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return DeleteEntity(new UriRef(uri));
+            };
         }
 
         #endregion
@@ -981,6 +993,40 @@ namespace Artivity.Apid.Modules
             IList<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJson(bindings);
+        }
+
+        Response DeleteEntity(UriRef uri)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT DISTINCT
+                    ?s
+                WHERE
+                {
+                  ?s ?p ?o
+
+                  {
+                      SELECT ?o WHERE { @entity ?p ?o . }
+                  }
+                  UNION
+                  {
+                      SELECT ?s WHERE { ?s ?p @entity .  }
+                  }
+                }");
+
+            query.Bind("@entity", uri);
+
+            IModel model = ModelProvider.GetActivities();
+
+            IList<BindingSet> bindings = model.GetBindings(query).ToList();
+
+            foreach (BindingSet b in bindings)
+            {
+                UriRef s = new UriRef(b["s"].ToString());
+
+                model.DeleteResource(s);
+            }
+
+            return HttpStatusCode.OK;
         }
 
         #endregion

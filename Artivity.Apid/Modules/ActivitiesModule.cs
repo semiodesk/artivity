@@ -342,20 +342,21 @@ namespace Artivity.Apid.Modules
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?time 
+                    ?time
                     ?activity
+                    ?comment
                     ?agent
                     ?message
                 WHERE
                 {
-                  ?activity
-                    prov:generated | prov:used @entity ;
-                    prov:qualifiedCommunication ?comment .
+                  ?activity prov:generated | prov:used @entity .
 
                   ?comment
-                    nao:created ?time ;
-                    nao:creator ?agent ;
-                    rdfs:comment ?message .
+                    a art:Comment ;
+                    rdfs:comment ?message ;
+                    prov:activity ?activity ;
+                    prov:atTime ?time ;
+                    nao:creator ?agent .
                 }
                 ORDER BY DESC(?time)");
 
@@ -373,8 +374,7 @@ namespace Artivity.Apid.Modules
                     ?comment
                 WHERE
                 {
-                    ?comment rdf:type art:Comment ;
-                        prov:activity | prov:hadActivity ?activity .
+                    ?comment a art:Comment ; prov:activity ?activity .
 
                     FILTER NOT EXISTS { ?comment rdfs:comment ?value . }
                 }");
