@@ -298,8 +298,6 @@ LayerTree.prototype.insertLayerAbove = function (layer, lowerLayer) {
     if (lower === undefined && lowerLayer.uri !== undefined) {
         lower = t.insertLayer(lowerLayer);
     }
-
-    console.log("insertLayerAbove: ", lower, lowerLayer.uri);
     
     if (layer != null && lower !== undefined) {
         var parent = lower.parent;
@@ -355,8 +353,6 @@ LayerCache.prototype.getAll = function (time, fn) {
             if (layer.creationTime <= time && time < layer.deletionTime) {
                 var lowerUri = layer.getValue(time, 'http://w3id.org/art/terms/1.0/aboveLayer');
                 var parentUri = layer.getValue(time, 'http://w3id.org/art/terms/1.0/parentLayer');
-
-                console.log(layer.uri, layer.getLabel(time), lowerUri, parentUri);
 
                 // In the beginning, there were no layers..
                 if (parentUri === undefined && (lowerUri === undefined || lowerUri === 'http://w3id.org/art/terms/1.0/noLayer')) {
