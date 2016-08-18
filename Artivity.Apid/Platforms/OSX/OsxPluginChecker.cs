@@ -36,7 +36,7 @@ using System.Xml.XPath;
 using System.Collections.Generic;
 using System.Xml;
 
-namespace Artivity.Api.Plugin.OSX
+namespace Artivity.Apid.Plugin.OSX
 {
     public class OsxPluginChecker : PluginChecker
     {

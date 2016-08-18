@@ -26,8 +26,8 @@
 
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
-using Artivity.Api.Plugin;
-using Artivity.Api.IO;
+using Artivity.Apid.Plugin;
+using Artivity.Apid.IO;
 using Semiodesk.Trinity;
 using System;
 using Nancy;

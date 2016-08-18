@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Apid
+namespace Artivity.Apid.IO
 {
     internal class FileSystemWatcherInfo
     {

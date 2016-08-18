@@ -1,4 +1,4 @@
-﻿using Artivity.Api.Plugin;
+﻿using Artivity.Apid.Plugin;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Artivity.Api.Plugin
+namespace Artivity.Apid.Plugin
 {
     /// <remarks/>
     [XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]

@@ -28,8 +28,8 @@
 using Artivity.DataModel;
 using Artivity.Apid.Parameters;
 using Artivity.Apid.Platforms;
-using Artivity.Api.Plugin;
-using Artivity.Api.Platforms;
+using Artivity.Apid.Plugin;
+using Artivity.Apid.Platforms;
 using Nancy;
 using Nancy.Responses;
 using Nancy.ModelBinding;
@@ -661,7 +661,7 @@ namespace Artivity.Apid.Modules
                 {
                     Assembly assembly = Assembly.GetExecutingAssembly();
 
-                    using (Stream source = assembly.GetManifestResourceStream("Artivity.Api.Resources.user.jpg"))
+                    using (Stream source = assembly.GetManifestResourceStream("Artivity.Apid.Resources.user.jpg"))
                     {
                         using (FileStream target = File.Create(file))
                         {

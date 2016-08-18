@@ -1,4 +1,4 @@
-﻿using Artivity.Api.Platforms;
+﻿using Artivity.Apid.Platforms;
 using System;
 using System.Collections.Generic;
 using System.Linq;

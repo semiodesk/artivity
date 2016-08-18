@@ -26,7 +26,7 @@
 
 using System;
 
-namespace Artivity.Api.Helpers
+namespace Artivity.Apid.Helpers
 {
     public static class FileNameEncoder
     {

@@ -27,7 +27,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Artivity.Api.Plugin.OSX
+namespace Artivity.Apid.Plugin.OSX
 {
     public class InstalledPrograms 
     {

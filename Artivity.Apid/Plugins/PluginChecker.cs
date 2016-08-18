@@ -34,7 +34,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Artivity.Api.Plugin
+namespace Artivity.Apid.Plugin
 {
     public abstract class PluginChecker
     {

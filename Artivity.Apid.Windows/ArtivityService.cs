@@ -1,4 +1,4 @@
-﻿using Artivity.Api.Plugin;
+﻿using Artivity.Apid.Plugin;
 using Artivity.WinService;
 using log4net;
 using log4net.Appender;

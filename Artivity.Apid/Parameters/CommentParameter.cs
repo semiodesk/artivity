@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Api.Parameters
+namespace Artivity.Apid.Parameters
 {
     public class CommentParameter
     {

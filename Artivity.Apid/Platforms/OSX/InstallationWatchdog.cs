@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Artivity.Api.Plugin.OSX
+namespace Artivity.Apid.Plugin.OSX
 {
 
     class InstallationWatchdog : IInstallationWatchdog

@@ -25,8 +25,8 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using Artivity.Api.IO;
-using Artivity.Api.Plugin;
+using Artivity.Apid.IO;
+using Artivity.Apid.Plugin;
 using Artivity.Apid;
 using Artivity.Apid.Platforms;
 using Artivity.DataModel;

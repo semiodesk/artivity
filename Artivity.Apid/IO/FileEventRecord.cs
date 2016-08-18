@@ -19,28 +19,49 @@
 // THE SOFTWARE.
 //
 // AUTHORS:
-//  Moritz Eberl <moritz@semiodesk.com>
+//
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.DataModel;
-using Artivity.Apid.Plugin.Win;
-using Artivity.Apid.Plugin.OSX;
-using Artivity.Apid.Platforms;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
-namespace Artivity.Apid.Plugin
+namespace Artivity.Apid.IO
 {
-    public class PluginCheckerFactory
+    /// <summary>
+    /// A list of of timestamps which represent events for a file.
+    /// </summary>
+    public class FileEventRecord
     {
-        public static PluginChecker CreatePluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo dir)
+        #region Members
+
+        public DateTime EventTimeUtc { get; set; }
+
+        public string FilePath { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        public FileEventRecord(DateTime eventTimeUtc, string filePath)
         {
-#if WIN
-            return new WinPluginChecker(platformProvider, modelProvider, dir);
-#elif OSX
-            return new OsxPluginChecker(platformProvider, modelProvider, dir);
-#endif
+            EventTimeUtc = eventTimeUtc;
+            FilePath = filePath;
         }
+
+        #endregion
+
+        #region Methods
+
+        public override int GetHashCode()
+        {
+            return FilePath.GetHashCode();
+        }
+
+        #endregion
     }
 }

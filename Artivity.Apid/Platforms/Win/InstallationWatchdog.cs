@@ -33,7 +33,7 @@ using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Api.Plugin.Win
+namespace Artivity.Apid.Plugin.Win
 {
     class InstallationWatchdog : IInstallationWatchdog
     {

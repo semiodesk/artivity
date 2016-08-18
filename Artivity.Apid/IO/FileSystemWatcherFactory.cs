@@ -27,7 +27,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Artivity.Apid
+namespace Artivity.Apid.IO
 {
     public class FileSystemWatcherFactory
     {

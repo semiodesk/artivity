@@ -28,7 +28,7 @@ using System;
 using System.IO;
 using Semiodesk.Trinity;
 
-namespace Artivity.Apid
+namespace Artivity.Apid.IO
 {
     /// <summary>
     /// Keeps an in-memory copy of the values from a FileInfo object.
@@ -49,6 +49,8 @@ namespace Artivity.Apid
 
         public string FullName { get; private set; }
 
+        public string LocalPath { get { return Url.LocalPath; } }
+
         public DateTime CreationTimeUtc { get; private set; }
 
         public DateTime LastAccessTimeUtc { get; private set; }
@@ -63,11 +65,6 @@ namespace Artivity.Apid
         /// A value which is used to determine if two files at different locations are equal.
         /// </summary>
         public readonly int IndexCode = -1;
-
-        /// <summary>
-        /// A value which indicates if the file is currently being processed by a thread.
-        /// </summary>
-        public bool IsLocked { get; set; }
 
         #endregion
 

@@ -1,4 +1,4 @@
-﻿using Artivity.Api.Platforms;
+﻿using Artivity.Apid.Platforms;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;

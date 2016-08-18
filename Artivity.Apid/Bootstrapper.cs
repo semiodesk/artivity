@@ -42,7 +42,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Nancy.Serialization.JsonNet;
 using Artivity.Apid.Modules;
-using Artivity.Api.Plugin;
+using Artivity.Apid.Plugin;
 
 namespace Artivity.Apid
 {

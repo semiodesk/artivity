@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Artivity.Api.Plugin
+namespace Artivity.Apid.Plugin
 {
     [XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]
     public partial class PluginManifestRegistryKey
