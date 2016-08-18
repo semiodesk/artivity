@@ -95,7 +95,7 @@ namespace Artivity.Apid.IO
         /// <summary>
         /// A timer used for executing tasks in a regular interval.
         /// </summary>
-        private readonly Timer _timer = new Timer() { Interval = 1000 };
+        private readonly Timer _timer = new Timer() { Interval = 500 };
 
         /// <summary>
         /// Drive types which should be monitored by the drive watchers.
@@ -105,6 +105,18 @@ namespace Artivity.Apid.IO
             DriveType.Network,
             DriveType.Removable
         };
+
+        /// <summary>
+        /// A list containing files that are indexed but do not exist anymore.
+        /// </summary>
+        /// <remarks>
+        /// These files need to be marked as deleted in the database.
+        /// </remarks>
+        private readonly List<FileInfoCache> _deletedFiles = new List<FileInfoCache>();
+
+        private readonly Queue<FileSystemEventArgs> _deletedEventsQueue = new Queue<FileSystemEventArgs>();
+
+        private readonly Queue<FileSystemEventArgs> _createdEventsQueue = new Queue<FileSystemEventArgs>();
 
         /// <summary>
         /// A log of previously created files; used for locating moved files.
@@ -135,14 +147,6 @@ namespace Artivity.Apid.IO
         /// Maps monitored file paths to their URIs in the database.
         /// </summary>
         private readonly static Dictionary<string, Uri> _monitoredFileUris = new Dictionary<string, Uri>();
-
-        /// <summary>
-        /// A list containing files that are indexed but do not exist anymore.
-        /// </summary>
-        /// <remarks>
-        /// These files need to be marked as deleted in the database.
-        /// </remarks>
-        private readonly List<FileInfoCache> _deletedFiles = new List<FileInfoCache>();
 
         #endregion
 
@@ -450,6 +454,30 @@ namespace Artivity.Apid.IO
         /// <param name="e">Timer event arguments.</param>
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
+            // Prioritize the processing of file creation events over deletion events.
+            int m = Math.Min(_deletedEventsQueue.Count, 50);
+            int n = Math.Min(_createdEventsQueue.Count, 50);
+
+            for (int i = 0; i < n; i++)
+            {
+                FileSystemEventArgs args = _createdEventsQueue.Dequeue();
+
+                HandleFileSystemObjectCreated(args);
+            }
+
+            for (int i = 0; i < m; i++)
+            {
+                FileSystemEventArgs args = _deletedEventsQueue.Dequeue();
+
+                HandleFileSystemObjectDeleted(args);
+            }
+
+            // Update deleted, but still indexed files in the database.
+            foreach (FileInfoCache file in _deletedFiles)
+            {
+                DeleteFileDataObject(file);
+            }
+
             // Install or uninstall drive watchers.
             foreach (DriveInfo drive in DriveInfo.GetDrives())
             {
@@ -468,12 +496,6 @@ namespace Artivity.Apid.IO
                 {
                     InstallMonitoring(drive.RootDirectory.FullName);
                 }
-            }
-
-            // Update deleted, but still indexed files in the database.
-            foreach (FileInfoCache file in _deletedFiles)
-            {
-                DeleteFileDataObject(file);
             }
 
             // Clean the index of created files.
@@ -569,26 +591,31 @@ namespace Artivity.Apid.IO
 
                 Logger.LogDebug("CREATED {0}", e.FullPath);
 
-                // We use the URL to access the path in order to normalize it.
-                Uri fileUrl = new Uri(e.FullPath);
-
-                if (_monitoredFiles.ContainsKey(fileUrl.LocalPath))
-                {
-                    Logger.LogDebug("Created {0}", fileUrl);
-
-                    // A monitored file is being replaced, update the database.
-                    UpdateFileDataObject(fileUrl);
-                }
-                else
-                {
-                    // The event is registered as the latest event with the file name.
-                    _createdFilesIndex.Add(file.Name, new FileEventRecord(DateTime.UtcNow, fileUrl.LocalPath));
-                }
+                _createdEventsQueue.Enqueue(e);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
                 Logger.LogDebug("{0}", new StackTrace());
+            }
+        }
+
+        private void HandleFileSystemObjectCreated(FileSystemEventArgs e)
+        {
+            // We use the URL to access the path in order to normalize it.
+            FileInfoCache file = new FileInfoCache(e.FullPath);
+
+            if (_monitoredFiles.ContainsKey(file.LocalPath))
+            {
+                Logger.LogDebug("Created {0}", file.LocalPath);
+
+                // A monitored file is being replaced, update the database.
+                UpdateFileDataObject(file.Url);
+            }
+            else
+            {
+                // The event is registered as the latest event with the file name.
+                _createdFilesIndex.Add(file.Name, new FileEventRecord(DateTime.UtcNow, file.LocalPath));
             }
         }
 
@@ -656,36 +683,41 @@ namespace Artivity.Apid.IO
 
                 Logger.LogDebug("DELETED {0}", e.FullPath);
 
-                UriRef url = new UriRef(e.FullPath);
-
-                if (_monitoredFiles.ContainsKey(url.LocalPath))
-                {
-                    FileInfoCache file = _monitoredFiles[url.LocalPath];
-
-                    if(_createdFilesIndex.ContainsKey(file.Name))
-                    {
-                        FileEventRecord record = _createdFilesIndex.TryGetLatestEvent(file.Name, file.Length);
-
-                        if(record != null)
-                        {
-                            // We assume that a recently created file with the same
-                            // name and size of a monitored one is being moved.
-                            UpdateFileDataObject(file.Url, new Uri(record.FilePath));
-
-                            // Clean up.
-                            _createdFilesIndex.Remove(file.Name, record);
-
-                            return;
-                        }
-                    }
-
-                    DeleteFileDataObject(file);
-                }
+                _deletedEventsQueue.Enqueue(e);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
                 Logger.LogDebug("{0}", new StackTrace());
+            }
+        }
+
+        private void HandleFileSystemObjectDeleted(FileSystemEventArgs e)
+        {
+            UriRef url = new UriRef(e.FullPath);
+
+            if (_monitoredFiles.ContainsKey(url.LocalPath))
+            {
+                FileInfoCache file = _monitoredFiles[url.LocalPath];
+
+                if (_createdFilesIndex.ContainsKey(file.Name))
+                {
+                    FileEventRecord record = _createdFilesIndex.TryGetLatestEvent(file.Name, file.Length);
+
+                    if (record != null)
+                    {
+                        // We assume that a recently created file with the same
+                        // name and size of a monitored one is being moved.
+                        UpdateFileDataObject(file.Url, new Uri(record.FilePath));
+
+                        // Clean up.
+                        _createdFilesIndex.Remove(file.Name, record);
+
+                        return;
+                    }
+                }
+
+                DeleteFileDataObject(file);
             }
         }
 
