@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using Artivity.Api.Helpers;
+using Artivity.Apid.Helpers;
 using Artivity.Apid.Platforms;
 using Artivity.DataModel;
 using Newtonsoft.Json;
@@ -37,7 +37,7 @@ using Semiodesk.Trinity;
 using VDS.RDF;
 using VDS.RDF.Storage;
 
-namespace Artivity.Api.IO
+namespace Artivity.Apid.IO
 {
     public class ArchiveWriter
     {

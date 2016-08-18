@@ -31,7 +31,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Api.Plugin.Win
+namespace Artivity.Apid.Plugin.Win
 {
     public class RegistryEntry
     {

@@ -27,7 +27,7 @@
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
 using Artivity.Apid.Parameters;
-using Artivity.Api.Plugin;
+using Artivity.Apid.Plugin;
 using Semiodesk.Trinity;
 using Semiodesk.Trinity.Store;
 using Nancy;
@@ -38,7 +38,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using VDS.RDF;
-using Artivity.Api.Parameters;
+using Artivity.Apid.Parameters;
 using Newtonsoft.Json;
 
 namespace Artivity.Apid.Modules

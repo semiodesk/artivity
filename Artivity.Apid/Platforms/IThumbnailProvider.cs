@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Api.Platforms
+namespace Artivity.Apid.Platforms
 {
     public interface IThumbnailProvider
     {
@@ -14,9 +14,9 @@ namespace Artivity.Api.Platforms
         public static IThumbnailProvider CreateThumbnailProvider()
         {
             #if WIN
-            return new Artivity.Api.Platforms.Win.ThumbnailProvider();
+            return new Artivity.Apid.Platforms.Win.ThumbnailProvider();
             #elif OSX
-            return new Artivity.Api.Platforms.OSX.ThumbnailProvider();
+            return new Artivity.Apid.Platforms.OSX.ThumbnailProvider();
             #endif
         }
     }

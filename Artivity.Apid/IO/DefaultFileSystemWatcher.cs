@@ -27,7 +27,7 @@
 using System;
 using System.IO;
 
-namespace Artivity.Apid
+namespace Artivity.Apid.IO
 {
     public class DefaultFileSystemWatcher : IFileSystemWatcher
     {

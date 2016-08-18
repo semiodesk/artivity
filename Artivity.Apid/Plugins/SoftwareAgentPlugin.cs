@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Api.Plugin
+namespace Artivity.Apid.Plugin
 {
     public class SoftwareAgentPlugin
     {

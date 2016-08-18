@@ -1,4 +1,4 @@
-﻿using Artivity.Api.Plugin.Win;
+﻿using Artivity.Apid.Plugin.Win;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Api.Plugin
+namespace Artivity.Apid.Plugin
 {
     public delegate void HandleProgramInstalledOrRemoved(object sender, EventArgs args);
 
@@ -23,9 +23,9 @@ namespace Artivity.Api.Plugin
         public static IInstallationWatchdog CreateWatchdog()
         {
             #if WIN
-            return new Artivity.Api.Plugin.Win.InstallationWatchdog(InstalledPrograms.RegistryKeyString);
+            return new Artivity.Apid.Plugin.Win.InstallationWatchdog(InstalledPrograms.RegistryKeyString);
             #elif OSX
-            return new Artivity.Api.Plugin.OSX.InstallationWatchdog();
+            return new Artivity.Apid.Plugin.OSX.InstallationWatchdog();
             #endif
         }
     }

@@ -27,8 +27,8 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using Artivity.Api.Helpers;
-using Artivity.Api.Plugin;
+using Artivity.Apid.Helpers;
+using Artivity.Apid.Plugin;
 using Artivity.Apid;
 using Artivity.Apid.Platforms;
 using Artivity.DataModel;
@@ -37,7 +37,7 @@ using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using VDS.RDF.Storage;
 
-namespace Artivity.Api.IO
+namespace Artivity.Apid.IO
 {
     public class ArchiveReader
     {

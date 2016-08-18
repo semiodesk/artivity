@@ -34,7 +34,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using Microsoft.Win32;
 
-namespace Artivity.Api.Plugin.Win
+namespace Artivity.Apid.Plugin.Win
 {
     public class WinPluginChecker : PluginChecker
     {       

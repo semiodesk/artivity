@@ -35,8 +35,8 @@ using Nancy.Hosting.Self;
 using Nancy.TinyIoc;
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
-using Artivity.Api.Plugin;
-using Artivity.Api.Platforms;
+using Artivity.Apid.Plugin;
+using Artivity.Apid.IO;
 
 namespace Artivity.Apid
 {

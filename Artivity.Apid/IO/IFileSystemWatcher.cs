@@ -27,7 +27,7 @@
 using System;
 using System.IO;
 
-namespace Artivity.Apid
+namespace Artivity.Apid.IO
 {
     /// <summary>
     /// An interface for cross-platform file system watcher implementations.

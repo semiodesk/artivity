@@ -28,7 +28,8 @@
 using Artivity.DataModel;
 using Artivity.Apid.Accounts;
 using Artivity.Apid.Platforms;
-using Artivity.Api.Helpers;
+using Artivity.Apid.Helpers;
+using Artivity.Apid.IO;
 using Nancy;
 using Nancy.Responses;
 using Nancy.IO;
