@@ -29,6 +29,7 @@ using System;
 using System.IO;
 using System.Threading;
 using AppKit;
+using Artivity.Apid.IO;
 using Mono.Unix;
 using Mono.Unix.Native;
 

@@ -30,6 +30,7 @@ using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using CoreServices;
 using CoreFoundation;
+using Artivity.Apid.IO;
 
 namespace Artivity.Apid.Mac
 {
