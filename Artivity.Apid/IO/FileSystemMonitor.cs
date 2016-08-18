@@ -46,6 +46,10 @@ namespace Artivity.Apid.IO
     ///  1. Create new file (target, file size is 0 when event occurs)
     ///  2. Delete old file (source, file size is 0 when event occurs)
     /// </remarks>
+    /// <todo>
+    ///  a) Implement monitoring for folders (deletion date)
+    ///  b) Implement support for detecting copied files (derivations)
+    /// </todo>
     public class FileSystemMonitor : IDisposable
     {
         #region Members
@@ -169,8 +173,6 @@ namespace Artivity.Apid.IO
             {
                 IsInitialized = true;
 
-                IsLoggingVerbose = true;
-
                 Logger.LogInfo("Starting file system monitor.");
 
                 // Initialize the model and environment.
@@ -229,7 +231,7 @@ namespace Artivity.Apid.IO
                 {
                     continue;
                 }
-                else if (folderUrl[folderUrl.Length - 1] != Path.DirectorySeparatorChar)
+                else if (folderUrl[folderUrl.Length - 1] != '/')
                 {
                     folderUrl += Path.DirectorySeparatorChar;
                 }
@@ -257,12 +259,6 @@ namespace Artivity.Apid.IO
                     Logger.LogDebug("Indexed file does not exist: {0}", url.LocalPath);
 
                     _deletedFiles.Add(file);
-
-                    // In order to improve start up performance, we add the file to the list 
-                    // of deleted files so that the deletion can be handled later..
-                    file.DeletionTimeUtc = DateTime.UtcNow;
-
-                    // NOTE: ProcessDeletedFiles() assumes that the file is registered in _monitoredFileUris.
                 }
 
                 Uri uri = new Uri(binding["file"].ToString());
@@ -504,12 +500,13 @@ namespace Artivity.Apid.IO
             }
 
             // Update deleted, but still indexed files in the database.
-            if (_deletedFiles.Count > 0)
+            while(_deletedFiles.Count > 0)
             {
-                foreach (FileInfoCache file in _deletedFiles)
-                {
-                    DeleteFileDataObject(file);
-                }
+                FileInfoCache file = _deletedFiles.First();
+
+                DeleteFileDataObject(file);
+
+                _deletedFiles.Remove(file);
             }
 
             // Clean the index of created files.
@@ -879,7 +876,7 @@ namespace Artivity.Apid.IO
         {
             if (_monitoredFileUris.ContainsKey(file.LocalPath))
             {
-                Logger.LogDebug("Deleted {0}", file.LocalPath);
+                Logger.LogDebug("Deleted file: {0}", file.LocalPath);
 
                 // Get the URI of the file data object.
                 Uri fileUri = _monitoredFileUris[file.LocalPath];
@@ -975,7 +972,7 @@ namespace Artivity.Apid.IO
 
             try
             {
-                Logger.LogDebug("Moved {0} -> {1}", oldUrl.LocalPath, newUrl.LocalPath);
+                Logger.LogDebug("Moved file: {0} -> {1}", oldUrl.LocalPath, newUrl.LocalPath);
 
                 FileInfo fileInfo = new FileInfo(newUrl.LocalPath);
 

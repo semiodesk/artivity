@@ -403,6 +403,7 @@ function DocumentRenderer(canvas, endpointUrl) {
 
 	// EaselJS drawing context.
 	t.stage = new createjs.Stage("canvas");
+	t.stage.autoClear = true;
 	
 	// Shadow that is drawn below the canvases / artboards / pages.
 	t.pageShadow = new createjs.Shadow('rgba(0,0,0,.3)', 5, 5, 15);
@@ -549,6 +550,8 @@ DocumentRenderer.prototype.render = function (influence) {
 
 	var time = new Date(influence.time);
 
+	var extents = { t: 0, l: 0, b: 0, r: 0};
+	
 	t.canvasCache.getAll(time, function (c) {
 		var s = new createjs.Shape();
 		s.shadow = t.pageShadow;
@@ -556,6 +559,10 @@ DocumentRenderer.prototype.render = function (influence) {
 		var g = s.graphics;
 		g.beginFill('white');
 		g.drawRect(c.x, -c.y, c.w, c.h);
+		
+		t.measureExtents(extents, c.x, -c.y, c.w, c.h);
+		
+		console.log(c);
 
 		t.stage.addChild(s);
 	});
@@ -574,7 +581,7 @@ DocumentRenderer.prototype.render = function (influence) {
 			var b = new createjs.Bitmap(r.img);
 			b.x = r.x;
 			b.y = -r.y;
-
+			
 			t.stage.addChild(b);
 
 			/*
@@ -605,21 +612,53 @@ DocumentRenderer.prototype.render = function (influence) {
 		t.stage.addChild(s);
 	}
 
-	var extents = t.stage.getBounds();
-
 	if (extents != null) {
+		// Draw the extents.
 		var s = new createjs.Shape();
 		
 		var g = s.graphics;
-		g.beginFill('green');
-		g.drawRect(extents.x, -extents.y, extents.w, extents.h);
+		g.beginStroke('red');
+		g.setStrokeStyle(1);
+		g.drawRect(extents.l, -extents.t, extents.width, extents.height);
 		
 		t.stage.addChild(s);
 		
-		console.log(extents);
+		// Draw null position.
+		s = new createjs.Shape();
 		
-		/*
+		g = s.graphics;
+		g.beginFill('green');
+		g.drawCircle(0, 0, 5);
+		
+		t.stage.addChild(s);
+		
+		// Draw extents position marker.
+		var ce = { x : extents.x + extents.width / 2, y: -extents.y + extents.height / 2 };
+		
+		s = new createjs.Shape();
+		
+		g = s.graphics;
+		g.beginFill('red');
+		g.drawCircle(ce.x, ce.y, 7);
+		
+		t.stage.addChild(s);
+		
+		// Draw center position marker.
+		var cc = { x : t.canvas.width / 2, y: t.canvas.height / 2 };
+		
+		s = new createjs.Shape();
+		
+		g = s.graphics;
+		g.beginFill('blue');
+		g.drawCircle(cc.x, cc.y, 5);
+		
+		t.stage.addChild(s);
+		
+		t.stage.x = cc.x - ce.x;
+		t.stage.y = cc.y - ce.y;
+		
 		// One zoom factor for scaling both axes.
+		/*
 		var z = 1.0;
 
 		// After measuring, determine the zoom level to contain all the canvases.
@@ -637,6 +676,17 @@ DocumentRenderer.prototype.render = function (influence) {
 	}
 
 	t.stage.update();
+}
+
+DocumentRenderer.prototype.measureExtents = function(extents, x, y, w, h) {
+	extents.l = Math.min(extents.l, x);
+	extents.r = Math.max(extents.r, x + w);
+	extents.t = Math.min(extents.t, -y);
+	extents.b = Math.max(extents.b, -y + h);
+	extents.x = extents.l;
+	extents.y = extents.t;
+	extents.width = extents.r - extents.l;
+	extents.height = extents.b - extents.t;
 }
 
 DocumentRenderer.prototype.getPalette = function () {

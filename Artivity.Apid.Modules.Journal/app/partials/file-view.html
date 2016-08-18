@@ -114,7 +114,7 @@
 			</div>
 
 			<div class="ui-resizable ui-pane ui-pane-center">
-				<canvas id="canvas" class="ui-ui-pane ui-layout-center" width="640" height="480"></canvas>
+				<canvas id="canvas" class="ui-ui-pane ui-layout-center" width="640" height="480" style="border: 1px solid blue;"></canvas>
 			</div>
 
 			<div class="ui-resizable ui-pane ui-pane-right">
@@ -236,9 +236,6 @@
 				$(".ctl-history").focus();
 			});
 
-			// Update the canvas every time the window is resized.
-			window.addEventListener('resize', updateCanvas, false);
-
 			// Make the left and right panes resizable.
 			$(".ui-pane-left").resizable({
 				handles: "e"
@@ -258,6 +255,9 @@
 			});
 			$(".ui-pane-right").resize(updateCanvas);
 
+			// Update the canvas every time the window is resized.
+			window.addEventListener('resize', updateCanvas, false);
+			
 			// Prevent navigation when the user clicks on tab headers.
 			$('.tablist a').click(function (e) {
 				e.preventDefault();
@@ -267,7 +267,7 @@
 
 		function updateCanvas() {
 			var buffer = document.getElementById("canvas");
-
+			
 			// To prevent flickering, store the current context before setting the size.
 			var bufferContext = buffer.getContext('2d');
 
@@ -287,12 +287,12 @@
 			buffer.width = $(buffer).width();
 			buffer.height = $(buffer).height();
 
-			// Update the buffer if now.
-			var scope = angular.element(buffer).scope();
-
 			// Draw temp canvas back to the current canvas
 			bufferContext.drawImage(tempContext.canvas, 0, 0);
 
+			// Update the buffer.
+			var scope = angular.element(buffer).scope();
+			
 			if (scope.selectedInfluence) {
 				scope.renderInfluence(scope.selectedInfluence);
 			}
