@@ -169,6 +169,8 @@ namespace Artivity.Apid.IO
             {
                 IsInitialized = true;
 
+                IsLoggingVerbose = true;
+
                 Logger.LogInfo("Starting file system monitor.");
 
                 // Initialize the model and environment.
@@ -211,6 +213,8 @@ namespace Artivity.Apid.IO
                     ?file
                         rdfs:label ?fileName;
                         nfo:belongsToContainer ?folder.
+
+                    FILTER NOT EXISTS { ?file nfo:deletionDate ?date . }
 
                     ?folder nie:url ?folderUrl .
                 }");
@@ -266,7 +270,12 @@ namespace Artivity.Apid.IO
                 _monitoredFileUris[url.LocalPath] = uri;
                 _monitoredFiles[url.LocalPath] = file;
 
-                Logger.LogDebug("{0} : {1}", binding["folderUrl"].ToString(), file.FullName);
+#if DEBUG
+                if (IsLoggingVerbose)
+                {
+                    Logger.LogDebug("MONITORING: {0}", file.FullName);
+                }
+#endif
 
                 n++;
             }
@@ -545,7 +554,7 @@ namespace Artivity.Apid.IO
                         // We remove events for created files which do not exist anymore.
                         records.Remove(record.EventTimeUtc);
                     }
-                    else if (((now - record.EventTimeUtc).Seconds - _timer.Interval) > fileInfo.Length)
+                    else if (((now - record.EventTimeUtc).Seconds - timerInterval) > fileInfo.Length)
                     {
                         // We remove events for created files which would have been moved at
                         // a transfer speed of 1 byte per second, and are still present.
@@ -790,14 +799,14 @@ namespace Artivity.Apid.IO
                         ?uri ?time
                     WHERE
                     {
-                        ?uri a nfo:Folder .
-                        ?uri nie:url @url .
-                        ?uri nie:lastModified ?time .
+                        ?uri a nfo:Folder ;
+                            nie:url @url ;
+                            nie:lastModified ?time .
                     }
                     ORDER BY DESC(?time) LIMIT 1
                 ");
 
-                query.Bind("@url", folderUrl.AbsoluteUri);
+                query.Bind("@url", folderUrl);
 
                 BindingSet bindings = _model.GetBindings(query).FirstOrDefault();
 
@@ -1013,7 +1022,7 @@ namespace Artivity.Apid.IO
                             LIMIT 1
                         ");
 
-                    query.Bind("@url", folderUrl.AbsoluteUri);
+                    query.Bind("@url", folderUrl);
 
                     BindingSet bindings = _model.GetBindings(query).FirstOrDefault();
 
