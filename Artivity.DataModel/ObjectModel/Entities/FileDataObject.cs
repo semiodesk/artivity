@@ -43,13 +43,16 @@ namespace Artivity.DataModel
 		public long ByteSize { get; set; }
 
 		[RdfProperty(NIE.created)]
-		public DateTime CreationTime { get; set; }
+		public DateTime CreationTimeUtc { get; set; }
 
 		[RdfProperty(NFO.fileLastAccessed)]
-		public DateTime LastAccessTime { get; set; }
+		public DateTime LastAccessTimeUtc { get; set; }
 
 		[RdfProperty(NIE.lastModified)]
-		public DateTime LastModificationTime { get; set; }
+		public DateTime LastModificationTimeUtc { get; set; }
+
+        [RdfProperty(NFO.deletionDate)]
+        public DateTime? DeletionTimeUtc { get; set; }
 
         [RdfProperty(NFO.belongsToContainer)]
         public Folder Folder { get; set; }
