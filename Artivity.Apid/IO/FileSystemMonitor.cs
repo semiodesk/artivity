@@ -75,6 +75,8 @@ namespace Artivity.Apid.IO
 
         public bool IsEnabled { get; private set; }
 
+        public bool IsLoggingVerbose { get; set; }
+
         public bool IsDisposed { get; private set; }
 
         /// <summary>
@@ -472,12 +474,6 @@ namespace Artivity.Apid.IO
                 HandleFileSystemObjectDeleted(args);
             }
 
-            // Update deleted, but still indexed files in the database.
-            foreach (FileInfoCache file in _deletedFiles)
-            {
-                DeleteFileDataObject(file);
-            }
-
             // Install or uninstall drive watchers.
             foreach (DriveInfo drive in DriveInfo.GetDrives())
             {
@@ -498,6 +494,15 @@ namespace Artivity.Apid.IO
                 }
             }
 
+            // Update deleted, but still indexed files in the database.
+            if (_deletedFiles.Count > 0)
+            {
+                foreach (FileInfoCache file in _deletedFiles)
+                {
+                    DeleteFileDataObject(file);
+                }
+            }
+
             // Clean the index of created files.
             if (_createdFilesIndex.Count > 0)
             {
@@ -515,6 +520,9 @@ namespace Artivity.Apid.IO
         private void CleanCreatedFilesIndex()
         {
             DateTime now = DateTime.UtcNow;
+
+            // We need to account for the events being processed in a fixed interval, rounded to seconds.
+            int timerInterval = Convert.ToInt32(Math.Ceiling(_timer.Interval / 1000));
 
             IList<string> keys = _createdFilesIndex.Keys.ToList();
 
@@ -537,7 +545,7 @@ namespace Artivity.Apid.IO
                         // We remove events for created files which do not exist anymore.
                         records.Remove(record.EventTimeUtc);
                     }
-                    else if ((now - record.EventTimeUtc).Seconds > fileInfo.Length)
+                    else if (((now - record.EventTimeUtc).Seconds - _timer.Interval) > fileInfo.Length)
                     {
                         // We remove events for created files which would have been moved at
                         // a transfer speed of 1 byte per second, and are still present.
@@ -589,7 +597,12 @@ namespace Artivity.Apid.IO
                     return;
                 }
 
-                Logger.LogDebug("CREATED {0}", e.FullPath);
+#if DEBUG
+                if (IsLoggingVerbose)
+                {
+                    Logger.LogDebug("CREATED {0}", e.FullPath);
+                }
+#endif
 
                 _createdEventsQueue.Enqueue(e);
             }
@@ -638,6 +651,13 @@ namespace Artivity.Apid.IO
                     return;
                 }
 
+#if DEBUG
+                if (IsLoggingVerbose)
+                {
+                    Logger.LogDebug("RENAMED {0}", e.FullPath);
+                }
+#endif
+
                 FileInfoCache oldFile = new FileInfoCache(e.OldFullPath);
 
                 if (_monitoredFiles.ContainsKey(oldFile.LocalPath))
@@ -681,7 +701,12 @@ namespace Artivity.Apid.IO
             {
                 if (IsMaskedFileEvent(e.FullPath)) return;
 
-                Logger.LogDebug("DELETED {0}", e.FullPath);
+#if DEBUG
+                if (IsLoggingVerbose)
+                {
+                    Logger.LogDebug("DELETED {0}", e.FullPath);
+                }
+#endif
 
                 _deletedEventsQueue.Enqueue(e);
             }

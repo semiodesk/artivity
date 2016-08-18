@@ -64,7 +64,10 @@ namespace Artivity.Apid.IO
                 records = this[key];
             }
 
-            records.Add(value.EventTimeUtc, value);
+            if (!records.ContainsKey(value.EventTimeUtc))
+            {
+                records.Add(value.EventTimeUtc, value);
+            }
         }
 
         public void Remove(string key, FileEventRecord value)
@@ -73,7 +76,10 @@ namespace Artivity.Apid.IO
             {
                 SortedList<DateTime, FileEventRecord> records = this[key];
 
-                records.Remove(value.EventTimeUtc);
+                if (records.ContainsKey(value.EventTimeUtc))
+                {
+                    records.Remove(value.EventTimeUtc);
+                }
 
                 if (records.Count == 0)
                 {
