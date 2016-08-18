@@ -37,7 +37,7 @@ namespace Artivity.WinService
 
         public void Run(string[] args)
         {
-            EnableLogging();
+            //EnableLogging();
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             RunWindowsService(args);
@@ -103,15 +103,15 @@ namespace Artivity.WinService
 
         private void EnableLogging()
         {
-            /*
             FileInfo logConf = new FileInfo(Path.Combine(GetCurrentAssembly().DirectoryName, "ubiquity.log.xml"));
-            if (logConf.Exists)
-            {
-                XmlConfigurator.Configure(logConf);
-                var logger = log4net.LogManager.GetLogger(typeof(UbiquityService));
-                logger.Debug("Starting logging");
 
-            }*/
+            //if (logConf.Exists)
+            //{
+            //    XmlConfigurator.Configure(logConf);
+
+            //    var logger = log4net.LogManager.GetLogger(typeof(UbiquityService));
+            //    logger.Debug("Starting logging");
+            //}
         }
 
         #endregion

@@ -49,11 +49,13 @@ namespace Artivity.Apid
 
         public string FullName { get; private set; }
 
-        public DateTime CreationTime { get; private set; }
+        public DateTime CreationTimeUtc { get; private set; }
 
-        public DateTime LastAccessTime { get; private set; }
+        public DateTime LastAccessTimeUtc { get; private set; }
 
-        public DateTime LastWriteTime { get; private set; }
+        public DateTime LastWriteTimeUtc { get; private set; }
+
+        public DateTime? DeletionTimeUtc { get; set; }
 
         public long Length { get; private set; }
 
@@ -61,6 +63,11 @@ namespace Artivity.Apid
         /// A value which is used to determine if two files at different locations are equal.
         /// </summary>
         public readonly int IndexCode = -1;
+
+        /// <summary>
+        /// A value which indicates if the file is currently being processed by a thread.
+        /// </summary>
+        public bool IsLocked { get; set; }
 
         #endregion
 
@@ -81,11 +88,11 @@ namespace Artivity.Apid
             if (Exists)
             {
                 Attributes = file.Attributes;
-                CreationTime = file.CreationTime;
-                LastAccessTime = file.LastAccessTime;
-                LastWriteTime = file.LastWriteTime;
+                CreationTimeUtc = file.CreationTimeUtc;
+                LastAccessTimeUtc = file.LastAccessTimeUtc;
+                LastWriteTimeUtc = file.LastWriteTimeUtc;
                 Length = file.Length;
-                IndexCode = Name.GetHashCode() + CreationTime.GetHashCode() + Length.GetHashCode();
+                IndexCode = Name.GetHashCode() + Length.GetHashCode();
             }
         }
 
@@ -93,7 +100,7 @@ namespace Artivity.Apid
 
         #region Methods
 
-        public bool IsLocked()
+        public bool HasOpenFileHandle()
         {
             if(!File.Exists(FullName))
             {

@@ -60,16 +60,12 @@ namespace Artivity.Apid
 
             After.AddItemToEndOfPipeline((ctx) =>
             {
-                int id = ModelProvider.ReleaseStore();
-
-                Logger.LogDebug("Released store with thread id {0} in pipeline post handler.", id);
+                ModelProvider.ReleaseStore();
             });
 
             OnError.AddItemToEndOfPipeline((ctx, ex) =>
             {
-                int id = ModelProvider.ReleaseStore();
-
-                Logger.LogDebug("Released store with thread id {0} in pipeline error handler.", id);
+                ModelProvider.ReleaseStore();
 
                 return null;
             });
@@ -83,16 +79,12 @@ namespace Artivity.Apid
 
             After.AddItemToEndOfPipeline((ctx) =>
             {
-                int id = ModelProvider.ReleaseStore();
-
-                Logger.LogDebug("Released store with thread id {0} in pipeline post handler.", id);
+                ModelProvider.ReleaseStore();
             });
 
             OnError.AddItemToEndOfPipeline((ctx, ex) =>
             {
-                int id = ModelProvider.ReleaseStore();
-
-                Logger.LogDebug("Released store with thread id {0} in pipeline error handler.", id);
+                ModelProvider.ReleaseStore();
 
                 return null;
             });

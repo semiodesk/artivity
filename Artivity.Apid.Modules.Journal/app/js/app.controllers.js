@@ -190,20 +190,18 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
                                 activity.endTime = activity.maxTime;
                             }
 
-                            /*
-                            activity.startTime = new Date(activity.startTime);
-                            activity.endTime = new Date(activity.endTime);
-                            activity.totalTime = moment(activity.endTime) - moment(activity.startTime);
-                            */
+                            //activity.startTime = new Date(activity.startTime);
+                            //activity.endTime = new Date(activity.endTime);
+                            //activity.totalTime = moment(activity.endTime) - moment(activity.startTime);
                         }
                     }
                 });
             }
         })
     };
-
+	
     $scope.loadActivities();
-
+	
     $scope.selectInfluence = function (influence) {
         $scope.selectedInfluence = influence;
         $scope.previousInfluence = undefined;

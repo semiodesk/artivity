@@ -36,15 +36,14 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        // TODO: Map into a URI, not a literal value. (Needs changing libartivity).
         [RdfProperty(NIE.url)]
-        public Resource Url { get; set; }
+        public UriRef Url { get; set; }
 
         [RdfProperty(NIE.created)]
-        public DateTime CreationTime { get; set; }
+        public DateTime CreationTimeUtc { get; set; }
 
         [RdfProperty(NIE.lastModified)]
-        public DateTime LastModificationTime { get; set; }
+        public DateTime LastModificationTimeUtc { get; set; }
 
         #endregion
 
