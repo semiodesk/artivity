@@ -126,6 +126,8 @@ namespace Artivity.Apid
 
                     EmbeddedFileResponse response = null;
 
+                    string fileName = Path.GetFileName(context.Request.Path);
+
                     string resourceId = context.Request.Path.TrimEnd('/').Replace(view.Path.TrimEnd('/'), view.Namespace);
 
                     if (!string.IsNullOrEmpty(resourceId))
@@ -136,16 +138,18 @@ namespace Artivity.Apid
                         resourceId = resourceId.Trim('.');
 
                         #if !OSX
+                        int n = fileName.Split('.').Length - 1;
+
                         string[] segments = resourceId.Split('.');
-                        for (int i = 0; i < segments.Length-3; i++)
+
+                        for (int i = 0; i < segments.Length - n - 1; i++)
                         {
                             segments[i] = segments[i].Replace('-', '_');
                         }
+
                         resourceId = string.Join(".", segments);
                         #endif
                     }
-
-                    string fileName = Path.GetFileName(context.Request.Path);
 
                     if(!string.IsNullOrEmpty(fileName))
                     {

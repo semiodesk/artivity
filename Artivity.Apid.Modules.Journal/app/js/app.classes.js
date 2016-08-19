@@ -401,10 +401,63 @@ function DocumentRenderer(canvas, endpointUrl) {
 
 	t.renderedLayers = [];
 
+	// The scene element which is being manipulated when zooming or panning.
+	t.scene = new createjs.Container();
+
+	t.scene.on("mousedown", function (e) {
+		t.stage.autoFit = false;
+
+		this.downX = e.stageX;
+		this.downY = e.stageY;
+		this.stageX = this.x;
+		this.stageY = this.y;
+	});
+
+	t.scene.on("pressmove", function (e) {
+		this.x = this.stageX + (e.stageX - this.downX);
+		this.y = this.stageY + (e.stageY - this.downY);
+
+		t.stage.update();
+	});
+
+	t.scene.zoom = function (delta) {
+		var dZ = 0.1;
+
+		var delta = delta > 0 ? dZ : -dZ;
+
+		if ((t.scene.scaleX + delta) > dZ) {
+			t.scene.scaleX += delta;
+			t.scene.scaleY += delta;
+
+			t.stage.update();
+		}
+	};
+
+	t.canvas.addEventListener("wheel", function (e) {
+		t.scene.zoom(-e.deltaY);
+	});
+
+	window.addEventListener("keydown", function (e) {
+		if (e.ctrlKey && e.key === '1') {
+			t.stage.autoFit = true;
+			
+			if(t.influence !== undefined) {
+				t.render(t.influence);
+			}
+		} else if (e.ctrlKey && e.key === '+') {
+			e.preventDefault();
+			t.scene.zoom(1);
+		} else if (e.ctrlKey && e.key === '-') {
+			e.preventDefault();
+			t.scene.zoom(-1);
+		}
+	});
+
 	// EaselJS drawing context.
 	t.stage = new createjs.Stage("canvas");
 	t.stage.autoClear = true;
-	
+	t.stage.autoFit = true;
+
 	// Shadow that is drawn below the canvases / artboards / pages.
 	t.pageShadow = new createjs.Shadow('rgba(0,0,0,.3)', 5, 5, 15);
 }
@@ -539,8 +592,13 @@ DocumentRenderer.prototype.render = function (influence) {
 
 DocumentRenderer.prototype.render = function (influence) {
 	var t = this;
+
+	t.influence = influence;
 	
 	t.stage.removeAllChildren();
+	t.stage.addChild(t.scene);
+
+	t.scene.removeAllChildren();
 
 	if (influence === undefined || t.canvasCache === undefined) {
 		t.stage.update();
@@ -550,8 +608,13 @@ DocumentRenderer.prototype.render = function (influence) {
 
 	var time = new Date(influence.time);
 
-	var extents = { t: 0, l: 0, b: 0, r: 0};
-	
+	var extents = {
+		t: 0,
+		l: 0,
+		b: 0,
+		r: 0
+	};
+
 	t.canvasCache.getAll(time, function (c) {
 		var s = new createjs.Shape();
 		s.shadow = t.pageShadow;
@@ -559,12 +622,12 @@ DocumentRenderer.prototype.render = function (influence) {
 		var g = s.graphics;
 		g.beginFill('white');
 		g.drawRect(c.x, -c.y, c.w, c.h);
-		
+
 		t.measureExtents(extents, c.x, -c.y, c.w, c.h);
-		
+
 		console.log(c);
 
-		t.stage.addChild(s);
+		t.scene.addChild(s);
 	});
 
 	if (t.layerCache === undefined || t.renderCache === undefined) {
@@ -581,8 +644,8 @@ DocumentRenderer.prototype.render = function (influence) {
 			var b = new createjs.Bitmap(r.img);
 			b.x = r.x;
 			b.y = -r.y;
-			
-			t.stage.addChild(b);
+
+			t.scene.addChild(b);
 
 			/*
 			if (layer.uri == influence.layer) {
@@ -609,76 +672,64 @@ DocumentRenderer.prototype.render = function (influence) {
 		g.beginFill('rgba(255,0,0,.2)');
 		g.drawRect(influence.x, -influence.y, influence.w, influence.h);
 
-		t.stage.addChild(s);
+		t.scene.addChild(s);
 	}
 
 	if (extents != null) {
-		// Draw the extents.
-		var s = new createjs.Shape();
-		
-		var g = s.graphics;
-		g.beginStroke('red');
-		g.setStrokeStyle(1);
-		g.drawRect(extents.l, -extents.t, extents.width, extents.height);
-		
-		t.stage.addChild(s);
-		
-		// Draw null position.
-		s = new createjs.Shape();
-		
-		g = s.graphics;
-		g.beginFill('green');
-		g.drawCircle(0, 0, 5);
-		
-		t.stage.addChild(s);
-		
 		// Draw extents position marker.
-		var ce = { x : extents.x + extents.width / 2, y: -extents.y + extents.height / 2 };
-		
-		s = new createjs.Shape();
-		
-		g = s.graphics;
-		g.beginFill('red');
-		g.drawCircle(ce.x, ce.y, 7);
-		
-		t.stage.addChild(s);
-		
+		var ce = {
+			x: extents.x + extents.width / 2,
+			y: -extents.y + extents.height / 2
+		};
+
 		// Draw center position marker.
-		var cc = { x : t.canvas.width / 2, y: t.canvas.height / 2 };
-		
-		s = new createjs.Shape();
-		
-		g = s.graphics;
-		g.beginFill('blue');
-		g.drawCircle(cc.x, cc.y, 5);
-		
-		t.stage.addChild(s);
-		
-		t.stage.x = cc.x - ce.x;
-		t.stage.y = cc.y - ce.y;
-		
-		// One zoom factor for scaling both axes.
-		/*
-		var z = 1.0;
+		var cc = {
+			x: t.canvas.width / 2,
+			y: t.canvas.height / 2
+		};
 
-		// After measuring, determine the zoom level to contain all the canvases.
-		if (extents.width > t.canvas.width) {
-			z = Math.min(z, t.canvas.width / extents.width);
+		// Uncomment this when debugging:
+		//t.drawSceneMarkers(extents, cc, ce);
+
+		if (t.stage.autoFit) {
+			// Set the registration point of the scene to the center of the extents (currently the canvas center).
+			t.scene.regX = ce.x;
+			t.scene.regY = ce.y;
+
+			// Move the scene into the center of the stage.
+			t.scene.x = cc.x;
+			t.scene.y = cc.y;
+
+			t.zoomToFit(extents);
 		}
-
-		if (extents.height > t.canvas.height) {
-			z = Math.min(z, t.canvas.height / extents.height);
-		}
-
-		t.stage.scaleX = z;
-		t.stage.scaleY = z;
-		*/
 	}
 
 	t.stage.update();
 }
 
-DocumentRenderer.prototype.measureExtents = function(extents, x, y, w, h) {
+DocumentRenderer.prototype.zoomToFit = function (extents) {
+	var t = this;
+
+	// One zoom factor for scaling both axes.
+	var z = 1.0;
+
+	// Padding inside the canvas.
+	var p = 30;
+
+	// After measuring, determine the zoom level to contain all the canvases.
+	if (extents.width > t.canvas.width) {
+		z = Math.min(z, (t.canvas.width - p) / extents.width);
+	}
+
+	if (extents.height > t.canvas.height) {
+		z = Math.min(z, (t.canvas.height - p) / extents.height);
+	}
+
+	t.scene.scaleX = z;
+	t.scene.scaleY = z;
+}
+
+DocumentRenderer.prototype.measureExtents = function (extents, x, y, w, h) {
 	extents.l = Math.min(extents.l, x);
 	extents.r = Math.max(extents.r, x + w);
 	extents.t = Math.min(extents.t, -y);
@@ -687,6 +738,70 @@ DocumentRenderer.prototype.measureExtents = function(extents, x, y, w, h) {
 	extents.y = extents.t;
 	extents.width = extents.r - extents.l;
 	extents.height = extents.b - extents.t;
+}
+
+DocumentRenderer.prototype.drawSceneMarkers = function (extents, cc, ce) {
+	var t = this;
+
+	// Draw the extents.
+	var s = new createjs.Shape();
+
+	var g = s.graphics;
+	g.beginStroke('red');
+	g.setStrokeStyle(1);
+	g.drawRect(extents.l, -extents.t, extents.width, extents.height);
+
+	t.scene.addChild(s);
+
+	var r = 6;
+
+	if (ce !== undefined) {
+		s = new createjs.Shape();
+
+		g = s.graphics;
+		g.beginStroke('red');
+		g.setStrokeStyle(1);
+		g.moveTo(ce.x - r, ce.y);
+		g.lineTo(ce.x + r, ce.y);
+		g.endStroke();
+
+		g.beginStroke('red');
+		g.setStrokeStyle(1);
+		g.moveTo(ce.x, ce.y - r);
+		g.lineTo(ce.x, ce.y + r);
+		g.endStroke();
+
+		t.scene.addChild(s);
+	}
+
+	if (cc !== undefined) {
+		s = new createjs.Shape();
+
+		g = s.graphics;
+		g.beginStroke('blue');
+		g.setStrokeStyle(1);
+		g.moveTo(cc.x - r, cc.y - r);
+		g.lineTo(cc.x + r, cc.y + r);
+		g.endStroke();
+
+		g.beginStroke('blue');
+		g.setStrokeStyle(1);
+		g.moveTo(cc.x + r, cc.y - r);
+		g.lineTo(cc.x - r, cc.y + r);
+		g.endStroke();
+
+		t.stage.addChild(s);
+	}
+
+	// Draw null position.
+	s = new createjs.Shape();
+
+	g = s.graphics;
+	g.beginStroke('green');
+	g.setStrokeStyle(1);
+	g.drawCircle(0, 0, 5);
+
+	t.stage.addChild(s);
 }
 
 DocumentRenderer.prototype.getPalette = function () {
