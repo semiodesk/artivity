@@ -184,6 +184,14 @@
     <Content Include="app\bower_components\angular-moment\karma.conf.js" />
     <Content Include="app\bower_components\angular-moment\tests.js" />
     <EmbeddedResource Include="app\bower_components\jquery-ui\ui\widgets\resizable.js" />
+    <EmbeddedResource Include="app\bower_components\EaselJS\lib\easeljs-0.8.2.min.js" />
+    <EmbeddedResource Include="app\bower_components\EaselJS\lib\easeljs-NEXT.min.js" />
+    <EmbeddedResource Include="app\bower_components\EaselJS\lib\webgl-0.8.2.min.js" />
+    <EmbeddedResource Include="app\bower_components\EaselJS\lib\webgl-NEXT.min.js" />
+    <EmbeddedResource Include="app\bower_components\fullcalendar\dist\fullcalendar.min.css" />
+    <EmbeddedResource Include="app\bower_components\fullcalendar\dist\fullcalendar.min.js" />
+    <EmbeddedResource Include="app\bower_components\fullcalendar\dist\fullcalendar.css" />
+    <EmbeddedResource Include="app\bower_components\fullcalendar\dist\fullcalendar.js" />
     <Content Include="app\img\heart-broken.svg" />
     <Content Include="app\img\heart.svg" />
     <Content Include="app\img\orcid_64x64.png" />
