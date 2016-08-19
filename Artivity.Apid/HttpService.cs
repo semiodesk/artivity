@@ -203,7 +203,7 @@ namespace Artivity.Apid
 
         public void Stop(bool waitForEnd = true)
         {
-            Logger.LogInfo("Stopping service.");
+            Logger.LogInfo("Stopping service..");
 
             StopWatchdog();
 
@@ -215,8 +215,6 @@ namespace Artivity.Apid
                 {
                     ServiceThread.Join();
                 }
-
-                Logger.LogInfo("Stopped service on port {0}", _servicePort);
             }
 
             StopDatabase();
@@ -247,7 +245,7 @@ namespace Artivity.Apid
                     // Start the Nancy service host.
                     _serviceHost.Start();
 
-                    Logger.LogInfo("Started service on port {0}", _servicePort);
+                    Logger.LogInfo("Started HTTP service on port {0}", _servicePort);
 
                     using (var monitor = FileSystemMonitor.Instance)
                     {
@@ -269,7 +267,7 @@ namespace Artivity.Apid
                 }
                 finally
                 {
-                    Logger.LogInfo("Stopped service on port {0}", _servicePort);
+                    Logger.LogInfo("Stopped HTTP service on port {0}", _servicePort);
                 }
             }
 
@@ -373,9 +371,12 @@ namespace Artivity.Apid
 
         private void StopDatabase()
         {
-            Logger.LogInfo("Stopping Database..");
+            if (_virtuosoInstance.ProcessRunning)
+            {
+                Logger.LogInfo("Stopping Database..");
 
-            _virtuosoInstance.Stop(false);
+                _virtuosoInstance.Stop(false);
+            }
         }
 
         private string GetConnectionStringFromConfiguration()

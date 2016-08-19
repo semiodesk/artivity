@@ -35,6 +35,7 @@ using Semiodesk.Trinity;
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
 using Nancy;
+using System.Threading.Tasks;
 
 namespace Artivity.Apid.IO
 {
@@ -101,7 +102,7 @@ namespace Artivity.Apid.IO
         /// <summary>
         /// A timer used for executing tasks in a regular interval.
         /// </summary>
-        private readonly Timer _timer = new Timer() { Interval = 500 };
+        private Task _periodicTask;
 
         /// <summary>
         /// Drive types which should be monitored by the drive watchers.
@@ -120,9 +121,9 @@ namespace Artivity.Apid.IO
         /// </remarks>
         private readonly List<FileInfoCache> _deletedFiles = new List<FileInfoCache>();
 
-        private readonly Queue<FileSystemEventArgs> _deletedEventsQueue = new Queue<FileSystemEventArgs>();
+        private readonly Queue<FileEventRecord> _deletedEventsQueue = new Queue<FileEventRecord>();
 
-        private readonly Queue<FileSystemEventArgs> _createdEventsQueue = new Queue<FileSystemEventArgs>();
+        private readonly Queue<FileEventRecord> _createdEventsQueue = new Queue<FileEventRecord>();
 
         /// <summary>
         /// A log of previously created files; used for locating moved files.
@@ -173,7 +174,7 @@ namespace Artivity.Apid.IO
             {
                 IsInitialized = true;
 
-                Logger.LogInfo("Starting file system monitor.");
+                Logger.LogInfo("Starting file system monitor..");
 
                 // Initialize the model and environment.
                 _model = modelProvider.GetActivities();
@@ -309,8 +310,6 @@ namespace Artivity.Apid.IO
                     InstallMonitoring(root);
                 }
             }
-
-            _timer.Elapsed += OnTimerElapsed;
         }
 
         /// <summary>
@@ -347,7 +346,11 @@ namespace Artivity.Apid.IO
                 TryEnable(watcher);
             }
 
-            _timer.Enabled = IsEnabled;
+            if (_periodicTask == null || _periodicTask.Status != TaskStatus.Running)
+            {
+                // Initialize the periodic task which handles processing the event queue and watching for new drives.
+                _periodicTask = ExecutePeriodicTasks();
+            }
 
             Logger.LogInfo("Started file system monitor.");
         }
@@ -359,6 +362,7 @@ namespace Artivity.Apid.IO
         {
             if (IsEnabled)
             {
+                // This will end the execution of the periodic task after it has completed a cycle.
                 IsEnabled = false;
 
                 foreach (IFileSystemWatcher watcher in _watchers.Values)
@@ -368,7 +372,12 @@ namespace Artivity.Apid.IO
                     Logger.LogInfo("Disabled device monitoring: {0}", watcher.Path);
                 }
 
-                _timer.Enabled = IsEnabled;
+                if (_periodicTask != null)
+                {
+                    _periodicTask.Wait();
+                    _periodicTask.Dispose();
+                    _periodicTask = null;
+                }
 
                 Logger.LogInfo("Stopped file system monitor.");
             }
@@ -384,13 +393,106 @@ namespace Artivity.Apid.IO
 
                 Disable();
 
-                _timer.Elapsed -= OnTimerElapsed;
-                _timer.Dispose();
-
                 foreach (IFileSystemWatcher watcher in _watchers.Values)
                 {
                     watcher.Dispose();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Installs or uninstalls new drive watchers in a regular interval.
+        /// </summary>
+        /// <param name="sender">Object that raised the event.</param>
+        /// <param name="e">Timer event arguments.</param>
+        private async Task ExecutePeriodicTasks()
+        {
+            while (IsEnabled)
+            {
+                // The period in ms the task is being executed.
+                int taskIntervalMs = 500;
+
+                // We cap the number of processed events to a maximum in order to keep the system responsive.
+                int maxEvents = 50;
+
+                // NOTE: When moving small files the create and delete events appear
+                // simultanously and not always in the expected order:
+                //
+                //  1. Created
+                //  2. Deleted
+                //
+                // To solve this we queue the events and process them in a prioritized order.
+                int m = Math.Min(_deletedEventsQueue.Count, maxEvents);
+                int n = Math.Min(_createdEventsQueue.Count, maxEvents);
+
+                for (int i = 0; i < n; i++)
+                {
+                    FileEventRecord record = _createdEventsQueue.Dequeue();
+
+                    HandleFileSystemObjectCreated(record);
+                }
+
+                DateTime time = DateTime.UtcNow;
+
+                // NOTE: We do not access the queue count directly because it may 
+                // have changed during execution.
+                while (m > 0)
+                {
+                    FileEventRecord record = _deletedEventsQueue.Peek();
+
+                    int timespan = (time - record.EventTimeUtc).Milliseconds;
+
+                    // To prevent possible race conditions, deleted events are processed
+                    // with a delay of one timer cycle.
+                    if (timespan <= taskIntervalMs)
+                    {
+                        break;
+                    }
+
+                    HandleFileSystemObjectDeleted(record);
+
+                    _deletedEventsQueue.Dequeue();
+
+                    m--;
+                }
+
+                // Install or uninstall drive watchers.
+                foreach (DriveInfo drive in DriveInfo.GetDrives())
+                {
+                    if (!_driveTypes.Contains(drive.DriveType))
+                    {
+                        continue;
+                    }
+
+                    string root = drive.RootDirectory.FullName;
+
+                    if (drive.IsReady && !_watchers.ContainsKey(root))
+                    {
+                        InstallMonitoring(drive.RootDirectory.FullName);
+                    }
+                    else if (!drive.IsReady && _watchers.ContainsKey(root))
+                    {
+                        InstallMonitoring(drive.RootDirectory.FullName);
+                    }
+                }
+
+                // Update deleted, but still indexed files in the database.
+                while (_deletedFiles.Count > 0)
+                {
+                    FileInfoCache file = _deletedFiles.First();
+
+                    DeleteFileDataObject(file);
+
+                    _deletedFiles.Remove(file);
+                }
+
+                // Clean the index of created files.
+                if (_createdFilesIndex.Count > 0)
+                {
+                    CleanCreatedFilesIndex(taskIntervalMs);
+                }
+
+                await Task.Delay(taskIntervalMs);
             }
         }
 
@@ -455,80 +557,15 @@ namespace Artivity.Apid.IO
         }
 
         /// <summary>
-        /// Installs or uninstalls new drive watchers in a regular interval.
-        /// </summary>
-        /// <param name="sender">Object that raised the event.</param>
-        /// <param name="e">Timer event arguments.</param>
-        private void OnTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            // Prioritize the processing of file creation events over deletion events.
-            int m = Math.Min(_deletedEventsQueue.Count, 50);
-            int n = Math.Min(_createdEventsQueue.Count, 50);
-
-            for (int i = 0; i < n; i++)
-            {
-                FileSystemEventArgs args = _createdEventsQueue.Dequeue();
-
-                HandleFileSystemObjectCreated(args);
-            }
-
-            for (int i = 0; i < m; i++)
-            {
-                FileSystemEventArgs args = _deletedEventsQueue.Dequeue();
-
-                HandleFileSystemObjectDeleted(args);
-            }
-
-            // Install or uninstall drive watchers.
-            foreach (DriveInfo drive in DriveInfo.GetDrives())
-            {
-                if (!_driveTypes.Contains(drive.DriveType))
-                {
-                    continue;
-                }
-
-                string root = drive.RootDirectory.FullName;
-
-                if (drive.IsReady && !_watchers.ContainsKey(root))
-                {
-                    InstallMonitoring(drive.RootDirectory.FullName);
-                }
-                else if (!drive.IsReady && _watchers.ContainsKey(root))
-                {
-                    InstallMonitoring(drive.RootDirectory.FullName);
-                }
-            }
-
-            // Update deleted, but still indexed files in the database.
-            while(_deletedFiles.Count > 0)
-            {
-                FileInfoCache file = _deletedFiles.First();
-
-                DeleteFileDataObject(file);
-
-                _deletedFiles.Remove(file);
-            }
-
-            // Clean the index of created files.
-            if (_createdFilesIndex.Count > 0)
-            {
-                CleanCreatedFilesIndex();
-            }
-        }
-
-        /// <summary>
         /// Remove invalid or outdated files from the index of created files.
         /// </summary>
         /// <remarks>
         /// The method removed files which a) do not exist anymore or b) exceeded the timespan 
         /// for them being moved to another file system at a speed of 1 byte per second.
         /// </remarks>
-        private void CleanCreatedFilesIndex()
+        private void CleanCreatedFilesIndex(int taskIntervalMs)
         {
             DateTime now = DateTime.UtcNow;
-
-            // We need to account for the events being processed in a fixed interval, rounded to seconds.
-            int timerInterval = Convert.ToInt32(Math.Ceiling(_timer.Interval / 1000));
 
             IList<string> keys = _createdFilesIndex.Keys.ToList();
 
@@ -551,7 +588,7 @@ namespace Artivity.Apid.IO
                         // We remove events for created files which do not exist anymore.
                         records.Remove(record.EventTimeUtc);
                     }
-                    else if (((now - record.EventTimeUtc).Seconds - timerInterval) > fileInfo.Length)
+                    else if (((now - record.EventTimeUtc).Milliseconds - taskIntervalMs) > (fileInfo.Length * 1000))
                     {
                         // We remove events for created files which would have been moved at
                         // a transfer speed of 1 byte per second, and are still present.
@@ -610,7 +647,9 @@ namespace Artivity.Apid.IO
                 }
 #endif
 
-                _createdEventsQueue.Enqueue(e);
+                FileEventRecord r = new FileEventRecord(DateTime.UtcNow, e.FullPath);
+
+                _createdEventsQueue.Enqueue(r);
             }
             catch (Exception ex)
             {
@@ -619,14 +658,14 @@ namespace Artivity.Apid.IO
             }
         }
 
-        private void HandleFileSystemObjectCreated(FileSystemEventArgs e)
+        private void HandleFileSystemObjectCreated(FileEventRecord r)
         {
             // We use the URL to access the path in order to normalize it.
-            FileInfoCache file = new FileInfoCache(e.FullPath);
+            FileInfoCache file = new FileInfoCache(r.FilePath);
 
             if (_monitoredFiles.ContainsKey(file.LocalPath))
             {
-                Logger.LogDebug("Created {0}", file.LocalPath);
+                Logger.LogDebug("Created file: {0}", file.LocalPath);
 
                 // A monitored file is being replaced, update the database.
                 UpdateFileDataObject(file.Url);
@@ -634,7 +673,7 @@ namespace Artivity.Apid.IO
             else
             {
                 // The event is registered as the latest event with the file name.
-                _createdFilesIndex.Add(file.Name, new FileEventRecord(DateTime.UtcNow, file.LocalPath));
+                _createdFilesIndex.Add(file.Name, r);
             }
         }
 
@@ -670,9 +709,10 @@ namespace Artivity.Apid.IO
                 {
                     Logger.LogDebug("Renamed {0} -> {1}", oldFile.LocalPath, file.LocalPath);
 
-                    if (oldFile.HasOpenFileHandle())
+                    if (!file.Exists || oldFile.HasOpenFileHandle())
                     {
-                        // The old file still exists and is being processed. Therefore ignore the rename and update the old file.
+                        // The new file is a virtual file or the old file still exists and is being processed.
+                        // In this case we ignore the rename and update the old file as many apps create temporary files when writing..
                         UpdateFileDataObject(oldFile.Url);
                     }
                     else
@@ -714,7 +754,9 @@ namespace Artivity.Apid.IO
                 }
 #endif
 
-                _deletedEventsQueue.Enqueue(e);
+                FileEventRecord r = new FileEventRecord(DateTime.UtcNow, e.FullPath);
+
+                _deletedEventsQueue.Enqueue(r);
             }
             catch (Exception ex)
             {
@@ -723,9 +765,9 @@ namespace Artivity.Apid.IO
             }
         }
 
-        private void HandleFileSystemObjectDeleted(FileSystemEventArgs e)
+        private void HandleFileSystemObjectDeleted(FileEventRecord r)
         {
-            UriRef url = new UriRef(e.FullPath);
+            UriRef url = new UriRef(r.FilePath);
 
             if (_monitoredFiles.ContainsKey(url.LocalPath))
             {
@@ -978,7 +1020,7 @@ namespace Artivity.Apid.IO
 
                 if (!fileInfo.Exists)
                 {
-                    Logger.LogError("Trying to update a non-existend target file: {0}", newUrl.LocalPath);
+                    Logger.LogError("Trying to update a non-existing target file: {0}", newUrl.LocalPath);
                     Logger.LogDebug("{0}", new StackTrace());
 
                     return;
