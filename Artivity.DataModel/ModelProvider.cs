@@ -40,23 +40,27 @@ namespace Artivity.DataModel
 
         private Dictionary<int, IStore> _stores = new Dictionary<int, IStore>();
 
+        object _lock = new object();
+
         public IStore Store 
         {
             get
             {
                 int id = Thread.CurrentThread.ManagedThreadId;
-
-                if (_stores.ContainsKey(id))
+                lock(_lock)
                 {
-                    return _stores[id];
-                }
-                else
-                {
-                    var store = StoreFactory.CreateStore(ConnectionString);
+                    if (_stores.ContainsKey(id))
+                    {
+                        return _stores[id];
+                    }
+                    else
+                    {
+                        var store = StoreFactory.CreateStore(ConnectionString);
 
-                    _stores.Add(id, store);
+                        _stores.Add(id, store);
 
-                    return store;
+                        return store;
+                    }
                 }
             }
         }
@@ -216,22 +220,23 @@ namespace Artivity.DataModel
         public int ReleaseStore()
         {
             int id = Thread.CurrentThread.ManagedThreadId;
-
-            if (_stores.ContainsKey(id))
+            lock(_lock)
             {
-                IStore store = _stores[id];
-
-                try
+                if (_stores.ContainsKey(id))
                 {
-                    store.Dispose();
-                }
-                catch(Exception)
-                {
-                }
+                    IStore store = _stores[id];
 
-                _stores.Remove(id);
+                    try
+                    {
+                        store.Dispose();
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    _stores.Remove(id);
+                }
             }
-
             return id;
         }
 
