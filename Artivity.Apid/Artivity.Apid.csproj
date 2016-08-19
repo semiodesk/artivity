@@ -89,9 +89,6 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net40-client\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="TinyVirtuoso, Version=0.3.30.0, Culture=neutral, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
     <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\VDS.Common.dll</HintPath>
       <Private>True</Private>
@@ -108,7 +105,8 @@
       <HintPath>..\packages\ini-parser.2.3.0\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
     <Reference Include="TinyVirtuoso">
-      <HintPath>..\packages\TinyVirtuoso.0.3.30\lib\Net35\TinyVirtuoso.dll</HintPath>
+      <HintPath>..\packages\TinyVirtuoso.0.3.29\lib\Net35\TinyVirtuoso.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -191,6 +189,9 @@
     <None Include="TinyVirtuoso\database\virtuoso.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Plugins\Manifest.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="TinyVirtuoso\virtuoso\doc\AUTHORS" />
     <None Include="TinyVirtuoso\virtuoso\doc\COPYING" />
     <None Include="TinyVirtuoso\virtuoso\doc\CREDITS" />
@@ -198,33 +199,31 @@
     <None Include="TinyVirtuoso\virtuoso\doc\LICENSE" />
     <None Include="TinyVirtuoso\virtuoso\doc\NEWS" />
     <None Include="TinyVirtuoso\virtuoso\doc\README" />
-    <None Include="Plugins\Manifest.xsd">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\user.jpg" />
     <Content Include="TinyVirtuoso\virtuoso\win\CtrlCSender.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\isql.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\libeay32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\libexpat.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\libwbxml2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\ssleay32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\virtuoso-t.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+</Content>
+<Content Include="TinyVirtuoso\virtuoso\win\isql.exe">
+  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+</Content>
+<Content Include="TinyVirtuoso\virtuoso\win\libeay32.dll">
+  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+</Content>
+<Content Include="TinyVirtuoso\virtuoso\win\libexpat.dll">
+  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+</Content>
+<Content Include="TinyVirtuoso\virtuoso\win\libwbxml2.dll">
+  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+</Content>
+<Content Include="TinyVirtuoso\virtuoso\win\ssleay32.dll">
+  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+</Content>
+<Content Include="TinyVirtuoso\virtuoso\win\virtuoso-t.exe">
+  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+</Content>
+
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
