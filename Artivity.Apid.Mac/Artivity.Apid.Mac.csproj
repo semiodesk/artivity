@@ -64,7 +64,7 @@
       <HintPath>..\packages\ini-parser.2.3.0\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
     <Reference Include="TinyVirtuoso">
-      <HintPath>..\packages\TinyVirtuoso.0.3.30\lib\Net35\TinyVirtuoso.dll</HintPath>
+      <HintPath>..\packages\TinyVirtuoso.0.3.29\lib\Net35\TinyVirtuoso.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
