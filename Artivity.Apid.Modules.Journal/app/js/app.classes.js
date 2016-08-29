@@ -1,13 +1,17 @@
 function each(array, fn) {
-	for (var i = 0; i < array.length; i++) {
-		fn(i, array[i]);
+	if(array !== undefined) {
+		for (var i = 0; i < array.length; i++) {
+			fn(i, array[i]);
+		}
 	}
 };
 
 function values(array, fn) {
-	for (k in array) {
-		if (array.hasOwnProperty(k)) {
-			fn(k, array[k]);
+	if(array !== undefined) {
+		for (k in array) {
+			if (array.hasOwnProperty(k)) {
+				fn(k, array[k]);
+			}
 		}
 	}
 };
@@ -462,134 +466,6 @@ function DocumentRenderer(canvas, endpointUrl) {
 	t.pageShadow = new createjs.Shadow('rgba(0,0,0,.3)', 5, 5, 15);
 }
 
-/*
-DocumentRenderer.prototype.render = function (influence) {
-	var t = this;
-
-	var context = t.canvas.getContext('2d');
-
-	context.clearRect(0, 0, t.canvas.width, t.canvas.height);
-
-	if (influence === undefined || t.canvasCache === undefined || t.layerCache === undefined || t.renderCache === undefined) {
-		return;
-	}
-
-	var time = new Date(influence.time);
-
-	// Save the untransformed canvas state.
-	context.save();
-
-	var shadowOffsetX = 3;
-	var shadowOffsetY = 3;
-
-	var zoom = 1.0;
-	var extents = {
-		x: 0,
-		y: 0,
-		width: 0,
-		height: 0
-	};
-
-	// -- MEASURE
-
-	// Measure the extents of the drawing.
-	t.canvasCache.getAll(time, function (c) {
-		// Fit the rendered document into the available viewport.
-		extents.width = Math.max(extents.width, c.x + c.w + shadowOffsetX);
-		extents.height = Math.max(extents.height, c.y + c.h + shadowOffsetY);
-	});
-
-	// Only render the newest version of every layer.
-	t.layerCache.getAll(time, function (layer) {
-		var r = t.renderCache.get(time, layer);
-
-		if (r !== undefined) {
-			extents.x = Math.min(extents.x, r.x);
-			extents.y = Math.min(extents.y, r.y);
-			extents.width = Math.max(extents.width, r.x + r.w);
-			extents.height = Math.max(extents.height, -r.y + r.h);
-		}
-	});
-
-	// After measuring, determine the zoom level to contain all the canvases.
-	if (extents.width > t.canvas.width) {
-		zoom = Math.min(zoom, t.canvas.width / extents.width);
-	}
-
-	if (extents.height > t.canvas.height) {
-		zoom = Math.min(zoom, t.canvas.height / extents.height);
-	}
-
-	context.scale(zoom, zoom);
-
-	// Translate the document to be centered on the canvas.            
-	if (extents.width !== undefined) {
-		context.translate((t.canvas.width - extents.width) / 2, 0);
-		context.translate(-extents.x, 0);
-	}
-
-	// -- RENDER
-
-	// Render the canvases.
-	t.canvasCache.getAll(time, function (c) {
-		// Fit the rendered document into the available viewport.
-		context.save();
-
-		context.shadowBlur = 10;
-		context.shadowOffsetX = shadowOffsetX;
-		context.shadowOffsetY = shadowOffsetY;
-		context.shadowColor = "black";
-		context.fillStyle = 'white';
-		context.fillRect(c.x, -c.y, c.w, c.h);
-
-		context.restore();
-	});
-
-	t.renderedLayers = [];
-
-	// Only render the newest version of every layer.
-	t.layerCache.getAll(time, function (layer) {
-		var r = t.renderCache.get(time, layer);
-
-		if (r !== undefined) {
-			t.renderedLayers.push(r);
-
-			context.save();
-			context.drawImage(r.img, r.x, -r.y, r.w, r.h);
-
-			extents.x = Math.min(extents.x, r.x);
-			extents.y = Math.min(extents.y, r.y);
-			extents.width = Math.max(extents.width, r.x + r.w);
-			extents.height = Math.max(extents.height, -r.y + r.h);
-
-			if (layer.uri == influence.layer) {
-				context.font = "1em Roboto";
-				context.fillStyle = "blue";
-				context.textAlign = "left";
-				context.fillText(layer.getLabel(time), r.x, -r.y - 10);
-
-				context.lineJoin = 'miter';
-				context.lineWidth = 1;
-				context.strokeStyle = 'blue';
-				context.setLineDash([1, 2]);
-				context.strokeRect(r.x, -r.y, r.w, r.h);
-			}
-
-			context.restore();
-		}
-	});
-
-	// Draw a line around the influenced region.
-	if (influence.w > 0 && influence.h > 0) {
-		context.fillStyle = "rgba(255,0,0,.2)";
-		context.fillRect(influence.x, -influence.y, influence.w, influence.h);
-	}
-
-	// Restore the untransformed canvas state.
-	context.restore();
-}
-*/
-
 DocumentRenderer.prototype.render = function (influence) {
 	var t = this;
 
@@ -625,8 +501,6 @@ DocumentRenderer.prototype.render = function (influence) {
 
 		t.measureExtents(extents, c.x, -c.y, c.w, c.h);
 
-		console.log(c);
-
 		t.scene.addChild(s);
 	});
 
@@ -636,11 +510,15 @@ DocumentRenderer.prototype.render = function (influence) {
 		return;
 	}
 
+	t.renderedLayers = [];
+	
 	// Only render the newest version of every layer.
 	t.layerCache.getAll(time, function (layer) {
 		var r = t.renderCache.get(time, layer);
 
 		if (r !== undefined) {
+			t.renderedLayers.push(r);
+			
 			var b = new createjs.Bitmap(r.img);
 			b.x = r.x;
 			b.y = -r.y;
@@ -806,7 +684,7 @@ DocumentRenderer.prototype.drawSceneMarkers = function (extents, cc, ce) {
 
 DocumentRenderer.prototype.getPalette = function () {
 	var t = this;
-
+	
 	// Used for extracting colors from images.
 	var thief = new ColorThief();
 
@@ -815,7 +693,7 @@ DocumentRenderer.prototype.getPalette = function () {
 
 	for (var n = 0; n < t.renderedLayers.length; n++) {
 		var r = t.renderedLayers[n];
-
+		
 		// Extract colors from the current image.
 		var p = thief.getPalette(r.img, 8);
 
@@ -835,7 +713,7 @@ DocumentRenderer.prototype.getPalette = function () {
 			return true;
 		});
 	}
-
+	
 	return palette;
 }
 
@@ -946,6 +824,26 @@ DocumentRendererCache.prototype.get = function (time, layer, fn) {
 
 	return undefined;
 };
+
+// STATS
+
+function Statistics() {
+	var t = this;
+
+	t.stepCount = 0;
+	t.undoCount = 0;
+	t.redoCount = 0;
+};
+
+Statistics.prototype.confidence = function () {
+	var t = this;
+	
+	if(t.stepCount > 0) {
+		return (100 * (t.stepCount - t.undoCount - t.redoCount) / t.stepCount).toFixed(0);
+	} else {
+		return 100;
+	}
+}
 
 // HEATMAP
 
