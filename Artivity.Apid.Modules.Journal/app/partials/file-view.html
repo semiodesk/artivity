@@ -131,28 +131,28 @@
 									<td>
 										<label>{{'FILEVIEW.CONFIDENCE' | translate}}</label>
 									</td>
-									<td><span class="pull-right">{{stats.confidence}}</span></td>
+									<td><span class="pull-right">{{selectedInfluence.stats.confidence()}}</span></td>
 									<td width="20">&nbsp;%</td>
 								</tr>
 								<tr>
 									<td>
 										<label>{{'FILEVIEW.STEPS' | translate}}</label>
 									</td>
-									<td><span class="pull-right">{{stats.steps}}</span></td>
+									<td><span class="pull-right">{{selectedInfluence.stats.stepCount}}</span></td>
 									<td></td>
 								</tr>
 								<tr>
 									<td>
 										<label>{{'FILEVIEW.UNDOS' | translate}}</label>
 									</td>
-									<td><span class="pull-right">{{stats.undos}}</span></td>
+									<td><span class="pull-right">{{selectedInfluence.stats.undoCount}}</span></td>
 									<td></td>
 								</tr>
 								<tr>
 									<td>
 										<label>{{'FILEVIEW.REDOS' | translate}}</label>
 									</td>
-									<td><span class="pull-right">{{stats.redos}}</span></td>
+									<td><span class="pull-right">{{selectedInfluence.stats.redoCount}}</span></td>
 									<td></td>
 								</tr>
 							</table>
@@ -163,7 +163,7 @@
 									<td>
 										<label>{{'FILEVIEW.LAYERS' | translate}}</label>
 									</td>
-									<td><span class="pull-right">{{stats.layers.length}}</span></td>
+									<td><span class="pull-right">{{selectedInfluence.stats.layers.length}}</span></td>
 									<td width="20"></td>
 								</tr>
 								<tr>
@@ -200,7 +200,7 @@
 
 							<h5 style="margin-top: 1em;">{{'FILEVIEW.LAYERS' | translate}}</h5>
 							<ul class="list-unstyled">
-								<li ng-repeat="layer in layers | reverse">
+								<li ng-repeat="layer in selectedInfluence.stats.layers | reverse">
 									<label><i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{layer.label}}</label>
 								</li>
 							</ul>
