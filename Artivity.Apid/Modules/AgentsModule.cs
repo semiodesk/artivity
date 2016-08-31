@@ -29,7 +29,6 @@ using Artivity.DataModel;
 using Artivity.Apid.Parameters;
 using Artivity.Apid.Platforms;
 using Artivity.Apid.Plugin;
-using Artivity.Apid.Platforms;
 using Nancy;
 using Nancy.Responses;
 using Nancy.ModelBinding;

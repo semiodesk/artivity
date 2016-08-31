@@ -19,11 +19,12 @@
 // THE SOFTWARE.
 //
 // AUTHORS:
+//
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-//
+
 using System;
 using System.Collections.Generic;
 
@@ -31,22 +32,14 @@ namespace Artivity.Apid.Plugin.OSX
 {
     public class InstalledPrograms 
     {
-        #region Members
-        #endregion
-
-        #region Constructors
-        #endregion
-
         #region Methods
+
         public List<string> GetInstalledPrograms ()
         {
-            List<string> res = new List<string> ();
-            return res;
+            return new List<string>();
         }
 
-
         #endregion
-    }
-        
+    } 
 }
 

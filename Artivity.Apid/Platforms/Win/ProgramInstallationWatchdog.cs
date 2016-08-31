@@ -19,6 +19,7 @@
 // THE SOFTWARE.
 //
 // AUTHORS:
+//
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
@@ -35,7 +36,7 @@ using System.Threading.Tasks;
 
 namespace Artivity.Apid.Plugin.Win
 {
-    class InstallationWatchdog : IInstallationWatchdog
+    class ProgramInstallationWatchdog : IProgramInstallationWatchdog
     {
         #region Members
 
@@ -51,7 +52,7 @@ namespace Artivity.Apid.Plugin.Win
 
         #region Constructor
 
-        public InstallationWatchdog(string registryKey)
+        public ProgramInstallationWatchdog(string registryKey)
         {
             _registryKey = registryKey;
         }
@@ -117,7 +118,6 @@ namespace Artivity.Apid.Plugin.Win
                 ProgrammInstalledOrRemoved(this, null);
             }
         }
-
 
         #endregion
     }

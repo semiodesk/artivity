@@ -25,32 +25,36 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.Plugin.Win;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Artivity.Apid.IO
+namespace Artivity.Apid.Plugin
 {
-    internal class FileSystemWatcherInfo
+    public delegate void HandleProgramInstalledOrRemoved(object sender, EventArgs args);
+
+    public interface IProgramInstallationWatchdog : IDisposable
     {
-        #region Members
+        void Start();
 
-        public IFileSystemWatcher FileWatcher { get; private set; }
+        void Stop();
 
-        public int FileCount { get; set; }
+        event HandleProgramInstalledOrRemoved ProgrammInstalledOrRemoved;
+    }
 
-        #endregion
-
-        #region Constructors
-
-        public FileSystemWatcherInfo(IFileSystemWatcher fileWatcher, int fileCount)
+    public class ProgramInstallationWatchdogFactory
+    {
+        public static IProgramInstallationWatchdog CreateWatchdog()
         {
-            FileWatcher = fileWatcher;
-            FileCount = fileCount;
+            #if WIN
+            return new Artivity.Apid.Plugin.Win.ProgramInstallationWatchdog(InstalledPrograms.RegistryKeyString);
+            #elif OSX
+            return new Artivity.Apid.Plugin.OSX.ProgramInstallationWatchdog();
+#endif
         }
-
-        #endregion
     }
 }

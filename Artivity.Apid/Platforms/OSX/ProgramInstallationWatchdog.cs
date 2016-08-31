@@ -25,99 +25,84 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Semiodesk.Trinity;
+using Microsoft.Win32;
+using RegistryUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management;
 using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
 
-namespace Artivity.Apid.Repositories
+namespace Artivity.Apid.Plugin.OSX
 {
-    public class ResourceRepository<T> : IDisposable where T : Resource
+    class ProgramInstallationWatchdog : IProgramInstallationWatchdog
     {
         #region Members
 
-        protected IModel Model;
+        public event HandleProgramInstalledOrRemoved ProgrammInstalledOrRemoved;
 
-        protected bool EnableInferencing = false;
+        /// <remarks>
+        /// Should be replaced by an async Task that can wait until it's previous run is completed.
+        /// Timer callbacks, however, get invoked regardless if there is another thread running which
+        /// might produce problems when the interval is to slow.
+        /// </remarks>
+        private Timer _timer;
+
+        public TimeSpan TimerInterval 
+        { 
+            get 
+            {
+                return TimeSpan.FromMilliseconds (_timer.Interval);
+            }
+            set
+            {
+                _timer.Interval = value.TotalMilliseconds;
+            }
+        }
 
         #endregion
 
-        #region Constructors
+        #region Constructor
 
-        public ResourceRepository(IModel model)
+        public ProgramInstallationWatchdog()
         {
-            Model = model;
-        }
+            _timer = new Timer();  
+            _timer.AutoReset = true;
 
-        ~ResourceRepository()
-        {
-            Dispose(false);
+            TimerInterval = TimeSpan.FromMinutes (1);
         }
 
         #endregion
 
         #region Methods
-
-        public T AddNew(Uri uri)
+        public void Start()
         {
-            if (!Model.ContainsResource(uri))
+            _timer.Elapsed += TimerElapsed;
+            _timer.Start();
+        }
+
+        public void Stop()
+        {
+            _timer.Stop ();
+            _timer.Elapsed -= TimerElapsed;
+        }
+
+        public void TimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            if (_timer.Enabled)
             {
-                return Model.CreateResource<T>(uri);
-            }
-            else
-                return null;
-        }
-
-        public T Add(T item)
-        {
-            if (!Model.ContainsResource(item.Uri))
-            {
-                return Model.AddResource<T>(item);
-            }
-            else
-                return Model.GetResource<T>(item.Uri);
-        }
-
-        public IEnumerable<T> List()
-        {
-            return Model.GetResources<T>(EnableInferencing);
-        }
-
-        public void Remove(T item)
-        {
-            Model.DeleteResource(item.Uri);
-        }
-
-        public void Update(T item)
-        {
-            item.Commit();
-        }
-
-        public T FindByUri(Uri u)
-        {
-            if (Model.ContainsResource(u))
-                return Model.GetResource<T>(u);
-
-            return null;
-        }
-
-        public void Clear()
-        {
-            Model.Clear();
-        }
-
-        public void Dispose(bool safeToFreeManagedObject)
-        {
-            if (safeToFreeManagedObject)
-            {
-
+                if (ProgrammInstalledOrRemoved != null)
+                {
+                    ProgrammInstalledOrRemoved(this, null);
+                }
             }
         }
 
         public void Dispose()
         {
-            Dispose(true);
+            _timer.Dispose();
         }
 
         #endregion
