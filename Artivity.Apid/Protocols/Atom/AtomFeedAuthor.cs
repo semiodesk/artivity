@@ -25,30 +25,52 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.Helpers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
-namespace Artivity.Apid.IO
+namespace Artivity.Apid.Protocols.Atom
 {
-    internal class FileSystemWatcherInfo
+    /// <summary>
+    /// Description of an Atom feed entry author.
+    /// </summary>
+    [XmlRoot("author", Namespace = atom.NS)]
+    public class AtomFeedAuthor
     {
         #region Members
 
-        public IFileSystemWatcher FileWatcher { get; private set; }
+        /// <summary>
+        /// Gets or sets the author's name.
+        /// </summary>
+        [XmlElement("name", Namespace = atom.NS)]
+        public string Name { get; set; }
 
-        public int FileCount { get; set; }
+        /// <summary>
+        /// Gets or sets the author's email address.
+        /// </summary>
+        [XmlElement("email", Namespace = atom.NS)]
+        public string EMail { get; set; }
 
         #endregion
 
-        #region Constructors
+        #region Methods
 
-        public FileSystemWatcherInfo(IFileSystemWatcher fileWatcher, int fileCount)
+        public static AtomFeedAuthor FromXElement(XElement e)
         {
-            FileWatcher = fileWatcher;
-            FileCount = fileCount;
+            AtomFeedAuthor result = new AtomFeedAuthor();
+
+            if(e != null)
+            {
+                result.Name = e.GetElementValue(atom.name, "");
+                result.EMail = e.GetElementValue(atom.email, "");
+            }
+
+            return result;
         }
 
         #endregion

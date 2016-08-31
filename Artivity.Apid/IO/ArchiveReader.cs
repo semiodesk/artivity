@@ -19,6 +19,7 @@
 // THE SOFTWARE.
 //
 // AUTHORS:
+//
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //

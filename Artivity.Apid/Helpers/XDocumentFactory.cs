@@ -27,30 +27,35 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 
-namespace Artivity.Apid.IO
+namespace Artivity.Apid.Helpers
 {
-    internal class FileSystemWatcherInfo
+    public static class XDocumentFactory
     {
-        #region Members
-
-        public IFileSystemWatcher FileWatcher { get; private set; }
-
-        public int FileCount { get; set; }
-
-        #endregion
-
-        #region Constructors
-
-        public FileSystemWatcherInfo(IFileSystemWatcher fileWatcher, int fileCount)
+        public static System.Xml.Linq.XDocument ParseUnicode(string xml)
         {
-            FileWatcher = fileWatcher;
-            FileCount = fileCount;
-        }
+            try
+            {
+                return System.Xml.Linq.XDocument.Parse(xml);
+            }
+            catch(XmlException)
+            {
+                // Prevent 'Data at the root level is invalid' exceptions.
+                // See: http://stackoverflow.com/questions/17795167/xml-loaddata-data-at-the-root-level-is-invalid-line-1-position-1
+                string byteOrderMarkUtf8 = Encoding.UTF8.GetString(Encoding.UTF8.GetPreamble());
 
-        #endregion
+                if (xml.StartsWith(byteOrderMarkUtf8))
+                {
+                    xml = xml.Remove(0, byteOrderMarkUtf8.Length);
+                }
+
+                return System.Xml.Linq.XDocument.Parse(xml);
+            }
+        }
     }
 }

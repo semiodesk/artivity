@@ -65,6 +65,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="CommandLine">
@@ -89,6 +90,7 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net40-client\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\VDS.Common.dll</HintPath>
       <Private>True</Private>
@@ -141,7 +143,7 @@
     <Compile Include="Modules\ModuleBase.cs" />
     <Compile Include="Parameters\AgentParameter.cs" />
     <Compile Include="IO\FileSystemMonitor.cs" />
-    <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Parameters\UriParameter.cs" />
     <Compile Include="Modules\UriModule.cs" />
@@ -149,16 +151,26 @@
     <Compile Include="Platforms\OSX\CoreFoundation.cs" />
     <Compile Include="Plugins\PluginChecker.cs" />
     <Compile Include="Plugins\PluginManifest.cs" />
-    <Compile Include="Platforms\Win\InstallationWatchdog.cs" />
+    <Compile Include="Platforms\Win\ProgramInstallationWatchdog.cs" />
     <Compile Include="Platforms\Win\InstalledPrograms.cs" />
     <Compile Include="Platforms\Win\RegistryEntry.cs" />
     <Compile Include="Platforms\Win\RegistryMonitor.cs" />
-    <Compile Include="Plugins\IInstallationWatchdog.cs" />
+    <Compile Include="Plugins\IProgramInstallationWatchdog.cs" />
     <Compile Include="Platforms\OSX\Carbon.cs" />
     <Compile Include="Platforms\OSX\InstalledPrograms.cs" />
     <Compile Include="Platforms\OSX\OsxPluginChecker.cs" />
     <Compile Include="Platforms\Win\WinPluginChecker.cs" />
-    <Compile Include="Platforms\OSX\InstallationWatchdog.cs" />
+    <Compile Include="Platforms\OSX\ProgramInstallationWatchdog.cs" />
+    <Compile Include="Protocols\Atom\AtomCategory.cs" />
+    <Compile Include="Protocols\Atom\AtomCollection.cs" />
+    <Compile Include="Protocols\Atom\AtomFeed.cs" />
+    <Compile Include="Protocols\Atom\AtomFeedAuthor.cs" />
+    <Compile Include="Protocols\Atom\AtomFeedEntry.cs" />
+    <Compile Include="Protocols\Atom\AtomPublishingClient.cs" />
+    <Compile Include="Protocols\Atom\AtomPublishingService.cs" />
+    <Compile Include="Protocols\XmlNamespaces.cs" />
+    <Compile Include="Helpers\XDocumentFactory.cs" />
+    <Compile Include="Helpers\XElementExtensions.cs" />
     <Compile Include="Repositories\ResourceRepository.cs" />
     <Compile Include="ProgramBase.cs" />
     <Compile Include="IO\IFileSystemWatcher.cs" />
@@ -203,27 +215,26 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\user.jpg" />
     <Content Include="TinyVirtuoso\virtuoso\win\CtrlCSender.exe">
-  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-</Content>
-<Content Include="TinyVirtuoso\virtuoso\win\isql.exe">
-  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-</Content>
-<Content Include="TinyVirtuoso\virtuoso\win\libeay32.dll">
-  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-</Content>
-<Content Include="TinyVirtuoso\virtuoso\win\libexpat.dll">
-  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-</Content>
-<Content Include="TinyVirtuoso\virtuoso\win\libwbxml2.dll">
-  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-</Content>
-<Content Include="TinyVirtuoso\virtuoso\win\ssleay32.dll">
-  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-</Content>
-<Content Include="TinyVirtuoso\virtuoso\win\virtuoso-t.exe">
-  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-</Content>
-
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\isql.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\libeay32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\libexpat.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\libwbxml2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\ssleay32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\virtuoso-t.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

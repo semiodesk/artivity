@@ -149,7 +149,7 @@ namespace Artivity.Apid
 
         private PluginChecker _pluginChecker = null;
 
-        private IInstallationWatchdog _watchdog;
+        private IProgramInstallationWatchdog _watchdog;
 
         #endregion
 
@@ -340,7 +340,7 @@ namespace Artivity.Apid
 
             if (PlatformProvider.CheckForNewSoftwareAgents)
             {
-                _watchdog = InstallationWatchdogFactory.CreateWatchdog();
+                _watchdog = ProgramInstallationWatchdogFactory.CreateWatchdog();
                 _watchdog.ProgrammInstalledOrRemoved += OnProgramInstalled;
 
                 StartWatchdog();

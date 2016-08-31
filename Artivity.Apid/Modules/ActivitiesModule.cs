@@ -19,6 +19,7 @@
 // THE SOFTWARE.
 //
 // AUTHORS:
+//
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
@@ -38,7 +39,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using VDS.RDF;
-using Artivity.Apid.Parameters;
 using Newtonsoft.Json;
 
 namespace Artivity.Apid.Modules

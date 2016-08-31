@@ -19,11 +19,11 @@
 // THE SOFTWARE.
 //
 // AUTHORS:
+//
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-//
 
 using Microsoft.Win32;
 using System;

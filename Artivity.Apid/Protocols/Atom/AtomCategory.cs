@@ -25,30 +25,56 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.Helpers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
-namespace Artivity.Apid.IO
+namespace Artivity.Apid.Protocols.Atom
 {
-    internal class FileSystemWatcherInfo
+    /// <summary>
+    /// A 'category' in the Atom Publishing Protocol, which is analogoue to a class + label in RDF.
+    /// </summary>
+    [XmlRoot("category", Namespace=atom.NS)]
+    public class AtomCategory
     {
         #region Members
 
-        public IFileSystemWatcher FileWatcher { get; private set; }
+        /// <summary>
+        /// Gets or sets a value representing the namespace of the category name / term.
+        /// </summary>
+        [XmlAttribute("scheme")]
+        public string Scheme { get; set; }
 
-        public int FileCount { get; set; }
+        /// <summary>
+        /// Gets or sets the category name / term.
+        /// </summary>
+        [XmlAttribute("term")]
+        public string Term { get; set; }
+
+        /// <summary>
+        /// Gets or sets a human readable name of the category.
+        /// </summary>
+        [XmlAttribute("label")]
+        public string Label { get; set; }
 
         #endregion
 
-        #region Constructors
+        #region Methods
 
-        public FileSystemWatcherInfo(IFileSystemWatcher fileWatcher, int fileCount)
+        internal static AtomCategory FromXElement(XElement e)
         {
-            FileWatcher = fileWatcher;
-            FileCount = fileCount;
+            return new AtomCategory
+            {
+                Scheme = e.GetAttributeValue("scheme", ""),
+                Term = e.GetAttributeValue("term", ""),
+                Label = e.GetAttributeValue("label", "")
+            };
         }
 
         #endregion
