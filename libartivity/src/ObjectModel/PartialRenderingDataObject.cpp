@@ -45,5 +45,10 @@ namespace artivity
 
         setValue(art::region, _region);
     }
+    
+    void PartialRenderingDataObject::setLayer(string layerUri)
+    {
+        addProperty(art::renderedLayer, layerUri, typeid(Resource));
+    }
 }
 
