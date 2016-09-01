@@ -69,8 +69,8 @@ namespace artivity
         virtual std::string getSoftwareAgent() = 0;
         virtual std::string getSoftwareAgentVersion() = 0;
 
-        CanvasRef createCanvas(std::string uri, double x, double y, double width, double height);
-        CanvasRef updateCanvas(std::string uri, double x, double y, double width, double height);
+        CanvasRef createCanvas(std::string uri, time_t time, double x, double y, double width, double height);
+        CanvasRef updateCanvas(std::string uri, time_t time, double x, double y, double width, double height);
 
         GenerationRef createGeneration() { return GenerationRef(new Generation()); }
         UndoRef createUndo() { return UndoRef(new Undo()); }

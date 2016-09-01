@@ -61,6 +61,8 @@ namespace artivity
         RectangleRef getRegion();
 
         void setRegion(RectangleRef region);
+        
+        void setLayer(std::string layerUri);
     };
 }
 
