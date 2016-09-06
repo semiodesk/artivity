@@ -10,8 +10,8 @@
 	<link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
 	<link rel="stylesheet" href="bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css">
 	<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css">
-	<link rel='stylesheet' href='bower_components/yasgui/dist/yasgui.min.css' type='text/css'/>
-	
+	<link rel='stylesheet' href='bower_components/yasgui/dist/yasgui.min.css' type='text/css' />
+
 	<link rel='stylesheet' href='css/roboto.css' type='text/css'>
 	<link rel="stylesheet" href="css/style.css">
 
@@ -36,7 +36,7 @@
 	<script src='bower_components/yasgui/dist/yasgui.min.js'></script>
 	<script src="js/lib/quantize.js"></script>
 	<script src="js/lib/d3-timeline.js"></script>
-	
+
 	<script src="js/app.conf.js"></script>
 	<script src="js/app.js"></script>
 	<script src="js/app.classes.js"></script>
@@ -46,73 +46,42 @@
 </head>
 
 <body>
-	<div ng-view></div>
-
-	<div class="overlay collapse" id="overlay">
-		<div class="msg center-xy invisible" id="msg-add-app">
+	<div ng-controller="QueryController as queryView">
+		<div id="header">
 			<div class="row">
-				<div class="col-xs-2">
-					<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
+				<div class="col">
+					<a class="btn" href="#/files"><i class="zmdi zmdi-hc-fw"></i></a>
 				</div>
-				<div class="col-xs-10">
-					<h1>Add Application</h1>
 
-					<label>Drop the application icon here to register it with the plugin installer.</label>
+				<div class="col expand">
+					<h5 class="title">SPARQL Query</h5>
 				</div>
 			</div>
 		</div>
 
-		<div class="msg center-xy invisible" id="msg-add-app-success">
-			<div class="row">
-				<div class="col-xs-2">
-					<i class="zmdi zmdi-hc-fw zmdi-check-circle zdmi-xl pull-right"></i>
-				</div>
-				<div class="col-xs-10">
-					<h1>Application Installed</h1>
-
-					<label>Go to the application preferences to enable the plugin.</label>
-				</div>
-			</div>
+		<div id="body">
+			<form target="{{endpoint}}" method="post">
+				<div id="editor"></div>
+			</form>
 		</div>
 
-		<div class="msg center-xy invisible" id="msg-import">
-			<div class="row">
-				<div class="col-xs-2">
-					<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
-				</div>
-				<div class="col-xs-10">
-					<h1>Import File</h1>
-
-					<label>Drop the file here to import the Artivity archive.</label>
-				</div>
-			</div>
-		</div>
-
-		<div class="msg center-xy invisible" id="msg-import-success">
-			<div class="row">
-				<div class="col-xs-2">
-					<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
-				</div>
-				<div class="col-xs-10">
-					<h1>Import Success</h1>
-
-					<label>The Artivity archive was sucessfully imported.</label>
-				</div>
-			</div>
-		</div>
-
-		<div class="msg center-xy invisible" id="msg-unsupported-file-type">
-			<div class="row">
-				<div class="col-xs-2">
-					<i class="zmdi zmdi-hc-fw zmdi-info zdmi-xl pull-right"></i>
-				</div>
-				<div class="col-xs-10">
-					<h1>Unsupported File Format</h1>
-
-					<label>Currently you can only drop applications here to register them with the plugin installer.</label>
-				</div>
-			</div>
-		</div>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				var yasgui = YASGUI(document.getElementById("editor"));
+				
+				console.log(yasgui);
+				
+				var queryButton = $('.yasqe_queryButton.query_valid');
+				
+				queryButton.remove();
+				queryButton.find('svg').remove();
+				queryButton.append($.parseHTML('<div class="btn"><i class="zmdi zmdi-play"></i></div>'));
+				
+				$('.yasr .yasr_header').prepend(queryButton);
+				
+				console.log(queryButton);
+			});
+		</script>
 	</div>
 </body>
 
