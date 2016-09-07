@@ -46,11 +46,11 @@
 </head>
 
 <body>
-	<div ng-controller="QueryController as queryView">
+	<div>
 		<div id="header">
 			<div class="row">
 				<div class="col">
-					<a class="btn" href="#/files"><i class="zmdi zmdi-hc-fw"></i></a>
+					<a class="btn" href="#/files"><i class="zmdi zmdi-chevron-left"></i></a>
 				</div>
 
 				<div class="col expand">
@@ -60,17 +60,35 @@
 		</div>
 
 		<div id="body">
-			<form target="{{endpoint}}" method="post">
-				<div id="editor"></div>
-			</form>
+		    <div id="editor"></div>
 		</div>
 
 		<script type="text/javascript">
-			$(document).ready(function () {
-				var yasgui = YASGUI(document.getElementById("editor"));
+            $(document).ready(function () {
+                // Generate the SPARQL query endpoint with the correct port from the current URI.
+                var endpoint = window.location.protocol + '//' + window.location.href.split('/')[2] + '/artivity/api/1.0/sparql';
+
+                // Initialize the SPARQL query GUI.
+                var yasgui = YASGUI(document.getElementById("editor"));
+
+                for (tab in yasgui.tabs) {
+                    var t = yasgui.tabs[tab];
+
+                    t.persistentOptions.yasqe.sparql.endpoint = endpoint;
+                    t.yasqe.addPrefixes({
+                        art: 'http://w3id.org/art/terms/1.0/',
+                        dc: 'http://purl.org/dc/elements/1.1/',
+                        prov: 'http://www.w3.org/ns/prov#',
+                        nie: 'http://www.semanticdesktop.org/ontologies/2007/01/19/nie#',
+                        nfo: 'http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#'
+                    });
+
+                    console.log('Initialized tab:', t);
+                }
 				
-				console.log(yasgui);
+				console.log('Loaded YASGUI:', yasgui);
 				
+                // Change the position of the 'execute query' button.
 				var queryButton = $('.yasqe_queryButton.query_valid');
 				
 				queryButton.remove();
@@ -78,8 +96,6 @@
 				queryButton.append($.parseHTML('<div class="btn"><i class="zmdi zmdi-play"></i></div>'));
 				
 				$('.yasr .yasr_header').prepend(queryButton);
-				
-				console.log(queryButton);
 			});
 		</script>
 	</div>

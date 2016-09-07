@@ -1,0 +1,35 @@
+{
+  "name": "yasgui",
+  "version": "2.4.1",
+  "homepage": "http://doc.yasgui.org",
+  "authors": [
+    "Laurens Rietveld <laurens.rietveld@gmail.com>"
+  ],
+  "description": "Yet Another SPARQL GUI",
+  "main": "dist/yasgui.bundled.min.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "SPARQL",
+    "Linked Data"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "2.4.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.4.1",
+    "commit": "387a717ba3912d1130ed82904d2a3e8b9be767e5"
+  },
+  "_source": "https://github.com/YASGUI/YASGUI.git",
+  "_target": "^2.4.1",
+  "_originalSource": "yasgui",
+  "_direct": true
+}
