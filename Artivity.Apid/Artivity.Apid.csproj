@@ -112,17 +112,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accounts\EPrintsAccountProvider.cs" />
+    <Compile Include="Accounts\HttpBasicAuthAuthenticator.cs" />
+    <Compile Include="Accounts\HttpOAuth2Authenticator.cs" />
     <Compile Include="Accounts\IOAuth2AccountProvider.cs" />
+    <Compile Include="Accounts\IOnlineAccountAuthenticator.cs" />
     <Compile Include="Accounts\OnlineAccountProvider.cs" />
     <Compile Include="Accounts\OAuth2AccountProvider.cs" />
     <Compile Include="Accounts\OnlineAccountFactory.cs" />
     <Compile Include="Accounts\IOnlineAccountProvider.cs" />
+    <Compile Include="Accounts\OnlineAccountAuthenticator.cs" />
     <Compile Include="Accounts\OrcidAccountProvider.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="HttpService.cs" />
     <Compile Include="IO\FileEventIndex.cs" />
     <Compile Include="IO\FileEventRecord.cs" />
     <Compile Include="IO\FileSystemWatcherInfo.cs" />
+    <Compile Include="Modules\AccountsModule.cs" />
     <Compile Include="Modules\ApiModule.cs" />
     <Compile Include="Modules\AgentsModule.cs" />
     <Compile Include="Parameters\ActivityParameter.cs" />
@@ -189,7 +195,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="Accounts\Accounts.cd" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>

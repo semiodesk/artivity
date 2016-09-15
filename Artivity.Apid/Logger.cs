@@ -79,7 +79,7 @@ namespace Artivity.Apid
         {
             if (Log.IsInfoEnabled)
             {
-                Log.InfoFormat("{0} {1}", status, msg, p);
+                Log.InfoFormat("{0} {1}", status, string.Format(msg, p));
             }
 
             return status;
