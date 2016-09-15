@@ -17,6 +17,13 @@ void curl_init_string(struct curl_string *s)
 
 size_t curl_write_string(void *ptr, size_t size, size_t nmemb, struct curl_string *s)
 {
+    if (s->ptr == NULL)
+    {
+        fprintf(stderr, "received NULL pointer to curl string; cannot realloc() memory.\n");
+
+        exit(EXIT_FAILURE);
+    }
+
     size_t new_len = s->len + size * nmemb;
     
     s->ptr = (char*)realloc(s->ptr, new_len + 1);

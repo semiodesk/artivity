@@ -26,6 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
+using Nancy;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
@@ -39,43 +40,55 @@ namespace Artivity.Apid.Accounts
     {
         #region Members
 
-        [JsonIgnore]
-        public IModel Model { get; set; }
+        public Uri Uri { get; protected set; }
 
-        public string Id { get; protected set; }
-
-        public string Url { get; protected set; }
-
-        public string Title { get; protected set; }
-
-        public string Description { get; protected set; }
-
-        public string InstallUrl { get; protected set; }
-
-        public string Status { get; protected set; }
+        public List<IOnlineAccountAuthenticator> SupportedAuthenticationMethods { get; protected set; }
 
         #endregion
 
         #region Constructors
 
-        public OnlineAccountProvider(string id)
+        public OnlineAccountProvider(Uri uri)
         {
-            Id = id;
+            Uri = uri;
         }
 
         #endregion
 
         #region Methods
 
-        public OnlineAccount TryCreateAccount()
+        public IOnlineAccountAuthenticator TryGetAccountAuthenticator(OnlineAccountAuthenticatorState state)
         {
-            if(Model == null)
+            return SupportedAuthenticationMethods.FirstOrDefault(a => a.State == state);
+        }
+
+        public T TryGetAccountAuthenticator<T>(OnlineAccountAuthenticatorState state) where T : class
+        {
+            return TryGetAccountAuthenticator(state) as T;
+        }
+
+        public IOnlineAccountAuthenticator TryGetAccountAuthenticator(Request request)
+        {
+            string authType = request.Query.authType;
+
+            return !string.IsNullOrEmpty(authType) ? SupportedAuthenticationMethods.FirstOrDefault(a => a.Id == authType) : null;
+        }
+
+        public T TryGetAccountAuthenticator<T>(Request request) where T : class
+        {
+            return TryGetAccountAuthenticator(request) as T;
+        }
+
+        public OnlineAccount TryCreateAccount(IModel model)
+        {
+            if(model == null)
             {
-                LogError("Cannot create account because model is not set.");
+                Logger.LogError("Cannot create account because model is not set.");
+
                 return null;
             }
 
-            OnlineAccount account = OnCreateAccount();
+            OnlineAccount account = OnCreateAccount(model);
 
             if (account == null)
             {
@@ -86,20 +99,22 @@ namespace Artivity.Apid.Accounts
             ISparqlQuery query = new SparqlQuery(@"ask where { ?account foaf:accountName @id }");
             query.Bind("@id", account.Id);
 
-            ISparqlQueryResult result = Model.ExecuteQuery(query);
+            ISparqlQueryResult result = model.ExecuteQuery(query);
 
             if (result.GetAnwser())
             {
                 // We do not need to install the account twice.
-                LogError("There is already an account with id {0}", account.Id);
+                Logger.LogError("There is already an account with id {0}", account.Id);
+
                 return null;
             }
 
-            Person user = Model.GetResources<Person>().FirstOrDefault();
+            Person user = model.GetResources<Person>().FirstOrDefault();
 
             if (user == null)
             {
-                LogError("Unable to retrieve user agent.");
+                Logger.LogError("Unable to retrieve user agent.");
+
                 return null;
             }
 
@@ -113,19 +128,10 @@ namespace Artivity.Apid.Accounts
 
             Logger.LogInfo("Installed account with id: {0}", account.Id);
 
-            Status = "Account installed.";
-
             return account;
         }
         
-        protected abstract OnlineAccount OnCreateAccount();
-
-        protected void LogError(string message, params object[] p)
-        {
-            Logger.LogError(message, p);
-
-            Status = "Error";
-        }
+        protected abstract OnlineAccount OnCreateAccount(IModel model);
 
         #endregion
     }
