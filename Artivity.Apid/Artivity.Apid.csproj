@@ -112,17 +112,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Accounts\EPrintsServiceConnector.cs" />
+    <Compile Include="Services\Connectors\EPrintsServiceConnector.cs" />
     <Compile Include="Protocols\Authentication\BasicAuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationClientState.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationParameterSet.cs" />
     <Compile Include="Protocols\Authentication\OAuth2AuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\IHttpAuthenticationClient.cs" />
-    <Compile Include="Accounts\OnlineServiceConnectorBase.cs" />
-    <Compile Include="Accounts\OnlineServiceConnectorFactory.cs" />
-    <Compile Include="Accounts\IOnlineServiceConnector.cs" />
+    <Compile Include="Services\OnlineServiceConnectorBase.cs" />
+    <Compile Include="Services\OnlineServiceConnectorFactory.cs" />
+    <Compile Include="Services\IOnlineServiceConnector.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationClientBase.cs" />
-    <Compile Include="Accounts\OrcidServiceConnector.cs" />
+    <Compile Include="Services\Connectors\OrcidServiceConnector.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="HttpService.cs" />
     <Compile Include="IO\FileEventIndex.cs" />
