@@ -77,6 +77,9 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// Gets the account identifier.
         /// </summary>
+        /// <remarks>
+        /// This method is called when an authenticated account is being persisted.
+        /// </remarks>
         protected override string GetAccountId()
         {
             IHttpAuthenticationClient authenticator = TryGetAuthenticationClient(HttpAuthenticationClientState.Authorized);
@@ -96,6 +99,9 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// Gets the account identifier.
         /// </summary>
+        /// <remarks>
+        /// This method is called when an authenticated account is being persisted.
+        /// </remarks>
         protected override string GetAccountTitle()
         {
             return "ORCiD";

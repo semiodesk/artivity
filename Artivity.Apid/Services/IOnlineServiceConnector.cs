@@ -78,10 +78,26 @@ namespace Artivity.Apid.Accounts
         /// <returns>The first client with the given state, <c>null</c> otherwise.</returns>
         T TryGetAuthenticationClient<T>(HttpAuthenticationClientState state) where T : class;
 
+        /// <summary>
+        /// Return a HTTP authentication client from the 'authType'-query parameter the given HTTP request.
+        /// </summary>
+        /// <param name="state">A Nancy HTTP request.</param>
+        /// <returns>The first client with the suitable URI, <c>null</c> otherwise.</returns>
         IHttpAuthenticationClient TryGetAuthenticationClient(Request request);
 
+        /// <summary>
+        /// Return a HTTP authentication client from the 'authType'-query parameter the given HTTP request.
+        /// </summary>
+        /// <typeparam name="T">A subclass of HttpAuthenticationClient.</typeparam>
+        /// <param name="state">A Nancy HTTP request.</param>
+        /// <returns>The first client with the suitable URI, <c>null</c> otherwise.</returns>
         T TryGetAuthenticationClient<T>(Request request) where T : class;
 
+        /// <summary>
+        /// Install an authenticated online account into the given model.
+        /// </summary>
+        /// <param name="model">The model in which the account should be created.</param>
+        /// <returns>A newly created instance of the <c>OnlineAccount</c> class.</returns>
         OnlineAccount InstallAccount(IModel model);
 
         #endregion
