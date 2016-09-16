@@ -199,6 +199,11 @@ namespace artivity
         properties.removeProperty(property.uri, Serializer::toString(value), typeid(value));
     }
 
+    void Resource::removeProperty(const Property& property)
+    {
+        properties.removeProperty(property.uri);
+    }
+
     void Resource::setValue(const Property& property, PropertyValue value)
     {
         properties.setProperty(property.uri, value);
