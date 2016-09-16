@@ -26,6 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
+using Nancy;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -38,15 +39,23 @@ namespace Artivity.Apid.Accounts
     {
         #region Members
 
-        IModel Model { get; }
+        Uri Uri { get; }
 
-        string Id { get; }
+        List<IOnlineAccountAuthenticator> SupportedAuthenticationMethods { get; }
 
-        string Url { get; }
+        #endregion
 
-        string Title { get; }
+        #region Methods
 
-        string Description { get; }
+        IOnlineAccountAuthenticator TryGetAccountAuthenticator(OnlineAccountAuthenticatorState state);
+
+        T TryGetAccountAuthenticator<T>(OnlineAccountAuthenticatorState state) where T : class;
+
+        IOnlineAccountAuthenticator TryGetAccountAuthenticator(Request request);
+
+        T TryGetAccountAuthenticator<T>(Request request) where T : class;
+
+        OnlineAccount TryCreateAccount(IModel model);
 
         #endregion
     }

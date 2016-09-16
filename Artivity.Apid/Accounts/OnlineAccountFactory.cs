@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Nancy;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace Artivity.Apid.Accounts
 
         public static bool IsInitialized = false;
 
-        private static readonly Dictionary<string, IOnlineAccountProvider> _providers = new Dictionary<string, IOnlineAccountProvider>();
+        private static readonly Dictionary<Uri, IOnlineAccountProvider> _providers = new Dictionary<Uri, IOnlineAccountProvider>();
 
         #endregion
 
@@ -50,24 +51,26 @@ namespace Artivity.Apid.Accounts
         {
             if (IsInitialized) return;
 
-            OnlineAccountFactory.RegisterProvider(new OrcidAccountProvider("orcid"));
+            OnlineAccountFactory.RegisterProvider(new EPrintsAccountProvider());
+            OnlineAccountFactory.RegisterProvider(new OrcidAccountProvider());
 
             IsInitialized = true;
         }
 
         public static void RegisterProvider(IOnlineAccountProvider provider)
         {
-            string id = provider.Id;
+            Uri uri = provider.Uri;
 
-            if(_providers.ContainsKey(provider.Id))
+            if(_providers.ContainsKey(provider.Uri))
             {
-                string message = string.Format("Identifier {0} already registered by provider {1}", id, _providers[id]);
+                string message = string.Format("Identifier {0} already registered by provider {1}", uri, _providers[uri]);
+
                 throw new DuplicateKeyException(message);
             }
 
-            Logger.LogInfo("Registered online account provider {0}", id);
+            Logger.LogInfo("Registered online account provider {0}", uri);
 
-            _providers[id] = provider;
+            _providers[uri] = provider;
         }
 
         public static IEnumerable<IOnlineAccountProvider> GetRegisteredProviders()
@@ -80,14 +83,31 @@ namespace Artivity.Apid.Accounts
             return _providers.Values;
         }
 
-        public static IOnlineAccountProvider GetProvider(string id)
+        public static IOnlineAccountProvider TryGetAccountProvider(Request request)
         {
-            if(!IsInitialized)
+            string uri = request.Query.providerUri;
+
+            if(string.IsNullOrEmpty(uri))
+            {
+                return null;
+            }
+
+            return TryGetAccountProvider(new Uri(uri));
+        }
+
+        public static IOnlineAccountProvider TryGetAccountProvider(Uri uri)
+        {
+            if (!IsInitialized)
             {
                 Initialize();
             }
 
-            return _providers[id];
+            return _providers[uri];
+        }
+
+        public static T TryGetAccountProvider<T>(Uri uri) where T : class
+        {
+            return TryGetAccountProvider(uri) as T;
         }
 
         #endregion
