@@ -58,10 +58,8 @@ namespace Artivity.Apid.Accounts
 
         #region Constructors
 
-        public OAuth2AccountProvider(string id) : base(id)
+        public OAuth2AccountProvider(Uri uri) : base(uri)
         {
-            // TODO: Remove magic string. Let the API module create an instance of OnlineAccountFactory with the proper links.
-            InstallUrl = string.Format("http://localhost:8262/artivity/api/1.0/accounts/oauth2/redirect?providerId={0}", id);
         }
 
         #endregion
@@ -77,15 +75,13 @@ namespace Artivity.Apid.Accounts
                 throw new ArgumentNullException("model");
             }
 
-            Model = model;
-
             if (string.IsNullOrEmpty(code))
             {
                 throw new ArgumentException("OAuth2 authorization code must not be null or empty.");
             }
         }
 
-        protected void UploadValues(Uri url, NameValueCollection data)
+        protected void UploadValues(IModel model, Uri url, NameValueCollection data)
         {
             using (WebClient client = new WebClient())
             {
@@ -103,7 +99,7 @@ namespace Artivity.Apid.Accounts
 
                         Logger.LogInfo("OAuth2 authorization success.");
 
-                        TryCreateAccount();
+                        TryCreateAccount(model);
                     }
                 };
 
