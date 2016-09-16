@@ -1,51 +1,63 @@
-# Readme #
+# Artivity - Readme #
 
-Artivity is a project which aims to produce a toolkit for capturing contextual data produced during the creative process of artists and designers while working on a computer. The project is funded by [JISC](http://www.jisc.ac.uk) and based on a cooparation of the [University of the Arts London](http://www.arts.ac.uk) and [Semiodesk GmbH](http://www.semiodesk.com). The captured data may include browsing history, email exchange and file editing statistics. Such information is already provided by [GNOME's Activity Journal](http://en.wikipedia.org/wiki/GNOME_Activity_Journal) which is build using the [Zeitgeist Framework](http://zeitgeist-project.com). This project will extend Activity Journal to capture data about the way designers and artists use popular software applications such as [Inkscape](https://inkscape.org/en/) and [GIMP](http://www.gimp.org).
+Understanding the techniques of artists is an essential part of studying art and art history. The process of creating an artwork is often more valueable than the artwork itself.
 
-### Summary ###
+In traditional art historical discourses, art forms such as painting, sculpture and printmaking, can be studied by technically examining the artwork for evidence of technique. In digital art, this evidence are often lost as soon as the editing session on a piece of software ends.
 
-This repository currently contains the following modules:
+Artivity can document the creation process of your digital artwork. This is critical for attributing art which is increasingly shared online, but also for interpreting individual artworks and their context within a given social and technical environment. It is a long term self archiving tool which does not intefere with your practice.
 
-* **inkscape**: Modified version of Inkscape which pushes undo/redo events to Zeitgeist
-* **artivity-explorer**: Simple GUI for viewing the undo/redo events for Inkscape drawings
-* **artivity-extension-firefox**: Browser extension for web browsers which are based on Mozilla Firefox
-* **artivity-extension-chromium**: Browser extension for web browsers which are based on Google Chrome
-* **artivity-apid**: OS daemon which provides a REST API for pushing events from a browser extension into Zeitgeist
+[Artivity](http://artivity.io) is a project which aims to produce a toolkit for capturing contextual data produced during the creative process of artists and designers while working on a computer. 
+The Artivity open source software is developed by [Semiodesk GmbH](http://www.semiodesk.com) in partnership with the [University of the Arts, London](http://www.arts.ac.uk) . The project was initiated by [Dr. Athanasios Velios](http://www.arts.ac.uk/research/ual-staff-researchers/a-z/dr-athanasios-velios/) at the [Ligatus Research Centre](http://www.ligatus.org.uk/). It is funded by [JISC](http://www.jisc.ac.uk) since March 2015.
 
-### Installing ###
+## Supported Platforms ##
+The Artivity core software is built to be platform independent and runs on any major desktop operating system. There are extensions for the most popular professional and open source creative tools and web browsers.
 
-There are prebuild binaries for [Ubuntu 14.04 LTS GNOME](http://cdimage.ubuntu.com/ubuntu-gnome/releases/14.04/release/) or [Ubuntu 14.04 LTS](http://www.ubuntu.com/), which are provided via a so called [Personal Package Archive](http://wiki.ubuntuusers.de/Launchpad/PPA). With this repository you will receive updates and new features via Ubuntu's updating mechanism as soon as they're published. If you want to try the current release, please follow these steps:
+### Operating Systems ###
+* [Mac OS X](https://www.apple.com/osx/)
+* [Windows](https://www.microsoft.com/en-us/windows) 
+* [Ubuntu](http://www.ubuntu.com/)
 
-1) Download [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/) and install it on your computer or in a virtual machine such as [Virtualbox](https://www.virtualbox.org).
+### Creative Tools ###
+* [Adobe Photoshop CC](http://www.adobe.com/products/photoshop.html)
+* [Adobe Illustrator CC](http://www.adobe.com/products/illustrator.html)
+* [Inkscape](https://inkscape.org/en/) 
+* [Krita](http://www.krita.org/)
 
-2) Enable the [Artivity PPA](https://launchpad.net/~faubulous/+archive/ubuntu/artivity) by pasting the following commands in a terminal:
-```
-#!bash
+### Web Browsers ###
+* [Mozilla Firefox](https://www.mozilla.org/en-GB/firefox)
+* [Google Chrome](https://www.google.com/chrome/)
+* [Opera](http://www.opera.com/)
 
-sudo add-apt-repository ppa:faubulous/artivity
-sudo apt-get update
-```
+## Installing ##
+As the development is currently ongoing, we only have an installer for Mac OS X available.
+You can download the latest version from here: [DOWNLOAD](https://static.semiodesk.com/artivity/osx/).
 
-3) Install the Artivity desktop packages with this command:
-```
-#!bash
+## Architecture ##
+The Artivity software consits of multiple parts that each serve a specific purpose.
 
-sudo apt-get install artivity-desktop
-```
+* **Server** 
+  This core part of the software is written in C# and compatible with .NET and Mono. It collects the data and provides means to query and visualize it.
+  When started the server instantiates a OpenLink Virutoso database. This database is configured to have a small footprint.
+  On Mac OS X this is started as a user agent on login. On Windows this runs a service.
 
-4) Enable the Zeitgeist browser event logging feature with the following command:
-```
-#!bash
+* **Journal**
+  This piece is responsible for displaying the files, data and settings to the user. It is basically a webbrowser with specific changes to communicate with the platform.
+  It is reimplemented for every platform, because the window frame as well as the browser needs to be fitted specifically for the operating system of the host.
+  
+* **Plugins**
+  There are a number of plugins, at least one for each supported software.
+  
 
-artivity-setup
-```
-5) Click on the Artivity icon in Mozilla Firefox and check the 'Capture browsing history' box.
+## Compiling ##
+### On Windows ###
+**Needed Tools**
 
-### Compiling ###
-Currently, only the customized build of Inkscape requires compilation. Please refer to the [Inkscape Wiki](http://wiki.inkscape.org/wiki/index.php/Compiling_Inkscape) for detailed instructions on how to compile it. Since Inkscape has a quite large code base it is highly recommended to use a byte code caching solution such as [ccache](https://ccache.samba.org).
+* [Visual Studio](https://www.visualstudio.com/downloads/download-visual-studio-vs.aspx) - The community edition should be fine.
+* Boost - use the provided script to install it
+### On Mac OS X ###
+**Needed Tools**
 
-Most of the tools developed for the Artivity project are written in Python and do not require compilation. We currently depend on the following Python libraries:
-
-* [Zeitgeist](http://bloc.eurion.net/archives/2012/zeitgeist-python-api-tutorial/)
-* [Werkzeug](http://werkzeug.pocoo.org)
-* [PyGObject (Gtk+ 3)](https://wiki.gnome.org/action/show/Projects/PyGObject)
+* [XCode](https://itunes.apple.com/de/app/xcode/id497799835)
+* [Xamarin Studio](https://www.xamarin.com/download-it) - The community edition should be fine.
+* [Homebrew](http://brew.sh/)
+* Boost - use homebrew to install it

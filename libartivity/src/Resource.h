@@ -102,6 +102,7 @@ namespace artivity
         void removeProperty(const Property& property, long value);
         void removeProperty(const Property& property, float value);
         void removeProperty(const Property& property, double value);
+        void removeProperty(const Property& property);
 
         void setValue(const Property& property, ResourceRef value);        
         void setValue(const Property& property, const time_t* value);

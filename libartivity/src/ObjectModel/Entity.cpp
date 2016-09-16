@@ -179,5 +179,17 @@ namespace artivity
         
         removeProperty(prov::qualifiedRevision, revision);
     }
+
+    void Entity::clearInfluences()
+    {
+        _influences.clear();
+
+        removeProperty(prov::qualifiedInfluence);
+        removeProperty(prov::qualifiedDerivation);
+        removeProperty(prov::qualifiedInvalidation);
+        removeProperty(prov::qualifiedGeneration);
+        removeProperty(prov::qualifiedRevision);
+        
+    }
 }
 
