@@ -132,6 +132,8 @@ namespace artivity
         void removeInfluence(DerivationRef derivation);
         
         void removeInfluence(RevisionRef revision);
+
+        void clearInfluences();
     };
 }
 

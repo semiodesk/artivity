@@ -144,6 +144,15 @@ namespace artivity
         _map.erase(it);
     }
 
+    void PropertyMap::removeProperty(const std::string& property)
+    {
+        PropertyMapIterator it = find(property);
+
+        if (it == _map.end()) return;
+
+        _map.erase(it);
+    }
+
     void PropertyMap::setProperty(const std::string& property, PropertyValue value)
     {
         _map.erase(property);

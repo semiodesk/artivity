@@ -291,7 +291,7 @@ namespace artivity
         if (!_imagePath.empty())
         {
             #ifdef WIN32
-            const char* sep = "\\\\";
+            const char* sep = "\\";
             #else
             const char* sep = "//";
             #endif
