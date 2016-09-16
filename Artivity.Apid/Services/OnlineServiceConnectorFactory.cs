@@ -35,13 +35,13 @@ using System.Text;
 
 namespace Artivity.Apid.Accounts
 {
-    public static class OnlineAccountFactory
+    public static class OnlineServiceConnectorFactory
     {
         #region Members
 
         public static bool IsInitialized = false;
 
-        private static readonly Dictionary<Uri, IOnlineAccountProvider> _providers = new Dictionary<Uri, IOnlineAccountProvider>();
+        private static readonly Dictionary<Uri, IOnlineServiceConnector> _connectors = new Dictionary<Uri, IOnlineServiceConnector>();
 
         #endregion
 
@@ -51,63 +51,63 @@ namespace Artivity.Apid.Accounts
         {
             if (IsInitialized) return;
 
-            OnlineAccountFactory.RegisterProvider(new EPrintsAccountProvider());
-            OnlineAccountFactory.RegisterProvider(new OrcidAccountProvider());
+            OnlineServiceConnectorFactory.RegisterConnector(new EPrintsServiceConnector());
+            OnlineServiceConnectorFactory.RegisterConnector(new OrcidServiceConnector());
 
             IsInitialized = true;
         }
 
-        public static void RegisterProvider(IOnlineAccountProvider provider)
+        public static void RegisterConnector(IOnlineServiceConnector connector)
         {
-            Uri uri = provider.Uri;
+            Uri uri = connector.Uri;
 
-            if(_providers.ContainsKey(provider.Uri))
+            if(_connectors.ContainsKey(connector.Uri))
             {
-                string message = string.Format("Identifier {0} already registered by provider {1}", uri, _providers[uri]);
+                string message = string.Format("Identifier {0} already registered by provider {1}", uri, _connectors[uri]);
 
                 throw new DuplicateKeyException(message);
             }
 
             Logger.LogInfo("Registered online account provider {0}", uri);
 
-            _providers[uri] = provider;
+            _connectors[uri] = connector;
         }
 
-        public static IEnumerable<IOnlineAccountProvider> GetRegisteredProviders()
+        public static IEnumerable<IOnlineServiceConnector> GetRegisteredConnectors()
         {
             if (!IsInitialized)
             {
                 Initialize();
             }
 
-            return _providers.Values;
+            return _connectors.Values;
         }
 
-        public static IOnlineAccountProvider TryGetAccountProvider(Request request)
+        public static IOnlineServiceConnector TryGetServiceConnector(Request request)
         {
-            string uri = request.Query.providerUri;
+            string uri = request.Query.connectorUri;
 
             if(string.IsNullOrEmpty(uri))
             {
                 return null;
             }
 
-            return TryGetAccountProvider(new Uri(uri));
+            return TryGetServiceConnector(new Uri(uri));
         }
 
-        public static IOnlineAccountProvider TryGetAccountProvider(Uri uri)
+        public static IOnlineServiceConnector TryGetServiceConnector(Uri uri)
         {
             if (!IsInitialized)
             {
                 Initialize();
             }
 
-            return _providers[uri];
+            return _connectors[uri];
         }
 
-        public static T TryGetAccountProvider<T>(Uri uri) where T : class
+        public static T TryGetServiceConnector<T>(Uri uri) where T : class
         {
-            return TryGetAccountProvider(uri) as T;
+            return TryGetServiceConnector(uri) as T;
         }
 
         #endregion

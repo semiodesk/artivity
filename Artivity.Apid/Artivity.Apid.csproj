@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{18E3ACB7-2958-43C7-B201-EA31F542F22C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Artivity.Api</RootNamespace>
+    <RootNamespace>Artivity.Apid</RootNamespace>
     <ReleaseVersion>1.6</ReleaseVersion>
     <AssemblyName>Artivity.Apid</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -112,17 +112,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Accounts\EPrintsAccountProvider.cs" />
-    <Compile Include="Accounts\HttpBasicAuthAuthenticator.cs" />
-    <Compile Include="Accounts\HttpOAuth2Authenticator.cs" />
-    <Compile Include="Accounts\IOAuth2AccountProvider.cs" />
-    <Compile Include="Accounts\IOnlineAccountAuthenticator.cs" />
-    <Compile Include="Accounts\OnlineAccountProvider.cs" />
-    <Compile Include="Accounts\OAuth2AccountProvider.cs" />
-    <Compile Include="Accounts\OnlineAccountFactory.cs" />
-    <Compile Include="Accounts\IOnlineAccountProvider.cs" />
-    <Compile Include="Accounts\OnlineAccountAuthenticator.cs" />
-    <Compile Include="Accounts\OrcidAccountProvider.cs" />
+    <Compile Include="Accounts\EPrintsServiceConnector.cs" />
+    <Compile Include="Protocols\Authentication\BasicAuthenticationClient.cs" />
+    <Compile Include="Protocols\Authentication\HttpAuthenticationClientState.cs" />
+    <Compile Include="Protocols\Authentication\HttpAuthenticationParameterSet.cs" />
+    <Compile Include="Protocols\Authentication\OAuth2AuthenticationClient.cs" />
+    <Compile Include="Protocols\Authentication\IHttpAuthenticationClient.cs" />
+    <Compile Include="Accounts\OnlineServiceConnectorBase.cs" />
+    <Compile Include="Accounts\OnlineServiceConnectorFactory.cs" />
+    <Compile Include="Accounts\IOnlineServiceConnector.cs" />
+    <Compile Include="Protocols\Authentication\HttpAuthenticationClientBase.cs" />
+    <Compile Include="Accounts\OrcidServiceConnector.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="HttpService.cs" />
     <Compile Include="IO\FileEventIndex.cs" />
