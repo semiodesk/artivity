@@ -330,6 +330,25 @@ namespace Artivity.Apid.Modules
                     }
                 }
             };
+
+            Post["/sparql"] = parameters =>
+            {
+                string query = Request.Form.query;
+
+                if (string.IsNullOrEmpty(query))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                if (Request.Query.inference)
+                {
+                    return ExecuteQuery(query, true);
+                }
+                else
+                {
+                    return ExecuteQuery(query);
+                }
+            };
         }
 
         #endregion
@@ -351,11 +370,56 @@ namespace Artivity.Apid.Modules
 
                     SparqlQuery query = new SparqlQuery(queryString, false);
 
-                    var bindings = model.ExecuteQuery(query, inferenceEnabled).GetBindings();
+                    var results = model.ExecuteQuery(query, inferenceEnabled).GetBindings();
 
-                    if (bindings != null)
+                    if (results != null && results.Any())
                     {
-                        return Response.AsJson(bindings.ToList());
+                        var vars = results.First().Keys.ToList();
+                        var bindings = new List<Dictionary<string, object>>();
+
+                        foreach(BindingSet row in results)
+                        {
+                            var item = new Dictionary<string, object>();
+
+                            foreach(KeyValuePair<string, object> column in row)
+                            {
+                                string type = column.Value is Uri ? "uri" : "literal";
+                                string value = column.Value.ToString();
+
+                                var b = new Dictionary<string, string>() { { "type", type }, { "value", value } };
+
+                                if(type == "literal" && !(column.Value is string))
+                                {
+                                    Type valueType = column.Value.GetType();
+
+                                    b["datatype"] = XsdTypeMapper.GetXsdTypeUri(valueType).ToString();
+                                }
+
+                                item[column.Key] = b;
+                            }
+
+                            bindings.Add(item);
+                        }
+
+                        Dictionary<string, object> result = new Dictionary<string, object>();
+                        result["head"] = new Dictionary<string, List<string>>() { { "vars", vars } };
+                        result["results"] = new Dictionary<string, List<Dictionary<string, object>>> { { "bindings", bindings } };
+
+                        Response response = Response.AsJson(result);
+                        response.ContentType = "application/sparql-results+json";
+
+                        return response;
+                    }
+                    else
+                    {
+                        Dictionary<string, object> result = new Dictionary<string, object>();
+                        result["head"] = new Dictionary<string, List<string>>() { };
+                        result["results"] = new Dictionary<string, List<Dictionary<string, object>>> { { "bindings", new List<Dictionary<string, object>>() } };
+
+                        Response response = Response.AsJson(result);
+                        response.ContentType = "application/sparql-results+json";
+
+                        return response;
                     }
                 }
             }
