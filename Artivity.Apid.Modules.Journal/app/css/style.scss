@@ -42,6 +42,7 @@ h1 {
 
 h2 {
 	font-size: 1.7em;
+	font-weight: 100;
 }
 
 h3 {
@@ -51,6 +52,10 @@ h3 {
 h3,
 h4 {
 	color: $labelColor;
+}
+
+.no-margin-top {
+	margin-top: 0;
 }
 
 body {
@@ -203,12 +208,13 @@ button:hover,
 }
 
 .nav-tabs li a {
-	border: none;
 	border-radius: 0;
+	border: none;
 	border-top: 2px solid transparent;
 	color: $labelColor;
 	text-transform: uppercase;
 	transition: all .1s linear;
+	padding: 1em;
 }
 
 .nav-tabs li a:hover {
@@ -226,6 +232,18 @@ button:hover,
 	color: $accentColor;
 }
 
+.nav-tabs.nav-stacked li a {
+	border: none;
+	border-right: 2px solid transparent;
+}
+
+.nav-tabs.nav-stacked li.active a,
+.nav-tabs.nav-stacked li.active a:hover {
+	border: none;
+	border-right: 2px solid $accentColor !important;
+	background: rgba($accentColor, .05);
+}
+
 .tab-content {
 	padding: 30px;
 }
@@ -238,7 +256,8 @@ button:hover,
 	text-align: center;
 }
 
-.list-view {
+.list-view,
+.tile-view {
 	list-style: none;
 	padding: 0;
 	margin: 0;
@@ -252,6 +271,24 @@ button:hover,
 
 .list-item:hover {
 	background: $headerBackgroundColor;
+}
+
+.tile-view {
+	padding: 0 5px 5px 5px;
+}
+
+.tile-item {
+	padding: 10px;
+	width: 250px;
+	height: 75px;
+	background: rgba($accentColor, .05);
+	float: left;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+.tile-item:hover {
+	background: rgba($accentColor, .1);
 }
 
 .label,
@@ -428,6 +465,7 @@ h4 {
 	display: table;
 	width: 100%;
 	height: 100%;
+	position: absolute;
 }
 
 #canvas {
@@ -520,6 +558,10 @@ h4 {
 	display: table-cell;
 }
 
+.ui-pane.ui-pane-center {
+	position: relative;
+}
+
 .ui-pane.ui-pane-left {
 	width: 370px;
 	min-width: 300px;
@@ -534,7 +576,7 @@ h4 {
 .ui-pane .tab-content {
 	overflow-y: scroll;
 	position: absolute;
-	top: 50px;
+	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -544,11 +586,14 @@ h4 {
 .ui-pane .tab-pane {
 	margin: 0;
 	padding: 0;
-	padding: 0;
 }
 
 .ui-pane .tab-pane.padded {
 	padding: 15px;
+}
+
+.ui-pane .tab-pane.padded-lg {
+	padding: 2em;
 }
 
 .ui-pane .pane-content {

@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 
 namespace Artivity.Api.Modules
 {
+    /// <summary>
+    /// Handles the authorization and installation of online service accounts.
+    /// </summary>
     public class AccountsModule : ModuleBase
     {
         #region Members
@@ -55,21 +58,26 @@ namespace Artivity.Api.Modules
                 }
             };
 
+            // Gets the current status of a online service connector from a session id (use to check the auth progress).
             Get["/connectors/status"] = parameters =>
             {
                 return GetServiceConnectorStatus();
             };
 
+            // Begin an authorization request for a online service account (needs to be called *before* installing).
+            // Returns session id.
             Get["/authorize"] = parameters =>
             {
                 return AuthorizeAccount();
             };
 
+            // Send an OAuth 2.0 access token to a remote server.
             Get["/authorize/oauth2/token"] = parameters =>
             {
                 return SendOAuth2AccessToken();
             };
 
+            // Install a account from a auth session id.
             Get["/install"] = parameters =>
             {
                 return InstallAccount();

@@ -46,7 +46,6 @@ angular.module('explorerApp').config(function ($translateProvider) {
 		
 		SETTINGS: {
 			TITLE: 'Preferences',
-
 			PROFILE: 'Profile',
 			APPS: 'Apps',
 			ACCOUNTS: 'Accounts',
@@ -54,6 +53,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			NAME: 'Name',
 			EMAIL: 'E-Mail Address',
 			ORGANIZATION: 'Organization',
+			SERVICE_ADD: 'Connect service'
 		},
 	});
 
