@@ -145,7 +145,7 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 											for (var i = $scope.influences.length - 1; i >= 0; i--) {
 												var influence = $scope.influences[i];
-												
+
 												// Convert the timestamp into a date object.
 												influence.time = new Date(influence.time);
 
@@ -241,15 +241,15 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 		if (influence.time !== undefined) {
 			$scope.renderInfluence(influence);
-			
+
 			// Set the labels of the layers at the time of the influence.
-			each(influence.stats.layers, function(i, layer) {
+			each(influence.stats.layers, function (i, layer) {
 				layer.label = layer.getLabel(influence.time);
 			});
 
 			// Trigger the processing of change notifications, if necessary.
 			// Note: $$phase should NOT be used, but currently solves the problem.
-			if(!$scope.$$phase) {
+			if (!$scope.$$phase) {
 				$scope.$digest();
 			}
 
@@ -638,7 +638,7 @@ explorerControllers.controller('SettingsController', function (api, $scope, $loc
 	};
 
 	$scope.$watch('agent.iconUrl', function () {
-		if (scope.agent.iconUrl !== "") {
+		if ($scope.agent && $scope.agent.iconUrl !== "") {
 			timeline.setUserPhotoUrl(scope.user.photoUrl);
 		}
 	});
@@ -730,28 +730,8 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
 		$scope.userForm.$setPristine();
 	});
 
-	// Load the user accounts.
-	api.getAccounts().then(function (data) {
-		$scope.accounts = data;
-	});
-
 	// Set the user photo URL.
 	$scope.userPhotoUrl = api.getUserPhotoUrl();
-
-	$scope.selectAccountProvider = function () {
-		var modalInstance = $uibModal.open({
-			animation: true,
-			templateUrl: 'addAccountDialog.html',
-			controller: 'AccountDialogController'
-		});
-
-		modalInstance.result.then(function (account) {
-			// Reload the user accounts.
-			api.getAccounts().then(function (data) {
-				$scope.accounts = data;
-			});
-		});
-	};
 
 	$scope.onPhotoChanged = function (e) {
 		// Update the preview image..
@@ -768,9 +748,97 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
 		}
 	};
 
-	$scope.uninstallAccount = function (account) {
-		api.uninstallAccount(account.Id).then(function () {
-			// Reload the accounts.
+	this.submit = function () {
+		console.log("Submitting settings: User Profile");
+
+		api.setUser($scope.user);
+
+		if ($scope.userPhoto) {
+			api.setUserPhoto($scope.userPhoto).then(function () {
+				$scope.userPhotoUrl = '';
+				$scope.userPhotoUrl = api.getUserPhotoUrl();
+			});
+		}
+	};
+
+	this.reset = function () {
+		$scope.userForm.reset();
+	};
+});
+
+explorerControllers.controller('AccountSettingsController', function (api, $scope, $uibModal, $log) {
+	// Register the controller with its parent for global apply/cancel.
+	$scope.$parent.children.push(this);
+
+	$scope.accounts = [];
+	
+	// Load the user accounts.
+	api.getAccounts().then(function (data) {
+		$scope.accounts = data;
+	});
+
+	api.getAccountConnectors().then(function (data) {
+		$scope.connectors = data;
+	});
+
+	$scope.selectConnector = function (c) {
+		// Set the currently selected connector.
+		$scope.connector = c;
+
+		// Set the authorization parameters for the connector.
+		$scope.parameter = {
+			connectorUri: c.Uri,
+			authType: c.AuthenticationClients[0].Uri
+		};
+	};
+
+	$scope.installAccount = function (c) {
+		api.authorizeAccount($scope.parameter).then(function (data) {
+			var sessionId = data.id;
+
+			var h = setInterval(function () {
+				api.getAccountConnectorStatus(sessionId).then(function (data) {
+					for (var i = 0; i < data.AuthenticationClients.length; i++) {
+						var c = data.AuthenticationClients[i];
+
+						console.log(c);
+
+						if (c.ClientState > 1) {
+							clearInterval(h);
+
+							if (c.ClientState == 2) {
+								api.installAccount(sessionId).then(function (r) {
+									console.log("Account connected:", sessionId);
+								});
+							}
+
+							break;
+						}
+					}
+				});
+			}, 1000);
+		});
+	};
+
+	$scope.uninstallAccount = function (a) {		
+		api.uninstallAccount(a.Uri).then(function (data) {
+			console.log("Account disconnected:", a.Uri);
+			
+			var i = $scope.accounts.indexOf(a);
+			
+			$scope.accounts.splice(i, 1);
+		});
+	};
+
+	$scope.selectAccountProvider = function () {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'addAccountDialog.html',
+			controller: 'AccountDialogController'
+		});
+
+		modalInstance.result.then(function (account) {
+			// Reload the user accounts.
 			api.getAccounts().then(function (data) {
 				$scope.accounts = data;
 			});
@@ -778,7 +846,7 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
 	};
 
 	this.submit = function () {
-		console.log("Submitting user..");
+		console.log("Submitting settings: Accounts");
 
 		api.setUser($scope.user);
 

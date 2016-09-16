@@ -45,6 +45,8 @@ namespace Artivity.Apid.Accounts
 
         public EPrintsServiceConnector() : base(new Uri("http://eprints.org"))
         {
+            Title = "EPrints";
+
             HttpAuthenticationParameterSet localhost = new HttpAuthenticationParameterSet();
             localhost.Id = "localhost:8080";
             localhost.Parameters["authType"] = "http://localhost:8272/artivity/api/1.0/auth/basic";

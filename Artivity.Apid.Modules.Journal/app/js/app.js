@@ -33,7 +33,7 @@ explorerApp.config(['$routeProvider',
 			templateUrl: 'partials/settings.html'
 		}).
 		when('/query', {
-		    templateUrl: 'partials/query.html'
+			templateUrl: 'partials/query.html'
 		}).
 		when('/error-no-apid-connection', {
 			templateUrl: 'partials/error-no-apid-connection.html'
@@ -53,26 +53,43 @@ explorerApp.factory('api', function ($http) {
 					return response.data;
 				})
 		},
-		getAccountProviders: function () {
-			return $http.get(endpoint + '/accounts/providers').then(
+		getAccountConnectors: function () {
+			return $http.get(endpoint + '/accounts/connectors').then(
 				function (response) {
 					return response.data;
 				})
 		},
-		getAccountProvider: function (providerId) {
-			return $http.get(endpoint + '/accounts/providers?providerId=' + providerId).then(
+		getAccountConnector: function (connectorUri) {
+			return $http.get(endpoint + '/accounts/connectors?connectorUri=' + connectorUri).then(
 				function (response) {
 					return response.data;
 				})
 		},
-		installAccount: function (providerId) {
-			return $http.get(endpoint + '/accounts/oauth2/redirect?providerId=' + providerId).then(
+		getAccountConnectorStatus: function (sessionId) {
+			return $http.get(endpoint + '/accounts/connectors/status?sessionId=' + sessionId).then(
 				function (response) {
 					return response.data;
 				})
 		},
-		uninstallAccount: function (accountId) {
-			return $http.get(endpoint + '/accounts/uninstall?accountId=' + accountId);
+		authorizeAccount: function (parameter) {
+			var p = serialize(parameter);
+			
+			return $http.get(endpoint + '/accounts/authorize?' + p).then(
+				function (response) {
+					return response.data;
+				})
+		},
+		installAccount: function (sessionId) {
+			return $http.get(endpoint + '/accounts/install?sessionId=' + sessionId).then(
+				function (response) {
+					return response.data;
+				})
+		},
+		uninstallAccount: function (accountUri) {
+			return $http.get(endpoint + '/accounts/uninstall?accountUri=' + accountUri).then(
+				function (response) {
+					return response.data;
+				})
 		},
 		getAgents: function () {
 			return $http.get(endpoint + '/agents').then(
@@ -244,6 +261,22 @@ explorerApp.factory('api', function ($http) {
 	};
 });
 
+function serialize(obj, prefix) {
+	var str = [];
+
+	for (var p in obj) {
+		if (obj.hasOwnProperty(p)) {
+			var k = prefix ? prefix + "[" + p + "]" : p,
+				v = obj[p];
+			str.push(typeof v == "object" ?
+				serialize(v, k) :
+				encodeURIComponent(k) + "=" + encodeURIComponent(v));
+		}
+	}
+
+	return str.join("&");
+}
+
 function getFileName(fileUrl) {
 	var url = fileUrl;
 
@@ -261,10 +294,10 @@ function getFileName(fileUrl) {
 
 function getValue(obj, path) {
 	for (var i = 0, path = path.split('.'), len = path.length; i < len; i++) {
-		if(obj === undefined) {
+		if (obj === undefined) {
 			break;
 		}
-		
+
 		obj = obj[path[i]];
 	}
 	return obj;

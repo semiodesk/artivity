@@ -38,9 +38,14 @@ namespace Artivity.Apid.Protocols.Authentication
     {
         #region Members
 
+        /// <summary>
+        /// Gets the Uniform Resource Identifier.
+        /// </summary>
         Uri Uri { get; }
 
         HttpAuthenticationClientState ClientState { get; }
+
+        string AuthorizeUrl { get; }
 
         byte[] ResponseData { get; }
 

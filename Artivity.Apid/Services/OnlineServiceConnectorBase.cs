@@ -41,13 +41,30 @@ namespace Artivity.Apid.Accounts
     {
         #region Members
 
+        /// <summary>
+        /// Gets the Uniform Resource Identifier.
+        /// </summary>
         public Uri Uri { get; protected set; }
 
+        /// <summary>
+        /// Gets the title of the online service.
+        /// </summary>
+        public string Title { get; protected set; }
+
+        /// <summary>
+        /// Gets a list of HTTP authentication parameter presets.
+        /// </summary>
         public List<HttpAuthenticationParameterSet> Presets { get; protected set; }
 
+        /// <summary>
+        /// Gets the selected set of HTTP authentication parameters.
+        /// </summary>
         [JsonIgnore]
         public HttpAuthenticationParameterSet SelectedPreset { get; protected set; }
 
+        /// <summary>
+        /// Gets a list of supported HTTP authentication methods.
+        /// </summary>
         public List<IHttpAuthenticationClient> AuthenticationClients { get; protected set; }
 
         #endregion
@@ -65,6 +82,10 @@ namespace Artivity.Apid.Accounts
 
         #region Methods
 
+        /// <summary>
+        /// Initializeses additional HTTP request query parameters from a preset ID which is provided via a query parameter.
+        /// </summary>
+        /// <param name="request">Nancy HTTP request.</param>
         public void InitializePresetQueryParameters(Request request)
         {
             if (!string.IsNullOrEmpty(request.Query["presetId"]))
@@ -86,16 +107,32 @@ namespace Artivity.Apid.Accounts
             }
         }
 
+        /// <summary>
+        /// Return a HTTP authentication client with a given state.
+        /// </summary>
+        /// <param name="state">A HTTP authentication client state.</param>
+        /// <returns>The first client with the given state, <c>null</c> otherwise.</returns>
         public IHttpAuthenticationClient TryGetAuthenticationClient(HttpAuthenticationClientState state)
         {
             return AuthenticationClients.FirstOrDefault(a => a.ClientState == state);
         }
 
+        /// <summary>
+        /// Return a HTTP authentication client with a given state.
+        /// </summary>
+        /// <typeparam name="T">A subclass of HttpAuthenticationClient.</typeparam>
+        /// <param name="state">A HTTP authentication client state.</param>
+        /// <returns>The first client with the given state, <c>null</c> otherwise.</returns>
         public T TryGetAuthenticationClient<T>(HttpAuthenticationClientState state) where T : class
         {
             return TryGetAuthenticationClient(state) as T;
         }
 
+        /// <summary>
+        /// Return a HTTP authentication client from the 'authType'-query parameter the given HTTP request.
+        /// </summary>
+        /// <param name="state">A Nancy HTTP request.</param>
+        /// <returns>The first client with the suitable URI, <c>null</c> otherwise.</returns>
         public IHttpAuthenticationClient TryGetAuthenticationClient(Request request)
         {
             string authType = request.Query.authType;
@@ -103,11 +140,22 @@ namespace Artivity.Apid.Accounts
             return !string.IsNullOrEmpty(authType) ? AuthenticationClients.FirstOrDefault(a => a.Uri.AbsoluteUri == authType) : null;
         }
 
+        /// <summary>
+        /// Return a HTTP authentication client from the 'authType'-query parameter the given HTTP request.
+        /// </summary>
+        /// <typeparam name="T">A subclass of HttpAuthenticationClient.</typeparam>
+        /// <param name="state">A Nancy HTTP request.</param>
+        /// <returns>The first client with the suitable URI, <c>null</c> otherwise.</returns>
         public T TryGetAuthenticationClient<T>(Request request) where T : class
         {
             return TryGetAuthenticationClient(request) as T;
         }
 
+        /// <summary>
+        /// Install an authenticated online account into the given model.
+        /// </summary>
+        /// <param name="model">The model in which the account should be created.</param>
+        /// <returns>A newly created instance of the <c>OnlineAccount</c> class.</returns>
         public OnlineAccount InstallAccount(IModel model)
         {
             if(model == null)
@@ -166,14 +214,32 @@ namespace Artivity.Apid.Accounts
 
             return account;
         }
-        
+
+        /// <summary>
+        /// Gets the account identifier.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when an authenticated account is being persisted.
+        /// </remarks>
         protected abstract string GetAccountId();
 
+        /// <summary>
+        /// Gets the account title.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when an authenticated account is being persisted.
+        /// </remarks>
         protected abstract string GetAccountTitle();
 
+        /// <summary>
+        /// Gets a description of the account.
+        /// </summary>
+        /// <remarks>
+        /// This method is called when an authenticated account is being persisted.
+        /// </remarks>
         protected virtual string GetAccountDescription()
         {
-            BasicAuthenticationClient authenticator = TryGetAuthenticationClient<BasicAuthenticationClient>(HttpAuthenticationClientState.Authorized);
+            IHttpAuthenticationClient authenticator = TryGetAuthenticationClient(HttpAuthenticationClientState.Authorized);
 
             if (authenticator != null)
             {

@@ -48,6 +48,8 @@ namespace Artivity.Apid.Accounts
         public OrcidServiceConnector()
             : base(new Uri("http://orcid.org"))
         {
+            Title = "ORCiD";
+
             HttpAuthenticationParameterSet orcid = new HttpAuthenticationParameterSet();
             orcid.Id = "orcid.org";
             orcid.Parameters["authType"] = "http://localhost:8272/artivity/api/1.0/auth/oauth2";
@@ -97,7 +99,7 @@ namespace Artivity.Apid.Accounts
         }
 
         /// <summary>
-        /// Gets the account identifier.
+        /// Gets the account title.
         /// </summary>
         /// <remarks>
         /// This method is called when an authenticated account is being persisted.
