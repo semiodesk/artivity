@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
 using Nancy;
 using Newtonsoft.Json;
@@ -36,50 +37,78 @@ using System.Text;
 
 namespace Artivity.Apid.Accounts
 {
-    public abstract class OnlineAccountProvider : IOnlineAccountProvider
+    public abstract class OnlineServiceConnectorBase : IOnlineServiceConnector
     {
         #region Members
 
         public Uri Uri { get; protected set; }
 
-        public List<IOnlineAccountAuthenticator> SupportedAuthenticationMethods { get; protected set; }
+        public List<HttpAuthenticationParameterSet> Presets { get; protected set; }
+
+        [JsonIgnore]
+        public HttpAuthenticationParameterSet SelectedPreset { get; protected set; }
+
+        public List<IHttpAuthenticationClient> AuthenticationClients { get; protected set; }
 
         #endregion
 
         #region Constructors
 
-        public OnlineAccountProvider(Uri uri)
+        public OnlineServiceConnectorBase(Uri uri)
         {
             Uri = uri;
+            Presets = new List<HttpAuthenticationParameterSet>();
+            AuthenticationClients = new List<IHttpAuthenticationClient>();
         }
 
         #endregion
 
         #region Methods
 
-        public IOnlineAccountAuthenticator TryGetAccountAuthenticator(OnlineAccountAuthenticatorState state)
+        public void InitializePresetQueryParameters(Request request)
         {
-            return SupportedAuthenticationMethods.FirstOrDefault(a => a.State == state);
+            if (!string.IsNullOrEmpty(request.Query["presetId"]))
+            {
+                string presetId = request.Query["presetId"];
+
+                SelectedPreset = Presets.FirstOrDefault(p => p.Id == presetId);
+
+                if (SelectedPreset != null)
+                {
+                    foreach (string key in SelectedPreset.Parameters.Keys)
+                    {
+                        if(string.IsNullOrEmpty(request.Query[key]))
+                        {
+                            request.Query[key] = SelectedPreset.Parameters[key];
+                        }
+                    }
+                }
+            }
         }
 
-        public T TryGetAccountAuthenticator<T>(OnlineAccountAuthenticatorState state) where T : class
+        public IHttpAuthenticationClient TryGetAuthenticationClient(HttpAuthenticationClientState state)
         {
-            return TryGetAccountAuthenticator(state) as T;
+            return AuthenticationClients.FirstOrDefault(a => a.ClientState == state);
         }
 
-        public IOnlineAccountAuthenticator TryGetAccountAuthenticator(Request request)
+        public T TryGetAuthenticationClient<T>(HttpAuthenticationClientState state) where T : class
+        {
+            return TryGetAuthenticationClient(state) as T;
+        }
+
+        public IHttpAuthenticationClient TryGetAuthenticationClient(Request request)
         {
             string authType = request.Query.authType;
 
-            return !string.IsNullOrEmpty(authType) ? SupportedAuthenticationMethods.FirstOrDefault(a => a.Id == authType) : null;
+            return !string.IsNullOrEmpty(authType) ? AuthenticationClients.FirstOrDefault(a => a.Uri.AbsoluteUri == authType) : null;
         }
 
-        public T TryGetAccountAuthenticator<T>(Request request) where T : class
+        public T TryGetAuthenticationClient<T>(Request request) where T : class
         {
-            return TryGetAccountAuthenticator(request) as T;
+            return TryGetAuthenticationClient(request) as T;
         }
 
-        public OnlineAccount TryCreateAccount(IModel model)
+        public OnlineAccount InstallAccount(IModel model)
         {
             if(model == null)
             {
@@ -88,7 +117,14 @@ namespace Artivity.Apid.Accounts
                 return null;
             }
 
-            OnlineAccount account = OnCreateAccount(model);
+            DateTime now = DateTime.UtcNow;
+
+            OnlineAccount account = model.CreateResource<OnlineAccount>();
+            account.Id = GetAccountId();
+            account.Title = GetAccountTitle();
+            account.Description = GetAccountDescription();
+            account.CreationTime = now;
+            account.LastModificationTime = now;
 
             if (account == null)
             {
@@ -131,7 +167,21 @@ namespace Artivity.Apid.Accounts
             return account;
         }
         
-        protected abstract OnlineAccount OnCreateAccount(IModel model);
+        protected abstract string GetAccountId();
+
+        protected abstract string GetAccountTitle();
+
+        protected virtual string GetAccountDescription()
+        {
+            BasicAuthenticationClient authenticator = TryGetAuthenticationClient<BasicAuthenticationClient>(HttpAuthenticationClientState.Authorized);
+
+            if (authenticator != null)
+            {
+                return new Uri(authenticator.AuthorizeUrl).Authority;
+            }
+
+            return null;
+        }
 
         #endregion
     }

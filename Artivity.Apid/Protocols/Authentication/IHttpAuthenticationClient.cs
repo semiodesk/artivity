@@ -25,37 +25,30 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.DataModel;
 using Nancy;
-using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Artivity.Apid.Accounts
+namespace Artivity.Apid.Protocols.Authentication
 {
-    public interface IOnlineAccountProvider
+    public interface IHttpAuthenticationClient
     {
         #region Members
 
         Uri Uri { get; }
 
-        List<IOnlineAccountAuthenticator> SupportedAuthenticationMethods { get; }
+        HttpAuthenticationClientState ClientState { get; }
+
+        byte[] ResponseData { get; }
 
         #endregion
 
         #region Methods
 
-        IOnlineAccountAuthenticator TryGetAccountAuthenticator(OnlineAccountAuthenticatorState state);
-
-        T TryGetAccountAuthenticator<T>(OnlineAccountAuthenticatorState state) where T : class;
-
-        IOnlineAccountAuthenticator TryGetAccountAuthenticator(Request request);
-
-        T TryGetAccountAuthenticator<T>(Request request) where T : class;
-
-        OnlineAccount TryCreateAccount(IModel model);
+        void HandleRequestAsync(Request reqeust, string token);
 
         #endregion
     }
