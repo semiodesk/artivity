@@ -70,6 +70,8 @@ namespace artivity
         void removeProperty(const std::string& property, ResourceRef resource);
         
         void removeProperty(const std::string& property, std::string literalValue, const std::type_info& typeInfo);
+
+        void removeProperty(const std::string& property);
         
         void setProperty(const std::string& property, PropertyValue value);
 

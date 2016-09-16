@@ -122,6 +122,7 @@ namespace artivity
         {
             _activity->clear();
             _influences.clear();
+            _entity->clearInfluences();
         }
         
 		void close();
