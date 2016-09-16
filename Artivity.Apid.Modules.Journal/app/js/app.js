@@ -33,7 +33,7 @@ explorerApp.config(['$routeProvider',
 			templateUrl: 'partials/settings.html'
 		}).
 		when('/query', {
-			templateUrl: 'partials/query.html'
+		    templateUrl: 'partials/query.html'
 		}).
 		when('/error-no-apid-connection', {
 			templateUrl: 'partials/error-no-apid-connection.html'

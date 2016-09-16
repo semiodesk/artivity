@@ -563,6 +563,7 @@ h4 {
 	padding: 15px;
 }
 
+
 /* FOOTER */
 
 #footer {
@@ -907,6 +908,7 @@ input.form-control:focus {
 	}
 }
 
+
 /* MISC */
 
 .under-construction {
@@ -1047,6 +1049,7 @@ input.form-control:focus {
 	outline: none;
 }
 
+
 /*
 .lst-activities .connection {
 	position: absolute;
@@ -1140,6 +1143,7 @@ input.form-control:focus {
 	vertical-align: middle;
 	margin-bottom: 0 !important;
 }
+
 
 /*
 .lst-influences a .node {
@@ -1275,18 +1279,206 @@ input.form-control:focus {
 	margin: 5px;
 }
 
+
 /* STATS */
 
 .chart-donut {
-  width: 29rem;
-  height: 29rem;
-  margin: 0 auto;
+	width: 29rem;
+	height: 29rem;
+	margin: 0 auto;
 }
 
 path.color0 {
-  fill: #1072b8;
+	fill: #1072b8;
 }
 
 path.color1 {
-  fill: #35526b;
+	fill: #35526b;
+}
+
+
+/* YASGUI */
+
+.yasgui {
+	background: none;
+	font-family: 'Roboto';
+}
+
+.yasgui .nav-tabs {
+	border-bottom: 2px solid $accentColor;
+}
+
+.yasgui .nav-tabs .active {
+	background: $accentColor !important;
+	color: $accentTextColor;
+	border-radius: 0;
+}
+
+.yasgui .nav-tabs .active a {
+	border: none !important;
+	border-radius: 0;
+	padding: 10px 10px 10px 15px;
+}
+
+.yasgui .nav-tabs a[role='addTab'] {
+	width: 40px;
+	text-align: center;
+}
+
+.yasgui .controlbar {
+	display: none;
+	border-left: none;
+	background: $headerBackgroundColor;
+}
+
+.yasgui .tab-content {
+	padding: 0;
+}
+
+.yasgui .CodeMirror {
+	border: none !important;
+	border-bottom: 4px solid $windowBackgroundColor;
+}
+
+.yasgui .CodeMirror-gutters {
+	border: none !important;
+	background: none;
+}
+
+.yasqe_share,
+.yasqe_fullscreenBtn {
+	width: 16px !important;
+	height: 16px !important;
+	margin: 0 5px;
+	position: relative;
+	left: -7px;
+}
+
+.yasqe_queryButton.query_valid .btn{
+	float: left;
+	font-size: 30px;
+	line-height: 30px;
+	border-radius: 50%;
+	margin: 11px 20px 0 0;
+	padding: 10px 8px 10px 12px;
+	width: 50px;
+	height: 50px;
+	background: #F94C00;
+	color: white;
+}
+
+.yasgui .yasr {
+	background-color: $windowBackgroundColor;
+}
+
+.yasgui .yasr .yasr_header {
+	position: relative;
+	top: -10px;
+}
+
+.yasgui .yasr .yasr_btn {
+	border: 1px solid $windowBackgroundColor;
+	background: $buttonBackgroundColor;
+	color: $buttonTextColor;
+}
+
+.yasgui .yasr .yasr_btn:hover {
+	border: 1px solid $windowBackgroundColor;
+	background: $buttonHoverBackgroundColor;
+	color: $buttonTextColor;
+}
+
+.yasgui .yasr .yasr_btn.selected {
+	background: #F94C00;
+	border: 1px solid $windowBackgroundColor;
+}
+
+.yasgui .yasr .yasr_btn svg path {
+	fill: $buttonTextColor !important;
+}
+
+.yasgui .yasr .sortIcons svg path {
+	fill: $labelColor !important;
+}
+
+.yasgui .yasr .yasr_results {
+	margin: 0;
+}
+
+.yasgui .yasr .btn_smallscreen,
+.yasgui .yasr .btn_fullscreen {
+	position: absolute;
+	right: 7px;
+}
+
+.yasgui .yasr input {
+	border: none;
+}
+
+.yasgui .yasr label {
+	font-weight: normal;
+}
+
+.yasgui .yasr .dataTables_wrapper .dtTopHeader {
+	padding: 7px 7px 7px 0;
+}
+
+.yasgui .yasr .dataTables_wrapper .dataTables_info {
+	padding: 7px;
+}
+
+.yasgui .yasr .dataTables_wrapper .dataTables_info {
+	color: $labelColor !important;
+	border: none !important;
+	margin: 0;
+}
+
+.yasgui .yasr table.dataTable {
+	border: none;
+}
+
+.yasgui .yasr table.dataTable thead th {
+	background: $headerBackgroundColor !important;
+	border-left: 1px solid $windowBackgroundColor;
+	border-right: none;
+	color: $labelColor;
+}
+
+.yasgui .yasr table.dataTable tbody td {
+	padding: 5px 10px;
+	font-family: 'Roboto';
+	background: $headerBackgroundColor;
+	border-left: 1px solid $windowBackgroundColor;
+	border-bottom: 1px solid $windowBackgroundColor;
+}
+
+.yasgui .yasr table.dataTable tbody tr td:first-child {
+	text-align: center;
+	color: #999;
+}
+
+.yasgui .yasr .CodeMirror {
+	background: $headerBackgroundColor;
+	color: $headerTextColor;
+}
+
+.yasgui .yasr .yasr_header {
+	padding-bottom: 5px;
+}
+
+.yasgui .yasr table.dataTable tbody tr td a,
+.yasgui .yasr .CodeMirror .cm-string {
+	color: #00ceff;
+}
+.yasgui .yasr .nonUri {
+	color: $textColor;
+}
+.yasgui .yasr sup {
+	color: $labelColor;
+}
+
+.openGchartBtn {
+	position: relative;
+	right: 47px;
+	top: -50px !important;
 }
