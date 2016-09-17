@@ -321,7 +321,10 @@ namespace Artivity.Apid.Modules
                                 {
                                     Type valueType = column.Value.GetType();
 
-                                    b["datatype"] = XsdTypeMapper.GetXsdTypeUri(valueType).ToString();
+                                    if(!valueType.IsAssignableFrom(typeof(DBNull)))
+                                    {
+                                        b["datatype"] = XsdTypeMapper.GetXsdTypeUri(valueType).ToString();
+                                    }
                                 }
 
                                 item[column.Key] = b;
