@@ -101,7 +101,6 @@
     <EmbeddedResource Include="app\bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
     <EmbeddedResource Include="app\bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
     <EmbeddedResource Include="app\bower_components\jquery\dist\jquery.min.map" />
-    <EmbeddedResource Include="app\bower_components\light-grid\dist\light-grid.min.js.map" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.eot" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.ttf" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.woff" />
@@ -119,6 +118,11 @@
     <None Include="app\bower_components\angular-moment\LICENSE" />
     <None Include="app\bower_components\angular-moment\package.json" />
     <None Include="app\bower_components\angular-moment\README.md" />
+    <None Include="app\bower_components\jquery-editable-select\.bower.json" />
+    <None Include="app\bower_components\jquery-editable-select\bower.json" />
+    <None Include="app\bower_components\jquery-editable-select\LICENSE" />
+    <None Include="app\bower_components\jquery-editable-select\package.json" />
+    <None Include="app\bower_components\jquery-editable-select\README.md" />
     <None Include="app\bower_components\moment-duration-format\.bower.json" />
     <None Include="app\bower_components\moment-duration-format\bower.json" />
     <None Include="app\bower_components\moment-duration-format\LICENSE" />
@@ -193,8 +197,6 @@
     <EmbeddedResource Include="app\bower_components\d3\d3.min.js" />
     <EmbeddedResource Include="app\bower_components\jquery\dist\jquery.js" />
     <EmbeddedResource Include="app\bower_components\jquery\dist\jquery.min.js" />
-    <EmbeddedResource Include="app\bower_components\light-grid\dist\light-grid.js" />
-    <EmbeddedResource Include="app\bower_components\light-grid\dist\light-grid.min.js" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\css\material-design-iconic-font.css" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\css\material-design-iconic-font.min.css" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.svg" />
@@ -221,6 +223,13 @@
     <EmbeddedResource Include="app\bower_components\fullcalendar\dist\fullcalendar.min.js" />
     <EmbeddedResource Include="app\bower_components\fullcalendar\dist\fullcalendar.css" />
     <EmbeddedResource Include="app\bower_components\fullcalendar\dist\fullcalendar.js" />
+    <Content Include="app\bower_components\jquery-editable-select\dist\jquery-editable-select.css" />
+    <Content Include="app\bower_components\jquery-editable-select\dist\jquery-editable-select.js" />
+    <EmbeddedResource Include="app\bower_components\jquery-editable-select\dist\jquery-editable-select.min.css" />
+    <EmbeddedResource Include="app\bower_components\jquery-editable-select\dist\jquery-editable-select.min.js" />
+    <Content Include="app\bower_components\jquery-editable-select\Gruntfile.js" />
+    <Content Include="app\bower_components\jquery-editable-select\src\jquery-editable-select.css" />
+    <Content Include="app\bower_components\jquery-editable-select\src\jquery-editable-select.js" />
     <Content Include="app\bower_components\yasgui\blank.html" />
     <Content Include="app\bower_components\yasgui\dist\yasgui.bundled.js" />
     <Content Include="app\bower_components\yasgui\dist\yasgui.bundled.min.js" />

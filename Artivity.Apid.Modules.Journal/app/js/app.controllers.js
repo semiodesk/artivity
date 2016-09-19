@@ -1,4 +1,4 @@
-var explorerControllers = angular.module('explorerControllers', ['ngInputModified', 'ui.bootstrap']);
+var explorerControllers = angular.module('explorerControllers', ['ngInputModified', 'ui.bootstrap', 'ui.bootstrap.modal']);
 
 explorerControllers.filter('reverse', function () {
 	return function (items) {
@@ -720,7 +720,7 @@ explorerControllers.controller('SettingsController', function (api, $scope, $loc
 	}
 });
 
-explorerControllers.controller('UserSettingsController', function (api, $scope, $uibModal, $log) {
+explorerControllers.controller('UserSettingsController', function (api, $scope, $log) {
 	// Register the controller with its parent for global apply/cancel.
 	$scope.$parent.children.push(this);
 
@@ -766,82 +766,47 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
 	};
 });
 
-explorerControllers.controller('AccountSettingsController', function (api, $scope, $uibModal, $log) {
+explorerControllers.controller('AccountSettingsController', function (api, $scope, $log, $uibModal) {
 	// Register the controller with its parent for global apply/cancel.
 	$scope.$parent.children.push(this);
 
-	$scope.accounts = [];
-	
+	$scope.selectedItem = null;
+
 	// Load the user accounts.
+	$scope.accounts = [];
+
 	api.getAccounts().then(function (data) {
 		$scope.accounts = data;
 	});
 
-	api.getAccountConnectors().then(function (data) {
-		$scope.connectors = data;
-	});
-
-	$scope.selectConnector = function (c) {
-		// Set the currently selected connector.
-		$scope.connector = c;
-
-		// Set the authorization parameters for the connector.
-		$scope.parameter = {
-			connectorUri: c.Uri,
-			authType: c.AuthenticationClients[0].Uri
-		};
-	};
-
-	$scope.installAccount = function (c) {
-		api.authorizeAccount($scope.parameter).then(function (data) {
-			var sessionId = data.id;
-
-			var h = setInterval(function () {
-				api.getAccountConnectorStatus(sessionId).then(function (data) {
-					for (var i = 0; i < data.AuthenticationClients.length; i++) {
-						var c = data.AuthenticationClients[i];
-
-						console.log(c);
-
-						if (c.ClientState > 1) {
-							clearInterval(h);
-
-							if (c.ClientState == 2) {
-								api.installAccount(sessionId).then(function (r) {
-									console.log("Account connected:", sessionId);
-								});
-							}
-
-							break;
-						}
-					}
-				});
-			}, 1000);
-		});
-	};
-
-	$scope.uninstallAccount = function (a) {		
-		api.uninstallAccount(a.Uri).then(function (data) {
-			console.log("Account disconnected:", a.Uri);
-			
-			var i = $scope.accounts.indexOf(a);
-			
-			$scope.accounts.splice(i, 1);
-		});
-	};
-
-	$scope.selectAccountProvider = function () {
+	$scope.addAccount = function () {
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'addAccountDialog.html',
-			controller: 'AccountDialogController'
+			templateUrl: 'add-account-dialog.html',
+			controller: 'AddAccountDialogController'
 		});
 
 		modalInstance.result.then(function (account) {
+			console.log("Reloading accounts..");
+			
 			// Reload the user accounts.
 			api.getAccounts().then(function (data) {
 				$scope.accounts = data;
 			});
+		});
+	};
+
+	$scope.selectAccount = function (account) {
+		$scope.selectedItem = account;
+	};
+
+	$scope.uninstallAccount = function (a) {
+		api.uninstallAccount(a.Uri).then(function (data) {
+			console.log("Account disconnected:", a.Uri);
+
+			var i = $scope.accounts.indexOf(a);
+
+			$scope.accounts.splice(i, 1);
 		});
 	};
 
@@ -863,39 +828,59 @@ explorerControllers.controller('AccountSettingsController', function (api, $scop
 	};
 });
 
-explorerControllers.controller('AccountDialogController', function (api, $scope, $uibModalInstance) {
+explorerControllers.controller('AddAccountDialogController', function (api, $scope, $filter, $uibModalInstance) {
 	var timer = undefined;
 
-	api.getAccountProviders().then(function (data) {
-		$scope.providers = data;
+	$scope.title = $filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE');
+
+	$scope.connectors = [];
+
+	api.getAccountConnectors().then(function (data) {
+		$scope.connectors = data;
 	});
 
-	$scope.showStatus = function (provider, $event) {
-		var element = $event.currentTarget;
+	$scope.selectedConnector = null;
 
-		$(element).find('.account').hide();
-		$(element).find('.description').hide();
-		$(element).find('.loader').show();
-		$(element).find('.status').show();
+	$scope.selectConnector = function (connector) {
+		$scope.selectedConnector = connector;
 
-		// Update the provider status every 500ms.
-		timer = window.setInterval(function () {
-			api.getAccountProvider(provider.Id).then(function (data) {
-				$(element).find('.status').val(data.Status);
+		$scope.title = ($filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE_X')).replace('{0}', connector.Title);
 
-				// TODO: Improve server API to provide status code.
-				if (data.Status.indexOf("install") > -1) {
-					$(element).find('.loader').hide();
-					$(element).find('.ok').show();
+		$scope.parameter = {
+			connectorUri: connector.Uri,
+			authType: connector.AuthenticationClients[0].Uri,
+			url: 'http://localhost:8080'
+		};
+	}
 
-					window.clearInterval(timer);
-				}
-			});
-		}, 500);
-	};
+	$scope.connectAccount = function (connector) {
+		$scope.isConnecting = true;
 
-	this.submit = function () {
-		console.log("Submitting accounts..");
+		api.authorizeAccount($scope.parameter).then(function (data) {
+			var sessionId = data.id;
+
+			var h = setInterval(function () {
+				api.getAccountConnectorStatus(sessionId).then(function (data) {
+					for (var i = 0; i < data.AuthenticationClients.length; i++) {
+						var c = data.AuthenticationClients[i];
+
+						if (c.ClientState > 1) {
+							clearInterval(h);
+
+							if (c.ClientState == 2) {
+								api.installAccount(sessionId).then(function (r) {
+									console.log("Account connected:", sessionId);
+								});
+							}
+
+							$uibModalInstance.close();
+
+							break;
+						}
+					}
+				});
+			}, 1000);
+		});
 	};
 
 	$scope.cancel = function () {

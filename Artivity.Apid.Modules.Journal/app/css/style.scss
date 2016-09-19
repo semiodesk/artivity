@@ -15,7 +15,7 @@ $selectionTextColor: white;
 $selectionBorderColor: transparent;
 $selectionBackgroundColor: rgba($textColor, .1);
 $windowBackgroundColor: #1D1D1D;
-$headerBackgroundColor: #333333;
+$headerBackgroundColor: #303030;
 $headerTextColor: $textColor;
 $headerHeight: 50px;
 $toolbarBackgroundColor: $headerBackgroundColor;
@@ -147,7 +147,7 @@ button,
 	background: $buttonBackgroundColor;
 	color: $buttonTextColor;
 	padding: .7em;
-	margin: 0 5px;
+	margin: 0 5px 0 0;
 	outline: none;
 	text-shadow: none;
 	box-shadow: none;
@@ -158,6 +158,26 @@ button:hover,
 .btn-default:hover {
 	background: $buttonHoverBackgroundColor;
 	color: $buttonTextColor;
+}
+
+.btn-success {
+	background: #4CAF50;
+	border: none;
+	text-shadow: none;
+	outline: none;
+	text-shadow: none;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+}
+
+.btn-success:hover {
+	background: lighten(#4CAF50, 10%);
+}
+
+.btn-sm {
+	width: 30px;
+	height: 30px;
+	padding: 5px 10px;
 }
 
 .btn-lg {
@@ -186,7 +206,8 @@ button:hover,
 	border: none;
 }
 
-.circular {
+.circular,
+.btn-circular {
 	border-radius: 50%;
 }
 
@@ -227,20 +248,22 @@ button:hover,
 .nav-tabs li.active a,
 .nav-tabs li.active a:hover {
 	border: none;
-	border-top: 2px solid $accentColor;
+	border-top: 3px solid $accentColor;
 	background: transparent;
 	color: $accentColor;
 }
 
 .nav-tabs.nav-stacked li a {
 	border: none;
-	border-right: 2px solid transparent;
+	border-left: 3px solid transparent;
+	margin: 0;
+	text-transform: none;
 }
 
 .nav-tabs.nav-stacked li.active a,
 .nav-tabs.nav-stacked li.active a:hover {
 	border: none;
-	border-right: 2px solid $accentColor !important;
+	border-left: 3px solid $accentColor !important;
 	background: rgba($accentColor, .05);
 }
 
@@ -256,39 +279,60 @@ button:hover,
 	text-align: center;
 }
 
-.list-view,
-.tile-view {
+.list-view {
 	list-style: none;
 	padding: 0;
 	margin: 0;
+	display: table;
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 3px;
 }
 
 .list-item {
-	padding: 7px 14px;
-	line-height: 30px;
+	display: table-row;
 	vertical-align: middle;
+	background: rgba($accentColor, .025);
 }
 
 .list-item:hover {
-	background: $headerBackgroundColor;
-}
-
-.tile-view {
-	padding: 0 5px 5px 5px;
-}
-
-.tile-item {
-	padding: 10px;
-	width: 250px;
-	height: 75px;
 	background: rgba($accentColor, .05);
-	float: left;
-	margin-right: 5px;
-	margin-bottom: 5px;
 }
 
-.tile-item:hover {
-	background: rgba($accentColor, .1);
+.list-item .col {
+	display: table-cell;
+}
+
+.list-item .col h5 {
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
+
+.list-item .col label {
+	margin: 0;
+}
+
+.list-item .col.expand {
+	width: 100%;
+}
+
+.list-item .col-icn {
+	vertical-align: middle;
+	text-align: center;
+	min-width: 48px;
+}
+
+.list-item .col-icn i {
+	background: $buttonBackgroundColor;
+	display: block;
+	width: 100%;
+	font-size: 30px;
+	line-height: 48px;
+}
+
+.list-item .col button {
+	background: transparent;
+	color: $labelColor;
 }
 
 .label,
@@ -564,13 +608,12 @@ h4 {
 
 .ui-pane.ui-pane-left {
 	width: 370px;
-	min-width: 300px;
-	border-right: 1px solid $headerBackgroundColor;
+	border-right: 1px solid rgba($accentColor, .025);
 }
 
 .ui-pane.ui-pane-right {
 	width: 300px;
-	border-left: 1px solid $headerBackgroundColor;
+	border-left: 1px solid rgba($accentColor, .025);
 }
 
 .ui-pane .tab-content {
@@ -883,7 +926,20 @@ svg {
 
 /* FORMS */
 
-label {
+fieldset {
+	background: rgba($accentColor, .025);
+	padding: 1em;
+}
+
+fieldset h4 {
+	padding: 0;
+	margin-top: 0;
+	color: $labelColor;
+	border: none;
+}
+
+label,
+p.description {
 	font-weight: 400;
 	color: $labelColor;
 }
@@ -892,6 +948,7 @@ input.form-control {
 	border-radius: 0;
 	border-color: white;
 	box-shadow: none;
+	margin-bottom: 4px;
 }
 
 textarea.form-control:active,
@@ -904,6 +961,40 @@ input.form-control:focus {
 	-webkit-appearance: none;
 }
 
+input.form-control-login {
+	max-width: 200px;
+}
+
+select {
+	-webkit-appearance: none;
+	border-radius: 0;
+}
+
+select:focus {
+	outline: none;
+}
+
+.modal-dialog {
+	margin-top: 59px;
+	box-shadow: none;
+}
+
+.modal-body {
+	padding-top: 0;
+}
+
+.modal-content {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border-radius: 0;
+	border: none;
+}
+
+.modal-backdrop.in {
+	background: darken($windowBackgroundColor, 5%);
+	opacity: .9 !important;
+	transition: opacity linear .4s;
+}
 
 /* LOADING SPINNER */
 
@@ -1399,7 +1490,7 @@ path.color1 {
 	left: -7px;
 }
 
-.yasqe_queryButton.query_valid .btn{
+.yasqe_queryButton.query_valid .btn {
 	float: left;
 	font-size: 30px;
 	line-height: 30px;
@@ -1515,9 +1606,11 @@ path.color1 {
 .yasgui .yasr .CodeMirror .cm-string {
 	color: #00ceff;
 }
+
 .yasgui .yasr .nonUri {
 	color: $textColor;
 }
+
 .yasgui .yasr sup {
 	color: $labelColor;
 }

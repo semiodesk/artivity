@@ -20,6 +20,9 @@ namespace Artivity.DataModel
         [RdfProperty(FOAF.accountName)]
         public string Id { get; set; }
 
+        [RdfProperty(ART.accountServiceConnector)]
+        public OnlineServiceConnector Connector { get; set; }
+
         /// <summary>
         /// Indicates a homepage of the service provide for this online account.
         /// </summary>

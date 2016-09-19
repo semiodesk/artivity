@@ -293,12 +293,15 @@ art:px a rdfs:Class ;
 nfo:FileDataObject rdfs:subClassOf prov:Entity.
 nfo:WebDataObject rdfs:subClassOf prov:Entity.
 
-art:OrcidAccount a rdfs:Class ;
-	rdfs:label "OrcidAccount" ;
-	rdfs:subClassOf foaf:OnlineAccount .
-
 art:USER rdf:type prov:Role ;
 	rdfs:label "USER" .
 
 art:SOFTWARE rdf:type prov:Role ;
 	rdfs:label "SOFTWARE" .
+
+art:accountServiceConnector a rdf:Property ;
+	rdfs:label "accountServiceConnector" ;
+	rdfs:domain art:OnlineServiceConnector .
+
+art:OnlineServiceConnector rdfs:subClassOf prov:SoftwareAgent ;
+	rdfs:label "OnlineServiceConnector" .

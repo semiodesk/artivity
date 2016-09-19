@@ -44,6 +44,7 @@
     <Compile Include="ObjectModel\Communication.cs" />
     <Compile Include="ObjectModel\Entities\Folder.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
+    <Compile Include="ObjectModel\OnlineServiceConnector.cs" />
     <Compile Include="ObjectModel\Person.cs" />
     <Compile Include="ObjectModel\Activity.cs" />
     <Compile Include="ObjectModel\SoftwareAssociation.cs" />
