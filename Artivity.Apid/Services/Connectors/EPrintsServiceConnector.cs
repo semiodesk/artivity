@@ -27,6 +27,7 @@
 
 using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
+using Nancy;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -62,6 +63,25 @@ namespace Artivity.Apid.Accounts
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Checks if the provides HTTP request query parameters are sane and may correct errors.
+        /// </summary>
+        /// <param name="request">Nancy HTTP request.</param>
+        public override void SanitizeQueryParameters(Request request)
+        {
+            base.SanitizeQueryParameters(request);
+
+            string url = request.Query.url;
+
+            if(!url.EndsWith("/id/contents"))
+            {
+                url.TrimEnd('/');
+                url += "/id/contents";
+
+                request.Query.url = url;
+            }
+        }
 
         /// <summary>
         /// Gets the account identifier.

@@ -46,6 +46,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			PROFILE: {
 				LABEL: 'Profile',
 				TITLE: 'User Profile',
+				DESCRIPTION: 'Edit the profile information that is published when you share files online:',
 				LABEL_PICTURE: 'Click to select your profile picture.',
 				LABEL_NAME: 'Name',
 				LABEL_EMAIL: 'E-Mail',
@@ -53,8 +54,8 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			},
 			ACCOUNTS: {
 				LABEL: 'Accounts',
-				TITLE: 'Connected Accounts',
-				DESCRIPTION: 'Artivity can be connected with your online services to provide extra features.',
+				TITLE: 'Accounts',
+				DESCRIPTION: 'Connect your online accounts to benefit from additional features:',
 				CONNECT_DIALOG: {
 					TITLE: 'Connect Account',
 					TITLE_X: 'Connect {0}-Account'
@@ -62,9 +63,17 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			},
 			APPS: {
 				LABEL: 'Apps',
-				TITLE: 'Application Plugins',
-				DESCRIPTION: 'Manage the application plugins which log data into Artivity.'
+				TITLE: 'Applications',
+				DESCRIPTION: 'Manage which applications should provide Artivity data:'
 			},
+		},
+		'http://eprints.org': {
+			'title': 'EPrints',
+			'description': 'Publish your files to online digital archives.'
+		},
+		'http://orcid.org': {
+			'title': 'ORCiD',
+			'description': 'Assign a persistent digital identifier to your published files.'
 		},
 	});
 

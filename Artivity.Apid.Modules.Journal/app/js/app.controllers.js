@@ -788,7 +788,7 @@ explorerControllers.controller('AccountSettingsController', function (api, $scop
 
 		modalInstance.result.then(function (account) {
 			console.log("Reloading accounts..");
-			
+
 			// Reload the user accounts.
 			api.getAccounts().then(function (data) {
 				$scope.accounts = data;
@@ -828,7 +828,7 @@ explorerControllers.controller('AccountSettingsController', function (api, $scop
 	};
 });
 
-explorerControllers.controller('AddAccountDialogController', function (api, $scope, $filter, $uibModalInstance) {
+explorerControllers.controller('AddAccountDialogController', function (api, $scope, $filter, $uibModalInstance, $sce) {
 	var timer = undefined;
 
 	$scope.title = $filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE');
@@ -837,6 +837,8 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 
 	api.getAccountConnectors().then(function (data) {
 		$scope.connectors = data;
+
+		console.log($scope.connectors);
 	});
 
 	$scope.selectedConnector = null;
@@ -848,35 +850,76 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 
 		$scope.parameter = {
 			connectorUri: connector.Uri,
-			authType: connector.AuthenticationClients[0].Uri,
-			url: 'http://localhost:8080'
+			authType: connector.AuthenticationClients[0].Uri
 		};
+
+		// TODO: Remove hard-wiring. Receive presets and target sites from connector.
+		if ($scope.selectedConnector.Uri === 'http://orcid.org') {
+			$scope.parameter.presetId = 'sandbox.orcid.org';
+
+			$scope.connectAccount($scope.selectedConnector);
+		} else if ($scope.selectedConnector.Uri === 'http://eprints.org') {
+			$scope.parameter.url = 'http://ualresearchonline.arts.ac.uk/id/contents';
+		}
 	}
 
+	// Prevent an account from being installed twice.
+	$scope.isInstalling = false;
+
+	// The connector state '0' refers to 'None'.	
+	$scope.connectorState = 0;
+
 	$scope.connectAccount = function (connector) {
-		$scope.isConnecting = true;
+		// The connector state '1' refers to 'InProgress'.
+		$scope.connectorState = 1;
+
+		// The number of status queries.
+		var n = 0;
 
 		api.authorizeAccount($scope.parameter).then(function (data) {
 			var sessionId = data.id;
 
+			// Query the current connector status in a regular interval.
 			var h = setInterval(function () {
 				api.getAccountConnectorStatus(sessionId).then(function (data) {
+					n++;
+
 					for (var i = 0; i < data.AuthenticationClients.length; i++) {
 						var c = data.AuthenticationClients[i];
+
+						// Allow iframes to connect to the URL.
+						$scope.clientUrl = $sce.trustAsResourceUrl(c.AuthorizeUrl);
+						
+						console.log(c.AuthorizeUrl, $scope.clientUrl);
 
 						if (c.ClientState > 1) {
 							clearInterval(h);
 
-							if (c.ClientState == 2) {
+							$scope.connectorState = c.ClientState;
+
+							// The connector state '2' refers to 'Authorized'.
+							if (!$scope.isInstalling && c.ClientState == 2) {
+								$scope.isInstalling = true;
+
 								api.installAccount(sessionId).then(function (r) {
 									console.log("Account connected:", sessionId);
+
+									// Close the dialog after the account was successfully connected.
+									setTimeout(function () {
+										$uibModalInstance.close();
+									}, 500);
 								});
 							}
 
-							$uibModalInstance.close();
-
 							break;
 						}
+					}
+
+					if (n === 300) {
+						clearInterval(h);
+
+						// The connector state '3' refers to 'Error'.
+						$scope.connectorState = 4;
 					}
 				});
 			}, 1000);

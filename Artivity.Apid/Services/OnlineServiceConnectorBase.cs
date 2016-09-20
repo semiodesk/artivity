@@ -86,7 +86,7 @@ namespace Artivity.Apid.Accounts
         /// Initializeses additional HTTP request query parameters from a preset ID which is provided via a query parameter.
         /// </summary>
         /// <param name="request">Nancy HTTP request.</param>
-        public void InitializePresetQueryParameters(Request request)
+        public void InitializeQueryParametersFromPreset(Request request)
         {
             if (!string.IsNullOrEmpty(request.Query["presetId"]))
             {
@@ -105,6 +105,14 @@ namespace Artivity.Apid.Accounts
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Checks if the provides HTTP request query parameters are sane and may correct errors.
+        /// </summary>
+        /// <param name="request">Nancy HTTP request.</param>
+        public virtual void SanitizeQueryParameters(Request request)
+        {
         }
 
         /// <summary>

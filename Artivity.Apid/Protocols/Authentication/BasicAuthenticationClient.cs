@@ -82,21 +82,51 @@ namespace Artivity.Apid.Protocols.Authentication
 
             string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", Username, Password)));
 
-            using (HttpClient client = new HttpClient())
+            try
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
-
-                HttpResponseMessage response = await client.GetAsync(AuthorizeUrl);
-
-                SetRequestStatus(response.StatusCode);
-
-                if(RequestStatus == 200)
+                using (HttpClient client = new HttpClient())
                 {
-                    ClientState = HttpAuthenticationClientState.Authorized;
-                }
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
 
-                ResponseData = await response.Content.ReadAsByteArrayAsync();
+                    HttpResponseMessage response = await client.GetAsync(AuthorizeUrl);
+
+                    SetRequestStatus(response.StatusCode);
+
+                    if (RequestStatus == 200)
+                    {
+                        ClientState = HttpAuthenticationClientState.Authorized;
+                    }
+                    else if(RequestStatus == 401)
+                    {
+                        ClientState = HttpAuthenticationClientState.Unauthorized;
+                    }
+
+                    ResponseData = await response.Content.ReadAsByteArrayAsync();
+                }
             }
+            catch (Exception ex)
+            {
+                ClientState = HttpAuthenticationClientState.Error;
+
+                Logger.LogError(ex);
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return GetHashCode() + Username.GetHashCode() + Password.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            BasicAuthenticationClient other = obj as BasicAuthenticationClient;
+
+            if(other == null)
+            {
+                return false;
+            }
+
+            return Username.Equals(other.Username) && Password.Equals(other.Password);
         }
 
         #endregion

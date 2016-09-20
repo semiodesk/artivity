@@ -61,7 +61,13 @@ namespace Artivity.Apid.Accounts
         /// Initializeses additional HTTP request query parameters from a preset ID which is provided via a query parameter.
         /// </summary>
         /// <param name="request">Nancy HTTP request.</param>
-        void InitializePresetQueryParameters(Request request);
+        void InitializeQueryParametersFromPreset(Request request);
+
+        /// <summary>
+        /// Checks if the provides HTTP request query parameters are sane and may correct errors.
+        /// </summary>
+        /// <param name="request">Nancy HTTP request.</param>
+        void SanitizeQueryParameters(Request request);
 
         /// <summary>
         /// Return a HTTP authentication client with a given state.
