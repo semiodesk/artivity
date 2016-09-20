@@ -1,5 +1,14 @@
 /* NOTE: If Brackets refuses to compile SASS files, check for syntax errors! */
 
+
+/* TODO: Build palette with shades: http://paletton.com/#uid=70t0u0kthtvhXAamVuIuCn5-Ji7
+$accentColor = #EB7414;
+$warnColor = #EBA214;
+$infoColor = #3694c3;
+$errorColor = #E71D36;
+$successColor = #849324;
+*/
+
 $textFont: 'Roboto',
 'Helvetica',
 'Arial',
@@ -76,6 +85,10 @@ a:hover {
 	text-decoration: none;
 }
 
+iframe {
+	border: none;
+}
+
 .collapsed {
 	display: none;
 }
@@ -102,7 +115,9 @@ a:hover {
 }
 
 .msg-error {
-	background: $errorColor;
+	display: block;
+	width: 100%;
+	background: #E71D36;
 	color: $errorTextColor;
 	padding: 1em;
 	margin: 0;
@@ -140,10 +155,14 @@ a:hover {
 	filter: grayscale(100%);
 }
 
+.btn-no-margin {
+	margin: 0;
+}
+
 button,
 .btn-default {
 	border: none;
-	border-radius: 3px;
+	border-radius: 0;
 	background: $buttonBackgroundColor;
 	color: $buttonTextColor;
 	padding: .7em;
@@ -160,14 +179,23 @@ button:hover,
 	color: $buttonTextColor;
 }
 
+button:active,
+button:focus,
+.btn:active,
+.btn:focus {
+	background: $buttonHoverBackgroundColor;
+	color: $buttonTextColor;
+	outline: none !important;
+}
+
+.btn-info {
+	background: #3694c3;
+	border-radius: 2px;
+}
+
 .btn-success {
 	background: #4CAF50;
-	border: none;
-	text-shadow: none;
-	outline: none;
-	text-shadow: none;
-	box-shadow: none;
-	-webkit-box-shadow: none;
+	border-radius: 2px;
 }
 
 .btn-success:hover {
@@ -185,6 +213,7 @@ button:hover,
 	height: 90px;
 }
 
+.btn-md,
 .btn-icn {
 	padding: 0;
 	font-size: $iconFontSize;
@@ -199,11 +228,6 @@ button:hover,
 	height: 50px;
 	background: none;
 	color: $labelColor;
-}
-
-.modal-header,
-.modal-footer {
-	border: none;
 }
 
 .circular,
@@ -286,7 +310,7 @@ button:hover,
 	display: table;
 	width: 100%;
 	border-collapse: separate;
-	border-spacing: 3px;
+	border-spacing: 0 3px;
 }
 
 .list-item {
@@ -306,6 +330,8 @@ button:hover,
 .list-item .col h5 {
 	margin-top: 6px;
 	margin-bottom: 6px;
+	color: lighten($labelColor, 15%);
+	font-size: 15px;
 }
 
 .list-item .col label {
@@ -322,12 +348,17 @@ button:hover,
 	min-width: 48px;
 }
 
+.list-item .col-icn-lg {
+	min-width: 64px;
+}
+
 .list-item .col-icn i {
-	background: $buttonBackgroundColor;
 	display: block;
 	width: 100%;
 	font-size: 30px;
-	line-height: 48px;
+	line-height: 100%;
+	border: none;
+	margin: 0;
 }
 
 .list-item .col button {
@@ -356,8 +387,27 @@ button:hover,
 	background: transparent;
 }
 
-zmdi-lg {
-	font-size: 32px !important;
+.icn-container-lg {
+	display: inline-block;
+	text-align: center;
+	width: 30px;
+}
+
+.zmdi-sm {
+	display: inline-block;
+	font-size: 20px;
+	width: 26px;
+	height: 20px;
+	line-height: 20px;
+	line-height: 20px;
+	text-align: center;
+	vertical-align: middle
+}
+
+.zmdi-lg {
+	font-size: 24px !important;
+	line-height: 24px;
+	vertical-align: middle;
 }
 
 .account,
@@ -501,8 +551,8 @@ h4 {
 	position: absolute;
 	left: 0;
 	right: 0;
-	bottom: 50px;
-	top: 52px;
+	bottom: 0;
+	top: 51px;
 }
 
 #body {
@@ -654,11 +704,17 @@ h4 {
 
 /* FOOTER */
 
+.statusbar,
 #footer {
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	right: 0;
+}
+
+.statusbar {
+	min-height: 1em;
+	background: $windowBackgroundColor;
 }
 
 
@@ -815,7 +871,7 @@ svg {
 /* DIRECTIVES */
 
 .btn-colorpicker {
-	border-radius: 3px;
+	border-radius: 50%;
 	width: 32px;
 	height: 32px;
 	padding: 2px;
@@ -830,7 +886,7 @@ svg {
 	display: block;
 	width: 100%;
 	height: 100%;
-	border-radius: 3px;
+	border-radius: 50%;
 }
 
 .colorpicker-lg .colorpicker-saturation {
@@ -907,7 +963,7 @@ svg {
 	width: 200px;
 	margin: 0 5px 5px 0;
 	padding: 0;
-	background: $buttonBackgroundColor;
+	background: #262626;
 }
 
 .card .title {
@@ -942,13 +998,14 @@ label,
 p.description {
 	font-weight: 400;
 	color: $labelColor;
+	margin-bottom: 1em;
 }
 
 input.form-control {
 	border-radius: 0;
 	border-color: white;
 	box-shadow: none;
-	margin-bottom: 4px;
+	margin-bottom: 6px;
 }
 
 textarea.form-control:active,
@@ -965,18 +1022,24 @@ input.form-control-login {
 	max-width: 200px;
 }
 
-select {
+select.form-control {
 	-webkit-appearance: none;
 	border-radius: 0;
+	border: none;
 }
 
-select:focus {
+select.form-control:focus {
 	outline: none;
 }
 
 .modal-dialog {
-	margin-top: 59px;
+	margin-top: 60px;
 	box-shadow: none;
+}
+
+.modal-header,
+.modal-footer {
+	border: none;
 }
 
 .modal-body {
@@ -986,8 +1049,8 @@ select:focus {
 .modal-content {
 	-webkit-box-shadow: none;
 	box-shadow: none;
-	border-radius: 0;
 	border: none;
+	border-radius: 0;
 }
 
 .modal-backdrop.in {
@@ -995,6 +1058,22 @@ select:focus {
 	opacity: .9 !important;
 	transition: opacity linear .4s;
 }
+
+.modal-status-bar .modal-state {
+	padding: 5px;
+	text-align: center;
+}
+
+input[disabled] {
+	opacity: .5;
+}
+
+button[disabled],
+button[disabled]:hover {
+	background: rgba($accentColor, .25) !important;
+	color: $windowBackgroundColor;
+}
+
 
 /* LOADING SPINNER */
 
@@ -1619,4 +1698,70 @@ path.color1 {
 	position: relative;
 	right: 47px;
 	top: -50px !important;
+}
+
+
+/* CONNECTION SPINNER */
+
+.spinner {
+	display: inline-block;
+	margin: 0 3px 0 0;
+	width: 20px;
+	height: 16px;
+	font-size: 10px;
+	position: relative;
+	top: 3px;
+}
+
+.spinner > div {
+	background-color: white;
+	height: 100%;
+	width: 4px;
+	display: inline-block;
+	-webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+	animation: sk-stretchdelay 1.2s infinite ease-in-out;
+}
+
+.spinner .rect2 {
+	-webkit-animation-delay: -1.1s;
+	animation-delay: -1.1s;
+}
+
+.spinner .rect3 {
+	-webkit-animation-delay: -1.0s;
+	animation-delay: -1.0s;
+}
+
+.spinner .rect4 {
+	-webkit-animation-delay: -0.9s;
+	animation-delay: -0.9s;
+}
+
+.spinner .rect5 {
+	-webkit-animation-delay: -0.8s;
+	animation-delay: -0.8s;
+}
+
+@-webkit-keyframes sk-stretchdelay {
+	0%,
+	40%,
+	100% {
+		-webkit-transform: scaleY(0.4)
+	}
+	20% {
+		-webkit-transform: scaleY(1.0)
+	}
+}
+
+@keyframes sk-stretchdelay {
+	0%,
+	40%,
+	100% {
+		transform: scaleY(0.4);
+		-webkit-transform: scaleY(0.4);
+	}
+	20% {
+		transform: scaleY(1.0);
+		-webkit-transform: scaleY(1.0);
+	}
 }

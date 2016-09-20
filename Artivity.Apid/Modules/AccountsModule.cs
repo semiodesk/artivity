@@ -175,7 +175,8 @@ namespace Artivity.Api.Modules
             }
             else
             {
-                connector.InitializePresetQueryParameters(Request);
+                connector.InitializeQueryParametersFromPreset(Request);
+                connector.SanitizeQueryParameters(Request);
             }
 
             IHttpAuthenticationClient authenticator = connector.TryGetAuthenticationClient(Request);
@@ -185,32 +186,19 @@ namespace Artivity.Api.Modules
                 return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
-            string sessionId;
+            // Remove any previous sessions.
+            string sessionId = _sessions.FirstOrDefault(s => s.Value == connector).Key;
 
-            switch(authenticator.ClientState)
+            if (!string.IsNullOrEmpty(sessionId))
             {
-                case HttpAuthenticationClientState.Processing:
-                {
-                    return Logger.LogRequest(HttpStatusCode.Processing, Request);
-                }
-                case HttpAuthenticationClientState.Authorized:
-                {
-                    // Return the session token from the previous successful request.
-                    sessionId = _sessions.FirstOrDefault(s => s.Value == connector).Key;
-
-                    break;
-                }
-                default:
-                {
-                    // Generate an authorization token for the current request.
-                    sessionId = Guid.NewGuid().ToString();
-
-                    // Only execute the request if there are no successful previous requests.
-                    authenticator.HandleRequestAsync(Request, sessionId);
-
-                    break;
-                }
+                _sessions.Remove(sessionId);
             }
+
+            // Generate an authorization token for the current request.
+            sessionId = Guid.NewGuid().ToString();
+
+            // Only execute the request if there are no successful previous requests.
+            authenticator.HandleRequestAsync(Request, sessionId);
 
             // Prepare the JSON result dictionary.
             Dictionary<string, object> result = new Dictionary<string, object>();

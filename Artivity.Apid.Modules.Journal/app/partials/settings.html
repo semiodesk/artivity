@@ -8,239 +8,242 @@
 			<div class="col">
 				<button class="btn btn-default btn-icn btn-header" ng-click="submitAndReturn()"><i class="zmdi zmdi-hc-fw"></i></button>
 			</div>
-
 			<div class="col expand">
 				<h5 class="title" translate="SETTINGS.TITLE"></h5>
 			</div>
-
 			<div class="col">
 				<button class="btn btn-default btn-icn btn-header" onclick="history.back()"><i class="zmdi zmdi-close"></i></button>
 			</div>
 		</div>
 	</div>
+	<div id="body-wrapper">
+		<div id="body">
+			<div class="ui-pane ui-pane-left" style="width: 225px; border-right: none; background: #262626;">
+				<ul class="nav nav-tabs nav-stacked" role="tablist" id="tabs">
+					<li role="presentation" class="active"><a data-target="#user-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-account zmdi-lg"></i></span> {{ 'SETTINGS.PROFILE.LABEL' | translate }}</a></li>
+					<li role="presentation"><a data-target="#applications-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-apps zmdi-lg"></i></span> {{ 'SETTINGS.APPS.LABEL' | translate }}</a></li>
+					<li role="presentation"><a data-target="#accounts-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-globe-alt zmdi-lg"></i></span> {{ 'SETTINGS.ACCOUNTS.LABEL' | translate }}</a></li>
+				</ul>
+			</div>
+			<div class="ui-pane ui-pane-center">
+				<div class="tab-content" style="max-width: 800px;">
+					<!-- PROFILE -->
+					<div role="tabpanel" class="tab-pane padded-lg fade active in" id="user-panel">
+						<form name="userForm" ng-controller="UserSettingsController as userSettings" ng-submit="submit()">
+							<div class="row">
+								<div class="col-md-12">
+									<h2 class="no-margin-top">{{ 'SETTINGS.PROFILE.TITLE' | translate }}</h2>
+									<p class="description">{{ 'SETTINGS.PROFILE.DESCRIPTION' | translate }}</p>
 
-	<div id="body">
-		<div class="ui-pane ui-pane-left" style="width: 225px; border-right: none; background: #222;">
-			<ul class="nav nav-tabs nav-stacked" role="tablist" id="tabs">
-				<li role="presentation" class="active"><a data-target="#user-panel" role="tab" data-toggle="tab"><i class="zmdi zmdi-hc-fw zdmi-lg"></i> {{ 'SETTINGS.PROFILE.LABEL' | translate }}</a></li>
-				<li role="presentation"><a data-target="#accounts-panel" role="tab" data-toggle="tab"><i class="zmdi zmdi-hc-fw zdmi-lg"></i> {{ 'SETTINGS.ACCOUNTS.LABEL' | translate }}</a></li>
-				<li role="presentation"><a data-target="#applications-panel" role="tab" data-toggle="tab"><i class="zmdi zmdi-hc-fw zdmi-lg"></i> {{ 'SETTINGS.APPS.LABEL' | translate }}</a></li>
-			</ul>
-		</div>
-		<div class="ui-pane ui-pane-center">
-			<div class="tab-content" style="max-width: 800px;">
-				<!-- PROFILE -->
-				<div role="tabpanel" class="tab-pane padded-lg fade active in" id="user-panel">
-					<form name="userForm" ng-controller="UserSettingsController as userSettings" ng-submit="submit()">
-						<div class="row">
-							<div class="col-md-12">
-								<h2 class="no-margin-top">{{ 'SETTINGS.PROFILE.TITLE' | translate }}</h2>
+									<div class="clearfix"></div>
 
-								<!-- USER -->
-								<div class="form-group">
-									<input type="file" accept="image/*" id="photo" name="photo" ng-model="userPhoto" style="display: none;" ng-photo-picker onchange="angular.element(this).scope().onPhotoChanged(this)" />
-
-									<button id="photo-btn" class="btn img-avatar img-avatar-lg circular">
-										<img id="photo-img" ng-src="{{userPhotoUrl}}" width="100" height="100">
-									</button>
-
-									<label for="photo-btn" style="margin: 10px 0"><i class="zmdi zmdi-hc-fw"></i> {{ 'SETTINGS.PROFILE.LABEL_PICTURE' | translate }}</label>
-
-									<script type="text/javascript">
-										$('#photo-btn').on('click', function () {
-											$('#photo').click();
-										});
-									</script>
-								</div>
-
-								<div style="max-width: 500px;">
+									<!-- USER -->
 									<div class="form-group">
-										<label for="name">{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}</label>
-										<input type="text" class="form-control" id="name" name="name" placeholder="{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}" size="30" ng-model="user.Name" ng-minlength="5" required>
+										<input type="file" accept="image/*" id="photo" name="photo" ng-model="userPhoto" style="display: none;" ng-photo-picker onchange="angular.element(this).scope().onPhotoChanged(this)" />
+
+										<button id="photo-btn" class="btn img-avatar img-avatar-lg circular">
+											<img id="photo-img" ng-src="{{userPhotoUrl}}" width="100" height="100">
+										</button>
+
+										<label for="photo-btn" style="margin: 10px 0"><i class="zmdi zmdi-hc-fw"></i> {{ 'SETTINGS.PROFILE.LABEL_PICTURE' | translate }}</label>
+
+										<script type="text/javascript">
+											$('#photo-btn').on('click', function () {
+												$('#photo').click();
+											});
+										</script>
 									</div>
 
-									<div class="form-group">
-										<label for="organization">{{'SETTINGS.PROFILE.LABEL_ORGANIZATION' | translate}}</label>
-										<input type="text" class="form-control" id="organization" name="organization" placeholder="{{'SETTINGS.PROFILE.LABEL_ORGANIZATION' | translate}}" length="25" ng-model="user.Organization">
-									</div>
+									<div style="max-width: 500px;">
+										<div class="form-group">
+											<label for="name">{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}</label>
+											<input type="text" class="form-control" id="name" name="name" placeholder="{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}" size="30" ng-model="user.Name" ng-minlength="5" required>
+										</div>
 
-									<div class="form-group">
-										<label for="email">{{'SETTINGS.PROFILE.LABEL_EMAIL' | translate}}</label>
-										<input type="text" class="form-control" id="email" name="email" placeholder="you@example.org" length="25" ng-model="user.EmailAddress" ng-minlength="5" required>
+										<div class="form-group">
+											<label for="organization">{{'SETTINGS.PROFILE.LABEL_ORGANIZATION' | translate}}</label>
+											<input type="text" class="form-control" id="organization" name="organization" placeholder="{{'SETTINGS.PROFILE.LABEL_ORGANIZATION' | translate}}" length="25" ng-model="user.Organization">
+										</div>
+
+										<div class="form-group">
+											<label for="email">{{'SETTINGS.PROFILE.LABEL_EMAIL' | translate}}</label>
+											<input type="text" class="form-control" id="email" name="email" placeholder="you@example.org" length="25" ng-model="user.EmailAddress" ng-minlength="5" required>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</form>
-				</div>
-				<!-- ACCOUNTS -->
-				<div role="tabpanel" class="tab-pane padded-lg fade" id="accounts-panel">
-					<form name="agentForm" ng-controller="AccountSettingsController as accountSettings">
-						<button class="btn btn-default btn-icn pull-right" style="margin: 0 -5px 15px 0;" ng-click="addAccount()"><i class="zmdi zmdi-plus zdmi-lg"></i></button>
+						</form>
+					</div>
+					<!-- ACCOUNTS -->
+					<div role="tabpanel" class="tab-pane padded-lg fade" id="accounts-panel">
+						<form name="agentForm" ng-controller="AccountSettingsController as accountSettings">
+							<button class="btn btn-default btn-icn btn-circular pull-right" style="margin: 5px 1px 15px 0;" ng-click="addAccount()"><i class="zmdi zmdi-plus zdmi-lg"></i></button>
 
-						<h2 class="no-margin-top">{{ 'SETTINGS.ACCOUNTS.TITLE' | translate }}</h2>
+							<h2 class="no-margin-top">{{ 'SETTINGS.ACCOUNTS.TITLE' | translate }}</h2>
+							<p class="description">{{ 'SETTINGS.ACCOUNTS.DESCRIPTION' | translate }}</p>
 
-						<p>
-							<label>{{ 'SETTINGS.ACCOUNTS.DESCRIPTION' | translate }}</label>
-						</p>
+							<div class="clearfix"></div>
 
-						<div class="clearfix"></div>
-
-						<ul class="list-view">
-							<li class="list-item" ng-repeat="a in accounts">
-								<a ng-click="selectAccount(a)">
-									<div class="col col-icn">
+							<ul class="list-view">
+								<li class="list-item" ng-repeat="a in accounts" ng-click="selectAccount(a)">
+									<div class="col col-icn col-icn-lg">
 										<i class="zmdi zmdi-account zdmi-lg"></i>
 									</div>
 									<div class="col expand">
-										<div style="padding-left: 6px;">
+										<div style="padding: 9px">
 											<h5>{{a.Title}}</h5>
 											<label>{{a.Id}}</label>
 										</div>
 									</div>
 									<div class="col col-btn" style="vertical-align: middle">
-										<button class="btn btn-sm btn-circular" ng-click="uninstallAccount(a)"><i class="zmdi zmdi-close"></i></button>
+										<button class="btn btn-md" ng-click="uninstallAccount(a)"><i class="zmdi zmdi-close zmdi-sm"></i></button>
 									</div>
-								</a>
-							</li>
-						</ul>
+								</li>
+							</ul>
 
-						<script type="text/ng-template" id="add-account-dialog.html">
-							<div style="background: #222">
-								<div class="modal-header">
-									<button class="btn btn-sm btn-circular pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
+							<script type="text/ng-template" id="add-account-dialog.html">
+								<div style="background: #222">
+									<div class="modal-header">
+										<button class="btn btn-sm btn-circular btn-no-margin pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
 
-									<h2 class="modal-title">{{ title | translate}}</h2>
-								</div>
-								<div class="modal-body">
-									<div ng-show="selectedConnector == null">
-										<p class="description">Please select the account type to connect with:</p>
+										<h2 class="modal-title">{{ title | translate}}</h2>
+									</div>
+									<div class="modal-body">
+										<div ng-show="selectedConnector == null">
+											<p class="description">Please select the account type to connect with:</p>
 
-										<ul class="list-view">
-											<li class="list-item" ng-repeat="connector in connectors">
-												<a ng-click="selectConnector(connector)" style="cursor: pointer;">
-													<div class="col col-icn">
-														<i class="zmdi zmdi-account"></i>
+											<ul class="list-view">
+												<li class="list-item" ng-repeat="connector in connectors">
+													<a ng-click="selectConnector(connector)" style="cursor: pointer;">
+														<div class="col col-icn col-icn-lg">
+															<i class="zmdi zmdi-account"></i>
+														</div>
+
+														<div class="col expand">
+															<div style="padding: 9px">
+																<h5>{{connector.Title}}</h5>
+																<label>{{connector.Uri + '.description' | translate}}</label>
+															</div>
+														</div>
+													</a>
+												</li>
+											</ul>
+										</div>
+										<div ng-show="selectedConnector.Uri === 'http://eprints.org'">
+											<form name="connectForm" ng-submit="connectAccount(selectedConnector)">
+												<p class="description">Please enter the server address, username and password of the repository:</p>
+
+												<select class="form-control" id="url" name="url" placeholder="http://example.org" ng-model="parameter.url" required>
+													<option value="http://ualresearchonline.arts.ac.uk/id/contents">http://ualresearchonline.arts.ac.uk</option>
+													<option value="http://localhost:8080/id/contents" selected>http://localhost:8080</option>
+												</select>
+
+												<fieldset>
+													<h4>Login</h4>
+
+													<div class="form-group">
+														<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20" maxlength="20" ng-model="parameter.username" required>
+														<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20" maxlength="20" ng-model="parameter.password" ui-keypress="{13:'connectAccount(selectedConnector)'}" required>
 													</div>
 
-													<div class="col expand">
-														<h5>{{connector.Title}}</h5>
-													</div>
-												</a>
-											</li>
-										</ul>
+													<button type="submit" class="btn btn-default" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < connectorState && connectorState < 3)">Connect</button>
+												</fieldset>
+											</form>
+										</div>
+										<div ng-show="selectedConnector.Uri === 'http://orcid.org'">
+											<p class="description">Please log into your ORCiD account and allow Artivity to be connected:</p>
+
+											<iframe ng-src="{{clientUrl}}" style="min-height: 400px; width: 100%;">
+											</iframe>
+										</div>
 									</div>
-									<div ng-show="selectedConnector.Uri === 'http://eprints.org'">
-										<p class="description">Please enter the server address, username and password of the repository:</p>
-
-										<select class="form-control" id="url" name="url" placeholder="http://example.org" ng-model="parameter.url" required>
-											<option value="http://ualresearchonline.arts.ac.uk">http://ualresearchonline.arts.ac.uk</option>
-											<option value="http://localhost:8080">http://localhost:8080</option>
-										</select>
-
-										<fieldset>
-											<h4>Login</h4>
-
-											<div class="form-group">
-												<input class="form-control form-control-login" type="text" id="username" name="username" size="20" maxlength="20" ng-model="parameter.username" placeholder="Username">
-												<input class="form-control form-control-login" type="password" id="password" name="password" size="20" maxlength="20" ng-model="parameter.password" placeholder="Password">
+									<div class="modal-status-bar">
+										<div class="modal-state fade in" style="background-color: #3694c3;" ng-show="connectorState === 1">
+											<div class="pull-center">
+												<div class="spinner">
+													<div class="rect1"></div>
+													<div class="rect2"></div>
+													<div class="rect3"></div>
+												</div> Connecting..
 											</div>
-
-											<button type="submit" class="btn-success" ng-click="connectAccount(connector)">Connect</button>
-										</fieldset>
-									</div>
-									<div ng-show="selectedConnector.Uri === 'http://orcid.org'">
-										<h5>ORCiD ACCOUNT</h5>
-										<label class="description">Associate your documents with our ORCiD idendity.</label>
-									</div>
-									<div ng-show="isConnecting">
-										Connecting..
+										</div>
+										<div class="modal-state fade in" style="background-color: #849324;" ng-show="connectorState === 2">
+											<i class="zmdi zmdi-check zmdi-sm"></i> Authorization successful.
+										</div>
+										<div class="modal-state fade in" style="background-color: #EB7414;" ng-show="connectorState === 3">
+											<i class="zmdi zmdi-alert-triangle zmdi-sm"></i> Wrong username or password.
+										</div>
+										<div class="modal-state fade in" style="background-color: #EB7414;" ng-show="connectorState === 4">
+											<i class="zmdi zmdi-alert-triangle zmdi-sm"></i> Connection error.
+										</div>
 									</div>
 								</div>
-							</div>
-						</script>
-						<!--
-						<div id="account-pane-add" class="ui-pane ui-pane-content">
-							<div ng-show="connector === undefined">
-								<ul class="tile-view">
-									<li ng-repeat="c in connectors">
-										<a class="tile-item" ng-click="selectConnector(c)">
-											<div class="icn"><i class="zmdi zmdi-account zdmi-lg"></i></div>
-											<b>{{c.Title}}</b>
-											<br>
-											<span>{{c.Description}}</span>
-										</a>
-									</li>
-								</ul>
-							</div>
+							</script>
+						</form>
+					</div>
+					<!-- AGENTS -->
+					<div role="tabpanel" class="tab-pane padded-lg fade" id="applications-panel">
+						<form name="agentForm" ng-controller="AgentSettingsController as agentSettings">
+							<button class="btn btn-default btn-icn btn-circular pull-right" style="margin: 5px 0 15px 0;" ng-click="reload()"><i class="zmdi zmdi-refresh-sync zmdi-lg"></i></button>
 
-						</div>
-						-->
-					</form>
-				</div>
-				<!-- AGENTS -->
-				<div role="tabpanel" class="tab-pane padded-lg fade" id="applications-panel">
-					<form name="agentForm" ng-controller="AgentSettingsController as agentSettings">
-						<h2 class="no-margin-top">{{ 'SETTINGS.APPS.TITLE' | translate }}</h2>
+							<h2 class="no-margin-top">{{ 'SETTINGS.APPS.TITLE' | translate }}</h2>
+							<p class="description">{{ 'SETTINGS.APPS.DESCRIPTION' | translate }}</p>
 
-						<div class="row">
-							<div class="col-xs-11">
-								<div class="hint">
-									<label><i class="zmdi zmdi-hc-fw"></i> You can drag undetected applications into this window.</label>
-								</div>
-							</div>
-							<div class="col-xs-1">
-								<button class="btn btn-default btn-icn pull-right" style="margin: 0 -5px 15px 0;" ng-click="reload()"><i class="zmdi zmdi-hc-fw"></i></button>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12">
-								<div class="msg-error animate-show" ng-show="hasError" style="margin: 0 -5px 15px -5px;">
+							<div class="clearfix"></div>
+
+							<ul class="list-view">
+								<li class="list-item" ng-repeat="agent in agents">
+									<div class="col col-icn col-icn-lg" ng-class="{disabled: !agent.pluginInstalled}">
+										<img ng-src="{{agent.iconSrc}}" width="40" height="40" />
+									</div>
+									<div class="col expand" ng-class="{disabled: !agent.pluginInstalled}">
+										<div style="padding: 9px">
+											<h5>{{agent.name}}</h5>
+
+											<div class="col" style="min-width: 250px;">
+												<label>Version: {{agent.softwareVersion}}</label>
+											</div>
+											<div class="col">
+												<label>Plugin: {{agent.pluginVersion}}</label>
+											</div>
+										</div>
+									</div>
+									<div class="col" style="vertical-align: middle" ng-class="{disabled: !agent.pluginInstalled}">
+										<div style="padding-right: 12px;">
+											<ng-color-picker selected-color="agent.color"></ng-color-picker>
+										</div>
+									</div>
+									<div class="col" style="vertical-align: middle">
+										<div style="padding-right: 12px;">
+											<input type="checkbox" ng-model="agent.pluginInstalled" ng-change="toggleInstall(agent)" data-size="small" bootstrap-switch/>
+										</div>
+									</div>
+								</li>
+							</ul>
+
+							<div class="statusbar">
+								<div class="msg-error animate-show" ng-show="hasError">
 									<h5>{{errorType}}</h5>
 									<label>{{errorMessage}}</label>
 								</div>
+
+								<div class="msg-info" ng-show="!hasError">
+									<label style="padding: 10px 30px;"><i class="zmdi zmdi-info"></i> You can drag undetected applications into this window.</label>
+								</div>
 							</div>
-						</div>
-
-						<ul class="list-view">
-							<li class="list-item" ng-repeat="agent in agents">
-								<!--
-								<div ng-class="{disabled: !agent.pluginInstalled}">
-
-								</div>
-								-->
-								<div class="col col-icn">
-									<img ng-src="{{agent.iconSrc}}" width="48" height="48" />
-								</div>
-
-								<div class="col expand" style="padding-left: 6px;">
-									<h4 style="margin-top: 0px; color: white;">{{agent.name}}</h4>
-									<label>Software version: {{agent.softwareVersion}}</label>
-									<br>
-									<label>Plugin version: {{agent.pluginVersion}}</label>
-								</div>
-
-								<div class="col">
-									<ng-color-picker selected-color="agent.color"></ng-color-picker>
-								</div>
-
-								<div class="col" style="margin-top: 2px;">
-									<input type="checkbox" ng-model="agent.pluginInstalled" ng-change="toggleInstall(agent)" data-size="small" bootstrap-switch/>
-								</div>
-							</li>
-						</ul>
-					</form>
+						</form>
+					</div>
 				</div>
 			</div>
+
+			<script type="text/javascript">
+				$(document).ready(function () {
+					$('#tabs a').click(function (e) {
+						e.preventDefault();
+						$(this).tab('show');
+					});
+				});
+			</script>
 		</div>
-
-		<script type="text/javascript">
-			$('#tabs a').click(function (e) {
-				e.preventDefault();
-				$(this).tab('show');
-			});
-
-			$('#url').editableSelect();
-		</script>
 	</div>
 </div>
