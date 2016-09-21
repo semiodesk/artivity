@@ -63,9 +63,6 @@ namespace Artivity.Journal.Mac
                 {
                     window.TitlebarAppearsTransparent = true;
                     window.Appearance = NSAppearance.GetAppearance(NSAppearance.NameVibrantDark);
-
-                    //window.BackgroundColor = NSColor.FromRgba(new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(1.0));
-                    //window.BackgroundColor = NSColor.White;
                 }
             }
         }
