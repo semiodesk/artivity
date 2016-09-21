@@ -555,6 +555,10 @@ h4 {
 	top: 52px;
 }
 
+#body-wrapper.bottom-toolbar {
+	bottom: 50px;
+}
+
 #body {
 	display: table;
 	width: 100%;
@@ -669,11 +673,15 @@ h4 {
 .ui-pane .tab-content {
 	overflow-y: scroll;
 	position: absolute;
-	top: 0;
+	top: 30px;
 	left: 0;
 	right: 0;
 	bottom: 0;
 	padding: 0;
+}
+
+.ui-pane .tab-content.nav-stacked {
+	top: 0;
 }
 
 .ui-pane .tab-pane {
@@ -998,6 +1006,9 @@ label,
 p.description {
 	font-weight: 400;
 	color: $labelColor;
+}
+
+p.description {
 	margin-bottom: 1em;
 }
 

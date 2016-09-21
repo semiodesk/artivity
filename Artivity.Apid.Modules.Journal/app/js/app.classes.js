@@ -1,5 +1,5 @@
 function each(array, fn) {
-	if(array !== undefined) {
+	if (array !== undefined) {
 		for (var i = 0; i < array.length; i++) {
 			fn(i, array[i]);
 		}
@@ -7,7 +7,7 @@ function each(array, fn) {
 };
 
 function values(array, fn) {
-	if(array !== undefined) {
+	if (array !== undefined) {
 		for (k in array) {
 			if (array.hasOwnProperty(k)) {
 				fn(k, array[k]);
@@ -444,8 +444,8 @@ function DocumentRenderer(canvas, endpointUrl) {
 	window.addEventListener("keydown", function (e) {
 		if (e.ctrlKey && e.key === '1') {
 			t.stage.autoFit = true;
-			
-			if(t.influence !== undefined) {
+
+			if (t.influence !== undefined) {
 				t.render(t.influence);
 			}
 		} else if (e.ctrlKey && e.key === '+') {
@@ -454,6 +454,15 @@ function DocumentRenderer(canvas, endpointUrl) {
 		} else if (e.ctrlKey && e.key === '-') {
 			e.preventDefault();
 			t.scene.zoom(-1);
+		}
+	});
+
+	window.addEventListener("visibilitychange", function (e) {
+		// Redraw the scene to prevent blank scenes when switching windows.		
+		if (!document.hidden && t.influence !== undefined) {
+			console.log("Redrawing..");
+			
+			t.render(t.influence);
 		}
 	});
 
@@ -470,7 +479,7 @@ DocumentRenderer.prototype.render = function (influence) {
 	var t = this;
 
 	t.influence = influence;
-	
+
 	t.stage.removeAllChildren();
 	t.stage.addChild(t.scene);
 
@@ -511,14 +520,14 @@ DocumentRenderer.prototype.render = function (influence) {
 	}
 
 	t.renderedLayers = [];
-	
+
 	// Only render the newest version of every layer.
 	t.layerCache.getAll(time, function (layer) {
 		var r = t.renderCache.get(time, layer);
 
 		if (r !== undefined) {
 			t.renderedLayers.push(r);
-			
+
 			var b = new createjs.Bitmap(r.img);
 			b.x = r.x;
 			b.y = -r.y;
@@ -684,7 +693,7 @@ DocumentRenderer.prototype.drawSceneMarkers = function (extents, cc, ce) {
 
 DocumentRenderer.prototype.getPalette = function () {
 	var t = this;
-	
+
 	// Used for extracting colors from images.
 	var thief = new ColorThief();
 
@@ -693,7 +702,7 @@ DocumentRenderer.prototype.getPalette = function () {
 
 	for (var n = 0; n < t.renderedLayers.length; n++) {
 		var r = t.renderedLayers[n];
-		
+
 		// Extract colors from the current image.
 		var p = thief.getPalette(r.img, 8);
 
@@ -713,7 +722,7 @@ DocumentRenderer.prototype.getPalette = function () {
 			return true;
 		});
 	}
-	
+
 	return palette;
 }
 
@@ -837,8 +846,8 @@ function Statistics() {
 
 Statistics.prototype.confidence = function () {
 	var t = this;
-	
-	if(t.stepCount > 0) {
+
+	if (t.stepCount > 0) {
 		return (100 * (t.stepCount - t.undoCount - t.redoCount) / t.stepCount).toFixed(0);
 	} else {
 		return 100;
