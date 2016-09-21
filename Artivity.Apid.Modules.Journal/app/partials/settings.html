@@ -133,10 +133,7 @@
 											<form name="connectForm" ng-submit="connectAccount(selectedConnector)">
 												<p class="description">Please enter the server address, username and password of the repository:</p>
 
-												<select class="form-control" id="url" name="url" placeholder="http://example.org" ng-model="parameter.url" required>
-													<option value="http://ualresearchonline.arts.ac.uk/id/contents">http://ualresearchonline.arts.ac.uk</option>
-													<option value="http://localhost:8080/id/contents" selected>http://localhost:8080</option>
-												</select>
+												<input type="text" class="form-control" id="url" name="url" placeholder="http://example.org" ng-model="parameter.url" required>
 
 												<fieldset>
 													<h4>Login</h4>
