@@ -75,9 +75,6 @@ namespace Artivity.Journal.Mac
             // Improve rendering performance.
             Browser.CanDrawConcurrently = true;
 
-            // Fixes rendering issues with JavaScript animations and modal dialogs.
-            Browser.CanDrawSubviewsIntoLayer = true;
-
             // Handle connection errors.
             Browser.FailedProvisionalLoad += OnBrowserLoadError;
 
@@ -120,11 +117,25 @@ namespace Artivity.Journal.Mac
                 }
             };
 
+            // Implementing UIGetFrame Prevents exceptions when using iframes.
             Browser.UIGetFrame += (WebView sender) =>
             {
-                // Prevents exceptions when using iframes.
+                if (Browser.MainFrame.ChildFrames.Length > 0)
+                {
+                    WebFrame frame = Browser.MainFrame.ChildFrames[0];
+                         
+                    // Enable keyboard input to iframes.
+                    frame.FrameView.BecomeFirstResponder();
+
+                    return frame.FrameView.Frame;
+                }
+
                 return View.Bounds;
             };
+
+            // Accept cookies from websites which handle OAuth2 authorization.
+            NSHttpCookieStorage cookies = NSHttpCookieStorage.SharedStorage;
+            cookies.AcceptPolicy = NSHttpCookieAcceptPolicy.Always;
 
             if (Program.IsApidAvailable(Port))
             {
@@ -194,12 +205,18 @@ namespace Artivity.Journal.Mac
 
         private void OpenJournal()
         {
+            // Fixes rendering issues with JavaScript animations and modal dialogs.
+            Browser.CanDrawSubviewsIntoLayer = true;
+
             Browser.HomeUrl = new NSUrl(string.Format("http://127.0.0.1:{0}/artivity/app/journal/1.0/", Port));                         
             Browser.NavigateHome();
         }
 
         private void OpenLoadingPage()
         {
+            // Fixes rendering issues with JavaScript animations and modal dialogs.
+            Browser.CanDrawSubviewsIntoLayer = false;
+
             ShowStaticPage("error.index.html");
 
             CancellationToken token = new CancellationToken();

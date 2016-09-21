@@ -442,10 +442,17 @@ h4 {
 	margin: 0;
 	border-spacing: 0;
 	table-layout: fixed;
+    z-index: 1000;
 }
 
 #header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
 	border-top: 1px solid darken($headerBackgroundColor, 5%);
+    border-bottom: 1px solid darken($headerBackgroundColor, 5%);
 }
 
 .table .row,
@@ -544,7 +551,6 @@ h4 {
 	top: 65px;
 }
 
-
 /* BODY */
 
 #body-wrapper {
@@ -553,6 +559,7 @@ h4 {
 	right: 0;
 	bottom: 0;
 	top: 52px;
+    z-index: 0;
 }
 
 #body-wrapper.bottom-toolbar {

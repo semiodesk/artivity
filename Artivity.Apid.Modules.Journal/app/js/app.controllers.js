@@ -882,6 +882,11 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 			// Query the current connector status in a regular interval.
 			var h = setInterval(function () {
 				api.getAccountConnectorStatus(sessionId).then(function (data) {
+                    if(!data) {
+                        // The sessionId was not found, no need to query again.
+                        clearInterval(h);
+                    }
+                    
 					n++;
 
 					for (var i = 0; i < data.AuthenticationClients.length; i++) {

@@ -73,6 +73,10 @@ namespace Artivity.Journal.Mac
             var defaults = NSUserDefaults.StandardUserDefaults;
             defaults.SetBool(true, "WebKitDeveloperExtras");
             defaults.Synchronize();
+
+            var gobal = NSUserDefaults.GlobalDomain;
+            defaults.SetBool(true, "WebKitDeveloperExtras");
+            defaults.Synchronize();
             #endif
         }
 
