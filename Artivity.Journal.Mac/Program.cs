@@ -62,8 +62,15 @@ namespace Artivity.Journal.Mac
 
         public void Run(string[] args)
         {
-            NSApplication.Init();
-            NSApplication.Main(args);
+            try
+            {
+                NSApplication.Init();
+                NSApplication.Main(args);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
         }
 
         protected void InitializeLogging()
