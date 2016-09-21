@@ -1,37 +1,39 @@
 <div id="document" ng-controller="FileListController as fileList">
-	<div id="header">
-		<div class="row">
-			<div class="col">
-				<img class="icn icn-circle" ng-src="{{userPhotoUrl}}" />
-			</div>
+    <div id="header">
+        <div class="row">
+            <div class="col">
+                <img class="icn icn-circle" ng-src="{{userPhotoUrl}}" />
+            </div>
 
-			<div class="col expand">
-				<h5 class="title">{{user.Name}}</h5>
-			</div>
+            <div class="col expand">
+                <h5 class="title">{{user.Name}}</h5>
+            </div>
 
-			<div class="col">
-				<a class="btn btn-default btn-header" href="#/settings"><i class="zmdi zmdi-hc-fw"></i></a>
-			</div>
-		</div>
-	</div>
+            <div class="col">
+                <a class="btn btn-default btn-header" href="#/settings"><i class="zmdi zmdi-hc-fw"></i></a>
+            </div>
+        </div>
+    </div>
 
-	<div id="body">
-		<div ng-switch on="hasFiles">
-			<div class="pull-left" ng-switch-when="true">
-				<ul id="file-list" class="cards">
-					<li class="card" ng-repeat="file in files">
-						<a href="#/files/view?uri={{file.uri}}">
-							<div>
-								<div class="img-thumbnail"></div>
-								<div class="title">{{file.label}}</div>
-							</div>
-						</a>
-					</li>
-				</ul>
-			</div>
-			<div ng-switch-when="false" class="text-center">
-				<h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
-			</div>
-		</div>
-	</div>
+    <div id="body-wrapper">
+        <div id="body">
+            <div ng-switch on="hasFiles">
+                <div class="pull-left" ng-switch-when="true">
+                    <ul id="file-list" class="cards">
+                        <li class="card" ng-repeat="file in files">
+                            <a href="#/files/view?uri={{file.uri}}">
+                                <div>
+                                    <div class="img-thumbnail"></div>
+                                    <div class="title">{{file.label}}</div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div ng-switch-when="false" class="text-center">
+                    <h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
