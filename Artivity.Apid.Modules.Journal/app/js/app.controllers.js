@@ -859,7 +859,7 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 
 			$scope.connectAccount($scope.selectedConnector);
 		} else if ($scope.selectedConnector.Uri === 'http://eprints.org') {
-			$scope.parameter.url = 'http://ualresearchonline.arts.ac.uk/id/contents';
+			$scope.parameter.url = 'http://ualresearchonline.arts.ac.uk';
 		}
 	}
 
