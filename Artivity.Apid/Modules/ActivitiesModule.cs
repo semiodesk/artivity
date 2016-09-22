@@ -150,7 +150,6 @@ namespace Artivity.Apid.Modules
                 WHERE
                 {
                   ?activity
-                    prov:generated | prov:used ?entity ;
                     prov:startedAtTime ?startTime .
 
                   OPTIONAL
@@ -160,21 +159,10 @@ namespace Artivity.Apid.Modules
 
                   OPTIONAL
                   {
-                    ?activity prov:qualifiedAssociation
-                    [
-                      prov:hadRole art:SOFTWARE ;
-                      prov:agent ?agent
-                    ] .
+                    ?activity prov:qualifiedAssociation / prov:agent ?agent .
 
-                    OPTIONAL
-                    {
-                        ?agent art:hasColourCode ?agentColor .
-                    }
+                    ?agent art:hasColourCode ?agentColor .
                   }
-
-                  ?influence
-                    prov:activity | prov:hadActivity ?activity ;
-                    prov:atTime ?time.
                 }
                 ORDER BY DESC(?startTime)");
 
@@ -283,6 +271,7 @@ namespace Artivity.Apid.Modules
                 {
                     Association association = model.CreateResource<Association>();
                     association.Agent = new SoftwareAgent(new UriRef(p.agent));
+                    association.Role = new Role(art.SOFTWARE);
                     association.Commit();
 
                     activity = model.CreateResource<Browse>();
@@ -323,6 +312,8 @@ namespace Artivity.Apid.Modules
 
                     activity.Usages.Add(view);
                     activity.Commit();
+
+                    Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
                 }
                 else if (p.endTime != null)
                 {
@@ -332,7 +323,7 @@ namespace Artivity.Apid.Modules
                     _activities.Remove(p.tab);
                 }
 
-                return Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
+                return HttpStatusCode.OK;
             }
             catch (Exception e)
             {

@@ -1063,7 +1063,7 @@ select.form-control:focus {
 	bottom: 0;
 	left: 0;
 	width: auto;
-	margin: 60px;
+	margin: 0;
 }
 
 .modal-window-lg .modal-content {
@@ -1080,6 +1080,7 @@ select.form-control:focus {
 
 .modal-window-lg .modal-body {
 	display: table-row;
+    padding: 10px;
 }
 
 .modal-header,
