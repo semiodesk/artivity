@@ -65,7 +65,7 @@ explorerControllers.controller('CalendarController', function (api, $scope, $fil
 					end: '17:00',
 				},
 				height: function () {
-					return $('.modal-body').innerHeight();
+					return $('.modal-body').innerHeight() - 20;
 				}
 			};
 
@@ -79,9 +79,17 @@ explorerControllers.controller('CalendarController', function (api, $scope, $fil
 					var activity = data[i];
 					activity.title = '';
 					activity.start = new Date(activity.startTime);
-					activity.end = activity.endTime ? new Date(activity.endTime) : new Date(activity.maxTime);
 					activity.color = activity.agentColor;
 
+                    if(activity.endTime) {
+                        activity.end = new Date(activity.endTime);
+                    } else if (activity.maxTime) {
+                        activity.end = new Date(activity.maxTime);
+                    } else {
+                        activity.end = new Date(activity.startTime);
+                        activity.end.setSeconds(activity.end.getSeconds() + 30);
+                    }
+                    
 					activities.push(activity);
 				}
 
