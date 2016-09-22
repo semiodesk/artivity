@@ -39,9 +39,11 @@ explorerControllers.directive('bootstrapSwitch', [
     ]);
 
 explorerControllers.controller('CalendarController', function (api, $scope, $filter, $uibModalInstance, $sce) {
-	$scope.title = $filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE');
+	$scope.isLoading = true;
 
 	$scope.dialog = $uibModalInstance;
+
+	$scope.getActivities = api.getActivities;
 
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');
@@ -50,17 +52,12 @@ explorerControllers.controller('CalendarController', function (api, $scope, $fil
 	return {
 		template: '',
 		link: function (scope, element, attributes) {
-			var activities = getValue(scope, attributes.artActivitiesSrc);
-
-			console.log(activities);
-
 			var options = {
 				header: {
 					left: 'prev,next today',
 					center: 'title',
 					right: 'month,agendaWeek,agendaDay'
 				},
-				events: activities,
 				defaultView: 'agendaWeek',
 				businessHours: {
 					dow: [1, 2, 3, 4, 5], // Monday - Friday
@@ -72,15 +69,35 @@ explorerControllers.controller('CalendarController', function (api, $scope, $fil
 				}
 			};
 
-			if (activities && activities.length > 0) {
-				options.defaultDate = activities[0].start;
-			}
-
 			var element = $(element);
 			element.fullCalendar(options);
 
-			scope.dialog.rendered.then(function () {
-				element.fullCalendar('render');
+			scope.getActivities().then(function (data) {
+				var activities = [];
+
+				for (var i = 0; i < data.length; i++) {
+					var activity = data[i];
+					activity.title = '';
+					activity.start = new Date(activity.startTime);
+					activity.end = activity.endTime ? new Date(activity.endTime) : new Date(activity.maxTime);
+					activity.color = activity.agentColor;
+
+					activities.push(activity);
+				}
+
+				console.log("Activities:", activities);
+
+				if (activities && activities.length > 0) {
+					element.fullCalendar('render');
+					element.fullCalendar('addEventSource', activities);
+					element.fullCalendar('gotoDate', activities[0].start);
+				}
+
+				scope.dialog.rendered.then(function () {
+					scope.isLoading = false;
+
+					element.fullCalendar('render');
+				});
 			});
 		}
 	}
@@ -113,26 +130,14 @@ explorerControllers.controller('FileListController', function (api, $scope, $uib
 
 	// CALENDAR
 	$scope.activities = [];
-	
+
 	$scope.toggleCalendar = function () {
-		api.getActivities().then(function (data) {
-			for (var i = 0; i < data.length; i++) {
-				var activity = data[i];
-				activity.title = '';
-				activity.start = activity.startTime;
-				activity.end = activity.endTime;
-				activity.color = activity.agentColor;
-
-				$scope.activities.push(activity);
-			}
-
-			var modalInstance = $uibModal.open({
-				animation: true,
-				templateUrl: 'calendar.html',
-				controller: 'CalendarController',
-				windowClass: 'modal-window-lg',
-				scope: $scope
-			});
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'calendar.html',
+			controller: 'CalendarController',
+			windowClass: 'modal-window-lg',
+			scope: $scope
 		});
 	};
 

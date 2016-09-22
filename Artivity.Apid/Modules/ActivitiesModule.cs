@@ -145,7 +145,6 @@ namespace Artivity.Apid.Modules
                     ?startTime 
                     ?endTime
                     MAX(?time) as ?maxTime
-                    ?entity
                     ?agent
                     SAMPLE(COALESCE(?agentColor,'#FF0000')) AS ?agentColor
                 WHERE
