@@ -1,12 +1,11 @@
 <script src="bower_components/EaselJS/lib/easeljs-0.8.2.min.js"></script>
 <script src="bower_components/color-thief/dist/color-thief.min.js"></script>
-<!--<script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>-->
 
 <div ng-controller="FileViewController as fileView">
 	<div id="header">
 		<div class="row">
 			<div class="col">
-                <a class="btn btn-header" href="#/files"><i class="zmdi zmdi-chevron-left"></i></a>
+				<a class="btn btn-header" href="#/files"><i class="zmdi zmdi-chevron-left"></i></a>
 			</div>
 			<div class="col">
 				<div class="icn" style="width: 32px; height: 32px; margin-top: 10px; margin-left: 5px;">
@@ -201,7 +200,7 @@
 							<h5 style="margin-top: 1em;">{{'FILEVIEW.LAYERS' | translate}}</h5>
 							<ul class="list-unstyled">
 								<li ng-repeat="layer in selectedInfluence.stats.layers | reverse">
-									<label><i class="zmdi zmdi-hc-fw icn icn-transparent"></i> {{layer.label}}</label>
+									<label><i class="zmdi zmdi-layers icn icn-transparent"></i> {{layer.label}}</label>
 								</li>
 							</ul>
 						</div>
@@ -223,14 +222,14 @@
 				<a class="btn btn-skip-next" ng-click="skipNext()"><i class="zmdi zmdi-skip-next"></i></a>
 			</div>
 			<div class="col expand">
-				<div art-timeline art-activities="activities" art-influences="influences"></div>
+				<div art-timeline art-activities-src="activities" art-influences-src="influences"></div>
 			</div>
 		</div>
 	</div>
 
 	<script>
 		$(function () {
-			$(document).ready(function () {				
+			$(document).ready(function () {
 				updateCanvas();
 
 				$(".ctl-history").focus();
@@ -257,7 +256,7 @@
 
 			// Update the canvas every time the window is resized.
 			window.addEventListener('resize', updateCanvas, false);
-			
+
 			// Prevent navigation when the user clicks on tab headers.
 			$('.tablist a').click(function (e) {
 				e.preventDefault();
@@ -267,7 +266,7 @@
 
 		function updateCanvas() {
 			var buffer = document.getElementById("canvas");
-			
+
 			// To prevent flickering, store the current context before setting the size.
 			var bufferContext = buffer.getContext('2d');
 
@@ -292,7 +291,7 @@
 
 			// Update the buffer.
 			var scope = angular.element(buffer).scope();
-			
+
 			if (scope.selectedInfluence) {
 				scope.renderInfluence(scope.selectedInfluence);
 			}

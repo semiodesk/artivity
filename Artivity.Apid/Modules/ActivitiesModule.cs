@@ -64,10 +64,12 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return GetActivities();
                 }
-
-                return GetActivities(new UriRef(uri));
+                else
+                {
+                    return GetActivities(new UriRef(uri));
+                }
             };
 
             Post["/"] = parameters =>
@@ -134,6 +136,53 @@ namespace Artivity.Apid.Modules
         #endregion
 
         #region Methods
+
+        private Response GetActivities()
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT DISTINCT
+                    ?activity AS ?uri
+                    ?startTime 
+                    ?endTime
+                    MAX(?time) as ?maxTime
+                    ?entity
+                    ?agent
+                    SAMPLE(COALESCE(?agentColor,'#FF0000')) AS ?agentColor
+                WHERE
+                {
+                  ?activity
+                    prov:generated | prov:used ?entity ;
+                    prov:startedAtTime ?startTime .
+
+                  OPTIONAL
+                  {
+                    ?activity prov:endedAtTime ?endTime .
+                  }
+
+                  OPTIONAL
+                  {
+                    ?activity prov:qualifiedAssociation
+                    [
+                      prov:hadRole art:SOFTWARE ;
+                      prov:agent ?agent
+                    ] .
+
+                    OPTIONAL
+                    {
+                        ?agent art:hasColourCode ?agentColor .
+                    }
+                  }
+
+                  ?influence
+                    prov:activity | prov:hadActivity ?activity ;
+                    prov:atTime ?time.
+                }
+                ORDER BY DESC(?startTime)");
+
+            var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
+
+            return Response.AsJson(bindings);
+        }
 
         private Response GetActivities(UriRef entityUri)
         {

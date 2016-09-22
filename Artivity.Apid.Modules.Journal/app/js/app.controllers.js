@@ -38,7 +38,55 @@ explorerControllers.directive('bootstrapSwitch', [
         }
     ]);
 
-explorerControllers.controller('FileListController', function (api, $scope) {
+explorerControllers.controller('CalendarController', function (api, $scope, $filter, $uibModalInstance, $sce) {
+	$scope.title = $filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE');
+
+	$scope.dialog = $uibModalInstance;
+
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+}).directive('artCalendar', function () {
+	return {
+		template: '',
+		link: function (scope, element, attributes) {
+			var activities = getValue(scope, attributes.artActivitiesSrc);
+
+			console.log(activities);
+
+			var options = {
+				header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'month,agendaWeek,agendaDay'
+				},
+				events: activities,
+				defaultView: 'agendaWeek',
+				businessHours: {
+					dow: [1, 2, 3, 4, 5], // Monday - Friday
+					start: '9:00',
+					end: '17:00',
+				},
+				height: function () {
+					return $('.modal-body').innerHeight();
+				}
+			};
+
+			if (activities && activities.length > 0) {
+				options.defaultDate = activities[0].start;
+			}
+
+			var element = $(element);
+			element.fullCalendar(options);
+
+			scope.dialog.rendered.then(function () {
+				element.fullCalendar('render');
+			});
+		}
+	}
+});
+
+explorerControllers.controller('FileListController', function (api, $scope, $uibModal) {
 	$scope.hasFiles = false;
 
 	$scope.userPhotoUrl = api.getUserPhotoUrl();
@@ -49,10 +97,53 @@ explorerControllers.controller('FileListController', function (api, $scope) {
 		$scope.user = data;
 	});
 
-	api.getRecentFiles().then(function (data) {
-		$scope.files = data;
+	// RECENTLY USED FILES
+	$scope.files = [];
+	$scope.hasFiles = false;
 
-		$scope.hasFiles = data.length > 0;
+	$scope.loadRecentFiles = function () {
+		api.getRecentFiles().then(function (data) {
+			$scope.files = data;
+
+			$scope.hasFiles = data.length > 0;
+		});
+	};
+
+	$scope.loadRecentFiles();
+
+	// CALENDAR
+	$scope.activities = [];
+	
+	$scope.toggleCalendar = function () {
+		api.getActivities().then(function (data) {
+			for (var i = 0; i < data.length; i++) {
+				var activity = data[i];
+				activity.title = '';
+				activity.start = activity.startTime;
+				activity.end = activity.endTime;
+				activity.color = activity.agentColor;
+
+				$scope.activities.push(activity);
+			}
+
+			var modalInstance = $uibModal.open({
+				animation: true,
+				templateUrl: 'calendar.html',
+				controller: 'CalendarController',
+				windowClass: 'modal-window-lg',
+				scope: $scope
+			});
+		});
+	};
+
+	// REFRESH
+	window.addEventListener("focus", function (e) {
+		// Redraw the scene to prevent blank scenes when switching windows.		
+		if (!document.hidden) {
+			console.log("Reloading..");
+
+			$scope.loadRecentFiles();
+		}
 	});
 });
 
@@ -214,6 +305,12 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 
 							if (activity.endTime < activity.maxTime) {
 								activity.endTime = activity.maxTime;
+							}
+
+							if (!activity.title) {
+								activity.title = $scope.file.label; // Set for fullcalendar.
+								activity.start = activity.startTime; // Alias for fullcalendar.
+								activity.end = activity.endTime; // Alias for fullcalendar.
 							}
 
 							//activity.startTime = new Date(activity.startTime);
@@ -571,19 +668,19 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		link: function (scope, element, attributes) {
 			var timeline = new TimelineControl(element);
 
-			timeline.setActivities(getValue(scope, attributes.artActivities));
-			timeline.setInfluences(getValue(scope, attributes.artInfluences));
+			timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
+			timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
 
 			timeline.selectedInfluenceChanged = function (influence) {
 				scope.previewInfluence(influence);
 			};
 
-			scope.$watchCollection(attributes.artActivities, function () {
-				timeline.setActivities(getValue(scope, attributes.artActivities));
+			scope.$watchCollection(attributes.artActivitiesSrc, function () {
+				timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
 			});
 
-			scope.$watchCollection(attributes.artInfluences, function () {
-				timeline.setInfluences(getValue(scope, attributes.artInfluences));
+			scope.$watchCollection(attributes.artInfluencesSrc, function () {
+				timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
 			});
 
 			scope.$watch('selectedInfluence', function () {
@@ -880,13 +977,13 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 			var sessionId = data.id;
 
 			// Query the current connector status in a regular interval.
-			var h = setInterval(function () {
+			timer = setInterval(function () {
 				api.getAccountConnectorStatus(sessionId).then(function (data) {
-                    if(!data) {
-                        // The sessionId was not found, no need to query again.
-                        clearInterval(h);
-                    }
-                    
+					if (!data) {
+						// The sessionId was not found, no need to query again.
+						clearInterval(timer);
+					}
+
 					n++;
 
 					for (var i = 0; i < data.AuthenticationClients.length; i++) {
@@ -894,11 +991,11 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 
 						// Allow iframes to connect to the URL.
 						$scope.clientUrl = $sce.trustAsResourceUrl(c.AuthorizeUrl);
-						
+
 						console.log(c.AuthorizeUrl, $scope.clientUrl);
 
 						if (c.ClientState > 1) {
-							clearInterval(h);
+							clearInterval(timer);
 
 							$scope.connectorState = c.ClientState;
 
@@ -921,7 +1018,7 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 					}
 
 					if (n === 300) {
-						clearInterval(h);
+						clearInterval(timer);
 
 						// The connector state '3' refers to 'Error'.
 						$scope.connectorState = 4;
