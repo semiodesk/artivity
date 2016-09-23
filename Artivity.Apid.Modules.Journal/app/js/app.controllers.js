@@ -1,4 +1,4 @@
-var explorerControllers = angular.module('explorerControllers', ['ngInputModified', 'ui.bootstrap', 'ui.bootstrap.modal']);
+var explorerControllers = angular.module('explorerControllers', ['ngAnimate', 'ngInputModified', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.bootstrap.progressbar']);
 
 explorerControllers.filter('reverse', function () {
 	return function (items) {
@@ -81,15 +81,15 @@ explorerControllers.controller('CalendarController', function (api, $scope, $fil
 					activity.start = new Date(activity.startTime);
 					activity.color = activity.agentColor;
 
-                    if(activity.endTime) {
-                        activity.end = new Date(activity.endTime);
-                    } else if (activity.maxTime) {
-                        activity.end = new Date(activity.maxTime);
-                    } else {
-                        activity.end = new Date(activity.startTime);
-                        activity.end.setSeconds(activity.end.getSeconds() + 30);
-                    }
-                    
+					if (activity.endTime) {
+						activity.end = new Date(activity.endTime);
+					} else if (activity.maxTime) {
+						activity.end = new Date(activity.maxTime);
+					} else {
+						activity.end = new Date(activity.startTime);
+						activity.end.setSeconds(activity.end.getSeconds() + 30);
+					}
+
 					activities.push(activity);
 				}
 
@@ -109,6 +109,69 @@ explorerControllers.controller('CalendarController', function (api, $scope, $fil
 			});
 		}
 	}
+});
+
+explorerControllers.controller('ShareDialogController', function (api, $scope, $filter, $uibModalInstance, $sce) {
+	$scope.title = "Publish File";
+	$scope.isUploading = false;
+
+	// Available accounts.
+	$scope.accounts = [];
+	$scope.selectedAccount = null;
+
+	api.getAccounts().then(function (data) {
+		console.log("Accounts:", data);
+
+		$scope.accounts = data;
+
+		if (0 < $scope.accounts.length) {
+			$scope.selectedAccount = $scope.accounts[0];
+		}
+	});
+
+	// The upload progress in percent from 0 to 100
+	$scope.uploadProgress = 0;
+
+	// Interval handle to a simulated upload function.
+	var uploaderInterval;
+
+	$scope.beginUpload = function () {
+		$scope.title = "Uploading File";
+		$scope.isUploading = true;
+
+		uploaderInterval = setInterval(function () {
+			console.log($scope.uploadProgress);
+
+			if (0 <= $scope.uploadProgress && $scope.uploadProgress < 100) {
+				// Simulate file upload.
+				$scope.uploadProgress += 1;
+			} else {
+				$scope.endUpload();
+			}
+
+			$scope.$digest();
+		}, 100);
+	};
+
+	$scope.endUpload = function () {
+		clearInterval(uploaderInterval);
+
+		if ($scope.uploadProgress < 100) {
+			$scope.uploadProgress = 0;
+		} else {
+			$uibModalInstance.close();
+		}
+	};
+
+	$scope.cancelUpload = $scope.endUpload;
+
+	$scope.cancel = function () {
+		if ($scope.isUploading) {
+			$scope.endUpload();
+		}
+
+		$uibModalInstance.dismiss('cancel');
+	};
 });
 
 explorerControllers.controller('FileListController', function (api, $scope, $uibModal) {
@@ -160,7 +223,7 @@ explorerControllers.controller('FileListController', function (api, $scope, $uib
 	});
 });
 
-explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams, $translate) {
+explorerControllers.controller('FileViewController', function (api, $scope, $location, $routeParams, $translate, $uibModal) {
 	var fileUri = $location.search().uri;
 
 	$scope.entity = {
@@ -498,6 +561,20 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	$scope.exportFile = function () {
 		api.exportFile(fileUri, $scope.file.label);
 	};
+
+	// SHARING
+	$scope.shareFile = function () {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'share-dialog.html',
+			controller: 'ShareDialogController',
+			scope: $scope
+		});
+
+		modalInstance.result.then(function (account) {
+			console.log("Uploading stuff..");
+		});
+	}
 
 	// PRINT LABEL
 

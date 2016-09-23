@@ -88,6 +88,12 @@ namespace Artivity.Api.Modules
             {
                 return UninstallAccount();
             };
+
+            // Upload content into an account.
+            Post["/upload"] = parameters =>
+            {
+                return UploadContent();
+            };
         }
 
         #endregion
@@ -274,6 +280,26 @@ namespace Artivity.Api.Modules
             }
 
             return Logger.LogInfo(HttpStatusCode.OK, "Uninstalled account: {0}", accountUri);
+        }
+
+        public Response UploadContent()
+        {
+            if (!IsUri(Request.Query.accountUri))
+            {
+                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+            }
+
+            // 1. Account + Parameters
+            // 2. Protocol
+            // 3. Content
+
+            //Uri accountUri = new Uri(Request.Query.accountUri);
+
+            //OnlineAccount account = ModelProvider.GetAgents().GetResource<OnlineAccount>(accountUri);
+
+            //IOnlineServiceConnector connector = OnlineServiceConnectorFactory.TryGetServiceConnector(account.Connector.Uri);
+
+            return HttpStatusCode.NotImplemented;
         }
 
         #endregion
