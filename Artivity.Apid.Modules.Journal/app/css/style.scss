@@ -162,7 +162,7 @@ iframe {
 button,
 .btn-default {
 	border: none;
-	border-radius: 0;
+	border-radius: 3px;
 	background: $buttonBackgroundColor;
 	color: $buttonTextColor;
 	padding: .7em;
@@ -255,26 +255,41 @@ button:focus,
 .nav-tabs li a {
 	border-radius: 0;
 	border: none;
-	border-top: 2px solid transparent;
+	border-bottom: 3px solid transparent;
 	color: $labelColor;
 	text-transform: uppercase;
 	transition: all .1s linear;
 	padding: 1em;
 }
 
+.nav-tabs.nav-tabs-top li a {
+	border-bottom: 0;
+	border-top: 3px solid transparent;
+}
+
 .nav-tabs li a:hover {
-	border-top: 2px solid $textColor;
+	border-bottom: 3px solid $textColor;
 	background: transparent;
 	color: $textColor;
 	cursor: pointer;
 }
 
+.nav-tabs.nav-tabs-top li a:hover {
+	border-top: 3px solid $textColor;
+}
+
 .nav-tabs li.active a,
 .nav-tabs li.active a:hover {
 	border: none;
-	border-top: 3px solid $accentColor;
+	border-bottom: 3px solid $accentColor;
 	background: transparent;
 	color: $accentColor;
+}
+
+.nav-tabs.nav-tabs-top li.active a,
+.nav-tabs.nav-tabs-top li.active a:hover {
+	border: none;
+	border-top: 3px solid $textColor;
 }
 
 .nav-tabs.nav-stacked li a {
@@ -717,7 +732,6 @@ h4 {
 	padding: 15px;
 }
 
-
 /* FOOTER */
 
 .statusbar,
@@ -1070,7 +1084,6 @@ select.form-control:focus {
 	display: table;
 	width: 100%;
 	height: 100%;
-	background: #222;
 }
 
 .modal-window-lg .modal-header {
@@ -1080,7 +1093,7 @@ select.form-control:focus {
 
 .modal-window-lg .modal-body {
 	display: table-row;
-    padding: 10px;
+	padding: 10px;
 }
 
 .modal-header,
@@ -1097,6 +1110,7 @@ select.form-control:focus {
 	box-shadow: none;
 	border: none;
 	border-radius: 0;
+	background: #222;
 }
 
 .modal-backdrop.in {
@@ -1404,7 +1418,6 @@ button[disabled]:hover {
 	vertical-align: middle;
 	margin-bottom: 0 !important;
 }
-
 
 /*
 .lst-influences a .node {
@@ -1815,67 +1828,73 @@ path.color1 {
 .spinner.loading,
 .spinner.loading:before,
 .spinner.loading:after {
-  border-radius: 50%;
+	border-radius: 50%;
 }
+
 .spinner.loading:before,
 .spinner.loading:after {
-  position: absolute;
-  content: '';
+	position: absolute;
+	content: '';
 }
+
 .spinner.loading:before {
-  width: 5.2em;
-  height: 10.2em;
-  background: #222;
-  border-radius: 10.2em 0 0 10.2em;
-  top: -0.1em;
-  left: -0.1em;
-  -webkit-transform-origin: 5.2em 5.1em;
-  transform-origin: 5.2em 5.1em;
-  -webkit-animation: load2 2s infinite ease 1.5s;
-  animation: load2 2s infinite ease 1.5s;
+	width: 5.2em;
+	height: 10.2em;
+	background: #222;
+	border-radius: 10.2em 0 0 10.2em;
+	top: -0.1em;
+	left: -0.1em;
+	-webkit-transform-origin: 5.2em 5.1em;
+	transform-origin: 5.2em 5.1em;
+	-webkit-animation: load2 2s infinite ease 1.5s;
+	animation: load2 2s infinite ease 1.5s;
 }
+
 .spinner.loading {
-  color: $labelColor;
-  font-size: 5px;
-  text-indent: -99999em;
-  margin: 55px auto;
-  position: relative;
-  width: 10em;
-  height: 10em;
-  box-shadow: inset 0 0 0 1em;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
+	color: $labelColor;
+	font-size: 5px;
+	text-indent: -99999em;
+	margin: 55px auto;
+	position: relative;
+	width: 10em;
+	height: 10em;
+	box-shadow: inset 0 0 0 1em;
+	-webkit-transform: translateZ(0);
+	-ms-transform: translateZ(0);
+	transform: translateZ(0);
 }
+
 .spinner.loading:after {
-  width: 5.2em;
-  height: 10.2em;
-  background: #222;
-  border-radius: 0 10.2em 10.2em 0;
-  top: -0.1em;
-  left: 5.1em;
-  -webkit-transform-origin: 0px 5.1em;
-  transform-origin: 0px 5.1em;
-  -webkit-animation: load2 2s infinite ease;
-  animation: load2 2s infinite ease;
+	width: 5.2em;
+	height: 10.2em;
+	background: #222;
+	border-radius: 0 10.2em 10.2em 0;
+	top: -0.1em;
+	left: 5.1em;
+	-webkit-transform-origin: 0px 5.1em;
+	transform-origin: 0px 5.1em;
+	-webkit-animation: load2 2s infinite ease;
+	animation: load2 2s infinite ease;
 }
+
 @-webkit-keyframes load2 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
+
 @keyframes load2 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
