@@ -210,6 +210,7 @@
     <EmbeddedResource Include="app\bower_components\jquery-ui\ui\widgets\draggable.js" />
     <EmbeddedResource Include="app\bower_components\angular-bootstrap\ui-bootstrap-tpls.js" />
     <EmbeddedResource Include="app\bower_components\angular-bootstrap\ui-bootstrap-tpls.min.js" />
+    <EmbeddedResource Include="app\bower_components\angular-animate\angular-animate.min.js" />
     <Content Include="app\bower_components\angular-moment\.gitignore" />
     <EmbeddedResource Include="app\bower_components\angular-moment\angular-moment.js" />
     <EmbeddedResource Include="app\bower_components\angular-moment\angular-moment.min.js" />
