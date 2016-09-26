@@ -65,6 +65,8 @@ namespace Artivity.Apid.Platforms
 
         public string ImportFolder { get; private set; }
 
+        public string TempFolder { get; private set; }
+
         public bool IsLinux { get; protected set; }
 
         public bool IsMac { get; protected set; }
@@ -106,6 +108,9 @@ namespace Artivity.Apid.Platforms
 
             ImportFolder = Path.Combine(ArtivityDataFolder, "Import");
             EnsureFolderExists(ImportFolder);
+
+            TempFolder = Path.Combine(ArtivityDataFolder, "Temp");
+            EnsureFolderExists(TempFolder);
 
             // Don't create the folder if it doesn't exist. TinyVirtuoso does that properly.
             DatabaseName = "Data";

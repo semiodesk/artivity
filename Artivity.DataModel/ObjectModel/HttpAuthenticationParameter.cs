@@ -25,19 +25,34 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Semiodesk.Trinity;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Artivity.Apid.Helpers
+namespace Artivity.DataModel
 {
-    public static class FileNameEncoder
+    [RdfClass(ART.HttpAuthenticationParameter)]
+    public class HttpAuthenticationParameter : Resource
     {
-        public static string Encode(string str)
-        {
-            char[] name = str.Replace("//", "-").Replace('/', '-').Replace(':', '-').ToCharArray();
+        #region Members
 
-            // Only allow letters or digits.
-            return new string(Array.FindAll<char>(name, c => char.IsLetterOrDigit(c) || c == '-' || c == '.'));
+        [RdfProperty(RDFS.label)]
+        public string Name { get; set; }
+
+        [RdfProperty(RDF.value)]
+        public string Value { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        public HttpAuthenticationParameter(Uri uri)
+            : base(uri)
+        {
         }
+
+        #endregion
     }
 }
-

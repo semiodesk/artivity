@@ -37,7 +37,7 @@ using System.Text;
 
 namespace Artivity.Apid.Accounts
 {
-    public abstract class OnlineServiceConnectorBase : IOnlineServiceConnector
+    public abstract class OnlineServiceClientBase : IOnlineServiceClient
     {
         #region Members
 
@@ -50,6 +50,11 @@ namespace Artivity.Apid.Accounts
         /// Gets the title of the online service.
         /// </summary>
         public string Title { get; protected set; }
+
+        /// <summary>
+        /// Gets the URL of the online service.
+        /// </summary>
+        public Uri ServiceUrl { get; protected set; }
 
         /// <summary>
         /// Gets a list of HTTP authentication parameter presets.
@@ -65,17 +70,17 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// Gets a list of supported HTTP authentication methods.
         /// </summary>
-        public List<IHttpAuthenticationClient> AuthenticationClients { get; protected set; }
+        public List<IHttpAuthenticationClient> SupportedAuthenticationClients { get; protected set; }
 
         #endregion
 
         #region Constructors
 
-        public OnlineServiceConnectorBase(Uri uri)
+        public OnlineServiceClientBase(Uri uri)
         {
             Uri = uri;
             Presets = new List<HttpAuthenticationParameterSet>();
-            AuthenticationClients = new List<IHttpAuthenticationClient>();
+            SupportedAuthenticationClients = new List<IHttpAuthenticationClient>();
         }
 
         #endregion
@@ -122,7 +127,7 @@ namespace Artivity.Apid.Accounts
         /// <returns>The first client with the given state, <c>null</c> otherwise.</returns>
         public IHttpAuthenticationClient TryGetAuthenticationClient(HttpAuthenticationClientState state)
         {
-            return AuthenticationClients.FirstOrDefault(a => a.ClientState == state);
+            return SupportedAuthenticationClients.FirstOrDefault(a => a.ClientState == state);
         }
 
         /// <summary>
@@ -145,7 +150,7 @@ namespace Artivity.Apid.Accounts
         {
             string authType = request.Query.authType;
 
-            return !string.IsNullOrEmpty(authType) ? AuthenticationClients.FirstOrDefault(a => a.Uri.AbsoluteUri == authType) : null;
+            return !string.IsNullOrEmpty(authType) ? SupportedAuthenticationClients.FirstOrDefault(a => a.Uri.AbsoluteUri == authType) : null;
         }
 
         /// <summary>
@@ -182,9 +187,24 @@ namespace Artivity.Apid.Accounts
             account.CreationTime = now;
             account.LastModificationTime = now;
 
-            if (account == null)
+            // Save the account credentials.
+            IHttpAuthenticationClient auth = TryGetAuthenticationClient(HttpAuthenticationClientState.Authorized);
+
+            if (auth != null)
             {
-                return null;
+                account.ServiceClient = new Resource(Uri);
+                account.ServiceUrl = new Resource(ServiceUrl);
+                account.AuthenticationProtocol = new HttpAuthenticationProtocol(auth.Uri);
+
+                foreach(KeyValuePair<string, string> parameter in auth.GetPersistableAuthenticationParameters())
+                {
+                    HttpAuthenticationParameter p = model.CreateResource<HttpAuthenticationParameter>();
+                    p.Name = parameter.Key;
+                    p.Value = parameter.Value;
+                    p.Commit();
+
+                    account.AuthenticationParameters.Add(p);
+                }
             }
 
             // Check if there is already an account with the given ID.

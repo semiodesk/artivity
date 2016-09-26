@@ -39,7 +39,7 @@ namespace Artivity.Apid.Accounts
     /// <summary>
     /// A helper class for installing authenticated online accounts.
     /// </summary>
-    public interface IOnlineServiceConnector
+    public interface IOnlineServiceClient
     {
         #region Members
 
@@ -51,7 +51,7 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// Gets a list of supported HTTP authentication methods.
         /// </summary>
-        List<IHttpAuthenticationClient> AuthenticationClients { get; }
+        List<IHttpAuthenticationClient> SupportedAuthenticationClients { get; }
 
         #endregion
 

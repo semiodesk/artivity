@@ -112,17 +112,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Services\Connectors\EPrintsServiceConnector.cs" />
+    <Compile Include="Services\Clients\EPrintsServiceClient.cs" />
     <Compile Include="Protocols\Authentication\BasicAuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationClientState.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationParameterSet.cs" />
     <Compile Include="Protocols\Authentication\OAuth2AuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\IHttpAuthenticationClient.cs" />
-    <Compile Include="Services\OnlineServiceConnectorBase.cs" />
-    <Compile Include="Services\OnlineServiceConnectorFactory.cs" />
-    <Compile Include="Services\IOnlineServiceConnector.cs" />
+    <Compile Include="Services\IOnlineServicePublishingClient.cs" />
+    <Compile Include="Services\OnlineServiceClientBase.cs" />
+    <Compile Include="Services\OnlineServiceClientFactory.cs" />
+    <Compile Include="Services\IOnlineServiceClient.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationClientBase.cs" />
-    <Compile Include="Services\Connectors\OrcidServiceConnector.cs" />
+    <Compile Include="Services\Clients\OrcidServiceClient.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="HttpService.cs" />
     <Compile Include="IO\FileEventIndex.cs" />
@@ -191,7 +192,7 @@
     <Compile Include="IO\ArchiveManifest.cs" />
     <Compile Include="IO\ArchiveWriter.cs" />
     <Compile Include="IO\ArchiveReader.cs" />
-    <Compile Include="Helpers\FileNameEncoder.cs" />
+    <Compile Include="IO\FileNameEncoder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,14 +1,19 @@
 ﻿using Artivity.Apid;
 using Artivity.Apid.Accounts;
+using Artivity.Apid.IO;
 using Artivity.Apid.Platforms;
 using Artivity.Apid.Plugin;
+using Artivity.Apid.Protocols.Atom;
 using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
 using Nancy;
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,7 +29,7 @@ namespace Artivity.Api.Modules
         /// <summary>
         /// Maps a session id to an issued authentication request for querying the status.
         /// </summary>
-        private static readonly Dictionary<string, IOnlineServiceConnector> _sessions = new Dictionary<string, IOnlineServiceConnector>();
+        private static readonly Dictionary<string, IOnlineServiceClient> _sessions = new Dictionary<string, IOnlineServiceClient>();
 
         #endregion
 
@@ -90,9 +95,9 @@ namespace Artivity.Api.Modules
             };
 
             // Upload content into an account.
-            Post["/upload"] = parameters =>
+            Get["/upload"] = parameters =>
             {
-                return UploadContent();
+                return UploadArchive();
             };
         }
 
@@ -102,21 +107,34 @@ namespace Artivity.Api.Modules
 
         private Response GetAccounts()
         {
-            List<OnlineAccount> accounts = ModelProvider.GetAgents().GetResources<OnlineAccount>(true).ToList();
+            List<OnlineAccount> accounts = ModelProvider.GetAgents().GetResources<OnlineAccount>().ToList();
 
-            return Response.AsJson(accounts);
+            string result = JsonConvert.SerializeObject(accounts);
+
+            // Manually convert the result because the default serializer crashes with an exception when
+            // trying to serialize the nested data object HttpAuthenticationProtocol. The exception occurs
+            // because the connection is already closed when the serializer tries to load the object from the db.
+            MemoryStream stream = new MemoryStream();
+
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(result);
+            writer.Flush();
+
+            stream.Position = 0;
+
+            return Response.FromStream(stream, "application/json");
         }
 
         private Response GetServiceConnectors()
         {
-            return Response.AsJson(OnlineServiceConnectorFactory.GetRegisteredConnectors());
+            return Response.AsJson(OnlineServiceClientFactory.GetRegisteredClients());
         }
 
         private Response GetServiceConnector(Uri providerUri)
         {
             try
             {
-                return Response.AsJson(OnlineServiceConnectorFactory.TryGetServiceConnector(providerUri));
+                return Response.AsJson(OnlineServiceClientFactory.TryGetClient(providerUri));
             }
             catch (KeyNotFoundException)
             {
@@ -138,7 +156,7 @@ namespace Artivity.Api.Modules
                 return Logger.LogError(HttpStatusCode.NotFound, "Session with token {0} not found.", sessionId);
             }
 
-            IOnlineServiceConnector connector = _sessions[sessionId];
+            IOnlineServiceClient connector = _sessions[sessionId];
 
             return Response.AsJson(connector);
         }
@@ -152,7 +170,7 @@ namespace Artivity.Api.Modules
                 return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
-            IOnlineServiceConnector connector = _sessions[sessionId];
+            IOnlineServiceClient connector = _sessions[sessionId];
 
             if (connector == null)
             {
@@ -173,7 +191,7 @@ namespace Artivity.Api.Modules
 
         private Response AuthorizeAccount()
         {
-            IOnlineServiceConnector connector = OnlineServiceConnectorFactory.TryGetServiceConnector(Request);
+            IOnlineServiceClient connector = OnlineServiceClientFactory.TryGetClient(Request);
 
             if (connector == null)
             {
@@ -225,7 +243,7 @@ namespace Artivity.Api.Modules
                 return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
-            IOnlineServiceConnector connector = _sessions[sessionId];
+            IOnlineServiceClient connector = _sessions[sessionId];
 
             if (connector == null)
             {
@@ -282,24 +300,87 @@ namespace Artivity.Api.Modules
             return Logger.LogInfo(HttpStatusCode.OK, "Uninstalled account: {0}", accountUri);
         }
 
-        public Response UploadContent()
+        public Response UploadArchive()
         {
-            if (!IsUri(Request.Query.accountUri))
+            IModel model = ModelProvider.GetAll();
+
+            if(!IsUri(Request.Query.entityUri))
             {
                 return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
-            // 1. Account + Parameters
-            // 2. Protocol
-            // 3. Content
+            UriRef entityUri = new UriRef(Request.Query.entityUri);
 
-            //Uri accountUri = new Uri(Request.Query.accountUri);
+            if (!model.ContainsResource(entityUri) || !IsUri(Request.Query.accountUri))
+            {
+                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+            }
 
-            //OnlineAccount account = ModelProvider.GetAgents().GetResource<OnlineAccount>(accountUri);
+            UriRef accountUri = new UriRef(Request.Query.accountUri);
 
-            //IOnlineServiceConnector connector = OnlineServiceConnectorFactory.TryGetServiceConnector(account.Connector.Uri);
+            if(!model.ContainsResource(accountUri))
+            {
+                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+            }
 
-            return HttpStatusCode.NotImplemented;
+            // 1. Get the file name and temp file path.
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?label
+                WHERE
+                {
+                  @entity nie:isStoredAs / rdfs:label ?label .
+                }");
+
+            query.Bind("@entity", entityUri);
+
+            IEnumerable<BindingSet> bindings = model.GetBindings(query);
+            
+            if(!bindings.Any())
+            {
+                return Logger.LogError(HttpStatusCode.InternalServerError, "No file data object found for entity:", entityUri);
+            }
+
+            string archiveName = Path.GetFileNameWithoutExtension(bindings.First()["label"].ToString()) + ".arta";
+            string tempFile = Path.Combine(PlatformProvider.TempFolder, archiveName);
+
+            try
+            {
+                if (File.Exists(tempFile))
+                {
+                    File.Delete(tempFile);
+                }
+
+                // 2. Create archive
+                ArchiveWriter archiveWriter = new ArchiveWriter(PlatformProvider, ModelProvider);
+                archiveWriter.Write(entityUri, tempFile, DateTime.MinValue);
+
+                // 3. Get target account and authorization parameters
+                OnlineAccount account = model.GetResource<OnlineAccount>(accountUri);
+
+                Uri clientUri = account.ServiceClient.Uri;
+                Uri serviceUrl = account.ServiceUrl.Uri;
+
+                IOnlineServicePublishingClient client = OnlineServiceClientFactory.TryGetClient<IOnlineServicePublishingClient>(clientUri);
+
+                if(client != null)
+                {
+                    client.UploadArchive(Request, serviceUrl, tempFile);
+                }
+            }
+            catch(Exception ex)
+            {
+                return Logger.LogError(HttpStatusCode.InternalServerError, ex);
+            }
+            finally
+            {
+                if(File.Exists(tempFile))
+                {
+                    File.Delete(tempFile);
+                }
+            }
+
+            return HttpStatusCode.OK;
         }
 
         #endregion

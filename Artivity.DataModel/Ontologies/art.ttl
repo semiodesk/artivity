@@ -299,9 +299,22 @@ art:USER rdf:type prov:Role ;
 art:SOFTWARE rdf:type prov:Role ;
 	rdfs:label "SOFTWARE" .
 
-art:accountServiceConnector a rdf:Property ;
-	rdfs:label "accountServiceConnector" ;
-	rdfs:domain art:OnlineServiceConnector .
+art:accountServiceClient a rdf:Property ;
+	rdfs:label "accountServiceClient" ;
+	rdfs:domain foaf:OnlineAccount .
 
-art:OnlineServiceConnector rdfs:subClassOf prov:SoftwareAgent ;
-	rdfs:label "OnlineServiceConnector" .
+art:authenticationProtocol a rdf:Property ;
+	rdfs:label "authenticationProtocol" ;
+	rdfs:domain foaf:OnlineAccount ;
+	rdfs:range art:HttpAuthenticationProtocol .
+
+art:authenticationParameter a rdf:Property ;
+	rdfs:label "authenticationParameter" ;
+	rdfs:domain foaf:OnlineAccount ;
+	rdfs:range art:HttpAuthenticationParameter .
+
+art:HttpAuthenticationProtocol a rdfs:Class ;
+	rdfs:label "HttpAuthenticationProtocol".
+
+art:HttpAuthenticationParameter a rdfs:Class ;
+	rdfs:label "HttpAuthenticationParameter" .
