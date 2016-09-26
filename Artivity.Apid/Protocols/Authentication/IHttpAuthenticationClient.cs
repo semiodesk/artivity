@@ -55,6 +55,8 @@ namespace Artivity.Apid.Protocols.Authentication
 
         void HandleRequestAsync(Request reqeust, string token);
 
+        IEnumerable<KeyValuePair<string, string>> GetPersistableAuthenticationParameters();
+
         #endregion
     }
 }

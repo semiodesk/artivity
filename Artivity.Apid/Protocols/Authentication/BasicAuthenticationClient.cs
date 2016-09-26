@@ -112,6 +112,11 @@ namespace Artivity.Apid.Protocols.Authentication
             }
         }
 
+        public override IEnumerable<KeyValuePair<string, string>> GetPersistableAuthenticationParameters()
+        {
+            yield return new KeyValuePair<string,string>("username", Username);
+        }
+
         public override int GetHashCode()
         {
             return GetHashCode() + Username.GetHashCode() + Password.GetHashCode();

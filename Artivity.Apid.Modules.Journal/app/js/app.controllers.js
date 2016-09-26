@@ -1032,12 +1032,14 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 
 	$scope.selectConnector = function (connector) {
 		$scope.selectedConnector = connector;
+		
+		console.log(connector);
 
 		$scope.title = ($filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE_X')).replace('{0}', connector.Title);
 
 		$scope.parameter = {
 			connectorUri: connector.Uri,
-			authType: connector.AuthenticationClients[0].Uri
+			authType: connector.SupportedAuthenticationClients[0].Uri
 		};
 
 		// TODO: Remove hard-wiring. Receive presets and target sites from connector.
@@ -1076,8 +1078,8 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 
 					n++;
 
-					for (var i = 0; i < data.AuthenticationClients.length; i++) {
-						var c = data.AuthenticationClients[i];
+					for (var i = 0; i < data.SupportedAuthenticationClients.length; i++) {
+						var c = data.SupportedAuthenticationClients[i];
 
 						// Allow iframes to connect to the URL.
 						$scope.clientUrl = $sce.trustAsResourceUrl(c.AuthorizeUrl);

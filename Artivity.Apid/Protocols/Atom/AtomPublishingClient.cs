@@ -65,6 +65,11 @@ namespace Artivity.Apid.Protocols.Atom
             _collectionEndpoint = new Uri(serviceUrl + "/id/contents");
         }
 
+        public AtomPublishingClient(Uri serviceUrl)
+            : this(serviceUrl.AbsoluteUri)
+        {
+        }
+
         #endregion
 
         #region Methods

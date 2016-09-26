@@ -28,36 +28,49 @@
 using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
 using Nancy;
+using Nancy.Json;
+using Newtonsoft.Json.Linq;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Artivity.Apid.Accounts
 {
     /// <summary>
-    /// A helper class for installing an authenticated EPrints online account.
+    /// A helper class for installing an authenticated ORCiD online account.
     /// </summary>
-    public class EPrintsServiceConnector : OnlineServiceConnectorBase
+    public class OrcidServiceClient : OnlineServiceClientBase
     {
         #region Constructors
 
-        public EPrintsServiceConnector() : base(new Uri("http://eprints.org"))
+        public OrcidServiceClient()
+            : base(new Uri("http://orcid.org"))
         {
-            Title = "EPrints";
+            Title = "ORCiD";
 
-            HttpAuthenticationParameterSet localhost = new HttpAuthenticationParameterSet();
-            localhost.Id = "localhost:8080";
-            localhost.Parameters["authType"] = "http://localhost:8272/artivity/api/1.0/auth/basic";
-            localhost.Parameters["url"] = "http://localhost:8080/id/contents";
+            HttpAuthenticationParameterSet orcid = new HttpAuthenticationParameterSet();
+            orcid.Id = "orcid.org";
+            orcid.Parameters["authType"] = "http://localhost:8272/artivity/api/1.0/auth/oauth2";
+            orcid.Parameters["url"] = "http://orcid.org";
+            orcid.Parameters["tokenUrl"] = "https://pub.orcid.org/oauth/token";
 
-            Presets.Add(localhost);
+            HttpAuthenticationParameterSet sandbox = new HttpAuthenticationParameterSet();
+            sandbox.Id = "sandbox.orcid.org";
+            sandbox.Parameters["authType"] = "http://localhost:8272/artivity/api/1.0/auth/oauth2";
+            sandbox.Parameters["url"] = "http://sandbox.orcid.org";
+            sandbox.Parameters["tokenUrl"] = "https://pub.sandbox.orcid.org/oauth/token";
 
-            BasicAuthenticationClient basic = new BasicAuthenticationClient();
+            Presets.Add(orcid);
+            Presets.Add(sandbox);
 
-            AuthenticationClients.Add(basic);
+            OAuth2AuthenticationClient oauth2 = new OAuth2AuthenticationClient();
+            oauth2.ClientId = "APP-AF3XVP6X01AMZQH1";
+            oauth2.ClientSecret = "0c883177-cfd8-4a0f-a111-03a5ba19539d";
+
+            SupportedAuthenticationClients.Add(oauth2);
         }
 
         #endregion
@@ -74,13 +87,8 @@ namespace Artivity.Apid.Accounts
 
             string url = request.Query.url;
 
-            if(!url.EndsWith("/id/contents"))
-            {
-                url.TrimEnd('/');
-                url += "/id/contents";
-
-                request.Query.url = url;
-            }
+            // Save the service endpoint address.
+            ServiceUrl = new Uri(url);
         }
 
         /// <summary>
@@ -91,11 +99,15 @@ namespace Artivity.Apid.Accounts
         /// </remarks>
         protected override string GetAccountId()
         {
-            BasicAuthenticationClient authenticator = TryGetAuthenticationClient<BasicAuthenticationClient>(HttpAuthenticationClientState.Authorized);
+            IHttpAuthenticationClient authenticator = TryGetAuthenticationClient(HttpAuthenticationClientState.Authorized);
 
-            if (authenticator != null)
+            if (authenticator != null && authenticator.ResponseData != null)
             {
-                return authenticator.Username;
+                string json = Encoding.UTF8.GetString(authenticator.ResponseData);
+
+                JObject response = JObject.Parse(json);
+
+                return response["orcid"].ToString();
             }
 
             return null;
@@ -109,7 +121,7 @@ namespace Artivity.Apid.Accounts
         /// </remarks>
         protected override string GetAccountTitle()
         {
-            return "EPrints";
+            return "ORCiD";
         }
 
         #endregion

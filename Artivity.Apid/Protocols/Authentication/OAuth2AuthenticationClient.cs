@@ -175,6 +175,11 @@ namespace Artivity.Apid.Protocols.Authentication
             }
         }
 
+        public override IEnumerable<KeyValuePair<string, string>> GetPersistableAuthenticationParameters()
+        {
+            yield break;
+        }
+
         #endregion
     }
 }

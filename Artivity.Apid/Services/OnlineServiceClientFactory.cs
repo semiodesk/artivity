@@ -38,7 +38,7 @@ namespace Artivity.Apid.Accounts
     /// <summary>
     /// A factory class for creating online service connectors.
     /// </summary>
-    public static class OnlineServiceConnectorFactory
+    public static class OnlineServiceClientFactory
     {
         #region Members
 
@@ -50,7 +50,7 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// A list of registered online service connectors.
         /// </summary>
-        private static readonly Dictionary<Uri, IOnlineServiceConnector> _connectors = new Dictionary<Uri, IOnlineServiceConnector>();
+        private static readonly Dictionary<Uri, IOnlineServiceClient> _clients = new Dictionary<Uri, IOnlineServiceClient>();
 
         #endregion
 
@@ -63,8 +63,8 @@ namespace Artivity.Apid.Accounts
         {
             if (IsInitialized) return;
 
-            OnlineServiceConnectorFactory.RegisterConnector(new EPrintsServiceConnector());
-            OnlineServiceConnectorFactory.RegisterConnector(new OrcidServiceConnector());
+            OnlineServiceClientFactory.RegisterClient(new EPrintsServiceClient());
+            OnlineServiceClientFactory.RegisterClient(new OrcidServiceClient());
 
             IsInitialized = true;
         }
@@ -72,34 +72,34 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// Register a new online service connector.
         /// </summary>
-        /// <param name="connector">A online service connector.</param>
-        public static void RegisterConnector(IOnlineServiceConnector connector)
+        /// <param name="client">A online service connector.</param>
+        public static void RegisterClient(IOnlineServiceClient client)
         {
-            Uri uri = connector.Uri;
+            Uri uri = client.Uri;
 
-            if(_connectors.ContainsKey(connector.Uri))
+            if(_clients.ContainsKey(client.Uri))
             {
-                string message = string.Format("Identifier {0} already registered by provider {1}", uri, _connectors[uri]);
+                string message = string.Format("Identifier {0} already registered by client {1}", uri, _clients[uri]);
 
                 throw new DuplicateKeyException(message);
             }
 
-            Logger.LogInfo("Registered online account provider {0}", uri);
+            Logger.LogInfo("Registered online account client {0}", uri);
 
-            _connectors[uri] = connector;
+            _clients[uri] = client;
         }
 
         /// <summary>
         /// Enumerates all registered online service connectors.
         /// </summary>
-        public static IEnumerable<IOnlineServiceConnector> GetRegisteredConnectors()
+        public static IEnumerable<IOnlineServiceClient> GetRegisteredClients()
         {
             if (!IsInitialized)
             {
                 Initialize();
             }
 
-            return _connectors.Values;
+            return _clients.Values;
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Artivity.Apid.Accounts
         /// </summary>
         /// <param name="request">A Nancy HTTP request.</param>
         /// <returns>A online service connector on success, <c>null</c> otherwise.</returns>
-        public static IOnlineServiceConnector TryGetServiceConnector(Request request)
+        public static IOnlineServiceClient TryGetClient(Request request)
         {
             string uri = request.Query.connectorUri;
 
@@ -116,7 +116,7 @@ namespace Artivity.Apid.Accounts
                 return null;
             }
 
-            return TryGetServiceConnector(new Uri(uri));
+            return TryGetClient(new Uri(uri));
         }
 
         /// <summary>
@@ -124,14 +124,19 @@ namespace Artivity.Apid.Accounts
         /// </summary>
         /// <param name="uri">A URI.</param>
         /// <returns>A online service connector on success, <c>null</c> otherwise.</returns>
-        public static IOnlineServiceConnector TryGetServiceConnector(Uri uri)
+        public static IOnlineServiceClient TryGetClient(Uri uri)
         {
             if (!IsInitialized)
             {
                 Initialize();
             }
 
-            return _connectors[uri];
+            if (_clients.Any(x => x.Key == uri))
+            {
+                return _clients.FirstOrDefault(x => x.Key == uri).Value;
+            }
+
+            return _clients[uri];
         }
 
         /// <summary>
@@ -140,9 +145,9 @@ namespace Artivity.Apid.Accounts
         /// <typeparam name="T">A subclass of OnlineServiceConnectorBase.</typeparam>
         /// <param name="uri">A URI.</param>
         /// <returns>A online service connector on success, <c>null</c> otherwise.</returns>
-        public static T TryGetServiceConnector<T>(Uri uri) where T : class
+        public static T TryGetClient<T>(Uri uri) where T : class
         {
-            return TryGetServiceConnector(uri) as T;
+            return TryGetClient(uri) as T;
         }
 
         #endregion
