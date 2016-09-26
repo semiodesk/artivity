@@ -178,12 +178,22 @@ namespace Artivity.Apid.Accounts
                 return null;
             }
 
-            DateTime now = DateTime.UtcNow;
+            // Create the online account.
+            UriRef accountUri = new UriRef(GetAccountUri());
 
-            OnlineAccount account = model.CreateResource<OnlineAccount>();
-            account.Id = GetAccountId();
+            OnlineAccount account = model.CreateResource<OnlineAccount>(accountUri);
+            account.Id = accountUri.AbsoluteUri;
             account.Title = GetAccountTitle();
             account.Description = GetAccountDescription();
+
+            if(accountUri == ServiceUrl)
+            {
+
+            }
+
+            // Set the creation and modification date.
+            DateTime now = DateTime.UtcNow;
+
             account.CreationTime = now;
             account.LastModificationTime = now;
 
@@ -249,7 +259,7 @@ namespace Artivity.Apid.Accounts
         /// <remarks>
         /// This method is called when an authenticated account is being persisted.
         /// </remarks>
-        protected abstract string GetAccountId();
+        protected abstract UriRef GetAccountUri();
 
         /// <summary>
         /// Gets the account title.
