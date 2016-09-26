@@ -97,7 +97,7 @@ namespace Artivity.Apid.Accounts
         /// <remarks>
         /// This method is called when an authenticated account is being persisted.
         /// </remarks>
-        protected override string GetAccountId()
+        protected override UriRef GetAccountUri()
         {
             IHttpAuthenticationClient authenticator = TryGetAuthenticationClient(HttpAuthenticationClientState.Authorized);
 
@@ -107,7 +107,12 @@ namespace Artivity.Apid.Accounts
 
                 JObject response = JObject.Parse(json);
 
-                return response["orcid"].ToString();
+                string id = response["orcid"].ToString();
+
+                UriBuilder uriBuilder = new UriBuilder(ServiceUrl);
+                uriBuilder.Path += id;
+
+                return new UriRef(uriBuilder.ToString());
             }
 
             return null;
