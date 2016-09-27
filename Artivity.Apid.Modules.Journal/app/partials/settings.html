@@ -109,28 +109,28 @@
 										<h2 class="modal-title">{{ title | translate}}</h2>
 									</div>
 									<div class="modal-body">
-										<div ng-show="selectedConnector == null">
+										<div ng-show="selectedClient == null">
 											<p class="description">Please select the account type to connect with:</p>
 
 											<ul class="list-view">
-												<li class="list-item" ng-repeat="connector in connectors">
-													<a ng-click="selectConnector(connector)" style="cursor: pointer;">
+												<li class="list-item" ng-repeat="client in clients">
+													<a ng-click="selectClient(client)" style="cursor: pointer;">
 														<div class="col col-icn col-icn-lg">
 															<i class="zmdi zmdi-account"></i>
 														</div>
 
 														<div class="col expand">
 															<div style="padding: 9px">
-																<h5>{{connector.Title}}</h5>
-																<label>{{connector.Uri + '.description' | translate}}</label>
+																<h5>{{client.Title}}</h5>
+																<label>{{client.Uri + '.description' | translate}}</label>
 															</div>
 														</div>
 													</a>
 												</li>
 											</ul>
 										</div>
-										<div ng-show="selectedConnector.Uri === 'http://eprints.org'">
-											<form name="connectForm" ng-submit="connectAccount(selectedConnector)">
+										<div ng-show="selectedClient.Uri === 'http://eprints.org'">
+											<form name="connectForm" ng-submit="connectAccount(selectedClient)">
 												<p class="description">Please enter the server address, username and password of the repository:</p>
 
 												<input type="text" class="form-control" id="url" name="url" placeholder="http://example.org" ng-model="parameter.url" required>
@@ -140,14 +140,14 @@
 
 													<div class="form-group">
 														<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20" maxlength="20" ng-model="parameter.username" required>
-														<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20" maxlength="20" ng-model="parameter.password" ui-keypress="{13:'connectAccount(selectedConnector)'}" required>
+														<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20" maxlength="20" ng-model="parameter.password" ui-keypress="{13:'connectAccount(selectedClient)'}" required>
 													</div>
 
-													<button type="submit" class="btn btn-default" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < connectorState && connectorState < 3)">Connect</button>
+													<button type="submit" class="btn btn-default" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < clientState && clientState < 3)">Connect</button>
 												</fieldset>
 											</form>
 										</div>
-										<div ng-show="selectedConnector.Uri === 'http://orcid.org'">
+										<div ng-show="selectedClient.Uri === 'http://orcid.org'">
 											<p class="description">Please log into your ORCiD account and allow Artivity to be connected:</p>
 
 											<iframe ng-src="{{clientUrl}}" style="min-height: 400px; width: 100%;">
@@ -155,7 +155,7 @@
 										</div>
 									</div>
 									<div class="modal-status-bar">
-										<div class="modal-state fade in" style="background-color: #3694c3;" ng-show="connectorState === 1">
+										<div class="modal-state fade in" style="background-color: #3694c3;" ng-show="clientState === 1">
 											<div class="pull-center">
 												<div class="spinner connecting">
 													<div class="rect1"></div>
@@ -164,13 +164,13 @@
 												</div> Connecting..
 											</div>
 										</div>
-										<div class="modal-state fade in" style="background-color: #849324;" ng-show="connectorState === 2">
+										<div class="modal-state fade in" style="background-color: #849324;" ng-show="clientState === 2">
 											<i class="zmdi zmdi-check zmdi-sm"></i> Authorization successful.
 										</div>
-										<div class="modal-state fade in" style="background-color: #EB7414;" ng-show="connectorState === 3">
+										<div class="modal-state fade in" style="background-color: #EB7414;" ng-show="clientState === 3">
 											<i class="zmdi zmdi-alert-triangle zmdi-sm"></i> Wrong username or password.
 										</div>
-										<div class="modal-state fade in" style="background-color: #EB7414;" ng-show="connectorState === 4">
+										<div class="modal-state fade in" style="background-color: #EB7414;" ng-show="clientState === 4">
 											<i class="zmdi zmdi-alert-triangle zmdi-sm"></i> Connection error.
 										</div>
 									</div>

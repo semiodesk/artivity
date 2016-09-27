@@ -41,32 +41,58 @@ namespace Artivity.Api.Modules
             // Get a list of all installed online accounts.
             Get["/"] = parameters =>
             {
-                return GetAccounts();
-            };
-
-            // Get a list of all supported online account types.
-            Get["/connectors"] = parameters =>
-            {
-                string connectorUri = Request.Query["connectorUri"];
-
-                if (string.IsNullOrEmpty(connectorUri))
+                if (!string.IsNullOrEmpty(Request.Query.featureUri))
                 {
-                    return GetServiceConnectors();
-                }
-                else if (IsUri(connectorUri))
-                {
-                    return GetServiceConnector(new Uri(connectorUri));
+                    string featureUri = Request.Query.featureUri;
+
+                    if (!IsUri(featureUri))
+                    {
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+
+                    return GetAccountsWithFeature(new Uri(featureUri));
                 }
                 else
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return GetAccounts();
                 }
             };
 
-            // Gets the current status of a online service connector from a session id (use to check the auth progress).
-            Get["/connectors/status"] = parameters =>
+            // Get a list of all supported online account types.
+            Get["/clients"] = parameters =>
             {
-                return GetServiceConnectorStatus();
+                if(!string.IsNullOrEmpty(Request.Query.featureUri))
+                {
+                    string featureUri = Request.Query.featureUri;
+
+                    if(!IsUri(featureUri))
+                    {
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+
+                    return GetServiceClientsWithFeature(new Uri(featureUri));
+                }
+                else if(!string.IsNullOrEmpty(Request.Query.clientUri))
+                {
+                    string clientUri = Request.Query.clientUri;
+
+                    if(!IsUri(clientUri))
+                    {
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+
+                    return GetServiceClient(new Uri(clientUri));
+                }
+                else
+                {
+                    return GetServiceClients();
+                }
+            };
+
+            // Gets the current status of a online service client from a session id (use to check the auth progress).
+            Get["/clients/status"] = parameters =>
+            {
+                return GetServiceClientStatus();
             };
 
             // Begin an authorization request for a online service account (needs to be called *before* installing).
@@ -109,28 +135,47 @@ namespace Artivity.Api.Modules
         {
             List<OnlineAccount> accounts = ModelProvider.GetAgents().GetResources<OnlineAccount>().ToList();
 
-            string result = JsonConvert.SerializeObject(accounts);
-
-            // Manually convert the result because the default serializer crashes with an exception when
-            // trying to serialize the nested data object HttpAuthenticationProtocol. The exception occurs
-            // because the connection is already closed when the serializer tries to load the object from the db.
-            MemoryStream stream = new MemoryStream();
-
-            StreamWriter writer = new StreamWriter(stream);
-            writer.Write(result);
-            writer.Flush();
-
-            stream.Position = 0;
-
-            return Response.FromStream(stream, "application/json");
+            return ResponseAsJsonSync(accounts);
         }
 
-        private Response GetServiceConnectors()
+        private Response GetAccountsWithFeature(Uri featureUri)
+        {
+            HashSet<string> clients = new HashSet<string>();
+
+            foreach(IOnlineServiceClient client in OnlineServiceClientFactory.GetRegisteredClients())
+            {
+                if(client.Features.Any(f => f.Uri == featureUri))
+                {
+                    clients.Add(client.Uri.AbsoluteUri);
+                }
+            }
+
+            List<OnlineAccount> accounts = new List<OnlineAccount>();
+
+            foreach(OnlineAccount account in ModelProvider.GetAgents().GetResources<OnlineAccount>())
+            {
+                if(clients.Contains(account.ServiceClient.Uri.AbsoluteUri))
+                {
+                    accounts.Add(account);
+                }
+            }
+
+            return ResponseAsJsonSync(accounts);
+        }
+
+        private Response GetServiceClients()
         {
             return Response.AsJson(OnlineServiceClientFactory.GetRegisteredClients());
         }
 
-        private Response GetServiceConnector(Uri providerUri)
+        private Response GetServiceClientsWithFeature(Uri featureUri)
+        {
+            List<IOnlineServiceClient> clients = OnlineServiceClientFactory.GetRegisteredClients().ToList();
+
+            return Response.AsJson(clients.Where(c => c.Features.Any(f => f.Uri == featureUri)));
+        }
+
+        private Response GetServiceClient(Uri providerUri)
         {
             try
             {
@@ -142,7 +187,7 @@ namespace Artivity.Api.Modules
             }
         }
 
-        private Response GetServiceConnectorStatus()
+        private Response GetServiceClientStatus()
         {
             string sessionId = Request.Query["sessionId"];
 
@@ -156,9 +201,9 @@ namespace Artivity.Api.Modules
                 return Logger.LogError(HttpStatusCode.NotFound, "Session with token {0} not found.", sessionId);
             }
 
-            IOnlineServiceClient connector = _sessions[sessionId];
+            IOnlineServiceClient client = _sessions[sessionId];
 
-            return Response.AsJson(connector);
+            return Response.AsJson(client);
         }
 
         private Response SendOAuth2AccessToken()
@@ -170,14 +215,14 @@ namespace Artivity.Api.Modules
                 return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
-            IOnlineServiceClient connector = _sessions[sessionId];
+            IOnlineServiceClient client = _sessions[sessionId];
 
-            if (connector == null)
+            if (client == null)
             {
                 return HttpStatusCode.NotFound;
             }
 
-            OAuth2AuthenticationClient authenticator = connector.TryGetAuthenticationClient<OAuth2AuthenticationClient>(HttpAuthenticationClientState.Processing);
+            OAuth2AuthenticationClient authenticator = client.TryGetAuthenticationClient<OAuth2AuthenticationClient>(HttpAuthenticationClientState.Processing);
 
             if (authenticator != null)
             {
@@ -191,19 +236,19 @@ namespace Artivity.Api.Modules
 
         private Response AuthorizeAccount()
         {
-            IOnlineServiceClient connector = OnlineServiceClientFactory.TryGetClient(Request);
+            IOnlineServiceClient client = OnlineServiceClientFactory.TryGetClient(Request);
 
-            if (connector == null)
+            if (client == null)
             {
                 return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
             else
             {
-                connector.InitializeQueryParametersFromPreset(Request);
-                connector.SanitizeQueryParameters(Request);
+                client.InitializeQueryParametersFromPreset(Request);
+                client.SanitizeQueryParameters(Request);
             }
 
-            IHttpAuthenticationClient authenticator = connector.TryGetAuthenticationClient(Request);
+            IHttpAuthenticationClient authenticator = client.TryGetAuthenticationClient(Request);
 
             if (authenticator == null)
             {
@@ -211,27 +256,22 @@ namespace Artivity.Api.Modules
             }
 
             // Remove any previous sessions.
-            string sessionId = _sessions.FirstOrDefault(s => s.Value == connector).Key;
+            string sessionId = _sessions.FirstOrDefault(s => s.Value == client).Key;
 
             if (!string.IsNullOrEmpty(sessionId))
             {
                 _sessions.Remove(sessionId);
             }
 
-            // Generate an authorization token for the current request.
-            sessionId = Guid.NewGuid().ToString();
+            // Generate an session handle for the current request.
+            Dictionary<string, object> sessionHandle = GetSessionHandle(client);
+
+            sessionId = sessionHandle["id"].ToString();
 
             // Only execute the request if there are no successful previous requests.
             authenticator.HandleRequestAsync(Request, sessionId);
 
-            // Prepare the JSON result dictionary.
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            result["id"] = sessionId;
-
-            // Store the authenticator in the chache *before* sending the request.
-            _sessions[sessionId] = connector;
-
-            return Response.AsJson(result);
+            return Response.AsJson(sessionHandle);
         }
 
         private Response InstallAccount()
@@ -243,14 +283,14 @@ namespace Artivity.Api.Modules
                 return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
-            IOnlineServiceClient connector = _sessions[sessionId];
+            IOnlineServiceClient client = _sessions[sessionId];
 
-            if (connector == null)
+            if (client == null)
             {
                 return Logger.LogRequest(HttpStatusCode.NotFound, Request);
             }
 
-            IHttpAuthenticationClient authenticator = connector.TryGetAuthenticationClient(HttpAuthenticationClientState.Authorized);
+            IHttpAuthenticationClient authenticator = client.TryGetAuthenticationClient(HttpAuthenticationClientState.Authorized);
 
             if (authenticator == null)
             {
@@ -259,7 +299,7 @@ namespace Artivity.Api.Modules
 
             IModel model = ModelProvider.GetAgents();
 
-            OnlineAccount account = connector.InstallAccount(model);
+            OnlineAccount account = client.InstallAccount(model);
 
             return account != null ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
         }
@@ -367,6 +407,10 @@ namespace Artivity.Api.Modules
                 {
                     client.UploadArchive(Request, serviceUrl, tempFile);
                 }
+
+                Dictionary<string, object> sessionHandle = GetSessionHandle(client);
+
+                return Response.AsJson(sessionHandle);
             }
             catch(Exception ex)
             {
@@ -379,8 +423,20 @@ namespace Artivity.Api.Modules
                     File.Delete(tempFile);
                 }
             }
+        }
 
-            return HttpStatusCode.OK;
+        private Dictionary<string, object> GetSessionHandle(IOnlineServiceClient client)
+        {
+            string sessionId = Guid.NewGuid().ToString();
+
+            // Prepare the JSON result dictionary.
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            result["id"] = sessionId;
+
+            // Store the authenticator in the chache *before* sending the request.
+            _sessions[sessionId] = client;
+
+            return result;
         }
 
         #endregion

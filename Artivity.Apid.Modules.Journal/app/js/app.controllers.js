@@ -10,6 +10,42 @@ explorerControllers.filter('reverse', function () {
 	};
 });
 
+explorerControllers.handleServiceClientState = function (api, sessionId, handleClientStateChange) {
+	// The polling interval in milliseconds.
+	var pollIntervalMs = 1000;
+
+	// The maximum number of queries.
+	var maxQueries = 300;
+
+	// The number of status queries.
+	var n = 0;
+
+	// Query the current client status in a regular interval.
+	var interval = setInterval(function () {
+		api.getAccountClientStatus(sessionId).then(function (data) {
+			var client = data;
+
+			if (!client) {
+				// The sessionId was not found, no need to query again.
+				clearInterval(interval);
+			}
+
+			n++;
+
+			if (handleClientStateChange) {
+				handleClientStateChange(interval, client);
+			}
+
+			if (n === maxQueries) {
+				clearInterval(interval);
+
+				// The client state '3' refers to 'Error'.
+				$scope.clientState = 4;
+			}
+		});
+	}, pollIntervalMs);
+};
+
 explorerControllers.directive('bootstrapSwitch', [
         function () {
 		return {
@@ -111,15 +147,15 @@ explorerControllers.controller('CalendarController', function (api, $scope, $fil
 	}
 });
 
-explorerControllers.controller('ShareDialogController', function (api, $scope, $filter, $uibModalInstance, $sce) {
-	$scope.title = "Publish File";
-	$scope.isUploading = false;
+explorerControllers.controller('PublishFileDialogController', function (api, $scope, $filter, $uibModalInstance, $sce) {
+	$scope.step = 'account-select';
+	$scope.title = 'Publish File';
 
-	// Available accounts.
+	// Available account.
 	$scope.accounts = [];
 	$scope.selectedAccount = null;
 
-	api.getAccounts().then(function (data) {
+	api.getAccountsWithFeature('http://w3id.org/art/terms/1.0/features/PublishArchive').then(function (data) {
 		console.log("Accounts:", data);
 
 		$scope.accounts = data;
@@ -129,46 +165,63 @@ explorerControllers.controller('ShareDialogController', function (api, $scope, $
 		}
 	});
 
-	// The upload progress in percent from 0 to 100
-	$scope.uploadProgress = 0;
+	// Authenticate account.
+	$scope.authorizeUpload = function (account) {
+		$scope.step = 'upload-authorize';
+		$scope.title = 'Authorize Upload';
+		
+		$scope.authProtocol = $scope.selectedAccount.AuthenticationProtocol.Uri;
+		$scope.authParameter = {};
+		
+		for(var i = 0; i < $scope.selectedAccount.AuthenticationParameters.length; i++) {
+			var p = $scope.selectedAccount.AuthenticationParameters[i];
+			
+			$scope.authParameter[p.Name] = p.Value;
+		}
+	};
 
-	// Interval handle to a simulated upload function.
-	var uploaderInterval;
+	// File upload.
+	var interval = undefined;
 
 	$scope.beginUpload = function () {
+		$scope.step = 'upload-progress';
 		$scope.title = "Uploading File";
-		$scope.isUploading = true;
 
-		uploaderInterval = setInterval(function () {
-			console.log($scope.uploadProgress);
+		$scope.percentComplete = 0;
 
-			if (0 <= $scope.uploadProgress && $scope.uploadProgress < 100) {
-				// Simulate file upload.
-				$scope.uploadProgress += 1;
-			} else {
-				$scope.endUpload();
-			}
+		api.uploadArchive($scope.selectedAccount.Uri, $scope.entity.uri, $scope.authParameter).then(function (data) {
+			var sessionId = data.id;
 
-			$scope.$digest();
-		}, 100);
+			console.log("Session: ", sessionId);
+
+			explorerControllers.handleServiceClientState(api, sessionId, function (intervalHandle, client) {
+				interval = intervalHandle;
+
+				$scope.totalBytes = client.State.TotalBytes;
+				$scope.transferredBytes = client.State.TransferredBytes;
+				$scope.percentComplete = client.State.PercentComplete;
+
+				if ($scope.percentComplete === 100) {
+					$scope.endUpload();
+				}
+			});
+		});
 	};
 
 	$scope.endUpload = function () {
-		clearInterval(uploaderInterval);
+		if (interval) {
+			clearInterval(interval);
+		}
 
-		if ($scope.uploadProgress < 100) {
-			$scope.uploadProgress = 0;
+		if ($scope.percentComplete < 100) {
+			$scope.percentComplete = 0;
 		} else {
 			$uibModalInstance.close();
 		}
 	};
 
-	$scope.cancelUpload = $scope.endUpload;
-
 	$scope.cancel = function () {
-		if ($scope.isUploading) {
-			$scope.endUpload();
-		}
+		$scope.endUpload();
 
 		$uibModalInstance.dismiss('cancel');
 	};
@@ -563,16 +616,12 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	};
 
 	// SHARING
-	$scope.shareFile = function () {
+	$scope.publishFile = function () {
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'share-dialog.html',
-			controller: 'ShareDialogController',
+			templateUrl: 'publish-file-dialog.html',
+			controller: 'PublishFileDialogController',
 			scope: $scope
-		});
-
-		modalInstance.result.then(function (account) {
-			console.log("Uploading stuff..");
 		});
 	}
 
@@ -989,7 +1038,7 @@ explorerControllers.controller('AccountSettingsController', function (api, $scop
 
 	$scope.uninstallAccount = function (a) {
 		api.uninstallAccount(a.Uri).then(function (data) {
-			console.log("Account disconnected:", a.Uri);
+			console.log("Account uninstalled:", a.Uri);
 
 			var i = $scope.accounts.indexOf(a);
 
@@ -1016,115 +1065,95 @@ explorerControllers.controller('AccountSettingsController', function (api, $scop
 });
 
 explorerControllers.controller('AddAccountDialogController', function (api, $scope, $filter, $uibModalInstance, $sce) {
-	var timer = undefined;
+	var interval = undefined;
 
 	$scope.title = $filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE');
 
-	$scope.connectors = [];
+	$scope.clients = [];
 
-	api.getAccountConnectors().then(function (data) {
-		$scope.connectors = data;
+	api.getAccountClients().then(function (data) {
+		$scope.clients = data;
 
-		console.log($scope.connectors);
+		console.log("Available clients:", $scope.clients);
 	});
 
-	$scope.selectedConnector = null;
+	$scope.selectedClient = null;
 
-	$scope.selectConnector = function (connector) {
-		$scope.selectedConnector = connector;
-		
-		console.log(connector);
+	$scope.selectClient = function (client) {
+		$scope.title = ($filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE_X')).replace('{0}', client.Title);
 
-		$scope.title = ($filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE_X')).replace('{0}', connector.Title);
+		$scope.selectedClient = client;
 
 		$scope.parameter = {
-			connectorUri: connector.Uri,
-			authType: connector.SupportedAuthenticationClients[0].Uri
+			clientUri: client.Uri,
+			authType: client.SupportedAuthenticationClients[0].Uri
 		};
 
-		// TODO: Remove hard-wiring. Receive presets and target sites from connector.
-		if ($scope.selectedConnector.Uri === 'http://orcid.org') {
+		// TODO: Remove hard-wiring. Receive presets and target sites from client.
+		if (client.Uri === 'http://orcid.org') {
 			$scope.parameter.presetId = 'sandbox.orcid.org';
 
-			$scope.connectAccount($scope.selectedConnector);
-		} else if ($scope.selectedConnector.Uri === 'http://eprints.org') {
+			$scope.connectAccount($scope.selectedClient);
+		} else if (client.Uri === 'http://eprints.org') {
 			$scope.parameter.url = 'http://ualresearchonline.arts.ac.uk';
 		}
+
+		console.log("Client selected: ", client);
 	}
 
 	// Prevent an account from being installed twice.
 	$scope.isInstalling = false;
 
-	// The connector state '0' refers to 'None'.	
-	$scope.connectorState = 0;
+	// The client state '0' refers to 'None'.	
+	$scope.clientState = 0;
 
-	$scope.connectAccount = function (connector) {
-		// The connector state '1' refers to 'InProgress'.
-		$scope.connectorState = 1;
-
-		// The number of status queries.
-		var n = 0;
+	$scope.connectAccount = function (client) {
+		// The client state '1' refers to 'InProgress'.
+		$scope.clientState = 1;
 
 		api.authorizeAccount($scope.parameter).then(function (data) {
 			var sessionId = data.id;
 
-			// Query the current connector status in a regular interval.
-			timer = setInterval(function () {
-				api.getAccountConnectorStatus(sessionId).then(function (data) {
-					if (!data) {
-						// The sessionId was not found, no need to query again.
-						clearInterval(timer);
-					}
+			explorerControllers.handleServiceClientState(api, sessionId, function (intervalHandle, client) {
+				interval = intervalHandle;
 
-					n++;
+				for (var i = 0; i < client.SupportedAuthenticationClients.length; i++) {
+					var c = client.SupportedAuthenticationClients[i];
 
-					for (var i = 0; i < data.SupportedAuthenticationClients.length; i++) {
-						var c = data.SupportedAuthenticationClients[i];
+					// Allow iframes to connect to the URL.
+					$scope.clientUrl = $sce.trustAsResourceUrl(c.AuthorizeUrl);
 
-						// Allow iframes to connect to the URL.
-						$scope.clientUrl = $sce.trustAsResourceUrl(c.AuthorizeUrl);
+					if (c.ClientState > 1) {
+						clearInterval(interval);
 
-						console.log(c.AuthorizeUrl, $scope.clientUrl);
+						$scope.clientState = c.ClientState;
 
-						if (c.ClientState > 1) {
-							clearInterval(timer);
+						// The client state '2' refers to 'Authorized'.
+						if (!$scope.isInstalling && c.ClientState == 2) {
+							$scope.isInstalling = true;
 
-							$scope.connectorState = c.ClientState;
+							api.installAccount(sessionId).then(function (r) {
+								console.log("Account installed:", sessionId);
 
-							// The connector state '2' refers to 'Authorized'.
-							if (!$scope.isInstalling && c.ClientState == 2) {
-								$scope.isInstalling = true;
-
-								api.installAccount(sessionId).then(function (r) {
-									console.log("Account connected:", sessionId);
-
-									// Close the dialog after the account was successfully connected.
-									setTimeout(function () {
-										$uibModalInstance.close();
-									}, 500);
-								});
-							}
-
-							break;
+								// Close the dialog after the account was successfully connected.
+								setTimeout(function () {
+									$uibModalInstance.close();
+								}, 500);
+							});
 						}
-					}
 
-					if (n === 300) {
-						clearInterval(timer);
-
-						// The connector state '3' refers to 'Error'.
-						$scope.connectorState = 4;
+						break;
 					}
-				});
-			}, 1000);
+				}
+			});
 		});
 	};
 
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');
 
-		if (timer) {
-			window.clearInterval(timer);
+		if (interval) {
+			window.clearInterval(interval);
 		}
 	};
 });

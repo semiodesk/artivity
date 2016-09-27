@@ -112,6 +112,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\ProgressStreamInfo.cs" />
+    <Compile Include="Helpers\ProgressStream.cs" />
+    <Compile Include="Helpers\ProgressStreamContent.cs" />
     <Compile Include="Services\Clients\EPrintsServiceClient.cs" />
     <Compile Include="Protocols\Authentication\BasicAuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationClientState.cs" />

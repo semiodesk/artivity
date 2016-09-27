@@ -16,7 +16,7 @@
 				<h5 class="title">{{file.label}}</h5>
 			</div>
 			<div class="col">
-				<a id="export-btn" class="btn btn-header" ng-click="shareFile()"><i class="zmdi zmdi-hc-fw zmdi-cloud-upload"></i></a>
+				<a id="export-btn" class="btn btn-header" ng-click="publishFile()"><i class="zmdi zmdi-hc-fw zmdi-cloud-upload"></i></a>
 			</div>
 			<div class="col">
 				<a id="export-btn" class="btn btn-header" ng-click="exportFile()"><i class="zmdi zmdi-hc-fw zmdi-archive"></i></a>
@@ -212,14 +212,14 @@
 			</div>
 		</div>
 
-		<script type="text/ng-template" id="share-dialog.html">
+		<script type="text/ng-template" id="publish-file-dialog.html">
 			<div class="modal-header">
 				<button class="btn btn-sm btn-circular btn-no-margin pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
 
 				<h2 class="modal-title">{{title}}</h2>
 			</div>
 			<div class="modal-body">
-				<div ng-show="!isUploading">
+				<div ng-show="step == 'account-select'">
 					<table>
 						<tr>
 							<td valign="top">
@@ -262,17 +262,29 @@
 						</tr>
 					</table>
 					<div class="text-center">
+						<button class="btn btn-default" ng-click="authorizeUpload(selectedAccount)">Continue</button>
+					</div>
+				</div>
+				<div ng-show="step == 'upload-authorize'">
+					<div ng-show="authProtocol == 'http://localhost:8272/artivity/api/1.0/auth/basic'">
+						<p class="description">Please log into our account:</p>
+						
+						<div class="form-group">
+							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20" maxlength="20" ng-model="authParameter.username" required>
+							<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20" maxlength="20" ng-model="authParameter.password" ui-keypress="{13:'connectAccount(selectedClient)'}" required>
+						</div>
+
 						<button class="btn btn-default" ng-click="beginUpload()">Upload</button>
 					</div>
 				</div>
-				<div ng-show="isUploading">
+				<div ng-show="step == 'upload-progress'">
 					<label>{{selectedAccount.Title}}</label>
-					<label class="pull-right">{{uploadProgress}}%</label>
+					<label class="pull-right">{{percentComplete}}%</label>
 
-					<uib-progressbar value="uploadProgress" max="100" style="height: 5px"></uib-progressbar>
+					<uib-progressbar value="percentComplete" max="100" style="height: 5px"></uib-progressbar>
 
 					<div class="text-center">
-						<button class="btn btn-default" ng-click="cancelUpload()">Cancel</button>
+						<button class="btn btn-default" ng-click="cancel()">Cancel</button>
 					</div>
 				</div>
 			</div>

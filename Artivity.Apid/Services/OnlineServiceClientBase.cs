@@ -57,6 +57,11 @@ namespace Artivity.Apid.Accounts
         public Uri ServiceUrl { get; protected set; }
 
         /// <summary>
+        /// Gets a list of supported client features.
+        /// </summary>
+        public List<Resource> Features { get; set; }
+
+        /// <summary>
         /// Gets a list of HTTP authentication parameter presets.
         /// </summary>
         public List<HttpAuthenticationParameterSet> Presets { get; protected set; }
@@ -72,6 +77,11 @@ namespace Artivity.Apid.Accounts
         /// </summary>
         public List<IHttpAuthenticationClient> SupportedAuthenticationClients { get; protected set; }
 
+        /// <summary>
+        /// Get information about the current client operations.
+        /// </summary>
+        public object State { get; protected set; }
+
         #endregion
 
         #region Constructors
@@ -80,6 +90,7 @@ namespace Artivity.Apid.Accounts
         {
             Uri = uri;
             Presets = new List<HttpAuthenticationParameterSet>();
+            Features = new List<Resource>();
             SupportedAuthenticationClients = new List<IHttpAuthenticationClient>();
         }
 

@@ -49,6 +49,11 @@ namespace Artivity.Apid.Accounts
         Uri Uri { get; }
 
         /// <summary>
+        /// Gets a list of features which are supported by the client.
+        /// </summary>
+        List<Resource> Features { get;  }
+
+        /// <summary>
         /// Gets a list of supported HTTP authentication methods.
         /// </summary>
         List<IHttpAuthenticationClient> SupportedAuthenticationClients { get; }
