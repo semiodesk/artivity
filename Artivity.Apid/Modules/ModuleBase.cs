@@ -116,6 +116,24 @@ namespace Artivity.Apid
             return (!string.IsNullOrEmpty(url)) && IsUri(Uri.EscapeUriString(url));
         }
 
+        protected Response ResponseAsJsonSync(object o)
+        {
+            string result = JsonConvert.SerializeObject(o);
+
+            // Manually convert the result because the default serializer crashes with an exception when
+            // trying to serialize the nested data object HttpAuthenticationProtocol. The exception occurs
+            // because the connection is already closed when the serializer tries to load the object from the db.
+            MemoryStream stream = new MemoryStream();
+
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(result);
+            writer.Flush();
+
+            stream.Position = 0;
+
+            return Response.FromStream(stream, "application/json");
+        }
+
         #endregion
 	}
 }

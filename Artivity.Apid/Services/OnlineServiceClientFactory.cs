@@ -36,7 +36,7 @@ using System.Text;
 namespace Artivity.Apid.Accounts
 {
     /// <summary>
-    /// A factory class for creating online service connectors.
+    /// A factory class for creating online service clients.
     /// </summary>
     public static class OnlineServiceClientFactory
     {
@@ -48,7 +48,7 @@ namespace Artivity.Apid.Accounts
         public static bool IsInitialized = false;
 
         /// <summary>
-        /// A list of registered online service connectors.
+        /// A list of registered online service clients.
         /// </summary>
         private static readonly Dictionary<Uri, IOnlineServiceClient> _clients = new Dictionary<Uri, IOnlineServiceClient>();
 
@@ -57,7 +57,7 @@ namespace Artivity.Apid.Accounts
         #region Methods
 
         /// <summary>
-        /// Initialize the factory class by registering all known online service connectors.
+        /// Initialize the factory class by registering all known online service clients.
         /// </summary>
         public static void Initialize()
         {
@@ -70,9 +70,9 @@ namespace Artivity.Apid.Accounts
         }
 
         /// <summary>
-        /// Register a new online service connector.
+        /// Register a new online service client.
         /// </summary>
-        /// <param name="client">A online service connector.</param>
+        /// <param name="client">A online service client.</param>
         public static void RegisterClient(IOnlineServiceClient client)
         {
             Uri uri = client.Uri;
@@ -90,7 +90,7 @@ namespace Artivity.Apid.Accounts
         }
 
         /// <summary>
-        /// Enumerates all registered online service connectors.
+        /// Enumerates all registered online service clients.
         /// </summary>
         public static IEnumerable<IOnlineServiceClient> GetRegisteredClients()
         {
@@ -103,13 +103,13 @@ namespace Artivity.Apid.Accounts
         }
 
         /// <summary>
-        /// Tries to get a online service connector from the 'connectorUri' query parameter of a HTTP request.
+        /// Tries to get a online service client from the 'clientUri' query parameter of a HTTP request.
         /// </summary>
         /// <param name="request">A Nancy HTTP request.</param>
-        /// <returns>A online service connector on success, <c>null</c> otherwise.</returns>
+        /// <returns>A online service client on success, <c>null</c> otherwise.</returns>
         public static IOnlineServiceClient TryGetClient(Request request)
         {
-            string uri = request.Query.connectorUri;
+            string uri = request.Query.clientUri;
 
             if(string.IsNullOrEmpty(uri))
             {
@@ -120,10 +120,10 @@ namespace Artivity.Apid.Accounts
         }
 
         /// <summary>
-        /// Tries to get a online service connector with the given URI.
+        /// Tries to get a online service client with the given URI.
         /// </summary>
         /// <param name="uri">A URI.</param>
-        /// <returns>A online service connector on success, <c>null</c> otherwise.</returns>
+        /// <returns>A online service client on success, <c>null</c> otherwise.</returns>
         public static IOnlineServiceClient TryGetClient(Uri uri)
         {
             if (!IsInitialized)
@@ -140,11 +140,11 @@ namespace Artivity.Apid.Accounts
         }
 
         /// <summary>
-        /// Tries to get a online service connector with the given URI.
+        /// Tries to get a online service client with the given URI.
         /// </summary>
-        /// <typeparam name="T">A subclass of OnlineServiceConnectorBase.</typeparam>
+        /// <typeparam name="T">A subclass of OnlineServiceclientBase.</typeparam>
         /// <param name="uri">A URI.</param>
-        /// <returns>A online service connector on success, <c>null</c> otherwise.</returns>
+        /// <returns>A online service client on success, <c>null</c> otherwise.</returns>
         public static T TryGetClient<T>(Uri uri) where T : class
         {
             return TryGetClient(uri) as T;

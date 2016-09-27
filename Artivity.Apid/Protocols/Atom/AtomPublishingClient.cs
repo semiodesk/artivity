@@ -187,14 +187,27 @@ namespace Artivity.Apid.Protocols.Atom
 
                     string atom = Encoding.UTF8.GetString(stream.ToArray());
 
-                    HttpContent atomContent = new StringContent(atom);
+                    int bufferSize = 4096;
+
+                    ProgressStreamInfo info = new ProgressStreamInfo(atom.Length + fileInfo.Length);
+
+                    ProgressDelegate progressDelegate = (bytes, total, expected) =>
+                    {
+                        info.TransferredBytes += bytes;
+
+                        RaiseDepositProgressChanged(info);
+                    };
+
+                    ProgressStreamContent atomContent = new ProgressStreamContent(atom, bufferSize);
                     atomContent.Headers.ContentType = new MediaTypeHeaderValue("application/atom+xml") { CharSet = "utf-8" };
                     atomContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { Name = "atom" };
+                    atomContent.Progress = progressDelegate;
 
-                    HttpContent fileContent = new StreamContent(new FileStream(fileInfo.FullName, FileMode.Open));
+                    ProgressStreamContent fileContent = new ProgressStreamContent(new FileStream(fileInfo.FullName, FileMode.Open), bufferSize);
                     fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/illustrator");
                     fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { Name = "payload", FileName = fileInfo.Name };
                     fileContent.Headers.Add("Packaging", sword.NS + "/package/Binary");
+                    fileContent.Progress = progressDelegate;
 
                     MultipartFormDataContent data = new MultipartFormDataContent();
                     data.Headers.ContentType.MediaType = "multipart/related";
@@ -212,5 +225,21 @@ namespace Artivity.Apid.Protocols.Atom
         }
 
         #endregion
+
+        #region Events
+
+        public DepositProgressChangedEventHandler DepositProgressChanged;
+
+        private void RaiseDepositProgressChanged(ProgressStreamInfo progressInfo)
+        {
+            if(DepositProgressChanged != null)
+            {
+                DepositProgressChanged(this, progressInfo);
+            }
+        }
+
+        #endregion
     }
+
+    public delegate void DepositProgressChangedEventHandler(object sender, ProgressStreamInfo progressInfo);
 }

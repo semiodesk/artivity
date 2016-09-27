@@ -6,10 +6,11 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
 @prefix art: <http://w3id.org/art/terms/1.0/> .
+@prefix artf: <http://w3id.org/art/terms/1.0/features/> .
 @prefix geo: <http://www.opengis.net/ont/geosparql#> .
 @prefix qudt: <http://qudt.org/vocab/unit#> .
 
-<http://w3id.org/art/terms/1.0/> a owl:Ontology .
+art: a owl:Ontology .
 
 art:Database a rdfs:Class ;
     rdfs:label "Database" .
@@ -298,6 +299,13 @@ art:USER rdf:type prov:Role ;
 
 art:SOFTWARE rdf:type prov:Role ;
 	rdfs:label "SOFTWARE" .
+
+art:accountFeature a rdf:Property ;
+	rdfs:label "accountFeature" ;
+	rdfs:domain art:OnlineAccountFeature .
+
+art:OnlineAccountFeature a rdfs:Class ;
+	rdfs:label "OnlineAccountFeature".
 
 art:accountServiceClient a rdf:Property ;
 	rdfs:label "accountServiceClient" ;

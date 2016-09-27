@@ -57,6 +57,8 @@ namespace Artivity.Apid.Accounts
 
             Presets.Add(localhost);
 
+            Features.Add(artf.PublishArchive);
+
             SupportedAuthenticationClients.Add(new BasicAuthenticationClient());
         }
 
@@ -131,6 +133,7 @@ namespace Artivity.Apid.Accounts
             AtomFeedEntry entry = new AtomFeedEntry();
             entry.Title = Path.GetFileName(filePath);
 
+            client.DepositProgressChanged += (sender, progressInfo) => { State = progressInfo; };
             client.DepositFile(entry, filePath);
         }
 

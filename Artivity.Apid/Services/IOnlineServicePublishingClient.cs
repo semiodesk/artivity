@@ -1,4 +1,5 @@
-﻿using Artivity.DataModel;
+﻿using Artivity.Apid.Accounts;
+using Artivity.DataModel;
 using Nancy;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Artivity.Apid
 {
-    public interface IOnlineServicePublishingClient
+    public interface IOnlineServicePublishingClient : IOnlineServiceClient
     {
         #region Methods
 

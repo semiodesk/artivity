@@ -48,25 +48,37 @@ explorerApp.factory('api', function ($http) {
 
 	return {
 		getAccounts: function () {
-			return $http.get(endpoint + '/accounts/').then(
+			return $http.get(endpoint + '/accounts').then(
 				function (response) {
 					return response.data;
 				});
 		},
-		getAccountConnectors: function () {
-			return $http.get(endpoint + '/accounts/connectors').then(
+		getAccountsWithFeature: function (featureUri) {
+			return $http.get(endpoint + '/accounts?featureUri=' + featureUri).then(
 				function (response) {
 					return response.data;
 				});
 		},
-		getAccountConnector: function (connectorUri) {
-			return $http.get(endpoint + '/accounts/connectors?connectorUri=' + connectorUri).then(
+		getAccountClients: function (featureUri) {
+			return $http.get(endpoint + '/accounts/clients').then(
 				function (response) {
 					return response.data;
 				});
 		},
-		getAccountConnectorStatus: function (sessionId) {
-			return $http.get(endpoint + '/accounts/connectors/status?sessionId=' + sessionId).then(
+		getAccountClientsWithFeature: function (featureUri) {
+			return $http.get(endpoint + '/accounts/clients?featureUri=' + featureUri).then(
+				function (response) {
+					return response.data;
+				});
+		},
+		getAccountClient: function (clientUri) {
+			return $http.get(endpoint + '/accounts/clients?clientUri=' + clientUri).then(
+				function (response) {
+					return response.data;
+				});
+		},
+		getAccountClientStatus: function (sessionId) {
+			return $http.get(endpoint + '/accounts/clients/status?sessionId=' + sessionId).then(
 				function (response) {
 					return response.data;
 				});
@@ -87,6 +99,14 @@ explorerApp.factory('api', function ($http) {
 		},
 		uninstallAccount: function (accountUri) {
 			return $http.get(endpoint + '/accounts/uninstall?accountUri=' + accountUri).then(
+				function (response) {
+					return response.data;
+				});
+		},
+		uploadArchive: function (accountUri, entityUri, parameter) {
+			var p = serialize(parameter);
+			
+			return $http.get(endpoint + '/accounts/upload?accountUri=' + accountUri + '&entityUri=' + entityUri + '&' + p).then(
 				function (response) {
 					return response.data;
 				});

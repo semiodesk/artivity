@@ -1,0 +1,16 @@
+﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
+@prefix art: <http://w3id.org/art/terms/1.0/> .
+@prefix artf: <http://w3id.org/art/terms/1.0/features/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix qudt: <http://qudt.org/vocab/unit#> .
+
+artf: a owl:Ontology .
+
+artf:PublishArchive rdf:type art:OnlineAccountFeature ;
+	rdfs:label "PublishArchive" .
