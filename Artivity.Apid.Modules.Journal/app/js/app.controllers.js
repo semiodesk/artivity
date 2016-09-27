@@ -202,7 +202,8 @@ explorerControllers.controller('PublishFileDialogController', function (api, $sc
 				$scope.percentComplete = client.State.PercentComplete;
 
 				if ($scope.percentComplete === 100) {
-					$scope.endUpload();
+					// Delay the closing of the window so that the UI can update the progress.
+					setTimeout($scope.endUpload, 2000);
 				}
 			});
 		});
