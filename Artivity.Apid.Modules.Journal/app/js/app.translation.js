@@ -74,7 +74,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
 		'http://orcid.org': {
 			'title': 'ORCiD',
 			'description': 'Assign a persistent digital identifier to your published files.'
-		},
+		}
 	});
 
 	$translateProvider.translations('de', {

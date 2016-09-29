@@ -25,6 +25,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.Apid.Helpers;
+using Artivity.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,7 +44,7 @@ namespace Artivity.Apid.Protocols.Atom
     /// <summary>
     /// A client for publishing files to Atom Publishing Protocol services.
     /// </summary>
-    public class AtomPublishingClient
+    public class AtomPublishingClient: INotifyProgressChanged
     {
         #region Members
 
@@ -189,13 +190,13 @@ namespace Artivity.Apid.Protocols.Atom
 
                     int bufferSize = 4096;
 
-                    ProgressStreamInfo info = new ProgressStreamInfo(atom.Length + fileInfo.Length);
+                    ProgressInfo progress = new ProgressInfo(artf.UploadArchive.Uri, atom.Length + fileInfo.Length);
 
                     ProgressDelegate progressDelegate = (bytes, total, expected) =>
                     {
-                        info.TransferredBytes += bytes;
+                        progress.Completed += bytes;
 
-                        RaiseDepositProgressChanged(info);
+                        RaiseProgressChanged(progress);
                     };
 
                     ProgressStreamContent atomContent = new ProgressStreamContent(atom, bufferSize);
@@ -228,18 +229,16 @@ namespace Artivity.Apid.Protocols.Atom
 
         #region Events
 
-        public DepositProgressChangedEventHandler DepositProgressChanged;
+        public event ProgressChangedEventHandler ProgressChanged;
 
-        private void RaiseDepositProgressChanged(ProgressStreamInfo progressInfo)
+        private void RaiseProgressChanged(ProgressInfo progressInfo)
         {
-            if(DepositProgressChanged != null)
+            if(ProgressChanged != null)
             {
-                DepositProgressChanged(this, progressInfo);
+                ProgressChanged(this, progressInfo);
             }
         }
 
         #endregion
     }
-
-    public delegate void DepositProgressChangedEventHandler(object sender, ProgressStreamInfo progressInfo);
 }

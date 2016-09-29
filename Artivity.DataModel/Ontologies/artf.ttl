@@ -14,3 +14,9 @@ artf: a owl:Ontology .
 
 artf:PublishArchive rdf:type art:OnlineAccountFeature ;
 	rdfs:label "PublishArchive" .
+
+artf:ExportArchive rdf:type art:OnlineAccountFeature ;
+	rdfs:label "ExportArchive" .
+
+artf:UploadArchive rdf:type art:OnlineAccountFeature ;
+	rdfs:label "ExportArchive" .

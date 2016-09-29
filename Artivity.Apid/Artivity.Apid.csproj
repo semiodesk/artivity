@@ -112,7 +112,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\ProgressStreamInfo.cs" />
+    <Compile Include="Helpers\INotifyProgressChanged.cs" />
+    <Compile Include="Helpers\ProgressInfo.cs" />
     <Compile Include="Helpers\ProgressStream.cs" />
     <Compile Include="Helpers\ProgressStreamContent.cs" />
     <Compile Include="Services\Clients\EPrintsServiceClient.cs" />

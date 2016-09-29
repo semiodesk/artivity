@@ -161,6 +161,8 @@
     <EmbeddedResource Include="app\js\app.overlay.js" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="app\partials\dialogs\account-add-dialog.html" />
+    <EmbeddedResource Include="app\partials\dialogs\file-publish-dialog.html" />
     <EmbeddedResource Include="app\query.html" />
     <EmbeddedResource Include="app\js\lib\d3-timeline.js" />
     <EmbeddedResource Include="app\js\app.translation.js" />

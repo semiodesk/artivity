@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.Helpers;
 using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
 using Nancy;
@@ -80,7 +81,7 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// Get information about the current client operations.
         /// </summary>
-        public object State { get; protected set; }
+        public object State { get; set; }
 
         #endregion
 

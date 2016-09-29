@@ -132,8 +132,11 @@ namespace Artivity.Apid.Accounts
 
             AtomFeedEntry entry = new AtomFeedEntry();
             entry.Title = Path.GetFileName(filePath);
+            entry.Type = "dataset";
+            entry.Subjects.Add("N1");
+            entry.Subjects.Add("NX");
 
-            client.DepositProgressChanged += (sender, progressInfo) => { State = progressInfo; };
+            client.ProgressChanged += (sender, progressInfo) => { State = progressInfo; };
             client.DepositFile(entry, filePath);
         }
 

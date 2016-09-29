@@ -1,5 +1,5 @@
-<script src="bower_components/EaselJS/lib/easeljs-0.8.2.min.js"></script>
-<script src="bower_components/color-thief/dist/color-thief.min.js"></script>
+<script src="bower_components/EaselJS/lib/easeljs-0.8.2.min.js" type="text/javascript"></script>
+<script src="bower_components/color-thief/dist/color-thief.min.js" type="text/javascript"></script>
 
 <div ng-controller="FileViewController as fileView">
 	<div id="header">
@@ -211,84 +211,6 @@
 				</div>
 			</div>
 		</div>
-
-		<script type="text/ng-template" id="publish-file-dialog.html">
-			<div class="modal-header">
-				<button class="btn btn-sm btn-circular btn-no-margin pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
-
-				<h2 class="modal-title">{{title}}</h2>
-			</div>
-			<div class="modal-body">
-				<div ng-show="step == 'account-select'">
-					<table>
-						<tr>
-							<td valign="top">
-								<div class="card no-margin">
-									<div class="img-thumbnail"></div>
-									<div class="title">{{file.label}}</div>
-								</div>
-							</td>
-							<td>
-								<div style="padding: 0 0 0 15px">
-									<div class="form-group">
-										<label for="account">Choose account:</label>
-										<br>
-										<select class="form-control" name="account" ng-options="account as account.Title for account in accounts track by account.Uri" ng-model="selectedAccount"></select>
-									</div>
-
-									<div class="form-group">
-										<label>Choose what to share:</label>
-										<br>
-										<ul class="nav nav-tabs tablist" role="tablist">
-											<li role="presentation" class="active"><a data-target="#activities-pane" role="tab" data-toggle="tab">Activities</a></li>
-											<li role="presentation"><a data-target="#websites-pane" role="tab" data-toggle="tab">Websites</a></li>
-										</ul>
-
-										<div class="tab-content" style="min-height: 200px;">
-											<div role="tabpanel" class="tab-pane fade active in" id="activities-pane">
-												<ul class="lst-activities list-unstyled">
-													<li ng-repeat="activity in activities">
-														{{activity.startTime}}
-													</li>
-												</ul>
-											</div>
-											<div role="tabpanel" class="tab-pane fade" id="websites-pane">
-												<label>No related websites.</label>
-											</div>
-										</div>
-									</div>
-								</div>
-							</td>
-						</tr>
-					</table>
-					<div class="text-center">
-						<button class="btn btn-default" ng-click="authorizeUpload(selectedAccount)">Continue</button>
-					</div>
-				</div>
-				<div ng-show="step == 'upload-authorize'">
-					<div ng-show="authProtocol == 'http://localhost:8272/artivity/api/1.0/auth/basic'">
-						<p class="description">Please log into our account:</p>
-						
-						<div class="form-group">
-							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20" maxlength="20" ng-model="authParameter.username" required>
-							<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20" maxlength="20" ng-model="authParameter.password" ui-keypress="{13:'connectAccount(selectedClient)'}" required>
-						</div>
-
-						<button class="btn btn-default" ng-click="beginUpload()">Upload</button>
-					</div>
-				</div>
-				<div ng-show="step == 'upload-progress'">
-					<label>{{selectedAccount.Title}}</label>
-					<label class="pull-right">{{percentComplete}}%</label>
-
-					<uib-progressbar value="percentComplete" max="100" style="height: 5px"></uib-progressbar>
-
-					<div class="text-center">
-						<button class="btn btn-default" ng-click="cancel()">Cancel</button>
-					</div>
-				</div>
-			</div>
-		</script>
 	</div>
 
 	<div id="footer">
