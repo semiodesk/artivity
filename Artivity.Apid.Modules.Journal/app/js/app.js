@@ -77,10 +77,15 @@ explorerApp.factory('api', function ($http) {
 					return response.data;
 				});
 		},
-		getAccountClientStatus: function (sessionId) {
+		getAccountClientStatus: function (sessionId, errorHandler) {
 			return $http.get(endpoint + '/accounts/clients/status?sessionId=' + sessionId).then(
 				function (response) {
 					return response.data;
+				},
+				function(data) {
+					if(errorHandler) {
+						errorHandler(data);
+					}
 				});
 		},
 		authorizeAccount: function (parameter) {

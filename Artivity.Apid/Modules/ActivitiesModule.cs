@@ -25,21 +25,21 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.DataModel;
-using Artivity.Apid.Platforms;
 using Artivity.Apid.Parameters;
+using Artivity.Apid.Platforms;
 using Artivity.Apid.Plugin;
-using Semiodesk.Trinity;
-using Semiodesk.Trinity.Store;
+using Artivity.DataModel;
 using Nancy;
 using Nancy.ModelBinding;
+using Newtonsoft.Json;
+using Semiodesk.Trinity;
+using Semiodesk.Trinity.Store;
 using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using VDS.RDF;
-using Newtonsoft.Json;
 
 namespace Artivity.Apid.Modules
 {

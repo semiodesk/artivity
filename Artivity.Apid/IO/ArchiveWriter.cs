@@ -25,22 +25,24 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.IO;
+using Artivity.Apid.Platforms;
+using Artivity.Apid.Helpers;
+using Artivity.DataModel;
+using Newtonsoft.Json;
+using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using Artivity.Apid.IO;
-using Artivity.Apid.Platforms;
-using Artivity.DataModel;
-using Newtonsoft.Json;
-using Semiodesk.Trinity;
+using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Storage;
 
 namespace Artivity.Apid.IO
 {
-    public class ArchiveWriter
+    public class ArchiveWriter : INotifyProgressChanged
     {
         #region Members
 
@@ -49,6 +51,8 @@ namespace Artivity.Apid.IO
         private readonly IModelProvider _modelProvider;
 
         private VirtuosoManager _virtuosoManager;
+
+        public ProgressInfo Progress { get; private set; }
 
         #endregion
 
@@ -59,11 +63,18 @@ namespace Artivity.Apid.IO
             _platformProvider = platformProvider;
             _modelProvider = modelProvider;
             _virtuosoManager = new VirtuosoManager(_modelProvider.NativeConnectionString);
+
+            Progress = new ProgressInfo(artf.ExportArchive.Uri, 0);
         }
 
         #endregion
 
         #region Methods
+
+        public async Task WriteAsync(UriRef entityUri, string targetPath, DateTime minTime)
+        {
+            await Task.Run(() => Write(entityUri, targetPath, minTime));
+        }
 
         public void Write(UriRef entityUri, string targetPath, DateTime minTime)
         {
@@ -73,6 +84,10 @@ namespace Artivity.Apid.IO
             {
                 throw new DirectoryNotFoundException("The target directory does not exist.");
             }
+
+            // We track the completion of 8 different methods + the number of compied renderings.
+            Progress.Total = 8 + GetRenderingsCount(entityUri);
+            RaiseProgressChanged();
 
             DirectoryInfo appFolder = new DirectoryInfo(_platformProvider.ArtivityDataFolder);
             DirectoryInfo exportFolder = CreateExportFolder(entityUri);
@@ -122,6 +137,9 @@ namespace Artivity.Apid.IO
             query.Bind("@entity", entityUri);
 
             WriteTurtle(query, targetDir, "agents.ttl");
+
+            Progress.Completed++;
+            RaiseProgressChanged();
         }
 
         private void ExportActivities(UriRef entityUri, string targetDir, DateTime minTime)
@@ -174,6 +192,21 @@ namespace Artivity.Apid.IO
             query.Bind("@minTime", minTime);
 
             WriteTurtle(query, targetDir, "activities.ttl");
+
+            Progress.Completed++;
+            RaiseProgressChanged();
+        }
+
+        private long GetRenderingsCount(UriRef entityUri)
+        {
+            string renderingsEntity = Path.Combine(_platformProvider.RenderingsFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri));
+
+            if (Directory.Exists(renderingsEntity))
+            {
+                return Directory.GetFiles(renderingsEntity, "*.png", SearchOption.TopDirectoryOnly).Length;
+            }
+
+            return 0;
         }
 
         private void ExportRenderings(UriRef entityUri, DirectoryInfo appFolder, DirectoryInfo exportFolder, DateTime minTime)
@@ -191,7 +224,7 @@ namespace Artivity.Apid.IO
                 }
 
                 // Copy all the files in the renderings folder to the export directory.
-                foreach (string fileName in Directory.GetFiles(renderingsEntity, "*.png"))
+                foreach (string fileName in Directory.GetFiles(renderingsEntity, "*.png", SearchOption.TopDirectoryOnly))
                 {
                     FileInfo file = new FileInfo(fileName);
 
@@ -199,6 +232,9 @@ namespace Artivity.Apid.IO
                     {
                         File.Copy(file.FullName, file.FullName.Replace(renderingsEntity, renderingsExport), true);
                     }
+
+                    Progress.Completed++;
+                    RaiseProgressChanged();
                 }
             }
         }
@@ -222,6 +258,9 @@ namespace Artivity.Apid.IO
             {
                 File.Copy(file, file.Replace(avatarsApp, avatarsExport), true);
             }
+
+            Progress.Completed++;
+            RaiseProgressChanged();
         }
 
         private void WriteTurtle(ISparqlQuery query, string targetDir, string fileName)
@@ -237,6 +276,9 @@ namespace Artivity.Apid.IO
 
                 graph.SaveToFile(file, writer);
             }
+
+            Progress.Completed++;
+            RaiseProgressChanged();
         }
 
         private void WriteManifest(UriRef entityUri, DirectoryInfo exportFolder)
@@ -250,6 +292,9 @@ namespace Artivity.Apid.IO
             string json = JsonConvert.SerializeObject(manifest, Formatting.Indented);
                 
             File.WriteAllText(manifestFile, json);
+
+            Progress.Completed++;
+            RaiseProgressChanged();
         }
 
         private FileInfo CompressExportFolder(UriRef entityUri, DirectoryInfo exportFolder)
@@ -262,6 +307,9 @@ namespace Artivity.Apid.IO
             }
 
             ZipFile.CreateFromDirectory(exportFolder.FullName, exportArchive);
+
+            Progress.Completed++;
+            RaiseProgressChanged();
 
             return new FileInfo(exportArchive);
         }
@@ -278,12 +326,32 @@ namespace Artivity.Apid.IO
 
             Directory.CreateDirectory(exportFolder);
 
+            Progress.Completed++;
+            RaiseProgressChanged();
+
             return new DirectoryInfo(exportFolder);
         }
 
         private void DeleteExportFolder(DirectoryInfo exportFolder)
         {
             Directory.Delete(exportFolder.FullName, true);
+
+            Progress.Completed++;
+            RaiseProgressChanged();
+        }
+
+        #endregion
+
+        #region Events
+
+        public event ProgressChangedEventHandler ProgressChanged;
+
+        private void RaiseProgressChanged()
+        {
+            if (ProgressChanged != null)
+            {
+                ProgressChanged(this, Progress);
+            }
         }
 
         #endregion

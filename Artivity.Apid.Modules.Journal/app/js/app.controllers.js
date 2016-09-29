@@ -11,8 +11,11 @@ explorerControllers.filter('reverse', function () {
 });
 
 explorerControllers.handleServiceClientState = function (api, sessionId, handleClientStateChange) {
+	// The polling interval hanler.
+	var interval = undefined;
+	
 	// The polling interval in milliseconds.
-	var pollIntervalMs = 1000;
+	var intervalMs = 1000;
 
 	// The maximum number of queries.
 	var maxQueries = 300;
@@ -20,9 +23,16 @@ explorerControllers.handleServiceClientState = function (api, sessionId, handleC
 	// The number of status queries.
 	var n = 0;
 
+	// Stop polling if errors occur.
+	var onError = function (data) {
+		if (interval) {
+			clearInterval(interval);
+		}
+	};
+
 	// Query the current client status in a regular interval.
 	var interval = setInterval(function () {
-		api.getAccountClientStatus(sessionId).then(function (data) {
+		api.getAccountClientStatus(sessionId, onError).then(function (data) {
 			var client = data;
 
 			if (!client) {
@@ -43,36 +53,8 @@ explorerControllers.handleServiceClientState = function (api, sessionId, handleC
 				$scope.clientState = 4;
 			}
 		});
-	}, pollIntervalMs);
+	}, intervalMs);
 };
-
-explorerControllers.directive('bootstrapSwitch', [
-        function () {
-		return {
-			restrict: 'A',
-			require: '?ngModel',
-			link: function (scope, element, attrs, ngModel) {
-				element.bootstrapSwitch();
-
-				element.on('switchChange.bootstrapSwitch', function (event, state) {
-					if (ngModel) {
-						scope.$apply(function () {
-							ngModel.$setViewValue(state);
-						});
-					}
-				});
-
-				scope.$watch(attrs.ngModel, function (newValue, oldValue) {
-					if (newValue) {
-						element.bootstrapSwitch('state', true, true);
-					} else {
-						element.bootstrapSwitch('state', false, true);
-					}
-				});
-			}
-		};
-        }
-    ]);
 
 explorerControllers.controller('CalendarController', function (api, $scope, $filter, $uibModalInstance, $sce) {
 	$scope.isLoading = true;
@@ -145,87 +127,6 @@ explorerControllers.controller('CalendarController', function (api, $scope, $fil
 			});
 		}
 	}
-});
-
-explorerControllers.controller('PublishFileDialogController', function (api, $scope, $filter, $uibModalInstance, $sce) {
-	$scope.step = 'account-select';
-	$scope.title = 'Publish File';
-
-	// Available account.
-	$scope.accounts = [];
-	$scope.selectedAccount = null;
-
-	api.getAccountsWithFeature('http://w3id.org/art/terms/1.0/features/PublishArchive').then(function (data) {
-		console.log("Accounts:", data);
-
-		$scope.accounts = data;
-
-		if (0 < $scope.accounts.length) {
-			$scope.selectedAccount = $scope.accounts[0];
-		}
-	});
-
-	// Authenticate account.
-	$scope.authorizeUpload = function (account) {
-		$scope.step = 'upload-authorize';
-		$scope.title = 'Authorize Upload';
-		
-		$scope.authProtocol = $scope.selectedAccount.AuthenticationProtocol.Uri;
-		$scope.authParameter = {};
-		
-		for(var i = 0; i < $scope.selectedAccount.AuthenticationParameters.length; i++) {
-			var p = $scope.selectedAccount.AuthenticationParameters[i];
-			
-			$scope.authParameter[p.Name] = p.Value;
-		}
-	};
-
-	// File upload.
-	var interval = undefined;
-
-	$scope.beginUpload = function () {
-		$scope.step = 'upload-progress';
-		$scope.title = "Uploading File";
-
-		$scope.percentComplete = 0;
-
-		api.uploadArchive($scope.selectedAccount.Uri, $scope.entity.uri, $scope.authParameter).then(function (data) {
-			var sessionId = data.id;
-
-			console.log("Session: ", sessionId);
-
-			explorerControllers.handleServiceClientState(api, sessionId, function (intervalHandle, client) {
-				interval = intervalHandle;
-
-				$scope.totalBytes = client.State.TotalBytes;
-				$scope.transferredBytes = client.State.TransferredBytes;
-				$scope.percentComplete = client.State.PercentComplete;
-
-				if ($scope.percentComplete === 100) {
-					// Delay the closing of the window so that the UI can update the progress.
-					setTimeout($scope.endUpload, 2000);
-				}
-			});
-		});
-	};
-
-	$scope.endUpload = function () {
-		if (interval) {
-			clearInterval(interval);
-		}
-
-		if ($scope.percentComplete < 100) {
-			$scope.percentComplete = 0;
-		} else {
-			$uibModalInstance.close();
-		}
-	};
-
-	$scope.cancel = function () {
-		$scope.endUpload();
-
-		$uibModalInstance.dismiss('cancel');
-	};
 });
 
 explorerControllers.controller('FileListController', function (api, $scope, $uibModal) {
@@ -620,8 +521,8 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 	$scope.publishFile = function () {
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'publish-file-dialog.html',
-			controller: 'PublishFileDialogController',
+			templateUrl: 'partials/dialogs/file-publish-dialog.html',
+			controller: 'FilePublishDialogController',
 			scope: $scope
 		});
 	}
@@ -762,105 +663,6 @@ explorerControllers.controller('FileViewController', function (api, $scope, $loc
 		}
 	};
 
-}).directive('ngEnter', function () {
-	return function (scope, element, attrs) {
-		element.bind("keydown keypress", function (event) {
-			if (event.which === 13) { // 13 = enter key
-				scope.$apply(function () {
-					scope.$eval(attrs.ngEnter);
-				});
-
-				event.preventDefault();
-			}
-		});
-	};
-}).directive('ngEsc', function () {
-	return function (scope, element, attrs) {
-		element.bind('keydown keypress', function (event) {
-			if (event.which === 27) { // 27 = esc key
-				scope.$apply(function () {
-					scope.$eval(attrs.ngEsc);
-				});
-
-				event.preventDefault();
-			}
-		});
-	};
-}).directive('artTimeline', function () {
-	return {
-		template: '\
-		<div class="timeline">\
-			<div class="timeline-control"> \
-				<div class="position"><label></label></div> \
-				<div class="duration"><label></label></div> \
-				<div class="track-col"> \
-					<div class="track-container"> \
-						<div class="track"></div> \
-						<div class="track-preview"></div> \
-						<div class="track-indicator"></div> \
-						<div class="thumb draggable"></div> \
-					</div> \
-					<div class="comments"></div> \
-					<div class="activities"></div> \
-				</div> \
-			</div> \
-		</div>',
-		link: function (scope, element, attributes) {
-			var timeline = new TimelineControl(element);
-
-			timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
-			timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
-
-			timeline.selectedInfluenceChanged = function (influence) {
-				scope.previewInfluence(influence);
-			};
-
-			scope.$watchCollection(attributes.artActivitiesSrc, function () {
-				timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
-			});
-
-			scope.$watchCollection(attributes.artInfluencesSrc, function () {
-				timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
-			});
-
-			scope.$watch('selectedInfluence', function () {
-				if (scope.selectedInfluence !== undefined) {
-					timeline.setPosition(scope.selectedInfluence);
-				}
-			});
-		}
-	}
-}).directive('artChartDonut', function () {
-	return {
-		template: '<div class="chart-donut"></div>',
-		link: function (scope, element, attributes) {
-			var chart = new DonutChart(element);
-
-			console.log("Confidence: ", scope.stats.confidence);
-			chart.draw(element, scope.stats.confidence);
-
-			scope.$watch('stats.confidence', function () {
-				console.log("Confidence: ", scope.stats.confidence);
-				chart.draw(element, scope.stats.confidence);
-			});
-		}
-	}
-}).directive('artStyleBinder', function () {
-	return {
-		link: function (scope, element, attributes) {
-			var template = $(element).text();
-
-			scope.$watch(attributes.artAccentColor, function () {
-				var accentColor = getValue(scope, attributes.artAccentColor);
-
-				if (accentColor !== undefined && accentColor !== "#FF0000") {
-					var text = template.replace(/\$accentColor/g, accentColor);
-
-					$(element).text(text);
-				}
-			});
-		}
-	}
 });
 
 explorerControllers.controller('SettingsController', function (api, $scope, $location, $rootScope, $routeParams) {
@@ -894,67 +696,6 @@ explorerControllers.controller('SettingsController', function (api, $scope, $loc
 			}
 		});
 	};
-}).directive("ngPhotoPicker", function () {
-	return {
-		link: function (scope, element, attributes) {
-			element.bind("change", function (changeEvent) {
-				scope.$apply(function () {
-					// Store the selected picture in the model for saving when the changes are applied.
-					scope.userPhoto = changeEvent.target.files[0];
-				});
-			});
-		}
-	}
-}).directive("ngColorPicker", function () {
-	return {
-		template: '<button type="button" class="btn btn-colorpicker"><span class="color-fill-icon"><i></i></span></button>',
-		link: function (scope, element, attributes) {
-			var indicator = $('.color-fill-icon', element);
-			indicator.css('background-color', getValue(scope, attributes.selectedColor));
-
-			var button = $(element);
-
-			button.on('changeColor', function (e) {
-				if (e.color == null) {
-					//when select transparent color
-					//$('.color-fill-icon', btn).addClass('colorpicker-color');
-				} else {
-					//$('.color-fill-icon', btn).removeClass('colorpicker-color');
-					indicator.css('background-color', e.color);
-
-					// Update the bound value.
-					setValue(scope, attributes.selectedColor, e.color.toHex());
-				}
-			});
-
-			button.colorpicker({
-				customClass: 'colorpicker-lg',
-				align: 'right',
-				format: 'rgb',
-				color: getValue(scope, attributes.selectedColor),
-				colorSelectors: {
-					'default': '#777777',
-					'primary': '#337ab7',
-					'success': '#5cb85c',
-					'info': '#5bc0de',
-					'warning': '#f0ad4e',
-					'danger': '#d9534f'
-				},
-				sliders: {
-					saturation: {
-						maxLeft: 200,
-						maxTop: 200
-					},
-					hue: {
-						maxTop: 200
-					},
-					alpha: {
-						maxTop: 200
-					}
-				}
-			});
-		}
-	}
 });
 
 explorerControllers.controller('UserSettingsController', function (api, $scope, $log) {
@@ -1019,7 +760,7 @@ explorerControllers.controller('AccountSettingsController', function (api, $scop
 	$scope.addAccount = function () {
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'add-account-dialog.html',
+			templateUrl: 'partials/dialogs/account-add-dialog.html',
 			controller: 'AddAccountDialogController'
 		});
 
@@ -1062,6 +803,272 @@ explorerControllers.controller('AccountSettingsController', function (api, $scop
 
 	this.reset = function () {
 		$scope.userForm.reset();
+	};
+});
+
+explorerControllers.controller('AgentSettingsController', function (api, $scope, $log) {
+	// Register the controller with its parent for global apply/cancel.
+	$scope.$parent.children.push(this);
+
+	$scope.agents = [];
+
+	$scope.hasError = false;
+	$scope.errorType = '';
+	$scope.errorMessage = '';
+
+	$scope.toggleInstall = function (agent) {
+		if (agent.pluginInstalled) {
+			api.installAgent(agent.uri).then(function (response) {
+				agent.pluginInstalled = response.success;
+
+				$scope.hasError = !response.success;
+				$scope.errorType = response.error.data.type;
+				$scope.errorMessage = response.error.data.message;
+			});
+		} else {
+			api.uninstallAgent(agent.uri).then(function (response) {
+				agent.pluginInstalled = !response.success;
+
+				$scope.hasError = !response.success;
+				$scope.errorType = response.error.data.type;
+				$scope.errorMessage = response.error.data.message;
+			});
+		}
+	};
+
+	$scope.reload = function () {
+		$scope.hasError = false;
+
+		api.getAgents().then(function (data) {
+			$scope.agents = [];
+
+			for (var i = 0; i < data.length; i++) {
+				var agent = data[i];
+
+				if (agent.IsSoftwareInstalled) {
+					$scope.agents.push({
+						uri: agent.Manifest.AgentUri,
+						name: agent.Manifest.DisplayName,
+						color: agent.Manifest.DefaultColor,
+						associationUri: agent.AssociationUri,
+						iconSrc: api.getAgentIconUrl(agent.Manifest.AgentUri),
+						softwareInstalled: agent.IsSoftwareInstalled,
+						softwareVersion: agent.DetectedVersion,
+						pluginInstalled: agent.IsPluginInstalled,
+						pluginVersion: agent.Manifest.PluginVersion,
+						pluginEnabled: agent.IsPluginEnabled
+					});
+				}
+			}
+
+			$scope.agentForm.$setPristine();
+		});
+	}
+
+	$scope.reload();
+
+	this.submit = function () {
+		if ($scope.agents.length > 0) {
+			api.setAgents($scope.agents);
+		}
+	};
+
+	this.reset = function () {
+		$scope.agentForm.reset();
+	};
+});
+
+explorerControllers.controller('QueryController', function (api, $scope) {
+	var defaultPrefixes = "\
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
+PREFIX art: <http://w3id.org/art/terms/1.0/>\n\
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n\
+PREFIX nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#>\n\
+PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>\n\
+PREFIX prov: <http://www.w3.org/ns/prov#>\n\
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n\n\
+PREFIX dces: <http://purl.org/dc/elements/1.1/>\n\n\
+SELECT ?s ?p ?o WHERE { ?s ?p ?o }";
+
+	$scope.queryString = defaultPrefixes;
+
+	$scope.executeQuery = function () {
+		api.getQueryResults($scope.queryString).then(function (data) {
+			console.log(data);
+
+			document.getElementById('result').innerHTML = JSON.stringify(data, null, 2);
+		});
+	}
+
+	$scope.resetQuery = function () {
+		$scope.queryString = defaultPrefixes;
+	}
+});
+
+function dump(arr, level) {
+	var dumped_text = "";
+
+	if (!level) level = 0;
+
+	//The padding given at the beginning of the line.
+	var level_padding = "";
+	for (var j = 0; j < level + 1; j++) level_padding += "    ";
+
+	if (typeof (arr) == 'object') { //Array/Hashes/Objects 
+		for (var item in arr) {
+			var value = arr[item];
+
+			if (typeof (value) == 'object') { //If it is an array,
+				dumped_text += level_padding + "'" + item + "' ...\n";
+				dumped_text += dump(value, level + 1);
+			} else {
+				dumped_text += level_padding + "'" + item + "' : \"" + value + "\"\n";
+			}
+		}
+	} else { //Stings/Chars/Numbers etc.
+		dumped_text = "===>" + arr + "<===(" + typeof (arr) + ")";
+	}
+	return dumped_text;
+}
+
+explorerControllers.controller('FilePublishDialogController', function (api, $scope, $filter, $uibModalInstance, $sce) {
+	$scope.dialog = {
+		step: 'publishing-options',
+		title: 'Publish File',
+		subtitle: 'Create a dataset for your file and upload it into a digital repository.'
+	};
+
+	// Archiving options.
+	$scope.archive = {
+		title: 'Artivity data for ' + $scope.file.label,
+		abstract: '',
+		license: null,
+		licenseOptions: [{
+				id: 'CC-BY-NC-ND',
+				label: 'Creative Commons BY-NC-ND',
+				description: 'Attribution, Non-Commercial, No Derivatives'
+			}, {
+				id: 'CC-BY-NC-SA',
+				label: 'Creative Commons BY-NC-SA',
+				description: 'Attribution, Non-Commercial, Share Alike'
+			}, {
+				id: 'CC-BY-NC',
+				label: 'Creative Commons BY-NC',
+				description: 'Attribution, Non-Commercial'
+			}, {
+				id: 'CC-BY-ND',
+				label: 'Creative Commons BY-ND',
+				description: 'Attribution, No Derivatives'
+			}, {
+				id: 'CC-BY-SA',
+				label: 'Creative Commons BY-SA',
+				description: 'Attribution, Share Alike'
+			}, {
+				id: 'CC-BY',
+				label: 'Creative Commons BY',
+				description: 'Attribution'
+			}
+		],
+		contentOptions: {
+			includeFile: true,
+			includeEditingHistory: true,
+			includeBrowsingHistory: false,
+			includeComments: false
+		}
+	};
+
+	$scope.archive.license = $scope.archive.licenseOptions[0];
+
+	// Authenticate account.
+	$scope.selectAccount = function () {
+		$scope.dialog.step = 'upload-account';
+		$scope.dialog.title = 'Select Account';
+		$scope.dialog.subtitle = 'Choose the account used for publication and authorize the upload by logging in.';
+
+		// Available accounts.
+		$scope.accounts = [];
+		$scope.selectedAccount = null;
+
+		api.getAccountsWithFeature('http://w3id.org/art/terms/1.0/features/PublishArchive').then(function (data) {
+			console.log("Accounts:", data);
+
+			$scope.accounts = data;
+
+			if (0 < $scope.accounts.length) {
+				var account = $scope.accounts[0];
+
+				$scope.selectedAccount = account;
+
+				$scope.authentication = {
+					protocol: account.AuthenticationProtocol.Uri,
+					parameter: {}
+				};
+
+				for (var i = 0; i < account.AuthenticationParameters.length; i++) {
+					var p = account.AuthenticationParameters[i];
+
+					$scope.authentication.parameter[p.Name] = p.Value;
+				}
+			}
+		});
+	};
+
+	// File upload.
+	var interval = undefined;
+
+	$scope.beginUpload = function () {
+		$scope.dialog.step = 'upload-progress';
+		$scope.dialog.title = "Publishing File";
+
+		$scope.progress = {
+			task: '',
+			total: 0,
+			completed: 0,
+			percentComplete: 0
+		};
+
+		api.uploadArchive($scope.selectedAccount.Uri, $scope.entity.uri, $scope.authentication.parameter).then(function (data) {
+			var sessionId = data.id;
+
+			console.log("Session: ", sessionId);
+
+			explorerControllers.handleServiceClientState(api, sessionId, function (intervalHandle, client) {
+				interval = intervalHandle;
+
+				$scope.dialog.subtitle = $filter('translate')(client.State.Id);
+
+				$scope.progress.task = client.State.Id;
+				$scope.progress.total = client.State.Total;
+				$scope.progress.completed = client.State.Completed;
+				$scope.progress.percentComplete = client.State.PercentComplete;
+
+				console.log($scope.progress.task, $scope.progress.percentComplete);
+
+				if ($scope.progress.task == 'http://w3id.org/art/terms/1.0/features/UploadArchive' && $scope.progress.percentComplete === 100) {
+					// Delay the closing of the window so that the UI can update the progress.
+					setTimeout($scope.endUpload, 2000);
+				}
+			});
+		});
+	};
+
+	$scope.endUpload = function () {
+		if (interval) {
+			clearInterval(interval);
+		}
+
+		if ($scope.percentComplete < 100) {
+			$scope.percentComplete = 0;
+		} else {
+			$uibModalInstance.close();
+		}
+	};
+
+	$scope.cancel = function () {
+		$scope.endUpload();
+
+		$uibModalInstance.dismiss('cancel');
 	};
 });
 
@@ -1159,76 +1166,97 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 	};
 });
 
-explorerControllers.controller('AgentSettingsController', function (api, $scope, $log) {
-	// Register the controller with its parent for global apply/cancel.
-	$scope.$parent.children.push(this);
+explorerControllers.directive('ngEnter', function () {
+	return function (scope, element, attrs) {
+		element.bind("keydown keypress", function (event) {
+			if (event.which === 13) { // 13 = enter key
+				scope.$apply(function () {
+					scope.$eval(attrs.ngEnter);
+				});
 
-	$scope.agents = [];
-
-	$scope.hasError = false;
-	$scope.errorType = '';
-	$scope.errorMessage = '';
-
-	$scope.toggleInstall = function (agent) {
-		if (agent.pluginInstalled) {
-			api.installAgent(agent.uri).then(function (response) {
-				agent.pluginInstalled = response.success;
-
-				$scope.hasError = !response.success;
-				$scope.errorType = response.error.data.type;
-				$scope.errorMessage = response.error.data.message;
-			});
-		} else {
-			api.uninstallAgent(agent.uri).then(function (response) {
-				agent.pluginInstalled = !response.success;
-
-				$scope.hasError = !response.success;
-				$scope.errorType = response.error.data.type;
-				$scope.errorMessage = response.error.data.message;
-			});
-		}
-	};
-
-	$scope.reload = function () {
-		$scope.hasError = false;
-
-		api.getAgents().then(function (data) {
-			$scope.agents = [];
-
-			for (var i = 0; i < data.length; i++) {
-				var agent = data[i];
-
-				if (agent.IsSoftwareInstalled) {
-					$scope.agents.push({
-						uri: agent.Manifest.AgentUri,
-						name: agent.Manifest.DisplayName,
-						color: agent.Manifest.DefaultColor,
-						associationUri: agent.AssociationUri,
-						iconSrc: api.getAgentIconUrl(agent.Manifest.AgentUri),
-						softwareInstalled: agent.IsSoftwareInstalled,
-						softwareVersion: agent.DetectedVersion,
-						pluginInstalled: agent.IsPluginInstalled,
-						pluginVersion: agent.Manifest.PluginVersion,
-						pluginEnabled: agent.IsPluginEnabled
-					});
-				}
+				event.preventDefault();
 			}
-
-			$scope.agentForm.$setPristine();
 		});
-	}
+	};
+});
 
-	$scope.reload();
+explorerControllers.directive('ngEsc', function () {
+	return function (scope, element, attrs) {
+		element.bind('keydown keypress', function (event) {
+			if (event.which === 27) { // 27 = esc key
+				scope.$apply(function () {
+					scope.$eval(attrs.ngEsc);
+				});
 
-	this.submit = function () {
-		if ($scope.agents.length > 0) {
-			api.setAgents($scope.agents);
+				event.preventDefault();
+			}
+		});
+	};
+});
+
+explorerControllers.directive("ngPhotoPicker", function () {
+	return {
+		link: function (scope, element, attributes) {
+			element.bind("change", function (changeEvent) {
+				scope.$apply(function () {
+					// Store the selected picture in the model for saving when the changes are applied.
+					scope.userPhoto = changeEvent.target.files[0];
+				});
+			});
 		}
-	};
+	}
+});
 
-	this.reset = function () {
-		$scope.agentForm.reset();
-	};
+explorerControllers.directive("ngColorPicker", function () {
+	return {
+		template: '<button type="button" class="btn btn-colorpicker"><span class="color-fill-icon"><i></i></span></button>',
+		link: function (scope, element, attributes) {
+			var indicator = $('.color-fill-icon', element);
+			indicator.css('background-color', getValue(scope, attributes.selectedColor));
+
+			var button = $(element);
+
+			button.on('changeColor', function (e) {
+				if (e.color == null) {
+					//when select transparent color
+					//$('.color-fill-icon', btn).addClass('colorpicker-color');
+				} else {
+					//$('.color-fill-icon', btn).removeClass('colorpicker-color');
+					indicator.css('background-color', e.color);
+
+					// Update the bound value.
+					setValue(scope, attributes.selectedColor, e.color.toHex());
+				}
+			});
+
+			button.colorpicker({
+				customClass: 'colorpicker-lg',
+				align: 'right',
+				format: 'rgb',
+				color: getValue(scope, attributes.selectedColor),
+				colorSelectors: {
+					'default': '#777777',
+					'primary': '#337ab7',
+					'success': '#5cb85c',
+					'info': '#5bc0de',
+					'warning': '#f0ad4e',
+					'danger': '#d9534f'
+				},
+				sliders: {
+					saturation: {
+						maxLeft: 200,
+						maxTop: 200
+					},
+					hue: {
+						maxTop: 200
+					},
+					alpha: {
+						maxTop: 200
+					}
+				}
+			});
+		}
+	}
 });
 
 explorerControllers.directive("ngDropzone", function () {
@@ -1251,56 +1279,111 @@ explorerControllers.directive("ngDropzone", function () {
 	}
 });
 
-explorerControllers.controller('QueryController', function (api, $scope) {
-	var defaultPrefixes = "\
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
-PREFIX art: <http://w3id.org/art/terms/1.0/>\n\
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n\
-PREFIX nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#>\n\
-PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>\n\
-PREFIX prov: <http://www.w3.org/ns/prov#>\n\
-prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n\n\
-PREFIX dces: <http://purl.org/dc/elements/1.1/>\n\n\
-SELECT ?s ?p ?o WHERE { ?s ?p ?o }";
+explorerControllers.directive('bootstrapSwitch', [
+	function () {
+		return {
+			restrict: 'A',
+			require: '?ngModel',
+			link: function (scope, element, attrs, ngModel) {
+				element.bootstrapSwitch();
 
-	$scope.queryString = defaultPrefixes;
+				element.on('switchChange.bootstrapSwitch', function (event, state) {
+					if (ngModel) {
+						scope.$apply(function () {
+							ngModel.$setViewValue(state);
+						});
+					}
+				});
 
-	$scope.executeQuery = function () {
-		api.getQueryResults($scope.queryString).then(function (data) {
-			console.log(data);
-
-			document.getElementById('result').innerHTML = JSON.stringify(data, null, 2);
-		});
+				scope.$watch(attrs.ngModel, function (newValue, oldValue) {
+					if (newValue) {
+						element.bootstrapSwitch('state', true, true);
+					} else {
+						element.bootstrapSwitch('state', false, true);
+					}
+				});
+			}
+		};
 	}
+]);
 
-	$scope.resetQuery = function () {
-		$scope.queryString = defaultPrefixes;
+explorerControllers.directive('artTimeline', function () {
+	return {
+		template: '\
+		<div class="timeline">\
+			<div class="timeline-control"> \
+				<div class="position"><label></label></div> \
+				<div class="duration"><label></label></div> \
+				<div class="track-col"> \
+					<div class="track-container"> \
+						<div class="track"></div> \
+						<div class="track-preview"></div> \
+						<div class="track-indicator"></div> \
+						<div class="thumb draggable"></div> \
+					</div> \
+					<div class="comments"></div> \
+					<div class="activities"></div> \
+				</div> \
+			</div> \
+		</div>',
+		link: function (scope, element, attributes) {
+			var timeline = new TimelineControl(element);
+
+			timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
+			timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
+
+			timeline.selectedInfluenceChanged = function (influence) {
+				scope.previewInfluence(influence);
+			};
+
+			scope.$watchCollection(attributes.artActivitiesSrc, function () {
+				timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
+			});
+
+			scope.$watchCollection(attributes.artInfluencesSrc, function () {
+				timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
+			});
+
+			scope.$watch('selectedInfluence', function () {
+				if (scope.selectedInfluence !== undefined) {
+					timeline.setPosition(scope.selectedInfluence);
+				}
+			});
+		}
 	}
 });
 
-function dump(arr, level) {
-	var dumped_text = "";
+explorerControllers.directive('artChartDonut', function () {
+	return {
+		template: '<div class="chart-donut"></div>',
+		link: function (scope, element, attributes) {
+			var chart = new DonutChart(element);
 
-	if (!level) level = 0;
+			console.log("Confidence: ", scope.stats.confidence);
+			chart.draw(element, scope.stats.confidence);
 
-	//The padding given at the beginning of the line.
-	var level_padding = "";
-	for (var j = 0; j < level + 1; j++) level_padding += "    ";
-
-	if (typeof (arr) == 'object') { //Array/Hashes/Objects 
-		for (var item in arr) {
-			var value = arr[item];
-
-			if (typeof (value) == 'object') { //If it is an array,
-				dumped_text += level_padding + "'" + item + "' ...\n";
-				dumped_text += dump(value, level + 1);
-			} else {
-				dumped_text += level_padding + "'" + item + "' : \"" + value + "\"\n";
-			}
+			scope.$watch('stats.confidence', function () {
+				console.log("Confidence: ", scope.stats.confidence);
+				chart.draw(element, scope.stats.confidence);
+			});
 		}
-	} else { //Stings/Chars/Numbers etc.
-		dumped_text = "===>" + arr + "<===(" + typeof (arr) + ")";
 	}
-	return dumped_text;
-}
+});
+
+explorerControllers.directive('artStyleBinder', function () {
+	return {
+		link: function (scope, element, attributes) {
+			var template = $(element).text();
+
+			scope.$watch(attributes.artAccentColor, function () {
+				var accentColor = getValue(scope, attributes.artAccentColor);
+
+				if (accentColor !== undefined && accentColor !== "#FF0000") {
+					var text = template.replace(/\$accentColor/g, accentColor);
+
+					$(element).text(text);
+				}
+			});
+		}
+	}
+});

@@ -9,6 +9,7 @@ $errorColor = #E71D36;
 $successColor = #849324;
 */
 
+$iconFont: 'Material-Design-Iconic-Font';
 $textFont: 'Roboto',
 'Helvetica',
 'Arial',
@@ -61,6 +62,10 @@ h3 {
 h3,
 h4 {
 	color: $labelColor;
+}
+
+.no-margin {
+	margin: 0;
 }
 
 .no-margin-top {
@@ -155,10 +160,6 @@ iframe {
 	filter: grayscale(100%);
 }
 
-.btn-no-margin {
-	margin: 0;
-}
-
 button,
 .btn-default {
 	border: none;
@@ -166,17 +167,18 @@ button,
 	background: $buttonBackgroundColor;
 	color: $buttonTextColor;
 	padding: .7em;
-	margin: 0 5px 0 0;
+	margin: 0 10px 0 0;
 	outline: none;
 	text-shadow: none;
 	box-shadow: none;
 	-webkit-box-shadow: none;
+	transition: all linear .2s;
 }
 
 button:hover,
 .btn-default:hover {
 	background: $buttonHoverBackgroundColor;
-	color: $buttonTextColor;
+	color: $buttonTextColor !important;
 }
 
 button:active,
@@ -190,16 +192,19 @@ button:focus,
 
 .btn-info {
 	background: #3694c3;
+	border: none;
 	border-radius: 2px;
 }
 
 .btn-success {
-	background: #4CAF50;
+	background: #EB7414;
+	border: none;
 	border-radius: 2px;
+	transition: all linear .2s;
 }
 
 .btn-success:hover {
-	background: lighten(#4CAF50, 10%);
+	background: lighten(#EB7414, 10%);
 }
 
 .btn-sm {
@@ -465,7 +470,7 @@ h4 {
 	top: 0;
 	left: 0;
 	right: 0;
-	z-index: 1;
+	z-index: 2000;
 	border-top: 1px solid darken($headerBackgroundColor, 5%);
 	border-bottom: 1px solid darken($headerBackgroundColor, 5%);
 }
@@ -732,6 +737,7 @@ h4 {
 	padding: 15px;
 }
 
+
 /* FOOTER */
 
 .statusbar,
@@ -902,8 +908,8 @@ svg {
 
 .btn-colorpicker {
 	border-radius: 50%;
-	width: 32px;
-	height: 32px;
+	width: 24px;
+	height: 24px;
 	padding: 2px;
 	background: transparent;
 }
@@ -1012,6 +1018,10 @@ svg {
 
 /* FORMS */
 
+.stretch-horizontal {
+	width: 100% !important;
+}
+
 fieldset {
 	background: rgba($accentColor, .025);
 	padding: 1em;
@@ -1025,7 +1035,8 @@ fieldset h4 {
 }
 
 label,
-p.description {
+p.description,
+p.subtitle {
 	font-weight: 400;
 	color: $labelColor;
 }
@@ -1034,11 +1045,22 @@ p.description {
 	margin-bottom: 1em;
 }
 
+label.form-label-top {
+	display: block;
+}
+
 input.form-control {
 	border-radius: 0;
 	border-color: white;
 	box-shadow: none;
 	margin-bottom: 6px;
+}
+
+textarea.form-control {
+	min-height: 4em;
+	border: none;
+	border-radius: 0;
+	outline: 0px;
 }
 
 textarea.form-control:active,
@@ -1055,10 +1077,53 @@ input.form-control-login {
 	max-width: 200px;
 }
 
+input[type='checkbox'].form-control {
+	-webkit-appearance: none;
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	background: $inputBackgroundColor;
+	vertical-align: middle;
+	line-height: 1em;
+	border: 0;
+	border-radius: 0;
+	outline: 0;
+	margin-right: .5em;
+}
+
+input[type='checkbox'][disabled].form-control {
+	opacity: .5;
+}
+
+input[type='checkbox'][disabled].form-control:hover {
+	cursor: default;
+}
+
+input[type='checkbox'].form-control:hover {
+	cursor: pointer;
+}
+
+input[type='checkbox'].form-control:active,
+input[type='checkbox'].form-control:checked {
+	background-color: #e9ecee;
+}
+
+input[type='checkbox'].form-control:checked:after {
+	content: '\f26b';
+	font-family: $iconFont;
+	font-size: 14px;
+	font-weight: 900;
+	position: relative;
+	left: 4px;
+	top: 2px;
+	color: black;
+}
+
 select.form-control {
 	-webkit-appearance: none;
 	border-radius: 0;
 	border: none;
+	width: auto;
 }
 
 select.form-control:focus {
@@ -1066,8 +1131,7 @@ select.form-control:focus {
 }
 
 .modal-dialog {
-	margin-top: 60px;
-	box-shadow: none;
+	margin-top: 50px;
 }
 
 .modal-window-lg .modal-dialog {
@@ -1096,21 +1160,35 @@ select.form-control:focus {
 	padding: 10px;
 }
 
+.modal-title {
+	margin-bottom: .25em;
+}
+
 .modal-header,
 .modal-footer {
 	border: none;
+	padding: 30px 30px 15px 30px;
+}
+
+.modal-footer-buttons {
+	padding-top: 1em;
+	position: relative;
+	top: 4px;
 }
 
 .modal-body {
-	padding-top: 0;
+	padding: 0 30px 30px 30px;
 }
 
 .modal-content {
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	border: none;
-	border-radius: 0;
+	border-radius: 0 0 10px 10px;
 	background: #222;
+	min-width: 700px;
+	transition: width linear .4s;
+	transition: height linear .4s;
 }
 
 .modal-backdrop.in {
@@ -1134,6 +1212,9 @@ button[disabled]:hover {
 	color: $windowBackgroundColor;
 }
 
+.progress {
+	margin-bottom: 10px;
+}
 
 /* LOADING SPINNER */
 
@@ -1418,6 +1499,7 @@ button[disabled]:hover {
 	vertical-align: middle;
 	margin-bottom: 0 !important;
 }
+
 
 /*
 .lst-influences a .node {

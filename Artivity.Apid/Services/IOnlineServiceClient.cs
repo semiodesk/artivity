@@ -58,6 +58,11 @@ namespace Artivity.Apid.Accounts
         /// </summary>
         List<IHttpAuthenticationClient> SupportedAuthenticationClients { get; }
 
+        /// <summary>
+        /// Get information about the current client operations.
+        /// </summary>
+        object State { get; set; }
+
         #endregion
 
         #region Methods
