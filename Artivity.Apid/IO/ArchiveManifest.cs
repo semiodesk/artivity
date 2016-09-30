@@ -35,6 +35,14 @@ namespace Artivity.Apid.IO
     {
         #region Members
 
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
+        public List<ArchiveManifestCreator> Creators { get; set; }
+
+        public string License { get; set; }
+
         public string FileFormat { get; set; }
 
         public List<Uri> ExportedEntites { get; set; }
@@ -47,6 +55,7 @@ namespace Artivity.Apid.IO
 
         public ArchiveManifest()
         {
+            Creators = new List<ArchiveManifestCreator>();
             ExportedEntites = new List<Uri>();
         }
 

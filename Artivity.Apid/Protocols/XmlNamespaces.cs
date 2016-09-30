@@ -66,6 +66,10 @@ namespace Artivity.Apid.Protocols
         public static readonly XName author = XNS + "author";
         public static readonly XName name = XNS + "name";
         public static readonly XName email = XNS + "email";
+        public static readonly XName link = XNS + "link";
+        public static readonly XName rel = XNS + "rel";
+        public static readonly XName type = XNS + "type";
+        public static readonly XName href = XNS + "href";
     }
 
     public static class dcterms

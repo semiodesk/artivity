@@ -108,10 +108,12 @@ explorerApp.factory('api', function ($http) {
 					return response.data;
 				});
 		},
-		uploadArchive: function (accountUri, entityUri, parameter) {
-			var p = serialize(parameter);
+		uploadArchive: function (accountUri, entityUri, parameter, data) {
+			// Add accountUri and entityUri as query parameters to the URL.
+			parameter.accountUri = accountUri;
+			parameter.entityUri = entityUri;
 			
-			return $http.get(endpoint + '/accounts/upload?accountUri=' + accountUri + '&entityUri=' + entityUri + '&' + p).then(
+			return $http.post(endpoint + '/accounts/upload?' + serialize(parameter), data).then(
 				function (response) {
 					return response.data;
 				});

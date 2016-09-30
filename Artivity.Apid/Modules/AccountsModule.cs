@@ -27,6 +27,7 @@
 
 using Artivity.Apid;
 using Artivity.Apid.Accounts;
+using Artivity.Apid.Helpers;
 using Artivity.Apid.IO;
 using Artivity.Apid.Platforms;
 using Artivity.Apid.Plugin;
@@ -35,6 +36,7 @@ using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
 using Nancy;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -56,7 +58,7 @@ namespace Artivity.Api.Modules
         /// <summary>
         /// Maps a session id to an issued authentication request for querying the status.
         /// </summary>
-        private static readonly Dictionary<string, IOnlineServiceClient> _sessions = new Dictionary<string, IOnlineServiceClient>();
+        private static readonly Dictionary<string, OnlineServiceClientSession> _sessions = new Dictionary<string, OnlineServiceClientSession>();
 
         #endregion
 
@@ -148,7 +150,7 @@ namespace Artivity.Api.Modules
             };
 
             // Upload content into an account.
-            Get["/upload"] = parameters =>
+            Post["/upload"] = parameters =>
             {
                 return UploadArchive();
             };
@@ -228,9 +230,9 @@ namespace Artivity.Api.Modules
                 return Logger.LogError(HttpStatusCode.NotFound, "Session with token {0} not found.", sessionId);
             }
 
-            IOnlineServiceClient client = _sessions[sessionId];
+            OnlineServiceClientSession session = _sessions[sessionId];
 
-            return Response.AsJson(client);
+            return Response.AsJson(session);
         }
 
         private Response SendOAuth2AccessToken()
@@ -242,14 +244,14 @@ namespace Artivity.Api.Modules
                 return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
-            IOnlineServiceClient client = _sessions[sessionId];
+            OnlineServiceClientSession session = _sessions[sessionId];
 
-            if (client == null)
+            if (session == null)
             {
                 return HttpStatusCode.NotFound;
             }
 
-            OAuth2AuthenticationClient authenticator = client.TryGetAuthenticationClient<OAuth2AuthenticationClient>(HttpAuthenticationClientState.Processing);
+            OAuth2AuthenticationClient authenticator = session.Client.TryGetAuthenticationClient<OAuth2AuthenticationClient>(HttpAuthenticationClientState.Processing);
 
             if (authenticator != null)
             {
@@ -291,14 +293,12 @@ namespace Artivity.Api.Modules
             }
 
             // Generate an session handle for the current request.
-            Dictionary<string, object> sessionHandle = GetSessionHandle(client);
-
-            sessionId = sessionHandle["id"].ToString();
+            OnlineServiceClientSession session = GetSessionHandle(client);
 
             // Only execute the request if there are no successful previous requests.
-            authenticator.HandleRequestAsync(Request, sessionId);
+            authenticator.HandleRequestAsync(Request, session.Id);
 
-            return Response.AsJson(sessionHandle);
+            return Response.AsJson(session);
         }
 
         private Response InstallAccount()
@@ -310,14 +310,14 @@ namespace Artivity.Api.Modules
                 return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
-            IOnlineServiceClient client = _sessions[sessionId];
+            OnlineServiceClientSession session = _sessions[sessionId];
 
-            if (client == null)
+            if (session == null)
             {
                 return Logger.LogRequest(HttpStatusCode.NotFound, Request);
             }
 
-            IHttpAuthenticationClient authenticator = client.TryGetAuthenticationClient(HttpAuthenticationClientState.Authorized);
+            IHttpAuthenticationClient authenticator = session.Client.TryGetAuthenticationClient(HttpAuthenticationClientState.Authorized);
 
             if (authenticator == null)
             {
@@ -326,7 +326,7 @@ namespace Artivity.Api.Modules
 
             IModel model = ModelProvider.GetAgents();
 
-            OnlineAccount account = client.InstallAccount(model);
+            OnlineAccount account = session.Client.InstallAccount(model);
 
             return account != null ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
         }
@@ -408,6 +408,64 @@ namespace Artivity.Api.Modules
                 return Logger.LogError(HttpStatusCode.InternalServerError, "No file data object found for entity:", entityUri);
             }
 
+            // Read the JSON content that provides additional metadata about the archive.
+            ArchiveManifest manifest = null;
+
+            if (Request.Body.Length > 0)
+            {
+                try
+                {
+                    using (var reader = new StreamReader(Request.Body))
+                    {
+                        string data = reader.ReadToEnd();
+
+                        JObject metadata = JObject.Parse(data);
+
+                        manifest = new ArchiveManifest();
+
+                        JToken token = null;
+
+                        if (metadata.TryGetValue("title", out token))
+                        {
+                            manifest.Title = token.Value<string>();
+                        }
+
+                        if (metadata.TryGetValue("description", out token))
+                        {
+                            manifest.Description = token.Value<string>();
+                        }
+
+                        foreach(JToken creator in metadata["creators"])
+                        {
+                            JToken name = creator["name"];
+                            JToken email = creator["email"];
+
+                            if(name != null)
+                            {
+                                ArchiveManifestCreator c = new ArchiveManifestCreator();
+                                c.Name = name.Value<string>();
+
+                                if(email != null)
+                                {
+                                    c.EmailAddress = email.Value<string>();
+                                }
+
+                                manifest.Creators.Add(c);
+                            }
+                        }
+
+                        if (metadata.TryGetValue("license", out token))
+                        {
+                            manifest.License = token.Value<string>();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Logger.LogError(HttpStatusCode.BadRequest, ex);
+                }
+            }
+
             string archiveName = Path.GetFileNameWithoutExtension(bindings.First()["label"].ToString()) + ".arta";
             string tempFile = Path.Combine(PlatformProvider.TempFolder, archiveName);
 
@@ -424,26 +482,37 @@ namespace Artivity.Api.Modules
                 Uri clientUri = account.ServiceClient.Uri;
                 Uri serviceUrl = account.ServiceUrl.Uri;
 
-                IOnlineServicePublishingClient client = OnlineServiceClientFactory.TryGetClient<IOnlineServicePublishingClient>(clientUri);
+                IOnlineServicePublishingClient publishingClient = OnlineServiceClientFactory.TryGetClient<IOnlineServicePublishingClient>(clientUri);
 
-                if(client != null)
+                if(publishingClient != null)
                 {
+                    ArchiveWriter archiveWriter = new ArchiveWriter(PlatformProvider, ModelProvider);
+
+                    OnlineServiceClientSession session = GetSessionHandle(publishingClient);
+
+                    // The publishing client state is a multi-task progress info.
+                    session.Progress.Tasks.Add(archiveWriter.Progress);
+                    session.Progress.Tasks.Add(publishingClient.Progress);
+                    session.Progress.Reset();
+
                     // Run the export and upload tasks asynchronously.
                     Task.Run(() =>
                     {
-                        ArchiveWriter archiveWriter = new ArchiveWriter(PlatformProvider, ModelProvider);
-
-                        client.State = archiveWriter.Progress;
+                        session.Progress.CurrentTask = session.Progress.Tasks[0];
 
                         archiveWriter.Write(entityUri, tempFile, DateTime.MinValue);
 
-                        client.UploadArchive(Request, serviceUrl, tempFile);
+                        session.Progress.CurrentTask = session.Progress.Tasks[1];
+
+                        publishingClient.UploadArchive(Request, serviceUrl, tempFile, manifest);
                     });
+
+                    return Response.AsJson(session);
                 }
-
-                Dictionary<string, object> sessionHandle = GetSessionHandle(client);
-
-                return Response.AsJson(sessionHandle);
+                else
+                {
+                    return Logger.LogError(HttpStatusCode.NotFound, new KeyNotFoundException(clientUri.AbsoluteUri));
+                }
             }
             catch(Exception ex)
             {
@@ -458,18 +527,14 @@ namespace Artivity.Api.Modules
             }
         }
 
-        private Dictionary<string, object> GetSessionHandle(IOnlineServiceClient client)
+        private OnlineServiceClientSession GetSessionHandle(IOnlineServiceClient client)
         {
-            string sessionId = Guid.NewGuid().ToString();
-
-            // Prepare the JSON result dictionary.
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            result["id"] = sessionId;
+            OnlineServiceClientSession session = new OnlineServiceClientSession(client);
 
             // Store the authenticator in the chache *before* sending the request.
-            _sessions[sessionId] = client;
+            _sessions[session.Id] = session;
 
-            return result;
+            return session;
         }
 
         #endregion

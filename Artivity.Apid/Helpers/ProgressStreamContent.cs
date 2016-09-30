@@ -7,8 +7,6 @@ using System.Threading;
 
 namespace Artivity.Apid.Helpers
 {
-    public delegate void ProgressDelegate(long bytes, long totalBytes, long totalBytesExpected);
-
     public class ProgressStreamContent : StreamContent
     {
         #region Members
@@ -17,9 +15,9 @@ namespace Artivity.Apid.Helpers
 
         long _totalBytesExpected = -1;
 
-        ProgressDelegate _progress;
+        ProgressStreamDelegate _progress;
 
-        public ProgressDelegate Progress
+        public ProgressStreamDelegate Progress
         {
             get { return _progress; }
             set { _progress = value != null ? value : delegate { }; }
@@ -111,4 +109,6 @@ namespace Artivity.Apid.Helpers
 
         #endregion
     }
+
+    public delegate void ProgressStreamDelegate(long bytes, long totalBytes, long totalBytesExpected);
 }

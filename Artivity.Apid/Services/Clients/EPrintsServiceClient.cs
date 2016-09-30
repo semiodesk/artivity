@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.IO;
 using Artivity.Apid.Protocols.Atom;
 using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
@@ -122,7 +123,7 @@ namespace Artivity.Apid.Accounts
             return "EPrints";
         }
 
-        public void UploadArchive(Request request, Uri serviceUrl, string filePath)
+        public void UploadArchive(Request request, Uri serviceUrl, string filePath, ArchiveManifest manifest = null)
         {
             string username = request.Query.username;
             string password = request.Query.password;
@@ -131,12 +132,45 @@ namespace Artivity.Apid.Accounts
             client.SetBasicAuthCredentials(username, password);
 
             AtomFeedEntry entry = new AtomFeedEntry();
-            entry.Title = Path.GetFileName(filePath);
             entry.Type = "dataset";
             entry.Subjects.Add("N1");
             entry.Subjects.Add("NX");
 
-            client.ProgressChanged += (sender, progressInfo) => { State = progressInfo; };
+            if(manifest != null)
+            {
+                entry.Title = manifest.Title;
+                entry.Description = manifest.Description;
+
+                foreach(ArchiveManifestCreator creator in manifest.Creators)
+                {
+                    AtomFeedAuthor author = new AtomFeedAuthor()
+                    {
+                        Name = creator.Name,
+                        EMail = creator.EmailAddress
+                    };
+
+                    entry.Authors.Add(author);
+                }
+
+                if(Uri.IsWellFormedUriString(manifest.License, UriKind.Absolute))
+                {
+                    entry.License = new AtomLink("license", new Uri(manifest.License));
+                }
+            }
+            else
+            {
+                entry.Title = Path.GetFileName(filePath);
+            }
+
+            // The progress of the client is the current operation.
+            Progress.Id = client.Progress.Id;
+
+            client.ProgressChanged += (sender, progress) =>
+            {
+                Progress.Total = progress.Total;
+                Progress.Completed = progress.Completed;
+            };
+
             client.DepositFile(entry, filePath);
         }
 

@@ -1173,7 +1173,8 @@ select.form-control:focus {
 .modal-footer-buttons {
 	padding-top: 1em;
 	position: relative;
-	top: 4px;
+	top: 7px;
+	z-index: 10;
 }
 
 .modal-body {
@@ -1197,9 +1198,18 @@ select.form-control:focus {
 	transition: opacity linear .4s;
 }
 
+.modal-status-bar {
+	position: absolute;
+	bottom: -5px;
+	left: 0;
+	right: 0;
+	z-index: 0;
+}
+
 .modal-status-bar .modal-state {
 	padding: 5px;
 	text-align: center;
+	border-radius: 0 0 10px 10px !important;
 }
 
 input[disabled] {
@@ -1214,7 +1224,14 @@ button[disabled]:hover {
 
 .progress {
 	margin-bottom: 10px;
+	background: $windowBackgroundColor !important;
+	border-radius: 0;
 }
+
+.progress-bar {
+	background: #EB7414 !important;
+}
+
 
 /* LOADING SPINNER */
 

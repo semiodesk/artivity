@@ -17,6 +17,11 @@
 							<div class="img-thumbnail"></div>
 							<div class="title">{{file.label}}</div>
 						</div>
+						<div class="clearfix"></div>
+						<div style="margin-top: 20px; line-height: 32px; vertical-align: middle;">
+							<img class="icn icn-circle pull-left" style="width: 32px; height: 32px; margin-right: 10px;" ng-src="{{userPhotoUrl}}" />
+							<label>{{user.Name}}</label>
+						</div>
 					</td>
 					<td>
 						<div style="padding: 0 0 0 25px">
@@ -26,11 +31,11 @@
 							</div>
 							<div class="form-group">
 								<label class="form-label-top" for="abstract">Abstract</label>
-								<textarea class="form-control stretch-horizontal" type="text" rows="7" name="abstract" id="abstract" ng-model="archive.abstract"></textarea>
+								<textarea class="form-control stretch-horizontal" type="text" rows="7" name="abstract" id="abstract" ng-model="archive.description"></textarea>
 							</div>
 							<div class="form-group">
 								<label class="form-label-top" for="license">License</label>
-								<select class="form-control" name="license" id="license" ng-options="license as license.label for license in archive.licenseOptions track by license.id" ng-model="archive.license">
+								<select class="form-control" name="license" id="license" ng-options="license.uri as license.label for license in archive.licenseOptions" ng-model="archive.license">
 								</select>
 							</div>
 							<label>Contents</label>
@@ -63,7 +68,7 @@
 				<button class="btn btn-icn btn-circular btn-success pull-right" ng-click="selectAccount()"><i class="zmdi zmdi-chevron-right"></i></button>
 			</div>
 		</div>
-		<div ng-switch-when="upload-account">
+		<div ng-switch-when="upload-select-account">
 			<div class="form-group">
 				<select class="form-control stretch-horizontal" name="account" ng-options="account as account.Description for account in accounts track by account.Uri" ng-model="selectedAccount"></select>
 			</div>
@@ -85,11 +90,18 @@
 			</div>
 		</div>
 		<div ng-switch-when="upload-progress">
-			<uib-progressbar value="progress.percentComplete" max="100" style="height: 5px"></uib-progressbar>
+			<uib-progressbar value="progress.PercentComplete" max="100" style="height: 5px"></uib-progressbar>
 
 			<label>{{selectedAccount.Description}}</label>
-			<label class="pull-right">{{progress.percentComplete}}%</label>
+			<label class="pull-right">{{progress.PercentComplete}}%</label>
 
+			<div class="modal-footer-buttons text-center">
+				<button class="btn btn-icn btn-circular no-margin pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
+			</div>
+		</div>
+		<div ng-switch-when="no-accounts">
+			<label>Go to <a href="#/settings">Preferences</a> <i class="zmdi zmdi-arrow-right"></i> Accounts to add one.</label>
+			
 			<div class="modal-footer-buttons text-center">
 				<button class="btn btn-icn btn-circular no-margin pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
 			</div>

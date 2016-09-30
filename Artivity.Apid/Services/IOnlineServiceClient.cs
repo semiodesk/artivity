@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Apid.Accounts
+namespace Artivity.Apid
 {
     /// <summary>
     /// A helper class for installing authenticated online accounts.

@@ -52,7 +52,7 @@ namespace Artivity.Apid.IO
 
         private VirtuosoManager _virtuosoManager;
 
-        public ProgressInfo Progress { get; private set; }
+        public TaskProgressInfo Progress { get; private set; }
 
         #endregion
 
@@ -64,7 +64,7 @@ namespace Artivity.Apid.IO
             _modelProvider = modelProvider;
             _virtuosoManager = new VirtuosoManager(_modelProvider.NativeConnectionString);
 
-            Progress = new ProgressInfo(artf.ExportArchive.Uri, 0);
+            Progress = new TaskProgressInfo(artf.ExportArchive.Uri);
         }
 
         #endregion
@@ -86,7 +86,7 @@ namespace Artivity.Apid.IO
             }
 
             // We track the completion of 8 different methods + the number of compied renderings.
-            Progress.Total = 8 + GetRenderingsCount(entityUri);
+            Progress.Total = 9 + GetRenderingsCount(entityUri);
             RaiseProgressChanged();
 
             DirectoryInfo appFolder = new DirectoryInfo(_platformProvider.ArtivityDataFolder);
