@@ -56,6 +56,8 @@ namespace Artivity.Apid.Protocols.Atom
 
         private string _password;
 
+        public TaskProgressInfo Progress { get; private set; }
+
         #endregion
 
         #region Constructors
@@ -64,6 +66,8 @@ namespace Artivity.Apid.Protocols.Atom
         {
             _serviceEndpoint = new Uri(serviceUrl + "/sword-app/servicedocument");
             _collectionEndpoint = new Uri(serviceUrl + "/id/contents");
+
+            Progress = new TaskProgressInfo(artf.UploadArchive.Uri);
         }
 
         public AtomPublishingClient(Uri serviceUrl)
@@ -190,13 +194,14 @@ namespace Artivity.Apid.Protocols.Atom
 
                     int bufferSize = 4096;
 
-                    ProgressInfo progress = new ProgressInfo(artf.UploadArchive.Uri, atom.Length + fileInfo.Length);
+                    Progress.Total = atom.Length + fileInfo.Length;
+                    Progress.Completed = 0;
 
-                    ProgressDelegate progressDelegate = (bytes, total, expected) =>
+                    ProgressStreamDelegate progressDelegate = (bytes, total, expected) =>
                     {
-                        progress.Completed += bytes;
+                        Progress.Completed += bytes;
 
-                        RaiseProgressChanged(progress);
+                        RaiseProgressChanged(Progress);
                     };
 
                     ProgressStreamContent atomContent = new ProgressStreamContent(atom, bufferSize);
@@ -205,7 +210,7 @@ namespace Artivity.Apid.Protocols.Atom
                     atomContent.Progress = progressDelegate;
 
                     ProgressStreamContent fileContent = new ProgressStreamContent(new FileStream(fileInfo.FullName, FileMode.Open), bufferSize);
-                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/illustrator");
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/artivity+zip");
                     fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { Name = "payload", FileName = fileInfo.Name };
                     fileContent.Headers.Add("Packaging", sword.NS + "/package/Binary");
                     fileContent.Progress = progressDelegate;
@@ -231,7 +236,7 @@ namespace Artivity.Apid.Protocols.Atom
 
         public event ProgressChangedEventHandler ProgressChanged;
 
-        private void RaiseProgressChanged(ProgressInfo progressInfo)
+        private void RaiseProgressChanged(TaskProgressInfo progressInfo)
         {
             if(ProgressChanged != null)
             {

@@ -25,11 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Apid.Accounts;
 using Artivity.Apid.Helpers;
-using Artivity.Apid.IO;
-using Artivity.DataModel;
-using Nancy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,17 +34,34 @@ using System.Threading.Tasks;
 
 namespace Artivity.Apid
 {
-    public interface IOnlineServicePublishingClient : IOnlineServiceClient
+    public class OnlineServiceClientSession
     {
         #region Members
 
-        TaskProgressInfo Progress { get;  }
+        public readonly string Id;
+
+        public readonly IOnlineServiceClient Client;
+
+        public readonly TaskProgressInfoList Progress = new TaskProgressInfoList();
+
+        #endregion
+
+        #region Constructors
+
+        public OnlineServiceClientSession(IOnlineServiceClient client)
+        {
+            Id = Guid.NewGuid().ToString();
+            Client = client;
+        }
 
         #endregion
 
         #region Methods
 
-        void UploadArchive(Request request, Uri serviceUrl, string filePath, ArchiveManifest manifest = null);
+        public override int GetHashCode()
+        {
+            return Client != null ? Client.GetHashCode() : base.GetHashCode();
+        }
 
         #endregion
     }

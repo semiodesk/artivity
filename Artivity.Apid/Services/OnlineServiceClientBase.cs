@@ -79,9 +79,14 @@ namespace Artivity.Apid.Accounts
         public List<IHttpAuthenticationClient> SupportedAuthenticationClients { get; protected set; }
 
         /// <summary>
-        /// Get information about the current client operations.
+        /// Get information about the current client operation.
         /// </summary>
         public object State { get; set; }
+
+        /// <summary>
+        /// Get information about the current client operation progress.
+        /// </summary>
+        public TaskProgressInfo Progress { get; protected set; }
 
         #endregion
 
@@ -93,6 +98,7 @@ namespace Artivity.Apid.Accounts
             Presets = new List<HttpAuthenticationParameterSet>();
             Features = new List<Resource>();
             SupportedAuthenticationClients = new List<IHttpAuthenticationClient>();
+            Progress = new TaskProgressInfo();
         }
 
         #endregion

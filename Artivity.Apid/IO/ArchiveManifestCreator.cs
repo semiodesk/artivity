@@ -25,30 +25,47 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Apid.Accounts;
-using Artivity.Apid.Helpers;
-using Artivity.Apid.IO;
-using Artivity.DataModel;
-using Nancy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Apid
+namespace Artivity.Apid.IO
 {
-    public interface IOnlineServicePublishingClient : IOnlineServiceClient
+    public class ArchiveManifestCreator
     {
         #region Members
 
-        TaskProgressInfo Progress { get;  }
+        public string Name { get; set; }
+
+        public string EmailAddress { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        public ArchiveManifestCreator(string name = "", string emailAddress = "")
+        {
+            Name = name;
+            EmailAddress = emailAddress;
+        }
 
         #endregion
 
         #region Methods
 
-        void UploadArchive(Request request, Uri serviceUrl, string filePath, ArchiveManifest manifest = null);
+        public override string ToString()
+        {
+            if (!string.IsNullOrEmpty(EmailAddress))
+            {
+                return string.Format("{0} <{1}>", Name, EmailAddress);
+            }
+            else
+            {
+                return Name;
+            }
+        }
 
         #endregion
     }

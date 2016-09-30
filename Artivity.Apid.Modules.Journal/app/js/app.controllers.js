@@ -13,12 +13,12 @@ explorerControllers.filter('reverse', function () {
 explorerControllers.handleServiceClientState = function (api, sessionId, handleClientStateChange) {
 	// The polling interval hanler.
 	var interval = undefined;
-	
+
 	// The polling interval in milliseconds.
-	var intervalMs = 1000;
+	var intervalMs = 500;
 
 	// The maximum number of queries.
-	var maxQueries = 300;
+	var maxQueries = 500;
 
 	// The number of status queries.
 	var n = 0;
@@ -48,9 +48,6 @@ explorerControllers.handleServiceClientState = function (api, sessionId, handleC
 
 			if (n === maxQueries) {
 				clearInterval(interval);
-
-				// The client state '3' refers to 'Error'.
-				$scope.clientState = 4;
 			}
 		});
 	}, intervalMs);
@@ -939,33 +936,72 @@ explorerControllers.controller('FilePublishDialogController', function (api, $sc
 		subtitle: 'Create a dataset for your file and upload it into a digital repository.'
 	};
 
-	// Archiving options.
+	// Accounts
+	$scope.accounts = [];
+	$scope.selectedAccount = null;
+
+	// At first, we need to determine if there are any accounts which can be used for publishing.
+	api.getAccountsWithFeature('http://w3id.org/art/terms/1.0/features/PublishArchive').then(function (data) {
+		console.log("Accounts:", data);
+
+		$scope.accounts = data;
+
+		if (0 < $scope.accounts.length) {
+			var account = $scope.accounts[0];
+
+			$scope.selectedAccount = account;
+
+			$scope.authentication = {
+				protocol: account.AuthenticationProtocol.Uri,
+				parameter: {}
+			};
+
+			for (var i = 0; i < account.AuthenticationParameters.length; i++) {
+				var p = account.AuthenticationParameters[i];
+
+				$scope.authentication.parameter[p.Name] = p.Value;
+			}
+		} else {
+			$scope.dialog.step = 'no-accounts';
+			$scope.dialog.title = 'No Accounts';
+			$scope.dialog.subtitle = 'You have not yet added any accounts which can be used for publication.';
+		}
+	});
+
+	$scope.selectAccount = function () {
+		$scope.dialog.step = 'upload-select-account';
+		$scope.dialog.title = 'Select Account';
+		$scope.dialog.subtitle = 'Choose the account used for publication and authorize the upload by logging in.';
+	};
+	
+	// Publishing
 	$scope.archive = {
 		title: 'Artivity data for ' + $scope.file.label,
-		abstract: '',
+		description: '',
+		creators: [],
 		license: null,
 		licenseOptions: [{
-				id: 'CC-BY-NC-ND',
+				uri: 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
 				label: 'Creative Commons BY-NC-ND',
 				description: 'Attribution, Non-Commercial, No Derivatives'
 			}, {
-				id: 'CC-BY-NC-SA',
+				uri: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
 				label: 'Creative Commons BY-NC-SA',
 				description: 'Attribution, Non-Commercial, Share Alike'
 			}, {
-				id: 'CC-BY-NC',
+				uri: 'https://creativecommons.org/licenses/by-nc/4.0/',
 				label: 'Creative Commons BY-NC',
 				description: 'Attribution, Non-Commercial'
 			}, {
-				id: 'CC-BY-ND',
+				uri: 'https://creativecommons.org/licenses/by-nd/4.0/',
 				label: 'Creative Commons BY-ND',
 				description: 'Attribution, No Derivatives'
 			}, {
-				id: 'CC-BY-SA',
+				uri: 'https://creativecommons.org/licenses/by-sa/4.0/',
 				label: 'Creative Commons BY-SA',
 				description: 'Attribution, Share Alike'
 			}, {
-				id: 'CC-BY',
+				uri: 'https://creativecommons.org/licenses/by/4.0/',
 				label: 'Creative Commons BY',
 				description: 'Attribution'
 			}
@@ -978,43 +1014,21 @@ explorerControllers.controller('FilePublishDialogController', function (api, $sc
 		}
 	};
 
-	$scope.archive.license = $scope.archive.licenseOptions[0];
+	$scope.archive.license = $scope.archive.licenseOptions[0].uri;
 
-	// Authenticate account.
-	$scope.selectAccount = function () {
-		$scope.dialog.step = 'upload-account';
-		$scope.dialog.title = 'Select Account';
-		$scope.dialog.subtitle = 'Choose the account used for publication and authorize the upload by logging in.';
+	// Load author information.
+	$scope.userPhotoUrl = api.getUserPhotoUrl();
 
-		// Available accounts.
-		$scope.accounts = [];
-		$scope.selectedAccount = null;
+	api.getUser().then(function (data) {
+		$scope.user = data;
 
-		api.getAccountsWithFeature('http://w3id.org/art/terms/1.0/features/PublishArchive').then(function (data) {
-			console.log("Accounts:", data);
+		$scope.archive.creators = [{
+			name: data.Name,
+			email: data.EmailAddress
+		}];
+	});
 
-			$scope.accounts = data;
-
-			if (0 < $scope.accounts.length) {
-				var account = $scope.accounts[0];
-
-				$scope.selectedAccount = account;
-
-				$scope.authentication = {
-					protocol: account.AuthenticationProtocol.Uri,
-					parameter: {}
-				};
-
-				for (var i = 0; i < account.AuthenticationParameters.length; i++) {
-					var p = account.AuthenticationParameters[i];
-
-					$scope.authentication.parameter[p.Name] = p.Value;
-				}
-			}
-		});
-	};
-
-	// File upload.
+	// Upload
 	var interval = undefined;
 
 	$scope.beginUpload = function () {
@@ -1022,30 +1036,26 @@ explorerControllers.controller('FilePublishDialogController', function (api, $sc
 		$scope.dialog.title = "Publishing File";
 
 		$scope.progress = {
-			task: '',
-			total: 0,
-			completed: 0,
-			percentComplete: 0
+			Tasks: [],
+			CurrentTask: '',
+			PercentComplete: 0
 		};
 
-		api.uploadArchive($scope.selectedAccount.Uri, $scope.entity.uri, $scope.authentication.parameter).then(function (data) {
-			var sessionId = data.id;
+		api.uploadArchive($scope.selectedAccount.Uri, $scope.entity.uri, $scope.authentication.parameter, $scope.archive).then(function (data) {
+			var sessionId = data.Id;
 
 			console.log("Session: ", sessionId);
 
-			explorerControllers.handleServiceClientState(api, sessionId, function (intervalHandle, client) {
+			explorerControllers.handleServiceClientState(api, sessionId, function (intervalHandle, state) {
 				interval = intervalHandle;
 
-				$scope.dialog.subtitle = $filter('translate')(client.State.Id);
+				$scope.dialog.subtitle = $filter('translate')(state.Progress.CurrentTask.Id + "#description");
 
-				$scope.progress.task = client.State.Id;
-				$scope.progress.total = client.State.Total;
-				$scope.progress.completed = client.State.Completed;
-				$scope.progress.percentComplete = client.State.PercentComplete;
+				$scope.progress = state.Progress;
 
-				console.log($scope.progress.task, $scope.progress.percentComplete);
+				if (parseInt(state.Progress.PercentComplete) === 100) {
+					clearInterval(interval);
 
-				if ($scope.progress.task == 'http://w3id.org/art/terms/1.0/features/UploadArchive' && $scope.progress.percentComplete === 100) {
 					// Delay the closing of the window so that the UI can update the progress.
 					setTimeout($scope.endUpload, 2000);
 				}
@@ -1103,7 +1113,7 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 
 			$scope.connectAccount($scope.selectedClient);
 		} else if (client.Uri === 'http://eprints.org') {
-			$scope.parameter.url = 'http://ualresearchonline.arts.ac.uk';
+			$scope.parameter.url = 'https://ualresearchonline.arts.ac.uk';
 		}
 
 		console.log("Client selected: ", client);
@@ -1120,13 +1130,15 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 		$scope.clientState = 1;
 
 		api.authorizeAccount($scope.parameter).then(function (data) {
-			var sessionId = data.id;
+			var sessionId = data.Id;
 
-			explorerControllers.handleServiceClientState(api, sessionId, function (intervalHandle, client) {
+			explorerControllers.handleServiceClientState(api, sessionId, function (intervalHandle, state) {
 				interval = intervalHandle;
+				
+				console.log(state);
 
-				for (var i = 0; i < client.SupportedAuthenticationClients.length; i++) {
-					var c = client.SupportedAuthenticationClients[i];
+				for (var i = 0; i < state.Client.SupportedAuthenticationClients.length; i++) {
+					var c = state.Client.SupportedAuthenticationClients[i];
 
 					// Allow iframes to connect to the URL.
 					$scope.clientUrl = $sce.trustAsResourceUrl(c.AuthorizeUrl);
@@ -1146,7 +1158,7 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 								// Close the dialog after the account was successfully connected.
 								setTimeout(function () {
 									$uibModalInstance.close();
-								}, 500);
+								}, 1000);
 							});
 						}
 

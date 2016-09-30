@@ -67,6 +67,12 @@ namespace Artivity.Apid.Protocols.Atom
         public string Description { get; set; }
 
         /// <summary>
+        /// Gets or sets the license of the entry contents.
+        /// </summary>
+        [XmlElement("link", Namespace=atom.NS)]
+        public AtomLink License { get; set; }
+
+        /// <summary>
         /// Gets the entry publishing state defined by the SWORD protocol.
         /// </summary>
         /// <seealso href="http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html"/>

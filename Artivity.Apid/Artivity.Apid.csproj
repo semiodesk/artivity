@@ -113,9 +113,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\INotifyProgressChanged.cs" />
-    <Compile Include="Helpers\ProgressInfo.cs" />
+    <Compile Include="Helpers\TaskProgressInfo.cs" />
+    <Compile Include="Helpers\TaskProgressInfoList.cs" />
     <Compile Include="Helpers\ProgressStream.cs" />
     <Compile Include="Helpers\ProgressStreamContent.cs" />
+    <Compile Include="IO\ArchiveManifestCreator.cs" />
+    <Compile Include="Protocols\Atom\AtomLink.cs" />
     <Compile Include="Services\Clients\EPrintsServiceClient.cs" />
     <Compile Include="Protocols\Authentication\BasicAuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationClientState.cs" />
@@ -197,6 +200,7 @@
     <Compile Include="IO\ArchiveWriter.cs" />
     <Compile Include="IO\ArchiveReader.cs" />
     <Compile Include="IO\FileNameEncoder.cs" />
+    <Compile Include="Services\OnlineServiceClientSession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
