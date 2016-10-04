@@ -199,19 +199,29 @@ namespace Artivity.Apid.Accounts
             // Create the online account.
             UriRef accountUri = new UriRef(GetAccountUri());
 
-            OnlineAccount account = model.CreateResource<OnlineAccount>(accountUri);
-            account.Id = accountUri.AbsoluteUri;
-            account.Title = GetAccountTitle();
-            account.Description = GetAccountDescription();
+            // Check if there is already an account with the given ID.
+            ISparqlQuery query = new SparqlQuery(@"ask where { ?account foaf:accountName @id }");
+            query.Bind("@id", accountUri.AbsoluteUri);
 
-            if(accountUri == ServiceUrl)
+            ISparqlQueryResult result = model.ExecuteQuery(query);
+
+            if (result.GetAnwser())
             {
+                // We do not need to install the account twice.
+                Logger.LogError("There is already an account with id {0}", accountUri.AbsoluteUri);
 
+                return null;
             }
+
+            Logger.LogInfo("Creating account: {0}", accountUri);
 
             // Set the creation and modification date.
             DateTime now = DateTime.UtcNow;
 
+            OnlineAccount account = model.CreateResource<OnlineAccount>(accountUri);
+            account.Id = accountUri.AbsoluteUri;
+            account.Title = GetAccountTitle();
+            account.Description = GetAccountDescription();
             account.CreationTime = now;
             account.LastModificationTime = now;
 
@@ -235,20 +245,6 @@ namespace Artivity.Apid.Accounts
                 }
             }
 
-            // Check if there is already an account with the given ID.
-            ISparqlQuery query = new SparqlQuery(@"ask where { ?account foaf:accountName @id }");
-            query.Bind("@id", account.Id);
-
-            ISparqlQueryResult result = model.ExecuteQuery(query);
-
-            if (result.GetAnwser())
-            {
-                // We do not need to install the account twice.
-                Logger.LogError("There is already an account with id {0}", account.Id);
-
-                return null;
-            }
-
             Person user = model.GetResources<Person>().FirstOrDefault();
 
             if (user == null)
@@ -263,10 +259,13 @@ namespace Artivity.Apid.Accounts
                 account.Commit();
             }
 
-            user.Accounts.Add(account);
-            user.Commit();
+            if (!user.Accounts.Contains(account))
+            {
+                Logger.LogInfo("Installed account: {0}", account.Uri);
 
-            Logger.LogInfo("Installed account with id: {0}", account.Id);
+                user.Accounts.Add(account);
+                user.Commit();
+            }
 
             return account;
         }
