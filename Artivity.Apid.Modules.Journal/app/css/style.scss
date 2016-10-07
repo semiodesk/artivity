@@ -1,42 +1,66 @@
 /* NOTE: If Brackets refuses to compile SASS files, check for syntax errors! */
 
-
-/* TODO: Build palette with shades: http://paletton.com/#uid=70t0u0kthtvhXAamVuIuCn5-Ji7
-$accentColor = #EB7414;
-$warnColor = #EBA214;
-$infoColor = #3694c3;
-$errorColor = #E71D36;
-$successColor = #849324;
+/*
+https://coolors.co/17bebb-ffc914-fb5f1a-2e282a-76b041
+https://coolors.co/17bebb-ffc914-fb5f1a-D62828-76b041
+https://coolors.co/76b041-087E8B-e57c04-fb5f1a-d62828
+https://coolors.co/087e8b-e57c04-fb5f1a-d62828-5e2f63
+https://coolors.co/0baabc-e57c04-fb5f1a-d62828-7b3d82
 */
 
-$iconFont: 'Material-Design-Iconic-Font';
-$textFont: 'Roboto',
-'Helvetica',
-'Arial',
-sans-serif;
-$textColor: #FFFFFF;
-$labelColor: darken($textColor, 30%);
-$accentColor: #FFFFFF;
-$accentTextColor: #1D1D1D;
-$errorColor: #ED3E44;
+$accentColor: #F27200;
+$accentTextColor: #FFFFFF;
+$accentShadeColor: shade($accentColor, 20%);
+
+$warnColor: #FFC914;
+$warnTextColor: #FFFFFF;
+
+$infoColor: #087E8B;
+$infoTextColor: #FFFFFF;
+
+$errorColor: #D62828;
 $errorTextColor: #FFFFFF;
-$iconFontSize: 20px;
-$selectionTextColor: white;
+
+$successColor: #5e2f63;
+$successTextColor: #FFFFFF;
+
+$iconFont: 'Material-Design-Iconic-Font';
+$iconFontSize: 21px;
+
+$textFont: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+$textColor: #F0F0F0;
+
+$labelTextColor: darken($textColor, 30%);
+$labelBackgroundColor: transparent;
+
+$itemTextColor: $textColor;
+$itemBackgroundColor: rgba($textColor, .025);
+
+$highlightTextColor: $textColor;
+$highlightBackgroundColor: rgba($textColor, .05);
+
+$selectionTextColor: $textColor;
 $selectionBorderColor: transparent;
 $selectionBackgroundColor: rgba($textColor, .1);
+
 $windowBackgroundColor: #1D1D1D;
+
 $headerBackgroundColor: #303030;
 $headerTextColor: $textColor;
-$headerHeight: 50px;
+$headerHeight: 45px;
+
 $toolbarBackgroundColor: $headerBackgroundColor;
 $toolbarTextColor: $headerTextColor;
+
+$overlayTextColor: $textColor;
+$overlayBackgroundColor: rgba($windowBackgroundColor, .95);
+
 $buttonBackgroundColor: $headerBackgroundColor;
 $buttonHoverBackgroundColor: lighten($headerBackgroundColor, 10%);
 $buttonTextColor: $headerTextColor;
+
 $inputBackgroundColor: #FFFFFF;
 $inputTextColor: #000000;
-$overlayTextColor: white;
-$overlayBackgroundColor: rgba($windowBackgroundColor, .95);
 
 /* GENERAL STYLES */
 
@@ -61,7 +85,7 @@ h3 {
 
 h3,
 h4 {
-	color: $labelColor;
+	color: $labelTextColor;
 }
 
 .no-margin {
@@ -165,7 +189,7 @@ button,
 	border: none;
 	border-radius: 3px;
 	background: $buttonBackgroundColor;
-	color: $buttonTextColor;
+	color: $labelTextColor;
 	padding: .7em;
 	margin: 0 10px 0 0;
 	outline: none;
@@ -197,14 +221,14 @@ button:focus,
 }
 
 .btn-success {
-	background: #EB7414;
+	background: #FB5F1A;
 	border: none;
 	border-radius: 2px;
 	transition: all linear .2s;
 }
 
 .btn-success:hover {
-	background: lighten(#EB7414, 10%);
+	background: lighten(#FB5F1A, 5%);
 }
 
 .btn-sm {
@@ -229,15 +253,17 @@ button:focus,
 
 .btn-header {
 	margin: 0 !important;
-	width: 50px;
-	height: 50px;
+	width: 45px;
+	height: 45px;
 	background: none;
-	color: $labelColor;
+	color: $labelTextColor;
 }
 
 .circular,
 .btn-circular {
 	border-radius: 50%;
+	width: 45px;
+	height: 45px;
 }
 
 .nav-pills {
@@ -261,45 +287,46 @@ button:focus,
 	border-radius: 0;
 	border: none;
 	border-bottom: 3px solid transparent;
-	color: $labelColor;
+	color: $labelTextColor;
 	text-transform: uppercase;
 	transition: all .1s linear;
-	padding: 1em;
+	padding: .75em 1em;
 }
 
 .nav-tabs.nav-tabs-top li a {
 	border-bottom: 0;
-	border-top: 3px solid transparent;
-}
-
-.nav-tabs li a:hover {
-	border-bottom: 3px solid $textColor;
-	background: transparent;
-	color: $textColor;
-	cursor: pointer;
+	border-top: 1px solid transparent;
 }
 
 .nav-tabs.nav-tabs-top li a:hover {
 	border-top: 3px solid $textColor;
 }
 
+.nav-tabs.nav-tabs-top li.active a,
+.nav-tabs.nav-tabs-top li.active a:hover {
+	border: none;
+	border-top: 1px solid $accentColor;
+	color: $textColor;
+}
+
+.nav-tabs li a:hover {
+	border-bottom: 1px solid $textColor;
+	background: transparent;
+	color: $textColor;
+	cursor: pointer;
+}
+
 .nav-tabs li.active a,
 .nav-tabs li.active a:hover {
 	border: none;
-	border-bottom: 3px solid $accentColor;
+	border-bottom: 1px solid $accentColor;
 	background: transparent;
 	color: $accentColor;
 }
 
-.nav-tabs.nav-tabs-top li.active a,
-.nav-tabs.nav-tabs-top li.active a:hover {
-	border: none;
-	border-top: 3px solid $textColor;
-}
-
 .nav-tabs.nav-stacked li a {
 	border: none;
-	border-left: 3px solid transparent;
+	border-left: 2px solid transparent;
 	margin: 0;
 	text-transform: none;
 }
@@ -307,8 +334,9 @@ button:focus,
 .nav-tabs.nav-stacked li.active a,
 .nav-tabs.nav-stacked li.active a:hover {
 	border: none;
-	border-left: 3px solid $accentColor !important;
-	background: rgba($accentColor, .05);
+	border-left: 2px solid $accentColor !important;
+	color: $highlightTextColor;
+	background: $highlightBackgroundColor;
 }
 
 .tab-content {
@@ -336,11 +364,13 @@ button:focus,
 .list-item {
 	display: table-row;
 	vertical-align: middle;
-	background: rgba($accentColor, .025);
+	color: $itemTextColor;
+	background: $itemBackgroundColor;
 }
 
 .list-item:hover {
-	background: rgba($accentColor, .05);
+	color: $highlightTextColor;
+	background: $highlightBackgroundColor;
 }
 
 .list-item .col {
@@ -350,7 +380,7 @@ button:focus,
 .list-item .col h5 {
 	margin-top: 6px;
 	margin-bottom: 6px;
-	color: lighten($labelColor, 15%);
+	color: lighten($labelTextColor, 15%);
 	font-size: 15px;
 }
 
@@ -383,12 +413,12 @@ button:focus,
 
 .list-item .col button {
 	background: transparent;
-	color: $labelColor;
+	color: $labelTextColor;
 }
 
 .label,
 .text-label {
-	color: $labelColor;
+	color: $labelTextColor;
 }
 
 .icn {
@@ -457,7 +487,7 @@ h4 {
 	background: $headerBackgroundColor;
 	color: $headerTextColor;
 	width: 100%;
-	height: 50px;
+	height: 45px;
 	padding: 0;
 	margin: 0;
 	border-spacing: 0;
@@ -489,7 +519,7 @@ h4 {
 	box-sizing: border-box;
 	padding: 0;
 	margin: 0;
-	width: 50px;
+	width: 45px;
 	text-align: center;
 }
 
@@ -500,13 +530,13 @@ h4 {
 }
 
 #header .title {
-	font-size: 18px;
+	font-size: 17px;
 	font-weight: 400;
-	line-height: 47px;
 	text-align: left;
-	vertical-align: middle;
 	margin: 0 0 0 5px;
 	padding: 0;
+	position: relative;
+	top: 2px;
 }
 
 #header a.btn,
@@ -522,9 +552,9 @@ h4 {
 #header a.btn i,
 #footer a.btn i {
 	display: block;
-	width: 50px;
-	height: 50px;
-	line-height: 50px;
+	width: 45px;
+	height: 45px;
+	line-height: 45px;
 	font-size: $iconFontSize;
 	vertical-align: middle;
 	text-align: center;
@@ -563,8 +593,8 @@ h4 {
 }
 
 .jumbo-header #header .icn {
-	width: 50px;
-	height: 50px;
+	width: 45px;
+	height: 45px;
 }
 
 .jumbo-header #body {
@@ -579,12 +609,12 @@ h4 {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	top: 52px;
+	top: 47px;
 	z-index: 0;
 }
 
 #body-wrapper.bottom-toolbar {
-	bottom: 50px;
+	bottom: 45px;
 }
 
 #body {
@@ -776,7 +806,7 @@ h4 {
 
 .toolbar {
 	position: relative;
-	height: 50px;
+	height: 45px;
 }
 
 .toolbar .btn {
@@ -842,7 +872,7 @@ svg {
 .timeline .track-preview {
 	width: 0px;
 	height: 4px;
-	background: $labelColor;
+	background: $labelTextColor;
 	z-index: 5;
 	transform: translateY(-1px);
 }
@@ -1000,6 +1030,7 @@ svg {
 	margin: 0 5px 5px 0;
 	padding: 0;
 	background: #262626;
+	transition: all linear .2s;
 }
 
 .card .title {
@@ -1018,6 +1049,10 @@ svg {
 
 /* FORMS */
 
+.form-header {
+	margin-bottom: 2em;
+}
+
 .stretch-horizontal {
 	width: 100% !important;
 }
@@ -1030,7 +1065,7 @@ fieldset {
 fieldset h4 {
 	padding: 0;
 	margin-top: 0;
-	color: $labelColor;
+	color: $labelTextColor;
 	border: none;
 }
 
@@ -1038,7 +1073,7 @@ label,
 p.description,
 p.subtitle {
 	font-weight: 400;
-	color: $labelColor;
+	color: $labelTextColor;
 }
 
 p.description {
@@ -1131,7 +1166,8 @@ select.form-control:focus {
 }
 
 .modal-dialog {
-	margin-top: 50px;
+	margin-top: 45px;
+	width: 700px;
 }
 
 .modal-window-lg .modal-dialog {
@@ -1152,7 +1188,7 @@ select.form-control:focus {
 
 .modal-window-lg .modal-header {
 	display: table-cell;
-	height: 50px;
+	height: 45px;
 }
 
 .modal-window-lg .modal-body {
@@ -1218,8 +1254,10 @@ input[disabled] {
 
 button[disabled],
 button[disabled]:hover {
-	background: rgba($accentColor, .25) !important;
-	color: $windowBackgroundColor;
+	opacity: 1 !important;
+	background: $buttonBackgroundColor !important;
+	color: $windowBackgroundColor !important;
+	cursor: default;
 }
 
 .progress {
@@ -1473,7 +1511,7 @@ button[disabled]:hover {
 }
 
 .lst-activities li {
-	color: $labelColor;
+	color: $labelTextColor;
 }
 
 .lst-activities li a {
@@ -1495,7 +1533,7 @@ button[disabled]:hover {
 
 .lst-activities li a.default:hover,
 .lst-activities li.selected a.default {
-	background: $accentColor;
+	background: $accentShadeColor;
 }
 
 .lst-activities li a.default:hover label,
@@ -1734,8 +1772,8 @@ path.color1 {
 	border-radius: 50%;
 	margin: 11px 20px 0 0;
 	padding: 10px 8px 10px 12px;
-	width: 50px;
-	height: 50px;
+	width: 45px;
+	height: 45px;
 	background: #F94C00;
 	color: white;
 }
@@ -1771,7 +1809,7 @@ path.color1 {
 }
 
 .yasgui .yasr .sortIcons svg path {
-	fill: $labelColor !important;
+	fill: $labelTextColor !important;
 }
 
 .yasgui .yasr .yasr_results {
@@ -1801,7 +1839,7 @@ path.color1 {
 }
 
 .yasgui .yasr .dataTables_wrapper .dataTables_info {
-	color: $labelColor !important;
+	color: $labelTextColor !important;
 	border: none !important;
 	margin: 0;
 }
@@ -1814,7 +1852,7 @@ path.color1 {
 	background: $headerBackgroundColor !important;
 	border-left: 1px solid $windowBackgroundColor;
 	border-right: none;
-	color: $labelColor;
+	color: $labelTextColor;
 }
 
 .yasgui .yasr table.dataTable tbody td {
@@ -1849,13 +1887,13 @@ path.color1 {
 }
 
 .yasgui .yasr sup {
-	color: $labelColor;
+	color: $labelTextColor;
 }
 
 .openGchartBtn {
 	position: relative;
 	right: 47px;
-	top: -50px !important;
+	top: -45px !important;
 }
 
 
@@ -1950,7 +1988,7 @@ path.color1 {
 }
 
 .spinner.loading {
-	color: $labelColor;
+	color: $labelTextColor;
 	font-size: 5px;
 	text-indent: -99999em;
 	margin: 55px auto;

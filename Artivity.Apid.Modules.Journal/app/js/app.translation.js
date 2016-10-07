@@ -41,6 +41,27 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			'http://w3id.org/art/terms/1.0/lengthUnit': 'Changed Length Unit',
 			'http://w3id.org/art/terms/1.0/Comment': 'Comment'
 		},
+		FILEPUBLISH: {
+			'NOACCOUNTS_TITLE': 'No Accounts',
+			'NOACCOUNTS_SUBTITLE': 'You have not yet added any accounts which can be used for publication.',
+			'NOACCOUNTS_MSG': 'Go to <a href="#/settings">Preferences</a> <i class="zmdi zmdi-arrow-right"></i> Accounts to add one.',
+			'PUBLISH_FILE_TITLE': 'Publish File',
+			'PUBLISH_FILE_SUBTITLE': 'Create a dataset for your file and upload it into a digital repository.',
+			'SELECT_ACCOUNT_TITLE': 'Select Account',
+			'SELECT_ACCOUNT_SUBTITLE': 'Choose the account used for publication and authorize the upload by logging in.',
+			'UPLOAD_FILE_TITLE': 'Publishing File',
+			'UPLOAD_FILE_SUBTITLE': '',
+			'TITLE': 'Title',
+			'TITLE_SUFFIX': ' Artivity Dataset',
+			'DESCRIPTION': 'Description',
+			'LICENSE': 'License',
+			'FILE': 'File',
+			'EDITING_HISTORY': 'Editing History',
+			'BROWSING_HISTORY': 'Browsing History',
+			'COMMENTS': 'Comments',
+			'http://w3id.org/art/terms/1.0/features/ExportArchive#description': 'Exporting..',
+			'http://w3id.org/art/terms/1.0/features/UploadArchive#description': 'Uploading..'
+		},
 		SETTINGS: {
 			TITLE: 'Preferences',
 			PROFILE: {
@@ -64,7 +85,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			APPS: {
 				LABEL: 'Apps',
 				TITLE: 'Applications',
-				DESCRIPTION: 'Manage which applications should provide Artivity data:'
+				DESCRIPTION: 'Manage which applications provide Artivity data:'
 			},
 		},
 		'http://eprints.org': {

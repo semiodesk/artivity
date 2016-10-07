@@ -137,31 +137,39 @@ explorerControllers.controller('FileListController', function (api, $scope, $uib
 		$scope.user = data;
 	});
 
+	$scope.activities = [];
+
 	// RECENTLY USED FILES
 	$scope.files = [];
 	$scope.hasFiles = false;
 
 	$scope.loadRecentFiles = function () {
-		api.getRecentFiles().then(function (data) {
-			$scope.files = data;
-
+		api.getRecentFiles().then(function (data) {			
 			$scope.hasFiles = data.length > 0;
+			
+			$scope.files = data;
 		});
 	};
 
 	$scope.loadRecentFiles();
 
 	// CALENDAR
-	$scope.activities = [];
+	$scope.calendar = null;
 
 	$scope.toggleCalendar = function () {
-		var modalInstance = $uibModal.open({
-			animation: true,
-			templateUrl: 'calendar.html',
-			controller: 'CalendarController',
-			windowClass: 'modal-window-lg',
-			scope: $scope
-		});
+		if ($scope.calendar) {
+			$scope.calendar.close();
+
+			$scope.calendar = null;
+		} else {
+			$scope.calendar = $uibModal.open({
+				animation: true,
+				templateUrl: 'partials/dialogs/calendar-dialog.html',
+				controller: 'CalendarController',
+				windowClass: 'modal-window-lg',
+				scope: $scope
+			});
+		}
 	};
 
 	// REFRESH
@@ -724,9 +732,15 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
 	};
 
 	this.submit = function () {
-		console.log("Submitting settings: User Profile");
+		if ($scope.userForm.$pristine) {
+			return;
+		}
 
-		api.setUser($scope.user);
+		console.log("Submitting user profile..");
+
+		if ($scope.user) {
+			api.setUser($scope.user);
+		}
 
 		if ($scope.userPhoto) {
 			api.setUserPhoto($scope.userPhoto).then(function () {
@@ -786,16 +800,8 @@ explorerControllers.controller('AccountSettingsController', function (api, $scop
 	};
 
 	this.submit = function () {
-		console.log("Submitting settings: Accounts");
-
-		api.setUser($scope.user);
-
-		if ($scope.userPhoto) {
-			api.setUserPhoto($scope.userPhoto).then(function () {
-				$scope.userPhotoUrl = '';
-				$scope.userPhotoUrl = api.getUserPhotoUrl();
-			});
-		}
+		// Changes are handled by the addAccount and uninstallAccount functions.
+		// Nothing to sumbmit here, yet.
 	};
 
 	this.reset = function () {
@@ -866,6 +872,8 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
 
 	this.submit = function () {
 		if ($scope.agents.length > 0) {
+			console.log("Submitting agents..");
+
 			api.setAgents($scope.agents);
 		}
 	};
@@ -973,7 +981,7 @@ explorerControllers.controller('FilePublishDialogController', function (api, $sc
 		$scope.dialog.title = 'Select Account';
 		$scope.dialog.subtitle = 'Choose the account used for publication and authorize the upload by logging in.';
 	};
-	
+
 	// Publishing
 	$scope.archive = {
 		title: 'Artivity data for ' + $scope.file.label,
@@ -1134,7 +1142,7 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 
 			explorerControllers.handleServiceClientState(api, sessionId, function (intervalHandle, state) {
 				interval = intervalHandle;
-				
+
 				console.log(state);
 
 				for (var i = 0; i < state.Client.SupportedAuthenticationClients.length; i++) {

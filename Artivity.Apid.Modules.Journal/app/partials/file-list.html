@@ -1,12 +1,8 @@
-<link rel='stylesheet' href='bower_components/fullcalendar/dist/fullcalendar.min.css' />
-
-<script src="bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-
-<div id="document" ng-controller="FileListController as fileList">
+<div ng-controller="FileListController as fileList">
 	<div id="header">
 		<div class="row">
 			<div class="col">
-				<img class="icn icn-circle" ng-src="{{userPhotoUrl}}" />
+				<img class="icn icn-circle" style="margin-left: 5px;" ng-src="{{userPhotoUrl}}" />
 			</div>
 			<div class="col expand">
 				<h5 class="title">{{user.Name}}</h5>
@@ -41,14 +37,4 @@
 			</div>
 		</div>
 	</div>
-
-	<script type="text/ng-template" id="calendar.html">
-		<div class="modal-header">
-			<button class="btn btn-sm btn-circular no-margin pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
-		</div>
-		<div class="modal-body">
-			<div art-calendar style="margin: 10px;"></div>
-			<div ng-show="isLoading" class="spinner loading" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%)"></div>
-		</div>
-	</script>
 </div>

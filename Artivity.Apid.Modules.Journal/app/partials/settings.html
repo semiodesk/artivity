@@ -1,18 +1,14 @@
-<link rel="stylesheet" href="bower_components/jquery-editable-select/dist/jquery-editable-select.min.css">
-
-<script src="bower_components/jquery-editable-select/dist/jquery-editable-select.min.js"></script>
-
 <div ng-controller="SettingsController as settings">
 	<div id="header">
 		<div class="row">
 			<div class="col">
-				<button class="btn btn-default btn-icn btn-header" ng-click="submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></button>
+				<a class="btn btn-header" ng-click="submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
 			</div>
 			<div class="col expand">
 				<h5 class="title" translate="SETTINGS.TITLE"></h5>
 			</div>
 			<div class="col">
-				<button class="btn btn-default btn-icn btn-header" onclick="history.back()"><i class="zmdi zmdi-close"></i></button>
+				<a class="btn btn-header" onclick="history.back()"><i class="zmdi zmdi-close"></i></a>
 			</div>
 		</div>
 	</div>
@@ -32,8 +28,9 @@
 						<form name="userForm" ng-controller="UserSettingsController as userSettings" ng-submit="submit()">
 							<div class="row">
 								<div class="col-md-12">
-									<h2 class="no-margin-top">{{ 'SETTINGS.PROFILE.TITLE' | translate }}</h2>
-									<p class="description">{{ 'SETTINGS.PROFILE.DESCRIPTION' | translate }}</p>
+									<div class="form-header">
+										<p class="description">{{ 'SETTINGS.PROFILE.DESCRIPTION' | translate }}</p>
+									</div>
 
 									<div class="clearfix"></div>
 
@@ -77,10 +74,11 @@
 					<!-- ACCOUNTS -->
 					<div role="tabpanel" class="tab-pane padded-lg fade" id="accounts-panel">
 						<form name="agentForm" ng-controller="AccountSettingsController as accountSettings">
-							<button class="btn btn-default btn-icn btn-circular pull-right" style="margin: 5px 1px 15px 0;" ng-click="addAccount()"><i class="zmdi zmdi-plus zdmi-lg"></i></button>
+							<div class="form-header">
+								<button class="btn btn-default btn-circular pull-right" style="position: relative; right -10px; top: -10px;" ng-click="addAccount()"><i class="zmdi zmdi-plus zmdi-lg"></i></button>
 
-							<h2 class="no-margin-top">{{ 'SETTINGS.ACCOUNTS.TITLE' | translate }}</h2>
-							<p class="description">{{ 'SETTINGS.ACCOUNTS.DESCRIPTION' | translate }}</p>
+								<p class="description">{{ 'SETTINGS.ACCOUNTS.DESCRIPTION' | translate }}</p>
+							</div>
 
 							<div class="clearfix"></div>
 
@@ -105,10 +103,11 @@
 					<!-- AGENTS -->
 					<div role="tabpanel" class="tab-pane padded-lg fade" id="applications-panel">
 						<form name="agentForm" ng-controller="AgentSettingsController as agentSettings">
-							<button class="btn btn-default btn-icn btn-circular pull-right" style="margin: 5px 0 15px 0;" ng-click="reload()"><i class="zmdi zmdi-refresh-sync zmdi-lg"></i></button>
+							<div class="form-header">
+								<button class="btn btn-default btn-circular pull-right" style="position: relative; right -10px; top: -10px;" ng-click="reload()"><i class="zmdi zmdi-refresh-sync zmdi-lg"></i></button>
 
-							<h2 class="no-margin-top">{{ 'SETTINGS.APPS.TITLE' | translate }}</h2>
-							<p class="description">{{ 'SETTINGS.APPS.DESCRIPTION' | translate }}</p>
+								<p class="description">{{ 'SETTINGS.APPS.DESCRIPTION' | translate }}</p>
+							</div>
 
 							<div class="clearfix"></div>
 
