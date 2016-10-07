@@ -18,20 +18,20 @@
 
 	<div id="body-wrapper">
 		<div id="body">
-			<div ng-switch on="hasFiles">
+			<div ng-switch on="files.length > 0">
 				<div class="pull-left" ng-switch-when="true">
 					<ul id="file-list" class="cards">
 						<li class="card" ng-repeat="file in files">
-							<a href="#/files/view?uri={{file.uri}}">
-								<div>
-									<div class="img-thumbnail"></div>
-									<div class="title">{{file.label}}</div>
-								</div>
-							</a>
+							<div class="file-thumbnail-container">
+								<div class="file-thumbnail" style="background-image: url({{getFileThumbnailUrl(file.uri)}});"></div>
+							</div>
+							<div class="file-name">{{getFileNameWithoutExtension(file.label)}}</div>
+							<div class="file-extension" style="background-color: {{file.agentColor}};">{{getFileExtension(file.label)}}</div>
+							<a href="#/files/view?uri={{file.uri}}"></a>
 						</li>
 					</ul>
 				</div>
-				<div ng-switch-when="false" class="text-center">
+				<div ng-switch-default class="text-center">
 					<h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
 				</div>
 			</div>
