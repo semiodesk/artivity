@@ -641,7 +641,12 @@ namespace Artivity.Apid.Modules
 
             if (user == null)
             {
-                return HttpStatusCode.BadRequest;
+                using (var reader = new StreamReader(stream))
+                {
+                    string data = reader.ReadToEnd();
+
+                    return Logger.LogError(HttpStatusCode.BadRequest, data);
+                }
             }
 
             user.Commit();
