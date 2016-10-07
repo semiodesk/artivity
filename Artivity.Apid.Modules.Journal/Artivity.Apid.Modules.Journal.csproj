@@ -142,6 +142,7 @@
     <EmbeddedResource Include="app\js\app.overlay.js" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="app\partials\dialogs\calendar-dialog.html" />
     <EmbeddedResource Include="app\js\app.api.js" />
     <EmbeddedResource Include="app\partials\dialogs\account-add-dialog.html" />
     <EmbeddedResource Include="app\partials\dialogs\file-publish-dialog.html" />
