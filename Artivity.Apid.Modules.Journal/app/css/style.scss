@@ -560,11 +560,12 @@ h4 {
 
 #header .icn,
 #footer .icn {
-	width: 40px;
-	height: 40px;
+	width: 32px;
+	height: 32px;
 }
 
-#header .icn-circle #footer .icn-circle {
+#header .icn-circle,
+#footer .icn-circle {
 	border-radius: 50%;
 }
 
