@@ -1,5 +1,6 @@
 /* NOTE: If Brackets refuses to compile SASS files, check for syntax errors! */
 
+
 /*
 https://coolors.co/17bebb-ffc914-fb5f1a-2e282a-76b041
 https://coolors.co/17bebb-ffc914-fb5f1a-D62828-76b041
@@ -11,54 +12,41 @@ https://coolors.co/0baabc-e57c04-fb5f1a-d62828-7b3d82
 $accentColor: #F27200;
 $accentTextColor: #FFFFFF;
 $accentShadeColor: shade($accentColor, 20%);
-
 $warnColor: #FFC914;
 $warnTextColor: #FFFFFF;
-
 $infoColor: #087E8B;
 $infoTextColor: #FFFFFF;
-
 $errorColor: #D62828;
 $errorTextColor: #FFFFFF;
-
 $successColor: #5e2f63;
 $successTextColor: #FFFFFF;
-
 $iconFont: 'Material-Design-Iconic-Font';
 $iconFontSize: 21px;
-
-$textFont: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+$textFont: 'Roboto',
+'Helvetica',
+'Arial',
+sans-serif;
 $textColor: #F0F0F0;
-
 $labelTextColor: darken($textColor, 30%);
 $labelBackgroundColor: transparent;
-
 $itemTextColor: $textColor;
 $itemBackgroundColor: rgba($textColor, .025);
-
 $highlightTextColor: $textColor;
 $highlightBackgroundColor: rgba($textColor, .05);
-
 $selectionTextColor: $textColor;
 $selectionBorderColor: transparent;
 $selectionBackgroundColor: rgba($textColor, .1);
-
 $windowBackgroundColor: #1D1D1D;
-
 $headerBackgroundColor: #303030;
 $headerTextColor: $textColor;
 $headerHeight: 45px;
-
 $toolbarBackgroundColor: $headerBackgroundColor;
 $toolbarTextColor: $headerTextColor;
-
 $overlayTextColor: $textColor;
 $overlayBackgroundColor: rgba($windowBackgroundColor, .95);
-
 $buttonBackgroundColor: $headerBackgroundColor;
 $buttonHoverBackgroundColor: lighten($headerBackgroundColor, 10%);
 $buttonTextColor: $headerTextColor;
-
 $inputBackgroundColor: #FFFFFF;
 $inputTextColor: #000000;
 
@@ -1005,16 +993,6 @@ svg {
 	height: 110px;
 }
 
-.img-thumbnail {
-	border: none;
-	border-radius: 0;
-	box-shadow: none;
-	background: transparent url('../img/placeholder-img.png') center center no-repeat;
-	background-size: 100px 80px;
-	width: 100%;
-	height: 150px;
-}
-
 
 /* CARDS */
 
@@ -1025,25 +1003,81 @@ svg {
 }
 
 .card {
+	position: relative;
 	float: left;
-	width: 200px;
+	width: 201px;
+	height: 201px;
 	margin: 0 5px 5px 0;
 	padding: 0;
 	background: #262626;
-	transition: all linear .2s;
-}
-
-.card .title {
-	padding: 10px;
-}
-
-.card:hover {
-	background: $buttonHoverBackgroundColor;
 }
 
 .card a {
+	z-index: 50;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: block;
 	margin: 0;
 	padding: 0;
+	width: 100%;
+	height: 100;
+	background: transparent;
+	transition: all ease-in .1s;
+}
+
+.card a:hover {
+	background: rgba(#FFFFFF, .15);
+}
+
+.card .file-thumbnail-container {
+	position: relative;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	width: 100%;
+	height: 100%;
+	background: transparent url('../img/placeholder-img.png') center center no-repeat;
+	background-size: 125px auto;
+}
+
+.card .file-thumbnail {
+	width: 100%;
+	height: 100%;
+	background: transparent no-repeat;
+	background-size: cover;
+}
+
+.card .file-thumbnail-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(rgba($windowBackgroundColor, .1), transparent, transparent, rgba($windowBackgroundColor, .3));	
+}
+
+.card .file-name {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 5px 5px 5px 5px;
+	text-shadow: 0 1px 3px rgba($windowBackgroundColor, .75);
+}
+
+.card .file-extension {
+	z-index: 100;
+	position: absolute;
+	top: 0;
+	right: 5px;
+	font-size: 11px;
+	text-transform: uppercase;
+	padding: 2px;
+	min-width: 30px;
+	text-align: center;
 }
 
 

@@ -1,4 +1,10 @@
-var explorerControllers = angular.module('explorerControllers', ['ngAnimate', 'ngInputModified', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.bootstrap.progressbar']);
+var explorerControllers = angular.module('explorerControllers', [
+	'ngAnimate',
+	'ngInputModified',
+	'ui.bootstrap',
+	'ui.bootstrap.modal',
+	'ui.bootstrap.progressbar'
+]);
 
 explorerControllers.filter('reverse', function () {
 	return function (items) {
@@ -126,12 +132,10 @@ explorerControllers.controller('CalendarController', function (api, $scope, $fil
 	}
 });
 
-explorerControllers.controller('FileListController', function (api, $scope, $uibModal) {
-	$scope.hasFiles = false;
-
+explorerControllers.controller('FileListController', function (api, $scope, $uibModal, fileService) {
+	// USER INFO
+	$scope.user = {};
 	$scope.userPhotoUrl = api.getUserPhotoUrl();
-
-	$scope.getFileName = getFileName;
 
 	api.getUser().then(function (data) {
 		$scope.user = data;
@@ -144,12 +148,26 @@ explorerControllers.controller('FileListController', function (api, $scope, $uib
 	$scope.hasFiles = false;
 
 	$scope.loadRecentFiles = function () {
-		api.getRecentFiles().then(function (data) {			
+		api.getRecentFiles().then(function (data) {
+			for (var i = 0; i < data.length; i++) {
+				var file = data[i];
+
+				if (i < $scope.files.length && $scope.files[i].uri == file.uri) {
+					break;
+				}
+
+				$scope.files.splice(i, 0, file);
+			}
+
 			$scope.hasFiles = data.length > 0;
-			
-			$scope.files = data;
 		});
 	};
+
+	$scope.getFileName = fileService.getFileName;
+	$scope.getFileNameWithoutExtension = fileService.getFileNameWithoutExtension;
+	$scope.getFileExtension = fileService.getFileExtension;
+	$scope.hasFileThumbnail = api.hasThumbnail;
+	$scope.getFileThumbnailUrl = api.getThumbnailUrl;
 
 	$scope.loadRecentFiles();
 
@@ -937,13 +955,21 @@ function dump(arr, level) {
 	return dumped_text;
 }
 
-explorerControllers.controller('FilePublishDialogController', function (api, $scope, $filter, $uibModalInstance, $sce) {
+explorerControllers.controller('FilePublishDialogController', function (api, $scope, $filter, $uibModalInstance, $sce, fileService) {
 	$scope.dialog = {
 		step: 'publishing-options',
 		title: 'Publish File',
 		subtitle: 'Create a dataset for your file and upload it into a digital repository.'
 	};
 
+	$scope.getFileName = fileService.getFileName;
+	$scope.getFileNameWithoutExtension = fileService.getFileNameWithoutExtension;
+	$scope.getFileExtension = fileService.getFileExtension;
+	$scope.hasFileThumbnail = api.hasThumbnail;
+	$scope.getFileThumbnailUrl = api.getThumbnailUrl;
+	
+	console.log($scope.entity);
+	
 	// Accounts
 	$scope.accounts = [];
 	$scope.selectedAccount = null;
