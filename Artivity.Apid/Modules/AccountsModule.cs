@@ -183,7 +183,7 @@ namespace Artivity.Api.Modules
 
             foreach(OnlineAccount account in ModelProvider.GetAgents().GetResources<OnlineAccount>())
             {
-                if(clients.Contains(account.ServiceClient.Uri.AbsoluteUri))
+                if(account.ServiceClient != null && clients.Contains(account.ServiceClient.Uri.AbsoluteUri))
                 {
                     accounts.Add(account);
                 }
