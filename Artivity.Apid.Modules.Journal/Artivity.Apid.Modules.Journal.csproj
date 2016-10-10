@@ -260,6 +260,7 @@
     <Content Include="app\bower_components\yasgui\src\utils.js" />
     <Content Include="app\bower_components\yasgui\src\yasqe.js" />
     <Content Include="app\bower_components\yasgui\src\yasr.js" />
+    <EmbeddedResource Include="app\img\artivity-logo.png" />
     <Content Include="app\img\heart-broken.svg" />
     <Content Include="app\img\heart.svg" />
     <Content Include="app\img\orcid_64x64.png" />
