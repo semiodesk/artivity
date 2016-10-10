@@ -61,6 +61,7 @@ namespace artivity
 
         ImageRef document;
 
+        std::string EditingSession::createThumbnailFilePath();
         std::string createImageFilePath(time_t time, int count);
         std::string getFileUri() { return _fileUri; }
 
