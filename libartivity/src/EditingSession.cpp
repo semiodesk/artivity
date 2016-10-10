@@ -284,6 +284,27 @@ namespace artivity
         }
     }
 
+    string EditingSession::createThumbnailFilePath()
+    {
+        string resPath = "";
+
+        if (!_imagePath.empty())
+        {
+#ifdef WIN32
+            const char* sep = "\\";
+#else
+            const char* sep = "//";
+#endif
+            stringstream ss;
+            ss << _imagePath << sep << "thumbnail" << ".png";
+
+
+            resPath = ss.str();
+        }
+
+        return resPath;
+    }
+
     string EditingSession::createImageFilePath(time_t time, int count)
     {
         string resPath = "";
