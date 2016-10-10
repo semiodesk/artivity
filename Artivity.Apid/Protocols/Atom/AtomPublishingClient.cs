@@ -25,6 +25,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.Apid.Helpers;
+using Artivity.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,7 +44,7 @@ namespace Artivity.Apid.Protocols.Atom
     /// <summary>
     /// A client for publishing files to Atom Publishing Protocol services.
     /// </summary>
-    public class AtomPublishingClient
+    public class AtomPublishingClient: INotifyProgressChanged
     {
         #region Members
 
@@ -55,6 +56,8 @@ namespace Artivity.Apid.Protocols.Atom
 
         private string _password;
 
+        public TaskProgressInfo Progress { get; private set; }
+
         #endregion
 
         #region Constructors
@@ -63,6 +66,13 @@ namespace Artivity.Apid.Protocols.Atom
         {
             _serviceEndpoint = new Uri(serviceUrl + "/sword-app/servicedocument");
             _collectionEndpoint = new Uri(serviceUrl + "/id/contents");
+
+            Progress = new TaskProgressInfo(artf.UploadArchive.Uri);
+        }
+
+        public AtomPublishingClient(Uri serviceUrl)
+            : this(serviceUrl.AbsoluteUri)
+        {
         }
 
         #endregion
@@ -182,14 +192,28 @@ namespace Artivity.Apid.Protocols.Atom
 
                     string atom = Encoding.UTF8.GetString(stream.ToArray());
 
-                    HttpContent atomContent = new StringContent(atom);
+                    int bufferSize = 4096;
+
+                    Progress.Total = atom.Length + fileInfo.Length;
+                    Progress.Completed = 0;
+
+                    ProgressStreamDelegate progressDelegate = (bytes, total, expected) =>
+                    {
+                        Progress.Completed += bytes;
+
+                        RaiseProgressChanged(Progress);
+                    };
+
+                    ProgressStreamContent atomContent = new ProgressStreamContent(atom, bufferSize);
                     atomContent.Headers.ContentType = new MediaTypeHeaderValue("application/atom+xml") { CharSet = "utf-8" };
                     atomContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { Name = "atom" };
+                    atomContent.Progress = progressDelegate;
 
-                    HttpContent fileContent = new StreamContent(new FileStream(fileInfo.FullName, FileMode.Open));
-                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/illustrator");
+                    ProgressStreamContent fileContent = new ProgressStreamContent(new FileStream(fileInfo.FullName, FileMode.Open), bufferSize);
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/artivity+zip");
                     fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { Name = "payload", FileName = fileInfo.Name };
                     fileContent.Headers.Add("Packaging", sword.NS + "/package/Binary");
+                    fileContent.Progress = progressDelegate;
 
                     MultipartFormDataContent data = new MultipartFormDataContent();
                     data.Headers.ContentType.MediaType = "multipart/related";
@@ -204,6 +228,20 @@ namespace Artivity.Apid.Protocols.Atom
             }
 
             return false;
+        }
+
+        #endregion
+
+        #region Events
+
+        public event ProgressChangedEventHandler ProgressChanged;
+
+        private void RaiseProgressChanged(TaskProgressInfo progressInfo)
+        {
+            if(ProgressChanged != null)
+            {
+                ProgressChanged(this, progressInfo);
+            }
         }
 
         #endregion

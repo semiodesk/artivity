@@ -37,13 +37,13 @@ namespace Artivity.Apid.Platforms
     {
         #region Deployment
 
+        UserConfig Config { get; }
+
         string AppDataFolder { get; }
 
         string ArtivityDataFolder { get; }
 
         string AvatarsFolder { get; }
-
-        UserConfig Config { get; }
 
         string UserFolder { get; }
 
@@ -52,6 +52,8 @@ namespace Artivity.Apid.Platforms
         string ExportFolder { get; }
 
         string ImportFolder { get; }
+
+        string TempFolder { get; }
 
         string DatabaseFolder { get; }
 

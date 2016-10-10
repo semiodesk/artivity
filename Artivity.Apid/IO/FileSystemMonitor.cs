@@ -630,7 +630,7 @@ namespace Artivity.Apid.IO
         {
             try
             {
-                if (IsMaskedFileEvent(e.FullPath)) return;
+                if (IsMaskedFileEvent(e.FullPath) || IsPathTooLong(e.FullPath)) return;
 
                 FileInfo file = new FileInfo(e.FullPath);
 
@@ -686,7 +686,7 @@ namespace Artivity.Apid.IO
         {
             try
             {
-                if (IsMaskedFileEvent(e.FullPath)) return;
+                if (IsMaskedFileEvent(e.FullPath) || IsPathTooLong(e.FullPath)) return;
 
                 FileInfoCache file = new FileInfoCache(e.FullPath);
 
@@ -745,7 +745,7 @@ namespace Artivity.Apid.IO
         {
             try
             {
-                if (IsMaskedFileEvent(e.FullPath)) return;
+                if (IsMaskedFileEvent(e.FullPath) || IsPathTooLong(e.FullPath)) return;
 
 #if DEBUG
                 if (IsLoggingVerbose)
@@ -1118,6 +1118,20 @@ namespace Artivity.Apid.IO
             {
                 Logger.LogError(HttpStatusCode.InternalServerError, e);
                 Logger.LogDebug("{0}", new StackTrace());
+            }
+        }
+
+        private bool IsPathTooLong(string path)
+        {
+            try
+            {
+                string fileName = Path.GetFileName(path);
+
+                return fileName.Length >= 248;
+            }
+            catch(ArgumentException)
+            {
+                return true;
             }
         }
 

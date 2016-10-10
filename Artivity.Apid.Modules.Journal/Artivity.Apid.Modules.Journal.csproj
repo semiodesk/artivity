@@ -66,30 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="app\fonts\Roboto-Bold.ttf" />
-    <EmbeddedResource Include="app\fonts\Roboto-Bold.woff" />
-    <EmbeddedResource Include="app\fonts\Roboto-Bold.woff2" />
-    <EmbeddedResource Include="app\fonts\Roboto-BoldItalic.ttf" />
-    <EmbeddedResource Include="app\fonts\Roboto-BoldItalic.woff" />
-    <EmbeddedResource Include="app\fonts\Roboto-BoldItalic.woff2" />
-    <EmbeddedResource Include="app\fonts\Roboto-Italic.ttf" />
-    <EmbeddedResource Include="app\fonts\Roboto-Italic.woff" />
-    <EmbeddedResource Include="app\fonts\Roboto-Italic.woff2" />
-    <EmbeddedResource Include="app\fonts\Roboto-Light.ttf" />
-    <EmbeddedResource Include="app\fonts\Roboto-Light.woff" />
-    <EmbeddedResource Include="app\fonts\Roboto-Light.woff2" />
-    <EmbeddedResource Include="app\fonts\Roboto-LightItalic.ttf" />
-    <EmbeddedResource Include="app\fonts\Roboto-LightItalic.woff" />
-    <EmbeddedResource Include="app\fonts\Roboto-LightItalic.woff2" />
-    <EmbeddedResource Include="app\fonts\Roboto-Medium.ttf" />
-    <EmbeddedResource Include="app\fonts\Roboto-Medium.woff" />
-    <EmbeddedResource Include="app\fonts\Roboto-Medium.woff2" />
-    <EmbeddedResource Include="app\fonts\Roboto-MediumItalic.ttf" />
-    <EmbeddedResource Include="app\fonts\Roboto-MediumItalic.woff" />
-    <EmbeddedResource Include="app\fonts\Roboto-MediumItalic.woff2" />
-    <EmbeddedResource Include="app\fonts\Roboto-Regular.ttf" />
-    <EmbeddedResource Include="app\fonts\Roboto-Regular.woff" />
-    <EmbeddedResource Include="app\fonts\Roboto-Regular.woff2" />
     <EmbeddedResource Include="app\bower_components\bootstrap-colorpicker\dist\css\bootstrap-colorpicker.css.map" />
     <EmbeddedResource Include="app\bower_components\bootstrap-colorpicker\dist\css\bootstrap-colorpicker.min.css.map" />
     <EmbeddedResource Include="app\bower_components\bootstrap\dist\css\bootstrap-theme.css.map" />
@@ -101,7 +77,6 @@
     <EmbeddedResource Include="app\bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
     <EmbeddedResource Include="app\bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
     <EmbeddedResource Include="app\bower_components\jquery\dist\jquery.min.map" />
-    <EmbeddedResource Include="app\bower_components\light-grid\dist\light-grid.min.js.map" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.eot" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.ttf" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.woff" />
@@ -119,6 +94,16 @@
     <None Include="app\bower_components\angular-moment\LICENSE" />
     <None Include="app\bower_components\angular-moment\package.json" />
     <None Include="app\bower_components\angular-moment\README.md" />
+    <EmbeddedResource Include="app\bower_components\font-roboto\dist\fonts\Roboto_italic_400_default.woff" />
+    <EmbeddedResource Include="app\bower_components\font-roboto\dist\fonts\Roboto_normal_300_default.woff" />
+    <EmbeddedResource Include="app\bower_components\font-roboto\dist\fonts\Roboto_normal_400_default.woff" />
+    <EmbeddedResource Include="app\bower_components\font-roboto\dist\fonts\Roboto_normal_500_default.woff" />
+    <EmbeddedResource Include="app\bower_components\font-roboto\dist\fonts\Roboto_normal_700_default.woff" />
+    <None Include="app\bower_components\jquery-editable-select\.bower.json" />
+    <None Include="app\bower_components\jquery-editable-select\bower.json" />
+    <None Include="app\bower_components\jquery-editable-select\LICENSE" />
+    <None Include="app\bower_components\jquery-editable-select\package.json" />
+    <None Include="app\bower_components\jquery-editable-select\README.md" />
     <None Include="app\bower_components\moment-duration-format\.bower.json" />
     <None Include="app\bower_components\moment-duration-format\bower.json" />
     <None Include="app\bower_components\moment-duration-format\LICENSE" />
@@ -157,15 +142,16 @@
     <EmbeddedResource Include="app\js\app.overlay.js" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="app\partials\dialogs\calendar-dialog.html" />
+    <EmbeddedResource Include="app\js\app.api.js" />
+    <EmbeddedResource Include="app\partials\dialogs\account-add-dialog.html" />
+    <EmbeddedResource Include="app\partials\dialogs\file-publish-dialog.html" />
     <EmbeddedResource Include="app\query.html" />
     <EmbeddedResource Include="app\js\lib\d3-timeline.js" />
     <EmbeddedResource Include="app\js\app.translation.js" />
     <EmbeddedResource Include="app\js\lib\quantize.js" />
     <EmbeddedResource Include="app\js\app.classes.js" />
     <EmbeddedResource Include="app\js\app.controllers.js" />
-    <EmbeddedResource Include="app\partials\query.html" />
-    <EmbeddedResource Include="app\css\roboto.css" />
-    <EmbeddedResource Include="app\css\ui-grid.min.css" />
     <EmbeddedResource Include="app\bower_components\angular-input-modified\dist\angular-input-modified.min.js" />
     <EmbeddedResource Include="app\bower_components\angular-route\angular-route.min.js" />
     <EmbeddedResource Include="app\bower_components\angular-translate\angular-translate.min.js" />
@@ -193,8 +179,6 @@
     <EmbeddedResource Include="app\bower_components\d3\d3.min.js" />
     <EmbeddedResource Include="app\bower_components\jquery\dist\jquery.js" />
     <EmbeddedResource Include="app\bower_components\jquery\dist\jquery.min.js" />
-    <EmbeddedResource Include="app\bower_components\light-grid\dist\light-grid.js" />
-    <EmbeddedResource Include="app\bower_components\light-grid\dist\light-grid.min.js" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\css\material-design-iconic-font.css" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\css\material-design-iconic-font.min.css" />
     <EmbeddedResource Include="app\bower_components\material-design-iconic-font\dist\fonts\Material-Design-Iconic-Font.svg" />
@@ -206,6 +190,9 @@
     <EmbeddedResource Include="app\bower_components\jquery-ui\jquery-ui.js" />
     <EmbeddedResource Include="app\bower_components\jquery-ui\jquery-ui.min.js" />
     <EmbeddedResource Include="app\bower_components\jquery-ui\ui\widgets\draggable.js" />
+    <EmbeddedResource Include="app\bower_components\angular-bootstrap\ui-bootstrap-tpls.js" />
+    <EmbeddedResource Include="app\bower_components\angular-bootstrap\ui-bootstrap-tpls.min.js" />
+    <EmbeddedResource Include="app\bower_components\angular-animate\angular-animate.min.js" />
     <Content Include="app\bower_components\angular-moment\.gitignore" />
     <EmbeddedResource Include="app\bower_components\angular-moment\angular-moment.js" />
     <EmbeddedResource Include="app\bower_components\angular-moment\angular-moment.min.js" />
@@ -221,6 +208,14 @@
     <EmbeddedResource Include="app\bower_components\fullcalendar\dist\fullcalendar.min.js" />
     <EmbeddedResource Include="app\bower_components\fullcalendar\dist\fullcalendar.css" />
     <EmbeddedResource Include="app\bower_components\fullcalendar\dist\fullcalendar.js" />
+    <EmbeddedResource Include="app\bower_components\font-roboto\dist\styles\roboto.min.css" />
+    <Content Include="app\bower_components\jquery-editable-select\dist\jquery-editable-select.css" />
+    <Content Include="app\bower_components\jquery-editable-select\dist\jquery-editable-select.js" />
+    <EmbeddedResource Include="app\bower_components\jquery-editable-select\dist\jquery-editable-select.min.css" />
+    <EmbeddedResource Include="app\bower_components\jquery-editable-select\dist\jquery-editable-select.min.js" />
+    <Content Include="app\bower_components\jquery-editable-select\Gruntfile.js" />
+    <Content Include="app\bower_components\jquery-editable-select\src\jquery-editable-select.css" />
+    <Content Include="app\bower_components\jquery-editable-select\src\jquery-editable-select.js" />
     <Content Include="app\bower_components\yasgui\blank.html" />
     <Content Include="app\bower_components\yasgui\dist\yasgui.bundled.js" />
     <Content Include="app\bower_components\yasgui\dist\yasgui.bundled.min.js" />
@@ -265,11 +260,11 @@
     <Content Include="app\bower_components\yasgui\src\utils.js" />
     <Content Include="app\bower_components\yasgui\src\yasqe.js" />
     <Content Include="app\bower_components\yasgui\src\yasr.js" />
+    <EmbeddedResource Include="app\img\artivity-logo.png" />
     <Content Include="app\img\heart-broken.svg" />
     <Content Include="app\img\heart.svg" />
     <Content Include="app\img\orcid_64x64.png" />
     <EmbeddedResource Include="app\partials\file-view.html" />
-    <EmbeddedResource Include="app\partials\error-no-apid-connection.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="app\css\style.css" />
@@ -280,11 +275,6 @@
     <EmbeddedResource Include="app\fonts\glyphicons-halflings-regular.ttf" />
     <EmbeddedResource Include="app\fonts\glyphicons-halflings-regular.woff" />
     <EmbeddedResource Include="app\fonts\glyphicons-halflings-regular.woff2" />
-    <EmbeddedResource Include="app\fonts\Material-Design-Iconic-Font.eot" />
-    <EmbeddedResource Include="app\fonts\Material-Design-Iconic-Font.svg" />
-    <EmbeddedResource Include="app\fonts\Material-Design-Iconic-Font.ttf" />
-    <EmbeddedResource Include="app\fonts\Material-Design-Iconic-Font.woff" />
-    <EmbeddedResource Include="app\fonts\Material-Design-Iconic-Font.woff2" />
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\alpha-horizontal.png" />
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\alpha.png" />
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\hue-horizontal.png" />

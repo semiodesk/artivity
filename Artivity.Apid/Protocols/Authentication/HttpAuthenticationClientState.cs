@@ -33,5 +33,5 @@ using System.Threading.Tasks;
 
 namespace Artivity.Apid.Protocols.Authentication
 {
-    public enum HttpAuthenticationClientState { Idle, Processing, Authorized, Error };
+    public enum HttpAuthenticationClientState { Idle, Processing, Authorized, Unauthorized, Error };
 }

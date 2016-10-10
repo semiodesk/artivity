@@ -97,17 +97,26 @@ namespace Artivity.Apid.Protocols.Authentication
                 TokenUrl = url;
             }
 
-            using (var client = new HttpClient())
+            try
             {
-                HttpResponseMessage response = await client.GetAsync(AuthorizeUrl);
-
-                // If the HTTP status code is OK, we leave the authenticator in the processing state.
-                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                using (var client = new HttpClient())
                 {
-                    SetRequestStatus(response.StatusCode);
-                }
+                    HttpResponseMessage response = await client.GetAsync(AuthorizeUrl);
 
-                ResponseData = await response.Content.ReadAsByteArrayAsync();
+                    // If the HTTP status code is OK, we leave the authenticator in the processing state.
+                    if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        SetRequestStatus(response.StatusCode);
+                    }
+
+                    ResponseData = await response.Content.ReadAsByteArrayAsync();
+                }
+            }
+            catch(Exception ex)
+            {
+                ClientState = HttpAuthenticationClientState.Error;
+
+                Logger.LogError(ex);
             }
         }
 
@@ -129,32 +138,46 @@ namespace Artivity.Apid.Protocols.Authentication
                 { "redirect_uri", RedirectUrl }
             };
 
-            using (var client = new System.Net.WebClient())
+            try
             {
-                client.UploadValuesCompleted += (object sender, System.Net.UploadValuesCompletedEventArgs e) =>
+                using (var client = new System.Net.WebClient())
                 {
-                    ResponseData = e.Result;
-
-                    if (e.Error == null)
+                    client.UploadValuesCompleted += (object sender, System.Net.UploadValuesCompletedEventArgs e) =>
                     {
-                        Logger.LogInfo("OAuth 2.0 authorization success.");
+                        ResponseData = e.Result;
 
-                        ClientState = HttpAuthenticationClientState.Authorized;
+                        if (e.Error == null)
+                        {
+                            Logger.LogInfo("OAuth 2.0 authorization success.");
 
-                        SetRequestStatus(HttpStatusCode.OK);
-                    }
-                    else
-                    {
-                        Logger.LogError("OAuth 2.0 authorization failed: {0}", e.Error.Message);
+                            ClientState = HttpAuthenticationClientState.Authorized;
 
-                        ClientState = HttpAuthenticationClientState.Error;
+                            SetRequestStatus(HttpStatusCode.OK);
+                        }
+                        else
+                        {
+                            Logger.LogError("OAuth 2.0 authorization failed: {0}", e.Error.Message);
 
-                        SetRequestStatus(HttpStatusCode.Unauthorized);
-                    }
-                };
+                            ClientState = HttpAuthenticationClientState.Error;
 
-                client.UploadValuesAsync(new Uri(TokenUrl), "POST", content);
+                            SetRequestStatus(HttpStatusCode.Unauthorized);
+                        }
+                    };
+
+                    client.UploadValuesAsync(new Uri(TokenUrl), "POST", content);
+                }
             }
+            catch (Exception ex)
+            {
+                ClientState = HttpAuthenticationClientState.Error;
+
+                Logger.LogError(ex);
+            }
+        }
+
+        public override IEnumerable<KeyValuePair<string, string>> GetPersistableAuthenticationParameters()
+        {
+            yield break;
         }
 
         #endregion

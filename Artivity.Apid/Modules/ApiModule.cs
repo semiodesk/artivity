@@ -156,6 +156,32 @@ namespace Artivity.Apid.Modules
                 return GetLayers(new UriRef(uri));
             };
 
+            Get["/thumbnails"] = parameters =>
+            {
+                if (Request.Query.entityUri)
+                {
+                    string uri = Request.Query.entityUri;
+
+                    if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                    {
+                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+
+                    if (Request.Query.exists)
+                    {
+                        return HasThumbnail(new UriRef(uri));
+                    }
+                    else
+                    {
+                        return GetThumbnail(new UriRef(uri));
+                    }
+                }
+                else
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+            };
+
             Get["/renderings"] = parameters =>
             {
                 if(Request.Query.uri)
@@ -379,6 +405,7 @@ namespace Artivity.Apid.Modules
 	                ?t1 AS ?time
 	                ?entity AS ?uri
 	                ?label
+                    SAMPLE(COALESCE(?agentColor, '#FF0000')) AS ?agentColor
                 WHERE
                 {
                     ?a1
@@ -397,10 +424,15 @@ namespace Artivity.Apid.Modules
 	                }
 	
 	                FILTER(!BOUND(?t2))
+
+                    OPTIONAL
+                    {
+                        ?a1 prov:qualifiedAssociation / prov:agent / art:hasColourCode ?agentColor .
+                    }
                 }
                 ORDER BY DESC(?t1) LIMIT 25");
 
-            var bindings = ModelProvider.GetActivities().GetBindings(query);
+            var bindings = ModelProvider.GetAll().GetBindings(query);
 
             return Response.AsJson(bindings);
         }
@@ -553,6 +585,32 @@ namespace Artivity.Apid.Modules
             }
 
             return Response.AsJson(influences);
+        }
+
+        private Response HasThumbnail(UriRef entityUri)
+        {
+            string file = Path.Combine(GetRenderOutputPath(entityUri), "thumbnail.png");
+
+            return Response.AsJson(File.Exists(file));
+        }
+
+        private Response GetThumbnail(UriRef entityUri)
+        {
+            string file = Path.Combine(GetRenderOutputPath(entityUri), "thumbnail.png");
+
+            if (File.Exists(file))
+            {
+                FileStream fileStream = new FileStream(file, FileMode.Open);
+
+                StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
+                response.Headers["Allow-Control-Allow-Origin"] = "127.0.0.1";
+
+                return response.AsAttachment(file);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private Response GetRenderings(UriRef entityUri)

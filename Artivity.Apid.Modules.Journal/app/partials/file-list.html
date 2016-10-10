@@ -1,36 +1,44 @@
-<div id="document" ng-controller="FileListController as fileList">
+<div ng-controller="FileListController as fileList">
 	<div id="header">
 		<div class="row">
 			<div class="col">
-				<img class="icn icn-circle" ng-src="{{userPhotoUrl}}" />
+				<img style="opacity: .5; width: auto; height: 30px; margin: 5px 10px;" ng-src="img/artivity-logo.png" />
 			</div>
-
-			<div class="col expand">
-				<h5 class="title">{{user.Name}}</h5>
+			<div class="col expand" style="padding: 0;">
+				<label class="title pull-right" style="margin: 0; padding: 0; position: relative; top: 7px;">{{user.Name}}</label>
 			</div>
-
+			<div class="col">
+				<img class="icn icn-circle" style="margin-left: 5px;" ng-src="{{userPhotoUrl}}" />
+			</div>
+			<!--
+			<div class="col">
+				<a id="calendar-btn" class="btn btn-header" ng-click="toggleCalendar()"><i class="zmdi zmdi-hc-fw zmdi-calendar"></i></a>
+			</div>
+			-->
 			<div class="col">
 				<a class="btn btn-default btn-header" href="#/settings"><i class="zmdi zmdi-hc-fw"></i></a>
 			</div>
 		</div>
 	</div>
 
-	<div id="body">
-		<div ng-switch on="hasFiles">
-			<div class="pull-left" ng-switch-when="true">
-				<ul id="file-list" class="cards">
-					<li class="card" ng-repeat="file in files">
-						<a href="#/files/view?uri={{file.uri}}">
-							<div>
-								<div class="img-thumbnail"></div>
-								<div class="title">{{file.label}}</div>
+	<div id="body-wrapper">
+		<div id="body">
+			<div ng-switch on="files.length > 0">
+				<div class="pull-left" ng-switch-when="true">
+					<ul id="file-list" class="cards">
+						<li class="card" ng-repeat="file in files">
+							<div class="file-thumbnail-container">
+								<div class="file-thumbnail" style="background-image: url({{getFileThumbnailUrl(file.uri)}});"></div>
 							</div>
-						</a>
-					</li>
-				</ul>
-			</div>
-			<div ng-switch-when="false" class="text-center">
-				<h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+							<div class="file-name">{{getFileNameWithoutExtension(file.label)}}</div>
+							<div class="file-extension" style="background-color: {{file.agentColor}};">{{getFileExtension(file.label)}}</div>
+							<a href="#/files/view?uri={{file.uri}}"></a>
+						</li>
+					</ul>
+				</div>
+				<div ng-switch-default class="text-center">
+					<h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+				</div>
 			</div>
 		</div>
 	</div>

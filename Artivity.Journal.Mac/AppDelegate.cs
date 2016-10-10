@@ -63,9 +63,6 @@ namespace Artivity.Journal.Mac
                 {
                     window.TitlebarAppearsTransparent = true;
                     window.Appearance = NSAppearance.GetAppearance(NSAppearance.NameVibrantDark);
-
-                    //window.BackgroundColor = NSColor.FromRgba(new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(1.0));
-                    //window.BackgroundColor = NSColor.White;
                 }
             }
         }
@@ -74,6 +71,10 @@ namespace Artivity.Journal.Mac
         {
             #if DEBUG
             var defaults = NSUserDefaults.StandardUserDefaults;
+            defaults.SetBool(true, "WebKitDeveloperExtras");
+            defaults.Synchronize();
+
+            var gobal = NSUserDefaults.GlobalDomain;
             defaults.SetBool(true, "WebKitDeveloperExtras");
             defaults.Synchronize();
             #endif
