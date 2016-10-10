@@ -489,7 +489,7 @@ h4 {
 	left: 0;
 	right: 0;
 	z-index: 2000;
-	border-top: 1px solid darken($headerBackgroundColor, 5%);
+	border-top: 1px solid darken($headerBackgroundColor, 2%);
 	border-bottom: 1px solid darken($headerBackgroundColor, 5%);
 }
 
@@ -1007,14 +1007,15 @@ svg {
 	position: relative;
 	float: left;
 	width: 201px;
-	height: 240px;
+	height: 235px;
 	margin: 0 5px 5px 0;
-	padding: 0 5px;
+	padding: 0;
 	border-radius: 5px;
+	background: #262626;
 }
 
 .card a {
-	z-index: 50;
+	z-index: 0;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -1043,7 +1044,6 @@ svg {
 	height: 201px;
 	background: #262626 url('../img/placeholder-img.png') center center no-repeat;
 	background-size: 125px auto;
-	margin-top: 5px;
 }
 
 .card .file-thumbnail {
@@ -1075,13 +1075,15 @@ svg {
 .card .file-extension {
 	z-index: 100;
 	position: absolute;
-	top: 5px;
-	right: 10px;
+	top: 0;
+	right: 0;
 	font-size: 11px;
 	text-transform: uppercase;
 	padding: 2px;
 	min-width: 30px;
 	text-align: center;
+	border-radius: 0 5px 0 5px;
+	box-shadow: 0 1px 3px rgba(0,0,0,.25);
 }
 
 
