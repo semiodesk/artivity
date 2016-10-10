@@ -62,3 +62,4 @@ libartivity/windows/ipch/*
 *.tlog
 *.pdb
 Artivity.Apid.Modules.Journal/app/bower_components/*
+Ontologies.g.cs

@@ -121,5 +121,20 @@ namespace Artivity.Apid.Helpers
 
             return defaultValue;
         }
+
+        public static Uri GetAttributeValueUri(this XElement e, XName attributeName, Uri defaultValue = null)
+        {
+            if (e.Attributes(attributeName).Any())
+            {
+                string uri = e.Attribute(attributeName).Value;
+
+                if (Uri.IsWellFormedUriString(uri, UriKind.RelativeOrAbsolute))
+                {
+                    return new Uri(uri);
+                }
+            }
+
+            return defaultValue;
+        }
     }
 }

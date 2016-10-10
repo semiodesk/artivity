@@ -6,10 +6,11 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
 @prefix art: <http://w3id.org/art/terms/1.0/> .
+@prefix artf: <http://w3id.org/art/terms/1.0/features/> .
 @prefix geo: <http://www.opengis.net/ont/geosparql#> .
 @prefix qudt: <http://qudt.org/vocab/unit#> .
 
-<http://w3id.org/art/terms/1.0/> a owl:Ontology .
+art: a owl:Ontology .
 
 art:Database a rdfs:Class ;
     rdfs:label "Database" .
@@ -293,12 +294,35 @@ art:px a rdfs:Class ;
 nfo:FileDataObject rdfs:subClassOf prov:Entity.
 nfo:WebDataObject rdfs:subClassOf prov:Entity.
 
-art:OrcidAccount a rdfs:Class ;
-	rdfs:label "OrcidAccount" ;
-	rdfs:subClassOf foaf:OnlineAccount .
-
 art:USER rdf:type prov:Role ;
 	rdfs:label "USER" .
 
 art:SOFTWARE rdf:type prov:Role ;
 	rdfs:label "SOFTWARE" .
+
+art:accountFeature a rdf:Property ;
+	rdfs:label "accountFeature" ;
+	rdfs:domain art:OnlineAccountFeature .
+
+art:OnlineAccountFeature a rdfs:Class ;
+	rdfs:label "OnlineAccountFeature".
+
+art:accountServiceClient a rdf:Property ;
+	rdfs:label "accountServiceClient" ;
+	rdfs:domain foaf:OnlineAccount .
+
+art:authenticationProtocol a rdf:Property ;
+	rdfs:label "authenticationProtocol" ;
+	rdfs:domain foaf:OnlineAccount ;
+	rdfs:range art:HttpAuthenticationProtocol .
+
+art:authenticationParameter a rdf:Property ;
+	rdfs:label "authenticationParameter" ;
+	rdfs:domain foaf:OnlineAccount ;
+	rdfs:range art:HttpAuthenticationParameter .
+
+art:HttpAuthenticationProtocol a rdfs:Class ;
+	rdfs:label "HttpAuthenticationProtocol".
+
+art:HttpAuthenticationParameter a rdfs:Class ;
+	rdfs:label "HttpAuthenticationParameter" .

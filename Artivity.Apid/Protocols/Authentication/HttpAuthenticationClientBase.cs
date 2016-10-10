@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.Accounts;
 using Nancy;
 using Newtonsoft.Json;
 using System;
@@ -112,6 +113,8 @@ namespace Artivity.Apid.Protocols.Authentication
         }
 
         public abstract void HandleRequestAsync(Request request, string token);
+
+        public abstract IEnumerable<KeyValuePair<string, string>> GetPersistableAuthenticationParameters();
 
         #endregion
     }

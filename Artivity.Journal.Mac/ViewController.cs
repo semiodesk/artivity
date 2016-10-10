@@ -69,6 +69,12 @@ namespace Artivity.Journal.Mac
             retryListener = new RetryListener();
             retryListener.Controller = this;
 
+            // Do not draw a background color. Let the window background be used.
+            Browser.DrawsBackground = false;
+
+            // Improve rendering performance.
+            Browser.CanDrawConcurrently = true;
+
             // Handle connection errors.
             Browser.FailedProvisionalLoad += OnBrowserLoadError;
 
@@ -111,7 +117,25 @@ namespace Artivity.Journal.Mac
                 }
             };
 
-            Browser.DrawsBackground = false;
+            // Implementing UIGetFrame Prevents exceptions when using iframes.
+            Browser.UIGetFrame += (WebView sender) =>
+            {
+                if (Browser.MainFrame.ChildFrames.Length > 0)
+                {
+                    WebFrame frame = Browser.MainFrame.ChildFrames[0];
+                         
+                    // Enable keyboard input to iframes.
+                    frame.FrameView.BecomeFirstResponder();
+
+                    return frame.FrameView.Frame;
+                }
+
+                return View.Bounds;
+            };
+
+            // Accept cookies from websites which handle OAuth2 authorization.
+            NSHttpCookieStorage cookies = NSHttpCookieStorage.SharedStorage;
+            cookies.AcceptPolicy = NSHttpCookieAcceptPolicy.Always;
 
             if (Program.IsApidAvailable(Port))
             {
@@ -130,9 +154,13 @@ namespace Artivity.Journal.Mac
 
             if (View.Layer.BackgroundColor == null)
             {
-                var c2 = new CGColor(CGColorSpace.CreateDeviceRGB(), new nfloat[] { new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(51.0 / 255), new nfloat(1.0) });
+                nfloat[] rgba = new nfloat[4];
+                rgba[0] = new nfloat(51.0 / 255);
+                rgba[1] = new nfloat(51.0 / 255);
+                rgba[2] = new nfloat(51.0 / 255);
+                rgba[3] = new nfloat(1.0);
 
-                View.Layer.BackgroundColor = c2;
+                View.Layer.BackgroundColor = new CGColor(CGColorSpace.CreateDeviceRGB(), rgba);
             }
         }
 
@@ -177,12 +205,18 @@ namespace Artivity.Journal.Mac
 
         private void OpenJournal()
         {
+            // Fixes rendering issues with JavaScript animations and modal dialogs.
+            Browser.CanDrawSubviewsIntoLayer = true;
+
             Browser.HomeUrl = new NSUrl(string.Format("http://127.0.0.1:{0}/artivity/app/journal/1.0/", Port));                         
             Browser.NavigateHome();
         }
 
         private void OpenLoadingPage()
         {
+            // Fixes rendering issues with JavaScript animations and modal dialogs.
+            Browser.CanDrawSubviewsIntoLayer = false;
+
             ShowStaticPage("error.index.html");
 
             CancellationToken token = new CancellationToken();

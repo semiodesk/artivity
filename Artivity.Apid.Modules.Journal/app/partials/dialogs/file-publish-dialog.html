@@ -1,0 +1,111 @@
+<div class="modal-header">
+	<h2 class="modal-title">{{dialog.title}}</h2>
+
+	<p class="subtitle">{{dialog.subtitle}}</p>
+</div>
+<div class="modal-body">
+	<div ng-switch="dialog.step">
+		<div ng-switch-default>
+			<table class="stretch-horizontal">
+				<colgroup>
+					<col width="150">
+						<col>
+				</colgroup>
+				<tr>
+					<td valign="top">
+						<div class="card no-margin">
+							<div class="file-thumbnail" style="background-image: url({{getFileThumbnailUrl(entity.uri)}});"></div>
+							<div class="file-name">{{getFileNameWithoutExtension(file.label)}}</div>
+							<div class="file-extension" style="background-color: {{file.agentColor}};">{{getFileExtension(file.label)}}</div>
+						</div>
+						<div class="clearfix"></div>
+						<div style="margin-top: 20px; line-height: 32px; vertical-align: middle;">
+							<img class="icn icn-circle pull-left" style="width: 32px; height: 32px; margin-right: 10px;" ng-src="{{userPhotoUrl}}" />
+							<label>{{user.Name}}</label>
+						</div>
+					</td>
+					<td>
+						<div style="padding: 0 0 0 25px">
+							<div class="form-group">
+								<label class="form-label-top" for="title">Title</label>
+								<input class="form-control stretch-horizontal" type="text" name="title" id="title" ng-model="archive.title">
+							</div>
+							<div class="form-group">
+								<label class="form-label-top" for="abstract">Abstract</label>
+								<textarea class="form-control stretch-horizontal" type="text" rows="7" name="abstract" id="abstract" ng-model="archive.description"></textarea>
+							</div>
+							<div class="form-group">
+								<label class="form-label-top" for="license">License</label>
+								<select class="form-control" name="license" id="license" ng-options="license.uri as license.label for license in archive.licenseOptions" ng-model="archive.license">
+								</select>
+							</div>
+							<label>Contents</label>
+							<div class="form-group">
+								<ul class="list-unstyled">
+									<li>
+										<input class="form-control" type="checkbox" ng-model="archive.contentOptions.includeFile">
+										<label>File</label>
+									</li>
+									<li>
+										<input class="form-control" type="checkbox" ng-model="archive.contentOptions.includeEditingHistory" disabled>
+										<label>Editing History</label>
+									</li>
+									<li>
+										<input class="form-control" type="checkbox" ng-model="archive.contentOptions.includeBrowsingHistory">
+										<label>Browsing History</label>
+									</li>
+									<li>
+										<input class="form-control" type="checkbox" ng-model="archive.contentOptions.includeComments">
+										<label>Comments</label>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<div class="modal-footer-buttons text-center">
+				<button class="btn btn-icn btn-circular no-margin pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
+				<button class="btn btn-icn btn-circular btn-success pull-right" ng-click="selectAccount()"><i class="zmdi zmdi-arrow-right"></i></button>
+			</div>
+		</div>
+		<div ng-switch-when="upload-select-account">
+			<div class="form-group">
+				<select class="form-control stretch-horizontal" name="account" ng-options="account as account.Description for account in accounts track by account.Uri" ng-model="selectedAccount"></select>
+			</div>
+
+			<div class="form-group" ng-switch="authentication.protocol">
+				<div ng-switch-when="http://localhost:8272/artivity/api/1.0/auth/basic">
+					<label class="form-label-top">Login</label>
+
+					<div class="form-group">
+						<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20" maxlength="20" ng-model="authentication.parameter.username" required>
+						<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20" maxlength="20" ng-model="authentication.parameter.password" ng-enter="beginUpload()" required>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer-buttons text-center">
+				<button class="btn btn-icn btn-circular no-margin pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
+				<button class="btn btn-icn btn-circular btn-success pull-right" ng-click="beginUpload()"><i class="zmdi zmdi-check"></i></button>
+			</div>
+		</div>
+		<div ng-switch-when="upload-progress">
+			<uib-progressbar value="progress.PercentComplete" max="100" style="height: 5px"></uib-progressbar>
+
+			<label>{{selectedAccount.Description}}</label>
+			<label class="pull-right">{{progress.PercentComplete}}%</label>
+
+			<div class="modal-footer-buttons text-center">
+				<button class="btn btn-icn btn-circular no-margin pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
+			</div>
+		</div>
+		<div ng-switch-when="no-accounts">
+			<label>Go to <a href="#/settings">Preferences</a> <i class="zmdi zmdi-arrow-right"></i> Accounts to add one.</label>
+
+			<div class="modal-footer-buttons text-center">
+				<button class="btn btn-icn btn-circular no-margin pull-right" ng-click="cancel()"><i class="zmdi zmdi-close"></i></button>
+			</div>
+		</div>
+	</div>
+</div>

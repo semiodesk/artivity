@@ -25,21 +25,21 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.DataModel;
-using Artivity.Apid.Platforms;
 using Artivity.Apid.Parameters;
+using Artivity.Apid.Platforms;
 using Artivity.Apid.Plugin;
-using Semiodesk.Trinity;
-using Semiodesk.Trinity.Store;
+using Artivity.DataModel;
 using Nancy;
 using Nancy.ModelBinding;
+using Newtonsoft.Json;
+using Semiodesk.Trinity;
+using Semiodesk.Trinity.Store;
 using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using VDS.RDF;
-using Newtonsoft.Json;
 
 namespace Artivity.Apid.Modules
 {
@@ -64,10 +64,12 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return GetActivities();
                 }
-
-                return GetActivities(new UriRef(uri));
+                else
+                {
+                    return GetActivities(new UriRef(uri));
+                }
             };
 
             Post["/"] = parameters =>
@@ -134,6 +136,40 @@ namespace Artivity.Apid.Modules
         #endregion
 
         #region Methods
+
+        private Response GetActivities()
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT DISTINCT
+                    ?activity AS ?uri
+                    ?startTime 
+                    ?endTime
+                    MAX(?time) as ?maxTime
+                    ?agent
+                    SAMPLE(COALESCE(?agentColor,'#FF0000')) AS ?agentColor
+                WHERE
+                {
+                  ?activity
+                    prov:startedAtTime ?startTime .
+
+                  OPTIONAL
+                  {
+                    ?activity prov:endedAtTime ?endTime .
+                  }
+
+                  OPTIONAL
+                  {
+                    ?activity prov:qualifiedAssociation / prov:agent ?agent .
+
+                    ?agent art:hasColourCode ?agentColor .
+                  }
+                }
+                ORDER BY DESC(?startTime)");
+
+            var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
+
+            return Response.AsJson(bindings);
+        }
 
         private Response GetActivities(UriRef entityUri)
         {
@@ -235,6 +271,7 @@ namespace Artivity.Apid.Modules
                 {
                     Association association = model.CreateResource<Association>();
                     association.Agent = new SoftwareAgent(new UriRef(p.agent));
+                    association.Role = new Role(art.SOFTWARE);
                     association.Commit();
 
                     activity = model.CreateResource<Browse>();
@@ -275,6 +312,8 @@ namespace Artivity.Apid.Modules
 
                     activity.Usages.Add(view);
                     activity.Commit();
+
+                    Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
                 }
                 else if (p.endTime != null)
                 {
@@ -284,7 +323,7 @@ namespace Artivity.Apid.Modules
                     _activities.Remove(p.tab);
                 }
 
-                return Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
+                return HttpStatusCode.OK;
             }
             catch (Exception e)
             {
