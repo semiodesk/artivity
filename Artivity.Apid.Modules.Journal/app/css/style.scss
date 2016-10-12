@@ -22,10 +22,7 @@ $successColor: #5e2f63;
 $successTextColor: #FFFFFF;
 $iconFont: 'Material-Design-Iconic-Font';
 $iconFontSize: 21px;
-$textFont: 'Roboto',
-'Helvetica',
-'Arial',
-sans-serif;
+$textFont: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 $textColor: #F0F0F0;
 $labelTextColor: darken($textColor, 30%);
 $labelBackgroundColor: transparent;
@@ -1083,7 +1080,7 @@ svg {
 	min-width: 30px;
 	text-align: center;
 	border-radius: 0 5px 0 5px;
-	box-shadow: 0 1px 3px rgba(0,0,0,.25);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
 	color: $windowBackgroundColor;
 }
 
@@ -2075,4 +2072,24 @@ path.color1 {
 		-webkit-transform: rotate(360deg);
 		transform: rotate(360deg);
 	}
+}
+
+.cfp-hotkeys-close {
+	display: none;
+}
+
+.cfp-hotkeys-container {
+	background: rgba($windowBackgroundColor, .9);
+	margin-top: 47px;
+}
+
+.cfp-hotkeys-key {
+	border: none;
+	background: $buttonTextColor;
+	color: $buttonBackgroundColor;
+	box-shadow: none;
+}
+
+.cfp-hotkeys-text {
+	color: $textColor;
 }
