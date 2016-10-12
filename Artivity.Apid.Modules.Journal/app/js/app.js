@@ -3,7 +3,8 @@ var explorerApp = angular.module('explorerApp', [
     'explorerControllers',
     'ui.bootstrap',
     'pascalprecht.translate',
-	'angularMoment'
+	'angularMoment',
+	'cfp.hotkeys'
 ]).config(function ($httpProvider) {
 	/*
 	$httpProvider.interceptors.push(function ($q) {

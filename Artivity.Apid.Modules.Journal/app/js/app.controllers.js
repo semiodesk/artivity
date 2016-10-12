@@ -59,77 +59,63 @@ explorerControllers.handleServiceClientState = function (api, sessionId, handleC
 	}, intervalMs);
 };
 
-explorerControllers.controller('CalendarController', function (api, $scope, $filter, $uibModalInstance, $sce) {
-	$scope.isLoading = true;
+explorerControllers.controller('KeyboardController', function (api, $scope, hotkeys) {	
+	$scope.navigateTo = function (path) {
+		var url = window.location.href.split('#');
 
-	$scope.dialog = $uibModalInstance;
+		if (url.length < 2) {
+			console.log('Navigation failed; unable to parse fragment from url:' + window.location.href);
 
-	$scope.getActivities = api.getActivities;
-
-	$scope.cancel = function () {
-		$uibModalInstance.dismiss('cancel');
-	};
-}).directive('artCalendar', function () {
-	return {
-		template: '',
-		link: function (scope, element, attributes) {
-			var options = {
-				header: {
-					left: 'prev,next today',
-					center: 'title',
-					right: 'month,agendaWeek,agendaDay'
-				},
-				defaultView: 'agendaWeek',
-				businessHours: {
-					dow: [1, 2, 3, 4, 5], // Monday - Friday
-					start: '9:00',
-					end: '17:00',
-				},
-				height: function () {
-					return $('.modal-body').innerHeight() - 20;
-				}
-			};
-
-			var element = $(element);
-			element.fullCalendar(options);
-
-			scope.getActivities().then(function (data) {
-				var activities = [];
-
-				for (var i = 0; i < data.length; i++) {
-					var activity = data[i];
-					activity.title = '';
-					activity.start = new Date(activity.startTime);
-					activity.color = activity.agentColor;
-
-					if (activity.endTime) {
-						activity.end = new Date(activity.endTime);
-					} else if (activity.maxTime) {
-						activity.end = new Date(activity.maxTime);
-					} else {
-						activity.end = new Date(activity.startTime);
-						activity.end.setSeconds(activity.end.getSeconds() + 30);
-					}
-
-					activities.push(activity);
-				}
-
-				console.log("Activities:", activities);
-
-				if (activities && activities.length > 0) {
-					element.fullCalendar('render');
-					element.fullCalendar('addEventSource', activities);
-					element.fullCalendar('gotoDate', activities[0].start);
-				}
-
-				scope.dialog.rendered.then(function () {
-					scope.isLoading = false;
-
-					element.fullCalendar('render');
-				});
-			});
+			return;
 		}
-	}
+		
+		window.location.href = url[0].replace(/index.html/i, '') + path;
+	};
+	
+	$scope.navigateToFragment = function (pathFragment) {
+		var url = window.location.href.split('#');
+
+		if (url.length < 2) {
+			console.log('Navigation failed; unable to parse fragment from url:' + window.location.href);
+
+			return;
+		}
+
+		window.location.href = url[0] + '#' + pathFragment;
+	};
+
+	hotkeys.add({
+		combo: 'backspace',
+		description: 'Go back to the previous view.',
+		callback: function () {
+			window.history.back();
+		}
+	});
+	
+	hotkeys.add({
+		combo: 'shift+backspace',
+		description: 'Go forward to the next view.',
+		callback: function() {
+			window.history.forward();
+		}
+	});
+	
+	hotkeys.add({
+		combo: 'alt+h',
+		description: 'Go to the dashboard view.',
+		callback: function() {
+			// This will be replaced with the correct home page by the route provider.
+			$scope.navigateToFragment('/');
+		}
+	});
+	
+	hotkeys.add({
+		combo: 'alt+q',
+		description: 'Open the SPARQL query editor view.',
+		callback: function () {
+			$scope.navigateTo('query.html');
+		}
+	});
 });
 
 explorerControllers.controller('FileListController', function (api, $scope, $uibModal, fileService) {
@@ -929,31 +915,17 @@ SELECT ?s ?p ?o WHERE { ?s ?p ?o }";
 	}
 });
 
-function dump(arr, level) {
-	var dumped_text = "";
+explorerControllers.controller('CalendarController', function (api, $scope, $filter, $uibModalInstance, $sce) {
+	$scope.isLoading = true;
 
-	if (!level) level = 0;
+	$scope.dialog = $uibModalInstance;
 
-	//The padding given at the beginning of the line.
-	var level_padding = "";
-	for (var j = 0; j < level + 1; j++) level_padding += "    ";
+	$scope.getActivities = api.getActivities;
 
-	if (typeof (arr) == 'object') { //Array/Hashes/Objects 
-		for (var item in arr) {
-			var value = arr[item];
-
-			if (typeof (value) == 'object') { //If it is an array,
-				dumped_text += level_padding + "'" + item + "' ...\n";
-				dumped_text += dump(value, level + 1);
-			} else {
-				dumped_text += level_padding + "'" + item + "' : \"" + value + "\"\n";
-			}
-		}
-	} else { //Stings/Chars/Numbers etc.
-		dumped_text = "===>" + arr + "<===(" + typeof (arr) + ")";
-	}
-	return dumped_text;
-}
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+});
 
 explorerControllers.controller('FilePublishDialogController', function (api, $scope, $filter, $uibModalInstance, $sce, fileService) {
 	$scope.dialog = {
@@ -967,9 +939,9 @@ explorerControllers.controller('FilePublishDialogController', function (api, $sc
 	$scope.getFileExtension = fileService.getFileExtension;
 	$scope.hasFileThumbnail = api.hasThumbnail;
 	$scope.getFileThumbnailUrl = api.getThumbnailUrl;
-	
+
 	console.log($scope.entity);
-	
+
 	// Accounts
 	$scope.accounts = [];
 	$scope.selectedAccount = null;
@@ -1429,6 +1401,69 @@ explorerControllers.directive('artStyleBinder', function () {
 
 					$(element).text(text);
 				}
+			});
+		}
+	}
+});
+
+explorerControllers.directive('artCalendar', function () {
+	return {
+		template: '',
+		link: function (scope, element, attributes) {
+			var options = {
+				header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'month,agendaWeek,agendaDay'
+				},
+				defaultView: 'agendaWeek',
+				businessHours: {
+					dow: [1, 2, 3, 4, 5], // Monday - Friday
+					start: '9:00',
+					end: '17:00',
+				},
+				height: function () {
+					return $('.modal-body').innerHeight() - 20;
+				}
+			};
+
+			var element = $(element);
+			element.fullCalendar(options);
+
+			scope.getActivities().then(function (data) {
+				var activities = [];
+
+				for (var i = 0; i < data.length; i++) {
+					var activity = data[i];
+					activity.title = '';
+					activity.start = new Date(activity.startTime);
+					activity.color = activity.agentColor;
+
+					if (activity.endTime) {
+						activity.end = new Date(activity.endTime);
+					} else if (activity.maxTime) {
+						activity.end = new Date(activity.maxTime);
+					} else {
+						activity.end = new Date(activity.startTime);
+						activity.end.setSeconds(activity.end.getSeconds() + 30);
+					}
+
+					activities.push(activity);
+				}
+
+				console.log("Activities:", activities);
+
+				if (activities && activities.length > 0) {
+					element.fullCalendar('render');
+					element.fullCalendar('addEventSource', activities);
+					element.fullCalendar('gotoDate', activities[0].start);
+				}
+
+				scope.dialog.rendered.then(function () {
+					scope.isLoading = false;
+
+					element.fullCalendar('render');
+				});
 			});
 		}
 	}
