@@ -68,8 +68,8 @@ explorerControllers.controller('KeyboardController', function (api, $scope, hotk
 
 			return;
 		}
-
-		window.location.href = url[0].replace(/index.html/i, path);
+		
+		window.location.href = url[0].replace(/index.html/i, '') + path;
 	};
 	
 	$scope.navigateToFragment = function (pathFragment) {
