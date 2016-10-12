@@ -461,7 +461,7 @@ function DocumentRenderer(canvas, endpointUrl) {
 		// Redraw the scene to prevent blank scenes when switching windows.		
 		if (!document.hidden && t.influence !== undefined) {
 			console.log("Redrawing..");
-			
+
 			t.render(t.influence);
 		}
 	});
@@ -531,6 +531,17 @@ DocumentRenderer.prototype.render = function (influence) {
 			var b = new createjs.Bitmap(r.img);
 			b.x = r.x;
 			b.y = -r.y;
+
+			// For performance reasons, the renderings might be smaller than the
+			// original size of the image. Therefore, we need to scale the image
+			// to it's actual size in the picture.
+			if (r.img.width > 0) {
+				b.scaleX = r.w / r.img.width;
+			}
+
+			if (r.img.height > 0) {
+				b.scaleY = r.h / r.img.height;
+			}
 
 			t.scene.addChild(b);
 

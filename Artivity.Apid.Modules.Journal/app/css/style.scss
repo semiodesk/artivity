@@ -283,22 +283,22 @@ button:focus,
 
 .nav-tabs.nav-tabs-top li a {
 	border-bottom: 0;
-	border-top: 1px solid transparent;
+	border-top: 2px solid transparent;
 }
 
 .nav-tabs.nav-tabs-top li a:hover {
-	border-top: 3px solid $textColor;
+	border-top: 2px solid $textColor;
 }
 
 .nav-tabs.nav-tabs-top li.active a,
 .nav-tabs.nav-tabs-top li.active a:hover {
 	border: none;
-	border-top: 1px solid $accentColor;
+	border-top: 2px solid $accentColor;
 	color: $textColor;
 }
 
 .nav-tabs li a:hover {
-	border-bottom: 1px solid $textColor;
+	border-bottom: 2px solid $textColor;
 	background: transparent;
 	color: $textColor;
 	cursor: pointer;
@@ -307,7 +307,7 @@ button:focus,
 .nav-tabs li.active a,
 .nav-tabs li.active a:hover {
 	border: none;
-	border-bottom: 1px solid $accentColor;
+	border-bottom: 2px solid $accentColor;
 	background: transparent;
 	color: $accentColor;
 }
@@ -324,7 +324,7 @@ button:focus,
 	border: none;
 	border-left: 2px solid $accentColor !important;
 	color: $highlightTextColor;
-	background: $highlightBackgroundColor;
+	background: $accentColor;
 }
 
 .tab-content {
@@ -490,7 +490,7 @@ h4 {
 	right: 0;
 	z-index: 2000;
 	border-top: 1px solid darken($headerBackgroundColor, 2%);
-	border-bottom: 1px solid darken($headerBackgroundColor, 5%);
+	border-bottom: 1px solid darken($headerBackgroundColor, 2%);
 }
 
 .table .row,
