@@ -151,13 +151,13 @@ namespace Artivity.Apid.Plugin
             {
                 Version min = Version.Parse(MinExecutableVersion);
 
-                if (min.Major <= v.Major && min.Minor <= v.Minor && min.Revision <= v.Revision)
+                if (min <= v)
                 {
                     if (!string.IsNullOrEmpty(MaxExecutableVersion))
                     {
                         Version max = Version.Parse(MaxExecutableVersion);
 
-                        return v.Major <= max.Major && v.Minor <= max.Minor && v.Revision <= max.Revision;
+                        return v <= max;
                     }
                     else
                     {

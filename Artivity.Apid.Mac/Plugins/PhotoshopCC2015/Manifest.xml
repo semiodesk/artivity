@@ -11,5 +11,6 @@
   <PluginArch>64</PluginArch>
   <PluginVersion>0.8.1</PluginVersion>
   <PluginFile Link="true">Artivity64.8li</PluginFile>
+  <PluginFile Link="true">ArtivityExport.8be</PluginFile>
   <PluginInstallPath>../Plug-ins/</PluginInstallPath>
 </PluginManifest>
