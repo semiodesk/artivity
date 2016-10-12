@@ -1754,11 +1754,9 @@ path.color1 {
 }
 
 .yasgui .nav-tabs {
-	border-bottom: 2px solid $accentColor;
 }
 
 .yasgui .nav-tabs .active {
-	background: $accentColor !important;
 	color: $accentTextColor;
 	border-radius: 0;
 }
@@ -1766,7 +1764,7 @@ path.color1 {
 .yasgui .nav-tabs .active a {
 	border: none !important;
 	border-radius: 0;
-	padding: 10px 10px 10px 15px;
+	padding: 10px 10px 11px 15px;
 }
 
 .yasgui .nav-tabs a[role='addTab'] {
