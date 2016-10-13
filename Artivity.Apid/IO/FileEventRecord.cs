@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Semiodesk.Trinity;
 
 namespace Artivity.Apid.IO
 {
@@ -39,18 +40,44 @@ namespace Artivity.Apid.IO
     {
         #region Members
 
-        public DateTime EventTimeUtc { get; set; }
+        /// <summary>
+        /// The time of the event.
+        /// </summary>
+        public readonly DateTime EventTimeUtc;
 
-        public string FilePath { get; set; }
+        /// <summary>
+        /// The current file path in any case.
+        /// </summary>
+        public readonly string FilePath;
+
+        /// <summary>
+        /// The previous file path in case of a rename or move event.
+        /// </summary>
+        /// <value>The old file path.</value>
+        public readonly string OldFilePath;
+
+        /// <summary>
+        /// The URI of the file data object in case of a file create event.
+        /// </summary>
+        /// <value>The URI.</value>
+        public readonly UriRef Uri;
 
         #endregion
 
         #region Constructors
 
-        public FileEventRecord(DateTime eventTimeUtc, string filePath)
+        public FileEventRecord(DateTime eventTimeUtc, string filePath, string oldFilePath = null)
         {
             EventTimeUtc = eventTimeUtc;
             FilePath = filePath;
+            OldFilePath = oldFilePath;
+        }
+
+        public FileEventRecord(DateTime eventTimeUtc, string filePath, UriRef uri)
+        {
+            EventTimeUtc = eventTimeUtc;
+            FilePath = filePath;
+            Uri = uri;
         }
 
         #endregion

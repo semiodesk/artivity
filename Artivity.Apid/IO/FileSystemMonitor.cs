@@ -55,7 +55,13 @@ namespace Artivity.Apid.IO
     {
         #region Members
 
-        private IModel _model;
+        private IModel _model
+        {
+            get
+            {
+                return _modelProvider.GetActivities();
+            }
+        }
 
         private IModelProvider _modelProvider;
 
@@ -121,9 +127,11 @@ namespace Artivity.Apid.IO
         /// </remarks>
         private readonly List<FileInfoCache> _deletedFiles = new List<FileInfoCache>();
 
+        private readonly Queue<FileEventRecord> _createdEventsQueue = new Queue<FileEventRecord>();
+
         private readonly Queue<FileEventRecord> _deletedEventsQueue = new Queue<FileEventRecord>();
 
-        private readonly Queue<FileEventRecord> _createdEventsQueue = new Queue<FileEventRecord>();
+        private readonly Queue<FileEventRecord> _renamedEventsQueue = new Queue<FileEventRecord>();
 
         /// <summary>
         /// A log of previously created files; used for locating moved files.
@@ -177,7 +185,6 @@ namespace Artivity.Apid.IO
                 Logger.LogInfo("Starting file system monitor..");
 
                 // Initialize the model and environment.
-                _model = modelProvider.GetActivities();
                 _modelProvider = modelProvider;
                 _platformProvider = platformProvider;
 
@@ -420,6 +427,7 @@ namespace Artivity.Apid.IO
                 //
                 //  1. Created
                 //  2. Deleted
+                //  3. Renamed
                 //
                 // To solve this we queue the events and process them in a prioritized order.
                 int m = Math.Min(_deletedEventsQueue.Count, maxEvents);
@@ -454,6 +462,15 @@ namespace Artivity.Apid.IO
                     _deletedEventsQueue.Dequeue();
 
                     m--;
+                }
+
+                // Handle rename events _after_ the created and deleted events
+                // which may render them obsolete.
+                while(_renamedEventsQueue.Count > 0)
+                {
+                    FileEventRecord record = _renamedEventsQueue.Dequeue();
+
+                    HandleFileSystemObjectRenamed(record);
                 }
 
                 // Install or uninstall drive watchers.
@@ -610,9 +627,16 @@ namespace Artivity.Apid.IO
 
         private bool IsMaskedFileEvent(string path)
         {
-            string p = Path.GetDirectoryName(path);
+            if (IsPathTooLong(path))
+            {
+                return true;
+            }
+            else
+            {
+                string p = Path.GetDirectoryName(path);
 
-            return p.StartsWith(_appDataRoaming) || p.StartsWith(_appDataLocal) || p.StartsWith(_appFolder);
+                return p.StartsWith(_appDataRoaming) || p.StartsWith(_appDataLocal) || p.StartsWith(_appFolder);
+            }
         }
 
         /// <summary>
@@ -630,7 +654,7 @@ namespace Artivity.Apid.IO
         {
             try
             {
-                if (IsMaskedFileEvent(e.FullPath) || IsPathTooLong(e.FullPath)) return;
+                if (IsMaskedFileEvent(e.FullPath)) return;
 
                 FileInfo file = new FileInfo(e.FullPath);
 
@@ -660,20 +684,94 @@ namespace Artivity.Apid.IO
 
         private void HandleFileSystemObjectCreated(FileEventRecord r)
         {
-            // We use the URL to access the path in order to normalize it.
-            FileInfoCache file = new FileInfoCache(r.FilePath);
-
-            if (_monitoredFiles.ContainsKey(file.LocalPath))
+            try
             {
-                Logger.LogDebug("Created file: {0}", file.LocalPath);
+                if (r.Uri != null)
+                {
+                    FileInfoCache fileInfo = new FileInfoCache(r.FilePath);
 
-                // A monitored file is being replaced, update the database.
-                UpdateFileDataObject(file.Url);
+                    _monitoredFiles[fileInfo.LocalPath] = fileInfo;
+                    _monitoredFileUris[fileInfo.LocalPath] = r.Uri;
+
+                    Logger.LogInfo("Enabled monitoring: {0}", fileInfo.Url.LocalPath);
+
+                    // Create the file and folder data objects.
+                    UriRef folderUrl = new UriRef(Path.GetDirectoryName(fileInfo.LocalPath));
+
+                    DirectoryInfo folderInfo = new DirectoryInfo(folderUrl.LocalPath);
+
+                    Folder folderObject;
+
+                    ISparqlQuery query = new SparqlQuery(@"
+                        SELECT
+                            ?uri ?time
+                        WHERE
+                        {
+                            ?uri a nfo:Folder ;
+                                nie:url @url ;
+                                nie:lastModified ?time .
+                        }
+                        ORDER BY DESC(?time) LIMIT 1
+                    ");
+
+                    query.Bind("@url", folderUrl);
+
+                    BindingSet bindings = _model.GetBindings(query).FirstOrDefault();
+
+                    if (bindings != null)
+                    {
+                        UriRef folderUri = new UriRef(bindings["uri"].ToString());
+
+                        folderObject = _model.GetResource<Folder>(folderUri);
+
+                        Logger.LogDebug("Updated folder: {0} {1}", folderInfo.FullName, folderObject.Uri);
+                    }
+                    else
+                    {
+                        folderObject = _model.CreateResource<Folder>();
+
+                        Logger.LogDebug("Created folder: {0} {1}", folderInfo.FullName, folderObject.Uri);
+                    }
+
+                    folderObject.Url = folderUrl;
+                    folderObject.CreationTimeUtc = folderInfo.CreationTimeUtc;
+                    folderObject.LastModificationTimeUtc = folderInfo.LastWriteTimeUtc;
+                    folderObject.Commit();
+
+                    FileDataObject fileObject = _model.CreateResource<FileDataObject>(r.Uri);
+                    fileObject.Name = fileInfo.Name;
+                    fileObject.ByteSize = fileInfo.Length;
+                    fileObject.Folder = folderObject;
+                    fileObject.CreationTimeUtc = fileInfo.CreationTimeUtc;
+                    fileObject.LastModificationTimeUtc = fileInfo.LastWriteTimeUtc;
+                    fileObject.LastAccessTimeUtc = fileInfo.LastAccessTimeUtc;
+                    fileObject.Commit();
+
+                    Logger.LogInfo("Created file: {0} {1}", fileInfo.FullName, fileObject.Uri);
+                }
+                else
+                {
+                    // We use the URL to access the path in order to normalize it.
+                    FileInfoCache file = new FileInfoCache(r.FilePath);
+
+                    if (_monitoredFiles.ContainsKey(file.LocalPath))
+                    {
+                        Logger.LogDebug("Created file: {0}", file.LocalPath);
+
+                        // A monitored file is being replaced, update the database.
+                        UpdateFileDataObject(file.Url);
+                    }
+                    else
+                    {
+                        // The event is registered as the latest event with the file name.
+                        _createdFilesIndex.Add(file.Name, r);
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // The event is registered as the latest event with the file name.
-                _createdFilesIndex.Add(file.Name, r);
+                Logger.LogError(ex);
+                Logger.LogDebug("{0}", new StackTrace());
             }
         }
 
@@ -686,7 +784,7 @@ namespace Artivity.Apid.IO
         {
             try
             {
-                if (IsMaskedFileEvent(e.FullPath) || IsPathTooLong(e.FullPath)) return;
+                if (IsMaskedFileEvent(e.FullPath)) return;
 
                 FileInfoCache file = new FileInfoCache(e.FullPath);
 
@@ -703,7 +801,23 @@ namespace Artivity.Apid.IO
                 }
 #endif
 
-                FileInfoCache oldFile = new FileInfoCache(e.OldFullPath);
+                FileEventRecord r = new FileEventRecord(DateTime.UtcNow, e.FullPath, e.OldFullPath);
+
+                _renamedEventsQueue.Enqueue(r);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                Logger.LogDebug("{0}", new StackTrace());
+            }
+        }
+
+        private void HandleFileSystemObjectRenamed(FileEventRecord r)
+        {
+            try
+            {
+                FileInfoCache file = new FileInfoCache(r.FilePath);
+                FileInfoCache oldFile = new FileInfoCache(r.OldFilePath);
 
                 if (_monitoredFiles.ContainsKey(oldFile.LocalPath))
                 {
@@ -745,7 +859,7 @@ namespace Artivity.Apid.IO
         {
             try
             {
-                if (IsMaskedFileEvent(e.FullPath) || IsPathTooLong(e.FullPath)) return;
+                if (IsMaskedFileEvent(e.FullPath)) return;
 
 #if DEBUG
                 if (IsLoggingVerbose)
@@ -801,10 +915,14 @@ namespace Artivity.Apid.IO
         /// <param name="url">URL of the file.</param>
         public void AddFile(UriRef uri, Uri url)
         {
+            // NOTE: We are not handling the database update here directly. Instead we serialize the
+            // events using the event queue in order to prevent race conditions when updating.
             if (_monitoredFileUris.ContainsKey(url.LocalPath))
             {
                 // Do not create a new file data object for an already existing file..
-                UpdateFileDataObject(url);
+                FileEventRecord r = new FileEventRecord(DateTime.UtcNow, url.LocalPath);
+
+                _createdEventsQueue.Enqueue(r);
 
                 return;
             }
@@ -819,66 +937,10 @@ namespace Artivity.Apid.IO
 
             try
             {
-                FileInfoCache fileInfo = new FileInfoCache(url.LocalPath);
+                // The URI parameter indicates that a new FileDataObject should be created in the database.
+                FileEventRecord r = new FileEventRecord(DateTime.UtcNow, url.LocalPath, uri);
 
-                _monitoredFiles[fileInfo.LocalPath] = fileInfo;
-                _monitoredFileUris[fileInfo.LocalPath] = uri;
-
-                Logger.LogInfo("Enabled monitoring: {0}", fileInfo.Url.LocalPath);
-
-                // Create the file and folder data objects.
-                UriRef folderUrl = new UriRef(Path.GetDirectoryName(fileInfo.LocalPath));
-
-                DirectoryInfo folderInfo = new DirectoryInfo(folderUrl.LocalPath);
-
-                Folder folderObject;
-
-                ISparqlQuery query = new SparqlQuery(@"
-                    SELECT
-                        ?uri ?time
-                    WHERE
-                    {
-                        ?uri a nfo:Folder ;
-                            nie:url @url ;
-                            nie:lastModified ?time .
-                    }
-                    ORDER BY DESC(?time) LIMIT 1
-                ");
-
-                query.Bind("@url", folderUrl);
-
-                BindingSet bindings = _model.GetBindings(query).FirstOrDefault();
-
-                if(bindings != null)
-                {
-                    UriRef folderUri = new UriRef(bindings["uri"].ToString());
-
-                    folderObject = _model.GetResource<Folder>(folderUri);
-
-                    Logger.LogDebug("Updated folder: {0} {1}", folderInfo.FullName, folderObject.Uri);
-                }
-                else
-                {
-                    folderObject = _model.CreateResource<Folder>();
-
-                    Logger.LogDebug("Created folder: {0} {1}", folderInfo.FullName, folderObject.Uri);
-                }
-
-                folderObject.Url = folderUrl;
-                folderObject.CreationTimeUtc = folderInfo.CreationTimeUtc;
-                folderObject.LastModificationTimeUtc = folderInfo.LastWriteTimeUtc;
-                folderObject.Commit();
-
-                FileDataObject fileObject = _model.CreateResource<FileDataObject>(uri);
-                fileObject.Name = fileInfo.Name;
-                fileObject.ByteSize = fileInfo.Length;
-                fileObject.Folder = folderObject;
-                fileObject.CreationTimeUtc = fileInfo.CreationTimeUtc;
-                fileObject.LastModificationTimeUtc = fileInfo.LastWriteTimeUtc;
-                fileObject.LastAccessTimeUtc = fileInfo.LastAccessTimeUtc;
-                fileObject.Commit();
-
-                Logger.LogInfo("Created file: {0} {1}", fileInfo.FullName, fileObject.Uri);
+                _createdEventsQueue.Enqueue(r);
             }
             catch (Exception ex)
             {
