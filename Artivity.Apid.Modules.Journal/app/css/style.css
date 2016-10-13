@@ -652,7 +652,7 @@ h4 {
 
 /* line 699, /Users/sebastian/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .ui-pane-container {
-  display: table; }
+  display: table !important; }
 
 /* line 703, /Users/sebastian/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */
 .ui-pane {
