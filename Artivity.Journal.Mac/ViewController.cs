@@ -31,11 +31,9 @@ using System.IO;
 using AppKit;
 using WebKit;
 using Foundation;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using CoreGraphics;
-using ObjCRuntime;
 
 namespace Artivity.Journal.Mac
 {
