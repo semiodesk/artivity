@@ -268,6 +268,10 @@
 		});
 
 		function updateCanvas() {
+            // Use the height of the absolutely positioned container which is 
+            // agnostic to the size requests of its content.
+            var body = $("#body-wrapper");
+            
 			var buffer = document.getElementById("canvas");
 
 			// To prevent flickering, store the current context before setting the size.
@@ -278,16 +282,16 @@
 
 			// Create temp canvas and context
 			var temp = document.createElement('canvas');
-			temp.width = $(buffer).width();
-			temp.height = $(buffer).height();
+			temp.width = container.width();
+			temp.height = body.height();
 
 			// Draw current canvas to temp canvas.
 			var tempContext = temp.getContext("2d");
 			tempContext.drawImage(bufferContext.canvas, 0, 0);
 
 			// Now resize the canvas.					
-			buffer.width = $(buffer).width();
-			buffer.height = $(buffer).height();
+			buffer.width = container.width();
+			buffer.height = body.height();
 
 			// Draw temp canvas back to the current canvas
 			bufferContext.drawImage(tempContext.canvas, 0, 0);
