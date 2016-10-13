@@ -394,8 +394,6 @@ namespace Artivity.Apid.Modules
 
                 return Response.AsJson(messages);
             }
-
-            return null;
         }
 
         private Response GetRecentlyUsedFiles()
