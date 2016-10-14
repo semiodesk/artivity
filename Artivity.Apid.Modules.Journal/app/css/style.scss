@@ -22,7 +22,10 @@ $successColor: #5e2f63;
 $successTextColor: #FFFFFF;
 $iconFont: 'Material-Design-Iconic-Font';
 $iconFontSize: 21px;
-$textFont: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+$textFont: 'Roboto',
+'Helvetica',
+'Arial',
+sans-serif;
 $textColor: #F0F0F0;
 $labelTextColor: darken($textColor, 30%);
 $labelBackgroundColor: transparent;
@@ -591,7 +594,7 @@ h4 {
 /* BODY */
 
 #body-wrapper {
-    display: block;
+	display: block;
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -607,8 +610,8 @@ h4 {
 #body {
 	display: block;
 	position: absolute;
-    width: 100%;
-    height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 #canvas {
@@ -697,7 +700,7 @@ h4 {
 }
 
 .ui-pane-container {
-    display: table !important;
+	display: table !important;
 }
 
 .ui-pane {
@@ -711,12 +714,12 @@ h4 {
 
 .ui-pane.ui-pane-left {
 	width: 370px;
-	border-right: 1px solid rgba(255,255,255,.025);
+	border-right: 1px solid rgba(255, 255, 255, .025);
 }
 
 .ui-pane.ui-pane-right {
 	width: 300px;
-	border-left: 1px solid rgba(255,255,255,.025);
+	border-left: 1px solid rgba(255, 255, 255, .025);
 }
 
 .ui-pane .tab-content {
@@ -759,8 +762,9 @@ h4 {
 }
 
 .scroll-vertical {
-    overflow-y: scroll;
+	overflow-y: scroll;
 }
+
 
 /* FOOTER */
 
@@ -1074,7 +1078,12 @@ svg {
 	left: 5px;
 	right: 5px;
 	padding: 5px 5px 5px 5px;
-	text-shadow: 0 1px 3px rgba($windowBackgroundColor, .75);
+	width: 200px;
+	display: block;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	color: lighten($labelTextColor, 10%);
 }
 
 .card .file-extension {
@@ -1390,7 +1399,7 @@ button[disabled]:hover {
 
 ::-webkit-scrollbar-thumb {
 	background: $headerBackgroundColor;
-    border: 2px solid $windowBackgroundColor;
+	border: 2px solid $windowBackgroundColor;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -1766,8 +1775,7 @@ path.color1 {
 	font-family: 'Roboto';
 }
 
-.yasgui .nav-tabs {
-}
+.yasgui .nav-tabs {}
 
 .yasgui .nav-tabs .active {
 	color: $accentTextColor;
