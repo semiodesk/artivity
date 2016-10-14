@@ -268,10 +268,10 @@
 		});
 
 		function updateCanvas() {
-            // Use the height of the absolutely positioned container which is 
-            // agnostic to the size requests of its content.
-            var body = $("#body-wrapper");
-            
+            // This seems to be the only reliable way to compute the correct height of the body area.
+			// I still don't know where the 8px come from..
+			var bodyHeight = $(window).height() - $('#header').height() - $('#footer').height() - 8;
+			
 			var buffer = document.getElementById("canvas");
 
 			// To prevent flickering, store the current context before setting the size.
@@ -283,7 +283,7 @@
 			// Create temp canvas and context
 			var temp = document.createElement('canvas');
 			temp.width = container.width();
-			temp.height = body.height();
+			temp.height = bodyHeight;
 
 			// Draw current canvas to temp canvas.
 			var tempContext = temp.getContext("2d");
@@ -291,7 +291,7 @@
 
 			// Now resize the canvas.					
 			buffer.width = container.width();
-			buffer.height = body.height();
+			buffer.height = bodyHeight;
 
 			// Draw temp canvas back to the current canvas
 			bufferContext.drawImage(tempContext.canvas, 0, 0);
