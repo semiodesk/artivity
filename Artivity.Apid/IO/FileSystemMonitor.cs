@@ -440,6 +440,15 @@ namespace Artivity.Apid.IO
                     HandleFileSystemObjectCreated(record);
                 }
 
+                // Handle rename events _after_ the created and deleted events
+                // which may render them obsolete.
+                while(_renamedEventsQueue.Count > 0)
+                {
+                    FileEventRecord record = _renamedEventsQueue.Dequeue();
+
+                    HandleFileSystemObjectRenamed(record);
+                }
+
                 DateTime time = DateTime.UtcNow;
 
                 // NOTE: We do not access the queue count directly because it may 
@@ -462,15 +471,6 @@ namespace Artivity.Apid.IO
                     _deletedEventsQueue.Dequeue();
 
                     m--;
-                }
-
-                // Handle rename events _after_ the created and deleted events
-                // which may render them obsolete.
-                while(_renamedEventsQueue.Count > 0)
-                {
-                    FileEventRecord record = _renamedEventsQueue.Dequeue();
-
-                    HandleFileSystemObjectRenamed(record);
                 }
 
                 // Install or uninstall drive watchers.
@@ -746,6 +746,9 @@ namespace Artivity.Apid.IO
                     fileObject.LastModificationTimeUtc = fileInfo.LastWriteTimeUtc;
                     fileObject.LastAccessTimeUtc = fileInfo.LastAccessTimeUtc;
                     fileObject.Commit();
+
+                    // The event is registered as the latest event with the file name.
+                    _createdFilesIndex.Add(fileInfo.Name, r);
 
                     Logger.LogInfo("Created file: {0} {1}", fileInfo.FullName, fileObject.Uri);
                 }
