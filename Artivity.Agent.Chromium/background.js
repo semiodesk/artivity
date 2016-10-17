@@ -43,7 +43,7 @@ chrome.tabs.onUpdated.addListener(
     function(tabId, changeInfo, tab) {
         if(tab.url !== undefined) {
             // Do not track secure connections and only track on load to avoid duplicate events.
-            if(tab.url.indexOf('https') === -1 && changeInfo.status == "loading") {
+            if(changeInfo.status == "loading") {
                 var now = new Date();
 
                 console.log("[", now, ", UPDATED] ", tab.url, tab.title);

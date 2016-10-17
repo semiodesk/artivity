@@ -248,14 +248,20 @@ namespace Artivity.Apid.Modules
         {
             try
             {
-                if (string.IsNullOrEmpty(p.tab))
+                if (string.IsNullOrEmpty(p.url) && p.endTime == null)
                 {
-                    return Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
+                    // We do not log this access because it happes regularly with Chrome.
+                    return HttpStatusCode.BadRequest;
                 }
 
                 if (string.IsNullOrEmpty(p.agent))
                 {
-                    return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
+                    return Logger.LogError(HttpStatusCode.BadRequest, "Invalid parameters.", p);
+                }
+
+                if (string.IsNullOrEmpty(p.tab))
+                {
+                    return Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
                 }
 
                 if (!IsCaptureEnabled(p))
@@ -286,7 +292,7 @@ namespace Artivity.Apid.Modules
                     activity = _activities[p.tab];
                 }
 
-                if (!string.IsNullOrEmpty(p.url) && Uri.IsWellFormedUriString(p.url, UriKind.Absolute))
+                if (!string.IsNullOrEmpty(p.url))
                 {
                     UriRef url = new UriRef(p.url);
 
@@ -315,15 +321,18 @@ namespace Artivity.Apid.Modules
 
                     Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
                 }
-                else if (p.endTime != null)
+
+                if (p.endTime != null)
                 {
                     activity.EndTime = (DateTime)p.endTime;
                     activity.Commit();
 
                     _activities.Remove(p.tab);
+
+                    Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
                 }
 
-                return HttpStatusCode.OK;
+                return Logger.LogError(HttpStatusCode.BadRequest, Request.Url);
             }
             catch (Exception e)
             {
