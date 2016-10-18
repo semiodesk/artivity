@@ -59,7 +59,7 @@ explorerControllers.handleServiceClientState = function (api, sessionId, handleC
 	}, intervalMs);
 };
 
-explorerControllers.controller('KeyboardController', function (api, $scope, hotkeys) {	
+explorerControllers.controller('KeyboardController', function (api, $scope, hotkeys) {
 	$scope.navigateTo = function (path) {
 		var url = window.location.href.split('#');
 
@@ -68,10 +68,10 @@ explorerControllers.controller('KeyboardController', function (api, $scope, hotk
 
 			return;
 		}
-		
+
 		window.location.href = url[0].replace(/index.html/i, '') + path;
 	};
-	
+
 	$scope.navigateToFragment = function (pathFragment) {
 		var url = window.location.href.split('#');
 
@@ -91,26 +91,26 @@ explorerControllers.controller('KeyboardController', function (api, $scope, hotk
 			window.history.back();
 		}
 	});
-	
+
 	hotkeys.add({
 		combo: 'shift+backspace',
 		description: 'Go forward to the next view.',
-		callback: function() {
+		callback: function () {
 			window.history.forward();
 		}
 	});
-	
+
 	hotkeys.add({
-		combo: 'alt+h',
+		combo: 'ctrl+h',
 		description: 'Go to the dashboard view.',
-		callback: function() {
+		callback: function () {
 			// This will be replaced with the correct home page by the route provider.
 			$scope.navigateToFragment('/');
 		}
 	});
-	
+
 	hotkeys.add({
-		combo: 'alt+q',
+		combo: 'ctrl+q',
 		description: 'Open the SPARQL query editor view.',
 		callback: function () {
 			$scope.navigateTo('query.html');
@@ -118,7 +118,7 @@ explorerControllers.controller('KeyboardController', function (api, $scope, hotk
 	});
 });
 
-explorerControllers.controller('FileListController', function (api, $scope, $uibModal, fileService) {
+explorerControllers.controller('FileListController', function (api, $scope, $uibModal, fileService, hotkeys) {
 	// USER INFO
 	$scope.user = {};
 	$scope.userPhotoUrl = api.getUserPhotoUrl();
@@ -176,6 +176,14 @@ explorerControllers.controller('FileListController', function (api, $scope, $uib
 		}
 	};
 
+	hotkeys.add({
+		combo: 'ctrl+c',
+		description: 'Open the calendar view.',
+		callback: function () {
+			$scope.toggleCalendar();
+		}
+	});
+	
 	// REFRESH
 	window.addEventListener("focus", function (e) {
 		// Redraw the scene to prevent blank scenes when switching windows.		
@@ -887,34 +895,6 @@ explorerControllers.controller('AgentSettingsController', function (api, $scope,
 	};
 });
 
-explorerControllers.controller('QueryController', function (api, $scope) {
-	var defaultPrefixes = "\
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
-PREFIX art: <http://w3id.org/art/terms/1.0/>\n\
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n\
-PREFIX nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#>\n\
-PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>\n\
-PREFIX prov: <http://www.w3.org/ns/prov#>\n\
-prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n\n\
-PREFIX dces: <http://purl.org/dc/elements/1.1/>\n\n\
-SELECT ?s ?p ?o WHERE { ?s ?p ?o }";
-
-	$scope.queryString = defaultPrefixes;
-
-	$scope.executeQuery = function () {
-		api.getQueryResults($scope.queryString).then(function (data) {
-			console.log(data);
-
-			document.getElementById('result').innerHTML = JSON.stringify(data, null, 2);
-		});
-	}
-
-	$scope.resetQuery = function () {
-		$scope.queryString = defaultPrefixes;
-	}
-});
-
 explorerControllers.controller('CalendarController', function (api, $scope, $filter, $uibModalInstance, $sce) {
 	$scope.isLoading = true;
 
@@ -1115,7 +1095,7 @@ explorerControllers.controller('AddAccountDialogController', function (api, $sco
 
 		// TODO: Remove hard-wiring. Receive presets and target sites from client.
 		if (client.Uri === 'http://orcid.org') {
-			$scope.parameter.presetId = 'sandbox.orcid.org';
+			$scope.parameter.presetId = 'orcid.org';
 
 			$scope.connectAccount($scope.selectedClient);
 		} else if (client.Uri === 'http://eprints.org') {
