@@ -79,7 +79,7 @@
 								</div>
 
 								<ul class="lst-influences list-unstyled">
-									<li ng-repeat="influence in activity.influences" ng-class="{selected: influence == selectedInfluence}">
+									<li ng-repeat="influence in activity.influences track by $index" ng-class="{selected: influence == selectedInfluence}">
 										<div ng-switch="influence.type">
 											<div ng-switch-when="http://w3id.org/art/terms/1.0/Comment">
 												<a class="comment" ng-click="previewInfluence(influence)">
