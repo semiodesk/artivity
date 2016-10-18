@@ -76,11 +76,11 @@ namespace Artivity.Apid
                     return GetLatestVersionUri();
                 }
 
-                return Logger.LogError(HttpStatusCode.BadRequest, Request.Url, "");
+                return PlatformProvider.Logger.LogError(HttpStatusCode.BadRequest, Request.Url, "");
             }
             catch(Exception e)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+                return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
             }
         }
             
@@ -92,7 +92,7 @@ namespace Artivity.Apid
 
         private Response GetFileUri()
 		{
-            Logger.LogRequest(HttpStatusCode.OK, Request);
+            PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
             string res = GetFileUri(Request.Query.file);
 
@@ -106,7 +106,7 @@ namespace Artivity.Apid
 
         private Response GetCanvasUri()
         {
-            Logger.LogRequest(HttpStatusCode.OK, Request);
+            PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
             string canvas = Request.Query.canvas;
             Uri url = GetUri(canvas);
@@ -140,7 +140,7 @@ namespace Artivity.Apid
 
         private Response GetLatestVersionUri()
         {
-            Logger.LogRequest(HttpStatusCode.OK, Request);
+            PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
             string latestVersion = Request.Query.latestVersion;
             Uri url = GetUri(latestVersion);

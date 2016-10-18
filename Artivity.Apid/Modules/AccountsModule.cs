@@ -76,7 +76,7 @@ namespace Artivity.Api.Modules
 
                     if (!IsUri(featureUri))
                     {
-                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
 
                     return GetAccountsWithFeature(new Uri(featureUri));
@@ -96,7 +96,7 @@ namespace Artivity.Api.Modules
 
                     if(!IsUri(featureUri))
                     {
-                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
 
                     return GetServiceClientsWithFeature(new Uri(featureUri));
@@ -107,7 +107,7 @@ namespace Artivity.Api.Modules
 
                     if(!IsUri(clientUri))
                     {
-                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
 
                     return GetServiceClient(new Uri(clientUri));
@@ -222,12 +222,12 @@ namespace Artivity.Api.Modules
 
             if (string.IsNullOrEmpty(sessionId))
             {
-                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
             if (!_sessions.ContainsKey(sessionId))
             {
-                return Logger.LogError(HttpStatusCode.NotFound, "Session with token {0} not found.", sessionId);
+                return PlatformProvider.Logger.LogError(HttpStatusCode.NotFound, "Session with token {0} not found.", sessionId);
             }
 
             OnlineServiceClientSession session = _sessions[sessionId];
@@ -241,7 +241,7 @@ namespace Artivity.Api.Modules
 
             if (string.IsNullOrEmpty(sessionId))
             {
-                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
             OnlineServiceClientSession session = _sessions[sessionId];
@@ -269,7 +269,7 @@ namespace Artivity.Api.Modules
 
             if (client == null)
             {
-                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
             else
             {
@@ -281,7 +281,7 @@ namespace Artivity.Api.Modules
 
             if (authenticator == null)
             {
-                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
             // Remove any previous sessions.
@@ -307,21 +307,21 @@ namespace Artivity.Api.Modules
 
             if (string.IsNullOrEmpty(sessionId))
             {
-                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
             OnlineServiceClientSession session = _sessions[sessionId];
 
             if (session == null)
             {
-                return Logger.LogRequest(HttpStatusCode.NotFound, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.NotFound, Request);
             }
 
             IHttpAuthenticationClient authenticator = session.Client.TryGetAuthenticationClient(HttpAuthenticationClientState.Authorized);
 
             if (authenticator == null)
             {
-                return Logger.LogRequest(HttpStatusCode.Unauthorized, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.Unauthorized, Request);
             }
 
             IModel model = ModelProvider.GetAgents();
@@ -335,7 +335,7 @@ namespace Artivity.Api.Modules
         {
             if (!IsUri(Request.Query.accountUri))
             {
-                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
             IModel model = ModelProvider.GetAgents();
@@ -344,7 +344,7 @@ namespace Artivity.Api.Modules
 
             if (user == null)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, "Unable to retrieve user agent.");
+                return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, "Unable to retrieve user agent.");
             }
 
             Uri accountUri = new Uri(Request.Query.accountUri);
@@ -353,7 +353,7 @@ namespace Artivity.Api.Modules
 
             if (account == null)
             {
-                return Logger.LogInfo(HttpStatusCode.BadRequest, "Unknown account: {0}", accountUri);
+                return PlatformProvider.Logger.LogInfo(HttpStatusCode.BadRequest, "Unknown account: {0}", accountUri);
             }
 
             model.DeleteResource(account);
@@ -364,7 +364,7 @@ namespace Artivity.Api.Modules
                 user.Commit();
             }
 
-            return Logger.LogInfo(HttpStatusCode.OK, "Uninstalled account: {0}", accountUri);
+            return PlatformProvider.Logger.LogInfo(HttpStatusCode.OK, "Uninstalled account: {0}", accountUri);
         }
 
         public Response UploadArchive()
@@ -373,21 +373,21 @@ namespace Artivity.Api.Modules
 
             if(!IsUri(Request.Query.entityUri))
             {
-                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
             UriRef entityUri = new UriRef(Request.Query.entityUri);
 
             if (!model.ContainsResource(entityUri) || !IsUri(Request.Query.accountUri))
             {
-                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
             UriRef accountUri = new UriRef(Request.Query.accountUri);
 
             if(!model.ContainsResource(accountUri))
             {
-                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             }
 
             // Get the file name and temp file path.
@@ -405,7 +405,7 @@ namespace Artivity.Api.Modules
             
             if(!bindings.Any())
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, "No file data object found for entity:", entityUri);
+                return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, "No file data object found for entity:", entityUri);
             }
 
             // Read the JSON content that provides additional metadata about the archive.
@@ -462,7 +462,7 @@ namespace Artivity.Api.Modules
                 }
                 catch(Exception ex)
                 {
-                    Logger.LogError(HttpStatusCode.BadRequest, ex);
+                    PlatformProvider.Logger.LogError(HttpStatusCode.BadRequest, ex);
                 }
             }
 
@@ -511,12 +511,12 @@ namespace Artivity.Api.Modules
                 }
                 else
                 {
-                    return Logger.LogError(HttpStatusCode.NotFound, new KeyNotFoundException(clientUri.AbsoluteUri));
+                    return PlatformProvider.Logger.LogError(HttpStatusCode.NotFound, new KeyNotFoundException(clientUri.AbsoluteUri));
                 }
             }
             catch(Exception ex)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, ex);
+                return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, ex);
             }
             finally
             {

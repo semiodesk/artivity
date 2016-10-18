@@ -178,15 +178,16 @@ namespace Artivity.Apid.IO
         {
             if (IsInitialized) return;
 
+            // Initialize the model and environment.
+            _modelProvider = modelProvider;
+            _platformProvider = platformProvider;
+
+
             try
             {
                 IsInitialized = true;
 
-                Logger.LogInfo("Starting file system monitor..");
-
-                // Initialize the model and environment.
-                _modelProvider = modelProvider;
-                _platformProvider = platformProvider;
+                _platformProvider.Logger.LogInfo("Starting file system monitor..");
 
                 // These folders are ignored when handling file system events.
                 _appFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -203,8 +204,8 @@ namespace Artivity.Apid.IO
             {
                 IsInitialized = false;
 
-                Logger.LogError(ex);
-                Logger.LogDebug("\n{0}\n", new StackTrace());
+                _platformProvider.Logger.LogError(ex);
+                _platformProvider.Logger.LogDebug("\n{0}\n", new StackTrace());
             }
         }
 
@@ -264,7 +265,7 @@ namespace Artivity.Apid.IO
                 // Check if the monitored file still exists..
                 if (!File.Exists(url.LocalPath))
                 {
-                    Logger.LogDebug("Indexed file does not exist: {0}", url.LocalPath);
+                    _platformProvider.Logger.LogDebug("Indexed file does not exist: {0}", url.LocalPath);
 
                     _deletedFiles.Add(file);
                 }
@@ -277,14 +278,14 @@ namespace Artivity.Apid.IO
 #if DEBUG
                 if (IsLoggingVerbose)
                 {
-                    Logger.LogDebug("MONITORING: {0}", file.FullName);
+                    _platformProvider.Logger.LogDebug("MONITORING: {0}", file.FullName);
                 }
 #endif
 
                 n++;
             }
 
-            Logger.LogInfo("Monitoring {0} file(s).", n);
+            _platformProvider.Logger.LogInfo("Monitoring {0} file(s).", n);
         }
 
         /// <summary>
@@ -328,14 +329,14 @@ namespace Artivity.Apid.IO
             {
                 watcher.EnableRaisingEvents = IsEnabled;
 
-                Logger.LogInfo("Enabled device monitoring: {0}", watcher.Path);
+                _platformProvider.Logger.LogInfo("Enabled device monitoring: {0}", watcher.Path);
 
                 return true;
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError(ex);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
 
                 return false;
             }
@@ -359,7 +360,7 @@ namespace Artivity.Apid.IO
                 _periodicTask = ExecutePeriodicTasks();
             }
 
-            Logger.LogInfo("Started file system monitor.");
+            _platformProvider.Logger.LogInfo("Started file system monitor.");
         }
 
         /// <summary>
@@ -376,7 +377,7 @@ namespace Artivity.Apid.IO
                 {
                     watcher.EnableRaisingEvents = IsEnabled;
 
-                    Logger.LogInfo("Disabled device monitoring: {0}", watcher.Path);
+                    _platformProvider.Logger.LogInfo("Disabled device monitoring: {0}", watcher.Path);
                 }
 
                 if (_periodicTask != null)
@@ -386,7 +387,7 @@ namespace Artivity.Apid.IO
                     _periodicTask = null;
                 }
 
-                Logger.LogInfo("Stopped file system monitor.");
+                _platformProvider.Logger.LogInfo("Stopped file system monitor.");
             }
         }
 
@@ -533,7 +534,7 @@ namespace Artivity.Apid.IO
 
             _watchers[watcher.Path] = watcher;
 
-            Logger.LogInfo("Installed device monitoring: {0}", watcher.Path);
+            _platformProvider.Logger.LogInfo("Installed device monitoring: {0}", watcher.Path);
 
             if (IsEnabled)
             {
@@ -561,7 +562,7 @@ namespace Artivity.Apid.IO
                 {
                     watcher.EnableRaisingEvents = false;
 
-                    Logger.LogInfo("Disabled device monitoring: {0}", watcher.Path);
+                    _platformProvider.Logger.LogInfo("Disabled device monitoring: {0}", watcher.Path);
                 }
 
                 watcher.Created -= OnFileSystemObjectCreated;
@@ -569,7 +570,7 @@ namespace Artivity.Apid.IO
 
                 _watchers.Remove(root);
 
-                Logger.LogInfo("Uninstalled device monitoring: {0}", root);
+                _platformProvider.Logger.LogInfo("Uninstalled device monitoring: {0}", root);
             }
         }
 
@@ -667,7 +668,7 @@ namespace Artivity.Apid.IO
 #if DEBUG
                 if (IsLoggingVerbose)
                 {
-                    Logger.LogDebug("CREATED {0}", e.FullPath);
+                    _platformProvider.Logger.LogDebug("CREATED {0}", e.FullPath);
                 }
 #endif
 
@@ -677,8 +678,8 @@ namespace Artivity.Apid.IO
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError(ex);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
             }
         }
 
@@ -693,7 +694,7 @@ namespace Artivity.Apid.IO
                     _monitoredFiles[fileInfo.LocalPath] = fileInfo;
                     _monitoredFileUris[fileInfo.LocalPath] = r.Uri;
 
-                    Logger.LogInfo("Enabled monitoring: {0}", fileInfo.Url.LocalPath);
+                    _platformProvider.Logger.LogInfo("Enabled monitoring: {0}", fileInfo.Url.LocalPath);
 
                     // Create the file and folder data objects.
                     UriRef folderUrl = new UriRef(Path.GetDirectoryName(fileInfo.LocalPath));
@@ -724,13 +725,13 @@ namespace Artivity.Apid.IO
 
                         folderObject = _model.GetResource<Folder>(folderUri);
 
-                        Logger.LogDebug("Updated folder: {0} {1}", folderInfo.FullName, folderObject.Uri);
+                        _platformProvider.Logger.LogDebug("Updated folder: {0} {1}", folderInfo.FullName, folderObject.Uri);
                     }
                     else
                     {
                         folderObject = _model.CreateResource<Folder>();
 
-                        Logger.LogDebug("Created folder: {0} {1}", folderInfo.FullName, folderObject.Uri);
+                        _platformProvider.Logger.LogDebug("Created folder: {0} {1}", folderInfo.FullName, folderObject.Uri);
                     }
 
                     folderObject.Url = folderUrl;
@@ -747,7 +748,7 @@ namespace Artivity.Apid.IO
                     fileObject.LastAccessTimeUtc = fileInfo.LastAccessTimeUtc;
                     fileObject.Commit();
 
-                    Logger.LogInfo("Created file: {0} {1}", fileInfo.FullName, fileObject.Uri);
+                    _platformProvider.Logger.LogInfo("Created file: {0} {1}", fileInfo.FullName, fileObject.Uri);
                 }
                 else
                 {
@@ -756,7 +757,7 @@ namespace Artivity.Apid.IO
 
                     if (_monitoredFiles.ContainsKey(file.LocalPath))
                     {
-                        Logger.LogDebug("Created file: {0}", file.LocalPath);
+                        _platformProvider.Logger.LogDebug("Created file: {0}", file.LocalPath);
 
                         // A monitored file is being replaced, update the database.
                         UpdateFileDataObject(file.Url);
@@ -770,8 +771,8 @@ namespace Artivity.Apid.IO
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError(ex);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
             }
         }
 
@@ -797,7 +798,7 @@ namespace Artivity.Apid.IO
 #if DEBUG
                 if (IsLoggingVerbose)
                 {
-                    Logger.LogDebug("RENAMED {0}", e.FullPath);
+                    _platformProvider.Logger.LogDebug("RENAMED {0}", e.FullPath);
                 }
 #endif
 
@@ -807,8 +808,8 @@ namespace Artivity.Apid.IO
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError(ex);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
             }
         }
 
@@ -821,7 +822,7 @@ namespace Artivity.Apid.IO
 
                 if (_monitoredFiles.ContainsKey(oldFile.LocalPath))
                 {
-                    Logger.LogDebug("Renamed {0} -> {1}", oldFile.LocalPath, file.LocalPath);
+                    _platformProvider.Logger.LogDebug("Renamed {0} -> {1}", oldFile.LocalPath, file.LocalPath);
 
                     if (!file.Exists || oldFile.HasOpenFileHandle())
                     {
@@ -837,7 +838,7 @@ namespace Artivity.Apid.IO
                 }
                 else if (_monitoredFiles.ContainsKey(file.LocalPath))
                 {
-                    Logger.LogDebug("Replaced {0} <- {1}", file.LocalPath, oldFile.LocalPath);
+                    _platformProvider.Logger.LogDebug("Replaced {0} <- {1}", file.LocalPath, oldFile.LocalPath);
 
                     // If the new file is being monitored, update the database.
                     UpdateFileDataObject(file.Url);
@@ -845,8 +846,8 @@ namespace Artivity.Apid.IO
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError(ex);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
             }
         }
 
@@ -864,7 +865,7 @@ namespace Artivity.Apid.IO
 #if DEBUG
                 if (IsLoggingVerbose)
                 {
-                    Logger.LogDebug("DELETED {0}", e.FullPath);
+                    _platformProvider.Logger.LogDebug("DELETED {0}", e.FullPath);
                 }
 #endif
 
@@ -874,8 +875,8 @@ namespace Artivity.Apid.IO
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError(ex);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
             }
         }
 
@@ -929,8 +930,8 @@ namespace Artivity.Apid.IO
 
             if(string.IsNullOrEmpty(url.LocalPath) || !File.Exists(url.LocalPath))
             {
-                Logger.LogError("File does not exist: {0}", url);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError("File does not exist: {0}", url);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
 
                 return;
             }
@@ -944,8 +945,8 @@ namespace Artivity.Apid.IO
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError(ex);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
             }
         }
 
@@ -962,13 +963,13 @@ namespace Artivity.Apid.IO
                 {
                     _monitoredFiles.Remove(fileInfo.LocalPath);
 
-                    Logger.LogInfo("Disabled monitoring: {0}", fileInfo.LocalPath);
+                    _platformProvider.Logger.LogInfo("Disabled monitoring: {0}", fileInfo.LocalPath);
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError(ex);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
             }
         }
 
@@ -980,7 +981,7 @@ namespace Artivity.Apid.IO
         {
             if (_monitoredFileUris.ContainsKey(file.LocalPath))
             {
-                Logger.LogDebug("Deleted file: {0}", file.LocalPath);
+                _platformProvider.Logger.LogDebug("Deleted file: {0}", file.LocalPath);
 
                 // Get the URI of the file data object.
                 Uri fileUri = _monitoredFileUris[file.LocalPath];
@@ -1005,8 +1006,8 @@ namespace Artivity.Apid.IO
         {
             if (!_monitoredFileUris.ContainsKey(url.LocalPath))
             {
-                Logger.LogError("Trying to update a non-monitored file: {0}", url.LocalPath);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError("Trying to update a non-monitored file: {0}", url.LocalPath);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
 
                 return;
             }
@@ -1037,7 +1038,7 @@ namespace Artivity.Apid.IO
 
                     fileObject.Commit();
 
-                    Logger.LogDebug("Updated file: {0} ; <{1}>", fileInfo.FullName, fileObject.Uri);
+                    _platformProvider.Logger.LogDebug("Updated file: {0} ; <{1}>", fileInfo.FullName, fileObject.Uri);
 
                     DirectoryInfo folderInfo = new DirectoryInfo(Path.GetDirectoryName(url.LocalPath));
 
@@ -1047,13 +1048,13 @@ namespace Artivity.Apid.IO
                     folderObject.LastModificationTimeUtc = folderInfo.LastWriteTimeUtc;
                     folderObject.Commit();
 
-                    Logger.LogDebug("Updated folder: {0} ; <{1}>", folderInfo.FullName, folderObject.Uri);
+                    _platformProvider.Logger.LogDebug("Updated folder: {0} ; <{1}>", folderInfo.FullName, folderObject.Uri);
                 }
             }
             catch (Exception e)
             {
-                Logger.LogError(HttpStatusCode.InternalServerError, e);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError(HttpStatusCode.InternalServerError, e);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
             }
         }
 
@@ -1066,8 +1067,8 @@ namespace Artivity.Apid.IO
         {
             if (!_monitoredFileUris.ContainsKey(oldUrl.LocalPath))
             {
-                Logger.LogError("Trying to update a non-monitored file: {0}", oldUrl.LocalPath);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError("Trying to update a non-monitored file: {0}", oldUrl.LocalPath);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
 
                 return;
             }
@@ -1076,14 +1077,14 @@ namespace Artivity.Apid.IO
 
             try
             {
-                Logger.LogDebug("Moved file: {0} -> {1}", oldUrl.LocalPath, newUrl.LocalPath);
+                _platformProvider.Logger.LogDebug("Moved file: {0} -> {1}", oldUrl.LocalPath, newUrl.LocalPath);
 
                 FileInfo fileInfo = new FileInfo(newUrl.LocalPath);
 
                 if (!fileInfo.Exists)
                 {
-                    Logger.LogError("Trying to update a non-existing target file: {0}", newUrl.LocalPath);
-                    Logger.LogDebug("{0}", new StackTrace());
+                    _platformProvider.Logger.LogError("Trying to update a non-existing target file: {0}", newUrl.LocalPath);
+                    _platformProvider.Logger.LogDebug("{0}", new StackTrace());
 
                     return;
                 }
@@ -1134,14 +1135,14 @@ namespace Artivity.Apid.IO
                         // Reuse the existing folder data object and update the metadata.
                         folderObject = _model.GetResource<Folder>(folderUri);
 
-                        Logger.LogDebug("Updated folder: {0} ; <{1}>", newFolderPath, folderObject.Uri);
+                        _platformProvider.Logger.LogDebug("Updated folder: {0} ; <{1}>", newFolderPath, folderObject.Uri);
                     }
                     else
                     {
                         // Create a new data object for the folder.
                         folderObject = _model.CreateResource<Folder>();
 
-                        Logger.LogDebug("Created folder: {0} ; <{1}>", newFolderPath, folderObject.Uri);
+                        _platformProvider.Logger.LogDebug("Created folder: {0} ; <{1}>", newFolderPath, folderObject.Uri);
                     }
 
                     // Update the creation and modification times of the folder.
@@ -1174,12 +1175,12 @@ namespace Artivity.Apid.IO
 
                 fileObject.Commit();
 
-                Logger.LogDebug("Updated file: {0} ; <{1}>", newUrl.LocalPath, fileObject.Uri);
+                _platformProvider.Logger.LogDebug("Updated file: {0} ; <{1}>", newUrl.LocalPath, fileObject.Uri);
             }
             catch (Exception e)
             {
-                Logger.LogError(HttpStatusCode.InternalServerError, e);
-                Logger.LogDebug("{0}", new StackTrace());
+                _platformProvider.Logger.LogError(HttpStatusCode.InternalServerError, e);
+                _platformProvider.Logger.LogDebug("{0}", new StackTrace());
             }
         }
 

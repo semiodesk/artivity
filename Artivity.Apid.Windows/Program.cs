@@ -98,7 +98,8 @@ namespace Artivity.WinService
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Logger.LogFatal("Unhandled Exception: \n" + e.ToString());
+            Logger log = new Logger();
+            log.LogFatal("Unhandled Exception: \n" + e.ToString());
         }
 
         private void EnableLogging()

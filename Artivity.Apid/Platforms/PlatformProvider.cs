@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.IO;
 using Artivity.Apid.Platforms;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
@@ -83,12 +84,19 @@ namespace Artivity.Apid.Platforms
 
         public bool AutomaticallyInstallSoftwareAgentPlugins { get; set; }
 
+        public ILogger Logger
+        {
+            get;
+            private set;
+        }
         #endregion
 
         #region Constructors
 
         public PlatformProvider(string appDataFolder, string userFolder, string userName)
         {
+            Logger = new Logger();
+
             AppDataFolder = appDataFolder;
 
             ArtivityDataFolder = Path.Combine(AppDataFolder, "Artivity");
@@ -228,6 +236,16 @@ namespace Artivity.Apid.Platforms
 
                 File.WriteAllText(ConfigFile, json);
             }
+        }
+
+        public void AddFile(UriRef uri, Uri url)
+        {
+            FileSystemMonitor.Instance.AddFile(uri, url);
+        }
+
+        public string EncodeFileName(string str)
+        {
+            return FileNameEncoder.Encode(str);
         }
 
         #endregion

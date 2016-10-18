@@ -27,7 +27,6 @@
 
 using System;
 using Artivity.Apid.IO;
-using Artivity.Apid.Plugin;
 using Artivity.Apid;
 using Artivity.Apid.Platforms;
 using Artivity.DataModel;
@@ -39,7 +38,7 @@ namespace Artivity.Api
     {
         #region Constructors
 
-        public ImportModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform)
+        public ImportModule(IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0/import", modelProvider, platform)
         {
             Get["/"] = parameters =>
@@ -48,7 +47,7 @@ namespace Artivity.Api
 
                 if (!IsFileUrl(fileUrl))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return Import(new Uri(fileUrl));
@@ -68,7 +67,7 @@ namespace Artivity.Api
             }
             catch (Exception e)
             {
-                Logger.LogError(e.Message);
+                PlatformProvider.Logger.LogError(e.Message);
 
                 return HttpStatusCode.InternalServerError;
             }

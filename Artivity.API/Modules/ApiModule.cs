@@ -26,10 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
-using Artivity.Apid.Accounts;
 using Artivity.Apid.Platforms;
-using Artivity.Apid.Helpers;
-using Artivity.Apid.IO;
 using Nancy;
 using Nancy.Responses;
 using Nancy.IO;
@@ -66,7 +63,7 @@ namespace Artivity.Apid.Modules
 
                 if (!IsFileUrl(fileUrl))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetUri(new UriRef(fileUrl));
@@ -94,7 +91,7 @@ namespace Artivity.Apid.Modules
                     }
                 }
 
-                return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             };
 
             Get["/files/recent"] = parameters =>
@@ -108,7 +105,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetInfluences(new UriRef(uri));
@@ -120,7 +117,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 if (Request.Query.timestamp)
@@ -135,7 +132,7 @@ namespace Artivity.Apid.Modules
                     }
                     else
                     {
-                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
                 }
                 else
@@ -150,7 +147,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetLayers(new UriRef(uri));
@@ -164,7 +161,7 @@ namespace Artivity.Apid.Modules
 
                     if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                     {
-                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
 
                     if (Request.Query.exists)
@@ -178,7 +175,7 @@ namespace Artivity.Apid.Modules
                 }
                 else
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
             };
 
@@ -191,7 +188,7 @@ namespace Artivity.Apid.Modules
 
                     if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                     {
-                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
 
                     if(!string.IsNullOrEmpty(file))
@@ -210,7 +207,7 @@ namespace Artivity.Apid.Modules
                         }
                         else
                         {
-                            return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                            return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                         }
                     }
 
@@ -218,7 +215,7 @@ namespace Artivity.Apid.Modules
                 }
                 else
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
             };
 
@@ -242,7 +239,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 if(Request.Query.timestamp)
@@ -257,7 +254,7 @@ namespace Artivity.Apid.Modules
                     }
                     else
                     {
-                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
                 }
 
@@ -272,7 +269,7 @@ namespace Artivity.Apid.Modules
 
                     if (string.IsNullOrEmpty(query))
                     {
-                        return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                     }
 
                     if (Request.Query.inference)
@@ -292,7 +289,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(query))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 if (Request.Query.inference)
@@ -320,7 +317,7 @@ namespace Artivity.Apid.Modules
 
                     if (model == null)
                     {
-                        Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
+                        PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
                     }
 
                     SparqlQuery query = new SparqlQuery(queryString, false);
@@ -383,7 +380,7 @@ namespace Artivity.Apid.Modules
             }
             catch (Exception e)
             {
-                Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+                PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
 
                 List<string> messages = new List<string>() { e.Message };
 
@@ -431,8 +428,9 @@ namespace Artivity.Apid.Modules
                 ORDER BY DESC(?t1) LIMIT 25");
 
             var bindings = ModelProvider.GetAll().GetBindings(query);
-
-            return Response.AsJson(bindings);
+            PlatformProvider.Logger.LogInfo("Update");
+            var resp = Response.AsJson(bindings);
+            return resp;
         }
 
         private Response GetInfluences(UriRef entityUri)
@@ -689,7 +687,7 @@ namespace Artivity.Apid.Modules
 
         private string GetRenderOutputPath(UriRef entityUri)
         {
-            string entityName = FileNameEncoder.Encode(entityUri.AbsoluteUri);
+            string entityName = PlatformProvider.EncodeFileName(entityUri.AbsoluteUri);
 
             return Path.Combine(PlatformProvider.RenderingsFolder, entityName);
         }
@@ -797,7 +795,7 @@ namespace Artivity.Apid.Modules
 
             if(string.IsNullOrEmpty(file) || string.IsNullOrEmpty(folder))
             {
-                Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
 
                 return Response.AsJson(new {});
             }
@@ -822,7 +820,7 @@ namespace Artivity.Apid.Modules
 
             var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
-            Logger.LogRequest(HttpStatusCode.OK, Request);
+            PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
             return Response.AsJson(bindings);
         }
@@ -853,7 +851,7 @@ namespace Artivity.Apid.Modules
 
         private Response CreateFile(UriRef uri, Uri url)
         {
-            FileSystemMonitor.Instance.AddFile(uri, url);
+            PlatformProvider.AddFile(uri, url);
 
             return HttpStatusCode.OK;
         }

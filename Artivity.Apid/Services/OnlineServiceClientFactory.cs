@@ -84,7 +84,7 @@ namespace Artivity.Apid.Accounts
                 throw new DuplicateKeyException(message);
             }
 
-            Logger.LogInfo("Registered online account client {0}", uri);
+            //PlatformProvider.Logger.LogInfo("Registered online account client {0}", uri);
 
             _clients[uri] = client;
         }
