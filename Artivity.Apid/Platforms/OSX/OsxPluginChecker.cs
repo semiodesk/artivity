@@ -149,7 +149,7 @@ namespace Artivity.Apid.Plugin.OSX
                     }
                     catch (Exception ex)
                     {
-                        Artivity.Apid.Logger.LogError(ex);
+                        PlatformProvider.Logger.LogError(ex);
                     }
                 }
             }

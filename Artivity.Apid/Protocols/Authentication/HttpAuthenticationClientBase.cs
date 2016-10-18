@@ -64,12 +64,14 @@ namespace Artivity.Apid.Protocols.Authentication
 
         public HttpAuthenticationClientState ClientState { get; protected set; }
 
+        public ILogger Logger { get; set; }
         #endregion
 
         #region Constructors
 
         public HttpAuthenticationClientBase(string uri)
         {
+            Logger = new Logger();
             Uri = new Uri(uri);
             RequestStatus = 0;
             RequestParameters = new HashSet<string>();

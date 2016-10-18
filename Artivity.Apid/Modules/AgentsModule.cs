@@ -430,7 +430,7 @@ namespace Artivity.Apid.Modules
 
             if (user == null)
             {
-                Logger.LogInfo("Creating new user profile..");
+                PlatformProvider.Logger.LogInfo("Creating new user profile..");
 
                 // If not, create one.
                 user = model.CreateResource<Person>();
@@ -438,7 +438,7 @@ namespace Artivity.Apid.Modules
             }
             else
             {
-                Logger.LogInfo("Upgrading user profile..");
+                PlatformProvider.Logger.LogInfo("Upgrading user profile..");
             }
 
             // Add the user role association.
@@ -464,7 +464,7 @@ namespace Artivity.Apid.Modules
 
             var bindings = ModelProvider.GetAgents().GetBindings(query);
 
-            Logger.LogRequest(HttpStatusCode.OK, Request);
+            PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
             return Response.AsJson(bindings);
         }
@@ -487,7 +487,7 @@ namespace Artivity.Apid.Modules
 
             var bindings = ModelProvider.GetAgents().GetBindings(query).FirstOrDefault();
 
-            Logger.LogRequest(HttpStatusCode.OK, Request);
+            PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
             return Response.AsJson(bindings);
         }
@@ -518,7 +518,7 @@ namespace Artivity.Apid.Modules
 
             if (bindings == null)
             {
-                Logger.LogInfo("Creating association for agent {0} ; version {1}", agent, version);
+                PlatformProvider.Logger.LogInfo("Creating association for agent {0} ; version {1}", agent, version);
 
                 // The URI format of the new agent is always {AGENT_URI}#{VERSION}
                 UriRef uri = new UriRef(agent.AbsoluteUri + "#" + version.Replace(' ', '_').Trim());
@@ -538,7 +538,7 @@ namespace Artivity.Apid.Modules
                 };
             }
 
-            Logger.LogRequest(HttpStatusCode.OK, Request);
+            PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
             return Response.AsJson(bindings);
         }
@@ -561,7 +561,7 @@ namespace Artivity.Apid.Modules
             }
             catch (Exception e)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+                return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
             }
         }
 
@@ -569,7 +569,7 @@ namespace Artivity.Apid.Modules
         {
             if (p.agent == null)
             {
-                Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
+                PlatformProvider.Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
 
                 // Return disabled state so that the browsers properly indicate disabled logging.
                 p.enabled = false;
@@ -590,7 +590,7 @@ namespace Artivity.Apid.Modules
             // Capturing agent data is disabled by default.
             p.enabled = agent != null ? agent.IsCaptureEnabled : false;
 
-            Logger.LogRequest(HttpStatusCode.OK, Request.Url + " " + p.agent, "GET", "");
+            PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url + " " + p.agent, "GET", "");
 
             return Response.AsJson(p);
         }
@@ -601,7 +601,7 @@ namespace Artivity.Apid.Modules
             {
                 if (p.agent == null)
                 {
-                    Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
+                    PlatformProvider.Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
 
                     // Return disabled state so that the browsers properly indicate disabled logging.
                     return Response.AsJson(new AgentParameter() { agent = p.agent, enabled = false });
@@ -624,14 +624,14 @@ namespace Artivity.Apid.Modules
                 agent.IsCaptureEnabled = Convert.ToBoolean(p.enabled);
                 agent.Commit();
 
-                Logger.LogRequest(HttpStatusCode.OK, Request.Url + " " + p.agent, "POST", "");
+                PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url + " " + p.agent, "POST", "");
 
                 // We return the request so that the plugin can set the server's enabled status.
                 return Response.AsJson(p);
             }
             catch (Exception e)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
+                return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
             }
         }
 
@@ -645,7 +645,7 @@ namespace Artivity.Apid.Modules
                 {
                     string data = reader.ReadToEnd();
 
-                    return Logger.LogError(HttpStatusCode.BadRequest, data);
+                    return PlatformProvider.Logger.LogError(HttpStatusCode.BadRequest, data);
                 }
             }
 
@@ -683,7 +683,7 @@ namespace Artivity.Apid.Modules
             }
             catch(IOException ex)
             {
-                Logger.LogError(ex);
+                PlatformProvider.Logger.LogError(ex);
 
                 return HttpStatusCode.InternalServerError;
             }
@@ -716,7 +716,7 @@ namespace Artivity.Apid.Modules
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Message);
+                PlatformProvider.Logger.LogError(ex.Message);
 
                 return HttpStatusCode.InternalServerError;
             }
@@ -740,7 +740,7 @@ namespace Artivity.Apid.Modules
                 PlatformProvider.WriteConfig(config);
             }
 
-            Logger.LogInfo("Added software agent search path: {0}", url.LocalPath);
+            PlatformProvider.Logger.LogInfo("Added software agent search path: {0}", url.LocalPath);
 
             return HttpStatusCode.OK;
         }
@@ -756,7 +756,7 @@ namespace Artivity.Apid.Modules
                 PlatformProvider.WriteConfig(config);
             }
 
-            Logger.LogInfo("Removed software agent search path: {0}", url.LocalPath);
+            PlatformProvider.Logger.LogInfo("Removed software agent search path: {0}", url.LocalPath);
 
             return HttpStatusCode.OK;
         }

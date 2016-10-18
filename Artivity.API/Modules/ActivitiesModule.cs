@@ -27,7 +27,6 @@
 
 using Artivity.Apid.Parameters;
 using Artivity.Apid.Platforms;
-using Artivity.Apid.Plugin;
 using Artivity.DataModel;
 using Nancy;
 using Nancy.ModelBinding;
@@ -55,7 +54,7 @@ namespace Artivity.Apid.Modules
 
         #region Constructors
 
-        public ActivitiesModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform)
+        public ActivitiesModule(IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0/activities", modelProvider, platform)
         {
             Get["/"] = parameters =>
@@ -98,7 +97,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetComments(new UriRef(uri));
@@ -236,11 +235,11 @@ namespace Artivity.Apid.Modules
                     LoadTurtle(ModelProvider.Activities, stream);
                 }
 
-                Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
+                PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
             }
             catch (Exception ex)
             {
-                Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, ex, data);
+                PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, ex, data);
             }
         }
 
@@ -250,17 +249,17 @@ namespace Artivity.Apid.Modules
             {
                 if (string.IsNullOrEmpty(p.tab))
                 {
-                    return Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
                 }
 
                 if (string.IsNullOrEmpty(p.agent))
                 {
-                    return Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
+                    return PlatformProvider.Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameters {0}", p);
                 }
 
                 if (!IsCaptureEnabled(p))
                 {
-                    return Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
                 }
 
                 IModel model = ModelProvider.GetWebActivities();
@@ -313,7 +312,7 @@ namespace Artivity.Apid.Modules
                     activity.Usages.Add(view);
                     activity.Commit();
 
-                    Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
+                    PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
                 }
                 else if (p.endTime != null)
                 {
@@ -327,7 +326,7 @@ namespace Artivity.Apid.Modules
             }
             catch (Exception e)
             {
-                return Logger.LogError(HttpStatusCode.InternalServerError, "{0}: {1}", Request.Url, e.Message);
+                return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, "{0}: {1}", Request.Url, e.Message);
             }
         }
 
@@ -436,7 +435,7 @@ namespace Artivity.Apid.Modules
         {
             if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
             {
-                Logger.LogError("Invalid URI for parameter 'entity': {0}", parameter.entity);
+                PlatformProvider.Logger.LogError("Invalid URI for parameter 'entity': {0}", parameter.entity);
 
                 return HttpStatusCode.BadRequest;
             }
@@ -445,7 +444,7 @@ namespace Artivity.Apid.Modules
 
             if (!Uri.IsWellFormedUriString(parameter.agent, UriKind.Absolute))
             {
-                Logger.LogError("Invalid URI for parameter 'agent': {0}", parameter.agent);
+                PlatformProvider.Logger.LogError("Invalid URI for parameter 'agent': {0}", parameter.agent);
 
                 return HttpStatusCode.BadRequest;
             }
@@ -481,7 +480,7 @@ namespace Artivity.Apid.Modules
             }
             else
             {
-                Logger.LogError("Model does not contain entity {0}", entityUri);
+                PlatformProvider.Logger.LogError("Model does not contain entity {0}", entityUri);
 
                 return HttpStatusCode.BadRequest;
             }

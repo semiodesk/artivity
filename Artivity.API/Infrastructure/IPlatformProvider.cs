@@ -26,6 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.Apid.Platforms;
+using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,10 @@ namespace Artivity.Apid.Platforms
 {
     public interface IPlatformProvider
     {
+        #region Logging
+        ILogger Logger { get; }
+        #endregion
+
         #region Deployment
 
         UserConfig Config { get; }
@@ -89,6 +94,9 @@ namespace Artivity.Apid.Platforms
 
         void WriteConfig(UserConfig config);
 
+        void AddFile(UriRef uri, Uri url);
+
+        string EncodeFileName(string str);
         #endregion
     }
 }

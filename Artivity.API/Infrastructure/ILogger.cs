@@ -1,4 +1,4 @@
-﻿// LICENSE:
+// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,55 +20,37 @@
 //
 // AUTHORS:
 //
+//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Semiodesk.Trinity;
 using System;
+using Nancy;
 
-namespace Artivity.DataModel
+namespace Artivity.Apid
 {
-    public interface IModelProvider
+    public interface ILogger
     {
-        #region Members
+        void LogInfo(string msg, params object[] p);
 
-        IStore Store { get; }
+        void LogDebug(string msg, params object[] p);
 
-        string ConnectionString { get; set; }
+        void LogError(string msg, params object[] p);
 
-        string NativeConnectionString { get; set; }
+        void LogError(Exception ex);
 
-        Uri Agents { get; set; }
+        void LogFatal(string msg, params object[] p);
 
-        Uri Activities { get; set; }
+        HttpStatusCode LogInfo(HttpStatusCode status, string msg, params object[] p);
 
-        Uri WebActivities { get; set; }
+        HttpStatusCode LogRequest(HttpStatusCode status, Request request);
 
-        string Uid { get; set; }
+        HttpStatusCode LogRequest(HttpStatusCode status, string route, string method, string content);
 
-        #endregion
+        HttpStatusCode LogError(HttpStatusCode status, Exception e);
 
-        #region Methods
-
-        bool CheckAgents();
-
-        bool CheckOntologies();
-
-        void InitializeAgents();
-
-        int ReleaseStore();
-
-        IModelGroup GetAll();
-
-        IModelGroup GetAllActivities();
-
-        IModel GetAgents();
-
-        IModel GetActivities();
-
-        IModel GetWebActivities();
-
-        #endregion
+        HttpStatusCode LogError(HttpStatusCode status, string msg, params object[] p);
     }
 }
+

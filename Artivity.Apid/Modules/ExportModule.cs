@@ -50,7 +50,7 @@ namespace Artivity.Apid.Modules
 
                 if (!IsUri(entityUri) || string.IsNullOrEmpty(fileName))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 string minStartTime = Request.Query.minStartTime;
@@ -91,7 +91,7 @@ namespace Artivity.Apid.Modules
             }
             catch (Exception e)
             {
-                Logger.LogError(e.Message);
+                PlatformProvider.Logger.LogError(e.Message);
 
                 return HttpStatusCode.InternalServerError;
             }

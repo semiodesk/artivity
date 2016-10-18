@@ -116,7 +116,8 @@ namespace Artivity.Apid.Protocols.Authentication
             {
                 ClientState = HttpAuthenticationClientState.Error;
 
-                Logger.LogError(ex);
+                if( Logger != null)
+                    Logger.LogError(ex);
             }
         }
 
@@ -148,7 +149,8 @@ namespace Artivity.Apid.Protocols.Authentication
 
                         if (e.Error == null)
                         {
-                            Logger.LogInfo("OAuth 2.0 authorization success.");
+                            if (Logger != null)
+                                Logger.LogInfo("OAuth 2.0 authorization success.");
 
                             ClientState = HttpAuthenticationClientState.Authorized;
 
@@ -156,7 +158,8 @@ namespace Artivity.Apid.Protocols.Authentication
                         }
                         else
                         {
-                            Logger.LogError("OAuth 2.0 authorization failed: {0}", e.Error.Message);
+                            if (Logger != null)
+                                Logger.LogError("OAuth 2.0 authorization failed: {0}", e.Error.Message);
 
                             ClientState = HttpAuthenticationClientState.Error;
 
@@ -171,7 +174,8 @@ namespace Artivity.Apid.Protocols.Authentication
             {
                 ClientState = HttpAuthenticationClientState.Error;
 
-                Logger.LogError(ex);
+                if (Logger != null)
+                    Logger.LogError(ex);
             }
         }
 
