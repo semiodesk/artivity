@@ -67,8 +67,8 @@ namespace Artivity.Apid.Accounts
             Presets.Add(sandbox);
 
             OAuth2AuthenticationClient oauth2 = new OAuth2AuthenticationClient();
-            oauth2.ClientId = "APP-AF3XVP6X01AMZQH1";
-            oauth2.ClientSecret = "0c883177-cfd8-4a0f-a111-03a5ba19539d";
+            oauth2.ClientId = "APP-5JQIA2KPUCN4Z29F";
+            oauth2.ClientSecret = "86c6b72d-dfb5-420f-b963-838fcc2daa20";
 
             SupportedAuthenticationClients.Add(oauth2);
         }

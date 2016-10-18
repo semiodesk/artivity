@@ -428,7 +428,7 @@ namespace Artivity.Apid.Modules
                         ?a1 prov:qualifiedAssociation / prov:agent / art:hasColourCode ?agentColor .
                     }
                 }
-                ORDER BY DESC(?t1) LIMIT 25");
+                ORDER BY DESC(?t1) LIMIT 100");
 
             var bindings = ModelProvider.GetAll().GetBindings(query);
 
