@@ -1770,6 +1770,16 @@ path.color1 {
 
 /* YASGUI */
 
+#editor {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
 .yasgui {
 	background: none;
 	font-family: 'Roboto';
@@ -1801,6 +1811,7 @@ path.color1 {
 
 .yasgui .tab-content {
 	padding: 0;
+	position: relative;
 }
 
 .yasgui .CodeMirror {

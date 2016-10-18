@@ -1,7 +1,11 @@
 var explorerApp = angular.module('explorerApp');
 
+var apid = {
+	endpointUrl: 'http://127.0.0.1:'.concat(port, '/artivity/api/1.0/')
+};
+
 explorerApp.factory('api', function ($http) {
-	var endpoint = 'http://127.0.0.1:'.concat(port, '/artivity/api/1.0/');
+	var endpoint = apid.endpointUrl;
 
 	return {
 		getAccounts: function () {

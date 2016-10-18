@@ -54,7 +54,7 @@
 		<div id="header">
 			<div class="row">
 				<div class="col">
-					<a class="btn" href="#/files"><i class="zmdi zmdi-chevron-left"></i></a>
+					<a class="btn" href="index.html#/files"><i class="zmdi zmdi-chevron-left"></i></a>
 				</div>
 
 				<div class="col expand">
@@ -71,7 +71,9 @@
 			<script type="text/javascript">
 				$(document).ready(function () {
 					// Generate the SPARQL query endpoint with the correct port from the current URI.
-					var endpoint = window.location.protocol + '//' + window.location.href.split('/')[2] + '/artivity/api/1.0/sparql';
+					var endpoint = apid.endpointUrl + 'sparql';
+					
+					console.log(endpoint);
 
 					// Initialize the SPARQL query GUI.
 					var yasgui = YASGUI(document.getElementById("editor"));
