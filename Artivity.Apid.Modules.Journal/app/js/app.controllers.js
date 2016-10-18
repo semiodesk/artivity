@@ -101,7 +101,7 @@ explorerControllers.controller('KeyboardController', function (api, $scope, hotk
 	});
 
 	hotkeys.add({
-		combo: 'ctrl+h',
+		combo: 'alt+h',
 		description: 'Go to the dashboard view.',
 		callback: function () {
 			// This will be replaced with the correct home page by the route provider.
@@ -110,7 +110,7 @@ explorerControllers.controller('KeyboardController', function (api, $scope, hotk
 	});
 
 	hotkeys.add({
-		combo: 'ctrl+q',
+		combo: 'alt+q',
 		description: 'Open the SPARQL query editor view.',
 		callback: function () {
 			$scope.navigateTo('query.html');
@@ -177,7 +177,7 @@ explorerControllers.controller('FileListController', function (api, $scope, $uib
 	};
 
 	hotkeys.add({
-		combo: 'ctrl+c',
+		combo: 'alt+c',
 		description: 'Open the calendar view.',
 		callback: function () {
 			$scope.toggleCalendar();
