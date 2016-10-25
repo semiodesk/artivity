@@ -240,24 +240,23 @@ namespace Artivity.Apid.IO
                 foreach (var zipEntry in arch.Entries)
                 {
                     string fullPath = fullName;
-                    if (zipEntry.FullName.Length != zipEntry.Name.Length)
+
+                    var dirPaths = zipEntry.FullName.Split('\\');
+
+                    int i = 0;
+                    foreach (var dir in dirPaths)
                     {
-                        var dirPaths = zipEntry.FullName.Split('\\');
+                        i++;
+                        if (i == dirPaths.Length)
+                            break;
 
-                        int i = 0;
-                        foreach (var dir in dirPaths)
-                        {
-                            i++;
-                            if (i == dirPaths.Length)
-                                break;
+                        fullPath = Path.Combine(fullPath, dir);
+                        Directory.CreateDirectory(fullPath);
 
-                            fullPath = Path.Combine(fullPath, dir);
-                            Directory.CreateDirectory(fullPath);
-
-                        }
                     }
 
-                    fullPath = Path.GetFullPath(Path.Combine(fullPath, zipEntry.Name));
+
+                    fullPath = Path.GetFullPath(Path.Combine(fullPath, dirPaths[i - 1]));
 
                     zipEntry.ExtractToFile(fullPath, false);
                 }
