@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+#if OSX
 using Artivity.DataModel;
 using Artivity.Apid;
 using Artivity.Apid.Platforms;
@@ -264,3 +265,4 @@ namespace Artivity.Apid.Plugin.OSX
     }
 }
 
+#endif
