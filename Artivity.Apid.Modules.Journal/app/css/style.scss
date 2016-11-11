@@ -172,6 +172,11 @@ iframe {
 	filter: grayscale(100%);
 }
 
+.btn.disabled {
+	opacity: .5;
+	cursor: default;
+}
+
 button,
 .btn-default {
 	border: none;
@@ -1545,7 +1550,6 @@ button[disabled]:hover {
 .ctl-history:focus {
 	outline: none;
 }
-
 
 /*
 .lst-activities .connection {
