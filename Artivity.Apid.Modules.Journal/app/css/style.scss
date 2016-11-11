@@ -172,6 +172,7 @@ iframe {
 	filter: grayscale(100%);
 }
 
+textarea.disabled,
 input.disabled,
 .btn.disabled {
 	opacity: .5;
