@@ -27,10 +27,12 @@ function TimelineControl(element) {
 	t.selectedIndex = 0;
 
 	var drag = function (e) {
-		var x = parseInt($(e.target).css('left'));
+		var x = parseInt($(e.target).css('left')) + $(e.target).outerWidth() / 2;
 
 		if (x) {
-			var c = Math.ceil(t.thumb.outerWidth() / 2);
+			//$(e.target).css('left', x);
+			
+			var c = Math.ceil(t.thumbKnob.outerWidth() / 2);
 
 			t.trackIndicator.css('width', (x + c) + 'px');
 			t.trackPreview.css('visibility', 'collapse');
@@ -64,7 +66,7 @@ function TimelineControl(element) {
 		var x = e.clientX - t.track.offset().left;
 
 		if (x) {
-			var c = Math.ceil(t.thumb.outerWidth() / 2);
+			var c = Math.ceil(t.thumbKnob.outerWidth() / 2);
 
 			t.trackIndicator.css('width', (x + c) + 'px');
 		}
@@ -74,7 +76,7 @@ function TimelineControl(element) {
 		var x = e.clientX - t.track.offset().left;
 
 		if (x) {
-			var c = Math.ceil(t.thumb.outerWidth() / 2);
+			var c = Math.ceil(t.thumbKnob.outerWidth() / 2);
 
 			t.trackIndicator.css('width', (x + c) + 'px');
 		}
@@ -139,6 +141,16 @@ function TimelineControl(element) {
 		}
 	};
 
+	var trackResize = function() {		
+		t.thumb.addClass('no-transition');
+		t.trackIndicator.addClass('no-transition');
+		
+		t.setPosition(t.influences[t.selectedIndex]);
+		
+		t.thumb.removeClass('no-transition');
+		t.trackIndicator.removeClass('no-transition');
+	};
+	
 	var thumbMouseEnter = function () {
 		t.trackPreview.css('visibility', 'collapse');
 	}
@@ -170,11 +182,12 @@ function TimelineControl(element) {
 	t.trackPreview = $(t.control.find(".track-preview")[0]);
 	t.trackIndicator = $(t.control.find(".track-indicator")[0]);
 	t.thumb = $(t.control.find(".thumb")[0]);
+	t.thumbKnob = $(t.control.find(".thumb-knob")[0]);
 	t.thumb.mouseenter(thumbMouseEnter);
 	t.thumb.mouseout(thumbMouseOut);
 	t.thumb.draggable({
 		axis: 'x',
-		containment: '.track-container',
+		containment: '.thumb-container',
 		scroll: false,
 		drag: drag,
 		start: dragStart,
@@ -184,6 +197,8 @@ function TimelineControl(element) {
 	t.durationLabel = $(t.control.find(".duration label")[0]);
 	t.activitiesContainer = $(t.control.find(".activities-container")[0]);
 	t.commentsContainer = $(t.control.find(".comments-container")[0]);
+	
+	$(window).resize(trackResize);
 };
 
 TimelineControl.prototype.selectedInfluenceChanged = undefined;
@@ -320,8 +335,8 @@ TimelineControl.prototype.updateTrackPreview = function (influence) {
 
 	var x = t.getTrackPosition(influence);
 
-	t.thumb.css('background', t.getColor(influence));
-	t.thumb.css('left', (x - Math.ceil(t.thumb.outerWidth() / 2)) + 'px');
+	t.thumbKnob.css('background', t.getColor(influence));
+	t.thumb.css('left', (x - Math.ceil(t.thumbKnob.outerWidth() / 2)) + 'px');
 
 	t.trackIndicator.css('background', t.getColor(influence));
 	t.trackIndicator.css('width', x + 'px');

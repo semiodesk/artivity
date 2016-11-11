@@ -1323,11 +1323,12 @@ explorerControllers.directive('artTimeline', function () {
 				<div class="position"><label></label></div> \
 				<div class="duration"><label></label></div> \
 				<div class="track-col"> \
+					<div class="thumb-container"></div> \
 					<div class="track-container"> \
 						<div class="track"></div> \
 						<div class="track-preview"></div> \
 						<div class="track-indicator"></div> \
-						<div class="thumb draggable"></div> \
+						<div class="thumb draggable"><div class="thumb-knob"></div></div> \
 					</div> \
 					<div class="comments"></div> \
 					<div class="activities"></div> \

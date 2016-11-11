@@ -270,7 +270,7 @@
 		function updateCanvas() {
             // This seems to be the only reliable way to compute the correct height of the body area.
 			// I still don't know where the 8px come from..
-			var bodyHeight = $(window).height() - $('#header').height() - $('#footer').height() - 8;
+			var bodyHeight = Math.min($('#body-wrapper').height(), $('.ui-pane-center').height());
 			
 			var buffer = document.getElementById("canvas");
 
