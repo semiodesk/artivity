@@ -172,6 +172,7 @@ iframe {
 	filter: grayscale(100%);
 }
 
+input.disabled,
 .btn.disabled {
 	opacity: .5;
 	cursor: default;
