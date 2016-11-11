@@ -675,6 +675,10 @@ namespace Artivity.Apid.IO
 
                 _createdEventsQueue.Enqueue(r);
             }
+            catch (PathTooLongException)
+            {
+                Logger.LogError("Path too long: {0}", e.FullPath);
+            }
             catch (Exception ex)
             {
                 Logger.LogError(ex);

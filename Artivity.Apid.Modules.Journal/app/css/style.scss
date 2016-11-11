@@ -886,15 +886,41 @@ svg {
 	transition: all .2s ease-out;
 }
 
+.timeline .thumb-container {
+	/*
+	The thumb container is larger than the actual track column because of the
+	invisible thumb area which allows for easier handling on touch screens.
+	Moving the thumb is constrained to be within the thumb-container.
+	*/
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: -10px;
+	right: -20px;
+}
+
 .timeline .thumb {
+	width: 20px;
+	height: 45px;
+	position: absolute;
+	top: -23px;
+	left: 50%;
+	z-index: 10;
+	background: transparent;
+}
+
+.timeline .thumb .thumb-knob {
+	background: $accentColor;
+	border-radius: 50%;
 	width: 10px;
 	height: 10px;
-	background: $accentColor;
 	position: absolute;
-	top: -4px;
-	left: 50%;
-	border-radius: 50%;
-	z-index: 10;
+	top: 4px;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	margin: auto;
+	text-align: center;
 }
 
 .timeline .thumb:hover {
@@ -2122,4 +2148,48 @@ path.color1 {
 
 .cfp-hotkeys-text {
 	color: $textColor;
+}
+
+@media screen and (max-width: 991px) {
+	.body-wrapper {
+		top: 47px;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+	
+	.ui-pane-right {
+		display: none;
+	}
+	
+	.ui-pane-left {
+		position: absolute;
+		bottom: -43px;
+		left: 0;
+		right: 0;
+		width: 100% !important;
+		height: 200px;
+		z-index: 10;
+		border: none;
+	}
+	
+	.ui-pane-center {
+		position: absolute !important;
+		top: 0;
+		bottom: 200px;
+		left: 0;
+		right: 0;
+	}
+	
+	.ctl-history {
+		bottom: 0;
+	}
+	
+	.ctl-comment {
+		display: none;
+	}
+	
+	#footer {
+		bottom: 201px;
+	}
 }
