@@ -121,7 +121,7 @@ explorerControllers.controller('KeyboardController', function (api, $scope, hotk
 explorerControllers.controller('FileListController', function (api, $scope, $uibModal, fileService, hotkeys) {
     // USER INFO
     $scope.user = {};
-    $scope.userPhotoUrl = api.getUserPhotoUrl();
+    $scope.userPhotoUrl = api.getUserPhotoUrl()+"?q="+Date.now();
 
     api.getUser().then(function (data) {
         $scope.user = data;
@@ -750,6 +750,7 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
             }
 
             reader.readAsDataURL(files[0]);
+            $scope.userForm.$pristine = false;
         }
     };
 
