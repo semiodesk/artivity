@@ -752,6 +752,24 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
             reader.readAsDataURL(files[0]);
         }
     };
+	
+	$scope.createBackup = function () {
+		alert('Hello');
+		
+		var fileName;
+		
+		if($scope.user.Name) {
+			fileName = $scope.user.Name;
+		} else {
+			fileName = 'Unknown';
+		}
+		
+		fileName += '-' + moment().format('DDMMYYYY') + '.artb';
+		
+		console.log("Creating backup of user profile: ", fileName);
+		
+		api.backupUserProfile(fileName);
+	};
 
     this.submit = function () {
         if ($scope.userForm.$pristine) {

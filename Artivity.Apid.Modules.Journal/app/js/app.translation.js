@@ -71,7 +71,9 @@ angular.module('explorerApp').config(function ($translateProvider) {
 				LABEL_PICTURE: 'Click to select your profile picture.',
 				LABEL_NAME: 'Name',
 				LABEL_EMAIL: 'E-Mail',
-				LABEL_ORGANIZATION: 'Organisation'
+				LABEL_ORGANIZATION: 'Organisation',
+				LABEL_BACKUP_CREATE: 'Backup profile',
+				LABEL_BACKUP_RESTORE: 'Restore profile'
 			},
 			ACCOUNTS: {
 				LABEL: 'Accounts',
@@ -86,7 +88,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
 				LABEL: 'Apps',
 				TITLE: 'Applications',
 				DESCRIPTION: 'Manage which applications provide Artivity data:'
-			},
+			}
 		},
 		'http://eprints.org': {
 			'title': 'EPrints',
