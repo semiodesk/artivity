@@ -194,6 +194,10 @@ button,
 	transition: all linear .2s;
 }
 
+.btn-default .zmdi {
+	padding: 0px 10px;
+}
+
 button:hover,
 .btn-default:hover {
 	background: $buttonHoverBackgroundColor;
@@ -224,6 +228,21 @@ button:focus,
 
 .btn-success:hover {
 	background: lighten(#FB5F1A, 5%);
+}
+
+.btn-chromeless {
+	padding: 0;
+	background: transparent;
+	color: $labelTextColor !important;
+	transition: color linear .2s;
+}
+
+.btn-chromeless:hover {
+	color: $buttonTextColor !important;
+}
+
+.btn .zmdi {
+	margin-right: 5px;
 }
 
 .btn-sm {

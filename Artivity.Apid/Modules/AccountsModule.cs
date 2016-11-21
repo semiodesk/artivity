@@ -500,11 +500,13 @@ namespace Artivity.Api.Modules
                     {
                         session.Progress.CurrentTask = session.Progress.Tasks[0];
 
-                        archiveWriter.Write(entityUri, tempFile, DateTime.MinValue);
+                        archiveWriter.Write(tempFile, entityUri, DateTime.MinValue);
 
                         session.Progress.CurrentTask = session.Progress.Tasks[1];
 
                         publishingClient.UploadArchive(Request, serviceUrl, tempFile, manifest);
+
+                        // TODO: Remove the temp file. Implement a completed handler on the publishing client.
                     });
 
                     return Response.AsJson(session);

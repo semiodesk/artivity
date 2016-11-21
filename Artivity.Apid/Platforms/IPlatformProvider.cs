@@ -37,6 +37,8 @@ namespace Artivity.Apid.Platforms
     {
         #region Deployment
 
+        string ConfigFile { get; }
+
         UserConfig Config { get; }
 
         string AppDataFolder { get; }
