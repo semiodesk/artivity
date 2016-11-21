@@ -158,7 +158,7 @@ explorerApp.factory('api', function ($http) {
 		backupUserProfile: function (fileName) {
 			return $http.get(endpoint + '/export/backup?fileName=' + fileName).then(
 				function (response) {
-					return response.data;
+					return response;
 				});
 		},
 		getFile: function (entityUri) {

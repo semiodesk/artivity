@@ -68,7 +68,20 @@
 										</div>
 										
 										<div class="form-group" style="margin-top: 3em;">
-											<a class="btn btn-chromeless" ng-click="createBackup()"><i class="zmdi zmdi-account-box-o"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_CREATE' | translate}}</a>
+											<div ng-switch="backupTaskState">
+												<div ng-switch-when="0">
+													<a class="btn btn-chromeless" ng-click="createBackup()"><i class="zmdi zmdi-account-box-o"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_CREATE' | translate}}</a>
+												</div>
+												<div ng-switch-when="102">
+													<a class="btn btn-chromeless"><i class="loader loader-xs"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_IN_PROGRESS' | translate}}</a>
+												</div>
+												<div ng-switch-when="200">
+													<a class="btn btn-chromeless"><i class="zmdi zmdi-check"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_SUCCESS' | translate}}</a>
+												</div>
+												<div ng-switch-default>
+													<a class="btn btn-chromeless"><i class="zmdi zmdi-close"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_ERROR' | translate}}</a>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
