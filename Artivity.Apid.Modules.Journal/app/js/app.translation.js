@@ -73,7 +73,10 @@ angular.module('explorerApp').config(function ($translateProvider) {
 				LABEL_EMAIL: 'E-Mail',
 				LABEL_ORGANIZATION: 'Organisation',
 				LABEL_BACKUP_CREATE: 'Backup profile',
-				LABEL_BACKUP_RESTORE: 'Restore profile'
+				LABEL_BACKUP_RESTORE: 'Restore profile',
+				LABEL_BACKUP_IN_PROGRESS: 'Creating backup..',
+				LABEL_BACKUP_SUCCESS: 'Successfully created backup.',
+				LABEL_BACKUP_ERROR: 'Unkown error occured.',
 			},
 			ACCOUNTS: {
 				LABEL: 'Accounts',

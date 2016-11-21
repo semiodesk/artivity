@@ -753,9 +753,9 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
         }
     };
 	
+	$scope.backupTaskState = 0;
+	
 	$scope.createBackup = function () {
-		alert('Hello');
-		
 		var fileName;
 		
 		if($scope.user.Name) {
@@ -766,9 +766,14 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
 		
 		fileName += '-' + moment().format('DDMMYYYY') + '.artb';
 		
-		console.log("Creating backup of user profile: ", fileName);
+		console.log("Creating user profile backup to file:", fileName);
 		
-		api.backupUserProfile(fileName);
+		// HTTP 102 - Processing
+		$scope.backupTaskState = 102;
+		
+		api.backupUserProfile(fileName).then(function (response) {
+			$scope.backupTaskState = response.status;
+		});
 	};
 
     this.submit = function () {
