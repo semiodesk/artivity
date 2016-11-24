@@ -29,11 +29,18 @@ namespace Artivity.Apid.Helpers
 
         public float PercentComplete { get; private set; }
 
+        public Exception Error { get; set; }
+
         #endregion
 
         #region Constructors
 
-        public TaskProgressInfo(Uri id = null, long total = 0)
+        public TaskProgressInfo()
+        {
+            Id = new Uri("urn:" + Guid.NewGuid());
+        }
+
+        public TaskProgressInfo(Uri id, long total = 0)
         {
             Id = id;
             Total = total;

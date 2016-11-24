@@ -62,7 +62,12 @@ namespace Artivity.Apid.IO
 
         #region Methods
 
-        public void Write(string targetPath)
+        public async Task WriteAsync(string targetPath, TaskProgressInfo progressInfo = null)
+        {
+            await Task.Run(() => Write(targetPath, progressInfo));
+        }
+
+        public void Write(string targetPath, TaskProgressInfo progressInfo = null)
         {
             FileInfo targetFile = new FileInfo(targetPath);
 
@@ -71,19 +76,27 @@ namespace Artivity.Apid.IO
                 throw new DirectoryNotFoundException("The target directory does not exist.");
             }
 
-            if(targetFile.Exists)
+            if(progressInfo != null)
+            {
+                progressInfo.Total = 5;
+                progressInfo.Completed = 0;
+            }
+
+            if (targetFile.Exists)
             {
                 File.Delete(targetPath);
             }
 
             // The data folder is compressed without copying any files..
-            FileInfo backupFile = CompressArtivityDataFolder(targetPath);
+            FileInfo backupFile = CompressArtivityDataFolder(targetPath, progressInfo);
 
             // Finally move the temporary export file to the final destination.
             File.Move(backupFile.FullName, targetFile.FullName);
+
+            if (progressInfo != null) progressInfo.Completed += 1;
         }
 
-        private FileInfo CompressArtivityDataFolder(string targetPath)
+        private FileInfo CompressArtivityDataFolder(string targetPath, TaskProgressInfo progressInfo)
         {
             string dataFolder = _platformProvider.ArtivityDataFolder;
 
@@ -102,11 +115,21 @@ namespace Artivity.Apid.IO
 
             // Add the users' data directories without any compression since most of the files are already compressed.
             AddDirectory(targetFile, _platformProvider.ArtivityDataFolder, _platformProvider.DatabaseFolder, new string[] { "*.lck" });
+
+            if(progressInfo != null) progressInfo.Completed += 1;
+
             AddDirectory(targetFile, _platformProvider.ArtivityDataFolder, _platformProvider.AvatarsFolder);
+
+            if (progressInfo != null) progressInfo.Completed += 1;
+
             AddDirectory(targetFile, _platformProvider.ArtivityDataFolder, _platformProvider.RenderingsFolder);
+
+            if (progressInfo != null) progressInfo.Completed += 1;
 
             // Add the config file with optimal compression.
             AddFile(targetFile, _platformProvider.ArtivityDataFolder, _platformProvider.ConfigFile);
+
+            if (progressInfo != null) progressInfo.Completed += 1;
 
             return new FileInfo(targetFile);
         }
@@ -114,8 +137,6 @@ namespace Artivity.Apid.IO
         private static ZipArchiveEntry CreateEntry(ZipArchive archive, string baseDirectory, string filePath, CompressionLevel level)
         {
             string key = filePath.Substring(baseDirectory.Length + 1);
-
-            Console.WriteLine(key);
 
             return archive.CreateEntry(key, level);
         }

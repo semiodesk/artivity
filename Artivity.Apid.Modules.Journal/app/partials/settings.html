@@ -66,20 +66,26 @@
 											<label for="email">{{'SETTINGS.PROFILE.LABEL_EMAIL' | translate}}</label>
 											<input type="text" class="form-control" id="email" name="email" placeholder="you@example.org" length="25" ng-model="user.EmailAddress" ng-minlength="5" required>
 										</div>
-										
-										<div class="form-group" style="margin-top: 3em;">
-											<div ng-switch="backupTaskState">
-												<div ng-switch-when="0">
-													<a class="btn btn-chromeless" ng-click="createBackup()"><i class="zmdi zmdi-account-box-o"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_CREATE' | translate}}</a>
-												</div>
-												<div ng-switch-when="102">
-													<a class="btn btn-chromeless"><i class="loader loader-xs"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_IN_PROGRESS' | translate}}</a>
-												</div>
-												<div ng-switch-when="200">
-													<a class="btn btn-chromeless"><i class="zmdi zmdi-check"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_SUCCESS' | translate}}</a>
-												</div>
+
+										<div class="form-group" style="margin-top: 3em;" class="label">
+											<div ng-switch="backupStatus">
 												<div ng-switch-default>
-													<a class="btn btn-chromeless"><i class="zmdi zmdi-close"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_ERROR' | translate}}</a>
+													<div ng-switch="backupStatus.Error">
+														<div ng-switch-when="null">
+															<div ng-if="backupStatus.PercentComplete < 100">
+																<i class="loader loader-xs"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_CREATING' | translate}}: <span ng-bind="backupStatus.PercentComplete"></span>%
+															</div>
+															<div ng-if="backupStatus.PercentComplete >= 100">
+																<i class="zmdi zmdi-check-circle"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_SUCCESS' | translate}}
+															</div>
+														</div>
+														<div ng-switch-default>
+															<i class="zmdi zmdi-alert-circle"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_ERROR' | translate}}: <span ng-bind="backupStatus.Error"></span>
+														</div>
+													</div>
+												</div>
+												<div ng-switch-when="null">
+													<a class="btn btn-chromeless" ng-click="createBackup()"><i class="zmdi zmdi-account-box-o"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_CREATE' | translate}}</a>
 												</div>
 											</div>
 										</div>

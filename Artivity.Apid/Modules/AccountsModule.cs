@@ -56,7 +56,7 @@ namespace Artivity.Api.Modules
         #region Members
 
         /// <summary>
-        /// Maps a session id to an issued authentication request for querying the status.
+        /// Maps a session id to a pending authentication request for querying the status.
         /// </summary>
         private static readonly Dictionary<string, OnlineServiceClientSession> _sessions = new Dictionary<string, OnlineServiceClientSession>();
 
