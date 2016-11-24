@@ -753,26 +753,38 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
         }
     };
 	
-	$scope.backupTaskState = 0;
+	$scope.backupStatus = null;
 	
 	$scope.createBackup = function () {
-		var fileName;
+		var fileName = 'Unknown';
 		
 		if($scope.user.Name) {
 			fileName = $scope.user.Name;
-		} else {
-			fileName = 'Unknown';
 		}
 		
 		fileName += '-' + moment().format('DDMMYYYY') + '.artb';
 		
-		console.log("Creating user profile backup to file:", fileName);
+		console.log("Creating backup to file:", fileName);
 		
-		// HTTP 102 - Processing
-		$scope.backupTaskState = 102;
-		
-		api.backupUserProfile(fileName).then(function (response) {
-			$scope.backupTaskState = response.status;
+		api.backupUserProfile(fileName).then(function (data) {
+			$scope.backupStatus = data;
+			
+			if($scope.backupStatus.Id && $scope.backupStatus.Error === null) {
+				var interval = setInterval(function() {					
+					api.getUserProfileBackupStatus($scope.backupStatus.Id).then(function(data) {
+						$scope.backupStatus.PercentComplete = data.PercentComplete;
+						$scope.backupStatus.Error = data.Error;
+						
+						if($scope.backupStatus.PercentComplete === 100 || $scope.backupStatus.Error) {
+							clearInterval(interval);
+							
+							if($scope.backupStatus.Error) {
+								console.log($scope.backupStatus.Error);
+							}
+						}
+					});
+				}, 500);
+			}
 		});
 	};
 
