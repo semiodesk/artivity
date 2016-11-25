@@ -114,17 +114,25 @@ namespace Artivity.Apid.IO
             }
 
             // Add the users' data directories without any compression since most of the files are already compressed.
+            Logger.LogDebug("Compressing database..");
+
             AddDirectory(targetFile, _platformProvider.DatabaseFolder, new string[] { "*.lck" });
 
             if(progressInfo != null) progressInfo.Completed += 1;
+
+            Logger.LogDebug("Compressing avatars..");
 
             AddDirectory(targetFile, _platformProvider.AvatarsFolder);
 
             if (progressInfo != null) progressInfo.Completed += 1;
 
+            Logger.LogDebug("Compressing renderings..");
+
             AddDirectory(targetFile, _platformProvider.RenderingsFolder);
 
             if (progressInfo != null) progressInfo.Completed += 1;
+
+            Logger.LogDebug("Compressing config file..");
 
             // Add the config file with optimal compression.
             AddFile(targetFile, _platformProvider.ConfigFile);
@@ -156,6 +164,8 @@ namespace Artivity.Apid.IO
                 throw new ArgumentException("The folder path must be located inside the base directory.");
             }
 
+            Logger.LogDebug("{0}", directoryPath);
+
             // Update the existing archive to preserve memory.
             ZipArchive archive = ZipFile.Open(archivePath, ZipArchiveMode.Update);
 
@@ -174,6 +184,8 @@ namespace Artivity.Apid.IO
 
         private void AddFile(ref ZipArchive archive, string archivePath, string filePath, CompressionLevel compressionLevel, int retryCount = 0)
         {
+            Logger.LogDebug("{0}", filePath);
+
             string entryName = filePath.Substring(_platformProvider.ArtivityDataFolder.Length + 1);
 
             ZipArchiveEntry entry = archive.CreateEntry(entryName, compressionLevel);
