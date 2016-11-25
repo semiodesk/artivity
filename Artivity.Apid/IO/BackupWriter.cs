@@ -78,7 +78,7 @@ namespace Artivity.Apid.IO
 
             if(progressInfo != null)
             {
-                progressInfo.Total = 5;
+                progressInfo.Total = 1;
                 progressInfo.Completed = 0;
             }
 
@@ -112,30 +112,22 @@ namespace Artivity.Apid.IO
                 string baseFolder = _platformProvider.ArtivityDataFolder;
 
                 // Add the users' data directories without any compression since most of the files are already compressed.
-                Logger.LogDebug("Compressing database..");
-
                 writer.AddDirectory(baseFolder, _platformProvider.DatabaseFolder, new string[] { "*.lck" });
-
-                if (progressInfo != null) progressInfo.Completed += 1;
-
-                Logger.LogDebug("Compressing avatars..");
-
                 writer.AddDirectory(baseFolder, _platformProvider.AvatarsFolder);
-
-                if (progressInfo != null) progressInfo.Completed += 1;
-
-                Logger.LogDebug("Compressing renderings..");
-
                 writer.AddDirectory(baseFolder, _platformProvider.RenderingsFolder);
-
-                if (progressInfo != null) progressInfo.Completed += 1;
-
-                Logger.LogDebug("Compressing config file..");
-
-                // Add the config file with optimal compression.
                 writer.AddFile(baseFolder, _platformProvider.ConfigFile);
 
-                if (progressInfo != null) progressInfo.Completed += 1;
+                if (progressInfo != null)
+                {
+                    progressInfo.Total += writer.Entries.Count();
+
+                    writer.OnEntryWritten = () =>
+                    {
+                        progressInfo.Completed += 1;
+                    };
+                }
+
+                writer.Write();
             }
 
             return new FileInfo(targetFile);
@@ -152,9 +144,17 @@ namespace Artivity.Apid.IO
 
         public string FilePath { get; private set; }
 
-        public long MaxBytesPerUpdate { get; set; }
+        private readonly List<ZipFileWriterEntry> _entries = new List<ZipFileWriterEntry>();
 
-        public long BytesWritten { get; private set; }
+        public IEnumerable<ZipFileWriterEntry> Entries
+        {
+            get
+            {
+                return _entries;
+            }
+        }
+
+        public Action OnEntryWritten = null;
 
         #endregion
 
@@ -164,68 +164,64 @@ namespace Artivity.Apid.IO
         {
             FilePath = filePath;
 
-            if (!File.Exists(filePath))
+            if (File.Exists(filePath))
             {
-                Archive = ZipFile.Open(filePath, ZipArchiveMode.Create);
-            }
-            else
-            {
-                Archive = ZipFile.Open(filePath, ZipArchiveMode.Update);
+                File.Delete(filePath);
             }
 
-            // Write max. 100 MB per update.
-            MaxBytesPerUpdate = 100 * 1024 * 1024;
+            Archive = ZipFile.Open(filePath, ZipArchiveMode.Create);
         }
 
         #endregion
 
         #region Methods
 
-        private void WriteFile(string basePath, string filePath, CompressionLevel compressionLevel)
+        public void Write()
         {
-            if(BytesWritten >= MaxBytesPerUpdate)
+            foreach (ZipFileWriterEntry entry in _entries)
             {
-                // Free the current archive handle memory.
-                Archive.Dispose();
-
-                // Re-open the ZIP archive handle for updating.
-                Archive = ZipFile.Open(FilePath, ZipArchiveMode.Update);
-
-                // Reset the byte count.
-                BytesWritten = 0;
+                WriteEntry(entry);
             }
 
-            Logger.LogDebug("{0}", filePath);
+            _entries.Clear();
+        }
 
-            string entryName = filePath.Substring(basePath.Length + 1);
+        private void WriteEntry(ZipFileWriterEntry entry)
+        {
+            Logger.LogDebug("{0}", entry.FilePath);
 
             // If the file cannot be read because it is opened by another process, try to read it manually.
-            using (Stream entryStream = Archive.CreateEntry(entryName, compressionLevel).Open())
+            using (Stream entryStream = Archive.CreateEntry(entry.EntryName, entry.CompressionLevel).Open())
             {
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (FileStream fileStream = new FileStream(entry.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     fileStream.Seek(0, SeekOrigin.Begin);
                     fileStream.CopyTo(entryStream);
-
-                    // Cannot access the properties of the archive entry while in create mode.
-                    BytesWritten += fileStream.Length;
+                    fileStream.Flush();
                 }
+
+                entryStream.Flush();
+            }
+
+            if (OnEntryWritten != null)
+            {
+                OnEntryWritten.Invoke();
             }
         }
 
-        public void AddFile(string basePath, string filePath, CompressionLevel compressionLevel = CompressionLevel.NoCompression)
+        public void AddFile(string baseDirectory, string filePath, CompressionLevel compressionLevel = CompressionLevel.NoCompression)
         {
-            if (!filePath.StartsWith(basePath))
+            if (!filePath.StartsWith(baseDirectory))
             {
                 throw new ArgumentException("The file path must be located inside the base directory.");
             }
 
-            WriteFile(basePath, filePath, compressionLevel);
+            _entries.Add(new ZipFileWriterEntry(baseDirectory, filePath, compressionLevel));
         }
 
-        public void AddDirectory(string basePath, string directoryPath, string[] excludePatterns = null, string searchPattern = "*", CompressionLevel compressionLevel = CompressionLevel.NoCompression)
+        public void AddDirectory(string baseDirectory, string directoryPath, string[] excludePatterns = null, string searchPattern = "*", CompressionLevel compressionLevel = CompressionLevel.NoCompression)
         {
-            if (!directoryPath.StartsWith(basePath))
+            if (!directoryPath.StartsWith(baseDirectory))
             {
                 throw new ArgumentException("The folder path must be located inside the base directory.");
             }
@@ -235,7 +231,7 @@ namespace Artivity.Apid.IO
             // Add the sub directories before updating the file with it's contents to preserve memory.
             foreach (string d in Directory.EnumerateDirectories(directoryPath))
             {
-                AddDirectory(basePath, d, excludePatterns, searchPattern, compressionLevel);
+                AddDirectory(baseDirectory, d, excludePatterns, searchPattern, compressionLevel);
             }
 
             // Update the existing archive to preserve memory.
@@ -246,7 +242,7 @@ namespace Artivity.Apid.IO
                     continue;
                 }
 
-                WriteFile(basePath, f, compressionLevel);
+                _entries.Add(new ZipFileWriterEntry(baseDirectory, f, compressionLevel));
             }
         }
 
@@ -279,6 +275,30 @@ namespace Artivity.Apid.IO
         public void Dispose()
         {
             Archive.Dispose();
+        }
+
+        #endregion
+    }
+
+    internal struct ZipFileWriterEntry
+    {
+        #region Members
+
+        public readonly string EntryName;
+
+        public readonly string FilePath;
+
+        public readonly CompressionLevel CompressionLevel;
+
+        #endregion
+
+        #region Constructors
+
+        public ZipFileWriterEntry(string baseDirectory, string filePath, CompressionLevel compressionLevel = CompressionLevel.NoCompression)
+        {
+            EntryName = filePath.Substring(baseDirectory.Length + 1);
+            FilePath = filePath;
+            CompressionLevel = compressionLevel;
         }
 
         #endregion
