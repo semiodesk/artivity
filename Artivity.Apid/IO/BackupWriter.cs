@@ -142,7 +142,7 @@ namespace Artivity.Apid.IO
             return new FileInfo(targetFile);
         }
 
-        public void AddFile(string archivePath, string filePath, CompressionLevel compressionLevel = CompressionLevel.Optimal)
+        public void AddFile(string archivePath, string filePath, CompressionLevel compressionLevel = CompressionLevel.NoCompression)
         {
             if (!filePath.StartsWith(_platformProvider.ArtivityDataFolder))
             {
