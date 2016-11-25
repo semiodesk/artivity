@@ -105,101 +105,148 @@ namespace Artivity.Apid.IO
                 File.Delete(targetFile);
             }
 
-            // Since we may add _many_ entries to the ZIP archive we update it when adding files from a directory.
-            using(MemoryStream stream = new MemoryStream())
+            // Write into the ZIP file through a memory-conserving updater class.
+            using (ZipFileWriter writer = new ZipFileWriter(targetFile))
             {
-                using(ZipArchive archive = new ZipArchive(stream, ZipArchiveMode.Create))
-                {
-                }
+                // The base path will be subtracted from the file path to make the path relative to the ZIP archive root.
+                string baseFolder = _platformProvider.ArtivityDataFolder;
+
+                // Add the users' data directories without any compression since most of the files are already compressed.
+                Logger.LogDebug("Compressing database..");
+
+                writer.AddDirectory(baseFolder, _platformProvider.DatabaseFolder, new string[] { "*.lck" });
+
+                if (progressInfo != null) progressInfo.Completed += 1;
+
+                Logger.LogDebug("Compressing avatars..");
+
+                writer.AddDirectory(baseFolder, _platformProvider.AvatarsFolder);
+
+                if (progressInfo != null) progressInfo.Completed += 1;
+
+                Logger.LogDebug("Compressing renderings..");
+
+                writer.AddDirectory(baseFolder, _platformProvider.RenderingsFolder);
+
+                if (progressInfo != null) progressInfo.Completed += 1;
+
+                Logger.LogDebug("Compressing config file..");
+
+                // Add the config file with optimal compression.
+                writer.AddFile(baseFolder, _platformProvider.ConfigFile);
+
+                if (progressInfo != null) progressInfo.Completed += 1;
             }
-
-            // Add the users' data directories without any compression since most of the files are already compressed.
-            Logger.LogDebug("Compressing database..");
-
-            AddDirectory(targetFile, _platformProvider.DatabaseFolder, new string[] { "*.lck" });
-
-            if(progressInfo != null) progressInfo.Completed += 1;
-
-            Logger.LogDebug("Compressing avatars..");
-
-            AddDirectory(targetFile, _platformProvider.AvatarsFolder);
-
-            if (progressInfo != null) progressInfo.Completed += 1;
-
-            Logger.LogDebug("Compressing renderings..");
-
-            AddDirectory(targetFile, _platformProvider.RenderingsFolder);
-
-            if (progressInfo != null) progressInfo.Completed += 1;
-
-            Logger.LogDebug("Compressing config file..");
-
-            // Add the config file with optimal compression.
-            AddFile(targetFile, _platformProvider.ConfigFile);
-
-            if (progressInfo != null) progressInfo.Completed += 1;
 
             return new FileInfo(targetFile);
         }
 
-        public void AddFile(string archivePath, string filePath, CompressionLevel compressionLevel = CompressionLevel.NoCompression)
+        #endregion
+    }
+
+    internal class ZipFileWriter : IDisposable
+    {
+        #region Members
+
+        public ZipArchive Archive { get; private set; }
+
+        public string FilePath { get; private set; }
+
+        public long MaxBytesPerUpdate { get; set; }
+
+        public long BytesWritten { get; private set; }
+
+        #endregion
+
+        #region Constructors
+
+        public ZipFileWriter(string filePath)
         {
-            if (!filePath.StartsWith(_platformProvider.ArtivityDataFolder))
+            FilePath = filePath;
+
+            if (!File.Exists(filePath))
+            {
+                Archive = ZipFile.Open(filePath, ZipArchiveMode.Create);
+            }
+            else
+            {
+                Archive = ZipFile.Open(filePath, ZipArchiveMode.Update);
+            }
+
+            // Write max. 100 MB per update.
+            MaxBytesPerUpdate = 100 * 1024 * 1024;
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void WriteFile(string basePath, string filePath, CompressionLevel compressionLevel)
+        {
+            if(BytesWritten >= MaxBytesPerUpdate)
+            {
+                // Free the current archive handle memory.
+                Archive.Dispose();
+
+                // Re-open the ZIP archive handle for updating.
+                Archive = ZipFile.Open(FilePath, ZipArchiveMode.Update);
+
+                // Reset the byte count.
+                BytesWritten = 0;
+            }
+
+            Logger.LogDebug("{0}", filePath);
+
+            string entryName = filePath.Substring(basePath.Length + 1);
+
+            // If the file cannot be read because it is opened by another process, try to read it manually.
+            using (Stream entryStream = Archive.CreateEntry(entryName, compressionLevel).Open())
+            {
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    fileStream.Seek(0, SeekOrigin.Begin);
+                    fileStream.CopyTo(entryStream);
+
+                    // Cannot access the properties of the archive entry while in create mode.
+                    BytesWritten += fileStream.Length;
+                }
+            }
+        }
+
+        public void AddFile(string basePath, string filePath, CompressionLevel compressionLevel = CompressionLevel.NoCompression)
+        {
+            if (!filePath.StartsWith(basePath))
             {
                 throw new ArgumentException("The file path must be located inside the base directory.");
             }
 
-            // Update the existing archive to preserve memory.
-            ZipArchive archive = ZipFile.Open(archivePath, ZipArchiveMode.Update);
-
-            AddFile(ref archive, archivePath, filePath, compressionLevel);
-
-            archive.Dispose();
+            WriteFile(basePath, filePath, compressionLevel);
         }
 
-        public void AddDirectory(string archivePath, string directoryPath, string[] excludePatterns = null, string searchPattern = "*", SearchOption searchOption = SearchOption.AllDirectories, CompressionLevel compressionLevel = CompressionLevel.NoCompression)
+        public void AddDirectory(string basePath, string directoryPath, string[] excludePatterns = null, string searchPattern = "*", CompressionLevel compressionLevel = CompressionLevel.NoCompression)
         {
-            if (!directoryPath.StartsWith(_platformProvider.ArtivityDataFolder))
+            if (!directoryPath.StartsWith(basePath))
             {
                 throw new ArgumentException("The folder path must be located inside the base directory.");
             }
 
             Logger.LogDebug("{0}", directoryPath);
 
-            // Update the existing archive to preserve memory.
-            ZipArchive archive = ZipFile.Open(archivePath, ZipArchiveMode.Update);
-
-            foreach (string filePath in Directory.GetFiles(directoryPath, searchPattern, searchOption))
+            // Add the sub directories before updating the file with it's contents to preserve memory.
+            foreach (string d in Directory.EnumerateDirectories(directoryPath))
             {
-                if (excludePatterns != null && Regex.IsMatch(filePath, ToRegex(excludePatterns)))
+                AddDirectory(basePath, d, excludePatterns, searchPattern, compressionLevel);
+            }
+
+            // Update the existing archive to preserve memory.
+            foreach (string f in Directory.EnumerateFiles(directoryPath, searchPattern, SearchOption.TopDirectoryOnly))
+            {
+                if (excludePatterns != null && Regex.IsMatch(f, ToRegex(excludePatterns)))
                 {
                     continue;
                 }
 
-                AddFile(ref archive, archivePath, filePath, compressionLevel);
-            }
-
-            archive.Dispose();
-        }
-
-        private void AddFile(ref ZipArchive archive, string archivePath, string filePath, CompressionLevel compressionLevel, int retryCount = 0)
-        {
-            Logger.LogDebug("{0}", filePath);
-
-            string entryName = filePath.Substring(_platformProvider.ArtivityDataFolder.Length + 1);
-
-            ZipArchiveEntry entry = archive.CreateEntry(entryName, compressionLevel);
-
-            // If the file cannot be read because it is opened by another process, try to read it manually.
-            using (Stream entryStream = entry.Open())
-            {
-                entryStream.Seek(0, SeekOrigin.Begin);
-
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    fileStream.Seek(0, SeekOrigin.Begin);
-                    fileStream.CopyTo(entryStream);
-                }
+                WriteFile(basePath, f, compressionLevel);
             }
         }
 
@@ -227,6 +274,11 @@ namespace Artivity.Apid.IO
             }
 
             return resultBuilder.ToString();
+        }
+
+        public void Dispose()
+        {
+            Archive.Dispose();
         }
 
         #endregion
