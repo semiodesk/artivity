@@ -1,3 +1,1871 @@
-/* line 56, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */html,body{height:100%;width:100%}/* line 61, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */h1{font-size:2em}/* line 65, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */h2{font-size:1.7em;font-weight:100}/* line 70, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */h3{font-size:1.4em}/* line 75, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */h3,h4{color:#a3a3a3}/* line 79, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.no-margin{margin:0}/* line 83, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.no-margin-top{margin-top:0}/* line 87, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */body{font-family:"Roboto","Helvetica","Arial",sans-serif;color:#F0F0F0;background:#1D1D1D;overflow:hidden;min-height:100%;margin:0}/* line 96, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */a{color:#F0F0F0}/* line 100, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */a:hover{color:inherit;text-decoration:none}/* line 105, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */iframe{border:none}/* line 109, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.collapsed{display:none}/* line 113, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.text-center{text-align:center}/* line 117, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.pull-center{margin-left:auto;margin-right:auto}/* line 122, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.accent-fill{fill:#F27200}/* line 126, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.accent-background{background:#F27200}/* line 130, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.accent-color{color:#F27200}/* line 134, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.msg-error{display:block;width:100%;background:#E71D36;color:#fff;padding:1em;margin:0}/* line 143, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.msg-error label{color:rgba(255,255,255,0.7)}/* line 147, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.animate-show{line-height:1em;opacity:1;padding:10px}/* line 153, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.animate-show.ng-hide{line-height:0;opacity:0;padding:0 10px}/* line 160, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.animate-show.ng-hide-add,.animate-show.ng-hide-remove{transition:0s linear all}/* line 165, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.animate-show.ng-hide-add-active,.animate-show.ng-hide-remove-active{transition:1s linear all}/* line 169, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.disabled{-webkit-filter:grayscale(100%);-moz-filter:grayscale(100%);filter:grayscale(100%)}/* line 175, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn.disabled{opacity:.5;cursor:default}/* line 181, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */button,.btn-default{border:none;border-radius:3px;background:#303030;color:#a3a3a3;padding:.7em;margin:0 10px 0 0;outline:none;text-shadow:none;box-shadow:none;-webkit-box-shadow:none;transition:all linear 0.2s}/* line 196, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */button:hover,.btn-default:hover{background:#4a4a4a;color:#F0F0F0 !important}/* line 204, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */button:active,button:focus,.btn:active,.btn:focus{background:#4a4a4a;color:#F0F0F0;outline:none !important}/* line 210, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-info{background:#3694c3;border:none;border-radius:2px}/* line 216, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-success{background:#FB5F1A;border:none;border-radius:2px;transition:all linear 0.2s}/* line 223, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-success:hover{background:#fb7133}/* line 227, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-sm{width:30px;height:30px;padding:5px 10px}/* line 233, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-lg{width:90px;height:90px}/* line 239, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-md,.btn-icn{padding:0;font-size:21px;font-weight:100;width:45px;height:45px}/* line 247, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-header{margin:0 !important;width:45px;height:45px;background:none;color:#a3a3a3}/* line 256, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.circular,.btn-circular{border-radius:50%;width:45px;height:45px}/* line 262, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-pills{border:1px solid #303030;border-radius:2px;margin:15px}/* line 268, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-pills li a{margin:0;padding:5px;min-width:150px}/* line 274, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-tabs{border:none;margin:0}/* line 279, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-tabs li a{border-radius:0;border:none;border-bottom:3px solid transparent;color:#a3a3a3;text-transform:uppercase;transition:all 0.1s linear;padding:0.75em 1em}/* line 289, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-tabs.nav-tabs-top li a{border-bottom:0;border-top:2px solid transparent}/* line 294, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-tabs.nav-tabs-top li a:hover{border-top:2px solid #F0F0F0}/* line 299, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-tabs.nav-tabs-top li.active a,.nav-tabs.nav-tabs-top li.active a:hover{border:none;border-top:2px solid #F27200;color:#F0F0F0}/* line 305, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-tabs li a:hover{border-bottom:2px solid #F0F0F0;background:transparent;color:#F0F0F0;cursor:pointer}/* line 313, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-tabs li.active a,.nav-tabs li.active a:hover{border:none;border-bottom:2px solid #F27200;background:transparent;color:#F27200}/* line 320, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-tabs.nav-stacked li a{border:none;border-left:2px solid transparent;margin:0;text-transform:none}/* line 328, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-tabs.nav-stacked li.active a,.nav-tabs.nav-stacked li.active a:hover{border:none;border-left:2px solid #F27200 !important;color:#F0F0F0;background:#F27200}/* line 335, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.tab-content{padding:30px}/* line 339, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.center-parent{position:relative;top:50%;transform:translateY(-50%);transform-style:preserve-3d;text-align:center}/* line 347, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-view{list-style:none;padding:0;margin:0;display:table;width:100%;border-collapse:separate;border-spacing:0 3px}/* line 357, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-item{display:table-row;vertical-align:middle;color:#F0F0F0;background:rgba(240,240,240,0.025)}/* line 364, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-item:hover{color:#F0F0F0;background:rgba(240,240,240,0.05)}/* line 369, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-item .col{display:table-cell}/* line 373, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-item .col h5{margin-top:6px;margin-bottom:6px;color:#cacaca;font-size:15px}/* line 380, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-item .col label{margin:0}/* line 384, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-item .col.expand{width:100%}/* line 388, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-item .col-icn{vertical-align:middle;text-align:center;min-width:48px}/* line 394, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-item .col-icn-lg{min-width:64px}/* line 398, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-item .col-icn i{display:block;width:100%;font-size:30px;line-height:100%;border:none;margin:0}/* line 407, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.list-item .col button{background:transparent;color:#a3a3a3}/* line 413, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.label,.text-label{color:#a3a3a3}/* line 417, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.icn{width:20px;height:20px;background:#303030;line-height:20px;vertical-align:middle}/* line 425, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.icn-circle{border-radius:50%}/* line 429, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.icn-transparent{background:transparent}/* line 433, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.icn-container-lg{display:inline-block;text-align:center;width:30px}/* line 439, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.zmdi-sm{display:inline-block;font-size:20px;width:26px;height:20px;line-height:20px;line-height:20px;text-align:center;vertical-align:middle}/* line 450, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.zmdi-lg{font-size:24px !important;line-height:24px;vertical-align:middle}/* line 457, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.account,.ok{font-size:21px;text-shadow:none;border:none;border-radius:50%;width:45px;height:45px;padding:0;margin:0 5px;outline:none;box-shadow:none}/* line 470, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */h4{font-size:1.1em}/* line 478, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#header,#footer{display:table;background:#303030;color:#F0F0F0;width:100%;height:45px;padding:0;margin:0;border-spacing:0;table-layout:fixed;z-index:1000}/* line 491, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#header{position:absolute;top:0;left:0;right:0;z-index:2000;border-top:1px solid #2b2b2b;border-bottom:1px solid #2b2b2b}/* line 503, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.table .row,#header .row,#footer .row{display:table-row}/* line 509, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.table .col,#header .col,#footer .col{position:relative;display:table-cell;box-sizing:border-box;padding:0;margin:0;width:45px;text-align:center}/* line 521, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.table .col.expand,#header .col.expand,#footer .col.expand{width:100% !important}/* line 525, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#header .title{font-size:17px;font-weight:400;text-align:left;margin:0 0 0 5px;padding:0;position:relative;top:2px}/* line 536, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#header a.btn,#footer a.btn{border-radius:0 !important;padding:0;margin:0;border:none;transition:all 0.2s linear;color:rgba(240,240,240,0.6)}/* line 546, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#header a.btn i,#footer a.btn i{display:block;width:45px;height:45px;line-height:45px;font-size:21px;vertical-align:middle;text-align:center}/* line 556, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#footer a.btn i{font-size:20px !important}/* line 561, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#header a.btn:hover,#footer a.btn:hover{background:rgba(255,255,255,0.1);color:#f0f0f0}/* line 567, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#header .icn,#footer .icn{width:32px;height:32px}/* line 573, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#header .icn-circle,#footer .icn-circle{border-radius:50%}/* line 577, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.jumbo-header #header{height:65px}/* line 581, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.jumbo-header #header .col{width:60px}/* line 585, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.jumbo-header #header .title{line-height:60px}/* line 589, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.jumbo-header #header .icn{width:45px;height:45px}/* line 594, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.jumbo-header #body{top:65px}/* line 601, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#body-wrapper{display:block;position:absolute;left:0;right:0;bottom:0;top:47px;z-index:0}/* line 611, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#body-wrapper.bottom-toolbar{bottom:45px}/* line 615, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#body{display:block;position:absolute;width:100%;height:100%}/* line 622, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#canvas{padding:0;width:100%;height:100%}/* line 628, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable{position:relative}/* line 632, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable-handle{position:absolute;font-size:0.1px;display:block}/* line 639, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable-disabled .ui-resizable-handle,.ui-resizable-autohide .ui-resizable-handle{display:none}/* line 643, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable-n{cursor:n-resize;height:7px;width:100%;top:-5px;left:0}/* line 651, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable-s{cursor:s-resize;height:7px;width:100%;bottom:-5px;left:0}/* line 659, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable-e{cursor:e-resize;width:7px;right:-5px;top:0;height:100%}/* line 667, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable-w{cursor:w-resize;width:7px;left:-5px;top:0;height:100%}/* line 675, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable-se{cursor:se-resize;width:12px;height:12px;right:1px;bottom:1px}/* line 683, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable-sw{cursor:sw-resize;width:9px;height:9px;left:-5px;bottom:-5px}/* line 691, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable-nw{cursor:nw-resize;width:9px;height:9px;left:-5px;top:-5px}/* line 699, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-resizable-ne{cursor:ne-resize;width:9px;height:9px;right:-5px;top:-5px}/* line 707, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane-container{display:table !important}/* line 711, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane{background:#1D1D1D;display:table-cell}/* line 716, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane.ui-pane-center{position:relative}/* line 720, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane.ui-pane-left{width:370px;border-right:1px solid rgba(255,255,255,0.025)}/* line 725, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane.ui-pane-right{width:300px;border-left:1px solid rgba(255,255,255,0.025)}/* line 730, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane .tab-content{overflow-y:scroll;position:absolute;top:30px;left:0;right:0;bottom:0;padding:0}/* line 740, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane .tab-content.nav-stacked{top:0}/* line 744, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane .tab-pane{margin:0;padding:0}/* line 749, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane .tab-pane.padded{padding:15px}/* line 753, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane .tab-pane.padded-lg{padding:2em}/* line 757, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane .pane-content{position:absolute;top:0;left:0;right:0;bottom:0}/* line 765, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane .pane-content.padded{padding:15px}/* line 769, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.scroll-vertical{overflow-y:scroll}/* line 777, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.statusbar,#footer{position:absolute;bottom:0;left:0;right:0}/* line 784, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.statusbar{min-height:1em;background:#1D1D1D}/* line 792, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.toolbar{display:table;text-align:center;overflow-y:hidden;transition-property:all;transition-duration:1s;transition-timing-function:cubic-bezier(0, 1, 0.5, 1);padding:0 14px}/* line 802, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.toolbar.hidden{max-height:0}/* line 806, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.toolbar.visible{max-height:100px}/* line 810, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.toolbar{position:relative;height:45px}/* line 815, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.toolbar .btn{transition:all 0.2s linear;color:rgba(240,240,240,0.6)}/* line 820, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.toolbar .btn:hover{color:#f0f0f0}/* line 824, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-toggle-play{font-size:30px !important}/* line 831, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */svg{padding:0;margin:0}/* line 836, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline{position:absolute;top:0;left:0;right:0;bottom:0}/* line 844, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .track-col{position:absolute;left:100px;right:100px;top:0;bottom:0;background:transparent}/* line 853, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .track-container{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%)}/* line 863, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .track,.timeline .track-preview,.timeline .track-indicator{width:100%;height:2px;position:absolute;top:50%}/* line 870, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .track{background:#1D1D1D;z-index:0}/* line 875, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .track-preview{width:0px;height:4px;background:#a3a3a3;z-index:5;transform:translateY(-1px)}/* line 883, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .track-indicator{width:50%;background:#F27200;z-index:10}/* line 890, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .track-indicator,.timeline .thumb{transition:all 0.2s ease-out}/* line 894, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .thumb-container{position:absolute;top:0;bottom:0;left:-10px;right:-20px}/* line 907, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .thumb{width:20px;height:45px;position:absolute;top:-23px;left:50%;z-index:10;background:transparent}/* line 917, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .thumb .thumb-knob{background:#F27200;border-radius:50%;width:10px;height:10px;position:absolute;top:4px;right:0;left:0;bottom:0;margin:auto;text-align:center}/* line 931, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .thumb:hover{cursor:pointer;transform-origin:center}/* line 938, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .position,.timeline .duration{display:block;width:100px;height:100%;position:absolute}/* line 945, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .position{left:0}/* line 949, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .duration{right:0}/* line 954, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.timeline .position label,.timeline .duration label{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)}/* line 961, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.no-transition{transition:none !important}/* line 968, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-colorpicker{border-radius:50%;width:24px;height:24px;padding:2px;background:transparent}/* line 976, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-colorpicker:hover{background:#303030}/* line 980, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.btn-colorpicker .color-fill-icon{display:block;width:100%;height:100%;border-radius:50%}/* line 987, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.colorpicker-lg .colorpicker-saturation{width:200px;height:200px}/* line 993, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.colorpicker-lg .colorpicker-hue,.colorpicker-lg .colorpicker-alpha{width:32px;height:200px}/* line 999, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.colorpicker-lg .colorpicker-color,.colorpicker-lg .colorpicker-color div{height:32px}/* line 1003, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.img-icon{width:40px}/* line 1007, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.img-avatar{padding:0;margin:0;overflow:hidden}/* line 1013, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.img-avatar img{border:none}/* line 1017, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.img-avatar-md{width:45px}/* line 1021, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.img-avatar-md img{width:45px;height:45px;border-radius:50%}/* line 1027, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.img-avatar-lg{margin-right:14px}/* line 1032, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.img-avatar-lg,.img-avatar-lg img{width:110px;height:110px}/* line 1040, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.cards{list-style:none;padding:5px;margin:0}/* line 1046, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.card{position:relative;float:left;width:201px;height:235px;margin:0 5px 5px 0;padding:0;border-radius:5px;background:#262626}/* line 1057, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.card a{z-index:0;position:absolute;top:0;right:0;bottom:0;left:0;display:block;margin:0;padding:0;width:100%;height:100;background:transparent;transition:all ease-in 0.1s;border-radius:5px}/* line 1074, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.card a:hover{background:rgba(255,255,255,0.15)}/* line 1078, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.card .file-thumbnail-container{position:relative;border:none;border-radius:5px;box-shadow:none;width:100%;height:201px;background:#262626 url("../img/placeholder-img.png") center center no-repeat;background-size:125px auto}/* line 1089, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.card .file-thumbnail{border-radius:5px;width:100%;height:100%;background:transparent no-repeat;background-size:cover}/* line 1097, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.card .file-thumbnail-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(rgba(29,29,29,0.1), transparent, transparent, rgba(29,29,29,0.3))}/* line 1106, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.card .file-name{position:absolute;bottom:0;left:5px;right:5px;padding:5px 5px 5px 5px;width:200px;display:block;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;color:#bdbdbd}/* line 1120, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.card .file-extension{z-index:100;position:absolute;top:0;right:0;font-size:11px;text-transform:uppercase;padding:2px;min-width:30px;text-align:center;border-radius:0 5px 0 5px;box-shadow:0 1px 3px rgba(0,0,0,0.25);color:#1D1D1D}/* line 1138, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.form-header{margin-bottom:2em}/* line 1142, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.stretch-horizontal{width:100% !important}/* line 1146, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */fieldset{background:rgba(242,114,0,0.025);padding:1em}/* line 1151, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */fieldset h4{padding:0;margin-top:0;color:#a3a3a3;border:none}/* line 1160, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */label,p.description,p.subtitle{font-weight:400;color:#a3a3a3}/* line 1165, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */p.description{margin-bottom:1em}/* line 1169, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */label.form-label-top{display:block}/* line 1173, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */input.form-control{border-radius:0;border-color:white;box-shadow:none;margin-bottom:6px}/* line 1180, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */textarea.form-control{min-height:4em;border:none;border-radius:0;outline:0px}/* line 1190, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */textarea.form-control:active,textarea.form-control:focus,input.form-control:active,input.form-control:focus{border-color:#F27200;box-shadow:none;outline:0px !important;-webkit-appearance:none}/* line 1197, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */input.form-control-login{max-width:200px}/* line 1201, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */input[type='checkbox'].form-control{-webkit-appearance:none;display:inline-block;width:18px;height:18px;background:#fff;vertical-align:middle;line-height:1em;border:0;border-radius:0;outline:0;margin-right:.5em}/* line 1215, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */input[type='checkbox'][disabled].form-control{opacity:.5}/* line 1219, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */input[type='checkbox'][disabled].form-control:hover{cursor:default}/* line 1223, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */input[type='checkbox'].form-control:hover{cursor:pointer}/* line 1228, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */input[type='checkbox'].form-control:active,input[type='checkbox'].form-control:checked{background-color:#e9ecee}/* line 1232, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */input[type='checkbox'].form-control:checked:after{content:'\f26b';font-family:"Material-Design-Iconic-Font";font-size:14px;font-weight:900;position:relative;left:4px;top:2px;color:black}/* line 1243, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */select.form-control{-webkit-appearance:none;border-radius:0;border:none;width:auto}/* line 1250, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */select.form-control:focus{outline:none}/* line 1254, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-dialog{margin-top:45px;width:700px}/* line 1259, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-window-lg .modal-dialog{position:absolute;top:0;right:0;bottom:0;left:0;width:auto;margin:0}/* line 1269, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-window-lg .modal-content{display:table;width:100%;height:100%}/* line 1275, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-window-lg .modal-header{display:table-cell;height:45px}/* line 1280, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-window-lg .modal-body{display:table-row;padding:10px}/* line 1285, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-title{margin-bottom:.25em}/* line 1290, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-header,.modal-footer{border:none;padding:30px 30px 15px 30px}/* line 1295, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-footer-buttons{padding-top:1em;position:relative;top:7px;z-index:10}/* line 1302, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-body{padding:0 30px 30px 30px}/* line 1306, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-content{-webkit-box-shadow:none;box-shadow:none;border:none;border-radius:0 0 10px 10px;background:#222;min-width:700px;transition:width linear 0.4s;transition:height linear 0.4s}/* line 1317, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-backdrop.in{background:#101010;opacity:.9 !important;transition:opacity linear 0.4s}/* line 1323, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-status-bar{position:absolute;bottom:-5px;left:0;right:0;z-index:0}/* line 1331, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.modal-status-bar .modal-state{padding:5px;text-align:center;border-radius:0 0 10px 10px !important}/* line 1337, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */input[disabled]{opacity:.5}/* line 1342, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */button[disabled],button[disabled]:hover{opacity:1 !important;background:#303030 !important;color:#1D1D1D !important;cursor:default}/* line 1349, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.progress{margin-bottom:10px;background:#1D1D1D !important;border-radius:0}/* line 1355, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.progress-bar{background:#EB7414 !important}/* line 1362, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.loader{margin:0.5em 1.5em;font-size:10px;position:relative;text-indent:-9999em;background:transparent;border-top:0.6em solid rgba(240,240,240,0.2);border-right:0.6em solid rgba(240,240,240,0.2);border-bottom:0.6em solid rgba(240,240,240,0.2);border-left:0.6em solid #F0F0F0;-webkit-transform:translateZ(0);-ms-transform:translateZ(0);transform:translateZ(0);-webkit-animation:load8 1.1s infinite linear;animation:load8 1.1s infinite linear}/* line 1380, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.loader,.loader:after{border-radius:50%;width:5em;height:5em}@-webkit-keyframes load8{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes load8{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}/* line 1411, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.under-construction{position:relative;height:300px;text-align:center;background:url("../img/construction.svg") center center no-repeat;background-size:100px 100px;opacity:.2}/* line 1420, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */::-webkit-scrollbar{width:12px;height:12px}/* line 1427, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */::-webkit-scrollbar-track{background:transparent}/* line 1431, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */::-webkit-scrollbar-thumb{background:#303030;border:2px solid #1D1D1D}/* line 1436, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */::-webkit-scrollbar-thumb:hover{background:#4a4a4a}/* line 1440, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.bootstrap-switch{background:#303030;outline:none;border:none}/* line 1446, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.bootstrap-switch-label{background:#303030 !important}/* line 1450, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.bootstrap-switch-focused{outline:none;border:none !important;box-shadow:none !important}/* line 1456, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.bootstrap-switch-handle-on{background:green !important}/* line 1460, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.bootstrap-switch-handle-off{background:#666 !important;color:white !important}/* line 1465, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-pills>li>a{cursor:pointer;border-radius:0;background:transparent;color:#F0F0F0}/* line 1472, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-pills>li.active>a{background:#F27200;color:#fff}/* line 1478, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.nav-pills>li>a:hover,.nav-pills>li.active>a:hover{cursor:pointer;background:#F27200;color:#fff;border-radius:0}/* line 1485, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.hint{background:#303030;border-radius:3px;padding:10px;box-sizing:border-box;width:100%}/* line 1493, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.zdmi-xl{font-size:48px}/* line 1497, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.overlay{position:absolute;top:45px;right:0;left:0;bottom:0;color:#F0F0F0;background:rgba(29,29,29,0.95)}/* line 1508, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.overlay.invisible,.msg.invisible{opacity:0}/* line 1512, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.msg{min-width:600px}/* line 1518, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.msg h1,.msg h2,.msg h3{margin-top:0}/* line 1522, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.center-x{position:absolute;left:50%;transform:translateX(-50%)}/* line 1528, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.center-y{position:absolute;top:50%;transform:translateY(-50%)}/* line 1534, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.center-xy{position:absolute;top:50%;left:50%;transform:translate(-50%, -100%)}/* line 1541, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ctl-history{position:absolute;top:0;left:0;right:0;bottom:59px;overflow-y:scroll}/* line 1550, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ctl-history:focus{outline:none}/* line 1568, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities label{margin:0}/* line 1572, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities .activity-header{position:relative;padding:10px 0 0 0;line-height:28px}/* line 1578, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities .activity-header .time{clear:both;vertical-align:middle;text-align:center;font-weight:bold}/* line 1585, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities .activity-header .session{margin-left:30px;background:#303030;padding:0 10px;margin-bottom:1px;margin-right:15px}/* line 1593, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities .activity-header .session .icn{float:left;height:26px;width:26px}/* line 1599, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities{margin-right:1px}/* line 1603, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li{color:#a3a3a3}/* line 1607, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a{cursor:pointer;display:block;margin-bottom:1px !important}/* line 1613, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.default{margin-left:60px;background:#303030;padding:5px;margin-right:15px}/* line 1620, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.default .time{padding-right:5px}/* line 1625, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.default:hover,.lst-activities li.selected a.default{background:shade(#F27200, 20%)}/* line 1632, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.default:hover label,.lst-activities li a.default:hover i,.lst-activities li.selected a.default label,.lst-activities li.selected a.default i{color:#1D1D1D}/* line 1636, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-influences{display:block;position:relative}/* line 1641, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-influences a{display:block;line-height:22px;vertical-align:middle;margin-bottom:0 !important}/* line 1666, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-influences a i.zmdi{display:inline-block;text-align:center;width:26px;font-size:16px;color:white;margin:0}/* line 1675, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-influences .type{color:white}/* line 1679, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment{position:relative;margin:0 15px 10px 30px}/* line 1684, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment .avatar{float:left;margin-right:15px;margin-bottom:15px}/* line 1690, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment .avatar img{width:42px;height:42px}/* line 1695, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment .time{padding-right:10px}/* line 1699, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment .tip{width:0px;height:0px;position:absolute;background:transparent;border:10px solid #303030}/* line 1707, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment .tip.tip-right{top:0px;right:-15px;border-right-color:transparent;border-bottom-color:transparent}/* line 1714, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment .tip.tip-left{top:0;left:-15px;border-left-color:transparent;border-bottom-color:transparent}/* line 1721, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment .txt{background:#303030;padding:10px;color:white;min-height:2em}/* line 1728, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment .txt .time{position:absolute;bottom:5px;right:5px;z-index:0}/* line 1736, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment:hover .txt,.lst-activities li.selected a.comment .txt{background:#F27200;color:black}/* line 1742, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment:hover .tip.tip-left,.lst-activities li.selected a.comment .tip.tip-left{border-top-color:#F27200;border-right-color:#F27200}/* line 1748, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.lst-activities li a.comment:hover .tip.tip-right,.lst-activities li.selected a.comment .tip.tip-right{border-top-color:#F27200;border-left-color:#F27200}/* line 1753, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ctl-comment{display:block;position:absolute;bottom:0;left:0;right:0;border-top:1px solid #303030;padding:10px}/* line 1764, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ctl-comment textarea,.ctl-comment input{display:block}/* line 1768, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ctl-comment textarea{line-height:1.3em;border:none;width:100%;padding:10px;color:#000;resize:none;height:2.7em}/* line 1778, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ctl-comment input[type=button]{float:right;margin:5px}/* line 1786, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.chart-donut{width:29rem;height:29rem;margin:0 auto}/* line 1792, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */path.color0{fill:#1072b8}/* line 1796, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */path.color1{fill:#35526b}/* line 1803, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#editor{position:absolute;top:0;left:0;bottom:0;right:0;overflow-y:scroll;overflow-x:hidden}/* line 1813, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui{background:none;font-family:'Roboto'}/* line 1820, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .nav-tabs .active{color:#fff;border-radius:0}/* line 1825, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .nav-tabs .active a{border:none !important;border-radius:0;padding:10px 10px 11px 15px}/* line 1831, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .nav-tabs a[role='addTab']{width:40px;text-align:center}/* line 1836, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .controlbar{display:none;border-left:none;background:#303030}/* line 1842, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .tab-content{padding:0;position:relative}/* line 1847, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .CodeMirror{border:none !important;border-bottom:4px solid #1D1D1D}/* line 1852, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .CodeMirror-gutters{border:none !important;background:none}/* line 1858, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasqe_share,.yasqe_fullscreenBtn{width:16px !important;height:16px !important;margin:0 5px;position:relative;left:-7px}/* line 1866, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasqe_queryButton.query_valid .btn{float:left;font-size:30px;line-height:30px;border-radius:50%;margin:11px 20px 0 0;padding:10px 8px 10px 12px;width:45px;height:45px;background:#F94C00;color:white}/* line 1879, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr{background-color:#1D1D1D}/* line 1883, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .yasr_header{position:relative;top:-10px}/* line 1888, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .yasr_btn{border:1px solid #1D1D1D;background:#303030;color:#F0F0F0}/* line 1894, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .yasr_btn:hover{border:1px solid #1D1D1D;background:#4a4a4a;color:#F0F0F0}/* line 1900, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .yasr_btn.selected{background:#F94C00;border:1px solid #1D1D1D}/* line 1905, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .yasr_btn svg path{fill:#F0F0F0 !important}/* line 1909, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .sortIcons svg path{fill:#a3a3a3 !important}/* line 1913, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .yasr_results{margin:0}/* line 1918, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .btn_smallscreen,.yasgui .yasr .btn_fullscreen{position:absolute;right:7px}/* line 1923, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr input{border:none}/* line 1927, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr label{font-weight:normal}/* line 1931, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .dataTables_wrapper .dtTopHeader{padding:7px 7px 7px 0}/* line 1935, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .dataTables_wrapper .dataTables_info{padding:7px}/* line 1939, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .dataTables_wrapper .dataTables_info{color:#a3a3a3 !important;border:none !important;margin:0}/* line 1945, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr table.dataTable{border:none}/* line 1949, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr table.dataTable thead th{background:#303030 !important;border-left:1px solid #1D1D1D;border-right:none;color:#a3a3a3}/* line 1956, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr table.dataTable tbody td{padding:5px 10px;font-family:'Roboto';background:#303030;border-left:1px solid #1D1D1D;border-bottom:1px solid #1D1D1D}/* line 1964, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr table.dataTable tbody tr td:first-child{text-align:center;color:#999}/* line 1969, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .CodeMirror{background:#303030;color:#F0F0F0}/* line 1974, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .yasr_header{padding-bottom:5px}/* line 1979, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr table.dataTable tbody tr td a,.yasgui .yasr .CodeMirror .cm-string{color:#00ceff}/* line 1983, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr .nonUri{color:#F0F0F0}/* line 1987, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.yasgui .yasr sup{color:#a3a3a3}/* line 1991, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.openGchartBtn{position:relative;right:47px;top:-45px !important}/* line 2000, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.connecting{display:inline-block;margin:0 3px 0 0;width:20px;height:16px;font-size:10px;position:relative;top:3px}/* line 2010, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.connecting>div{background-color:white;height:100%;width:4px;display:inline-block;-webkit-animation:sk-stretchdelay 1.2s infinite ease-in-out;animation:sk-stretchdelay 1.2s infinite ease-in-out}/* line 2019, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.connecting .rect2{-webkit-animation-delay:-1.1s;animation-delay:-1.1s}/* line 2024, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.connecting .rect3{-webkit-animation-delay:-1.0s;animation-delay:-1.0s}/* line 2029, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.connecting .rect4{-webkit-animation-delay:-0.9s;animation-delay:-0.9s}/* line 2034, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.connecting .rect5{-webkit-animation-delay:-0.8s;animation-delay:-0.8s}@-webkit-keyframes sk-stretchdelay{0%,40%,100%{-webkit-transform:scaleY(0.4)}20%{-webkit-transform:scaleY(1)}}@keyframes sk-stretchdelay{0%,40%,100%{transform:scaleY(0.4);-webkit-transform:scaleY(0.4)}20%{transform:scaleY(1);-webkit-transform:scaleY(1)}}/* line 2065, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.loading,.spinner.loading:before,.spinner.loading:after{border-radius:50%}/* line 2070, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.loading:before,.spinner.loading:after{position:absolute;content:''}/* line 2075, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.loading:before{width:5.2em;height:10.2em;background:#222;border-radius:10.2em 0 0 10.2em;top:-0.1em;left:-0.1em;-webkit-transform-origin:5.2em 5.1em;transform-origin:5.2em 5.1em;-webkit-animation:load2 2s infinite ease 1.5s;animation:load2 2s infinite ease 1.5s}/* line 2088, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.loading{color:#a3a3a3;font-size:5px;text-indent:-99999em;margin:55px auto;position:relative;width:10em;height:10em;box-shadow:inset 0 0 0 1em;-webkit-transform:translateZ(0);-ms-transform:translateZ(0);transform:translateZ(0)}/* line 2102, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.spinner.loading:after{width:5.2em;height:10.2em;background:#222;border-radius:0 10.2em 10.2em 0;top:-0.1em;left:5.1em;-webkit-transform-origin:0px 5.1em;transform-origin:0px 5.1em;-webkit-animation:load2 2s infinite ease;animation:load2 2s infinite ease}@-webkit-keyframes load2{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes load2{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}/* line 2137, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.cfp-hotkeys-close{display:none}/* line 2141, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.cfp-hotkeys-container{background:rgba(29,29,29,0.9);margin-top:47px}/* line 2146, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.cfp-hotkeys-key{border:none;background:#F0F0F0;color:#303030;box-shadow:none}/* line 2153, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.cfp-hotkeys-text{color:#F0F0F0}@media screen and (max-width: 991px){/* line 2158, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.body-wrapper{top:47px;bottom:0;left:0;right:0}/* line 2165, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane-right{display:none}/* line 2169, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane-left{position:absolute;bottom:-43px;left:0;right:0;width:100% !important;height:200px;z-index:10;border:none}/* line 2180, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ui-pane-center{position:absolute !important;top:0;bottom:200px;left:0;right:0}/* line 2188, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ctl-history{bottom:0}/* line 2192, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */.ctl-comment{display:none}/* line 2196, D:/Projects/2016/Artivity/Artivity.Apid.Modules.Journal/app/css/style.scss */#footer{bottom:201px}}
+/* NOTE: If Brackets refuses to compile SASS files, check for syntax errors! */
+/*
+https://coolors.co/17bebb-ffc914-fb5f1a-2e282a-76b041
+https://coolors.co/17bebb-ffc914-fb5f1a-D62828-76b041
+https://coolors.co/76b041-087E8B-e57c04-fb5f1a-d62828
+https://coolors.co/087e8b-e57c04-fb5f1a-d62828-5e2f63
+https://coolors.co/0baabc-e57c04-fb5f1a-d62828-7b3d82
+*/
+/* GENERAL STYLES */
+html,
+body {
+  height: 100%;
+  width: 100%; }
 
-/*# sourceMappingURL=style.css.map */
+h1 {
+  font-size: 2em; }
+
+h2 {
+  font-size: 1.7em;
+  font-weight: 100; }
+
+h3 {
+  font-size: 1.4em; }
+
+h3,
+h4 {
+  color: #a4a4a4; }
+
+.no-margin {
+  margin: 0; }
+
+.no-margin-top {
+  margin-top: 0; }
+
+body {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  color: #F0F0F0;
+  background: #1D1D1D;
+  overflow: hidden;
+  min-height: 100%;
+  margin: 0; }
+
+a {
+  color: #F0F0F0; }
+
+a:hover {
+  color: inherit;
+  text-decoration: none; }
+
+iframe {
+  border: none; }
+
+.collapsed {
+  display: none; }
+
+.text-center {
+  text-align: center; }
+
+.pull-center {
+  margin-left: auto;
+  margin-right: auto; }
+
+.accent-fill {
+  fill: #F27200; }
+
+.accent-background {
+  background: #F27200; }
+
+.accent-color {
+  color: #F27200; }
+
+.msg-error {
+  display: block;
+  width: 100%;
+  background: #E71D36;
+  color: #FFFFFF;
+  padding: 1em;
+  margin: 0; }
+
+.msg-error label {
+  color: rgba(255, 255, 255, 0.7); }
+
+.animate-show {
+  line-height: 1em;
+  opacity: 1;
+  padding: 10px; }
+
+.animate-show.ng-hide {
+  line-height: 0;
+  opacity: 0;
+  padding: 0 10px; }
+
+.animate-show.ng-hide-add,
+.animate-show.ng-hide-remove {
+  transition: 0s linear all; }
+
+.animate-show.ng-hide-add-active,
+.animate-show.ng-hide-remove-active {
+  transition: 1s linear all; }
+
+.disabled {
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  filter: grayscale(100%); }
+
+.btn.disabled {
+  opacity: .5;
+  cursor: default; }
+
+button,
+.btn-default {
+  border: none;
+  border-radius: 3px;
+  background: #303030;
+  color: #a4a4a4;
+  padding: .7em;
+  margin: 0 10px 0 0;
+  outline: none;
+  text-shadow: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  transition: all linear .2s; }
+
+button:hover,
+.btn-default:hover {
+  background: #4a4a4a;
+  color: #F0F0F0 !important; }
+
+button:active,
+button:focus,
+.btn:active,
+.btn:focus {
+  background: #4a4a4a;
+  color: #F0F0F0;
+  outline: none !important; }
+
+.btn-info {
+  background: #3694c3;
+  border: none;
+  border-radius: 2px; }
+
+.btn-success {
+  background: #FB5F1A;
+  border: none;
+  border-radius: 2px;
+  transition: all linear .2s; }
+
+.btn-success:hover {
+  background: #fb7133; }
+
+.btn-sm {
+  width: 30px;
+  height: 30px;
+  padding: 5px 10px; }
+
+.btn-lg {
+  width: 90px;
+  height: 90px; }
+
+.btn-md,
+.btn-icn {
+  padding: 0;
+  font-size: 21px;
+  font-weight: 100;
+  width: 45px;
+  height: 45px; }
+
+.btn-header {
+  margin: 0 !important;
+  width: 45px;
+  height: 45px;
+  background: none;
+  color: #a4a4a4; }
+
+.circular,
+.btn-circular {
+  border-radius: 50%;
+  width: 45px;
+  height: 45px; }
+
+.nav-pills {
+  border: 1px solid #303030;
+  border-radius: 2px;
+  margin: 15px; }
+
+.nav-pills li a {
+  margin: 0;
+  padding: 5px;
+  min-width: 150px; }
+
+.nav-tabs {
+  border: none;
+  margin: 0; }
+
+.nav-tabs li a {
+  border-radius: 0;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #a4a4a4;
+  text-transform: uppercase;
+  transition: all .1s linear;
+  padding: .75em 1em; }
+
+.nav-tabs.nav-tabs-top li a {
+  border-bottom: 0;
+  border-top: 2px solid transparent; }
+
+.nav-tabs.nav-tabs-top li a:hover {
+  border-top: 2px solid #F0F0F0; }
+
+.nav-tabs.nav-tabs-top li.active a,
+.nav-tabs.nav-tabs-top li.active a:hover {
+  border: none;
+  border-top: 2px solid #F27200;
+  color: #F0F0F0; }
+
+.nav-tabs li a:hover {
+  border-bottom: 2px solid #F0F0F0;
+  background: transparent;
+  color: #F0F0F0;
+  cursor: pointer; }
+
+.nav-tabs li.active a,
+.nav-tabs li.active a:hover {
+  border: none;
+  border-bottom: 2px solid #F27200;
+  background: transparent;
+  color: #F27200; }
+
+.nav-tabs.nav-stacked li a {
+  border: none;
+  border-left: 2px solid transparent;
+  margin: 0;
+  text-transform: none; }
+
+.nav-tabs.nav-stacked li.active a,
+.nav-tabs.nav-stacked li.active a:hover {
+  border: none;
+  border-left: 2px solid #F27200 !important;
+  color: #F0F0F0;
+  background: #F27200; }
+
+.tab-content {
+  padding: 30px; }
+
+.center-parent {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  transform-style: preserve-3d;
+  text-align: center; }
+
+.list-view {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 3px; }
+
+.list-item {
+  display: table-row;
+  vertical-align: middle;
+  color: #F0F0F0;
+  background: rgba(240, 240, 240, 0.025); }
+
+.list-item:hover {
+  color: #F0F0F0;
+  background: rgba(240, 240, 240, 0.05); }
+
+.list-item .col {
+  display: table-cell; }
+
+.list-item .col h5 {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  color: #cacaca;
+  font-size: 15px; }
+
+.list-item .col label {
+  margin: 0; }
+
+.list-item .col.expand {
+  width: 100%; }
+
+.list-item .col-icn {
+  vertical-align: middle;
+  text-align: center;
+  min-width: 48px; }
+
+.list-item .col-icn-lg {
+  min-width: 64px; }
+
+.list-item .col-icn i {
+  display: block;
+  width: 100%;
+  font-size: 30px;
+  line-height: 100%;
+  border: none;
+  margin: 0; }
+
+.list-item .col button {
+  background: transparent;
+  color: #a4a4a4; }
+
+.label,
+.text-label {
+  color: #a4a4a4; }
+
+.icn {
+  width: 20px;
+  height: 20px;
+  background: #303030;
+  line-height: 20px;
+  vertical-align: middle; }
+
+.icn-circle {
+  border-radius: 50%; }
+
+.icn-transparent {
+  background: transparent; }
+
+.icn-container-lg {
+  display: inline-block;
+  text-align: center;
+  width: 30px; }
+
+.zmdi-sm {
+  display: inline-block;
+  font-size: 20px;
+  width: 26px;
+  height: 20px;
+  line-height: 20px;
+  line-height: 20px;
+  text-align: center;
+  vertical-align: middle; }
+
+.zmdi-lg {
+  font-size: 24px !important;
+  line-height: 24px;
+  vertical-align: middle; }
+
+.account,
+.ok {
+  font-size: 21px;
+  text-shadow: none;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  margin: 0 5px;
+  outline: none;
+  box-shadow: none; }
+
+h4 {
+  font-size: 1.1em; }
+
+/* HEADER */
+#header,
+#footer {
+  display: table;
+  background: #303030;
+  color: #F0F0F0;
+  width: 100%;
+  height: 45px;
+  padding: 0;
+  margin: 0;
+  border-spacing: 0;
+  table-layout: fixed;
+  z-index: 1000; }
+
+#header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  border-top: 1px solid #2b2b2b;
+  border-bottom: 1px solid #2b2b2b; }
+
+.table .row,
+#header .row,
+#footer .row {
+  display: table-row; }
+
+.table .col,
+#header .col,
+#footer .col {
+  position: relative;
+  display: table-cell;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  width: 45px;
+  text-align: center; }
+
+.table .col.expand,
+#header .col.expand,
+#footer .col.expand {
+  width: 100% !important; }
+
+#header .title {
+  font-size: 17px;
+  font-weight: 400;
+  text-align: left;
+  margin: 0 0 0 5px;
+  padding: 0;
+  position: relative;
+  top: 2px; }
+
+#header a.btn,
+#footer a.btn {
+  border-radius: 0 !important;
+  padding: 0;
+  margin: 0;
+  border: none;
+  transition: all .2s linear;
+  color: rgba(240, 240, 240, 0.6); }
+
+#header a.btn i,
+#footer a.btn i {
+  display: block;
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+  font-size: 21px;
+  vertical-align: middle;
+  text-align: center; }
+
+#footer a.btn i {
+  font-size: 20px !important; }
+
+#header a.btn:hover,
+#footer a.btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f0f0f0; }
+
+#header .icn,
+#footer .icn {
+  width: 32px;
+  height: 32px; }
+
+#header .icn-circle,
+#footer .icn-circle {
+  border-radius: 50%; }
+
+.jumbo-header #header {
+  height: 65px; }
+
+.jumbo-header #header .col {
+  width: 60px; }
+
+.jumbo-header #header .title {
+  line-height: 60px; }
+
+.jumbo-header #header .icn {
+  width: 45px;
+  height: 45px; }
+
+.jumbo-header #body {
+  top: 65px; }
+
+/* BODY */
+#body-wrapper {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 47px;
+  z-index: 0; }
+
+#body-wrapper.bottom-toolbar {
+  bottom: 45px; }
+
+#body {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%; }
+
+#canvas {
+  padding: 0;
+  width: 100%;
+  height: 100%; }
+
+.ui-resizable {
+  position: relative; }
+
+.ui-resizable-handle {
+  position: absolute;
+  font-size: 0.1px;
+  display: block; }
+
+.ui-resizable-disabled .ui-resizable-handle,
+.ui-resizable-autohide .ui-resizable-handle {
+  display: none; }
+
+.ui-resizable-n {
+  cursor: n-resize;
+  height: 7px;
+  width: 100%;
+  top: -5px;
+  left: 0; }
+
+.ui-resizable-s {
+  cursor: s-resize;
+  height: 7px;
+  width: 100%;
+  bottom: -5px;
+  left: 0; }
+
+.ui-resizable-e {
+  cursor: e-resize;
+  width: 7px;
+  right: -5px;
+  top: 0;
+  height: 100%; }
+
+.ui-resizable-w {
+  cursor: w-resize;
+  width: 7px;
+  left: -5px;
+  top: 0;
+  height: 100%; }
+
+.ui-resizable-se {
+  cursor: se-resize;
+  width: 12px;
+  height: 12px;
+  right: 1px;
+  bottom: 1px; }
+
+.ui-resizable-sw {
+  cursor: sw-resize;
+  width: 9px;
+  height: 9px;
+  left: -5px;
+  bottom: -5px; }
+
+.ui-resizable-nw {
+  cursor: nw-resize;
+  width: 9px;
+  height: 9px;
+  left: -5px;
+  top: -5px; }
+
+.ui-resizable-ne {
+  cursor: ne-resize;
+  width: 9px;
+  height: 9px;
+  right: -5px;
+  top: -5px; }
+
+.ui-pane-container {
+  display: table !important; }
+
+.ui-pane {
+  background: #1D1D1D;
+  display: table-cell; }
+
+.ui-pane.ui-pane-center {
+  position: relative; }
+
+.ui-pane.ui-pane-left {
+  width: 370px;
+  border-right: 1px solid rgba(255, 255, 255, 0.025); }
+
+.ui-pane.ui-pane-right {
+  width: 300px;
+  border-left: 1px solid rgba(255, 255, 255, 0.025); }
+
+.ui-pane .tab-content {
+  overflow-y: scroll;
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0; }
+
+.ui-pane .tab-content.nav-stacked {
+  top: 0; }
+
+.ui-pane .tab-pane {
+  margin: 0;
+  padding: 0; }
+
+.ui-pane .tab-pane.padded {
+  padding: 15px; }
+
+.ui-pane .tab-pane.padded-lg {
+  padding: 2em; }
+
+.ui-pane .pane-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; }
+
+.ui-pane .pane-content.padded {
+  padding: 15px; }
+
+.scroll-vertical {
+  overflow-y: scroll; }
+
+/* FOOTER */
+.statusbar,
+#footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.statusbar {
+  min-height: 1em;
+  background: #1D1D1D; }
+
+/* TOOLBARS */
+.toolbar {
+  display: table;
+  text-align: center;
+  overflow-y: hidden;
+  transition-property: all;
+  transition-duration: 1s;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+  padding: 0 14px; }
+
+.toolbar.hidden {
+  max-height: 0; }
+
+.toolbar.visible {
+  max-height: 100px; }
+
+.toolbar {
+  position: relative;
+  height: 45px; }
+
+.toolbar .btn {
+  transition: all .2s linear;
+  color: rgba(240, 240, 240, 0.6); }
+
+.toolbar .btn:hover {
+  color: #f0f0f0; }
+
+.btn-toggle-play {
+  font-size: 30px !important; }
+
+/* ACTIVITIES CHART */
+svg {
+  padding: 0;
+  margin: 0; }
+
+.timeline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; }
+
+.timeline .track-col {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  top: 0;
+  bottom: 0;
+  background: transparent; }
+
+.timeline .track-container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%); }
+
+.timeline .track,
+.timeline .track-preview,
+.timeline .track-indicator {
+  width: 100%;
+  height: 2px;
+  position: absolute;
+  top: 50%; }
+
+.timeline .track {
+  background: #1D1D1D;
+  z-index: 0; }
+
+.timeline .track-preview {
+  width: 0px;
+  height: 4px;
+  background: #a4a4a4;
+  z-index: 5;
+  transform: translateY(-1px); }
+
+.timeline .track-indicator {
+  width: 50%;
+  background: #F27200;
+  z-index: 10; }
+
+.timeline .track-indicator,
+.timeline .thumb {
+  transition: all .2s ease-out; }
+
+.timeline .thumb-container {
+  /*
+	The thumb container is larger than the actual track column because of the
+	invisible thumb area which allows for easier handling on touch screens.
+	Moving the thumb is constrained to be within the thumb-container.
+	*/
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -20px; }
+
+.timeline .thumb {
+  width: 20px;
+  height: 45px;
+  position: absolute;
+  top: -23px;
+  left: 50%;
+  z-index: 10;
+  background: transparent; }
+
+.timeline .thumb .thumb-knob {
+  background: #F27200;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 4px;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin: auto;
+  text-align: center; }
+
+.timeline .thumb:hover {
+  cursor: pointer;
+  transform-origin: center;
+  /*transform: scale(1.25, 1.25);*/ }
+
+.timeline .position,
+.timeline .duration {
+  display: block;
+  width: 100px;
+  height: 100%;
+  position: absolute; }
+
+.timeline .position {
+  left: 0; }
+
+.timeline .duration {
+  right: 0; }
+
+.timeline .position label,
+.timeline .duration label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); }
+
+.no-transition {
+  transition: none !important; }
+
+/* DIRECTIVES */
+.btn-colorpicker {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  background: transparent; }
+
+.btn-colorpicker:hover {
+  background: #303030; }
+
+.btn-colorpicker .color-fill-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%; }
+
+.colorpicker-lg .colorpicker-saturation {
+  width: 200px;
+  height: 200px; }
+
+.colorpicker-lg .colorpicker-hue,
+.colorpicker-lg .colorpicker-alpha {
+  width: 32px;
+  height: 200px; }
+
+.colorpicker-lg .colorpicker-color,
+.colorpicker-lg .colorpicker-color div {
+  height: 32px; }
+
+.img-icon {
+  width: 40px; }
+
+.img-avatar {
+  padding: 0;
+  margin: 0;
+  overflow: hidden; }
+
+.img-avatar img {
+  border: none; }
+
+.img-avatar-md {
+  width: 45px; }
+
+.img-avatar-md img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%; }
+
+.img-avatar-lg {
+  margin-right: 14px; }
+
+.img-avatar-lg,
+.img-avatar-lg img {
+  width: 110px;
+  height: 110px; }
+
+/* CARDS */
+.cards {
+  list-style: none;
+  padding: 5px;
+  margin: 0; }
+
+.card {
+  position: relative;
+  float: left;
+  width: 201px;
+  height: 235px;
+  margin: 0 5px 5px 0;
+  padding: 0;
+  border-radius: 5px;
+  background: #262626; }
+
+.card a {
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100;
+  background: transparent;
+  transition: all ease-in .1s;
+  border-radius: 5px; }
+
+.card a:hover {
+  background: rgba(255, 255, 255, 0.15); }
+
+.card .file-thumbnail-container {
+  position: relative;
+  border: none;
+  border-radius: 5px;
+  box-shadow: none;
+  width: 100%;
+  height: 201px;
+  background: #262626 url("../img/placeholder-img.png") center center no-repeat;
+  background-size: 125px auto; }
+
+.card .file-thumbnail {
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  background: transparent no-repeat;
+  background-size: cover; }
+
+.card .file-thumbnail-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(rgba(29, 29, 29, 0.1), transparent, transparent, rgba(29, 29, 29, 0.3)); }
+
+.card .file-name {
+  position: absolute;
+  bottom: 0;
+  left: 5px;
+  right: 5px;
+  padding: 5px 5px 5px 5px;
+  width: 200px;
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #bdbdbd; }
+
+.card .file-extension {
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  padding: 2px;
+  min-width: 30px;
+  text-align: center;
+  border-radius: 0 5px 0 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  color: #1D1D1D; }
+
+/* FORMS */
+.form-header {
+  margin-bottom: 2em; }
+
+.stretch-horizontal {
+  width: 100% !important; }
+
+fieldset {
+  background: rgba(242, 114, 0, 0.025);
+  padding: 1em; }
+
+fieldset h4 {
+  padding: 0;
+  margin-top: 0;
+  color: #a4a4a4;
+  border: none; }
+
+label,
+p.description,
+p.subtitle {
+  font-weight: 400;
+  color: #a4a4a4; }
+
+p.description {
+  margin-bottom: 1em; }
+
+label.form-label-top {
+  display: block; }
+
+input.form-control {
+  border-radius: 0;
+  border-color: white;
+  box-shadow: none;
+  margin-bottom: 6px; }
+
+textarea.form-control {
+  min-height: 4em;
+  border: none;
+  border-radius: 0;
+  outline: 0px; }
+
+textarea.form-control:active,
+textarea.form-control:focus,
+input.form-control:active,
+input.form-control:focus {
+  border-color: #F27200;
+  box-shadow: none;
+  outline: 0px !important;
+  -webkit-appearance: none; }
+
+input.form-control-login {
+  max-width: 200px; }
+
+input[type='checkbox'].form-control {
+  -webkit-appearance: none;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: #FFFFFF;
+  vertical-align: middle;
+  line-height: 1em;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  margin-right: .5em; }
+
+input[type='checkbox'][disabled].form-control {
+  opacity: .5; }
+
+input[type='checkbox'][disabled].form-control:hover {
+  cursor: default; }
+
+input[type='checkbox'].form-control:hover {
+  cursor: pointer; }
+
+input[type='checkbox'].form-control:active,
+input[type='checkbox'].form-control:checked {
+  background-color: #e9ecee; }
+
+input[type='checkbox'].form-control:checked:after {
+  content: '\f26b';
+  font-family: "Material-Design-Iconic-Font";
+  font-size: 14px;
+  font-weight: 900;
+  position: relative;
+  left: 4px;
+  top: 2px;
+  color: black; }
+
+select.form-control {
+  -webkit-appearance: none;
+  border-radius: 0;
+  border: none;
+  width: auto; }
+
+select.form-control:focus {
+  outline: none; }
+
+.modal-dialog {
+  margin-top: 45px;
+  width: 700px; }
+
+.modal-window-lg .modal-dialog {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  margin: 0; }
+
+.modal-window-lg .modal-content {
+  display: table;
+  width: 100%;
+  height: 100%; }
+
+.modal-window-lg .modal-header {
+  display: table-cell;
+  height: 45px; }
+
+.modal-window-lg .modal-body {
+  display: table-row;
+  padding: 10px; }
+
+.modal-title {
+  margin-bottom: .25em; }
+
+.modal-header,
+.modal-footer {
+  border: none;
+  padding: 30px 30px 15px 30px; }
+
+.modal-footer-buttons {
+  padding-top: 1em;
+  position: relative;
+  top: 7px;
+  z-index: 10; }
+
+.modal-body {
+  padding: 0 30px 30px 30px; }
+
+.modal-content {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border: none;
+  border-radius: 0 0 10px 10px;
+  background: #222;
+  min-width: 700px;
+  transition: width linear .4s;
+  transition: height linear .4s; }
+
+.modal-backdrop.in {
+  background: #101010;
+  opacity: .9 !important;
+  transition: opacity linear .4s; }
+
+.modal-status-bar {
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  z-index: 0; }
+
+.modal-status-bar .modal-state {
+  padding: 5px;
+  text-align: center;
+  border-radius: 0 0 10px 10px !important; }
+
+input[disabled] {
+  opacity: .5; }
+
+button[disabled],
+button[disabled]:hover {
+  opacity: 1 !important;
+  background: #303030 !important;
+  color: #1D1D1D !important;
+  cursor: default; }
+
+.progress {
+  margin-bottom: 10px;
+  background: #1D1D1D !important;
+  border-radius: 0; }
+
+.progress-bar {
+  background: #EB7414 !important; }
+
+/* LOADING SPINNER */
+.loader {
+  margin: .5em 1.5em;
+  font-size: 10px;
+  position: relative;
+  text-indent: -9999em;
+  background: transparent;
+  border-top: 0.6em solid rgba(240, 240, 240, 0.2);
+  border-right: 0.6em solid rgba(240, 240, 240, 0.2);
+  border-bottom: 0.6em solid rgba(240, 240, 240, 0.2);
+  border-left: 0.6em solid #F0F0F0;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear; }
+
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 5em;
+  height: 5em; }
+
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+/* MISC */
+.under-construction {
+  position: relative;
+  height: 300px;
+  text-align: center;
+  background: url("../img/construction.svg") center center no-repeat;
+  background-size: 100px 100px;
+  opacity: .2; }
+
+::-webkit-scrollbar {
+  width: 12px;
+  /* for vertical scrollbars */
+  height: 12px;
+  /* for horizontal scrollbars */ }
+
+::-webkit-scrollbar-track {
+  background: transparent; }
+
+::-webkit-scrollbar-thumb {
+  background: #303030;
+  border: 2px solid #1D1D1D; }
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a; }
+
+.bootstrap-switch {
+  background: #303030;
+  outline: none;
+  border: none; }
+
+.bootstrap-switch-label {
+  background: #303030 !important; }
+
+.bootstrap-switch-focused {
+  outline: none;
+  border: none !important;
+  box-shadow: none !important; }
+
+.bootstrap-switch-handle-on {
+  background: green !important; }
+
+.bootstrap-switch-handle-off {
+  background: #666 !important;
+  color: white !important; }
+
+.nav-pills > li > a {
+  cursor: pointer;
+  border-radius: 0;
+  background: transparent;
+  color: #F0F0F0; }
+
+.nav-pills > li.active > a {
+  background: #F27200;
+  color: #FFFFFF; }
+
+.nav-pills > li > a:hover,
+.nav-pills > li.active > a:hover {
+  cursor: pointer;
+  background: #F27200;
+  color: #FFFFFF;
+  border-radius: 0; }
+
+.hint {
+  background: #303030;
+  border-radius: 3px;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 100%; }
+
+.zdmi-xl {
+  font-size: 48px; }
+
+.overlay {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  color: #F0F0F0;
+  background: rgba(29, 29, 29, 0.95); }
+
+.overlay.invisible,
+.msg.invisible {
+  opacity: 0; }
+
+.msg {
+  min-width: 600px; }
+
+.msg h1,
+.msg h2,
+.msg h3 {
+  margin-top: 0; }
+
+.center-x {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%); }
+
+.center-y {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%); }
+
+.center-xy {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%); }
+
+.ctl-history {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 59px;
+  overflow-y: scroll; }
+
+.ctl-history:focus {
+  outline: none; }
+
+/*
+.lst-activities .connection {
+	position: absolute;
+	top: 0;
+	left: 27px;
+	bottom: 0;
+	width: 2px;
+	background: $headerBackgroundColor;
+	background: #E96F02;
+	z-index: -10;
+	display: none;
+}
+*/
+.lst-activities label {
+  margin: 0; }
+
+.lst-activities .activity-header {
+  position: relative;
+  padding: 10px 0 0 0;
+  line-height: 28px; }
+
+.lst-activities .activity-header .time {
+  clear: both;
+  vertical-align: middle;
+  text-align: center;
+  font-weight: bold; }
+
+.lst-activities .activity-header .session {
+  margin-left: 30px;
+  background: #303030;
+  padding: 0 10px;
+  margin-bottom: 1px;
+  margin-right: 15px; }
+
+.lst-activities .activity-header .session .icn {
+  float: left;
+  height: 26px;
+  width: 26px; }
+
+.lst-activities {
+  margin-right: 1px; }
+
+.lst-activities li {
+  color: #a4a4a4; }
+
+.lst-activities li a {
+  cursor: pointer;
+  display: block;
+  margin-bottom: 1px !important; }
+
+.lst-activities li a.default {
+  margin-left: 60px;
+  background: #303030;
+  padding: 5px;
+  margin-right: 15px; }
+
+.lst-activities li a.default .time {
+  padding-right: 5px; }
+
+.lst-activities li a.default:hover,
+.lst-activities li.selected a.default {
+  background: shade(#F27200, 20%); }
+
+.lst-activities li a.default:hover label,
+.lst-activities li a.default:hover i,
+.lst-activities li.selected a.default label,
+.lst-activities li.selected a.default i {
+  color: #1D1D1D; }
+
+.lst-influences {
+  display: block;
+  position: relative; }
+
+.lst-influences a {
+  display: block;
+  line-height: 22px;
+  vertical-align: middle;
+  margin-bottom: 0 !important; }
+
+/*
+.lst-influences a .node {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	line-height: 10px;
+	margin-left: 8px;
+	margin-right: 8px;
+	text-align: center;
+	vertical-align: middle;
+	background: transparent;
+	background: #E96F02;
+	border-radius: 50%;
+	border: none;
+}
+*/
+.lst-influences a i.zmdi {
+  display: inline-block;
+  text-align: center;
+  width: 26px;
+  font-size: 16px;
+  color: white;
+  margin: 0; }
+
+.lst-influences .type {
+  color: white; }
+
+.lst-activities li a.comment {
+  position: relative;
+  margin: 0 15px 10px 30px; }
+
+.lst-activities li a.comment .avatar {
+  float: left;
+  margin-right: 15px;
+  margin-bottom: 15px; }
+
+.lst-activities li a.comment .avatar img {
+  width: 42px;
+  height: 42px; }
+
+.lst-activities li a.comment .time {
+  padding-right: 10px; }
+
+.lst-activities li a.comment .tip {
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  background: transparent;
+  border: 10px solid #303030; }
+
+.lst-activities li a.comment .tip.tip-right {
+  top: 0px;
+  right: -15px;
+  border-right-color: transparent;
+  border-bottom-color: transparent; }
+
+.lst-activities li a.comment .tip.tip-left {
+  top: 0;
+  left: -15px;
+  border-left-color: transparent;
+  border-bottom-color: transparent; }
+
+.lst-activities li a.comment .txt {
+  background: #303030;
+  padding: 10px;
+  color: white;
+  min-height: 2em; }
+
+.lst-activities li a.comment .txt .time {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  z-index: 0; }
+
+.lst-activities li a.comment:hover .txt,
+.lst-activities li.selected a.comment .txt {
+  background: #F27200;
+  color: black; }
+
+.lst-activities li a.comment:hover .tip.tip-left,
+.lst-activities li.selected a.comment .tip.tip-left {
+  border-top-color: #F27200;
+  border-right-color: #F27200; }
+
+.lst-activities li a.comment:hover .tip.tip-right,
+.lst-activities li.selected a.comment .tip.tip-right {
+  border-top-color: #F27200;
+  border-left-color: #F27200; }
+
+.ctl-comment {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #303030;
+  padding: 10px; }
+
+.ctl-comment textarea,
+.ctl-comment input {
+  display: block; }
+
+.ctl-comment textarea {
+  line-height: 1.3em;
+  border: none;
+  width: 100%;
+  padding: 10px;
+  color: #000000;
+  resize: none;
+  height: 2.7em; }
+
+.ctl-comment input[type=button] {
+  float: right;
+  margin: 5px; }
+
+/* STATS */
+.chart-donut {
+  width: 29rem;
+  height: 29rem;
+  margin: 0 auto; }
+
+path.color0 {
+  fill: #1072b8; }
+
+path.color1 {
+  fill: #35526b; }
+
+/* YASGUI */
+#editor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow-y: scroll;
+  overflow-x: hidden; }
+
+.yasgui {
+  background: none;
+  font-family: 'Roboto'; }
+
+.yasgui .nav-tabs .active {
+  color: #FFFFFF;
+  border-radius: 0; }
+
+.yasgui .nav-tabs .active a {
+  border: none !important;
+  border-radius: 0;
+  padding: 10px 10px 11px 15px; }
+
+.yasgui .nav-tabs a[role='addTab'] {
+  width: 40px;
+  text-align: center; }
+
+.yasgui .controlbar {
+  display: none;
+  border-left: none;
+  background: #303030; }
+
+.yasgui .tab-content {
+  padding: 0;
+  position: relative; }
+
+.yasgui .CodeMirror {
+  border: none !important;
+  border-bottom: 4px solid #1D1D1D; }
+
+.yasgui .CodeMirror-gutters {
+  border: none !important;
+  background: none; }
+
+.yasqe_share,
+.yasqe_fullscreenBtn {
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 5px;
+  position: relative;
+  left: -7px; }
+
+.yasqe_queryButton.query_valid .btn {
+  float: left;
+  font-size: 30px;
+  line-height: 30px;
+  border-radius: 50%;
+  margin: 11px 20px 0 0;
+  padding: 10px 8px 10px 12px;
+  width: 45px;
+  height: 45px;
+  background: #F94C00;
+  color: white; }
+
+.yasgui .yasr {
+  background-color: #1D1D1D; }
+
+.yasgui .yasr .yasr_header {
+  position: relative;
+  top: -10px; }
+
+.yasgui .yasr .yasr_btn {
+  border: 1px solid #1D1D1D;
+  background: #303030;
+  color: #F0F0F0; }
+
+.yasgui .yasr .yasr_btn:hover {
+  border: 1px solid #1D1D1D;
+  background: #4a4a4a;
+  color: #F0F0F0; }
+
+.yasgui .yasr .yasr_btn.selected {
+  background: #F94C00;
+  border: 1px solid #1D1D1D; }
+
+.yasgui .yasr .yasr_btn svg path {
+  fill: #F0F0F0 !important; }
+
+.yasgui .yasr .sortIcons svg path {
+  fill: #a4a4a4 !important; }
+
+.yasgui .yasr .yasr_results {
+  margin: 0; }
+
+.yasgui .yasr .btn_smallscreen,
+.yasgui .yasr .btn_fullscreen {
+  position: absolute;
+  right: 7px; }
+
+.yasgui .yasr input {
+  border: none; }
+
+.yasgui .yasr label {
+  font-weight: normal; }
+
+.yasgui .yasr .dataTables_wrapper .dtTopHeader {
+  padding: 7px 7px 7px 0; }
+
+.yasgui .yasr .dataTables_wrapper .dataTables_info {
+  padding: 7px; }
+
+.yasgui .yasr .dataTables_wrapper .dataTables_info {
+  color: #a4a4a4 !important;
+  border: none !important;
+  margin: 0; }
+
+.yasgui .yasr table.dataTable {
+  border: none; }
+
+.yasgui .yasr table.dataTable thead th {
+  background: #303030 !important;
+  border-left: 1px solid #1D1D1D;
+  border-right: none;
+  color: #a4a4a4; }
+
+.yasgui .yasr table.dataTable tbody td {
+  padding: 5px 10px;
+  font-family: 'Roboto';
+  background: #303030;
+  border-left: 1px solid #1D1D1D;
+  border-bottom: 1px solid #1D1D1D; }
+
+.yasgui .yasr table.dataTable tbody tr td:first-child {
+  text-align: center;
+  color: #999; }
+
+.yasgui .yasr .CodeMirror {
+  background: #303030;
+  color: #F0F0F0; }
+
+.yasgui .yasr .yasr_header {
+  padding-bottom: 5px; }
+
+.yasgui .yasr table.dataTable tbody tr td a,
+.yasgui .yasr .CodeMirror .cm-string {
+  color: #00ceff; }
+
+.yasgui .yasr .nonUri {
+  color: #F0F0F0; }
+
+.yasgui .yasr sup {
+  color: #a4a4a4; }
+
+.openGchartBtn {
+  position: relative;
+  right: 47px;
+  top: -45px !important; }
+
+/* CONNECTION SPINNER */
+.spinner.connecting {
+  display: inline-block;
+  margin: 0 3px 0 0;
+  width: 20px;
+  height: 16px;
+  font-size: 10px;
+  position: relative;
+  top: 3px; }
+
+.spinner.connecting > div {
+  background-color: white;
+  height: 100%;
+  width: 4px;
+  display: inline-block;
+  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  animation: sk-stretchdelay 1.2s infinite ease-in-out; }
+
+.spinner.connecting .rect2 {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s; }
+
+.spinner.connecting .rect3 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s; }
+
+.spinner.connecting .rect4 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s; }
+
+.spinner.connecting .rect5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s; }
+
+@-webkit-keyframes sk-stretchdelay {
+  0%,
+  40%,
+  100% {
+    -webkit-transform: scaleY(0.4); }
+  20% {
+    -webkit-transform: scaleY(1); } }
+
+@keyframes sk-stretchdelay {
+  0%,
+  40%,
+  100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4); }
+  20% {
+    transform: scaleY(1);
+    -webkit-transform: scaleY(1); } }
+
+.spinner.loading,
+.spinner.loading:before,
+.spinner.loading:after {
+  border-radius: 50%; }
+
+.spinner.loading:before,
+.spinner.loading:after {
+  position: absolute;
+  content: ''; }
+
+.spinner.loading:before {
+  width: 5.2em;
+  height: 10.2em;
+  background: #222;
+  border-radius: 10.2em 0 0 10.2em;
+  top: -0.1em;
+  left: -0.1em;
+  -webkit-transform-origin: 5.2em 5.1em;
+  transform-origin: 5.2em 5.1em;
+  -webkit-animation: load2 2s infinite ease 1.5s;
+  animation: load2 2s infinite ease 1.5s; }
+
+.spinner.loading {
+  color: #a4a4a4;
+  font-size: 5px;
+  text-indent: -99999em;
+  margin: 55px auto;
+  position: relative;
+  width: 10em;
+  height: 10em;
+  box-shadow: inset 0 0 0 1em;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0); }
+
+.spinner.loading:after {
+  width: 5.2em;
+  height: 10.2em;
+  background: #222;
+  border-radius: 0 10.2em 10.2em 0;
+  top: -0.1em;
+  left: 5.1em;
+  -webkit-transform-origin: 0px 5.1em;
+  transform-origin: 0px 5.1em;
+  -webkit-animation: load2 2s infinite ease;
+  animation: load2 2s infinite ease; }
+
+@-webkit-keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+.cfp-hotkeys-close {
+  display: none; }
+
+.cfp-hotkeys-container {
+  background: rgba(29, 29, 29, 0.9);
+  margin-top: 47px; }
+
+.cfp-hotkeys-key {
+  border: none;
+  background: #F0F0F0;
+  color: #303030;
+  box-shadow: none; }
+
+.cfp-hotkeys-text {
+  color: #F0F0F0; }
+
+@media screen and (max-width: 991px) {
+  .body-wrapper {
+    top: 47px;
+    bottom: 0;
+    left: 0;
+    right: 0; }
+  .ui-pane-right {
+    display: none; }
+  .ui-pane-left {
+    position: absolute;
+    bottom: -43px;
+    left: 0;
+    right: 0;
+    width: 100% !important;
+    height: 200px;
+    z-index: 10;
+    border: none; }
+  .ui-pane-center {
+    position: absolute !important;
+    top: 0;
+    bottom: 200px;
+    left: 0;
+    right: 0; }
+  .ctl-history {
+    bottom: 0; }
+  .ctl-comment {
+    display: none; }
+  #footer {
+    bottom: 201px; } }
+
+.fullscreen {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%); }
+
+#spinner-container {
+  background-color: #1D1D1D;
+  z-index: 15; }
+
+#error-container {
+  background-color: #1D1D1D;
+  z-index: 10; }
+
+.error-container {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%); }
+
+.bounce {
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+  animation: sk-bounce 2.0s infinite ease-in-out; }
+
+@-webkit-keyframes sk-bounce {
+  0%,
+  100% {
+    -webkit-transform: scale(1); }
+  50% {
+    -webkit-transform: scale(0.7); } }
+
+@keyframes sk-bounce {
+  0%,
+  100% {
+    transform: scale(0);
+    -webkit-transform: scale(1); }
+  50% {
+    transform: scale(1);
+    -webkit-transform: scale(0.7); } }
+
+iframe {
+  border: none;
+  margin: none;
+  width: 100%;
+  height: 100%;
+  z-index: 0; }
+
+#title-bar {
+  -webkit-app-region: drag;
+  height: 24px;
+  padding: none;
+  margin: 0px; }
+
+#title {
+  position: fixed;
+  top: 0px;
+  left: 6px; }
+
+#title-bar-btns {
+  -webkit-app-region: no-drag;
+  position: fixed;
+  top: 1px;
+  right: 0px; }
+
+#title-bar-btns button.btn-title {
+  height: 32px;
+  width: 32px;
+  padding: 0px !important;
+  background-color: transparent;
+  border: none;
+  color: #F1F1F1;
+  font-size: 16px; }
+
+#title-bar-btns button:hover.btn-title {
+  background-color: #3F3F41; }

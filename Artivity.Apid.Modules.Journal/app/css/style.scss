@@ -2198,3 +2198,115 @@ path.color1 {
 		bottom: 201px;
 	}
 }
+
+.fullscreen {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+		}
+		
+		.spinner {
+			width: 40px;
+			height: 40px;
+			position: absolute;
+			top: 45%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+		
+		#spinner-container {
+			background-color: #1D1D1D;
+			z-index: 15;
+		}
+		
+		#error-container {
+			background-color: #1D1D1D;
+			z-index: 10;
+		}
+		
+		.error-container {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+		
+		.bounce {
+			width: 100%;
+			height: 100%;
+			opacity: 0.6;
+			position: absolute;
+			top: 0;
+			left: 0;
+			-webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+			animation: sk-bounce 2.0s infinite ease-in-out;
+		}
+		
+		@-webkit-keyframes sk-bounce {
+			0%,
+			100% {
+				-webkit-transform: scale(1.0)
+			}
+			50% {
+				-webkit-transform: scale(0.7)
+			}
+		}
+		
+		@keyframes sk-bounce {
+			0%,
+			100% {
+				transform: scale(0.0);
+				-webkit-transform: scale(1.0);
+			}
+			50% {
+				transform: scale(1.0);
+				-webkit-transform: scale(0.7);
+			}
+		}
+		
+		iframe {
+			border: none;
+			margin: none;
+			width: 100%;
+			height: 100%;
+			z-index: 0;
+		}
+
+		#title-bar {
+ -webkit-app-region: drag;
+ height: 24px; 
+ padding: none;
+ margin: 0px; 
+}
+
+#title {
+ position: fixed;
+ top: 0px;
+ left: 6px; 
+}
+
+#title-bar-btns  {
+ -webkit-app-region: no-drag;
+ position: fixed;
+ top: 1px;
+ right: 0px; 
+}
+
+
+
+#title-bar-btns button.btn-title  {
+ height: 32px;
+ width: 32px;
+ padding: 0px !important;
+ background-color: transparent;
+ border: none;
+ color: #F1F1F1;
+ font-size: 16px;
+}
+
+
+
+#title-bar-btns  button:hover.btn-title {
+ background-color: #3F3F41;
+}

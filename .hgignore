@@ -65,3 +65,4 @@ Artivity.Apid.Modules.Journal/app/bower_components/**
 Artivity.Apid.Modules.Journal/app/node_modules/**
 Ontologies.g.cs
 
+Artivity.Apid.Modules.Journal/app/journal-win32-x64/*

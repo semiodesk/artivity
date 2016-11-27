@@ -27,7 +27,6 @@
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="bower_components/angular-animate/angular-animate.js"></script>
 	<script src="bower_components/angular-route/angular-route.js"></script>
-	<script src="bower_components/angular-translate/angular-translate.js"></script>
 	<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 	<script src="bower_components/angular-input-modified/dist/angular-input-modified.js"></script>
 	<script src="bower_components/moment/moment.js"></script>
@@ -43,6 +42,7 @@
 	<script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
 	<script src="bower_components/yasgui/dist/yasgui.bundled.min.js"></script>
 	<script src="bower_components/angular-hotkeys/build/hotkeys.js"></script>
+	<script src="bower_components/angular-translate/angular-translate.js"></script>
 	<!-- endbower -->
 	
 
@@ -57,6 +57,7 @@
 	<script src="js/app.controllers.js"></script>
 	<script src="js/app.overlay.js"></script>
 	<script src="js/app.translation.js"></script>
+	<script src="js/controller/load.controler.js"></script>
 
 	<script>
 	if (window.module) module = window.module;
@@ -68,6 +69,13 @@
 <body>
 	<div ng-controller="KeyboardController"></div>
 	
+	<div id="title-bar">
+      <div id="title-bar-btns">
+           <button class="btn-title" id="min-btn">-</button>
+           <button class="btn-title" id="max-btn">+</button>
+           <button class="btn-title" id="close-btn">x</button>
+      </div>
+ 	</div>
 	<div ng-view></div>
 
 	<div class="overlay collapse" id="overlay">
