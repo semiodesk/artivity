@@ -24,6 +24,11 @@ var explorerApp = angular.module('explorerApp', [
 explorerApp.config(['$routeProvider',
   function ($routeProvider) {
 		$routeProvider.
+		when('/load', {
+			controller: 'LoadController',
+            templateUrl: 'partials/load.view.html',
+            controllerAs: 'vm'
+		}).
 		when('/files', {
 			templateUrl: 'partials/file-list.html'
 		}).
@@ -40,7 +45,7 @@ explorerApp.config(['$routeProvider',
 			templateUrl: 'partials/error-no-apid-connection.html'
 		}).
 		otherwise({
-			redirectTo: '/files'
+			redirectTo: '/load'
 		});
   }]);
 
