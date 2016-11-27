@@ -1,3 +1,5 @@
+
+
 module.exports = function(grunt) {
  
     // Project configuration.
@@ -19,14 +21,39 @@ module.exports = function(grunt) {
                     'index.html'
                 ]
             }
+        },
+
+        sass: {
+			dist: {
+				files: {
+					'css/style.css' : 'css/style.scss'
+				}
+			}
+		},
+
+        electron: {
+        windowsBuild: {
+            options: {
+                name: 'journal',
+                dir: '.',
+                out: 'dist',
+                platform: 'win32',
+                arch: 'x64'
+            }
         }
+    }
+    
 
     });
 
  
     grunt.loadNpmTasks('grunt-wiredep');
+    grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-electron')
 
     // Default task
-    grunt.registerTask('default', ['wiredep']);
+    grunt.registerTask('default', ['wiredep', 'sass']);
+
+    grunt.registerTask('build', ['electron']);
  
 };

@@ -22,7 +22,6 @@
     "angular": "^1.5.8",
     "angular-animate": "^1.5.8",
     "angular-route": "^1.5.7",
-    "angular-translate": "^2.12.1",
     "angular-ui": "^0.4.0",
     "angular-bootstrap": "^2.1.3",
     "angular-input-modified": "^2.3.3",
@@ -40,7 +39,8 @@
     "fullcalendar": "^3.0.0",
     "yasgui": "^2.4.1",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#^1.7.0",
-    "font-roboto": "^0.0.2"
+    "font-roboto": "^0.0.2",
+    "angular-translate": "^2.13.0"
   },
   "resolutions": {
     "angular": "^1.5.8",
