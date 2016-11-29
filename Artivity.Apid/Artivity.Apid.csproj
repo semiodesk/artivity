@@ -20,7 +20,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>..\Output\</OutputPath>
+    <OutputPath>..\build\Release\</OutputPath>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WIN</DefineConstants>
@@ -319,10 +319,6 @@
     <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
       <Name>Artivity.DataModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Artivity.Apid.Modules.Journal\Artivity.Apid.Modules.Journal.csproj">
-      <Project>{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}</Project>
-      <Name>Artivity.Apid.Modules.Journal</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
