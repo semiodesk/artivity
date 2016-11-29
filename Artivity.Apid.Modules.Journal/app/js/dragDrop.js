@@ -86,8 +86,7 @@ window.ondragleave = (ev) => {
         });
         
         document.getElementById("close-btn").addEventListener("click", function (e) {
-          const window = remote.getCurrentWindow();
-          window.close();
+          remote.app.exit();
         }); 
       }; 
       
