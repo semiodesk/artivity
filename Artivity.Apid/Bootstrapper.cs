@@ -62,7 +62,6 @@ namespace Artivity.Apid
 
         #region Methods
 
-
         protected override DiagnosticsConfiguration DiagnosticsConfiguration
         {
             get { return new DiagnosticsConfiguration { Password = @"abc" }; }
@@ -88,7 +87,6 @@ namespace Artivity.Apid
             }
                 
             container.Register<JsonNetSerializer>();
-            container.Register(typeof(IViewModule), typeof(JournalModule));
 
         }
             
