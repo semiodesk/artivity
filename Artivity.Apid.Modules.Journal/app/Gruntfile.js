@@ -24,6 +24,16 @@ module.exports = function (grunt) {
             }
         },
 
+        toggleComments: {
+            customOptions: {
+                options: {
+                    padding: 4,
+                    removeCommands: true
+                },
+                files: { "index.html": "index.html" }
+            }
+        },
+
         clean: {
             options: {
                 'force': true
@@ -101,6 +111,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-msbuild');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-comment-toggler');
 
 
     // Default task
