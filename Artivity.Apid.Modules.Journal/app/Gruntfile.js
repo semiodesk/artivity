@@ -78,14 +78,12 @@ module.exports = function (grunt) {
                         src: '**',
                         dest: '../../build/dist/Artivity-win32-x64/apid/'
                     },
+                    {
+                        src: '../../build/dist/Artivity-win32-x64/resources/app/js/app.conf.release.js',
+                        dest: '../../build/dist/Artivity-win32-x64/resources/app/js/app.conf.js',
+                        force: true
+                    },
                 ],
-            },
-        },
-        'create-windows-installer': {
-            x64: {
-                appDirectory: '../../build/dist/Artivity-win32-x64',
-                outputDirectory: '../../build/dist/installer',
-                exe: 'Artivity.exe',
             },
         }
 
@@ -97,7 +95,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-wiredep');
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-electron');
-    grunt.loadNpmTasks('grunt-electron-installer');
     grunt.loadNpmTasks('grunt-msbuild');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -106,6 +103,6 @@ module.exports = function (grunt) {
     // Default task
     grunt.registerTask('default', ['wiredep', 'sass']);
 
-    grunt.registerTask('build', ['clean', 'electron', 'msbuild', 'copy', 'create-windows-installer']);
+    grunt.registerTask('build', ['clean', 'electron', 'msbuild', 'copy']);
 
 };
