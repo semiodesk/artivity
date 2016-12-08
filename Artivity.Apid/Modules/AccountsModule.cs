@@ -56,7 +56,7 @@ namespace Artivity.Api.Modules
         #region Members
 
         /// <summary>
-        /// Maps a session id to an issued authentication request for querying the status.
+        /// Maps a session id to a pending authentication request for querying the status.
         /// </summary>
         private static readonly Dictionary<string, OnlineServiceClientSession> _sessions = new Dictionary<string, OnlineServiceClientSession>();
 
@@ -500,11 +500,13 @@ namespace Artivity.Api.Modules
                     {
                         session.Progress.CurrentTask = session.Progress.Tasks[0];
 
-                        archiveWriter.Write(entityUri, tempFile, DateTime.MinValue);
+                        archiveWriter.Write(tempFile, entityUri, DateTime.MinValue);
 
                         session.Progress.CurrentTask = session.Progress.Tasks[1];
 
                         publishingClient.UploadArchive(Request, serviceUrl, tempFile, manifest);
+
+                        // TODO: Remove the temp file. Implement a completed handler on the publishing client.
                     });
 
                     return Response.AsJson(session);

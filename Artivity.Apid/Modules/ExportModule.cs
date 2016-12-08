@@ -33,11 +33,22 @@ using Semiodesk.Trinity;
 using System;
 using Nancy;
 using System.IO;
+using Artivity.Apid.Helpers;
+using System.Collections.Generic;
 
 namespace Artivity.Apid.Modules
 {
     public class ExportModule : ModuleBase
     {
+        #region Members
+
+        /// <summary>
+        /// Maps a session id to a pending authentication request for querying the status.
+        /// </summary>
+        private static readonly Dictionary<string, TaskProgressInfo> _tasks = new Dictionary<string, TaskProgressInfo>();
+
+        #endregion
+
         #region Constructors
 
         public ExportModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform)
@@ -61,7 +72,7 @@ namespace Artivity.Apid.Modules
 
                     if (DateTimeOffset.TryParse(minStartTime.Replace(' ', '+'), out timestamp))
                     {
-                        return Export(new UriRef(entityUri), fileName, timestamp.UtcDateTime);
+                        return Export(fileName, new UriRef(entityUri), timestamp.UtcDateTime);
                     }
                     else
                     {
@@ -70,8 +81,32 @@ namespace Artivity.Apid.Modules
                 }
                 else
                 {
-                    return Export(new UriRef(entityUri), fileName, DateTime.MinValue);
+                    return Export(fileName, new UriRef(entityUri), DateTime.MinValue);
                 }
+            };
+
+            Get["/backup"] = parameters =>
+            {
+                string fileName = Request.Query.fileName;
+
+                if (string.IsNullOrEmpty(fileName))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return Backup(fileName);
+            };
+
+            Get["/backup/status"] = parameters =>
+            {
+                string taskId = Request.Query.taskId;
+
+                if (string.IsNullOrEmpty(taskId))
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return GetBackupStatus(taskId);
             };
         }
 
@@ -79,15 +114,55 @@ namespace Artivity.Apid.Modules
 
         #region Methods
 
-        protected Response Export(UriRef entityUri, string fileName, DateTime minTime)
+        protected Response Export(string fileName, UriRef entityUri, DateTime minTime)
         {
             try
             {
                 string targetFile = Path.GetFileNameWithoutExtension(fileName) + ".arta";
                 string targetFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                string targetPath = Path.Combine(targetFolder, targetFile);
 
-                ArchiveWriter exporter = new ArchiveWriter(PlatformProvider, ModelProvider);
-                exporter.Write(entityUri, Path.Combine(targetFolder, targetFile), minTime);
+                ArchiveWriter writer = new ArchiveWriter(PlatformProvider, ModelProvider);
+                writer.Write(targetPath, entityUri, minTime);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+
+                return HttpStatusCode.InternalServerError;
+            }
+
+            return HttpStatusCode.OK;
+        }
+
+        protected Response Backup(string fileName)
+        {
+            try
+            {
+                string targetFile = Path.GetFileNameWithoutExtension(fileName) + ".artb";
+                string targetFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                string targetPath = Path.Combine(targetFolder, targetFile);
+
+                TaskProgressInfo progress = new TaskProgressInfo();
+
+                _tasks[progress.Id.ToString()] = progress;
+
+                BackupWriter writer = new BackupWriter(PlatformProvider, ModelProvider);
+
+                try
+                {
+                    Logger.LogInfo("Started backup task with id: {0}", progress.Id);
+
+                    writer.WriteAsync(targetPath, progress);
+                }
+                catch(Exception ex)
+                {
+                    progress.Error = ex;
+
+                    throw;
+                }
+
+                return Response.AsJson(progress);
             }
             catch (Exception e)
             {
@@ -95,8 +170,18 @@ namespace Artivity.Apid.Modules
 
                 return HttpStatusCode.InternalServerError;
             }
+        }
 
-            return HttpStatusCode.OK;
+        protected Response GetBackupStatus(string taskId)
+        {
+            if(_tasks.ContainsKey(taskId))
+            {
+                return Response.AsJson(_tasks[taskId]);
+            }
+            else
+            {
+                return Logger.LogError(HttpStatusCode.NotFound, "Task with id {0} not found.", taskId);
+            }
         }
 
         #endregion

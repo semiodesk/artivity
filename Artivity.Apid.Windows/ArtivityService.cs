@@ -1,4 +1,5 @@
-﻿using Artivity.Apid.Plugin;
+﻿using Artivity.Apid.Platforms;
+using Artivity.Apid.Plugin;
 using Artivity.WinService;
 using log4net;
 using log4net.Appender;
@@ -27,10 +28,6 @@ namespace Artivity.Apid
         protected EventLog eventLog;
         protected Dictionary<uint, HttpService> _services;
 
-        public bool AutoPluginChecker { get; set; }
-
-        PluginChecker _checker;
-
         private string _logConfigPath = "log.config";
 
         public string LogConfigPath { get { return _logConfigPath;} set{ _logConfigPath = value;} }
@@ -45,28 +42,10 @@ namespace Artivity.Apid
             : base(serviceName)
         {
             CanHandleSessionChangeEvent = true;
-            AutoPluginChecker = true;
 
             if (!string.IsNullOrEmpty(logConfig))
                 _logConfigPath = logConfig;
             InitializeLog();
-            //_configuration = Configuration.Instance;
-
-            //EventWaitHandleSecurity security = new System.Security.AccessControl.EventWaitHandleSecurity();
-            //security.AddAccessRule(new EventWaitHandleAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), EventWaitHandleRights.Synchronize, AccessControlType.Allow));
-            //bool created = false;
-            //#if DEBUG
-            //string mode = "DEBUG";
-            //#else
-            //string mode = "RELEASE";
-            //#endif
-            //string nameAdditon = "";
-            //if( IntPtr.Size == 4 )
-            //    nameAdditon = "32";
-            //else
-            //    nameAdditon = "64";
-            //StopEvent = new EventWaitHandle(false, EventResetMode.ManualReset, string.Format("Global\\OrganiseMetaSync_StopEvent_{0}_{1}", mode, nameAdditon), out created, security);
-            //_service = new HttpService();
         }
 
         #endregion
@@ -146,19 +125,6 @@ namespace Artivity.Apid
 
         protected void InitializeLog()
         {
-            //eventLog = new EventLog();
-            //eventLog.Log = "Application";
-            //eventLog.Source = base.ServiceName;
-
-            //((ISupportInitialize)(this.EventLog)).BeginInit();
-
-            //if (!EventLog.SourceExists(this.EventLog.Source))
-            //{
-            //    EventLog.CreateEventSource(this.EventLog.Source, this.EventLog.Log);
-            //}
-
-            //((ISupportInitialize)(this.EventLog)).EndInit();
-
             FileInfo logFileConfig = new FileInfo(Path.Combine(GetCurrentDirectory(), LogConfigPath));
             log4net.Config.XmlConfigurator.Configure(logFileConfig);
 
@@ -219,13 +185,22 @@ namespace Artivity.Apid
                     {
                         //Thread.CurrentPrincipal = new GenericPrincipal(new WindowsIdentity(token), new string[]{});
                        
+                        // Only set username, disregard domain
+                        string userName = user.Split('\\')[1];
+
                         var sid = Win32.GetSidByUsername(user);
                         string regKeyFolders = string.Format(@"HKEY_USERS\{0}\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", sid);
                         string regValueAppData = @"AppData";
-                        string path = Registry.GetValue(regKeyFolders, regValueAppData, null) as string;
-                        httpService.ApplicationData = path;
-                        // Only set username, disregard domain
-                        httpService.Username = user.Split('\\')[1];
+                        string appData = Registry.GetValue(regKeyFolders, regValueAppData, null) as string;
+
+                        string regValuePersonal = @"Personal";
+                        string personalFolder = Registry.GetValue(regKeyFolders, regValuePersonal, null) as string;
+                        PlatformProvider p = new PlatformProvider(appData, personalFolder, userName);
+                        p.SetDeploymentDir(this.GetCurrentDirectory());
+                        httpService.ApplicationData = appData;
+                        httpService.Username = userName;
+                        httpService.PlatformProvider = p;
+                        
                         httpService.Start(false);
                     });
 
@@ -234,7 +209,7 @@ namespace Artivity.Apid
 
                 _services.Add(sessionId, httpService);
 
-                _log.DebugFormat("Service running; Press a key to stop..");
+                _log.DebugFormat("Service running...");
             }
             catch (Exception e)
             {
