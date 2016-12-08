@@ -21,8 +21,10 @@ var explorerApp = angular.module('explorerApp', [
 	*/
 });
 
-explorerApp.config(['$routeProvider',
-  function ($routeProvider) {
+explorerApp.config(['$locationProvider', '$routeProvider',
+  function ($locationProvider, $routeProvider) {
+	  //$locationProvider.hashPrefix('#!');
+
 		$routeProvider.
 		when('/load', {
 			controller: 'LoadController',

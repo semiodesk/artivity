@@ -1855,31 +1855,52 @@ iframe {
   height: 100%;
   z-index: 0; }
 
-#title-bar {
+#window-title {
   -webkit-app-region: drag;
-  height: 24px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   padding: none;
-  margin: 0px; }
+  margin: 0px;
+  height: 30px;
+  background: #303030;
+  z-index: 99999; }
 
-#title {
-  position: fixed;
-  top: 0px;
-  left: 6px; }
+#window-title-text {
+  text-align: center;
+  color: #a4a4a4;
+  line-height: 30px;
+  vertical-align: middle; }
 
-#title-bar-btns {
+#window-title-btns {
   -webkit-app-region: no-drag;
-  position: fixed;
-  top: 1px;
-  right: 0px; }
+  position: absolute;
+  top: 0;
+  right: 0; }
 
-#title-bar-btns button.btn-title {
-  height: 32px;
-  width: 32px;
-  padding: 0px !important;
+#window-title-btns button.btn-title {
+  height: 30px;
+  width: 45px;
+  padding: 0 !important;
+  margin: 0;
   background-color: transparent;
   border: none;
+  border-radius: 0;
   color: #F1F1F1;
-  font-size: 16px; }
+  font-size: 16px;
+  opacity: .5; }
 
-#title-bar-btns button:hover.btn-title {
-  background-color: #3F3F41; }
+#window-title-btns button:hover.btn-title {
+  background-color: #3F3F41;
+  opacity: 1; }
+
+#close-btn:hover {
+  background: #E81123 !important; }
+
+#window-view-container {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  bottom: 0; }

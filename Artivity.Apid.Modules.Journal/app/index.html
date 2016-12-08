@@ -45,7 +45,6 @@
 	<script src="bower_components/angular-translate/angular-translate.js"></script>
 	<!-- endbower -->
 
-
 	<script src="js/lib/quantize.js"></script>
 	<script src="js/lib/d3-timeline.js"></script>
 
@@ -61,22 +60,25 @@
 
 	<script>
 	if (window.module) module = window.module;
-
-	
 	</script>
 </head>
 
 <body>
 	<div ng-controller="KeyboardController"></div>
 
-	<div id="title-bar">
-		<div id="title-bar-btns">
-			<button class="btn-title" id="min-btn">-</button>
-			<button class="btn-title" id="max-btn">+</button>
-			<button class="btn-title" id="close-btn">x</button>
+	<div id="window-title">
+		<div id="window-title-text">Artivity</div>
+
+		<div id="window-title-btns">
+			<button class="btn-title" id="min-btn"><img src="img/windows/btn-minimize.png" width="45" height="30" alt="Minimize"></button>
+			<button class="btn-title" id="max-btn"><img src="img/windows/btn-maximize.png" width="45" height="30" alt="Maximize"></button>
+			<button class="btn-title" id="close-btn"><img src="img/windows/btn-close.png" width="45" height="30" alt="Close"></button>
 		</div>
 	</div>
-	<div ng-view></div>
+
+	<div id="window-view-container">
+		<div ng-view></div>
+	</div>
 
 	<div class="overlay collapse" id="overlay">
 		<div class="msg center-xy invisible" id="msg-add-app">
