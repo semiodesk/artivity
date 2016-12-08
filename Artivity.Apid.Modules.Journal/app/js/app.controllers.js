@@ -753,6 +753,41 @@ explorerControllers.controller('UserSettingsController', function (api, $scope, 
             $scope.userForm.$pristine = false;
         }
     };
+	
+	$scope.backupStatus = null;
+	
+	$scope.createBackup = function () {
+		var fileName = 'Unknown';
+		
+		if($scope.user.Name) {
+			fileName = $scope.user.Name;
+		}
+		
+		fileName += '-' + moment().format('DDMMYYYY') + '.artb';
+		
+		console.log("Creating backup to file:", fileName);
+		
+		api.backupUserProfile(fileName).then(function (data) {
+			$scope.backupStatus = data;
+			
+			if($scope.backupStatus.Id && $scope.backupStatus.Error === null) {
+				var interval = setInterval(function() {					
+					api.getUserProfileBackupStatus($scope.backupStatus.Id).then(function(data) {
+						$scope.backupStatus.PercentComplete = data.PercentComplete;
+						$scope.backupStatus.Error = data.Error;
+						
+						if($scope.backupStatus.PercentComplete === 100 || $scope.backupStatus.Error) {
+							clearInterval(interval);
+							
+							if($scope.backupStatus.Error) {
+								console.log($scope.backupStatus.Error);
+							}
+						}
+					});
+				}, 500);
+			}
+		});
+	};
 
     this.submit = function () {
         if ($scope.userForm.$pristine) {

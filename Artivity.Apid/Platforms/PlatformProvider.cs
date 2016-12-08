@@ -73,9 +73,9 @@ namespace Artivity.Apid.Platforms
 
         public bool IsWindows { get; protected set; }
 
-        public string PluginDir { get; set; }
+        public string PluginDir { get; protected set; }
 
-        public string DeploymentDir { get; set; }
+        public string DeploymentDir { get; protected set; }
 
         public string OntologyDir { get; set; }
 
@@ -123,13 +123,18 @@ namespace Artivity.Apid.Platforms
             IsMac = TestMac();
             IsLinux = TestLinux();
 
-            DeploymentDir = Environment.CurrentDirectory;
-            PluginDir = Path.Combine(DeploymentDir, "Plugins");
+            SetDeploymentDir(Environment.CurrentDirectory);
         }
 
         #endregion
 
         #region Methods
+
+        public void SetDeploymentDir(string dir)
+        {
+            DeploymentDir = dir;
+            PluginDir = Path.Combine(DeploymentDir, "Plugins");
+        }
 
         protected void EnsureFolderExists(string folder)
         {

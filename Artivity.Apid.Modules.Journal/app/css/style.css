@@ -103,6 +103,8 @@ iframe {
   -moz-filter: grayscale(100%);
   filter: grayscale(100%); }
 
+textarea.disabled,
+input.disabled,
 .btn.disabled {
   opacity: .5;
   cursor: default; }
@@ -120,6 +122,9 @@ button,
   box-shadow: none;
   -webkit-box-shadow: none;
   transition: all linear .2s; }
+
+.btn-default .zmdi {
+  padding: 0px 10px; }
 
 button:hover,
 .btn-default:hover {
@@ -147,6 +152,18 @@ button:focus,
 
 .btn-success:hover {
   background: #fb7133; }
+
+.btn-chromeless {
+  padding: 0;
+  background: transparent;
+  color: #a4a4a4 !important;
+  transition: color linear .2s; }
+
+.btn-chromeless:hover {
+  color: #F0F0F0 !important; }
+
+.btn .zmdi {
+  margin-right: 5px; }
 
 .btn-sm {
   width: 30px;
@@ -1113,6 +1130,19 @@ button[disabled]:hover {
   -webkit-animation: load8 1.1s infinite linear;
   animation: load8 1.1s infinite linear; }
 
+.loader.loader-xs {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-top: 2px solid rgba(240, 240, 240, 0.2);
+  border-right: 2px solid rgba(240, 240, 240, 0.2);
+  border-bottom: 2px solid rgba(240, 240, 240, 0.2);
+  border-left: 2px solid #F0F0F0;
+  padding: 0;
+  margin: 3px;
+  line-height: 16px;
+  vertical-align: middle; }
+
 .loader,
 .loader:after {
   border-radius: 50%;
@@ -1717,22 +1747,6 @@ path.color1 {
   transform-origin: 0px 5.1em;
   -webkit-animation: load2 2s infinite ease;
   animation: load2 2s infinite ease; }
-
-@-webkit-keyframes load2 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg); }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg); } }
-
-@keyframes load2 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg); }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg); } }
 
 .cfp-hotkeys-close {
   display: none; }

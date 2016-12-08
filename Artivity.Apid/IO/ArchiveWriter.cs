@@ -24,7 +24,6 @@
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
-
 using Artivity.Apid.IO;
 using Artivity.Apid.Platforms;
 using Artivity.Apid.Helpers;
@@ -71,12 +70,12 @@ namespace Artivity.Apid.IO
 
         #region Methods
 
-        public async Task WriteAsync(UriRef entityUri, string targetPath, DateTime minTime)
+        public async Task WriteAsync(string targetPath, UriRef entityUri, DateTime minTime)
         {
-            await Task.Run(() => Write(entityUri, targetPath, minTime));
+            await Task.Run(() => Write(targetPath, entityUri, minTime));
         }
 
-        public void Write(UriRef entityUri, string targetPath, DateTime minTime)
+        public void Write(string targetPath, UriRef entityUri, DateTime minTime)
         {
             FileInfo targetFile = new FileInfo(targetPath);
 

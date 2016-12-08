@@ -22,7 +22,6 @@
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-electron": "^5.0.0",
-    "grunt-electron-installer": "^2.1.0",
     "grunt-msbuild": "^0.3.7",
     "grunt-sass": "^1.2.1",
     "grunt-wiredep": "^3.0.1"

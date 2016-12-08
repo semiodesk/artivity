@@ -118,6 +118,7 @@
     <Compile Include="Helpers\ProgressStream.cs" />
     <Compile Include="Helpers\ProgressStreamContent.cs" />
     <Compile Include="IO\ArchiveManifestCreator.cs" />
+    <Compile Include="IO\BackupWriter.cs" />
     <Compile Include="Protocols\Atom\AtomLink.cs" />
     <Compile Include="Services\Clients\EPrintsServiceClient.cs" />
     <Compile Include="Protocols\Authentication\BasicAuthenticationClient.cs" />
