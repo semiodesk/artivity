@@ -11,3 +11,7 @@ app.on('ready', () => {
         win.show();
     });
 })
+
+ app.on('window-all-closed', function() {
+  app.quit();
+});
