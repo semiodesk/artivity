@@ -1,5 +1,3 @@
-
-
 module.exports = function (grunt) {
 
     // Project configuration.
@@ -19,7 +17,7 @@ module.exports = function (grunt) {
             dist: {
                 options: {
                     style: 'compressed',
-                    sourceMap: true
+                    sourceMap: false
                 },
                 files: {
                     'css/style.css': 'css/style.scss'
@@ -28,7 +26,7 @@ module.exports = function (grunt) {
             dev: {
                 options: {
                     style: 'expanded',
-                    sourceMap: false
+                    sourceMap: true
                 },
                 files: {
                     'css/style.css': 'css/style.scss'
@@ -37,6 +35,9 @@ module.exports = function (grunt) {
         },
 
         watch: {
+            options: {
+                livereload: true
+            },
             files: ['css/*.scss'],
             tasks: 'sass:dev'
         },
@@ -109,6 +110,7 @@ module.exports = function (grunt) {
     });
 
     grunt.loadNpmTasks('grunt-wiredep');
+    grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-electron');
     grunt.loadNpmTasks('grunt-msbuild');
@@ -117,6 +119,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
 
     // Default task
-    grunt.registerTask('default', ['sass:dev', 'wiredep']);
-    grunt.registerTask('build', ['sass:dist', 'clean', 'electron', 'msbuild', 'copy']);
+    grunt.registerTask('default', ['concurrent:wiredep', 'concurrent:sass:dev']);
+    grunt.registerTask('build', ['clean', 'sass:dist', 'electron', 'msbuild', 'copy']);
 };

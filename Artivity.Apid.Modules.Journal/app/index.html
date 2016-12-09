@@ -1,6 +1,5 @@
 <!doctype html>
 <html ng-app="explorerApp">
-
 <head>
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -62,12 +61,14 @@
 	if (window.module) module = window.module;
 	</script>
 </head>
-
 <body>
 	<div ng-controller="KeyboardController"></div>
 
 	<div id="window-title">
-		<div id="window-title-text">Artivity</div>
+		<div id="window-title-text">
+			<span><img src="img/artivity-logo-16x16.png" width="16" height="16" style="opacity: .5"/></span>
+			<span>Artivity</span>
+		</div>
 
 		<div id="window-title-btns">
 			<button class="btn-title" id="min-btn"><img src="img/windows/btn-minimize.png" width="45" height="30" alt="Minimize"></button>
@@ -147,5 +148,7 @@
 		</div>
 	</div>
 </body>
-
+<!-- Enable live-reload if we're in a development environment. -->
+<script type="text/javascript" id="livereload"></script>
+<script type="text/javascript" id="livereload-init" src="js/lib/livereload.js"></script>
 </html>
