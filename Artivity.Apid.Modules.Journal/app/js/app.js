@@ -5,51 +5,36 @@ var explorerApp = angular.module('explorerApp', [
     'pascalprecht.translate',
 	'angularMoment',
 	'cfp.hotkeys'
-]).config(function ($httpProvider) {
-	/*
-	$httpProvider.interceptors.push(function ($q) {
-		return {
-			responseError: function (rejection) {
-				if (rejection.status <= 0) {
-					window.location = "#/error-no-apid-connection";
-					return;
-				}
-				return $q.reject(rejection);
-			}
-		};
-	});
-	*/
-});
+]);
 
 explorerApp.config(['$locationProvider', '$routeProvider',
   function ($locationProvider, $routeProvider) {
 	  //$locationProvider.hashPrefix('#!');
 
-		$routeProvider.
+	$routeProvider.
 		when('/load', {
-			controller: 'LoadController',
-            templateUrl: 'partials/load.view.html',
-            controllerAs: 'vm'
+			templateUrl: 'partials/start.html',
+			controller: 'StartController'
 		}).
 		when('/files', {
-			templateUrl: 'partials/file-list.html'
+			templateUrl: 'partials/file-list.html',
+			controller: 'FileListController'
 		}).
 		when('/files/view', {
-			templateUrl: 'partials/file-view.html'
+			templateUrl: 'partials/file-view.html',
+			controller: 'FileViewController'
 		}).
 		when('/settings', {
-			templateUrl: 'partials/settings.html'
+			templateUrl: 'partials/settings.html',
+			controller: 'SettingsController'
 		}).
 		when('/query', {
-			templateUrl: 'partials/query.html'
-		}).
-		when('/error-no-apid-connection', {
-			templateUrl: 'partials/error-no-apid-connection.html'
+			templateUrl: 'query.html'
 		}).
 		otherwise({
 			redirectTo: '/load'
 		});
-  }]);
+}]);
 
 explorerApp.factory('fileService', function () {
 	return {

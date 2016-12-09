@@ -1,0 +1,50 @@
+<form name="form" ng-controller="AppsSettingsDirectiveFormController">
+    <div class="form-header">
+        <button class="btn btn-default btn-circular pull-right" style="position: relative; right -10px; top: -10px;" ng-click="reload()"><i class="zmdi zmdi-refresh-sync zmdi-lg"></i></button>
+
+        <p class="description">{{ 'SETTINGS.APPS.DESCRIPTION' | translate }}</p>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <ul class="list-view">
+        <li class="list-item" ng-repeat="agent in agents">
+            <div class="col col-icn col-icn-lg" ng-class="{disabled: !agent.pluginInstalled}">
+                <img ng-src="{{agent.iconSrc}}" width="40" height="40" />
+            </div>
+            <div class="col expand" ng-class="{disabled: !agent.pluginInstalled}">
+                <div style="padding: 9px">
+                    <h5>{{agent.name}}</h5>
+
+                    <div class="col" style="min-width: 250px;">
+                        <label>Version: {{agent.softwareVersion}}</label>
+                    </div>
+                    <div class="col">
+                        <label>Plugin: {{agent.pluginVersion}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col" style="vertical-align: middle" ng-class="{disabled: !agent.pluginInstalled}">
+                <div style="padding-right: 12px;">
+                    <ng-color-picker selected-color="agent.color"></ng-color-picker>
+                </div>
+            </div>
+            <div class="col" style="vertical-align: middle">
+                <div style="padding-right: 12px;">
+                    <input type="checkbox" ng-model="agent.pluginInstalled" ng-change="toggleInstall(agent)" data-size="small" bootstrap-switch/>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    <div class="statusbar">
+        <div class="msg-error animate-show" ng-show="hasError">
+            <h5>{{errorType}}</h5>
+            <label>{{errorMessage}}</label>
+        </div>
+
+        <div class="msg-info" ng-show="!hasError">
+            <label style="padding: 10px 30px;"><i class="zmdi zmdi-info"></i> You can drag undetected applications into this window.</label>
+        </div>
+    </div>
+</form>
