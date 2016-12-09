@@ -4,7 +4,6 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
-
         //Read the package.json (optional)
         pkg: grunt.file.readJSON('package.json'),
 
@@ -18,10 +17,28 @@ module.exports = function (grunt) {
 
         sass: {
             dist: {
+                options: {
+                    style: 'compressed',
+                    sourceMap: true
+                },
+                files: {
+                    'css/style.css': 'css/style.scss'
+                }
+            },
+            dev: {
+                options: {
+                    style: 'expanded',
+                    sourceMap: false
+                },
                 files: {
                     'css/style.css': 'css/style.scss'
                 }
             }
+        },
+
+        watch: {
+            files: ['css/*.scss'],
+            tasks: 'sass:dev'
         },
 
         clean: {
@@ -32,6 +49,7 @@ module.exports = function (grunt) {
             dist: ['../../build/dist']
 
         },
+
         electron: {
             windowsBuild: {
                 options: {
@@ -53,6 +71,7 @@ module.exports = function (grunt) {
                 }
             }
         },
+
         msbuild: {
             release: {
                 src: ['../../Artivity.sln'],
@@ -69,6 +88,7 @@ module.exports = function (grunt) {
                 }
             }
         },
+
         copy: {
             main: {
                 files: [
@@ -86,23 +106,17 @@ module.exports = function (grunt) {
                 ],
             },
         }
-
-
-
     });
-
 
     grunt.loadNpmTasks('grunt-wiredep');
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-electron');
     grunt.loadNpmTasks('grunt-msbuild');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-
     // Default task
-    grunt.registerTask('default', ['wiredep', 'sass']);
-
-    grunt.registerTask('build', ['clean', 'electron', 'msbuild', 'copy']);
-
+    grunt.registerTask('default', ['sass:dev', 'wiredep']);
+    grunt.registerTask('build', ['sass:dist', 'clean', 'electron', 'msbuild', 'copy']);
 };
