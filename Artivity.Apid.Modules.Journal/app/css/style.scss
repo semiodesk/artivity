@@ -274,7 +274,7 @@ button:focus,
 }
 
 .btn-header.btn-text {
-	padding: 0 10px !important;
+	padding: 0 15px !important;
 }
 
 .circular,
@@ -1457,9 +1457,9 @@ button[disabled]:hover {
 }
 
 ::-webkit-scrollbar {
-	width: 12px;
+	width: 16px;
 	/* for vertical scrollbars */
-	height: 12px;
+	height: 16px;
 	/* for horizontal scrollbars */
 }
 
