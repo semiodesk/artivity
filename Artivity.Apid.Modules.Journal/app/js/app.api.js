@@ -1,6 +1,6 @@
-var explorerApp = angular.module('explorerApp');
+var app = angular.module('explorerApp');
 
-explorerApp.factory('api', function ($http) {
+app.factory('api', function ($http) {
 	var endpoint = apid.endpointUrl;
 
 	return {

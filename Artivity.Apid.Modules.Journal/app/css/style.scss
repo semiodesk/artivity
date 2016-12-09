@@ -265,10 +265,16 @@ button:focus,
 
 .btn-header {
 	margin: 0 !important;
-	width: 45px;
+	min-width: 45px;
 	height: 45px;
+	line-height: 45px;
+	vertical-align: middle;
 	background: none;
 	color: $labelTextColor;
+}
+
+.btn-header.btn-text {
+	padding: 0 10px !important;
 }
 
 .circular,
@@ -302,7 +308,7 @@ button:focus,
 	color: $labelTextColor;
 	text-transform: uppercase;
 	transition: all .1s linear;
-	padding: .55em 1em;
+	padding: .6em 1em;
 }
 
 .nav-tabs.nav-tabs-top li a {

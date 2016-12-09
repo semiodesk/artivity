@@ -1,0 +1,26 @@
+<form name="form" ng-controller="AccountsSettingsDirectiveFormController">
+    <div class="form-header">
+        <button class="btn btn-default btn-circular pull-right" style="position: relative; right -10px; top: -10px;" ng-click="addAccount()"><i class="zmdi zmdi-plus zmdi-lg"></i></button>
+
+        <p class="description">{{ 'SETTINGS.ACCOUNTS.DESCRIPTION' | translate }}</p>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <ul class="list-view">
+        <li class="list-item" ng-repeat="a in accounts" ng-click="selectAccount(a)">
+            <div class="col col-icn col-icn-lg">
+                <i class="zmdi zmdi-account zdmi-lg"></i>
+            </div>
+            <div class="col expand">
+                <div style="padding: 9px">
+                    <h5>{{a.Title}}</h5>
+                    <label>{{a.Id}}</label>
+                </div>
+            </div>
+            <div class="col col-btn" style="vertical-align: middle">
+                <button class="btn btn-md" ng-click="uninstallAccount(a)"><i class="zmdi zmdi-close zmdi-sm"></i></button>
+            </div>
+        </li>
+    </ul>
+</form>
