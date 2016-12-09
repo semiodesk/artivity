@@ -274,33 +274,35 @@
 			
 			var buffer = document.getElementById("canvas");
 
-			// To prevent flickering, store the current context before setting the size.
-			var bufferContext = buffer.getContext('2d');
+			if(buffer !== null) {
+				// To prevent flickering, store the current context before setting the size.
+				var bufferContext = buffer.getContext('2d');
 
-			// Fit the canvas into its parent.
-			var container = $(buffer);
+				// Fit the canvas into its parent.
+				var container = $(buffer);
 
-			// Create temp canvas and context
-			var temp = document.createElement('canvas');
-			temp.width = container.width();
-			temp.height = bodyHeight;
+				// Create temp canvas and context
+				var temp = document.createElement('canvas');
+				temp.width = container.width();
+				temp.height = bodyHeight;
 
-			// Draw current canvas to temp canvas.
-			var tempContext = temp.getContext("2d");
-			tempContext.drawImage(bufferContext.canvas, 0, 0);
+				// Draw current canvas to temp canvas.
+				var tempContext = temp.getContext("2d");
+				tempContext.drawImage(bufferContext.canvas, 0, 0);
 
-			// Now resize the canvas.					
-			buffer.width = container.width();
-			buffer.height = bodyHeight;
+				// Now resize the canvas.					
+				buffer.width = container.width();
+				buffer.height = bodyHeight;
 
-			// Draw temp canvas back to the current canvas
-			bufferContext.drawImage(tempContext.canvas, 0, 0);
+				// Draw temp canvas back to the current canvas
+				bufferContext.drawImage(tempContext.canvas, 0, 0);
 
-			// Update the buffer.
-			var scope = angular.element(buffer).scope();
+				// Update the buffer.
+				var scope = angular.element(buffer).scope();
 
-			if (scope.selectedInfluence) {
-				scope.renderInfluence(scope.selectedInfluence);
+				if (scope.selectedInfluence) {
+					scope.renderInfluence(scope.selectedInfluence);
+				}
 			}
 		}
 	</script>

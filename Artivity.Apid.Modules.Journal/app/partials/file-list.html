@@ -2,13 +2,12 @@
 	<div id="header">
 		<div class="row">
 			<div class="col">
-				<img style="opacity: .5; width: auto; height: 25px; margin: 5px 10px;" ng-src="img/artivity-logo.png" />
+				<img class="icn icn-circle" style="margin: 0 4px;" ng-src="{{userPhotoUrl}}" />
 			</div>
 			<div class="col expand" style="padding: 0;">
-				<label class="title pull-right" style="margin: 0; padding: 0; position: relative; top: 7px;">{{user.Name}}</label>
+				<label class="title pull-left" style="margin: 0; padding: 0; position: relative; top: 7px;">{{user.Name}}</label>
 			</div>
 			<div class="col">
-				<img class="icn icn-circle" style="margin-left: 5px;" ng-src="{{userPhotoUrl}}" />
 			</div>
 			<!--
 			<div class="col">
