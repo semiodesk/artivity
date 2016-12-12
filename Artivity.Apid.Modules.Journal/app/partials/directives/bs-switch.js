@@ -1,33 +1,27 @@
-(function () {
-    'use strict';
+angular.module('explorerApp').directive('bsSwitch', BootstrapSwitchDirective);
 
-    var app = angular.module('explorerApp');
+function BootstrapSwitchDirective() {
+    return {
+        restrict: 'A',
+        require: '?ngModel',
+        link: function (scope, element, attrs, ngModel) {
+            element.bootstrapSwitch();
 
-    app.directive('bsSwitch', BootstrapSwitchDirective);
+            element.on('switchChange.bootstrapSwitch', function (event, state) {
+                if (ngModel) {
+                    scope.$apply(function () {
+                        ngModel.$setViewValue(state);
+                    });
+                }
+            });
 
-    function BootstrapSwitchDirective() {
-        return {
-            restrict: 'A',
-            require: '?ngModel',
-            link: function (scope, element, attrs, ngModel) {
-                element.bootstrapSwitch();
-
-                element.on('switchChange.bootstrapSwitch', function (event, state) {
-                    if (ngModel) {
-                        scope.$apply(function () {
-                            ngModel.$setViewValue(state);
-                        });
-                    }
-                });
-
-                scope.$watch(attrs.ngModel, function (newValue, oldValue) {
-                    if (newValue) {
-                        element.bootstrapSwitch('state', true, true);
-                    } else {
-                        element.bootstrapSwitch('state', false, true);
-                    }
-                });
-            }
-        };
-    }
-})();
+            scope.$watch(attrs.ngModel, function (newValue, oldValue) {
+                if (newValue) {
+                    element.bootstrapSwitch('state', true, true);
+                } else {
+                    element.bootstrapSwitch('state', false, true);
+                }
+            });
+        }
+    };
+}

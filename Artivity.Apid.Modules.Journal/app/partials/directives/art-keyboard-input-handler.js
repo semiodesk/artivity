@@ -1,22 +1,14 @@
-var explorerControllers = angular.module('explorerControllers', [
-	'ngAnimate',
-	'ngInputModified',
-	'ui.bootstrap',
-	'ui.bootstrap.modal',
-	'ui.bootstrap.progressbar'
-]);
+angular.module('explorerApp').directive('artKeyboardInputHandler', KeyboardInputHandlerDirective);
 
-explorerControllers.filter('reverse', function () {
-    return function (items) {
-        if (items !== undefined && items.length > 1) {
-            return items.slice().reverse();
-        } else {
-            return items;
-        }
-    };
-});
+function KeyboardInputHandlerDirective() {
+    return {
+        scope: true,
+        template: '',
+        controller: KeyboardInputHandlerDirectiveController
+    }
+};
 
-explorerControllers.controller('KeyboardController', function (api, $scope, hotkeys) {
+function KeyboardInputHandlerDirectiveController (api, $scope, hotkeys) {
     $scope.navigateTo = function (path) {
         var url = window.location.href.split('#');
 
@@ -73,4 +65,4 @@ explorerControllers.controller('KeyboardController', function (api, $scope, hotk
             $scope.navigateTo('query.html');
         }
     });
-});
+}

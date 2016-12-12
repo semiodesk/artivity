@@ -1,27 +1,21 @@
-(function () {
-    'use strict';
+angular.module('explorerApp').directive('ngDropzone', DropZoneDirective);
 
-    var app = angular.module('explorerApp');
+function DropZoneDirective() {
+    return {
+        restrict: "A",
+        link: function (scope, elem) {
+            elem.bind('drop', function (evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
 
-    app.directive('ngDropzone', DropZoneDirective);
+                var files = evt.dataTransfer.files;
 
-    function DropZoneDirective() {
-        return {
-            restrict: "A",
-            link: function (scope, elem) {
-                elem.bind('drop', function (evt) {
-                    evt.stopPropagation();
-                    evt.preventDefault();
+                alert(files);
 
-                    var files = evt.dataTransfer.files;
-
-                    alert(files);
-
-                    for (var i = 0, f; f = files[i]; i++) {
-                        alert(f);
-                    }
-                });
-            }
+                for (var i = 0, f; f = files[i]; i++) {
+                    alert(f);
+                }
+            });
         }
     }
-})();
+}

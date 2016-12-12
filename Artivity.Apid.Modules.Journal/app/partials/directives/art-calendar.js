@@ -1,73 +1,67 @@
-(function () {
-    'use strict';
+angular.module('explorerApp').directive('artCalendar', CalendarDirective);
 
-    var app = angular.module('explorerApp');
+function CalendarDirective() {
+    return {
+        scope: true,
+        template: '',
+        link: function(scope, element, attributes, api, $log, $uibModal) {
+            var s = scope;
 
-    app.directive('artCalendar', CalendarDirective);
+            var options = {
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
+                    },
+                    defaultView: 'agendaWeek',
+                    businessHours: {
+                        dow: [1, 2, 3, 4, 5], // Monday - Friday
+                        start: '9:00',
+                        end: '17:00',
+                    },
+                    height: function () {
+                        return $('.modal-body').innerHeight() - 20;
+                    }
+                };
 
-    function CalendarDirective() {
-        return {
-            scope: true,
-            template: '',
-            link: function(scope, element, attributes, api, $log, $uibModal) {
-                var s = scope;
+                var element = $(element);
+                element.fullCalendar(options);
 
-                var options = {
-                        header: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'month,agendaWeek,agendaDay'
-                        },
-                        defaultView: 'agendaWeek',
-                        businessHours: {
-                            dow: [1, 2, 3, 4, 5], // Monday - Friday
-                            start: '9:00',
-                            end: '17:00',
-                        },
-                        height: function () {
-                            return $('.modal-body').innerHeight() - 20;
-                        }
-                    };
+                s.getActivities().then(function (data) {
+                    var activities = [];
 
-                    var element = $(element);
-                    element.fullCalendar(options);
+                    for (var i = 0; i < data.length; i++) {
+                        var activity = data[i];
+                        activity.title = '';
+                        activity.start = new Date(activity.startTime);
+                        activity.color = activity.agentColor;
 
-                    s.getActivities().then(function (data) {
-                        var activities = [];
-
-                        for (var i = 0; i < data.length; i++) {
-                            var activity = data[i];
-                            activity.title = '';
-                            activity.start = new Date(activity.startTime);
-                            activity.color = activity.agentColor;
-
-                            if (activity.endTime) {
-                                activity.end = new Date(activity.endTime);
-                            } else if (activity.maxTime) {
-                                activity.end = new Date(activity.maxTime);
-                            } else {
-                                activity.end = new Date(activity.startTime);
-                                activity.end.setSeconds(activity.end.getSeconds() + 30);
-                            }
-
-                            activities.push(activity);
+                        if (activity.endTime) {
+                            activity.end = new Date(activity.endTime);
+                        } else if (activity.maxTime) {
+                            activity.end = new Date(activity.maxTime);
+                        } else {
+                            activity.end = new Date(activity.startTime);
+                            activity.end.setSeconds(activity.end.getSeconds() + 30);
                         }
 
-                        console.log("Activities:", activities);
+                        activities.push(activity);
+                    }
 
-                        if (activities && activities.length > 0) {
-                            element.fullCalendar('render');
-                            element.fullCalendar('addEventSource', activities);
-                            element.fullCalendar('gotoDate', activities[0].start);
-                        }
+                    console.log("Activities:", activities);
 
-                        s.dialog.rendered.then(function () {
-                            s.isLoading = false;
+                    if (activities && activities.length > 0) {
+                        element.fullCalendar('render');
+                        element.fullCalendar('addEventSource', activities);
+                        element.fullCalendar('gotoDate', activities[0].start);
+                    }
 
-                            element.fullCalendar('render');
-                        });
+                    s.dialog.rendered.then(function () {
+                        s.isLoading = false;
+
+                        element.fullCalendar('render');
                     });
-            }
+                });
         }
-    };
-})();
+    }
+};

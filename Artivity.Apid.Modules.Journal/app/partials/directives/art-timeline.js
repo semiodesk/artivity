@@ -1,57 +1,51 @@
-(function () {
-    'use strict';
+angular.module('explorerApp').directive('artTimeline', function () {
+	return {
+		template: '\
+		<div class="timeline">\
+			<div class="timeline-control"> \
+				<div class="position"><label></label></div> \
+				<div class="duration"><label></label></div> \
+				<div class="track-col"> \
+					<div class="thumb-container"></div> \
+					<div class="track-container"> \
+						<div class="track"></div> \
+						<div class="track-preview"></div> \
+						<div class="track-indicator"></div> \
+						<div class="thumb draggable"><div class="thumb-knob"></div></div> \
+					</div> \
+					<div class="comments"></div> \
+					<div class="activities"></div> \
+				</div> \
+			</div> \
+		</div>',
+		link: function (scope, element, attributes) {
+			var timeline = new TimelineControl(element);
 
-    var app = angular.module('explorerApp');
+			timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
+			timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
 
-    app.directive('artTimeline', function () {
-        return {
-            template: '\
-            <div class="timeline">\
-                <div class="timeline-control"> \
-                    <div class="position"><label></label></div> \
-                    <div class="duration"><label></label></div> \
-                    <div class="track-col"> \
-                        <div class="thumb-container"></div> \
-                        <div class="track-container"> \
-                            <div class="track"></div> \
-                            <div class="track-preview"></div> \
-                            <div class="track-indicator"></div> \
-                            <div class="thumb draggable"><div class="thumb-knob"></div></div> \
-                        </div> \
-                        <div class="comments"></div> \
-                        <div class="activities"></div> \
-                    </div> \
-                </div> \
-            </div>',
-            link: function (scope, element, attributes) {
-                var timeline = new TimelineControl(element);
+			timeline.selectedInfluenceChanged = function (influence) {
+				scope.previewInfluence(influence);
+			};
 
-                timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
-                timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
+			scope.$watchCollection(attributes.artActivitiesSrc, function () {
+				timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
+			});
 
-                timeline.selectedInfluenceChanged = function (influence) {
-                    scope.previewInfluence(influence);
-                };
+			scope.$watchCollection(attributes.artInfluencesSrc, function () {
+				timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
+			});
 
-                scope.$watchCollection(attributes.artActivitiesSrc, function () {
-                    timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
-                });
+			scope.$watch('selectedInfluence', function () {
+				if (scope.selectedInfluence !== undefined) {
+					timeline.setPosition(scope.selectedInfluence);
 
-                scope.$watchCollection(attributes.artInfluencesSrc, function () {
-                    timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
-                });
-
-                scope.$watch('selectedInfluence', function () {
-                    if (scope.selectedInfluence !== undefined) {
-                        timeline.setPosition(scope.selectedInfluence);
-
-                        console.log(angular.element(scope.selectedInfluence));
-                    }
-                });
-            }
-        }
-    });
-})();
+					console.log(angular.element(scope.selectedInfluence));
+				}
+			});
+		}
+	}
+});
 
 function Activity(activity, timeOffset) {
 	var t = this;
