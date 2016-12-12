@@ -15,7 +15,7 @@ explorerApp.config(['$locationProvider', '$routeProvider',
 	  //$locationProvider.hashPrefix('#!');
 
 	$routeProvider.
-		when('/load', {
+		when('/start', {
 			templateUrl: 'partials/start.html',
 			controller: 'StartController'
 		}).
@@ -35,6 +35,6 @@ explorerApp.config(['$locationProvider', '$routeProvider',
 			templateUrl: 'query.html'
 		}).
 		otherwise({
-			redirectTo: '/load'
+			redirectTo: '/start'
 		});
 }]);

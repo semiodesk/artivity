@@ -11,29 +11,26 @@ function StartController($location, api, $http) {
 
     function init() {
         showLoadingSpinner();
-        
+
         $http.get(apid.endpointUrl + '/agents').then(
             function (response) {
-                $location.path("/files")
-            }, 
-            function() {
+                $location.path("/files");
+            },
+            function () {
                 showConnectionError();
             });
     }
-    
-    function retry()
-    {
+
+    function retry() {
         init();
     }
 
-    function showLoadingSpinner()
-    {
+    function showLoadingSpinner() {
         t.showSpinner = true;
         t.showError = false;
     }
-    
-    function showConnectionError()
-    {
+
+    function showConnectionError() {
         t.showSpinner = false;
         t.showError = true;
     }
