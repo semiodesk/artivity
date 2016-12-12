@@ -33,7 +33,7 @@
         s.addAccount = function () {
             var modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'partials/dialogs/account-add-dialog.html',
+                templateUrl: 'partials/dialogs/add-account-dialog.html',
                 controller: 'AddAccountDialogController'
             });
 
