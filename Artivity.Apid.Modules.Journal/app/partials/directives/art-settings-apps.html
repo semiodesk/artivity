@@ -26,12 +26,12 @@
             </div>
             <div class="col" style="vertical-align: middle" ng-class="{disabled: !agent.pluginInstalled}">
                 <div style="padding-right: 12px;">
-                    <ng-color-picker selected-color="agent.color"></ng-color-picker>
+                    <art-color-picker selected-color="agent.color"></art-color-picker>
                 </div>
             </div>
             <div class="col" style="vertical-align: middle">
                 <div style="padding-right: 12px;">
-                    <input type="checkbox" ng-model="agent.pluginInstalled" ng-change="toggleInstall(agent)" data-size="small" bootstrap-switch/>
+                    <input type="checkbox" ng-model="agent.pluginInstalled" ng-change="toggleInstall(agent)" data-size="small" bs-switch/>
                 </div>
             </div>
         </li>

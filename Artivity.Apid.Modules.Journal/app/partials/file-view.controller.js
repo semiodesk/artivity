@@ -359,14 +359,13 @@
         s.publishFile = function () {
             var modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'partials/dialogs/file-publish-dialog.html',
-                controller: 'FilePublishDialogController',
+                templateUrl: 'partials/dialogs/publish-file-dialog.html',
+                controller: 'PublishFileDialogController',
                 scope: $scope
             });
         }
 
         // PRINT LABEL
-
         var getChangedProperty = function (influence) {
             for (var i = 0; i < influence.changes.length; i++) {
                 var change = influence.changes[i];
