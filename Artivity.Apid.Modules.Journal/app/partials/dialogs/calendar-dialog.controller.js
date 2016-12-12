@@ -1,15 +1,11 @@
-(function() {
-    'use strict';
+angular.module('explorerApp').controller('CalendarDialogController', CalendarDialogController);
 
-    angular.module('explorerApp').controller('CalendarDialogController', CalendarDialogController);
+function CalendarDialogController(api, $scope, $filter, $uibModalInstance, $sce) {
+    $scope.isLoading = true;
+    $scope.dialog = $uibModalInstance;
+    $scope.getActivities = api.getActivities;
 
-    function CalendarDialogController(api, $scope, $filter, $uibModalInstance, $sce) {
-        $scope.isLoading = true;
-        $scope.dialog = $uibModalInstance;
-        $scope.getActivities = api.getActivities;
-
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-    }
-})();
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+}

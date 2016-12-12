@@ -44,50 +44,24 @@
 	<script src="bower_components/angular-translate/angular-translate.js"></script>
 	<!-- endbower -->
 
-	<script src="js/lib/quantize.js"></script>
-
 	<script src="js/dragDrop.js"></script>
 	<script src="js/app.conf.js"></script>
 	<script src="js/app.js"></script>
 	<script src="js/app.api.js"></script>
-	<script src="js/app.classes.js"></script>
-	<script src="js/app.controllers.js"></script>
 	<script src="js/app.overlay.js"></script>
 	<script src="js/app.translation.js"></script>
-
-	<script src="partials/start.controller.js"></script>
-	<script src="partials/settings.controller.js"></script>
-	<script src="partials/file-list.controller.js"></script>
-	<script src="partials/file-view.controller.js"></script>
-
-	<script src="partials/directives/art-calendar.js"></script>
-	<script src="partials/directives/art-color-picker.js"></script>
-	<script src="partials/directives/art-photo-picker.js"></script>
-	<script src="partials/directives/art-settings-user.js"></script>
-	<script src="partials/directives/art-settings-accounts.js"></script>
-	<script src="partials/directives/art-settings-apps.js"></script>
-	<script src="partials/directives/art-style-binder.js"></script>
-	<script src="partials/directives/art-timeline.js"></script>
-	<script src="partials/directives/bs-switch.js"></script>
-	<script src="partials/directives/ng-dropzone.js"></script>
-	<script src="partials/directives/ng-enter.js"></script>
-	<script src="partials/directives/ng-esc.js"></script>
-
-	<script src="partials/dialogs/add-account-dialog.controller.js"></script>
-	<script src="partials/dialogs/calendar-dialog.controller.js"></script>
-	<script src="partials/dialogs/publish-file-dialog.controller.js"></script>
+	<script src="js/app.src.js"></script>
 
 	<script>
 	if (window.module) module = window.module;
 	</script>
 </head>
 <body>
-	<div ng-controller="KeyboardController"></div>
+	<div art-keyboard-input-handler></div>
 
 	<div id="window-title">
 		<div id="window-title-text">
-			<span><img src="img/artivity-logo-16x16.png" width="16" height="16" style="opacity: .5"/></span>
-			<span>Artivity</span>
+			<span><img src="img/artivity-66x20.png" width="66" height="20" style="opacity: .5" alt="artivity"/></span>
 		</div>
 
 		<div id="window-title-btns">
@@ -168,7 +142,7 @@
 		</div>
 	</div>
 </body>
-<!-- Enable live-reload if we're in a development environment. -->
+<!-- Enable live-reload if we're in a development environment. The following empty 
+script is the container into which the livereload.js file is being loaded on run-time. -->
 <script type="text/javascript" id="livereload"></script>
-<script type="text/javascript" id="livereload-init" src="js/lib/livereload.js"></script>
 </html>

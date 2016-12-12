@@ -1,21 +1,15 @@
-(function () {
-    'use strict';
+angular.module('explorerApp').directive('ngEnter', EnterKeyBindingDirective);
 
-    var app = angular.module('explorerApp');
+function EnterKeyBindingDirective() {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if (event.which === 13) { // 13 = enter key
+                scope.$apply(function () {
+                    scope.$eval(attrs.ngEnter);
+                });
 
-    app.directive('ngEnter', EnterKeyBindingDirective);
-
-    function EnterKeyBindingDirective() {
-        return function (scope, element, attrs) {
-            element.bind("keydown keypress", function (event) {
-                if (event.which === 13) { // 13 = enter key
-                    scope.$apply(function () {
-                        scope.$eval(attrs.ngEnter);
-                    });
-
-                    event.preventDefault();
-                }
-            });
-        };
-    }
-})();
+                event.preventDefault();
+            }
+        });
+    };
+}

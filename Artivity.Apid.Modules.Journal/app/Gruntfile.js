@@ -35,11 +35,48 @@ module.exports = function (grunt) {
         },
 
         watch: {
-            options: {
-                livereload: true
+            js: {
+                options: {
+                    livereload: true
+                },
+                files: [
+                    'js/lib/*.js',
+                    'js/lib/classes/*.js',
+                    'js/lib/filters/*.js',
+                    'js/lib/services/*.js',
+                    'partials/directives/*.js',
+                    'partials/dialogs/*.js',
+                    'partials/*.js'
+                ],
+                tasks: 'concat:js:dev'
             },
-            files: ['css/*.scss'],
-            tasks: 'sass:dev'
+            sass: {
+                options: {
+                    livereload: true
+                },
+                files: ['css/*.scss'],
+                tasks: 'sass:dev'
+            }
+        },
+
+        concat: {
+            js: {
+                options: {
+                    banner: "(function () {\n\n'use strict';\n\n",
+                    footer: "\n})();"
+                },
+                nonull: true,
+                dest: 'js/app.src.js',
+                src: [
+                    'js/lib/*.js',
+                    'js/lib/classes/*.js',
+                    'js/lib/filters/*.js',
+                    'js/lib/services/*.js',
+                    'partials/directives/*.js',
+                    'partials/dialogs/*.js',
+                    'partials/*.js'
+                ]
+            }
         },
 
         clean: {
@@ -117,8 +154,21 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-concat');
 
-    // Default task
-    grunt.registerTask('default', ['concurrent:wiredep', 'concurrent:sass:dev']);
-    grunt.registerTask('build', ['clean', 'sass:dist', 'electron', 'msbuild', 'copy']);
+    grunt.registerTask('default', [
+        'wiredep',
+        'concat:js',
+        'sass:dev'
+    ]);
+
+    grunt.registerTask('build', [
+        'clean',
+        'wiredep',
+        'concat:js',
+        'sass:dist',
+        'electron',
+        'msbuild',
+        'copy'
+    ]);
 };

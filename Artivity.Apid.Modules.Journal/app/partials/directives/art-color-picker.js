@@ -1,59 +1,53 @@
-(function () {
-    'use strict';
+angular.module('explorerApp').directive('artColorPicker', ColorPickerDirective);
 
-    var app = angular.module('explorerApp');
+function ColorPickerDirective() {
+    return {
+        template: '<button type="button" class="btn btn-colorpicker"><span class="color-fill-icon"><i></i></span></button>',
+        link: function (scope, element, attributes) {
+            var indicator = $('.color-fill-icon', element);
+            indicator.css('background-color', getValue(scope, attributes.selectedColor));
 
-    app.directive('artColorPicker', ColorPickerDirective);
+            var button = $(element);
 
-    function ColorPickerDirective() {
-        return {
-            template: '<button type="button" class="btn btn-colorpicker"><span class="color-fill-icon"><i></i></span></button>',
-            link: function (scope, element, attributes) {
-                var indicator = $('.color-fill-icon', element);
-                indicator.css('background-color', getValue(scope, attributes.selectedColor));
+            button.on('changeColor', function (e) {
+                if (e.color == null) {
+                    //when select transparent color
+                    //$('.color-fill-icon', btn).addClass('colorpicker-color');
+                } else {
+                    //$('.color-fill-icon', btn).removeClass('colorpicker-color');
+                    indicator.css('background-color', e.color);
 
-                var button = $(element);
+                    // Update the bound value.
+                    setValue(scope, attributes.selectedColor, e.color.toHex());
+                }
+            });
 
-                button.on('changeColor', function (e) {
-                    if (e.color == null) {
-                        //when select transparent color
-                        //$('.color-fill-icon', btn).addClass('colorpicker-color');
-                    } else {
-                        //$('.color-fill-icon', btn).removeClass('colorpicker-color');
-                        indicator.css('background-color', e.color);
-
-                        // Update the bound value.
-                        setValue(scope, attributes.selectedColor, e.color.toHex());
-                    }
-                });
-
-                button.colorpicker({
-                    customClass: 'colorpicker-lg',
-                    align: 'right',
-                    format: 'rgb',
-                    color: getValue(scope, attributes.selectedColor),
-                    colorSelectors: {
-                        'default': '#777777',
-                        'primary': '#337ab7',
-                        'success': '#5cb85c',
-                        'info': '#5bc0de',
-                        'warning': '#f0ad4e',
-                        'danger': '#d9534f'
+            button.colorpicker({
+                customClass: 'colorpicker-lg',
+                align: 'right',
+                format: 'rgb',
+                color: getValue(scope, attributes.selectedColor),
+                colorSelectors: {
+                    'default': '#777777',
+                    'primary': '#337ab7',
+                    'success': '#5cb85c',
+                    'info': '#5bc0de',
+                    'warning': '#f0ad4e',
+                    'danger': '#d9534f'
+                },
+                sliders: {
+                    saturation: {
+                        maxLeft: 200,
+                        maxTop: 200
                     },
-                    sliders: {
-                        saturation: {
-                            maxLeft: 200,
-                            maxTop: 200
-                        },
-                        hue: {
-                            maxTop: 200
-                        },
-                        alpha: {
-                            maxTop: 200
-                        }
+                    hue: {
+                        maxTop: 200
+                    },
+                    alpha: {
+                        maxTop: 200
                     }
-                });
-            }
+                }
+            });
         }
     }
-})();
+}
