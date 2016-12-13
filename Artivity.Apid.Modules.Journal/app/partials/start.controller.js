@@ -12,9 +12,13 @@ function StartController($location, api, $http) {
     function init() {
         showLoadingSpinner();
 
-        $http.get(apid.endpointUrl + '/agents').then(
+        $http.get(apid.endpointUrl + '/setup').then(
             function (response) {
-                $location.path("/files");
+                if(response.data) {
+                    $location.path("/setup");
+                } else {
+                    $location.path("/files");
+                }
             },
             function () {
                 showConnectionError();

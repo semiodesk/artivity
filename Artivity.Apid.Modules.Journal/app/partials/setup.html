@@ -1,0 +1,23 @@
+<div id="body-wrapper">
+    <div class="container">
+        <h1>Welcome!</h1>
+
+        <p>Thank you for using Artivity. Before you can begin using the app we need to setup a few things.</p>
+
+        <section>
+            <div ng-switch="currentStep">
+                <div ng-switch-when="art-settings-user">
+                    <div art-settings-user backup-enabled="false"></div>
+                </div>
+                <div ng-switch-when="art-settings-apps">
+                    <div art-settings-apps></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="text-right">
+            <button class="btn btn-circular btn-icn" ng-show="canGoBack" ng-click="goBack()"><i class="zmdi zmdi-arrow-left"></i></button>
+            <button class="btn btn-circular btn-icn btn-success" ng-show="canGoNext" ng-click="goNext()"><i class="zmdi zmdi-arrow-right"></i></button>
+        </div>
+    </div>
+</div>

@@ -39,6 +39,9 @@ body {
   min-height: 100%;
   margin: 0; }
 
+section {
+  margin: 1em 0; }
+
 a {
   color: #F0F0F0; }
 
@@ -180,6 +183,9 @@ button:focus,
   font-weight: 100;
   width: 45px;
   height: 45px; }
+
+.btn-icn .zmdi {
+  margin: 0; }
 
 .btn-header {
   margin: 0 !important;

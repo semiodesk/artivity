@@ -1,4 +1,4 @@
-<form name="form" ng-controller="UserSettingsDirectiveFormController">
+<form name="form">
     <div class="row">
         <div class="col-md-12">
             <div class="form-header">
@@ -26,7 +26,7 @@
             <div style="max-width: 500px;">
                 <div class="form-group">
                     <label for="name">{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}" size="30" ng-model="user.Name" ng-minlength="5" required>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}" size="30" ng-model="user.Name">
                 </div>
 
                 <div class="form-group">
@@ -39,7 +39,7 @@
                     <input type="text" class="form-control" id="email" name="email" placeholder="you@example.org" length="25" ng-model="user.EmailAddress" ng-minlength="5" required>
                 </div>
 
-                <div class="form-group" style="margin-top: 3em;" class="label">
+                <div class="form-group" style="margin-top: 3em;" class="label ng-hide" ng-show="{{backupEnabled}}">
                     <div ng-switch="backupStatus">
                         <div ng-switch-default>
                             <div ng-switch="backupStatus.Error">

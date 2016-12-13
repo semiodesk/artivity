@@ -1,15 +1,13 @@
 angular.module('explorerApp').controller('SettingsController', SettingsController);
 
-function SettingsController(api, $scope, $rootScope, $location, $routeParams) {
+function SettingsController(api, $scope, $rootScope, $location, $routeParams, settingsService) {
     var t = this;
     var s = $scope;
 
-    s.children = [];
-
     s.submit = function () {
-        s.children.forEach(function (child) {
-            if (child.submit) {
-                child.submit();
+        settingsService.controllers(function(c) {
+            if(c.submit) {
+                c.submit();
             }
         });
     };
@@ -23,14 +21,14 @@ function SettingsController(api, $scope, $rootScope, $location, $routeParams) {
     s.submitAndReturn = function () {
         s.submit();
 
-        // Navigate to dasboard and refresh the page.
+        // Navigate to dashboard and refresh the page.
         $location.path('/');
     };
 
     s.reset = function () {
-        s.children.forEach(function (child) {
-            if (child.reset) {
-                child.reset();
+        settingsService.controllers(function(c) {
+            if(c.reset) {
+                c.reset();
             }
         });
     };

@@ -48,7 +48,7 @@ module.exports = function (grunt) {
                     'partials/dialogs/*.js',
                     'partials/*.js'
                 ],
-                tasks: 'concat:js:dev'
+                tasks: 'tags'
             },
             sass: {
                 options: {
@@ -59,11 +59,27 @@ module.exports = function (grunt) {
             }
         },
 
+        tags: {
+            build: {
+                src: [
+                    'js/lib/*.js',
+                    'js/lib/classes/*.js',
+                    'js/lib/filters/*.js',
+                    'js/lib/services/*.js',
+                    'partials/directives/*.js',
+                    'partials/dialogs/*.js',
+                    'partials/*.js'
+                ],
+                dest: 'index.html'
+            }
+        },
+
         concat: {
             js: {
                 options: {
                     banner: "(function () {\n\n'use strict';\n\n",
-                    footer: "\n})();"
+                    footer: "\n})();",
+                    sourceMap: true
                 },
                 nonull: true,
                 dest: 'js/app.src.js',
@@ -149,6 +165,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-wiredep');
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-script-link-tags');
     grunt.loadNpmTasks('grunt-electron');
     grunt.loadNpmTasks('grunt-msbuild');
     grunt.loadNpmTasks('grunt-contrib-watch');
@@ -156,9 +173,16 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
 
+    grunt.registerTask('concat:js:clear', 'Empties the concatenated app source files.', function() {
+        // TODO: Read dest file from config 'concat:js:dest'.
+        grunt.file.write('js/app.src.js', '');
+        grunt.file.write('js/app.src.js.map', '');
+    });
+
     grunt.registerTask('default', [
         'wiredep',
-        'concat:js',
+        'concat:js:clear',
+        'tags',
         'sass:dev'
     ]);
 
