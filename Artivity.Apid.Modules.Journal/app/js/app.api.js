@@ -269,6 +269,12 @@ app.factory('api', function ($http) {
 				function (response) {
 					return response.data;
 				});
+		},
+		setRunSetup: function(enabled) {
+			return $http.post(endpoint + '/setup', { runSetup: enabled }).then(
+				function (response) {
+					return response.data;
+				});
 		}
 	};
 });

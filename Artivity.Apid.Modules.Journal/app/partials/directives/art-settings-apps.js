@@ -1,22 +1,25 @@
 var app = angular.module('explorerApp');
 
-app.directive('artAppsSettings', AppsSettingsDirective);
+app.directive('artSettingsApps', AppsSettingsDirective);
 
 function AppsSettingsDirective() {
     return {
-        scope: true,
-        templateUrl: 'partials/directives/art-settings-apps.html'
+        scope: {},
+        templateUrl: 'partials/directives/art-settings-apps.html',
+        controller: AppsSettingsDirectiveFormController
     }
 };
 
 app.controller('AppsSettingsDirectiveFormController', AppsSettingsDirectiveFormController);
 
-function AppsSettingsDirectiveFormController (api, $scope, $log) {
+function AppsSettingsDirectiveFormController (api, $scope, settingsService) {
     var t = this;
     var s = $scope;
 
-    // Register the controller with its parent for global apply/cancel.
-    s.$parent.children.push(t);
+    if(settingsService) {
+        // Register the controller with its parent for global apply/cancel.
+        settingsService.registerController(t);
+    }
 
     s.agents = [];
 
@@ -77,7 +80,7 @@ function AppsSettingsDirectiveFormController (api, $scope, $log) {
 
     t.submit = function () {
         if (s.agents.length > 0) {
-            console.log("Submitting Apps..");
+            console.log("Submitting Apps");
 
             api.setAgents(s.agents);
         }

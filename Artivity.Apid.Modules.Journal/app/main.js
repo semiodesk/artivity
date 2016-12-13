@@ -9,7 +9,9 @@ app.on('ready', () => {
         frame: false,
         show: false,
         width: 1100,
+        minWidth: 850, 
         height: 800,
+        minHeight: 600,
         icon: __dirname + '/img/icon.ico',
         backgroundColor: '#1D1D1D'
     };

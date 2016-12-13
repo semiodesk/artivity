@@ -1,27 +1,31 @@
 var app = angular.module('explorerApp');
 
-app.directive('artUserSettings', UserSettingsDirective);
+app.directive('artSettingsUser', UserSettingsDirective);
 
 function UserSettingsDirective() {
     return {
-        scope: true,
+        scope: {
+            backupEnabled: '@backupEnabled'
+        },
         templateUrl: 'partials/directives/art-settings-user.html',
+        controller: UserSettingsDirectiveFormController
     }
 };
 
 app.controller('UserSettingsDirectiveFormController', UserSettingsDirectiveFormController);
 
-function UserSettingsDirectiveFormController (api, $scope, $log) {
+function UserSettingsDirectiveFormController (api, $scope, settingsService) {
     var t = this;
     var s = $scope;
 
-    // Register the controller with its parent for global apply/cancel.
-    s.$parent.children.push(t);
+    if(settingsService) {
+        // Register the controller with its parent for global apply/cancel.
+        settingsService.registerController(t);
+    }
 
     // Load the user data.
     api.getUser().then(function (data) {
         s.user = data;
-        s.form.$setPristine();
     });
 
     // Set the user photo URL.
@@ -43,6 +47,11 @@ function UserSettingsDirectiveFormController (api, $scope, $log) {
             s.form.$pristine = false;
         }
     };
+
+    // Set attribute default values.
+    if(s.backupEnabled === undefined) {
+        s.backupEnabled = true;
+    }
     
     s.backupStatus = null;
     
@@ -80,11 +89,7 @@ function UserSettingsDirectiveFormController (api, $scope, $log) {
     };
 
     t.submit = function () {
-        if (s.form.$pristine) {
-            return;
-        }
-
-        console.log("Submitting Profile..");
+        console.log("Submitting Profile");
 
         if (s.user) {
             api.setUser(s.user);

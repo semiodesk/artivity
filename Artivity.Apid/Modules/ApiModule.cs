@@ -32,6 +32,7 @@ using Artivity.Apid.Helpers;
 using Artivity.Apid.IO;
 using Nancy;
 using Nancy.Responses;
+using Nancy.Extensions;
 using Nancy.IO;
 using Semiodesk.Trinity;
 using Semiodesk.Trinity.Store;
@@ -60,6 +61,32 @@ namespace Artivity.Apid.Modules
         public ApiModule(IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0", modelProvider, platform)
         {
+            Get["/setup"] = parameters =>
+            {
+                return Response.AsJson(platform.Config.RunSetup);
+            };
+
+            Post["/setup"] = parameters =>
+            {
+                string data = Request.Body.AsString();
+
+                Dictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(data);
+
+                if (values.ContainsKey("runSetup"))
+                {
+                    bool value = Convert.ToBoolean(values["runSetup"]);
+
+                    platform.Config.RunSetup = value;
+                    platform.WriteConfig(platform.Config);
+
+                    return HttpStatusCode.OK;
+                }
+                else
+                {
+                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+            };
+
             Get["/uris"] = parameters =>
             {
                 string fileUrl = Request.Query["fileUrl"];

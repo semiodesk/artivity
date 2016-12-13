@@ -15,10 +15,6 @@ explorerApp.config(['$locationProvider', '$routeProvider',
 	  //$locationProvider.hashPrefix('#!');
 
 	$routeProvider.
-		when('/start', {
-			templateUrl: 'partials/start.html',
-			controller: 'StartController'
-		}).
 		when('/files', {
 			templateUrl: 'partials/file-list.html',
 			controller: 'FileListController'
@@ -30,6 +26,14 @@ explorerApp.config(['$locationProvider', '$routeProvider',
 		when('/settings', {
 			templateUrl: 'partials/settings.html',
 			controller: 'SettingsController'
+		}).
+		when('/setup', {
+			templateUrl: 'partials/setup.html',
+			controller: 'SetupController'
+		}).
+		when('/start', {
+			templateUrl: 'partials/start.html',
+			controller: 'StartController'
 		}).
 		when('/query', {
 			templateUrl: 'query.html'

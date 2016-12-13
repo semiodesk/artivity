@@ -1,22 +1,25 @@
 var app = angular.module('explorerApp');
 
-app.directive('artAccountsSettings', AccountsSettingsDirective);
+app.directive('artSettingsAccounts', AccountsSettingsDirective);
 
 function AccountsSettingsDirective() {
     return {
-        scope: true,
+        scope: {},
         templateUrl: 'partials/directives/art-settings-accounts.html',
+        controller: AccountsSettingsDirectiveFormController
     }
 };
 
 app.controller('AccountsSettingsDirectiveFormController', AccountsSettingsDirectiveFormController);
 
-function AccountsSettingsDirectiveFormController (api, $scope, $log, $uibModal) {
+function AccountsSettingsDirectiveFormController (api, $scope, settingsService, $uibModal) {
     var t = this;
     var s = $scope;
 
-    // Register the controller with its parent for global apply/cancel.
-    s.$parent.children.push(this);
+    if(settingsService) {
+        // Register the controller with its parent for global apply/cancel.
+        settingsService.registerController(t);
+    }
 
     s.selectedItem = null;
 
@@ -35,7 +38,7 @@ function AccountsSettingsDirectiveFormController (api, $scope, $log, $uibModal) 
         });
 
         modalInstance.result.then(function (account) {
-            console.log("Reloading accounts..");
+            console.log("Reloading Accounts");
 
             // Reload the user accounts.
             api.getAccounts().then(function (data) {

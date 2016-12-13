@@ -215,6 +215,7 @@ namespace Artivity.Apid.Platforms
 
                 config = new UserConfig();
                 config.IsNew = true;
+                config.RunSetup = true;
                 config.Uid = "urn:art:uid:" + Guid.NewGuid();
 
                 string json = JsonConvert.SerializeObject(config, Formatting.Indented);

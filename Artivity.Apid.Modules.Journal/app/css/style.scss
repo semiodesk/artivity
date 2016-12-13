@@ -91,6 +91,10 @@ body {
 	margin: 0;
 }
 
+section {
+	margin: 1em 0;
+}
+
 a {
 	color: $textColor;
 }
@@ -261,6 +265,10 @@ button:focus,
 	font-weight: 100;
 	width: 45px;
 	height: 45px;
+}
+
+.btn-icn .zmdi {
+	margin: 0;
 }
 
 .btn-header {

@@ -73,8 +73,6 @@ function FileListController(api, $scope, $uibModal, fileService, hotkeys) {
     window.addEventListener("focus", function (e) {
         // Redraw the scene to prevent blank scenes when switching windows.		
         if (!document.hidden) {
-            console.log("Reloading..");
-
             s.loadRecentFiles();
         }
     });
