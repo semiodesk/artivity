@@ -1,57 +1,59 @@
 angular.module('explorerApp').controller('FileListController', FileListController);
 
-function FileListController(api, $scope, $uibModal, fileService, hotkeys) {
+function FileListController(api, $scope, $uibModal, fileService, windowService, hotkeys) {
     var t = this;
-    var s = $scope;
+
+    windowService.setMinimizable();
+    windowService.setMaximizable();
 
     // USER INFO
-    s.user = {};
-    s.userPhotoUrl = api.getUserPhotoUrl()+"?q="+Date.now();
+    t.user = {};
+    t.userPhotoUrl = api.getUserPhotoUrl() + "?q=" + Date.now();
 
     api.getUser().then(function (data) {
-        s.user = data;
+        t.user = data;
     });
 
-    s.activities = [];
+    t.activities = [];
 
     // RECENTLY USED FILES
-    s.files = [];
-    s.hasFiles = false;
+    t.files = [];
+    t.hasFiles = false;
 
-    s.loadRecentFiles = function () {
+    t.loadRecentFiles = function () {
         api.getRecentFiles().then(function (data) {
             for (var i = 0; i < data.length; i++) {
                 var file = data[i];
 
-                if (i < s.files.length && s.files[i].uri == file.uri) {
+                if (i < t.files.length && t.files[i].uri == file.uri) {
                     break;
                 }
 
-                s.files.splice(i, 0, file);
+                t.files.splice(i, 0, file);
             }
 
-            s.hasFiles = data.length > 0;
+            t.hasFiles = data.length > 0;
         });
     };
 
-    s.getFileName = fileService.getFileName;
-    s.getFileNameWithoutExtension = fileService.getFileNameWithoutExtension;
-    s.getFileExtension = fileService.getFileExtension;
-    s.hasFileThumbnail = api.hasThumbnail;
-    s.getFileThumbnailUrl = api.getThumbnailUrl;
+    t.getFileName = fileService.getFileName;
+    t.getFileNameWithoutExtension = fileService.getFileNameWithoutExtension;
+    t.getFileExtension = fileService.getFileExtension;
+    t.hasFileThumbnail = api.hasThumbnail;
+    t.getFileThumbnailUrl = api.getThumbnailUrl;
 
-    s.loadRecentFiles();
+    t.loadRecentFiles();
 
     // CALENDAR
-    s.calendar = null;
+    t.calendar = null;
 
-    s.toggleCalendar = function () {
-        if (s.calendar) {
-            s.calendar.close();
+    t.toggleCalendar = function () {
+        if (t.calendar) {
+            t.calendar.close();
 
-            s.calendar = null;
+            t.calendar = null;
         } else {
-            s.calendar = $uibModal.open({
+            t.calendar = $uibModal.open({
                 animation: true,
                 templateUrl: 'partials/dialogs/calendar-dialog.html',
                 controller: 'CalendarDialogController',
@@ -65,7 +67,7 @@ function FileListController(api, $scope, $uibModal, fileService, hotkeys) {
         combo: 'alt+c',
         description: 'Open the calendar view.',
         callback: function () {
-            s.toggleCalendar();
+            t.toggleCalendar();
         }
     });
 
@@ -73,7 +75,7 @@ function FileListController(api, $scope, $uibModal, fileService, hotkeys) {
     window.addEventListener("focus", function (e) {
         // Redraw the scene to prevent blank scenes when switching windows.		
         if (!document.hidden) {
-            s.loadRecentFiles();
+            t.loadRecentFiles();
         }
     });
 }

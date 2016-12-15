@@ -1,57 +1,86 @@
 angular.module('explorerApp').controller('SetupController', SetupController);
 
-function SetupController(api, $scope, $rootScope, $location, $routeParams, $controller, settingsService) {
+function SetupController(api, $scope, $location, settingsService, windowService) {
     var t = this;
-    var s = $scope;
 
-    // Inherit from SettingsController.
-    $controller('SettingsController', {
-        api: api,
-        $scope: $scope,
-        $rootScope: $rootScope,
-        $location: location,
-        $routeParams: $routeParams,
-        settingsService: settingsService
-    });
+    windowService.setMinimizable(false);
+    windowService.setMaximizable(false);
 
-    s.steps = ['art-settings-user', 'art-settings-apps', 'art-settings-complete'];
-    s.currentStep = s.steps[0];
-    s.canGoNext = true;
-    s.canGoBack = false;
+    t.init = function () {
+        t.tabs = [];
 
-    s.goNext = function() {
-        var n = s.steps.indexOf(s.currentStep);
+        each($('.tab-pane'), function(n, tab) {
+            var id = $(tab).attr('id');
 
-        if(n < s.steps.length - 1) {
-            s.currentStep = s.steps[n + 1];
-            s.canGoNext = n + 1 < s.steps.length - 1;
+            if(id !== undefined) {
+                t.tabs.push('#' + id);
+            }
+        });
 
-            onStepChanged();
-        }
-    }
+        if(t.tabs.length > 0) {
+            t.activeTab = '#' + $('.tab-pane.active').attr('id');
 
-    s.goBack = function() {
-        var n = s.steps.indexOf(s.currentStep);
+            t.onActiveTabChanged();
 
-        if(n > 0) {
-            s.currentStep = s.steps[n - 1];
-            s.canGoBack = n - 1 > 0;
+            // http://getbootstrap.com/javascript/#tabs
+            $('a[data-toggle="tab"]').bind('shown.bs.tab', function (e) {
+                t.activeTab = $(e.target).data('target');
 
-            onStepChanged();
-        }
-    }
+                t.onActiveTabChanged();
 
-    function onStepChanged() {
-        var n = s.steps.indexOf(s.currentStep);
-
-        if(n === s.steps.length - 1) {
-            // Submit all setup pages.
-            s.submit();
-
-            api.setRunSetup(false).then(function() {
-                // After the setup has been disabled, go to the homepage.
-                $location.path("/");
+                // The event is triggered from another thread. Trigger the digest manually for the UI to update.
+                $scope.$digest();
             });
         }
     }
+
+    t.onActiveTabChanged = function() {
+        var n = t.tabs.indexOf(t.activeTab);
+
+        t.canShowPrev = n > 0;
+        t.canShowNext = n < t.tabs.length - 1;
+        t.setupComplete = t.setupComplete | !t.canShowNext;
+    }
+
+    t.showTab = function(target) {
+        var a = $('a[data-target="' + target + '"]');
+
+        if(a !== undefined) {
+            t.activeTab = target;
+
+            t.onActiveTabChanged();
+
+            a.tab('show');
+        }
+    }
+
+    t.showNext = function() {
+        var n = t.tabs.indexOf(t.activeTab);
+
+        if(n < t.tabs.length - 1) {
+            t.showTab(t.tabs[n + 1]);
+        }
+    }
+
+    t.showPrev = function() {
+        var n = t.tabs.indexOf(t.activeTab);
+
+        if(n > 0) {
+            t.showTab(t.tabs[n - 1]);
+        }
+    }
+
+    t.submitAndReturn = function() {
+        // Submit all setup pages.
+        settingsService.submitAll();
+
+        api.setRunSetup(false).then(function() {
+            windowService.setWidth(992);
+
+            // After the setup has been disabled, go to the homepage.
+            $location.path("/");
+        });
+    }
+
+    t.init();
 }

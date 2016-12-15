@@ -67,7 +67,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			PROFILE: {
 				LABEL: 'Profile',
 				TITLE: 'User Profile',
-				DESCRIPTION: 'Edit the profile information that is published when you share files online:',
+				DESCRIPTION: 'Edit the profile information that is published when you share files with others:',
 				LABEL_PICTURE: 'Click to select your profile picture.',
 				LABEL_NAME: 'Name',
 				LABEL_EMAIL: 'E-Mail',
@@ -90,7 +90,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			APPS: {
 				LABEL: 'Apps',
 				TITLE: 'Applications',
-				DESCRIPTION: 'Manage which applications provide Artivity data:'
+				DESCRIPTION: 'Enable or disable the applications which will log data into Artivity:'
 			}
 		},
 		'http://eprints.org': {

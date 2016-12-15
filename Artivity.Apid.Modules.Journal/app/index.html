@@ -57,7 +57,6 @@
 	<script type="text/javascript" src="js/lib/livereload.js"></script>
 	<script type="text/javascript" src="js/lib/overlay.js"></script>
 	<script type="text/javascript" src="js/lib/quantize.js"></script>
-	<script type="text/javascript" src="js/lib/classes/canvas-cache.js"></script>
 	<script type="text/javascript" src="js/lib/classes/document-renderer-cache.js"></script>
 	<script type="text/javascript" src="js/lib/classes/document-renderer.js"></script>
 	<script type="text/javascript" src="js/lib/classes/editing-statistics.js"></script>
@@ -68,10 +67,13 @@
 	<script type="text/javascript" src="js/lib/classes/layer-tree-node.js"></script>
 	<script type="text/javascript" src="js/lib/classes/layer-tree.js"></script>
 	<script type="text/javascript" src="js/lib/classes/layer.js"></script>
+	<script type="text/javascript" src="js/lib/classes/x-canvas-cache.js"></script>
 	<script type="text/javascript" src="js/lib/filters/reverse.js"></script>
-	<script type="text/javascript" src="js/lib/services/client-service.js"></script>
-	<script type="text/javascript" src="js/lib/services/file-service.js"></script>
-	<script type="text/javascript" src="js/lib/services/settings-service.js"></script>
+	<script type="text/javascript" src="js/lib/services/client.service.js"></script>
+	<script type="text/javascript" src="js/lib/services/file.service.js"></script>
+	<script type="text/javascript" src="js/lib/services/selection.service.js"></script>
+	<script type="text/javascript" src="js/lib/services/settings.service.js"></script>
+	<script type="text/javascript" src="js/lib/services/window.service.js"></script>
 	<script type="text/javascript" src="partials/directives/art-calendar.js"></script>
 	<script type="text/javascript" src="partials/directives/art-color-picker.js"></script>
 	<script type="text/javascript" src="partials/directives/art-keyboard-input-handler.js"></script>
@@ -90,6 +92,7 @@
 	<script type="text/javascript" src="partials/dialogs/publish-file-dialog.controller.js"></script>
 	<script type="text/javascript" src="partials/file-list.controller.js"></script>
 	<script type="text/javascript" src="partials/file-view.controller.js"></script>
+	<script type="text/javascript" src="partials/query.controller.js"></script>
 	<script type="text/javascript" src="partials/settings.controller.js"></script>
 	<script type="text/javascript" src="partials/setup.controller.js"></script>
 	<script type="text/javascript" src="partials/start.controller.js"></script>
@@ -108,9 +111,9 @@
 		</div>
 
 		<div id="window-title-btns">
-			<button class="btn-title" id="min-btn"><img src="img/windows/btn-minimize.png" width="45" height="30" alt="Minimize"></button>
-			<button class="btn-title" id="max-btn"><img src="img/windows/btn-maximize.png" width="45" height="30" alt="Maximize"></button>
-			<button class="btn-title" id="close-btn"><img src="img/windows/btn-close.png" width="45" height="30" alt="Close"></button>
+			<button class="btn-title" id="btn-min" uib-tooltip="Minimize" tooltip-placement="bottom" tooltip-popup-delay="1000"><img src="img/windows/btn-minimize.png" width="45" height="30" alt="Minimize"></button>
+			<button class="btn-title" id="btn-max" uib-tooltip="Maximize" tooltip-placement="bottom" tooltip-popup-delay="1000"><img src="img/windows/btn-maximize.png" width="45" height="30" alt="Maximize"></button>
+			<button class="btn-title" id="btn-close" uib-tooltip="Close" tooltip-placement="bottom" tooltip-popup-delay="1000"><img src="img/windows/btn-close.png" width="45" height="30" alt="Close"></button>
 		</div>
 	</div>
 
