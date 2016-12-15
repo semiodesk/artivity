@@ -40,6 +40,7 @@ module.exports = function (grunt) {
                     livereload: true
                 },
                 files: [
+                    'js/host/*.js',
                     'js/lib/*.js',
                     'js/lib/classes/*.js',
                     'js/lib/filters/*.js',
@@ -63,6 +64,7 @@ module.exports = function (grunt) {
             build: {
                 src: [
                     'js/lib/*.js',
+                    'js/host/*.js',
                     'js/lib/classes/*.js',
                     'js/lib/filters/*.js',
                     'js/lib/services/*.js',
@@ -85,6 +87,7 @@ module.exports = function (grunt) {
                 dest: 'js/app.src.js',
                 src: [
                     'js/lib/*.js',
+                    'js/host/*.js',
                     'js/lib/classes/*.js',
                     'js/lib/filters/*.js',
                     'js/lib/services/*.js',

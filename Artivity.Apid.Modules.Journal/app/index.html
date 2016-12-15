@@ -17,7 +17,9 @@
 
 	<link rel="stylesheet" href="css/style.css">
 
+	<!-- comments:comment-block html -->
 	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+	<!-- endcomments -->
 
 	<!-- bower:js -->
 	<script src="bower_components/jquery/dist/jquery.js"></script>
@@ -44,7 +46,6 @@
 	<script src="bower_components/angular-translate/angular-translate.js"></script>
 	<!-- endbower -->
 
-	<script src="js/app.window.js"></script>
 	<script src="js/app.conf.js"></script>
 	<script src="js/app.route.js"></script>
 	<script src="js/app.api.js"></script>
@@ -57,11 +58,14 @@
 	<script type="text/javascript" src="js/lib/livereload.js"></script>
 	<script type="text/javascript" src="js/lib/overlay.js"></script>
 	<script type="text/javascript" src="js/lib/quantize.js"></script>
+	<script type="text/javascript" src="js/host/app.dragDrop.js"></script>
+	<script type="text/javascript" src="js/host/app.window.js"></script>
+	<script type="text/javascript" src="js/host/updateChecker.js"></script>
+	<script type="text/javascript" src="js/lib/classes/1entity-cache.js"></script>
 	<script type="text/javascript" src="js/lib/classes/canvas-cache.js"></script>
 	<script type="text/javascript" src="js/lib/classes/document-renderer-cache.js"></script>
 	<script type="text/javascript" src="js/lib/classes/document-renderer.js"></script>
 	<script type="text/javascript" src="js/lib/classes/editing-statistics.js"></script>
-	<script type="text/javascript" src="js/lib/classes/entity-cache.js"></script>
 	<script type="text/javascript" src="js/lib/classes/entity.js"></script>
 	<script type="text/javascript" src="js/lib/classes/heatmap-renderer.js"></script>
 	<script type="text/javascript" src="js/lib/classes/layer-cache.js"></script>
@@ -72,6 +76,7 @@
 	<script type="text/javascript" src="js/lib/services/client-service.js"></script>
 	<script type="text/javascript" src="js/lib/services/file-service.js"></script>
 	<script type="text/javascript" src="js/lib/services/settings-service.js"></script>
+	<script type="text/javascript" src="js/lib/services/update.service.js"></script>
 	<script type="text/javascript" src="partials/directives/art-calendar.js"></script>
 	<script type="text/javascript" src="partials/directives/art-color-picker.js"></script>
 	<script type="text/javascript" src="partials/directives/art-keyboard-input-handler.js"></script>
@@ -97,6 +102,7 @@
 
 	<script>
 	if (window.module) module = window.module;
+	
 	</script>
 </head>
 <body>
