@@ -1,5 +1,6 @@
 module.exports = function (grunt) {
     var jsFiles = [
+        'js/host/*.js',
         'js/lib/*.js',
         'js/lib/classes/*.js',
         'js/lib/filters/*.js',
@@ -49,7 +50,6 @@ module.exports = function (grunt) {
                     livereload: true
                 },
                 files: jsFiles,
-                    'js/host/*.js',
                 tasks: 'tags'
             },
             sass: {
@@ -64,7 +64,6 @@ module.exports = function (grunt) {
         tags: {
             build: {
                 src: jsFiles,
-                    'js/host/*.js',
                 dest: 'index.html'
             }
         },
