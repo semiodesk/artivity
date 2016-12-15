@@ -1,4 +1,3 @@
-/* NOTE: If Brackets refuses to compile SASS files, check for syntax errors! */
 /*
 https://coolors.co/17bebb-ffc914-fb5f1a-2e282a-76b041
 https://coolors.co/17bebb-ffc914-fb5f1a-D62828-76b041
@@ -39,6 +38,9 @@ body {
   overflow: hidden;
   min-height: 100%;
   margin: 0; }
+
+section {
+  margin: 1em 0; }
 
 a {
   color: #F0F0F0; }
@@ -111,11 +113,11 @@ input.disabled,
 
 button,
 .btn-default {
-  border: none;
-  border-radius: 3px;
+  border: none !important;
+  border-radius: 0;
   background: #303030;
   color: #a4a4a4;
-  padding: .7em;
+  padding: 7px 10px;
   margin: 0 10px 0 0;
   outline: none;
   text-shadow: none;
@@ -124,7 +126,7 @@ button,
   transition: all linear .2s; }
 
 .btn-default .zmdi {
-  padding: 0px 10px; }
+  padding: 0px 3px; }
 
 button:hover,
 .btn-default:hover {
@@ -182,12 +184,20 @@ button:focus,
   width: 45px;
   height: 45px; }
 
+.btn-icn .zmdi {
+  margin: 0; }
+
 .btn-header {
   margin: 0 !important;
-  width: 45px;
+  min-width: 45px;
   height: 45px;
+  line-height: 45px;
+  vertical-align: middle;
   background: none;
   color: #a4a4a4; }
+
+.btn-header.btn-text {
+  padding: 0 15px !important; }
 
 .circular,
 .btn-circular {
@@ -216,7 +226,7 @@ button:focus,
   color: #a4a4a4;
   text-transform: uppercase;
   transition: all .1s linear;
-  padding: .75em 1em; }
+  padding: .6em 1em; }
 
 .nav-tabs.nav-tabs-top li a {
   border-bottom: 0;
@@ -1175,9 +1185,9 @@ button[disabled]:hover {
   opacity: .2; }
 
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 16px;
   /* for vertical scrollbars */
-  height: 12px;
+  height: 16px;
   /* for horizontal scrollbars */ }
 
 ::-webkit-scrollbar-track {
@@ -1193,7 +1203,8 @@ button[disabled]:hover {
 .bootstrap-switch {
   background: #303030;
   outline: none;
-  border: none; }
+  border: none;
+  border-radius: 0 !important; }
 
 .bootstrap-switch-label {
   background: #303030 !important; }
@@ -1204,11 +1215,13 @@ button[disabled]:hover {
   box-shadow: none !important; }
 
 .bootstrap-switch-handle-on {
-  background: green !important; }
+  background: green !important;
+  border-radius: 0 !important; }
 
 .bootstrap-switch-handle-off {
   background: #666 !important;
-  color: white !important; }
+  color: white !important;
+  border-radius: 0 !important; }
 
 .nav-pills > li > a {
   cursor: pointer;
@@ -1904,3 +1917,5 @@ iframe {
   left: 0;
   right: 0;
   bottom: 0; }
+
+/*# sourceMappingURL=style.css.map */

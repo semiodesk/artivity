@@ -1,6 +1,3 @@
-/* NOTE: If Brackets refuses to compile SASS files, check for syntax errors! */
-
-
 /*
 https://coolors.co/17bebb-ffc914-fb5f1a-2e282a-76b041
 https://coolors.co/17bebb-ffc914-fb5f1a-D62828-76b041
@@ -94,6 +91,10 @@ body {
 	margin: 0;
 }
 
+section {
+	margin: 1em 0;
+}
+
 a {
 	color: $textColor;
 }
@@ -182,11 +183,11 @@ input.disabled,
 
 button,
 .btn-default {
-	border: none;
-	border-radius: 3px;
+	border: none !important;
+	border-radius: 0;
 	background: $buttonBackgroundColor;
 	color: $labelTextColor;
-	padding: .7em;
+	padding: 7px 10px;
 	margin: 0 10px 0 0;
 	outline: none;
 	text-shadow: none;
@@ -196,7 +197,7 @@ button,
 }
 
 .btn-default .zmdi {
-	padding: 0px 10px;
+	padding: 0px 3px;
 }
 
 button:hover,
@@ -266,12 +267,22 @@ button:focus,
 	height: 45px;
 }
 
+.btn-icn .zmdi {
+	margin: 0;
+}
+
 .btn-header {
 	margin: 0 !important;
-	width: 45px;
+	min-width: 45px;
 	height: 45px;
+	line-height: 45px;
+	vertical-align: middle;
 	background: none;
 	color: $labelTextColor;
+}
+
+.btn-header.btn-text {
+	padding: 0 15px !important;
 }
 
 .circular,
@@ -305,7 +316,7 @@ button:focus,
 	color: $labelTextColor;
 	text-transform: uppercase;
 	transition: all .1s linear;
-	padding: .75em 1em;
+	padding: .6em 1em;
 }
 
 .nav-tabs.nav-tabs-top li a {
@@ -1454,9 +1465,9 @@ button[disabled]:hover {
 }
 
 ::-webkit-scrollbar {
-	width: 12px;
+	width: 16px;
 	/* for vertical scrollbars */
-	height: 12px;
+	height: 16px;
 	/* for horizontal scrollbars */
 }
 
@@ -1477,6 +1488,7 @@ button[disabled]:hover {
 	background: $toolbarBackgroundColor;
 	outline: none;
 	border: none;
+	border-radius: 0 !important;
 }
 
 .bootstrap-switch-label {
@@ -1491,11 +1503,13 @@ button[disabled]:hover {
 
 .bootstrap-switch-handle-on {
 	background: green !important;
+	border-radius: 0 !important;
 }
 
 .bootstrap-switch-handle-off {
 	background: #666 !important;
 	color: white !important;
+	border-radius: 0 !important;
 }
 
 .nav-pills > li > a {

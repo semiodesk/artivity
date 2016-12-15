@@ -1,0 +1,13 @@
+{
+    "version": "0.1.0",
+    "command": "grunt",
+    "isShellCommand": true,
+    "tasks": [
+        {
+            "taskName": "watch",
+            "showOutput": "always",
+            "isBuildCommand": true,
+            "isWatching": true
+        }
+    ]
+}

@@ -28,6 +28,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -43,6 +44,8 @@ namespace Artivity.Apid.Platforms
         public string Uid { get; set; }
 
         public List<string> SoftwarePaths { get; set; }
+
+        public bool RunSetup { get; set; }
 
         #endregion
 
