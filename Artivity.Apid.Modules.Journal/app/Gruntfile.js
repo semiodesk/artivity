@@ -1,10 +1,7 @@
-
-
 module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
-
         //Read the package.json (optional)
         pkg: grunt.file.readJSON('package.json'),
 
@@ -18,9 +15,86 @@ module.exports = function (grunt) {
 
         sass: {
             dist: {
+                options: {
+                    style: 'compressed',
+                    sourceMap: false
+                },
                 files: {
                     'css/style.css': 'css/style.scss'
                 }
+            },
+            dev: {
+                options: {
+                    style: 'expanded',
+                    sourceMap: true
+                },
+                files: {
+                    'css/style.css': 'css/style.scss'
+                }
+            }
+        },
+
+        watch: {
+            js: {
+                options: {
+                    livereload: true
+                },
+                files: [
+                    'js/host/*.js',
+                    'js/lib/*.js',
+                    'js/lib/classes/*.js',
+                    'js/lib/filters/*.js',
+                    'js/lib/services/*.js',
+                    'partials/directives/*.js',
+                    'partials/dialogs/*.js',
+                    'partials/*.js'
+                ],
+                tasks: 'tags'
+            },
+            sass: {
+                options: {
+                    livereload: true
+                },
+                files: ['css/*.scss'],
+                tasks: 'sass:dev'
+            }
+        },
+
+        tags: {
+            build: {
+                src: [
+                    'js/lib/*.js',
+                    'js/host/*.js',
+                    'js/lib/classes/*.js',
+                    'js/lib/filters/*.js',
+                    'js/lib/services/*.js',
+                    'partials/directives/*.js',
+                    'partials/dialogs/*.js',
+                    'partials/*.js'
+                ],
+                dest: 'index.html'
+            }
+        },
+
+        concat: {
+            js: {
+                options: {
+                    banner: "(function () {\n\n'use strict';\n\n",
+                    footer: "\n})();",
+                    sourceMap: true
+                },
+                nonull: true,
+                dest: 'js/app.src.js',
+                src: [
+                    'js/lib/*.js',
+                    'js/host/*.js',
+                    'js/lib/classes/*.js',
+                    'js/lib/filters/*.js',
+                    'js/lib/services/*.js',
+                    'partials/directives/*.js',
+                    'partials/dialogs/*.js',
+                    'partials/*.js'
+                ]
             }
         },
 
@@ -32,6 +106,7 @@ module.exports = function (grunt) {
             dist: ['../../build/dist']
 
         },
+
         electron: {
             windowsBuild: {
                 options: {
@@ -53,6 +128,7 @@ module.exports = function (grunt) {
                 }
             }
         },
+
         msbuild: {
             release: {
                 src: ['../../Artivity.sln'],
@@ -69,6 +145,7 @@ module.exports = function (grunt) {
                 }
             }
         },
+
         copy: {
             main: {
                 files: [
@@ -86,23 +163,39 @@ module.exports = function (grunt) {
                 ],
             },
         }
-
-
-
     });
 
-
     grunt.loadNpmTasks('grunt-wiredep');
+    grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-script-link-tags');
     grunt.loadNpmTasks('grunt-electron');
     grunt.loadNpmTasks('grunt-msbuild');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-concat');
 
+    grunt.registerTask('concat:js:clear', 'Empties the concatenated app source files.', function() {
+        // TODO: Read dest file from config 'concat:js:dest'.
+        grunt.file.write('js/app.src.js', '');
+        grunt.file.write('js/app.src.js.map', '');
+    });
 
-    // Default task
-    grunt.registerTask('default', ['wiredep', 'sass']);
+    grunt.registerTask('default', [
+        'wiredep',
+        'concat:js:clear',
+        'tags',
+        'sass:dev'
+    ]);
 
-    grunt.registerTask('build', ['clean', 'electron', 'msbuild', 'copy']);
-
+    grunt.registerTask('build', [
+        'clean',
+        'wiredep',
+        'concat:js',
+        'sass:dist',
+        'electron',
+        'msbuild',
+        'copy'
+    ]);
 };

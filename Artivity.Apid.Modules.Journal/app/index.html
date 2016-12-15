@@ -1,6 +1,5 @@
 <!doctype html>
 <html ng-app="explorerApp">
-
 <head>
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -18,7 +17,9 @@
 
 	<link rel="stylesheet" href="css/style.css">
 
+	<!-- comments:comment-block html -->
 	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+	<!-- endcomments -->
 
 	<!-- bower:js -->
 	<script src="bower_components/jquery/dist/jquery.js"></script>
@@ -45,29 +46,72 @@
 	<script src="bower_components/angular-translate/angular-translate.js"></script>
 	<!-- endbower -->
 
-	<script src="js/lib/quantize.js"></script>
-	<script src="js/lib/d3-timeline.js"></script>
-
-	<script src="js/dragDrop.js"></script>
 	<script src="js/app.conf.js"></script>
-	<script src="js/app.js"></script>
+	<script src="js/app.route.js"></script>
 	<script src="js/app.api.js"></script>
-	<script src="js/app.classes.js"></script>
-	<script src="js/app.controllers.js"></script>
-	<script src="js/app.overlay.js"></script>
 	<script src="js/app.translation.js"></script>
-	<script src="js/controller/load.controler.js"></script>
+	<script src="js/app.src.js"></script>
+
+	<!-- start auto template tags -->
+	<script type="text/javascript" src="js/lib/extensions.js"></script>
+	<script type="text/javascript" src="js/lib/functions.js"></script>
+	<script type="text/javascript" src="js/lib/livereload.js"></script>
+	<script type="text/javascript" src="js/lib/overlay.js"></script>
+	<script type="text/javascript" src="js/lib/quantize.js"></script>
+	<script type="text/javascript" src="js/host/app.dragDrop.js"></script>
+	<script type="text/javascript" src="js/host/app.window.js"></script>
+	<script type="text/javascript" src="js/host/updateChecker.js"></script>
+	<script type="text/javascript" src="js/lib/classes/1entity-cache.js"></script>
+	<script type="text/javascript" src="js/lib/classes/canvas-cache.js"></script>
+	<script type="text/javascript" src="js/lib/classes/document-renderer-cache.js"></script>
+	<script type="text/javascript" src="js/lib/classes/document-renderer.js"></script>
+	<script type="text/javascript" src="js/lib/classes/editing-statistics.js"></script>
+	<script type="text/javascript" src="js/lib/classes/entity.js"></script>
+	<script type="text/javascript" src="js/lib/classes/heatmap-renderer.js"></script>
+	<script type="text/javascript" src="js/lib/classes/layer-cache.js"></script>
+	<script type="text/javascript" src="js/lib/classes/layer-tree-node.js"></script>
+	<script type="text/javascript" src="js/lib/classes/layer-tree.js"></script>
+	<script type="text/javascript" src="js/lib/classes/layer.js"></script>
+	<script type="text/javascript" src="js/lib/filters/reverse.js"></script>
+	<script type="text/javascript" src="js/lib/services/client-service.js"></script>
+	<script type="text/javascript" src="js/lib/services/file-service.js"></script>
+	<script type="text/javascript" src="js/lib/services/settings-service.js"></script>
+	<script type="text/javascript" src="js/lib/services/update.service.js"></script>
+	<script type="text/javascript" src="partials/directives/art-calendar.js"></script>
+	<script type="text/javascript" src="partials/directives/art-color-picker.js"></script>
+	<script type="text/javascript" src="partials/directives/art-keyboard-input-handler.js"></script>
+	<script type="text/javascript" src="partials/directives/art-photo-picker.js"></script>
+	<script type="text/javascript" src="partials/directives/art-settings-accounts.js"></script>
+	<script type="text/javascript" src="partials/directives/art-settings-apps.js"></script>
+	<script type="text/javascript" src="partials/directives/art-settings-user.js"></script>
+	<script type="text/javascript" src="partials/directives/art-style-binder.js"></script>
+	<script type="text/javascript" src="partials/directives/art-timeline.js"></script>
+	<script type="text/javascript" src="partials/directives/bs-switch.js"></script>
+	<script type="text/javascript" src="partials/directives/ng-dropzone.js"></script>
+	<script type="text/javascript" src="partials/directives/ng-enter.js"></script>
+	<script type="text/javascript" src="partials/directives/ng-esc.js"></script>
+	<script type="text/javascript" src="partials/dialogs/add-account-dialog.controller.js"></script>
+	<script type="text/javascript" src="partials/dialogs/calendar-dialog.controller.js"></script>
+	<script type="text/javascript" src="partials/dialogs/publish-file-dialog.controller.js"></script>
+	<script type="text/javascript" src="partials/file-list.controller.js"></script>
+	<script type="text/javascript" src="partials/file-view.controller.js"></script>
+	<script type="text/javascript" src="partials/settings.controller.js"></script>
+	<script type="text/javascript" src="partials/setup.controller.js"></script>
+	<script type="text/javascript" src="partials/start.controller.js"></script>
+	<!-- end auto template tags -->
 
 	<script>
 	if (window.module) module = window.module;
+	
 	</script>
 </head>
-
 <body>
-	<div ng-controller="KeyboardController"></div>
+	<div art-keyboard-input-handler></div>
 
 	<div id="window-title">
-		<div id="window-title-text">Artivity</div>
+		<div id="window-title-text">
+			<span><img src="img/artivity-66x20.png" width="66" height="20" style="opacity: .5" alt="artivity"/></span>
+		</div>
 
 		<div id="window-title-btns">
 			<button class="btn-title" id="min-btn"><img src="img/windows/btn-minimize.png" width="45" height="30" alt="Minimize"></button>
@@ -147,5 +191,7 @@
 		</div>
 	</div>
 </body>
-
+<!-- Enable live-reload if we're in a development environment. The following empty 
+script is the container into which the livereload.js file is being loaded on run-time. -->
+<script type="text/javascript" id="livereload"></script>
 </html>

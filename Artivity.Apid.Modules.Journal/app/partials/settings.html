@@ -1,192 +1,46 @@
-<div ng-controller="SettingsController as settings">
-	<div id="header">
-		<div class="row">
-			<div class="col">
-				<a class="btn btn-header" ng-click="submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
-			</div>
-			<div class="col expand">
-				<h5 class="title" translate="SETTINGS.TITLE"></h5>
-			</div>
-			<div class="col">
-				<a class="btn btn-header" onclick="history.back()"><i class="zmdi zmdi-close"></i></a>
-			</div>
+<div id="header">
+	<div class="row">
+		<div class="col">
+			<a class="btn btn-header" ng-click="submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
+		</div>
+		<div class="col expand">
+			<h5 class="title" translate="SETTINGS.TITLE"></h5>
+		</div>
+		<div class="col" style="width: 90px; text-align: right;">
+			<a class="btn btn-header btn-text" onclick="history.back()">Cancel</a>
 		</div>
 	</div>
-	<div id="body-wrapper">
-		<div id="body" class="ui-pane-container">
-			<div class="ui-pane ui-pane-left" style="width: 225px; border-right: none; background: #262626;">
-				<ul class="nav nav-tabs nav-stacked" role="tablist" id="tabs">
-					<li role="presentation" class="active"><a data-target="#user-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-account zmdi-lg"></i></span> {{ 'SETTINGS.PROFILE.LABEL' | translate }}</a></li>
-					<li role="presentation"><a data-target="#applications-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-apps zmdi-lg"></i></span> {{ 'SETTINGS.APPS.LABEL' | translate }}</a></li>
-					<li role="presentation"><a data-target="#accounts-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-globe-alt zmdi-lg"></i></span> {{ 'SETTINGS.ACCOUNTS.LABEL' | translate }}</a></li>
-				</ul>
-			</div>
-			<div class="ui-pane ui-pane-center">
-				<div class="tab-content nav-stacked" style="max-width: 800px;">
-					<!-- PROFILE -->
-					<div role="tabpanel" class="tab-pane padded-lg fade active in" id="user-panel">
-						<form name="userForm" ng-controller="UserSettingsController as userSettings" ng-submit="submit()">
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-header">
-										<p class="description">{{ 'SETTINGS.PROFILE.DESCRIPTION' | translate }}</p>
-									</div>
-
-									<div class="clearfix"></div>
-
-									<!-- USER -->
-									<div class="form-group">
-										<input type="file" accept="image/*" id="photo" name="photo" ng-model="userPhoto" style="display: none;" ng-photo-picker onchange="angular.element(this).scope().onPhotoChanged(this)" />
-
-										<button id="photo-btn" class="btn img-avatar img-avatar-lg circular">
-											<img id="photo-img" ng-src="{{userPhotoUrl}}" width="100" height="100">
-										</button>
-
-										<label for="photo-btn" style="margin: 10px 0"><i class="zmdi zmdi-hc-fw"></i> {{ 'SETTINGS.PROFILE.LABEL_PICTURE' | translate }}</label>
-
-										<script type="text/javascript">
-											$('#photo-btn').on('click', function () {
-												$('#photo').click();
-											});
-										</script>
-									</div>
-
-									<div style="max-width: 500px;">
-										<div class="form-group">
-											<label for="name">{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}</label>
-											<input type="text" class="form-control" id="name" name="name" placeholder="{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}" size="30" ng-model="user.Name" ng-minlength="5" required>
-										</div>
-
-										<div class="form-group">
-											<label for="organization">{{'SETTINGS.PROFILE.LABEL_ORGANIZATION' | translate}}</label>
-											<input type="text" class="form-control" id="organization" name="organization" placeholder="{{'SETTINGS.PROFILE.LABEL_ORGANIZATION' | translate}}" length="25" ng-model="user.Organization">
-										</div>
-
-										<div class="form-group">
-											<label for="email">{{'SETTINGS.PROFILE.LABEL_EMAIL' | translate}}</label>
-											<input type="text" class="form-control" id="email" name="email" placeholder="you@example.org" length="25" ng-model="user.EmailAddress" ng-minlength="5" required>
-										</div>
-
-										<div class="form-group" style="margin-top: 3em;" class="label">
-											<div ng-switch="backupStatus">
-												<div ng-switch-default>
-													<div ng-switch="backupStatus.Error">
-														<div ng-switch-when="null">
-															<div ng-if="backupStatus.PercentComplete < 100">
-																<i class="loader loader-xs"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_CREATING' | translate}}: <span ng-bind="backupStatus.PercentComplete"></span>%
-															</div>
-															<div ng-if="backupStatus.PercentComplete >= 100">
-																<i class="zmdi zmdi-check-circle"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_SUCCESS' | translate}}
-															</div>
-														</div>
-														<div ng-switch-default>
-															<i class="zmdi zmdi-alert-circle"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_ERROR' | translate}}: <span ng-bind="backupStatus.Error"></span>
-														</div>
-													</div>
-												</div>
-												<div ng-switch-when="null">
-													<a class="btn btn-chromeless" ng-click="createBackup()"><i class="zmdi zmdi-account-box-o"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_CREATE' | translate}}</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</form>
-					</div>
-					<!-- ACCOUNTS -->
-					<div role="tabpanel" class="tab-pane padded-lg fade" id="accounts-panel">
-						<form name="agentForm" ng-controller="AccountSettingsController as accountSettings">
-							<div class="form-header">
-								<button class="btn btn-default btn-circular pull-right" style="position: relative; right -10px; top: -10px;" ng-click="addAccount()"><i class="zmdi zmdi-plus zmdi-lg"></i></button>
-
-								<p class="description">{{ 'SETTINGS.ACCOUNTS.DESCRIPTION' | translate }}</p>
-							</div>
-
-							<div class="clearfix"></div>
-
-							<ul class="list-view">
-								<li class="list-item" ng-repeat="a in accounts" ng-click="selectAccount(a)">
-									<div class="col col-icn col-icn-lg">
-										<i class="zmdi zmdi-account zdmi-lg"></i>
-									</div>
-									<div class="col expand">
-										<div style="padding: 9px">
-											<h5>{{a.Title}}</h5>
-											<label>{{a.Id}}</label>
-										</div>
-									</div>
-									<div class="col col-btn" style="vertical-align: middle">
-										<button class="btn btn-md" ng-click="uninstallAccount(a)"><i class="zmdi zmdi-close zmdi-sm"></i></button>
-									</div>
-								</li>
-							</ul>
-						</form>
-					</div>
-					<!-- AGENTS -->
-					<div role="tabpanel" class="tab-pane padded-lg fade" id="applications-panel">
-						<form name="agentForm" ng-controller="AgentSettingsController as agentSettings">
-							<div class="form-header">
-								<button class="btn btn-default btn-circular pull-right" style="position: relative; right -10px; top: -10px;" ng-click="reload()"><i class="zmdi zmdi-refresh-sync zmdi-lg"></i></button>
-
-								<p class="description">{{ 'SETTINGS.APPS.DESCRIPTION' | translate }}</p>
-							</div>
-
-							<div class="clearfix"></div>
-
-							<ul class="list-view">
-								<li class="list-item" ng-repeat="agent in agents">
-									<div class="col col-icn col-icn-lg" ng-class="{disabled: !agent.pluginInstalled}">
-										<img ng-src="{{agent.iconSrc}}" width="40" height="40" />
-									</div>
-									<div class="col expand" ng-class="{disabled: !agent.pluginInstalled}">
-										<div style="padding: 9px">
-											<h5>{{agent.name}}</h5>
-
-											<div class="col" style="min-width: 250px;">
-												<label>Version: {{agent.softwareVersion}}</label>
-											</div>
-											<div class="col">
-												<label>Plugin: {{agent.pluginVersion}}</label>
-											</div>
-										</div>
-									</div>
-									<div class="col" style="vertical-align: middle" ng-class="{disabled: !agent.pluginInstalled}">
-										<div style="padding-right: 12px;">
-											<ng-color-picker selected-color="agent.color"></ng-color-picker>
-										</div>
-									</div>
-									<div class="col" style="vertical-align: middle">
-										<div style="padding-right: 12px;">
-											<input type="checkbox" ng-model="agent.pluginInstalled" ng-change="toggleInstall(agent)" data-size="small" bootstrap-switch/>
-										</div>
-									</div>
-								</li>
-							</ul>
-
-							<div class="statusbar">
-								<div class="msg-error animate-show" ng-show="hasError">
-									<h5>{{errorType}}</h5>
-									<label>{{errorMessage}}</label>
-								</div>
-
-								<div class="msg-info" ng-show="!hasError">
-									<label style="padding: 10px 30px;"><i class="zmdi zmdi-info"></i> You can drag undetected applications into this window.</label>
-								</div>
-							</div>
-						</form>
-					</div>
+</div>
+<div id="body-wrapper">
+	<div id="body" class="ui-pane-container">
+		<div class="ui-pane ui-pane-left" style="width: 225px; border-right: none; background: #262626;">
+			<ul class="nav nav-tabs nav-stacked" role="tablist" id="tabs">
+				<li role="presentation" class="active"><a data-target="#user-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-account zmdi-lg"></i></span> {{ 'SETTINGS.PROFILE.LABEL' | translate }}</a></li>
+				<li role="presentation"><a data-target="#applications-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-apps zmdi-lg"></i></span> {{ 'SETTINGS.APPS.LABEL' | translate }}</a></li>
+				<li role="presentation"><a data-target="#accounts-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-globe-alt zmdi-lg"></i></span> {{ 'SETTINGS.ACCOUNTS.LABEL' | translate }}</a></li>
+			</ul>
+		</div>
+		<div class="ui-pane ui-pane-center">
+			<div class="tab-content nav-stacked" style="max-width: 800px;">
+				<div role="tabpanel" class="tab-pane padded-lg fade active in" id="user-panel">
+					<div art-settings-user></div>
+				</div>
+				<div role="tabpanel" class="tab-pane padded-lg fade" id="accounts-panel">
+					<div art-settings-accounts></div>
+				</div>
+				<div role="tabpanel" class="tab-pane padded-lg fade" id="applications-panel">
+					<div art-settings-apps></div>
 				</div>
 			</div>
-
-			<script type="text/javascript">
-				$(document).ready(function () {
-					$('#tabs a').click(function (e) {
-						e.preventDefault();
-						$(this).tab('show');
-					});
-				});
-			</script>
 		</div>
+
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$('#tabs a').click(function (e) {
+					e.preventDefault();
+					$(this).tab('show');
+				});
+			});
+		</script>
 	</div>
 </div>
