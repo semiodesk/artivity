@@ -1,5 +1,6 @@
 module.exports = function (grunt) {
     var jsFiles = [
+        'js/host/*.js',
         'js/lib/*.js',
         'js/lib/classes/*.js',
         'js/lib/filters/*.js',
