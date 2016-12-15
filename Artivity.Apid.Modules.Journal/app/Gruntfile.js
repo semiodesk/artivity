@@ -1,4 +1,13 @@
 module.exports = function (grunt) {
+    var jsFiles = [
+        'js/lib/*.js',
+        'js/lib/classes/*.js',
+        'js/lib/filters/*.js',
+        'js/lib/services/*.js',
+        'partials/directives/*.js',
+        'partials/dialogs/*.js',
+        'partials/*.js'
+    ];
 
     // Project configuration.
     grunt.initConfig({
@@ -39,15 +48,7 @@ module.exports = function (grunt) {
                 options: {
                     livereload: true
                 },
-                files: [
-                    'js/lib/*.js',
-                    'js/lib/classes/*.js',
-                    'js/lib/filters/*.js',
-                    'js/lib/services/*.js',
-                    'partials/directives/*.js',
-                    'partials/dialogs/*.js',
-                    'partials/*.js'
-                ],
+                files: jsFiles,
                 tasks: 'tags'
             },
             sass: {
@@ -61,15 +62,7 @@ module.exports = function (grunt) {
 
         tags: {
             build: {
-                src: [
-                    'js/lib/*.js',
-                    'js/lib/classes/*.js',
-                    'js/lib/filters/*.js',
-                    'js/lib/services/*.js',
-                    'partials/directives/*.js',
-                    'partials/dialogs/*.js',
-                    'partials/*.js'
-                ],
+                src: jsFiles,
                 dest: 'index.html'
             }
         },

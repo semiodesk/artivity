@@ -1,44 +1,46 @@
 angular.module('explorerApp').controller('FileViewController', FileViewController);
 
-function FileViewController(api, $scope, $location, $routeParams, $translate, $uibModal) {
+function FileViewController(api, $scope, $location, $routeParams, $translate, $uibModal, selectionService) {
     var t = this;
-    var s = $scope;
+
+    // TODO: Remove. Currently required by timeline control.
+    t.scope = $scope;
 
     var fileUri = $location.search().uri;
 
-    s.entity = {
+    t.entity = {
         uri: fileUri
     };
 
     // File metadata
-    s.file = {};
+    t.file = {};
 
     api.getFile(fileUri).then(function (data) {
-        s.file = data;
+        t.file = data;
 
-        console.log("Entity: ", s.file);
+        console.log("Entity: ", t.file);
     });
 
     // Agent metadata
-    s.agent = {
+    t.agent = {
         iconUrl: ''
     };
 
     api.getAgent(fileUri).then(function (data) {
-        s.agent = data;
-        s.agent.iconUrl = api.getAgentIconUrl(data.agent);
+        t.agent = data;
+        t.agent.iconUrl = api.getAgentIconUrl(data.agent);
 
-        console.log("Agent: ", s.agent);
+        console.log("Agent: ", t.agent);
     });
 
     // Load the user data.
-    s.user = {};
+    t.user = {};
 
     api.getUser().then(function (data) {
-        s.user = data;
-        s.user.photoUrl = api.getUserPhotoUrl();
+        t.user = data;
+        t.user.photoUrl = api.getUserPhotoUrl();
 
-        console.log("User: ", s.user);
+        console.log("User: ", t.user);
     });
 
     // RENDERING
@@ -47,24 +49,25 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
     var renderer = new DocumentRenderer(canvas, api.getRenderingUrl(fileUri));
 
     // INFLUENCES
-    s.influences = [];
-    s.previousInfluence;
-    s.selectedInfluence;
+    t.influences = [];
+    t.previousInfluence;
+    t.selectedInfluence; // TODO: Implement using selectionService.
+    t.onSelectedInfluenceChanged = null;
 
     // ACTIVITIES
-    s.activities = [];
+    t.activities = [];
 
-    s.loadActivities = function () {
+    t.loadActivities = function () {
         api.getActivities(fileUri).then(function (data) {
             console.log("Loaded activities: ", data);
 
-            s.activities = data;
+            t.activities = data;
 
             if (data.length > 0) {
                 api.getInfluences(fileUri).then(function (data) {
                     console.log("Loaded influences:", data.length, data);
 
-                    s.influences = data;
+                    t.influences = data;
 
                     if (data.length > 0) {
                         // Canvases in the file.
@@ -81,17 +84,17 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
                                             renderer.renderCache.load(data, function () {
                                                 console.log("Loaded renderings: ", renderer.renderCache);
 
-                                                s.previewInfluence(s.selectedInfluence);
+                                                t.previewInfluence(t.selectedInfluence);
                                             });
                                         }).then(function () {
-                                            s.statistics = [];
+                                            t.statistics = [];
 
                                             var stepCount = 0;
                                             var undoCount = 0;
                                             var redoCount = 0;
 
-                                            for (var i = s.influences.length - 1; i >= 0; i--) {
-                                                var influence = s.influences[i];
+                                            for (var i = t.influences.length - 1; i >= 0; i--) {
+                                                var influence = t.influences[i];
 
                                                 // Convert the timestamp into a date object.
                                                 influence.time = new Date(influence.time);
@@ -117,10 +120,10 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
                                                     influence.stats.layers.push(layer);
                                                 });
 
-                                                s.statistics.push(influence.stats);
+                                                t.statistics.push(influence.stats);
                                             }
 
-                                            console.log("Loaded stats:", s.statistics);
+                                            console.log("Loaded stats:", t.statistics);
                                         });;
                                     });
                                 });
@@ -130,7 +133,7 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
                         // Add the loaded influences to the activities for easier access in the frontend.
                         var i = 0;
 
-                        var activity = s.activities[i];
+                        var activity = t.activities[i];
                         activity.showDate = true;
                         activity.influences = [];
 
@@ -145,12 +148,12 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
                             // Initialize empty statistics.
                             influence.stats = new EditingStatistics();
 
-                            while (activity.uri !== influence.activity && i < s.activities.length - 1) {
+                            while (activity.uri !== influence.activity && i < t.activities.length - 1) {
                                 if (activities[influence.activity]) {
                                     // The influece belongs to previous activity.
                                     activity = activities[influence.activity];
                                 } else {
-                                    var a = s.activities[++i];
+                                    var a = t.activities[++i];
 
                                     var t1 = new Date(a.startTime);
                                     var t2 = new Date(activity.startTime);
@@ -175,7 +178,7 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
                             }
 
                             if (!activity.title) {
-                                activity.title = s.file.label; // Set for fullcalendar.
+                                activity.title = t.file.label; // Set for fullcalendar.
                                 activity.start = activity.startTime; // Alias for fullcalendar.
                                 activity.end = activity.endTime; // Alias for fullcalendar.
                             }
@@ -185,26 +188,34 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
                             //activity.totalTime = moment(activity.endTime) - moment(activity.startTime);
                         }
 
-                        s.previewInfluence(data[0]);
+                        t.previewInfluence(data[0]);
                     }
                 });
             }
         });
     };
 
-    s.loadActivities();
+    t.loadActivities();
 
-    s.selectInfluence = function (influence) {
-        s.selectedInfluence = influence;
-        s.previousInfluence = undefined;
+    t.selectInfluence = function (influence) {
+        t.selectedInfluence = influence;
+        t.previousInfluence = undefined;
+
+        if(t.onSelectedInfluenceChanged !== null) {
+            t.onSelectedInfluenceChanged(t.selectedInfluence);
+        }
     };
 
-    s.previewInfluence = function (influence) {
-        s.previousInfluence = s.selectedInfluence;
-        s.selectedInfluence = influence;
+    t.previewInfluence = function (influence) {
+        t.previousInfluence = t.selectedInfluence;
+        t.selectedInfluence = influence;
+
+        if(t.onSelectedInfluenceChanged !== null) {
+            t.onSelectedInfluenceChanged(t.selectedInfluence);
+        }
 
         if (influence.time !== undefined) {
-            s.renderInfluence(influence);
+            t.renderInfluence(influence);
 
             // Set the labels of the layers at the time of the influence.
             each(influence.stats.layers, function (i, layer) {
@@ -213,58 +224,66 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
 
             // Trigger the processing of change notifications, if necessary.
             // Note: $$phase should NOT be used, but currently solves the problem.
-            if (!s.$$phase) {
-                s.$digest();
+            try {
+                if (!t.$$phase) {
+                    $scope.$digest();
+                }
+            }
+            catch(error) {
             }
 
             // Note: this is experimental.
             //var heatmap = new HeatmapRenderer(canvas);
-            //heatmap.render(s.influences);
+            //heatmap.render(t.influences);
         }
     };
 
-    s.renderInfluence = function (influence) {
+    t.renderInfluence = function (influence) {
         if (influence !== undefined) {
             renderer.render(influence);
 
             // Warning: this is slow.
-            //s.palette = renderer.getPalette();
+            //t.palette = renderer.getPalette();
         }
     };
 
-    s.resetInfluence = function () {
-        if (s.previousInfluence) {
-            s.selectedInfluence = s.previousInfluence;
-            s.previousInfluence = undefined;
+    t.resetInfluence = function () {
+        if (t.previousInfluence) {
+            t.selectedInfluence = t.previousInfluence;
+            t.previousInfluence = undefined;
 
-            s.renderInfluence(s.selectedInfluence);
+            if(t.onSelectedInfluenceChanged !== null) {
+                t.onSelectedInfluenceChanged(t.selectedInfluence);
+            }
+
+            t.renderInfluence(t.selectedInfluence);
         }
     };
 
     // PLAYBACK
-    s.playing = false;
+    t.playing = false;
 
     var playloop = undefined;
 
-    s.togglePlay = function () {
+    t.togglePlay = function () {
         if (playloop) {
-            s.pause();
+            t.pause();
         } else {
-            s.play();
+            t.play();
         }
     };
 
-    s.play = function () {
-        var end = s.influences.indexOf(s.selectedInfluence) === 0;
+    t.play = function () {
+        var end = t.influences.indexOf(t.selectedInfluence) === 0;
 
         if (!playloop && !end) {
-            playloop = setInterval(s.skipNext, 500);
+            playloop = setInterval(t.skipNext, 500);
 
-            s.playing = playloop !== undefined;
+            t.playing = playloop !== undefined;
         }
     };
 
-    s.pause = function () {
+    t.pause = function () {
         console.log(playloop);
 
         if (playloop) {
@@ -272,88 +291,98 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
 
             playloop = undefined;
 
-            s.playing = playloop !== undefined;
+            t.playing = playloop !== undefined;
 
-            s.$digest();
+            t.$digest();
         }
     };
 
-    s.skipPrev = function () {
-        if (s.influences === undefined) {
+    t.skipPrev = function () {
+        if (t.influences === undefined) {
             return;
         }
 
-        var i = s.influences.indexOf(s.selectedInfluence) + 1;
+        var i = t.influences.indexOf(t.selectedInfluence) + 1;
 
-        if (0 < i && i < s.influences.length) {
-            s.selectedInfluence = s.influences[i];
+        if (0 < i && i < t.influences.length) {
+            t.selectedInfluence = t.influences[i];
 
-            console.log(s.selectedInfluence.offsetTop);
+            if(t.onSelectedInfluenceChanged !== null) {
+                t.onSelectedInfluenceChanged(t.selectedInfluence);
+            }
 
-            s.renderInfluence(s.selectedInfluence);
+            console.log(t.selectedInfluence.offsetTop);
+
+            t.renderInfluence(t.selectedInfluence);
         }
 
         if (playloop) {
-            s.$digest();
+            t.$digest();
 
-            if (i === s.influences.length) {
-                s.pause();
+            if (i === t.influences.length) {
+                t.pause();
             }
         }
     };
 
-    s.skipNext = function () {
-        var i = s.influences.indexOf(s.selectedInfluence);
+    t.skipNext = function () {
+        var i = t.influences.indexOf(t.selectedInfluence);
 
-        if (0 < i && i < s.influences.length) {
-            s.selectedInfluence = s.influences[i - 1];
+        if (0 < i && i < t.influences.length) {
+            t.selectedInfluence = t.influences[i - 1];
 
-            s.renderInfluence(s.selectedInfluence);
+            if(t.onSelectedInfluenceChanged !== null) {
+                t.onSelectedInfluenceChanged(t.selectedInfluence);
+            }
+
+            t.renderInfluence(t.selectedInfluence);
         }
 
         if (playloop) {
-            s.$digest();
+            t.$digest();
 
             if (i === 0) {
-                s.pause();
+                t.pause();
             }
         }
     };
 
-    s.historyKeyDown = function (e) {
+    t.historyKeyDown = function (e) {
         if (e.which == 40) { // Arrow key down
-            s.skipPrev();
+            t.skipPrev();
 
             e.preventDefault();
         } else if (e.which === 38) { // Arrow up
-            s.skipNext();
+            t.skipNext();
 
             e.preventDefault();
         }
     };
 
     // FORMATTING
-    s.getFormattedTime = function (time) {
+    t.getFormattedTime = function (time) {
         return moment(time).format('hh:mm:ss');
     };
 
-    s.getFormattedDate = function (time) {
+    t.getFormattedDate = function (time) {
         return moment(time).format('dddd, Do MMMM YYYY');
     };
 
-    s.getFormattedTimeFromNow = function (time) {
+    t.getFormattedTimeFromNow = function (time) {
         var result = moment(time).fromNow();
 
         return result;
     };
 
     // EXPORT
-    s.exportFile = function () {
-        api.exportFile(fileUri, s.file.label);
+    t.exportFile = function () {
+        api.exportFile(fileUri, t.file.label);
     };
 
     // SHARING
-    s.publishFile = function () {
+    t.publishFile = function () {
+        selectionService.items = [t.file];
+
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'partials/dialogs/publish-file-dialog.html',
@@ -375,7 +404,7 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
         return '';
     };
 
-    s.getLabel = function (influence) {
+    t.getLabel = function (influence) {
         var key;
 
         switch (influence.type) {
@@ -411,7 +440,7 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
         return result;
     };
 
-    s.getIcon = function (influence) {
+    t.getIcon = function (influence) {
         switch (influence.type) {
             /*
             case 'http://www.w3.org/ns/prov#Generation':
@@ -453,46 +482,46 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
         return 'zmdi-brush';
     };
 
-    s.comment = {
+    t.comment = {
         text: ''
     };
 
-    s.updateComment = function () {
-        if (!s.comment.startTime) {
-            s.comment.activity = s.activities[0].uri;
-            s.comment.agent = s.user.Uri;
-            s.comment.entity = s.entity.uri;
-            s.comment.startTime = new Date();
+    t.updateComment = function () {
+        if (!t.comment.startTime) {
+            t.comment.activity = t.activities[0].uri;
+            t.comment.agent = t.user.Uri;
+            t.comment.entity = t.entity.uri;
+            t.comment.startTime = new Date();
 
-            console.log("Start comment: ", s.comment);
+            console.log("Start comment: ", t.comment);
         }
     };
 
-    s.resetComment = function (clearText) {
+    t.resetComment = function (clearText) {
         if (clearText) {
-            s.comment.text = '';
+            t.comment.text = '';
         }
 
-        if (s.comment.text === '') {
-            s.comment.startTime = undefined;
-            s.comment.endTime = undefined;
+        if (t.comment.text === '') {
+            t.comment.startTime = undefined;
+            t.comment.endTime = undefined;
         }
 
-        console.log("Reset comment: ", s.comment);
+        console.log("Reset comment: ", t.comment);
     };
 
-    s.postComment = function () {
-        var comment = s.comment;
+    t.postComment = function () {
+        var comment = t.comment;
 
         if (comment.agent && comment.text !== '') {
-            s.resetComment(true);
+            t.resetComment(true);
 
             comment.endTime = new Date();
 
             console.log("Post comment: ", comment);
 
             api.postComment(comment).then(function (data) {
-                s.loadActivities();
+                t.loadActivities();
             });
         }
     };

@@ -1,3 +1,4 @@
+/*
 var reloadUrl = 'http://localhost:35729/livereload.js?host=localhost';
 
 $.get(reloadUrl, function() {
@@ -9,3 +10,4 @@ $.get(reloadUrl, function() {
         console.log('Enabled live-reload:', reloadUrl);
     }
 });
+*/
