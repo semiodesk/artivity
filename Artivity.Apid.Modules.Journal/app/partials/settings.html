@@ -1,46 +1,47 @@
-<div id="header">
-	<div class="row">
-		<div class="col">
-			<a class="btn btn-header" ng-click="submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
+<div class="layout-root table-layout">
+    <div class="row header">
+		<div class="toolbar">
+			<div class="col">
+				<a class="btn btn-header" ng-click="t.submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
+			</div>
+			<div class="col expand">
+				<h5 class="title" translate="SETTINGS.TITLE"></h5>
+			</div>
+			<div class="col" style="width: 90px; text-align: right;">
+				<a class="btn btn-header btn-text" onclick="history.back()">Cancel</a>
+			</div>
 		</div>
-		<div class="col expand">
-			<h5 class="title" translate="SETTINGS.TITLE"></h5>
-		</div>
-		<div class="col" style="width: 90px; text-align: right;">
-			<a class="btn btn-header btn-text" onclick="history.back()">Cancel</a>
-		</div>
-	</div>
-</div>
-<div id="body-wrapper">
-	<div id="body" class="ui-pane-container">
-		<div class="ui-pane ui-pane-left" style="width: 225px; border-right: none; background: #262626;">
-			<ul class="nav nav-tabs nav-stacked" role="tablist" id="tabs">
-				<li role="presentation" class="active"><a data-target="#user-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-account zmdi-lg"></i></span> {{ 'SETTINGS.PROFILE.LABEL' | translate }}</a></li>
-				<li role="presentation"><a data-target="#applications-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-apps zmdi-lg"></i></span> {{ 'SETTINGS.APPS.LABEL' | translate }}</a></li>
-				<li role="presentation"><a data-target="#accounts-panel" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-globe-alt zmdi-lg"></i></span> {{ 'SETTINGS.ACCOUNTS.LABEL' | translate }}</a></li>
-			</ul>
-		</div>
-		<div class="ui-pane ui-pane-center">
-			<div class="tab-content nav-stacked" style="max-width: 800px;">
-				<div role="tabpanel" class="tab-pane padded-lg fade active in" id="user-panel">
-					<div art-settings-user></div>
-				</div>
-				<div role="tabpanel" class="tab-pane padded-lg fade" id="accounts-panel">
-					<div art-settings-accounts></div>
-				</div>
-				<div role="tabpanel" class="tab-pane padded-lg fade" id="applications-panel">
-					<div art-settings-apps></div>
+    </div>
+	<div class="row expand">
+		<div class="layout-container padding-xl padding-y">
+			<div class="container">
+				<ul class="nav nav-pills border-bottom" role="tablist" id="tabs">
+					<li role="presentation" class="active"><a data-target="#panel-user" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-account zmdi-lg"></i></span> {{ 'SETTINGS.PROFILE.LABEL' | translate }}</a></li>
+					<li role="presentation"><a data-target="#panel-apps" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-apps zmdi-lg"></i></span> {{ 'SETTINGS.APPS.LABEL' | translate }}</a></li>
+					<li role="presentation"><a data-target="#panel-accounts" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-globe-alt zmdi-lg"></i></span> {{ 'SETTINGS.ACCOUNTS.LABEL' | translate }}</a></li>
+				</ul>
+
+				<div class="tab-content padding-xl padding-x padding-y">
+					<div role="tabpanel" class="tab-pane fade active in" id="panel-user">
+						<div art-settings-user></div>
+					</div>
+					<div role="tabpanel" class="tab-pane fade" id="panel-accounts">
+						<div art-settings-accounts></div>
+					</div>
+					<div role="tabpanel" class="tab-pane fade" id="panel-apps">
+						<div art-settings-apps></div>
+					</div>
 				</div>
 			</div>
 		</div>
-
-		<script type="text/javascript">
-			$(document).ready(function () {
-				$('#tabs a').click(function (e) {
-					e.preventDefault();
-					$(this).tab('show');
-				});
-			});
-		</script>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+	});
+</script>

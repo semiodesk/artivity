@@ -1,5 +1,6 @@
 angular.module('explorerApp').directive('artTimeline', function () {
 	return {
+		scope: true,
 		template: '\
 		<div class="timeline">\
 			<div class="timeline-control"> \
@@ -19,30 +20,31 @@ angular.module('explorerApp').directive('artTimeline', function () {
 			</div> \
 		</div>',
 		link: function (scope, element, attributes) {
+			var t = scope.$parent.t; // Bad hack. Needs to be fixed when refactoring the control.
+			
 			var timeline = new TimelineControl(element);
 
 			timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
 			timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
 
 			timeline.selectedInfluenceChanged = function (influence) {
-				scope.previewInfluence(influence);
+				t.previewInfluence(influence);
 			};
 
-			scope.$watchCollection(attributes.artActivitiesSrc, function () {
+			t.scope.$watchCollection(attributes.artActivitiesSrc, function () {
 				timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
 			});
 
-			scope.$watchCollection(attributes.artInfluencesSrc, function () {
+			t.scope.$watchCollection(attributes.artInfluencesSrc, function () {
 				timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
 			});
 
-			scope.$watch('selectedInfluence', function () {
-				if (scope.selectedInfluence !== undefined) {
-					timeline.setPosition(scope.selectedInfluence);
-
-					console.log(angular.element(scope.selectedInfluence));
+			// TODO: Implement using selectionService.
+			t.onSelectedInfluenceChanged = function(influence) {
+				if (influence !== undefined) {
+					timeline.setPosition(influence);
 				}
-			});
+			}
 		}
 	}
 });
