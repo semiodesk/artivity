@@ -62,7 +62,7 @@ function KeyboardInputHandlerDirectiveController (api, $scope, hotkeys) {
         combo: 'alt+q',
         description: 'Open the SPARQL query editor view.',
         callback: function () {
-            $scope.navigateTo('query.html');
+            $scope.navigateToFragment('/query');
         }
     });
 }

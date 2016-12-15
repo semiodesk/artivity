@@ -1,6 +1,6 @@
 <form name="form">
     <div class="form-header">
-        <button class="btn btn-default btn-circular pull-right" style="position: relative; right -10px; top: -10px;" ng-click="reload()"><i class="zmdi zmdi-refresh-sync zmdi-lg"></i></button>
+        <button class="btn btn-chromeless pull-right" style="position: relative; right -10px; top: -10px;" ng-click="reload()"><i class="zmdi zmdi-refresh-sync zmdi-lg"></i> <span class="btn-label">Refresh</span></button>
 
         <p class="description">{{ 'SETTINGS.APPS.DESCRIPTION' | translate }}</p>
     </div>
@@ -10,18 +10,14 @@
     <ul class="list-view">
         <li class="list-item" ng-repeat="agent in agents">
             <div class="col col-icn col-icn-lg" ng-class="{disabled: !agent.pluginInstalled}">
-                <img ng-src="{{agent.iconSrc}}" width="40" height="40" />
+                <img ng-src="{{agent.iconSrc}}" width="40" height="40" style="margin: 10px;" />
             </div>
-            <div class="col expand" ng-class="{disabled: !agent.pluginInstalled}">
-                <div style="padding: 9px">
-                    <h5>{{agent.name}}</h5>
-
-                    <div class="col" style="min-width: 250px;">
-                        <label>Version: {{agent.softwareVersion}}</label>
-                    </div>
-                    <div class="col">
-                        <label>Plugin: {{agent.pluginVersion}}</label>
-                    </div>
+            <div class="col expand" style="vertical-align: middle" ng-class="{disabled: !agent.pluginInstalled}">
+                <h5>{{agent.name}}</h5>
+            </div>
+            <div class="col" style="vertical-align: middle">
+                <div style="padding-right: 12px; margin-top: 4px;">
+                    <a class="btn btn-chromeless" uib-tooltip-template="'app-info-template.html'" tooltip-placement="left"><i class="zmdi zmdi-info" style="font-size: 23px;"></i></a>
                 </div>
             </div>
             <div class="col" style="vertical-align: middle" ng-class="{disabled: !agent.pluginInstalled}">
@@ -37,14 +33,27 @@
         </li>
     </ul>
 
-    <div class="statusbar">
+    <div class="statusbar text-center">
         <div class="msg-error animate-show" ng-show="hasError">
             <h5>{{errorType}}</h5>
             <label>{{errorMessage}}</label>
         </div>
 
-        <div class="msg-info" ng-show="!hasError">
+        <div class="msg-info" ng-show="false">
             <label style="padding: 10px 30px;"><i class="zmdi zmdi-info"></i> You can drag undetected applications into this window.</label>
         </div>
     </div>
 </form>
+
+<script type="text/ng-template" id="app-info-template.html">
+    <table style="min-width: 175px;">
+        <tr>
+            <td class="text-left">Software version:</td>
+            <td class="text-right">{{agent.softwareVersion}}</td>
+        </tr>
+        <tr>
+            <td class="text-left">Plugin version:</td>
+            <td class="text-right">{{agent.pluginVersion}}</td>
+        </tr>
+    </table>
+</script>

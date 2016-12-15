@@ -1,7 +1,10 @@
 angular.module('explorerApp').controller('StartController', StartController);
 
-function StartController($location, api, $http) {
+function StartController($location, api, $http, windowService) {
     var t = this;
+
+    windowService.setMinimizable(false);
+    windowService.setMaximizable(false);
 
     t.showSpinner = true;
     t.showError = false;
@@ -15,6 +18,8 @@ function StartController($location, api, $http) {
         $http.get(apid.endpointUrl + '/setup').then(
             function (response) {
                 if(response.data) {
+                    windowService.setWidth(991);
+                    
                     $location.path("/setup");
                 } else {
                     $location.path("/files");
