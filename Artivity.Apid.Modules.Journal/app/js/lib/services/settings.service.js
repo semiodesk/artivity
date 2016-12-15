@@ -13,6 +13,24 @@ angular.module('explorerApp').factory('settingsService', function () {
             if(controllers.indexOf(c) === -1) {
 			    controllers.push(c);
             }
+		},
+		submitAll: function() {
+			for(var i = 0; i < controllers.length; i++) {
+				var c = controllers[i];
+
+				if(c.submit) {
+					c.submit();
+				}
+			}
+		},
+		resetAll: function() {
+			for(var i = 0; i < controllers.length; i++) {
+				var c = controllers[i];
+
+				if(c.reset) {
+					c.reset();
+				}
+			}
 		}
 	};
 });

@@ -72,6 +72,10 @@ function AppsSettingsDirectiveFormController (api, $scope, settingsService) {
                 }
             }
 
+            s.agents.sort(function(a, b) {
+                return a.name.localeCompare(b.name);
+            });
+
             s.form.$setPristine();
         });
     }
