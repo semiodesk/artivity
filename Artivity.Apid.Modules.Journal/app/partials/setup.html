@@ -1,23 +1,35 @@
-<div id="body-wrapper">
-    <div class="container">
-        <h1>Welcome!</h1>
+<div class="layout-root table-layout">
+    <div class="row header">
+        <div class="container padding-xl padding-y">
+            <h1>Welcome!</h1>
 
-        <p>Thank you for using Artivity. Before you can begin using the app we need to setup a few things.</p>
-
-        <section>
-            <div ng-switch="currentStep">
-                <div ng-switch-when="art-settings-user">
-                    <div art-settings-user backup-enabled="false"></div>
-                </div>
-                <div ng-switch-when="art-settings-apps">
-                    <div art-settings-apps></div>
+            <p>Thank you for downloading Artivity. Before you can begin using the app we need to setup your account:</p>
+        </div>
+    </div>
+    <div class="row expand">
+        <ul class="nav" role="tablist" id="tabs" ng-show="false">
+            <li role="presentation" class="active"><a role="tab" data-toggle="tab" data-target="#panel-user">User</a></li>
+            <li role="presentation"><a role="tab" data-toggle="tab" data-target="#panel-apps">Apps</a></li>
+        </ul>
+        <div class="layout-container" style="margin-top: 15px;">
+            <div class="scroll-container scroll-y layout-fix">
+                <div class="container">
+                    <div class="tab-content padding-xl padding-y">
+                        <div role="tabpanel" class="tab-pane fade active in" id="panel-user">
+                            <div art-settings-user backup-enabled="false"></div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="panel-apps">
+                            <div art-settings-apps></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
-
-        <div class="text-right">
-            <button class="btn btn-circular btn-icn" ng-show="canGoBack" ng-click="goBack()"><i class="zmdi zmdi-arrow-left"></i></button>
-            <button class="btn btn-circular btn-icn btn-success" ng-show="canGoNext" ng-click="goNext()"><i class="zmdi zmdi-arrow-right"></i></button>
+        </div>
+    </div>
+    <div class="row footer">
+        <div class="text-right padding-xl padding-x padding-y">
+            <button class="btn btn-default btn-success" ng-show="t.canShowNext" ng-click="t.showNext()">Continue</button>
+            <button class="btn btn-default btn-success" ng-show="t.setupComplete" ng-click="t.submitAndReturn()">Done</button>
         </div>
     </div>
 </div>

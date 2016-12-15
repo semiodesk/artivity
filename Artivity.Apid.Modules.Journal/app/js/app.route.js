@@ -17,26 +17,33 @@ explorerApp.config(['$locationProvider', '$routeProvider',
 	$routeProvider.
 		when('/files', {
 			templateUrl: 'partials/file-list.html',
-			controller: 'FileListController'
+			controller: 'FileListController',
+			controllerAs: 't'
 		}).
 		when('/files/view', {
 			templateUrl: 'partials/file-view.html',
-			controller: 'FileViewController'
+			controller: 'FileViewController',
+			controllerAs: 't'
 		}).
 		when('/settings', {
 			templateUrl: 'partials/settings.html',
-			controller: 'SettingsController'
+			controller: 'SettingsController',
+			controllerAs: 't'
 		}).
 		when('/setup', {
 			templateUrl: 'partials/setup.html',
-			controller: 'SetupController'
+			controller: 'SetupController',
+			controllerAs: 't'
 		}).
 		when('/start', {
 			templateUrl: 'partials/start.html',
-			controller: 'StartController'
+			controller: 'StartController',
+			controllerAs: 't'
 		}).
 		when('/query', {
-			templateUrl: 'query.html'
+			templateUrl: 'partials/query.html',
+			controller: 'QueryController',
+			controllerAs: 't'
 		}).
 		otherwise({
 			redirectTo: '/start'

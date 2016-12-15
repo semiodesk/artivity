@@ -1,16 +1,14 @@
-
 (function () {
-
   const remote = require('electron').remote;
 
   function init() {
-    document.getElementById("min-btn").addEventListener("click", function (e) {
-      const window = remote.getCurrentWindow();
+    const window = remote.getCurrentWindow();
+
+    $("btn-min").click(function (e) {      
       window.minimize();
     });
 
-    document.getElementById("max-btn").addEventListener("click", function (e) {
-      const window = remote.getCurrentWindow();
+    $("btn-max").click(function (e) {
       if (!window.isMaximized()) {
         window.maximize();
       } else {
@@ -18,16 +16,18 @@
       }
     });
 
-    document.getElementById("close-btn").addEventListener("click", function (e) {
+    $("btn-close").click(function (e) {
       remote.app.exit();
+    });
+
+    $("#window-title").dblclick(function(){
+      alert("The paragraph was double-clicked");
     });
   };
 
   document.onreadystatechange = function () {
-    if (document.readyState == "complete") {
+    if (document.readyState === "complete") {
       init();
     }
   };
-
- 
 })();

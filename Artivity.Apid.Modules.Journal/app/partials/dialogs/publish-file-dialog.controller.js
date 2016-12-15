@@ -1,6 +1,6 @@
 angular.module('explorerApp').controller('PublishFileDialogController', PublishFileDialogController);
 
-function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $sce, fileService, clientService) {
+function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $sce, selectionService, fileService, clientService) {
     $scope.dialog = {
         step: 'publishing-options',
         title: 'Publish File',
@@ -12,8 +12,6 @@ function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $s
     $scope.getFileExtension = fileService.getFileExtension;
     $scope.hasFileThumbnail = api.hasThumbnail;
     $scope.getFileThumbnailUrl = api.getThumbnailUrl;
-
-    console.log($scope.entity);
 
     // Accounts
     $scope.accounts = [];
@@ -53,9 +51,11 @@ function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $s
         $scope.dialog.subtitle = 'Choose the account used for publication and authorize the upload by logging in.';
     };
 
+    var file = selectionService.items[0];
+
     // Publishing
     $scope.archive = {
-        title: 'Artivity data for ' + $scope.file.label,
+        title: 'Artivity data for ' + file.label,
         description: '',
         creators: [],
         license: null,
