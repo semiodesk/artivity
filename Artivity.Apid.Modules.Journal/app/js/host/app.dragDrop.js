@@ -1,5 +1,5 @@
 (function () {
-     var dragging = 0;
+  var dragging = 0;
 
   window.ondragenter = (ev) => {
 
