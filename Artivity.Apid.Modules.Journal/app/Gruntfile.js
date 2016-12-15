@@ -146,6 +146,11 @@ module.exports = function (grunt) {
             }
         },
 
+        nugetRestore: {
+            artivity: ["../../Artivity.sln"]
+
+        },
+
         copy: {
             main: {
                 files: [
@@ -182,6 +187,40 @@ module.exports = function (grunt) {
         grunt.file.write('js/app.src.js.map', '');
     });
 
+    // Task to restore nuget package
+    grunt.registerMultiTask('nugetRestore', function () {
+        path = require('path');
+        var done = this.async();
+        grunt.util.async.forEachSeries(this.data, function (filePath, next) {
+            filePath = path.normalize(filePath);
+            filePath = path.resolve(filePath);
+            
+            var nugetPath = path.resolve(path.normalize('../../Utils/NuGet/nuget.exe'));
+            var spawn;
+            if (process.platform === "win32") {
+                spawn = {
+                    cmd: nugetPath,
+                    args: ['restore', filePath],
+                    opts: { stdio: 'inherit' }, // print to the same stdout
+                };
+            } else {
+                spawn = {
+                    cmd: 'mono',
+                    args: [nugetPath, 'restore', filePath],
+                    opts: { stdio: 'inherit' }, // print to the same stdout
+                }
+            }
+
+            grunt.util.spawn(spawn, function (err, result, code) {
+                next();
+            });
+        }, function () {
+            // Do something with tasks now that each
+            // contains their respective error code
+            done();
+        });
+    });
+
     grunt.registerTask('default', [
         'wiredep',
         'concat:js:clear',
@@ -195,6 +234,7 @@ module.exports = function (grunt) {
         'concat:js',
         'sass:dist',
         'electron',
+        'nugetRestore',
         'msbuild',
         'copy'
     ]);
