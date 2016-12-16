@@ -18,6 +18,7 @@
     "bower": "^1.8.0",
     "electron-packager": "^8.3.0",
     "grunt": "^1.0.1",
+    "grunt-bower-install-simple": "^1.2.3",
     "grunt-concurrent": "^2.3.1",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-concat": "^1.0.1",
