@@ -381,7 +381,11 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
 
     // SHARING
     t.publishFile = function () {
-        selectionService.items = [t.file];
+        selectionService.items = [{
+            uri: t.entity.uri,
+            label: t.file.label,
+            agentColor: t.agent.color
+        }];
 
         var modalInstance = $uibModal.open({
             animation: true,

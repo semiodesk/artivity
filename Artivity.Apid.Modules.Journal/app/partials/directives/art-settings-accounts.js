@@ -34,7 +34,8 @@ function AccountsSettingsDirectiveFormController (api, $scope, settingsService, 
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'partials/dialogs/add-account-dialog.html',
-            controller: 'AddAccountDialogController'
+            controller: 'AddAccountDialogController',
+            controllerAs: 't'
         });
 
         modalInstance.result.then(function (account) {
