@@ -23,13 +23,8 @@
 				<div ng-switch on="t.files.length > 0">
 					<div ng-switch-when="true">
 						<ul id="file-list" class="cards">
-							<li class="card" ng-repeat="file in t.files">
-								<div class="file-thumbnail-container">
-									<div class="file-thumbnail" style="background-image: url({{t.getFileThumbnailUrl(file.uri)}});"></div>
-								</div>
-								<div class="file-name">{{t.getFileNameWithoutExtension(file.label)}}</div>
-								<div class="file-extension" style="background-color: {{file.agentColor}};">{{t.getFileExtension(file.label)}}</div>
-								<a href="#/files/view?uri={{file.uri}}"></a>
+							<li ng-repeat="file in t.files">
+								<div art-file-card file="{{file}}"></div>
 							</li>
 						</ul>
 					</div>

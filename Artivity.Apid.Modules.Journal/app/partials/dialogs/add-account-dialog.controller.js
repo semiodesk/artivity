@@ -2,51 +2,50 @@ angular.module('explorerApp').controller('AddAccountDialogController', AddAccoun
 
 function AddAccountDialogController(api, $scope, $filter, $uibModalInstance, $sce, clientService) {
     var t = this;
-    var s = $scope;
     var interval = undefined;
 
-    s.title = $filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE');
-    s.clients = [];
+    t.title = $filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE');
+    t.clients = [];
 
     api.getAccountClients().then(function (data) {
-        s.clients = data;
+        t.clients = data;
 
-        console.log("Available clients:", s.clients);
+        console.log("Available clients:", t.clients);
     });
 
-    s.selectedClient = null;
+    t.selectedClient = null;
 
-    s.selectClient = function (client) {
-        s.title = ($filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE_X')).replace('{0}', client.Title);
-        s.selectedClient = client;
-        s.parameter = {
+    t.selectClient = function (client) {
+        t.title = ($filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE_X')).replace('{0}', client.Title);
+        t.selectedClient = client;
+        t.parameter = {
             clientUri: client.Uri,
             authType: client.SupportedAuthenticationClients[0].Uri
         };
 
         // TODO: Remove hard-wiring. Receive presets and target sites from client.
         if (client.Uri === 'http://orcid.org') {
-            s.parameter.presetId = 'orcid.org';
+            t.parameter.presetId = 'orcid.org';
 
-            s.connectAccount(s.selectedClient);
-        } else if (client.Uri === 'http://eprints.org') {
-            s.parameter.url = 'https://ualresearchonline.arts.ac.uk';
+            t.connectAccount(t.selectedClient);
+        } else if (client.Uri === 'http://eprintt.org') {
+            t.parameter.url = 'https://ualresearchonline.artt.ac.uk';
         }
 
         console.log("Client selected: ", client);
     }
 
     // Prevent an account from being installed twice.
-    s.isInstalling = false;
+    t.isInstalling = false;
 
     // The client state '0' refers to 'None'.	
-    s.clientState = 0;
+    t.clientState = 0;
 
-    s.connectAccount = function (client) {
+    t.connectAccount = function (client) {
         // The client state '1' refers to 'InProgress'.
-        s.clientState = 1;
+        t.clientState = 1;
 
-        api.authorizeAccount(s.parameter).then(function (data) {
+        api.authorizeAccount(t.parameter).then(function (data) {
             var sessionId = data.Id;
 
             clientService.pollServiceState(api, sessionId, function (intervalHandle, state) {
@@ -58,16 +57,16 @@ function AddAccountDialogController(api, $scope, $filter, $uibModalInstance, $sc
                     var c = state.Client.SupportedAuthenticationClients[i];
 
                     // Allow iframes to connect to the URL.
-                    s.clientUrl = $sce.trustAsResourceUrl(c.AuthorizeUrl);
+                    t.clientUrl = $sce.trustAsResourceUrl(c.AuthorizeUrl);
 
                     if (c.ClientState > 1) {
                         clearInterval(interval);
 
-                        s.clientState = c.ClientState;
+                        t.clientState = c.ClientState;
 
                         // The client state '2' refers to 'Authorized'.
-                        if (!s.isInstalling && c.ClientState == 2) {
-                            s.isInstalling = true;
+                        if (!t.isInstalling && c.ClientState == 2) {
+                            t.isInstalling = true;
 
                             api.installAccount(sessionId).then(function (r) {
                                 console.log("Account installed:", sessionId);
@@ -86,7 +85,7 @@ function AddAccountDialogController(api, $scope, $filter, $uibModalInstance, $sc
         });
     };
 
-    s.cancel = function () {
+    t.cancel = function () {
         $uibModalInstance.dismiss('cancel');
 
         if (interval) {

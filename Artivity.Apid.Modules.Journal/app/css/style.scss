@@ -232,14 +232,15 @@ button:focus,
 }
 
 .btn-success {
-	color: $accentTextColor;
-	background: $accentColor;
+	color: $accentTextColor !important;
+	background: $accentColor !important;
 	border: none;
 	transition: all linear .2s;
+	text-shadow: none;
 }
 
 .btn-success:hover {
-	background: lighten($accentColor, 5%);
+	background: lighten($accentColor, 5%) !important;
 }
 
 .btn-chromeless {
@@ -520,6 +521,7 @@ h4 {
 /* HEADER */
 
 .toolbar {
+	display: table-row;
 	background: $toolbarBackgroundColor;
 	color: $toolbarTextColor;
 }
@@ -535,60 +537,8 @@ h4 {
 	border-bottom: 2px solid $accentColor !important;
 }
 
-.header .toolbar {
-	padding: 0;
-	margin: 0;
-}
-
-.header .toolbar .title {
-	font-size: 17px;
-	font-weight: 400;
-	text-align: left;
-	margin: 0 0 0 5px;
-	padding: 0;
-	position: relative;
-	top: 2px;
-}
-
-.header .toolbar a.btn,
-.footer .toolbar a.btn {
-	border-radius: 0 !important;
-	padding: 0;
-	margin: 0;
-	border: none;
-	transition: all .2s linear;
-	color: rgba($textColor, .6);
-}
-
-.header .toolbar a.btn i,
-.footer .toolbar a.btn i {
-	display: block;
-	width: 45px;
-	height: 45px;
-	line-height: 45px;
-	font-size: $iconFontSize;
-	text-align: center;
-}
-
 .footer .toolbar a.btn i {
 	font-size: 20px !important;
-}
-
-.header .toolbar a.btn:hover,
-.footer .toolbar a.btn:hover {
-	background: rgba(255, 255, 255, .1);
-	color: rgba($textColor, 1);
-}
-
-.header .toolbar .icn,
-.footer .toolbar .icn {
-	width: 32px;
-	height: 32px;
-}
-
-.header .toolbar .icn-circle,
-.footer .toolbar .icn-circle {
-	border-radius: 50%;
 }
 
 /* BODY */
@@ -754,6 +704,21 @@ h4 {
 	height: 100%;
 }
 
+.table-layout.spacing-xs {
+    border-collapse: separate;
+	border-spacing: 5px;
+}
+
+.table-layout.spacing-md {
+    border-collapse: separate;
+	border-spacing: 15px;
+}
+
+.table-layout.spacing-xl {
+    border-collapse: separate;
+	border-spacing: 30px;
+}
+
 .table-layout .row {
 	display: table-row;
 	position: relative;
@@ -850,7 +815,10 @@ h4 {
 	transition-property: all;
 	transition-duration: 1s;
 	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+	position: relative;
+	height: 45px;
 	padding: 0;
+	margin: 0;
 }
 
 .toolbar.hidden {
@@ -858,21 +826,58 @@ h4 {
 }
 
 .toolbar.visible {
-	max-height: 100px;
+	max-height: 99999px;
 }
 
-.toolbar {
+.toolbar .title {
+	font-size: 17px;
+	font-weight: 400;
+	text-align: left;
+	margin: 0 0 0 5px;
+	padding: 0;
 	position: relative;
-	height: 45px;
+	top: 2px;
 }
 
 .toolbar .btn {
-	transition: all .2s linear;
+	background: transparent;
 	color: rgba($textColor, .6);
+	border-radius: 0 !important;
+	border: none;
+	padding: 0;
+	margin: 0;
+	transition: all .2s linear;
 }
 
 .toolbar .btn:hover {
+	background: rgba(255, 255, 255, .1);
 	color: rgba($textColor, 1);
+}
+
+.toolbar .btn i.zmdi {
+	display: inline-block;
+	width: 45px;
+	height: 45px;
+	line-height: 45px;
+	font-size: $iconFontSize;
+	text-align: center;
+}
+
+.toolbar .btn .btn-label {
+	line-height: 45px;
+	vertical-align: middle;
+	margin: 0 5px;
+}
+
+.toolbar .icn,
+.toolbar .icn {
+	width: 32px;
+	height: 32px;
+}
+
+.toolbar .icn-circle,
+.toolbar .icn-circle {
+	border-radius: 50%;
 }
 
 .btn-toggle-play {
@@ -1215,6 +1220,10 @@ p.subtitle {
 	color: $labelTextColor;
 }
 
+p.subtitle {
+	margin-top: 1em;
+}
+
 p.description {
 	margin-bottom: 1em;
 }
@@ -1306,6 +1315,11 @@ select.form-control:focus {
 
 .modal-dialog {
 	width: 700px;
+	margin-top: $windowTitlebarHeight;
+}
+
+.modal-dialog .toolbar {
+	margin-top: 10px;
 }
 
 .modal-window-lg .modal-dialog {
@@ -1338,28 +1352,13 @@ select.form-control:focus {
 	margin-bottom: .25em;
 }
 
-.modal-header,
-.modal-footer {
-	border: none;
-	padding: 30px 30px 15px 30px;
-}
-
-.modal-footer-buttons {
-	padding-top: 1em;
-	position: relative;
-	top: 7px;
-	z-index: 10;
-}
-
-.modal-body {
-	padding: 0 30px 30px 30px;
-}
-
 .modal-content {
-	-webkit-box-shadow: none;
 	box-shadow: none;
-	border-radius: 0 0 10px 10px;
-	background: #222;
+	box-shadow: 0px 7px 15px 0px rgba(0,0,0,.25);
+	border-radius: 0;
+	border: none;
+	border-top: 1px solid darken($toolbarBackgroundColor, 3%);
+	background: $toolbarBackgroundColor;
 	min-width: 700px;
 	transition: width linear .4s;
 	transition: height linear .4s;
@@ -1568,18 +1567,20 @@ button[disabled]:hover {
 	border-radius: 0;
 	background: transparent;
 	color: $textColor;
+	border-bottom: 2px solid transparent;
 }
 
 .nav-pills > li.active > a {
-	background: $accentColor;
-	color: $accentTextColor;
+	background: transparent;
+	border-bottom: 2px solid $accentColor;
+	color: $accentColor;
 }
 
 .nav-pills > li > a:hover,
 .nav-pills > li.active > a:hover {
 	cursor: pointer;
-	color: $accentTextColor;
-	background: $accentColor;
+	color: $accentColor;
+	background: transparent;
 	border-radius: 0;
 	transition: background linear .2s;
 }
@@ -2078,6 +2079,8 @@ path.color1 {
 	font-size: 10px;
 	position: relative;
 	top: 3px;
+	left: 0;
+	transform: none;
 }
 
 .spinner.connecting > div {
@@ -2368,7 +2371,7 @@ iframe {
 	opacity: 1;
 }
 
-#close-btn:hover {
+#btn-close:hover {
 	background: #E81123 !important;
 }
 
