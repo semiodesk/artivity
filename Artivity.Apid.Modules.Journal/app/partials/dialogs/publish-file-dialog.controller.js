@@ -5,7 +5,7 @@ function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $s
 
     t.dialog = {
         step: 'publishing-options',
-        title: 'Publish File',
+        title: 'Publish Editing History',
         subtitle: 'Create a dataset for your file and upload it into a digital repository.'
     };
 
@@ -122,7 +122,7 @@ function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $s
             PercentComplete: 0
         };
 
-        api.uploadArchive(t.selectedAccount.Uri, t.entity.uri, t.authentication.parameter, t.archive).then(function (data) {
+        api.uploadArchive(t.selectedAccount.Uri, t.file.uri, t.authentication.parameter, t.archive).then(function (data) {
             var sessionId = data.Id;
 
             console.log("Session: ", sessionId);
@@ -130,7 +130,7 @@ function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $s
             clientService.pollServiceState(api, sessionId, function (intervalHandle, state) {
                 interval = intervalHandle;
 
-                t.dialog.subtitle = $filter('translate')(state.Progress.CurrentTask.Id + "#description");
+                t.dialog.subtitle = $filter('translate')('FILEPUBLISH.' + state.Progress.CurrentTask.Id + "#description");
 
                 t.progress = state.Progress;
 
