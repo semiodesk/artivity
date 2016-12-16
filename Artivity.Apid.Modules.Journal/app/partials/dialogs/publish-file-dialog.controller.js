@@ -1,34 +1,38 @@
 angular.module('explorerApp').controller('PublishFileDialogController', PublishFileDialogController);
 
 function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $sce, selectionService, fileService, clientService) {
-    $scope.dialog = {
+    var t = this;
+
+    t.dialog = {
         step: 'publishing-options',
         title: 'Publish File',
         subtitle: 'Create a dataset for your file and upload it into a digital repository.'
     };
 
-    $scope.getFileName = fileService.getFileName;
-    $scope.getFileNameWithoutExtension = fileService.getFileNameWithoutExtension;
-    $scope.getFileExtension = fileService.getFileExtension;
-    $scope.hasFileThumbnail = api.hasThumbnail;
-    $scope.getFileThumbnailUrl = api.getThumbnailUrl;
+    t.file = selectionService.items[0];
+    
+    t.getFileName = fileService.getFileName;
+    t.getFileNameWithoutExtension = fileService.getFileNameWithoutExtension;
+    t.getFileExtension = fileService.getFileExtension;
+    t.hasFileThumbnail = api.hasThumbnail;
+    t.getFileThumbnailUrl = api.getThumbnailUrl;
 
     // Accounts
-    $scope.accounts = [];
-    $scope.selectedAccount = null;
+    t.accounts = [];
+    t.selectedAccount = null;
 
     // At first, we need to determine if there are any accounts which can be used for publishing.
     api.getAccountsWithFeature('http://w3id.org/art/terms/1.0/features/PublishArchive').then(function (data) {
         console.log("Accounts:", data);
 
-        $scope.accounts = data;
+        t.accounts = data;
 
-        if (0 < $scope.accounts.length) {
-            var account = $scope.accounts[0];
+        if (0 < t.accounts.length) {
+            var account = t.accounts[0];
 
-            $scope.selectedAccount = account;
+            t.selectedAccount = account;
 
-            $scope.authentication = {
+            t.authentication = {
                 protocol: account.AuthenticationProtocol.Uri,
                 parameter: {}
             };
@@ -36,26 +40,24 @@ function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $s
             for (var i = 0; i < account.AuthenticationParameters.length; i++) {
                 var p = account.AuthenticationParameters[i];
 
-                $scope.authentication.parameter[p.Name] = p.Value;
+                t.authentication.parameter[p.Name] = p.Value;
             }
         } else {
-            $scope.dialog.step = 'no-accounts';
-            $scope.dialog.title = 'No Accounts';
-            $scope.dialog.subtitle = 'You have not yet added any accounts which can be used for publication.';
+            t.dialog.step = 'no-accounts';
+            t.dialog.title = 'No Accounts';
+            t.dialog.subtitle = 'You have not yet added any accounts which can be used for publication.';
         }
     });
 
-    $scope.selectAccount = function () {
-        $scope.dialog.step = 'upload-select-account';
-        $scope.dialog.title = 'Select Account';
-        $scope.dialog.subtitle = 'Choose the account used for publication and authorize the upload by logging in.';
+    t.selectAccount = function () {
+        t.dialog.step = 'upload-select-account';
+        t.dialog.title = 'Select Account';
+        t.dialog.subtitle = 'Choose the account used for publication and authorize the upload by logging in.';
     };
 
-    var file = selectionService.items[0];
-
     // Publishing
-    $scope.archive = {
-        title: 'Artivity data for ' + file.label,
+    t.archive = {
+        title: 'Artivity data for ' + t.file.label,
         description: '',
         creators: [],
         license: null,
@@ -93,15 +95,15 @@ function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $s
         }
     };
 
-    $scope.archive.license = $scope.archive.licenseOptions[0].uri;
+    t.archive.license = t.archive.licenseOptions[0].uri;
 
     // Load author information.
-    $scope.userPhotoUrl = api.getUserPhotoUrl();
+    t.userPhotoUrl = api.getUserPhotoUrl();
 
     api.getUser().then(function (data) {
-        $scope.user = data;
+        t.user = data;
 
-        $scope.archive.creators = [{
+        t.archive.creators = [{
             name: data.Name,
             email: data.EmailAddress
         }];
@@ -110,17 +112,17 @@ function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $s
     // Upload
     var interval = undefined;
 
-    $scope.beginUpload = function () {
-        $scope.dialog.step = 'upload-progress';
-        $scope.dialog.title = "Publishing File";
+    t.beginUpload = function () {
+        t.dialog.step = 'upload-progress';
+        t.dialog.title = "Publishing File";
 
-        $scope.progress = {
+        t.progress = {
             Tasks: [],
             CurrentTask: '',
             PercentComplete: 0
         };
 
-        api.uploadArchive($scope.selectedAccount.Uri, $scope.entity.uri, $scope.authentication.parameter, $scope.archive).then(function (data) {
+        api.uploadArchive(t.selectedAccount.Uri, t.entity.uri, t.authentication.parameter, t.archive).then(function (data) {
             var sessionId = data.Id;
 
             console.log("Session: ", sessionId);
@@ -128,34 +130,34 @@ function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $s
             clientService.pollServiceState(api, sessionId, function (intervalHandle, state) {
                 interval = intervalHandle;
 
-                $scope.dialog.subtitle = $filter('translate')(state.Progress.CurrentTask.Id + "#description");
+                t.dialog.subtitle = $filter('translate')(state.Progress.CurrentTask.Id + "#description");
 
-                $scope.progress = state.Progress;
+                t.progress = state.Progress;
 
                 if (parseInt(state.Progress.PercentComplete) === 100) {
                     clearInterval(interval);
 
                     // Delay the closing of the window so that the UI can update the progress.
-                    setTimeout($scope.endUpload, 2000);
+                    setTimeout(t.endUpload, 2000);
                 }
             });
         });
     };
 
-    $scope.endUpload = function () {
+    t.endUpload = function () {
         if (interval) {
             clearInterval(interval);
         }
 
-        if ($scope.percentComplete < 100) {
-            $scope.percentComplete = 0;
+        if (t.percentComplete < 100) {
+            t.percentComplete = 0;
         } else {
             $uibModalInstance.close();
         }
     };
 
-    $scope.cancel = function () {
-        $scope.endUpload();
+    t.cancel = function () {
+        t.endUpload();
 
         $uibModalInstance.dismiss('cancel');
     };

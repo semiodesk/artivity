@@ -1351,6 +1351,10 @@ select.form-control:focus {
 	z-index: 10;
 }
 
+.modal-footer-buttons .btn {
+	margin-left: 10px;
+}
+
 .modal-body {
 	padding: 0 30px 30px 30px;
 }
@@ -1568,18 +1572,20 @@ button[disabled]:hover {
 	border-radius: 0;
 	background: transparent;
 	color: $textColor;
+	border-bottom: 2px solid transparent;
 }
 
 .nav-pills > li.active > a {
-	background: $accentColor;
-	color: $accentTextColor;
+	background: transparent;
+	border-bottom: 3px solid $accentColor;
+	color: $accentColor;
 }
 
 .nav-pills > li > a:hover,
 .nav-pills > li.active > a:hover {
 	cursor: pointer;
-	color: $accentTextColor;
-	background: $accentColor;
+	color: $accentColor;
+	background: transparent;
 	border-radius: 0;
 	transition: background linear .2s;
 }
@@ -2368,7 +2374,7 @@ iframe {
 	opacity: 1;
 }
 
-#close-btn:hover {
+#btn-close:hover {
 	background: #E81123 !important;
 }
 

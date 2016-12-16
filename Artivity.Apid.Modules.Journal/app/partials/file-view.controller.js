@@ -387,6 +387,7 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
             animation: true,
             templateUrl: 'partials/dialogs/publish-file-dialog.html',
             controller: 'PublishFileDialogController',
+            controllerAs: 't',
             scope: $scope
         });
     }
