@@ -4,7 +4,6 @@ function UpdateChecker(appcastUrl, currentVersion) {
     if (currentVersion == undefined) {
         var pjson = require('./package.json');
         this.currentVersion = pjson.version;
-        console.log(this.currentVersion);
     } else {
         this.currentVersion = currentVersion;
     }
@@ -70,7 +69,7 @@ function UpdateChecker(appcastUrl, currentVersion) {
                 if (semver.gte(updateVer, currentVersion)) {
                     this.update = {
                         title: item.title,
-                        releaseNotesUrl: item['sparkle:releaseNotesLink'],
+                        releaseNotesUrl: item['sparkle:releasenoteslink'],
                         published: item.pubDate,
                         version: updateVer,
                         length: package.length,
@@ -94,7 +93,7 @@ function UpdateChecker(appcastUrl, currentVersion) {
             var remote = require('electron').remote;
             var app = remote.app;
             var p = app.getPath('temp') + "\\artivity-update-" + update.version + ".msi";
-            
+
             update.localPath = p;
 
             if (fs.existsSync(p)) {
