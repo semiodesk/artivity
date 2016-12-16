@@ -1,5 +1,4 @@
 (function () {
-    'use strict';
 
     angular
         .module('explorerApp')
@@ -22,6 +21,8 @@
 
 		function initService(){
 			service.checker = new UpdateChecker(endpoint);
+			canUpdate().then(function(val) {
+				console.log(val);});
 		}
 
 		//////////////////////////////
