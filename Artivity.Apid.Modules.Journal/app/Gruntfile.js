@@ -143,6 +143,23 @@ module.exports = function (grunt) {
 
         },
 
+        "bower-install-simple": {
+            options: {
+                color: true,
+            },
+            "prod": {
+                options: {
+                    production: true
+                }
+            },
+            "dev": {
+                options: {
+                    production: false
+                }
+            }
+        },
+
+
         copy: {
             main: {
                 files: [
@@ -172,8 +189,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks("grunt-bower-install-simple");
 
-    grunt.registerTask('concat:js:clear', 'Empties the concatenated app source files.', function() {
+    grunt.registerTask('concat:js:clear', 'Empties the concatenated app source files.', function () {
         // TODO: Read dest file from config 'concat:js:dest'.
         grunt.file.write('js/app.src.js', '');
         grunt.file.write('js/app.src.js.map', '');
@@ -186,7 +204,7 @@ module.exports = function (grunt) {
         grunt.util.async.forEachSeries(this.data, function (filePath, next) {
             filePath = path.normalize(filePath);
             filePath = path.resolve(filePath);
-            
+
             var nugetPath = path.resolve(path.normalize('../../Utils/NuGet/nuget.exe'));
             var spawn;
             if (process.platform === "win32") {
@@ -213,6 +231,8 @@ module.exports = function (grunt) {
         });
     });
 
+    grunt.registerTask("bower-install", ["bower-install-simple"]);
+
     grunt.registerTask('default', [
         'wiredep',
         'concat:js:clear',
@@ -222,6 +242,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean',
+        "bower-install",
         'wiredep',
         'concat:js',
         'sass:dist',
