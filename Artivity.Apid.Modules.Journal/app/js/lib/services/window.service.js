@@ -4,6 +4,8 @@ angular.module('explorerApp').factory('windowService', function () {
     return {
         setMinimizable: function(value) {
             if(value || value === undefined) {
+                window.setMinimizable(true);
+
                 $('#btn-min').show();
             } else {
                 $('#btn-min').hide();
@@ -11,6 +13,8 @@ angular.module('explorerApp').factory('windowService', function () {
         },
         setMaximizable: function(value) {
             if(value || value === undefined) {
+                window.setMaximizable(true);
+
                 $('#btn-max').show();
             } else {
                 $('#btn-max').hide();

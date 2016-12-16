@@ -1091,6 +1091,9 @@ select.form-control:focus {
   top: 7px;
   z-index: 10; }
 
+.modal-footer-buttons .btn {
+  margin-left: 10px; }
+
 .modal-body {
   padding: 0 30px 30px 30px; }
 
@@ -1269,17 +1272,19 @@ button[disabled]:hover {
   cursor: pointer;
   border-radius: 0;
   background: transparent;
-  color: #F0F0F0; }
+  color: #F0F0F0;
+  border-bottom: 2px solid transparent; }
 
 .nav-pills > li.active > a {
-  background: #F27200;
-  color: #FFFFFF; }
+  background: transparent;
+  border-bottom: 3px solid #F27200;
+  color: #F27200; }
 
 .nav-pills > li > a:hover,
 .nav-pills > li.active > a:hover {
   cursor: pointer;
-  color: #FFFFFF;
-  background: #F27200;
+  color: #F27200;
+  background: transparent;
   border-radius: 0;
   transition: background linear .2s; }
 
@@ -1925,7 +1930,7 @@ iframe {
   background-color: #3F3F41;
   opacity: 1; }
 
-#close-btn:hover {
+#btn-close:hover {
   background: #E81123 !important; }
 
 #window-view-container {
