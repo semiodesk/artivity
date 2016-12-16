@@ -11,10 +11,16 @@
     document.getElementById("btn-max").addEventListener("click", function (e) {
       const window = remote.getCurrentWindow();
 
+      // TODO: Change the button state via CSS class to OS independent.
+      // Requires refactoring the window controls in index.html.
       if (!window.isMaximized()) {
         window.maximize();
+
+        $('#btn-max img').attr('src', 'img/windows/btn-restore.png');
       } else {
         window.unmaximize();
+
+        $('#btn-max img').attr('src', 'img/windows/btn-maximize.png');
       }
     });
 
