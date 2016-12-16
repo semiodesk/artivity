@@ -1,48 +1,64 @@
 (function () {
 
-    angular
-        .module('explorerApp')
-        .factory('UpdateService', UpdateService);
+	angular
+		.module('explorerApp')
+		.factory('UpdateService', UpdateService);
 
-    UpdateService.$inject = [];
-    function UpdateService() {
+	UpdateService.$inject = [];
+	function UpdateService() {
 
-		var endpoint = "https://static.semiodesk.com/artivity/osx/appcast.xml";
-        var service = {
+		var downloadRunning = false;
+		var downloadPromise;
+
+		var endpoint = "https://static.semiodesk.com/artivity/win/appcast.xml";
+		var service = {
 			canUpdate: canUpdate,
 			download: download,
 			update: update
 
+
 		};
 		initService();
-        return service;
+		return service;
 
 		//////////////////////////////
 
-		function initService(){
+		function initService() {
 			service.checker = new UpdateChecker(endpoint);
-			canUpdate().then(function(val) {
-				console.log(val);});
+
 		}
 
 		//////////////////////////////
 
-        function canUpdate(){
+		function canUpdate() {
 			return service.checker.canUpdate();
 		}
 
-		function download() {
-			return service.checker.downloadUpdate();
+		function download(data) {
+			if (!downloadRunning) {
+				downloadRunning = true
+				downloadPromise = service.checker.downloadUpdate(data);
+				downloadPromise.then(function () {
+					downloadRunning = false;
+				})
+			}
+			return downloadPromise;
 		}
 
-		function update(){
-			return service.checker.executeUpdate();
+		function update(data) {
+			return service.checker.executeUpdate(data);
 		}
-    }
+	}
 
 })();
 
 // TODO: pull out of this file to keep it unit testable
-//angular.module('explorerApp').run(['UpdateService', function(UpdateService) {
-//;
-//}]);
+angular.module('explorerApp').run(['UpdateService', function (UpdateService) {
+	UpdateService.canUpdate().then(function (val) {
+		UpdateService.download(val).then(function (val) {
+			UpdateService.update(val);
+		});
+}, function(msg) {
+		console.log("no update");
+	});
+}]);
