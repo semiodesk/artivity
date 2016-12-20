@@ -1,50 +1,7 @@
 function UpdateChecker(appcastUrl, currentVersion) {
     var t = this;
 
-    t.getUpdateInstallerPath = getUpdateInstallerPath;
-    t.verifyUpdateInstallerSignature = verifyUpdateInstallerSignature;
-
     t.init(appcastUrl, currentVersion);
-
-    function getUpdateInstallerPath(update) {
-        var remote = require('electron').remote;
-        var app = remote.app;
-
-        return app.getPath('temp') + "\\artivity-update-" + update.version + ".msi";
-    }
-
-    function verifyUpdateInstallerSignature(update) {
-        return new Promise(function (resolve, reject) {
-            if (existsSync(update.localPath)) {
-                // Note: This is platform dependent and shoild be moved into a factory.
-                var script = require('path').dirname(__filename) + '\\js\\host\\VerifySignature.exe';
-
-                // Execute the signature verifier in a separate process.
-                const execute = require('child_process').execFile;
-                const child = execute(script, [update.localPath], (error, stdout, stderr) => {
-                    if (error) {
-                        console.error('Error validating signature:', stderr);
-
-                        return reject(update);
-                    }
-
-                    var result = JSON.parse(stdout);
-
-                    if ("error" in result) {
-                        return reject(update);
-                    } else {
-                        update.signature = result;
-
-                        return resolve(update);
-                    }
-                });
-            } else {
-                console.error('File does not exist:', update.localPath);
-
-                return reject(update);
-            }
-        });
-    }
 }
 
 UpdateChecker.prototype.init = function (appcastUrl, currentVersion) {
@@ -134,7 +91,11 @@ UpdateChecker.prototype.isUpdateAvailable = function () {
 UpdateChecker.prototype.isUpdateDownloaded = function (update) {
     var t = this;
 
-    update.localPath = t.getUpdateInstallerPath(update);
+    var remote = require('electron').remote;
+    var app = remote.app;
+
+    // Note: This is platform dependent and should be moved into a factory.
+    update.localPath = app.getPath('temp') + "\\artivity-update-" + update.version + ".msi";
 
     return t.verifyUpdateInstallerSignature(update);
 }
@@ -204,6 +165,39 @@ UpdateChecker.prototype.installUpdate = function (update) {
             console.error(err);
 
             reject(update);
+        }
+    });
+}
+
+UpdateChecker.prototype.verifyUpdateInstallerSignature = function(update) {
+    return new Promise(function (resolve, reject) {
+        if (existsSync(update.localPath)) {
+            // Note: This is platform dependent and should be moved into a factory.
+            var script = require('path').dirname(__filename) + '\\js\\host\\VerifySignature.exe';
+
+            // Execute the signature verifier in a separate process.
+            const execute = require('child_process').execFile;
+            const child = execute(script, [update.localPath], (error, stdout, stderr) => {
+                if (error) {
+                    console.error('Error validating signature:', stderr);
+
+                    return reject(update);
+                }
+
+                var result = JSON.parse(stdout);
+
+                if ("error" in result) {
+                    return reject(update);
+                } else {
+                    update.signature = result;
+
+                    return resolve(update);
+                }
+            });
+        } else {
+            console.error('File does not exist:', update.localPath);
+
+            return reject(update);
         }
     });
 }
