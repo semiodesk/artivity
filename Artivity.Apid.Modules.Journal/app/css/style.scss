@@ -142,6 +142,10 @@ iframe {
 	color: $accentColor;
 }
 
+.translucent {
+	opacity: .5;
+}
+
 .msg-error {
 	display: block;
 	width: 100%;
@@ -175,12 +179,6 @@ iframe {
 .animate-show.ng-hide-add-active,
 .animate-show.ng-hide-remove-active {
 	transition: 1s linear all;
-}
-
-.disabled {
-	-webkit-filter: grayscale(100%);
-	-moz-filter: grayscale(100%);
-	filter: grayscale(100%);
 }
 
 .tooltip>.tooltip-inner {
@@ -251,6 +249,10 @@ input.disabled,
 	border-radius: 0;
 	-webkit-box-shadow: none;
 	box-shadow: none;
+}
+
+.btn.padding-sm {
+	padding: 3px 6px;
 }
 
 button:hover,
@@ -471,6 +473,12 @@ button:focus,
 
 .list-item .col.expand {
 	width: 100%;
+}
+
+.list-item .col.disabled {
+	-webkit-filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	filter: grayscale(100%);
 }
 
 .list-item .col-icn {

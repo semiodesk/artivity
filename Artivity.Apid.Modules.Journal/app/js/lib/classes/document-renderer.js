@@ -132,42 +132,44 @@ DocumentRenderer.prototype.render = function (influence) {
 
     // Only render the newest version of every layer.
     t.layerCache.getAll(time, function (layer) {
-        var r = t.renderCache.get(time, layer);
+        if (layer.visible) {
+            var r = t.renderCache.get(time, layer);
 
-        if (r !== undefined) {
-            t.renderedLayers.push(r);
+            if (r !== undefined) {
+                t.renderedLayers.push(r);
 
-            var b = new createjs.Bitmap(r.img);
-            b.x = r.x;
-            b.y = -r.y;
+                var b = new createjs.Bitmap(r.img);
+                b.x = r.x;
+                b.y = -r.y;
 
-            // For performance reasons, the renderings might be smaller than the
-            // original size of the image. Therefore, we need to scale the image
-            // to it's actual size in the picture.
-            if (r.img.width > 0) {
-                b.scaleX = r.w / r.img.width;
+                // For performance reasons, the renderings might be smaller than the
+                // original size of the image. Therefore, we need to scale the image
+                // to it's actual size in the picture.
+                if (r.img.width > 0) {
+                    b.scaleX = r.w / r.img.width;
+                }
+
+                if (r.img.height > 0) {
+                    b.scaleY = r.h / r.img.height;
+                }
+
+                t.scene.addChild(b);
+
+                /*
+                if (layer.uri == influence.layer) {
+                	context.font = "1em Roboto";
+                	context.fillStyle = "blue";
+                	context.textAlign = "left";
+                	context.fillText(layer.getLabel(time), r.x, -r.y - 10);
+
+                	context.lineJoin = 'miter';
+                	context.lineWidth = 1;
+                	context.strokeStyle = 'blue';
+                	context.setLineDash([1, 2]);
+                	context.strokeRect(r.x, -r.y, r.w, r.h);
+                }
+                */
             }
-
-            if (r.img.height > 0) {
-                b.scaleY = r.h / r.img.height;
-            }
-
-            t.scene.addChild(b);
-
-            /*
-            if (layer.uri == influence.layer) {
-            	context.font = "1em Roboto";
-            	context.fillStyle = "blue";
-            	context.textAlign = "left";
-            	context.fillText(layer.getLabel(time), r.x, -r.y - 10);
-
-            	context.lineJoin = 'miter';
-            	context.lineWidth = 1;
-            	context.strokeStyle = 'blue';
-            	context.setLineDash([1, 2]);
-            	context.strokeRect(r.x, -r.y, r.w, r.h);
-            }
-            */
         }
     });
 

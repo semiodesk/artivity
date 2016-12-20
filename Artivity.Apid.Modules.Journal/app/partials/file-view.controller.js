@@ -79,6 +79,13 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
                                     renderer.layerCache.load(data, function (layers) {
                                         console.log("Loaded layers: ", layers);
 
+                                        values(layers, function(uri, layer) {
+                                            // TODO: The layer state should be recorded and returned by the API.
+                                            layer.visible = true;
+
+                                            console.log(layer);
+                                        });
+
                                         // Trigger loading the bitmaps.
                                         api.getRenderings(fileUri).then(function (data) {
                                             renderer.renderCache.load(data, function () {
@@ -530,4 +537,12 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
             });
         }
     };
+
+    t.toggleVisibility = function(layer) {
+        console.log("Toggle visibility: ", layer);
+        
+        layer.visible = !layer.visible;
+
+        t.previewInfluence(t.selectedInfluence);
+    }
 }
