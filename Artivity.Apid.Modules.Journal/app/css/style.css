@@ -26,6 +26,10 @@ h3,
 h4 {
   color: #bdbdbd; }
 
+h1 .zmdi,
+h2 .zmdi {
+  margin-right: .3em; }
+
 body {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   color: #F0F0F0;
@@ -106,6 +110,34 @@ iframe {
   -moz-filter: grayscale(100%);
   filter: grayscale(100%); }
 
+.tooltip > .tooltip-inner {
+  background-color: #EEEEEE;
+  color: black; }
+
+.tooltip.top .tooltip-arrow {
+  border-top-color: #EEEEEE; }
+
+.tooltip.top-left .tooltip-arrow {
+  border-top-color: #EEEEEE; }
+
+.tooltip.top-right .tooltip-arrow {
+  border-top-color: #EEEEEE; }
+
+.tooltip.right .tooltip-arrow {
+  border-right-color: #EEEEEE; }
+
+.tooltip.left .tooltip-arrow {
+  border-left-color: #EEEEEE; }
+
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: #EEEEEE; }
+
+.tooltip.bottom-left .tooltip-arrow {
+  border-bottom-color: #EEEEEE; }
+
+.tooltip.bottom-right .tooltip-arrow {
+  border-bottom-color: #EEEEEE; }
+
 textarea.disabled,
 input.disabled,
 .btn.disabled {
@@ -150,7 +182,8 @@ button:focus,
   outline: none !important; }
 
 .btn-info {
-  background: #3694c3;
+  background: #00A7E4;
+  color: #FFFFFF;
   border: none;
   border-radius: 2px; }
 
@@ -1067,6 +1100,17 @@ select.form-control:focus {
 .modal-dialog .toolbar {
   margin-top: 10px; }
 
+.modal-dialog .toolbar .btn .btn-label {
+  margin: 0;
+  margin-right: 15px;
+  margin-left: -5px;
+  float: right; }
+
+.modal-dialog .toolbar .btn .btn-label.left {
+  margin-left: 15px;
+  margin-right: -5px;
+  float: left; }
+
 .modal-window-lg .modal-dialog {
   position: absolute;
   top: 0;
@@ -1916,18 +1960,41 @@ iframe {
 #window-title-btns button.btn-title {
   height: 30px;
   width: 45px;
-  padding: 0 !important;
+  padding: 0;
   margin: 0;
   background-color: transparent;
   border: none;
   border-radius: 0;
   color: #F1F1F1;
-  font-size: 16px;
   opacity: .5; }
 
 #window-title-btns button:hover.btn-title {
   background-color: #3F3F41;
   opacity: 1; }
+
+#window-title-btns button#btn-update {
+  background: #F27200;
+  color: #FFFFFF;
+  display: none;
+  opacity: .9 !important;
+  text-shadow: none;
+  transition: opacity linear .2s;
+  width: auto;
+  padding: 0 10px; }
+
+#window-title-btns button#btn-update .btn-label {
+  display: none;
+  font-size: 12px;
+  padding-left: 5px;
+  position: relative;
+  bottom: 1px; }
+
+#window-title-btns button#btn-update .zmdi {
+  font-size: 15px; }
+
+#window-title-btns button#btn-update.disabled {
+  opacity: 0 !important;
+  cursor: default; }
 
 #btn-close:hover {
   background: #E81123 !important; }

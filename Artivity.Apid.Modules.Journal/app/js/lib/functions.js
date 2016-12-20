@@ -83,3 +83,16 @@ function loadItems(items, action, done) {
 		action(items, i, completed);
 	}
 }
+
+// Note: fs.existsSync is deprecated and throws IO exceptions if the file is not accessible.
+// See: https://github.com/nodejs/node/issues/1592
+function existsSync(filename) {
+	try {
+		var fs = require('fs');
+		fs.accessSync(filename);
+		return true;
+	} catch(err) {
+		console.error(err);
+		return false;
+	}
+}
