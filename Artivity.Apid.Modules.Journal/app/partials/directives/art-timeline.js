@@ -396,7 +396,7 @@ TimelineControl.prototype.updateTrackPreview = function (influence) {
 TimelineControl.prototype.getColor = function (influence) {
 	var t = this;
 
-	if (influence.agentColor === '#FF0000') {
+	if (!influence || influence.agentColor === '#FF0000') {
 		return t.lastColor;
 	}
 
