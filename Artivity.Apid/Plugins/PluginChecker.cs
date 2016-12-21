@@ -34,6 +34,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Artivity.Apid.Plugin
 {
@@ -41,13 +42,13 @@ namespace Artivity.Apid.Plugin
     {
         #region Members
 
-        private List<PluginManifest> _manifests = new List<PluginManifest>();
-
-        private List<string> _manifestErrors = new List<string>();
-
         protected IPlatformProvider PlatformProvider;
 
         protected IModelProvider ModelProvider;
+
+        private List<PluginManifest> _manifests = new List<PluginManifest>();
+
+        private List<string> _manifestErrors = new List<string>();
 
         public List<SoftwareAgentPlugin> Plugins { get; private set;}
 
@@ -76,11 +77,11 @@ namespace Artivity.Apid.Plugin
 
         public PluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo pluginDir)
         {
-            Plugins = new List<SoftwareAgentPlugin>();
-            PluginDirectory = pluginDir;
-
             PlatformProvider = platformProvider;
             ModelProvider = modelProvider;
+
+            Plugins = new List<SoftwareAgentPlugin>();
+            PluginDirectory = pluginDir;
 
             IModel agents = ModelProvider.GetAgents();
 
@@ -219,32 +220,39 @@ namespace Artivity.Apid.Plugin
             }
         }
 
-        protected bool HasAgentAssociation(IModel model, SoftwareAgentPlugin plugin)
+        protected bool HasAgentAssociations(IModel model, SoftwareAgentPlugin plugin)
         {
-            ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @association prov:agent @agent . }");
+            StringBuilder queryBuilder = new StringBuilder();
+            queryBuilder.Append("ASK WHERE {");
 
-            query.Bind("@agent", plugin.Manifest.AgentUri);
-            query.Bind("@association", plugin.GetAssociationUri());
+            foreach(UriRef uri in plugin.GetAssociationUris())
+            {
+                queryBuilder.AppendFormat(" <{0}> prov:agent <{1}> .", uri, plugin.Manifest.AgentUri);
+            }
 
+            queryBuilder.Append(" }");
+
+            ISparqlQuery query = new SparqlQuery(queryBuilder.ToString());
             ISparqlQueryResult result = model.ExecuteQuery(query);
 
             return result.GetAnwser();
         }
 
-        protected void InstallAgentAssociation(IModel model, SoftwareAgentPlugin plugin)
+        protected void InstallAgentAssociations(IModel model, SoftwareAgentPlugin plugin)
         {
-            var uri = plugin.GetAssociationUri();
-
-            if (!model.ContainsResource(uri))
+            foreach(UriRef uri in plugin.GetAssociationUris())
             {
-                Logger.InfoFormat("Installing agent association <{0}>", uri);
+                if (!model.ContainsResource(uri))
+                {
+                    Logger.InfoFormat("Installing agent association <{0}>", uri);
 
-                SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(uri);
-                association.Agent = new SoftwareAgent(new UriRef(plugin.Manifest.AgentUri));
-                association.Role = new Role(new UriRef(ART.SOFTWARE));
-                association.ExecutableVersion = plugin.Manifest.ExecutableVersion;
-                association.ExecutablePath = plugin.Manifest.ExecutablePath;
-                association.Commit();
+                    SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(uri);
+                    association.Agent = new SoftwareAgent(new UriRef(plugin.Manifest.AgentUri));
+                    association.Role = new Role(new UriRef(ART.SOFTWARE));
+                    association.ExecutableVersion = plugin.Manifest.ExecutableVersion;
+                    association.ExecutablePath = plugin.Manifest.ExecutablePath;
+                    association.Commit();
+                }
             }
         }
 
@@ -256,9 +264,8 @@ namespace Artivity.Apid.Plugin
             {
                 try
                 {
-                    plugin.DetectedVersion = TryGetInstalledSoftwareVersion(plugin.Manifest);
-
-                    plugin.IsSoftwareInstalled = !string.IsNullOrEmpty(plugin.DetectedVersion);
+                    plugin.DetectedVersions = TryGetInstalledSoftwareVersion(plugin.Manifest).ToArray();
+                    plugin.IsSoftwareInstalled = plugin.DetectedVersions.Any();
 
                     if (plugin.IsSoftwareInstalled)
                     {
@@ -266,11 +273,17 @@ namespace Artivity.Apid.Plugin
 
                         if (plugin.IsPluginInstalled)
                         {
-                            Logger.InfoFormat("Software and plugin installed: <{0}>", plugin.GetAssociationUri());
+                            foreach(UriRef uri in plugin.GetAssociationUris())
+                            {
+                                Logger.InfoFormat("Software and plugin installed: <{0}>", uri);
+                            }
                         }
                         else
                         {
-                            Logger.InfoFormat("Software installed: <{0}>", plugin.GetAssociationUri());
+                            foreach(UriRef uri in plugin.GetAssociationUris())
+                            {
+                                Logger.InfoFormat("Software installed: <{0}>", uri);
+                            }
                         }
                         
                         if (!plugin.IsPluginInstalled && installPlugins)
@@ -279,14 +292,17 @@ namespace Artivity.Apid.Plugin
                             plugin.IsPluginEnabled = plugin.IsPluginInstalled;
                         }
 
-                        if (!HasAgentAssociation(model, plugin))
+                        if (!HasAgentAssociations(model, plugin))
                         {
-                            InstallAgentAssociation(model, plugin);
+                            InstallAgentAssociations(model, plugin);
                         }
                     }
                     else
                     {
-                        Logger.InfoFormat("Software not installed: <{0}>", plugin.GetAssociationUri());
+                        foreach (UriRef uri in plugin.GetAssociationUris())
+                        {
+                            Logger.InfoFormat("Software not installed: <{0}>", uri);
+                        }
 
                         plugin.IsPluginInstalled = false;
                         plugin.IsPluginEnabled = false;
@@ -299,37 +315,37 @@ namespace Artivity.Apid.Plugin
             }
         }
 
-        public string TryGetInstalledSoftwareVersion(PluginManifest manifest)
+        public IEnumerable<string> TryGetInstalledSoftwareVersion(PluginManifest manifest)
         {
-            DirectoryInfo location = GetApplicationLocation(manifest);
-
-            if (location != null && location.Exists)
+            foreach(DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
             {
-                FileSystemInfo info;
+                // Search for the executable in the provided application directory.
+                FileSystemInfo info = new FileInfo(Path.Combine(location.FullName, manifest.ProcessName));
 
-                if (!string.IsNullOrEmpty(manifest.ExecutablePath))
+                if (!info.Exists)
                 {
-                    info = new FileInfo(Path.Combine(location.FullName, manifest.ExecutablePath));
-                }
-                else
-                {
-                    info = location;
+                    if (!string.IsNullOrEmpty(manifest.ExecutablePath))
+                    {
+                        info = new FileInfo(Path.Combine(location.FullName, manifest.ExecutablePath));
+                    }
+                    else
+                    {
+                        info = location;
+                    }
                 }
 
                 string version = GetApplicationVersion(info);
 
-                if (manifest.IsMatch(version))
+                if (!string.IsNullOrEmpty(version) && manifest.IsMatch(version))
                 {
-                    return version;
+                    yield return version;
                 }
             }
-
-            return null;
         }
 
         public bool IsSoftwareInstalled(PluginManifest manifest)
         {
-            return !string.IsNullOrEmpty(TryGetInstalledSoftwareVersion(manifest));
+            return TryGetInstalledSoftwareVersion(manifest).Any();
         }
 
         public abstract bool IsPluginInstalled(PluginManifest manifest);
@@ -347,60 +363,54 @@ namespace Artivity.Apid.Plugin
 
             try
             {
-                DirectoryInfo location = GetApplicationLocation(manifest);
-
-                if (location == null || !location.Exists)
+                foreach (DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
                 {
-                    return false;
-                }
-
-                foreach (PluginManifestPluginFile pluginFile in manifest.PluginFile)
-                {
-                    // This may also be an app bundle /directory on macOS.
-                    string sourcePath = pluginFile.GetPluginSource(manifest);
-
-                    if (!File.Exists(sourcePath) && !Directory.Exists(sourcePath))
+                    foreach (PluginManifestPluginFile pluginFile in manifest.PluginFile)
                     {
-                        Logger.ErrorFormat("Plugin file does not exist: {0}", sourcePath);
+                        // This may also be an app bundle / directory on macOS.
+                        string sourcePath = pluginFile.GetPluginSource(manifest);
 
-                        return false;
-                    }
-
-                    DirectoryInfo targetFolder = TryGetPluginTargetDirectory(location, manifest);
-
-                    if (!targetFolder.Exists)
-                    {
-                        return false;
-                    }
-
-                    var targetPath = Path.Combine(targetFolder.FullName, pluginFile.GetName());
-
-                    if (pluginFile.Link)
-                    {
-                        Logger.InfoFormat("Linking plugin: {0}", targetPath);
-
-                        CreateLink(sourcePath, targetPath);
-                    }
-                    else
-                    {
-                        Logger.InfoFormat("Copying plugin: {0}", targetPath);
-
-                        if (File.Exists(sourcePath))
+                        if (!File.Exists(sourcePath) && !Directory.Exists(sourcePath))
                         {
-                            File.Copy(sourcePath, targetPath);
+                            throw new FileNotFoundException(sourcePath);
                         }
-                        else if (Directory.Exists(sourcePath))
+
+                        DirectoryInfo targetFolder = TryGetPluginTargetDirectory(location, manifest);
+
+                        if (!targetFolder.Exists)
                         {
-                            CopyDirectory(sourcePath, targetPath, true);
+                            return false;
+                        }
+
+                        var targetPath = Path.Combine(targetFolder.FullName, pluginFile.GetName());
+
+                        if (pluginFile.Link)
+                        {
+                            Logger.InfoFormat("Linking plugin: {0}", targetPath);
+
+                            CreateLink(sourcePath, targetPath);
+                        }
+                        else
+                        {
+                            Logger.InfoFormat("Copying plugin: {0}", targetPath);
+
+                            if (File.Exists(sourcePath))
+                            {
+                                File.Copy(sourcePath, targetPath);
+                            }
+                            else if (Directory.Exists(sourcePath))
+                            {
+                                CopyDirectory(sourcePath, targetPath, true);
+                            }
                         }
                     }
-                }
 
-                IModel model = ModelProvider.GetAgents();
+                    IModel model = ModelProvider.GetAgents();
 
-                if (!HasAgentAssociation(model, plugin))
-                {
-                    InstallAgent(model, plugin);
+                    if (!HasAgentAssociations(model, plugin))
+                    {
+                        InstallAgent(model, plugin);
+                    }
                 }
 
                 return true;
@@ -426,35 +436,31 @@ namespace Artivity.Apid.Plugin
 
             try
             {
-                DirectoryInfo location = GetApplicationLocation(manifest);
-
-                if (location == null || !location.Exists)
+                foreach (DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
                 {
-                    return false;
-                }
-
-                foreach (PluginManifestPluginFile pluginFile in manifest.PluginFile)
-                {
-                    DirectoryInfo targetFolder = TryGetPluginTargetDirectory(location, manifest);
-
-                    if (!targetFolder.Exists)
+                    foreach (PluginManifestPluginFile pluginFile in manifest.PluginFile)
                     {
-                        return false;
-                    }
+                        DirectoryInfo targetFolder = TryGetPluginTargetDirectory(location, manifest);
 
-                    var targetPath = Path.Combine(targetFolder.FullName, pluginFile.GetName());
+                        if (!targetFolder.Exists)
+                        {
+                            return false;
+                        }
 
-                    if (pluginFile.Link)
-                    {
-                        DeleteLink(targetPath);
-                    }
-                    else if (File.Exists(targetPath))
-                    {
-                        File.Delete(targetPath);
-                    }
-                    else if (Directory.Exists(targetPath))
-                    {
-                        Directory.Delete(targetPath);
+                        var targetPath = Path.Combine(targetFolder.FullName, pluginFile.GetName());
+
+                        if (pluginFile.Link)
+                        {
+                            DeleteLink(targetPath);
+                        }
+                        else if (File.Exists(targetPath))
+                        {
+                            File.Delete(targetPath);
+                        }
+                        else if (Directory.Exists(targetPath))
+                        {
+                            Directory.Delete(targetPath);
+                        }
                     }
                 }
 
@@ -470,13 +476,6 @@ namespace Artivity.Apid.Plugin
 
         public void UninstallAgent(IModel model, SoftwareAgentPlugin plugin)
         {
-            if (model.ContainsResource(plugin.GetAssociationUri()))
-            {
-                Logger.InfoFormat("Uninstalling agent association {0}", plugin.Manifest.AgentUri);
-
-                model.DeleteResource(plugin.GetAssociationUri());
-            }
-
             UriRef agentUri = new UriRef(plugin.Manifest.AgentUri);
 
             if (model.ContainsResource(agentUri))
@@ -485,9 +484,19 @@ namespace Artivity.Apid.Plugin
 
                 model.DeleteResource(agentUri);
             }
+
+            foreach(UriRef uri in plugin.GetAssociationUris())
+            {
+                if (model.ContainsResource(uri))
+                {
+                    Logger.InfoFormat("Uninstalling agent association {0}", plugin.Manifest.AgentUri);
+
+                    model.DeleteResource(uri);
+                }
+            }
         }
 
-        protected abstract DirectoryInfo GetApplicationLocation(PluginManifest manifest);
+        protected abstract IEnumerable<DirectoryInfo> GetApplicationLocations(PluginManifest manifest);
 
         protected abstract string GetApplicationVersion(FileSystemInfo app);
 

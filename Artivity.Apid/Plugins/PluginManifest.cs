@@ -97,21 +97,9 @@ namespace Artivity.Apid.Plugin
             set { _pluginFile = value; }
         }
 
-        /// <summary>
-        /// Windows: Here we look for this key in the registry
-        /// </summary>
         [JsonIgnore]
-        public string RegistryId { get; set; }
-
-        private List<PluginManifestRegistryKey> _registryKeys = new List<PluginManifestRegistryKey>();
-
-        [JsonIgnore]
-        [XmlElement("RegistryKey")]
-        public List<PluginManifestRegistryKey> RegistryKeys
-        {
-            get { return _registryKeys; }
-            set { _registryKeys = value; }
-        }
+        [XmlElement("Registry")]
+        public PluginManifestRegistryInfo RegistryInfo { get; set; }
 
         #endregion
 
@@ -137,6 +125,11 @@ namespace Artivity.Apid.Plugin
             }
         }
 
+        /// <summary>
+        /// Indicates if a given (Major, Minor, Release) version string matches the version information which is specified in the manifest.
+        /// </summary>
+        /// <param name="versionString">A version string.</param>
+        /// <returns><c>true</c> if the version was matched, <c>false</c> otherwise.</returns>
         public bool IsMatch(string versionString)
         {
             Version v = Version.Parse(versionString);

@@ -2,7 +2,7 @@
 <PluginManifest xmlns="http://www.artivity.io/plugins/manifest/">
   <AgentUri>http://adobe.com/products/illustrator</AgentUri>
   <DefaultColor>#F27200</DefaultColor>
-  <DisplayName>Adobe Illustrator CC 2015</DisplayName>
+  <DisplayName>Adobe Illustrator CC</DisplayName>
   <ProcessName>Illustrator.exe</ProcessName>
   <ExecutablePath>Support Files\Contents\Windows\Illustrator.exe</ExecutablePath>
   <ExecutableVersion>19.1.0</ExecutableVersion>
@@ -12,5 +12,9 @@
   <PluginVersion>0.8.1</PluginVersion>
   <PluginFile Link="true">Artivity64_2015.aip</PluginFile>
   <PluginInstallPath>Plug-ins\Extensions</PluginInstallPath>
-  <RegistryId>ILST_19_1_0</RegistryId>
+  <Registry>
+	<ApplicationKeys>
+		<RegistryKey Name="ILST_19_1_0"></RegistryKey>
+	</ApplicationKeys>
+  </Registry>
 </PluginManifest>

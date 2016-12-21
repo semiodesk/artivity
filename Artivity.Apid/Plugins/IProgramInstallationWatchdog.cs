@@ -54,7 +54,7 @@ namespace Artivity.Apid.Plugin
             return new Artivity.Apid.Plugin.Win.ProgramInstallationWatchdog(InstalledPrograms.RegistryKeyString);
             #elif OSX
             return new Artivity.Apid.Plugin.OSX.ProgramInstallationWatchdog();
-#endif
+            #endif
         }
     }
 }
