@@ -71,7 +71,7 @@ UpdateChecker.prototype.isUpdateAvailable = function () {
             if (semver.gte(version, t.currentVersion)) {
                 var update = {
                     title: lastItem.title,
-                    releaseNotesUrl: lastItem['sparkle:releasenoteslink'],
+                    releaseNotesUrl: lastItem['sparkle:releasenoteslink']['#'],
                     published: lastItem.pubDate,
                     version: version,
                     length: package.length,
