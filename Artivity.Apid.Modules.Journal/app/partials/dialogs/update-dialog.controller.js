@@ -12,9 +12,11 @@ function UpdateDialogController(api, $scope, $filter, $uibModalInstance, $sce, u
     updateService.isUpdateAvailable().then(init);
 
     function init() {
+        const util = require('util');
+
         var update = updateService.update;
 
-        if(update.releaseNotesUrl && update.releaseNotesUrl.indexOf('https') === 0) {
+        if(util.isString(update.releaseNotesUrl) && update.releaseNotesUrl.indexOf('https') === 0) {
             update.releaseNotesUrl = $sce.trustAsResourceUrl(update.releaseNotesUrl);
         }
 
