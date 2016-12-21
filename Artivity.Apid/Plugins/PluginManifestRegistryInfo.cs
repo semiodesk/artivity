@@ -25,67 +25,32 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Semiodesk.Trinity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Artivity.Apid.Plugin
 {
-    public class SoftwareAgentPlugin
+    public class PluginManifestRegistryInfo
     {
-        #region Members
+        /// <summary>
+        /// These keys are being used for locating one ore more installed versions of an application.
+        /// </summary>
+        [JsonIgnore]
+        [XmlArray("ApplicationKeys")]
+        [XmlArrayItem("RegistryKey")]
+        public List<PluginManifestRegistryKey> ApplicationKeys { get; set; }
 
-        public PluginManifest Manifest { get; private set;}
-
-        public bool IsSoftwareInstalled { get; set; }
-
-        public bool IsPluginInstalled { get; set; }
-
-        public bool IsPluginEnabled { get; set; }
-
-        public string[] DetectedVersions { get; set; }
-
-        public IEnumerable<UriRef> AssociationUris
-        {
-            get { return GetAssociationUris(); }
-        }
-
-        #endregion
-
-        #region Constructors
-
-        public SoftwareAgentPlugin(PluginManifest manifest)
-        {
-            Manifest = manifest;
-        }
-
-        #endregion
-
-        #region Methods
-
-        public Uri GetIcon()
-        {
-            FileInfo file = new FileInfo(Path.Combine(Manifest.ManifestFile.DirectoryName, "Icon.png"));
-
-            return file.Exists ? file.ToUriRef() : null;
-        }
-
-        public IEnumerable<UriRef> GetAssociationUris()
-        {
-            HashSet<UriRef> result = new HashSet<UriRef>();
-
-            foreach(string version in DetectedVersions)
-            {
-                result.Add(new UriRef(Manifest.AgentUri + "/" + version));
-            }
-
-            return result;
-        }
-
-        #endregion
+        /// <summary>
+        /// These keys are being created when the plugin is installed.
+        /// </summary>
+        [JsonIgnore]
+        [XmlArray("PluginKeys")]
+        [XmlArrayItem("RegistryKey")]
+        public List<PluginManifestRegistryKey> PluginKeys { get; set; }
     }
 }

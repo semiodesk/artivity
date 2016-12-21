@@ -2,7 +2,7 @@
 <PluginManifest xmlns="http://www.artivity.io/plugins/manifest/">
   <AgentUri>http://adobe.com/products/photoshop</AgentUri>
   <DefaultColor>#3FC2FC</DefaultColor>
-  <DisplayName>Adobe Photoshop CC 2015</DisplayName>
+  <DisplayName>Adobe Photoshop CC</DisplayName>
   <ProcessName>Photoshop.exe</ProcessName>
   <ExecutablePath>Adobe Photoshop CC 2015\Photoshop.exe</ExecutablePath>
   <MinExecutableVersion>16.1.0</MinExecutableVersion>
@@ -12,5 +12,11 @@
   <PluginVersion>0.8.1</PluginVersion>
   <PluginFile Link="true">Artivity64.8li</PluginFile>
   <PluginInstallPath>Adobe Photoshop CC 2015\Plug-ins</PluginInstallPath>
-  <RegistryId>{793C2BF7-A4FE-4608-91C9-9282C5801C21}</RegistryId>
+  <Registry>
+	<ApplicationKeys>
+		<RegistryKey Name="{793C2BF7-A4FE-4608-91C9-9282C5801C21}"></RegistryKey>
+		<RegistryKey Name="PHSP_17_0_1"></RegistryKey>
+		<RegistryKey Name="PHSP_18_0_1"></RegistryKey>
+	</ApplicationKeys>
+  </Registry>
 </PluginManifest>

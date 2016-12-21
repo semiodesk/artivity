@@ -64,7 +64,7 @@ function AppsSettingsDirectiveFormController (api, $scope, settingsService) {
                         associationUri: agent.AssociationUri,
                         iconSrc: api.getAgentIconUrl(agent.Manifest.AgentUri),
                         softwareInstalled: agent.IsSoftwareInstalled,
-                        softwareVersion: agent.DetectedVersion,
+                        softwareVersion: agent.DetectedVersions.join(),
                         pluginInstalled: agent.IsPluginInstalled,
                         pluginVersion: agent.Manifest.PluginVersion,
                         pluginEnabled: agent.IsPluginEnabled
