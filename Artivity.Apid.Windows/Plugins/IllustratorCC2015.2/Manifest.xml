@@ -15,6 +15,7 @@
   <Registry>
 	<ApplicationKeys>
 		<RegistryKey Name="ILST_19_2_1"></RegistryKey>
+    <RegistryKey Name="ILST_20_1_0"></RegistryKey>
 		<RegistryKey Name="ILST_21_0_0"></RegistryKey>
 	</ApplicationKeys>
   </Registry>
