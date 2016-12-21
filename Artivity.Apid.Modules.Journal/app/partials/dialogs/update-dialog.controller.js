@@ -13,9 +13,10 @@ function UpdateDialogController(api, $scope, $filter, $uibModalInstance, $sce, u
 
     function init() {
         var update = updateService.update;
-        var releaseNotesUrl = 'http://static.semiodesk.com/artivity/osx/1.6.101/changelog.html';
 
-        update.releaseNotesUrl = $sce.trustAsResourceUrl(releaseNotesUrl);
+        if(update.releaseNotesUrl && update.releaseNotesUrl.indexOf('https') === 0) {
+            update.releaseNotesUrl = $sce.trustAsResourceUrl(update.releaseNotesUrl);
+        }
 
         t.update = update;
 
