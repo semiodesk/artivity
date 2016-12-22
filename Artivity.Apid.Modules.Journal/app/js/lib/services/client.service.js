@@ -1,6 +1,12 @@
-angular.module('explorerApp').factory('clientService', function() {
-	return {
-		pollServiceState : function (api, sessionId, handleClientStateChange) {
+(function () {
+	angular.module('explorerApp').factory('clientService', clientService);
+
+	function clientService() {
+		return {
+			pollServiceState: pollServiceState
+		}
+
+		function pollServiceState(api, sessionId, handleClientStateChange) {
 			// The polling interval hanler.
 			var interval = undefined;
 
@@ -43,4 +49,4 @@ angular.module('explorerApp').factory('clientService', function() {
 			}, intervalMs);
 		}
 	}
-});
+})();

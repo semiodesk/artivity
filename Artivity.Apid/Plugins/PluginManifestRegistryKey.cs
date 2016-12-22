@@ -36,64 +36,16 @@ namespace Artivity.Apid.Plugin
     [XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.artivity.io/plugins/manifest/")]
     public partial class PluginManifestRegistryKey
     {
-        private string nameField;
-
-        private string pathField;
-
-        private string platformField;
-
-        private List<PluginManifestRegistryItem> itemsField = new List<PluginManifestRegistryItem>();
+        [XmlAttributeAttribute()]
+        public string Name { get; set; }
 
         [XmlAttributeAttribute()]
-        public string Name
-        {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
-            }
-        }
+        public string Path { get; set; }
 
         [XmlAttributeAttribute()]
-        public string Path
-        {
-            get
-            {
-                return this.pathField;
-            }
-            set
-            {
-                this.pathField = value;
-            }
-        }
-
-        [XmlAttributeAttribute()]
-        public string Platform
-        {
-            get
-            {
-                return this.platformField;
-            }
-            set
-            {
-                this.platformField = value;
-            }
-        }
+        public string Platform { get; set; }
 
         [XmlElement("RegistryItem")]
-        public List<PluginManifestRegistryItem> Items
-        {
-            get
-            {
-                return this.itemsField;
-            }
-            set
-            {
-                this.itemsField = value;
-            }
-        }
+        public List<PluginManifestRegistryItem> Items { get; set; }
     }
 }

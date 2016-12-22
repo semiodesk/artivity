@@ -139,19 +139,12 @@
     <None Include="app\bower_components\yasgui\src\scss\yasr.scss" />
     <None Include="packages.config" />
     <EmbeddedResource Include="error\index.html" />
-    <EmbeddedResource Include="app\js\app.overlay.js" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="app\partials\dialogs\calendar-dialog.html" />
     <EmbeddedResource Include="app\js\app.api.js" />
-    <EmbeddedResource Include="app\partials\dialogs\account-add-dialog.html" />
-    <EmbeddedResource Include="app\partials\dialogs\file-publish-dialog.html" />
-    <EmbeddedResource Include="app\query.html" />
-    <EmbeddedResource Include="app\js\lib\d3-timeline.js" />
     <EmbeddedResource Include="app\js\app.translation.js" />
     <EmbeddedResource Include="app\js\lib\quantize.js" />
-    <EmbeddedResource Include="app\js\app.classes.js" />
-    <EmbeddedResource Include="app\js\app.controllers.js" />
     <EmbeddedResource Include="app\bower_components\angular-input-modified\dist\angular-input-modified.min.js" />
     <EmbeddedResource Include="app\bower_components\angular-route\angular-route.min.js" />
     <EmbeddedResource Include="app\bower_components\angular-translate\angular-translate.min.js" />
@@ -263,8 +256,6 @@
     <Content Include="app\bower_components\yasgui\src\yasqe.js" />
     <Content Include="app\bower_components\yasgui\src\yasr.js" />
     <EmbeddedResource Include="app\img\artivity-logo.png" />
-    <Content Include="app\img\heart-broken.svg" />
-    <Content Include="app\img\heart.svg" />
     <Content Include="app\img\orcid_64x64.png" />
     <EmbeddedResource Include="app\partials\file-view.html" />
   </ItemGroup>
@@ -282,10 +273,8 @@
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\hue-horizontal.png" />
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\hue.png" />
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\saturation.png" />
-    <EmbeddedResource Include="app\img\construction.svg" />
     <EmbeddedResource Include="app\img\placeholder-img.png" />
     <EmbeddedResource Include="app\index.html" />
-    <EmbeddedResource Include="app\js\app.js" />
     <EmbeddedResource Include="app\partials\file-list.html" />
     <EmbeddedResource Include="app\partials\settings.html" />
   </ItemGroup>

@@ -97,21 +97,9 @@ namespace Artivity.Apid.Plugin
             set { _pluginFile = value; }
         }
 
-        /// <summary>
-        /// Windows: Here we look for this key in the registry
-        /// </summary>
         [JsonIgnore]
-        public string RegistryId { get; set; }
-
-        private List<PluginManifestRegistryKey> _registryKeys = new List<PluginManifestRegistryKey>();
-
-        [JsonIgnore]
-        [XmlElement("RegistryKey")]
-        public List<PluginManifestRegistryKey> RegistryKeys
-        {
-            get { return _registryKeys; }
-            set { _registryKeys = value; }
-        }
+        [XmlElement("Registry")]
+        public PluginManifestRegistryInfo RegistryInfo { get; set; }
 
         #endregion
 
@@ -137,6 +125,37 @@ namespace Artivity.Apid.Plugin
             }
         }
 
+        public DirectoryInfo GetPluginTargetDirectory(DirectoryInfo location)
+        {
+            string targetFolder = Environment.ExpandEnvironmentVariables(PluginInstallPath);
+
+            if (!Path.IsPathRooted(targetFolder))
+            {
+                targetFolder = Path.Combine(location.FullName, targetFolder);
+            }
+
+            DirectoryInfo folder = new DirectoryInfo(targetFolder);
+
+            if (!folder.Exists)
+            {
+                Logger.LogInfo("Trying to create plugin target directory: {0}", targetFolder);
+
+                folder = Directory.CreateDirectory(targetFolder);
+
+                if (!folder.Exists)
+                {
+                    Logger.LogError("Failed to create plugin target directory: {0}", targetFolder);
+                }
+            }
+
+            return folder;
+        }
+
+        /// <summary>
+        /// Indicates if a given (Major, Minor, Release) version string matches the version information which is specified in the manifest.
+        /// </summary>
+        /// <param name="versionString">A version string.</param>
+        /// <returns><c>true</c> if the version was matched, <c>false</c> otherwise.</returns>
         public bool IsMatch(string versionString)
         {
             Version v = Version.Parse(versionString);

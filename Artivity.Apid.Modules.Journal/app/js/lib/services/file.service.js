@@ -1,6 +1,14 @@
-angular.module('explorerApp').factory('fileService', function () {
-	return {
-		getFileName: function (fileUrl) {
+(function () {
+	angular.module('explorerApp').factory('fileService', fileService);
+
+	function fileService() {
+		return {
+			getFileName: getFileName,
+			getFileNameWithoutExtension: getFileNameWithoutExtension,
+			getFileExtension: getFileExtension
+		};
+
+		function getFileName(fileUrl) {
 			var url = fileUrl;
 
 			// Remove the anchor at the end, if there is one
@@ -13,14 +21,16 @@ angular.module('explorerApp').factory('fileService', function () {
 			url = url.substring(url.lastIndexOf("/") + 1, url.length);
 
 			return decodeURIComponent(url);
-		},
-		getFileNameWithoutExtension: function (fileName) {
+		}
+
+		function getFileNameWithoutExtension(fileName) {
 			var components = fileName.split('.');
 
 			// Return the file name which does not contain any dot.
 			return components[0];
-		},
-		getFileExtension: function (fileName) {
+		}
+
+		function getFileExtension(fileName) {
 			var components = fileName.split('.');
 
 			if (components.length == 1) {
@@ -31,5 +41,5 @@ angular.module('explorerApp').factory('fileService', function () {
 				return components.slice(1).join('.');
 			}
 		}
-	};
-});
+	}
+})();

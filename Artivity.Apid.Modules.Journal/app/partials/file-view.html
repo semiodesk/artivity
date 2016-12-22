@@ -211,8 +211,8 @@
 
 							<h5 style="margin-top: 1em;">{{'FILEVIEW.LAYERS' | translate}}</h5>
 							<ul class="list-unstyled">
-								<li ng-repeat="layer in t.selectedInfluence.stats.layers | reverse">
-									<label><i class="zmdi zmdi-layers icn icn-transparent"></i> {{layer.label}}</label>
+								<li ng-repeat="layer in t.selectedInfluence.stats.layers | reverse" ng-class="{translucent: !layer.visible}">
+									<a class="btn btn-chromeless padding-sm" ng-click="t.toggleVisibility(layer)"><i class="zmdi zmdi-eye icn icn-transparent"></i></a><label>{{layer.label}}</label>
 								</li>
 							</ul>
 						</div>
