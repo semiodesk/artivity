@@ -125,6 +125,32 @@ namespace Artivity.Apid.Plugin
             }
         }
 
+        public DirectoryInfo GetPluginTargetDirectory(DirectoryInfo location)
+        {
+            string targetFolder = Environment.ExpandEnvironmentVariables(PluginInstallPath);
+
+            if (!Path.IsPathRooted(targetFolder))
+            {
+                targetFolder = Path.Combine(location.FullName, targetFolder);
+            }
+
+            DirectoryInfo folder = new DirectoryInfo(targetFolder);
+
+            if (!folder.Exists)
+            {
+                Logger.LogInfo("Trying to create plugin target directory: {0}", targetFolder);
+
+                folder = Directory.CreateDirectory(targetFolder);
+
+                if (!folder.Exists)
+                {
+                    Logger.LogError("Failed to create plugin target directory: {0}", targetFolder);
+                }
+            }
+
+            return folder;
+        }
+
         /// <summary>
         /// Indicates if a given (Major, Minor, Release) version string matches the version information which is specified in the manifest.
         /// </summary>

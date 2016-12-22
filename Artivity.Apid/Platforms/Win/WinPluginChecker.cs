@@ -80,6 +80,23 @@ namespace Artivity.Apid.Plugin.Win
             }
         }
 
+        protected override IEnumerable<string> TryGetInstalledSoftwareVersions(PluginManifest manifest)
+        {
+            foreach (DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
+            {
+                // Search for the executable in the provided application directory.
+                foreach (FileSystemInfo info in location.EnumerateFiles(manifest.ProcessName, SearchOption.AllDirectories))
+                {
+                    string version = GetApplicationVersion(info);
+
+                    if (!string.IsNullOrEmpty(version) && manifest.IsMatch(version))
+                    {
+                        yield return version;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Indicates a plugin for one of the supported application versions is fully installed.
         /// </summary>
@@ -199,7 +216,7 @@ namespace Artivity.Apid.Plugin.Win
         }
 
         // TODO: We definitly need to add some security mechanism here - i.e. by adding a signature to the plugin Manifest.
-        protected override bool CreateRegistryKey(PluginManifestRegistryKey key)
+        protected bool CreateRegistryKey(PluginManifestRegistryKey key)
         {
             string root = "HKEY_LOCAL_MACHINE\\SOFTWARE\\";
 
@@ -265,7 +282,7 @@ namespace Artivity.Apid.Plugin.Win
 
 
         // TODO: We definitly need to add some security mechanism here - i.e. by adding a signature to the plugin Manifest.
-        protected override bool DeleteRegistryKey(PluginManifestRegistryKey key)
+        protected bool DeleteRegistryKey(PluginManifestRegistryKey key)
         {
             string root = "HKEY_LOCAL_MACHINE\\SOFTWARE\\";
 
@@ -315,7 +332,7 @@ namespace Artivity.Apid.Plugin.Win
             return false;
         }
 
-        protected override bool HasRegistryKey(PluginManifestRegistryKey key)
+        protected bool HasRegistryKey(PluginManifestRegistryKey key)
         {
             string root = "HKEY_LOCAL_MACHINE\\SOFTWARE\\";
 
