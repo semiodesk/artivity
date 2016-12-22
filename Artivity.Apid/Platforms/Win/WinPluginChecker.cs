@@ -28,12 +28,14 @@
 using Artivity.DataModel;
 using Artivity.Apid.Platforms;
 using System;
+using System.Linq;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using Microsoft.Win32;
+using System.Collections.Generic;
 
 namespace Artivity.Apid.Plugin.Win
 {
@@ -65,69 +67,101 @@ namespace Artivity.Apid.Plugin.Win
             return result;
         }
 
-        protected override DirectoryInfo GetApplicationLocation(PluginManifest manifest)
+        protected override IEnumerable<DirectoryInfo> GetApplicationLocations(PluginManifest manifest)
         {
-            RegistryEntry entry = InstalledPrograms.FindInstalledProgram(manifest.RegistryId);
-
-            if (entry != null)
+            foreach (PluginManifestRegistryKey key in manifest.RegistryInfo.ApplicationKeys)
             {
-                return new DirectoryInfo(entry.InstallLocation);
-            }
+                RegistryEntry entry = InstalledPrograms.FindInstalledProgram(key.Name);
 
-            return null;
-        }
-
-        public override bool IsPluginInstalled(PluginManifest manifest)
-        {
-            DirectoryInfo location = GetApplicationLocation(manifest);
-
-            if (location == null || !location.Exists)
-            {
-                return false;
-            }
-
-            foreach (PluginManifestPluginFile file in manifest.PluginFile)
-            {
-                var targetFolder = Path.Combine(location.FullName, manifest.PluginInstallPath);
-                var targetFile = Path.Combine(targetFolder, file.GetName());
-
-                if (!File.Exists(targetFile))
+                if (entry != null)
                 {
-                    return false;
+                    yield return new DirectoryInfo(entry.InstallLocation);
                 }
             }
+        }
 
-            bool is64Bit = Environment.Is64BitOperatingSystem;
-
-            foreach (PluginManifestRegistryKey key in manifest.RegistryKeys)
+        protected override IEnumerable<string> TryGetInstalledSoftwareVersions(PluginManifest manifest)
+        {
+            foreach (DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
             {
-                if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
+                // Search for the executable in the provided application directory.
+                foreach (FileSystemInfo info in location.EnumerateFiles(manifest.ProcessName, SearchOption.AllDirectories))
+                {
+                    string version = GetApplicationVersion(info);
+
+                    if (!string.IsNullOrEmpty(version) && manifest.IsMatch(version))
+                    {
+                        yield return version;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indicates a plugin for one of the supported application versions is fully installed.
+        /// </summary>
+        /// <param name="manifest">A plugin manifest.</param>
+        /// <returns><c>false</c> if no plugins are fully installed, <c>true</c> if at least one version is.</returns>
+        public override bool IsPluginInstalled(PluginManifest manifest)
+        {
+            foreach(DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
+            {
+                // Check if all plugin files are installed in the plugin target folder.
+                bool installed = true;
+
+                foreach (PluginManifestPluginFile file in manifest.PluginFile)
+                {
+                    var targetFolder = Path.Combine(location.FullName, manifest.PluginInstallPath);
+                    var targetFile = Path.Combine(targetFolder, file.GetName());
+
+                    if (!File.Exists(targetFile))
+                    {
+                        installed = false;
+                        break;
+                    }
+                }
+
+                if(!installed)
                 {
                     continue;
                 }
 
-                if(!HasRegistryKey(key))
+                // Check if all plugin registry entries are installed.
+                string currentPlatform = Environment.Is64BitOperatingSystem ? "win64" : "win32";
+
+                IEnumerable<PluginManifestRegistryKey> pluginKeys = manifest.RegistryInfo.PluginKeys;
+
+                foreach (PluginManifestRegistryKey key in pluginKeys.Where(k => k.Platform.ToLowerInvariant() == currentPlatform))
                 {
-                    return false;
+                    if(!HasRegistryKey(key))
+                    {
+                        installed = false;
+                        break;
+                    }
+                }
+
+                // Only return true if all criteria are met.
+                if (installed)
+                {
+                    return true;
                 }
             }
 
-            return true;
+            // No plugins are installed.
+            return false;
         }
 
         public override bool InstallPlugin(SoftwareAgentPlugin plugin)
         {
             if (base.InstallPlugin(plugin))
             {
-                bool is64Bit = Environment.Is64BitOperatingSystem;
+                // Only install registry keys which are supported for the current platform.
+                string currentPlatform = Environment.Is64BitOperatingSystem ? "win64" : "win32";
 
-                foreach (PluginManifestRegistryKey key in plugin.Manifest.RegistryKeys)
+                IEnumerable<PluginManifestRegistryKey> pluginKeys = plugin.Manifest.RegistryInfo.PluginKeys;
+
+                foreach (PluginManifestRegistryKey key in pluginKeys.Where(k => k.Platform.ToLowerInvariant() == currentPlatform))
                 {
-                    if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
-                    {
-                        continue;
-                    }
-
                     if (!CreateRegistryKey(key))
                     {
                         return false;
@@ -144,15 +178,13 @@ namespace Artivity.Apid.Plugin.Win
         {
             if (base.UninstallPlugin(plugin))
             {
-                bool is64Bit = Environment.Is64BitOperatingSystem;
+                // Only remove registry keys which are supported for the current platform.
+                string currentPlatform = Environment.Is64BitOperatingSystem ? "win64" : "win32";
 
-                foreach (PluginManifestRegistryKey key in plugin.Manifest.RegistryKeys)
+                IEnumerable<PluginManifestRegistryKey> pluginKeys = plugin.Manifest.RegistryInfo.PluginKeys;
+
+                foreach (PluginManifestRegistryKey key in pluginKeys.Where(k => k.Platform.ToLowerInvariant() == currentPlatform))
                 {
-                    if (is64Bit && key.Platform == "Win32" || !is64Bit && key.Platform == "Win64")
-                    {
-                        continue;
-                    }
-
                     DeleteRegistryKey(key);
                 }
 
@@ -184,7 +216,7 @@ namespace Artivity.Apid.Plugin.Win
         }
 
         // TODO: We definitly need to add some security mechanism here - i.e. by adding a signature to the plugin Manifest.
-        protected override bool CreateRegistryKey(PluginManifestRegistryKey key)
+        protected bool CreateRegistryKey(PluginManifestRegistryKey key)
         {
             string root = "HKEY_LOCAL_MACHINE\\SOFTWARE\\";
 
@@ -250,7 +282,7 @@ namespace Artivity.Apid.Plugin.Win
 
 
         // TODO: We definitly need to add some security mechanism here - i.e. by adding a signature to the plugin Manifest.
-        protected override bool DeleteRegistryKey(PluginManifestRegistryKey key)
+        protected bool DeleteRegistryKey(PluginManifestRegistryKey key)
         {
             string root = "HKEY_LOCAL_MACHINE\\SOFTWARE\\";
 
@@ -300,7 +332,7 @@ namespace Artivity.Apid.Plugin.Win
             return false;
         }
 
-        protected override bool HasRegistryKey(PluginManifestRegistryKey key)
+        protected bool HasRegistryKey(PluginManifestRegistryKey key)
         {
             string root = "HKEY_LOCAL_MACHINE\\SOFTWARE\\";
 

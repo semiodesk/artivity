@@ -37,15 +37,12 @@ namespace Artivity.WinService
 
         public void Run(string[] args)
         {
-            //EnableLogging();
-
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             RunWindowsService(args);
         }
 
         protected void RunWindowsService(string[] args)
         {
-            //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
             string ServiceName = "Artivity Service";
 
 #if DEBUG
@@ -74,9 +71,6 @@ namespace Artivity.WinService
                 }
                 else if (opt != null && opt.ToLower() == "-debug")
                 {
-                    // We don't want plugin checks in debug
-                    Service.AutoPluginChecker = false;
-
                     Thread ServiceThread = new Thread(Service.Start);
                     ServiceThread.Start();
 
@@ -99,19 +93,6 @@ namespace Artivity.WinService
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Logger.LogFatal("Unhandled Exception: \n" + e.ToString());
-        }
-
-        private void EnableLogging()
-        {
-            FileInfo logConf = new FileInfo(Path.Combine(GetCurrentAssembly().DirectoryName, "ubiquity.log.xml"));
-
-            //if (logConf.Exists)
-            //{
-            //    XmlConfigurator.Configure(logConf);
-
-            //    var logger = log4net.LogManager.GetLogger(typeof(UbiquityService));
-            //    logger.Debug("Starting logging");
-            //}
         }
 
         #endregion

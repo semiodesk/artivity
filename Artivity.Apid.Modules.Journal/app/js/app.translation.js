@@ -45,11 +45,11 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			'NOACCOUNTS_TITLE': 'No Accounts',
 			'NOACCOUNTS_SUBTITLE': 'You have not yet added any accounts which can be used for publication.',
 			'NOACCOUNTS_MSG': 'Go to <a href="#/settings">Preferences</a> <i class="zmdi zmdi-arrow-right"></i> Accounts to add one.',
-			'PUBLISH_FILE_TITLE': 'Publish File',
+			'PUBLISH_FILE_TITLE': 'Publish Editing History',
 			'PUBLISH_FILE_SUBTITLE': 'Create a dataset for your file and upload it into a digital repository.',
 			'SELECT_ACCOUNT_TITLE': 'Select Account',
 			'SELECT_ACCOUNT_SUBTITLE': 'Choose the account used for publication and authorize the upload by logging in.',
-			'UPLOAD_FILE_TITLE': 'Publishing File',
+			'UPLOAD_FILE_TITLE': 'Publishing Dataset',
 			'UPLOAD_FILE_SUBTITLE': '',
 			'TITLE': 'Title',
 			'TITLE_SUFFIX': ' Artivity Dataset',
@@ -62,12 +62,16 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			'http://w3id.org/art/terms/1.0/features/ExportArchive#description': 'Exporting..',
 			'http://w3id.org/art/terms/1.0/features/UploadArchive#description': 'Uploading..'
 		},
+		UPDATE: {
+			'TITLE': 'New Release',
+			'DESCRIPTION': 'An update for Artivity is available for download:'
+		},
 		SETTINGS: {
 			TITLE: 'Preferences',
 			PROFILE: {
 				LABEL: 'Profile',
 				TITLE: 'User Profile',
-				DESCRIPTION: 'Edit the profile information that is published when you share files online:',
+				DESCRIPTION: 'Edit the profile information that is published when you share files with others:',
 				LABEL_PICTURE: 'Click to select your profile picture.',
 				LABEL_NAME: 'Name',
 				LABEL_EMAIL: 'E-Mail',
@@ -90,7 +94,7 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			APPS: {
 				LABEL: 'Apps',
 				TITLE: 'Applications',
-				DESCRIPTION: 'Manage which applications provide Artivity data:'
+				DESCRIPTION: 'Enable or disable the applications which will log data into Artivity:'
 			}
 		},
 		'http://eprints.org': {
