@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+#if OSX
 using Artivity.DataModel;
 using Artivity.Apid;
 using Artivity.Apid.Platforms;
@@ -52,7 +53,7 @@ namespace Artivity.Apid.Plugin.OSX
 
         #region Methods
 
-        protected override DirectoryInfo GetApplicationLocation(PluginManifest manifest)
+        protected override IEnumerable<DirectoryInfo> GetApplicationLocations(PluginManifest manifest)
         {
             if (string.IsNullOrEmpty(manifest.SampleFile))
             {
@@ -66,43 +67,37 @@ namespace Artivity.Apid.Plugin.OSX
                 throw new Exception("Sample file does not exist: " + sample);
             }
 
-            List<string> list = new List<string>();
+            List<string> aassociatedApps = new List<string>();
 
-            foreach (var l in CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All))
+            foreach (string appBundle in CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All))
             {
-                if (l.Contains(manifest.SampleResultFilter))
+                if (appBundle.Contains(manifest.SampleResultFilter))
                 {
-                    list.Add(l);
+                    aassociatedApps.Add(appBundle);
                 }
             }
 
             if (PlatformProvider != null && PlatformProvider.Config != null)
             {
-                list.InsertRange(0, PlatformProvider.Config.SoftwarePaths);
+                aassociatedApps.InsertRange(0, PlatformProvider.Config.SoftwarePaths);
             }
 
-            string location = null;
-
-            foreach(var app in list)
+            foreach(string appBundle in aassociatedApps)
             {
-                if (Directory.Exists(app))
+                if (Directory.Exists(appBundle))
                 {
                     string name;
                     string version;
 
-                    if (GetApplicationNameAndVersion(app, out name, out version))
+                    if (GetApplicationNameAndVersion(appBundle, out name, out version))
                     {
                         if (name.Contains(manifest.SampleResultFilter) && manifest.IsMatch(version))
                         {
-                            location = app;
-
-                            break;
+                            yield return new DirectoryInfo(appBundle);
                         }
                     }
                 }
             }
-
-            return string.IsNullOrEmpty(location) ? null : new DirectoryInfo(location);
         }
 
         protected bool GetApplicationNameAndVersion(string app, out string name, out string version)
@@ -203,39 +198,48 @@ namespace Artivity.Apid.Plugin.OSX
             return null;
         }
 
+        protected override IEnumerable<string> TryGetInstalledSoftwareVersions(PluginManifest manifest)
+        {
+            foreach(DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
+            {
+                string version = GetApplicationVersion(location);
+
+                if (!string.IsNullOrEmpty(version) && manifest.IsMatch(version))
+                {
+                    yield return version;
+                }
+            }
+        }
+
         public override bool IsPluginInstalled(PluginManifest manifest)
         {
-            DirectoryInfo location = GetApplicationLocation(manifest);
-
-            if (location == null || !location.Exists)
+            foreach (DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
             {
-                return false;
-            }
-
-            foreach (PluginManifestPluginFile file in manifest.PluginFile)
-            {
-                DirectoryInfo targetFolder = TryGetPluginTargetDirectory(location, manifest);
-
-                if (!targetFolder.Exists)
+                foreach (PluginManifestPluginFile file in manifest.PluginFile)
                 {
-                    return false;
-                }
+                    DirectoryInfo targetFolder = manifest.GetPluginTargetDirectory(location);
 
-                // This may be a file or app bundle / directory.
-                var targetPath = Path.Combine(targetFolder.FullName, file.GetName());
-
-                if (file.Link)
-                {
-                    UnixSymbolicLinkInfo link = new UnixSymbolicLinkInfo(targetPath);
-
-                    if (!link.Exists)
+                    if (!targetFolder.Exists)
                     {
                         return false;
                     }
-                }
-                else if (!File.Exists(targetPath) && !Directory.Exists(targetPath))
-                {
-                    return false;
+
+                    // This may be a file or app bundle / directory.
+                    var targetPath = Path.Combine(targetFolder.FullName, file.GetName());
+
+                    if (file.Link)
+                    {
+                        UnixSymbolicLinkInfo link = new UnixSymbolicLinkInfo(targetPath);
+
+                        if (!link.Exists)
+                        {
+                            return false;
+                        }
+                    }
+                    else if (!File.Exists(targetPath) && !Directory.Exists(targetPath))
+                    {
+                        return false;
+                    }
                 }
             }
 
@@ -264,3 +268,4 @@ namespace Artivity.Apid.Plugin.OSX
     }
 }
 
+#endif

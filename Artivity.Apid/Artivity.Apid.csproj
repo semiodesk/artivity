@@ -20,7 +20,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>..\Output\</OutputPath>
+    <OutputPath>..\build\Release\</OutputPath>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WIN</DefineConstants>
@@ -119,6 +119,7 @@
     <Compile Include="Helpers\ProgressStreamContent.cs" />
     <Compile Include="IO\ArchiveManifestCreator.cs" />
     <Compile Include="IO\BackupWriter.cs" />
+    <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />
     <Compile Include="Protocols\Atom\AtomLink.cs" />
     <Compile Include="Services\Clients\EPrintsServiceClient.cs" />
     <Compile Include="Protocols\Authentication\BasicAuthenticationClient.cs" />
@@ -213,6 +214,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Plugins\Plugins.cd" />
     <None Include="TinyVirtuoso\database\virtuoso.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -320,10 +322,6 @@
     <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
       <Name>Artivity.DataModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Artivity.Apid.Modules.Journal\Artivity.Apid.Modules.Journal.csproj">
-      <Project>{EBEAF1EE-ACD3-4124-A8E4-314822824EC8}</Project>
-      <Name>Artivity.Apid.Modules.Journal</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

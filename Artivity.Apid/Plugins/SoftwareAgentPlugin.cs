@@ -47,11 +47,11 @@ namespace Artivity.Apid.Plugin
 
         public bool IsPluginEnabled { get; set; }
 
-        public string DetectedVersion { get; set; }
+        public string[] DetectedVersions { get; set; }
 
-        public UriRef AssociationUri
+        public IEnumerable<UriRef> AssociationUris
         {
-            get { return GetAssociationUri(); }
+            get { return GetAssociationUris(); }
         }
 
         #endregion
@@ -74,20 +74,16 @@ namespace Artivity.Apid.Plugin
             return file.Exists ? file.ToUriRef() : null;
         }
 
-        public UriRef GetAssociationUri()
+        public IEnumerable<UriRef> GetAssociationUris()
         {
-            string version = "unknown";
+            HashSet<UriRef> result = new HashSet<UriRef>();
 
-            if (!string.IsNullOrEmpty(DetectedVersion))
+            foreach(string version in DetectedVersions)
             {
-                version = DetectedVersion;
-            }
-            else if(!string.IsNullOrEmpty(Manifest.GetVersion()))
-            {
-                version = Manifest.GetVersion();
+                result.Add(new UriRef(Manifest.AgentUri + "/" + version));
             }
 
-            return new UriRef(Manifest.AgentUri + "/" + version);
+            return result;
         }
 
         #endregion

@@ -1,0 +1,46 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div class="container padding-xl padding-x padding-y">
+			<h2 class="modal-title"><i class="zmdi zmdi-cast"></i> {{ t.title | translate}}</h2>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<iframe ng-src="{{t.update.releaseNotesUrl}}" style="background: white; min-height: 400px; width: 100%; padding: 25px;"></iframe>
+	</div>
+</div>
+<div ng-show="t.progress">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="layout-container padding-xl padding-x" style="margin-top: 10px">
+				<uib-progressbar value="t.progress.percentComplete" animate="t.progressAnimate" max="100" style="height: 5px"></uib-progressbar>
+				<label class="pull-right">{{t.progress.percentComplete}}%</label>
+				<div ng-if="t.progress.percentComplete < 100">
+					<label>Downloading..</label>
+				</div>
+				<div ng-if="t.progress.percentComplete === 100">
+					<label>Download complete.</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="toolbar pull-right">
+				<button ng-show="t.progress.percentComplete === 100" class="btn btn-success" type="submit" ng-click="t.installUpdate()"><i class="zmdi zmdi-check"></i> <span class="btn-label">Install</span></button>
+				<button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
+			</div>
+		</div>
+	</div>
+</div>
+<div ng-show="!t.progress">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="toolbar pull-right">
+				<button class="btn btn-success" type="submit" ng-click="t.downloadUpdate()"><i class="zmdi zmdi-download"></i> <span class="btn-label">Download</span></button>
+				<button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
+			</div>
+		</div>
+	</div>
+</div>

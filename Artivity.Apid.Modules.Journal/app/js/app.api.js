@@ -1,10 +1,6 @@
-var explorerApp = angular.module('explorerApp');
+var app = angular.module('explorerApp');
 
-var apid = {
-	endpointUrl: 'http://127.0.0.1:'.concat(port, '/artivity/api/1.0/')
-};
-
-explorerApp.factory('api', function ($http) {
+app.factory('api', function ($http) {
 	var endpoint = apid.endpointUrl;
 
 	return {
@@ -270,6 +266,12 @@ explorerApp.factory('api', function ($http) {
 		},
 		postComment: function (comment) {
 			return $http.post(endpoint + '/activities/comments', comment).then(
+				function (response) {
+					return response.data;
+				});
+		},
+		setRunSetup: function(enabled) {
+			return $http.post(endpoint + '/setup', { runSetup: enabled }).then(
 				function (response) {
 					return response.data;
 				});
