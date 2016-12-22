@@ -1,6 +1,6 @@
 angular.module('explorerApp').controller('StartController', StartController);
 
-function StartController($location, api, $http, windowService) {
+function StartController($location, api, $http, windowService, updateService) {
     var t = this;
 
     windowService.setMinimizable(false);
@@ -9,8 +9,6 @@ function StartController($location, api, $http, windowService) {
     t.showSpinner = true;
     t.showError = false;
     t.retry = retry;
-
-    init();
 
     function init() {
         showLoadingSpinner();
@@ -22,6 +20,8 @@ function StartController($location, api, $http, windowService) {
                     
                     $location.path("/setup");
                 } else {
+                    updateService.isUpdateAvailable();
+                    
                     $location.path("/files");
                 }
             },
@@ -43,4 +43,6 @@ function StartController($location, api, $http, windowService) {
         t.showSpinner = false;
         t.showError = true;
     }
+    
+    init();
 };

@@ -62,6 +62,10 @@ angular.module('explorerApp').config(function ($translateProvider) {
 			'http://w3id.org/art/terms/1.0/features/ExportArchive#description': 'Exporting..',
 			'http://w3id.org/art/terms/1.0/features/UploadArchive#description': 'Uploading..'
 		},
+		UPDATE: {
+			'TITLE': 'New Release',
+			'DESCRIPTION': 'An update for Artivity is available for download:'
+		},
 		SETTINGS: {
 			TITLE: 'Preferences',
 			PROFILE: {

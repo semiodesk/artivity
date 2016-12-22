@@ -28,8 +28,8 @@ function AddAccountDialogController(api, $scope, $filter, $uibModalInstance, $sc
             t.parameter.presetId = 'orcid.org';
 
             t.connectAccount(t.selectedClient);
-        } else if (client.Uri === 'http://eprintt.org') {
-            t.parameter.url = 'https://ualresearchonline.artt.ac.uk';
+        } else if (client.Uri === 'http://eprints.org') {
+            t.parameter.url = 'https://ualresearchonline.arts.ac.uk';
         }
 
         console.log("Client selected: ", client);

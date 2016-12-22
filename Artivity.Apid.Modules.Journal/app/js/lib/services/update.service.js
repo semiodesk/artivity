@@ -1,64 +1,87 @@
 (function () {
+	angular.module('explorerApp').factory('updateService', updateService);
 
-	angular
-		.module('explorerApp')
-		.factory('UpdateService', UpdateService);
+	updateService.$inject = [];
 
-	UpdateService.$inject = [];
-	function UpdateService() {
+	function updateService() {
+		var appcastUrl = "https://static.semiodesk.com/artivity/win/appcast.xml";
+		var checker = new UpdateChecker(appcastUrl);
 
-		var downloadRunning = false;
-		var downloadPromise;
+		var downloading = false;
+		var currentDownload;
 
-		var endpoint = "https://static.semiodesk.com/artivity/win/appcast.xml";
 		var service = {
-			canUpdate: canUpdate,
-			download: download,
-			update: update
-
-
+			update: null,
+			isUpdateAvailable: isUpdateAvailable,
+			isUpdateDownloaded: isUpdateDownloaded,
+			isDownloading: isDownloading,
+			downloadUpdate: downloadUpdate,
+			installUpdate: installUpdate,
+			on: on,
+			off: off
 		};
-		initService();
+
 		return service;
 
-		//////////////////////////////
+		function isUpdateAvailable() {
+			return new Promise(function (resolve, reject) {
+				if (service.update) {
+					resolve(service.update);
+				} else {
+					checker.isUpdateAvailable().then(function (update) {
+						service.update = update;
 
-		function initService() {
-			service.checker = new UpdateChecker(endpoint);
-
+						resolve(update);
+					}, function () {
+						reject();
+					});
+				}
+			});
 		}
 
-		//////////////////////////////
-
-		function canUpdate() {
-			return service.checker.canUpdate();
+		function isUpdateDownloaded() {
+			return new Promise(function (resolve, reject) {
+				return isUpdateAvailable().then(function () {
+					checker.isUpdateDownloaded(service.update).then(function() {
+						resolve(service.update);
+					}, function() {
+						reject();
+					});
+				});
+			});
 		}
 
-		function download(data) {
-			if (!downloadRunning) {
-				downloadRunning = true
-				downloadPromise = service.checker.downloadUpdate(data);
-				downloadPromise.then(function () {
-					downloadRunning = false;
-				})
+		function isDownloading() {
+			return downloading;
+		}
+
+		function downloadUpdate() {
+			if (downloading) {
+				return currentDownload;
 			}
-			return downloadPromise;
+
+			downloading = true;
+
+			currentDownload = checker.downloadUpdate(service.update);
+			currentDownload.then(function () {
+				downloading = false;
+			}, function () {
+				downloading = false;
+			});
+
+			return currentDownload;
 		}
 
-		function update(data) {
-			return service.checker.executeUpdate(data);
+		function installUpdate() {
+			return checker.installUpdate(service.update);
+		}
+
+		function on(event, callback) {
+			checker.on(event, callback);
+		}
+
+		function off(event, callback) {
+			checker.off(event, callback);
 		}
 	}
-
 })();
-
-// TODO: pull out of this file to keep it unit testable
-angular.module('explorerApp').run(['UpdateService', function (UpdateService) {
-	UpdateService.canUpdate().then(function (val) {
-		UpdateService.download(val).then(function (val) {
-			UpdateService.update(val);
-		});
-}, function(msg) {
-		console.log("no update");
-	});
-}]);
