@@ -217,7 +217,7 @@ namespace Artivity.Apid.Plugin.OSX
             {
                 foreach (PluginManifestPluginFile file in manifest.PluginFile)
                 {
-                    DirectoryInfo targetFolder = TryGetPluginTargetDirectory(location, manifest);
+                    DirectoryInfo targetFolder = manifest.GetPluginTargetDirectory(location);
 
                     if (!targetFolder.Exists)
                     {
