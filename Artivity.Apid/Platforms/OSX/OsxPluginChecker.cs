@@ -198,6 +198,19 @@ namespace Artivity.Apid.Plugin.OSX
             return null;
         }
 
+        protected override IEnumerable<string> TryGetInstalledSoftwareVersions(PluginManifest manifest)
+        {
+            foreach(DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
+            {
+                string version = GetApplicationVersion(location);
+
+                if (!string.IsNullOrEmpty(version) && manifest.IsMatch(version))
+                {
+                    yield return version;
+                }
+            }
+        }
+
         public override bool IsPluginInstalled(PluginManifest manifest)
         {
             foreach (DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
