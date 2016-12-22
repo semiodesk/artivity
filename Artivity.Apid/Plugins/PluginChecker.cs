@@ -319,14 +319,28 @@ namespace Artivity.Apid.Plugin
         {
             foreach(DirectoryInfo location in GetApplicationLocations(manifest).Where(l => l.Exists))
             {
-                // Search for the executable in the provided application directory.
-                foreach (FileSystemInfo info in location.EnumerateFiles(manifest.ProcessName, SearchOption.AllDirectories))
-                {
-                    string version = GetApplicationVersion(info);
+                string version = GetApplicationVersion(location);
 
-                    if (!string.IsNullOrEmpty(version) && manifest.IsMatch(version))
+                if (!string.IsNullOrEmpty(version))
+                {
+                    // TODO: This is macOS specific. Move into MacPluginChecker.
+                    if (manifest.IsMatch(version))
                     {
                         yield return version;
+                    }
+                }
+                else
+                {
+                    // TODO: This is Windows specific. Move into WinPluginChecker.
+                    // Search for the executable in the provided application directory.
+                    foreach (FileSystemInfo info in location.EnumerateFiles(manifest.ProcessName, SearchOption.AllDirectories))
+                    {
+                        version = GetApplicationVersion(info);
+
+                        if (!string.IsNullOrEmpty(version) && manifest.IsMatch(version))
+                        {
+                            yield return version;
+                        }
                     }
                 }
             }
