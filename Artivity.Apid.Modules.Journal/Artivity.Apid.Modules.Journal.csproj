@@ -256,8 +256,6 @@
     <Content Include="app\bower_components\yasgui\src\yasqe.js" />
     <Content Include="app\bower_components\yasgui\src\yasr.js" />
     <EmbeddedResource Include="app\img\artivity-logo.png" />
-    <Content Include="app\img\heart-broken.svg" />
-    <Content Include="app\img\heart.svg" />
     <Content Include="app\img\orcid_64x64.png" />
     <EmbeddedResource Include="app\partials\file-view.html" />
   </ItemGroup>
@@ -275,7 +273,6 @@
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\hue-horizontal.png" />
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\hue.png" />
     <EmbeddedResource Include="app\img\bootstrap-colorpicker\saturation.png" />
-    <EmbeddedResource Include="app\img\construction.svg" />
     <EmbeddedResource Include="app\img\placeholder-img.png" />
     <EmbeddedResource Include="app\index.html" />
     <EmbeddedResource Include="app\partials\file-list.html" />
