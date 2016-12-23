@@ -106,15 +106,6 @@
     <Content Include="Plugins\Chrome\Manifest.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Plugins\IllustratorCC2015.2\Manifest.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Plugins\IllustratorCC2015\Manifest.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Plugins\PhotoshopCC2015\Manifest.xml">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

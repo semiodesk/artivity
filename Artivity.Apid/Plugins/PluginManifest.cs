@@ -27,6 +27,7 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
@@ -131,7 +132,16 @@ namespace Artivity.Apid.Plugin
 
             if (!Path.IsPathRooted(targetFolder))
             {
-                targetFolder = Path.Combine(location.FullName, targetFolder);
+                string appFolder = Directory.EnumerateDirectories(location.FullName, ProcessName, SearchOption.AllDirectories).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(appFolder))
+                {
+                    targetFolder = Path.Combine(appFolder, targetFolder);
+                }
+                else
+                {
+                    targetFolder = Path.Combine(location.FullName, targetFolder);
+                }
             }
 
             DirectoryInfo folder = new DirectoryInfo(targetFolder);
