@@ -2,32 +2,52 @@
   const remote = require('electron').remote;
 
   function init() {
-    document.getElementById("btn-min").addEventListener("click", function (e) { 
-      const window = remote.getCurrentWindow();
+    var title = document.getElementById('window-title');
 
-      window.minimize();
-    });
+    var btns = title.getElementsByClassName("btn-min");
 
-    document.getElementById("btn-max").addEventListener("click", function (e) {
-      const window = remote.getCurrentWindow();
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", minimizeWindow);
+    }
 
-      // TODO: Change the button state via CSS class to OS independent.
-      // Requires refactoring the window controls in index.html.
-      if (!window.isMaximized()) {
-        window.maximize();
+    btns = title.getElementsByClassName("btn-max");
 
-        $('#btn-max img').attr('src', 'img/windows/btn-restore.png');
-      } else {
-        window.unmaximize();
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", maximizeWindow);
+    }
 
-        $('#btn-max img').attr('src', 'img/windows/btn-maximize.png');
-      }
-    });
+    btns = title.getElementsByClassName("btn-close");
 
-    document.getElementById("btn-close").addEventListener("click", function (e) {
-      remote.app.exit();
-    });
-  };
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", closeWindow);
+    }
+  }
+
+  function minimizeWindow(e) {
+    const window = remote.getCurrentWindow();
+
+    window.minimize();
+  }
+
+  function maximizeWindow(e) {
+    const window = remote.getCurrentWindow();
+
+    // TODO: Change the button state via CSS class to OS independent.
+    // Requires refactoring the window controls in index.html.
+    if (!window.isMaximized()) {
+      window.maximize();
+
+      $('.window-title-btns .btn-max').addClass("maximized");
+    } else {
+      window.unmaximize();
+
+      $('.window-title-btns .btn-max').removeClass("maximized");
+    }
+  }
+
+  function closeWindow(e) {
+    remote.app.exit();
+  }
 
   document.onreadystatechange = function () {
     if (document.readyState === "complete") {
