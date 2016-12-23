@@ -2412,37 +2412,114 @@ iframe {
 }
 
 #window-title-text {
+	position: absolute;
+	width: 100%;
+	z-index: -1;
 	text-align: center;
 	color: $labelTextColor;
 	line-height: $windowTitlebarHeight;
 	vertical-align: middle;
 }
 
-#window-title-btns {
+.window-title-btns {
 	-webkit-app-region: no-drag;
-	position: absolute;
-	top: 0;
-	right: 0;
 }
 
-#window-title-btns button.btn-title {
+.window-title-btns .btn-title {
 	height: $windowTitlebarHeight;
-	width: 45px;
-	padding: 0;
-	margin: 0;
 	background-color: transparent;
 	border: none;
 	border-radius: 0;
 	color: #F1F1F1;
 	opacity: .5;
+	position: relative;
 }
 
-#window-title-btns button:hover.btn-title {
+.window-title-btns.win {
+	float: right;
+}
+
+.window-title-btns.win .btn-title {
+	width: 45px;
+	padding: 0;
+	margin: 0;
+}
+
+.window-title-btns.win .btn-title:hover {
 	background-color: #3F3F41;
 	opacity: 1;
 }
 
-#window-title-btns button#btn-update {
+.window-title-btns.win .btn-control {
+	width: 100%;
+	height: 100%;
+}
+
+.window-title-btns.win .btn-min .btn-control {
+	background: url('../img/windows/btn-minimize.png') center center no-repeat;
+}
+
+.window-title-btns.win .btn-max .btn-control {
+	background: url('../img/windows/btn-maximize.png') center center no-repeat;
+}
+
+.window-title-btns.win .btn-max.maximized .btn-control {
+	background: url('../img/windows/btn-restore.png') center center no-repeat;
+}
+
+.window-title-btns.win .btn-close .btn-control {
+	background: url('../img/windows/btn-close.png') center center no-repeat;
+}
+
+.window-title-btns.win .btn-close:hover {
+	background: #E81123;
+}
+
+.window-title-btns.mac {
+	float: left;
+	padding-left: 5px;
+}
+
+.window-title-btns.mac .btn-title {
+	opacity: 1;
+	width: 22px;
+	margin: 0;
+}
+
+.window-title-btns.mac .btn-title:hover {
+	background: transparent;
+}
+
+.window-title-btns.mac .btn-control {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border: 1px solid transparent;
+	border-radius: 50%;
+	width: 14px;
+	height: 14px;
+	transition: all ease-out .1s;
+}
+
+.window-title-btns.mac .btn-control:hover {
+	width: 18px;
+	height: 18px;
+}
+
+.window-title-btns.mac .btn-close .btn-control {
+	background: #FD5F58;
+}
+
+.window-title-btns.mac .btn-min .btn-control {
+	background: #FEBC2E;
+}
+
+.window-title-btns.mac .btn-max .btn-control {
+	background: #27CA41;
+}
+
+.window-title-btns #btn-update {
 	background: $accentColor;
 	color: $accentTextColor;
 	display: none;
@@ -2453,7 +2530,7 @@ iframe {
 	padding: 0 10px;
 }
 
-#window-title-btns button#btn-update .btn-label {
+.window-title-btns #btn-update .btn-label {
 	display: none;
 	font-size: 12px;
 	padding-left: 5px;
@@ -2461,17 +2538,13 @@ iframe {
 	bottom: 1px;
 }
 
-#window-title-btns button#btn-update .zmdi {
+.window-title-btns #btn-update .zmdi {
 	font-size: 15px;
 }
 
-#window-title-btns button#btn-update.disabled {
+.window-title-btns #btn-update.disabled {
 	opacity: 0 !important;
 	cursor: default;
-}
-
-#btn-close:hover {
-	background: #E81123 !important;
 }
 
 #window-view-container {

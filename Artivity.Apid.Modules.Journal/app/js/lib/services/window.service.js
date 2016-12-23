@@ -14,9 +14,9 @@
             if (value || value === undefined) {
                 window.setMinimizable(true);
 
-                $('#btn-min').show();
+                $('.window-title-btns .btn-min').show();
             } else {
-                $('#btn-min').hide();
+                $('.window-title-btns .btn-min').hide();
             }
         }
 
@@ -24,9 +24,9 @@
             if (value || value === undefined) {
                 window.setMaximizable(true);
 
-                $('#btn-max').show();
+                $('.window-title-btns .btn-max').show();
             } else {
-                $('#btn-max').hide();
+                $('.window-title-btns .btn-max').hide();
             }
         }
 
