@@ -4,7 +4,6 @@
   <DefaultColor>#F27200</DefaultColor>
   <DisplayName>Adobe Illustrator CC</DisplayName>
   <ProcessName>Illustrator.exe</ProcessName>
-  <ExecutablePath>Support Files\Contents\Windows\Illustrator.exe</ExecutablePath>
   <ExecutableVersion>19.1.0</ExecutableVersion>
   <SampleFile>Sample.ai</SampleFile>
   <SampleResultFilter>Illustrator</SampleResultFilter>
