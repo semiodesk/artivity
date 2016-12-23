@@ -131,6 +131,17 @@ module.exports = function (grunt) {
             }
         },
 
+        assemblyVersion: {
+            artivity: {
+                src: [
+                    '../../Artivity.Apid/Properties/AssemblyInfo.cs',
+                    '../../Artivity.Apid.Windows/Properties/AssemblyInfo.cs',
+                    '../../Artivity.DataModel/Properties/AssemblyInfo.cs'
+                ],
+                version: '<%= pkg.version %>'
+            }
+        },
+
         msbuild: {
             release: {
                 src: ['../../Artivity.sln'],
@@ -287,6 +298,27 @@ module.exports = function (grunt) {
         });
     });
 
+    grunt.registerMultiTask('assemblyVersion', function () {
+        const path = require('path');
+ 
+        var version = this.data['version'];
+        var done = this.async();
+        grunt.util.async.forEachSeries(this.data['src'], function (filePath, next) {
+            var targetFile = path.resolve(filePath);
+            var assemblyInfoContent = grunt.file.read(targetFile);
+            const regex = /Assembly(\w*)Version\(("[0-9*\.]+")\)/g;
+
+            var output = assemblyInfoContent.replace(regex, 'Assembly$1Version("'+version+'")');
+            
+            grunt.file.write(targetFile, output);
+            next();
+        }, function () {
+            // Do something with tasks now that each
+            // contains their respective error code
+            done();
+        });
+    });
+
     grunt.registerTask("bower-install", ["bower-install-simple"]);
 
     // Create a new task to wrap the two targets for macOS
@@ -308,6 +340,7 @@ module.exports = function (grunt) {
             'sass:dist',
             'electron:windowsBuild',
             'nugetRestore',
+            'assemblyVersion',
             'msbuild:release',
             'copy:mainWin'
         ]);
@@ -320,6 +353,7 @@ module.exports = function (grunt) {
             'sass:dist',
             'electron:macosBuild',
             'nugetRestore',
+            'assemblyVersion',
             'xbuild',
             'copy:mainMac'
         ]);
