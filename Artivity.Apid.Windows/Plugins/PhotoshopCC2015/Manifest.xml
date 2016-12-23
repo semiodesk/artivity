@@ -4,14 +4,14 @@
   <DefaultColor>#3FC2FC</DefaultColor>
   <DisplayName>Adobe Photoshop CC</DisplayName>
   <ProcessName>Photoshop.exe</ProcessName>
-  <ExecutablePath>Adobe Photoshop CC 2015\Photoshop.exe</ExecutablePath>
   <MinExecutableVersion>16.1.0</MinExecutableVersion>
   <SampleFile>Sample.ai</SampleFile>
   <SampleResultFilter>Illustrator</SampleResultFilter>
   <PluginArch>64</PluginArch>
   <PluginVersion>0.8.1</PluginVersion>
   <PluginFile Link="true">Artivity64.8li</PluginFile>
-  <PluginInstallPath>Adobe Photoshop CC 2015\Plug-ins</PluginInstallPath>
+  <PluginFile Link="true">ArtivityExport64.8be</PluginFile>
+  <PluginInstallPath>Plug-ins</PluginInstallPath>
   <Registry>
 	<ApplicationKeys>
 		<RegistryKey Name="{793C2BF7-A4FE-4608-91C9-9282C5801C21}"></RegistryKey>
