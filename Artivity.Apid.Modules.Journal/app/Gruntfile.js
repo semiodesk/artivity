@@ -118,6 +118,16 @@ module.exports = function (grunt) {
                     },
 
                 }
+            },
+            macosBuild: {
+                options: {
+                    name: 'Artivity',
+                    dir: '.',
+                    out: '../../build/dist',
+                    platform: 'darwin',
+                    icon: 'img/Icons.icns',
+                    arch: 'x64'
+                }
             }
         },
 
@@ -129,13 +139,44 @@ module.exports = function (grunt) {
                     targets: ['Clean', 'Rebuild'],
                     version: 4.0,
                     maxCpuCount: 4,
+                    platform: "Any CPU",
                     buildParameters: {
                         WarningLevel: 2
                     },
                     nodeReuse: false,
                     verbosity: 'quiet'
                 }
+            },
+            // xbuild cannot handle multipe targets at the same time, so we separate them in two tasks
+            cleanMac: {
+                src: ['../../Artivity.sln'],
+                options: {
+                    projectConfiguration: "Release OSX",
+                    targets: ['Clean'],
+                    version: 4.0,
+                    maxCpuCount: 4,
+                    platform: "Any CPU",
+                    buildParameters: {
+                        WarningLevel: 2
+                    },
+                    verbosity: 'quiet'
+                }
+            },
+            releaseMac: {
+                src: ['../../Artivity.sln'],
+                options: {
+                    projectConfiguration: "Release OSX",
+                    targets: ['Rebuild'],
+                    version: 4.0,
+                    maxCpuCount: 4,
+                    platform: "Any CPU",
+                    buildParameters: {
+                        WarningLevel: 2
+                    },
+                    verbosity: 'quiet'
+                }
             }
+
         },
 
         nugetRestore: {
@@ -161,7 +202,22 @@ module.exports = function (grunt) {
 
 
         copy: {
-            main: {
+            mainMac: {
+                files: [
+                    {
+                        expand: true, // need expand: true with cwd
+                        cwd: '../../build/Release/artivity-apid.app',
+                        src: '**',
+                        dest: '../../build/dist/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app'
+                    },
+                    {
+                        src: '../../build/dist/Artivity-darwin-x64/Artivity.app/Contents/Resources/app/js/app.conf.release.js',
+                        dest: '../../build/dist/Artivity-darwin-x64/Artivity.app/Contents/Resources/app/js/app.conf.js',
+                        force: true
+                    },
+                ],
+            },
+            mainWin: {
                 files: [
                     {
                         expand: true, // need expand: true with cwd
@@ -233,6 +289,9 @@ module.exports = function (grunt) {
 
     grunt.registerTask("bower-install", ["bower-install-simple"]);
 
+    // Create a new task to wrap the two targets for macOS
+    grunt.registerTask("xbuild", ["msbuild:cleanMac", "msbuild:releaseMac"]);
+
     grunt.registerTask('default', [
         'wiredep',
         'concat:js:clear',
@@ -240,15 +299,30 @@ module.exports = function (grunt) {
         'sass:dev'
     ]);
 
-    grunt.registerTask('build', [
-        'clean',
-        "bower-install",
-        'wiredep',
-        'concat:js',
-        'sass:dist',
-        'electron',
-        'nugetRestore',
-        'msbuild',
-        'copy'
-    ]);
+    if (process.platform === "win32") {
+        grunt.registerTask('build', [
+            'clean',
+            "bower-install",
+            'wiredep',
+            'concat:js',
+            'sass:dist',
+            'electron:windowsBuild',
+            'nugetRestore',
+            'msbuild:release',
+            'copy:mainWin'
+        ]);
+    } else if (process.platform === "darwin") {
+        grunt.registerTask('build', [
+            'clean',
+            "bower-install",
+            'wiredep',
+            'concat:js',
+            'sass:dist',
+            'electron:macosBuild',
+            'nugetRestore',
+            'xbuild',
+            'copy:mainMac'
+        ]);
+    }
+
 };
