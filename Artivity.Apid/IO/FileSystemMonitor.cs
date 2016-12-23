@@ -1194,9 +1194,10 @@ namespace Artivity.Apid.IO
         {
             try
             {
+                string fullPath = Path.GetFullPath(path);
                 string fileName = Path.GetFileName(path);
 
-                return fileName.Length >= 248;
+                return !string.IsNullOrEmpty(fullPath) && fileName.Length >= 248;
             }
             catch(ArgumentException)
             {

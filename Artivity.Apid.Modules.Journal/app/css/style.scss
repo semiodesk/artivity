@@ -6,7 +6,7 @@ https://coolors.co/087e8b-e57c04-fb5f1a-d62828-5e2f63
 https://coolors.co/0baabc-e57c04-fb5f1a-d62828-7b3d82
 */
 
-$accentColor: #F27200;
+$accentColor: #F87806;
 $accentTextColor: #FFFFFF;
 $accentShadeColor: shade($accentColor, 20%);
 $warnColor: #FFC914;
@@ -1124,6 +1124,7 @@ svg {
 	padding: 0;
 	margin: 0;
 	overflow: hidden;
+	transition: all linear .2s;
 }
 
 .img-avatar img {
@@ -1150,6 +1151,9 @@ svg {
 	height: 110px;
 }
 
+.img-avatar:hover {
+	transform: scale(1.02);
+}
 
 /* CARDS */
 
@@ -1607,17 +1611,6 @@ button[disabled]:hover {
 	margin: 0;
 }
 
-.nav-pills li a {
-	margin: 0;
-	padding: 5px;
-	min-width: 130px;
-	text-align: center;
-}
-
-.nav-pills li a .icn-container-lg {
-	margin-left: -1em;
-}
-
 .nav-pills.border {
 	border: 1px solid $headerBackgroundColor;
 }
@@ -1626,8 +1619,16 @@ button[disabled]:hover {
 	border-top: 1px solid $headerBackgroundColor;
 }
 
+.nav-pills.border-top>li>a {
+	top: -1px;
+}
+
 .nav-pills.border-bottom {
 	border-bottom: 1px solid $headerBackgroundColor;
+}
+
+.nav-pills.border-bottom>li>a {
+	bottom: -1px;
 }
 
 .nav-pills>li+li {
@@ -1635,11 +1636,20 @@ button[disabled]:hover {
 }
 
 .nav-pills>li>a {
+	position: relative;
+	color: $labelTextColor;
+	background: transparent;
+	margin: 0;
+	padding: 5px;
+	min-width: 130px;
+	text-align: center;
 	cursor: pointer;
 	border-radius: 0;
-	background: transparent;
-	color: $textColor;
 	border-bottom: 2px solid transparent;
+}
+
+.nav-pills>li>a .icn-container-lg {
+	margin-left: -1em;
 }
 
 .nav-pills>li.active>a {
@@ -1655,11 +1665,6 @@ button[disabled]:hover {
 	background: transparent;
 	border-radius: 0;
 	transition: background linear .2s;
-}
-
-.nav-pills>li>a:hover {
-	color: $accentColor;
-	background: transparent;
 }
 
 .hint {
