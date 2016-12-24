@@ -132,11 +132,11 @@ namespace Artivity.Apid.Plugin
 
             if (!Path.IsPathRooted(targetFolder))
             {
-                string appFolder = Directory.EnumerateDirectories(location.FullName, ProcessName, SearchOption.AllDirectories).FirstOrDefault();
+                string appFolder = Directory.EnumerateFiles(location.FullName, ProcessName, SearchOption.AllDirectories).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(appFolder))
                 {
-                    targetFolder = Path.Combine(appFolder, targetFolder);
+                    targetFolder = Path.Combine(Path.GetDirectoryName(appFolder), targetFolder);
                 }
                 else
                 {
