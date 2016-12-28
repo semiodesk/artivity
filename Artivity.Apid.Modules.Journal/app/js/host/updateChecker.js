@@ -64,8 +64,8 @@ UpdateChecker.prototype.isUpdateAvailable = function () {
         });
 
         feedparser.on('end', function () {
-            var package = lastItem['rss:enclosure']['@'];
-            var version = package["sparkle:version"];
+            var pkg = lastItem['rss:enclosure']['@'];
+            var version = pkg["sparkle:version"];
             var semver = require('semver');
 
             if (semver.gte(version, t.currentVersion)) {
@@ -74,8 +74,8 @@ UpdateChecker.prototype.isUpdateAvailable = function () {
                     releaseNotesUrl: lastItem['sparkle:releasenoteslink']['#'],
                     published: lastItem.pubDate,
                     version: version,
-                    length: package.length,
-                    url: package.url
+                    length: pkg.length,
+                    url: pkg.url
                 };
 
                 resolve(update);
@@ -106,7 +106,7 @@ UpdateChecker.prototype.downloadUpdate = function (update) {
     return new Promise(function (resolve, reject) {
         t.isUpdateDownloaded(update).then(function () {
             resolve(update);
-        }, function () {
+        }).catch(function () {
             var https = require('https');
 
             var request = https.get(update.url, function (response) {
@@ -135,7 +135,7 @@ UpdateChecker.prototype.downloadUpdate = function (update) {
             request.on('close', function () {
                 t.verifyUpdateInstallerSignature(update).then(function () {
                     resolve(update);
-                }, function () {
+                }).catch( function () {
                     reject(update);
                 });
             });
@@ -171,33 +171,35 @@ UpdateChecker.prototype.installUpdate = function (update) {
 
 UpdateChecker.prototype.verifyUpdateInstallerSignature = function(update) {
     return new Promise(function (resolve, reject) {
-        if (existsSync(update.localPath)) {
-            // Note: This is platform dependent and should be moved into a factory.
+        try{
+            fs.accessSync("real_exixs_path", fs.R_OK | fs.W_OK)
+     
             var script = require('path').dirname(__filename) + '\\js\\host\\VerifySignature.exe';
-
             // Execute the signature verifier in a separate process.
             const execute = require('child_process').execFile;
             const child = execute(script, [update.localPath], (error, stdout, stderr) => {
                 if (error) {
                     console.error('Error validating signature:', stderr);
 
-                    return reject(update);
+                    reject(update);
                 }
 
                 var result = JSON.parse(stdout);
 
                 if ("error" in result) {
-                    return reject(update);
+                    reject(update);
                 } else {
                     update.signature = result;
 
-                    return resolve(update);
+                    resolve(update);
                 }
             });
-        } else {
+
+        }catch(e){
             console.error('File does not exist:', update.localPath);
 
-            return reject(update);
+            reject(update);
+
         }
     });
 }
@@ -232,7 +234,7 @@ UpdateChecker.prototype.raiseEvent = function (event, params) {
     if (event in t.eventListeners) {
         var listeners = t.eventListeners[event];
 
-        for (i in listeners) {
+        for (var i in listeners) {
             listeners[i](params);
         }
     }

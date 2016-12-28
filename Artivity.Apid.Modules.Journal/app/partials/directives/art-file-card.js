@@ -12,7 +12,7 @@ function FileCardDirective() {
     }
 }
 
-app.controller('FileCardDirectiveController', FileCardDirectiveController);
+angular.module('explorerApp').controller('FileCardDirectiveController', FileCardDirectiveController);
 
 function FileCardDirectiveController (api, $scope, fileService) {
     var t = this;

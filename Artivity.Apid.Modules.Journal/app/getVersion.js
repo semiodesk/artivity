@@ -1,7 +1,7 @@
 
-var package = require('./package.json');
+var pkg = require('./package.json');
 
-var version = package["version"].split(".");
+var version = pkg["version"].split(".");
 
 var _major = false;
 if(process.argv.indexOf("-m") != -1){

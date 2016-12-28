@@ -30,6 +30,8 @@ function UpdateDialogController(api, $scope, $filter, $uibModalInstance, $sce, u
             };
 
             $scope.$apply();
+        }).catch(function() {
+            
         });
 
         $uibModalInstance.closed.then(function () {
