@@ -1,6 +1,5 @@
-var app = angular.module('explorerApp');
 
-app.directive('artUpdateIndicator', UpdateIndicatorDirective);
+angular.module('explorerApp').directive('artUpdateIndicator', UpdateIndicatorDirective);
 
 function UpdateIndicatorDirective() {
     return {
@@ -15,7 +14,7 @@ function UpdateIndicatorDirective() {
     }
 }
 
-app.controller('UpdateIndicatorDirectiveController', UpdateIndicatorDirectiveController);
+angular.module('explorerApp').controller('UpdateIndicatorDirectiveController', UpdateIndicatorDirectiveController);
 
 function UpdateIndicatorDirectiveController(api, $scope, settingsService, $uibModal, updateService) {
     var t = this;
@@ -26,7 +25,7 @@ function UpdateIndicatorDirectiveController(api, $scope, settingsService, $uibMo
 
         updateService.isUpdateDownloaded().then(function() {
             t.setProgressValue(100);
-        });
+        }).catch(function() {});
     });
 
     updateService.on('progress', function(progress) {

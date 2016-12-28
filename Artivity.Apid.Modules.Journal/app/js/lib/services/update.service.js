@@ -44,7 +44,7 @@
 				return isUpdateAvailable().then(function () {
 					checker.isUpdateDownloaded(service.update).then(function() {
 						resolve(service.update);
-					}, function() {
+					}).catch(function() {
 						reject();
 					});
 				});

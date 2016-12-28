@@ -1,6 +1,4 @@
-var app = angular.module('explorerApp');
-
-app.directive('artSettingsApps', AppsSettingsDirective);
+angular.module('explorerApp').directive('artSettingsApps', AppsSettingsDirective);
 
 function AppsSettingsDirective() {
     return {
@@ -10,7 +8,7 @@ function AppsSettingsDirective() {
     }
 };
 
-app.controller('AppsSettingsDirectiveFormController', AppsSettingsDirectiveFormController);
+angular.module('explorerApp').controller('AppsSettingsDirectiveFormController', AppsSettingsDirectiveFormController);
 
 function AppsSettingsDirectiveFormController (api, $scope, settingsService) {
     var t = this;

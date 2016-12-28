@@ -65,6 +65,10 @@ module.exports = function (grunt) {
             build: {
                 src: jsFiles,
                 dest: 'index.html'
+            },
+            release: {
+                src: 'js/app.src.js',
+                dest: 'index.html'
             }
         },
 
@@ -77,16 +81,7 @@ module.exports = function (grunt) {
                 },
                 nonull: true,
                 dest: 'js/app.src.js',
-                src: [
-                    'js/lib/*.js',
-                    'js/host/*.js',
-                    'js/lib/classes/*.js',
-                    'js/lib/filters/*.js',
-                    'js/lib/services/*.js',
-                    'partials/directives/*.js',
-                    'partials/dialogs/*.js',
-                    'partials/*.js'
-                ]
+                src: jsFiles
             }
         },
 
@@ -327,17 +322,23 @@ module.exports = function (grunt) {
     grunt.registerTask('default', [
         'wiredep',
         'concat:js:clear',
-        'tags',
+        'tags:build',
         'sass:dev'
+    ]);
+
+    grunt.registerTask('release', [
+            'wiredep',
+            'concat:js:clear',
+            'concat:js',
+            'tags:release',
+            'sass:dist'
     ]);
 
     if (process.platform === "win32") {
         grunt.registerTask('build', [
             'clean',
-            "bower-install",
-            'wiredep',
-            'concat:js',
-            'sass:dist',
+            'bower-install',
+            'release',
             'electron:windowsBuild',
             'nugetRestore',
             'assemblyVersion',
@@ -347,10 +348,8 @@ module.exports = function (grunt) {
     } else if (process.platform === "darwin") {
         grunt.registerTask('build', [
             'clean',
-            "bower-install",
-            'wiredep',
-            'concat:js',
-            'sass:dist',
+            'bower-install',
+            'release',
             'electron:macosBuild',
             'nugetRestore',
             'assemblyVersion',

@@ -14,7 +14,7 @@ function ClientStateInfoDirective() {
     }
 }
 
-app.controller('ClientStateInfoDirectiveController', ClientStateInfoDirectiveController);
+angular.module('explorerApp').controller('ClientStateInfoDirectiveController', ClientStateInfoDirectiveController);
 
 function ClientStateInfoDirectiveController ($scope) {
     var t = this;

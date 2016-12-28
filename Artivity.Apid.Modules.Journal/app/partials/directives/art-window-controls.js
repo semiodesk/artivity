@@ -1,6 +1,5 @@
-var app = angular.module('explorerApp');
 
-app.directive('artWindowControls', WindowControlsDirective);
+angular.module('explorerApp').directive('artWindowControls', WindowControlsDirective);
 
 function WindowControlsDirective() {
     return {
@@ -13,7 +12,7 @@ function WindowControlsDirective() {
     }
 }
 
-app.controller('WindowControlsDirectiveController', WindowControlsDirectiveController);
+angular.module('explorerApp').controller('WindowControlsDirectiveController', WindowControlsDirectiveController);
 
 function WindowControlsDirectiveController($scope, windowService) {
     var t = this;
