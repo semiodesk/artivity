@@ -9,7 +9,7 @@ function UpdateDialogController(api, $scope, $filter, $uibModalInstance, $sce, u
     t.progressAnimate = false;
     t.initialized = false;
 
-    updateService.isUpdateAvailable().then(init);
+    updateService.isUpdateAvailable().then(init).catch(function(){});
 
     function init() {
         const util = require('util');

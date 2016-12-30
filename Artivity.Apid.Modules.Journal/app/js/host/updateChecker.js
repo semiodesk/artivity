@@ -29,12 +29,12 @@ UpdateChecker.prototype.isUpdateAvailable = function () {
 
     return new Promise(function (resolve, reject) {
         var FeedParser = require('feedparser');
-        var request = require('request');
+        var Request = require('request');
 
         var feedparser = new FeedParser();
         var lastItem;
 
-        var req = request(t.appcastUrl);
+        var req = Request(t.appcastUrl);
 
         req.on('error', function (error) {
             reject();
@@ -196,10 +196,6 @@ UpdateChecker.prototype.verifyUpdateInstallerSignature = function(update) {
             });
 
         }catch(e){
-            console.error('File does not exist:', update.localPath);
-
-            reject(update);
-
         }
     });
 }
