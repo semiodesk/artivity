@@ -103,13 +103,14 @@ module.exports = function (grunt) {
                     platform: 'win32',
                     icon: 'img/icon.ico',
                     arch: 'x64',
+                    'app-copyright': 'Copyright © 2016 Semiodesk GmbH',
                     win32metadata: {
                         FileDescription: 'Artivity is a tool to track the creative process.',
                         OriginalFilename: 'Artivity.exe',
                         ProductName: 'Artivity',
                         InternalName: 'Artivity',
                         CompanyName: 'Semiodesk GmbH',
-                        Copyright: 'Copyright © 2016 Semiodesk GmbH'
+                       
                     },
 
                 }
