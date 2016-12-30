@@ -65,4 +65,16 @@ function KeyboardInputHandlerDirectiveController (api, $scope, hotkeys) {
             $scope.navigateToFragment('/query');
         }
     });
+
+    hotkeys.add({
+        combo: 'alt+i',
+        description: 'Opens the development tools.',
+        callback: function () {
+           var remote = require('electron').remote;
+            var BrowserWindow = remote.getCurrentWindow();
+            BrowserWindow.openDevTools();
+        }
+    });
+
+    
 }

@@ -33,7 +33,6 @@
 
 						resolve(update);
 					}, function () {
-						reject();
 					});
 				}
 			});
