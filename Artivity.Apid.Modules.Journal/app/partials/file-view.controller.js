@@ -50,9 +50,14 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
 
     // INFLUENCES
     t.influences = [];
-    t.previousInfluence;
-    t.selectedInfluence; // TODO: Implement using selectionService.
-    t.onSelectedInfluenceChanged = null;
+    t.selectedInfluence = null;
+    t.previousInfluence = null;
+
+    selectionService.on('selectionChanged', function(item) {
+        t.selectedInfluence = item;
+
+        t.renderInfluence(item);
+    });
 
     // ACTIVITIES
     t.activities = [];
@@ -91,7 +96,7 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
                                             renderer.renderCache.load(data, function () {
                                                 console.log("Loaded renderings: ", renderer.renderCache);
 
-                                                t.previewInfluence(t.selectedInfluence);
+                                                t.previewInfluence(selectionService.selectedItem());
                                             });
                                         }).then(function () {
                                             t.statistics = [];
@@ -157,7 +162,7 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
 
                             while (activity.uri !== influence.activity && i < t.activities.length - 1) {
                                 if (activities[influence.activity]) {
-                                    // The influece belongs to previous activity.
+                                    // The influence belongs to previous activity.
                                     activity = activities[influence.activity];
                                 } else {
                                     var a = t.activities[++i];
@@ -195,7 +200,8 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
                             //activity.totalTime = moment(activity.endTime) - moment(activity.startTime);
                         }
 
-                        t.previewInfluence(data[0]);
+                        selectionService.dataContext(data);
+                        selectionService.selectedItem(data[0]);
                     }
                 });
             }
@@ -204,26 +210,13 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
 
     t.loadActivities();
 
-    t.selectInfluence = function (influence) {
-        t.selectedInfluence = influence;
-        t.previousInfluence = undefined;
-
-        if(t.onSelectedInfluenceChanged !== null) {
-            t.onSelectedInfluenceChanged(t.selectedInfluence);
-        }
-    };
-
     t.previewInfluence = function (influence) {
-        t.previousInfluence = t.selectedInfluence;
-        t.selectedInfluence = influence;
+        t.previousInfluence = selectionService.selectedItem();
 
-        if(t.onSelectedInfluenceChanged !== null) {
-            t.onSelectedInfluenceChanged(t.selectedInfluence);
-        }
+        // The selected item is being rendered automatically.
+        selectionService.selectedItem(influence);
 
         if (influence.time !== undefined) {
-            t.renderInfluence(influence);
-
             // Set the labels of the layers at the time of the influence.
             each(influence.stats.layers, function (i, layer) {
                 layer.label = layer.getLabel(influence.time);
@@ -256,111 +249,22 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
 
     t.resetInfluence = function () {
         if (t.previousInfluence) {
-            t.selectedInfluence = t.previousInfluence;
-            t.previousInfluence = undefined;
+            var influence = t.previousInfluence;
 
-            if(t.onSelectedInfluenceChanged !== null) {
-                t.onSelectedInfluenceChanged(t.selectedInfluence);
-            }
+            t.previousInfluence = null;
 
-            t.renderInfluence(t.selectedInfluence);
-        }
-    };
-
-    // PLAYBACK
-    t.playing = false;
-
-    var playloop = undefined;
-
-    t.togglePlay = function () {
-        if (playloop) {
-            t.pause();
-        } else {
-            t.play();
-        }
-    };
-
-    t.play = function () {
-        var end = t.influences.indexOf(t.selectedInfluence) === 0;
-
-        if (!playloop && !end) {
-            playloop = setInterval(t.skipNext, 500);
-
-            t.playing = playloop !== undefined;
-        }
-    };
-
-    t.pause = function () {
-        console.log(playloop);
-
-        if (playloop) {
-            clearInterval(playloop);
-
-            playloop = undefined;
-
-            t.playing = playloop !== undefined;
-
-            t.$digest();
-        }
-    };
-
-    t.skipPrev = function () {
-        if (t.influences === undefined) {
-            return;
-        }
-
-        var i = t.influences.indexOf(t.selectedInfluence) + 1;
-
-        if (0 < i && i < t.influences.length) {
-            t.selectedInfluence = t.influences[i];
-
-            if(t.onSelectedInfluenceChanged !== null) {
-                t.onSelectedInfluenceChanged(t.selectedInfluence);
-            }
-
-            console.log(t.selectedInfluence.offsetTop);
-
-            t.renderInfluence(t.selectedInfluence);
-        }
-
-        if (playloop) {
-            t.$digest();
-
-            if (i === t.influences.length) {
-                t.pause();
-            }
-        }
-    };
-
-    t.skipNext = function () {
-        var i = t.influences.indexOf(t.selectedInfluence);
-
-        if (0 < i && i < t.influences.length) {
-            t.selectedInfluence = t.influences[i - 1];
-
-            if(t.onSelectedInfluenceChanged !== null) {
-                t.onSelectedInfluenceChanged(t.selectedInfluence);
-            }
-
-            t.renderInfluence(t.selectedInfluence);
-        }
-
-        if (playloop) {
-            t.$digest();
-
-            if (i === 0) {
-                t.pause();
-            }
+            // The selected item is being rendered automatically.
+            selectionService.selectedItem(influence);
         }
     };
 
     t.historyKeyDown = function (e) {
         if (e.which == 40) { // Arrow key down
-            t.skipPrev();
+            selectionService.selectNext();
 
             e.preventDefault();
         } else if (e.which === 38) { // Arrow up
-            t.skipNext();
+            selectionService.selectPrev();
 
             e.preventDefault();
         }
@@ -388,11 +292,14 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
 
     // SHARING
     t.publishFile = function () {
-        selectionService.items = [{
+        var influence = selectionService.selectedItem();
+
+        selectionService.mute();
+        selectionService.selectedItem({
             uri: t.entity.uri,
             label: t.file.label,
             agentColor: t.agent.color
-        }];
+        });
 
         var modalInstance = $uibModal.open({
             animation: true,
@@ -400,6 +307,9 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
             controller: 'PublishFileDialogController',
             controllerAs: 't',
             scope: $scope
+        }).closed.then(function() {
+            selectionService.selectedItem(influence);
+            selectionService.unmute();
         });
     }
 
@@ -543,6 +453,8 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
         
         layer.visible = !layer.visible;
 
-        t.previewInfluence(t.selectedInfluence);
+        var influence = selectionService.selectedItem();
+
+        t.previewInfluence(influence);
     }
 }

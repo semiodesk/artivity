@@ -9,6 +9,7 @@
 
 		var downloading = false;
 		var currentDownload;
+		var updateAvailable;
 
 		var service = {
 			update: null,
@@ -25,7 +26,7 @@
 
 		function isUpdateAvailable() {
 			return new Promise(function (resolve, reject) {
-				if (service.update) {
+				if (service.update !== undefined) {
 					resolve(service.update);
 				} else {
 					checker.isUpdateAvailable().then(function (update) {
@@ -33,7 +34,9 @@
 
 						resolve(update);
 					}, function () {
-						reject();
+						service.update = null;
+
+						reject(null);
 					});
 				}
 			});
