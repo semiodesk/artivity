@@ -1,118 +1,95 @@
-angular.module('explorerApp').directive('artTimeline', function () {
+angular.module('explorerApp').directive('artPlaybackControl', function () {
 	return {
-		scope: true,
-		template: '\
-		<div class="timeline">\
-			<div class="timeline-control"> \
-				<div class="position"><label></label></div> \
-				<div class="duration"><label></label></div> \
-				<div class="track-col"> \
-					<div class="thumb-container"></div> \
-					<div class="track-container"> \
-						<div class="track"></div> \
-						<div class="track-preview"></div> \
-						<div class="track-indicator"></div> \
-						<div class="thumb draggable"><div class="thumb-knob"></div></div> \
-					</div> \
-					<div class="comments"></div> \
-					<div class="activities"></div> \
-				</div> \
-			</div> \
-		</div>',
-		link: function (scope, element, attributes) {
-			var t = scope.$parent.t; // Bad hack. Needs to be fixed when refactoring the control.
-			
-			var timeline = new TimelineControl(element);
-
-			timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
-			timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
-
-			timeline.selectedInfluenceChanged = function (influence) {
-				t.previewInfluence(influence);
-			};
-
-			t.scope.$watchCollection(attributes.artActivitiesSrc, function () {
-				timeline.setActivities(getValue(scope, attributes.artActivitiesSrc));
-			});
-
-			t.scope.$watchCollection(attributes.artInfluencesSrc, function () {
-				timeline.setInfluences(getValue(scope, attributes.artInfluencesSrc));
-			});
-
-			// TODO: Implement using selectionService.
-			t.onSelectedInfluenceChanged = function(influence) {
-				if (influence !== undefined) {
-					timeline.setPosition(influence);
-				}
-			}
+		restrict: 'E',
+		templateUrl: 'partials/directives/art-playback-control.html',
+		controller: PlaybackControlDirectiveController,
+		controllerAs: 't',
+		scope: {
+			influences: "@influences",
+			selectedInfluence: "@selectedInfluence",
+			activities: "@activities"
 		}
 	}
 });
 
-function Activity(activity, timeOffset) {
+function PlaybackControlDirectiveController($scope, selectionService) {
 	var t = this;
 
-	t.color = activity.agentColor;
-	t.lastColor = t.color;
+	t.activities = [];
+	t.influences = [];
+	t.selectionService = selectionService;
 
-	t.startTime = new Date(activity.startTime);
-	t.endTime = new Date(activity.endTime === undefined ? activity.maxTime : activity.endTime);
+	$scope.$parent.$watchCollection($scope.activities, function () {
+		var activities = getValue($scope.$parent, $scope.activities);
 
-	t.timeRange = {};
-	t.timeRange.start = timeOffset;
-	t.timeRange.length = t.endTime - t.startTime;
-	t.timeRange.end = t.timeRange.start + t.timeRange.length;
-};
+		if (activities) {
+			t.setActivities(activities);
+		} else {
+			console.error("Could not bind to ", $scope.activities, " from scope:", $scope.$parent);
+		}
+	});
 
-Activity.prototype.getOffset = function (timestamp) {
-	var t = this;
-	var time = new Date(timestamp);
+	$scope.$parent.$watchCollection($scope.influences, function () {
+		var influences = getValue($scope.$parent, $scope.influences);
 
-	return (time - t.startTime) + t.timeRange.start;
-};
+		if (influences) {
+			t.setInfluences(influences);
+		} else {
+			console.error("Could not bind to ", $scope.influences, " from scope:", $scope.$parent);
+		}
+	});
 
-function TimelineControl(element) {
-	var t = this;
+	var onSelectionChanged = function (influence) {
+		if (influence) {
+			t.setPosition(influence);
+		}
+	};
 
+	selectionService.on('selectionChanged', onSelectionChanged);
+
+	t.playloop = undefined;
+	t.playing = false;
 	t.dragging = false;
 	t.selectedIndex = 0;
 
 	var drag = function (e) {
-		var x = parseInt($(e.target).css('left')) + $(e.target).outerWidth() / 2;
+		// It can happen that the cursor re-enters the track while dragging. This would
+		// enable the position preview and cause flickering. Hiding the preview on drag
+		// prevents the flickering from happening.
+		t.trackPreview.css('visibility', 'collapse');
+		
+		var trackX = t.track.offset().left;
+		var maxX = t.track.outerWidth() + t.thumbKnob.outerWidth();
 
-		if (x) {
-			//$(e.target).css('left', x);
-			
-			var c = Math.ceil(t.thumbKnob.outerWidth() / 2);
+		var x = e.clientX - trackX;
 
-			t.trackIndicator.css('width', (x + c) + 'px');
-			t.trackPreview.css('visibility', 'collapse');
+		if (x <= maxX) {
+			t.trackIndicator.css('width', x + 'px');
+		}
 
-			var y = t.track.innerWidth() / t.influences.length;
-			var i = t.influences.length - Math.ceil(x / y);
+		var y = t.track.innerWidth() / t.influences.length;
+		var i = t.influences.length - Math.ceil(x / y);
 
-			if (i > -1 && i !== t.selectedIndex) {
-				t.selectedIndex = i;
+		if (i > -1 && i !== t.selectedIndex) {
+			t.selectedIndex = i;
 
-				var influence = t.influences[t.selectedIndex];
+			var influence = t.influences[t.selectedIndex];
 
-				// Snap the thumb to the position of the currently selected influence.
-				t.updatePositionLabels(influence);
-				t.updateTrackPreview(influence);
+			// Snap the thumb to the position of the currently selected influence.
+			t.updatePositionLabels(influence);
 
-				if (t.selectedInfluenceChanged) {
-					t.selectedInfluenceChanged(t.influences[i]);
-				}
-			}
+			// Set the position of the newly selected influence;
+			selectionService.selectedItem(influence);
 		}
 	};
 
 	var dragStart = function (e) {
 		t.dragging = true;
 
+		selectionService.off('selectionChanged', onSelectionChanged);
+
 		t.thumb.addClass('no-transition');
 		t.trackIndicator.addClass('no-transition');
-		t.trackPreview.css('visibility', 'collapse');
 
 		var x = e.clientX - t.track.offset().left;
 
@@ -132,9 +109,16 @@ function TimelineControl(element) {
 			t.trackIndicator.css('width', (x + c) + 'px');
 		}
 
+		selectionService.on('selectionChanged', onSelectionChanged);
+
 		t.thumb.removeClass('no-transition');
 		t.trackIndicator.removeClass('no-transition');
-		t.trackPreview.css('visibility', 'visible');
+
+		var maxX = t.track.outerWidth() + t.thumbKnob.outerWidth();
+
+		if(e.clientX <= maxX) {
+			t.trackPreview.css('visibility', 'visible');
+		}
 
 		var influence = t.influences[t.selectedIndex];
 
@@ -182,26 +166,22 @@ function TimelineControl(element) {
 
 			var i = t.influences.indexOf(influence);
 
-			if (i > -1 && i !== t.selectedIndex) {
-				t.setPosition(influence);
-
-				if (t.selectedInfluenceChanged) {
-					t.selectedInfluenceChanged(influence);
-				}
+			if (-1 < i && i !== t.selectedIndex) {
+				selectionService.selectedItem(influence);
 			}
 		}
 	};
 
-	var trackResize = function() {		
+	var trackResize = function () {
 		t.thumb.addClass('no-transition');
 		t.trackIndicator.addClass('no-transition');
-		
-		t.setPosition(t.influences[t.selectedIndex]);
-		
+
+		t.setPosition(selectionService.selectedItem());
+
 		t.thumb.removeClass('no-transition');
 		t.trackIndicator.removeClass('no-transition');
 	};
-	
+
 	var thumbMouseEnter = function () {
 		t.trackPreview.css('visibility', 'collapse');
 	}
@@ -221,19 +201,17 @@ function TimelineControl(element) {
 
 	t.color = "#ffffff";
 	t.timeRange = new Array(2);
-
-	t.control = $(element);
-	t.trackColumn = $(t.control.find(".track-col")[0]);
+	t.trackColumn = $($(".track-col")[0]);
 	t.trackColumn.mouseenter(trackMouseEnter);
 	t.trackColumn.mousemove(trackMouseMove);
 	t.trackColumn.mouseout(trackMouseOut);
 	t.trackColumn.click(trackClick);
-	t.trackContainer = $(t.control.find(".track-container")[0]);
-	t.track = $(t.control.find(".track")[0]);
-	t.trackPreview = $(t.control.find(".track-preview")[0]);
-	t.trackIndicator = $(t.control.find(".track-indicator")[0]);
-	t.thumb = $(t.control.find(".thumb")[0]);
-	t.thumbKnob = $(t.control.find(".thumb-knob")[0]);
+	t.trackContainer = $($(".track-container")[0]);
+	t.track = $($(".track")[0]);
+	t.trackPreview = $($(".track-preview")[0]);
+	t.trackIndicator = $($(".track-indicator")[0]);
+	t.thumb = $($(".thumb")[0]);
+	t.thumbKnob = $($(".thumb-knob")[0]);
 	t.thumb.mouseenter(thumbMouseEnter);
 	t.thumb.mouseout(thumbMouseOut);
 	t.thumb.draggable({
@@ -244,17 +222,18 @@ function TimelineControl(element) {
 		start: dragStart,
 		stop: dragStop
 	});
-	t.positionLabel = $(t.control.find(".position label")[0]);
-	t.durationLabel = $(t.control.find(".duration label")[0]);
-	t.activitiesContainer = $(t.control.find(".activities-container")[0]);
-	t.commentsContainer = $(t.control.find(".comments-container")[0]);
-	
-	$(window).resize(trackResize);
+	t.positionLabel = $($(".position label")[0]);
+	t.durationLabel = $($(".duration label")[0]);
+	t.activitiesContainer = $($(".activities-container")[0]);
+	t.commentsContainer = $($(".comments-container")[0]);
+
+	$(window).resize(function () {
+		t.trackPreview.css('visibility', 'collapse');
+		trackResize();
+	});
 };
 
-TimelineControl.prototype.selectedInfluenceChanged = undefined;
-
-TimelineControl.prototype.setActivities = function (data) {
+PlaybackControlDirectiveController.prototype.setActivities = function (data) {
 	var t = this;
 
 	if (data && data.length > 0) {
@@ -277,7 +256,11 @@ TimelineControl.prototype.setActivities = function (data) {
 		t.timeRange[1] = t.totalTime;
 
 		// Update x time scale to current range and control size.
-		t.xScale = d3.scaleTime().domain(t.timeRange).range([0, t.control.innerWidth()]).clamp(true);
+		var container = $($('.timeline')[0]);
+
+		if (container) {
+			t.xScale = d3.scaleTime().domain(t.timeRange).range([0, container.innerWidth()]).clamp(true);
+		}
 
 		// Set the current position text.
 		var time = moment.duration(t.totalTime, "milliseconds").format("hh:mm:ss", {
@@ -292,13 +275,13 @@ TimelineControl.prototype.setActivities = function (data) {
 	}
 };
 
-TimelineControl.prototype.setInfluences = function (influences) {
+PlaybackControlDirectiveController.prototype.setInfluences = function (influences) {
 	var t = this;
 
 	t.influences = influences;
 };
 
-TimelineControl.prototype.getInfluence = function (x) {
+PlaybackControlDirectiveController.prototype.getInfluence = function (x) {
 	var t = this;
 
 	if (x > 0 && x <= t.track.innerWidth()) {
@@ -313,7 +296,7 @@ TimelineControl.prototype.getInfluence = function (x) {
 	}
 };
 
-TimelineControl.prototype.setPosition = function (influence) {
+PlaybackControlDirectiveController.prototype.setPosition = function (influence) {
 	var t = this;
 
 	if (t.dragging) {
@@ -333,19 +316,19 @@ TimelineControl.prototype.setPosition = function (influence) {
 	}
 };
 
-TimelineControl.prototype.updatePositionLabels = function (influence) {
+PlaybackControlDirectiveController.prototype.updatePositionLabels = function (influence) {
 	var t = this;
 
 	if (influence) {
 		var time = new Date(influence.time);
 		var position = 0;
-		
+
 		for (var i = 0; i < t.activities.length; i++) {
 			var a = t.activities[i];
-			
-			if(a.endTime >= time && time >= a.startTime) {
+
+			if (a.endTime >= time && time >= a.startTime) {
 				position += (time - a.startTime);
-			} else if(time >= a.startTime) {
+			} else if (time >= a.startTime) {
 				position += a.timeRange.length;
 			}
 		}
@@ -353,18 +336,10 @@ TimelineControl.prototype.updatePositionLabels = function (influence) {
 		t.positionLabel.text(moment.duration(position, 'milliseconds').format('hh:mm:ss', {
 			trim: false
 		}));
-
-		/*
-		var duration = t.lastActivity.endTime - t.firstActivity.startTime;
-
-		t.durationLabel.text(moment.duration(duration, 'milliseconds').format('hh:mm:ss', {
-			trim: false
-		}));
-		*/
 	}
 };
 
-TimelineControl.prototype.getTrackPosition = function (influence) {
+PlaybackControlDirectiveController.prototype.getTrackPosition = function (influence) {
 	var t = this;
 	var i = t.influences.indexOf(influence);
 
@@ -381,7 +356,7 @@ TimelineControl.prototype.getTrackPosition = function (influence) {
 	return 0;
 };
 
-TimelineControl.prototype.updateTrackPreview = function (influence) {
+PlaybackControlDirectiveController.prototype.updateTrackPreview = function (influence) {
 	var t = this;
 
 	var x = t.getTrackPosition(influence);
@@ -393,7 +368,7 @@ TimelineControl.prototype.updateTrackPreview = function (influence) {
 	t.trackIndicator.css('width', x + 'px');
 };
 
-TimelineControl.prototype.getColor = function (influence) {
+PlaybackControlDirectiveController.prototype.getColor = function (influence) {
 	var t = this;
 
 	if (!influence || influence.agentColor === '#FF0000') {
@@ -403,4 +378,71 @@ TimelineControl.prototype.getColor = function (influence) {
 	t.lastColor = influence.agentColor;
 
 	return t.lastColor;
+};
+
+PlaybackControlDirectiveController.prototype.play = function () {
+	var t = this;
+	var end = t.influences.indexOf(t.selectionService.selectedItem()) === 0;
+
+	if (!t.playloop && !end) {
+		t.playloop = setInterval(function () {
+			t.skipNext();
+		}, 500);
+		t.playing = true;
+	}
+};
+
+PlaybackControlDirectiveController.prototype.pause = function () {
+	var t = this;
+
+	if (t.playloop) {
+		clearInterval(t.playloop);
+
+		t.playloop = undefined;
+		t.playing = false;
+
+		t.$digest();
+	}
+};
+
+PlaybackControlDirectiveController.prototype.togglePlay = function () {
+	var t = this;
+
+	if (t.playloop) {
+		t.pause();
+	} else {
+		t.play();
+	}
+};
+
+PlaybackControlDirectiveController.prototype.skipPrev = function () {
+	var t = this;
+
+	if (t.influences === undefined) {
+		return;
+	}
+
+	t.selectionService.selectNext();
+
+	if (t.playloop) {
+		var i = t.selectionService.selectedIndex();
+
+		if (i === t.influences.length - 1) {
+			t.pause();
+		}
+	}
+};
+
+PlaybackControlDirectiveController.prototype.skipNext = function () {
+	var t = this;
+
+	t.selectionService.selectPrev();
+
+	if (t.playloop) {
+		var i = t.selectionService.selectedIndex();
+
+		if (i === 0) {
+			t.pause();
+		}
+	}
 };
