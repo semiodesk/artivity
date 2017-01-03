@@ -9,7 +9,7 @@ function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $s
         subtitle: 'Create a dataset for your file and upload it into a digital repository.'
     };
 
-    t.file = selectionService.items[0];
+    t.file = selectionService.selectedItem();
     
     t.getFileName = fileService.getFileName;
     t.getFileNameWithoutExtension = fileService.getFileNameWithoutExtension;

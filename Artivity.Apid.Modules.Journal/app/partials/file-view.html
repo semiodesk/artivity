@@ -1,8 +1,7 @@
 <script src="bower_components/EaselJS/lib/easeljs-0.8.2.min.js" type="text/javascript"></script>
 <script src="bower_components/color-thief/dist/color-thief.min.js" type="text/javascript"></script>
-
 <div class="layout-root table-layout">
-    <div class="row header">
+	<div class="row header">
 		<div class="toolbar">
 			<div class="col">
 				<a class="btn btn-header" href="#/files"><i class="zmdi zmdi-chevron-left"></i></a>
@@ -16,10 +15,14 @@
 				<h5 class="title">{{t.file.label}}</h5>
 			</div>
 			<div class="col">
-				<a id="publish-btn" class="btn btn-header" ng-click="t.publishFile()"><i class="zmdi zmdi-hc-fw zmdi-cloud-upload"></i></a>
+				<a id="publish-btn" class="btn btn-header" ng-click="t.publishFile()" uib-tooltip="Publish" tooltip-placement="bottom" tooltip-popup-delay="1000">
+					<i class="zmdi zmdi-hc-fw zmdi-cloud-upload"></i>
+				</a>
 			</div>
 			<div class="col">
-				<a id="export-btn" class="btn btn-header" ng-click="t.exportFile()"><i class="zmdi zmdi-hc-fw zmdi-archive"></i></a>
+				<a id="export-btn" class="btn btn-header" ng-click="t.exportFile()" uib-tooltip="Export" tooltip-placement="bottom" tooltip-popup-delay="1000">
+					<i class="zmdi zmdi-hc-fw zmdi-archive"></i>
+				</a>
 			</div>
 		</div>
 	</div>
@@ -63,23 +66,18 @@
 											border-left-color: $accentColor;
 										}
 									</style>
-
 									<ul class="lst-activities list-unstyled">
 										<li ng-repeat="activity in t.activities">
 											<div class="activity-header">
 												<div class="time" ng-class="{collapsed: !activity.showDate}">
 													<label>{{t.getFormattedDate(activity.startTime)}}</label>
 												</div>
-
 												<div class="session" ng-class="{collapsed: activity.isComment}">
 													<!--<img class="icn" ng-src="{{agent.iconUrl}}" width="24" height="24">-->
-
 													<label>{{'FILEVIEW.EDITING_SESSION' | translate}}</label>
-
 													<!--<label class="time pull-right small">{{activity.totalTime | amDateFormat:'h[h] m[m]'}}</label>-->
 												</div>
 											</div>
-
 											<ul class="lst-influences list-unstyled">
 												<li ng-repeat="influence in activity.influences track by $index" ng-class="{selected: influence == t.selectedInfluence}">
 													<div ng-switch="influence.type">
@@ -90,10 +88,8 @@
 																	<div class="txt">{{influence.comment}}</div>
 																	<span class="tip tip-right"></span>
 																</div>
-
 																<label class="time pull-right small">{{t.getFormattedTime(influence.time)}}</label>
 															</a>
-
 															<div class="clearfix"></div>
 														</div>
 														<div ng-switch-default>
@@ -101,7 +97,6 @@
 																<label class="type">
 																	<i class="zmdi icn icn-transparent" ng-class="t.getIcon(influence)"></i> {{t.getLabel(influence)}}
 																</label>
-
 																<label class="time pull-right small">{{t.getFormattedTime(influence.time)}}</label>
 															</a>
 														</div>
@@ -116,22 +111,20 @@
 					</div>
 					<div class="row">
 						<div class="ctl-comment" ng-show="false">
-							<textarea id="msg-txt" ng-model="t.comment.text" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-change="t.updateComment()" ng-enter="t.postComment()" ng-esc="t.resetComment(true)" ng-blur="t.resetComment(false)" required></textarea>
+							<textarea id="msg-txt" ng-model="t.comment.text" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-change="t.updateComment()"
+											ng-enter="t.postComment()" ng-esc="t.resetComment(true)" ng-blur="t.resetComment(false)" required></textarea>
 						</div>
 					</div>
 				</div>
 			</div>
-
 			<div class="ui-resizable ui-pane ui-pane-center">
 				<canvas id="canvas" class="ui-ui-pane ui-layout-center" width="640" height="480"></canvas>
 			</div>
-
 			<div class="ui-resizable ui-pane ui-pane-right">
 				<div class="pane-content">
 					<ul class="nav nav-tabs nav-tabs-top tablist" id="tabs-right" role="tablist">
 						<li role="presentation" class="active"><a data-target="#statistics" role="tab" data-toggle="tab">{{'FILEVIEW.STATISTICS' | translate}}</a></li>
 					</ul>
-
 					<div class="tab-content padding-md padding-x padding-y">
 						<div role="tabpanel" class="tab-pane fade active in" id="statistics">
 							<h5>{{'FILEVIEW.EDITING' | translate}}</h5>
@@ -165,7 +158,6 @@
 									<td></td>
 								</tr>
 							</table>
-
 							<h5 style="margin-top: 1em;">{{'FILEVIEW.COMPOSITION' | translate}}</h5>
 							<table style="width: 90%;">
 								<tr>
@@ -197,18 +189,15 @@
 									<td></td>
 								</tr>
 							</table>
-
 							<div ng-show="false">
 								<h5 style="margin-top: 1em;">{{'FILEVIEW.COLOURS' | translate}}</h5>
 								<ul class="list-unstyled">
 									<li ng-repeat="color in t.palette">
 										<div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
 									</li>
-
 									<div class="clearfix"></div>
 								</ul>
 							</div>
-
 							<h5 style="margin-top: 1em;">{{'FILEVIEW.LAYERS' | translate}}</h5>
 							<ul class="list-unstyled">
 								<li ng-repeat="layer in t.selectedInfluence.stats.layers | reverse" ng-class="{translucent: !layer.visible}">
@@ -222,29 +211,19 @@
 		</div>
 	</div>
 	<div class="row footer" style="height: 50px;">
-		<div class="toolbar" style="height: 100%;">
-			<div class="col">
-				<a class="btn btn-skip-prev" ng-click="t.skipPrev()"><i class="zmdi zmdi-skip-previous"></i></a>
-			</div>
-			<div class="col">
-				<a class="btn btn-toggle-play" ng-click="t.togglePlay()"><i class="zmdi" ng-class="{'zmdi-pause': t.playing, 'zmdi-play': !t.playing}"></i></a>
-			</div>
-			<div class="col">
-				<a class="btn btn-skip-next" ng-click="t.skipNext()"><i class="zmdi zmdi-skip-next"></i></a>
-			</div>
-			<div class="col expand">
-				<div art-timeline art-activities-src="t.activities" art-influences-src="t.influences"></div>
-			</div>
-		</div>
+		<art-playback-control id="playback-control" activities="t.activities" influences="t.influences" selected-influence="t.selectedInfluence"></art-timeline>
 	</div>
 </div>
-
 <script type="text/javascript">
 $(function () {
 	$(document).ready(function () {
 		updateCanvas();
 
 		$(".ctl-history").focus();
+	});
+
+	$(document).load(function () {
+		updateCanvas();
 	});
 
 	// Make the left and right panes resizable.

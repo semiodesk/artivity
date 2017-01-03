@@ -5,9 +5,20 @@
         const window = require('electron').remote.getCurrentWindow();
 
         return {
+            setClosable: setClosable,
             setMinimizable: setMinimizable,
             setMaximizable: setMaximizable,
             setWidth: setWidth
+        }
+
+        function setClosable(value) {
+            if (value || value === undefined) {
+                window.setClosable(true);
+
+                $('.window-title-btns .btn-close').show();
+            } else {
+                $('.window-title-btns .btn-close').hide();
+            }
         }
 
         function setMinimizable(value) {
