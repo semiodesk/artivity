@@ -1,0 +1,73 @@
+<style type="text/css" art-style-binder art-accent-color="agent.color">
+    .lst-activities li a.default:hover,
+    .lst-activities li.selected a.default {
+        background: $accentColor;
+    }
+    
+    .lst-activities li a.default:hover label,
+    .lst-activities li a.default:hover i,
+    .lst-activities li.selected a.default label,
+    .lst-activities li.selected a.default i {
+        color: white;
+    }
+    
+    .lst-activities li a.comment:hover .txt,
+    .lst-activities li.selected a.comment .txt {
+        background: $accentColor;
+        color: white;
+    }
+    
+    .lst-activities li a.comment:hover .tip.tip-left,
+    .lst-activities li.selected a.comment .tip.tip-left {
+        border-top-color: $accentColor;
+        border-right-color: $accentColor;
+    }
+    
+    .lst-activities li a.comment:hover .tip.tip-right,
+    .lst-activities li.selected a.comment .tip.tip-right {
+        border-top-color: $accentColor;
+        border-left-color: $accentColor;
+    }
+</style>
+<!-- Note: The tabindex is required for the div to be focusable. -->
+<div class="ctl-history" tabindex="0">
+    <ul class="lst-activities list-unstyled">
+        <li ng-repeat="activity in activities">
+            <div class="activity-header">
+                <div class="time" ng-class="{collapsed: !activity.showDate}">
+                    <label>{{t.getFormattedDate(activity.startTime)}}</label>
+                </div>
+                <div class="session" ng-class="{collapsed: activity.isComment}">
+                    <!--<img class="icn" ng-src="{{agent.iconUrl}}" width="24" height="24">-->
+                    <label>{{'FILEVIEW.EDITING_SESSION' | translate}}</label>
+                    <!--<label class="time pull-right small">{{activity.totalTime | amDateFormat:'h[h] m[m]'}}</label>-->
+                </div>
+            </div>
+            <ul class="lst-influences list-unstyled">
+                <li ng-repeat="influence in activity.influences track by $index" ng-class="{selected: influence == t.selectedInfluence}" data-id="{{influence.id}}">
+                    <div ng-switch="influence.type">
+                        <div ng-switch-when="http://w3id.org/art/terms/1.0/Comment">
+                            <a class="comment" ng-click="t.selectInfluence(influence, false)">
+                                <div>
+                                    <div class="avatar"><img ng-src="{{t.user.photoUrl}}" /></div>
+                                    <div class="txt">{{influence.comment}}</div>
+                                    <span class="tip tip-right"></span>
+                                </div>
+                                <label class="time pull-right small">{{t.getFormattedTime(influence.time)}}</label>
+                            </a>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div ng-switch-default>
+                            <a class="default" ng-click="t.selectInfluence(influence, false)">
+                                <label class="type">
+                                    <i class="zmdi icn icn-transparent" ng-class="t.getInfluenceIcon(influence)"></i> {{t.getInfluenceLabel(influence)}}
+                                </label>
+                                <label class="time pull-right small">{{t.getFormattedTime(influence.time)}}</label>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

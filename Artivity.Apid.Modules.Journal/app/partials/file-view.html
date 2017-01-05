@@ -33,86 +33,20 @@
 					<div class="table-layout">
 						<div class="row expand">
 							<div class="scroll-container scroll-y">
-								<!-- Note: The tabindex is required for the div to be focusable. -->
-								<div class="ctl-history" ng-keydown="t.historyKeyDown($event)" tabindex="0">
-									<style type="text/css" art-style-binder art-accent-color="t.agent.color">
-										.lst-activities li a.default:hover,
-										.lst-activities li.selected a.default {
-											background: $accentColor;
-										}
-										
-										.lst-activities li a.default:hover label,
-										.lst-activities li a.default:hover i,
-										.lst-activities li.selected a.default label,
-										.lst-activities li.selected a.default i {
-											color: white;
-										}
-										
-										.lst-activities li a.comment:hover .txt,
-										.lst-activities li.selected a.comment .txt {
-											background: $accentColor;
-											color: white;
-										}
-										
-										.lst-activities li a.comment:hover .tip.tip-left,
-										.lst-activities li.selected a.comment .tip.tip-left {
-											border-top-color: $accentColor;
-											border-right-color: $accentColor;
-										}
-										
-										.lst-activities li a.comment:hover .tip.tip-right,
-										.lst-activities li.selected a.comment .tip.tip-right {
-											border-top-color: $accentColor;
-											border-left-color: $accentColor;
-										}
-									</style>
-									<ul class="lst-activities list-unstyled">
-										<li ng-repeat="activity in t.activities">
-											<div class="activity-header">
-												<div class="time" ng-class="{collapsed: !activity.showDate}">
-													<label>{{t.getFormattedDate(activity.startTime)}}</label>
-												</div>
-												<div class="session" ng-class="{collapsed: activity.isComment}">
-													<!--<img class="icn" ng-src="{{agent.iconUrl}}" width="24" height="24">-->
-													<label>{{'FILEVIEW.EDITING_SESSION' | translate}}</label>
-													<!--<label class="time pull-right small">{{activity.totalTime | amDateFormat:'h[h] m[m]'}}</label>-->
-												</div>
-											</div>
-											<ul class="lst-influences list-unstyled">
-												<li ng-repeat="influence in activity.influences track by $index" ng-class="{selected: influence == t.selectedInfluence}">
-													<div ng-switch="influence.type">
-														<div ng-switch-when="http://w3id.org/art/terms/1.0/Comment">
-															<a class="comment" ng-click="t.previewInfluence(influence)">
-																<div>
-																	<div class="avatar"><img ng-src="{{t.user.photoUrl}}" /></div>
-																	<div class="txt">{{influence.comment}}</div>
-																	<span class="tip tip-right"></span>
-																</div>
-																<label class="time pull-right small">{{t.getFormattedTime(influence.time)}}</label>
-															</a>
-															<div class="clearfix"></div>
-														</div>
-														<div ng-switch-default>
-															<a class="default" ng-click="t.previewInfluence(influence)">
-																<label class="type">
-																	<i class="zmdi icn icn-transparent" ng-class="t.getIcon(influence)"></i> {{t.getLabel(influence)}}
-																</label>
-																<label class="time pull-right small">{{t.getFormattedTime(influence.time)}}</label>
-															</a>
-														</div>
-													</div>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</div>
+								<art-editing-history agent="t.agent" influences="t.influences" activities="t.activities"></art-editing-history>
 							</div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="ctl-comment" ng-show="false">
-							<textarea id="msg-txt" ng-model="t.comment.text" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-change="t.updateComment()"
-											ng-enter="t.postComment()" ng-esc="t.resetComment(true)" ng-blur="t.resetComment(false)" required></textarea>
+							<textarea id="msg-txt" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}"
+								ng-model="t.comment.text"
+								ng-change="t.updateComment()"
+								ng-enter="t.postComment()"
+								ng-esc="t.resetComment(true)"
+								ng-blur="t.resetComment(false)"
+								required>
+							</textarea>
 						</div>
 					</div>
 				</div>
@@ -127,83 +61,8 @@
 					</ul>
 					<div class="tab-content padding-md padding-x padding-y">
 						<div role="tabpanel" class="tab-pane fade active in" id="statistics">
-							<h5>{{'FILEVIEW.EDITING' | translate}}</h5>
-							<table style="width: 90%;">
-								<tr>
-									<td>
-										<label>{{'FILEVIEW.CONFIDENCE' | translate}}</label>
-									</td>
-									<td><span class="pull-right">{{t.selectedInfluence.stats.confidence()}}</span></td>
-									<td width="20">&nbsp;%</td>
-								</tr>
-								<tr>
-									<td>
-										<label>{{'FILEVIEW.STEPS' | translate}}</label>
-									</td>
-									<td><span class="pull-right">{{t.selectedInfluence.stats.stepCount}}</span></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td>
-										<label>{{'FILEVIEW.UNDOS' | translate}}</label>
-									</td>
-									<td><span class="pull-right">{{t.selectedInfluence.stats.undoCount}}</span></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td>
-										<label>{{'FILEVIEW.REDOS' | translate}}</label>
-									</td>
-									<td><span class="pull-right">{{t.selectedInfluence.stats.redoCount}}</span></td>
-									<td></td>
-								</tr>
-							</table>
-							<h5 style="margin-top: 1em;">{{'FILEVIEW.COMPOSITION' | translate}}</h5>
-							<table style="width: 90%;">
-								<tr>
-									<td>
-										<label>{{'FILEVIEW.LAYERS' | translate}}</label>
-									</td>
-									<td><span class="pull-right">{{t.selectedInfluence.stats.layers.length}}</span></td>
-									<td width="20"></td>
-								</tr>
-								<tr>
-									<td>
-										<label>{{'FILEVIEW.GROUPS' | translate}}</label>
-									</td>
-									<td><span class="pull-right">0</span></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td>
-										<label>{{'FILEVIEW.MASKED' | translate}}</label>
-									</td>
-									<td><span class="pull-right">0</span></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td>
-										<label>{{'FILEVIEW.CLIPPED' | translate}}</label>
-									</td>
-									<td><span class="pull-right">0</span></td>
-									<td></td>
-								</tr>
-							</table>
-							<div ng-show="false">
-								<h5 style="margin-top: 1em;">{{'FILEVIEW.COLOURS' | translate}}</h5>
-								<ul class="list-unstyled">
-									<li ng-repeat="color in t.palette">
-										<div style="width: 30px; height: 30px; margin-right: 5px; margin-bottom: 5px; float: left; background: rgb({{color[0]}},{{color[1]}},{{color[2]}});"></div>
-									</li>
-									<div class="clearfix"></div>
-								</ul>
-							</div>
-							<h5 style="margin-top: 1em;">{{'FILEVIEW.LAYERS' | translate}}</h5>
-							<ul class="list-unstyled">
-								<li ng-repeat="layer in t.selectedInfluence.stats.layers | reverse" ng-class="{translucent: !layer.visible}">
-									<a class="btn btn-chromeless padding-sm" ng-click="t.toggleVisibility(layer)"><i class="zmdi zmdi-eye icn icn-transparent"></i></a><label>{{layer.label}}</label>
-								</li>
-							</ul>
+							<art-editing-stats stats="t.selectedInfluence.stats"></art-editing-stats>
+							<art-layer-control layers="t.selectedInfluence.stats.layers"></art-layer-control>
 						</div>
 					</div>
 				</div>
