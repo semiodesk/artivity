@@ -1,11 +1,7 @@
 angular.module('explorerApp').controller('FileViewController', FileViewController);
 
-function FileViewController(api, $scope, $location, $routeParams, $translate, $uibModal, selectionService) {
+function FileViewController(api, $scope, $location, $routeParams, $uibModal, selectionService) {
     var t = this;
-
-    // TODO: Remove. Currently required by timeline control.
-    t.scope = $scope;
-
     var fileUri = $location.search().uri;
 
     t.entity = {
@@ -45,7 +41,6 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
 
     // RENDERING
     var canvas = document.getElementById('canvas');
-
     var renderer = new DocumentRenderer(canvas, api.getRenderingUrl(fileUri));
 
     // INFLUENCES
@@ -157,6 +152,9 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
                         for (var j = 0; j < data.length; j++) {
                             var influence = data[j];
 
+                            // Add an identifier to the influence.
+                            influence.id = j;
+
                             // Initialize empty statistics.
                             influence.stats = new EditingStatistics();
 
@@ -257,34 +255,7 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
             selectionService.selectedItem(influence);
         }
     };
-
-    t.historyKeyDown = function (e) {
-        if (e.which == 40) { // Arrow key down
-            selectionService.selectNext();
-
-            e.preventDefault();
-        } else if (e.which === 38) { // Arrow up
-            selectionService.selectPrev();
-
-            e.preventDefault();
-        }
-    };
-
-    // FORMATTING
-    t.getFormattedTime = function (time) {
-        return moment(time).format('hh:mm:ss');
-    };
-
-    t.getFormattedDate = function (time) {
-        return moment(time).format('dddd, Do MMMM YYYY');
-    };
-
-    t.getFormattedTimeFromNow = function (time) {
-        var result = moment(time).fromNow();
-
-        return result;
-    };
-
+    
     // EXPORT
     t.exportFile = function () {
         api.exportFile(fileUri, t.file.label);
@@ -312,97 +283,6 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
             selectionService.unmute();
         });
     }
-
-    // PRINT LABEL
-    var getChangedProperty = function (influence) {
-        for (var i = 0; i < influence.changes.length; i++) {
-            var change = influence.changes[i];
-
-            if (change.entityType !== 'http://w3id.org/art/terms/1.0/Layer' && change.property) {
-                return change.property;
-            }
-        }
-
-        return '';
-    };
-
-    t.getLabel = function (influence) {
-        var key;
-
-        switch (influence.type) {
-            case 'http://www.w3.org/ns/prov#Generation':
-                {
-                    key = 'FILEVIEW.http://www.w3.org/ns/prov#Generation';
-                    break;
-                }
-            case 'http://www.w3.org/ns/prov#Invalidation':
-                {
-                    key = 'FILEVIEW.http://www.w3.org/ns/prov#Invalidation';
-                    break;
-                }
-            default:
-                {
-                    // TODO: pluralize
-                    key = 'FILEVIEW.' + getChangedProperty(influence);
-                    break;
-                }
-        }
-
-        var result;
-
-        // Only translate if we actually found a property in the previous loop.
-        if (key && key !== 'FILEVIEW.') {
-            result = $translate.instant(key)
-        } else if (influence.description) {
-            result = influence.description;
-        } else {
-            result = $translate.instant('FILEVIEW.' + influence.type);
-        }
-
-        return result;
-    };
-
-    t.getIcon = function (influence) {
-        switch (influence.type) {
-            /*
-            case 'http://www.w3.org/ns/prov#Generation':
-                return 'zmdi-plus';
-            case 'http://www.w3.org/ns/prov#Invalidation':
-                return 'zmdi-delete';
-            */
-            case 'http://www.w3.org/ns/prov#Derivation':
-                return 'zmdi-floppy';
-            case 'http://www.w3.org/ns/prov#Undo':
-                return 'zmdi-undo';
-            case 'http://www.w3.org/ns/prov#Redo':
-                return 'zmdi-redo';
-            case 'http://w3id.org/art/terms/1.0/Save':
-                return 'zmdi-floppy';
-            case 'http://w3id.org/art/terms/1.0/SaveAs':
-                return 'zmdi-floppy';
-        }
-
-        /*
-        var property = getChangedProperty(influence);
-
-        if (property !== '') {
-            switch (property) {
-            case 'http://w3id.org/art/terms/1.0/position':
-                return 'zmdi-arrows';
-            case 'http://w3id.org/art/terms/1.0/hadBoundaries':
-                return 'zmdi-border-style';
-            case 'http://www.w3.org/2000/01/rdf-schema#label':
-                return 'zmdi-format-color-text';
-            case 'http://w3id.org/art/terms/1.0/textValue':
-                return 'zmdi-format-color-text';
-            case 'http://w3id.org/art/terms/1.0/strokeWidth':
-                return 'zmdi-border-color';
-            }
-        }
-        */
-
-        return 'zmdi-brush';
-    };
 
     t.comment = {
         text: ''
@@ -447,14 +327,4 @@ function FileViewController(api, $scope, $location, $routeParams, $translate, $u
             });
         }
     };
-
-    t.toggleVisibility = function(layer) {
-        console.log("Toggle visibility: ", layer);
-        
-        layer.visible = !layer.visible;
-
-        var influence = selectionService.selectedItem();
-
-        t.previewInfluence(influence);
-    }
 }
