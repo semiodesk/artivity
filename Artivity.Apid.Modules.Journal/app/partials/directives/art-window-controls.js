@@ -1,4 +1,3 @@
-
 angular.module('explorerApp').directive('artWindowControls', WindowControlsDirective);
 
 function WindowControlsDirective() {
