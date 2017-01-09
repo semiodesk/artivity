@@ -17,7 +17,9 @@ module.exports = function (grunt) {
         'updateVersion.js',
         'getVersion.js',
         'version.txt',
-        '.vscode'
+        '.vscode',
+        'js/lib',
+
     ];
 
  
@@ -31,7 +33,7 @@ module.exports = function (grunt) {
         
         for (var i = 0, len = patterns.length; i < len; i++) {
             if (minimatch(file, "/"+patterns[i])){
-                grunt.log.writeln("Ignore '"+file+"' for packaging.");
+                grunt.verbose.writeln("Ignore '"+file+"' for packaging.");
                 return true;
                 }
         }
