@@ -26,7 +26,7 @@
 
 		function isUpdateAvailable() {
 			return new Promise(function (resolve, reject) {
-				if (service.update !== undefined) {
+				if (service.update !== null) {
 					resolve(service.update);
 				} else {
 					checker.isUpdateAvailable().then(function (update) {
@@ -44,15 +44,16 @@
 
 		function isUpdateDownloaded() {
 			return new Promise(function (resolve, reject) {
-				return isUpdateAvailable().then(function () {
-					checker.isUpdateDownloaded(service.update).then(function() {
+				if (service.update != null) {
+					checker.isUpdateDownloaded(service.update).then(function () {
 						resolve(service.update);
-					}).catch(function() {
+					}).catch(function () {
 						reject();
 					});
-				});
+				}
 			});
 		}
+
 
 		function isDownloading() {
 			return downloading;

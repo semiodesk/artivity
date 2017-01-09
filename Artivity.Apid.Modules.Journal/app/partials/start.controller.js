@@ -1,6 +1,6 @@
 angular.module('explorerApp').controller('StartController', StartController);
 
-function StartController($location, api, $http, windowService, updateService) {
+function StartController($location, api, $http, windowService) {
     var t = this;
 
     windowService.setClosable(true);
