@@ -1,25 +1,27 @@
-angular.module('explorerApp').directive('artClientStateInfo', ClientStateInfoDirective);
+(function () {
+    angular.module('explorerApp').directive('artClientStateInfo', ClientStateInfoDirective);
 
-function ClientStateInfoDirective() {
-    return {
-        scope: {},
-        templateUrl: 'partials/directives/art-client-state-info.html',
-        controller: ClientStateInfoDirectiveController,
-        controllerAs: 't',
-        link: function(scope, element, attr, ctrl) {
-            attr.$observe('state', function(value) {
-                ctrl.setClientState(value);
-            });
+    function ClientStateInfoDirective() {
+        return {
+            scope: {},
+            templateUrl: 'partials/directives/art-client-state-info.html',
+            controller: ClientStateInfoDirectiveController,
+            controllerAs: 't',
+            link: function (scope, element, attr, ctrl) {
+                attr.$observe('state', function (value) {
+                    ctrl.setClientState(value);
+                });
+            }
         }
     }
-}
 
-angular.module('explorerApp').controller('ClientStateInfoDirectiveController', ClientStateInfoDirectiveController);
+    angular.module('explorerApp').controller('ClientStateInfoDirectiveController', ClientStateInfoDirectiveController);
 
-function ClientStateInfoDirectiveController ($scope) {
-    var t = this;
+    function ClientStateInfoDirectiveController($scope) {
+        var t = this;
 
-    t.setClientState = function(clientState) {
-        t.clientState = clientState;
+        t.setClientState = function (clientState) {
+            t.clientState = clientState;
+        }
     }
-}
+})();

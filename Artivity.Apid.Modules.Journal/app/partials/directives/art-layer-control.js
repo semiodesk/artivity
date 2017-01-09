@@ -1,31 +1,31 @@
-angular.module('explorerApp').directive('artLayerControl', function () {
-	return {
-		restrict: 'E',
-		templateUrl: 'partials/directives/art-layer-control.html',
-		controller: LayerControlDirectiveController,
-		controllerAs: 't',
-        scope: {
-            layers: "=layers"
-        }
-	}
-});
-
-function LayerControlDirectiveController($scope, selectionService) {
-	var t = this;
-    
-    selectionService.on('selectionChanged', function(influence) {
-        try {
-            if (!t.$$phase) {
-                $scope.$digest();
+(function () {
+    angular.module('explorerApp').directive('artLayerControl', function () {
+        return {
+            restrict: 'E',
+            templateUrl: 'partials/directives/art-layer-control.html',
+            controller: LayerControlDirectiveController,
+            controllerAs: 't',
+            scope: {
+                layers: "=layers"
             }
-        } catch (error) {}
+        }
     });
 
-    t.toggleVisibility = function(layer) {
-        console.log("Toggle visibility: ", layer);
-        
-        layer.visible = !layer.visible;
+    function LayerControlDirectiveController($rootScope, $scope, selectionService) {
+        var t = this;
 
-        selectionService.selectedItem(influence);
-    }
-};
+        selectionService.on('selectedItemChanged', function(influence) {
+            if (!$rootScope.$$phase) {
+                $rootScope.$digest();
+            }
+        });
+
+        t.toggleVisibility = function (layer) {
+            console.log("Toggle visibility: ", layer);
+
+            layer.visible = !layer.visible;
+
+            $rootScope.$broadcast('redraw');
+        }
+    };
+})();
