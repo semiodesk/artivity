@@ -8,8 +8,8 @@ function Entity(uri) {
 
     t.uri = uri;
     t.properties = {};
-    t.creationTime = undefined;
-    t.deletionTime = new Date();
+    t.creationTime = null;
+    t.deletionTime = new Date(8640000000000000); // The deletion time is far in the future until explicitly specified.
 };
 
 Entity.prototype.pushValue = function (time, property, value) {
