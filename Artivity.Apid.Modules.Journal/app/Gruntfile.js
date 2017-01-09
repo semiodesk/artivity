@@ -1,4 +1,6 @@
+
 module.exports = function (grunt) {
+
     var jsFiles = [
         'js/host/*.js',
         'js/lib/*.js',
@@ -9,6 +11,33 @@ module.exports = function (grunt) {
         'partials/dialogs/*.js',
         'partials/*.js'
     ];
+
+    var devFiles = [
+        'Gruntfile.js',
+        'updateVersion.js',
+        'getVersion.js',
+        'version.txt',
+        '.vscode'
+    ];
+
+ 
+    function ignore(file) {
+        var minimatch = require("minimatch")
+
+        if( file.startsWith("/node_modules") || file.startsWith("/bower_components"))
+            return false;
+
+        var patterns = devFiles.concat(jsFiles);
+        
+        for (var i = 0, len = patterns.length; i < len; i++) {
+            if (minimatch(file, "/"+patterns[i])){
+                grunt.log.writeln("Ignore '"+file+"' for packaging.");
+                return true;
+                }
+        }
+        return false;
+    }
+
 
     // Project configuration.
     grunt.initConfig({
@@ -110,8 +139,9 @@ module.exports = function (grunt) {
                         ProductName: 'Artivity',
                         InternalName: 'Artivity',
                         CompanyName: 'Semiodesk GmbH',
-                       
+
                     },
+                    ignore: ignore
 
                 }
             },
@@ -296,7 +326,7 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('assemblyVersion', function () {
         const path = require('path');
- 
+
         var version = this.data['version'];
         var done = this.async();
         grunt.util.async.forEachSeries(this.data['src'], function (filePath, next) {
@@ -304,8 +334,8 @@ module.exports = function (grunt) {
             var assemblyInfoContent = grunt.file.read(targetFile);
             const regex = /Assembly(\w*)Version\(("[0-9*\.]+")\)/g;
 
-            var output = assemblyInfoContent.replace(regex, 'Assembly$1Version("'+version+'")');
-            
+            var output = assemblyInfoContent.replace(regex, 'Assembly$1Version("' + version + '")');
+
             grunt.file.write(targetFile, output);
             next();
         }, function () {
@@ -328,11 +358,11 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('release', [
-            'wiredep',
-            'concat:js:clear',
-            'concat:js',
-            'tags:release',
-            'sass:dist'
+        'wiredep',
+        'concat:js:clear',
+        'concat:js',
+        'tags:release',
+        'sass:dist'
     ]);
 
     if (process.platform === "win32") {
