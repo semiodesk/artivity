@@ -54,6 +54,8 @@ LayerCache.prototype.getAll = function (time, fn) {
 
                     if (lowerLayer !== undefined) {
                         tree.insertLayerAbove(layer, lowerLayer);
+                    } else {
+                        tree.insertLayer(layer);
                     }
                 }
             }
