@@ -1,6 +1,6 @@
 angular.module('explorerApp').controller('FileListController', FileListController);
 
-function FileListController(api, $scope, $uibModal, fileService, windowService, updateService, hotkeys) {
+function FileListController(api, $scope, $uibModal, fileService, windowService, hotkeys) {
     var t = this;
 
     windowService.setMinimizable();
@@ -43,8 +43,6 @@ function FileListController(api, $scope, $uibModal, fileService, windowService, 
     t.getFileThumbnailUrl = api.getThumbnailUrl;
 
     t.loadRecentFiles();
-    
-    updateService.isUpdateAvailable();
 
     // CALENDAR
     t.calendar = null;
