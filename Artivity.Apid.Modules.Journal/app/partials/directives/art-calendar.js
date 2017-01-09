@@ -1,13 +1,14 @@
-angular.module('explorerApp').directive('artCalendar', CalendarDirective);
+(function () {
+    angular.module('explorerApp').directive('artCalendar', CalendarDirective);
 
-function CalendarDirective() {
-    return {
-        scope: true,
-        template: '',
-        link: function(scope, element, attributes, api, $log, $uibModal) {
-            var s = scope;
+    function CalendarDirective() {
+        return {
+            scope: true,
+            template: '',
+            link: function (scope, element, attributes, api, $log, $uibModal) {
+                var s = scope;
 
-            var options = {
+                var options = {
                     header: {
                         left: 'prev,next today',
                         center: 'title',
@@ -62,6 +63,7 @@ function CalendarDirective() {
                         element.fullCalendar('render');
                     });
                 });
+            }
         }
-    }
-};
+    };
+})();

@@ -53,8 +53,9 @@
 
         function selectedItem(value) {
             if (value) {
+                t.dispatcher.raise('selectedItemChanging', value);
                 t.selectedItem = value;
-                t.dispatcher.raise('selectionChanged', value);
+                t.dispatcher.raise('selectedItemChanged', value);
             }
 
             return t.selectedItem;
@@ -62,10 +63,9 @@
 
         function selectedItems(values) {
             if (values) {
+                t.dispatcher.raise('selectedItemsChanging', values);
                 t.selectedItems = values;
-                t.dispatcher.raise('selectionChanged', values);
-
-                // TODO: Set the selected item to the first item which is contained in the data context.
+                t.dispatcher.raise('selectedItemsChanged', values);
             }
 
             return t.selectedItems;
