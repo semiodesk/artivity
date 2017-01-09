@@ -19,7 +19,7 @@ angular.module('explorerApp').controller('UpdateIndicatorDirectiveController', U
 function UpdateIndicatorDirectiveController(api, $scope, settingsService, $uibModal, updateService) {
     var t = this;
     t.modalInstance = null;
-
+    updateService.isUpdateAvailable();
     updateService.on('updateAvailable', function() {
         $("#btn-update").fadeIn();
 
