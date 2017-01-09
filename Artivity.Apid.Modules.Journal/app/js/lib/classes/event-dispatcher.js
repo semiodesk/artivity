@@ -1,4 +1,4 @@
-EventDispatcher = function() {
+function EventDispatcher() {
     var t = this;
 
     t.muted = false;

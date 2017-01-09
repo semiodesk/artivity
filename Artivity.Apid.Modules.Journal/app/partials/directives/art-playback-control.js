@@ -401,7 +401,11 @@ PlaybackControlDirectiveController.prototype.pause = function () {
 		t.playloop = undefined;
 		t.playing = false;
 
-		t.$digest();
+        try {
+            if (!t.$$phase) {
+                $scope.$digest();
+            }
+        } catch (error) {}
 	}
 };
 
