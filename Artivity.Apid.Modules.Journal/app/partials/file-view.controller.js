@@ -29,6 +29,42 @@ function FileViewController(api, $scope, $location, $routeParams, $uibModal, sel
         console.log("Agent: ", t.agent);
     });
 
+    t.initView = function () {
+        // Make the left and right panes resizable.
+        $(".ui-pane-left").resizable({
+            handles: "e"
+        });
+        $(".ui-pane-left").resize(t.updateCanvas);
+        $(".ui-pane-right").resizable({
+            handles: "w",
+            resize: function (event, ui) {
+                // Only resize the width of the element.
+                if (ui.position.left < 0) {
+                    ui.size.width = ui.originalSize.width + Math.abs(ui.position.left);
+                }
+
+                // Do not use the left CSS property at all because it breaks the table layout.
+                ui.position.left = 0;
+            }
+        });
+        $(".ui-pane-right").resize(t.updateCanvas);
+
+        // Prevent navigation when the user clicks on tab headers.
+        $('.tablist a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        $(document).ready(function () {
+            t.updateCanvas();
+
+            $(".ctl-history").focus();
+
+            // Update the canvas every time the window is resized.
+            window.addEventListener('resize', t.updateCanvas, false);
+        });
+    }
+
     // Load the user data.
     t.user = {};
 
@@ -48,7 +84,7 @@ function FileViewController(api, $scope, $location, $routeParams, $uibModal, sel
     t.selectedInfluence = null;
     t.previousInfluence = null;
 
-    selectionService.on('selectionChanged', function(item) {
+    selectionService.on('selectionChanged', function (item) {
         t.selectedInfluence = item;
 
         t.renderInfluence(item);
@@ -79,7 +115,7 @@ function FileViewController(api, $scope, $location, $routeParams, $uibModal, sel
                                     renderer.layerCache.load(data, function (layers) {
                                         console.log("Loaded layers: ", layers);
 
-                                        values(layers, function(uri, layer) {
+                                        values(layers, function (uri, layer) {
                                             // TODO: The layer state should be recorded and returned by the API.
                                             layer.visible = true;
 
@@ -172,7 +208,7 @@ function FileViewController(api, $scope, $location, $routeParams, $uibModal, sel
 
                                     activity = a;
                                     activity.influences = [];
-                                    
+
                                     activities[activity.uri] = activity;
                                 }
                             }
@@ -226,9 +262,7 @@ function FileViewController(api, $scope, $location, $routeParams, $uibModal, sel
                 if (!t.$$phase) {
                     $scope.$digest();
                 }
-            }
-            catch(error) {
-            }
+            } catch (error) {}
 
             // Note: this is experimental.
             //var heatmap = new HeatmapRenderer(canvas);
@@ -255,7 +289,56 @@ function FileViewController(api, $scope, $location, $routeParams, $uibModal, sel
             selectionService.selectedItem(influence);
         }
     };
-    
+
+    $(function () {
+
+    });
+
+    t.updateCanvas = function () {
+        // This seems to be the only reliable way to compute the correct height of the body area.
+        var bodyHeight = $('#window-view-container').height();
+
+        $('.layout-root > .row').each(function (n, row) {
+            if (!$(row).hasClass('expand')) {
+                bodyHeight -= $(row).height();
+            }
+        });
+
+        var buffer = document.getElementById("canvas");
+
+        if (buffer !== null) {
+            // To prevent flickering, store the current context before setting the size.
+            var bufferContext = buffer.getContext('2d');
+
+            // Fit the canvas into its parent.
+            var container = $(buffer);
+
+            // Create temp canvas and context
+            var temp = document.createElement('canvas');
+            temp.width = container.width();
+            temp.height = bodyHeight;
+
+            // Draw current canvas to temp canvas.
+            var tempContext = temp.getContext("2d");
+            tempContext.drawImage(bufferContext.canvas, 0, 0);
+
+            // Now resize the canvas.					
+            buffer.width = container.width();
+            buffer.height = bodyHeight;
+            buffer.style.height = bodyHeight + 'px';
+
+            // Draw temp canvas back to the current canvas
+            bufferContext.drawImage(tempContext.canvas, 0, 0);
+
+            // Update the buffer.
+            var t = angular.element(buffer).controller();
+
+            if (t && t.selectedInfluence) {
+                t.renderInfluence(t.selectedInfluence);
+            }
+        }
+    }
+
     // EXPORT
     t.exportFile = function () {
         api.exportFile(fileUri, t.file.label);
@@ -278,7 +361,7 @@ function FileViewController(api, $scope, $location, $routeParams, $uibModal, sel
             controller: 'PublishFileDialogController',
             controllerAs: 't',
             scope: $scope
-        }).closed.then(function() {
+        }).closed.then(function () {
             selectionService.selectedItem(influence);
             selectionService.unmute();
         });
@@ -327,4 +410,7 @@ function FileViewController(api, $scope, $location, $routeParams, $uibModal, sel
             });
         }
     };
+
+    // Initialize the view.
+    t.initView();
 }

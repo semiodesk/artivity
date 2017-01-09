@@ -14,6 +14,10 @@ function EditingStatsDirectiveController($scope, selectionService) {
 	var t = this;
 
     selectionService.on('selectionChanged', function(influence) {
-        $scope.$apply();
+        try {
+            if (!t.$$phase) {
+                $scope.$digest();
+            }
+        } catch (error) {}
     });
 };

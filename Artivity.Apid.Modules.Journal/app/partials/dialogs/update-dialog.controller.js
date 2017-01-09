@@ -9,14 +9,14 @@ function UpdateDialogController(api, $scope, $filter, $uibModalInstance, $sce, u
     t.progressAnimate = false;
     t.initialized = false;
 
-    updateService.isUpdateAvailable().then(init).catch(function(){});
+    updateService.isUpdateAvailable().then(init).catch(function () {});
 
     function init() {
         const util = require('util');
 
         var update = updateService.update;
 
-        if(util.isString(update.releaseNotesUrl) && update.releaseNotesUrl.indexOf('https') === 0) {
+        if (util.isString(update.releaseNotesUrl) && update.releaseNotesUrl.indexOf('https') === 0) {
             update.releaseNotesUrl = $sce.trustAsResourceUrl(update.releaseNotesUrl);
         }
 
@@ -29,9 +29,13 @@ function UpdateDialogController(api, $scope, $filter, $uibModalInstance, $sce, u
                 percentComplete: 100
             };
 
-            $scope.$apply();
-        }).catch(function() {
-            
+            try {
+                if (!t.$$phase) {
+                    $scope.$digest();
+                }
+            } catch (error) {}
+        }).catch(function () {
+
         });
 
         $uibModalInstance.closed.then(function () {
@@ -44,7 +48,11 @@ function UpdateDialogController(api, $scope, $filter, $uibModalInstance, $sce, u
     function onDownloadProgress(progress) {
         t.progress = progress;
 
-        $scope.$apply();
+        try {
+            if (!t.$$phase) {
+                $scope.$digest();
+            }
+        } catch (error) {}
     }
 
     t.downloadUpdate = function () {
