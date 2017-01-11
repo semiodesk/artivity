@@ -3,10 +3,8 @@ const path = require('path');
 
 const {app, BrowserWindow} = electron;
 
-
 var userData = app.getPath('userData');
 app.setPath('userData', path.join(userData, 'app'));
-
 
 app.on('ready', () => {
     // NOTE: Setting the background color prevents flickering on resize:
@@ -27,7 +25,7 @@ app.on('ready', () => {
     win.setMenuBarVisibility(false);
     win.setMaximizable(false);
     win.setMinimizable(false);
-    win.loadURL(`file://${__dirname}/index.html`);
+    win.loadURL(`file://${__dirname}/index.html#/start`);
     win.webContents.on('did-finish-load', function() {
         win.show();
     });

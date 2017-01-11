@@ -1,20 +1,18 @@
 var explorerApp = angular.module('explorerApp', [
 	'ngAnimate',
 	'ngInputModified',
-    'ngRoute',
+	'ngRoute',
 	'angularMoment',
 	'ui.bootstrap',
 	'ui.bootstrap.modal',
 	'ui.bootstrap.progressbar',
-    'pascalprecht.translate',
+	'pascalprecht.translate',
 	'cfp.hotkeys'
 ]);
 
 explorerApp.config(['$locationProvider', '$routeProvider',
-  function ($locationProvider, $routeProvider) {
-	  //$locationProvider.hashPrefix('#!');
-
-	$routeProvider.
+	function ($locationProvider, $routeProvider) {
+		$routeProvider.
 		when('/files', {
 			templateUrl: 'partials/file-list.html',
 			controller: 'FileListController',
@@ -48,4 +46,5 @@ explorerApp.config(['$locationProvider', '$routeProvider',
 		otherwise({
 			redirectTo: '/start'
 		});
-}]);
+	}
+]);

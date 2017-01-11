@@ -2,13 +2,21 @@
     angular.module('explorerApp').factory('windowService', windowService);
 
     function windowService() {
+        const remote = require('electron').remote;
         const window = require('electron').remote.getCurrentWindow();
 
         return {
+            currentWindow: currentWindow,
+            openWindow: openWindow,
+            close: close,
             setClosable: setClosable,
             setMinimizable: setMinimizable,
             setMaximizable: setMaximizable,
             setWidth: setWidth
+        }
+
+        function close() {
+            remote.getCurrentWindow().close();
         }
 
         function setClosable(value) {
@@ -45,6 +53,37 @@
             var bounds = window.getBounds();
 
             window.setSize(width, bounds.height, true);
+        }
+
+        function openWindow(url, options) {
+            if (options === undefined) {
+                options = {
+                    frame: false,
+                    show: false,
+                    width: 800,
+                    minWidth: 800,
+                    height: 600,
+                    minHeight: 600,
+                    icon: __dirname + '/img/icon.ico',
+                    backgroundColor: '#1D1D1D'
+                };
+            }
+
+            const BrowserWindow = remote.BrowserWindow;
+
+            var w = new BrowserWindow(options);
+            w.setMenuBarVisibility(false);
+            w.loadURL(url);
+            w.webContents.on('did-finish-load', function () {
+                w.show();
+                w.focus();
+            });
+
+            return w;
+        }
+
+        function currentWindow() {
+            return window;
         }
     }
 })();
