@@ -1,11 +1,3 @@
-/*
-https://coolors.co/17bebb-ffc914-fb5f1a-2e282a-76b041
-https://coolors.co/17bebb-ffc914-fb5f1a-D62828-76b041
-https://coolors.co/76b041-087E8B-e57c04-fb5f1a-d62828
-https://coolors.co/087e8b-e57c04-fb5f1a-d62828-5e2f63
-https://coolors.co/0baabc-e57c04-fb5f1a-d62828-7b3d82
-*/
-
 $accentColor: #F87806;
 $accentTextColor: #FFFFFF;
 $accentShadeColor: shade($accentColor, 20%);
@@ -19,12 +11,9 @@ $successColor: #5e2f63;
 $successTextColor: #FFFFFF;
 $iconFont: 'Material-Design-Iconic-Font';
 $iconFontSize: 21px;
-$textFont: 'Roboto',
-'Helvetica',
-'Arial',
-sans-serif;
+$textFont: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 $textColor: #F0F0F0;
-$labelTextColor: darken($textColor, 20%);
+$labelTextColor: darken($textColor, 25%);
 $labelBackgroundColor: transparent;
 $itemTextColor: $textColor;
 $itemBackgroundColor: rgba($textColor, .025);
@@ -393,7 +382,7 @@ button:focus,
 .nav-tabs.nav-tabs-top li.active a,
 .nav-tabs.nav-tabs-top li.active a:hover {
 	border: none;
-	border-top: 2px solid $accentColor;
+	border-top: 2px solid $textColor;
 	color: $textColor;
 }
 
@@ -1653,14 +1642,14 @@ button[disabled]:hover {
 
 .nav-pills>li.active>a {
 	background: transparent;
-	border-bottom: 2px solid $accentColor;
-	color: $accentColor;
+	border-bottom: 2px solid $textColor;
+	color: $textColor;
 }
 
 .nav-pills>li>a:hover,
 .nav-pills>li.active>a:hover {
 	cursor: pointer;
-	color: $accentColor;
+	color: $textColor;
 	background: transparent;
 	border-radius: 0;
 	transition: background linear .2s;

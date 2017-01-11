@@ -111,8 +111,8 @@ namespace Artivity.Apid.Plugin.Win
 
                 foreach (PluginManifestPluginFile file in manifest.PluginFile)
                 {
-                    var targetFolder = Path.Combine(location.FullName, manifest.PluginInstallPath);
-                    var targetFile = Path.Combine(targetFolder, file.GetName());
+                    var targetFolder = manifest.GetPluginTargetDirectory(location);
+                    var targetFile = Path.Combine(targetFolder.FullName, file.GetName());
 
                     if (!File.Exists(targetFile))
                     {
