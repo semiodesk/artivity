@@ -81,7 +81,7 @@ module.exports = function (grunt) {
                     livereload: true
                 },
                 files: jsFiles,
-                tasks: 'tags'
+                tasks: 'tags:build'
             },
             sass: {
                 options: {

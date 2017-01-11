@@ -621,7 +621,7 @@ h4 {
   overflow: hidden; }
 
 .scroll-container.layout-fix {
-  padding-left: 16px; }
+  padding-left: 12px; }
 
 .scroll-container.scroll-x {
   overflow-x: scroll !important; }
@@ -1247,9 +1247,9 @@ button[disabled]:hover {
   opacity: .2; }
 
 ::-webkit-scrollbar {
-  width: 16px;
+  width: 12px;
   /* for vertical scrollbars */
-  height: 16px;
+  height: 12px;
   /* for horizontal scrollbars */ }
 
 ::-webkit-scrollbar-track {
@@ -1574,16 +1574,22 @@ path.color1 {
 /* YASGUI */
 #editor {
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow-y: scroll;
-  overflow-x: hidden; }
+  width: 100%;
+  height: 100%;
+  background: #efefef; }
+
+#editor .yasgui,
+#editor .yasgui .tabpanel,
+#editor .yasgui .tabpanel .tab-content,
+#editor .yasgui .tabpanel .tab-content .wrapper {
+  height: 100%; }
 
 .yasgui {
-  background: none;
-  font-family: 'Roboto'; }
+  font-family: 'Roboto';
+  background: #efefef; }
+
+.yasgui .nav-tabs {
+  border-bottom: none !important; }
 
 .yasgui .nav-tabs .active {
   color: #FFFFFF;
@@ -1598,10 +1604,21 @@ path.color1 {
   width: 40px;
   text-align: center; }
 
+.yasgui button:hover {
+  color: #F87806; }
+
+.yasgui button[disabled] {
+  background: white !important;
+  color: #202020;
+  opacity: .6; }
+
+.yasgui .nav-tabs button:hover,
+.yasgui .nav-tabs li a:hover {
+  color: #202020 !important; }
+
 .yasgui .controlbar {
   display: none;
-  border-left: none;
-  background: #303030; }
+  border-left: none; }
 
 .yasgui .tab-content {
   padding: 0;
@@ -1609,7 +1626,11 @@ path.color1 {
 
 .yasgui .CodeMirror {
   border: none !important;
-  border-bottom: 4px solid #202020; }
+  border-bottom: 4px transparent;
+  border-top: none; }
+
+.yasgui .CodeMirror-cursors {
+  color: white !important; }
 
 .yasgui .CodeMirror-gutters {
   border: none !important;
@@ -1623,47 +1644,63 @@ path.color1 {
   position: relative;
   left: -7px; }
 
+.yasgui .yasqe .yasqe_buttons > .yasqe_share,
+.yasgui .yasqe .yasqe_buttons > .fullscreenToggleBtns {
+  margin-top: 12px; }
+
 .yasqe_queryButton.query_valid .btn {
-  float: left;
-  font-size: 30px;
+  font-size: 26px;
   line-height: 30px;
-  border-radius: 50%;
-  margin: 11px 20px 0 0;
-  padding: 10px 8px 10px 12px;
-  width: 45px;
-  height: 45px;
+  border-radius: 0;
+  width: 40px;
+  height: 40px;
   background: #F87806;
   color: white; }
 
-.yasgui .yasr {
-  background-color: #202020; }
+.yasqe_queryButton.query_valid .btn:hover {
+  background: #fa9337; }
 
-.yasgui .yasr .yasr_header {
-  position: relative;
-  top: -10px; }
+.yasqe_queryButton.query_valid svg path {
+  fill: #F87806 !important; }
+
+.yasgui .yasr {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  background-color: #efefef; }
 
 .yasgui .yasr .yasr_btn {
-  border: 1px solid #202020;
-  background: #303030;
-  color: #F0F0F0; }
+  border-radius: 0;
+  border: 1px solid #efefef;
+  background: white;
+  color: #202020; }
+
+.yasgui .yasr .yasr_btn.btn_icn {
+  color: #202020 !important; }
 
 .yasgui .yasr .yasr_btn:hover {
-  border: 1px solid #202020;
-  background: rgba(48, 48, 48, 0.4);
-  color: #F0F0F0; }
+  border: 1px solid #efefef;
+  background: white;
+  color: #F87806 !important; }
 
 .yasgui .yasr .yasr_btn.selected {
-  background: #F94C00;
-  border: 1px solid #202020; }
+  background: #F87806;
+  border: 1px solid #efefef; }
+
+.yasgui .yasr .yasr_btn.disabled:hover {
+  color: #202020 !important; }
+
+.yasgui .yasr .yasr_btn.selected:hover {
+  color: #FFFFFF !important; }
 
 .yasgui .yasr .yasr_btn svg path {
-  fill: #F0F0F0 !important; }
+  fill: #202020 !important; }
 
 .yasgui .yasr .sortIcons svg path {
-  fill: #b0b0b0 !important; }
+  fill: #202020 !important; }
 
 .yasgui .yasr .yasr_results {
-  margin: 0; }
+  margin: 7px;
+  overflow-y: scroll;
+  overflow-x: hidden; }
 
 .yasgui .yasr .btn_smallscreen,
 .yasgui .yasr .btn_fullscreen {
@@ -1673,50 +1710,50 @@ path.color1 {
 .yasgui .yasr input {
   border: none; }
 
-.yasgui .yasr label {
-  font-weight: normal; }
+.yasgui .yasr label,
+.yasgui .yasr .dataTables_wrapper .dataTables_info {
+  font-weight: normal;
+  color: #606060; }
 
 .yasgui .yasr .dataTables_wrapper .dtTopHeader {
   padding: 7px 7px 7px 0; }
 
 .yasgui .yasr .dataTables_wrapper .dataTables_info {
+  border: none !important;
+  margin: 0;
   padding: 7px; }
 
-.yasgui .yasr .dataTables_wrapper .dataTables_info {
-  color: #b0b0b0 !important;
-  border: none !important;
-  margin: 0; }
-
 .yasgui .yasr table.dataTable {
-  border: none; }
+  border: none;
+  border-collapse: collapse; }
 
 .yasgui .yasr table.dataTable thead th {
-  background: #303030 !important;
-  border-left: 1px solid #202020;
+  background: white !important;
   border-right: none;
-  color: #b0b0b0; }
+  border-left: 1px solid #efefef;
+  border-bottom: 1px solid #efefef;
+  color: #606060; }
 
 .yasgui .yasr table.dataTable tbody td {
   padding: 5px 10px;
   font-family: 'Roboto';
-  background: #303030;
-  border-left: 1px solid #202020;
-  border-bottom: 1px solid #202020; }
+  background: white;
+  border-left: 1px solid #efefef;
+  border-bottom: 1px solid #efefef; }
 
 .yasgui .yasr table.dataTable tbody tr td:first-child {
   text-align: center;
-  color: #999; }
+  color: #202020; }
 
 .yasgui .yasr .CodeMirror {
-  background: #303030;
-  color: #F0F0F0; }
+  background: white;
+  margin: 0 !important; }
 
 .yasgui .yasr .yasr_header {
   padding-bottom: 5px; }
 
-.yasgui .yasr table.dataTable tbody tr td a,
-.yasgui .yasr .CodeMirror .cm-string {
-  color: #00ceff; }
+.yasgui .yasr table.dataTable tbody tr td a {
+  color: #202020; }
 
 .yasgui .yasr .nonUri {
   color: #F0F0F0; }
@@ -1728,6 +1765,22 @@ path.color1 {
   position: relative;
   right: 47px;
   top: -45px !important; }
+
+.yasgui ::-webkit-scrollbar {
+  width: 12px;
+  /* for vertical scrollbars */
+  height: 12px;
+  /* for horizontal scrollbars */ }
+
+.yasgui ::-webkit-scrollbar-track {
+  background: transparent; }
+
+.yasgui ::-webkit-scrollbar-thumb {
+  background: #606060;
+  border: 2px solid #efefef; }
+
+.yasgui ::-webkit-scrollbar-thumb:hover {
+  background: #797979; }
 
 /* CONNECTION SPINNER */
 .spinner.connecting {

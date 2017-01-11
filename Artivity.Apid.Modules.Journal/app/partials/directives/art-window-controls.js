@@ -69,7 +69,7 @@
         }
 
         t.closeWindow = function (e) {
-            t.remote.app.exit();
+            windowService.close();
         }
     }
 })();

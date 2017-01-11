@@ -9,29 +9,45 @@
         }
     };
 
-    function KeyboardInputHandlerDirectiveController(api, $scope, hotkeys) {
-        $scope.navigateTo = function (path) {
+    function KeyboardInputHandlerDirectiveController(api, $scope, hotkeys, windowService) {
+        $scope.getUrlWithFile = function (file) {
             var url = window.location.href.split('#');
 
             if (url.length < 2) {
-                console.log('Navigation failed; unable to parse fragment from url:' + window.location.href);
+                console.log('Unable to parse fragment from url:' + window.location.href);
 
-                return;
+                return '';
+            } else {
+                return url[0].replace(/index.html/i, '') + file;
             }
+        }
 
-            window.location.href = url[0].replace(/index.html/i, '') + path;
+        $scope.getUrlWithFragment = function (fragment) {
+            var url = window.location.href.split('#');
+
+            if (url.length < 2) {
+                console.log('Unable to parse fragment from url:' + window.location.href);
+
+                return '';
+            } else {
+                return url[0] + '#' + fragment;
+            }
+        }
+
+        $scope.navigateToFile = function (file) {
+            var url = $scope.getUrlWithFile(file);
+
+            if (url !== '') {
+                window.location.href = url;
+            }
         };
 
-        $scope.navigateToFragment = function (pathFragment) {
-            var url = window.location.href.split('#');
+        $scope.navigateToFragment = function (fragment) {
+            var url = $scope.getUrlWithFragment(fragment);
 
-            if (url.length < 2) {
-                console.log('Navigation failed; unable to parse fragment from url:' + window.location.href);
-
-                return;
+            if (url !== '') {
+                window.location.href = url;
             }
-
-            window.location.href = url[0] + '#' + pathFragment;
         };
 
         hotkeys.add({
@@ -63,7 +79,9 @@
             combo: 'alt+q',
             description: 'Open the SPARQL query editor view.',
             callback: function () {
-                $scope.navigateToFragment('/query');
+                var url = $scope.getUrlWithFragment('/query');
+
+                windowService.openWindow(url);
             }
         });
 
@@ -71,12 +89,8 @@
             combo: 'alt+i',
             description: 'Opens the development tools.',
             callback: function () {
-                var remote = require('electron').remote;
-                var BrowserWindow = remote.getCurrentWindow();
-                BrowserWindow.openDevTools();
+                windowService.currentWindow().openDevTools();
             }
         });
-
-
     }
 })();
