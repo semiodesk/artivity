@@ -132,30 +132,14 @@ namespace Artivity.Apid.Plugin
 
             if (!Path.IsPathRooted(targetFolder))
             {
-                string appFolder = Directory.EnumerateFiles(location.FullName, ProcessName, SearchOption.AllDirectories).FirstOrDefault();
-
-                if (!string.IsNullOrEmpty(appFolder))
-                {
-                    targetFolder = Path.Combine(Path.GetDirectoryName(appFolder), targetFolder);
-                }
-                else
-                {
-                    targetFolder = Path.Combine(location.FullName, targetFolder);
-                }
+                targetFolder = Path.Combine(location.FullName, targetFolder);
             }
 
             DirectoryInfo folder = new DirectoryInfo(targetFolder);
 
             if (!folder.Exists)
             {
-                Logger.LogInfo("Trying to create plugin target directory: {0}", targetFolder);
-
-                folder = Directory.CreateDirectory(targetFolder);
-
-                if (!folder.Exists)
-                {
-                    Logger.LogError("Failed to create plugin target directory: {0}", targetFolder);
-                }
+                Logger.LogError("Plugin target directory does not exist: {0}", targetFolder);
             }
 
             return folder;
