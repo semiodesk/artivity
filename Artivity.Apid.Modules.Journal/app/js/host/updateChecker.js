@@ -1,12 +1,13 @@
-function UpdateChecker(appcastUrl, currentVersion) {
+function UpdateChecker(appcastUrl, currentVersion, appService) {
     var t = this;
 
-    t.init(appcastUrl, currentVersion);
+    t.init(appcastUrl, currentVersion, appService);
 }
 
-UpdateChecker.prototype.init = function (appcastUrl, currentVersion) {
+UpdateChecker.prototype.init = function (appcastUrl, currentVersion, appService) {
     var t = this;
 
+    t.appService = appService;
     t.appcastUrl = appcastUrl;
 
     console.log('Appcast URL:', t.appcastUrl);
@@ -91,11 +92,8 @@ UpdateChecker.prototype.isUpdateAvailable = function () {
 UpdateChecker.prototype.isUpdateDownloaded = function (update) {
     var t = this;
 
-    var remote = require('electron').remote;
-    var app = remote.app;
-
     // Note: This is platform dependent and should be moved into a factory.
-    update.localPath = app.getPath('temp') + "\\artivity-update-" + update.version + ".msi";
+    update.localPath = t.appService.configPath('temp') + "\\artivity-update-" + update.version + ".msi";
 
     return t.verifyUpdateInstallerSignature(update);
 }
@@ -135,7 +133,7 @@ UpdateChecker.prototype.downloadUpdate = function (update) {
             request.on('close', function () {
                 t.verifyUpdateInstallerSignature(update).then(function () {
                     resolve(update);
-                }).catch( function () {
+                }).catch(function () {
                     reject(update);
                 });
             });
@@ -159,8 +157,7 @@ UpdateChecker.prototype.installUpdate = function (update) {
             child.unref();
 
             // Close the Artivity app window and process.
-            const remote = require('electron').remote;
-            remote.app.exit();
+            t.appService.exit();
         } catch (err) {
             console.error(err);
 
@@ -169,11 +166,11 @@ UpdateChecker.prototype.installUpdate = function (update) {
     });
 }
 
-UpdateChecker.prototype.verifyUpdateInstallerSignature = function(update) {
+UpdateChecker.prototype.verifyUpdateInstallerSignature = function (update) {
     return new Promise(function (resolve, reject) {
-        try{
+        try {
             fs.accessSync("real_exixs_path", fs.R_OK | fs.W_OK)
-     
+
             var script = require('path').dirname(__filename) + '\\js\\host\\VerifySignature.exe';
             // Execute the signature verifier in a separate process.
             const execute = require('child_process').execFile;
@@ -195,8 +192,7 @@ UpdateChecker.prototype.verifyUpdateInstallerSignature = function(update) {
                 }
             });
 
-        }catch(e){
-        }
+        } catch (e) {}
     });
 }
 

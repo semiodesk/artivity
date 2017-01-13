@@ -1,7 +1,7 @@
 (function () {
     angular.module('explorerApp').controller('StartController', StartController);
 
-    function StartController($location, api, $http, windowService) {
+    function StartController($location, api, $http, windowService, appService) {
         var t = this;
 
         windowService.setClosable(true);
@@ -12,28 +12,54 @@
         t.showError = false;
         t.retry = retry;
 
+        t.connectTime = 0;
+        t.connectTimeout = appService.connectionTimeout();
+        t.connectInterval = null;
+        t.connectIntervalMs = appService.connectionInterval();
+
         function init() {
             showLoadingSpinner();
 
+            tryConnect();
+        }
+
+        function tryConnect() {
             $http.get(apid.endpointUrl + '/setup').then(
                 function (response) {
-                    if (response.data) {
-                        windowService.setWidth(991);
-
-                        $location.path("/setup");
-                    } else {
-                        t.showSpinner = false;
-
-                        $location.path("/files");
-                    }
+                    stopConnect();
+                    showStartView(response);
                 },
                 function () {
-                    showConnectionError();
+                    if (t.connectInterval === null) {
+                        t.connectInterval = setInterval(tryConnect, t.connectIntervalMs);
+                    } else if (t.connectTime < t.connectTimeout) {
+                        t.connectTime += t.connectIntervalMs;
+                    } else {
+                        stopConnect();
+                        showConnectionError();
+                    }
                 });
         }
 
-        function retry() {
-            init();
+        function stopConnect() {
+            if (t.connectInterval !== null) {
+                clearInterval(t.connectInterval);
+
+                t.connectInterval = null;
+                t.connectTime = 0;
+            }
+        }
+
+        function showStartView(response) {
+            t.showSpinner = false;
+
+            if (response.data) {
+                windowService.setWidth(991);
+
+                $location.path("/setup");
+            } else {
+                $location.path("/files");
+            }
         }
 
         function showLoadingSpinner() {
@@ -44,6 +70,10 @@
         function showConnectionError() {
             t.showSpinner = false;
             t.showError = true;
+        }
+
+        function retry() {
+            init();
         }
 
         init();
