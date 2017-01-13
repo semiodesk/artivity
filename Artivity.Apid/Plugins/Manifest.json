@@ -1,0 +1,56 @@
+﻿// This is a mockup of a new plugin manifest file format. In comparison
+// to the current XML-based format it has the following advantages:
+//
+// - Package multiple plugin versions in a single plugin directory.
+// - Target multiple application versions in a single plugin directory.
+// - More precise install target information.
+//
+// AUTHORS:
+//
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
+{
+    "agent": {
+        "uri": "http://adobe.com/products/illustrator",
+        "name": "Adobe Illustrator CC", // Fallback application name.
+        "icon": "Icon.png", // Fallback application icon.
+        "color": "#F27200" // Default application accent color.
+    },
+    "plugins": [
+        {
+            "version": "0.8.1", // Plugin version
+            "application": {
+                "processName": "Illustrator.exe",
+                "compatibility": { // Binary compatibility with the plugin files.
+                    "architecture": "x64",
+                    "version": "19.1.0",
+                    "minVersion": "19.1.0",
+                    "maxVersion": "19.1.0"
+                },
+                "locationHints": {
+                    "fileAssociations": {
+                        "processNameFilter": "Illustrator", // String to search in the list of associated files.
+                        "fileExtensions": [ ".ai" ], // Used for searching for associated files by the OS.
+                        "fileSamples": [ "Sample.ai" ] // Find files associated with these sample files.
+                    },
+                    "registry": {
+                        "keys": [ "ILST_19_1_0" ]
+                    }
+                }
+            },
+            "install": {
+                "relativeToBinary": true, // The install location is relative to the application executable.
+                "targetDirectory": "../../../Plug-ins/Extensions/",
+                "files": [
+                    {
+                        "file": "Artivity64_2015.aip",
+                        "targetDirectory": "../../../Plug-ins/Extensions/", // Override the default install location.
+                        "link": true // Create a symbolic link instead of copying the file.
+                    }
+                ]
+            }
+        }
+    ]
+}
