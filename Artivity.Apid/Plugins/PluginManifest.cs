@@ -88,6 +88,10 @@ namespace Artivity.Apid.Plugin
         [JsonIgnore]
         public string PluginInstallPath { get; set; }
 
+        [JsonIgnore]
+        [XmlElement("PluginInstallRelativeToBinary")]
+        public bool PluginInstallRelativeToBinary { get; set; }
+
         private List<PluginManifestPluginFile> _pluginFile = new List<PluginManifestPluginFile>();
 
         [JsonIgnore]
@@ -132,17 +136,34 @@ namespace Artivity.Apid.Plugin
 
             if (!Path.IsPathRooted(targetFolder))
             {
-                targetFolder = Path.Combine(location.FullName, targetFolder);
+                if (PluginInstallRelativeToBinary)
+                {
+                    // Some applications, such as Adobe Illustrator CC 2015, set a default registry entry (on Windows) which 
+                    // contains a wrong application install path. Therefore, we search the given location for the binary and 
+                    // install the plugins relative to the binary location as a fallback option.
+                    string appFolder = Directory.EnumerateFiles(location.FullName, ProcessName, SearchOption.AllDirectories).FirstOrDefault();
+
+                    if (!string.IsNullOrEmpty(appFolder))
+                    {
+                        targetFolder = Path.Combine(Path.GetDirectoryName(appFolder), targetFolder);
+                    }
+                }
+                else
+                {
+                    targetFolder = Path.Combine(location.FullName, targetFolder);
+                }
             }
 
-            DirectoryInfo folder = new DirectoryInfo(targetFolder);
+            DirectoryInfo directory = new DirectoryInfo(targetFolder);
 
-            if (!folder.Exists)
+            if (!directory.Exists)
             {
+                // Note: We intentionally do not implicitly try to create the plugin target directory here, because
+                // it would mess up the file system in the most likly event the target directory has been computed wrong.
                 Logger.LogError("Plugin target directory does not exist: {0}", targetFolder);
             }
 
-            return folder;
+            return directory;
         }
 
         /// <summary>
