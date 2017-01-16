@@ -188,7 +188,7 @@ namespace Artivity.Apid.IO
 
         private void WriteEntry(ZipFileWriterEntry entry)
         {
-            Logger.LogDebug("{0}", entry.FilePath);
+            //Logger.LogDebug("{0}", entry.FilePath);
 
             // If the file cannot be read because it is opened by another process, try to read it manually.
             using (Stream entryStream = Archive.CreateEntry(entry.EntryName, entry.CompressionLevel).Open())
@@ -226,7 +226,7 @@ namespace Artivity.Apid.IO
                 throw new ArgumentException("The folder path must be located inside the base directory.");
             }
 
-            Logger.LogDebug("{0}", directoryPath);
+            //Logger.LogDebug("{0}", directoryPath);
 
             // Add the sub directories before updating the file with it's contents to preserve memory.
             foreach (string d in Directory.EnumerateDirectories(directoryPath))

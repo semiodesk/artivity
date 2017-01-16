@@ -31,11 +31,11 @@ using log4net;
 
 namespace Artivity.Apid
 {
-    public class Logger
+    public class Logger : ILogger
     {
-        public static readonly ILog Log = LogManager.GetLogger("HttpService");
+        public readonly ILog Log = LogManager.GetLogger("HttpService");
 
-        public static void LogInfo(string msg, params object[] p)
+        public void LogInfo(string msg, params object[] p)
         {
             if (Log.IsInfoEnabled)
             {
@@ -43,7 +43,7 @@ namespace Artivity.Apid
             }
         }
 
-        public static void LogDebug(string msg, params object[] p)
+        public void LogDebug(string msg, params object[] p)
         {
             if (Log.IsDebugEnabled)
             {
@@ -51,7 +51,7 @@ namespace Artivity.Apid
             }
         }
 
-        public static void LogError(string msg, params object[] p)
+        public void LogError(string msg, params object[] p)
         {
             if (Log.IsErrorEnabled)
             {
@@ -59,7 +59,7 @@ namespace Artivity.Apid
             }
         }
 
-        public static void LogError(Exception ex)
+        public void LogError(Exception ex)
         {
             if (Log.IsErrorEnabled)
             {
@@ -67,7 +67,7 @@ namespace Artivity.Apid
             }
         }
 
-        public static void LogFatal(string msg, params object[] p)
+        public void LogFatal(string msg, params object[] p)
         {
             if (Log.IsFatalEnabled)
             {
@@ -75,7 +75,7 @@ namespace Artivity.Apid
             }
         }
 
-        public static HttpStatusCode LogInfo(HttpStatusCode status, string msg, params object[] p)
+        public HttpStatusCode LogInfo(HttpStatusCode status, string msg, params object[] p)
         {
             if (Log.IsInfoEnabled)
             {
@@ -85,7 +85,7 @@ namespace Artivity.Apid
             return status;
         }
 
-        public static HttpStatusCode LogRequest(HttpStatusCode status, Request request)
+        public HttpStatusCode LogRequest(HttpStatusCode status, Request request)
         {
             if (Log.IsInfoEnabled)
             {
@@ -95,7 +95,7 @@ namespace Artivity.Apid
             return status;
         }
 
-        public static HttpStatusCode LogRequest(HttpStatusCode status, string route, string method, string content)
+        public HttpStatusCode LogRequest(HttpStatusCode status, string route, string method, string content)
         {
             if(Log.IsInfoEnabled)
             { 
@@ -110,7 +110,7 @@ namespace Artivity.Apid
             return status;
         }
 
-        public static HttpStatusCode LogError(HttpStatusCode status, Exception e)
+        public HttpStatusCode LogError(HttpStatusCode status, Exception e)
         {
             if (Log.IsErrorEnabled)
             {
@@ -120,7 +120,7 @@ namespace Artivity.Apid
             return status;
         }
 
-        public static HttpStatusCode LogError(HttpStatusCode status, string msg, params object[] p)
+        public HttpStatusCode LogError(HttpStatusCode status, string msg, params object[] p)
         {
             if (Log.IsErrorEnabled)
             {

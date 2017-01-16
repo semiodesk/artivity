@@ -133,7 +133,7 @@ namespace Artivity.Apid
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex.Message);
+                    Platform.Logger.LogError(ex.Message);
                 }
             }
 
@@ -165,7 +165,7 @@ namespace Artivity.Apid
             // Listen to SIGINT for cancelling the daemon.
             Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
             {
-                Logger.LogInfo("Received SIGINT. Shutting down.");
+                Platform.Logger.LogInfo("Received SIGINT. Shutting down.");
 
                 Service.Stop();
 

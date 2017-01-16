@@ -38,7 +38,7 @@ namespace Artivity.Apid.Modules
 
         #region Constructors
 
-        public JournalModule()
+        public JournalModule() 
         {
             _namespace = GetType().Assembly.GetName().Name + '.' + DocumentRoot.TrimEnd('/').Replace('/', '.');
         }

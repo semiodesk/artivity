@@ -171,14 +171,15 @@ namespace Artivity.Apid
         {
             string version = typeof(HttpService).Assembly.GetName().Version.ToString();
 
-            Logger.LogInfo("--- Artivity API Service, Version {0} ---", version);
-
             SemiodeskDiscovery.Discover();
 
             if (PlatformProvider == null)
             {
                 PlatformProvider = new PlatformProvider(ApplicationData, UserFolder, Username);
             }
+
+            PlatformProvider.Logger.LogInfo("--- Artivity API Service, Version {0} ---", version);
+
 
             // Make sure the database is started.
             StartDatabase();
@@ -203,7 +204,7 @@ namespace Artivity.Apid
 
         public void Stop(bool waitForEnd = true)
         {
-            Logger.LogInfo("Stopping service..");
+            PlatformProvider.Logger.LogInfo("Stopping service..");
 
             StopWatchdog();
 
@@ -235,7 +236,7 @@ namespace Artivity.Apid
             hostConfig.RewriteLocalhost = true;
             hostConfig.UnhandledExceptionCallback = new Action<Exception>((ex) =>
             {
-                Logger.LogError(ex.Message, ex);
+                PlatformProvider.Logger.LogError(ex.Message, ex);
             });
 
             using (_serviceHost = new NancyHost(customBootstrapper, hostConfig, new Uri("http://localhost:" + _servicePort)))
@@ -245,7 +246,7 @@ namespace Artivity.Apid
                     // Start the Nancy service host.
                     _serviceHost.Start();
 
-                    Logger.LogInfo("Started HTTP service on port {0}", _servicePort);
+                    PlatformProvider.Logger.LogInfo("Started HTTP service on port {0}", _servicePort);
 
                     using (var monitor = FileSystemMonitor.Instance)
                     {
@@ -263,11 +264,11 @@ namespace Artivity.Apid
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex);
+                    PlatformProvider.Logger.LogError(ex);
                 }
                 finally
                 {
-                    Logger.LogInfo("Stopped HTTP service on port {0}", _servicePort);
+                    PlatformProvider.Logger.LogInfo("Stopped HTTP service on port {0}", _servicePort);
                 }
             }
 
@@ -285,9 +286,9 @@ namespace Artivity.Apid
                 string deploymentDir = PlatformProvider.DeploymentDir;
 
                 // We are running on Windows or Mac. Start the database using TinyVirtuoso..
-                Logger.LogInfo("Starting the OpenLink Virtuoso database..");
-                Logger.LogInfo("Database folder: {0}", PlatformProvider.DatabaseFolder);
-                Logger.LogInfo("Deployment folder: {0}", PlatformProvider.DeploymentDir);
+                PlatformProvider.Logger.LogInfo("Starting the OpenLink Virtuoso database..");
+                PlatformProvider.Logger.LogInfo("Database folder: {0}", PlatformProvider.DatabaseFolder);
+                PlatformProvider.Logger.LogInfo("Deployment folder: {0}", PlatformProvider.DeploymentDir);
 
                 // The database is started in the user's application data folder on port 8273..
                 _virtuoso = new TinyVirtuoso(PlatformProvider.ArtivityDataFolder, deploymentDir, false);
@@ -310,8 +311,8 @@ namespace Artivity.Apid
                     LoadOntologies();
                 }
 
-                Logger.LogDebug("Database connection: {0}", nativeConnectionString);
-                Logger.LogInfo("Started database on port {0}", _virtuosoPort);
+                PlatformProvider.Logger.LogDebug("Database connection: {0}", nativeConnectionString);
+                PlatformProvider.Logger.LogInfo("Started database on port {0}", _virtuosoPort);
             }
             else
             {
@@ -331,7 +332,7 @@ namespace Artivity.Apid
 
         private void InitializeSoftwareAgentPlugins()
         {
-            Logger.LogInfo("Initializing software agent plugins..");
+            PlatformProvider.Logger.LogInfo("Initializing software agent plugins..");
 
             DirectoryInfo pluginDirectory = new DirectoryInfo(PlatformProvider.PluginDir);
 
@@ -373,7 +374,7 @@ namespace Artivity.Apid
         {
             if (_virtuosoInstance.ProcessRunning)
             {
-                Logger.LogInfo("Stopping Database..");
+                PlatformProvider.Logger.LogInfo("Stopping Database..");
 
                 _virtuosoInstance.Stop(false);
             }
@@ -398,7 +399,7 @@ namespace Artivity.Apid
         {
             using (IStore store = StoreFactory.CreateStore(ModelProvider.ConnectionString))
             {
-                Logger.LogInfo("Loading ontologies..");
+                PlatformProvider.Logger.LogInfo("Loading ontologies..");
 
                 FileInfo f = new FileInfo(System.Reflection.Assembly.GetAssembly(typeof(HttpService)).Location);
 
@@ -412,7 +413,7 @@ namespace Artivity.Apid
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(e.Message);
+                    PlatformProvider.Logger.LogError(e.Message);
                 }
             }
         }

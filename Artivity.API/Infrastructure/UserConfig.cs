@@ -20,54 +20,53 @@
 //
 // AUTHORS:
 //
+//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Semiodesk.Trinity;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
 
-namespace Artivity.DataModel
+namespace Artivity.Apid.Platforms
 {
-    public interface IModelProvider
+    public class UserConfig
     {
         #region Members
 
-        IStore Store { get; }
+        [JsonIgnore]
+        public bool IsNew { get; set; }
 
-        string ConnectionString { get; set; }
+        public string Uid { get; set; }
 
-        string NativeConnectionString { get; set; }
+        public List<string> SoftwarePaths { get; set; }
 
-        Uri Agents { get; set; }
-
-        Uri Activities { get; set; }
-
-        Uri WebActivities { get; set; }
-
-        string Uid { get; set; }
+        public bool RunSetup { get; set; }
 
         #endregion
 
         #region Methods
 
-        bool CheckAgents();
+        public UserConfig()
+        {
+            SoftwarePaths = new List<string>();
+        }
 
-        bool CheckOntologies();
-
-        void InitializeAgents();
-
-        int ReleaseStore();
-
-        IModelGroup GetAll();
-
-        IModelGroup GetAllActivities();
-
-        IModel GetAgents();
-
-        IModel GetActivities();
-
-        IModel GetWebActivities();
+        public string GetUserId()
+        {
+            if (Uid.StartsWith("urn:art:uid:", StringComparison.InvariantCulture))
+            {
+                return Uid.Substring(Uid.LastIndexOf(':') + 1);
+            }
+            else
+            {
+                return Uid;
+            }
+        }
 
         #endregion
     }
