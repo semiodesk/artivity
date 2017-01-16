@@ -354,6 +354,20 @@
             t.renderInfluence(t.selectedInfluence);
         }
 
+        hotkeys.add({
+            combo: 'f10',
+            description: 'Toggle rendering of the editing frequency of influenced regions.',
+            callback: function () {
+                t.toggleEditingFrequency();
+            }
+        });
+
+        t.toggleEditingFrequency = function() {
+            renderer.renderEditingFrequency = !renderer.renderEditingFrequency;
+
+            t.renderInfluence(t.selectedInfluence);
+        }
+
         // EXPORT
         t.exportFile = function () {
             api.exportFile(fileUri, t.file.label);
