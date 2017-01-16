@@ -11,6 +11,7 @@ function DocumentRenderer(canvas, endpointUrl) {
 
     t.renderCache = new DocumentRendererCache();
     t.renderCache.endpointUrl = endpointUrl;
+    t.renderInfluencedRegions = false;
 
     t.renderedLayers = [];
 
@@ -180,6 +181,58 @@ DocumentRenderer.prototype.render = function (influence) {
         var g = s.graphics;
         g.beginFill('rgba(255,0,0,.2)');
         g.drawRect(influence.x, -influence.y, influence.w, influence.h);
+
+        t.scene.addChild(s);
+    }
+
+    if (t.renderInfluencedRegions && t.influences) {
+        var entities = {};
+
+        var s = new createjs.Shape();
+        var g = s.graphics;
+
+        var x = Math.ceil(255 / t.influences.length);
+        var r = 0;
+        var b = 255;
+
+        for (var i = t.influences.length - 1; i > 0; i--) {
+            var inf = t.influences[i];
+
+            if(new Date(inf.time) > time) {
+                break;
+            }
+
+            if (inf.w > 0 && inf.h > 0) {
+                g.setStrokeStyle(1);
+                g.beginFill('rgba(' + r + ',0,' + b + ',.2)');
+                g.drawRect(inf.x, -inf.y, inf.w, inf.h);
+            }
+
+            /*
+            if(inf.changes) {
+                for(j in inf.changes) {
+                    var entity = inf.changes[j].entity;
+
+                    if(entity) {
+                        var editCount = entities[entity];
+
+                        if(editCount) {
+                            editCount++;
+                        } else {
+                            editCount = 1;
+                        }
+
+                        entities[entity] = editCount;
+                    }
+                }
+            }
+            */
+
+            r = Math.min(r + x, 255);
+            b = Math.max(b - x, 0);
+
+            console.log(inf);
+        }
 
         t.scene.addChild(s);
     }
