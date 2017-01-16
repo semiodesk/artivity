@@ -30,30 +30,13 @@ using System;
 
 namespace Artivity.DataModel
 {
-	[RdfClass(PROV.Entity)]
-	public class Entity : Resource
+	[RdfClass(PROV.Publish)]
+    public class Publish : Activity
 	{
-		#region Members
-
-		[RdfProperty(PROV.qualifiedGeneration)]
-		public Generation Generation { get; set; }
-
-		[RdfProperty(PROV.qualifiedInvalidation)]
-		public Invalidation Invalidation { get; set; }
-
-		[RdfProperty(PROV.specializationOf)]
-		public Entity GenericEntity { get; set; }
-
-		[RdfProperty(PROV.wasRevisionOf)]
-		public Entity RevisedEntitiy { get; set; }
-
-		#endregion
-
 		#region Constructors
 
-        public Entity(Uri uri) : base(uri) {}
-        public Entity(string uri) : base(uri) { }
-		#endregion
-    }
-}
+        public Publish(Uri uri) : base(uri) { }
 
+		#endregion
+	}
+}
