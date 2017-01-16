@@ -108,7 +108,8 @@ namespace Artivity.Apid.Protocols.Authentication
             {
                 ClientState = HttpAuthenticationClientState.Error;
 
-                Logger.LogError(ex);
+                if (Logger != null)
+                    Logger.LogError(ex);
             }
         }
 

@@ -112,12 +112,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\INotifyProgressChanged.cs" />
-    <Compile Include="Helpers\TaskProgressInfo.cs" />
-    <Compile Include="Helpers\TaskProgressInfoList.cs" />
     <Compile Include="Helpers\ProgressStream.cs" />
     <Compile Include="Helpers\ProgressStreamContent.cs" />
-    <Compile Include="IO\ArchiveManifestCreator.cs" />
     <Compile Include="IO\BackupWriter.cs" />
     <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />
     <Compile Include="Protocols\Atom\AtomLink.cs" />
@@ -139,12 +135,7 @@
     <Compile Include="IO\FileEventRecord.cs" />
     <Compile Include="IO\FileSystemWatcherInfo.cs" />
     <Compile Include="Modules\AccountsModule.cs" />
-    <Compile Include="Modules\ApiModule.cs" />
     <Compile Include="Modules\AgentsModule.cs" />
-    <Compile Include="Parameters\ActivityParameter.cs" />
-    <Compile Include="Parameters\CommentParameter.cs" />
-    <Compile Include="Platforms\UserConfig.cs" />
-    <Compile Include="Platforms\IPlatformProvider.cs" />
     <Compile Include="Platforms\OSX\ThumbnailProvider.cs" />
     <Compile Include="Platforms\IThumbnailProvider.cs" />
     <Compile Include="Platforms\Win\ThumbnailProvider.cs" />
@@ -156,12 +147,9 @@
     <Compile Include="Plugins\PluginManifestRegistryKey.cs" />
     <Compile Include="Plugins\SoftwareAgentPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Modules\ModuleBase.cs" />
-    <Compile Include="Parameters\AgentParameter.cs" />
     <Compile Include="IO\FileSystemMonitor.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Options.cs" />
-    <Compile Include="Parameters\UriParameter.cs" />
     <Compile Include="Modules\UriModule.cs" />
     <Compile Include="IO\FileInfoCache.cs" />
     <Compile Include="Platforms\OSX\CoreFoundation.cs" />
@@ -195,13 +183,7 @@
     <Compile Include="Helpers\JsonNetBodyDeserializer.cs" />
     <Compile Include="Helpers\JsonNetSerializer.cs" />
     <Compile Include="Helpers\NancyHelpers.cs" />
-    <Compile Include="Modules\ActivitiesModule.cs" />
     <Compile Include="Modules\ExportModule.cs" />
-    <Compile Include="Modules\ImportModule.cs" />
-    <Compile Include="IO\ArchiveManifest.cs" />
-    <Compile Include="IO\ArchiveWriter.cs" />
-    <Compile Include="IO\ArchiveReader.cs" />
-    <Compile Include="IO\FileNameEncoder.cs" />
     <Compile Include="Services\OnlineServiceClientSession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -317,6 +299,10 @@
   </ProjectExtensions>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Artivity.API\Artivity.API.csproj">
+      <Project>{e5d40ad8-4cdc-421a-9b71-1b4959d09671}</Project>
+      <Name>Artivity.API</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
       <Name>Artivity.DataModel</Name>

@@ -160,7 +160,7 @@ namespace Artivity.Apid.Plugin
             {
                 // Note: We intentionally do not implicitly try to create the plugin target directory here, because
                 // it would mess up the file system in the most likly event the target directory has been computed wrong.
-                Logger.LogError("Plugin target directory does not exist: {0}", targetFolder);
+                //Logger.LogError("Plugin target directory does not exist: {0}", targetFolder);
             }
 
             return directory;

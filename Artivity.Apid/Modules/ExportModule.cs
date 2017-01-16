@@ -61,7 +61,7 @@ namespace Artivity.Apid.Modules
 
                 if (!IsUri(entityUri) || string.IsNullOrEmpty(fileName))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 string minStartTime = Request.Query.minStartTime;
@@ -91,7 +91,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(fileName))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return Backup(fileName);
@@ -103,7 +103,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(taskId))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetBackupStatus(taskId);
@@ -123,11 +123,11 @@ namespace Artivity.Apid.Modules
                 string targetPath = Path.Combine(targetFolder, targetFile);
 
                 ArchiveWriter writer = new ArchiveWriter(PlatformProvider, ModelProvider);
-                writer.Write(targetPath, entityUri, minTime);
+                writer.Write(entityUri, targetPath, minTime);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Message);
+                PlatformProvider.Logger.LogError(ex.Message);
 
                 return HttpStatusCode.InternalServerError;
             }
@@ -151,7 +151,7 @@ namespace Artivity.Apid.Modules
 
                 try
                 {
-                    Logger.LogInfo("Started backup task with id: {0}", progress.Id);
+                    PlatformProvider.Logger.LogInfo("Started backup task with id: {0}", progress.Id);
 
                     writer.WriteAsync(targetPath, progress);
                 }
@@ -166,7 +166,7 @@ namespace Artivity.Apid.Modules
             }
             catch (Exception e)
             {
-                Logger.LogError(e.Message);
+                PlatformProvider.Logger.LogError(e.Message);
 
                 return HttpStatusCode.InternalServerError;
             }
@@ -180,7 +180,7 @@ namespace Artivity.Apid.Modules
             }
             else
             {
-                return Logger.LogError(HttpStatusCode.NotFound, "Task with id {0} not found.", taskId);
+                return PlatformProvider.Logger.LogError(HttpStatusCode.NotFound, "Task with id {0} not found.", taskId);
             }
         }
 
