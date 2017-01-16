@@ -1,11 +1,11 @@
 (function () {
 	angular.module('explorerApp').factory('updateService', updateService);
 
-	updateService.$inject = [];
+	updateService.$inject = ['appService'];
 
-	function updateService() {
+	function updateService(appService) {
 		var appcastUrl = "https://static.semiodesk.com/artivity/win/appcast.xml";
-		var checker = new UpdateChecker(appcastUrl);
+		var checker = new UpdateChecker(appcastUrl, undefined, appService);
 
 		var downloading = false;
 		var currentDownload;
