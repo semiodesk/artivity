@@ -5,10 +5,12 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
+@prefix nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#> .
 @prefix art: <http://w3id.org/art/terms/1.0/> .
 @prefix artf: <http://w3id.org/art/terms/1.0/features/> .
 @prefix geo: <http://www.opengis.net/ont/geosparql#> .
 @prefix qudt: <http://qudt.org/vocab/unit#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
 
 art: a owl:Ontology .
 
@@ -326,3 +328,24 @@ art:HttpAuthenticationProtocol a rdfs:Class ;
 
 art:HttpAuthenticationParameter a rdfs:Class ;
 	rdfs:label "HttpAuthenticationParameter" .
+
+nie:InformationElement rdfs:subClassOf art:Entity .
+
+art:PartialRenderingDataObject
+	rdf:type rdfs:Class ;
+    rdfs:subClassOf art:RenderingDataObject ;
+    rdfs:label "PartialRenderingDataObject"@en ;
+	rdfs:comment "Rasterized bitmap data of a specific region of an image."@en ;
+    rdfs:isDefinedBy art: ;
+	dcterms:issued "2016-06-06"^^xsd:date ;
+    dcterms:modified "2016-06-06"^^xsd:date .
+
+art:RenderingDataObject
+	rdf:type rdfs:Class ;
+    rdfs:subClassOf nfo:FileDataObject ;
+    rdfs:label "RenderingDataObject"@en ;
+	rdfs:comment "Rasterized bitmap data of the entire extents of an image."@en ;
+    rdfs:isDefinedBy art: ;
+	dcterms:issued "2016-06-06"^^xsd:date ;
+    dcterms:modified "2016-06-06"^^xsd:date .
+    
