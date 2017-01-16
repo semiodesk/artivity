@@ -32,7 +32,7 @@ using System.Collections.Generic;
 namespace Artivity.DataModel
 {
 	[RdfClass(NFO.FileDataObject)]
-	public class FileDataObject : Entity
+	public class FileDataObject : Resource
 	{
 		#region Members
 
@@ -62,6 +62,7 @@ namespace Artivity.DataModel
 		#region Constructors
 
 		public FileDataObject(Uri uri) : base(uri) {}
+        public FileDataObject(string uri) : base(uri) { }
 
 		#endregion
 	}
