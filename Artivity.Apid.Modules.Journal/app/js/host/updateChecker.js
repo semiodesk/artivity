@@ -191,8 +191,9 @@ UpdateChecker.prototype.verifyUpdateInstallerSignature = function (update) {
                     resolve(update);
                 }
             });
-
-        } catch (e) {}
+        } catch (e) {
+            reject(update);
+        }
     });
 }
 
