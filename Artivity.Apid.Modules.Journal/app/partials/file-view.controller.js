@@ -1,7 +1,7 @@
 (function () {
     angular.module('explorerApp').controller('FileViewController', FileViewController);
 
-    function FileViewController(api, $rootScope, $scope, $location, $routeParams, $uibModal, selectionService) {
+    function FileViewController(api, $rootScope, $scope, $location, $routeParams, $uibModal, selectionService, hotkeys) {
         var t = this;
         var fileUri = $location.search().uri;
 
@@ -276,6 +276,7 @@
 
         t.renderInfluence = function (influence) {
             if (influence !== undefined) {
+                renderer.influences = t.influences;
                 renderer.render(influence);
 
                 // Warning: this is slow.
@@ -337,6 +338,20 @@
                     t.renderInfluence(t.selectedInfluence);
                 }
             }
+        }
+
+        hotkeys.add({
+            combo: 'f9',
+            description: 'Toggle rendering of influenced regions.',
+            callback: function () {
+                t.toggleInfluencedRegions();
+            }
+        });
+
+        t.toggleInfluencedRegions = function() {
+            renderer.renderInfluencedRegions = !renderer.renderInfluencedRegions;
+
+            t.renderInfluence(t.selectedInfluence);
         }
 
         // EXPORT
