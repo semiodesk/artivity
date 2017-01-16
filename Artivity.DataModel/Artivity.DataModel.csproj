@@ -40,9 +40,12 @@
     <Compile Include="IViewModule.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />
+    <Compile Include="ObjectModel\Activities\Publish.cs" />
     <Compile Include="ObjectModel\Comment.cs" />
     <Compile Include="ObjectModel\Communication.cs" />
     <Compile Include="ObjectModel\Entities\Folder.cs" />
+    <Compile Include="ObjectModel\Entities\InformationElement.cs" />
+    <Compile Include="ObjectModel\FileDataObject\RenderingDataObject.cs" />
     <Compile Include="ObjectModel\HttpAuthenticationProtocol.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
     <Compile Include="ObjectModel\HttpAuthenticationParameter.cs" />
@@ -59,7 +62,7 @@
     <Compile Include="ObjectModel\Association.cs" />
     <Compile Include="ObjectModel\Entities\XmlAttribute.cs" />
     <Compile Include="ObjectModel\Entities\XmlElement.cs" />
-    <Compile Include="ObjectModel\Entities\FileDataObject.cs" />
+    <Compile Include="ObjectModel\FileDataObject\FileDataObject.cs" />
     <Compile Include="ObjectModel\Role.cs" />
     <Compile Include="ObjectModel\Entities\WebDataObject.cs" />
     <Compile Include="ModelProvider.cs" />
@@ -96,6 +99,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Ontologies\art - Copy.ttl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Ontologies\artf.ttl" />
     <None Include="Ontologies\nao.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
