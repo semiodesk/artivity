@@ -349,3 +349,7 @@ art:RenderingDataObject
 	dcterms:issued "2016-06-06"^^xsd:date ;
     dcterms:modified "2016-06-06"^^xsd:date .
     
+art:Project a rdfs:Class;
+  rdfs:label "Project";
+  rdfs:subClassOf prov:Collection ;
+  rdfs:comment "A collaborative enterprise, involving research or design, that is carefully planned to achieve a particular aim.".

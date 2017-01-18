@@ -20,18 +20,7 @@
 	<div class="row expand">
 		<div class="scroll-container scroll-y">
 			<div class="layout-container" style="padding: 8px;">
-				<div ng-switch on="t.files.length > 0">
-					<div ng-switch-when="true">
-						<ul id="file-list" class="cards">
-							<li ng-repeat="file in t.files">
-								<div art-file-card file="{{file}}"></div>
-							</li>
-						</ul>
-					</div>
-					<div ng-switch-default class="text-center">
-						<h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
-					</div>
-				</div>
+				<div art-file-list files="{{t.files}}"></div>
 			</div>
 		</div>
 	</div>
