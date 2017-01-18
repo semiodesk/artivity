@@ -45,7 +45,10 @@ namespace Artivity.DataModel
 		public Entity GenericEntity { get; set; }
 
 		[RdfProperty(PROV.wasRevisionOf)]
-		public Entity RevisedEntitiy { get; set; }
+		public Entity RevisedEntity { get; set; }
+
+        [RdfProperty(PROV.hadPrimarySource)]
+        public Entity PrimarySource { get; set; }
 
 		#endregion
 

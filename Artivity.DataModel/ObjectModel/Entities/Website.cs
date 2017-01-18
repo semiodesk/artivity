@@ -25,37 +25,27 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Semiodesk.Trinity;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.Comment)]
-    public class Comment : Entity
+    [RdfClass(NFO.Website)]
+    public class Website : Entity
     {
         #region Members
 
-        [RdfProperty(NAO.creator)] // should be in communication and PROV.agent
-        public Agent Author { get; set; }
-
-        [RdfProperty(PROV.atTime)]
-        public DateTime Time { get; set; }
-
-        [RdfProperty(RDFS.comment)]
-        public string Message { get; set; }
+        [RdfProperty(NIE.title)]
+        public string Title { get; set; }
 
         #endregion
 
         #region Constructors
 
-        public Comment(Uri uri)
-            : base(uri)
-        {
-        }
+        public Website(Uri uri) : base(uri) { }
 
         #endregion
     }
 }
+

@@ -17,33 +17,11 @@
 
         t.activities = [];
 
-        // RECENTLY USED FILES
-        t.files = [];
-        t.hasFiles = false;
-
-        t.loadRecentFiles = function () {
-            api.getRecentFiles().then(function (data) {
-                for (var i = 0; i < data.length; i++) {
-                    var file = data[i];
-
-                    if (i < t.files.length && t.files[i].uri == file.uri) {
-                        break;
-                    }
-
-                    t.files.splice(i, 0, file);
-                }
-
-                t.hasFiles = data.length > 0;
-            });
-        };
-
         t.getFileName = fileService.getFileName;
         t.getFileNameWithoutExtension = fileService.getFileNameWithoutExtension;
         t.getFileExtension = fileService.getFileExtension;
         t.hasFileThumbnail = api.hasThumbnail;
         t.getFileThumbnailUrl = api.getThumbnailUrl;
-
-        t.loadRecentFiles();
 
         // CALENDAR
         t.calendar = null;
@@ -75,9 +53,9 @@
         // REFRESH
         window.addEventListener("focus", function (e) {
             // Redraw the scene to prevent blank scenes when switching windows.		
-            if (!document.hidden) {
-                t.loadRecentFiles();
-            }
+            //if (!document.hidden) {
+            //    t.loadRecentFiles();
+            //}
         });
     }
 })();

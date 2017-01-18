@@ -43,8 +43,15 @@
     <Compile Include="ObjectModel\Activities\Publish.cs" />
     <Compile Include="ObjectModel\Comment.cs" />
     <Compile Include="ObjectModel\Communication.cs" />
+    <Compile Include="ObjectModel\Entities\Collection.cs" />
     <Compile Include="ObjectModel\Entities\Folder.cs" />
+    <Compile Include="ObjectModel\Entities\Image.cs" />
     <Compile Include="ObjectModel\Entities\InformationElement.cs" />
+    <Compile Include="ObjectModel\Entities\Post.cs" />
+    <Compile Include="ObjectModel\Entities\Project.cs" />
+    <Compile Include="ObjectModel\Entities\RasterImage.cs" />
+    <Compile Include="ObjectModel\Entities\VectorImage.cs" />
+    <Compile Include="ObjectModel\Entities\Website.cs" />
     <Compile Include="ObjectModel\FileDataObject\RenderingDataObject.cs" />
     <Compile Include="ObjectModel\HttpAuthenticationProtocol.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
@@ -121,6 +128,7 @@
     <None Include="Ontologies\rdfs.n3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Ontologies\sioc.rdf" />
     <None Include="Ontologies\xml.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
