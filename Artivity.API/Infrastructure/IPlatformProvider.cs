@@ -72,6 +72,8 @@ namespace Artivity.Apid.Platforms
 
         string OntologyDir { get; }
 
+        bool RequiresAuthentication { get; }
+
         #endregion
 
         #region Platform

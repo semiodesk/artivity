@@ -7,7 +7,8 @@ var explorerApp = angular.module('explorerApp', [
 	'ui.bootstrap.modal',
 	'ui.bootstrap.progressbar',
 	'pascalprecht.translate',
-	'cfp.hotkeys'
+	'cfp.hotkeys',
+	'ngDragDrop'
 ]);
 
 explorerApp.config(['$locationProvider', '$routeProvider',

@@ -75,7 +75,9 @@
                         return a.name.localeCompare(b.name);
                     });
 
-                    s.form.$setPristine();
+                    // This somehow started throwing errors after i added the project list ~ Mo
+                    if( s.form != undefined)
+                        s.form.$setPristine();
                 });
             }
 

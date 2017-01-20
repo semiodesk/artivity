@@ -78,14 +78,17 @@
     <Compile Include="Archive\ArchiveManifestCreator.cs" />
     <Compile Include="Archive\ArchiveReader.cs" />
     <Compile Include="Archive\ArchiveWriter.cs" />
+    <Compile Include="Infrastructure\EntityBase.cs" />
     <Compile Include="Infrastructure\FileNameEncoder.cs" />
     <Compile Include="Infrastructure\IPlatformProvider.cs" />
     <Compile Include="Infrastructure\ILogger.cs" />
     <Compile Include="Infrastructure\ModuleBase.cs" />
+    <Compile Include="Infrastructure\NancyExtensions.cs" />
     <Compile Include="Infrastructure\UserConfig.cs" />
     <Compile Include="Modules\ActivitiesModule.cs" />
     <Compile Include="Modules\ApiModule.cs" />
     <Compile Include="Modules\ImportModule.cs" />
+    <Compile Include="Modules\ProjectModule.cs" />
     <Compile Include="Parameters\ActivityParameter.cs" />
     <Compile Include="Parameters\AgentParameter.cs" />
     <Compile Include="Parameters\CommentParameter.cs" />
@@ -105,7 +108,9 @@
       <Name>Artivity.DataModel</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Infrastructure\JsonSerializerSettings.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

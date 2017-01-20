@@ -129,6 +129,18 @@ namespace Artivity.Apid.Modules
                 return GetRecentlyUsedFiles();
             };
 
+            Get["/files/project"] = parameters =>
+            {
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return GetProjectFilese(new UriRef(uri));
+            };
+
             Get["/influences"] = parameters =>
             {
                 string uri = Request.Query.uri;
@@ -438,6 +450,46 @@ namespace Artivity.Apid.Modules
                         prov:endedAtTime ?t1 .
 
 	                ?entity nie:isStoredAs [ rdfs:label ?label ] .
+	
+	                OPTIONAL
+	                {
+                        ?a2
+                            prov:generated | prov:used ?entity ;
+                            prov:endedAtTime ?t2 .
+		
+		                FILTER(?t1 > ?t2)
+	                }
+	
+	                FILTER(!BOUND(?t2))
+
+                    OPTIONAL
+                    {
+                        ?a1 prov:qualifiedAssociation / prov:agent / art:hasColourCode ?agentColor .
+                    }
+                }
+                ORDER BY DESC(?t1) LIMIT 100");
+
+            var bindings = ModelProvider.GetAll().GetBindings(query);
+
+            return Response.AsJson(bindings);
+        }
+
+        private Response GetProjectFilese(UriRef projectUri)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT DISTINCT
+	                ?t1 AS ?time
+	                ?entity AS ?uri
+	                ?label
+                    SAMPLE(COALESCE(?agentColor, '#FF0000')) AS ?agentColor
+                WHERE
+                {
+                    ?a1
+                        prov:generated | prov:used ?entity ;
+                        prov:endedAtTime ?t1 .
+
+	                ?entity nie:isStoredAs [ rdfs:label ?label ] .
+                    <" + projectUri.AbsoluteUri + @"> prov:hadMember ?entity .
 	
 	                OPTIONAL
 	                {

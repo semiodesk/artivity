@@ -52,6 +52,8 @@
 
         // REFRESH
         window.addEventListener("focus", function (e) {
+            // Sorry i broke this ~ Mo
+            // TODO: Is it enough to refresh data in service? Check how to refresh a directive
             // Redraw the scene to prevent blank scenes when switching windows.		
             //if (!document.hidden) {
             //    t.loadRecentFiles();

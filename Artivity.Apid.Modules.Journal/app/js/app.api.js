@@ -175,6 +175,12 @@ app.factory('api', function ($http) {
 					return response.data;
 				});
 		},
+		getProjectFiles: function (projectUri) {
+			return $http.get(endpoint + '/files/project?uri='+projectUri).then(
+				function (response) {
+					return response.data;
+				});
+		},
 		getActivities: function (entityUri) {
 			if (entityUri) {
 				return $http.get(endpoint + '/activities?uri=' + entityUri).then(

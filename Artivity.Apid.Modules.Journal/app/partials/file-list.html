@@ -18,9 +18,14 @@
 		</div>
     </div>
 	<div class="row expand">
-		<div class="scroll-container scroll-y">
-			<div class="layout-container" style="padding: 8px;">
-				<div art-file-list files="{{t.files}}"></div>
+		<div class="layout-container ui-pane-container">
+			<div class="ui-resizable ui-pane ui-pane-left">
+				<art-project-list></art-project-list>
+				</div>
+			<div class="scroll-container scroll-y">
+				<div class="layout-container" style="padding: 8px;">
+					<div art-file-list files="{{t.files}}"></div>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -23,6 +23,9 @@
         function initialize()
         {
             artFileService.loadRecentFiles();
+            artFileService.on('dataChanged', function () {
+                t.setFiles();
+            });
         }
 
         t.setFiles = function () {
