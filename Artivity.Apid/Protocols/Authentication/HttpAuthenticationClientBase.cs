@@ -64,6 +64,7 @@ namespace Artivity.Apid.Protocols.Authentication
 
         public HttpAuthenticationClientState ClientState { get; protected set; }
 
+        [JsonIgnore]
         public ILogger Logger { get; set; }
         #endregion
 

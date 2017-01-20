@@ -88,6 +88,7 @@ namespace Artivity.Apid.Accounts
         /// </summary>
         public TaskProgressInfo Progress { get; protected set; }
 
+        [JsonIgnore]
         protected ILogger Logger { get; set; }
 
         #endregion

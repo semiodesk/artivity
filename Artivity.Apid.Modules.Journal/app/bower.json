@@ -40,7 +40,8 @@
     "yasgui": "^2.4.1",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#^1.7.0",
     "font-roboto": "^0.0.2",
-    "angular-translate": "^2.13.0"
+    "angular-translate": "^2.13.0",
+    "angular-dragdrop": "^1.0.13"
   },
   "resolutions": {
     "angular": "1.5.8",

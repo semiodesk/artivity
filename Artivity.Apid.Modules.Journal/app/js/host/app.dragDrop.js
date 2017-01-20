@@ -19,7 +19,7 @@
 
   document.ondrop = (ev) => {
 
-    if (ev.dataTransfer.files != null && ev.dataTransfer.files.length > 0) {
+    if (ev.dataTransfer != null && ev.dataTransfer.files != null && ev.dataTransfer.files.length > 0) {
       var fileUrl = require('file-url');
       var filePath = ev.dataTransfer.files[0].path;
 

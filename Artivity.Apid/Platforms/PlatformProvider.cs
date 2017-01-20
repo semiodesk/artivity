@@ -91,6 +91,8 @@ namespace Artivity.Apid.Platforms
         }
 
         public bool DidSetupRun { get { return Config.RunSetup; } set { Config.RunSetup = value; } }
+
+        public bool RequiresAuthentication { get { return false; } }
         #endregion
 
         #region Constructors

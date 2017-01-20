@@ -28,6 +28,8 @@
 using System;
 using System.Collections.Generic;
 using Semiodesk.Trinity;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace Artivity.DataModel
 {
@@ -36,8 +38,10 @@ namespace Artivity.DataModel
     {
         #region Members
 
+        [JsonIgnore]
         [RdfProperty(PROV.hadMember)]
-        public List<Entity> Members { get; set; }
+        public List<Entity> Members_ { get; set; }
+        public IEnumerable<string> Members { get { return from a in Members_ select a.Uri.AbsoluteUri; } }
 
         #endregion
 

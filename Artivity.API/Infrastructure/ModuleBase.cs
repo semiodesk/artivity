@@ -46,7 +46,9 @@ namespace Artivity.Apid
         public IModelProvider ModelProvider { get; set; }
 
         public IPlatformProvider PlatformProvider { get; set; }
-        
+
+        public IModel UserModel { get; private set; }
+
         protected string ArtivityModulePath { get; set; }
 
         #endregion
@@ -69,6 +71,11 @@ namespace Artivity.Apid
 
                 return null;
             });
+        }
+
+        public virtual void LoadCurrentUser()
+        {
+            UserModel = ModelProvider.GetActivities();
         }
 
         public ModuleBase(string modulePath, IModelProvider model, IPlatformProvider platform) : base(modulePath)
@@ -100,7 +107,7 @@ namespace Artivity.Apid
             {
                 string value = reader.ReadToEnd();
 
-                JsonResourceSerializerSettings settings = new JsonResourceSerializerSettings(store);
+                CustomJsonResourceSerializerSettings settings = new CustomJsonResourceSerializerSettings(store);
 
                 return JsonConvert.DeserializeObject<T>(value, settings);
             }
