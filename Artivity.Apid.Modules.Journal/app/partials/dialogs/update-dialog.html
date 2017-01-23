@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-xs-12">
-		<div class="container padding-xl padding-x padding-y">
+		<div class="container padding-x-xl padding-y-xl">
 			<h2 class="modal-title"><i class="zmdi zmdi-cast"></i> {{ t.title | translate}}</h2>
 		</div>
 	</div>
@@ -13,7 +13,7 @@
 <div ng-show="t.progress">
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="layout-container padding-xl padding-x" style="margin-top: 10px">
+			<div class="layout-container padding-x-xl" style="margin-top: 10px">
 				<uib-progressbar value="t.progress.percentComplete" animate="t.progressAnimate" max="100" style="height: 5px"></uib-progressbar>
 				<label class="pull-right">{{t.progress.percentComplete}}%</label>
 				<div ng-if="t.progress.percentComplete < 100">

@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-xs-12">
-		<div class="container padding-xl padding-x padding-y">
+		<div class="container padding-x-xl padding-y-xl">
 			<h2 class="modal-title">{{ t.title | translate}}</h2>
 		</div>
 	</div>
@@ -9,7 +9,7 @@
 	<div ng-switch-when="http://eprints.org">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="layout-container padding-xl padding-x">
+				<div class="layout-container padding-x-xl">
 					<form name="connectForm" ng-submit="t.connectAccount(selectedClient)">
 						<p class="description">Please enter the server address, username and password of the repository:</p>
 
@@ -40,13 +40,13 @@
 	<div ng-switch-when="http://orcid.org">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="container padding-xl padding-x">
+				<div class="container padding-x-xl">
 					<p class="description">Please log into your ORCiD account and allow Artivity to be connected:</p>
 				</div>
 
 				<iframe ng-src="{{t.clientUrl}}" style="background: white; min-height: 400px; width: 100%;"></iframe>
 
-				<div class="container padding-xl padding-x">
+				<div class="container padding-x-xl">
 					<div art-client-state-info state="{{t.clientState}}"></div>
 				</div>
 			</div>
@@ -63,7 +63,7 @@
 	<div ng-switch-default>
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="layout-container padding-xl padding-x">
+				<div class="layout-container padding-x-xl">
 					<p class="description">Please select the account type to connect with:</p>
 
 					<ul class="list-view">

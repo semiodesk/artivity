@@ -15,7 +15,7 @@
 
     angular.module('explorerApp').controller('FileListDirectiveController', FileListDirectiveController);
 
-    function FileListDirectiveController(api, $scope, artFileService) {
+    function FileListDirectiveController(api, $rootScope, $scope, artFileService) {
         var t = this;
 
         initialize();
@@ -30,6 +30,14 @@
 
         t.setFiles = function () {
             t.files = artFileService.files; 
+        }
+
+        t.onDragStart = function() {
+            $rootScope.$broadcast('dragStarted');
+        }
+
+        t.onDragStop = function() {
+            $rootScope.$broadcast('dragStopped');
         }
     }
 })();
