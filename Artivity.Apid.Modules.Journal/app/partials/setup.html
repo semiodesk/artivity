@@ -1,6 +1,6 @@
 <div class="layout-root table-layout">
     <div class="row header">
-        <div class="container padding-xl padding-y">
+        <div class="container padding-y-xl">
             <h1>Welcome!</h1>
 
             <p>Thank you for downloading Artivity. Before you can begin using the app we need to setup your account:</p>
@@ -14,7 +14,7 @@
         <div class="layout-container" style="margin-top: 15px;">
             <div class="scroll-container scroll-y layout-fix">
                 <div class="container">
-                    <div class="tab-content padding-xl padding-y">
+                    <div class="tab-content padding-y-xl">
                         <div role="tabpanel" class="tab-pane fade active in" id="panel-user">
                             <div art-settings-user backup-enabled="false"></div>
                         </div>
@@ -27,7 +27,7 @@
         </div>
     </div>
     <div class="row footer">
-        <div class="text-right padding-xl padding-x padding-y">
+        <div class="text-right padding-x-xl padding-y-xl">
             <button class="btn btn-default btn-success" ng-show="t.canShowNext" ng-click="t.showNext()">Continue</button>
             <button class="btn btn-default btn-success" ng-show="t.setupComplete" ng-click="t.submitAndReturn()">Done</button>
         </div>

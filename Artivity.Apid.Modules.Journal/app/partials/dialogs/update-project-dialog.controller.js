@@ -8,9 +8,8 @@
         t.project = null;
 
         // Public methods
-        t.updateProject = updateProject;
+        t.save = save;
         t.cancel = cancel;
-
 
         // Initaliziation
         initialize();
@@ -20,14 +19,18 @@
         }
 
         // Methods
-        function updateProject() {
-            projectService.update(t.project);
+        function save() {
+            if ($scope.projectForm.$valid) {
+                projectService.update(t.project);
+                
+                $uibModalInstance.close();
+            }
         }
 
         function cancel() {
             projectService.selectedProject = null;
-            $uibModalInstance.dismiss('cancel');
 
-        };
+            $uibModalInstance.dismiss('cancel');
+        }
     };
 })();

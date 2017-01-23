@@ -9,10 +9,13 @@
 
         // USER INFO
         t.user = {};
-        t.userPhotoUrl = api.getUserPhotoUrl() + "?q=" + Date.now();
 
         api.getUser().then(function (data) {
             t.user = data;
+
+            // Note: For some reason, binding does not work reliably with the user data and image source.
+            $('#userName').text(data.Name);
+            $('#userPhoto').attr('src', api.getUserPhotoUrl());
         });
 
         t.activities = [];
@@ -43,7 +46,7 @@
         };
 
         hotkeys.add({
-            combo: 'alt+c',
+            combo: 'f9',
             description: 'Open the calendar view.',
             callback: function () {
                 t.toggleCalendar();

@@ -1,16 +1,17 @@
-<div ng-switch on="t.files.length > 0">
-    <div ng-switch-when="true">
-        <ul id="file-list" class="cards">
-            <li ng-repeat="file in t.files" >
-                <div art-file-card file="{{file}}" 
-                data-drag="true"
-                ng-model="file" 
-                jqyoui-draggable 
-                data-jqyoui-options="{opacity:0.7,helper:'clone',appendTo: 'body', placeholder:'keep'}" ></div>
-            </li>
-        </ul>
-    </div>
-    <div ng-switch-default class="text-center">
-        <h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+<div class="scroll-container scroll-y">
+    <div class="layout-container" style="padding: 8px;">
+        <div ng-switch on="t.files.length > 0">
+            <div ng-switch-when="true">
+                <ul id="file-list" class="cards">
+                    <li ng-repeat="file in t.files">
+                        <art-file-card file="{{file}}" ng-model="file" jqyoui-draggable="{onStart: 't.onDragStart', onStop: 't.onDragStop'}" data-drag="true"
+                            data-jqyoui-options="{opacity:0.7, helper:'clone', appendTo: 'body', placeholder:'keep', cursorAt: {top: 5, left: 5}}"></art-file-card>
+                    </li>
+                </ul>
+            </div>
+            <div ng-switch-default class="text-center">
+                <h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+            </div>
+        </div>
     </div>
 </div>

@@ -1,16 +1,14 @@
 ﻿(function () {
     'use strict';
 
-    angular
-        .module('explorerApp')
-        .factory('projectService', projectService);
+    angular.module('explorerApp').factory('projectService', projectService);
 
     projectService.$inject = ['$http'];
-    function projectService($http) {
-        var service = {};
 
+    function projectService($http) {
         var endpoint = apid.endpointUrl + "projects";
 
+        var service = {};
         service.getAll = getAll;
         service.getById = getById;
         service.create = create;
@@ -23,47 +21,63 @@
         return service;
 
         function getAll() {
-            if( service.Projects != null) {
-                return new Promise(function( resolve, reject) { resolve(service.Projects);})
+            if (service.projects != null) {
+                return new Promise(function (resolve, reject) {
+                    resolve(service.projects);
+                });
             }
 
-            return new Promise(function(resolve, reject){
-                 $http.get(endpoint).then(function(result){
-                     var data = result.data;
-                     service.Projects = data;
-                     resolve(data);
-                 } , handleError('Error getting all projects'));
+            return new Promise(function (resolve, reject) {
+                $http.get(endpoint).then(function (result) {
+                    var data = result.data;
+
+                    data.sort(function compare(a, b) {
+                        if (a.Title < b.Title) return -1;
+                        if (a.Title > b.Title) return 1;
+                        return 0;
+                    });
+
+                    service.projects = data;
+                    resolve(data);
+                }, handleError('Error when getting all projects.'));
             });
         }
 
         function getById(uri) {
-            return $http.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error getting projects by id'));
-
+            return $http.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting projects by id.'));
         }
 
         function create() {
-            return new Promise(function(resolve, reject){
-             $http.get(endpoint + '/new').then(function(result){
-                 resolve(result.data);
-             }, handleError('Error creating projects'));
+            return new Promise(function (resolve, reject) {
+                $http.get(endpoint + '/new').then(function (result) {
+                    resolve(result.data);
+                }, handleError('Error when creating new project.'));
             });
-
         }
 
         function update(project) {
             var uri = encodeURIComponent(project.Uri);
-            return $http.put(endpoint + '?uri=' + uri, project).then(handleSuccess, handleError('Error updating projects'));
 
+            return $http.put(endpoint + '?uri=' + uri, project).then(function (response) {
+                service.projects = null;
+                return response.data;
+            }, handleError('Error when updating project.'));
         }
 
-        function remove(uri) {
-            return $http.delete(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error deleting projects'));
+        function remove(projectUri) {
+            var uri = encodeURIComponent(projectUri);
+
+            return $http.delete(endpoint + '?uri=' + uri).then(function (response) {
+                service.projects = null;
+                return response.data;
+            }, handleError('Error when deleting project.'));
         }
 
         function addFileToProject(projectUri, fileUri) {
-            return $http.get(endpoint + '/addFileToProject?projectUri=' + encodeURIComponent(projectUri)+"&fileUri="+encodeURIComponent(fileUri)).then(handleSuccess, handleError('Error deleting projects'));
-        }
+            var uri = encodeURIComponent(projectUri);
 
+            return $http.get(endpoint + '/addFileToProject?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError('Error when adding file to project.'));
+        }
 
         // private functions
         function handleSuccess(res) {
@@ -72,9 +86,11 @@
 
         function handleError(error) {
             return function () {
-                return { success: false, message: error };
+                return {
+                    success: false,
+                    message: error
+                };
             };
         }
     }
-
 })();

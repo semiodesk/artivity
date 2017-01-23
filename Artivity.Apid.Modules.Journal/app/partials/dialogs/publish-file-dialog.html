@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-xs-12">
-		<div class="container padding-xl padding-x padding-y">
+		<div class="container padding-x-xl padding-y-xl">
 			<h2 class="modal-title">{{t.dialog.title}}</h2>
 
 			<p class="subtitle">{{t.dialog.subtitle}}</p>
@@ -11,7 +11,7 @@
 	<div ng-switch-when="no-accounts">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="layout-container padding-xl padding-x padding-y">
+				<div class="layout-container padding-x-xl padding-y-xl">
 					<label>Go to <a href="#/settings">Preferences</a> <i class="zmdi zmdi-arrow-right"></i> Accounts to add one.</label>
 				</div>
 			</div>
@@ -27,7 +27,7 @@
 	<div ng-switch-when="upload-select-account">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="layout-container padding-xl padding-x">
+				<div class="layout-container padding-x-xl">
 					<div class="form-group">
 						<select class="form-control stretch-horizontal" name="account" ng-options="account as account.Description for account in t.accounts track by account.Uri" ng-model="t.selectedAccount"></select>
 					</div>
@@ -56,7 +56,7 @@
 	<div ng-switch-when="upload-progress">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="layout-container padding-xl padding-x">
+				<div class="layout-container padding-x-xl">
 					<uib-progressbar value="t.progress.PercentComplete" max="100" style="height: 5px"></uib-progressbar>
 
 					<label>{{t.selectedAccount.Description}}</label>
@@ -78,8 +78,8 @@
 				<div class="table-layout">
 					<div class="row">
 						<div class="col" style="width: 230px">
-							<div class="padding-xl padding-x">
-								<div art-file-card file="{{t.file}}" enable-link="false"></div>
+							<div class="padding-x-xl">
+								<art-file-card file="{{t.file}}" enable-link="false"></art-file-card>
 								<div class="clearfix"></div>
 								<div style="margin-top: 20px; line-height: 32px; vertical-align: middle;">
 									<img class="icn icn-circle pull-left" style="width: 32px; height: 32px; margin-right: 10px;" ng-src="{{t.userPhotoUrl}}" />
@@ -88,7 +88,7 @@
 							</div>
 						</div>
 						<div class="col expand">
-							<div class="padding-xl padding-x">
+							<div class="padding-x-xl">
 								<div class="form-group">
 									<label class="form-label-top" for="title">Title</label>
 									<input class="form-control stretch-horizontal" type="text" name="title" id="title" ng-model="t.archive.title">

@@ -1,12 +1,11 @@
 (function () {
-	angular.module('explorerApp').factory('artFileService', artFileService);
+    angular.module('explorerApp').factory('artFileService', artFileService);
 
-	artFileService.$inject = ['api'];
-	function artFileService(api) {
+    artFileService.$inject = ['api'];
 
-
-		var service = {
-			loadRecentFiles: loadRecentFiles,
+    function artFileService(api) {
+        var service = {
+            loadRecentFiles: loadRecentFiles,
             filterFilesByProject: filterFilesByProject,
             removeFilter: removeFilter,
             mute: mute,
@@ -15,13 +14,12 @@
             off: off,
             files: [],
             hasFiles: false,
-            dispatcher: new EventDispatcher(),
-            
-		};
+            dispatcher: new EventDispatcher()
+        };
 
         return service;
 
-		function loadRecentFiles () {
+        function loadRecentFiles() {
             api.getRecentFiles().then(function (data) {
                 for (var i = 0; i < data.length; i++) {
                     var file = data[i];
@@ -38,16 +36,17 @@
             });
         }
 
-        function clearFiles () {
+        function clearFiles() {
             service.files = [];
+            service.dispatcher.raise('dataChanged', values);
         }
 
-        function removeFilter(){
+        function removeFilter() {
             clearFiles();
             loadRecentFiles();
         }
 
-        function filterFilesByProject (projectUri) {
+        function filterFilesByProject(projectUri) {
             clearFiles();
             api.getProjectFiles(projectUri).then(function (data) {
                 for (var i = 0; i < data.length; i++) {
@@ -65,7 +64,6 @@
             });
         }
 
-        
         function mute() {
             service.dispatcher.mute();
         }
@@ -81,6 +79,5 @@
         function off(event, callback) {
             service.dispatcher.off(event, callback);
         }
-        
-	}
+    }
 })();

@@ -9,12 +9,19 @@ using System.Linq;
 
 namespace Artivity.Apid
 {
-
     public abstract class EntityBase<T> : ModuleBase where T : Resource
     {
+        #region Members
 
+        private bool _create;
+        private bool _retrieve;
+        private bool _update;
+        private bool _delete;
+
+        #endregion
 
         #region Constructors
+
         public EntityBase(string path, IModelProvider modelProvider, IPlatformProvider platformProvider, bool create = true, bool retrieve = true, bool update = true, bool delete = true)
             : base(path, modelProvider, platformProvider)
         {
@@ -34,28 +41,22 @@ namespace Artivity.Apid
             _delete = delete;
             Initialize();
         }
-        #endregion
 
-        #region Member
-        bool _create;
-        bool _retrieve;
-        bool _update;
-        bool _delete;
         #endregion
 
         #region Methods
 
         public virtual void EntityCreated(T entity)
-        { }
+        {}
 
         public virtual void EntityAboutToBeUpdated(Uri uri)
-        { }
+        {}
 
         public virtual void EntityUpdated(T entity)
-        { }
+        {}
 
         public virtual void EntityAboutToBeDeleted(Uri uri)
-        { }
+        {}
 
         private static string GetTypename()
         {
@@ -79,12 +80,17 @@ namespace Artivity.Apid
             {
                 Get["/"] = Parameters =>
                 {
-                    if( PlatformProvider.RequiresAuthentication )
+                    if (PlatformProvider.RequiresAuthentication)
+                    {
                         this.RequiresAuthentication();
+                    }
+
                     LoadCurrentUser();
 
                     if (UserModel == null)
+                    {
                         return Response.AsJson("", HttpStatusCode.InternalServerError);
+                    }
 
                     if (Request.Query["uri"] != null)
                     {
@@ -109,11 +115,16 @@ namespace Artivity.Apid
                 Get["/new"] = Parameters =>
                 {
                     if (PlatformProvider.RequiresAuthentication)
+                    {
                         this.RequiresAuthentication();
+                    }
+
                     LoadCurrentUser();
 
                     if (UserModel == null)
+                    {
                         return Response.AsJson("", HttpStatusCode.InternalServerError);
+                    }
 
                     Uri uri = CreateUri();
                     T entity = UserModel.CreateResource<T>(uri);
@@ -129,18 +140,22 @@ namespace Artivity.Apid
                 Put["/"] = Parameters =>
                 {
                     if (PlatformProvider.RequiresAuthentication)
+                    {
                         this.RequiresAuthentication();
+                    }
+
                     LoadCurrentUser();
 
                     if (UserModel == null)
+                    {
                         return Response.AsJsonSync("", HttpStatusCode.InternalServerError);
+                    }
 
                     Uri uri = new Uri(Request.Query["uri"]);
                     T entity;
 
                     EntityAboutToBeUpdated(uri);
                     entity = Bind<T>(ModelProvider.Store, Request.Body);
-                    
                     
                     // Test if user is allowed to write into model
                     entity.Commit();
@@ -155,24 +170,27 @@ namespace Artivity.Apid
                 Delete["/"] = Parameters =>
                 {
                     if (PlatformProvider.RequiresAuthentication)
+                    {
                         this.RequiresAuthentication();
+                    }
+
                     LoadCurrentUser();
 
                     Uri uri = new Uri(Request.Query["uri"]);
 
                     if (UserModel == null)
+                    {
                         return Response.AsJsonSync("", HttpStatusCode.InternalServerError);
+                    }
 
                     EntityAboutToBeDeleted(uri);
                     UserModel.DeleteResource(uri);
+
                     return Response.AsJsonSync(new Dictionary<string, object> { { "success", true } });
                 };
             }
         }
 
-
         #endregion
-
-
     }
 }

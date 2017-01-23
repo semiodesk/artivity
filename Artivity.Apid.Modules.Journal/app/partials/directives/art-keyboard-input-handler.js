@@ -67,7 +67,7 @@
         });
 
         hotkeys.add({
-            combo: 'alt+h',
+            combo: 'ctrl+h',
             description: 'Go to the dashboard view.',
             callback: function () {
                 // This will be replaced with the correct home page by the route provider.
@@ -76,7 +76,7 @@
         });
 
         hotkeys.add({
-            combo: 'alt+q',
+            combo: 'f12',
             description: 'Open the SPARQL query editor view.',
             callback: function () {
                 var url = $scope.getUrlWithFragment('/query');
@@ -86,7 +86,7 @@
         });
 
         hotkeys.add({
-            combo: 'alt+i',
+            combo: 'ctrl+i',
             description: 'Opens the development tools.',
             callback: function () {
                 windowService.currentWindow().openDevTools();

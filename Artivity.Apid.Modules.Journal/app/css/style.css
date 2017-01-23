@@ -2,7 +2,9 @@
 html,
 body {
   height: 100%;
-  width: 100%; }
+  width: 100%;
+  -webkit-user-select: none;
+  user-select: none; }
 
 h1 {
   font-size: 2em;
@@ -146,8 +148,7 @@ input.disabled,
   text-shadow: none;
   box-shadow: none;
   -webkit-box-shadow: none;
-  transition: all linear .2s;
-  min-width: 100px; }
+  transition: all linear .2s; }
 
 .btn-default .zmdi {
   padding: 0px 3px; }
@@ -253,6 +254,9 @@ button:focus,
 .btn .btn-label {
   margin-left: 5px; }
 
+.btn .btn-label.left {
+  text-align: left; }
+
 .nav-tabs {
   border: none;
   margin: 0; }
@@ -321,15 +325,40 @@ button:focus,
   border-collapse: separate;
   border-spacing: 0 3px; }
 
+.list-view.list-view-compact {
+  border-spacing: 0 1px; }
+
 .list-item {
   display: table-row;
   vertical-align: middle;
   color: #F0F0F0;
   background: rgba(240, 240, 240, 0.025); }
 
+.list-item-unstyled {
+  background: transparent; }
+
+.list-item-link {
+  cursor: pointer; }
+
+.list-item.drop-target {
+  transition: background linear .25s;
+  background: rgba(240, 240, 240, 0.015); }
+
+.list-item.drop-target-valid {
+  background: rgba(240, 240, 240, 0.075); }
+
+.list-item.selected {
+  background: rgba(240, 240, 240, 0.1);
+  color: #F0F0F0 !important; }
+
+.list-item.selected label,
+.list-item.selected .label,
+.list-item.selected .zmdi {
+  color: #F0F0F0 !important; }
+
 .list-item:hover {
   color: #F0F0F0;
-  background: rgba(240, 240, 240, 0.05); }
+  background: rgba(240, 240, 240, 0.075); }
 
 .list-item .col {
   display: table-cell; }
@@ -373,6 +402,8 @@ button:focus,
 
 .label,
 .text-label {
+  font-size: 1em;
+  font-weight: normal;
   color: #b0b0b0; }
 
 .icn {
@@ -629,29 +660,37 @@ h4 {
 .scroll-container.scroll-y {
   overflow-y: scroll !important; }
 
-.padding-xs.padding-x {
-  padding-left: 5px;
-  padding-right: 5px; }
+.padding-x-none {
+  padding-left: 0 !important;
+  padding-right: 0 !important; }
 
-.padding-md.padding-x {
-  padding-left: 15px;
-  padding-right: 15px; }
+.padding-x-xs {
+  padding-left: 4px !important;
+  padding-right: 4px !important; }
 
-.padding-xl.padding-x {
-  padding-left: 30px;
-  padding-right: 30px; }
+.padding-x-md {
+  padding-left: 12px !important;
+  padding-right: 12px !important; }
 
-.padding-xs.padding-y {
-  padding-top: 5px;
-  padding-bottom: 5px; }
+.padding-x-xl {
+  padding-left: 24px !important;
+  padding-right: 24px !important; }
 
-.padding-md.padding-y {
-  padding-top: 15px;
-  padding-bottom: 15px; }
+.padding-y-none {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important; }
 
-.padding-xl.padding-y {
-  padding-top: 30px;
-  padding-bottom: 30px; }
+.padding-y-xs {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important; }
+
+.padding-y-md {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important; }
+
+.padding-y-xl {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important; }
 
 /* FOOTER */
 .statusbar {
@@ -921,7 +960,7 @@ svg {
   height: 235px;
   margin: 0 5px 5px 0;
   padding: 0;
-  border-radius: 5px;
+  border-radius: 0;
   background: #262626; }
 
 .card a {
@@ -937,8 +976,7 @@ svg {
   width: 100%;
   height: 100;
   background: transparent;
-  transition: all ease-in .1s;
-  border-radius: 5px; }
+  transition: all ease-in .1s; }
 
 .card a:hover {
   background: rgba(255, 255, 255, 0.15); }
@@ -946,7 +984,7 @@ svg {
 .card .file-thumbnail-container {
   position: relative;
   border: none;
-  border-radius: 5px;
+  border-radius: 0;
   box-shadow: none;
   width: 100%;
   height: 201px;
@@ -954,7 +992,7 @@ svg {
   background-size: 125px auto; }
 
 .card .file-thumbnail {
-  border-radius: 5px;
+  border-radius: 0;
   width: 100%;
   height: 100%;
   background: transparent no-repeat;
@@ -991,8 +1029,7 @@ svg {
   padding: 2px;
   min-width: 30px;
   text-align: center;
-  border-radius: 0 5px 0 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 0;
   color: #202020; }
 
 /* FORMS */
@@ -1447,25 +1484,8 @@ button[disabled]:hover {
 .lst-influences a {
   display: block;
   line-height: 22px;
-  vertical-align: middle;
   margin-bottom: 0 !important; }
 
-/*
-.lst-influences a .node {
-	display: inline-block;
-	width: 10px;
-	height: 10px;
-	line-height: 10px;
-	margin-left: 8px;
-	margin-right: 8px;
-	text-align: center;
-	vertical-align: middle;
-	background: transparent;
-	background: #E96F02;
-	border-radius: 50%;
-	border: none;
-}
-*/
 .lst-influences a i.zmdi {
   display: inline-block;
   text-align: center;
@@ -1539,6 +1559,7 @@ button[disabled]:hover {
   border-top-color: #F87806;
   border-left-color: #F87806; }
 
+.no-outline:focus,
 .ctl-history:focus {
   outline: none; }
 
