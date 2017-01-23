@@ -16,6 +16,7 @@
 	function PlaybackControlDirectiveController($rootScope, $scope, selectionService) {
 		var t = this;
 
+		t.rootScope = $rootScope;
 		t.activities = [];
 		t.influences = [];
 		t.selectionService = selectionService;
@@ -173,6 +174,8 @@
 
 				if (-1 < i && i !== t.selectedIndex) {
 					selectionService.selectedItem(influence);
+
+					t.rootScope.$broadcast('redraw');
 				}
 			}
 		};
@@ -433,6 +436,8 @@
 
 		t.selectionService.selectNext();
 
+		t.rootScope.$broadcast('redraw');
+
 		if (t.playloop) {
 			var i = t.selectionService.selectedIndex();
 
@@ -447,6 +452,8 @@
 
 		t.selectionService.selectPrev();
 
+		t.rootScope.$broadcast('redraw');
+		
 		if (t.playloop) {
 			var i = t.selectionService.selectedIndex();
 
