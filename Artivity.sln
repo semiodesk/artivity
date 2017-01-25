@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apid", "Apid\Apid.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apid.Windows", "Apid.Windows\Apid.Windows.csproj", "{3CAF4068-5CE1-43B2-BE19-4425B0A86DB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apid.Mac", "Apid.Mac\Artivity.Apid.Mac.csproj", "{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apid.Mac", "Apid.Mac\Apid.Mac.csproj", "{DDDE0F95-5159-4C2E-A9C6-5AD4DF3688D7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModel", "DataModel\DataModel.csproj", "{AF97FB55-09C8-4775-81F6-F1F97C2DB468}"
 EndProject

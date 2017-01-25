@@ -27,7 +27,6 @@
 
 using System;
 using System.Collections.Generic;
-using Semiodesk.Trinity;
 
 namespace Artivity.Api.IO
 {

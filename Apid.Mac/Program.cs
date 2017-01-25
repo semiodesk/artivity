@@ -25,11 +25,14 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.IO;
+using Artivity.Apid.Mac.Platform;
+using Artivity.Apid.Platform;
+using Artivity.Apid.Plugins;
 using System;
 using System.IO;
 using System.Threading;
 using AppKit;
-using Artivity.Apid.IO;
 using Mono.Unix;
 using Mono.Unix.Native;
 
@@ -40,11 +43,13 @@ namespace Artivity.Apid.Mac
     {
         NSApplication app;
 
-
         public bool Run (Options opts)
         {
-            var applicationData = Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
-            var userFolder = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
+            PluginCheckerFactory.RegisterType<Artivity.Apid.Mac.Platform.PluginChecker>();
+            ThumbnailProviderFactory.RegisterType<Artivity.Apid.Mac.Platform.ThumbnailProvider>();
+
+            var applicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             var username = Environment.UserName;
 
             Platform = new MacPlatformProvider(applicationData, userFolder, username);
@@ -57,10 +62,10 @@ namespace Artivity.Apid.Mac
 
             Options = opts;
             OverwriteLogging = true;
-            InitializeLogging ();
+            InitializeLogging();
 
             Thread signal_thread = new Thread (WaitSIGINT);
-            signal_thread.Start ();
+            signal_thread.Start();
 
             if (!Initialize())
             {
@@ -97,7 +102,7 @@ namespace Artivity.Apid.Mac
 
         protected void WaitSIGINT()
         {
-            Logger.LogInfo("Establishing signal interception...");
+            Platform.Logger.LogInfo("Establishing signal interception...");
 
             UnixSignal[] signals = new UnixSignal []
             {
@@ -113,7 +118,7 @@ namespace Artivity.Apid.Mac
 
                 Signum signal = signals[index].Signum;
 
-                Logger.LogInfo(string.Format("Received signal {0}. Shutting down!", signal));
+                Platform.Logger.LogInfo(string.Format("Received signal {0}. Shutting down!", signal));
 
                 // When we are finished we tell the DispatcherQueue to stop.
                 Service.Stop (true);

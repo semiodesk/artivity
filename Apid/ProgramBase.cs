@@ -79,7 +79,6 @@ namespace Artivity.Apid
             }
 
             InitializeLogging();
-
             InitializeService();
 
             EnableShutdownOnSigInt();

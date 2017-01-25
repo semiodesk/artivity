@@ -25,12 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Apid.Plugin;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace Artivity.Apid.Plugins

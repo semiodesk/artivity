@@ -28,7 +28,6 @@
 using log4net;
 using Artivity.DataModel;
 using Artivity.Api.Platform;
-using Artivity.Apid.Platforms;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;

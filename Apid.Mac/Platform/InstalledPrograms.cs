@@ -25,15 +25,20 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.Platform;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Artivity.Apid.Platforms.OSX
+namespace Artivity.Apid.Mac.Platform
 {
-    class ThumbnailProvider : IThumbnailProvider
+    public class InstalledPrograms 
     {
-    }
+        #region Methods
+
+        public List<string> GetInstalledPrograms ()
+        {
+            return new List<string>();
+        }
+
+        #endregion
+    } 
 }
+

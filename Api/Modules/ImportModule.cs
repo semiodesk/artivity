@@ -25,11 +25,11 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using System;
 using Artivity.Api.IO;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
+using System;
 
 namespace Artivity.Api.Modules
 {

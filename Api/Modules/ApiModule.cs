@@ -27,22 +27,15 @@
 
 using Artivity.DataModel;
 using Artivity.Api.Platform;
-using Artivity.Api.Helpers;
 using Artivity.Api.IO;
 using Nancy;
 using Nancy.Responses;
 using Nancy.Extensions;
-using Nancy.IO;
 using Semiodesk.Trinity;
-using Semiodesk.Trinity.Store;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Threading.Tasks;
-using VDS.RDF;
 using Newtonsoft.Json;
 
 namespace Artivity.Api.Modules

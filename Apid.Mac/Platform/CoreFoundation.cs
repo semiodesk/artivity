@@ -221,4 +221,22 @@ namespace MonoDevelop.MacInterop
             }
         }
     }
+
+    public static class CF
+    {
+        [Flags]
+        public enum LSRolesMask : uint
+        {
+            None = 0x00000001,
+            Viewer = 0x00000002,
+            Editor = 0x00000004,
+            Shell = 0x00000008,
+            All = 0xFFFFFFFF
+        }
+
+        public static string[] GetApplicationUrls(string filePath, LSRolesMask roles)
+        {
+            return CoreFoundation.GetApplicationUrls(filePath, (CoreFoundation.LSRolesMask)roles);
+        }
+    }
 }

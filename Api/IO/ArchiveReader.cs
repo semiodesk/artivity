@@ -28,14 +28,10 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using Artivity.Api;
-using Artivity.Api.Helpers;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
-using Nancy;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
-using VDS.RDF.Storage;
 
 namespace Artivity.Api.IO
 {

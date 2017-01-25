@@ -25,8 +25,6 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using System;
-
 namespace Artivity.Api.Parameters
 {
     public class UriParameter

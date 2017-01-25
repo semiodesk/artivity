@@ -25,10 +25,6 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Artivity.Api.Parameters
 {
     public class AgentParameter
