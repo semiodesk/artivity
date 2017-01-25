@@ -32,7 +32,7 @@ using CoreServices;
 using CoreFoundation;
 using Artivity.Apid.IO;
 
-namespace Artivity.Apid.Mac
+namespace Artivity.Apid.Mac.Platform
 {
     public class FSEventsFileSystemWatcher : IFileSystemWatcher, IDisposable
     {

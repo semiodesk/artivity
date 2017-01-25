@@ -25,7 +25,6 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.IO;
 using Artivity.Api.Helpers;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
@@ -34,7 +33,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Semiodesk.Trinity;
 using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
@@ -45,8 +43,6 @@ namespace Artivity.Api.IO
     {
         #region Members
 
-        private IModelProvider _modelProvider;
-
         private IPlatformProvider _platformProvider;
 
         #endregion
@@ -55,7 +51,6 @@ namespace Artivity.Api.IO
 
         public BackupWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
         {
-            _modelProvider = modelProvider;
             _platformProvider = platformProvider;
         }
 

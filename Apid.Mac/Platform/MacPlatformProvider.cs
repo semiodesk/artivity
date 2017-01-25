@@ -24,10 +24,10 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Apid.Platforms;
+using Artivity.Apid.Platform;
 using System.IO;
 
-namespace Artivity.Apid.Mac
+namespace Artivity.Apid.Mac.Platform
 {
     public class MacPlatformProvider : PlatformProvider
     {

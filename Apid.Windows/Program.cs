@@ -79,7 +79,7 @@ namespace Artivity.Apid.Windows
             string ServiceName = "Artivity Service";
 
 #if DEBUG
-            string logConfig = "debug.log.config";
+            string logConfig = "log.config.debug";
 #else
             string logConfig = "log.config";
 #endif
