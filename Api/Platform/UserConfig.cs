@@ -25,15 +25,49 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.Platforms;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Apid.Platforms.OSX
+namespace Artivity.Api.Platform
 {
-    class ThumbnailProvider : IThumbnailProvider
+    public class UserConfig
     {
+        #region Members
+
+        [JsonIgnore]
+        public bool IsNew { get; set; }
+
+        public string Uid { get; set; }
+
+        public List<string> SoftwarePaths { get; set; }
+
+        public bool RunSetup { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        public UserConfig()
+        {
+            SoftwarePaths = new List<string>();
+        }
+
+        public string GetUserId()
+        {
+            if (Uid.StartsWith("urn:art:uid:", StringComparison.InvariantCulture))
+            {
+                return Uid.Substring(Uid.LastIndexOf(':') + 1);
+            }
+            else
+            {
+                return Uid;
+            }
+        }
+
+        #endregion
     }
 }

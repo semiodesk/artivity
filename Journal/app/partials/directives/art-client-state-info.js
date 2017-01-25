@@ -4,7 +4,7 @@
     function ClientStateInfoDirective() {
         return {
             scope: {},
-            templateUrl: 'partials/directives/art-client-state-info.html',
+            templateUrl: 'app/partials/directives/art-client-state-info.html',
             controller: ClientStateInfoDirectiveController,
             controllerAs: 't',
             link: function (scope, element, attr, ctrl) {

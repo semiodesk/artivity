@@ -1,17 +1,26 @@
-
 module.exports = function (grunt) {
+    // .NET solution file which contains the APID.
+    var solutionFile = '../Artivity.sln';
 
-	var solutionFile = '../Artivity.sln';
-	
-	var buildReleaseDir = '../build/Release';
-	var buildDistDir = '../build/dist';
-	
-	var appJsFile = 'app/app.src.js';
-	
+    // Build directories.
+    var buildReleaseDir = '../build/Release';
+    var buildDistDir = '../build/dist';
+
+    // The order of the following files is important:
     var jsFiles = [
-        'app/**/*.js'
+        'app/app.conf.js',
+        'app/app.route.js',
+        'app/app.api.js',
+        'app/app.translation.js',
+        'app/host/*.js',
+        'app/util/*.js',
+        'app/classes/*.js',
+        'app/services/*.js',
+        'app/filters/*.js',
+        'app/partials/**/*.js'
     ];
 
+    // These files are NOT bundled.
     var devFiles = [
         'Gruntfile.js',
         'updateVersion.js',
@@ -20,20 +29,22 @@ module.exports = function (grunt) {
         '.vscode'
     ];
 
- 
+    // All the above files are bundled into this file in the relase version.
+    var appJsFile = 'app/app.src.js';
+
     function ignore(file) {
         var minimatch = require("minimatch")
 
-        if( file.startsWith("/node_modules") || file.startsWith("/bower_components"))
+        if (file.startsWith("/node_modules") || file.startsWith("/bower_components"))
             return false;
 
         var patterns = devFiles.concat(jsFiles);
-        
+
         for (var i = 0, len = patterns.length; i < len; i++) {
-            if (minimatch(file, "/"+patterns[i])){
-                grunt.verbose.writeln("Ignore '"+file+"' for packaging.");
+            if (minimatch(file, "/" + patterns[i])) {
+                grunt.verbose.writeln("Ignore '" + file + "' for packaging.");
                 return true;
-                }
+            }
         }
         return false;
     }
@@ -43,7 +54,6 @@ module.exports = function (grunt) {
     grunt.initConfig({
         //Read the package.json (optional)
         pkg: grunt.file.readJSON('package.json'),
-
         wiredep: {
             task: {
                 src: [
@@ -51,7 +61,6 @@ module.exports = function (grunt) {
                 ]
             }
         },
-
         sass: {
             dist: {
                 options: {
@@ -72,7 +81,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-
         watch: {
             js: {
                 options: {
@@ -89,7 +97,6 @@ module.exports = function (grunt) {
                 tasks: 'sass:dev'
             }
         },
-
         tags: {
             build: {
                 src: jsFiles,
@@ -100,7 +107,6 @@ module.exports = function (grunt) {
                 dest: 'index.html'
             }
         },
-
         concat: {
             js: {
                 options: {
@@ -113,7 +119,6 @@ module.exports = function (grunt) {
                 src: jsFiles
             }
         },
-
         clean: {
             options: {
                 'force': true
@@ -122,7 +127,6 @@ module.exports = function (grunt) {
             dist: [buildDistDir]
 
         },
-
         electron: {
             windowsBuild: {
                 options: {
@@ -156,7 +160,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-
         assemblyVersion: {
             artivity: {
                 src: [
@@ -167,7 +170,6 @@ module.exports = function (grunt) {
                 version: '<%= pkg.version %>'
             }
         },
-
         msbuild: {
             release: {
                 src: [solutionFile],
@@ -215,11 +217,9 @@ module.exports = function (grunt) {
             }
 
         },
-
         nugetRestore: {
             artivity: [solutionFile]
         },
-
         "bower-install-simple": {
             options: {
                 color: true,
@@ -235,12 +235,9 @@ module.exports = function (grunt) {
                 }
             }
         },
-
-
         copy: {
             mainMac: {
-                files: [
-                    {
+                files: [{
                         expand: true, // need expand: true with cwd
                         cwd: buildReleaseDir + '/artivity-apid.app',
                         src: '**',
@@ -254,8 +251,7 @@ module.exports = function (grunt) {
                 ],
             },
             mainWin: {
-                files: [
-                    {
+                files: [{
                         expand: true, // need expand: true with cwd
                         cwd: buildReleaseDir,
                         src: '**',
@@ -303,13 +299,17 @@ module.exports = function (grunt) {
                 spawn = {
                     cmd: nugetPath,
                     args: ['restore', filePath],
-                    opts: { stdio: 'inherit' }, // print to the same stdout
+                    opts: {
+                        stdio: 'inherit'
+                    }, // print to the same stdout
                 };
             } else {
                 spawn = {
                     cmd: 'mono',
                     args: [nugetPath, 'restore', filePath],
-                    opts: { stdio: 'inherit' }, // print to the same stdout
+                    opts: {
+                        stdio: 'inherit'
+                    }, // print to the same stdout
                 }
             }
 

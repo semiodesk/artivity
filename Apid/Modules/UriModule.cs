@@ -27,7 +27,7 @@
 
 using Artivity.Api.Modules;
 using Artivity.Api.Parameters;
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Semiodesk.Trinity;
 using Semiodesk.Trinity.Store;

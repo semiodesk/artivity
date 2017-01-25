@@ -2,7 +2,7 @@
     angular.module('explorerApp').directive('artLayerControl', function () {
         return {
             restrict: 'E',
-            templateUrl: 'partials/directives/art-layer-control.html',
+            templateUrl: 'app/partials/directives/art-layer-control.html',
             controller: LayerControlDirectiveController,
             controllerAs: 't',
             scope: {

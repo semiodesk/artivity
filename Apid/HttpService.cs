@@ -25,10 +25,10 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using Artivity.Apid.IO;
-using Artivity.Apid.Platforms;
-using Artivity.Apid.Plugin;
+using Artivity.Apid.Platform;
+using Artivity.Apid.Plugins;
 using Artivity.DataModel;
 using Semiodesk.Trinity;
 using Semiodesk.TinyVirtuoso;

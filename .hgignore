@@ -63,3 +63,5 @@ nohup.out
 obj/*
 packages/*
 tmp/*
+app.src.js
+app.src.js.map

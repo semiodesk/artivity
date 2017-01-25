@@ -36,7 +36,7 @@
             if (!t.modalInstance) {
                 t.modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'partials/dialogs/update-dialog.html',
+                    templateUrl: 'app/partials/dialogs/update-dialog.html',
                     controller: 'UpdateDialogController',
                     controllerAs: 't',
                     scope: $scope

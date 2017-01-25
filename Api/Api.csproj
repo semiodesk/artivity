@@ -74,7 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Infrastructure\IThumbnailProvider.cs" />
+    <Compile Include="Platform\IThumbnailProvider.cs" />
     <Compile Include="IO\ArchiveManifest.cs" />
     <Compile Include="IO\ArchiveManifestCreator.cs" />
     <Compile Include="IO\ArchiveReader.cs" />
@@ -85,11 +85,11 @@
     <Compile Include="IO\NancyHelpers.cs" />
     <Compile Include="Modules\EntityModuleBase.cs" />
     <Compile Include="IO\FileNameEncoder.cs" />
-    <Compile Include="Infrastructure\IPlatformProvider.cs" />
+    <Compile Include="Platform\IPlatformProvider.cs" />
     <Compile Include="Infrastructure\ILogger.cs" />
     <Compile Include="Modules\ModuleBase.cs" />
     <Compile Include="Infrastructure\NancyExtensions.cs" />
-    <Compile Include="Infrastructure\UserConfig.cs" />
+    <Compile Include="Platform\UserConfig.cs" />
     <Compile Include="Modules\ActivitiesModule.cs" />
     <Compile Include="Modules\ApiModule.cs" />
     <Compile Include="Modules\ImportModule.cs" />

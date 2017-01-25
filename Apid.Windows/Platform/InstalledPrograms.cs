@@ -33,7 +33,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace Artivity.Apid.Plugin.Win
+namespace Artivity.Apid.Windows.Platform
 {
     public class InstalledPrograms
     {

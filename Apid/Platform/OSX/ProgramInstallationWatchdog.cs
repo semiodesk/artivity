@@ -25,8 +25,8 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.Plugins;
 using Microsoft.Win32;
-using RegistryUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;

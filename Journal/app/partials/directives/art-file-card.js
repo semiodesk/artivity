@@ -5,7 +5,7 @@
         return {
             restrict: 'E',
             scope: {},
-            templateUrl: 'partials/directives/art-file-card.html',
+            templateUrl: 'app/partials/directives/art-file-card.html',
             controller: FileCardDirectiveController,
             controllerAs: 't',
             link: function (scope, element, attr, ctrl) {

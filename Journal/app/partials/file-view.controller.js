@@ -386,7 +386,7 @@
 
             var modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'partials/dialogs/publish-file-dialog.html',
+                templateUrl: 'app/partials/dialogs/publish-file-dialog.html',
                 controller: 'PublishFileDialogController',
                 controllerAs: 't',
                 scope: $scope

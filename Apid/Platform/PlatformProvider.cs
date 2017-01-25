@@ -27,9 +27,8 @@
 
 using Artivity.Api;
 using Artivity.Api.IO;
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using Artivity.Apid.IO;
-using Artivity.Apid.Platforms;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
@@ -39,7 +38,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Artivity.Apid.Platforms
+namespace Artivity.Apid.Platform
 {
     public class PlatformProvider : IPlatformProvider
     {

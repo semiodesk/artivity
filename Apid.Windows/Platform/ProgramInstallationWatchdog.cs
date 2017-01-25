@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Apid.Plugins;
 using Microsoft.Win32;
 using RegistryUtils;
 using System;
@@ -34,7 +35,7 @@ using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Apid.Plugin.Win
+namespace Artivity.Apid.Windows.Platform
 {
     class ProgramInstallationWatchdog : IProgramInstallationWatchdog
     {
@@ -52,9 +53,9 @@ namespace Artivity.Apid.Plugin.Win
 
         #region Constructor
 
-        public ProgramInstallationWatchdog(string registryKey)
+        public ProgramInstallationWatchdog()
         {
-            _registryKey = registryKey;
+            _registryKey = InstalledPrograms.RegistryKeyString;
         }
 
         #endregion

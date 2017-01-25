@@ -33,7 +33,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Artivity.Apid.Plugin
+namespace Artivity.Apid.Plugins
 {
     public class PluginManifestRegistryInfo
     {

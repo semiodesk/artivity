@@ -37,7 +37,7 @@
             } else {
                 t.calendar = $uibModal.open({
                     animation: true,
-                    templateUrl: 'partials/dialogs/calendar-dialog.html',
+                    templateUrl: 'app/partials/dialogs/calendar-dialog.html',
                     controller: 'CalendarDialogController',
                     windowClass: 'modal-window-lg',
                     scope: $scope

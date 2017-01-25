@@ -25,11 +25,11 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.DataModel;
-using Artivity.Api.Parameters;
 using Artivity.Api.Modules;
-using Artivity.Api.Platforms;
-using Artivity.Apid.Plugin;
+using Artivity.Api.Parameters;
+using Artivity.Api.Platform;
+using Artivity.Apid.Plugins;
+using Artivity.DataModel;
 using Nancy;
 using Nancy.Responses;
 using Nancy.ModelBinding;
@@ -50,7 +50,7 @@ namespace Artivity.Apid.Modules
     {
         #region Members
 
-        PluginChecker _checker;
+        private PluginChecker _checker;
 
         #endregion 
 

@@ -3,7 +3,7 @@
 
     function WindowControlsDirective() {
         return {
-            templateUrl: 'partials/directives/art-window-controls.html',
+            templateUrl: 'app/partials/directives/art-window-controls.html',
             controller: WindowControlsDirectiveController,
             controllerAs: 't',
             link: function (scope, element, attributes, ctrl) {

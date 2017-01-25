@@ -3,7 +3,6 @@
 
 <head>
 	<title>Artivity</title>
-	
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<!-- bower:css -->
 	<link rel="stylesheet" href="bower_components/jquery-editable-select/dist/jquery-editable-select.min.css" />
@@ -51,83 +50,82 @@
 	<script src="bower_components/angular-translate/angular-translate.js"></script>
 	<script src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
 	<!-- endbower -->
-	<script src="js/app.conf.js"></script>
-	<script src="js/app.route.js"></script>
-	<script src="js/app.api.js"></script>
-	<script src="js/app.translation.js"></script>
 	<!-- start auto template tags -->
-	<script type="text/javascript" src="js/host/app.dragDrop.js"></script>
-	<script type="text/javascript" src="js/host/updateChecker.js"></script>
-	<script type="text/javascript" src="js/lib/extensions.js"></script>
-	<script type="text/javascript" src="js/lib/functions.js"></script>
-	<script type="text/javascript" src="js/lib/livereload.js"></script>
-	<script type="text/javascript" src="js/lib/overlay.js"></script>
-	<script type="text/javascript" src="js/lib/quantize.js"></script>
-	<script type="text/javascript" src="js/lib/classes/activity.js"></script>
-	<script type="text/javascript" src="js/lib/classes/document-renderer-cache.js"></script>
-	<script type="text/javascript" src="js/lib/classes/document-renderer.js"></script>
-	<script type="text/javascript" src="js/lib/classes/editing-statistics.js"></script>
-	<script type="text/javascript" src="js/lib/classes/entity-cache.js"></script>
-	<script type="text/javascript" src="js/lib/classes/entity.js"></script>
-	<script type="text/javascript" src="js/lib/classes/event-dispatcher.js"></script>
-	<script type="text/javascript" src="js/lib/classes/heatmap-renderer.js"></script>
-	<script type="text/javascript" src="js/lib/classes/layer-cache.js"></script>
-	<script type="text/javascript" src="js/lib/classes/layer-tree-node.js"></script>
-	<script type="text/javascript" src="js/lib/classes/layer-tree.js"></script>
-	<script type="text/javascript" src="js/lib/classes/layer.js"></script>
-	<script type="text/javascript" src="js/lib/classes/x-canvas-cache.js"></script>
-	<script type="text/javascript" src="js/lib/filters/reverse.js"></script>
-	<script type="text/javascript" src="js/lib/services/app.service.js"></script>
-	<script type="text/javascript" src="js/lib/services/artFile.service.js"></script>
-	<script type="text/javascript" src="js/lib/services/client.service.js"></script>
-	<script type="text/javascript" src="js/lib/services/file.service.js"></script>
-	<script type="text/javascript" src="js/lib/services/formatting.service.js"></script>
-	<script type="text/javascript" src="js/lib/services/project.service.js"></script>
-	<script type="text/javascript" src="js/lib/services/selection.service.js"></script>
-	<script type="text/javascript" src="js/lib/services/settings.service.js"></script>
-	<script type="text/javascript" src="js/lib/services/translation.service.js"></script>
-	<script type="text/javascript" src="js/lib/services/update.service.js"></script>
-	<script type="text/javascript" src="js/lib/services/window.service.js"></script>
-	<script type="text/javascript" src="partials/directives/art-calendar.js"></script>
-	<script type="text/javascript" src="partials/directives/art-client-state-info.js"></script>
-	<script type="text/javascript" src="partials/directives/art-color-picker.js"></script>
-	<script type="text/javascript" src="partials/directives/art-editing-history.js"></script>
-	<script type="text/javascript" src="partials/directives/art-editing-stats.js"></script>
-	<script type="text/javascript" src="partials/directives/art-file-card.js"></script>
-	<script type="text/javascript" src="partials/directives/art-file-list.js"></script>
-	<script type="text/javascript" src="partials/directives/art-keyboard-input-handler.js"></script>
-	<script type="text/javascript" src="partials/directives/art-layer-control.js"></script>
-	<script type="text/javascript" src="partials/directives/art-photo-picker.js"></script>
-	<script type="text/javascript" src="partials/directives/art-playback-control.js"></script>
-	<script type="text/javascript" src="partials/directives/art-project-list.js"></script>
-	<script type="text/javascript" src="partials/directives/art-query-editor.js"></script>
-	<script type="text/javascript" src="partials/directives/art-settings-accounts.js"></script>
-	<script type="text/javascript" src="partials/directives/art-settings-apps.js"></script>
-	<script type="text/javascript" src="partials/directives/art-settings-user.js"></script>
-	<script type="text/javascript" src="partials/directives/art-style-binder.js"></script>
-	<script type="text/javascript" src="partials/directives/art-update-indicator.js"></script>
-	<script type="text/javascript" src="partials/directives/art-window-controls.js"></script>
-	<script type="text/javascript" src="partials/directives/bs-switch.js"></script>
-	<script type="text/javascript" src="partials/directives/ng-dropzone.js"></script>
-	<script type="text/javascript" src="partials/directives/ng-enter.js"></script>
-	<script type="text/javascript" src="partials/directives/ng-esc.js"></script>
-	<script type="text/javascript" src="partials/dialogs/add-account-dialog.controller.js"></script>
-	<script type="text/javascript" src="partials/dialogs/calendar-dialog.controller.js"></script>
-	<script type="text/javascript" src="partials/dialogs/publish-file-dialog.controller.js"></script>
-	<script type="text/javascript" src="partials/dialogs/update-dialog.controller.js"></script>
-	<script type="text/javascript" src="partials/dialogs/update-project-dialog.controller.js"></script>
-	<script type="text/javascript" src="partials/file-list.controller.js"></script>
-	<script type="text/javascript" src="partials/file-view.controller.js"></script>
-	<script type="text/javascript" src="partials/query.controller.js"></script>
-	<script type="text/javascript" src="partials/settings.controller.js"></script>
-	<script type="text/javascript" src="partials/setup.controller.js"></script>
-	<script type="text/javascript" src="partials/start.controller.js"></script>
+	<script type="text/javascript" src="app/app.conf.js"></script>
+	<script type="text/javascript" src="app/app.route.js"></script>
+	<script type="text/javascript" src="app/app.api.js"></script>
+	<script type="text/javascript" src="app/app.translation.js"></script>
+	<script type="text/javascript" src="app/host/app.dragDrop.js"></script>
+	<script type="text/javascript" src="app/host/updateChecker.js"></script>
+	<script type="text/javascript" src="app/util/extensions.js"></script>
+	<script type="text/javascript" src="app/util/functions.js"></script>
+	<script type="text/javascript" src="app/util/livereload.js"></script>
+	<script type="text/javascript" src="app/util/overlay.js"></script>
+	<script type="text/javascript" src="app/util/quantize.js"></script>
+	<script type="text/javascript" src="app/classes/activity.js"></script>
+	<script type="text/javascript" src="app/classes/document-renderer-cache.js"></script>
+	<script type="text/javascript" src="app/classes/document-renderer.js"></script>
+	<script type="text/javascript" src="app/classes/editing-statistics.js"></script>
+	<script type="text/javascript" src="app/classes/entity-cache.js"></script>
+	<script type="text/javascript" src="app/classes/entity.js"></script>
+	<script type="text/javascript" src="app/classes/event-dispatcher.js"></script>
+	<script type="text/javascript" src="app/classes/heatmap-renderer.js"></script>
+	<script type="text/javascript" src="app/classes/layer-cache.js"></script>
+	<script type="text/javascript" src="app/classes/layer-tree-node.js"></script>
+	<script type="text/javascript" src="app/classes/layer-tree.js"></script>
+	<script type="text/javascript" src="app/classes/layer.js"></script>
+	<script type="text/javascript" src="app/classes/x-canvas-cache.js"></script>
+	<script type="text/javascript" src="app/services/app.service.js"></script>
+	<script type="text/javascript" src="app/services/artFile.service.js"></script>
+	<script type="text/javascript" src="app/services/client.service.js"></script>
+	<script type="text/javascript" src="app/services/file.service.js"></script>
+	<script type="text/javascript" src="app/services/formatting.service.js"></script>
+	<script type="text/javascript" src="app/services/project.service.js"></script>
+	<script type="text/javascript" src="app/services/selection.service.js"></script>
+	<script type="text/javascript" src="app/services/settings.service.js"></script>
+	<script type="text/javascript" src="app/services/translation.service.js"></script>
+	<script type="text/javascript" src="app/services/update.service.js"></script>
+	<script type="text/javascript" src="app/services/window.service.js"></script>
+	<script type="text/javascript" src="app/filters/reverse.js"></script>
+	<script type="text/javascript" src="app/partials/dialogs/add-account-dialog.controller.js"></script>
+	<script type="text/javascript" src="app/partials/dialogs/calendar-dialog.controller.js"></script>
+	<script type="text/javascript" src="app/partials/dialogs/publish-file-dialog.controller.js"></script>
+	<script type="text/javascript" src="app/partials/dialogs/update-dialog.controller.js"></script>
+	<script type="text/javascript" src="app/partials/dialogs/update-project-dialog.controller.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-calendar.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-client-state-info.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-color-picker.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-editing-history.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-editing-stats.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-file-card.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-file-list.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-keyboard-input-handler.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-layer-control.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-photo-picker.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-playback-control.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-project-list.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-query-editor.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-settings-accounts.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-settings-apps.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-settings-user.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-style-binder.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-update-indicator.js"></script>
+	<script type="text/javascript" src="app/partials/directives/art-window-controls.js"></script>
+	<script type="text/javascript" src="app/partials/directives/bs-switch.js"></script>
+	<script type="text/javascript" src="app/partials/directives/ng-dropzone.js"></script>
+	<script type="text/javascript" src="app/partials/directives/ng-enter.js"></script>
+	<script type="text/javascript" src="app/partials/directives/ng-esc.js"></script>
+	<script type="text/javascript" src="app/partials/file-list.controller.js"></script>
+	<script type="text/javascript" src="app/partials/file-view.controller.js"></script>
+	<script type="text/javascript" src="app/partials/query.controller.js"></script>
+	<script type="text/javascript" src="app/partials/settings.controller.js"></script>
+	<script type="text/javascript" src="app/partials/setup.controller.js"></script>
+	<script type="text/javascript" src="app/partials/start.controller.js"></script>
 	<!-- end auto template tags -->
 	<script>
 		if (window.module) module = window.module;
 	</script>
 </head>
-
 <body>
 	<div art-keyboard-input-handler></div>
 	<div id="window-title">
@@ -200,7 +198,4 @@
 		</div>
 	</div>
 </body>
-<!-- Enable live-reload if we're in a development environment. The following empty 
-script is the container into which the livereload.js file is being loaded on run-time. -->
-<script type="text/javascript" id="livereload"></script>
 </html>

@@ -25,24 +25,51 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.Platforms;
-using Artivity.Apid.Plugin.Win;
+using Artivity.Api.Platform;
 using Artivity.Apid.Plugin.OSX;
 using Artivity.Apid.Platforms;
 using Artivity.DataModel;
 using System.IO;
+using System;
 
-namespace Artivity.Apid.Plugin
+namespace Artivity.Apid.Plugins
 {
     public class PluginCheckerFactory
     {
-        public static PluginChecker CreatePluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo dir)
+        #region Members
+
+        public static Type _checkerType;
+
+        #endregion
+
+        #region Methods
+
+        public static void RegisterType<T>() where T : PluginChecker
         {
-#if WIN
-            return new WinPluginChecker(platformProvider, modelProvider, dir);
-#elif OSX
-            return new OsxPluginChecker(platformProvider, modelProvider, dir);
-#endif
+            if (_checkerType == null)
+            {
+                _checkerType = typeof(T);
+            }
+            else
+            {
+                string msg = string.Format("Trying to overwrite registered type: {0}", _checkerType);
+                throw new Exception(msg);
+            }
         }
+
+        public static PluginChecker CreatePluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo folder)
+        {
+            if (_checkerType != null)
+            {
+                return Activator.CreateInstance(_checkerType, platformProvider, modelProvider, folder) as PluginChecker;
+            }
+            else
+            {
+                string msg = string.Format("No type registered for type: {0}", typeof(PluginChecker));
+                throw new Exception(msg);
+            }
+        }
+
+        #endregion
     }
 }
