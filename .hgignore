@@ -48,7 +48,6 @@ syntax: glob
 Debug
 Makefile
 Output/*
-TinyVirtuoso/*
 bin/*
 bower_components/**
 build/*

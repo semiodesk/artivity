@@ -156,7 +156,6 @@
     <Compile Include="Protocols\XmlNamespaces.cs" />
     <Compile Include="Helpers\XDocumentFactory.cs" />
     <Compile Include="Helpers\XElementExtensions.cs" />
-    <Compile Include="Repositories\ResourceRepository.cs" />
     <Compile Include="ProgramBase.cs" />
     <Compile Include="IO\IFileSystemWatcher.cs" />
     <Compile Include="IO\FileSystemWatcherFactory.cs" />

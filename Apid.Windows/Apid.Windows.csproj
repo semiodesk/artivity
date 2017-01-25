@@ -52,6 +52,10 @@
       <HintPath>..\packages\ini-parser.2.3.0\lib\net20\INIFileParser.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="log4net, Version=2.0.7.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
@@ -62,9 +66,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="TinyVirtuoso, Version=0.3.29.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\TinyVirtuoso.0.3.29\lib\Net35\TinyVirtuoso.dll</HintPath>
       <Private>True</Private>
@@ -114,11 +115,41 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="TinyVirtuoso\database\virtuoso.ini" />
+    <None Include="TinyVirtuoso\database\virtuoso.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TinyVirtuoso\virtuoso\doc\AUTHORS" />
+    <None Include="TinyVirtuoso\virtuoso\doc\COPYING" />
+    <None Include="TinyVirtuoso\virtuoso\doc\CREDITS" />
+    <None Include="TinyVirtuoso\virtuoso\doc\INSTALL" />
+    <None Include="TinyVirtuoso\virtuoso\doc\LICENSE" />
+    <None Include="TinyVirtuoso\virtuoso\doc\NEWS" />
+    <None Include="TinyVirtuoso\virtuoso\doc\README" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Plugins\Chrome\Manifest.xml">
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\CtrlCSender.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\isql.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\libeay32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\libexpat.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\libwbxml2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\ssleay32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\virtuoso-t.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
