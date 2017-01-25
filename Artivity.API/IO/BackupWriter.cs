@@ -25,9 +25,10 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.IO;
+using Artivity.Api.Helpers;
+using Artivity.Api.Platforms;
 using Artivity.DataModel;
-using Artivity.Apid.Platforms;
-using Artivity.Apid.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 
-namespace Artivity.Apid.IO
+namespace Artivity.Api.IO
 {
     public class BackupWriter
     {

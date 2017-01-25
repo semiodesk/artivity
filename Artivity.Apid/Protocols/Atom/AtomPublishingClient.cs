@@ -24,6 +24,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Helpers;
 using Artivity.Apid.Helpers;
 using Artivity.DataModel;
 using System;

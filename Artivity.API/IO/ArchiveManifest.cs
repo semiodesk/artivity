@@ -27,46 +27,39 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Semiodesk.Trinity;
 
-namespace Artivity.Apid.IO
+namespace Artivity.Api.IO
 {
-    public class ArchiveManifestCreator
+    public class ArchiveManifest
     {
         #region Members
 
-        public string Name { get; set; }
+        public string Title { get; set; }
 
-        public string EmailAddress { get; set; }
+        public string Description { get; set; }
+
+        public List<ArchiveManifestCreator> Creators { get; set; }
+
+        public string License { get; set; }
+
+        public string FileFormat { get; set; }
+
+        public List<Uri> ExportedEntites { get; set; }
+
+        public DateTime ExportDate { get; set; }
 
         #endregion
 
         #region Constructors
 
-        public ArchiveManifestCreator(string name = "", string emailAddress = "")
+        public ArchiveManifest()
         {
-            Name = name;
-            EmailAddress = emailAddress;
-        }
-
-        #endregion
-
-        #region Methods
-
-        public override string ToString()
-        {
-            if (!string.IsNullOrEmpty(EmailAddress))
-            {
-                return string.Format("{0} <{1}>", Name, EmailAddress);
-            }
-            else
-            {
-                return Name;
-            }
+            Creators = new List<ArchiveManifestCreator>();
+            ExportedEntites = new List<Uri>();
         }
 
         #endregion
     }
 }
+

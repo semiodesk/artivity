@@ -25,8 +25,9 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.DataModel;
+using Artivity.Api.Platforms;
 using Artivity.Apid.Platforms;
+using Artivity.DataModel;
 using System;
 using System.Linq;
 using System.IO;
@@ -34,8 +35,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
-using Microsoft.Win32;
 using System.Collections.Generic;
+using Microsoft.Win32;
 
 namespace Artivity.Apid.Plugin.Win
 {

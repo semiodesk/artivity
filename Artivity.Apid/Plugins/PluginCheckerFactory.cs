@@ -25,10 +25,11 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.DataModel;
+using Artivity.Api.Platforms;
 using Artivity.Apid.Plugin.Win;
 using Artivity.Apid.Plugin.OSX;
 using Artivity.Apid.Platforms;
+using Artivity.DataModel;
 using System.IO;
 
 namespace Artivity.Apid.Plugin

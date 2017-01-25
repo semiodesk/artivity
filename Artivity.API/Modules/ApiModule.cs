@@ -26,9 +26,9 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.DataModel;
-using Artivity.Apid.Platforms;
-using Artivity.Apid.Helpers;
-using Artivity.Apid.IO;
+using Artivity.Api.Platforms;
+using Artivity.Api.Helpers;
+using Artivity.Api.IO;
 using Nancy;
 using Nancy.Responses;
 using Nancy.Extensions;
@@ -45,7 +45,7 @@ using System.Threading.Tasks;
 using VDS.RDF;
 using Newtonsoft.Json;
 
-namespace Artivity.Apid.Modules
+namespace Artivity.Api.Modules
 {
     public class ApiModule : ModuleBase
     {

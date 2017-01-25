@@ -25,14 +25,14 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Apid.Platforms;
+using Artivity.Api.Platforms;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Apid.Platforms
+namespace Artivity.Api.Platforms
 {
     public interface IPlatformProvider
     {

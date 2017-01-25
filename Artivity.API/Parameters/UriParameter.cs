@@ -27,7 +27,7 @@
 
 using System;
 
-namespace Artivity.Apid.Parameters
+namespace Artivity.Api.Parameters
 {
     public class UriParameter
     {

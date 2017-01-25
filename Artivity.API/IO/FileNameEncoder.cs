@@ -26,40 +26,18 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using System.Collections.Generic;
-using Semiodesk.Trinity;
 
-namespace Artivity.Apid.IO
+namespace Artivity.Api.IO
 {
-    public class ArchiveManifest
+    public static class FileNameEncoder
     {
-        #region Members
-
-        public string Title { get; set; }
-
-        public string Description { get; set; }
-
-        public List<ArchiveManifestCreator> Creators { get; set; }
-
-        public string License { get; set; }
-
-        public string FileFormat { get; set; }
-
-        public List<Uri> ExportedEntites { get; set; }
-
-        public DateTime ExportDate { get; set; }
-
-        #endregion
-
-        #region Constructors
-
-        public ArchiveManifest()
+        public static string Encode(string str)
         {
-            Creators = new List<ArchiveManifestCreator>();
-            ExportedEntites = new List<Uri>();
-        }
+            char[] name = str.Replace("//", "-").Replace('/', '-').Replace(':', '-').ToCharArray();
 
-        #endregion
+            // Only allow letters or digits.
+            return new string(Array.FindAll<char>(name, c => char.IsLetterOrDigit(c) || c == '-' || c == '.'));
+        }
     }
 }
 

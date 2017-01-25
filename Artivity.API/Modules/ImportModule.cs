@@ -26,13 +26,12 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using System;
-using Artivity.Apid.IO;
-using Artivity.Apid;
-using Artivity.Apid.Platforms;
+using Artivity.Api.IO;
+using Artivity.Api.Platforms;
 using Artivity.DataModel;
 using Nancy;
 
-namespace Artivity.Api
+namespace Artivity.Api.Modules
 {
     public class ImportModule : ModuleBase
     {

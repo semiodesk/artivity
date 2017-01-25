@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api;
 using System;
 using Nancy;
 using log4net;

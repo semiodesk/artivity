@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api;
 using Artivity.Apid.Accounts;
 using Nancy;
 using Newtonsoft.Json;
@@ -66,6 +67,7 @@ namespace Artivity.Apid.Protocols.Authentication
 
         [JsonIgnore]
         public ILogger Logger { get; set; }
+
         #endregion
 
         #region Constructors
