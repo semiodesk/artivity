@@ -28,13 +28,8 @@
 		<note>Improved data capture mechanisms in all plugins.</note>
 	</notes>
 </channel>
-
-
-
 <channel os="win">
 </channel>
-
 <channel os="linux">
 </channel>
-
 </changelog>
