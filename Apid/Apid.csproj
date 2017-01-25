@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{18E3ACB7-2958-43C7-B201-EA31F542F22C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Artivity.Apid</RootNamespace>
+    <ReleaseVersion>1.6</ReleaseVersion>
+    <AssemblyName>Artivity.Apid</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WIN, DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\build\Release\</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WIN</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug OSX|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug_OSX</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <Commandlineparameters>-l log.config</Commandlineparameters>
+    <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>OSX, DEBUG</DefineConstants>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release OSX|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release OSX</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>OSX</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="dotNetRDF, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\dotNetRDF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dotNetRDF.Data.Virtuoso, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OpenLink.Data.Virtuoso, Version=7.2.3215.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity, Version=0.9.147.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Hosting.Self">
+      <HintPath>..\packages\Nancy.Hosting.Self.1.4.1\lib\net40\Nancy.Hosting.Self.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Management" />
+    <Reference Include="Nancy, Version=1.4.2.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Nancy.1.4.3\lib\net40\Nancy.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.5\lib\net40-client\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\VDS.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="OAuth2">
+      <HintPath>..\packages\OAuth2.0.8.37\lib\OAuth2.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="INIFileParser">
+      <HintPath>..\packages\ini-parser.2.3.0\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
+    <Reference Include="TinyVirtuoso">
+      <HintPath>..\packages\TinyVirtuoso.0.3.29\lib\Net35\TinyVirtuoso.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Helpers\ProgressStream.cs" />
+    <Compile Include="Helpers\ProgressStreamContent.cs" />
+    <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />
+    <Compile Include="Protocols\Atom\AtomLink.cs" />
+    <Compile Include="Services\Clients\EPrintsServiceClient.cs" />
+    <Compile Include="Protocols\Authentication\BasicAuthenticationClient.cs" />
+    <Compile Include="Protocols\Authentication\HttpAuthenticationClientState.cs" />
+    <Compile Include="Protocols\Authentication\HttpAuthenticationParameterSet.cs" />
+    <Compile Include="Protocols\Authentication\OAuth2AuthenticationClient.cs" />
+    <Compile Include="Protocols\Authentication\IHttpAuthenticationClient.cs" />
+    <Compile Include="Services\IOnlineServicePublishingClient.cs" />
+    <Compile Include="Services\OnlineServiceClientBase.cs" />
+    <Compile Include="Services\OnlineServiceClientFactory.cs" />
+    <Compile Include="Services\IOnlineServiceClient.cs" />
+    <Compile Include="Protocols\Authentication\HttpAuthenticationClientBase.cs" />
+    <Compile Include="Services\Clients\OrcidServiceClient.cs" />
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="HttpService.cs" />
+    <Compile Include="IO\FileEventIndex.cs" />
+    <Compile Include="IO\FileEventRecord.cs" />
+    <Compile Include="IO\FileSystemWatcherInfo.cs" />
+    <Compile Include="Modules\AccountsModule.cs" />
+    <Compile Include="Modules\AgentsModule.cs" />
+    <Compile Include="Platforms\OSX\ThumbnailProvider.cs" />
+    <Compile Include="Platforms\ThumbnailProviderFactory.cs" />
+    <Compile Include="Platforms\Win\ThumbnailProvider.cs" />
+    <Compile Include="Platforms\PlatformProvider.cs" />
+    <Compile Include="Plugins\PluginCheckerFactory.cs" />
+    <Compile Include="Plugins\PluginManifestPluginFile.cs" />
+    <Compile Include="Plugins\PluginManifestReader.cs" />
+    <Compile Include="Plugins\PluginManifestRegistryItem.cs" />
+    <Compile Include="Plugins\PluginManifestRegistryKey.cs" />
+    <Compile Include="Plugins\SoftwareAgentPlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IO\FileSystemMonitor.cs" />
+    <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="Modules\UriModule.cs" />
+    <Compile Include="IO\FileInfoCache.cs" />
+    <Compile Include="Platforms\OSX\CoreFoundation.cs" />
+    <Compile Include="Plugins\PluginChecker.cs" />
+    <Compile Include="Plugins\PluginManifest.cs" />
+    <Compile Include="Platforms\Win\ProgramInstallationWatchdog.cs" />
+    <Compile Include="Platforms\Win\InstalledPrograms.cs" />
+    <Compile Include="Platforms\Win\RegistryEntry.cs" />
+    <Compile Include="Platforms\Win\RegistryMonitor.cs" />
+    <Compile Include="Plugins\IProgramInstallationWatchdog.cs" />
+    <Compile Include="Platforms\OSX\Carbon.cs" />
+    <Compile Include="Platforms\OSX\InstalledPrograms.cs" />
+    <Compile Include="Platforms\OSX\OsxPluginChecker.cs" />
+    <Compile Include="Platforms\Win\WinPluginChecker.cs" />
+    <Compile Include="Platforms\OSX\ProgramInstallationWatchdog.cs" />
+    <Compile Include="Protocols\Atom\AtomCategory.cs" />
+    <Compile Include="Protocols\Atom\AtomCollection.cs" />
+    <Compile Include="Protocols\Atom\AtomFeed.cs" />
+    <Compile Include="Protocols\Atom\AtomFeedAuthor.cs" />
+    <Compile Include="Protocols\Atom\AtomFeedEntry.cs" />
+    <Compile Include="Protocols\Atom\AtomPublishingClient.cs" />
+    <Compile Include="Protocols\Atom\AtomPublishingService.cs" />
+    <Compile Include="Protocols\XmlNamespaces.cs" />
+    <Compile Include="Helpers\XDocumentFactory.cs" />
+    <Compile Include="Helpers\XElementExtensions.cs" />
+    <Compile Include="Repositories\ResourceRepository.cs" />
+    <Compile Include="ProgramBase.cs" />
+    <Compile Include="IO\IFileSystemWatcher.cs" />
+    <Compile Include="IO\FileSystemWatcherFactory.cs" />
+    <Compile Include="IO\DefaultFileSystemWatcher.cs" />
+    <Compile Include="Modules\ExportModule.cs" />
+    <Compile Include="Services\OnlineServiceClientSession.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Makefile" />
+    <None Include="COPYING" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Plugins\Manifest.json" />
+    <None Include="Plugins\Plugins.cd" />
+    <None Include="TinyVirtuoso\database\virtuoso.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TinyVirtuoso\virtuoso\doc\AUTHORS" />
+    <None Include="TinyVirtuoso\virtuoso\doc\COPYING" />
+    <None Include="TinyVirtuoso\virtuoso\doc\CREDITS" />
+    <None Include="TinyVirtuoso\virtuoso\doc\INSTALL" />
+    <None Include="TinyVirtuoso\virtuoso\doc\LICENSE" />
+    <None Include="TinyVirtuoso\virtuoso\doc\NEWS" />
+    <None Include="TinyVirtuoso\virtuoso\doc\README" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\user.jpg" />
+    <Content Include="TinyVirtuoso\virtuoso\win\CtrlCSender.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\isql.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\libeay32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\libexpat.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\libwbxml2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\ssleay32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TinyVirtuoso\virtuoso\win\virtuoso-t.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <TextStylePolicy inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain" />
+          <StandardHeader Text="LICENSE:&#xA;&#xA;Permission is hereby granted, free of charge, to any person obtaining a copy&#xA;of this software and associated documentation files (the &quot;Software&quot;), to deal&#xA;in the Software without restriction, including without limitation the rights&#xA;to use, copy, modify, merge, publish, distribute, sublicense, and/or sell&#xA;copies of the Software, and to permit persons to whom the Software is&#xA;furnished to do so, subject to the following conditions:&#xA;&#xA;The above copyright notice and this permission notice shall be included in&#xA;all copies or substantial portions of the Software.&#xA;&#xA;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR&#xA;IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,&#xA;FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE&#xA;AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER&#xA;LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,&#xA;OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN&#xA;THE SOFTWARE.&#xA;&#xA;AUTHORS:&#xA; Moritz Eberl &lt;moritz@semiodesk.com&gt;&#xA; Sebastian Faubel &lt;sebastian@semiodesk.com&gt;&#xA;&#xA;Copyright (c) Semiodesk GmbH 2015&#xA;" IncludeInNewFiles="True" />
+          <NameConventionPolicy>
+            <Rules>
+              <NamingRule Name="Namespaces" AffectedEntity="Namespace" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True" />
+              <NamingRule Name="Types" AffectedEntity="Class, Struct, Enum, Delegate" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True" />
+              <NamingRule Name="Interfaces" AffectedEntity="Interface" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True">
+                <RequiredPrefixes>
+                  <String>I</String>
+                </RequiredPrefixes>
+              </NamingRule>
+              <NamingRule Name="Attributes" AffectedEntity="CustomAttributes" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True">
+                <RequiredSuffixes>
+                  <String>Attribute</String>
+                </RequiredSuffixes>
+              </NamingRule>
+              <NamingRule Name="Event Arguments" AffectedEntity="CustomEventArgs" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True">
+                <RequiredSuffixes>
+                  <String>EventArgs</String>
+                </RequiredSuffixes>
+              </NamingRule>
+              <NamingRule Name="Exceptions" AffectedEntity="CustomExceptions" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True">
+                <RequiredSuffixes>
+                  <String>Exception</String>
+                </RequiredSuffixes>
+              </NamingRule>
+              <NamingRule Name="Methods" AffectedEntity="Methods" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True" />
+              <NamingRule Name="Static Readonly Fields" AffectedEntity="ReadonlyField" VisibilityMask="Internal, Protected, Public" NamingStyle="PascalCase" IncludeInstanceMembers="False" IncludeStaticEntities="True" />
+              <NamingRule Name="Fields (Non Private)" AffectedEntity="Field" VisibilityMask="Internal, Protected, Public" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True" />
+              <NamingRule Name="ReadOnly Fields (Non Private)" AffectedEntity="ReadonlyField" VisibilityMask="Internal, Protected, Public" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="False" />
+              <NamingRule Name="Fields (Private)" AffectedEntity="Field, ReadonlyField" VisibilityMask="Private" NamingStyle="CamelCase" IncludeInstanceMembers="True" IncludeStaticEntities="False">
+                <AllowedPrefixes>
+                  <String>_</String>
+                  <String>m_</String>
+                </AllowedPrefixes>
+              </NamingRule>
+              <NamingRule Name="Static Fields (Private)" AffectedEntity="Field" VisibilityMask="Private" NamingStyle="CamelCase" IncludeInstanceMembers="False" IncludeStaticEntities="True" />
+              <NamingRule Name="ReadOnly Fields (Private)" AffectedEntity="ReadonlyField" VisibilityMask="Private" NamingStyle="CamelCase" IncludeInstanceMembers="True" IncludeStaticEntities="False">
+                <AllowedPrefixes>
+                  <String>_</String>
+                  <String>m_</String>
+                </AllowedPrefixes>
+              </NamingRule>
+              <NamingRule Name="Constant Fields" AffectedEntity="ConstantField" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True" />
+              <NamingRule Name="Properties" AffectedEntity="Property" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True" />
+              <NamingRule Name="Events" AffectedEntity="Event" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True" />
+              <NamingRule Name="Enum Members" AffectedEntity="EnumMember" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True" />
+              <NamingRule Name="Parameters" AffectedEntity="Parameter" VisibilityMask="VisibilityMask" NamingStyle="CamelCase" IncludeInstanceMembers="True" IncludeStaticEntities="True" />
+              <NamingRule Name="Type Parameters" AffectedEntity="TypeParameter" VisibilityMask="VisibilityMask" NamingStyle="PascalCase" IncludeInstanceMembers="True" IncludeStaticEntities="True">
+                <RequiredPrefixes>
+                  <String>T</String>
+                </RequiredPrefixes>
+              </NamingRule>
+            </Rules>
+          </NameConventionPolicy>
+        </Policies>
+        <Deployment.LinuxDeployData scriptName="artivity-apid" />
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Api\Api.csproj">
+      <Project>{e5d40ad8-4cdc-421a-9b71-1b4959d09671}</Project>
+      <Name>Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataModel\DataModel.csproj">
+      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
+      <Name>DataModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+</Project>
