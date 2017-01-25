@@ -25,12 +25,8 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.Platform;
 using Semiodesk.Trinity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Artivity.Api.Platform
 {

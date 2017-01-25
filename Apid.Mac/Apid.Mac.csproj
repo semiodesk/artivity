@@ -31,6 +31,7 @@
     <TlsProvider>Default</TlsProvider>
     <LinkMode>None</LinkMode>
     <Commandlineparameters>´</Commandlineparameters>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release OSX|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -48,6 +49,7 @@
     <HttpClientHandler>HttpClientHandler</HttpClientHandler>
     <TlsProvider>Default</TlsProvider>
     <PackageSigningKey>Developer ID Installer</PackageSigningKey>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -66,6 +68,9 @@
     <Reference Include="TinyVirtuoso">
       <HintPath>..\packages\TinyVirtuoso.0.3.29\lib\Net35\TinyVirtuoso.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -77,6 +82,12 @@
     <Compile Include="Platform\FSEventsFileSystemWatcher.cs" />
     <Compile Include="Platform\MacPlatformProvider.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Platform\Carbon.cs" />
+    <Compile Include="Platform\CoreFoundation.cs" />
+    <Compile Include="Platform\InstalledPrograms.cs" />
+    <Compile Include="Platform\PluginChecker.cs" />
+    <Compile Include="Platform\ProgramInstallationWatchdog.cs" />
+    <Compile Include="Platform\ThumbnailProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -94,23 +105,24 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Plugins\Chrome\Sample.html" />
-    <None Include="Plugins\IllustratorCC2015\Artivity64_2015.aip" />
-    <None Include="Plugins\IllustratorCC2015\Icon.png" />
-    <None Include="Plugins\IllustratorCC2015\Manifest.xml" />
-    <None Include="Plugins\IllustratorCC2015\Sample.ai" />
-    <None Include="Plugins\IllustratorCC2015.2\Artivity64_2015.2.aip" />
-    <None Include="Plugins\IllustratorCC2015.2\Icon.png" />
-    <None Include="Plugins\IllustratorCC2015.2\Manifest.xml" />
-    <None Include="Plugins\PhotoshopCC2015\Artivity64.8li" />
-    <None Include="Plugins\PhotoshopCC2015\Icon.png" />
-    <None Include="Plugins\PhotoshopCC2015\Manifest.xml" />
-    <None Include="Plugins\PhotoshopCC2015\Sample.psd" />
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Artivity.Apid\Artivity.Apid.csproj">
+    <ProjectReference Include="..\Apid\Apid.csproj">
       <Project>{18E3ACB7-2958-43C7-B201-EA31F542F22C}</Project>
-      <Name>Artivity.Apid</Name>
+      <Name>Apid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Api\Api.csproj">
+      <Project>{E5D40AD8-4CDC-421A-9B71-1B4959D09671}</Project>
+      <Name>Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataModel\DataModel.csproj">
+      <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>
+      <Name>DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Apid\Apid.csproj">
+      <Project>{18E3ACB7-2958-43C7-B201-EA31F542F22C}</Project>
+      <Name>Apid</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -122,7 +134,6 @@
     <BundleResource Include="TinyVirtuoso\virtuoso\osx\isql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>
-    <BundleResource Include="Plugins\IllustratorCC2015.2\Sample.ai" />
     <BundleResource Include="TinyVirtuoso\database\virtuoso.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>

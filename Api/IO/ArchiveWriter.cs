@@ -25,17 +25,14 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.IO;
 using Artivity.Api.Platform;
 using Artivity.Api.Helpers;
 using Artivity.DataModel;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Text;
 using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Storage;

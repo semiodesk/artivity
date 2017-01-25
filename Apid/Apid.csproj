@@ -15,14 +15,14 @@
     <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DefineConstants>WIN, DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>..\build\Release\</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DefineConstants>WIN</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug OSX|AnyCPU' ">
@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
     <Commandlineparameters>-l log.config</Commandlineparameters>
     <DebugSymbols>true</DebugSymbols>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DefineConstants>OSX, DEBUG</DefineConstants>
     <Externalconsole>true</Externalconsole>
   </PropertyGroup>
@@ -39,75 +39,69 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Release OSX</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DefineConstants>OSX</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dotNetRDF, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\dotNetRDF.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="dotNetRDF.Data.Virtuoso, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="OpenLink.Data.Virtuoso, Version=7.2.3215.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Semiodesk.Trinity, Version=0.9.147.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="CommandLine">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
-    </Reference>
-    <Reference Include="Nancy.Hosting.Self">
-      <HintPath>..\packages\Nancy.Hosting.Self.1.4.1\lib\net40\Nancy.Hosting.Self.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Management" />
-    <Reference Include="Nancy, Version=1.4.2.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Nancy.1.4.3\lib\net40\Nancy.dll</HintPath>
-    </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.5\lib\net40-client\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.147-rc\lib\Net40\VDS.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="OAuth2">
-      <HintPath>..\packages\OAuth2.0.8.37\lib\OAuth2.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="INIFileParser">
       <HintPath>..\packages\ini-parser.2.3.0\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
     <Reference Include="TinyVirtuoso">
       <HintPath>..\packages\TinyVirtuoso.0.3.29\lib\Net35\TinyVirtuoso.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy">
+      <HintPath>..\packages\Nancy.1.4.3\lib\net40\Nancy.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Hosting.Self">
+      <HintPath>..\packages\Nancy.Hosting.Self.1.4.1\lib\net40\Nancy.Hosting.Self.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="dotNetRDF.Data.Virtuoso">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+    </Reference>
+    <Reference Include="dotNetRDF">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\dotNetRDF.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenLink.Data.Virtuoso">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+    </Reference>
+    <Reference Include="VDS.Common">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\VDS.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="OAuth2">
+      <HintPath>..\packages\OAuth2.0.8.40\lib\OAuth2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -135,7 +129,6 @@
     <Compile Include="IO\FileSystemWatcherInfo.cs" />
     <Compile Include="Modules\AccountsModule.cs" />
     <Compile Include="Modules\AgentsModule.cs" />
-    <Compile Include="Platform\OSX\ThumbnailProvider.cs" />
     <Compile Include="Platform\ThumbnailProviderFactory.cs" />
     <Compile Include="Platform\PlatformProvider.cs" />
     <Compile Include="Plugins\PluginCheckerFactory.cs" />
@@ -150,14 +143,9 @@
     <Compile Include="Options.cs" />
     <Compile Include="Modules\UriModule.cs" />
     <Compile Include="IO\FileInfoCache.cs" />
-    <Compile Include="Platform\OSX\CoreFoundation.cs" />
     <Compile Include="Plugins\PluginChecker.cs" />
     <Compile Include="Plugins\PluginManifest.cs" />
     <Compile Include="Plugins\IProgramInstallationWatchdog.cs" />
-    <Compile Include="Platform\OSX\Carbon.cs" />
-    <Compile Include="Platform\OSX\InstalledPrograms.cs" />
-    <Compile Include="Platform\OSX\OsxPluginChecker.cs" />
-    <Compile Include="Platform\OSX\ProgramInstallationWatchdog.cs" />
     <Compile Include="Protocols\Atom\AtomCategory.cs" />
     <Compile Include="Protocols\Atom\AtomCollection.cs" />
     <Compile Include="Protocols\Atom\AtomFeed.cs" />
@@ -181,53 +169,22 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Makefile" />
     <None Include="COPYING" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="Plugins\Manifest.json" />
     <None Include="Plugins\Plugins.cd" />
-    <None Include="TinyVirtuoso\database\virtuoso.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TinyVirtuoso\virtuoso\doc\AUTHORS" />
-    <None Include="TinyVirtuoso\virtuoso\doc\COPYING" />
-    <None Include="TinyVirtuoso\virtuoso\doc\CREDITS" />
-    <None Include="TinyVirtuoso\virtuoso\doc\INSTALL" />
-    <None Include="TinyVirtuoso\virtuoso\doc\LICENSE" />
-    <None Include="TinyVirtuoso\virtuoso\doc\NEWS" />
-    <None Include="TinyVirtuoso\virtuoso\doc\README" />
+    <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\user.jpg" />
-    <Content Include="TinyVirtuoso\virtuoso\win\CtrlCSender.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\isql.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\libeay32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\libexpat.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\libwbxml2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\ssleay32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TinyVirtuoso\virtuoso\win\virtuoso-t.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
         <Policies>
-          <TextStylePolicy inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain" />
+          <TextStylePolicy FileWidth="80" TabWidth="4" TabsToSpaces="True" IndentWidth="4" RemoveTrailingWhitespace="True" NoTabsAfterNonTabs="False" EolMarker="Native" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain" />
           <StandardHeader Text="LICENSE:&#xA;&#xA;Permission is hereby granted, free of charge, to any person obtaining a copy&#xA;of this software and associated documentation files (the &quot;Software&quot;), to deal&#xA;in the Software without restriction, including without limitation the rights&#xA;to use, copy, modify, merge, publish, distribute, sublicense, and/or sell&#xA;copies of the Software, and to permit persons to whom the Software is&#xA;furnished to do so, subject to the following conditions:&#xA;&#xA;The above copyright notice and this permission notice shall be included in&#xA;all copies or substantial portions of the Software.&#xA;&#xA;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR&#xA;IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,&#xA;FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE&#xA;AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER&#xA;LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,&#xA;OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN&#xA;THE SOFTWARE.&#xA;&#xA;AUTHORS:&#xA; Moritz Eberl &lt;moritz@semiodesk.com&gt;&#xA; Sebastian Faubel &lt;sebastian@semiodesk.com&gt;&#xA;&#xA;Copyright (c) Semiodesk GmbH 2015&#xA;" IncludeInNewFiles="True" />
           <NameConventionPolicy>
             <Rules>
