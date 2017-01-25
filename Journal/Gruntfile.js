@@ -8,7 +8,6 @@ module.exports = function (grunt) {
 
     // The order of the following files is important:
     var jsFiles = [
-        'app/app.conf.js',
         'app/app.route.js',
         'app/app.api.js',
         'app/app.translation.js',
@@ -99,11 +98,11 @@ module.exports = function (grunt) {
         },
         tags: {
             build: {
-                src: jsFiles,
+                src: ['app/app.conf.js', jsFiles],
                 dest: 'index.html'
             },
             release: {
-                src: appJsFile,
+                src: ['app/app.conf.release.js', appJsFile],
                 dest: 'index.html'
             }
         },
@@ -244,8 +243,8 @@ module.exports = function (grunt) {
                         dest: buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app'
                     },
                     {
-                        src: buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Resources/app/js/app.conf.release.js',
-                        dest: buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Resources/app/js/app.conf.js',
+                        src: buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Resources/app/app/app.conf.release.js',
+                        dest: buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Resources/app/app/app.conf.js',
                         force: true
                     },
                 ],
@@ -258,8 +257,8 @@ module.exports = function (grunt) {
                         dest: buildDistDir + '/Artivity-win32-x64/apid/'
                     },
                     {
-                        src: buildDistDir + '/Artivity-win32-x64/resources/app/js/app.conf.release.js',
-                        dest: buildDistDir + '/Artivity-win32-x64/resources/app/js/app.conf.js',
+                        src: buildDistDir + '/Artivity-win32-x64/Resources/app/app/app.conf.release.js',
+                        dest: buildDistDir + '/Artivity-win32-x64/Resources/app/app/app.conf.js',
                         force: true
                     },
                 ],
