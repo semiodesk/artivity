@@ -691,7 +691,7 @@ namespace Artivity.Apid.IO
         {
             try
             {
-                if (r.Uri != null)
+                if (r != null && r.Uri != null)
                 {
                     FileInfoCache fileInfo = new FileInfoCache(r.FilePath);
 
