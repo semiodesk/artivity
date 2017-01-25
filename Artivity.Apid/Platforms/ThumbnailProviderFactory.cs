@@ -25,16 +25,23 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Platforms;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace Artivity.Api.Parameters
+namespace Artivity.Apid.Platforms
 {
-    public class AgentParameter
+    public class ThumbnailProviderFactory
     {
-        public string agent { get; set; }
-
-        public bool? enabled { get; set; }
+        public static IThumbnailProvider CreateThumbnailProvider()
+        {
+            #if WIN
+            return new Artivity.Apid.Platforms.Win.ThumbnailProvider();
+            #elif OSX
+            return new Artivity.Apid.Platforms.OSX.ThumbnailProvider();
+            #endif
+        }
     }
 }

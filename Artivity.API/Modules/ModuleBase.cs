@@ -25,19 +25,20 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.IO;
+using Artivity.Api.Platforms;
+using Artivity.DataModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Semiodesk.Trinity;
 using Semiodesk.Trinity.Serialization;
 using Nancy;
-using Artivity.DataModel;
 using Nancy.IO;
-using System.IO;
 using Newtonsoft.Json;
-using Artivity.Apid.Platforms;
 
-namespace Artivity.Apid
+namespace Artivity.Api.Modules
 {
 	public class ModuleBase : NancyModule
     {

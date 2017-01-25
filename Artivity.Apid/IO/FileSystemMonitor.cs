@@ -24,6 +24,8 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Platforms;
+using Artivity.DataModel;
 using System;
 using System.IO;
 using System.Linq;
@@ -31,11 +33,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Diagnostics;
-using Semiodesk.Trinity;
-using Artivity.DataModel;
-using Artivity.Apid.Platforms;
-using Nancy;
 using System.Threading.Tasks;
+using Semiodesk.Trinity;
+using Nancy;
 
 namespace Artivity.Apid.IO
 {

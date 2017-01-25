@@ -25,18 +25,19 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Platforms;
+using Artivity.Apid.IO;
+using Artivity.Apid.Platforms;
+using Artivity.Apid.Plugin;
+using Artivity.DataModel;
+using Semiodesk.Trinity;
+using Semiodesk.TinyVirtuoso;
 using System;
 using System.IO;
 using System.Configuration;
 using System.Threading;
-using Semiodesk.Trinity;
-using Semiodesk.TinyVirtuoso;
 using Nancy.Hosting.Self;
 using Nancy.TinyIoc;
-using Artivity.DataModel;
-using Artivity.Apid.Platforms;
-using Artivity.Apid.Plugin;
-using Artivity.Apid.IO;
 
 namespace Artivity.Apid
 {

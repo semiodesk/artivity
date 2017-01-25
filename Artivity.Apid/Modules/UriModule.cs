@@ -25,8 +25,10 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Modules;
+using Artivity.Api.Parameters;
+using Artivity.Api.Platforms;
 using Artivity.DataModel;
-using Artivity.Apid.Parameters;
 using Semiodesk.Trinity;
 using Semiodesk.Trinity.Store;
 using System;
@@ -41,7 +43,6 @@ using Nancy;
 using Nancy.IO;
 using Nancy.ModelBinding;
 using VDS.RDF;
-using Artivity.Apid.Platforms;
 
 namespace Artivity.Apid
 {

@@ -29,7 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Artivity.Apid.Parameters
+namespace Artivity.Api.Parameters
 {
     public class ActivityParameter
     {

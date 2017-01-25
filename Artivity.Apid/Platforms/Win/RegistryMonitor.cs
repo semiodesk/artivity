@@ -319,8 +319,10 @@ namespace RegistryUtils
 		/// </summary>
 		public void Start()
 		{
-			if (_disposed)
-				throw new ObjectDisposedException(null, "This instance is already disposed");
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(null, "This instance is already disposed");
+            }
 			
 			lock (_threadLock)
 			{
@@ -339,12 +341,15 @@ namespace RegistryUtils
 		/// </summary>
 		public void Stop()
 		{
-			if (_disposed)
-				throw new ObjectDisposedException(null, "This instance is already disposed");
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(null, "This instance is already disposed");
+            }
 			
 			lock (_threadLock)
 			{
 				Thread thread = _thread;
+
 				if (thread != null)
 				{
 					_eventTerminate.Set();
@@ -363,24 +368,30 @@ namespace RegistryUtils
 			{
 				OnError(e);
 			}
+
 			_thread = null;
 		}
 
 		private void ThreadLoop()
 		{
 			IntPtr registryKey;
-			int result = RegOpenKeyEx(_registryHive, _registrySubName, 0, STANDARD_RIGHTS_READ | KEY_QUERY_VALUE | KEY_NOTIFY,
-			                          out registryKey);
-			if (result != 0)
-				throw new Win32Exception(result);
+
+			int result = RegOpenKeyEx(_registryHive, _registrySubName, 0, STANDARD_RIGHTS_READ | KEY_QUERY_VALUE | KEY_NOTIFY, out registryKey);
+
+            if (result != 0)
+            {
+                throw new Win32Exception(result);
+            }
 
 			try
 			{
 				AutoResetEvent _eventNotify = new AutoResetEvent(false);
 				WaitHandle[] waitHandles = new WaitHandle[] {_eventNotify, _eventTerminate};
+
 				while (!_eventTerminate.WaitOne(0, true))
 				{
 					result = RegNotifyChangeKeyValue(registryKey, true, _regFilter, _eventNotify.Handle, true);
+
 					if (result != 0)
 						throw new Win32Exception(result);
 

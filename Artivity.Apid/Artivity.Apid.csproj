@@ -113,7 +113,6 @@
   <ItemGroup>
     <Compile Include="Helpers\ProgressStream.cs" />
     <Compile Include="Helpers\ProgressStreamContent.cs" />
-    <Compile Include="IO\BackupWriter.cs" />
     <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />
     <Compile Include="Protocols\Atom\AtomLink.cs" />
     <Compile Include="Services\Clients\EPrintsServiceClient.cs" />
@@ -136,7 +135,7 @@
     <Compile Include="Modules\AccountsModule.cs" />
     <Compile Include="Modules\AgentsModule.cs" />
     <Compile Include="Platforms\OSX\ThumbnailProvider.cs" />
-    <Compile Include="Platforms\IThumbnailProvider.cs" />
+    <Compile Include="Platforms\ThumbnailProviderFactory.cs" />
     <Compile Include="Platforms\Win\ThumbnailProvider.cs" />
     <Compile Include="Platforms\PlatformProvider.cs" />
     <Compile Include="Plugins\PluginCheckerFactory.cs" />
@@ -179,9 +178,6 @@
     <Compile Include="IO\IFileSystemWatcher.cs" />
     <Compile Include="IO\FileSystemWatcherFactory.cs" />
     <Compile Include="IO\DefaultFileSystemWatcher.cs" />
-    <Compile Include="Helpers\JsonNetBodyDeserializer.cs" />
-    <Compile Include="Helpers\JsonNetSerializer.cs" />
-    <Compile Include="Helpers\NancyHelpers.cs" />
     <Compile Include="Modules\ExportModule.cs" />
     <Compile Include="Services\OnlineServiceClientSession.cs" />
   </ItemGroup>
@@ -298,9 +294,9 @@
   </ProjectExtensions>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\Artivity.API\Artivity.API.csproj">
+    <ProjectReference Include="..\Artivity.API\Artivity.Api.csproj">
       <Project>{e5d40ad8-4cdc-421a-9b71-1b4959d09671}</Project>
-      <Name>Artivity.API</Name>
+      <Name>Artivity.Api</Name>
     </ProjectReference>
     <ProjectReference Include="..\Artivity.DataModel\Artivity.DataModel.csproj">
       <Project>{AF97FB55-09C8-4775-81F6-F1F97C2DB468}</Project>

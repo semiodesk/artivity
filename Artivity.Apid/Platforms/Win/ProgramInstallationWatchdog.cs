@@ -42,10 +42,10 @@ namespace Artivity.Apid.Plugin.Win
 
         private string _registryKey;
 
-        private RegistryMonitor _monitor32;
+        //private RegistryMonitor _monitor32;
         private RegistryMonitor _monitor64;
 
-        private RegistryKey _key32;
+        //private RegistryKey _key32;
         private RegistryKey _key64;
 
         #endregion
@@ -80,19 +80,19 @@ namespace Artivity.Apid.Plugin.Win
 
         public void Stop()
         {
-            if (_monitor32 != null)
-            {
-                _monitor32.Stop();
-            }
+            //if (_monitor32 != null)
+            //{
+            //    _monitor32.Stop();
+            //}
+
+            //if (_key32 != null)
+            //{
+            //    _key32.Dispose();
+            //}
 
             if (_monitor64 != null)
             {
                 _monitor64.Stop();
-            }
-
-            if (_key32 != null)
-            {
-                _key32.Dispose();
             }
 
             if (_key64 != null)

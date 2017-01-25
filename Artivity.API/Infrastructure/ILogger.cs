@@ -28,7 +28,7 @@
 using System;
 using Nancy;
 
-namespace Artivity.Apid
+namespace Artivity.Api
 {
     public interface ILogger
     {

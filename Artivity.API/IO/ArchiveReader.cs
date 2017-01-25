@@ -28,17 +28,16 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using Artivity.Apid.Helpers;
-
-using Artivity.Apid;
-using Artivity.Apid.Platforms;
+using Artivity.Api;
+using Artivity.Api.Helpers;
+using Artivity.Api.Platforms;
 using Artivity.DataModel;
 using Nancy;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using VDS.RDF.Storage;
 
-namespace Artivity.Apid.IO
+namespace Artivity.Api.IO
 {
     public class ArchiveReader
     {

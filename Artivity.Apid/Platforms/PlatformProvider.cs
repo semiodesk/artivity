@@ -25,6 +25,9 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api;
+using Artivity.Api.IO;
+using Artivity.Api.Platforms;
 using Artivity.Apid.IO;
 using Artivity.Apid.Platforms;
 using Newtonsoft.Json;
@@ -93,6 +96,7 @@ namespace Artivity.Apid.Platforms
         public bool DidSetupRun { get { return Config.RunSetup; } set { Config.RunSetup = value; } }
 
         public bool RequiresAuthentication { get { return false; } }
+
         #endregion
 
         #region Constructors

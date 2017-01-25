@@ -25,9 +25,9 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Apid.IO;
-using Artivity.Apid.Platforms;
-using Artivity.Apid.Helpers;
+using Artivity.Api.IO;
+using Artivity.Api.Platforms;
+using Artivity.Api.Helpers;
 using Artivity.DataModel;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
@@ -40,7 +40,7 @@ using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Storage;
 
-namespace Artivity.Apid.IO
+namespace Artivity.Api.IO
 {
     public class ArchiveWriter : INotifyProgressChanged
     {

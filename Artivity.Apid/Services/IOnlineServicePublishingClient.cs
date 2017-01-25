@@ -25,16 +25,17 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Helpers;
+using Artivity.Api.IO;
 using Artivity.Apid.Accounts;
 using Artivity.Apid.Helpers;
-using Artivity.Apid.IO;
 using Artivity.DataModel;
-using Nancy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Nancy;
 
 namespace Artivity.Apid
 {

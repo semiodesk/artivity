@@ -25,16 +25,18 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.DataModel;
-using Artivity.Apid.Platforms;
-using Artivity.Apid.Plugin;
+using Artivity.Api.IO;
+using Artivity.Api.Helpers;
+using Artivity.Api.Modules;
+using Artivity.Api.Platforms;
 using Artivity.Apid.IO;
+using Artivity.Apid.Plugin;
+using Artivity.DataModel;
 using Semiodesk.Trinity;
 using System;
-using Nancy;
-using System.IO;
-using Artivity.Apid.Helpers;
 using System.Collections.Generic;
+using System.IO;
+using Nancy;
 
 namespace Artivity.Apid.Modules
 {

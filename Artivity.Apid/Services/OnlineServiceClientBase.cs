@@ -25,7 +25,8 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Apid.Helpers;
+using Artivity.Api;
+using Artivity.Api.Helpers;
 using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
 using Nancy;

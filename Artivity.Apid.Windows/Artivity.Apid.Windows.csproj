@@ -86,9 +86,9 @@
       <Project>{18E3ACB7-2958-43C7-B201-EA31F542F22C}</Project>
       <Name>Artivity.Apid</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Artivity.API\Artivity.API.csproj">
+    <ProjectReference Include="..\Artivity.API\Artivity.Api.csproj">
       <Project>{e5d40ad8-4cdc-421a-9b71-1b4959d09671}</Project>
-      <Name>Artivity.API</Name>
+      <Name>Artivity.Api</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

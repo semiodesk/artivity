@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{D678BD84
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginDownloader", "Utils\PluginDownloader\PluginDownloader.csproj", "{8FBE4503-F546-47E4-81A6-AC1B72080066}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.API", "Artivity.API\Artivity.API.csproj", "{E5D40AD8-4CDC-421A-9B71-1B4959D09671}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artivity.Api", "Artivity.API\Artivity.Api.csproj", "{E5D40AD8-4CDC-421A-9B71-1B4959D09671}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

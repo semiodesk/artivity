@@ -31,7 +31,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Apid.Parameters
+namespace Artivity.Api.Parameters
 {
     public class CommentParameter
     {

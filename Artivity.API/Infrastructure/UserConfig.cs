@@ -32,7 +32,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Apid.Platforms
+namespace Artivity.Api.Platforms
 {
     public class UserConfig
     {

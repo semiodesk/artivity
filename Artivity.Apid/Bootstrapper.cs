@@ -25,6 +25,10 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Platforms;
+using Artivity.Apid.Modules;
+using Artivity.Apid.Plugin;
+using Artivity.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,13 +40,9 @@ using Nancy.Bootstrapper;
 using Nancy.Diagnostics;
 using Nancy.Responses;
 using Nancy.TinyIoc;
-using Artivity.DataModel;
-using Artivity.Apid.Platforms;
+using Nancy.Serialization.JsonNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Nancy.Serialization.JsonNet;
-using Artivity.Apid.Modules;
-using Artivity.Apid.Plugin;
 
 namespace Artivity.Apid
 {
