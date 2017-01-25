@@ -29,23 +29,16 @@ using Artivity.Api.IO;
 using Artivity.Api.Platform;
 using Artivity.Apid;
 using Artivity.Apid.Accounts;
-using Artivity.Apid.Helpers;
-using Artivity.Apid.IO;
-using Artivity.Apid.Platforms;
 using Artivity.Apid.Plugins;
-using Artivity.Apid.Protocols.Atom;
 using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
 using Nancy;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Artivity.Api.Modules

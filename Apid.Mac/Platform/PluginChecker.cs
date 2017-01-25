@@ -25,10 +25,9 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-#if OSX
+using Artivity.Api.Platform;
 using Artivity.DataModel;
-using Artivity.Apid;
-using Artivity.Apid.Platforms;
+using Artivity.Apid.Plugins;
 using System;
 using System.IO;
 using System.Linq;
@@ -38,13 +37,13 @@ using System.Xml.XPath;
 using System.Collections.Generic;
 using System.Xml;
 
-namespace Artivity.Apid.Plugin.OSX
+namespace Artivity.Apid.Mac.Platform
 {
-    public class OsxPluginChecker : PluginChecker
+    public class PluginChecker : Artivity.Apid.Plugins.PluginChecker
     {
         #region Constructors
 
-        public OsxPluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo folder)
+        public PluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo folder)
             : base(platformProvider, modelProvider, folder)
         {
         }
@@ -67,22 +66,22 @@ namespace Artivity.Apid.Plugin.OSX
                 throw new Exception("Sample file does not exist: " + sample);
             }
 
-            List<string> aassociatedApps = new List<string>();
+            List<string> associatedApps = new List<string>();
 
-            foreach (string appBundle in CoreFoundation.GetApplicationUrls(sample, CoreFoundation.LSRolesMask.All))
+            foreach (string appBundle in CF.GetApplicationUrls(sample, CF.LSRolesMask.All))
             {
                 if (appBundle.Contains(manifest.SampleResultFilter))
                 {
-                    aassociatedApps.Add(appBundle);
+                    associatedApps.Add(appBundle);
                 }
             }
 
             if (PlatformProvider != null && PlatformProvider.Config != null)
             {
-                aassociatedApps.InsertRange(0, PlatformProvider.Config.SoftwarePaths);
+                associatedApps.InsertRange(0, PlatformProvider.Config.SoftwarePaths);
             }
 
-            foreach(string appBundle in aassociatedApps)
+            foreach(string appBundle in associatedApps)
             {
                 if (Directory.Exists(appBundle))
                 {
@@ -189,7 +188,6 @@ namespace Artivity.Apid.Plugin.OSX
                     catch (Exception ex)
                     {
                         Logger.Error(ex.Message);
-
                         Logger.Debug("Failed to parse Info.plist. May be the file is in binary format?");
                     }
                 }
@@ -267,5 +265,3 @@ namespace Artivity.Apid.Plugin.OSX
         #endregion
     }
 }
-
-#endif

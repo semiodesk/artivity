@@ -26,16 +26,10 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.Apid.Plugins;
-using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
-namespace Artivity.Apid.Plugin.OSX
+namespace Artivity.Apid.Mac.Platform
 {
     class ProgramInstallationWatchdog : IProgramInstallationWatchdog
     {
