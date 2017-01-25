@@ -27,7 +27,7 @@
 
 using System;
 using Artivity.Api.IO;
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
 

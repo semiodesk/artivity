@@ -33,7 +33,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Apid.Plugin
+namespace Artivity.Apid.Plugins
 {
     public class SoftwareAgentPlugin
     {

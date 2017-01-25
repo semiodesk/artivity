@@ -30,7 +30,7 @@ using System.IO;
 using System.IO.Compression;
 using Artivity.Api;
 using Artivity.Api.Helpers;
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
 using Newtonsoft.Json;

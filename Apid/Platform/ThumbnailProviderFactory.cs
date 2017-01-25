@@ -23,17 +23,52 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Apid.Platforms.Win
+namespace Artivity.Apid.Platform
 {
-    class ThumbnailProvider : IThumbnailProvider
+    public static class ThumbnailProviderFactory
     {
+        #region Members
+
+        public static Type _providerType;
+
+        #endregion
+
+        #region Methods
+
+        public static void RegisterType<T>() where T : IThumbnailProvider
+        {
+            if (_providerType == null)
+            {
+                _providerType = typeof(T);
+            }
+            else
+            {
+                string msg = string.Format("Trying to overwrite registered type: {0}", _providerType);
+                throw new Exception(msg);
+            }
+        }
+
+        public static IThumbnailProvider CreateProvider()
+        {
+            if(_providerType != null)
+            {
+                return Activator.CreateInstance(_providerType) as IThumbnailProvider;
+            }
+            else
+            {
+                string msg = string.Format("No type registered for type: {0}", typeof(IThumbnailProvider));
+                throw new Exception(msg);
+            }
+        }
+
+        #endregion
     }
 }

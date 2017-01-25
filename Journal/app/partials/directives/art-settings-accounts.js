@@ -4,7 +4,7 @@
     function AccountsSettingsDirective() {
         return {
             scope: {},
-            templateUrl: 'partials/directives/art-settings-accounts.html',
+            templateUrl: 'app/partials/directives/art-settings-accounts.html',
             controller: AccountsSettingsDirectiveFormController
         }
     };
@@ -32,7 +32,7 @@
         s.addAccount = function () {
             var modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'partials/dialogs/add-account-dialog.html',
+                templateUrl: 'app/partials/dialogs/add-account-dialog.html',
                 controller: 'AddAccountDialogController',
                 controllerAs: 't'
             });

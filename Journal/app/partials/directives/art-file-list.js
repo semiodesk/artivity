@@ -4,7 +4,7 @@
     function FileListDirective() {
         return {
             scope: {},
-            templateUrl: 'partials/directives/art-file-list.html',
+            templateUrl: 'app/partials/directives/art-file-list.html',
             controller: FileListDirectiveController,
             controllerAs: 't',
             link: function (scope, element, attr, ctrl) {

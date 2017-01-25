@@ -28,9 +28,9 @@
 using Artivity.Api.IO;
 using Artivity.Api.Helpers;
 using Artivity.Api.Modules;
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using Artivity.Apid.IO;
-using Artivity.Apid.Plugin;
+using Artivity.Apid.Plugins;
 using Artivity.DataModel;
 using Semiodesk.Trinity;
 using System;

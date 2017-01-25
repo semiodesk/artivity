@@ -4,7 +4,7 @@
     function EditingHistoryDirective() {
         return {
             restrict: 'E',
-            templateUrl: 'partials/directives/art-editing-history.html',
+            templateUrl: 'app/partials/directives/art-editing-history.html',
             controller: EditingHistoryDirectiveController,
             controllerAs: 't',
             scope: {

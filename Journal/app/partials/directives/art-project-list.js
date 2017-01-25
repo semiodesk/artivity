@@ -4,7 +4,7 @@
     function ProjectListDirective() {
         return {
             restrict: 'E',
-            templateUrl: 'partials/directives/art-project-list.html',
+            templateUrl: 'app/partials/directives/art-project-list.html',
             controller: ProjectListDirectiveController,
             controllerAs: 't'
         }
@@ -59,7 +59,7 @@
 
             var modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'partials/dialogs/update-project-dialog.html',
+                templateUrl: 'app/partials/dialogs/update-project-dialog.html',
                 controller: 'UpdateProjectDialogController',
                 controllerAs: 't'
             }).closed.then(function (account) {

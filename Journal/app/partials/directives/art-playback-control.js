@@ -2,7 +2,7 @@
 	angular.module('explorerApp').directive('artPlaybackControl', function () {
 		return {
 			restrict: 'E',
-			templateUrl: 'partials/directives/art-playback-control.html',
+			templateUrl: 'app/partials/directives/art-playback-control.html',
 			controller: PlaybackControlDirectiveController,
 			controllerAs: 't',
 			scope: {

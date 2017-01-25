@@ -1,6 +1,31 @@
-﻿using Artivity.Apid.Platforms;
-using Artivity.Apid.Plugin;
-using Artivity.WinService;
+﻿// LICENSE:
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// AUTHORS:
+//
+//  Moritz Eberl <moritz@semiodesk.com>
+//  Sebastian Faubel <sebastian@semiodesk.com>
+//
+// Copyright (c) Semiodesk GmbH 2015
+
+using Artivity.Apid.Platform;
 using log4net;
 using log4net.Appender;
 using Microsoft.Win32;
@@ -17,15 +42,18 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 
-namespace Artivity.Apid
+namespace Artivity.Apid.Windows
 {
     public class ArtivityService :  WindowsService
     {
         #region Members
 
         protected AutoResetEvent _stopping;
+
         protected ILog _log;
+
         protected EventLog eventLog;
+
         protected Dictionary<uint, HttpService> _services;
 
         private string _logConfigPath = "log.config";
@@ -84,7 +112,6 @@ namespace Artivity.Apid
             _stopping = new AutoResetEvent(false);
             _services = new Dictionary<uint, HttpService>();
         }
-
 
         void current_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
@@ -159,7 +186,6 @@ namespace Artivity.Apid
             }
         }
 
-
         protected void OnLogon(uint sessionId)
         {
             string user = Win32.GetUsernameBySessionId((int)sessionId, true);
@@ -187,14 +213,13 @@ namespace Artivity.Apid
                        
                         // Only set username, disregard domain
                         string userName = user.Split('\\')[1];
-
-                        var sid = Win32.GetSidByUsername(user);
+                        string sid = Win32.GetSidByUsername(user);
                         string regKeyFolders = string.Format(@"HKEY_USERS\{0}\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", sid);
                         string regValueAppData = @"AppData";
-                        string appData = Registry.GetValue(regKeyFolders, regValueAppData, null) as string;
-
                         string regValuePersonal = @"Personal";
+                        string appData = Registry.GetValue(regKeyFolders, regValueAppData, null) as string;
                         string personalFolder = Registry.GetValue(regKeyFolders, regValuePersonal, null) as string;
+
                         PlatformProvider p = new PlatformProvider(appData, personalFolder, userName);
                         p.SetDeploymentDir(this.GetCurrentDirectory());
                         httpService.ApplicationData = appData;
@@ -220,25 +245,28 @@ namespace Artivity.Apid
         void OnLogoff(uint sessionId)
         {
             string user = Win32.GetUsernameBySessionId((int)sessionId, true);
+
             _log.InfoFormat("Logoff Event. SessionId {0} Username {1}", sessionId, user);
+
             if (_services.ContainsKey(sessionId))
             {
                 _log.InfoFormat("Stopping Service for {0}", user);
+
                 var service = _services[sessionId];
                 service.Stop(false);
+
                 _services.Remove(sessionId);
             }
-            
         }
 
         protected override void OnStop()
         {
-            if( _stopping != null)
+            if (_stopping != null)
+            {
                 _stopping.Set();
+            }
         }
 
         #endregion
     }
-
-    
 }

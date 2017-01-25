@@ -2,7 +2,7 @@
     angular.module('explorerApp').directive('artEditingStats', function () {
         return {
             restrict: 'E',
-            templateUrl: 'partials/directives/art-editing-stats.html',
+            templateUrl: 'app/partials/directives/art-editing-stats.html',
             controller: EditingStatsDirectiveController,
             controllerAs: 't',
             scope: {

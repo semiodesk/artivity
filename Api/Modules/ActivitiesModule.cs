@@ -26,7 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.Api.Parameters;
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
 using Nancy.ModelBinding;

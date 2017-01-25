@@ -29,16 +29,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Artivity.Apid.Plugin.Win
+namespace Artivity.Api.Platform
 {
-    public class RegistryEntry
+    public interface IThumbnailProvider
     {
-        public string Id;
-
-        public string Name;
-
-        public string InstallLocation;
     }
 }

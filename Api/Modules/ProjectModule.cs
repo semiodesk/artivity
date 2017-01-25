@@ -26,7 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2017
 
 using Artivity.Api;
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
 using Semiodesk.Trinity;

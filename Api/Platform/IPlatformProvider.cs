@@ -25,48 +25,83 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Newtonsoft.Json;
+using Artivity.Api.Platform;
+using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.Api.Platforms
+namespace Artivity.Api.Platform
 {
-    public class UserConfig
+    public interface IPlatformProvider
     {
-        #region Members
+        #region Logging
+        ILogger Logger { get; }
+        #endregion
 
-        [JsonIgnore]
-        public bool IsNew { get; set; }
+        #region Deployment
 
-        public string Uid { get; set; }
+        UserConfig Config { get; }
 
-        public List<string> SoftwarePaths { get; set; }
+        string ConfigFile { get; }
 
-        public bool RunSetup { get; set; }
+        string AppDataFolder { get; }
 
+        string ArtivityDataFolder { get; }
+
+        string AvatarsFolder { get; }
+
+        string UserFolder { get; }
+
+        string RenderingsFolder { get; }
+
+        string ExportFolder { get; }
+
+        string ImportFolder { get; }
+
+        string TempFolder { get; }
+
+        string DatabaseFolder { get; }
+
+        string DatabaseName { get; }
+
+        string DeploymentDir { get; }
+
+        string PluginDir { get; }
+
+        string OntologyDir { get; }
+
+        bool RequiresAuthentication { get; }
+
+        #endregion
+
+        #region Platform
+
+        bool IsLinux { get; }
+
+        bool IsMac { get; }
+
+        bool IsWindows { get; }
+
+        #endregion
+
+        #region Settings
+
+        bool CheckForNewSoftwareAgents { get; set; }
+
+        bool AutomaticallyInstallSoftwareAgentPlugins { get; set; }
+
+        bool DidSetupRun { get; set; }
         #endregion
 
         #region Methods
 
-        public UserConfig()
-        {
-            SoftwarePaths = new List<string>();
-        }
+        void WriteConfig(UserConfig config);
 
-        public string GetUserId()
-        {
-            if (Uid.StartsWith("urn:art:uid:", StringComparison.InvariantCulture))
-            {
-                return Uid.Substring(Uid.LastIndexOf(':') + 1);
-            }
-            else
-            {
-                return Uid;
-            }
-        }
+        void AddFile(UriRef uri, Uri url);
+
+        string EncodeFileName(string str);
 
         #endregion
     }

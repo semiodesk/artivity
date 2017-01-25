@@ -6,7 +6,7 @@
             scope: {
                 backupEnabled: '@backupEnabled'
             },
-            templateUrl: 'partials/directives/art-settings-user.html',
+            templateUrl: 'app/partials/directives/art-settings-user.html',
             controller: UserSettingsDirectiveFormController
         }
     };

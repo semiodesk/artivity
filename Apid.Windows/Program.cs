@@ -27,6 +27,8 @@
 
 using Artivity.Api;
 using Artivity.Apid;
+using Artivity.Apid.Platform;
+using Artivity.Apid.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,7 +39,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Artivity.WinService
+namespace Artivity.Apid.Windows
 {
     class Program
     {
@@ -65,6 +67,9 @@ namespace Artivity.WinService
 
         public void Run(string[] args)
         {
+            PluginCheckerFactory.RegisterType<Artivity.Apid.Windows.Platform.PluginChecker>();
+            ThumbnailProviderFactory.RegisterType<Artivity.Apid.Windows.Platform.ThumbnailProvider>();
+
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             RunWindowsService(args);
         }

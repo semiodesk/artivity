@@ -4,7 +4,7 @@
         function AppsSettingsDirective() {
             return {
                 scope: {},
-                templateUrl: 'partials/directives/art-settings-apps.html',
+                templateUrl: 'app/partials/directives/art-settings-apps.html',
                 controller: AppsSettingsDirectiveFormController
             }
         };

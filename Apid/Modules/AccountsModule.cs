@@ -26,13 +26,13 @@
 // Copyright (c) Semiodesk GmbH 2016
 
 using Artivity.Api.IO;
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using Artivity.Apid;
 using Artivity.Apid.Accounts;
 using Artivity.Apid.Helpers;
 using Artivity.Apid.IO;
 using Artivity.Apid.Platforms;
-using Artivity.Apid.Plugin;
+using Artivity.Apid.Plugins;
 using Artivity.Apid.Protocols.Atom;
 using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;

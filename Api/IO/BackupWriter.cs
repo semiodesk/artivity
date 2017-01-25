@@ -27,7 +27,7 @@
 
 using Artivity.Api.IO;
 using Artivity.Api.Helpers;
-using Artivity.Api.Platforms;
+using Artivity.Api.Platform;
 using Artivity.DataModel;
 using System;
 using System.Collections.Generic;

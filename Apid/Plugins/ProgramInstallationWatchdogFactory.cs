@@ -25,83 +25,49 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.Platforms;
-using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Artivity.Api.Platforms
+namespace Artivity.Apid.Plugins
 {
-    public interface IPlatformProvider
+    public class ProgramInstallationWatchdogFactory
     {
-        #region Logging
-        ILogger Logger { get; }
-        #endregion
+        #region Members
 
-        #region Deployment
+        public static Type _watchdogType;
 
-        UserConfig Config { get; }
-
-        string ConfigFile { get; }
-
-        string AppDataFolder { get; }
-
-        string ArtivityDataFolder { get; }
-
-        string AvatarsFolder { get; }
-
-        string UserFolder { get; }
-
-        string RenderingsFolder { get; }
-
-        string ExportFolder { get; }
-
-        string ImportFolder { get; }
-
-        string TempFolder { get; }
-
-        string DatabaseFolder { get; }
-
-        string DatabaseName { get; }
-
-        string DeploymentDir { get; }
-
-        string PluginDir { get; }
-
-        string OntologyDir { get; }
-
-        bool RequiresAuthentication { get; }
-
-        #endregion
-
-        #region Platform
-
-        bool IsLinux { get; }
-
-        bool IsMac { get; }
-
-        bool IsWindows { get; }
-
-        #endregion
-
-        #region Settings
-
-        bool CheckForNewSoftwareAgents { get; set; }
-
-        bool AutomaticallyInstallSoftwareAgentPlugins { get; set; }
-
-        bool DidSetupRun { get; set; }
         #endregion
 
         #region Methods
 
-        void WriteConfig(UserConfig config);
+        public static void RegisterType<T>() where T : IProgramInstallationWatchdog
+        {
+            if (_watchdogType == null)
+            {
+                _watchdogType = typeof(T);
+            }
+            else
+            {
+                string msg = string.Format("Trying to overwrite registered type: {0}", _watchdogType);
+                throw new Exception(msg);
+            }
+        }
 
-        void AddFile(UriRef uri, Uri url);
-
-        string EncodeFileName(string str);
+        public static IProgramInstallationWatchdog CreateWatchdog()
+        {
+            if (_watchdogType != null)
+            {
+                return Activator.CreateInstance(_watchdogType) as IProgramInstallationWatchdog;
+            }
+            else
+            {
+                string msg = string.Format("No type registered for type: {0}", typeof(IProgramInstallationWatchdog));
+                throw new Exception(msg);
+            }
+        }
 
         #endregion
     }

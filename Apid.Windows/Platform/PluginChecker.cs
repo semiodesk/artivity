@@ -25,8 +25,8 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.Platforms;
-using Artivity.Apid.Platforms;
+using Artivity.Api.Platform;
+using Artivity.Apid.Plugins;
 using Artivity.DataModel;
 using System;
 using System.Linq;
@@ -38,13 +38,13 @@ using System.Text;
 using System.Collections.Generic;
 using Microsoft.Win32;
 
-namespace Artivity.Apid.Plugin.Win
+namespace Artivity.Apid.Windows.Platform
 {
-    public class WinPluginChecker : PluginChecker
+    public class PluginChecker : Artivity.Apid.Plugins.PluginChecker
     {       
         #region Constructors
 
-        public WinPluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo dir)
+        public PluginChecker(IPlatformProvider platformProvider, IModelProvider modelProvider, DirectoryInfo dir)
             : base(platformProvider, modelProvider, dir)
         {
         }
