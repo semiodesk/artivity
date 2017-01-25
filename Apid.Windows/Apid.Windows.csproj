@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Artivity.Apid.Windows</RootNamespace>
-    <AssemblyName>Artivity.Apid.Windows</AssemblyName>
+    <AssemblyName>artivity-apid</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ReleaseVersion>1.6</ReleaseVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
