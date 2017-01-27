@@ -43,6 +43,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
 using Newtonsoft.Json;
+using Artivity.Apid.Accounts;
 
 namespace Artivity.Apid.Modules
 {
@@ -233,6 +234,12 @@ namespace Artivity.Apid.Modules
             Post["/status"] = parameters =>
             {
                 return PostAgentStatus(this.Bind<AgentParameter>());
+            };
+
+            // Gets the current status of a online service client from a session id (use to check the auth progress).
+            Get["/sync"] = parameters =>
+            {
+                return SynchronizeAgents();
             };
         }
 
@@ -760,6 +767,44 @@ namespace Artivity.Apid.Modules
             PlatformProvider.Logger.LogInfo("Removed software agent search path: {0}", url.LocalPath);
 
             return HttpStatusCode.OK;
+        }
+
+        private Response SynchronizeAgents()
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?s ?p ?o
+                WHERE
+                {
+                    ?s ?p ?o .
+
+                    ?a prov:agent ?s .
+                    ?a prov:hadRole art:USER .
+                }
+            ");
+
+            Person user = ModelProvider.GetAgents().GetResources<Person>(query).FirstOrDefault();
+
+            if (user != null)
+            {
+                foreach (OnlineAccount account in user.Accounts)
+                {
+                    IOnlineServiceAccountClient client = OnlineServiceClientFactory.TryGetClient<IOnlineServiceAccountClient>(account.ServiceClient.Uri);
+
+                    if (client != null)
+                    {
+                        PlatformProvider.Logger.LogDebug("Synchronizing: <{0}> -> <{1}>", user.Uri, account.Uri);
+
+                        client.SynchronizeAgentAsync(user, account);
+
+                        break;
+                    }
+                }
+
+                return HttpStatusCode.OK;
+            }
+
+            return HttpStatusCode.InternalServerError;
         }
 
         #endregion

@@ -20,3 +20,9 @@ artf:ExportArchive rdf:type art:OnlineAccountFeature ;
 
 artf:UploadArchive rdf:type art:OnlineAccountFeature ;
 	rdfs:label "ExportArchive" .
+
+artf:SynchronizeAgent rdf:type art:OnlineAccountFeature ;
+	rdfs:label "SynchronizeAgent" .
+
+artf:SynchronizeActivities rdf:type art:OnlineAccountFeature ;
+	rdfs:label "SynchronizeActivities" .

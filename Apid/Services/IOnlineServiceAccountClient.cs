@@ -1,4 +1,4 @@
-// LICENSE:
+﻿// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,40 +23,23 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
+using Artivity.DataModel;
 using System;
-using Nancy;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Artivity.Api
+namespace Artivity.Apid
 {
-    public interface ILogger
+    public interface IOnlineServiceAccountClient : IOnlineServiceClient
     {
         #region Methods
 
-        void LogInfo(string msg, params object[] p);
-
-        void LogDebug(string msg);
-
-        void LogDebug(string msg, params object[] p);
-
-        void LogError(string msg, params object[] p);
-
-        void LogError(Exception ex);
-
-        void LogFatal(string msg, params object[] p);
-
-        HttpStatusCode LogInfo(HttpStatusCode status, string msg, params object[] p);
-
-        HttpStatusCode LogRequest(HttpStatusCode status, Request request);
-
-        HttpStatusCode LogRequest(HttpStatusCode status, string route, string method, string content);
-
-        HttpStatusCode LogError(HttpStatusCode status, Exception e);
-
-        HttpStatusCode LogError(HttpStatusCode status, string msg, params object[] p);
+        void SynchronizeAgentAsync(Agent agent, OnlineAccount account);
 
         #endregion
     }
 }
-

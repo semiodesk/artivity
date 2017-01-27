@@ -73,9 +73,6 @@
     <Compile Include="IO\ArchiveReader.cs" />
     <Compile Include="IO\ArchiveWriter.cs" />
     <Compile Include="IO\BackupWriter.cs" />
-    <Compile Include="IO\JsonNetBodyDeserializer.cs" />
-    <Compile Include="IO\JsonNetSerializer.cs" />
-    <Compile Include="IO\NancyHelpers.cs" />
     <Compile Include="Modules\EntityModuleBase.cs" />
     <Compile Include="IO\FileNameEncoder.cs" />
     <Compile Include="Platform\IPlatformProvider.cs" />

@@ -26,15 +26,16 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.Api.Platform;
+using Artivity.Apid.Accounts;
 using Artivity.Apid.IO;
 using Artivity.Apid.Platform;
 using Artivity.Apid.Plugins;
 using Artivity.DataModel;
-using Semiodesk.Trinity;
 using Semiodesk.TinyVirtuoso;
+using Semiodesk.Trinity;
 using System;
-using System.IO;
 using System.Configuration;
+using System.IO;
 using System.Threading;
 using Nancy.Hosting.Self;
 using Nancy.TinyIoc;
@@ -190,6 +191,9 @@ namespace Artivity.Apid
                 LoadOntologies();
             }
 
+            // Register the available online service connectors.
+            InitializeOnlineServiceClients();
+
             // Test for SoftwareAgents 
             InitializeSoftwareAgentPlugins();
 
@@ -329,6 +333,13 @@ namespace Artivity.Apid
             _started = true;
 
             DatabaseStarted.Set();
+        }
+
+        private void InitializeOnlineServiceClients()
+        {
+            PlatformProvider.Logger.LogInfo("Initializing online service connectors..");
+
+            OnlineServiceClientFactory.Initialize();
         }
 
         private void InitializeSoftwareAgentPlugins()

@@ -105,17 +105,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\NancyHelpers.cs" />
     <Compile Include="Helpers\ProgressStream.cs" />
     <Compile Include="Helpers\ProgressStreamContent.cs" />
+    <Compile Include="IO\JsonNetBodyDeserializer.cs" />
+    <Compile Include="IO\JsonNetSerializer.cs" />
     <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />
     <Compile Include="Plugins\ProgramInstallationWatchdogFactory.cs" />
     <Compile Include="Protocols\Atom\AtomLink.cs" />
+    <Compile Include="Protocols\Authentication\JwtAuthenticationClient.cs" />
+    <Compile Include="Services\Clients\ArtivityServiceClient.cs" />
     <Compile Include="Services\Clients\EPrintsServiceClient.cs" />
     <Compile Include="Protocols\Authentication\BasicAuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationClientState.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationParameterSet.cs" />
     <Compile Include="Protocols\Authentication\OAuth2AuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\IHttpAuthenticationClient.cs" />
+    <Compile Include="Services\IOnlineServiceAccountClient.cs" />
     <Compile Include="Services\IOnlineServicePublishingClient.cs" />
     <Compile Include="Services\OnlineServiceClientBase.cs" />
     <Compile Include="Services\OnlineServiceClientFactory.cs" />
