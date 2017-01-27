@@ -6,23 +6,21 @@
 	</div>
 </div>
 <div ng-switch="t.selectedClient.Uri">
-	<div ng-switch-when="http://eprints.org">
+	<div ng-switch-when="http://artivity.online">
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="layout-container padding-x-xl">
 					<form name="connectForm" ng-submit="t.connectAccount(selectedClient)">
-						<p class="description">Please enter the server address, username and password of the repository:</p>
-
-						<input type="text" class="form-control" id="url" name="url" placeholder="http://example.org" ng-model="t.parameter.url" required>
-
+						<p class="description">Please enter the server address, username and password of the Artivity service:</p>
+						<input type="text" class="form-control" id="url" name="url" placeholder="https://artivity.online" ng-model="t.parameter.url" required>
 						<label style="margin-top: .5em;">Login</label>
-
 						<div class="form-group">
-							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20" maxlength="20" ng-model="t.parameter.username" required>
-							<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20" maxlength="20" ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
+							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20"
+											maxlength="20" ng-model="t.parameter.username" required>
+								<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20"
+												maxlength="20" ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
 						</div>
 					</form>
-
 					<div art-client-state-info state="{{t.clientState}}"></div>
 				</div>
 			</div>
@@ -36,16 +34,41 @@
 			</div>
 		</div>
 	</div>
-
+	<div ng-switch-when="http://eprints.org">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="layout-container padding-x-xl">
+					<form name="connectForm" ng-submit="t.connectAccount(selectedClient)">
+						<p class="description">Please enter the server address, username and password of the repository:</p>
+						<input type="text" class="form-control" id="url" name="url" placeholder="http://example.org" ng-model="t.parameter.url" required>
+						<label style="margin-top: .5em;">Login</label>
+						<div class="form-group">
+							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20"
+											maxlength="20" ng-model="t.parameter.username" required>
+								<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20"
+												maxlength="20" ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
+						</div>
+					</form>
+					<div art-client-state-info state="{{t.clientState}}"></div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="toolbar pull-right">
+					<button class="btn btn-success" type="submit" ng-click="t.connectAccount(selectedClient)" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < t.clientState && t.clientState < 3)"><i class="zmdi zmdi-check"></i></button>
+					<button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div ng-switch-when="http://orcid.org">
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="container padding-x-xl">
 					<p class="description">Please log into your ORCiD account and allow Artivity to be connected:</p>
 				</div>
-
 				<iframe ng-src="{{t.clientUrl}}" style="background: white; min-height: 400px; width: 100%;"></iframe>
-
 				<div class="container padding-x-xl">
 					<div art-client-state-info state="{{t.clientState}}"></div>
 				</div>
@@ -59,20 +82,17 @@
 			</div>
 		</div>
 	</div>
-
 	<div ng-switch-default>
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="layout-container padding-x-xl">
 					<p class="description">Please select the account type to connect with:</p>
-
 					<ul class="list-view">
 						<li class="list-item" ng-repeat="client in t.clients">
 							<a ng-click="t.selectClient(client)" style="cursor: pointer;">
 								<div class="col col-icn col-icn-lg">
 									<i class="zmdi zmdi-account"></i>
 								</div>
-
 								<div class="col expand">
 									<div style="padding: 9px">
 										<h5>{{client.Title}}</h5>

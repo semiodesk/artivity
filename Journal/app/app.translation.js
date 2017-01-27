@@ -97,6 +97,10 @@ angular.module('explorerApp').config(function ($translateProvider) {
 				DESCRIPTION: 'Enable or disable the applications which will log data into Artivity:'
 			}
 		},
+		'http://artivity.online': {
+			'title': 'Artivity',
+			'description': 'Publish your files to an Artivity online account.'
+		},
 		'http://eprints.org': {
 			'title': 'EPrints',
 			'description': 'Publish your files to online digital archives.'

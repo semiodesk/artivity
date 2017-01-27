@@ -52,6 +52,11 @@ namespace Artivity.Apid.Accounts
         /// </summary>
         private static readonly Dictionary<Uri, IOnlineServiceClient> _clients = new Dictionary<Uri, IOnlineServiceClient>();
 
+        /// <summary>
+        /// The default logger.
+        /// </summary>
+        private static readonly Logger _logger = new Logger();
+
         #endregion
 
         #region Methods
@@ -63,6 +68,7 @@ namespace Artivity.Apid.Accounts
         {
             if (IsInitialized) return;
 
+            OnlineServiceClientFactory.RegisterClient(new ArtivityServiceClient());
             OnlineServiceClientFactory.RegisterClient(new EPrintsServiceClient());
             OnlineServiceClientFactory.RegisterClient(new OrcidServiceClient());
 
@@ -84,7 +90,7 @@ namespace Artivity.Apid.Accounts
                 throw new DuplicateKeyException(message);
             }
 
-            //PlatformProvider.Logger.LogInfo("Registered online account client {0}", uri);
+            _logger.LogInfo("Registered online account client <{0}>", uri);
 
             _clients[uri] = client;
         }
@@ -100,6 +106,48 @@ namespace Artivity.Apid.Accounts
             }
 
             return _clients.Values;
+        }
+
+        /// <summary>
+        /// Enumerates all registered online service clients of a given type.
+        /// </summary>
+        /// <param name="uri">URI of the feature.</param>
+        /// <returns>An enumeration of all clients with the given feature, if any.</returns>
+        public static IEnumerable<IOnlineServiceClient> GetRegisteredClients<T>() where T : IOnlineServiceClient
+        {
+            if (!IsInitialized)
+            {
+                Initialize();
+            }
+
+            foreach (IOnlineServiceClient client in _clients.Values)
+            {
+                if(client is T)
+                {
+                    yield return client;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Enumerates all registered online service clients with a given feature.
+        /// </summary>
+        /// <param name="uri">URI of the feature.</param>
+        /// <returns>An enumeration of all clients with the given feature, if any.</returns>
+        public static IEnumerable<IOnlineServiceClient> GetRegisteredClientsWithFeature(Resource feature)
+        {
+            if (!IsInitialized)
+            {
+                Initialize();
+            }
+
+            foreach(IOnlineServiceClient client in _clients.Values)
+            {
+                if(client.Features.Any(f => f.Uri == feature.Uri))
+                {
+                    yield return client;
+                }
+            }
         }
 
         /// <summary>

@@ -103,6 +103,7 @@ namespace Artivity.Apid.Accounts
             Features = new List<Resource>();
             SupportedAuthenticationClients = new List<IHttpAuthenticationClient>();
             Progress = new TaskProgressInfo();
+            Logger = new Logger();
         }
 
         #endregion
@@ -190,6 +191,7 @@ namespace Artivity.Apid.Accounts
         /// Install an authenticated online account into the given model.
         /// </summary>
         /// <param name="model">The model in which the account should be created.</param>
+        /// <param name="data">Optional request data specific for the account provider.</param>
         /// <returns>A newly created instance of the <c>OnlineAccount</c> class.</returns>
         public OnlineAccount InstallAccount(IModel model)
         {
@@ -271,8 +273,15 @@ namespace Artivity.Apid.Accounts
                 user.Commit();
             }
 
+            OnAccountInstalled(user, account);
+
             return account;
         }
+
+        /// <summary>
+        /// Invoked when a new account was successfully created and installed in the database.
+        /// </summary>
+        protected virtual void OnAccountInstalled(Person user, OnlineAccount account) { }
 
         /// <summary>
         /// Gets the account identifier.
