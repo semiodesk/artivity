@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2017
 
+using Artivity.Api;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
@@ -116,7 +117,7 @@ namespace Artivity.Api.Modules
 
                     if (UserModel == null)
                     {
-                        return Response.AsJson("", HttpStatusCode.InternalServerError);
+                        return Response.AsJsonSync("", HttpStatusCode.InternalServerError);
                     }
 
                     if (Request.Query["uri"] != null)
@@ -150,7 +151,7 @@ namespace Artivity.Api.Modules
 
                     if (UserModel == null)
                     {
-                        return Response.AsJson("", HttpStatusCode.InternalServerError);
+                        return Response.AsJsonSync("", HttpStatusCode.InternalServerError);
                     }
 
                     Uri uri = CreateUri();

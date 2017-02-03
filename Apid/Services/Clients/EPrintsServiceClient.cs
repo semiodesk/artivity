@@ -26,6 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.Api.IO;
+using Artivity.Api.Platform;
 using Artivity.Apid.Protocols.Atom;
 using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
@@ -47,7 +48,8 @@ namespace Artivity.Apid.Accounts
     {
         #region Constructors
 
-        public EPrintsServiceClient() : base(new Uri("http://eprints.org"))
+        public EPrintsServiceClient(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base(new UriRef("http://eprints.org"), modelProvider, platformProvider)
         {
             Title = "EPrints";
 
@@ -58,7 +60,7 @@ namespace Artivity.Apid.Accounts
 
             Presets.Add(localhost);
 
-            Features.Add(artf.PublishArchive);
+            ClientFeatures.Add(artf.PublishArchive);
 
             SupportedAuthenticationClients.Add(new BasicAuthenticationClient());
         }
@@ -152,7 +154,7 @@ namespace Artivity.Apid.Accounts
                     entry.Authors.Add(author);
                 }
 
-                if(Uri.IsWellFormedUriString(manifest.License, UriKind.Absolute))
+                if(System.Uri.IsWellFormedUriString(manifest.License, UriKind.Absolute))
                 {
                     entry.License = new AtomLink("license", new Uri(manifest.License));
                 }
@@ -163,12 +165,12 @@ namespace Artivity.Apid.Accounts
             }
 
             // The progress of the client is the current operation.
-            Progress.Id = client.Progress.Id;
+            TaskProgress.Id = client.Progress.Id;
 
             client.ProgressChanged += (sender, progress) =>
             {
-                Progress.Total = progress.Total;
-                Progress.Completed = progress.Completed;
+                TaskProgress.Total = progress.Total;
+                TaskProgress.Completed = progress.Completed;
             };
 
             client.DepositFile(entry, filePath);

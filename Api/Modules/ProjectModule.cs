@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2017
 
+using Artivity.Api;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
@@ -64,7 +65,7 @@ namespace Artivity.Api.Modules
                 proj.Commit();
             }
 
-            return Response.AsJson(new Dictionary<string, bool>{ {"success", true}});
+            return Response.AsJsonSync(new Dictionary<string, bool>{ {"success", true}});
         }
     }
 }

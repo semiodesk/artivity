@@ -20,58 +20,56 @@
 //
 // AUTHORS:
 //
+//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Modules;
+using Artivity.Api.Parameters;
+using Artivity.Api.Platform;
+using Artivity.Apid.Synchronization;
+using Artivity.DataModel;
 using Semiodesk.Trinity;
+using Semiodesk.Trinity.Store;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using Nancy;
+using Nancy.IO;
+using Nancy.ModelBinding;
+using VDS.RDF;
 
-namespace Artivity.DataModel
+namespace Artivity.Apid
 {
-    public interface IModelProvider
+    public class SyncModule : ModuleBase
     {
-        #region Members
+        #region Constructors
 
-        IStore Store { get; }
-
-        string ConnectionString { get; set; }
-
-        string NativeConnectionString { get; set; }
-
-        Uri Agents { get; set; }
-
-        Uri Activities { get; set; }
-
-        Uri WebActivities { get; set; }
-
-        string Uid { get; set; }
+        public SyncModule(IModelProvider model, IPlatformProvider platform, IOnlineServiceSynchronizationProvider syncProvider)
+            : base("/artivity/api/1.0/sync", model, platform)
+        {
+            Get[""] = parameters => { return Synchronize(syncProvider); };
+        }
 
         #endregion
 
         #region Methods
 
-        bool CheckAgents();
+        private Response Synchronize(IOnlineServiceSynchronizationProvider syncProvider)
+        {
+            syncProvider.TrySynchronize();
 
-        bool CheckOntologies();
-
-        void InitializeAgents();
-
-        int ReleaseStore();
-
-        IModelGroup GetAll();
-
-        IModelGroup GetAllActivities();
-
-        IModel GetAgents();
-
-        IModel GetActivities();
-
-        IModel GetWebActivities();
-
-        IModelGroup CreateModelGroup(params Uri[] models);
+            return HttpStatusCode.OK;
+        }
 
         #endregion
     }
 }
+

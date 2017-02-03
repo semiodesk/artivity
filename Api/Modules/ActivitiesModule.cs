@@ -168,7 +168,7 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetActivities(UriRef entityUri)
@@ -216,7 +216,7 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private void PostActivities(string data)
@@ -412,7 +412,7 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response CleanComments()

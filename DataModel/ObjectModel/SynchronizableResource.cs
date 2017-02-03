@@ -23,33 +23,65 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
-using Artivity.Api.Helpers;
-using Artivity.Api.IO;
-using Artivity.Apid.Accounts;
-using Artivity.Apid.Helpers;
-using Artivity.DataModel;
+using Artivity.DataModel.ObjectModel;
+using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Nancy;
 
-namespace Artivity.Apid
+namespace Artivity.DataModel
 {
-    public interface IOnlineServicePublishingClient : IOnlineServiceClient
+    [RdfClass(RDFS.Resource)]
+    public class SynchronizableResource : Resource
     {
         #region Members
 
-        TaskProgressInfo TaskProgress { get;  }
+        [RdfProperty(NIE.created)]
+        public DateTime CreationDate { get; set; }
+
+        [RdfProperty(NIE.modified)]
+        public DateTime ModificationDate { get; set; }
+
+        [RdfProperty(ARTS.synchronizationState)]
+        public ResourceSynchronizationState SynchronizationState { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        public SynchronizableResource(Uri uri) : base(uri)
+        {
+        }
 
         #endregion
 
         #region Methods
 
-        void UploadArchive(Request request, Uri serviceUrl, string filePath, ArchiveManifest manifest = null);
+        public override void Commit()
+        {
+            if (IsNew || CreationDate == null)
+            {
+                CreationDate = DateTime.UtcNow;
+            }
+
+            ModificationDate = DateTime.UtcNow;
+
+            if (SynchronizationState == null)
+            {
+                SynchronizationState = Model.CreateResource<ResourceSynchronizationState>();
+            }
+
+            // The resource is flagged as modified. The account synchronizer will update 
+            // the last update counter and the flag when the resource was successfully uploaded.
+            SynchronizationState.LastUpdateCounter = -1;
+            SynchronizationState.Commit();
+
+            base.Commit();
+        }
 
         #endregion
     }

@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2016
 
+using Artivity.Api;
 using Artivity.Api.IO;
 using Artivity.Api.Platform;
 using Artivity.Apid;
@@ -157,9 +158,9 @@ namespace Artivity.Api.Modules
 
         private Response GetAccounts()
         {
-            List<OnlineAccount> accounts = ModelProvider.GetAgents().GetResources<OnlineAccount>().ToList();
+            Person user = ModelProvider.GetAgents().GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
 
-            return ResponseAsJsonSync(accounts);
+            return ResponseAsJsonSync(user.Accounts);
         }
 
         private Response GetAccountsWithFeature(Uri featureUri)
@@ -168,7 +169,7 @@ namespace Artivity.Api.Modules
 
             foreach(IOnlineServiceClient client in OnlineServiceClientFactory.GetRegisteredClients())
             {
-                if(client.Features.Any(f => f.Uri == featureUri))
+                if(client.ClientFeatures.Any(f => f.Uri == featureUri))
                 {
                     clients.Add(client.Uri.AbsoluteUri);
                 }
@@ -189,21 +190,21 @@ namespace Artivity.Api.Modules
 
         private Response GetServiceClients()
         {
-            return Response.AsJson(OnlineServiceClientFactory.GetRegisteredClients());
+            return Response.AsJsonSync(OnlineServiceClientFactory.GetRegisteredClients());
         }
 
         private Response GetServiceClientsWithFeature(Uri featureUri)
         {
             List<IOnlineServiceClient> clients = OnlineServiceClientFactory.GetRegisteredClients().ToList();
 
-            return Response.AsJson(clients.Where(c => c.Features.Any(f => f.Uri == featureUri)));
+            return Response.AsJsonSync(clients.Where(c => c.ClientFeatures.Any(f => f.Uri == featureUri)));
         }
 
         private Response GetServiceClient(Uri providerUri)
         {
             try
             {
-                return Response.AsJson(OnlineServiceClientFactory.TryGetClient(providerUri));
+                return Response.AsJsonSync(OnlineServiceClientFactory.TryGetClient(providerUri));
             }
             catch (KeyNotFoundException)
             {
@@ -227,7 +228,7 @@ namespace Artivity.Api.Modules
 
             OnlineServiceClientSession session = _sessions[sessionId];
 
-            return Response.AsJson(session);
+            return Response.AsJsonSync(session);
         }
 
         private Response SendOAuth2AccessToken()
@@ -293,7 +294,7 @@ namespace Artivity.Api.Modules
             // Only execute the request if there are no successful previous requests.
             authenticator.HandleRequestAsync(Request, session.Id);
 
-            return Response.AsJson(session);
+            return Response.AsJsonSync(session);
         }
 
         private Response InstallAccount()
@@ -321,7 +322,23 @@ namespace Artivity.Api.Modules
 
             IModel model = ModelProvider.GetAgents();
 
+            // Associate the account with the user.
+            Person user = model.GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
+
+            if (user == null)
+            {
+                return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, "Unable to retrieve user agent.");
+            }
+
+            // Run any client specific install tasks.
             OnlineAccount account = session.Client.InstallAccount(model);
+
+            // Add the account to the user.
+            if(!user.Accounts.Any(a => a.Id == account.Id))
+            {
+                user.Accounts.Add(account);
+                user.Commit();
+            }
 
             return account != null ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
         }
@@ -335,7 +352,7 @@ namespace Artivity.Api.Modules
 
             IModel model = ModelProvider.GetAgents();
 
-            Person user = model.GetResources<Person>().FirstOrDefault();
+            Person user = model.GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
 
             if (user == null)
             {
@@ -487,7 +504,7 @@ namespace Artivity.Api.Modules
 
                     // The publishing client state is a multi-task progress info.
                     session.Progress.Tasks.Add(archiveWriter.Progress);
-                    session.Progress.Tasks.Add(publishingClient.Progress);
+                    session.Progress.Tasks.Add(publishingClient.TaskProgress);
                     session.Progress.Reset();
 
                     // Run the export and upload tasks asynchronously.
@@ -504,7 +521,7 @@ namespace Artivity.Api.Modules
                         // TODO: Remove the temp file. Implement a completed handler on the publishing client.
                     });
 
-                    return Response.AsJson(session);
+                    return Response.AsJsonSync(session);
                 }
                 else
                 {
