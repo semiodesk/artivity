@@ -29,15 +29,15 @@ namespace Artivity.DataModel
 {
     public class ModelProviderFactory
     {
-        public static ModelProvider CreateModelProvider(string connectionString, string nativeConectionString, string username = null)
+        public static ModelProvider CreateProvider(string connectionString, string nativeConectionString, string username = null)
         {
-            ModelProvider p = new ModelProvider();
-            p.ConnectionString = connectionString;
-            p.NativeConnectionString = nativeConectionString;
-            p.Uid = username;
-            p.InitializeStore();
+            ModelProvider provider = new ModelProvider();
+            provider.ConnectionString = connectionString;
+            provider.NativeConnectionString = nativeConectionString;
+            provider.Uid = username;
+            provider.InitializeStore();
 
-            return p;
+            return provider;
         }
     }
 }

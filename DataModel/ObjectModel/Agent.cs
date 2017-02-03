@@ -35,7 +35,7 @@ using System.Text;
 namespace Artivity.DataModel
 {
     [RdfClass(PROV.Agent)]
-    public class Agent : Resource
+    public class Agent : SynchronizableResource
     {
 		#region Members
 

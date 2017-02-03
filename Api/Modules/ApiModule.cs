@@ -56,7 +56,7 @@ namespace Artivity.Api.Modules
             
             Get["/setup"] = parameters =>
             {
-                return Response.AsJson(platform.DidSetupRun);
+                return Response.AsJsonSync(platform.DidSetupRun);
             };
 
             Post["/setup"] = parameters =>
@@ -395,7 +395,7 @@ namespace Artivity.Api.Modules
                         result["head"] = new Dictionary<string, List<string>>() { { "vars", vars } };
                         result["results"] = new Dictionary<string, List<Dictionary<string, object>>> { { "bindings", bindings } };
 
-                        Response response = Response.AsJson(result);
+                        Response response = Response.AsJsonSync(result);
                         response.ContentType = "application/sparql-results+json";
 
                         return response;
@@ -406,7 +406,7 @@ namespace Artivity.Api.Modules
                         result["head"] = new Dictionary<string, List<string>>() { };
                         result["results"] = new Dictionary<string, List<Dictionary<string, object>>> { { "bindings", new List<Dictionary<string, object>>() } };
 
-                        Response response = Response.AsJson(result);
+                        Response response = Response.AsJsonSync(result);
                         response.ContentType = "application/sparql-results+json";
 
                         return response;
@@ -424,7 +424,7 @@ namespace Artivity.Api.Modules
                     messages.Add(e.InnerException.Message);
                 }
 
-                return Response.AsJson(messages);
+                return Response.AsJsonSync(messages);
             }
         }
 
@@ -464,7 +464,7 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetAll().GetBindings(query);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetProjectFilese(UriRef projectUri)
@@ -504,7 +504,7 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetAll().GetBindings(query);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetInfluences(UriRef entityUri)
@@ -654,14 +654,14 @@ namespace Artivity.Api.Modules
                 }
             }
 
-            return Response.AsJson(influences);
+            return Response.AsJsonSync(influences);
         }
 
         private Response HasThumbnail(UriRef entityUri)
         {
             string file = Path.Combine(GetRenderOutputPath(entityUri), "thumbnail.png");
 
-            return Response.AsJson(File.Exists(file));
+            return Response.AsJsonSync(File.Exists(file));
         }
 
         private Response GetThumbnail(UriRef entityUri)
@@ -737,7 +737,7 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetActivities().GetBindings(query);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetRendering(UriRef uri, string fileName)
@@ -777,7 +777,7 @@ namespace Artivity.Api.Modules
 
             List<string> result = new List<string>() { path };
 
-            return Response.AsJson(result);
+            return Response.AsJsonSync(result);
         }
 
         private string GetEntityUri(string path)
@@ -834,7 +834,7 @@ namespace Artivity.Api.Modules
 
             IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetCompositionStats(UriRef entityUri, DateTime time)
@@ -859,7 +859,7 @@ namespace Artivity.Api.Modules
 
             List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetUri(Uri fileUrl)
@@ -871,7 +871,7 @@ namespace Artivity.Api.Modules
             {
                 PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
 
-                return Response.AsJson(new {});
+                return Response.AsJsonSync(new {});
             }
 
             ISparqlQuery query = new SparqlQuery(@"
@@ -896,7 +896,7 @@ namespace Artivity.Api.Modules
 
             PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetFile(Uri entityUri)
@@ -920,7 +920,7 @@ namespace Artivity.Api.Modules
 
             BindingSet bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response CreateFile(UriRef uri, Uri url)
@@ -988,7 +988,7 @@ namespace Artivity.Api.Modules
             
             List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetLayers(UriRef uriRef)
@@ -1034,7 +1034,7 @@ namespace Artivity.Api.Modules
 
             IList<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         #endregion

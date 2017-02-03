@@ -20,57 +20,38 @@
 //
 // AUTHORS:
 //
+//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Artivity.DataModel
 {
-    public interface IModelProvider
+    [RdfClass(ARTS.OnlineAccountSynchronizationState)]
+    public class OnlineAccountSynchronizationState : Resource
     {
         #region Members
 
-        IStore Store { get; }
+        [RdfProperty(ARTS.currentUpdateCounter)]
+        public int ClientUpdateCounter { get; set; }
 
-        string ConnectionString { get; set; }
-
-        string NativeConnectionString { get; set; }
-
-        Uri Agents { get; set; }
-
-        Uri Activities { get; set; }
-
-        Uri WebActivities { get; set; }
-
-        string Uid { get; set; }
+        [RdfProperty(ARTS.lastUpdateCounter)]
+        public int ServerUpdateCounter { get; set; }
 
         #endregion
 
-        #region Methods
+        #region Constructors
 
-        bool CheckAgents();
-
-        bool CheckOntologies();
-
-        void InitializeAgents();
-
-        int ReleaseStore();
-
-        IModelGroup GetAll();
-
-        IModelGroup GetAllActivities();
-
-        IModel GetAgents();
-
-        IModel GetActivities();
-
-        IModel GetWebActivities();
-
-        IModelGroup CreateModelGroup(params Uri[] models);
+        public OnlineAccountSynchronizationState(Uri uri) : base(uri)
+        {
+        }
 
         #endregion
     }

@@ -25,20 +25,30 @@
 //
 // Copyright (c) Semiodesk GmbH 2017
 
-using Artivity.DataModel;
+using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.Apid
+namespace Artivity.DataModel
 {
-    public interface IOnlineServiceAccountClient : IOnlineServiceClient
+    [RdfClass(ARTS.ResourceSynchronizationState)]
+    public class ResourceSynchronizationState : Resource
     {
-        #region Methods
+        #region Members
 
-        void SynchronizeAgentAsync(Agent agent, OnlineAccount account);
+        [RdfProperty(ARTS.lastUpdateCounter)]
+        public int LastUpdateCounter { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        public ResourceSynchronizationState(Uri uri) : base(uri)
+        {
+        }
 
         #endregion
     }

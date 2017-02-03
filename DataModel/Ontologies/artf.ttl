@@ -12,17 +12,17 @@
 
 artf: a owl:Ontology .
 
-artf:PublishArchive rdf:type art:OnlineAccountFeature ;
+artf:PublishArchive a art:OnlineAccountFeature ;
 	rdfs:label "PublishArchive" .
 
-artf:ExportArchive rdf:type art:OnlineAccountFeature ;
+artf:ExportArchive a art:OnlineAccountFeature ;
 	rdfs:label "ExportArchive" .
 
-artf:UploadArchive rdf:type art:OnlineAccountFeature ;
+artf:UploadArchive a art:OnlineAccountFeature ;
 	rdfs:label "ExportArchive" .
 
-artf:SynchronizeAgent rdf:type art:OnlineAccountFeature ;
-	rdfs:label "SynchronizeAgent" .
+artf:SynchronizeUser a art:OnlineAccountFeature ;
+	rdfs:label "SynchronizeUser" .
 
-artf:SynchronizeActivities rdf:type art:OnlineAccountFeature ;
+artf:SynchronizeActivities a art:OnlineAccountFeature ;
 	rdfs:label "SynchronizeActivities" .

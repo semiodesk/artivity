@@ -655,7 +655,7 @@ namespace Artivity.Apid.IO
         {
             try
             {
-                if (IsMaskedFileEvent(e.FullPath)) return;
+                if (e == null || IsMaskedFileEvent(e.FullPath)) return;
 
                 FileInfo file = new FileInfo(e.FullPath);
 
@@ -738,7 +738,7 @@ namespace Artivity.Apid.IO
                         _platformProvider.Logger.LogDebug("Created folder: {0} {1}", folderInfo.FullName, folderObject.Uri);
                     }
 
-                    folderObject.Url = folderUrl;
+                    folderObject.Url = new Resource(folderUrl);
                     folderObject.CreationTimeUtc = folderInfo.CreationTimeUtc;
                     folderObject.LastModificationTimeUtc = folderInfo.LastWriteTimeUtc;
                     folderObject.Commit();
@@ -792,7 +792,7 @@ namespace Artivity.Apid.IO
         {
             try
             {
-                if (IsMaskedFileEvent(e.FullPath)) return;
+                if (e == null || IsMaskedFileEvent(e.FullPath)) return;
 
                 FileInfoCache file = new FileInfoCache(e.FullPath);
 
@@ -867,7 +867,7 @@ namespace Artivity.Apid.IO
         {
             try
             {
-                if (IsMaskedFileEvent(e.FullPath)) return;
+                if (e == null || IsMaskedFileEvent(e.FullPath)) return;
 
 #if DEBUG
                 if (IsLoggingVerbose)
@@ -1155,7 +1155,7 @@ namespace Artivity.Apid.IO
                     // Update the creation and modification times of the folder.
                     DirectoryInfo folderInfo = new DirectoryInfo(newFolderPath);
 
-                    folderObject.Url = folderUrl;
+                    folderObject.Url = new Resource(folderUrl);
                     folderObject.CreationTimeUtc = folderInfo.CreationTimeUtc;
                     folderObject.LastModificationTimeUtc = folderInfo.LastWriteTimeUtc;
                     folderObject.Commit();

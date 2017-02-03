@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api;
 using Artivity.Api.IO;
 using Artivity.Api.Helpers;
 using Artivity.Api.Modules;
@@ -164,7 +165,7 @@ namespace Artivity.Apid.Modules
                     throw;
                 }
 
-                return Response.AsJson(progress);
+                return Response.AsJsonSync(progress);
             }
             catch (Exception e)
             {
@@ -178,7 +179,7 @@ namespace Artivity.Apid.Modules
         {
             if(_tasks.ContainsKey(taskId))
             {
-                return Response.AsJson(_tasks[taskId]);
+                return Response.AsJsonSync(_tasks[taskId]);
             }
             else
             {

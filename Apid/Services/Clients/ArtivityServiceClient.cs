@@ -26,14 +26,17 @@
 // Copyright (c) Semiodesk GmbH 2017
 
 using Artivity.Api.IO;
+using Artivity.Api.Platform;
 using Artivity.Apid.Protocols.Atom;
 using Artivity.Apid.Protocols.Authentication;
+using Artivity.Apid.Synchronization;
 using Artivity.DataModel;
 using Nancy;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -46,7 +49,7 @@ namespace Artivity.Apid.Accounts
     /// <summary>
     /// A helper class for installing an authenticated Artivity online account.
     /// </summary>
-    public class ArtivityServiceClient : OnlineServiceClientBase, IOnlineServiceAccountClient
+    public class ArtivityServiceClient : OnlineServiceClientBase, IOnlineServiceSynchronizationClient
     {
         #region Members
 
@@ -56,12 +59,22 @@ namespace Artivity.Apid.Accounts
 
         #region Constructors
 
-        public ArtivityServiceClient()
-            : base(new Uri("http://artivity.online"))
+        public ArtivityServiceClient(IModelProvider modelProvider, IPlatformProvider platformProvider, IOnlineServiceSynchronizationProvider syncProvider)
+            : base(new UriRef("http://artivity.online"), modelProvider, platformProvider)
         {
             Title = "Artivity";
 
-#if DEBUG
+            ClientFeatures.Add(artf.SynchronizeUser);
+            ClientFeatures.Add(artf.SynchronizeActivities);
+
+            if (syncProvider != null)
+            {
+                syncProvider.RegisterServiceClient(this);
+            }
+
+            SupportedAuthenticationClients.Add(new JwtAuthenticationClient());
+
+            #if DEBUG
             HttpAuthenticationParameterSet localhost = new HttpAuthenticationParameterSet();
             localhost.Id = "localhost:8080";
             localhost.Parameters["authType"] = "http://localhost:8272/artivity/api/1.0/auth/jwt";
@@ -70,12 +83,7 @@ namespace Artivity.Apid.Accounts
             Presets.Add(localhost);
 
             SelectedPreset = localhost;
-#endif
-
-            Features.Add(artf.SynchronizeAgent);
-            Features.Add(artf.SynchronizeActivities);
-
-            SupportedAuthenticationClients.Add(new JwtAuthenticationClient());
+            #endif
         }
 
         #endregion
@@ -138,27 +146,163 @@ namespace Artivity.Apid.Accounts
             return "Artivity";
         }
 
-        public async void SynchronizeAgentAsync(Agent agent, OnlineAccount account)
+        public async Task<SynchronizationChangeset> TryGetChangesetAsync(OnlineAccount account)
         {
-            try
-            {
-                string json = JsonConvert.SerializeObject(agent);
+            Logger.LogInfo("Retrieving changeset from {0}", account.Uri);
 
-                Uri url = new Uri(account.ServiceUrl.Uri.AbsoluteUri + "/api/1.0/users/");
+            if(account.ServiceUrl != null)
+            {
+                long counter = account.SynchronizationState.ClientUpdateCounter;
+                string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+                Uri url = new Uri(baseUrl + "/api/1.0/sync/" + counter);
 
                 using (HttpClient client = GetHttpClient(account))
                 {
-                    HttpContent data = new ByteArrayContent(Encoding.UTF8.GetBytes(json));
+                    try
+                    {
+                        HttpResponseMessage response = await client.GetAsync(url);
 
-                    HttpResponseMessage response = await client.PutAsync(url, data);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string json = await response.Content.ReadAsStringAsync();
 
-                    Logger.LogInfo("{0} - {1}", response.StatusCode, url);
+                            dynamic data = JsonConvert.DeserializeObject(json);
+
+                            if (data != null)
+                            {
+                                SynchronizationChangeset result = new SynchronizationChangeset((int)data.counter);
+
+                                foreach (var row in data.changes)
+                                {
+                                    SynchronizationChangesetItem item = new SynchronizationChangesetItem();
+                                    item.ActionType = SynchronizationActionType.Pull;
+                                    item.ResourceUri = new UriRef(row.resource.ToString());
+                                    item.ResourceType = new UriRef(row.resourceType.ToString());
+                                    item.Counter = (int)row.counter;
+
+                                    result.Add(item);
+                                }
+
+                                return result;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        PlatformProvider.Logger.LogError(ex);
+                    }
                 }
             }
-            catch(Exception ex)
+
+            return null;
+        }
+
+        public async Task<ResourceSynchronizationState> TryPullAsync(OnlineAccount account, Uri uri, Uri typeUri)
+        {
+            string type = typeUri.AbsoluteUri;
+
+            switch (type)
             {
-                Logger.LogError(ex);
+                default: return null;
+                case PROV.Person: return await TryPullUserAsync(account, uri);
+                case PROV.Activity: return await TryPullActivityAsync(account, uri);
             }
+        }
+
+        private async Task<ResourceSynchronizationState> TryPullUserAsync(OnlineAccount account, Uri uri)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            Uri url = new Uri(baseUrl + "/api/1.0/users/" + account.GetParameter("username"));
+
+            using (HttpClient client = GetHttpClient(account))
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync();
+
+                    dynamic data = JsonConvert.DeserializeObject(json);
+
+                    IModel model = ModelProvider.GetAgents();
+
+                    Person user = model.GetResource<Person>(uri);
+
+                    if (!string.IsNullOrEmpty(data.Name))
+                    {
+                        user.Name = data.Name;
+                    }
+
+                    if (!string.IsNullOrEmpty(data.Organization))
+                    {
+                        user.Organization = data.Organization;
+                    }
+
+                    if(!string.IsNullOrEmpty(data.EmailAddress))
+                    {
+                        user.EmailAddress = data.EmailAddress;
+                    }
+
+                    if(!user.IsSynchronized)
+                    {
+                        user.Commit();
+                    }
+
+                    Logger.LogInfo("{0} - {1}", response.StatusCode, url);
+
+                    return user.SynchronizationState;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        private async Task<ResourceSynchronizationState> TryPullActivityAsync(OnlineAccount account, Uri uri)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ResourceSynchronizationState> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri)
+        {
+            string type = typeUri.AbsoluteUri;
+
+            switch (type)
+            {
+                default: return null;
+                case PROV.Person: return await TryPushUserAsync(account, uri);
+                case PROV.Activity: return await TryPushActivityAsync(account, uri);
+            }
+        }
+
+        private async Task<ResourceSynchronizationState> TryPushUserAsync(OnlineAccount account, Uri uri)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            Uri url = new Uri(baseUrl + "/api/1.0/sync/user/" + account.GetParameter("username"));
+
+            using (HttpClient client = GetHttpClient(account))
+            {
+                IModel model = ModelProvider.GetAgents();
+
+                Person user = model.GetResource<Person>(uri);
+
+                StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync(url, content);
+
+                Logger.LogInfo("{0} - {1}", response.StatusCode, url);
+
+                return response.IsSuccessStatusCode ? user.SynchronizationState : null;
+            }
+        }
+
+        private async Task<ResourceSynchronizationState> TryPushActivityAsync(OnlineAccount account, Uri uri)
+        {
+            throw new NotImplementedException();
         }
 
         protected HttpClient GetHttpClient(OnlineAccount account)
@@ -169,6 +313,7 @@ namespace Artivity.Apid.Accounts
             {
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 return client;
             }

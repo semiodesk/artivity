@@ -110,6 +110,7 @@
     <Compile Include="Helpers\ProgressStreamContent.cs" />
     <Compile Include="IO\JsonNetBodyDeserializer.cs" />
     <Compile Include="IO\JsonNetSerializer.cs" />
+    <Compile Include="Modules\SyncModule.cs" />
     <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />
     <Compile Include="Plugins\ProgramInstallationWatchdogFactory.cs" />
     <Compile Include="Protocols\Atom\AtomLink.cs" />
@@ -121,8 +122,8 @@
     <Compile Include="Protocols\Authentication\HttpAuthenticationParameterSet.cs" />
     <Compile Include="Protocols\Authentication\OAuth2AuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\IHttpAuthenticationClient.cs" />
-    <Compile Include="Services\IOnlineServiceAccountClient.cs" />
     <Compile Include="Services\IOnlineServicePublishingClient.cs" />
+    <Compile Include="Services\IOnlineServiceSynchronizationClient.cs" />
     <Compile Include="Services\OnlineServiceClientBase.cs" />
     <Compile Include="Services\OnlineServiceClientFactory.cs" />
     <Compile Include="Services\IOnlineServiceClient.cs" />
@@ -168,6 +169,11 @@
     <Compile Include="IO\DefaultFileSystemWatcher.cs" />
     <Compile Include="Modules\ExportModule.cs" />
     <Compile Include="Services\OnlineServiceClientSession.cs" />
+    <Compile Include="Synchronization\IOnlineServiceSynchronizationProvider.cs" />
+    <Compile Include="Synchronization\OnlineServiceSynchronizer.cs" />
+    <Compile Include="Synchronization\SynchronizationActionType.cs" />
+    <Compile Include="Synchronization\SynchronizationChangeset.cs" />
+    <Compile Include="Synchronization\SynchronizationChangesetItem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

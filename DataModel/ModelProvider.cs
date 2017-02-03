@@ -47,6 +47,7 @@ namespace Artivity.DataModel
             get
             {
                 int id = Thread.CurrentThread.ManagedThreadId;
+
                 lock(_lock)
                 {
                     if (_stores.ContainsKey(id))
@@ -182,6 +183,11 @@ namespace Artivity.DataModel
             return !model.IsEmpty;
         }
 
+        public IModelGroup CreateModelGroup(params Uri[] models)
+        {
+            return Store.CreateModelGroup(models);
+        }
+
         public IModelGroup GetAll()
         {
             IModelGroup result = Store.CreateModelGroup();
@@ -220,6 +226,7 @@ namespace Artivity.DataModel
         public int ReleaseStore()
         {
             int id = Thread.CurrentThread.ManagedThreadId;
+
             lock(_lock)
             {
                 if (_stores.ContainsKey(id))
@@ -237,6 +244,7 @@ namespace Artivity.DataModel
                     _stores.Remove(id);
                 }
             }
+
             return id;
         }
 
