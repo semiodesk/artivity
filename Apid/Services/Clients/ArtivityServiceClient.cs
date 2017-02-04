@@ -148,20 +148,22 @@ namespace Artivity.Apid.Accounts
 
         public async Task<SynchronizationChangeset> TryGetChangesetAsync(OnlineAccount account)
         {
-            Logger.LogInfo("Retrieving changeset from {0}", account.Uri);
-
             if(account.ServiceUrl != null)
             {
-                long counter = account.SynchronizationState.ClientUpdateCounter;
+                long counter = ModelProvider.SynchronizationState.ClientUpdateCounter;
                 string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
                 Uri url = new Uri(baseUrl + "/api/1.0/sync/" + counter);
 
                 using (HttpClient client = GetHttpClient(account))
                 {
+                    System.Net.HttpStatusCode status = System.Net.HttpStatusCode.ServiceUnavailable;
+
                     try
                     {
                         HttpResponseMessage response = await client.GetAsync(url);
+
+                        status = response.StatusCode;
 
                         if (response.IsSuccessStatusCode)
                         {
@@ -188,10 +190,11 @@ namespace Artivity.Apid.Accounts
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        PlatformProvider.Logger.LogError(ex);
                     }
+
+                    Logger.LogInfo("{0} - Requested changeset from {1}", status, url);
                 }
             }
 

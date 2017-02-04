@@ -42,7 +42,7 @@ namespace Artivity.Apid.Synchronization
 
         #region Constructors
 
-        public SynchronizationChangeset(OnlineAccountSynchronizationState state)
+        public SynchronizationChangeset(IModelSynchronizationState state)
         {
             Counter = state.ClientUpdateCounter;
         }

@@ -70,13 +70,17 @@ namespace Artivity.DataModel
 
         public string NativeConnectionString { get; set; }
 
+        public IModelSynchronizationState SynchronizationState { get; private set; }
+
         public string Uid { get; set; }
 
-        public Uri Agents { get; set; }
+        public UriRef Default { get; set; }
 
-        public Uri Activities { get; set; }
+        public UriRef Agents { get; set; }
 
-        public Uri WebActivities { get; set; }
+        public UriRef Activities { get; set; }
+
+        public UriRef WebActivities { get; set; }
 
         #endregion
 
@@ -97,9 +101,28 @@ namespace Artivity.DataModel
                     throw new Exception("Cannot initialize RDF store: UID must not be empty. Is your config.json valid?");
                 }
 
-                Agents = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/agents", Uid));
-                Activities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities", Uid));
-                WebActivities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities/web", Uid));
+                string baseUrl = string.Format("http://localhost:8890/artivity/1.0/{0}", Uid);
+
+                Default = new UriRef(baseUrl);
+                Agents = new UriRef(baseUrl + "/agents");
+                Activities = new UriRef(baseUrl + "/activities");
+                WebActivities = new UriRef(baseUrl + "/activities/web");
+
+                IModel model = GetDefault();
+
+                UriRef syncUrl = new UriRef(baseUrl + "#sync");
+
+                if(model.ContainsResource(syncUrl))
+                {
+                    SynchronizationState = model.GetResource<ModelSynchronizationState>(syncUrl);
+                }
+                else
+                {
+                    SynchronizationState = model.CreateResource<ModelSynchronizationState>(syncUrl);
+                    SynchronizationState.ClientUpdateCounter = 0;
+                    SynchronizationState.ServerUpdateCounter = 0;
+                    SynchronizationState.Commit();
+                }
 
                 _initialized = true;
             }
@@ -112,18 +135,13 @@ namespace Artivity.DataModel
             model.Clear();
 
             // Create a default user..
-            Person user = model.CreateResource<Person>();
+            Person user = model.CreateResource<Person>(new UriRef(Uid));
             user.Commit();
 
             Association association = model.CreateResource<Association>();
             association.Agent = user;
             association.Role = new Role(art.USER);
             association.Commit();
-
-            // Create the default agents..
-            InstallAgent(model, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
-            InstallAgent(model, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
-            InstallAgent(model, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
         }
 
         public void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
@@ -221,6 +239,11 @@ namespace Artivity.DataModel
         public IModel GetWebActivities()
         {
             return Store.GetModel(WebActivities);
+        }
+
+        public IModel GetDefault()
+        {
+            return Store.GetModel(Default);
         }
 
         public int ReleaseStore()

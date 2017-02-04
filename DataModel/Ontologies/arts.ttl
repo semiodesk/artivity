@@ -27,8 +27,8 @@ arts:lastUpdateCounter a rdf:Property ;
 arts:ResourceSynchronizationState a rdfs:Class ;
 	rdfs:label "ResourceSynchronizationState" .
 
-arts:OnlineAccountSynchronizationState a rdfs:Class ;
-	rdfs:label "OnlineAccountSynchronizationState" .
+arts:ModelSynchronizationState a rdfs:Class ;
+	rdfs:label "ModelSynchronizationState" .
 
 arts:currentUpdateCounter a rdf:Property ;
 	rdfs:label "currentUpdateCounter" .

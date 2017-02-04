@@ -38,6 +38,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="IModelSynchronizationState.cs" />
     <Compile Include="IViewModule.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />
@@ -106,7 +107,7 @@
     <Compile Include="ObjectModel\DatabaseState.cs" />
     <Compile Include="ModelProviderFactory.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />
-    <Compile Include="ObjectModel\OnlineAccountSynchronizationState.cs" />
+    <Compile Include="ObjectModel\ModelSynchronizationState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
