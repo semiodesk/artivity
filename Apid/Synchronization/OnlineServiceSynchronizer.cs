@@ -52,9 +52,9 @@ namespace Artivity.Apid.Synchronization
             }
         }
 
-        public List<OnlineAccountSynchronizationState> TrySynchronize()
+        public IEnumerable<IModelSynchronizationState> TrySynchronize()
         {
-            List<OnlineAccountSynchronizationState> result = new List<OnlineAccountSynchronizationState>();
+            List<IModelSynchronizationState> result = new List<IModelSynchronizationState>();
 
             IModel model = _modelProvider.GetAgents();
 
@@ -62,19 +62,12 @@ namespace Artivity.Apid.Synchronization
 
             foreach (OnlineAccount account in user.Accounts.Where(a => _clients.ContainsKey(a.ServiceClient.Uri)))
             {
-                OnlineAccountSynchronizationState state = TrySynchronize(account);
+                IModelSynchronizationState state = TrySynchronize(account);
 
                 if (state != null)
                 {
                     result.Add(state);
                 }
-            }
-
-            user = model.GetResource<Person>(new UriRef(_platformProvider.Config.Uid));
-
-            foreach (OnlineAccount account in user.Accounts.Where(a => _clients.ContainsKey(a.ServiceClient.Uri)))
-            {
-                OnlineAccountSynchronizationState state = account.SynchronizationState;
             }
 
             return result;
@@ -85,17 +78,9 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="account">An authorized online account.</param>
         /// <returns><c>true</c> on success, <c>false</c> otherwise.</returns>
-        public OnlineAccountSynchronizationState TrySynchronize(OnlineAccount account)
+        public IModelSynchronizationState TrySynchronize(OnlineAccount account)
         {
-            if (account.SynchronizationState == null)
-            {
-                // If the account has not been synchronized yet, initialize the sync state.
-                account.SynchronizationState = account.Model.CreateResource<OnlineAccountSynchronizationState>();
-                account.SynchronizationState.Commit();
-                account.Commit();
-            }
-
-            OnlineAccountSynchronizationState accountState = account.SynchronizationState;
+            IModelSynchronizationState accountState = _modelProvider.SynchronizationState;
 
             try
             {
@@ -142,17 +127,17 @@ namespace Artivity.Apid.Synchronization
         private SynchronizationChangeset GetChangesetClient(OnlineAccount account)
         {
             // The constructor sets the accounts _current_ update counter (the one of the client).
-            SynchronizationChangeset result = new SynchronizationChangeset(account.SynchronizationState);
+            SynchronizationChangeset result = new SynchronizationChangeset(_modelProvider.SynchronizationState);
 
             // Query the database for all resource that have a push counter greater than the last push.
             ISparqlQuery query = new SparqlQuery(@"
-                    SELECT ?resource ?resourceType WHERE
-                    {
-                        ?resource a ?resourceType ; arts:synchronizationState [
-                            arts:lastUpdateCounter '-1'^^xsd:long
-                        ] .
-                    }
-                ");
+                SELECT ?resource ?resourceType WHERE
+                {
+                    ?resource a ?resourceType ; arts:synchronizationState [
+                        arts:lastUpdateCounter '-1'^^xsd:long
+                    ] .
+                }
+            ");
 
             // Synchronize agents and non-browsing activites only.
             IModelGroup model = _modelProvider.CreateModelGroup(_modelProvider.Agents, _modelProvider.Activities);
@@ -193,7 +178,7 @@ namespace Artivity.Apid.Synchronization
             if (client != null)
             {
                 // Asynchronously get the changes which are newer than the last client update counter (download).
-                long counter = account.SynchronizationState.ServerUpdateCounter;
+                long counter = _modelProvider.SynchronizationState.ServerUpdateCounter;
 
                 Task<SynchronizationChangeset> changesetTask = client.TryGetChangesetAsync(account);
 
@@ -213,17 +198,17 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="changeset">A synchronization changeset.</param>
         /// <returns>The number of successfully executed actions. Equals the number of items in the changeset if all actions were successfully executed.</returns>
-        private OnlineAccountSynchronizationState TryExecuteChangeset(OnlineAccount account, SynchronizationChangeset changeset)
+        private IModelSynchronizationState TryExecuteChangeset(OnlineAccount account, SynchronizationChangeset changeset)
         {
             IOnlineServiceSynchronizationClient client = TryGetSynchronizationClient(account);
 
             if (client != null)
             {
-                OnlineAccountSynchronizationState accountState = account.SynchronizationState;
+                IModelSynchronizationState syncState = _modelProvider.SynchronizationState;
 
                 int itemsCount = changeset.Items.Count();
-                int serverCounter = accountState.ServerUpdateCounter;
-                int clientCounter = accountState.ClientUpdateCounter + 1;
+                int serverCounter = syncState.ServerUpdateCounter;
+                int clientCounter = syncState.ClientUpdateCounter + 1;
 
                 _platformProvider.Logger.LogInfo("Applying changeset with {0} item(s):", itemsCount);
 
@@ -270,10 +255,10 @@ namespace Artivity.Apid.Synchronization
                                     }
 
                                     // In case of a successful push also update the accounts client counter.
-                                    if(clientCounter > accountState.ClientUpdateCounter)
+                                    if(clientCounter > syncState.ClientUpdateCounter)
                                     {
-                                        accountState.ClientUpdateCounter = clientCounter;
-                                        accountState.Commit();
+                                        syncState.ClientUpdateCounter = clientCounter;
+                                        syncState.Commit();
                                     }
                                 }
 
@@ -297,7 +282,7 @@ namespace Artivity.Apid.Synchronization
                     }
                 }
 
-                return accountState;
+                return syncState;
             }
             else
             {

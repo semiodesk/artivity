@@ -76,7 +76,8 @@ namespace Artivity.Api.Modules
             UserModel = ModelProvider.GetActivities();
         }
 
-        public ModuleBase(string modulePath, IModelProvider model, IPlatformProvider platform) : base(modulePath)
+        public ModuleBase(string modulePath, IModelProvider model, IPlatformProvider platform)
+            : base(modulePath)
         {
             ModelProvider = model;
             PlatformProvider = platform;

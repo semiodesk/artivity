@@ -20,7 +20,6 @@
 //
 // AUTHORS:
 //
-//  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
 // Copyright (c) Semiodesk GmbH 2017
@@ -34,24 +33,13 @@ using System.Threading.Tasks;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ARTS.OnlineAccountSynchronizationState)]
-    public class OnlineAccountSynchronizationState : Resource
+    public interface IModelSynchronizationState : ITransactional
     {
         #region Members
 
-        [RdfProperty(ARTS.currentUpdateCounter)]
-        public int ClientUpdateCounter { get; set; }
+        int ClientUpdateCounter { get; set; }
 
-        [RdfProperty(ARTS.lastUpdateCounter)]
-        public int ServerUpdateCounter { get; set; }
-
-        #endregion
-
-        #region Constructors
-
-        public OnlineAccountSynchronizationState(Uri uri) : base(uri)
-        {
-        }
+        int ServerUpdateCounter { get; set; }
 
         #endregion
     }

@@ -80,9 +80,6 @@ namespace Artivity.DataModel
         [RdfProperty(ART.authenticationParameter)]
         public List<HttpAuthenticationParameter> AuthenticationParameters { get; set; }
 
-        [RdfProperty(ARTS.synchronizationState)]
-        public OnlineAccountSynchronizationState SynchronizationState { get; set; }
-
         #endregion
 
         #region Constructors

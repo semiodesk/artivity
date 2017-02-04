@@ -57,16 +57,18 @@ namespace Artivity.Api.Modules
             _retrieve = retrieve;
             _update = update;
             _delete = delete;
+
             Initialize();
         }
 
-        public EntityModuleBase(ModelProvider modelProvider, IPlatformProvider platformProvider , bool create = true, bool retrieve = true, bool update = true, bool delete = true)
+        public EntityModuleBase(IModelProvider modelProvider, IPlatformProvider platformProvider, bool create = true, bool retrieve = true, bool update = true, bool delete = true)
             : base(GetTypename(), modelProvider, platformProvider)
         {
             _create = create;
             _retrieve = retrieve;
             _update = update;
             _delete = delete;
+
             Initialize();
         }
 

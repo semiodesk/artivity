@@ -13,7 +13,7 @@ namespace Artivity.Apid.Synchronization
 
         void RegisterServiceClient(IOnlineServiceSynchronizationClient client);
 
-        List<OnlineAccountSynchronizationState> TrySynchronize();
+        IEnumerable<IModelSynchronizationState> TrySynchronize();
 
         #endregion
     }
