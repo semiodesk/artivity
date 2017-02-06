@@ -50,6 +50,12 @@
             projectService.getAll().then(function (list) {
                 t.projectList = list;
 
+                list.sort(function compare(a, b) {
+                    if (a.Name < b.Name) return -1;
+                    if (a.Name > b.Name) return 1;
+                    return 0;
+                });
+
                 $scope.$apply();
             });
         }

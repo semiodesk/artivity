@@ -39,8 +39,8 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        [RdfProperty(ARTS.lastUpdateCounter)]
-        public int LastUpdateCounter { get; set; }
+        [RdfProperty(ARTS.lastRemoteRevision)]
+        public int LastRemoteRevision { get; set; }
 
         #endregion
 

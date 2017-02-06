@@ -37,9 +37,9 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        int ClientUpdateCounter { get; set; }
+        int LastLocalRevision { get; set; }
 
-        int ServerUpdateCounter { get; set; }
+        int LastRemoteRevision { get; set; }
 
         #endregion
     }

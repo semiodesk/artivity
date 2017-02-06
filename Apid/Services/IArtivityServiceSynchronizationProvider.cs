@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Artivity.Apid.Synchronization
 {
-    public interface IOnlineServiceSynchronizationProvider
+    public interface IArtivityServiceSynchronizationProvider
     {
         #region Methods
 
-        void RegisterServiceClient(IOnlineServiceSynchronizationClient client);
+        void RegisterClient(IArtivityServiceSynchronizationClient client);
 
         IEnumerable<IModelSynchronizationState> TrySynchronize();
 
