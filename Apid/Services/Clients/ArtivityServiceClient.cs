@@ -49,7 +49,7 @@ namespace Artivity.Apid.Accounts
     /// <summary>
     /// A helper class for installing an authenticated Artivity online account.
     /// </summary>
-    public class ArtivityServiceClient : OnlineServiceClientBase, IOnlineServiceSynchronizationClient
+    public class ArtivityServiceClient : OnlineServiceClientBase, IArtivityServiceSynchronizationClient
     {
         #region Members
 
@@ -59,7 +59,7 @@ namespace Artivity.Apid.Accounts
 
         #region Constructors
 
-        public ArtivityServiceClient(IModelProvider modelProvider, IPlatformProvider platformProvider, IOnlineServiceSynchronizationProvider syncProvider)
+        public ArtivityServiceClient(IModelProvider modelProvider, IPlatformProvider platformProvider, IArtivityServiceSynchronizationProvider syncProvider)
             : base(new UriRef("http://artivity.online"), modelProvider, platformProvider)
         {
             Title = "Artivity";
@@ -69,7 +69,7 @@ namespace Artivity.Apid.Accounts
 
             if (syncProvider != null)
             {
-                syncProvider.RegisterServiceClient(this);
+                syncProvider.RegisterClient(this);
             }
 
             SupportedAuthenticationClients.Add(new JwtAuthenticationClient());
@@ -146,14 +146,16 @@ namespace Artivity.Apid.Accounts
             return "Artivity";
         }
 
-        public async Task<SynchronizationChangeset> TryGetChangesetAsync(OnlineAccount account)
+        public async Task<SynchronizationChangeset> TryGetChangesetAsync(Person user, OnlineAccount account)
         {
             if(account.ServiceUrl != null)
             {
-                long counter = ModelProvider.SynchronizationState.ClientUpdateCounter;
+                IModelSynchronizationState state = ModelProvider.GetModelSynchronizationState(user);
+
+                int revision = state.LastRemoteRevision;
                 string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
-                Uri url = new Uri(baseUrl + "/api/1.0/sync/" + counter);
+                Uri url = new Uri(baseUrl + "/api/1.0/sync/" + revision);
 
                 using (HttpClient client = GetHttpClient(account))
                 {
@@ -181,7 +183,7 @@ namespace Artivity.Apid.Accounts
                                     item.ActionType = SynchronizationActionType.Pull;
                                     item.ResourceUri = new UriRef(row.resource.ToString());
                                     item.ResourceType = new UriRef(row.resourceType.ToString());
-                                    item.Counter = (int)row.counter;
+                                    item.Revision = (int)row.counter;
 
                                     result.Add(item);
                                 }
@@ -208,16 +210,16 @@ namespace Artivity.Apid.Accounts
             switch (type)
             {
                 default: return null;
-                case PROV.Person: return await TryPullUserAsync(account, uri);
+                case ART.Project: return await TryPullProjectAsync(account, uri);
                 case PROV.Activity: return await TryPullActivityAsync(account, uri);
             }
         }
 
-        private async Task<ResourceSynchronizationState> TryPullUserAsync(OnlineAccount account, Uri uri)
+        private async Task<ResourceSynchronizationState> TryPullProjectAsync(OnlineAccount account, Uri uri)
         {
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
-            Uri url = new Uri(baseUrl + "/api/1.0/users/" + account.GetParameter("username"));
+            Uri url = new Uri(baseUrl + "/api/1.0/sync/project/" + Path.GetFileName(uri.AbsolutePath));
 
             using (HttpClient client = GetHttpClient(account))
             {
@@ -229,39 +231,41 @@ namespace Artivity.Apid.Accounts
 
                     dynamic data = JsonConvert.DeserializeObject(json);
 
-                    IModel model = ModelProvider.GetAgents();
-
-                    Person user = model.GetResource<Person>(uri);
-
-                    if (!string.IsNullOrEmpty(data.Name))
+                    if(data != null)
                     {
-                        user.Name = data.Name;
+                        IModel model = ModelProvider.GetActivities();
+
+                        Project project;
+
+                        if (model.ContainsResource(uri))
+                        {
+                            project = model.GetResource<Project>(uri);
+                        }
+                        else
+                        {
+                            project = model.CreateResource<Project>(uri);
+                        }
+
+                        string name = data.Name;
+
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            project.Name = name;
+                        }
+
+                        if (!project.IsSynchronized)
+                        {
+                            project.Commit();
+                        }
+
+                        Logger.LogInfo("{0} - {1}", response.StatusCode, url);
+
+                        return project.SynchronizationState;
                     }
-
-                    if (!string.IsNullOrEmpty(data.Organization))
-                    {
-                        user.Organization = data.Organization;
-                    }
-
-                    if(!string.IsNullOrEmpty(data.EmailAddress))
-                    {
-                        user.EmailAddress = data.EmailAddress;
-                    }
-
-                    if(!user.IsSynchronized)
-                    {
-                        user.Commit();
-                    }
-
-                    Logger.LogInfo("{0} - {1}", response.StatusCode, url);
-
-                    return user.SynchronizationState;
-                }
-                else
-                {
-                    return null;
                 }
             }
+
+            return null;
         }
 
         private async Task<ResourceSynchronizationState> TryPullActivityAsync(OnlineAccount account, Uri uri)
@@ -276,30 +280,37 @@ namespace Artivity.Apid.Accounts
             switch (type)
             {
                 default: return null;
-                case PROV.Person: return await TryPushUserAsync(account, uri);
+                case ART.Project: return await TryPushProjectAsync(account, uri);
                 case PROV.Activity: return await TryPushActivityAsync(account, uri);
             }
         }
 
-        private async Task<ResourceSynchronizationState> TryPushUserAsync(OnlineAccount account, Uri uri)
+        private async Task<ResourceSynchronizationState> TryPushProjectAsync(OnlineAccount account, Uri uri)
         {
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
-            Uri url = new Uri(baseUrl + "/api/1.0/sync/user/" + account.GetParameter("username"));
+            Uri url = new Uri(baseUrl + "/api/1.0/sync/project/" + Path.GetFileName(uri.AbsolutePath));
 
             using (HttpClient client = GetHttpClient(account))
             {
-                IModel model = ModelProvider.GetAgents();
+                IModel model = ModelProvider.GetActivities();
 
-                Person user = model.GetResource<Person>(uri);
+                if (model.ContainsResource(uri))
+                {
+                    Project project = model.GetResource<Project>(uri);
 
-                StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(project), Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await client.PostAsync(url, content);
+                    HttpResponseMessage response = await client.PostAsync(url, content);
 
-                Logger.LogInfo("{0} - {1}", response.StatusCode, url);
+                    Logger.LogInfo("{0} - {1}", response.StatusCode, url);
 
-                return response.IsSuccessStatusCode ? user.SynchronizationState : null;
+                    return response.IsSuccessStatusCode ? project.SynchronizationState : null;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 

@@ -67,7 +67,7 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// Initialize the factory class by registering all known online service clients.
         /// </summary>
-        public static void Initialize(IModelProvider modelProvider, IPlatformProvider platformProvider, IOnlineServiceSynchronizationProvider syncProvider)
+        public static void Initialize(IModelProvider modelProvider, IPlatformProvider platformProvider, IArtivityServiceSynchronizationProvider syncProvider)
         {
             if (IsInitialized) return;
 

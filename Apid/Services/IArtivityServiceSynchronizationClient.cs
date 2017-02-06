@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Artivity.Apid
 {
-    public interface IOnlineServiceSynchronizationClient : IOnlineServiceClient
+    public interface IArtivityServiceSynchronizationClient : IOnlineServiceClient
     {
         #region Methods
 
-        Task<SynchronizationChangeset> TryGetChangesetAsync(OnlineAccount account);
+        Task<SynchronizationChangeset> TryGetChangesetAsync(Person user, OnlineAccount account);
 
         Task<ResourceSynchronizationState> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri);
 

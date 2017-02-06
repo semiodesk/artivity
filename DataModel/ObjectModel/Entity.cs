@@ -25,37 +25,40 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 
 namespace Artivity.DataModel
 {
 	[RdfClass(PROV.Entity)]
-	public class Entity : Resource
+	public class Entity : SynchronizableResource
 	{
 		#region Members
 
-		[RdfProperty(PROV.qualifiedGeneration)]
+		[RdfProperty(PROV.qualifiedGeneration), JsonIgnore]
 		public Generation Generation { get; set; }
 
-		[RdfProperty(PROV.qualifiedInvalidation)]
+        [RdfProperty(PROV.qualifiedInvalidation), JsonIgnore]
 		public Invalidation Invalidation { get; set; }
 
-		[RdfProperty(PROV.specializationOf)]
+        [RdfProperty(PROV.specializationOf), JsonIgnore]
 		public Entity GenericEntity { get; set; }
 
-		[RdfProperty(PROV.wasRevisionOf)]
+        [RdfProperty(PROV.wasRevisionOf), JsonIgnore]
 		public Entity RevisedEntity { get; set; }
 
-        [RdfProperty(PROV.hadPrimarySource)]
+        [RdfProperty(PROV.hadPrimarySource), JsonIgnore]
         public Entity PrimarySource { get; set; }
 
 		#endregion
 
 		#region Constructors
 
-        public Entity(Uri uri) : base(uri) {}
-        public Entity(string uri) : base(uri) { }
+        public Entity(Uri uri) : base(uri)
+        {
+        }
+
 		#endregion
     }
 }

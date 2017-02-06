@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.DataModel.ObjectModel;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,8 @@ namespace Artivity.DataModel
         #region Members
 
         private bool _initialized = false;
+
+        private IModelSynchronizationState _synchronizationState;
 
         private Dictionary<int, IStore> _stores = new Dictionary<int, IStore>();
 
@@ -69,8 +72,6 @@ namespace Artivity.DataModel
         public string ConnectionString { get; set; }
 
         public string NativeConnectionString { get; set; }
-
-        public IModelSynchronizationState SynchronizationState { get; private set; }
 
         public string Uid { get; set; }
 
@@ -114,14 +115,14 @@ namespace Artivity.DataModel
 
                 if(model.ContainsResource(syncUrl))
                 {
-                    SynchronizationState = model.GetResource<ModelSynchronizationState>(syncUrl);
+                    _synchronizationState = model.GetResource<ModelSynchronizationState>(syncUrl);
                 }
                 else
                 {
-                    SynchronizationState = model.CreateResource<ModelSynchronizationState>(syncUrl);
-                    SynchronizationState.ClientUpdateCounter = 0;
-                    SynchronizationState.ServerUpdateCounter = 0;
-                    SynchronizationState.Commit();
+                    _synchronizationState = model.CreateResource<ModelSynchronizationState>(syncUrl);
+                    _synchronizationState.LastLocalRevision = 0;
+                    _synchronizationState.LastRemoteRevision = 0;
+                    _synchronizationState.Commit();
                 }
 
                 _initialized = true;
@@ -244,6 +245,11 @@ namespace Artivity.DataModel
         public IModel GetDefault()
         {
             return Store.GetModel(Default);
+        }
+
+        public IModelSynchronizationState GetModelSynchronizationState(IUserAgent user)
+        {
+            return _synchronizationState;
         }
 
         public int ReleaseStore()

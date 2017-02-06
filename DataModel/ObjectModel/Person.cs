@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.DataModel.ObjectModel;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
@@ -35,7 +36,7 @@ using System.Text;
 namespace Artivity.DataModel
 {
     [RdfClass(PROV.Person)]
-    public class Person : Agent
+    public class Person : Agent, IUserAgent
     {
 		#region Members
 

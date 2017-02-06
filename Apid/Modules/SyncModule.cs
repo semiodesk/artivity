@@ -52,7 +52,7 @@ namespace Artivity.Apid
     {
         #region Constructors
 
-        public SyncModule(IModelProvider model, IPlatformProvider platform, IOnlineServiceSynchronizationProvider syncProvider)
+        public SyncModule(IModelProvider model, IPlatformProvider platform, IArtivityServiceSynchronizationProvider syncProvider)
             : base("/artivity/api/1.0/sync", model, platform)
         {
             Get[""] = parameters => { return Synchronize(syncProvider); };
@@ -62,7 +62,7 @@ namespace Artivity.Apid
 
         #region Methods
 
-        private Response Synchronize(IOnlineServiceSynchronizationProvider syncProvider)
+        private Response Synchronize(IArtivityServiceSynchronizationProvider syncProvider)
         {
             syncProvider.TrySynchronize();
 

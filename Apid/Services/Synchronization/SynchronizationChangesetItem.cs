@@ -13,7 +13,7 @@ namespace Artivity.Apid.Synchronization
         /// <summary>
         /// The pull- or push counter of the item in the synchronization target system.
         /// </summary>
-        public long Counter { get; set; }
+        public int Revision { get; set; }
 
         /// <summary>
         /// The URI of the changed resource.
@@ -38,9 +38,9 @@ namespace Artivity.Apid.Synchronization
         {
         }
 
-        public SynchronizationChangesetItem(long counter, Uri uri, Uri type, SynchronizationActionType actionType)
+        public SynchronizationChangesetItem(int revision, Uri uri, Uri type, SynchronizationActionType actionType)
         {
-            Counter = counter;
+            Revision = revision;
             ResourceUri = uri;
             ResourceType = type;
             ActionType = actionType;

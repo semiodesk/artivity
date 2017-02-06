@@ -152,7 +152,7 @@ namespace Artivity.Apid
 
         private IProgramInstallationWatchdog _installWatchdog;
 
-        private IOnlineServiceSynchronizationProvider _synchronizationProvider;
+        private IArtivityServiceSynchronizationProvider _synchronizationProvider;
 
         private IModelProvider _modelProvider { get; set; }
 
@@ -191,7 +191,7 @@ namespace Artivity.Apid
         {
             PlatformProvider.Logger.LogInfo("Initializing online service synchronization..");
 
-            _synchronizationProvider = new OnlineServiceSynchronizer(_modelProvider, PlatformProvider);
+            _synchronizationProvider = new ArtivityServiceSynchronizer(_modelProvider, PlatformProvider);
 
             PlatformProvider.Logger.LogInfo("Initializing online service connectors..");
 

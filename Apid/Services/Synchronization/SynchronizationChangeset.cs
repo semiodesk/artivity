@@ -7,14 +7,17 @@ using System.Threading.Tasks;
 
 namespace Artivity.Apid.Synchronization
 {
-    public class SynchronizationChangeset
+    public class SynchronizationChangeset : ISynchronizationChangeset
     {
         #region Members
 
         /// <summary>
         /// The pull- or push counter for which the changeset was created.
         /// </summary>
-        public readonly int Counter;
+        public int Revision { get; private set; }
+
+        // The dictionary provides a O(1) lookup for the URIs.
+        private readonly Dictionary<Uri, SynchronizationChangesetItem> _resources = new Dictionary<Uri, SynchronizationChangesetItem>();
 
         // The list maintains the order of the items in which they were added.
         private readonly List<SynchronizationChangesetItem> _items = new List<SynchronizationChangesetItem>();
@@ -27,29 +30,18 @@ namespace Artivity.Apid.Synchronization
             get { return _items; }
         }
 
-        // The dictionary provides a O(1) lookup for the URIs.
-        private readonly Dictionary<Uri, SynchronizationChangesetItem> _resources = new Dictionary<Uri, SynchronizationChangesetItem>();
-
-        /// <summary>
-        /// Uniform Resource Identifiers of the resources in the changeset.
-        /// </summary>
-        public IDictionary<Uri, SynchronizationChangesetItem> Resources
-        {
-            get { return _resources; }
-        }
-
         #endregion
 
         #region Constructors
 
         public SynchronizationChangeset(IModelSynchronizationState state)
         {
-            Counter = state.ClientUpdateCounter;
+            Revision = state.LastLocalRevision;
         }
 
         public SynchronizationChangeset(int counter, IEnumerable<SynchronizationChangesetItem> items = null)
         {
-            Counter = counter;
+            Revision = counter;
 
             if (items != null)
             {
@@ -62,7 +54,7 @@ namespace Artivity.Apid.Synchronization
 
         internal SynchronizationChangeset(SynchronizationChangeset other)
         {
-            Counter = other.Counter;
+            Revision = other.Revision;
 
             _items = new List<SynchronizationChangesetItem>(other._items);
             _resources = new Dictionary<Uri, SynchronizationChangesetItem>(other._resources);
@@ -71,6 +63,16 @@ namespace Artivity.Apid.Synchronization
         #endregion
 
         #region Methods
+
+        public bool ContainsItem(Uri uri)
+        {
+            return _resources.ContainsKey(uri);
+        }
+
+        public SynchronizationChangesetItem GetItem(Uri uri)
+        {
+            return _resources[uri];
+        }
 
         /// <summary>
         /// Add a synchronization item to the changeset.

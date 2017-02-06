@@ -9,10 +9,17 @@ namespace Artivity.DataModel
     [RdfClass(NIE.InformationElement)]
     public class InformationElement : Entity
     {
-        public InformationElement(Uri uri) : base(uri) { }
-        public InformationElement(string uri) : base(uri) { }
+        #region Members
 
         [RdfProperty(NIE.isStoredAs)]
         public FileDataObject DataObject { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        public InformationElement(Uri uri) : base(uri) { }
+
+        #endregion
     }
 }

@@ -15,10 +15,8 @@
 						<input type="text" class="form-control" id="url" name="url" placeholder="https://artivity.online" ng-model="t.parameter.url" required>
 						<label style="margin-top: .5em;">Login</label>
 						<div class="form-group">
-							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20"
-											maxlength="20" ng-model="t.parameter.username" required>
-								<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20"
-												maxlength="20" ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
+							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20" maxlength="20" ng-model="t.parameter.username" required>
+							<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20" maxlength="20" ng-model="t.parameter.password" ng-enter="t.connectAccount(selectedClient)" required>
 						</div>
 					</form>
 					<div art-client-state-info state="{{t.clientState}}"></div>

@@ -59,7 +59,7 @@ namespace Artivity.Apid
 
         public PluginChecker PluginChecker { get; set; }
 
-        public IOnlineServiceSynchronizationProvider SynchronizationProvider { get; set; }
+        public IArtivityServiceSynchronizationProvider SynchronizationProvider { get; set; }
 
         #endregion
 

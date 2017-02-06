@@ -15,20 +15,20 @@ arts: a owl:Ontology .
 arts:SynchronizableResource a rdfs:Class ;
 	rdfs:label "SynchronizableResource" .
 
-arts:synchronizationState a rdf:Property ;
-	rdfs:label "synchronizationState" .
-
 arts:SynchronizationState a rdfs:Class ;
 	rdfs:label "SynchronizationState" .
-
-arts:lastUpdateCounter a rdf:Property ;
-	rdfs:label "lastUpdateCounter" .
-
-arts:ResourceSynchronizationState a rdfs:Class ;
-	rdfs:label "ResourceSynchronizationState" .
 
 arts:ModelSynchronizationState a rdfs:Class ;
 	rdfs:label "ModelSynchronizationState" .
 
-arts:currentUpdateCounter a rdf:Property ;
-	rdfs:label "currentUpdateCounter" .
+arts:ResourceSynchronizationState a rdfs:Class ;
+	rdfs:label "ResourceSynchronizationState" .
+
+arts:synchronizationState a rdf:Property ;
+	rdfs:label "synchronizationState" .
+
+arts:lastLocalRevision a rdf:Property ;
+	rdfs:label "lastLocalRevision" .
+
+arts:lastRemoteRevision a rdf:Property ;
+	rdfs:label "lastRemoteRevision" .

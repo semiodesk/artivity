@@ -26,6 +26,7 @@
 // Copyright (c) Semiodesk GmbH 2017
 
 using Artivity.DataModel.ObjectModel;
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -40,13 +41,15 @@ namespace Artivity.DataModel
     {
         #region Members
 
+        protected bool IsSynchronizable;
+
         [RdfProperty(NIE.created)]
         public DateTime CreationDate { get; set; }
 
         [RdfProperty(NIE.modified)]
         public DateTime ModificationDate { get; set; }
 
-        [RdfProperty(ARTS.synchronizationState)]
+        [RdfProperty(ARTS.synchronizationState), JsonIgnore]
         public ResourceSynchronizationState SynchronizationState { get; set; }
 
         #endregion
@@ -61,6 +64,20 @@ namespace Artivity.DataModel
 
         #region Methods
 
+        public void SetRevision(int revision)
+        {
+            if (IsSynchronizable)
+            {
+                ResourceSynchronizationState state = SynchronizationState;
+                state.LastRemoteRevision = revision;
+                state.Commit();
+            }
+            else
+            {
+                throw new Exception("Trying to set a revision on a resource which has synchronization disabled.");
+            }
+        }
+
         public override void Commit()
         {
             if (IsNew || CreationDate == null)
@@ -70,15 +87,18 @@ namespace Artivity.DataModel
 
             ModificationDate = DateTime.UtcNow;
 
-            if (SynchronizationState == null)
+            if (IsSynchronizable)
             {
-                SynchronizationState = Model.CreateResource<ResourceSynchronizationState>();
-            }
+                if (SynchronizationState == null)
+                {
+                    SynchronizationState = Model.CreateResource<ResourceSynchronizationState>();
+                }
 
-            // The resource is flagged as modified. The account synchronizer will update 
-            // the last update counter and the flag when the resource was successfully uploaded.
-            SynchronizationState.LastUpdateCounter = -1;
-            SynchronizationState.Commit();
+                // The resource is flagged as modified. The account synchronizer will update 
+                // the last update counter and the flag when the resource was successfully uploaded.
+                SynchronizationState.LastRemoteRevision = -1;
+                SynchronizationState.Commit();
+            }
 
             base.Commit();
         }

@@ -24,6 +24,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.DataModel.ObjectModel;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -39,8 +40,6 @@ namespace Artivity.DataModel
         string ConnectionString { get; set; }
 
         string NativeConnectionString { get; set; }
-
-        IModelSynchronizationState SynchronizationState { get; }
 
         UriRef Agents { get; set; }
 
@@ -75,6 +74,8 @@ namespace Artivity.DataModel
         IModel GetWebActivities();
 
         IModelGroup CreateModelGroup(params Uri[] models);
+
+        IModelSynchronizationState GetModelSynchronizationState(IUserAgent user);
 
         #endregion
     }
