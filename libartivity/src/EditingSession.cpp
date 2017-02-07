@@ -321,7 +321,6 @@ namespace artivity
             {
                 ss.str(string()); // empty string
                 ss << _imagePath << sep << time << "-" << count << ".png";
-                count++;
             } while (boost::filesystem::exists(ss.str()));
 
             resPath = ss.str();
@@ -329,6 +328,55 @@ namespace artivity
 
         return resPath;
     }
+
+    string EditingSession::createImageFilePath(time_t time, std::string suffix)
+    {
+        string resPath = "";
+
+        if (!_imagePath.empty())
+        {
+#ifdef WIN32
+            const char* sep = "\\";
+#else
+            const char* sep = "//";
+#endif
+            stringstream ss;
+            do
+            {
+                ss.str(string()); // empty string
+                ss << _imagePath << sep << time << suffix << ".png";
+            } while (boost::filesystem::exists(ss.str()));
+
+            resPath = ss.str();
+        }
+
+        return resPath;
+    }
+
+    string EditingSession::createImageFilePath(time_t time, std::string suffix, int count)
+    {
+        string resPath = "";
+
+        if (!_imagePath.empty())
+        {
+#ifdef WIN32
+            const char* sep = "\\";
+#else
+            const char* sep = "//";
+#endif
+            stringstream ss;
+            do
+            {
+                ss.str(string()); // empty string
+                ss << _imagePath << sep << time << suffix << "-" << count << ".png";
+            } while (boost::filesystem::exists(ss.str()));
+
+            resPath = ss.str();
+        }
+
+        return resPath;
+    }
+
 
     CanvasRef EditingSession::createCanvas(string uri, time_t time, double x, double y, double width, double height)
     {
