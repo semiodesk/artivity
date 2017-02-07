@@ -63,7 +63,7 @@ namespace artivity
 
         GeometryRef _boundaries;
 
-        RenderingDataObjectRef _rendering;
+        std::list<RenderingDataObjectRef> _renderings;
 
     protected:
         ActivityRef activity;
@@ -145,9 +145,12 @@ namespace artivity
 
         void setBoundaries(GeometryRef boundaries);
 
-        RenderingDataObjectRef getRendering();
+        std::list<RenderingDataObjectRef> getRenderings();
 
-        void setRendering(RenderingDataObjectRef render);
+        void addRendering(RenderingDataObjectRef entity);
+
+        void removeRendering(RenderingDataObjectRef entity);
+
     };
 }
 
