@@ -50,5 +50,10 @@ namespace artivity
     {
         addProperty(art::renderedLayer, layerUri, typeid(Resource));
     }
+
+    void PartialRenderingDataObject::setCanvas(string canvasUri)
+    {
+        addProperty(art::renderedCanvas, canvasUri, typeid(Resource));
+    }
 }
 
