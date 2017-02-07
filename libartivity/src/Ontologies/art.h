@@ -78,6 +78,8 @@ namespace artivity
 
         static const char* renderedLayer = art("renderedLayer");
 
+        static const char* renderedCanvas = art("renderedCanvas");
+
         static const char* usingTool = art("usingTool");
 
         static const char* usingToolSettings = art("usingToolSettings");
