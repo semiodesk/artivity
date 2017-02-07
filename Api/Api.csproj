@@ -67,11 +67,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\StreamExtensions.cs" />
+    <Compile Include="IO\ArchiveWriters\ActivityArchiveWriter.cs" />
+    <Compile Include="IO\ArchiveWriters\EntityArchiveWriter.cs" />
     <Compile Include="Platform\IThumbnailProvider.cs" />
     <Compile Include="IO\ArchiveManifest.cs" />
     <Compile Include="IO\ArchiveManifestCreator.cs" />
     <Compile Include="IO\ArchiveReader.cs" />
-    <Compile Include="IO\ArchiveWriter.cs" />
+    <Compile Include="IO\ArchiveWriterBase.cs" />
     <Compile Include="IO\BackupWriter.cs" />
     <Compile Include="Modules\EntityModuleBase.cs" />
     <Compile Include="IO\FileNameEncoder.cs" />

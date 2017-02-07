@@ -12,11 +12,15 @@ namespace Artivity.Apid
     {
         #region Methods
 
-        Task<SynchronizationChangeset> TryGetChangesetAsync(Person user, OnlineAccount account);
+        bool BeginSynchronization();
 
-        Task<ResourceSynchronizationState> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri);
+        void EndSynchronization();
 
-        Task<ResourceSynchronizationState> TryPullAsync(OnlineAccount account, Uri uri, Uri typeUri);
+        Task<SynchronizationChangeset> TryGetChangesetAsync(IUserAgent user, OnlineAccount account);
+
+        Task<bool> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision);
+
+        Task<bool> TryPullAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision);
 
         #endregion
     }

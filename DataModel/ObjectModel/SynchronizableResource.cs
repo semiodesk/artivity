@@ -30,6 +30,7 @@ using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,21 +65,40 @@ namespace Artivity.DataModel
 
         #region Methods
 
-        public void SetRevision(int revision)
+        public void Sanitize()
         {
-            if (IsSynchronizable)
+            List<object> values = ListValues(arts.synchronizationState).ToList();
+
+            if(values.Count > 1)
             {
-                ResourceSynchronizationState state = SynchronizationState;
-                state.LastRemoteRevision = revision;
-                state.Commit();
-            }
-            else
-            {
-                throw new Exception("Trying to set a revision on a resource which has synchronization disabled.");
+                for(int i = 1; i < values.Count; i++)
+                {
+                    Resource r = values[i] as Resource;
+
+                    if(r != null)
+                    {
+                        ResourceSynchronizationState s = new ResourceSynchronizationState(r.Uri);
+
+                        RemoveProperty(arts.synchronizationState, s);
+
+                        if (Model.ContainsResource(r.Uri))
+                        {
+                            Model.DeleteResource(r.Uri);
+                        }
+                    }
+                }
+
+                base.Commit();
+                base.Rollback();
             }
         }
 
         public override void Commit()
+        {
+            Commit(-1);
+        }
+
+        public void Commit(int revision)
         {
             if (IsNew || CreationDate == null)
             {
@@ -89,15 +109,24 @@ namespace Artivity.DataModel
 
             if (IsSynchronizable)
             {
-                if (SynchronizationState == null)
+                try
                 {
-                    SynchronizationState = Model.CreateResource<ResourceSynchronizationState>();
+                    if (SynchronizationState == null)
+                    {
+                        SynchronizationState = Model.CreateResource<ResourceSynchronizationState>();
+                    }
+                }
+                catch (Exception)
+                {
+                    Sanitize();
                 }
 
                 // The resource is flagged as modified. The account synchronizer will update 
                 // the last update counter and the flag when the resource was successfully uploaded.
-                SynchronizationState.LastRemoteRevision = -1;
+                SynchronizationState.LastRemoteRevision = revision;
                 SynchronizationState.Commit();
+
+                Console.WriteLine("Commiting resource {0}, sync state {1}", Uri, SynchronizationState.Uri);
             }
 
             base.Commit();

@@ -125,7 +125,7 @@ namespace Artivity.Apid.Modules
                 string targetFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 string targetPath = Path.Combine(targetFolder, targetFile);
 
-                ArchiveWriter writer = new ArchiveWriter(PlatformProvider, ModelProvider);
+                EntityArchiveWriter writer = new EntityArchiveWriter(PlatformProvider, ModelProvider);
                 writer.Write(entityUri, targetPath, minTime);
             }
             catch (Exception ex)
@@ -156,7 +156,7 @@ namespace Artivity.Apid.Modules
                 {
                     PlatformProvider.Logger.LogInfo("Started backup task with id: {0}", progress.Id);
 
-                    writer.WriteAsync(targetPath, progress);
+                    writer.Write(targetPath, progress);
                 }
                 catch(Exception ex)
                 {
