@@ -53,6 +53,8 @@ namespace Artivity.Apid.Accounts
     {
         #region Members
 
+        private bool _isSynchronizing;
+
         private const string _path = "/api/1.0/auth/login";
 
         #endregion
@@ -146,7 +148,61 @@ namespace Artivity.Apid.Accounts
             return "Artivity";
         }
 
-        public async Task<SynchronizationChangeset> TryGetChangesetAsync(Person user, OnlineAccount account)
+        public bool BeginSynchronization()
+        {
+            if (!_isSynchronizing)
+            {
+                _isSynchronizing = true;
+
+                PlatformProvider.Logger.LogInfo("Starting synchronization..");
+
+                InitializeActivitySynchronizationState();
+
+                // TODO: Here we can query the server here to see if another client is currently syncing.
+                return true;
+            }
+
+            return false;
+        }
+
+        public void EndSynchronization()
+        {
+            _isSynchronizing = false;
+
+            PlatformProvider.Logger.LogInfo("Finished synchronization.");
+        }
+
+        private void InitializeActivitySynchronizationState()
+        {
+            PlatformProvider.Logger.LogInfo("Initializing activity synchronization states..");
+
+            IModel model = ModelProvider.GetActivities();
+
+            SparqlUpdate update = new SparqlUpdate(@"
+                WITH @model
+                INSERT
+                {
+                    ?activity arts:synchronizationState ?state .
+
+                    ?state a arts:ResourceSynchronizationState ; arts:lastRemoteRevision @undefined .
+                }
+                WHERE
+                {
+                    ?influence prov:activity | prov:hadActivity ?activity .
+
+                    FILTER NOT EXISTS { ?activity arts:synchronizationState ?s . }
+
+                    BIND(URI(CONCAT(STR(?activity), '#sync')) AS ?state) .
+                }
+            ");
+
+            update.Bind("@model", model);
+            update.Bind("@undefined", -1);
+
+            model.ExecuteUpdate(update);
+        }
+
+        public async Task<SynchronizationChangeset> TryGetChangesetAsync(IUserAgent user, OnlineAccount account)
         {
             if(account.ServiceUrl != null)
             {
@@ -203,19 +259,20 @@ namespace Artivity.Apid.Accounts
             return null;
         }
 
-        public async Task<ResourceSynchronizationState> TryPullAsync(OnlineAccount account, Uri uri, Uri typeUri)
+        public async Task<bool> TryPullAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision)
         {
             string type = typeUri.AbsoluteUri;
 
             switch (type)
             {
-                default: return null;
-                case ART.Project: return await TryPullProjectAsync(account, uri);
-                case PROV.Activity: return await TryPullActivityAsync(account, uri);
+                case ART.Project: return await TryPullProjectAsync(account, uri, revision);
+                case PROV.Activity: return await TryPullActivityAsync(account, uri, revision);
             }
+
+            return false;
         }
 
-        private async Task<ResourceSynchronizationState> TryPullProjectAsync(OnlineAccount account, Uri uri)
+        private async Task<bool> TryPullProjectAsync(OnlineAccount account, Uri uri, int revision)
         {
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
@@ -253,39 +310,46 @@ namespace Artivity.Apid.Accounts
                             project.Name = name;
                         }
 
-                        if (!project.IsSynchronized)
-                        {
-                            project.Commit();
-                        }
+                        // Do not commit _after_ setting the revision.
+                        project.Commit(revision);
 
                         Logger.LogInfo("{0} - {1}", response.StatusCode, url);
 
-                        return project.SynchronizationState;
+                        return true;
                     }
                 }
             }
 
-            return null;
+            return false;
         }
 
-        private async Task<ResourceSynchronizationState> TryPullActivityAsync(OnlineAccount account, Uri uri)
+        private async Task<bool> TryPullActivityAsync(OnlineAccount account, Uri uri, int revision)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public async Task<ResourceSynchronizationState> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri)
+        public async Task<bool> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision)
         {
             string type = typeUri.AbsoluteUri;
 
             switch (type)
             {
-                default: return null;
-                case ART.Project: return await TryPushProjectAsync(account, uri);
-                case PROV.Activity: return await TryPushActivityAsync(account, uri);
+                case ART.Project:
+                {
+                    return await TryPushProjectAsync(account, uri, revision);
+                }
+                case ART.CreateFile:
+                case ART.EditFile:
+                case PROV.Activity:
+                {
+                    return await TryPushActivityAsync(account, uri, revision);
+                }
             }
+
+            return false;
         }
 
-        private async Task<ResourceSynchronizationState> TryPushProjectAsync(OnlineAccount account, Uri uri)
+        private async Task<bool> TryPushProjectAsync(OnlineAccount account, Uri uri, int revision)
         {
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
@@ -305,18 +369,65 @@ namespace Artivity.Apid.Accounts
 
                     Logger.LogInfo("{0} - {1}", response.StatusCode, url);
 
-                    return response.IsSuccessStatusCode ? project.SynchronizationState : null;
-                }
-                else
-                {
-                    return null;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        project.Commit(revision);
+
+                        return true;
+                    }
                 }
             }
+
+            return false;
         }
 
-        private async Task<ResourceSynchronizationState> TryPushActivityAsync(OnlineAccount account, Uri uri)
+        private async Task<bool> TryPushActivityAsync(OnlineAccount account, Uri uri, int revision)
         {
-            throw new NotImplementedException();
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            Uri url = new Uri(baseUrl + "/api/1.0/sync/activity/");
+
+            using (HttpClient client = GetHttpClient(account))
+            {
+                string archiveName = FileNameEncoder.Encode(uri.AbsoluteUri) + ".arta";
+                string archivePath = Path.Combine(PlatformProvider.TempFolder, archiveName);
+
+                FileInfo archive = new FileInfo(archivePath);
+
+                try
+                {
+                    if(archive.Exists)
+                    {
+                        File.Delete(archive.FullName);
+                    }
+
+                    ActivityArchiveWriter writer = new ActivityArchiveWriter(PlatformProvider, ModelProvider);
+
+                    await writer.WriteAsync(uri, archive.FullName, DateTime.MinValue);
+
+                    using (FileStream stream = File.Open(archive.FullName, FileMode.Open))
+                    {
+                        HttpContent content = new StreamContent(stream);
+                        content.Headers.ContentType = new MediaTypeHeaderValue("application/artivity+zip");
+
+                        MultipartFormDataContent form = new MultipartFormDataContent();
+                        form.Add(content, "file", archive.Name + archive.Extension);
+
+                        HttpResponseMessage response = await client.PostAsync(url, form);
+
+                        return response.IsSuccessStatusCode;
+                    }
+                }
+                finally
+                {
+                    if (archive.Exists)
+                    {
+                        File.Delete(archive.FullName);
+                    }
+                }
+            }
+
+            return false;
         }
 
         protected HttpClient GetHttpClient(OnlineAccount account)

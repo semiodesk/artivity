@@ -498,7 +498,7 @@ namespace Artivity.Api.Modules
 
                 if(publishingClient != null)
                 {
-                    ArchiveWriter archiveWriter = new ArchiveWriter(PlatformProvider, ModelProvider);
+                    ArchiveWriterBase archiveWriter = new EntityArchiveWriter(PlatformProvider, ModelProvider);
 
                     OnlineServiceClientSession session = GetSessionHandle(publishingClient);
 

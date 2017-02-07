@@ -57,6 +57,11 @@ namespace Artivity.Api.IO
 
         #region Methods
 
+        public void Read(string fileName)
+        {
+            Read(new Uri("file://" + fileName));
+        }
+
         public void Read(Uri fileUrl)
         {
             DirectoryInfo appFolder = new DirectoryInfo(_platformProvider.ArtivityDataFolder);
