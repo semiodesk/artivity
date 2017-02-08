@@ -148,7 +148,7 @@ namespace Artivity.Apid.Accounts
             return "Artivity";
         }
 
-        public bool BeginSynchronization()
+        public bool BeginSynchronization(IUserAgent user, OnlineAccount account)
         {
             if (!_isSynchronizing)
             {
@@ -165,11 +165,28 @@ namespace Artivity.Apid.Accounts
             return false;
         }
 
-        public void EndSynchronization()
+        public IModelSynchronizationState EndSynchronization(IUserAgent user, OnlineAccount account)
         {
+            IModelSynchronizationState state = ModelProvider.GetModelSynchronizationState(user);
+
+            Task<int> stateTask = TryGetSynchronizationState(user, account);
+
+            stateTask.Wait();
+
+            int revision = stateTask.Result;
+
+            if (revision > 0)
+            {
+                // Update the server revision for the online account.
+                state.LastRemoteRevision = revision;
+                state.Commit();
+            }
+
             _isSynchronizing = false;
 
-            PlatformProvider.Logger.LogInfo("Finished synchronization.");
+            PlatformProvider.Logger.LogInfo("Finished synchronization; Server at revision #{0}", revision);
+
+            return state;
         }
 
         private void InitializeActivitySynchronizationState()
@@ -202,6 +219,33 @@ namespace Artivity.Apid.Accounts
             model.ExecuteUpdate(update);
         }
 
+        public async Task<int> TryGetSynchronizationState(IUserAgent user, OnlineAccount account)
+        {
+            if (account != null && account.ServiceUrl != null)
+            {
+                IModelSynchronizationState state = ModelProvider.GetModelSynchronizationState(user);
+
+                string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+                Uri url = new Uri(baseUrl + "/api/1.0/sync/");
+
+                using (HttpClient client = GetHttpClient(account))
+                {
+                    HttpResponseMessage response = await client.GetAsync(url);
+
+                    string json = await response.Content.ReadAsStringAsync();
+
+                    dynamic data = JsonConvert.DeserializeObject(json);
+
+                    int revision = data.revision;
+
+                    return revision;
+                }
+            }
+
+            return -1;
+        }
+
         public async Task<SynchronizationChangeset> TryGetChangesetAsync(IUserAgent user, OnlineAccount account)
         {
             if(account.ServiceUrl != null)
@@ -231,7 +275,7 @@ namespace Artivity.Apid.Accounts
 
                             if (data != null)
                             {
-                                SynchronizationChangeset result = new SynchronizationChangeset((int)data.counter);
+                                SynchronizationChangeset result = new SynchronizationChangeset((int)data.revision);
 
                                 foreach (var row in data.changes)
                                 {
@@ -239,7 +283,7 @@ namespace Artivity.Apid.Accounts
                                     item.ActionType = SynchronizationActionType.Pull;
                                     item.ResourceUri = new UriRef(row.resource.ToString());
                                     item.ResourceType = new UriRef(row.resourceType.ToString());
-                                    item.Revision = (int)row.counter;
+                                    item.Revision = (int)row.revision;
 
                                     result.Add(item);
                                 }
@@ -371,7 +415,9 @@ namespace Artivity.Apid.Accounts
 
                     if (response.IsSuccessStatusCode)
                     {
-                        project.Commit(revision);
+                        int r = await GetLastRemoteRevision(response);
+
+                        project.Commit(r);
 
                         return true;
                     }
@@ -415,8 +461,35 @@ namespace Artivity.Apid.Accounts
 
                         HttpResponseMessage response = await client.PostAsync(url, form);
 
+                        if(response.IsSuccessStatusCode)
+                        {
+                            int r = await GetLastRemoteRevision(response);
+
+                            IModel model = ModelProvider.GetActivities();
+
+                            SparqlUpdate update = new SparqlUpdate(@"
+                                WITH @model
+                                DELETE { ?state arts:lastRemoteRevision @undefined . }
+                                INSERT { ?state arts:lastRemoteRevision @revision . }
+                                WHERE { @activity arts:synchronizationState ?state . }
+                            ");
+
+                            update.Bind("@model", model);
+                            update.Bind("@activity", uri);
+                            update.Bind("@undefined", -1);
+                            update.Bind("@revision", r);
+
+                            model.ExecuteUpdate(update);
+                        }
+
                         return response.IsSuccessStatusCode;
                     }
+                }
+                catch(Exception ex)
+                {
+                    Logger.LogError(ex);
+
+                    return false;
                 }
                 finally
                 {
@@ -426,8 +499,17 @@ namespace Artivity.Apid.Accounts
                     }
                 }
             }
+        }
 
-            return false;
+        private async Task<int> GetLastRemoteRevision(HttpResponseMessage response)
+        {
+            string json = await response.Content.ReadAsStringAsync();
+
+            dynamic data = JsonConvert.DeserializeObject(json);
+
+            int revision = data.revision;
+
+            return revision;
         }
 
         protected HttpClient GetHttpClient(OnlineAccount account)

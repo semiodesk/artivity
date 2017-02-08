@@ -74,27 +74,31 @@ namespace Artivity.Apid
         {
             _container = container;
 
+            container.Register<JsonNetSerializer>();
+
             if (ModelProvider != null)
             {
                 _container.Register(ModelProvider);
+                _container.Register<IModelProvider>(ModelProvider);
             }
 
             if (PlatformProvider != null)
             {
                 _container.Register(PlatformProvider);
+                _container.Register<IPlatformProvider>(PlatformProvider);
             }
 
             if (PluginChecker != null)
             {
                 _container.Register(PluginChecker);
+                _container.Register<PluginChecker>(PluginChecker);
             }
 
             if(SynchronizationProvider != null)
             {
                 _container.Register(SynchronizationProvider);
+                _container.Register<IArtivityServiceSynchronizationProvider>(SynchronizationProvider);
             }
-                
-            container.Register<JsonNetSerializer>();
         }
             
         protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container, IPipelines pipelines, NancyContext context)

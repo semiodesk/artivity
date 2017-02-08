@@ -49,7 +49,9 @@ namespace Artivity.Api.Modules
         private static object _modelLock = new object();
 
         private static readonly Dictionary<string, Browse> _activities = new Dictionary<string, Browse>();
-        private IPlatformProvider _platform;
+
+        private IPlatformProvider _platformProvider;
+
         #endregion 
 
         #region Constructors
@@ -57,7 +59,8 @@ namespace Artivity.Api.Modules
         public ActivitiesModule(IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0/activities", modelProvider, platform)
         {
-            _platform = platform;
+            _platformProvider = platform;
+
             Get["/"] = parameters =>
             {
                 string uri = Request.Query.uri;
@@ -98,7 +101,7 @@ namespace Artivity.Api.Modules
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
-                    return _platform.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return _platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetComments(new UriRef(uri));
@@ -219,7 +222,7 @@ namespace Artivity.Api.Modules
             return Response.AsJsonSync(bindings);
         }
 
-        private void PostActivities(string data)
+        private Response PostActivities(string data)
         {
             try
             {
@@ -236,15 +239,15 @@ namespace Artivity.Api.Modules
                     LoadTurtle(ModelProvider.Activities, stream);
                 }
 
-                PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
             }
             catch (Exception ex)
             {
-                PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, ex, data);
+                return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, ex, data);
             }
         }
 
-        private HttpStatusCode PostActivity(ActivityParameter p)
+        private Response PostActivity(ActivityParameter p)
         {
             try
             {
@@ -256,17 +259,17 @@ namespace Artivity.Api.Modules
 
                 if (string.IsNullOrEmpty(p.agent))
                 {
-                    return _platform.Logger.LogError(HttpStatusCode.BadRequest, "Invalid parameters.", p);
+                    return _platformProvider.Logger.LogError(HttpStatusCode.BadRequest, "Invalid parameters.", p);
                 }
 
                 if (string.IsNullOrEmpty(p.tab))
                 {
-                    return _platform.Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
+                    return _platformProvider.Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
                 }
 
                 if (!IsCaptureEnabled(p))
                 {
-                    return _platform.Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
+                    return _platformProvider.Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
                 }
 
                 IModel model = ModelProvider.GetWebActivities();
@@ -329,53 +332,14 @@ namespace Artivity.Api.Modules
 
                     _activities.Remove(p.tab);
 
-                    _platform.Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
+                    _platformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
                 }
 
-                return _platform.Logger.LogError(HttpStatusCode.BadRequest, Request.Url);
+                return _platformProvider.Logger.LogError(HttpStatusCode.BadRequest, Request.Url);
             }
             catch (Exception e)
             {
-                return _platform.Logger.LogError(HttpStatusCode.InternalServerError, "{0}: {1}", Request.Url, e.Message);
-            }
-        }
-
-        private bool IsCaptureEnabled(ActivityParameter p)
-        {
-            SoftwareAgent agent = null;
-
-            Uri agentUri = new Uri(p.agent);
-
-            IModel model = ModelProvider.GetAgents();
-
-            if (model.ContainsResource(agentUri))
-            {
-                agent = model.GetResource<SoftwareAgent>(agentUri);
-            }
-
-            return agent.IsCaptureEnabled;
-        }
-
-        private void LoadTurtle(Uri modelUri, Stream stream)
-        {
-            string connectionString = ModelProvider.NativeConnectionString;
-
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                string data = reader.ReadToEnd();
-
-                using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
-                {
-                    using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
-                    {
-                        IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
-                        parser.Load(graph, new StringReader(data));
-
-                        graph.BaseUri = modelUri;
-
-                        m.UpdateGraph(modelUri, graph.Triples, new List<Triple>());
-                    }
-                }
+                return _platformProvider.Logger.LogError(HttpStatusCode.InternalServerError, "{0}: {1}", Request.Url, e.Message);
             }
         }
 
@@ -445,7 +409,7 @@ namespace Artivity.Api.Modules
         {
             if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
             {
-                _platform.Logger.LogError("Invalid URI for parameter 'entity': {0}", parameter.entity);
+                _platformProvider.Logger.LogError("Invalid URI for parameter 'entity': {0}", parameter.entity);
 
                 return HttpStatusCode.BadRequest;
             }
@@ -454,7 +418,7 @@ namespace Artivity.Api.Modules
 
             if (!Uri.IsWellFormedUriString(parameter.agent, UriKind.Absolute))
             {
-                _platform.Logger.LogError("Invalid URI for parameter 'agent': {0}", parameter.agent);
+                _platformProvider.Logger.LogError("Invalid URI for parameter 'agent': {0}", parameter.agent);
 
                 return HttpStatusCode.BadRequest;
             }
@@ -498,9 +462,48 @@ namespace Artivity.Api.Modules
             }
             else
             {
-                _platform.Logger.LogError("Model does not contain entity {0}", entityUri);
+                _platformProvider.Logger.LogError("Model does not contain entity {0}", entityUri);
 
                 return HttpStatusCode.BadRequest;
+            }
+        }
+
+        private bool IsCaptureEnabled(ActivityParameter p)
+        {
+            SoftwareAgent agent = null;
+
+            Uri agentUri = new Uri(p.agent);
+
+            IModel model = ModelProvider.GetAgents();
+
+            if (model.ContainsResource(agentUri))
+            {
+                agent = model.GetResource<SoftwareAgent>(agentUri);
+            }
+
+            return agent.IsCaptureEnabled;
+        }
+
+        private void LoadTurtle(Uri modelUri, Stream stream)
+        {
+            string connectionString = ModelProvider.NativeConnectionString;
+
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string data = reader.ReadToEnd();
+
+                using (VDS.RDF.Storage.VirtuosoManager m = new VDS.RDF.Storage.VirtuosoManager(connectionString))
+                {
+                    using (VDS.RDF.Graph graph = new VDS.RDF.Graph())
+                    {
+                        IRdfReader parser = dotNetRDFStore.GetReader(RdfSerializationFormat.N3);
+                        parser.Load(graph, new StringReader(data));
+
+                        graph.BaseUri = modelUri;
+
+                        m.UpdateGraph(modelUri, graph.Triples, new List<Triple>());
+                    }
+                }
             }
         }
 
