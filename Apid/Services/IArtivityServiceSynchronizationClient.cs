@@ -12,9 +12,11 @@ namespace Artivity.Apid
     {
         #region Methods
 
-        bool BeginSynchronization();
+        bool BeginSynchronization(IUserAgent user, OnlineAccount account);
 
-        void EndSynchronization();
+        IModelSynchronizationState EndSynchronization(IUserAgent user, OnlineAccount account);
+
+        Task<int> TryGetSynchronizationState(IUserAgent user, OnlineAccount account);
 
         Task<SynchronizationChangeset> TryGetChangesetAsync(IUserAgent user, OnlineAccount account);
 

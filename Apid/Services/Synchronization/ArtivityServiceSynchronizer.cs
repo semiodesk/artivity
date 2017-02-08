@@ -83,7 +83,7 @@ namespace Artivity.Apid.Synchronization
             IArtivityServiceSynchronizationClient client = TryGetSynchronizationClient(account);
 
             // Try to begin the synchronization. The server can still reject the sync when another client is currently syncing..
-            if (client.BeginSynchronization())
+            if (client.BeginSynchronization(user, account))
             {
                 try
                 {
@@ -98,7 +98,7 @@ namespace Artivity.Apid.Synchronization
                         _platformProvider.Logger.LogInfo("Server changeset with {0} item(s) at #{1}", serverChangeset.Items.Count(), serverChangeset.Revision);
 
                         // Asynchronously get the changes which are newer than the last client revision (upload).
-                        SynchronizationChangeset clientChangeset = GetChangesetClient(user, account);
+                        SynchronizationChangeset clientChangeset = GetChangesetClient(user, account, serverChangeset.Revision);
 
                         _platformProvider.Logger.LogInfo("Client changeset with {0} item(s) at #{1}", clientChangeset.Items.Count(), clientChangeset.Revision);
 
@@ -123,7 +123,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="account">An authorized online account.</param>
         /// <returns>A synchronization changeset on success.</returns>
-        private SynchronizationChangeset GetChangesetClient(Person user, OnlineAccount account)
+        private SynchronizationChangeset GetChangesetClient(Person user, OnlineAccount account, int revision)
         {
             // Get the current model synchronization state for the current user.
             IModelSynchronizationState state = _modelProvider.GetModelSynchronizationState(user);
@@ -136,12 +136,15 @@ namespace Artivity.Apid.Synchronization
                 SELECT DISTINCT ?resource ?resourceType WHERE
                 {
                     ?resource a ?resourceType ; arts:synchronizationState [
-                        arts:lastRemoteRevision @undefined
+                        arts:lastRemoteRevision ?revision
                     ] .
+
+                    FILTER(?revision = @undefined || ?revision > @revision)
                 }
             ");
 
             query.Bind("@undefined", -1);
+            query.Bind("@revision", revision);
 
             // Synchronize agents and non-browsing activites only.
             IModelGroup model = _modelProvider.CreateModelGroup(_modelProvider.Agents, _modelProvider.Activities);
@@ -203,7 +206,7 @@ namespace Artivity.Apid.Synchronization
                 {
                     try
                     {
-                        bool success = false;
+                        bool error = false;
 
                         switch (item.ActionType)
                         {
@@ -213,7 +216,9 @@ namespace Artivity.Apid.Synchronization
 
                                 pullTask.Wait();
 
-                                success = pullTask.Result;
+                                error = !pullTask.Result;
+
+                                _platformProvider.Logger.LogInfo("{0}: <{1}> <{2}> at #{3}", item.ActionType, item.ResourceType, item.ResourceUri, revision);
 
                                 break;
                             }
@@ -223,20 +228,18 @@ namespace Artivity.Apid.Synchronization
 
                                 pushTask.Wait();
 
-                                success = pushTask.Result;
+                                error = !pushTask.Result;
                                 revision = changeset.Revision + 1;
+
+                                _platformProvider.Logger.LogInfo("{0}: <{1}> <{2}>", item.ActionType, item.ResourceType, item.ResourceUri);
 
                                 break;
                             }
                         }
 
-                        if (success)
+                        if (error)
                         {
-                            _platformProvider.Logger.LogInfo("{0}: <{1}> <{2}> at #{3}", item.ActionType, item.ResourceType, item.ResourceUri, revision);
-                        }
-                        else
-                        {
-                            _platformProvider.Logger.LogError("{0}: <{1}> <{2}>", item.ActionType, item.ResourceType, item.ResourceUri);
+                            _platformProvider.Logger.LogError("{0}: <{1}> <{2}>", item.ActionType, item.ResourceType, item.ResourceUri);   
                         }
                     }
                     catch (Exception ex)
@@ -246,18 +249,7 @@ namespace Artivity.Apid.Synchronization
                     }
                 }
 
-                IModelSynchronizationState modelState = _modelProvider.GetModelSynchronizationState(user);
-
-                // Update the server revision for the online account.
-                if (modelState.LastRemoteRevision < revision)
-                {
-                    modelState.LastRemoteRevision = revision;
-                    modelState.Commit();
-                }
-
-                client.EndSynchronization();
-
-                return modelState;
+                return client.EndSynchronization(user, account);
             }
             else
             {
