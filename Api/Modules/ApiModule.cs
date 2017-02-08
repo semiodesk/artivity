@@ -50,13 +50,12 @@ namespace Artivity.Api.Modules
 
         #region Constructors
 
-        public ApiModule(IModelProvider modelProvider, IPlatformProvider platform)
-            : base("/artivity/api/1.0", modelProvider, platform)
+        public ApiModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0", modelProvider, platformProvider)
         {
-            
             Get["/setup"] = parameters =>
             {
-                return Response.AsJsonSync(platform.DidSetupRun);
+                return Response.AsJsonSync(platformProvider.DidSetupRun);
             };
 
             Post["/setup"] = parameters =>
@@ -69,14 +68,14 @@ namespace Artivity.Api.Modules
                 {
                     bool value = Convert.ToBoolean(values["runSetup"]);
 
-                    platform.DidSetupRun = value;
-                    platform.WriteConfig(platform.Config);
+                    platformProvider.DidSetupRun = value;
+                    platformProvider.WriteConfig(platformProvider.Config);
 
                     return HttpStatusCode.OK;
                 }
                 else
                 {
-                    return platform.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
             };
 
@@ -86,7 +85,7 @@ namespace Artivity.Api.Modules
 
                 if (!IsFileUrl(fileUrl))
                 {
-                    return platform.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetUri(new UriRef(fileUrl));
@@ -114,7 +113,7 @@ namespace Artivity.Api.Modules
                     }
                 }
 
-                return platform.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             };
 
             Get["/files/recent"] = parameters =>
@@ -1038,52 +1037,56 @@ namespace Artivity.Api.Modules
         }
 
         #endregion
-    }
 
-    class Influence
-    {
-        [JsonIgnore]
-        public string uri;
+        #region Classes
 
-        public object activity;
+        class Influence
+        {
+            [JsonIgnore]
+            public string uri;
 
-        public object time;
+            public object activity;
 
-        public object type;
+            public object time;
 
-        public object description;
+            public object type;
 
-        public object comment;
+            public object description;
 
-        public object layer;
+            public object comment;
 
-        public object agentColor;
+            public object layer;
 
-        public object x;
+            public object agentColor;
 
-        public object y;
+            public object x;
 
-        public object w;
+            public object y;
 
-        public object h;
+            public object w;
 
-        public object vx;
+            public object h;
 
-        public object vy;
+            public object vx;
 
-        public object vw;
+            public object vy;
 
-        public object vh;
+            public object vw;
 
-        public List<Change> changes = new List<Change>();
-    }
+            public object vh;
 
-    struct Change
-    {
-        public string entity;
+            public List<Change> changes = new List<Change>();
+        }
 
-        public string entityType;
+        struct Change
+        {
+            public string entity;
 
-        public string property;
+            public string entityType;
+
+            public string property;
+        }
+
+        #endregion
     }
 }

@@ -45,11 +45,11 @@ namespace Artivity.Api.IO
     {
         #region Members
 
+        private VirtuosoManager _virtuosoManager;
+
         protected readonly IPlatformProvider PlatformProvider;
 
         protected readonly IModelProvider ModelProvider;
-
-        private VirtuosoManager _virtuosoManager;
 
         public TaskProgressInfo Progress { get; private set; }
 
@@ -158,11 +158,6 @@ namespace Artivity.Api.IO
                 {
                     string sourceFile = Path.Combine(sourceFolder, info.Rendering.Name);
 
-                    if(!File.Exists(sourceFile))
-                    {
-                        continue;
-                    }
-
                     string targetFolder = PlatformProvider.RenderingsFolder.Replace(appFolder.FullName, exportFolder.FullName);
 
                     if (!Directory.Exists(targetFolder))
@@ -170,12 +165,30 @@ namespace Artivity.Api.IO
                         Directory.CreateDirectory(targetFolder);
                     }
 
-                    File.Copy(sourceFile, sourceFile.Replace(sourceFolder, targetFolder), true);
+                    ExportThumbnail(uri, sourceFolder, targetFolder);
 
-                    Progress.Completed++;
+                    if (File.Exists(sourceFile))
+                    {
+                        File.Copy(sourceFile, sourceFile.Replace(sourceFolder, targetFolder), true);
 
-                    RaiseProgressChanged();
+                        Progress.Completed++;
+
+                        RaiseProgressChanged();
+                    }
                 }
+            }
+        }
+
+        private void ExportThumbnail(Uri uri, string sourceFolder, string targetFolder)
+        {
+            string thumbnailName = "thumbnail.png";
+
+            string sourceFile = Path.Combine(sourceFolder, thumbnailName);
+            string targetFile = Path.Combine(targetFolder, thumbnailName);
+
+            if(File.Exists(sourceFile) && !File.Exists(targetFile))
+            {
+                File.Copy(sourceFile, targetFile);
             }
         }
 

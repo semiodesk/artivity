@@ -69,7 +69,7 @@ namespace Artivity.Api.IO
 
             Decompress(importFolder, fileUrl);
 
-            ArchiveManifest manifest = ReadManifest(importFolder);
+            ArchiveManifest manifest = ReadManifestFromDirectory(importFolder);
 
             foreach (Uri entityUri in manifest.ExportedEntites)
             {
@@ -80,6 +80,48 @@ namespace Artivity.Api.IO
             ImportAvatars(appFolder, importFolder);
 
             DeleteImportFolder(importFolder);
+        }
+
+        public ArchiveManifest GetManifest(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentNullException("fileName");
+            }
+
+            if (!File.Exists(fileName))
+            {
+                throw new FileNotFoundException(fileName);
+            }
+
+            using (ZipArchive archive = ZipFile.OpenRead(fileName))
+            {
+                ZipArchiveEntry entry = archive.GetEntry("Manifest.json");
+
+                // Note: JsonConvert.Deserialize threw comment parsing errors on a comment-less document.
+                using (StreamReader reader = new StreamReader(entry.Open()))
+                {
+                    return new JsonSerializer().Deserialize<ArchiveManifest>(new JsonTextReader(reader));
+                }
+            }
+        }
+
+        private ArchiveManifest ReadManifestFromDirectory(DirectoryInfo importFolder)
+        {
+            FileInfo file = new FileInfo(Path.Combine(importFolder.FullName, "Manifest.json"));
+
+            if (file.Exists)
+            {
+                // Note: JsonConvert.Deserialize threw comment parsing errors on a comment-less document.
+                using (TextReader reader = File.OpenText(file.FullName))
+                {
+                    return new JsonSerializer().Deserialize<ArchiveManifest>(new JsonTextReader(reader));
+                }
+            }
+            else
+            {
+                throw new FileNotFoundException(file.FullName);
+            }
         }
 
         private void ImportData(DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
@@ -155,12 +197,14 @@ namespace Artivity.Api.IO
 
         private void ImportRenderings(DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
         {
-            string renderingsApp = _platformProvider.RenderingsFolder;
-            string renderingsSource = _platformProvider.RenderingsFolder;
+            string renderingsSource = _platformProvider.RenderingsFolder.Replace(appFolder.FullName, importFolder.FullName);
 
-            renderingsSource = renderingsSource.Replace(appFolder.FullName, importFolder.FullName);
+            if(!Directory.Exists(renderingsSource))
+            {
+                return;
+            }
 
-            string renderingsTarget = Path.Combine(renderingsApp, FileNameEncoder.Encode(entityUri.AbsoluteUri));
+            string renderingsTarget = Path.Combine(_platformProvider.RenderingsFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri));
 
             if (!Directory.Exists(renderingsTarget))
             {
@@ -204,63 +248,64 @@ namespace Artivity.Api.IO
             Directory.Delete(importFolder.FullName, true);
         }
 
-        private ArchiveManifest ReadManifest(DirectoryInfo importFolder)
+        private void Decompress(DirectoryInfo importFolder, Uri fileUrl)
         {
-            FileInfo file = new FileInfo(Path.Combine(importFolder.FullName, "Manifest.json"));
-
-            if (file.Exists)
+            using (ZipArchive archive = ZipFile.OpenRead(fileUrl.LocalPath))
             {
-                // Note: JsonConvert.Deserialize threw comment parsing errors on a comment-less document.
-                using (TextReader reader = File.OpenText(file.FullName))
+                if (archive == null)
                 {
-                    return new JsonSerializer().Deserialize<ArchiveManifest>(new JsonTextReader(reader));
+                    throw new ArgumentNullException("fileUrl");
                 }
-            }
-            else
-            {
-                throw new FileNotFoundException(file.FullName);
+
+                if (importFolder == null)
+                {
+                    throw new ArgumentNullException("importFolder");
+                }
+
+                if (!importFolder.Exists)
+                {
+                    importFolder.Create();
+                }
+
+                string targetFolder = importFolder.FullName;
+
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    string targetFile = GetEntryTargetFile(entry, targetFolder, true);
+
+                    entry.ExtractToFile(targetFile, false);
+                }
             }
         }
 
-        private void Decompress(DirectoryInfo importFolder, Uri fileUrl)
+        private string GetEntryTargetFile(ZipArchiveEntry entry, string targetFolder, bool createTargetFolder)
         {
-            using (ZipArchive arch = ZipFile.OpenRead(fileUrl.LocalPath))
+            string result = targetFolder;
+
+            string[] path = entry.FullName.Split('\\');
+
+            int i = 0;
+
+            foreach (string dir in path)
             {
-                if (arch == null)
-                    throw new ArgumentNullException("fileUrl");
+                i++;
 
-                if (importFolder == null)
-                    throw new ArgumentNullException("importFolder");
-
-                if (!importFolder.Exists)
-                    importFolder.Create();
-
-                string fullName = importFolder.FullName;
-
-                foreach (var zipEntry in arch.Entries)
+                if (i == path.Length)
                 {
-                    string fullPath = fullName;
+                    break;
+                }
 
-                    var dirPaths = zipEntry.FullName.Split('\\');
+                result = Path.Combine(result, dir);
 
-                    int i = 0;
-                    foreach (var dir in dirPaths)
-                    {
-                        i++;
-                        if (i == dirPaths.Length)
-                            break;
-
-                        fullPath = Path.Combine(fullPath, dir);
-                        Directory.CreateDirectory(fullPath);
-
-                    }
-
-
-                    fullPath = Path.GetFullPath(Path.Combine(fullPath, dirPaths[i - 1]));
-
-                    zipEntry.ExtractToFile(fullPath, false);
+                if (createTargetFolder)
+                {
+                    Directory.CreateDirectory(result);
                 }
             }
+
+            result = Path.GetFullPath(Path.Combine(result, path[i - 1]));
+
+            return result;
         }
 
         #endregion

@@ -53,10 +53,10 @@ namespace Artivity.Api.Modules
 
         #region Constructors
 
-        public ModuleBase(IModelProvider model, IPlatformProvider platform) 
+        public ModuleBase(IModelProvider modelProvider, IPlatformProvider platformProvider) 
         {
-            ModelProvider = model;
-            PlatformProvider = platform;
+            ModelProvider = modelProvider;
+            PlatformProvider = platformProvider;
 
             After.AddItemToEndOfPipeline((ctx) =>
             {
@@ -71,16 +71,11 @@ namespace Artivity.Api.Modules
             });
         }
 
-        public virtual void LoadCurrentUser()
-        {
-            UserModel = ModelProvider.GetActivities();
-        }
-
-        public ModuleBase(string modulePath, IModelProvider model, IPlatformProvider platform)
+        public ModuleBase(string modulePath, IModelProvider modelProvider, IPlatformProvider platformProvider)
             : base(modulePath)
         {
-            ModelProvider = model;
-            PlatformProvider = platform;
+            ModelProvider = modelProvider;
+            PlatformProvider = platformProvider;
             ArtivityModulePath = modulePath;
 
             After.AddItemToEndOfPipeline((ctx) =>
@@ -99,6 +94,11 @@ namespace Artivity.Api.Modules
 		#endregion
 
         #region Methods
+
+        public virtual void LoadCurrentUser()
+        {
+            UserModel = ModelProvider.GetActivities();
+        }
 
         public T Bind<T>(IStore store, RequestStream stream) where T : Resource
         {
