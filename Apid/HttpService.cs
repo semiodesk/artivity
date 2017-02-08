@@ -257,7 +257,6 @@ namespace Artivity.Apid
 
             PlatformProvider.Logger.LogInfo("--- Artivity API Service, Version {0} ---", version);
 
-
             // Make sure the database is started.
             StartDatabase();
 

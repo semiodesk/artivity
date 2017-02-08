@@ -39,9 +39,9 @@ namespace Artivity.Apid.Synchronization
             Revision = state.LastLocalRevision;
         }
 
-        public SynchronizationChangeset(int counter, IEnumerable<SynchronizationChangesetItem> items = null)
+        public SynchronizationChangeset(int revision, IEnumerable<SynchronizationChangesetItem> items = null)
         {
-            Revision = counter;
+            Revision = revision;
 
             if (items != null)
             {
