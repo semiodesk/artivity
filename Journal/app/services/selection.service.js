@@ -1,5 +1,5 @@
 (function () {
-    angular.module('explorerApp').factory('selectionService', selectionService);
+    angular.module('app').factory('selectionService', selectionService);
 
     function selectionService() {
         var t = {

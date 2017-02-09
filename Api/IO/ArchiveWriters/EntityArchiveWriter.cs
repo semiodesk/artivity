@@ -65,6 +65,8 @@ namespace Artivity.Api.IO
                         art:renderedAs / rdfs:label ?file .
 
                     FILTER(@minTime <= ?time) .
+
+                    BIND(@entity AS ?entity)
                 }");
 
             query.Bind("@entity", uri);

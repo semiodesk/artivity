@@ -1,4 +1,4 @@
-var explorerApp = angular.module('explorerApp', [
+var app = angular.module('app', [
 	'ngAnimate',
 	'ngInputModified',
 	'ngRoute',
@@ -11,36 +11,36 @@ var explorerApp = angular.module('explorerApp', [
 	'ngDragDrop'
 ]);
 
-explorerApp.config(['$locationProvider', '$routeProvider',
+app.config(['$locationProvider', '$routeProvider',
 	function ($locationProvider, $routeProvider) {
 		$routeProvider.
 		when('/files', {
-			templateUrl: 'app/partials/file-list.html',
+			templateUrl: 'app/views/file-list/file-list.html',
 			controller: 'FileListController',
 			controllerAs: 't'
 		}).
 		when('/files/view', {
-			templateUrl: 'app/partials/file-view.html',
+			templateUrl: 'app/views/file-view/file-view.html',
 			controller: 'FileViewController',
 			controllerAs: 't'
 		}).
 		when('/settings', {
-			templateUrl: 'app/partials/settings.html',
+			templateUrl: 'app/views/settings/settings.html',
 			controller: 'SettingsController',
 			controllerAs: 't'
 		}).
 		when('/setup', {
-			templateUrl: 'app/partials/setup.html',
+			templateUrl: 'app/views/setup/setup.html',
 			controller: 'SetupController',
 			controllerAs: 't'
 		}).
 		when('/start', {
-			templateUrl: 'app/partials/start.html',
+			templateUrl: 'app/views/start/start.html',
 			controller: 'StartController',
 			controllerAs: 't'
 		}).
 		when('/query', {
-			templateUrl: 'app/partials/query.html',
+			templateUrl: 'app/views/query/query.html',
 			controller: 'QueryController',
 			controllerAs: 't'
 		}).

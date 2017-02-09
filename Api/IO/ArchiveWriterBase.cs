@@ -152,13 +152,21 @@ namespace Artivity.Api.IO
         {
             foreach(EntityRenderingInfo info in GetRenderings(uri, minTime))
             {
-                string sourceFolder = Path.Combine(PlatformProvider.RenderingsFolder, FileNameEncoder.Encode(info.EntityUri));
+                string entityFolder = FileNameEncoder.Encode(info.EntityUri);
+                string sourceFolder = Path.Combine(PlatformProvider.RenderingsFolder, entityFolder);
 
                 if (Directory.Exists(sourceFolder))
                 {
                     string sourceFile = Path.Combine(sourceFolder, info.Rendering.Name);
 
-                    string targetFolder = PlatformProvider.RenderingsFolder.Replace(appFolder.FullName, exportFolder.FullName);
+                    string[] path = new string[]
+                    {
+                        exportFolder.FullName,
+                        Path.GetFileName(PlatformProvider.RenderingsFolder),
+                        entityFolder
+                    };
+
+                    string targetFolder = string.Join(Path.DirectorySeparatorChar.ToString(), path);
 
                     if (!Directory.Exists(targetFolder))
                     {
@@ -243,7 +251,7 @@ namespace Artivity.Api.IO
         private void WriteManifest(Uri entityUri, DirectoryInfo exportFolder)
         {
             ArchiveManifest manifest = new ArchiveManifest();
-            manifest.FileFormat = "1.0";
+            manifest.FileFormat = "1.1";
             manifest.ExportDate = DateTime.UtcNow;
             manifest.ExportedEntites.Add(entityUri);
 

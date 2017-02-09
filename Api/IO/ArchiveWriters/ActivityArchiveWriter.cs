@@ -67,7 +67,9 @@ namespace Artivity.Api.IO
                         art:renderedAs / rdfs:label ?file .
 
                     FILTER(@minTime <= ?time) .
-                }");
+                }
+                ORDER BY ?entity ?time
+                ");
 
             query.Bind("@activity", uri);
             query.Bind("@minTime", minTime);

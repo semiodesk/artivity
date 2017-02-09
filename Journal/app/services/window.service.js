@@ -1,5 +1,5 @@
 (function () {
-    angular.module('explorerApp').factory('windowService', windowService);
+    angular.module('app').factory('windowService', windowService);
 
     function windowService() {
         const remote = require('electron').remote;
@@ -64,7 +64,7 @@
                     minWidth: 800,
                     height: 600,
                     minHeight: 600,
-                    icon: __dirname + '/img/icon.ico',
+                    icon: __dirname + '/app/resources/images/icon.ico',
                     backgroundColor: '#1D1D1D'
                 };
             }

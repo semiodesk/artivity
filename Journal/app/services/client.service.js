@@ -1,5 +1,5 @@
 (function () {
-	angular.module('explorerApp').factory('clientService', clientService);
+	angular.module('app').factory('clientService', clientService);
 
 	function clientService() {
 		return {

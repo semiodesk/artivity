@@ -1,4 +1,4 @@
-angular.module('explorerApp').config(function ($translateProvider) {
+angular.module('app').config(function ($translateProvider) {
 	$translateProvider.useSanitizeValueStrategy('escape');
 
 	$translateProvider.translations('en', {

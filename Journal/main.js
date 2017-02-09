@@ -16,7 +16,7 @@ app.on('ready', () => {
         minWidth: 800, 
         height: 800,
         minHeight: 600,
-        icon: __dirname + '/img/icon.ico',
+        icon: __dirname + '/app/resources/images/icon.ico',
         backgroundColor: '#1D1D1D'
     };
 
