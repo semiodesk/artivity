@@ -1,5 +1,5 @@
 (function () {
-	angular.module('explorerApp').factory('settingsService', settingsService);
+	angular.module('app').factory('settingsService', settingsService);
 
 	function settingsService() {
 		var controllers = [];

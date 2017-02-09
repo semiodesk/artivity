@@ -28,6 +28,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Newtonsoft.Json;
@@ -74,7 +75,7 @@ namespace Artivity.Api.IO
             foreach (Uri entityUri in manifest.ExportedEntites)
             {
                 ImportData(appFolder, importFolder, entityUri);
-                ImportRenderings(appFolder, importFolder, entityUri);
+                ImportRenderings(appFolder, importFolder, manifest);
             }
 
             ImportAvatars(appFolder, importFolder);
@@ -175,47 +176,78 @@ namespace Artivity.Api.IO
 
             avatarsImport = avatarsImport.Replace(appFolder.FullName, importFolder.FullName);
 
-            if (!Directory.Exists(avatarsImport))
+            if (Directory.Exists(avatarsImport))
             {
-                return;
-            }
-
-            // Copy all the files in the renderings folder to the export directory.
-            foreach (string file in Directory.GetFiles(avatarsImport, "*.jpg"))
-            {
-                FileInfo source = new FileInfo(file);
-                FileInfo target = new FileInfo(Path.Combine(avatarsApp, Path.GetFileName(file)));
-
-                if (target.Exists && (target.Length == source.Length || target.CreationTime >= source.CreationTime))
+                // Copy all the files in the renderings folder to the export directory.
+                foreach (string file in Directory.GetFiles(avatarsImport, "*.jpg"))
                 {
-                    continue;
-                }
+                    FileInfo source = new FileInfo(file);
+                    FileInfo target = new FileInfo(Path.Combine(avatarsApp, Path.GetFileName(file)));
 
-                File.Copy(source.FullName, target.FullName, true);
+                    if (target.Exists && (target.Length == source.Length || target.CreationTime >= source.CreationTime))
+                    {
+                        continue;
+                    }
+
+                    File.Copy(source.FullName, target.FullName, true);
+                }
             }
         }
 
-        private void ImportRenderings(DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
+        private void ImportRenderings(DirectoryInfo appFolder, DirectoryInfo importFolder, ArchiveManifest manifest)
         {
-            string renderingsSource = _platformProvider.RenderingsFolder.Replace(appFolder.FullName, importFolder.FullName);
+            string renderingsFolder = _platformProvider.RenderingsFolder.Replace(appFolder.FullName, importFolder.FullName);
 
-            if(!Directory.Exists(renderingsSource))
+            if (!Directory.Exists(renderingsFolder))
             {
                 return;
             }
 
-            string renderingsTarget = Path.Combine(_platformProvider.RenderingsFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri));
-
-            if (!Directory.Exists(renderingsTarget))
+            if(manifest.FileFormat == "1.0")
             {
-                Directory.CreateDirectory(renderingsTarget);
-            }
+                // Format 1.0 only supports the epxort of one entity per archive.
+                if (manifest.ExportedEntites.Count != 1)
+                {
+                    return;
+                }
 
+                Uri entityUri = manifest.ExportedEntites.First();
+
+                string targetFolder = Path.Combine(_platformProvider.RenderingsFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri));
+
+                if (!Directory.Exists(targetFolder))
+                {
+                    Directory.CreateDirectory(targetFolder);
+                }
+
+                // All renderings for this entity are contained in the 'Renderings' folder.
+                CopyRenderingFiles(renderingsFolder, targetFolder);
+            }
+            else
+            {
+                // In newer versions of the format, all renderings are copied into a sub folder in 'Renderings'
+                // which is named after the entity the renderings belong to.
+                foreach (string sourceDirectory in Directory.GetDirectories(renderingsFolder))
+                {
+                    string renderingsTarget = Path.Combine(_platformProvider.RenderingsFolder, Path.GetFileName(sourceDirectory));
+
+                    if (!Directory.Exists(renderingsTarget))
+                    {
+                        Directory.CreateDirectory(renderingsTarget);
+                    }
+
+                    CopyRenderingFiles(sourceDirectory, renderingsTarget);
+                }
+        }
+        }
+
+        private void CopyRenderingFiles(string sourceDirectory, string targetDirectory)
+        {
             // Copy all the files in the renderings folder to the export directory.
-            foreach (string file in Directory.GetFiles(renderingsSource, "*.png"))
+            foreach (string file in Directory.GetFiles(sourceDirectory, "*.png"))
             {
                 FileInfo source = new FileInfo(file);
-                FileInfo target = new FileInfo(Path.Combine(renderingsTarget, Path.GetFileName(file)));
+                FileInfo target = new FileInfo(Path.Combine(targetDirectory, Path.GetFileName(file)));
 
                 if (target.Exists && (target.Length == source.Length || target.CreationTime >= source.CreationTime))
                 {
@@ -271,9 +303,12 @@ namespace Artivity.Api.IO
 
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
-                    string targetFile = GetEntryTargetFile(entry, targetFolder, true);
+                    string target = GetEntryTargetFile(entry, targetFolder, true);
 
-                    entry.ExtractToFile(targetFile, false);
+                    if (!Directory.Exists(target))
+                    {
+                        entry.ExtractToFile(target, false);
+                    }
                 }
             }
         }
@@ -284,26 +319,17 @@ namespace Artivity.Api.IO
 
             string[] path = entry.FullName.Split('\\');
 
-            int i = 0;
-
-            foreach (string dir in path)
+            for(int i = 0; i < path.Length - 1; i++)
             {
-                i++;
+                result = Path.Combine(result, path[i]);
 
-                if (i == path.Length)
-                {
-                    break;
-                }
-
-                result = Path.Combine(result, dir);
-
-                if (createTargetFolder)
+                if (!Directory.Exists(result) && createTargetFolder)
                 {
                     Directory.CreateDirectory(result);
                 }
             }
 
-            result = Path.GetFullPath(Path.Combine(result, path[i - 1]));
+            result = Path.GetFullPath(Path.Combine(result, entry.Name));
 
             return result;
         }

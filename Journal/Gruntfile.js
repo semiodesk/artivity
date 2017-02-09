@@ -16,7 +16,9 @@ module.exports = function (grunt) {
         'app/classes/*.js',
         'app/services/*.js',
         'app/filters/*.js',
-        'app/partials/**/*.js'
+        'app/directives/**/*.js',
+        'app/dialogs/**/*.js',
+        'app/views/**/*.js'
     ];
 
     // These files are NOT bundled.
@@ -67,7 +69,7 @@ module.exports = function (grunt) {
                     sourceMap: false
                 },
                 files: {
-                    'css/style.css': 'css/style.scss'
+                    'app/style.css': 'app/style.scss'
                 }
             },
             dev: {
@@ -76,7 +78,7 @@ module.exports = function (grunt) {
                     sourceMap: true
                 },
                 files: {
-                    'css/style.css': 'css/style.scss'
+                    'app/style.css': 'app/style.scss'
                 }
             }
         },
@@ -92,7 +94,7 @@ module.exports = function (grunt) {
                 options: {
                     livereload: true
                 },
-                files: ['css/*.scss'],
+                files: ['app/*.scss'],
                 tasks: 'sass:dev'
             }
         },
@@ -133,7 +135,7 @@ module.exports = function (grunt) {
                     dir: '.',
                     out: buildDistDir,
                     platform: 'win32',
-                    icon: 'img/icon.ico',
+                    icon: 'app/resources/images/icon.ico',
                     arch: 'x64',
                     'app-copyright': 'Copyright © 2016 Semiodesk GmbH',
                     win32metadata: {
@@ -154,7 +156,7 @@ module.exports = function (grunt) {
                     dir: '.',
                     out: buildDistDir,
                     platform: 'darwin',
-                    icon: 'img/Icons.icns',
+                    icon: 'app/resources/images/Icons.icns',
                     arch: 'x64'
                 }
             }

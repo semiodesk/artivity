@@ -1,5 +1,5 @@
 (function () {
-    angular.module('explorerApp').factory('syncService', syncService);
+    angular.module('app').factory('syncService', syncService);
 
     function syncService() {
         var serviceUrls = [ 'http://faubulous@localhost:8080/api/1.0/sync'];

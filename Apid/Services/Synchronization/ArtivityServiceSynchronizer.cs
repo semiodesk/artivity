@@ -100,19 +100,28 @@ namespace Artivity.Apid.Synchronization
                         // Asynchronously get the changes which are newer than the last client revision (upload).
                         SynchronizationChangeset clientChangeset = GetChangesetClient(user, account, serverChangeset.Revision);
 
-                        _platformProvider.Logger.LogInfo("Client changeset with {0} item(s) at #{1}", clientChangeset.Items.Count(), clientChangeset.Revision);
+                        _platformProvider.Logger.LogInfo("Client changeset with {0} item(s)", clientChangeset.Items.Count());
 
                         // Merge the two changesets and resolve conflicts.
                         SynchronizationChangeset merged = MergeChangesets(clientChangeset, serverChangeset);
 
-                        // Execute the changeset and sync the resources either with the client or the server.
-                        return TryExecuteChangeset(user, account, merged);
+                        if (merged.Items.Any())
+                        {
+                            // Execute the changeset and sync the resources either with the client or the server.
+                            TryExecuteChangeset(user, account, merged, client);
+                        }
+                        else
+                        {
+                            _platformProvider.Logger.LogInfo("No changes.");
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     _platformProvider.Logger.LogError(ex);
                 }
+
+                return client.EndSynchronization(user, account);
             }
 
             return null;
@@ -192,69 +201,62 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="changeset">A synchronization changeset.</param>
         /// <returns>The number of successfully executed actions. Equals the number of items in the changeset if all actions were successfully executed.</returns>
-        private IModelSynchronizationState TryExecuteChangeset(Person user, OnlineAccount account, SynchronizationChangeset changeset)
+        private bool TryExecuteChangeset(Person user, OnlineAccount account, SynchronizationChangeset changeset, IArtivityServiceSynchronizationClient client)
         {
-            IArtivityServiceSynchronizationClient client = TryGetSynchronizationClient(account);
+            bool success = false;
 
-            if (client != null)
+            int revision = changeset.Revision;
+
+            _platformProvider.Logger.LogInfo("Applying changeset with {0} item(s):", changeset.Items.Count());
+
+            foreach (SynchronizationChangesetItem item in changeset.Items)
             {
-                int revision = changeset.Revision;
-
-                _platformProvider.Logger.LogInfo("Applying changeset with {0} item(s):", changeset.Items.Count());
-
-                foreach (SynchronizationChangesetItem item in changeset.Items)
+                try
                 {
-                    try
+                    switch (item.ActionType)
                     {
-                        bool error = false;
-
-                        switch (item.ActionType)
+                        case SynchronizationActionType.Pull:
                         {
-                            case SynchronizationActionType.Pull:
-                            {
-                                Task<bool> pullTask = client.TryPullAsync(account, item.ResourceUri, item.ResourceType, revision);
+                            Task<bool> pullTask = client.TryPullAsync(account, item.ResourceUri, item.ResourceType, revision);
 
-                                pullTask.Wait();
+                            pullTask.Wait();
 
-                                error = !pullTask.Result;
+                            success = pullTask.Result;
 
-                                _platformProvider.Logger.LogInfo("{0}: <{1}> <{2}> at #{3}", item.ActionType, item.ResourceType, item.ResourceUri, revision);
+                            _platformProvider.Logger.LogInfo("{0}: <{1}> <{2}> at #{3}", item.ActionType, item.ResourceType, item.ResourceUri, revision);
 
-                                break;
-                            }
-                            case SynchronizationActionType.Push:
-                            {
-                                Task<bool> pushTask = client.TryPushAsync(account, item.ResourceUri, item.ResourceType, revision);
-
-                                pushTask.Wait();
-
-                                error = !pushTask.Result;
-                                revision = changeset.Revision + 1;
-
-                                _platformProvider.Logger.LogInfo("{0}: <{1}> <{2}>", item.ActionType, item.ResourceType, item.ResourceUri);
-
-                                break;
-                            }
+                            break;
                         }
-
-                        if (error)
+                        case SynchronizationActionType.Push:
                         {
-                            _platformProvider.Logger.LogError("{0}: <{1}> <{2}>", item.ActionType, item.ResourceType, item.ResourceUri);   
+                            Task<bool> pushTask = client.TryPushAsync(account, item.ResourceUri, item.ResourceType, revision);
+
+                            pushTask.Wait();
+
+                            success = pushTask.Result;
+                            revision = changeset.Revision + 1;
+
+                            _platformProvider.Logger.LogInfo("{0}: <{1}> <{2}>", item.ActionType, item.ResourceType, item.ResourceUri);
+
+                            break;
                         }
                     }
-                    catch (Exception ex)
+
+                    if (!success)
                     {
-                        _platformProvider.Logger.LogError("Caught exception when trying to {0} <{1}> <{2}>:", item.ActionType, item.ResourceUri, item.ResourceType);
-                        _platformProvider.Logger.LogError(ex);
+                        _platformProvider.Logger.LogError("{0}: <{1}> <{2}>", item.ActionType, item.ResourceType, item.ResourceUri);   
                     }
                 }
+                catch (Exception ex)
+                {
+                    success = false;
 
-                return client.EndSynchronization(user, account);
+                    _platformProvider.Logger.LogError("Caught exception when trying to {0} <{1}> <{2}>:", item.ActionType, item.ResourceUri, item.ResourceType);
+                    _platformProvider.Logger.LogError(ex);
+                }
             }
-            else
-            {
-                return null;
-            }
+
+            return success;
         }
 
         /// <summary>
