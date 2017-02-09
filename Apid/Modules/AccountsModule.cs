@@ -491,6 +491,7 @@ namespace Artivity.Api.Modules
                 // Get target account and authorization parameters
                 OnlineAccount account = model.GetResource<OnlineAccount>(accountUri);
 
+                Uri userUri = new UriRef(PlatformProvider.Config.Uid);
                 Uri clientUri = account.ServiceClient.Uri;
                 Uri serviceUrl = account.ServiceUrl.Uri;
 
@@ -512,7 +513,7 @@ namespace Artivity.Api.Modules
                     {
                         session.Progress.CurrentTask = session.Progress.Tasks[0];
 
-                        archiveWriter.Write(entityUri, tempFile, DateTime.MinValue);
+                        archiveWriter.Write(userUri, entityUri, tempFile, DateTime.MinValue);
 
                         session.Progress.CurrentTask = session.Progress.Tasks[1];
 

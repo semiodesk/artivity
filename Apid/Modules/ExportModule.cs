@@ -121,12 +121,14 @@ namespace Artivity.Apid.Modules
         {
             try
             {
+                Uri userUri = new UriRef(PlatformProvider.Config.Uid);
+
                 string targetFile = Path.GetFileNameWithoutExtension(fileName) + ".arta";
                 string targetFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 string targetPath = Path.Combine(targetFolder, targetFile);
 
                 EntityArchiveWriter writer = new EntityArchiveWriter(PlatformProvider, ModelProvider);
-                writer.Write(entityUri, targetPath, minTime);
+                writer.Write(userUri, entityUri, targetPath, minTime);
             }
             catch (Exception ex)
             {

@@ -45,7 +45,7 @@ namespace Artivity.Api.IO
     {
         #region Members
 
-        private VirtuosoManager _virtuosoManager;
+        protected readonly VirtuosoManager VirtuosoManager;
 
         protected readonly IPlatformProvider PlatformProvider;
 
@@ -61,7 +61,8 @@ namespace Artivity.Api.IO
         {
             PlatformProvider = platformProvider;
             ModelProvider = modelProvider;
-            _virtuosoManager = new VirtuosoManager(ModelProvider.NativeConnectionString);
+
+            VirtuosoManager = new VirtuosoManager(ModelProvider.NativeConnectionString);
 
             Progress = new TaskProgressInfo(artf.ExportArchive.Uri);
         }
@@ -70,12 +71,12 @@ namespace Artivity.Api.IO
 
         #region Methods
 
-        public async Task WriteAsync(Uri uri, string targetPath, DateTime minTime)
+        public async Task WriteAsync(Uri user, Uri uri, string targetPath, DateTime minTime)
         {
-            await Task.Run(() => Write(uri, targetPath, minTime));
+            await Task.Run(() => Write(user, uri, targetPath, minTime));
         }
 
-        public void Write(Uri uri, string targetPath, DateTime minTime)
+        public void Write(Uri user, Uri uri, string targetPath, DateTime minTime)
         {
             FileInfo targetFile = new FileInfo(targetPath);
 
@@ -94,7 +95,7 @@ namespace Artivity.Api.IO
 
             ExportData(uri, appFolder, exportFolder, minTime);
             ExportRenderings(uri, appFolder, exportFolder, minTime);
-            ExportAvatars(uri, appFolder, exportFolder);
+            ExportAvatars(uri, appFolder, exportFolder, user);
 
             WriteManifest(uri, exportFolder);
 
@@ -200,7 +201,7 @@ namespace Artivity.Api.IO
             }
         }
 
-        private void ExportAvatars(Uri uri, DirectoryInfo appFolder, DirectoryInfo exportFolder)
+        private void ExportAvatars(Uri uri, DirectoryInfo appFolder, DirectoryInfo exportFolder, Uri user)
         {
             string sourceFolder = PlatformProvider.AvatarsFolder;
             string targetFolder = PlatformProvider.AvatarsFolder.Replace(appFolder.FullName, exportFolder.FullName);
@@ -211,7 +212,7 @@ namespace Artivity.Api.IO
             }
 
             // Export the user avatar picture.
-            string file = Path.Combine(sourceFolder, PlatformProvider.Config.GetUserId() + ".jpg");
+            string file = Path.Combine(sourceFolder, FileNameEncoder.Encode(user.AbsoluteUri) + ".jpg");
 
             if (File.Exists(file))
             {
@@ -225,7 +226,7 @@ namespace Artivity.Api.IO
 
         private void WriteTurtle(ISparqlQuery query, string targetDir, string fileName)
         {
-            IGraph graph = _virtuosoManager.Query(query.ToString()) as IGraph;
+            IGraph graph = VirtuosoManager.Query(query.ToString()) as IGraph;
 
             if (graph != null && !graph.IsEmpty)
             {

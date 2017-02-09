@@ -292,8 +292,9 @@ namespace Artivity.Apid.Accounts
                             }
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        Logger.LogError(ex);
                     }
 
                     Logger.LogInfo("{0} - Requested changeset from {1}", status, url);
@@ -309,8 +310,16 @@ namespace Artivity.Apid.Accounts
 
             switch (type)
             {
-                case ART.Project: return await TryPullProjectAsync(account, uri, revision);
-                case PROV.Activity: return await TryPullActivityAsync(account, uri, revision);
+                case ART.Project:
+                {
+                    return await TryPullProjectAsync(account, uri, revision);
+                }
+                case ART.CreateFile:
+                case ART.EditFile:
+                case PROV.Activity:
+                {
+                    return await TryPullActivityAsync(account, uri, revision);
+                }
             }
 
             return false;
@@ -369,7 +378,92 @@ namespace Artivity.Apid.Accounts
 
         private async Task<bool> TryPullActivityAsync(OnlineAccount account, Uri uri, int revision)
         {
-            return false;
+            // TODO: Copied in large parts from ArtivityCloud server. Share the code.
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            Uri url = new Uri(baseUrl + "/api/1.0/sync/activity?uri=" + uri);
+
+            using (HttpClient client = GetHttpClient(account))
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode && response.Content.Headers.ContentLength > 0)
+                {
+                    // 1. Create a temporary archive file.
+                    string archiveName = FileNameEncoder.Encode(uri.AbsoluteUri) + ".arta";
+
+                    string[] path = new string[] { PlatformProvider.TempFolder, archiveName };
+
+                    string archivePath = string.Join(Path.DirectorySeparatorChar.ToString(), path);
+
+                    FileInfo archive = new FileInfo(archivePath);
+
+                    try
+                    {
+                        // Delete any previous fils, if any.
+                        if (File.Exists(archive.FullName))
+                        {
+                            File.Delete(archive.FullName);
+                        }
+
+                        // 3. Download the file into the temporary archive.
+                        Stream httpStream = await response.Content.ReadAsStreamAsync();
+
+                        using (StreamReader reader = new StreamReader(httpStream))
+                        {
+                            using (FileStream fileStream = File.Create(archive.FullName))
+                            {
+                                httpStream.CopyTo(fileStream);
+
+                                fileStream.Flush();
+                            }
+                        }
+
+                        // 4. Extract and import the archive.
+                        ArchiveReader archiveReader = new ArchiveReader(PlatformProvider, ModelProvider);
+                        archiveReader.Read(archive.FullName);
+
+                        ArchiveManifest manifest = archiveReader.GetManifest(archive.FullName);
+
+                        foreach (Uri entityUri in manifest.ExportedEntites)
+                        {
+                            IModel model = ModelProvider.GetActivities();
+
+                            // Swap the 'local' for 'remote' in the revision property.
+                            SparqlUpdate update = new SparqlUpdate(@"
+                                WITH @model
+                                DELETE { ?state arts:lastLocalRevision ?revision . }
+                                INSERT { ?state arts:lastRemoteRevision ?revision . }
+                                WHERE
+                                {
+                                    @activity arts:synchronizationState ?state .
+                                    ?state arts:lastLocalRevision ?revision .
+                                }
+                            ");
+
+                            update.Bind("@model", model);
+                            update.Bind("@activity", uri);
+
+                            model.ExecuteUpdate(update);
+                        }
+
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        PlatformProvider.Logger.LogError(ex);
+                    }
+                    finally
+                    {
+                        if (File.Exists(archive.FullName))
+                        {
+                            File.Delete(archive.FullName);
+                        }
+                    }
+                }
+
+                return false;
+            }
         }
 
         public async Task<bool> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision)
@@ -447,9 +541,11 @@ namespace Artivity.Apid.Accounts
                         File.Delete(archive.FullName);
                     }
 
+                    Uri userUri = new UriRef(PlatformProvider.Config.Uid);
+
                     ActivityArchiveWriter writer = new ActivityArchiveWriter(PlatformProvider, ModelProvider);
 
-                    await writer.WriteAsync(uri, archive.FullName, DateTime.MinValue);
+                    await writer.WriteAsync(userUri, uri, archive.FullName, DateTime.MinValue);
 
                     using (FileStream stream = File.Open(archive.FullName, FileMode.Open))
                     {

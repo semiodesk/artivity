@@ -75,6 +75,12 @@ namespace Artivity.Api.IO
             if (reader.TokenType == JsonToken.Null) return null;
 
             JObject resourceJson = JObject.Load(reader);
+
+            if(resourceJson["Model"] == null)
+            {
+                return null;
+            }
+
             JObject modelJson = resourceJson["Model"].Value<JObject>();
 
             if (modelJson == null)
