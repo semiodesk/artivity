@@ -213,6 +213,8 @@ namespace Artivity.Apid.Synchronization
             {
                 try
                 {
+                    string message = string.Format("{0}: <{1}> <{2}> ", item.ActionType, item.ResourceType, item.ResourceUri);
+
                     switch (item.ActionType)
                     {
                         case SynchronizationActionType.Pull:
@@ -223,7 +225,10 @@ namespace Artivity.Apid.Synchronization
 
                             success = pullTask.Result;
 
-                            _platformProvider.Logger.LogInfo("{0}: <{1}> <{2}> at #{3}", item.ActionType, item.ResourceType, item.ResourceUri, revision);
+                            if(success)
+                            {
+                                message += "at #" + revision;
+                            }
 
                             break;
                         }
@@ -236,15 +241,17 @@ namespace Artivity.Apid.Synchronization
                             success = pushTask.Result;
                             revision = changeset.Revision + 1;
 
-                            _platformProvider.Logger.LogInfo("{0}: <{1}> <{2}>", item.ActionType, item.ResourceType, item.ResourceUri);
-
                             break;
                         }
                     }
 
-                    if (!success)
+                    if(success)
                     {
-                        _platformProvider.Logger.LogError("{0}: <{1}> <{2}>", item.ActionType, item.ResourceType, item.ResourceUri);   
+                        _platformProvider.Logger.LogInfo(message);
+                    }
+                    else
+                    {
+                        _platformProvider.Logger.LogError(message);   
                     }
                 }
                 catch (Exception ex)

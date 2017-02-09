@@ -4,7 +4,7 @@ const path = require('path');
 const {app, BrowserWindow} = electron;
 
 var userData = app.getPath('userData');
-app.setPath('userData', path.join(userData, 'app'));
+app.setPath('userData', path.join(userData, 'App'));
 
 app.on('ready', () => {
     // NOTE: Setting the background color prevents flickering on resize:

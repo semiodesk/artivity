@@ -80,7 +80,7 @@ namespace Artivity.Apid.Synchronization
         /// <param name="item">A synchronization item.</param>
         public void Add(SynchronizationChangesetItem item)
         {
-            if (item.ResourceUri != null)
+            if (item.ResourceUri != null && !_resources.ContainsKey(item.ResourceUri))
             {
                 _resources.Add(item.ResourceUri, item);
             }

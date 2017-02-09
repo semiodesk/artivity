@@ -39,7 +39,7 @@ namespace Artivity.DataModel
 
         private bool _initialized = false;
 
-        private IModelSynchronizationState _synchronizationState;
+        private Uri _synchronizationStateUrl;
 
         private Dictionary<int, IStore> _stores = new Dictionary<int, IStore>();
 
@@ -111,18 +111,14 @@ namespace Artivity.DataModel
 
                 IModel model = GetDefault();
 
-                UriRef syncUrl = new UriRef(baseUrl + "#sync");
+                _synchronizationStateUrl = new UriRef(baseUrl + "#sync");
 
-                if(model.ContainsResource(syncUrl))
+                if (!model.ContainsResource(_synchronizationStateUrl))
                 {
-                    _synchronizationState = model.GetResource<ModelSynchronizationState>(syncUrl);
-                }
-                else
-                {
-                    _synchronizationState = model.CreateResource<ModelSynchronizationState>(syncUrl);
-                    _synchronizationState.LastLocalRevision = 0;
-                    _synchronizationState.LastRemoteRevision = 0;
-                    _synchronizationState.Commit();
+                    ModelSynchronizationState state = model.CreateResource<ModelSynchronizationState>(_synchronizationStateUrl);
+                    state.LastLocalRevision = 0;
+                    state.LastRemoteRevision = 0;
+                    state.Commit();
                 }
 
                 _initialized = true;
@@ -136,7 +132,7 @@ namespace Artivity.DataModel
             model.Clear();
 
             // Create a default user..
-            Person user = model.CreateResource<Person>(new UriRef(Uid));
+            Person user = model.CreateResource<Person>(new UriRef("urn:art:uid:" + Uid));
             user.Commit();
 
             Association association = model.CreateResource<Association>();
@@ -249,7 +245,7 @@ namespace Artivity.DataModel
 
         public IModelSynchronizationState GetModelSynchronizationState(IUserAgent user)
         {
-            return _synchronizationState;
+            return Store.GetModel(Default).GetResource<ModelSynchronizationState>(_synchronizationStateUrl); ;
         }
 
         public int ReleaseStore()
