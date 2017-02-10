@@ -4,6 +4,8 @@
     artFileService.$inject = ['api'];
 
     function artFileService(api) {
+        var self = this;
+
         var service = {
             loadRecentFiles: loadRecentFiles,
             filterFilesByProject: filterFilesByProject,
@@ -14,7 +16,7 @@
             off: off,
             files: [],
             hasFiles: false,
-            dispatcher: new EventDispatcher()
+            dispatcher: new EventDispatcher(),
         };
 
         return service;

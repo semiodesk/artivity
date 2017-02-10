@@ -28,6 +28,7 @@
 using System;
 using System.Collections.Generic;
 using Semiodesk.Trinity;
+using Newtonsoft.Json;
 
 namespace Artivity.DataModel
 {

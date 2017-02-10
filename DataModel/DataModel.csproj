@@ -41,10 +41,12 @@
     <Compile Include="IViewModule.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />
+    <Compile Include="ObjectModel\Activities\EditFile.cs" />
+    <Compile Include="ObjectModel\Activities\LeaveComment.cs" />
     <Compile Include="ObjectModel\Activities\Publish.cs" />
-    <Compile Include="ObjectModel\Comment.cs" />
     <Compile Include="ObjectModel\Communication.cs" />
     <Compile Include="ObjectModel\Entities\Collection.cs" />
+    <Compile Include="ObjectModel\Entities\Comment.cs" />
     <Compile Include="ObjectModel\Entities\Folder.cs" />
     <Compile Include="ObjectModel\Entities\Image.cs" />
     <Compile Include="ObjectModel\Entities\InformationElement.cs" />
@@ -53,8 +55,12 @@
     <Compile Include="ObjectModel\Entities\RasterImage.cs" />
     <Compile Include="ObjectModel\Entities\VectorImage.cs" />
     <Compile Include="ObjectModel\Entities\Website.cs" />
+    <Compile Include="ObjectModel\FileDataObject\PartialRenderingDataObject.cs" />
     <Compile Include="ObjectModel\FileDataObject\RenderingDataObject.cs" />
     <Compile Include="ObjectModel\HttpAuthenticationProtocol.cs" />
+    <Compile Include="ObjectModel\Influences\Derivation.cs" />
+    <Compile Include="ObjectModel\Influences\Revision.cs" />
+    <Compile Include="ObjectModel\Influences\Save.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
     <Compile Include="ObjectModel\HttpAuthenticationParameter.cs" />
     <Compile Include="ObjectModel\Person.cs" />
@@ -73,7 +79,7 @@
     <Compile Include="ObjectModel\Role.cs" />
     <Compile Include="ObjectModel\Entities\WebDataObject.cs" />
     <Compile Include="ModelProvider.cs" />
-    <Compile Include="ObjectModel\Entity.cs" />
+    <Compile Include="ObjectModel\Entities\Entity.cs" />
     <Compile Include="ObjectModel\ActivityInfluence.cs" />
     <Compile Include="ObjectModel\Generation.cs" />
     <Compile Include="ObjectModel\Influence.cs" />
@@ -81,24 +87,18 @@
     <Compile Include="ObjectModel\EntityInfluence.cs" />
     <Compile Include="ObjectModel\Usage.cs" />
     <Compile Include="ObjectModel\Geometry\Canvas.cs" />
-    <Compile Include="ObjectModel\Geometry\BoundingCube.cs" />
     <Compile Include="ObjectModel\Geometry\BoundingRectangle.cs" />
     <Compile Include="ObjectModel\Geometry\CartesianCoordinateSystem.cs" />
     <Compile Include="ObjectModel\Geometry\CoordinateSystem.cs" />
-    <Compile Include="ObjectModel\Geometry\Cube.cs" />
     <Compile Include="ObjectModel\Geometry\Geometry.cs" />
     <Compile Include="ObjectModel\Geometry\Point.cs" />
     <Compile Include="ObjectModel\Geometry\Rectangle.cs" />
     <Compile Include="ObjectModel\Geometry\Viewport.cs" />
     <Compile Include="ObjectModel\Activities\Browse.cs" />
     <Compile Include="ObjectModel\Activities\CreateFile.cs" />
-    <Compile Include="ObjectModel\Activities\EditFile.cs" />
-    <Compile Include="ObjectModel\Influences\Add.cs" />
     <Compile Include="ObjectModel\Influences\Redo.cs" />
-    <Compile Include="ObjectModel\Influences\Remove.cs" />
     <Compile Include="ObjectModel\Influences\Undo.cs" />
     <Compile Include="ObjectModel\Activities\DeleteFile.cs" />
-    <Compile Include="ObjectModel\Influences\Edit.cs" />
     <Compile Include="ObjectModel\Influences\View.cs" />
     <Compile Include="ObjectModel\Database.cs" />
     <Compile Include="ObjectModel\DatabaseState.cs" />
@@ -107,11 +107,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Ontologies\artf.ttl" />
-    <None Include="Ontologies\nao.rdf">
+    <None Include="Ontologies\art_old.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ontologies\art.ttl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ontologies\artf.ttl" />
+    <None Include="Ontologies\nao.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ontologies\nfo.rdf">

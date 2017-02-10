@@ -261,6 +261,12 @@ namespace Artivity.Apid.Platform
             return FileNameEncoder.Encode(str);
         }
 
+        public string GetRenderOutputPath(UriRef entityUri)
+        {
+            string entityName = FileNameEncoder.Encode(entityUri.AbsoluteUri);
+
+            return Path.Combine(RenderingsFolder, entityName);
+        }
         #endregion
     }
 }

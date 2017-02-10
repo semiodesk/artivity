@@ -24,6 +24,11 @@ explorerApp.config(['$locationProvider', '$routeProvider',
 			controller: 'FileViewController',
 			controllerAs: 't'
 		}).
+		when('/files/preview', {
+			templateUrl: 'app/partials/file-view-simple.html',
+			controller: 'FileViewSimpleController',
+			controllerAs: 't'
+		}).
 		when('/settings', {
 			templateUrl: 'app/partials/settings.html',
 			controller: 'SettingsController',

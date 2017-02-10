@@ -35,8 +35,11 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        [RdfProperty(ART.position)]
-        public Point Position { get; set; }
+        [RdfProperty(ART.x)]
+        public double x { get; set; }
+
+        [RdfProperty(ART.y)]
+        public double y { get; set; }
 
         [RdfProperty(ART.width)]
         public double Width { get; set; }
@@ -49,6 +52,37 @@ namespace Artivity.DataModel
         #region Constructors
 
         public Rectangle(Uri uri) : base(uri) {}
+
+        #endregion
+
+        #region Methods
+
+
+        #endregion
+    }
+
+    [RdfClass(ART.Rectangle)]
+    public class RectangleEntity : Entity
+    {
+        #region Members
+
+        [RdfProperty(ART.x)]
+        public double x { get; set; }
+
+        [RdfProperty(ART.y)]
+        public double y { get; set; }
+
+        [RdfProperty(ART.width)]
+        public double Width { get; set; }
+
+        [RdfProperty(ART.height)]
+        public double Height { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        public RectangleEntity(Uri uri) : base(uri) { }
 
         #endregion
 

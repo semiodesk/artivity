@@ -659,14 +659,14 @@ namespace Artivity.Api.Modules
 
         private Response HasThumbnail(UriRef entityUri)
         {
-            string file = Path.Combine(GetRenderOutputPath(entityUri), "thumbnail.png");
+            string file = Path.Combine(PlatformProvider.GetRenderOutputPath(entityUri), "thumbnail.png");
 
             return Response.AsJson(File.Exists(file));
         }
 
         private Response GetThumbnail(UriRef entityUri)
         {
-            string file = Path.Combine(GetRenderOutputPath(entityUri), "thumbnail.png");
+            string file = Path.Combine(PlatformProvider.GetRenderOutputPath(entityUri), "thumbnail.png");
 
             if (File.Exists(file))
             {
@@ -742,7 +742,7 @@ namespace Artivity.Api.Modules
 
         private Response GetRendering(UriRef uri, string fileName)
         {
-            string file = Path.Combine(GetRenderOutputPath(uri), fileName);
+            string file = Path.Combine(PlatformProvider.GetRenderOutputPath(uri), fileName);
 
             if (File.Exists(file))
             {
@@ -759,16 +759,9 @@ namespace Artivity.Api.Modules
             }
         }
 
-        private string GetRenderOutputPath(UriRef entityUri)
-        {
-            string entityName = FileNameEncoder.Encode(entityUri.AbsoluteUri);
-
-            return Path.Combine(PlatformProvider.RenderingsFolder, entityName);
-        }
-
         private Response GetRenderOutputPath(UriRef entityUri, bool createDirectory = false)
         {
-            string path = GetRenderOutputPath(entityUri);
+            string path = PlatformProvider.GetRenderOutputPath(entityUri);
 
             if (createDirectory && !Directory.Exists(path))
             {

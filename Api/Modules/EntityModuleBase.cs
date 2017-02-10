@@ -119,7 +119,7 @@ namespace Artivity.Api.Modules
                         return Response.AsJson("", HttpStatusCode.InternalServerError);
                     }
 
-                    if (Request.Query["uri"] != null)
+                    if (Request.Query["uri"] != null && !string.IsNullOrEmpty(Request.Query["uri"]))
                     {
                         Uri uri = new Uri(Request.Query["uri"]);
 
@@ -129,7 +129,7 @@ namespace Artivity.Api.Modules
                     }
                     else
                     {
-                        var list = UserModel.GetResources<T>().ToList();
+                        var list = UserModel.GetResources<T>(true).ToList();
                         var resp = Response.AsJsonSync(list);
                         return resp;
                     }

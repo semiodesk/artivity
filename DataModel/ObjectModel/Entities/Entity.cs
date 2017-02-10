@@ -1,4 +1,4 @@
-﻿// LICENSE:
+// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,52 +25,43 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(PROV.Activity)]
-    public class Activity : Resource
-    {
+	[RdfClass(PROV.Entity)]
+	public class Entity : Resource
+	{
 		#region Members
 
-		[RdfProperty(PROV.qualifiedAssociation)]
-		public List<Association> Associations { get; private set; }
+        [JsonIgnore]
+        [RdfProperty(PROV.qualifiedRevision)]
+        public List<Save> Revisions_ { get; set; }
+        public IEnumerable<string> Revisions { get { return from a in Revisions_ select a.Uri.AbsoluteUri; } }
 
-        [RdfProperty(PROV.qualifiedCommunication)]
-        public List<Communication> Communications { get; private set; }
+        [JsonIgnore]
+		[RdfProperty(PROV.specializationOf)]
+		public Entity GenericEntity { get; set; }
 
-        [RdfProperty(PROV.qualifiedUsage)]
-		public List<Usage> Usages { get; private set; }
+        [JsonIgnore]
+		[RdfProperty(PROV.wasRevisionOf)]
+		public Entity RevisedEntity { get; set; }
 
-		[RdfProperty(PROV.invalidated)]
-		public List<Entity> InvalidatedEntities { get; set; }
-
-		[RdfProperty(PROV.generated)]
-		public List<Entity> GeneratedEntities { get; set; }
-
-        [RdfProperty(PROV.used)]
-        public List<Entity> UsedEntities { get; set; }
-
-		[RdfProperty(PROV.startedAtTime)]
-		public DateTime StartTime { get; set; }
-
-		[RdfProperty(PROV.endedAtTime)]
-		public DateTime EndTime { get; set; }
-
-        [RdfProperty(PROV.wasStartedBy)]
-        public Agent StartedBy { get; set; }
+        [JsonIgnore]
+        [RdfProperty(PROV.hadPrimarySource)]
+        public Entity PrimarySource { get; set; }
 
 		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        public Activity(Uri uri) : base(uri) {}
-
-        #endregion
+        public Entity(Uri uri) : base(uri) {}
+        public Entity(string uri) : base(uri) { }
+		#endregion
     }
 }
+

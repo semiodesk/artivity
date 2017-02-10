@@ -23,39 +23,25 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
+using Artivity.Api.Platform;
+using Artivity.DataModel;
+using Nancy;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Artivity.DataModel
+namespace Artivity.Api.Modules
 {
-    [RdfClass(ART.Comment)]
-    public class Comment : Entity
+    public class ImageEntityModule : EntityModuleBase<Image>
     {
-        #region Members
-
-        [RdfProperty(NAO.creator)] // should be in communication and PROV.agent
-        public Agent Author { get; set; }
-
-        [RdfProperty(PROV.atTime)]
-        public DateTime Time { get; set; }
-
-        [RdfProperty(RDFS.comment)]
-        public string Message { get; set; }
-
-        #endregion
-
-        #region Constructors
-
-        public Comment(Uri uri)
-            : base(uri)
+        public ImageEntityModule(IModelProvider modelProvider, IPlatformProvider platformProvider) : 
+            base("/artivity/api/1.0/entity/images", modelProvider, platformProvider)
         {
+
         }
 
-        #endregion
+
     }
 }

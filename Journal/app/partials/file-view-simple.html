@@ -1,0 +1,30 @@
+<div class="layout-root table-layout">
+	<div class="row header">
+		<div class="toolbar">
+			<div class="col">
+				<a class="btn btn-header" href="#/files"><i class="zmdi zmdi-chevron-left"></i></a>
+			</div>
+			<div class="col">
+				<div class="icn" style="width: 32px; height: 32px; margin-left: 5px;">
+					<img ng-src="{{t.agent.iconUrl}}" width="32" height="32" />
+				</div>
+			</div>
+			<div class="col expand">
+				<h5 class="title">{{t.file.label}}</h5>
+			</div>
+			<div class="col">
+				<a id="publish-btn" class="btn btn-header" ng-click="t.publishFile()" uib-tooltip="Publish" tooltip-placement="bottom" tooltip-popup-delay="1000">
+					<i class="zmdi zmdi-hc-fw zmdi-cloud-upload"></i>
+				</a>
+			</div>
+			<div class="col">
+				<a id="export-btn" class="btn btn-header" ng-click="t.exportFile()" uib-tooltip="Export" tooltip-placement="bottom" tooltip-popup-delay="1000">
+					<i class="zmdi zmdi-hc-fw zmdi-archive"></i>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="row expand" id="content">
+		<art-file-view-simple file="{{t.entity.uri}}"></art-file-view-simple>
+	</div>
+</div>

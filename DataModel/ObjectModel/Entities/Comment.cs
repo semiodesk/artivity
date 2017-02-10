@@ -25,19 +25,37 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using System;
 using Semiodesk.Trinity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.BoundingCube)]
-    public class BoundingCube : Cube
+    [RdfClass(ART.Comment)]
+    public class Comment : Entity
     {
+        #region Members
+
+        [RdfProperty(RDFS.comment)]
+        public string Message { get; set; }
+
+        [RdfProperty(PROV.hadActivity)]
+        public LeaveComment Activity { get; set; }
+
+        [RdfProperty(ART.refersTo)]
+        public EntityInfluence RefersTo { get; set; }
+        
+        #endregion
+
         #region Constructors
 
-        public BoundingCube(Uri uri) : base(uri) {}
+        public Comment(Uri uri)
+            : base(uri)
+        {
+        }
 
         #endregion
     }
 }
-

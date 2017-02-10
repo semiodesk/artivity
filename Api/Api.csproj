@@ -67,6 +67,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modules\CommentModule.cs" />
+    <Compile Include="Modules\DerivationModule.cs" />
+    <Compile Include="Modules\ImageModule.cs" />
+    <Compile Include="Modules\ImageEntityModule.cs" />
     <Compile Include="Platform\IThumbnailProvider.cs" />
     <Compile Include="IO\ArchiveManifest.cs" />
     <Compile Include="IO\ArchiveManifestCreator.cs" />
