@@ -50,6 +50,9 @@ namespace Artivity.DataModel
         [RdfProperty(NIE.modified)]
         public DateTime ModificationDate { get; set; }
 
+        [RdfProperty(ART.deleted)]
+        public DateTime DeletionDate { get; set; }
+
         [RdfProperty(ARTS.synchronizationState), JsonIgnore]
         public ResourceSynchronizationState SynchronizationState { get; set; }
 
@@ -118,15 +121,18 @@ namespace Artivity.DataModel
                 }
                 catch (Exception)
                 {
+                    Console.WriteLine("Caught exception when trying to access sync state of resource {1}", Uri);
+
                     Sanitize();
                 }
 
-                // The resource is flagged as modified. The account synchronizer will update 
-                // the last update counter and the flag when the resource was successfully uploaded.
-                SynchronizationState.LastRemoteRevision = revision;
-                SynchronizationState.Commit();
-
-                Console.WriteLine("Commiting resource {0}, sync state {1}", Uri, SynchronizationState.Uri);
+                if (SynchronizationState != null)
+                {
+                    // The resource is flagged as modified. The account synchronizer will update 
+                    // the last update counter and the flag when the resource was successfully uploaded.
+                    SynchronizationState.LastRemoteRevision = revision;
+                    SynchronizationState.Commit();
+                }
             }
 
             base.Commit();
