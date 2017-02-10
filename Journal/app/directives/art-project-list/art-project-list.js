@@ -48,13 +48,17 @@
 
         function refreshProjectList() {
             projectService.getAll().then(function (list) {
-                t.projectList = list;
+                list = list.filter(function(p) {
+                    return !p.DeletionDate || p.DeletionDate.startsWith("0001-01-01T00:00:00");
+                });
 
                 list.sort(function compare(a, b) {
                     if (a.Name < b.Name) return -1;
                     if (a.Name > b.Name) return 1;
                     return 0;
                 });
+
+                t.projectList = list;
 
                 $scope.$apply();
             });

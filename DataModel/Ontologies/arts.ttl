@@ -5,6 +5,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
+@prefix nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#> .
 @prefix art: <http://w3id.org/art/terms/1.0/> .
 @prefix arts: <http://w3id.org/art/terms/1.0/synchronization/> .
 @prefix geo: <http://www.opengis.net/ont/geosparql#> .

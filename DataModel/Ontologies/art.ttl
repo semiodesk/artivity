@@ -623,6 +623,13 @@ art:executablePath a rdf:Property ;
     rdfs:label "executablePath" ;
     rdfs:domain prov:SoftwareAssociation ;
     rdfs:range xsd:string .
+    
+art:deleted a rdf:Property ;
+    rdfs:label "deleted" ;
+    rdfs:subPropertyOf nie:modified .
+
+nfo:FileDataObject rdfs:subClassOf prov:Entity.
+nfo:WebDataObject rdfs:subClassOf prov:Entity.
 
 art:version a rdf:Property ;
     rdfs:label "version" .
