@@ -76,22 +76,9 @@ namespace Artivity.Api.Modules
 
         #region Methods
 
-        public virtual void EntityCreated(T entity)
-        {}
-
-        public virtual void EntityAboutToBeUpdated(Uri uri)
-        {}
-
-        public virtual void EntityUpdated(T entity)
-        {}
-
-        public virtual void EntityAboutToBeDeleted(Uri uri)
-        {}
-
         private static string GetTypename()
         {
-            Type t = typeof(T);
-            return t.Name;
+            return typeof(T).Name;
         }
 
         protected virtual Uri CreateUri(string guid)
@@ -108,7 +95,7 @@ namespace Artivity.Api.Modules
         {
             if (_retrieve)
             {
-                Get["/"] = Parameters =>
+                Get["/"] = parameters =>
                 {
                     if (PlatformProvider.RequiresAuthentication)
                     {
@@ -119,7 +106,7 @@ namespace Artivity.Api.Modules
 
                     if (UserModel == null)
                     {
-                        return Response.AsJsonSync("", HttpStatusCode.InternalServerError);
+                        return HttpStatusCode.InternalServerError;
                     }
 
                     if (Request.Query["uri"] != null)
@@ -127,14 +114,14 @@ namespace Artivity.Api.Modules
                         Uri uri = new Uri(Request.Query["uri"]);
 
                         T entity = UserModel.GetResource<T>(uri);
-                        var resp = Response.AsJsonSync(entity);
-                        return resp;
+
+                        return Response.AsJsonSync(entity);
                     }
                     else
                     {
                         var list = UserModel.GetResources<T>().ToList();
-                        var resp = Response.AsJsonSync(list);
-                        return resp;
+
+                        return Response.AsJsonSync(list);
                     }
                 };
             }
@@ -142,7 +129,7 @@ namespace Artivity.Api.Modules
             if (_create)
             {
                 // Create a new resource
-                Get["/new"] = Parameters =>
+                Get["/new"] = parameters =>
                 {
                     if (PlatformProvider.RequiresAuthentication)
                     {
@@ -153,21 +140,23 @@ namespace Artivity.Api.Modules
 
                     if (UserModel == null)
                     {
-                        return Response.AsJsonSync("", HttpStatusCode.InternalServerError);
+                        return HttpStatusCode.InternalServerError;
                     }
 
                     Uri uri = CreateUri();
+
                     T entity = UserModel.CreateResource<T>(uri);
-                    EntityCreated(entity);
-                    var resp = Response.AsJsonSync(entity);
-                    return resp;
+
+                    OnEntityCreated(entity);
+
+                    return Response.AsJsonSync(entity);
                 };
             }
 
             if (_update)
             {
                 // Update entity. Check if user should be able to do that
-                Put["/"] = Parameters =>
+                Put["/"] = parameters =>
                 {
                     if (PlatformProvider.RequiresAuthentication)
                     {
@@ -178,26 +167,25 @@ namespace Artivity.Api.Modules
 
                     if (UserModel == null)
                     {
-                        return Response.AsJsonSync("", HttpStatusCode.InternalServerError);
+                        return HttpStatusCode.InternalServerError;
                     }
 
                     Uri uri = new Uri(Request.Query["uri"]);
-                    T entity;
 
-                    EntityAboutToBeUpdated(uri);
-                    entity = Bind<T>(ModelProvider.Store, Request.Body);
-                    
-                    // Test if user is allowed to write into model
+                    OnBeforeEntityUpdated(uri);
+
+                    T entity = Bind<T>(ModelProvider.Store, Request.Body);
                     entity.Commit();
-                    EntityUpdated(entity);
-                    var resp = Response.AsJsonSync(new Dictionary<string, object> { { "success", true } });
-                    return resp;
+
+                    OnEntityUpdated(entity);
+
+                    return Response.AsJsonSync(new { success = true });
                 };
             }
 
             if (_delete)
             {
-                Delete["/"] = Parameters =>
+                Delete["/"] = parameters =>
                 {
                     if (PlatformProvider.RequiresAuthentication)
                     {
@@ -210,16 +198,27 @@ namespace Artivity.Api.Modules
 
                     if (UserModel == null)
                     {
-                        return Response.AsJsonSync("", HttpStatusCode.InternalServerError);
+                        return HttpStatusCode.InternalServerError;
                     }
 
-                    EntityAboutToBeDeleted(uri);
-                    UserModel.DeleteResource(uri);
+                    OnBeforeEntityDeleted(uri);
 
-                    return Response.AsJsonSync(new Dictionary<string, object> { { "success", true } });
+                    IResource resource = UserModel.GetResource(uri);
+                    resource.AddProperty(art.deleted, DateTime.UtcNow);
+                    resource.Commit();
+
+                    return Response.AsJsonSync(new { success = true });
                 };
             }
         }
+
+        public virtual void OnEntityCreated(T entity) { }
+
+        public virtual void OnBeforeEntityUpdated(Uri uri) { }
+
+        public virtual void OnEntityUpdated(T entity) { }
+
+        public virtual void OnBeforeEntityDeleted(Uri uri) { }
 
         #endregion
     }

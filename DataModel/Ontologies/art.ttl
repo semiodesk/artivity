@@ -293,6 +293,10 @@ art:px a rdfs:Class ;
     rdfs:label "px" ;
     rdfs:subClassOf art:LengthUnit .
 
+art:deleted a rdf:Property ;
+	rdfs:label "deleted" ;
+    rdfs:subPropertyOf nie:modified .
+
 nfo:FileDataObject rdfs:subClassOf prov:Entity.
 nfo:WebDataObject rdfs:subClassOf prov:Entity.
 
