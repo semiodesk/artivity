@@ -435,14 +435,22 @@ namespace Artivity.Apid.Accounts
                             IModel model = ModelProvider.GetActivities();
 
                             // Swap the 'local' for 'remote' in the revision property.
+                            // Delete any exisiting remote revision triples.
                             SparqlUpdate update = new SparqlUpdate(@"
                                 WITH @model
-                                DELETE { ?state arts:lastLocalRevision ?revision . }
-                                INSERT { ?state arts:lastRemoteRevision ?revision . }
+                                DELETE
+                                {
+                                    ?state arts:lastRemoteRevision ?remote .
+                                    ?state arts:lastLocalRevision ?local .
+                                }
+                                INSERT
+                                {
+                                    ?state arts:lastRemoteRevision ?local .
+                                }
                                 WHERE
                                 {
                                     @activity arts:synchronizationState ?state .
-                                    ?state arts:lastLocalRevision ?revision .
+                                    ?state arts:lastLocalRevision ?local .
                                 }
                             ");
 

@@ -317,7 +317,16 @@ namespace Artivity.Api.IO
         {
             string result = targetFolder;
 
-            string[] path = entry.FullName.Split('\\');
+            string[] path;
+
+            if (entry.FullName.Contains('\\'))
+            {
+                path = entry.FullName.Split('\\');
+            }
+            else
+            {
+                path = entry.FullName.Split('/');
+            }
 
             if (path.Length > 1)
             {
