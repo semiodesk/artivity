@@ -60,14 +60,23 @@ namespace Artivity.Apid.Synchronization
 
             Person user = model.GetResource<Person>(new UriRef(_platformProvider.Config.Uid));
 
-            foreach (OnlineAccount account in user.Accounts.Where(a => _clients.ContainsKey(a.ServiceClient.Uri)))
-            {
-                IModelSynchronizationState state = TrySynchronize(user, account);
+            IEnumerable<OnlineAccount> accounts = user.Accounts.Where(a => _clients.ContainsKey(a.ServiceClient.Uri));
 
-                if (state != null)
+            if (accounts.Any())
+            {
+                foreach (OnlineAccount account in accounts)
                 {
-                    result.Add(state);
+                    IModelSynchronizationState state = TrySynchronize(user, account);
+
+                    if (state != null)
+                    {
+                        result.Add(state);
+                    }
                 }
+            }
+            else
+            {
+                _platformProvider.Logger.LogInfo("No synchronizable account found.");
             }
 
             return result;
