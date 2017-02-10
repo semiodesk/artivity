@@ -107,8 +107,8 @@ namespace Artivity.Api.IO
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
-                    ?file
                     @activity
+                    ?file
                     ?influence
                     ?entity
                     ?undo
@@ -124,8 +124,6 @@ namespace Artivity.Api.IO
 
                   FILTER(@minTime <= ?startTime) .
 
-                  ?entity nie:isStoredAs ?file .
-
                   ?influence prov:activity | prov:hadActivity @activity .
 
                   OPTIONAL
@@ -133,6 +131,7 @@ namespace Artivity.Api.IO
                      ?influence art:renderedAs ?render .
 
                      OPTIONAL { ?render art:region ?renderRegion . }
+                     OPTIONAL { ?render art:renderedLayer ?layer . }
                   }
 
                   OPTIONAL { ?influence art:hadViewport ?viewport . }
