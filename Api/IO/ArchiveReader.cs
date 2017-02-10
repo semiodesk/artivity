@@ -319,17 +319,25 @@ namespace Artivity.Api.IO
 
             string[] path = entry.FullName.Split('\\');
 
-            for(int i = 0; i < path.Length - 1; i++)
+            if (path.Length > 1)
             {
-                result = Path.Combine(result, path[i]);
-
-                if (!Directory.Exists(result) && createTargetFolder)
+                for (int i = 0; i < path.Length - 1; i++)
                 {
-                    Directory.CreateDirectory(result);
+                    result = Path.Combine(result, path[i]);
+
+                    if (!Directory.Exists(result) && createTargetFolder)
+                    {
+                        Directory.CreateDirectory(result);
+                    }
                 }
             }
 
-            result = Path.GetFullPath(Path.Combine(result, entry.Name));
+            if (path.Length > 0)
+            {
+                string fileName = path.Last();
+
+                result = Path.GetFullPath(Path.Combine(result, path.Last()));
+            }
 
             return result;
         }
