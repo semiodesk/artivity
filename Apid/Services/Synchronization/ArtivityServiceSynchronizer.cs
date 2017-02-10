@@ -237,7 +237,7 @@ namespace Artivity.Apid.Synchronization
 
                             if(success)
                             {
-                                message += "at #" + revision;
+                                message += "at #" + item.Revision;
                             }
 
                             break;
