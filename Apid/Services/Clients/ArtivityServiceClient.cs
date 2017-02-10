@@ -231,15 +231,22 @@ namespace Artivity.Apid.Accounts
 
                 using (HttpClient client = GetHttpClient(account))
                 {
-                    HttpResponseMessage response = await client.GetAsync(url);
+                    try
+                    {
+                        HttpResponseMessage response = await client.GetAsync(url);
 
-                    string json = await response.Content.ReadAsStringAsync();
+                        string json = await response.Content.ReadAsStringAsync();
 
-                    dynamic data = JsonConvert.DeserializeObject(json);
+                        dynamic data = JsonConvert.DeserializeObject(json);
 
-                    int revision = data.revision;
+                        int revision = data.revision;
 
-                    return revision;
+                        return revision;
+                    }
+                    catch(Exception ex)
+                    {
+                        Logger.LogError(ex);
+                    }
                 }
             }
 
