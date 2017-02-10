@@ -79,7 +79,7 @@ namespace Artivity.Apid.Synchronization
             }
             else
             {
-                _platformProvider.Logger.LogInfo("No synchronizable account found.");
+                _logger.LogInfo("Requested synchronization but no synchronizable account was found.");
             }
 
             return result;
