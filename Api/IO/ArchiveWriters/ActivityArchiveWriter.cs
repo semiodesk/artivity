@@ -126,6 +126,8 @@ namespace Artivity.Api.IO
 
                   ?influence prov:activity | prov:hadActivity @activity .
 
+                  OPTIONAL { ?entity nie:isStoredAs ?file . }
+
                   OPTIONAL
                   {
                      ?influence art:renderedAs ?render .
