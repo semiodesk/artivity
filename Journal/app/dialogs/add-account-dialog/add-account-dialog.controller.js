@@ -17,6 +17,11 @@
         t.selectedClient = null;
 
         t.selectClient = function (client) {
+            // On macOS the Mono serializes the URIs differently - of course - and appends a trailing slash.. :/
+            if(client.Uri.endsWith('/')) {
+                client.Uri = client.Uri.slice(0, -1);
+            }
+
             t.title = ($filter('translate')('SETTINGS.ACCOUNTS.CONNECT_DIALOG.TITLE_X')).replace('{0}', client.Title);
             t.selectedClient = client;
             t.parameter = {
@@ -25,7 +30,7 @@
             };
 
             // TODO: Remove hard-wiring. Receive presets and target sites from client.
-            if (client.Uri === 'http://orcid.org') {
+            if (client.Uri.startsWith === 'http://orcid.org') {
                 t.parameter.presetId = 'orcid.org';
 
                 t.connectAccount(t.selectedClient);
