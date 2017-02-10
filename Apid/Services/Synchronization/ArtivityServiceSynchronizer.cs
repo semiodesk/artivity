@@ -19,6 +19,8 @@ namespace Artivity.Apid.Synchronization
 
         private readonly IModelProvider _modelProvider;
 
+        private readonly ILogger _logger;
+
         // Maps service client URIs to corresponding handlers for retrieving synchronization changesets from remote services.
         private readonly Dictionary<UriRef, IArtivityServiceSynchronizationClient> _clients = new Dictionary<UriRef, IArtivityServiceSynchronizationClient>();
 
@@ -28,8 +30,9 @@ namespace Artivity.Apid.Synchronization
 
         public ArtivityServiceSynchronizer(IModelProvider modelProvider, IPlatformProvider platformProvider)
         {
-            _platformProvider = platformProvider;
             _modelProvider = modelProvider;
+            _platformProvider = platformProvider;
+            _logger = platformProvider.Logger;
         }
 
         #endregion
@@ -87,20 +90,18 @@ namespace Artivity.Apid.Synchronization
             {
                 try
                 {
-                    IModelSynchronizationState modelState = _modelProvider.GetModelSynchronizationState(user);
-
                     // Asynchronously get the changes which are newer than the last known remote revision (download).
                     SynchronizationChangeset serverChangeset = TryGetChangesetServer(user, account, client);
 
                     // The remote server was not available or some other error occured.
                     if (serverChangeset != null)
                     {
-                        _platformProvider.Logger.LogInfo("Server changeset with {0} item(s) at #{1}", serverChangeset.Items.Count(), serverChangeset.Revision);
+                        _logger.LogInfo("Server changeset with {0} item(s) at #{1}", serverChangeset.Items.Count(), serverChangeset.Revision);
 
                         // Asynchronously get the changes which are newer than the last client revision (upload).
                         SynchronizationChangeset clientChangeset = GetChangesetClient(user, account, serverChangeset.Revision);
 
-                        _platformProvider.Logger.LogInfo("Client changeset with {0} item(s)", clientChangeset.Items.Count());
+                        _logger.LogInfo("Client changeset with {0} item(s)", clientChangeset.Items.Count());
 
                         // Merge the two changesets and resolve conflicts.
                         SynchronizationChangeset merged = MergeChangesets(clientChangeset, serverChangeset);
@@ -112,13 +113,13 @@ namespace Artivity.Apid.Synchronization
                         }
                         else
                         {
-                            _platformProvider.Logger.LogInfo("No changes.");
+                            _logger.LogInfo("No changes.");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    _platformProvider.Logger.LogError(ex);
+                    _logger.LogError(ex);
                 }
 
                 return client.EndSynchronization(user, account);
@@ -175,7 +176,7 @@ namespace Artivity.Apid.Synchronization
                 }
                 else
                 {
-                    _platformProvider.Logger.LogDebug("Invalid bindings: {0} {1}", resource, resourceType);
+                    _logger.LogDebug("Invalid bindings: {0} {1}", resource, resourceType);
                 }
             }
 
@@ -207,7 +208,7 @@ namespace Artivity.Apid.Synchronization
 
             int revision = changeset.Revision;
 
-            _platformProvider.Logger.LogInfo("Applying changeset with {0} item(s):", changeset.Items.Count());
+            _logger.LogInfo("Applying changeset with {0} item(s):", changeset.Items.Count());
 
             foreach (SynchronizationChangesetItem item in changeset.Items)
             {
@@ -258,8 +259,8 @@ namespace Artivity.Apid.Synchronization
                 {
                     success = false;
 
-                    _platformProvider.Logger.LogError("Caught exception when trying to {0} <{1}> <{2}>:", item.ActionType, item.ResourceUri, item.ResourceType);
-                    _platformProvider.Logger.LogError(ex);
+                    _logger.LogError("Caught exception when trying to {0} <{1}> <{2}>:", item.ActionType, item.ResourceUri, item.ResourceType);
+                    _logger.LogError(ex);
                 }
             }
 
@@ -325,7 +326,7 @@ namespace Artivity.Apid.Synchronization
             }
             else
             {
-                _platformProvider.Logger.LogError("No synchronization client registered with id {0}", clientUri);
+                _logger.LogError("No synchronization client registered with id {0}", clientUri);
 
                 return null;
             }
