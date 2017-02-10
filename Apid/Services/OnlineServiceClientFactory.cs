@@ -25,6 +25,9 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Platform;
+using Artivity.Apid.Synchronization;
+using Artivity.DataModel;
 using Nancy;
 using Semiodesk.Trinity;
 using System;
@@ -52,6 +55,11 @@ namespace Artivity.Apid.Accounts
         /// </summary>
         private static readonly Dictionary<Uri, IOnlineServiceClient> _clients = new Dictionary<Uri, IOnlineServiceClient>();
 
+        /// <summary>
+        /// The default logger.
+        /// </summary>
+        private static readonly Logger _logger = new Logger();
+
         #endregion
 
         #region Methods
@@ -59,12 +67,13 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// Initialize the factory class by registering all known online service clients.
         /// </summary>
-        public static void Initialize()
+        public static void Initialize(IModelProvider modelProvider, IPlatformProvider platformProvider, IArtivityServiceSynchronizationProvider syncProvider)
         {
             if (IsInitialized) return;
 
-            OnlineServiceClientFactory.RegisterClient(new EPrintsServiceClient());
-            OnlineServiceClientFactory.RegisterClient(new OrcidServiceClient());
+            OnlineServiceClientFactory.RegisterClient(new ArtivityServiceClient(modelProvider, platformProvider, syncProvider));
+            OnlineServiceClientFactory.RegisterClient(new EPrintsServiceClient(modelProvider, platformProvider));
+            OnlineServiceClientFactory.RegisterClient(new OrcidServiceClient(modelProvider, platformProvider));
 
             IsInitialized = true;
         }
@@ -77,14 +86,14 @@ namespace Artivity.Apid.Accounts
         {
             Uri uri = client.Uri;
 
-            if(_clients.ContainsKey(client.Uri))
+            if(_clients.ContainsKey(uri))
             {
                 string message = string.Format("Identifier {0} already registered by client {1}", uri, _clients[uri]);
 
                 throw new DuplicateKeyException(message);
             }
 
-            //PlatformProvider.Logger.LogInfo("Registered online account client {0}", uri);
+            _logger.LogInfo("Registered service client <{0}>", uri);
 
             _clients[uri] = client;
         }
@@ -96,10 +105,52 @@ namespace Artivity.Apid.Accounts
         {
             if (!IsInitialized)
             {
-                Initialize();
+                throw new Exception("Factory is not initialized.");
             }
 
             return _clients.Values;
+        }
+
+        /// <summary>
+        /// Enumerates all registered online service clients of a given type.
+        /// </summary>
+        /// <param name="uri">URI of the feature.</param>
+        /// <returns>An enumeration of all clients with the given feature, if any.</returns>
+        public static IEnumerable<IOnlineServiceClient> GetRegisteredClients<T>() where T : IOnlineServiceClient
+        {
+            if (!IsInitialized)
+            {
+                throw new Exception("Factory is not initialized.");
+            }
+
+            foreach (IOnlineServiceClient client in _clients.Values)
+            {
+                if(client is T)
+                {
+                    yield return client;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Enumerates all registered online service clients with a given feature.
+        /// </summary>
+        /// <param name="uri">URI of the feature.</param>
+        /// <returns>An enumeration of all clients with the given feature, if any.</returns>
+        public static IEnumerable<IOnlineServiceClient> GetRegisteredClientsWithFeature(Resource feature)
+        {
+            if (!IsInitialized)
+            {
+                throw new Exception("Factory is not initialized.");
+            }
+
+            foreach(IOnlineServiceClient client in _clients.Values)
+            {
+                if(client.ClientFeatures.Any(f => f.Uri == feature.Uri))
+                {
+                    yield return client;
+                }
+            }
         }
 
         /// <summary>
@@ -128,7 +179,7 @@ namespace Artivity.Apid.Accounts
         {
             if (!IsInitialized)
             {
-                Initialize();
+                throw new Exception("Factory is not initialized.");
             }
 
             if (_clients.Any(x => x.Key == uri))

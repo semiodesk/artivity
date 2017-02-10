@@ -27,6 +27,7 @@
 
 using Artivity.Api;
 using Artivity.Api.Helpers;
+using Artivity.Api.Platform;
 using Artivity.Apid.Protocols.Authentication;
 using Artivity.DataModel;
 using Nancy;
@@ -43,10 +44,17 @@ namespace Artivity.Apid.Accounts
     {
         #region Members
 
+        [JsonIgnore]
+        protected ILogger Logger { get; set; }
+
+        protected IPlatformProvider PlatformProvider { get; set; }
+
+        protected IModelProvider ModelProvider { get; set; }
+
         /// <summary>
         /// Gets the Uniform Resource Identifier.
         /// </summary>
-        public Uri Uri { get; protected set; }
+        public UriRef Uri { get; protected set; }
 
         /// <summary>
         /// Gets the title of the online service.
@@ -61,7 +69,7 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// Gets a list of supported client features.
         /// </summary>
-        public List<Resource> Features { get; set; }
+        public List<Resource> ClientFeatures { get; set; }
 
         /// <summary>
         /// Gets a list of HTTP authentication parameter presets.
@@ -82,27 +90,27 @@ namespace Artivity.Apid.Accounts
         /// <summary>
         /// Get information about the current client operation.
         /// </summary>
-        public object State { get; set; }
+        public object TaskState { get; set; }
 
         /// <summary>
         /// Get information about the current client operation progress.
         /// </summary>
-        public TaskProgressInfo Progress { get; protected set; }
-
-        [JsonIgnore]
-        protected ILogger Logger { get; set; }
+        public TaskProgressInfo TaskProgress { get; protected set; }
 
         #endregion
 
         #region Constructors
 
-        public OnlineServiceClientBase(Uri uri)
+        public OnlineServiceClientBase(UriRef uri, IModelProvider modelProvider, IPlatformProvider platformProvider)
         {
             Uri = uri;
+            PlatformProvider = platformProvider;
+            ModelProvider = modelProvider;
+            ClientFeatures = new List<Resource>();
             Presets = new List<HttpAuthenticationParameterSet>();
-            Features = new List<Resource>();
             SupportedAuthenticationClients = new List<IHttpAuthenticationClient>();
-            Progress = new TaskProgressInfo();
+            TaskProgress = new TaskProgressInfo();
+            Logger = new Logger();
         }
 
         #endregion
@@ -190,6 +198,7 @@ namespace Artivity.Apid.Accounts
         /// Install an authenticated online account into the given model.
         /// </summary>
         /// <param name="model">The model in which the account should be created.</param>
+        /// <param name="data">Optional request data specific for the account provider.</param>
         /// <returns>A newly created instance of the <c>OnlineAccount</c> class.</returns>
         public OnlineAccount InstallAccount(IModel model)
         {
@@ -200,11 +209,22 @@ namespace Artivity.Apid.Accounts
                 return null;
             }
 
+            // Associate the account with the user.
+            Person user = model.GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
+
+            if (user == null)
+            {
+                Logger.LogError("Unable to retrieve user agent.");
+
+                return null;
+            }
+
             // Create the online account.
             UriRef accountUri = new UriRef(GetAccountUri());
 
             // Check if there is already an account with the given ID.
-            ISparqlQuery query = new SparqlQuery(@"ask where { ?account foaf:accountName @id }");
+            ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @user foaf:account / foaf:accountName @id }");
+            query.Bind("@user", user);
             query.Bind("@id", accountUri.AbsoluteUri);
 
             ISparqlQueryResult result = model.ExecuteQuery(query);
@@ -220,9 +240,21 @@ namespace Artivity.Apid.Accounts
             Logger.LogInfo("Creating account: {0}", accountUri);
 
             // Set the creation and modification date.
+            OnlineAccount account;
+            
+            if(model.ContainsResource(accountUri))
+            {
+                // If there is already an account with the given URI, update it.
+                account = model.GetResource<OnlineAccount>(accountUri);
+            }
+            else
+            {
+                // Otherwise create a new account.
+                account = model.CreateResource<OnlineAccount>(accountUri);
+            }
+
             DateTime now = DateTime.UtcNow;
 
-            OnlineAccount account = model.CreateResource<OnlineAccount>(accountUri);
             account.Id = accountUri.AbsoluteUri;
             account.Title = GetAccountTitle();
             account.Description = GetAccountDescription();
@@ -249,15 +281,6 @@ namespace Artivity.Apid.Accounts
                 }
             }
 
-            Person user = model.GetResources<Person>().FirstOrDefault();
-
-            if (user == null)
-            {
-                Logger.LogError("Unable to retrieve user agent.");
-
-                return null;
-            }
-
             if(!account.IsSynchronized)
             {
                 account.Commit();
@@ -271,8 +294,15 @@ namespace Artivity.Apid.Accounts
                 user.Commit();
             }
 
+            OnAccountInstalled(user, account);
+
             return account;
         }
+
+        /// <summary>
+        /// Invoked when a new account was successfully created and installed in the database.
+        /// </summary>
+        protected virtual void OnAccountInstalled(Person user, OnlineAccount account) { }
 
         /// <summary>
         /// Gets the account identifier.

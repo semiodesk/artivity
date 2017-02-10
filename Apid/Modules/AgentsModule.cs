@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api;
 using Artivity.Api.Modules;
 using Artivity.Api.Parameters;
 using Artivity.Api.Platform;
@@ -43,6 +44,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
 using Newtonsoft.Json;
+using Artivity.Apid.Accounts;
 
 namespace Artivity.Apid.Modules
 {
@@ -56,8 +58,8 @@ namespace Artivity.Apid.Modules
 
         #region Constructors
 
-        public AgentsModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform)
-            : base("/artivity/api/1.0/agents", modelProvider, platform)
+        public AgentsModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/agents", modelProvider, platformProvider)
         {
             _checker = checker;
 
@@ -145,7 +147,7 @@ namespace Artivity.Apid.Modules
 
             Post["/user"] = parameters =>
             {
-                return SetUserAgent(Request.Body);
+                return UpdateUserAgent(Request.Body);
             };
 
             Get["/user/photo"] = parameters =>
@@ -234,6 +236,11 @@ namespace Artivity.Apid.Modules
             {
                 return PostAgentStatus(this.Bind<AgentParameter>());
             };
+
+            Get["/sync"] = parameters =>
+            {
+                return Synchronize();
+            };
         }
 
         #endregion
@@ -244,7 +251,7 @@ namespace Artivity.Apid.Modules
         {
             _checker.CheckPlugins();
 
-            return Response.AsJson(_checker.Plugins);
+            return Response.AsJsonSync(_checker.Plugins);
         }
 
         public Response SetAgents(string data)
@@ -280,7 +287,7 @@ namespace Artivity.Apid.Modules
         {
             _checker.CheckPlugins();
 
-            return Response.AsJson(_checker.Plugins.FirstOrDefault(p => p.Manifest.AgentUri == uri.AbsoluteUri));
+            return Response.AsJsonSync(_checker.Plugins.FirstOrDefault(p => p.Manifest.AgentUri == uri.AbsoluteUri));
         }
 
         private Response GetAgentFromEntity(Uri entityUri)
@@ -304,7 +311,7 @@ namespace Artivity.Apid.Modules
 
             BindingSet bindings = ModelProvider.GetAll().GetBindings(query).FirstOrDefault();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         public Response GetAgentIcon(Uri uri)
@@ -356,7 +363,7 @@ namespace Artivity.Apid.Modules
                 error["type"] = e.GetType().ToString();
                 error["message"] = e.Message;
 
-                return Response.AsJson(error, HttpStatusCode.InternalServerError);
+                return Response.AsJsonSync(error, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -379,67 +386,48 @@ namespace Artivity.Apid.Modules
                 error["type"] = e.GetType().ToString();
                 error["message"] = e.Message;
 
-                return Response.AsJson(error, HttpStatusCode.InternalServerError);
+                return Response.AsJsonSync(error, HttpStatusCode.InternalServerError);
             }
         }
 
         private Response GetUserAgent()
         {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?s ?p ?o
-                WHERE
-                {
-                    ?s ?p ?o .
-
-                    ?a prov:agent ?s .
-                    ?a prov:hadRole art:USER .
-                }
-            ");
-
-            IEnumerable<Person> persons = ModelProvider.GetAgents().GetResources<Person>(query);
-
-            if (persons.Any())
-            {
-                return Response.AsJson(persons.First());
-            }
-            else
-            {
-                Association association = CreateUserAssociation();
-
-                return Response.AsJson(association.Agent);
-            }
-        }
-
-        private Association CreateUserAssociation()
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?s ?p ?o
-                WHERE
-                {
-                    ?s ?p ?o .
-
-                    ?s rdf:type prov:Person .
-                }
-            ");
+            UriRef uid = new UriRef(PlatformProvider.Config.Uid);
 
             IModel model = ModelProvider.GetAgents();
 
-            // See if there is already a person defined..
-            Person user = model.ExecuteQuery(query).GetResources<Person>().FirstOrDefault();
+            if(model.ContainsResource(uid))
+            {
+                return Response.AsJsonSync(model.GetResource<Person>(uid));
+            }
+            else
+            {
+                Association association = CreateUserAssociation(uid);
 
-            if (user == null)
+                return Response.AsJsonSync(association.Agent);
+            }
+        }
+
+        private Association CreateUserAssociation(UriRef uid)
+        {
+            // See if there is already a person defined..
+            Person user;
+
+            IModel model = ModelProvider.GetAgents();
+
+            if (!model.ContainsResource(uid))
             {
                 PlatformProvider.Logger.LogInfo("Creating new user profile..");
 
                 // If not, create one.
-                user = model.CreateResource<Person>();
+                user = model.CreateResource<Person>(uid);
                 user.Commit();
             }
             else
             {
                 PlatformProvider.Logger.LogInfo("Upgrading user profile..");
+
+                user = model.GetResource<Person>(uid);
             }
 
             // Add the user role association.
@@ -467,7 +455,7 @@ namespace Artivity.Apid.Modules
 
             PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetAgentAssociation(UriRef role)
@@ -490,7 +478,7 @@ namespace Artivity.Apid.Modules
 
             PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetAgentAssociation(UriRef role, UriRef agent, string version)
@@ -541,7 +529,7 @@ namespace Artivity.Apid.Modules
 
             PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         protected Response GetAgentStatus()
@@ -575,7 +563,7 @@ namespace Artivity.Apid.Modules
                 // Return disabled state so that the browsers properly indicate disabled logging.
                 p.enabled = false;
 
-                return Response.AsJson(p);
+                return Response.AsJsonSync(p);
             }
 
             IModel model = ModelProvider.GetAgents();
@@ -593,7 +581,7 @@ namespace Artivity.Apid.Modules
 
             PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url + " " + p.agent, "GET", "");
 
-            return Response.AsJson(p);
+            return Response.AsJsonSync(p);
         }
 
         protected Response PostAgentStatus(AgentParameter p)
@@ -605,7 +593,7 @@ namespace Artivity.Apid.Modules
                     PlatformProvider.Logger.LogError(HttpStatusCode.BadRequest, "Invalid value for parameter 'agent': {0}", p.agent);
 
                     // Return disabled state so that the browsers properly indicate disabled logging.
-                    return Response.AsJson(new AgentParameter() { agent = p.agent, enabled = false });
+                    return Response.AsJsonSync(new AgentParameter() { agent = p.agent, enabled = false });
                 }
 
                 IModel model = ModelProvider.GetAgents();
@@ -628,7 +616,7 @@ namespace Artivity.Apid.Modules
                 PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url + " " + p.agent, "POST", "");
 
                 // We return the request so that the plugin can set the server's enabled status.
-                return Response.AsJson(p);
+                return Response.AsJsonSync(p);
             }
             catch (Exception e)
             {
@@ -636,7 +624,7 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response SetUserAgent(RequestStream stream)
+        private Response UpdateUserAgent(RequestStream stream)
         {
             Person user = Bind<Person>(ModelProvider.Store, stream);
 
@@ -649,10 +637,17 @@ namespace Artivity.Apid.Modules
                     return PlatformProvider.Logger.LogError(HttpStatusCode.BadRequest, data);
                 }
             }
+            
+            if(!string.IsNullOrEmpty(user.Name) && !string.IsNullOrEmpty(user.EmailAddress))
+            {
+                user.Commit();
 
-            user.Commit();
-
-            return HttpStatusCode.OK;
+                return HttpStatusCode.OK;
+            }
+            else
+            {
+                return HttpStatusCode.BadRequest;
+            }
         }
 
         private Response GetUserAgentPhoto()
@@ -727,7 +722,7 @@ namespace Artivity.Apid.Modules
 
         Response GetDirectories()
         {
-            return Response.AsJson(PlatformProvider.Config.SoftwarePaths);
+            return Response.AsJsonSync(PlatformProvider.Config.SoftwarePaths);
         }
 
         Response AddDirectory(Uri url)
@@ -759,6 +754,11 @@ namespace Artivity.Apid.Modules
 
             PlatformProvider.Logger.LogInfo("Removed software agent search path: {0}", url.LocalPath);
 
+            return HttpStatusCode.OK;
+        }
+
+        Response Synchronize()
+        {
             return HttpStatusCode.OK;
         }
 

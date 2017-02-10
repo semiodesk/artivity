@@ -105,11 +105,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\NancyHelpers.cs" />
     <Compile Include="Helpers\ProgressStream.cs" />
     <Compile Include="Helpers\ProgressStreamContent.cs" />
+    <Compile Include="IO\JsonNetBodyDeserializer.cs" />
+    <Compile Include="IO\JsonNetSerializer.cs" />
+    <Compile Include="Modules\SyncModule.cs" />
     <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />
     <Compile Include="Plugins\ProgramInstallationWatchdogFactory.cs" />
     <Compile Include="Protocols\Atom\AtomLink.cs" />
+    <Compile Include="Protocols\Authentication\JwtAuthenticationClient.cs" />
+    <Compile Include="Services\Clients\ArtivityServiceClient.cs" />
     <Compile Include="Services\Clients\EPrintsServiceClient.cs" />
     <Compile Include="Protocols\Authentication\BasicAuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\HttpAuthenticationClientState.cs" />
@@ -117,6 +123,7 @@
     <Compile Include="Protocols\Authentication\OAuth2AuthenticationClient.cs" />
     <Compile Include="Protocols\Authentication\IHttpAuthenticationClient.cs" />
     <Compile Include="Services\IOnlineServicePublishingClient.cs" />
+    <Compile Include="Services\IArtivityServiceSynchronizationClient.cs" />
     <Compile Include="Services\OnlineServiceClientBase.cs" />
     <Compile Include="Services\OnlineServiceClientFactory.cs" />
     <Compile Include="Services\IOnlineServiceClient.cs" />
@@ -162,6 +169,12 @@
     <Compile Include="IO\DefaultFileSystemWatcher.cs" />
     <Compile Include="Modules\ExportModule.cs" />
     <Compile Include="Services\OnlineServiceClientSession.cs" />
+    <Compile Include="Services\IArtivityServiceSynchronizationProvider.cs" />
+    <Compile Include="Services\Synchronization\ArtivityServiceSynchronizer.cs" />
+    <Compile Include="Services\Synchronization\ISynchronizationChangeset.cs" />
+    <Compile Include="Services\Synchronization\SynchronizationActionType.cs" />
+    <Compile Include="Services\Synchronization\SynchronizationChangeset.cs" />
+    <Compile Include="Services\Synchronization\SynchronizationChangesetItem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -174,7 +187,6 @@
     </None>
     <None Include="Plugins\Manifest.json" />
     <None Include="Plugins\Plugins.cd" />
-    <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\user.jpg" />

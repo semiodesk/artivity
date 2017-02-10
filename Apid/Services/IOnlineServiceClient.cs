@@ -46,12 +46,12 @@ namespace Artivity.Apid
         /// <summary>
         /// Gets the Uniform Resource Identifier.
         /// </summary>
-        Uri Uri { get; }
+        UriRef Uri { get; }
 
         /// <summary>
         /// Gets a list of features which are supported by the client.
         /// </summary>
-        List<Resource> Features { get;  }
+        List<Resource> ClientFeatures { get;  }
 
         /// <summary>
         /// Gets a list of supported HTTP authentication methods.
@@ -61,7 +61,7 @@ namespace Artivity.Apid
         /// <summary>
         /// Get information about the current client operations.
         /// </summary>
-        object State { get; set; }
+        object TaskState { get; set; }
 
         #endregion
 

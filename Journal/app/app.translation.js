@@ -1,4 +1,4 @@
-angular.module('explorerApp').config(function ($translateProvider) {
+angular.module('app').config(function ($translateProvider) {
 	$translateProvider.useSanitizeValueStrategy('escape');
 
 	$translateProvider.translations('en', {
@@ -96,6 +96,10 @@ angular.module('explorerApp').config(function ($translateProvider) {
 				TITLE: 'Applications',
 				DESCRIPTION: 'Enable or disable the applications which will log data into Artivity:'
 			}
+		},
+		'http://artivity.online': {
+			'title': 'Artivity',
+			'description': 'Publish your files to an Artivity online account.'
 		},
 		'http://eprints.org': {
 			'title': 'EPrints',

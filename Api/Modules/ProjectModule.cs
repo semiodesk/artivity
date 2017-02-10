@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2017
 
+using Artivity.Api;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
@@ -55,16 +56,18 @@ namespace Artivity.Api.Modules
 
         protected Response AddFileToProject(string projectUri, string fileUri)
         {
-            IModel m = ModelProvider.GetActivities();
-            Project proj = m.GetResource<Project>(new Uri(projectUri));
-            Entity entity = m.GetResource<Entity>(new Uri(fileUri));
+            IModel model = ModelProvider.GetActivities();
+
+            Project proj = model.GetResource<Project>(new Uri(projectUri));
+            Entity entity = model.GetResource<Entity>(new Uri(fileUri));
+
             if (!proj.Members_.Contains(entity))
             {
                 proj.Members_.Add(entity);
                 proj.Commit();
             }
 
-            return Response.AsJson(new Dictionary<string, bool>{ {"success", true}});
+            return Response.AsJsonSync(new Dictionary<string, bool>{ {"success", true}});
         }
     }
 }

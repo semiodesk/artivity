@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api;
 using Artivity.Api.IO;
 using Artivity.Api.Helpers;
 using Artivity.Api.Modules;
@@ -120,12 +121,14 @@ namespace Artivity.Apid.Modules
         {
             try
             {
+                Uri userUri = new UriRef(PlatformProvider.Config.Uid);
+
                 string targetFile = Path.GetFileNameWithoutExtension(fileName) + ".arta";
                 string targetFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 string targetPath = Path.Combine(targetFolder, targetFile);
 
-                ArchiveWriter writer = new ArchiveWriter(PlatformProvider, ModelProvider);
-                writer.Write(entityUri, targetPath, minTime);
+                EntityArchiveWriter writer = new EntityArchiveWriter(PlatformProvider, ModelProvider);
+                writer.Write(userUri, entityUri, targetPath, minTime);
             }
             catch (Exception ex)
             {
@@ -155,7 +158,7 @@ namespace Artivity.Apid.Modules
                 {
                     PlatformProvider.Logger.LogInfo("Started backup task with id: {0}", progress.Id);
 
-                    writer.WriteAsync(targetPath, progress);
+                    writer.Write(targetPath, progress);
                 }
                 catch(Exception ex)
                 {
@@ -164,7 +167,7 @@ namespace Artivity.Apid.Modules
                     throw;
                 }
 
-                return Response.AsJson(progress);
+                return Response.AsJsonSync(progress);
             }
             catch (Exception e)
             {
@@ -178,7 +181,7 @@ namespace Artivity.Apid.Modules
         {
             if(_tasks.ContainsKey(taskId))
             {
-                return Response.AsJson(_tasks[taskId]);
+                return Response.AsJsonSync(_tasks[taskId]);
             }
             else
             {

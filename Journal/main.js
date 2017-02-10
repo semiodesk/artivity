@@ -4,7 +4,7 @@ const path = require('path');
 const {app, BrowserWindow} = electron;
 
 var userData = app.getPath('userData');
-app.setPath('userData', path.join(userData, 'app'));
+app.setPath('userData', path.join(userData, 'App'));
 
 app.on('ready', () => {
     // NOTE: Setting the background color prevents flickering on resize:
@@ -16,7 +16,7 @@ app.on('ready', () => {
         minWidth: 800, 
         height: 800,
         minHeight: 600,
-        icon: __dirname + '/img/icon.ico',
+        icon: __dirname + '/app/resources/images/icon.ico',
         backgroundColor: '#1D1D1D'
     };
 

@@ -51,8 +51,11 @@ namespace Artivity.Apid.Protocols.Authentication
 
         #region Constructors
 
-        public BasicAuthenticationClient()
-            : base("http://localhost:8272/artivity/api/1.0/auth/basic")
+        public BasicAuthenticationClient() : this("http://localhost:8272/artivity/api/1.0/auth/basic")
+        {
+        }
+
+        protected BasicAuthenticationClient(string uri) : base(uri)
         {
             RequiredParameters.Add("url");
             RequiredParameters.Add("username");
@@ -109,7 +112,9 @@ namespace Artivity.Apid.Protocols.Authentication
                 ClientState = HttpAuthenticationClientState.Error;
 
                 if (Logger != null)
+                {
                     Logger.LogError(ex);
+                }
             }
         }
 

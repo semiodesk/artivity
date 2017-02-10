@@ -1,5 +1,5 @@
 (function () {
-	angular.module('explorerApp').factory('updateService', updateService);
+	angular.module('app').factory('updateService', updateService);
 
 	updateService.$inject = ['appService'];
 

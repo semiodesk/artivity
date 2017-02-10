@@ -64,7 +64,13 @@ namespace Artivity.Api
 
             return formatter.FromStream(stream, "application/json");
         }
+
+        public static string ReadAsString(this RequestStream requestStream)
+        {
+            using (var reader = new StreamReader(requestStream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
     }
-
-
 }

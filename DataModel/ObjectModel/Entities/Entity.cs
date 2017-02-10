@@ -34,7 +34,7 @@ using System.Collections.Generic;
 namespace Artivity.DataModel
 {
 	[RdfClass(PROV.Entity)]
-	public class Entity : Resource
+    public class Entity : SynchronizableResource
 	{
 		#region Members
 
@@ -60,7 +60,7 @@ namespace Artivity.DataModel
 		#region Constructors
 
         public Entity(Uri uri) : base(uri) {}
-        public Entity(string uri) : base(uri) { }
+        //public Entity(string uri) : base(uri) { }
 		#endregion
     }
 }

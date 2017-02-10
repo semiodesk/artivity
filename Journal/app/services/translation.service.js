@@ -1,5 +1,5 @@
 (function () {
-    angular.module('explorerApp').factory('translationService', ['$translate', translationService]);
+    angular.module('app').factory('translationService', ['$translate', translationService]);
 
     function translationService(translate) {
         return {

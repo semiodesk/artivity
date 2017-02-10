@@ -28,19 +28,20 @@
 using Artivity.Api.Platform;
 using Artivity.Apid.Modules;
 using Artivity.Apid.Plugins;
+using Artivity.Apid.Synchronization;
 using Artivity.DataModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.Diagnostics;
 using Nancy.Responses;
-using Nancy.TinyIoc;
 using Nancy.Serialization.JsonNet;
+using Nancy.TinyIoc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -58,6 +59,8 @@ namespace Artivity.Apid
 
         public PluginChecker PluginChecker { get; set; }
 
+        public IArtivityServiceSynchronizationProvider SynchronizationProvider { get; set; }
+
         #endregion
 
         #region Methods
@@ -71,23 +74,31 @@ namespace Artivity.Apid
         {
             _container = container;
 
-            if (PlatformProvider != null)
-            {
-                _container.Register(PlatformProvider);
-            }
+            container.Register<JsonNetSerializer>();
 
             if (ModelProvider != null)
             {
                 _container.Register(ModelProvider);
+                _container.Register<IModelProvider>(ModelProvider);
+            }
+
+            if (PlatformProvider != null)
+            {
+                _container.Register(PlatformProvider);
+                _container.Register<IPlatformProvider>(PlatformProvider);
             }
 
             if (PluginChecker != null)
             {
                 _container.Register(PluginChecker);
+                _container.Register<PluginChecker>(PluginChecker);
             }
-                
-            container.Register<JsonNetSerializer>();
 
+            if(SynchronizationProvider != null)
+            {
+                _container.Register(SynchronizationProvider);
+                _container.Register<IArtivityServiceSynchronizationProvider>(SynchronizationProvider);
+            }
         }
             
         protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container, IPipelines pipelines, NancyContext context)
@@ -96,8 +107,8 @@ namespace Artivity.Apid
             pipelines.AfterRequest.AddItemToEndOfPipeline((ctx) =>
             {
                 ctx.Response.WithHeader("Access-Control-Allow-Origin", "*")
-                                .WithHeader("Access-Control-Allow-Methods", "POST,GET")
-                                .WithHeader("Access-Control-Allow-Headers", "Accept, Origin, Content-type");
+                            .WithHeader("Access-Control-Allow-Methods", "POST,GET")
+                            .WithHeader("Access-Control-Allow-Headers", "Accept, Origin, Content-type");
 
             });
             #endif
@@ -173,8 +184,6 @@ namespace Artivity.Apid
                 });
             }
         }
-
-
 
         #endregion
     }

@@ -1,45 +1,83 @@
 (function () {
-	angular.module('explorerApp').factory('fileService', fileService);
+    angular.module('app').factory('fileService', fileService);
 
-	function fileService() {
-		return {
-			getFileName: getFileName,
-			getFileNameWithoutExtension: getFileNameWithoutExtension,
-			getFileExtension: getFileExtension
-		};
+    fileService.$inject = ['api'];
 
-		function getFileName(fileUrl) {
-			var url = fileUrl;
+    function fileService(api) {
+        var service = {
+            loadRecentFiles: loadRecentFiles,
+            filterFilesByProject: filterFilesByProject,
+            removeFilter: removeFilter,
+            mute: mute,
+            unmute: unmute,
+            on: on,
+            off: off,
+            files: [],
+            hasFiles: false,
+            dispatcher: new EventDispatcher()
+        };
 
-			// Remove the anchor at the end, if there is one
-			url = url.substring(0, (url.indexOf("#") == -1) ? url.length : url.indexOf("#"));
+        return service;
 
-			// Remove the query after the file name, if there is one
-			url = url.substring(0, (url.indexOf("?") == -1) ? url.length : url.indexOf("?"));
+        function loadRecentFiles() {
+            api.getRecentFiles().then(function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var file = data[i];
 
-			// Remove everything before the last slash in the path
-			url = url.substring(url.lastIndexOf("/") + 1, url.length);
+                    if (i < service.files.length && service.files[i].uri == file.uri) {
+                        break;
+                    }
 
-			return decodeURIComponent(url);
-		}
+                    service.files.splice(i, 0, file);
+                    service.dispatcher.raise('dataChanged', values);
+                }
 
-		function getFileNameWithoutExtension(fileName) {
-			var components = fileName.split('.');
+                service.hasFiles = data.length > 0;
+            });
+        }
 
-			// Return the file name which does not contain any dot.
-			return components[0];
-		}
+        function clearFiles() {
+            service.files = [];
+            service.dispatcher.raise('dataChanged', values);
+        }
 
-		function getFileExtension(fileName) {
-			var components = fileName.split('.');
+        function removeFilter() {
+            clearFiles();
+            loadRecentFiles();
+        }
 
-			if (components.length == 1) {
-				// Return the file name which does not contain any dot.
-				return components[0];
-			} else {
-				// Return all components which are seperated by a dot. i.e. 'tar.gz'
-				return components.slice(1).join('.');
-			}
-		}
-	}
+        function filterFilesByProject(projectUri) {
+            clearFiles();
+            api.getProjectFiles(projectUri).then(function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var file = data[i];
+
+                    if (i < service.files.length && service.files[i].uri == file.uri) {
+                        break;
+                    }
+
+                    service.files.splice(i, 0, file);
+                    service.dispatcher.raise('dataChanged', values);
+                }
+
+                service.hasFiles = data.length > 0;
+            });
+        }
+
+        function mute() {
+            service.dispatcher.mute();
+        }
+
+        function unmute() {
+            service.dispatcher.unmute();
+        }
+
+        function on(event, callback) {
+            service.dispatcher.on(event, callback);
+        }
+
+        function off(event, callback) {
+            service.dispatcher.off(event, callback);
+        }
+    }
 })();

@@ -26,22 +26,24 @@
 // Copyright (c) Semiodesk GmbH 2015
 
 using Artivity.Api.Platform;
+using Artivity.Apid.Accounts;
 using Artivity.Apid.IO;
 using Artivity.Apid.Platform;
 using Artivity.Apid.Plugins;
 using Artivity.DataModel;
-using Semiodesk.Trinity;
 using Semiodesk.TinyVirtuoso;
+using Semiodesk.Trinity;
 using System;
-using System.IO;
 using System.Configuration;
+using System.IO;
 using System.Threading;
 using Nancy.Hosting.Self;
 using Nancy.TinyIoc;
+using Artivity.Apid.Synchronization;
 
 namespace Artivity.Apid
 {
-    public class HttpService
+    public sealed class HttpService
     {
         #region Members
 
@@ -84,7 +86,7 @@ namespace Artivity.Apid
         /// <summary>
         /// The thread for the HTTP service.
         /// </summary>
-        protected Thread ServiceThread;
+        private Thread _serviceThread;
 
         /// <summary>
         /// The host of the Nancy HTTP service.
@@ -132,9 +134,7 @@ namespace Artivity.Apid
         /// <summary>
         /// Indicates that the service is running.
         /// </summary>
-        public bool IsRunning { get { return ServiceThread != null && ServiceThread.IsAlive; } }
-
-        public IModelProvider ModelProvider { get; set; }
+        public bool IsRunning { get { return _serviceThread != null && _serviceThread.IsAlive; } }
 
         public string Username { get; set; }
 
@@ -150,7 +150,11 @@ namespace Artivity.Apid
 
         private PluginChecker _pluginChecker = null;
 
-        private IProgramInstallationWatchdog _watchdog;
+        private IProgramInstallationWatchdog _installWatchdog;
+
+        private IArtivityServiceSynchronizationProvider _synchronizationProvider;
+
+        private IModelProvider _modelProvider { get; set; }
 
         #endregion
 
@@ -168,6 +172,78 @@ namespace Artivity.Apid
 
         #region Methods
 
+        private string GetConnectionStringFromConfiguration()
+        {
+            string configName = "virt0";
+
+            foreach (ConnectionStringSettings s in ConfigurationManager.ConnectionStrings)
+            {
+                if (s.Name == configName)
+                {
+                    return s.ConnectionString;
+                }
+            }
+
+            return null;
+        }
+
+        private void InitializeOnlineServiceClients()
+        {
+            PlatformProvider.Logger.LogInfo("Initializing online service synchronization..");
+
+            _synchronizationProvider = new ArtivityServiceSynchronizer(_modelProvider, PlatformProvider);
+
+            PlatformProvider.Logger.LogInfo("Initializing online service connectors..");
+
+            OnlineServiceClientFactory.Initialize(_modelProvider, PlatformProvider, _synchronizationProvider);
+        }
+
+        private void InitializeSoftwareAgentPlugins()
+        {
+            PlatformProvider.Logger.LogInfo("Initializing software agent plugins..");
+
+            DirectoryInfo pluginDirectory = new DirectoryInfo(PlatformProvider.PluginDir);
+
+            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(PlatformProvider, _modelProvider, pluginDirectory);
+            _pluginChecker.CheckPlugins();
+
+            if (PlatformProvider.CheckForNewSoftwareAgents)
+            {
+                _installWatchdog = ProgramInstallationWatchdogFactory.CreateWatchdog();
+                _installWatchdog.ProgrammInstalledOrRemoved += OnProgramInstalled;
+
+                StartWatchdog();
+            }
+        }
+
+        private void LoadOntologies()
+        {
+            using (IStore store = StoreFactory.CreateStore(_modelProvider.ConnectionString))
+            {
+                PlatformProvider.Logger.LogInfo("Loading ontologies..");
+
+                FileInfo f = new FileInfo(System.Reflection.Assembly.GetAssembly(typeof(HttpService)).Location);
+
+                var dir = f.Directory;
+
+                string config = Path.Combine(dir.FullName, string.Format("{0}.config", f.Name));
+
+                try
+                {
+                    store.LoadOntologySettings(config, PlatformProvider.OntologyDir);
+                }
+                catch (Exception e)
+                {
+                    PlatformProvider.Logger.LogError(e.Message);
+                }
+            }
+        }
+
+        private void OnProgramInstalled(object sender, EventArgs entry)
+        {
+            _pluginChecker.CheckPlugins(PlatformProvider.AutomaticallyInstallSoftwareAgentPlugins);
+        }
+
         public void Start(bool blocking = true)
         {
             string version = typeof(HttpService).Assembly.GetName().Version.ToString();
@@ -181,7 +257,6 @@ namespace Artivity.Apid
 
             PlatformProvider.Logger.LogInfo("--- Artivity API Service, Version {0} ---", version);
 
-
             // Make sure the database is started.
             StartDatabase();
 
@@ -190,48 +265,33 @@ namespace Artivity.Apid
                 LoadOntologies();
             }
 
+            // Register the available online service connectors.
+            InitializeOnlineServiceClients();
+
             // Test for SoftwareAgents 
             InitializeSoftwareAgentPlugins();
 
             // Start the daemon in a new thread.
-            ServiceThread = new Thread(StartService);
-            ServiceThread.Start();
+            _serviceThread = new Thread(StartService);
+            _serviceThread.Start();
 
             if (blocking)
             {
-                ServiceThread.Join();
+                _serviceThread.Join();
             }
-        }
-
-        public void Stop(bool waitForEnd = true)
-        {
-            PlatformProvider.Logger.LogInfo("Stopping service..");
-
-            StopWatchdog();
-
-            if (ServiceThread != null && ServiceThread.IsAlive)
-            {
-                _wait.Set();
-
-                if (waitForEnd)
-                {
-                    ServiceThread.Join();
-                }
-            }
-
-            StopDatabase();
         }
 
         private void StartService()
         {
             UserConfig userConfig = PlatformProvider.Config;
 
-            ModelProvider.Uid = userConfig.GetUserId();
+            _modelProvider.Uid = userConfig.GetUserId();
 
             Bootstrapper customBootstrapper = new Bootstrapper();
             customBootstrapper.PlatformProvider = PlatformProvider;
-            customBootstrapper.ModelProvider = ModelProvider;
+            customBootstrapper.ModelProvider = _modelProvider;
             customBootstrapper.PluginChecker = _pluginChecker;
+            customBootstrapper.SynchronizationProvider = _synchronizationProvider;
 
             HostConfiguration hostConfig = new HostConfiguration();
             hostConfig.RewriteLocalhost = true;
@@ -252,7 +312,7 @@ namespace Artivity.Apid
                     using (var monitor = FileSystemMonitor.Instance)
                     {
                         // Start the file system change monitor.
-                        monitor.Initialize(ModelProvider, PlatformProvider);
+                        monitor.Initialize(_modelProvider, PlatformProvider);
                         monitor.Enable();
 
                         _wait.WaitOne();
@@ -305,9 +365,9 @@ namespace Artivity.Apid
                 string nativeConnectionString = _virtuosoInstance.GetAdoNetConnectionString();
                 nativeConnectionString = nativeConnectionString.Replace("localhost", "127.0.0.1");
 
-                ModelProvider = ModelProviderFactory.CreateModelProvider(connectionString, nativeConnectionString, uid);
+                _modelProvider = ModelProviderFactory.CreateProvider(connectionString, nativeConnectionString, uid);
 
-                if (!ModelProvider.CheckOntologies())
+                if (!_modelProvider.CheckOntologies())
                 {
                     LoadOntologies();
                 }
@@ -318,12 +378,12 @@ namespace Artivity.Apid
             else
             {
                 // We are running on Linux..
-                ModelProvider = ModelProviderFactory.CreateModelProvider(GetConnectionStringFromConfiguration(), "", uid);
+                _modelProvider = ModelProviderFactory.CreateProvider(GetConnectionStringFromConfiguration(), "", uid);
             }
 
-            if (!ModelProvider.CheckAgents())
+            if (!_modelProvider.CheckAgents())
             {
-                ModelProvider.InitializeAgents();
+                _modelProvider.InitializeAgents();
             }
 
             _started = true;
@@ -331,44 +391,31 @@ namespace Artivity.Apid
             DatabaseStarted.Set();
         }
 
-        private void InitializeSoftwareAgentPlugins()
-        {
-            PlatformProvider.Logger.LogInfo("Initializing software agent plugins..");
-
-            DirectoryInfo pluginDirectory = new DirectoryInfo(PlatformProvider.PluginDir);
-
-            _pluginChecker = PluginCheckerFactory.CreatePluginChecker(PlatformProvider, ModelProvider, pluginDirectory);
-            _pluginChecker.CheckPlugins();
-
-            if (PlatformProvider.CheckForNewSoftwareAgents)
-            {
-                _watchdog = ProgramInstallationWatchdogFactory.CreateWatchdog();
-                _watchdog.ProgrammInstalledOrRemoved += OnProgramInstalled;
-
-                StartWatchdog();
-            }
-        }
-
-        private void OnProgramInstalled(object sender, EventArgs entry)
-        {
-            _pluginChecker.CheckPlugins(PlatformProvider.AutomaticallyInstallSoftwareAgentPlugins);
-        }
-
         private void StartWatchdog()
         {
-            if (_watchdog != null)
+            if (_installWatchdog != null)
             {
-                _watchdog.Start();
+                _installWatchdog.Start();
             }
         }
 
-        private void StopWatchdog()
+        public void Stop(bool waitForEnd = true)
         {
-            if (_watchdog != null) 
+            PlatformProvider.Logger.LogInfo("Stopping service..");
+
+            StopWatchdog();
+
+            if (_serviceThread != null && _serviceThread.IsAlive)
             {
-                _watchdog.Stop();
-                _watchdog.Dispose();
+                _wait.Set();
+
+                if (waitForEnd)
+                {
+                    _serviceThread.Join();
+                }
             }
+
+            StopDatabase();
         }
 
         private void StopDatabase()
@@ -381,41 +428,12 @@ namespace Artivity.Apid
             }
         }
 
-        private string GetConnectionStringFromConfiguration()
+        private void StopWatchdog()
         {
-            string configName = "virt0";
-
-            foreach (ConnectionStringSettings s in ConfigurationManager.ConnectionStrings)
+            if (_installWatchdog != null)
             {
-                if (s.Name == configName)
-                {
-                    return s.ConnectionString;
-                }
-            }
-
-            return null;
-        }
-
-        private void LoadOntologies()
-        {
-            using (IStore store = StoreFactory.CreateStore(ModelProvider.ConnectionString))
-            {
-                PlatformProvider.Logger.LogInfo("Loading ontologies..");
-
-                FileInfo f = new FileInfo(System.Reflection.Assembly.GetAssembly(typeof(HttpService)).Location);
-
-                var dir = f.Directory;
-
-                string config = Path.Combine(dir.FullName, string.Format("{0}.config", f.Name));
-
-                try
-                {
-                    store.LoadOntologySettings(config, PlatformProvider.OntologyDir);
-                }
-                catch (Exception e)
-                {
-                    PlatformProvider.Logger.LogError(e.Message);
-                }
+                _installWatchdog.Stop();
+                _installWatchdog.Dispose();
             }
         }
 

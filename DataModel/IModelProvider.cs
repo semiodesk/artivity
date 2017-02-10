@@ -24,8 +24,10 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.DataModel.ObjectModel;
 using Semiodesk.Trinity;
 using System;
+using System.Collections.Generic;
 
 namespace Artivity.DataModel
 {
@@ -39,11 +41,13 @@ namespace Artivity.DataModel
 
         string NativeConnectionString { get; set; }
 
-        Uri Agents { get; set; }
+        UriRef Agents { get; set; }
 
-        Uri Activities { get; set; }
+        UriRef Activities { get; set; }
 
-        Uri WebActivities { get; set; }
+        UriRef WebActivities { get; set; }
+
+        UriRef Default { get; set; }
 
         string Uid { get; set; }
 
@@ -68,6 +72,10 @@ namespace Artivity.DataModel
         IModel GetActivities();
 
         IModel GetWebActivities();
+
+        IModelGroup CreateModelGroup(params Uri[] models);
+
+        IModelSynchronizationState GetModelSynchronizationState(IUserAgent user);
 
         #endregion
     }

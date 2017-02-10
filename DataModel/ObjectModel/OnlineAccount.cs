@@ -87,5 +87,16 @@ namespace Artivity.DataModel
         public OnlineAccount(Uri uri) : base(uri) { }
 
         #endregion
+
+        #region Members
+
+        public string GetParameter(string name)
+        {
+            HttpAuthenticationParameter parameter = AuthenticationParameters.FirstOrDefault(p => p.Name == name);
+
+            return parameter != null ? parameter.Value : null;
+        }
+
+        #endregion
     }
 }

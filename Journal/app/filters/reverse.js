@@ -1,5 +1,5 @@
 (function () {
-    angular.module('explorerApp').filter('reverse', ReverseFilter);
+    angular.module('app').filter('reverse', ReverseFilter);
 
     function ReverseFilter() {
         return function (items) {

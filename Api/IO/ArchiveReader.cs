@@ -28,6 +28,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Newtonsoft.Json;
@@ -57,6 +58,11 @@ namespace Artivity.Api.IO
 
         #region Methods
 
+        public void Read(string fileName)
+        {
+            Read(new Uri("file://" + fileName));
+        }
+
         public void Read(Uri fileUrl)
         {
             DirectoryInfo appFolder = new DirectoryInfo(_platformProvider.ArtivityDataFolder);
@@ -64,17 +70,59 @@ namespace Artivity.Api.IO
 
             Decompress(importFolder, fileUrl);
 
-            ArchiveManifest manifest = ReadManifest(importFolder);
+            ArchiveManifest manifest = ReadManifestFromDirectory(importFolder);
 
             foreach (Uri entityUri in manifest.ExportedEntites)
             {
                 ImportData(appFolder, importFolder, entityUri);
-                ImportRenderings(appFolder, importFolder, entityUri);
+                ImportRenderings(appFolder, importFolder, manifest);
             }
 
             ImportAvatars(appFolder, importFolder);
 
             DeleteImportFolder(importFolder);
+        }
+
+        public ArchiveManifest GetManifest(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentNullException("fileName");
+            }
+
+            if (!File.Exists(fileName))
+            {
+                throw new FileNotFoundException(fileName);
+            }
+
+            using (ZipArchive archive = ZipFile.OpenRead(fileName))
+            {
+                ZipArchiveEntry entry = archive.GetEntry("Manifest.json");
+
+                // Note: JsonConvert.Deserialize threw comment parsing errors on a comment-less document.
+                using (StreamReader reader = new StreamReader(entry.Open()))
+                {
+                    return new JsonSerializer().Deserialize<ArchiveManifest>(new JsonTextReader(reader));
+                }
+            }
+        }
+
+        private ArchiveManifest ReadManifestFromDirectory(DirectoryInfo importFolder)
+        {
+            FileInfo file = new FileInfo(Path.Combine(importFolder.FullName, "Manifest.json"));
+
+            if (file.Exists)
+            {
+                // Note: JsonConvert.Deserialize threw comment parsing errors on a comment-less document.
+                using (TextReader reader = File.OpenText(file.FullName))
+                {
+                    return new JsonSerializer().Deserialize<ArchiveManifest>(new JsonTextReader(reader));
+                }
+            }
+            else
+            {
+                throw new FileNotFoundException(file.FullName);
+            }
         }
 
         private void ImportData(DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
@@ -128,45 +176,78 @@ namespace Artivity.Api.IO
 
             avatarsImport = avatarsImport.Replace(appFolder.FullName, importFolder.FullName);
 
-            if (!Directory.Exists(avatarsImport))
+            if (Directory.Exists(avatarsImport))
+            {
+                // Copy all the files in the renderings folder to the export directory.
+                foreach (string file in Directory.GetFiles(avatarsImport, "*.jpg"))
+                {
+                    FileInfo source = new FileInfo(file);
+                    FileInfo target = new FileInfo(Path.Combine(avatarsApp, Path.GetFileName(file)));
+
+                    if (target.Exists && (target.Length == source.Length || target.CreationTime >= source.CreationTime))
+                    {
+                        continue;
+                    }
+
+                    File.Copy(source.FullName, target.FullName, true);
+                }
+            }
+        }
+
+        private void ImportRenderings(DirectoryInfo appFolder, DirectoryInfo importFolder, ArchiveManifest manifest)
+        {
+            string renderingsFolder = _platformProvider.RenderingsFolder.Replace(appFolder.FullName, importFolder.FullName);
+
+            if (!Directory.Exists(renderingsFolder))
             {
                 return;
             }
 
-            // Copy all the files in the renderings folder to the export directory.
-            foreach (string file in Directory.GetFiles(avatarsImport, "*.jpg"))
+            if(manifest.FileFormat == "1.0")
             {
-                FileInfo source = new FileInfo(file);
-                FileInfo target = new FileInfo(Path.Combine(avatarsApp, Path.GetFileName(file)));
-
-                if (target.Exists && (target.Length == source.Length || target.CreationTime >= source.CreationTime))
+                // Format 1.0 only supports the epxort of one entity per archive.
+                if (manifest.ExportedEntites.Count != 1)
                 {
-                    continue;
+                    return;
                 }
 
-                File.Copy(source.FullName, target.FullName, true);
+                Uri entityUri = manifest.ExportedEntites.First();
+
+                string targetFolder = Path.Combine(_platformProvider.RenderingsFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri));
+
+                if (!Directory.Exists(targetFolder))
+                {
+                    Directory.CreateDirectory(targetFolder);
+                }
+
+                // All renderings for this entity are contained in the 'Renderings' folder.
+                CopyRenderingFiles(renderingsFolder, targetFolder);
             }
+            else
+            {
+                // In newer versions of the format, all renderings are copied into a sub folder in 'Renderings'
+                // which is named after the entity the renderings belong to.
+                foreach (string sourceDirectory in Directory.GetDirectories(renderingsFolder))
+                {
+                    string renderingsTarget = Path.Combine(_platformProvider.RenderingsFolder, Path.GetFileName(sourceDirectory));
+
+                    if (!Directory.Exists(renderingsTarget))
+                    {
+                        Directory.CreateDirectory(renderingsTarget);
+                    }
+
+                    CopyRenderingFiles(sourceDirectory, renderingsTarget);
+                }
+        }
         }
 
-        private void ImportRenderings(DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
+        private void CopyRenderingFiles(string sourceDirectory, string targetDirectory)
         {
-            string renderingsApp = _platformProvider.RenderingsFolder;
-            string renderingsSource = _platformProvider.RenderingsFolder;
-
-            renderingsSource = renderingsSource.Replace(appFolder.FullName, importFolder.FullName);
-
-            string renderingsTarget = Path.Combine(renderingsApp, FileNameEncoder.Encode(entityUri.AbsoluteUri));
-
-            if (!Directory.Exists(renderingsTarget))
-            {
-                Directory.CreateDirectory(renderingsTarget);
-            }
-
             // Copy all the files in the renderings folder to the export directory.
-            foreach (string file in Directory.GetFiles(renderingsSource, "*.png"))
+            foreach (string file in Directory.GetFiles(sourceDirectory, "*.png"))
             {
                 FileInfo source = new FileInfo(file);
-                FileInfo target = new FileInfo(Path.Combine(renderingsTarget, Path.GetFileName(file)));
+                FileInfo target = new FileInfo(Path.Combine(targetDirectory, Path.GetFileName(file)));
 
                 if (target.Exists && (target.Length == source.Length || target.CreationTime >= source.CreationTime))
                 {
@@ -199,63 +280,75 @@ namespace Artivity.Api.IO
             Directory.Delete(importFolder.FullName, true);
         }
 
-        private ArchiveManifest ReadManifest(DirectoryInfo importFolder)
+        private void Decompress(DirectoryInfo importFolder, Uri fileUrl)
         {
-            FileInfo file = new FileInfo(Path.Combine(importFolder.FullName, "Manifest.json"));
-
-            if (file.Exists)
+            using (ZipArchive archive = ZipFile.OpenRead(fileUrl.LocalPath))
             {
-                // Note: JsonConvert.Deserialize threw comment parsing errors on a comment-less document.
-                using (TextReader reader = File.OpenText(file.FullName))
+                if (archive == null)
                 {
-                    return new JsonSerializer().Deserialize<ArchiveManifest>(new JsonTextReader(reader));
+                    throw new ArgumentNullException("fileUrl");
                 }
-            }
-            else
-            {
-                throw new FileNotFoundException(file.FullName);
+
+                if (importFolder == null)
+                {
+                    throw new ArgumentNullException("importFolder");
+                }
+
+                if (!importFolder.Exists)
+                {
+                    importFolder.Create();
+                }
+
+                string targetFolder = importFolder.FullName;
+
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    string target = GetEntryTargetFile(entry, targetFolder, true);
+
+                    if (!Directory.Exists(target))
+                    {
+                        entry.ExtractToFile(target, false);
+                    }
+                }
             }
         }
 
-        private void Decompress(DirectoryInfo importFolder, Uri fileUrl)
+        private string GetEntryTargetFile(ZipArchiveEntry entry, string targetFolder, bool createTargetFolder)
         {
-            using (ZipArchive arch = ZipFile.OpenRead(fileUrl.LocalPath))
+            string result = targetFolder;
+
+            string[] path;
+
+            if (entry.FullName.Contains('\\'))
             {
-                if (arch == null)
-                    throw new ArgumentNullException("fileUrl");
+                path = entry.FullName.Split('\\');
+            }
+            else
+            {
+                path = entry.FullName.Split('/');
+            }
 
-                if (importFolder == null)
-                    throw new ArgumentNullException("importFolder");
-
-                if (!importFolder.Exists)
-                    importFolder.Create();
-
-                string fullName = importFolder.FullName;
-
-                foreach (var zipEntry in arch.Entries)
+            if (path.Length > 1)
+            {
+                for (int i = 0; i < path.Length - 1; i++)
                 {
-                    string fullPath = fullName;
+                    result = Path.Combine(result, path[i]);
 
-                    var dirPaths = zipEntry.FullName.Split('\\');
-
-                    int i = 0;
-                    foreach (var dir in dirPaths)
+                    if (!Directory.Exists(result) && createTargetFolder)
                     {
-                        i++;
-                        if (i == dirPaths.Length)
-                            break;
-
-                        fullPath = Path.Combine(fullPath, dir);
-                        Directory.CreateDirectory(fullPath);
-
+                        Directory.CreateDirectory(result);
                     }
-
-
-                    fullPath = Path.GetFullPath(Path.Combine(fullPath, dirPaths[i - 1]));
-
-                    zipEntry.ExtractToFile(fullPath, false);
                 }
             }
+
+            if (path.Length > 0)
+            {
+                string fileName = path.Last();
+
+                result = Path.GetFullPath(Path.Combine(result, path.Last()));
+            }
+
+            return result;
         }
 
         #endregion

@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.DataModel.ObjectModel;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace Artivity.DataModel
 
         private bool _initialized = false;
 
+        private Uri _synchronizationStateUrl;
+
         private Dictionary<int, IStore> _stores = new Dictionary<int, IStore>();
 
         object _lock = new object();
@@ -47,6 +50,7 @@ namespace Artivity.DataModel
             get
             {
                 int id = Thread.CurrentThread.ManagedThreadId;
+
                 lock(_lock)
                 {
                     if (_stores.ContainsKey(id))
@@ -71,11 +75,13 @@ namespace Artivity.DataModel
 
         public string Uid { get; set; }
 
-        public Uri Agents { get; set; }
+        public UriRef Default { get; set; }
 
-        public Uri Activities { get; set; }
+        public UriRef Agents { get; set; }
 
-        public Uri WebActivities { get; set; }
+        public UriRef Activities { get; set; }
+
+        public UriRef WebActivities { get; set; }
 
         #endregion
 
@@ -96,9 +102,24 @@ namespace Artivity.DataModel
                     throw new Exception("Cannot initialize RDF store: UID must not be empty. Is your config.json valid?");
                 }
 
-                Agents = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/agents", Uid));
-                Activities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities", Uid));
-                WebActivities = new Uri(string.Format("http://localhost:8890/artivity/1.0/{0}/activities/web", Uid));
+                string baseUrl = string.Format("http://localhost:8890/artivity/1.0/{0}", Uid);
+
+                Default = new UriRef(baseUrl);
+                Agents = new UriRef(baseUrl + "/agents");
+                Activities = new UriRef(baseUrl + "/activities");
+                WebActivities = new UriRef(baseUrl + "/activities/web");
+
+                IModel model = GetDefault();
+
+                _synchronizationStateUrl = new UriRef(baseUrl + "#sync");
+
+                if (!model.ContainsResource(_synchronizationStateUrl))
+                {
+                    ModelSynchronizationState state = model.CreateResource<ModelSynchronizationState>(_synchronizationStateUrl);
+                    state.LastLocalRevision = 0;
+                    state.LastRemoteRevision = 0;
+                    state.Commit();
+                }
 
                 _initialized = true;
             }
@@ -111,18 +132,13 @@ namespace Artivity.DataModel
             model.Clear();
 
             // Create a default user..
-            Person user = model.CreateResource<Person>();
+            Person user = model.CreateResource<Person>(new UriRef("urn:art:uid:" + Uid));
             user.Commit();
 
             Association association = model.CreateResource<Association>();
             association.Agent = user;
             association.Role = new Role(art.USER);
             association.Commit();
-
-            // Create the default agents..
-            InstallAgent(model, "application://inkscape.desktop/", "Inkscape", "inkscape", "#EE204E", true);
-            InstallAgent(model, "application://krita.desktop/", "Krita", "krita", "#926EAE", true);
-            InstallAgent(model, "application://firefox-browser.desktop/", "Firefox", "firefox", "#1F75FE");
         }
 
         public void InstallAgent(IModel model, string uri, string name, string executableName, string colour, bool captureEnabled = false)
@@ -182,6 +198,11 @@ namespace Artivity.DataModel
             return !model.IsEmpty;
         }
 
+        public IModelGroup CreateModelGroup(params Uri[] models)
+        {
+            return Store.CreateModelGroup(models);
+        }
+
         public IModelGroup GetAll()
         {
             IModelGroup result = Store.CreateModelGroup();
@@ -217,9 +238,20 @@ namespace Artivity.DataModel
             return Store.GetModel(WebActivities);
         }
 
+        public IModel GetDefault()
+        {
+            return Store.GetModel(Default);
+        }
+
+        public IModelSynchronizationState GetModelSynchronizationState(IUserAgent user)
+        {
+            return Store.GetModel(Default).GetResource<ModelSynchronizationState>(_synchronizationStateUrl); ;
+        }
+
         public int ReleaseStore()
         {
             int id = Thread.CurrentThread.ManagedThreadId;
+
             lock(_lock)
             {
                 if (_stores.ContainsKey(id))
@@ -237,6 +269,7 @@ namespace Artivity.DataModel
                     _stores.Remove(id);
                 }
             }
+
             return id;
         }
 

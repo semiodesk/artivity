@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    angular.module('explorerApp').factory('derivationService', derivationService);
+    angular.module('app').factory('derivationService', derivationService);
 
     derivationService.$inject = ['$http'];
 

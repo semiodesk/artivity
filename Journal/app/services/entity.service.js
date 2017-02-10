@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    angular.module('explorerApp').factory('entityService', entityService);
+    angular.module('app').factory('entityService', entityService);
 
     entityService.$inject = ['$http'];
 
