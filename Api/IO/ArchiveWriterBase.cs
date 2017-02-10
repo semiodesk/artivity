@@ -160,12 +160,7 @@ namespace Artivity.Api.IO
                 {
                     string sourceFile = Path.Combine(sourceFolder, info.Rendering.Name);
 
-                    string[] path = new string[]
-                    {
-                        exportFolder.FullName,
-                        Path.GetFileName(PlatformProvider.RenderingsFolder),
-                        entityFolder
-                    };
+                    string[] path = new string[] { exportFolder.FullName, Path.GetFileName(PlatformProvider.RenderingsFolder), entityFolder };
 
                     string targetFolder = string.Join(Path.DirectorySeparatorChar.ToString(), path);
 
