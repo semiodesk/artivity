@@ -187,7 +187,6 @@
     </None>
     <None Include="Plugins\Manifest.json" />
     <None Include="Plugins\Plugins.cd" />
-    <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\user.jpg" />

@@ -106,7 +106,7 @@ namespace Artivity.Apid.Accounts
             ServiceUrl = new Uri(url);
 
             // Issue the request against the Artivity specific /api/1.0/login path.
-            if (!url.EndsWith(_path))
+            if (!url.EndsWith(_path, StringComparison.InvariantCulture))
             {
                 url.TrimEnd('/');
                 url += _path;
@@ -223,8 +223,6 @@ namespace Artivity.Apid.Accounts
         {
             if (account != null && account.ServiceUrl != null)
             {
-                IModelSynchronizationState state = ModelProvider.GetModelSynchronizationState(user);
-
                 string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
                 Uri url = new Uri(baseUrl + "/api/1.0/sync/");
