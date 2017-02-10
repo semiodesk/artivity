@@ -1,0 +1,41 @@
+<div class="layout-container ui-pane-container">
+    <div class="ui-resizable ui-pane ui-pane-left">
+        <div class="pane-content">
+            <div class="table-layout">
+                <div class="row">
+                    <ul class="list-view list-view-compact">
+                        <li class="list-item list-item-unstyled list-item-link project-item" ng-repeat="derivation in vm.derivations" ng-click="vm.selectDerivation(derivation)" ng-class="{selected: vm.selectedDerivation === derivation}">
+                            <div class="padding-x-xl padding-y-none" style="padding-right: 0 !important;">
+                                <div class="col expand">
+                                    <span class="label">{{derivation.AtTime}}</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row"><button class="btn-chromeless btn" ng-click="vm.Post()">Save</button></div>
+                    <div class="row">
+				    <div class="ctl-comment">
+							<textarea id="msg-txt" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-model="vm.currentComment.text" required />
+                            								<!--
+								ng-change="t.updateComment()"
+								ng-enter="t.postComment()"
+								ng-esc="t.resetComment(true)"
+								ng-blur="t.resetComment(false)"-->
+                            <button class="btn-chromeless btn" ng-click="vm.saveCurrentComment()">New</button>
+                            <button class="btn-chromeless btn" ng-click="vm.setPanMode()">Pan</button>
+                            <button class="btn-chromeless btn" ng-click="vm.setRectangleMode()">Marker</button>
+                    </div>
+			    </div>
+                <div class="row">
+				   <div class="comment" ng-repeat="comment in vm.currentCollection.comments" >
+                       {{comment.text}} <button class="btn-chromeless btn" ng-click="vm.selectComment($index)">view</button>
+                   </div>
+			    </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui-resizable ui-pane ui-pane-center">
+        <canvas id="canvas" style="background-color:darkgrey;" >No Canvas supported by your browser!</canvas>
+    </div>
+</div>

@@ -27,36 +27,18 @@
 
 using Semiodesk.Trinity;
 using System;
+using System.Collections.Generic;
 
 namespace Artivity.DataModel
 {
-	[RdfClass(PROV.Entity)]
-	public class Entity : Resource
+	[RdfClass(PROV.Derivation)]
+    public class Derivation : EntityInfluence
 	{
-		#region Members
-
-		[RdfProperty(PROV.qualifiedGeneration)]
-		public Generation Generation { get; set; }
-
-		[RdfProperty(PROV.qualifiedInvalidation)]
-		public Invalidation Invalidation { get; set; }
-
-		[RdfProperty(PROV.specializationOf)]
-		public Entity GenericEntity { get; set; }
-
-		[RdfProperty(PROV.wasRevisionOf)]
-		public Entity RevisedEntity { get; set; }
-
-        [RdfProperty(PROV.hadPrimarySource)]
-        public Entity PrimarySource { get; set; }
-
-		#endregion
 
 		#region Constructors
 
-        public Entity(Uri uri) : base(uri) {}
-        public Entity(string uri) : base(uri) { }
-		#endregion
-    }
-}
+        public Derivation(Uri uri) : base(uri) { }
 
+		#endregion
+	}
+}

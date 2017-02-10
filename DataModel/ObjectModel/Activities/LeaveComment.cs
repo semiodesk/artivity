@@ -30,12 +30,16 @@ using System;
 
 namespace Artivity.DataModel
 {
-	[RdfClass(ART.Edit)]
-    public class Edit : EntityInfluence
-	{
-		#region Constructors
+	[RdfClass(ART.LeaveComment)]
+    public class LeaveComment : Activity
+    {
+        #region Members
 
-		public Edit(Uri uri) : base(uri) {}
+        #endregion
+
+        #region Constructors
+
+        public LeaveComment(Uri uri) : base(uri) { }
 
 		#endregion
 	}

@@ -25,17 +25,31 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Artivity.DataModel
 {
-	[RdfClass(ART.Add)]
-    public class Add : EntityInfluence
+	[RdfClass(ART.Save)]
+    public class Save : Revision
 	{
+        #region Members
+
+        [RdfProperty(ART.renderedAs)]
+        public List<PartialRenderingDataObject> RenderedAs { get; set; }
+        //public IEnumerable<string> RenderedAs { get { return from a in RenderedAs_ select a.Uri.AbsoluteUri; } }
+
+        [RdfProperty(PROV.atTime)]
+        public DateTime AtTime { get; set; }
+        #endregion
+
+
 		#region Constructors
 
-		public Add(Uri uri) : base(uri) {}
+        public Save(Uri uri) : base(uri) { }
 
 		#endregion
 	}

@@ -28,6 +28,7 @@
 using System;
 using Semiodesk.Trinity;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Artivity.DataModel
 {
@@ -36,24 +37,31 @@ namespace Artivity.DataModel
 	{
 		#region Members
 
+        [JsonIgnore]
         [RdfProperty(RDFS.label)]
         public string Name { get; set; }
 
+        [JsonIgnore]
 		[RdfProperty(NFO.fileSize)]
 		public long ByteSize { get; set; }
 
+        [JsonIgnore]
 		[RdfProperty(NIE.created)]
 		public DateTime CreationTimeUtc { get; set; }
 
+        [JsonIgnore]
 		[RdfProperty(NFO.fileLastAccessed)]
 		public DateTime LastAccessTimeUtc { get; set; }
 
+        [JsonIgnore]
 		[RdfProperty(NIE.lastModified)]
 		public DateTime LastModificationTimeUtc { get; set; }
 
+        [JsonIgnore]
         [RdfProperty(NFO.deletionDate)]
         public DateTime? DeletionTimeUtc { get; set; }
 
+        [JsonIgnore]
         [RdfProperty(NFO.belongsToContainer)]
         public Folder Folder { get; set; }
 

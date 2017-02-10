@@ -1,4 +1,5 @@
-﻿using Semiodesk.Trinity;
+﻿using Newtonsoft.Json;
+using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace Artivity.DataModel
         public InformationElement(Uri uri) : base(uri) { }
         public InformationElement(string uri) : base(uri) { }
 
+        [JsonIgnore]
         [RdfProperty(NIE.isStoredAs)]
         public FileDataObject DataObject { get; set; }
     }

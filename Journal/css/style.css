@@ -1574,7 +1574,7 @@ button[disabled]:hover {
   padding: 10px;
   color: #000000;
   resize: none;
-  height: 2.7em; }
+  height: 10em; }
 
 .ctl-comment input[type=button] {
   float: right;

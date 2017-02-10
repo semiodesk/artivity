@@ -1,0 +1,355 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
+@prefix nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#> .
+@prefix art: <http://w3id.org/art/terms/1.0/> .
+@prefix artf: <http://w3id.org/art/terms/1.0/features/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix qudt: <http://qudt.org/vocab/unit#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+art: a owl:Ontology .
+
+art:Database a rdfs:Class ;
+    rdfs:label "Database" .
+
+art:Comment a rdfs:Class ;
+    rdfs:label "Comment" .
+
+art:isMonitoringEnabled a rdf:Property ;
+    rdfs:label "isMonitoringEnabled" ;
+    rdfs:domain art:Database ;
+    rdfs:range xsd:boolean .
+
+art:hadState a rdf:Property ;
+    rdfs:label "hadState" ;
+    rdfs:domain art:Database ;
+    rdfs:range art:DatabaseState .
+
+art:DatabaseState a rdfs:Class ;
+    rdfs:label "DatabaseState" .
+
+art:atTime a rdf:Property ;
+    rdfs:label "atTime" ;
+    rdfs:domain art:DatabaseState ;
+    rdfs:range xsd:dateTime .
+
+art:factsCount a rdf:Property ;
+    rdfs:label "factsCount" ;
+    rdfs:domain art:DatabaseState ;
+    rdfs:range xsd:integer .
+
+art:Browse a rdfs:Class ;
+    rdfs:label "Browse" ;
+    rdfs:subClassOf prov:Activity .
+
+art:CreateFile a rdfs:Class ;
+    rdfs:label "CreateFile" ;
+    rdfs:subClassOf prov:Activity .
+
+art:DeleteFile a rdfs:Class ;
+    rdfs:label "DeleteFile" ;
+    rdfs:subClassOf prov:Activity .
+
+art:EditFile a rdfs:Class ;
+    rdfs:label "EditFile" ;
+    rdfs:subClassOf prov:Activity .
+
+art:Add a rdfs:Class ;
+    rdfs:label "Add" ;
+    rdfs:subClassOf prov:EntityInfluence .
+
+art:Edit a rdfs:Class ;
+    rdfs:label "Edit" ;
+    rdfs:subClassOf prov:EntityInfluence .
+
+art:Redo a rdfs:Class ;
+    rdfs:label "Redo" ;
+    rdfs:subClassOf prov:EntityInfluence .
+
+art:Remove a rdfs:Class ;
+    rdfs:label "Remove" ;
+    rdfs:subClassOf prov:EntityInfluence .
+    
+art:Undo a rdfs:Class ;
+    rdfs:label "Undo" ;
+    rdfs:subClassOf prov:EntityInfluence .
+
+art:View a rdfs:Class ;
+    rdfs:label "View" ;
+    rdfs:subClassOf prov:Usage .
+        
+art:Layer a rdfs:Class ;
+    rdfs:label "Layer" .
+    
+art:selectedLayer a rdf:Property ;
+	rdfs:label "selectedLayer" ;
+	rdfs:domain prov:Activity ;
+	rdfs:range xsd:string .
+
+art:layerZPosition a rdf:Property ;
+	rdfs:label "layerZPosition" ;
+	rdfs:domain prov:Activity ;
+	rdfs:range xsd:integer .
+    
+art:isCaptureEnabled a rdf:Property ;
+    rdfs:label "isCaptureEnabled" ;v
+    rdfs:domain prov:SoftwareAgent ;
+    rdfs:range xsd:boolean .
+
+art:executableName a rdf:Property ;
+    rdfs:label "executableName" ;
+    rdfs:domain prov:SoftwareAgent ;
+    rdfs:range xsd:boolean .
+
+art:executablePath a rdf:Property ;
+    rdfs:label "executablePath" ;
+    rdfs:domain prov:SoftwareAgent ;
+    rdfs:range xsd:boolean .
+
+art:hasColourCode a rdf:Property ;
+    rdfs:label "hasColourCode" ;
+    rdfs:domain prov:SoftwareAgent ;
+    rdfs:range xsd:string .
+
+art:coordinateSystem a rdf:Property ;
+    rdfs:label "coordinateSystem" ;
+    rdfs:domain art:Canvas ;
+    rdfs:range art:CoordinateSystem .
+
+art:CoordinateSystem a rdfs:Class ;
+    rdfs:label "CoordinateSystem" .
+
+art:CartesianCoordinateSystem a rdfs:Class ;
+    rdfs:label "CoordinateSystem" ;
+    rdfs:subClassOf art:CoordinateSystem .
+
+art:SoftwareAssociation a rdfs:Class ;
+    rdfs:label "SoftwareAssociation" ;
+    rdfs:subClassOf prov:Association .
+
+art:version a rdf:Property ;
+    rdfs:label "version" .
+
+art:lengthUnit a rdf:Property ;
+    rdfs:label "lengthUnit" ;
+    rdfs:domain art:Canvas ;
+    rdfs:range art:LengthUnit .
+
+art:transformationMatrix a rdf:Property ;
+    rdfs:label "transformationMatrix" ;
+    rdfs:domain art:Canvas ;
+    rdfs:range xsd:string .
+
+art:Point a rdfs:Class ;
+    rdfs:label "Point" .
+
+art:x a rdf:Property ;
+    rdfs:label "x" ;
+    rdfs:domain art:Point ;
+    rdfs:range xsd:double .
+
+art:y a rdf:Property ;
+    rdfs:label "y" ;
+    rdfs:domain art:Point ;
+    rdfs:range xsd:double .
+
+art:z a rdf:Property ;
+    rdfs:label "z" ;
+    rdfs:domain art:Point ;
+    rdfs:range xsd:double .
+
+art:Geometry a rdfs:Class ;
+    rdfs:label "Geometry" ;
+    owl:sameAs geo:Geometry .
+
+art:USER a prov:Role ;
+	rdfs:label "User" .
+
+art:coordinateDimension a rdf:Property ;
+    rdfs:label "coordinateDimension" ;
+    rdfs:domain art:Geometry ;
+    rdfs:range xsd:integer ;
+    owl:sameAs geo:coordinateDimension .
+
+art:width a rdf:Property ;
+    rdfs:label "width" ;
+    rdfs:domain art:Geometry ;
+    rdfs:range xsd:double .
+
+art:height a rdf:Property ;
+    rdfs:label "height" ;
+    rdfs:domain art:Geometry ;
+    rdfs:range xsd:double .
+
+art:depth a rdf:Property ;
+    rdfs:label "depth" ;
+    rdfs:domain art:Geometry ;
+    rdfs:range xsd:double .
+
+art:position a rdf:Property ;
+    rdfs:label "position" ;
+    rdfs:domain art:Geometry ;
+    rdfs:range art:Point .
+
+art:Rectangle a rdfs:Class ;
+    rdfs:label "Rectangle" ;
+    rdfs:subClassOf art:Geometry .
+
+art:Cube a rdfs:Class ;
+    rdfs:label "Cube" ;
+    rdfs:subClassOf art:Geometry .
+
+art:canvas a rdf:Property ;
+    rdfs:label "canvas" ;
+    rdfs:subClassOf geo:hasGeometry ;
+    rdfs:domain nfo:FileDataObject ;
+    rdfs:range art:Canvas .
+
+art:Canvas a rdfs:Class ;
+    rdfs:label "Canvas" ;
+    rdfs:subClassOf art:Rectangle .
+
+art:hadBoundaries a rdf:Property ;
+    rdfs:label "hadBoundaries" ;
+    rdfs:subClassOf geo:hasGeometry ;
+    rdfs:domain prov:Entity ;
+    rdfs:range art:BoundingRectangle ;
+    rdfs:range art:BoundingCube .
+
+art:BoundingRectangle a rdfs:Class ;
+    rdfs:label "BoundingRectangle" ;
+    rdfs:subClassOf art:Rectangle .
+
+art:BoundingCube a rdfs:Class ;
+    rdfs:label "BoundingCube" ;
+    rdfs:subClassOf art:Cube .
+
+art:hadViewport a rdf:Property ;
+    rdfs:label "hadViewport" ;
+    rdfs:subClassOf geo:hasGeometry ;
+    rdfs:domain prov:ActivityInfluence ;
+    rdfs:range art:Viewport.
+
+art:thumbnailUrl a rdf:Property ;
+    rdfs:label "thumbnailUrl" ;
+    rdfs:subClassOf nfo:fileUrl ;
+    rdfs:domain prov:ActivityInfluence .
+
+art:thumbnailPosition a rdf:Property ;
+    rdfs:label "thumbnailPosition" ;
+	rdfs:subClassOf geo:hasGeometry ;
+    rdfs:domain prov:ActivityInfluence ;
+	rdfs:range art:Rectangle.
+
+art:Viewport a rdfs:Class ;
+    rdfs:label "Viewport" ;
+    rdfs:subClassOf art:Rectangle .
+    
+art:zoomFactor a rdf:Property ;
+    rdfs:label "zoomFactor" ;
+    rdfs:domain art:Viewport ;
+    rdfs:range xsd:double .
+
+art:LengthUnit a rdfs:Class ;
+    rdfs:label "LengthUnit" ;
+    owl:sameAs qudt:LengthUnit .
+
+art:m a rdfs:Class ;
+    rdfs:label "m" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Meter .
+
+art:cm a rdfs:Class ;
+    rdfs:label "cm" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Centimeter .
+
+art:mm a rdfs:Class ;
+    rdfs:label "mm" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Millimeter .
+
+art:pt a rdfs:Class ;
+    rdfs:label "pt" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Point .
+
+art:in a rdfs:Class ;
+    rdfs:label "in" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Inch .
+
+art:ft a rdfs:Class ;
+    rdfs:label "ft" ;
+    rdfs:subClassOf art:LengthUnit ;
+    owl:sameAs qudt:Foot .
+
+art:px a rdfs:Class ;
+    rdfs:label "px" ;
+    rdfs:subClassOf art:LengthUnit .
+
+nfo:FileDataObject rdfs:subClassOf prov:Entity.
+nfo:WebDataObject rdfs:subClassOf prov:Entity.
+
+art:USER rdf:type prov:Role ;
+	rdfs:label "USER" .
+
+art:SOFTWARE rdf:type prov:Role ;
+	rdfs:label "SOFTWARE" .
+
+art:accountFeature a rdf:Property ;
+	rdfs:label "accountFeature" ;
+	rdfs:domain art:OnlineAccountFeature .
+
+art:OnlineAccountFeature a rdfs:Class ;
+	rdfs:label "OnlineAccountFeature".
+
+art:accountServiceClient a rdf:Property ;
+	rdfs:label "accountServiceClient" ;
+	rdfs:domain foaf:OnlineAccount .
+
+art:authenticationProtocol a rdf:Property ;
+	rdfs:label "authenticationProtocol" ;
+	rdfs:domain foaf:OnlineAccount ;
+	rdfs:range art:HttpAuthenticationProtocol .
+
+art:authenticationParameter a rdf:Property ;
+	rdfs:label "authenticationParameter" ;
+	rdfs:domain foaf:OnlineAccount ;
+	rdfs:range art:HttpAuthenticationParameter .
+
+art:HttpAuthenticationProtocol a rdfs:Class ;
+	rdfs:label "HttpAuthenticationProtocol".
+
+art:HttpAuthenticationParameter a rdfs:Class ;
+	rdfs:label "HttpAuthenticationParameter" .
+
+nie:InformationElement rdfs:subClassOf art:Entity .
+
+art:PartialRenderingDataObject
+	rdf:type rdfs:Class ;
+    rdfs:subClassOf art:RenderingDataObject ;
+    rdfs:label "PartialRenderingDataObject"@en ;
+	rdfs:comment "Rasterized bitmap data of a specific region of an image."@en ;
+    rdfs:isDefinedBy art: ;
+	dcterms:issued "2016-06-06"^^xsd:date ;
+    dcterms:modified "2016-06-06"^^xsd:date .
+
+art:RenderingDataObject
+	rdf:type rdfs:Class ;
+    rdfs:subClassOf nfo:FileDataObject ;
+    rdfs:label "RenderingDataObject"@en ;
+	rdfs:comment "Rasterized bitmap data of the entire extents of an image."@en ;
+    rdfs:isDefinedBy art: ;
+	dcterms:issued "2016-06-06"^^xsd:date ;
+    dcterms:modified "2016-06-06"^^xsd:date .
+    
+art:Project a rdfs:Class;
+  rdfs:label "Project";
+  rdfs:subClassOf prov:Collection ;
+  rdfs:comment "A collaborative enterprise, involving research or design, that is planned to achieve a particular aim.".

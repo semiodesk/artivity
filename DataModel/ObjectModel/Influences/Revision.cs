@@ -27,15 +27,16 @@
 
 using Semiodesk.Trinity;
 using System;
+using System.Collections.Generic;
 
 namespace Artivity.DataModel
 {
-	[RdfClass(ART.Remove)]
-    public class Remove : EntityInfluence
+    [RdfClass(PROV.Revision)]
+    public class Revision : Derivation
 	{
 		#region Constructors
 
-		public Remove(Uri uri) : base(uri) {}
+        public Revision(Uri uri) : base(uri) { }
 
 		#endregion
 	}
