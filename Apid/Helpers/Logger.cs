@@ -34,7 +34,27 @@ namespace Artivity.Apid
 {
     public class Logger : ILogger
     {
-        public readonly ILog Log = LogManager.GetLogger("HttpService");
+        #region Members
+
+        public readonly ILog Log;
+
+        #endregion
+
+        #region Constructors
+
+        public Logger()
+        {
+            Log = GetLogger();
+        }
+
+        #endregion
+
+        #region Methods
+
+        public static ILog GetLogger()
+        {
+            return LogManager.GetLogger("HttpService");
+        }
 
         public void LogInfo(string msg, params object[] p)
         {
@@ -42,6 +62,11 @@ namespace Artivity.Apid
             {
                 Log.InfoFormat(msg, p);
             }
+        }
+
+        public void LogDebug(string msg)
+        {
+            Log.Debug(msg);
         }
 
         public void LogDebug(string msg, params object[] p)
@@ -130,6 +155,7 @@ namespace Artivity.Apid
 
             return status;
         }
+
+        #endregion
     }
 }
-

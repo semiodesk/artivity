@@ -37,7 +37,7 @@ namespace Artivity.DataModel
         #region Members
 
         [RdfProperty(NIE.url)]
-        public UriRef Url { get; set; }
+        public Resource Url { get; set; }
 
         [RdfProperty(NIE.created)]
         public DateTime CreationTimeUtc { get; set; }

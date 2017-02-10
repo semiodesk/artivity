@@ -1,5 +1,5 @@
 (function () {
-    angular.module('explorerApp').factory('appService', appService);
+    angular.module('app').factory('appService', appService);
 
     function appService() {
         const remote = require('electron').remote;

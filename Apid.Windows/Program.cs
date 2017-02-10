@@ -107,7 +107,10 @@ namespace Artivity.Apid.Windows
                     Thread ServiceThread = new Thread(Service.Start);
                     ServiceThread.Start();
 
-                    Console.Read();
+                    while (Console.ReadKey().Key != ConsoleKey.Escape)
+                    {
+                        ;
+                    }
 
                     Service.Stop();
                     Service.Dispose();

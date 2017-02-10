@@ -32,7 +32,11 @@ namespace Artivity.Api
 {
     public interface ILogger
     {
+        #region Methods
+
         void LogInfo(string msg, params object[] p);
+
+        void LogDebug(string msg);
 
         void LogDebug(string msg, params object[] p);
 
@@ -51,6 +55,8 @@ namespace Artivity.Api
         HttpStatusCode LogError(HttpStatusCode status, Exception e);
 
         HttpStatusCode LogError(HttpStatusCode status, string msg, params object[] p);
+
+        #endregion
     }
 }
 

@@ -63,6 +63,9 @@ namespace artivity
 
         std::string createThumbnailFilePath();
         std::string createImageFilePath(time_t time, int count);
+        std::string createImageFilePath(time_t time, std::string suffix);
+        std::string createImageFilePath(time_t time, std::string suffix, int count);
+        std::string getImageFilePath() { return _imagePath; }
         std::string getFileUri() { return _fileUri; }
 
         virtual ImageRef getDocument() = 0;

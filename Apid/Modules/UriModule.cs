@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api;
 using Artivity.Api.Modules;
 using Artivity.Api.Parameters;
 using Artivity.Api.Platform;
@@ -99,7 +100,7 @@ namespace Artivity.Apid
 
             if (!string.IsNullOrEmpty(res))
             {
-                return Response.AsJson(res);
+                return Response.AsJsonSync(res);
             }
     
             return "";
@@ -132,7 +133,7 @@ namespace Artivity.Apid
 
                 if (!string.IsNullOrEmpty(uri))
                 {
-                    return Response.AsJson(uri);
+                    return Response.AsJsonSync(uri);
                 }
             }
                 
@@ -166,7 +167,7 @@ namespace Artivity.Apid
 
                 if (!string.IsNullOrEmpty(uri))
                 {
-                    return Response.AsJson(uri);
+                    return Response.AsJsonSync(uri);
                 }
             }
 

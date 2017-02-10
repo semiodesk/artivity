@@ -1,0 +1,11 @@
+<div class="card">
+    <div class="file-thumbnail-container">
+        <div class="file-thumbnail"></div>
+    </div>
+
+    <div class="file-name">{{t.fileName}}</div>
+    <div class="file-extension" style="background-color: {{t.file.agentColor}};">{{t.fileExtension}}</div>
+
+    <!--<a ng-if="t.link" href="#/files/view?uri={{t.file.uri}}"></a>-->
+	<a ng-if="t.link" href="#/files/preview?uri={{t.file.uri}}"></a>
+</div>

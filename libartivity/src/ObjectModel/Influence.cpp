@@ -123,16 +123,21 @@ namespace artivity
         setValue(art::hadBoundaries, boundaries);
     }
 
-    RenderingDataObjectRef Influence::getRendering()
+    list<RenderingDataObjectRef> Influence::getRenderings()
     {
-        return _rendering;
+        return _renderings;
     }
 
-    void Influence::setRendering(RenderingDataObjectRef render)
+    void Influence::addRendering(RenderingDataObjectRef rendering)
     {
-        _rendering = render;
+        _renderings.push_back(rendering);
+        addProperty(art::renderedAs, rendering);
+    }
 
-        setValue(art::renderedAs, _rendering);
+    void Influence::removeRendering(RenderingDataObjectRef rendering)
+    {
+        _renderings.remove(rendering);
+        removeProperty(art::renderedAs, rendering);
     }
 }
 

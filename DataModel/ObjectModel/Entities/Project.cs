@@ -35,13 +35,18 @@ namespace Artivity.DataModel
     public class Project : Collection
     {
         #region Members
-        [RdfProperty(DCES.title)]
-        public string Title { get; set; }
+
+        [RdfProperty(RDFS.label)]
+        public string Name { get; set; }
+
         #endregion
 
         #region Constructors
 
-        public Project(Uri uri) : base(uri) { }
+        public Project(Uri uri) : base(uri)
+        {
+            IsSynchronizable = true;
+        }
 
         #endregion
     }

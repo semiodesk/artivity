@@ -53,9 +53,13 @@ namespace Artivity.Apid
 
         #endregion
 
+        #region Constructors
+
         public ProgramBase()
         {
         }
+
+        #endregion
 
         #region Methods
 

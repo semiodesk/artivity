@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    angular.module('explorerApp').factory('projectService', projectService);
+    angular.module('app').factory('projectService', projectService);
 
     projectService.$inject = ['$http'];
 

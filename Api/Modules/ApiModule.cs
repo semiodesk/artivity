@@ -50,13 +50,12 @@ namespace Artivity.Api.Modules
 
         #region Constructors
 
-        public ApiModule(IModelProvider modelProvider, IPlatformProvider platform)
-            : base("/artivity/api/1.0", modelProvider, platform)
+        public ApiModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0", modelProvider, platformProvider)
         {
-            
             Get["/setup"] = parameters =>
             {
-                return Response.AsJson(platform.DidSetupRun);
+                return Response.AsJsonSync(platformProvider.DidSetupRun);
             };
 
             Post["/setup"] = parameters =>
@@ -69,14 +68,14 @@ namespace Artivity.Api.Modules
                 {
                     bool value = Convert.ToBoolean(values["runSetup"]);
 
-                    platform.DidSetupRun = value;
-                    platform.WriteConfig(platform.Config);
+                    platformProvider.DidSetupRun = value;
+                    platformProvider.WriteConfig(platformProvider.Config);
 
                     return HttpStatusCode.OK;
                 }
                 else
                 {
-                    return platform.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
             };
 
@@ -86,7 +85,7 @@ namespace Artivity.Api.Modules
 
                 if (!IsFileUrl(fileUrl))
                 {
-                    return platform.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return GetUri(new UriRef(fileUrl));
@@ -114,7 +113,7 @@ namespace Artivity.Api.Modules
                     }
                 }
 
-                return platform.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             };
 
             Get["/files/recent"] = parameters =>
@@ -395,7 +394,7 @@ namespace Artivity.Api.Modules
                         result["head"] = new Dictionary<string, List<string>>() { { "vars", vars } };
                         result["results"] = new Dictionary<string, List<Dictionary<string, object>>> { { "bindings", bindings } };
 
-                        Response response = Response.AsJson(result);
+                        Response response = Response.AsJsonSync(result);
                         response.ContentType = "application/sparql-results+json";
 
                         return response;
@@ -406,7 +405,7 @@ namespace Artivity.Api.Modules
                         result["head"] = new Dictionary<string, List<string>>() { };
                         result["results"] = new Dictionary<string, List<Dictionary<string, object>>> { { "bindings", new List<Dictionary<string, object>>() } };
 
-                        Response response = Response.AsJson(result);
+                        Response response = Response.AsJsonSync(result);
                         response.ContentType = "application/sparql-results+json";
 
                         return response;
@@ -424,7 +423,7 @@ namespace Artivity.Api.Modules
                     messages.Add(e.InnerException.Message);
                 }
 
-                return Response.AsJson(messages);
+                return Response.AsJsonSync(messages);
             }
         }
 
@@ -464,7 +463,7 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetAll().GetBindings(query);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetProjectFilese(UriRef projectUri)
@@ -504,7 +503,7 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetAll().GetBindings(query);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetInfluences(UriRef entityUri)
@@ -654,14 +653,14 @@ namespace Artivity.Api.Modules
                 }
             }
 
-            return Response.AsJson(influences);
+            return Response.AsJsonSync(influences);
         }
 
         private Response HasThumbnail(UriRef entityUri)
         {
             string file = Path.Combine(PlatformProvider.GetRenderOutputPath(entityUri), "thumbnail.png");
 
-            return Response.AsJson(File.Exists(file));
+            return Response.AsJsonSync(File.Exists(file));
         }
 
         private Response GetThumbnail(UriRef entityUri)
@@ -737,7 +736,7 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetActivities().GetBindings(query);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetRendering(UriRef uri, string fileName)
@@ -770,7 +769,7 @@ namespace Artivity.Api.Modules
 
             List<string> result = new List<string>() { path };
 
-            return Response.AsJson(result);
+            return Response.AsJsonSync(result);
         }
 
         private string GetEntityUri(string path)
@@ -827,7 +826,7 @@ namespace Artivity.Api.Modules
 
             IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetCompositionStats(UriRef entityUri, DateTime time)
@@ -852,7 +851,7 @@ namespace Artivity.Api.Modules
 
             List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetUri(Uri fileUrl)
@@ -864,7 +863,7 @@ namespace Artivity.Api.Modules
             {
                 PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
 
-                return Response.AsJson(new {});
+                return Response.AsJsonSync(new {});
             }
 
             ISparqlQuery query = new SparqlQuery(@"
@@ -889,7 +888,7 @@ namespace Artivity.Api.Modules
 
             PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetFile(Uri entityUri)
@@ -913,7 +912,7 @@ namespace Artivity.Api.Modules
 
             BindingSet bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response CreateFile(UriRef uri, Uri url)
@@ -981,7 +980,7 @@ namespace Artivity.Api.Modules
             
             List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetLayers(UriRef uriRef)
@@ -1027,56 +1026,60 @@ namespace Artivity.Api.Modules
 
             IList<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         #endregion
-    }
 
-    class Influence
-    {
-        [JsonIgnore]
-        public string uri;
+        #region Classes
 
-        public object activity;
+        class Influence
+        {
+            [JsonIgnore]
+            public string uri;
 
-        public object time;
+            public object activity;
 
-        public object type;
+            public object time;
 
-        public object description;
+            public object type;
 
-        public object comment;
+            public object description;
 
-        public object layer;
+            public object comment;
 
-        public object agentColor;
+            public object layer;
 
-        public object x;
+            public object agentColor;
 
-        public object y;
+            public object x;
 
-        public object w;
+            public object y;
 
-        public object h;
+            public object w;
 
-        public object vx;
+            public object h;
 
-        public object vy;
+            public object vx;
 
-        public object vw;
+            public object vy;
 
-        public object vh;
+            public object vw;
 
-        public List<Change> changes = new List<Change>();
-    }
+            public object vh;
 
-    struct Change
-    {
-        public string entity;
+            public List<Change> changes = new List<Change>();
+        }
 
-        public string entityType;
+        struct Change
+        {
+            public string entity;
 
-        public string property;
+            public string entityType;
+
+            public string property;
+        }
+
+        #endregion
     }
 }

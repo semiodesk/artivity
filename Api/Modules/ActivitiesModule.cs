@@ -49,7 +49,9 @@ namespace Artivity.Api.Modules
         private static object _modelLock = new object();
 
         private static readonly Dictionary<string, Browse> _activities = new Dictionary<string, Browse>();
-        private IPlatformProvider _platform;
+
+        private IPlatformProvider _platformProvider;
+
         #endregion 
 
         #region Constructors
@@ -57,7 +59,8 @@ namespace Artivity.Api.Modules
         public ActivitiesModule(IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0/activities", modelProvider, platform)
         {
-            _platform = platform;
+            _platformProvider = platform;
+
             Get["/"] = parameters =>
             {
                 string uri = Request.Query.uri;
@@ -134,7 +137,7 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
         private Response GetActivities(UriRef entityUri)
@@ -182,10 +185,10 @@ namespace Artivity.Api.Modules
 
             var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            return Response.AsJsonSync(bindings);
         }
 
-        private void PostActivities(string data)
+        private Response PostActivities(string data)
         {
             try
             {
@@ -202,15 +205,15 @@ namespace Artivity.Api.Modules
                     LoadTurtle(ModelProvider.Activities, stream);
                 }
 
-                PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
+                return PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", data);
             }
             catch (Exception ex)
             {
-                PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, ex, data);
+                return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, ex, data);
             }
         }
 
-        private HttpStatusCode PostActivity(ActivityParameter p)
+        private Response PostActivity(ActivityParameter p)
         {
             try
             {
@@ -222,17 +225,17 @@ namespace Artivity.Api.Modules
 
                 if (string.IsNullOrEmpty(p.agent))
                 {
-                    return _platform.Logger.LogError(HttpStatusCode.BadRequest, "Invalid parameters.", p);
+                    return _platformProvider.Logger.LogError(HttpStatusCode.BadRequest, "Invalid parameters.", p);
                 }
 
                 if (string.IsNullOrEmpty(p.tab))
                 {
-                    return _platform.Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
+                    return _platformProvider.Logger.LogRequest(HttpStatusCode.NotModified, Request.Url, "POST", p.tab);
                 }
 
                 if (!IsCaptureEnabled(p))
                 {
-                    return _platform.Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
+                    return _platformProvider.Logger.LogRequest(HttpStatusCode.Locked, Request.Url, "POST", "");
                 }
 
                 IModel model = ModelProvider.GetWebActivities();
@@ -295,15 +298,22 @@ namespace Artivity.Api.Modules
 
                     _activities.Remove(p.tab);
 
-                    _platform.Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
+                    _platformProvider.Logger.LogRequest(HttpStatusCode.OK, Request.Url, "POST", "");
                 }
 
-                return _platform.Logger.LogError(HttpStatusCode.BadRequest, Request.Url);
+                return _platformProvider.Logger.LogError(HttpStatusCode.BadRequest, Request.Url);
             }
             catch (Exception e)
             {
-                return _platform.Logger.LogError(HttpStatusCode.InternalServerError, "{0}: {1}", Request.Url, e.Message);
+                return _platformProvider.Logger.LogError(HttpStatusCode.InternalServerError, "{0}: {1}", Request.Url, e.Message);
             }
+        }
+
+        private Response ClearActivities()
+        {
+            ModelProvider.GetActivities().Clear();
+
+            return HttpStatusCode.OK;
         }
 
         private bool IsCaptureEnabled(ActivityParameter p)
@@ -344,14 +354,6 @@ namespace Artivity.Api.Modules
                 }
             }
         }
-
-        private Response ClearActivities()
-        {
-            ModelProvider.GetActivities().Clear();
-
-            return HttpStatusCode.OK;
-        }
-
         #endregion
     }
 }

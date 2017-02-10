@@ -1,5 +1,5 @@
 (function () {
-    angular.module('explorerApp').factory('formattingService', formattingService);
+    angular.module('app').factory('formattingService', formattingService);
 
     function formattingService() {
         return {

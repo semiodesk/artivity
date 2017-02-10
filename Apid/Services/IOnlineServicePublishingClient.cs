@@ -43,7 +43,7 @@ namespace Artivity.Apid
     {
         #region Members
 
-        TaskProgressInfo Progress { get;  }
+        TaskProgressInfo TaskProgress { get;  }
 
         #endregion
 

@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    angular.module('explorerApp').factory('imageService', imageService);
+    angular.module('app').factory('imageService', imageService);
 
     imageService.$inject = ['$http'];
 

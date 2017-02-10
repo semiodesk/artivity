@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    angular.module('explorerApp').factory('commentService', commentService);
+    angular.module('app').factory('commentService', commentService);
 
     commentService.$inject = ['$http'];
 

@@ -1,5 +1,5 @@
 (function () {
-    angular.module('explorerApp').factory('agentService', agentService);
+    angular.module('app').factory('agentService', agentService);
 
     agentService.$inject = ['api'];
 

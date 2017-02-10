@@ -33,7 +33,9 @@ namespace Artivity.Api.Platform
     public interface IPlatformProvider
     {
         #region Logging
+
         ILogger Logger { get; }
+
         #endregion
 
         #region Deployment
@@ -89,6 +91,7 @@ namespace Artivity.Api.Platform
         bool AutomaticallyInstallSoftwareAgentPlugins { get; set; }
 
         bool DidSetupRun { get; set; }
+
         #endregion
 
         #region Methods

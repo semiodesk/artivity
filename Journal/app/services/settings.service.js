@@ -1,11 +1,12 @@
 (function () {
-	angular.module('explorerApp').factory('settingsService', settingsService);
+	angular.module('app').factory('settingsService', settingsService);
 
 	function settingsService() {
 		var controllers = [];
 
 		return {
 			controllers: controllers,
+			clear: clear,
 			registerController: registerController,
 			submitAll: submitAll,
 			resetAll: resetAll
@@ -19,10 +20,18 @@
 			}
 		}
 
+		function clear() {
+			controllers = [];
+		}
+
 		function registerController(c) {
-			if (controllers.indexOf(c) === -1) {
-				controllers.push(c);
+			for(var i = 0; i < controllers.length; i++) {
+				if(controllers[i].constructor.name === c.constructor.name) {
+					controllers.splice(i, 1);
+				}
 			}
+
+			controllers.push(c);
 		}
 
 		function submitAll() {
