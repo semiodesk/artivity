@@ -41,6 +41,8 @@ namespace Artivity.Api.Parameters
         {
             public string text { get; set; }
 
+            public DateTime time { get; set; }
+
             public Marker[] marker { get; set; }
         }
 

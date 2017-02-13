@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -41,12 +42,21 @@ namespace Artivity.DataModel
         [RdfProperty(RDFS.comment)]
         public string Message { get; set; }
 
+        [JsonIgnore]
         [RdfProperty(PROV.hadActivity)]
-        public LeaveComment Activity { get; set; }
+        public LeaveComment Activity_ { get; set; }
+        public string Activity { get { return Activity_.Uri.AbsoluteUri; } }
 
+        [RdfProperty(PROV.atTime)]
+        public DateTime Time { get; set; }
+
+        [JsonIgnore]
         [RdfProperty(ART.refersTo)]
-        public EntityInfluence RefersTo { get; set; }
-        
+        public EntityInfluence RefersTo_ { get; set; }
+        public string RefersTo { get { return RefersTo_.Uri.AbsoluteUri; } }
+
+        [RdfProperty(ART.region)]
+        public List<RectangleEntity> Regions { get; set; }
         #endregion
 
         #region Constructors
