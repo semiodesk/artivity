@@ -101,6 +101,7 @@
             vm.influence = derivation.Uri;
             vm.loadImages(derivation);
             loadComments(derivation);
+            hideRegions();
         }
 
         function loadImages(deriv) {
@@ -255,7 +256,9 @@
                 startTime: new Date(),
                 comments: []
             }
-            vm.currentComment = null;
+            if( vm.canvasContainer != null )
+                vm.canvasContainer.removeAllChildren();
+            vm.createNewComment();
         }
 
         /**
@@ -323,7 +326,6 @@
 
         function initializeCommenting() {
             vm.createNewCollection();
-            vm.createNewComment();
         }
 
         function addMarker(marker) {
@@ -340,7 +342,12 @@
         function commit(){
             vm.currentCollection.endTime = new Date();
             vm.currentCollection.influence = vm.selectedDerivation.Uri;
-            commentService.post(vm.currentCollection);
+            commentService.post(vm.currentCollection).then(function(r){
+                vm.createNewCollection();
+                delete vm.comments[vm.selectedDerivation.Uri]
+                loadComments(vm.selectedDerivation);
+            })
+            
         }
 
     }
