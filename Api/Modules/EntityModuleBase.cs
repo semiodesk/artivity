@@ -34,6 +34,7 @@ using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Artivity.Api.Modules
 {
@@ -119,9 +120,14 @@ namespace Artivity.Api.Modules
                     }
                     else
                     {
-                        var list = UserModel.GetResources<T>(true).ToList();
+                        T t = (T)Activator.CreateInstance(typeof(T), new Uri("http://localhost"));
 
-                        return Response.AsJsonSync(list);
+                        ResourceQuery query = new ResourceQuery(t.GetTypes());
+                        query.Where(art.deleted, DateTime.MinValue);
+
+                        List<T> list = UserModel.GetResources<T>(query).ToList();
+
+                        return Response.AsJsonSync(new Dictionary<string, object> { { "success", true }, { "data", list } });
                     }
                 };
             }

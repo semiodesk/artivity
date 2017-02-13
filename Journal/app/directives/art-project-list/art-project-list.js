@@ -47,18 +47,18 @@
         }
 
         function refreshProjectList() {
-            projectService.getAll().then(function (list) {
-                list = list.filter(function(p) {
-                    return !p.DeletionDate || p.DeletionDate.startsWith("0001-01-01T00:00:00");
-                });
+            projectService.getAll().then(function (response) {
+                var list = response.data;
 
-                list.sort(function compare(a, b) {
-                    if (a.Name < b.Name) return -1;
-                    if (a.Name > b.Name) return 1;
-                    return 0;
-                });
+                if(list && list.length > 0) {
+                    list.sort(function compare(a, b) {
+                        if (a.Name < b.Name) return -1;
+                        if (a.Name > b.Name) return 1;
+                        return 0;
+                    });
 
-                t.projectList = list;
+                    t.projectList = list;
+                }
 
                 $scope.$apply();
             });
