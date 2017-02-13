@@ -33,6 +33,7 @@ using Artivity.Apid.Synchronization;
 using Artivity.DataModel;
 using Nancy;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,9 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.WebSockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Artivity.Apid.Accounts
@@ -53,15 +56,23 @@ namespace Artivity.Apid.Accounts
     {
         #region Members
 
+        private IArtivityServiceSynchronizationProvider _synchronizer;
+
         private bool _isSynchronizing;
 
         private const string _path = "/api/1.0/auth/login";
+
+        private Uri _socketUrl = new Uri("ws://192.168.0.109:8082/");
+
+        private ClientWebSocket _socket;
+
+        private UTF8Encoding _encoder = new UTF8Encoding();
 
         #endregion
 
         #region Constructors
 
-        public ArtivityServiceClient(IModelProvider modelProvider, IPlatformProvider platformProvider, IArtivityServiceSynchronizationProvider syncProvider)
+        public ArtivityServiceClient(IModelProvider modelProvider, IPlatformProvider platformProvider, IArtivityServiceSynchronizationProvider synchronizer)
             : base(new UriRef("http://artivity.online"), modelProvider, platformProvider)
         {
             Title = "Artivity";
@@ -69,9 +80,12 @@ namespace Artivity.Apid.Accounts
             ClientFeatures.Add(artf.SynchronizeUser);
             ClientFeatures.Add(artf.SynchronizeActivities);
 
-            if (syncProvider != null)
+            if (synchronizer != null)
             {
-                syncProvider.RegisterClient(this);
+                _synchronizer = synchronizer;
+                _synchronizer.RegisterClient(this);
+
+                TryConnectClientAsync();
             }
 
             SupportedAuthenticationClients.Add(new JwtAuthenticationClient());
@@ -146,6 +160,46 @@ namespace Artivity.Apid.Accounts
         protected override string GetAccountTitle()
         {
             return "Artivity";
+        }
+
+        public async Task TryConnectClientAsync()
+        {
+            _socket = new ClientWebSocket();
+            _socket.Options.AddSubProtocol("sync");
+
+            await _socket.ConnectAsync(_socketUrl, CancellationToken.None);
+
+            await Task.WhenAll(ReceiveMessage());
+        }
+
+        private async Task ReceiveMessage()
+        {
+            byte[] buffer = new byte[1024];
+
+            while (_socket.State == WebSocketState.Open)
+            {
+                var result = await _socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    await _socket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+
+                    Logger.LogInfo("Closed socket connection to {0}", _socketUrl);
+                }
+                else if(!_isSynchronizing)
+                {
+                    string json = _encoder.GetString(buffer);
+
+                    dynamic data = JObject.Parse(json);
+
+                    int revision = data.revision;
+
+                    Logger.LogInfo("Server at revision #{0}", revision);
+
+                    // TODO: Check if client sync is necessary.
+                    _synchronizer.TrySynchronize();
+                }
+            }
         }
 
         public bool BeginSynchronization(IUserAgent user, OnlineAccount account)
