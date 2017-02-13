@@ -142,7 +142,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="account">An authorized online account.</param>
         /// <returns>A synchronization changeset on success.</returns>
-        private SynchronizationChangeset GetChangesetClient(Person user, OnlineAccount account, int revision)
+        private SynchronizationChangeset GetChangesetClient(Person user, OnlineAccount account, int remoteRevision)
         {
             // Get the current model synchronization state for the current user.
             IModelSynchronizationState state = _modelProvider.GetModelSynchronizationState(user);
@@ -152,7 +152,7 @@ namespace Artivity.Apid.Synchronization
 
             // Query the database for all resource that have a push counter greater than the last push.
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT DISTINCT ?resource ?resourceType WHERE
+                SELECT DISTINCT ?resource ?resourceType ?revision WHERE
                 {
                     ?resource a ?resourceType ; arts:synchronizationState [
                         arts:lastRemoteRevision ?revision
@@ -163,7 +163,7 @@ namespace Artivity.Apid.Synchronization
             ");
 
             query.Bind("@undefined", -1);
-            query.Bind("@revision", revision);
+            query.Bind("@revision", remoteRevision);
 
             // Synchronize agents and non-browsing activites only.
             IModelGroup model = _modelProvider.CreateModelGroup(_modelProvider.Agents, _modelProvider.Activities);
@@ -172,6 +172,7 @@ namespace Artivity.Apid.Synchronization
             {
                 Uri resource = b["resource"] as Uri;
                 Uri resourceType = b["resourceType"] as Uri;
+                int revision = (int)b["revision"];
 
                 if (resource != null && resourceType != null)
                 {
@@ -179,7 +180,7 @@ namespace Artivity.Apid.Synchronization
                     item.ActionType = SynchronizationActionType.Push;
                     item.ResourceUri = resource;
                     item.ResourceType = resourceType;
-                    item.Revision = result.Revision;
+                    item.Revision = revision;
 
                     result.Add(item);
                 }

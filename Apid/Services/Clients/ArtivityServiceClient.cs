@@ -518,8 +518,6 @@ namespace Artivity.Apid.Accounts
 
                     HttpResponseMessage response = await client.PostAsync(url, content);
 
-                    Logger.LogInfo("{0} - {1}", response.StatusCode, url);
-
                     if (response.IsSuccessStatusCode)
                     {
                         int r = await GetLastRemoteRevision(response);
@@ -578,14 +576,18 @@ namespace Artivity.Apid.Accounts
 
                             SparqlUpdate update = new SparqlUpdate(@"
                                 WITH @model
-                                DELETE { ?state arts:lastRemoteRevision @undefined . }
+                                DELETE { ?state arts:lastRemoteRevision ?revision . }
                                 INSERT { ?state arts:lastRemoteRevision @revision . }
-                                WHERE { @activity arts:synchronizationState ?state . }
+                                WHERE
+                                { 
+                                    @activity arts:synchronizationState ?state .
+
+                                    ?state arts:lastRemoteRevision ?revision .
+                                }
                             ");
 
                             update.Bind("@model", model);
                             update.Bind("@activity", uri);
-                            update.Bind("@undefined", -1);
                             update.Bind("@revision", r);
 
                             model.ExecuteUpdate(update);
