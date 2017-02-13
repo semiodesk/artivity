@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Nancy.ModelBinding;
 
 namespace Artivity.Api.Modules
 {
@@ -24,14 +25,14 @@ namespace Artivity.Api.Modules
         {
             Get["/comments"] = parameters =>
             {
-                string uri = Request.Query.entityUri;
+                string uri = Request.Query.uri;
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return GetComments(new UriRef(uri));
+                return GetInfluenceComments(new UriRef(uri));
             };
 
             Get["/comments/clean"] = parameters =>
@@ -41,23 +42,44 @@ namespace Artivity.Api.Modules
 
             Post["/comments"] = parameters =>
             {
-                using (var reader = new StreamReader(Request.Body))
+                CommentCollection comment = this.Bind<CommentCollection>();
+
+                if (comment.Comments.Length == 0)
                 {
-                    string data = reader.ReadToEnd();
-
-                    CommentCollection comment = JsonConvert.DeserializeObject<CommentCollection>(data);
-
-                    if (comment.Comments.Length == 0)
-                    {
-                        return HttpStatusCode.BadRequest;
-                    }
-
-                    return PostComment(comment);
+                    return HttpStatusCode.BadRequest;
                 }
+                return PostComment(comment);
+
             };
         }
 
-            
+        private Response GetInfluenceComments(UriRef uriRef)
+        {
+            LoadCurrentUser();
+
+            ISparqlQuery query = new SparqlQuery(@"
+                DESCRIBE ?comment
+                WHERE
+                {
+                  
+                  ?comment
+                    a art:Comment ;
+                    prov:atTime ?time ; 
+                    art:refersTo @uri ;
+                    prov:hadActivity ?act .
+
+                  ?act prov:endedAtTime ?actTime .
+                }
+                ORDER BY DESC(?actTime) DESC(?time) ");
+
+            query.Bind("@uri", uriRef);
+            var res = UserModel.ExecuteQuery(query, true).GetResources<Comment>();
+            var list = res.ToList();
+
+            return Response.AsJsonSync(list);
+        }
+
+
         private Response GetComments(UriRef entityUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
@@ -103,7 +125,7 @@ namespace Artivity.Api.Modules
 
             List<BindingSet> bindings = model.GetBindings(query).ToList();
 
-            foreach(BindingSet b in bindings)
+            foreach (BindingSet b in bindings)
             {
                 Uri uri = new Uri(b["comment"].ToString());
 
@@ -136,7 +158,7 @@ namespace Artivity.Api.Modules
             UriRef entityUri = new UriRef(parameter.entity);
             UriRef influenceUri = new UriRef(parameter.influence);
 
-            UriRef agentUri = GetAgentUri();
+            //UriRef agentUri = GetAgentUri();
 
             if (UserModel.ContainsResource(entityUri) && UserModel.ContainsResource(influenceUri))
             {
@@ -146,18 +168,17 @@ namespace Artivity.Api.Modules
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
                 activity.UsedEntities.Add(new Entity(entityUri));
-                activity.StartedBy = new Agent(agentUri);
+                //activity.StartedBy = new Agent(agentUri);
 
-                foreach( var c in parameter.Comments )
-                { 
+                foreach (var c in parameter.Comments)
+                {
                     Comment comment = UserModel.CreateResource<Comment>();
-                    comment.Activity = activity;
-                    comment.RefersTo = influence; 
+                    comment.Activity_ = activity;
+                    comment.RefersTo_ = influence;
                     comment.Message = c.text;
-                    comment.Commit();
-                    activity.GeneratedEntities.Add(comment);
+                    comment.Time = c.time;
 
-                    foreach( var marker in c.marker )
+                    foreach (var marker in c.marker)
                     {
                         RectangleEntity rect = UserModel.CreateResource<RectangleEntity>();
                         rect.x = marker.x;
@@ -165,11 +186,14 @@ namespace Artivity.Api.Modules
                         rect.Width = marker.width;
                         rect.Height = marker.height;
                         rect.Commit();
+                        comment.Regions.Add(rect);
                         activity.GeneratedEntities.Add(rect);
                     }
+                    comment.Commit();
+                    activity.GeneratedEntities.Add(comment);
                 }
 
-                
+
                 activity.Commit();
 
                 return HttpStatusCode.OK;

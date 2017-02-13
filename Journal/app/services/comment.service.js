@@ -12,22 +12,23 @@
 
         
         service.post = post;
-
-
+        service.get = get;
 
         return service;
 
-        
-
-        function post() {
-            /*
-            var uri = encodeURIComponent(project.Uri);
-
-            return $http.post(endpoint + '?uri=' + uri, project).then(function (response) {
-                service.projects = null;
+        function get(derivationUri) {
+            var uri = encodeURIComponent(derivationUri);
+            return $http.get(endpoint+'?uri='+uri).then(function (response) {
                 return response.data;
-            }, handleError('Error when updating project.'));
-            */
+            }, handleError('Error while retrieving comments.'));
+           
+        }
+
+        function post(commentCollection) {
+            return $http.post(endpoint, commentCollection).then(function (response) {
+                return response.data;
+            }, handleError('Error when pushing comments.'));
+           
         }
 
         // private functions
