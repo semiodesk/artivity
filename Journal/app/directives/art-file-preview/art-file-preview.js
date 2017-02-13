@@ -22,6 +22,7 @@
         vm.imageFileId = null;
         vm.entity = null;
         vm.derivations = [];
+        vm.comments = {};
         vm.selectedDerivation = null;
         vm.setFile = setFile;
         vm.selectDerivation = selectDerivation;
@@ -34,10 +35,14 @@
         vm.removeComment = removeComment;
         vm.setRectangleMode = setRectangleMode;
         vm.setPanMode = setPanMode;
+        vm.commit = commit;
+        vm.showRegions = showRegions;
+        vm.hideRegions = hideRegions;
         vm.stage = null;
         vm.currentCollection = null;
         vm.currentComment = null;
         vm.canvasContainer = null;
+        vm.commentContainer = null;
         vm.imageContainer = null;
 
         initialize();
@@ -52,13 +57,15 @@
             initializeCommenting();
             vm.imageContainer = new createjs.Container();
             vm.canvasContainer = new createjs.Container();
-            vm.stage.addChild(vm.imageContainer, vm.canvasContainer);
+            vm.commentContainer = new createjs.Container()
+            vm.stage.addChild(vm.imageContainer, vm.canvasContainer, vm.commentContainer);
         }
 
         function setFile(file) {
             imageFileId = file;
             entityService.getById(imageFileId).then(function (res) {
                 vm.entity = res;
+                vm.currentCollection.entity = res.Uri;
                 if (vm.entity.Revisions != null)
                     loadDerivations();
             });
@@ -91,7 +98,9 @@
 
         function selectDerivation(derivation) {
             vm.selectedDerivation = derivation;
+            vm.influence = derivation.Uri;
             vm.loadImages(derivation);
+            loadComments(derivation);
         }
 
         function loadImages(deriv) {
@@ -111,6 +120,31 @@
             });
 
         }
+
+        function loadComments(deriv){
+            if( !vm.comments.hasOwnProperty(deriv.Uri)){
+                commentService.get(deriv.Uri).then(function(data){
+                    vm.comments[deriv.Uri] = data;
+                });
+            }
+        }
+
+        function showRegions(comment){
+            vm.hideRegions();
+            for (i = comment.Regions.length - 1; i >= 0; i--) {
+                region = comment.Regions[i];
+                var square = new createjs.Shape();
+                square.graphics.setStrokeStyle(1).beginStroke("#00FF00").drawRect(region.x, region.y, region.Width, region.Height);
+                vm.commentContainer.addChild(square);
+            }
+             vm.stage.update();
+        }
+
+        function hideRegions(){
+            vm.commentContainer.removeAllChildren();
+             vm.stage.update();
+        }
+
 
         function initializeCanvas(canvas) {
             canvas.addEventListener("mousewheel", MouseWheelHandler, false);
@@ -230,6 +264,7 @@
         function createNewComment() {
             vm.currentComment = { text: '', marker: [] };
             vm.currentComment.id = vm.currentCollection.comments.length;
+            vm.currentComment.time = new Date();
             vm.currentCollection.comments.push(vm.currentComment);
         }
 
@@ -300,6 +335,12 @@
                 if (vm.currentComment.marker[i].name == markerName)
                     vm.currentComment.marker.splice(i, 1);
             }
+        }
+
+        function commit(){
+            vm.currentCollection.endTime = new Date();
+            vm.currentCollection.influence = vm.selectedDerivation.Uri;
+            commentService.post(vm.currentCollection);
         }
 
     }
