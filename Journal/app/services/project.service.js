@@ -31,15 +31,19 @@
                 $http.get(endpoint).then(function (result) {
                     var data = result.data;
 
-                    data.sort(function compare(a, b) {
-                        if (a.Title < b.Title) return -1;
-                        if (a.Title > b.Title) return 1;
-                        return 0;
-                    });
+                    if(data && data.length > 1) {
+                        data.sort(function compare(a, b) {
+                            if (a.Title < b.Title) return -1;
+                            if (a.Title > b.Title) return 1;
+                            return 0;
+                        });
+                    }
 
                     service.projects = data;
+
                     resolve(data);
-                }, handleError('Error when getting all projects.'));
+                },
+                handleError('Error when getting all projects.'));
             });
         }
 
