@@ -415,17 +415,18 @@ namespace Artivity.Apid.Accounts
                             project = model.CreateResource<Project>(uri);
                         }
 
-                        string name = data.Name;
-
-                        if (!string.IsNullOrEmpty(name))
+                        if (data.Name is String)
                         {
-                            project.Name = name;
+                            project.Name = data.Name;
+                        }
+
+                        if (data.DeletionDate is DateTime)
+                        {
+                            project.DeletionDate = data.DeletionDate;
                         }
 
                         // Do not commit _after_ setting the revision.
                         project.Commit(revision);
-
-                        Logger.LogInfo("{0} - {1}", response.StatusCode, url);
 
                         return true;
                     }
