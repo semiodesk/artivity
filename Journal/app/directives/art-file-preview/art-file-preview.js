@@ -246,18 +246,17 @@
 
         /**
          * Creates a new comment collection. Resets the current comment.
-         * @param {String} entityUri 
-         * @param {String} influenceUri
          */
-        function createNewCollection(entityUri, influenceUri) {
+        function createNewCollection() {
             vm.currentCollection = {
-                influence: influenceUri,
-                entity: entityUri,
                 startTime: new Date(),
                 comments: []
             }
-            if( vm.canvasContainer != null )
+            if( vm.canvasContainer != null ){
                 vm.canvasContainer.removeAllChildren();
+                vm.stage.update();
+            }
+                
             vm.createNewComment();
         }
 
@@ -342,6 +341,7 @@
         function commit(){
             vm.currentCollection.endTime = new Date();
             vm.currentCollection.influence = vm.selectedDerivation.Uri;
+            vm.currentCollection.entity = vm.entity.Uri;
             commentService.post(vm.currentCollection).then(function(r){
                 vm.createNewCollection();
                 delete vm.comments[vm.selectedDerivation.Uri]
