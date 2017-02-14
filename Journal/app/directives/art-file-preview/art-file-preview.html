@@ -4,16 +4,20 @@
             <div class="table-layout">
                 <div class="row">
                     <ul class="list-view list-view-compact">
-                        <li class="list-item list-item-unstyled list-item-link project-item" ng-repeat="derivation in vm.derivations" ng-click="vm.selectDerivation(derivation)" ng-class="{selected: vm.selectedDerivation === derivation}">
+                        <li class="list-item list-item-unstyled list-item-link project-item" ng-repeat="derivation in vm.derivations" ng-class="{selected: vm.selectedDerivation === derivation}">
                             <div class="padding-x-xl padding-y-none" style="padding-right: 0 !important;">
                                 <div class="col expand">
-                                    <span class="label">{{derivation.AtTime}}</span>
+                                    <span class="label" ng-click="vm.selectDerivation(derivation)" >{{derivation.AtTime}}</span>
+
+                                    <div ng-if="vm.selectedDerivation === derivation" ng-repeat="comment in vm.comments[derivation.Uri]">
+                                        {{comment.Message}} <a ng-if="comment.Regions.length > 0" ng-click="vm.showRegions(comment)">Show</a>
+                                    </div>
                                 </div>
                             </div>
                         </li>
                     </ul>
                 </div>
-                <div class="row"><button class="btn-chromeless btn" ng-click="vm.Post()">Save</button></div>
+                <div class="row"><button class="btn-chromeless btn" ng-click="vm.commit()">Save</button></div>
                     <div class="row">
 				    <div class="ctl-comment">
 							<textarea id="msg-txt" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-model="vm.currentComment.text" required />
