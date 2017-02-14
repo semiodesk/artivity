@@ -9,7 +9,7 @@
         }
     };
 
-    function KeyboardInputHandlerDirectiveController(api, $scope, hotkeys, windowService) {
+    function KeyboardInputHandlerDirectiveController(api, $scope, hotkeys, windowService, syncService) {
         $scope.getUrlWithFile = function (file) {
             var url = window.location.href.split('#');
 
@@ -76,20 +76,36 @@
         });
 
         hotkeys.add({
-            combo: 'f12',
-            description: 'Open the SPARQL query editor view.',
+            combo: 'ctrl+shift+i',
+            description: 'Open development tools.',
             callback: function () {
-                var url = $scope.getUrlWithFragment('/query');
-
-                windowService.openWindow(url);
+                windowService.currentWindow().openDevTools();
             }
         });
 
         hotkeys.add({
-            combo: 'ctrl+i',
-            description: 'Opens the development tools.',
+            combo: 'f5',
+            description: 'Reload the current view.',
             callback: function () {
-                windowService.currentWindow().openDevTools();
+                windowService.reload();
+            }
+        });
+
+        hotkeys.add({
+            combo: 'f6',
+            description: 'Synchronize online accounts.',
+            callback: function () {
+                syncService.synchronize();
+            }
+        });
+
+        hotkeys.add({
+            combo: 'f12',
+            description: 'Open SPARQL query editor.',
+            callback: function () {
+                var url = $scope.getUrlWithFragment('/query');
+
+                windowService.openWindow(url);
             }
         });
     }

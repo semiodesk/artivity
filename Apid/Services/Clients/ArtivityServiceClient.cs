@@ -56,6 +56,10 @@ namespace Artivity.Apid.Accounts
     {
         #region Members
 
+        private IPlatformProvider _platformProvider;
+
+        private IModelProvider _modelProvider;
+
         private IArtivityServiceSynchronizationProvider _synchronizer;
 
         private bool _isSynchronizing;
@@ -79,6 +83,9 @@ namespace Artivity.Apid.Accounts
 
             ClientFeatures.Add(artf.SynchronizeUser);
             ClientFeatures.Add(artf.SynchronizeActivities);
+
+            _platformProvider = platformProvider;
+            _modelProvider = modelProvider;
 
             if (synchronizer != null)
             {
@@ -365,6 +372,9 @@ namespace Artivity.Apid.Accounts
 
         public async Task<bool> TryPullAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision)
         {
+            bool result1 = IsSubClassOf(prov.Activity, art.LeaveComment);
+            bool result2 = IsInstanceOf(prov.Activity, uri);
+
             string type = typeUri.AbsoluteUri;
 
             switch (type)
@@ -546,6 +556,9 @@ namespace Artivity.Apid.Accounts
 
         public async Task<bool> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision)
         {
+            bool result1 = IsSubClassOf(prov.Activity, art.LeaveComment);
+            bool result2 = IsInstanceOf(prov.Activity, uri);
+
             string type = typeUri.AbsoluteUri;
 
             switch (type)
@@ -704,6 +717,34 @@ namespace Artivity.Apid.Accounts
             {
                 throw new Exception("Could not retrieve JWT token from account authentication parameters.");
             }
+        }
+
+        private bool IsSubClassOf(Class superClass, Class subClass)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                ASK WHERE { @subClass rdfs:subClassOf @superClass . }
+            ");
+
+            query.Bind("@superClass", superClass);
+            query.Bind("@subClass", subClass);
+
+            // NOTE: Execute the query with inferencing enabled so that the 
+            // query evaluates the class inheritance in the ontology.
+            return _modelProvider.GetActivities().ExecuteQuery(query, true).GetAnwser();
+        }
+
+        private bool IsInstanceOf(Class type, Uri resource)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                ASK WHERE { @resource a @type . }
+            ");
+
+            query.Bind("@type", type);
+            query.Bind("@resource", resource);
+
+            // NOTE: Execute the query with inferencing enabled so that the 
+            // query evaluates the class inheritance in the ontology.
+            return _modelProvider.GetActivities().ExecuteQuery(query, true).GetAnwser();
         }
 
         #endregion

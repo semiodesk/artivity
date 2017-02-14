@@ -281,6 +281,12 @@ app.factory('api', function ($http) {
 				function (response) {
 					return response.data;
 				});
+		},
+		synchronize: function() {
+			return $http.get(endpoint + '/sync').then(
+				function(response) {
+					return response.data;
+				});
 		}
 	};
 });

@@ -111,6 +111,7 @@
 	<script type="text/javascript" src="app/directives/art-settings-apps/art-settings-apps.js"></script>
 	<script type="text/javascript" src="app/directives/art-settings-user/art-settings-user.js"></script>
 	<script type="text/javascript" src="app/directives/art-style-binder/art-style-binder.js"></script>
+	<script type="text/javascript" src="app/directives/art-sync-indicator/art-sync-indicator.js"></script>
 	<script type="text/javascript" src="app/directives/art-update-indicator/art-update-indicator.js"></script>
 	<script type="text/javascript" src="app/directives/art-window-controls/art-window-controls.js"></script>
 	<script type="text/javascript" src="app/directives/bs-switch/bs-switch.js"></script>
@@ -139,7 +140,10 @@
 	<div id="window-title">
 		<div art-window-controls></div>
 		<div class="window-title-btns pull-right">
-			<button class="btn-title btn-info" id="btn-update"><div art-update-indicator></div></button>
+			<button class="btn-title btn-info" id="btn-update"><art-update-indicator></art-update-indicator></button>
+		</div>
+		<div class="window-title-btns pull-right">
+			<button class="btn-title btn-info" id="btn-sync"><art-sync-indicator></art-sync-indicator></button>
 		</div>
 		<div id="window-title-text">
 			<span><img src="app/resources/images/artivity-66x20.png" width="66" height="20" alt="artivity"/></span>

@@ -9,6 +9,7 @@
             currentWindow: currentWindow,
             openWindow: openWindow,
             close: close,
+            reload: reload,
             setClosable: setClosable,
             setMinimizable: setMinimizable,
             setMaximizable: setMaximizable,
@@ -84,6 +85,10 @@
 
         function currentWindow() {
             return window;
+        }
+
+        function reload() {
+            window.reload();
         }
     }
 })();
