@@ -415,12 +415,22 @@ namespace Artivity.Apid.Accounts
                             project = model.CreateResource<Project>(uri);
                         }
 
-                        if (data.Name is String)
+                        if (data.Name != null)
                         {
                             project.Name = data.Name;
                         }
 
-                        if (data.DeletionDate is DateTime)
+                        if(data.CreationDate != null)
+                        {
+                            project.CreationDate = data.CreationDate;
+                        }
+
+                        if(data.ModificationDate != null)
+                        {
+                            project.ModificationDate = data.ModificationDate;
+                        }
+
+                        if (data.DeletionDate != null)
                         {
                             project.DeletionDate = data.DeletionDate;
                         }
