@@ -103,9 +103,10 @@ namespace Artivity.DataModel
 
         public void Commit(int revision)
         {
-            if (IsNew || CreationDate == null)
+            if (IsNew || CreationDate == DateTime.MinValue)
             {
                 CreationDate = DateTime.UtcNow;
+                DeletionDate = DateTime.MinValue;
             }
 
             ModificationDate = DateTime.UtcNow;
