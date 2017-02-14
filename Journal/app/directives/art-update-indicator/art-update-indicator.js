@@ -3,6 +3,7 @@
 
     function UpdateIndicatorDirective() {
         return {
+            restrict: 'E',
             template: '<i class="zmdi zmdi-cast" uib-tooltip="Update available." tooltip-placement="bottom"></i><span class="btn-label"></span>',
             controller: UpdateIndicatorDirectiveController,
             controllerAs: 't',

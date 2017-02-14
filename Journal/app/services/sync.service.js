@@ -1,27 +1,52 @@
 (function () {
+    'use strict';
+
     angular.module('app').factory('syncService', syncService);
 
-    function syncService() {
-        var serviceUrls = [ 'http://faubulous@localhost:8080/api/1.0/sync'];
+    syncService.$inject = ['api', '$http'];
 
-        return {
-            sync: sync
+    function syncService(api, $http) {
+        var t = {
+            // Private event dispatcher instance.
+            dispatcher: new EventDispatcher()
         };
 
-        function sync() {
-            for(var i = 0; i < serviceUrls.length; i++) {
-                var url = serviceUrls[i];
+        var service = {
+            endpoint: api.endpointUrl + 'sync',
+            mute: mute,
+            unmute: unmute,
+            on: on,
+            off: off,
+            synchronize: synchronize
+        };
 
-                console.log('Synchronizing with service:', url);
+        return service;
 
-                $http.get(url, function(response) {
-                    if(response.data) {
-                        console.log(' ', response.data.length, ' item(s)');
-                    }
-                }, function(response) {
-                    console.log('Connection error.');
-                });
-            }
+        function synchronize() {
+            t.dispatcher.raise('syncBegin');
+
+            api.synchronize().then(function() {
+                t.dispatcher.raise('syncEnd');
+            }, function() {
+                t.dispatcher.raise('syncError');
+                t.dispatcher.raise('syncEnd');
+            });
+        }
+
+        function mute() {
+            t.dispatcher.mute();
+        }
+
+        function unmute() {
+            t.dispatcher.unmute();
+        }
+
+        function on(event, callback) {
+            t.dispatcher.on(event, callback);
+        }
+
+        function off(event, callback) {
+            t.dispatcher.off(event, callback);
         }
     }
 })();
