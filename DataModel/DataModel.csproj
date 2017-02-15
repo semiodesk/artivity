@@ -113,8 +113,8 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Ontologies\art_old.ttl" />
-     <None Include="Ontologies\artf.ttl">
-         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Ontologies\artf.ttl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ontologies\art.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -220,17 +220,25 @@ namespace Artivity.Apid
         {
             using (IStore store = StoreFactory.CreateStore(_modelProvider.ConnectionString))
             {
-                PlatformProvider.Logger.LogInfo("Loading ontologies..");
+                // Get the path of the 'entry' (.exe) assembly which has a corresponding app.config file.
+                FileInfo executableFile = new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
 
-                FileInfo f = new FileInfo(System.Reflection.Assembly.GetAssembly(typeof(HttpService)).Location);
+                DirectoryInfo executableFolder = executableFile.Directory;
 
-                var dir = f.Directory;
-
-                string config = Path.Combine(dir.FullName, string.Format("{0}.config", f.Name));
+                string config = Path.Combine(executableFolder.FullName, string.Format("{0}.config", executableFile.Name));
 
                 try
                 {
-                    store.LoadOntologySettings(config, PlatformProvider.OntologyDir);
+                    if (File.Exists(config))
+                    {
+                        PlatformProvider.Logger.LogInfo("Loading ontologies from {0}..", config);
+
+                        store.LoadOntologySettings(config, PlatformProvider.OntologyDir);
+                    }
+                    else
+                    {
+                        PlatformProvider.Logger.LogError("Ontology configuration file does not exist: {0}", config);
+                    }
                 }
                 catch (Exception e)
                 {

@@ -372,26 +372,18 @@ namespace Artivity.Apid.Accounts
 
         public async Task<bool> TryPullAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision)
         {
-            bool result1 = IsSubClassOf(prov.Activity, art.LeaveComment);
-            bool result2 = IsInstanceOf(prov.Activity, uri);
-
-            string type = typeUri.AbsoluteUri;
-
-            switch (type)
+            if (IsInstanceOf(uri, art.Project))
             {
-                case ART.Project:
-                {
-                    return await TryPullProjectAsync(account, uri, revision);
-                }
-                case ART.CreateFile:
-                case ART.EditFile:
-                case PROV.Activity:
-                {
-                    return await TryPullActivityAsync(account, uri, revision);
-                }
+                return await TryPullProjectAsync(account, uri, revision);
             }
-
-            return false;
+            else if (IsInstanceOf(uri, prov.Activity))
+            {
+                return await TryPullActivityAsync(account, uri, revision);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private async Task<bool> TryPullProjectAsync(OnlineAccount account, Uri uri, int revision)
@@ -556,26 +548,18 @@ namespace Artivity.Apid.Accounts
 
         public async Task<bool> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision)
         {
-            bool result1 = IsSubClassOf(prov.Activity, art.LeaveComment);
-            bool result2 = IsInstanceOf(prov.Activity, uri);
-
-            string type = typeUri.AbsoluteUri;
-
-            switch (type)
+            if(IsInstanceOf(uri, art.Project))
             {
-                case ART.Project:
-                {
-                    return await TryPushProjectAsync(account, uri, revision);
-                }
-                case ART.CreateFile:
-                case ART.EditFile:
-                case PROV.Activity:
-                {
-                    return await TryPushActivityAsync(account, uri, revision);
-                }
+                return await TryPushProjectAsync(account, uri, revision);
             }
-
-            return false;
+            else if (IsInstanceOf(uri, prov.Activity))
+            {
+                return await TryPushActivityAsync(account, uri, revision);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private async Task<bool> TryPushProjectAsync(OnlineAccount account, Uri uri, int revision)
@@ -719,24 +703,10 @@ namespace Artivity.Apid.Accounts
             }
         }
 
-        private bool IsSubClassOf(Class superClass, Class subClass)
+        private bool IsInstanceOf(Uri resource, Class type)
         {
             ISparqlQuery query = new SparqlQuery(@"
-                ASK WHERE { @subClass rdfs:subClassOf @superClass . }
-            ");
-
-            query.Bind("@superClass", superClass);
-            query.Bind("@subClass", subClass);
-
-            // NOTE: Execute the query with inferencing enabled so that the 
-            // query evaluates the class inheritance in the ontology.
-            return _modelProvider.GetActivities().ExecuteQuery(query, true).GetAnwser();
-        }
-
-        private bool IsInstanceOf(Class type, Uri resource)
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                ASK WHERE { @resource a @type . }
+                ASK FROM art: WHERE { @resource a @type . }
             ");
 
             query.Bind("@type", type);
