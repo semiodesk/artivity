@@ -14,7 +14,7 @@
 
 art: rdf:type owl:Ontology ;
     dcterms:title "Artivity Ontology, Version 1.0"@en ;
-	dcterms:modified "2016-06-06"^^xsd:date ;
+	dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime ;
     dcterms:publisher <http://artivity.io/about> .
 
 nie:InformationElement rdfs:subClassOf art:Entity .
@@ -35,8 +35,8 @@ art:BoundingRectangle
 	rdfs:comment "An expression of the maximum extents of a 2-dimensional object (e.g. point, line, polygon) or set of objects within their 2-D coordinate system. In other words min(x), max(x), min(y), max(y)."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Minimum_bounding_rectangle> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:Canvas
 	rdf:type rdfs:Class ;
@@ -44,8 +44,8 @@ art:Canvas
     rdfs:label "Canvas"@en ;
 	rdfs:comment "An entity that defines the 2-dimensional extents of the printable or renderable region(s) of a document."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:CartesianCoordinateSystem
 	rdf:type rdfs:Class ;
@@ -54,8 +54,8 @@ art:CartesianCoordinateSystem
 	rdfs:comment "A coordinate system that specifies each point uniquely using n Cartesian coordinates which specify the point in an n-dimensional Euclidean space for any dimension n. These coordinates are equal, up to sign, to distances from the point to n mutually perpendicular hyperplanes."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Cartesian_coordinate_system> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:CoordinateSystem
 	rdf:type rdfs:Class ;
@@ -63,8 +63,8 @@ art:CoordinateSystem
 	rdfs:comment "A system which uses one or more numbers (coordinates) to uniquely determine the position of a point or other geometric element on a manifold such as Euclidean space."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Coordinate_system> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:CreateFile
 	rdf:type rdfs:Class ;
@@ -72,8 +72,8 @@ art:CreateFile
     rdfs:label "CreateFile"@en ;
 	rdfs:comment "An activity which resulted in a new file being generated."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:EditFile
 	rdf:type rdfs:Class ;
@@ -81,8 +81,8 @@ art:EditFile
     rdfs:label "EditFile"@en ;
 	rdfs:comment "An activity which may result in an existing file being revised and/or modified."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:DeleteFile
 	rdf:type rdfs:Class ;
@@ -90,8 +90,8 @@ art:DeleteFile
     rdfs:label "DeleteFile"@en ;
 	rdfs:comment "An activity which resulted in an existing file being deleted."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:Save
 	rdf:type rdfs:Class ;
@@ -99,8 +99,8 @@ art:Save
     rdfs:label "Save"@en ;
 	rdfs:comment "The revision of a file."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-02-04"^^xsd:date ;
-    dcterms:modified "2016-02-04"^^xsd:date .
+	dcterms:issued "2016-02-04T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-02-04T12:00:00Z"^^xsd:dateTime .
 
 art:EntityGroup
 	rdf:type rdfs:Class ;
@@ -108,8 +108,8 @@ art:EntityGroup
     rdfs:label "EntityGroup"@en ;
 	rdfs:comment "A set of entities."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:Layer
 	rdf:type rdfs:Class ;
@@ -117,16 +117,16 @@ art:Layer
     rdfs:label "Layer"@en ;
 	rdfs:comment "Establishes a depth hierarchy amongst separate entities of a 2-dimensional digital image."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:LengthUnit
 	rdf:type rdfs:Class ;
     rdfs:label "LengthUnit"@en ;
 	rdfs:comment "Refers to any discrete, pre-established length or distance having a constant magnitude which is used as a reference or convention to express linear dimension."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:PartialRenderingDataObject
 	rdf:type rdfs:Class ;
@@ -134,8 +134,8 @@ art:PartialRenderingDataObject
     rdfs:label "PartialRenderingDataObject"@en ;
 	rdfs:comment "Rasterized bitmap data of a specific region of an image."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:Point
 	rdf:type rdfs:Class ;
@@ -144,8 +144,8 @@ art:Point
 	rdfs:comment "An entity that captures the notion of a unique location in Euclidean space."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Point_(geometry)> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:Rectangle
 	rdf:type rdfs:Class ;
@@ -155,8 +155,8 @@ art:Rectangle
 	rdfs:comment "A parallelogram containing a right angle."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Rectangle> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:Redo
 	rdf:type rdfs:Class ;
@@ -164,8 +164,8 @@ art:Redo
     rdfs:label "Redo"@en ;
 	rdfs:comment "The re-generation of a formerly undone entity influence."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:RenderingDataObject
 	rdf:type rdfs:Class ;
@@ -173,8 +173,8 @@ art:RenderingDataObject
     rdfs:label "RenderingDataObject"@en ;
 	rdfs:comment "Rasterized bitmap data of the entire extents of an image."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:Undo
 	rdf:type rdfs:Class ;
@@ -182,8 +182,8 @@ art:Undo
     rdfs:label "Undo"@en ;
 	rdfs:comment "The invalidation of an existing entity influence."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:ViewFile
 	rdf:type rdfs:Class ;
@@ -191,8 +191,8 @@ art:ViewFile
     rdfs:label "ViewFile"@en ;
 	rdfs:comment "An activity in which a file was viewed by one or more users."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:Viewport
 	rdf:type rdfs:Class ;
@@ -201,8 +201,8 @@ art:Viewport
 	rdfs:comment "A rectangle that represents the visible portion of a document."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Viewport> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:WebBrowsing
 	rdf:type rdfs:Class ;
@@ -210,8 +210,8 @@ art:WebBrowsing
     rdfs:label "WebBrowsing"@en ;
 	rdfs:comment "An activity in which one or more websites were viewed by one or more users."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:aboveLayer
 	rdf:type rdf:Property ;
@@ -220,8 +220,8 @@ art:aboveLayer
     rdfs:isDefinedBy art: ;
 	rdfs:domain art:Layer ;
 	rdfs:range art:Layer ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:boundaries
 	rdf:type rdf:Property ;
@@ -231,8 +231,8 @@ art:boundaries
 	rdfs:domain prov:Entity ;
 	rdfs:domain prov:EntityInfluence ;
 	rdfs:range art:BoundingRectangle ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:canvas
 	rdf:type rdf:Property ;
@@ -242,8 +242,8 @@ art:canvas
 	rdfs:domain nfo:VectorImage ;
 	rdfs:domain nfo:RasterImage ;
 	rdfs:range art:Canvas ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:colorCode
 	rdf:type rdf:Property ;
@@ -253,8 +253,8 @@ art:colorCode
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Web_colors#Hex_triplet> ;
 	rdfs:domain prov:Entity ;
 	rdfs:range xsd:string ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:coordinateDimension
 	rdf:type rdf:Property ;
@@ -263,8 +263,8 @@ art:coordinateDimension
     rdfs:isDefinedBy art: ;
 	rdfs:domain art:CoordinateSystem ;
 	rdfs:range xsd:integer ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:coordinateSystem
 	rdf:type rdf:Property ;
@@ -274,8 +274,8 @@ art:coordinateSystem
 	rdfs:domain nfo:VectorImage ;
 	rdfs:domain nfo:RasterImage ;
 	rdfs:range art:CoordinateSystem ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:depth
 	rdf:type rdf:Property ;
@@ -284,8 +284,8 @@ art:depth
     rdfs:isDefinedBy art: ;
 	rdfs:domain geo:Geometry ;
 	rdfs:range xsd:double ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:executable
 	rdf:type rdf:Property ;
@@ -294,8 +294,8 @@ art:executable
     rdfs:isDefinedBy art: ;
 	rdfs:domain prov:SoftwareAgent ;
 	rdfs:range nfo:FileDataObject ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:group
 	rdf:type rdf:Property ;
@@ -304,8 +304,8 @@ art:group
     rdfs:isDefinedBy art: ;
 	rdfs:domain prov:Entity ;
 	rdfs:range art:EntityGroup ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:height
 	rdf:type rdf:Property ;
@@ -314,8 +314,8 @@ art:height
     rdfs:isDefinedBy art: ;
 	rdfs:domain geo:Geometry ;
 	rdfs:range xsd:double ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:layer
 	rdf:type rdf:Property ;
@@ -324,8 +324,8 @@ art:layer
     rdfs:isDefinedBy art: ;
 	rdfs:domain prov:Entity ;
 	rdfs:range art:Layer ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:lengthUnit
 	rdf:type rdf:Property ;
@@ -334,8 +334,8 @@ art:lengthUnit
     rdfs:isDefinedBy art: ;
 	rdfs:domain art:CoordinateSystem ;
 	rdfs:range art:LengthUnit ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:loggingEnabled
 	rdf:type rdf:Property ;
@@ -344,8 +344,8 @@ art:loggingEnabled
     rdfs:isDefinedBy art: ;
 	rdfs:domain prov:SoftwareAgent ;
 	rdfs:range xsd:boolean ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:parentLayer
 	rdf:type rdf:Property ;
@@ -354,8 +354,8 @@ art:parentLayer
     rdfs:isDefinedBy art: ;
 	rdfs:domain art:Layer ;
 	rdfs:range art:Layer ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:pluginFolder
 	rdf:type rdf:Property ;
@@ -364,8 +364,8 @@ art:pluginFolder
     rdfs:isDefinedBy art: ;
 	rdfs:domain prov:SoftwareAgent ;
 	rdfs:range nfo:Folder ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:position
 	rdf:type rdf:Property ;
@@ -374,8 +374,8 @@ art:position
     rdfs:isDefinedBy art: ;
 	rdfs:domain geo:Geometry ;
 	rdfs:range art:Point ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:region
 	rdf:type rdf:Property ;
@@ -383,8 +383,8 @@ art:region
 	rdfs:comment "Specifies the shape and location of something in Euclidean space."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:range geo:Geometry ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:renderedAs
 	rdf:type rdf:Property ;
@@ -393,8 +393,8 @@ art:renderedAs
     rdfs:isDefinedBy art: ;
 	rdfs:range geo:Geometry ;
 	skos:note "Artivity may record bitmap data for every influence to a document. The bitmaps are stored in PNG files and may either contain a rendering of the whole image (art:RenderingDataObject) or only of the parts (art:PartialRenderingDataObject) that have been changed. For the latter it may be required to define along a position and the extents of the parts that have changed."@en ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:reverted
 	rdf:type rdf:Property ;
@@ -403,8 +403,8 @@ art:reverted
     rdfs:isDefinedBy art: ;
 	rdfs:range prov:EntityInfluence ;
 	rdfs:domain prov:EntityInfluence ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:restored
 	rdf:type rdf:Property ;
@@ -413,8 +413,8 @@ art:restored
     rdfs:isDefinedBy art: ;
 	rdfs:range prov:EntityInfluence ;
 	rdfs:domain prov:EntityInfluence ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:selectedGroup
 	rdf:type rdf:Property ;
@@ -423,8 +423,8 @@ art:selectedGroup
     rdfs:isDefinedBy art: ;
 	rdfs:domain prov:EntityInfluence ;
 	rdfs:range art:EntityGroup ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 	
 art:selectedLayer
 	rdf:type rdf:Property ;
@@ -433,8 +433,8 @@ art:selectedLayer
     rdfs:isDefinedBy art: ;
 	rdfs:domain prov:EntityInfluence ;
 	rdfs:range art:Layer ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:transformationMatrix
 	rdf:type rdf:Property ;
@@ -446,8 +446,8 @@ art:transformationMatrix
 	rdfs:domain geo:Geometry ;
 	rdfs:domain art:CoordinateSystem ;
 	rdfs:range xsd:string ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:viewport
 	rdf:type rdf:Property ;
@@ -456,8 +456,8 @@ art:viewport
     rdfs:isDefinedBy art: ;
 	rdfs:domain prov:EntityInfluence ;
 	rdfs:range art:Viewport ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:width
 	rdf:type rdf:Property ;
@@ -466,8 +466,8 @@ art:width
     rdfs:isDefinedBy art: ;
 	rdfs:domain geo:Geometry ;
 	rdfs:range xsd:double ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:x
 	rdf:type rdf:Property ;
@@ -476,8 +476,8 @@ art:x
     rdfs:isDefinedBy art: ;
 	rdfs:domain art:Point ;
 	rdfs:range xsd:double ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:y
 	rdf:type rdf:Property ;
@@ -486,8 +486,8 @@ art:y
     rdfs:isDefinedBy art: ;
 	rdfs:domain art:Point ;
 	rdfs:range xsd:double ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:z
 	rdf:type rdf:Property ;
@@ -496,8 +496,8 @@ art:z
     rdfs:isDefinedBy art: ;
 	rdfs:domain art:Point ;
 	rdfs:range xsd:double ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:zoomFactor
 	rdf:type rdf:Property ;
@@ -506,8 +506,8 @@ art:zoomFactor
     rdfs:isDefinedBy art: ;
 	rdfs:domain art:Viewport ;
 	rdfs:range xsd:double ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 # INSTANCES 
 
@@ -523,8 +523,8 @@ art:cm
 	rdfs:comment "A unit of length in the metric system, equal to one hundredth of a metre."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Centimetre> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:ft
 	rdf:type art:LengthUnit ;
@@ -532,8 +532,8 @@ art:ft
 	rdfs:comment "A unit of length in the imperial and US customary systems of measurement. Since 1959, the international foot was defined as 0.3048 Wikipedia: meters exactly."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Foot_(unit)> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 	
 art:in
 	rdf:type art:LengthUnit ;
@@ -541,8 +541,8 @@ art:in
 	rdfs:comment "A unit of length in the imperial and US customary systems of measurement. Since 1959, the international yard was defined as 0.9144 metres exactly."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Inch> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:m
 	rdf:type art:LengthUnit ;
@@ -550,8 +550,8 @@ art:m
 	rdfs:comment "The base unit of length in the International System of Units (SI), the modern form of the metric system."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Metre> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:mm
 	rdf:type art:LengthUnit ;
@@ -559,8 +559,8 @@ art:mm
 	rdfs:comment "A unit of length in the metric system, equal to one thousandth of a metre."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Millimetre> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:pt
 	rdf:type art:LengthUnit ;
@@ -568,8 +568,8 @@ art:pt
 	rdfs:comment "The smallest unit of measure in typography. The desktop publishing point is defined as 1⁄72 of an international inch (about 0.353 mm)."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Point_(typography)> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:px
 	rdf:type art:LengthUnit ;
@@ -577,8 +577,8 @@ art:px
 	rdfs:comment "A physical point in a raster image, or the smallest addressable element in an all points addressable display device."@en ;
     rdfs:isDefinedBy art: ;
 	rdfs:seeAlso <https://en.wikipedia.org/wiki/Pixel> ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 #--- Unsanitized additions 
 
@@ -587,24 +587,24 @@ art:LeaveComment a rdfs:Class ;
     rdfs:label "LeaveComment"@en ;
 	rdfs:comment "Describes the activity of leaving a comment."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2017-02-09"^^xsd:date ;
-    dcterms:modified "2017-02-09"^^xsd:date .
+	dcterms:issued "2017-02-09T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2017-02-09T12:00:00Z"^^xsd:dateTime .
 
 art:Comment a rdfs:Class ;
     rdfs:subClassOf prov:Entity ;
     rdfs:label "Comment"@en ;
 	rdfs:comment "A comment is a message pertaining a certain subject."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2017-02-04"^^xsd:date ;
-    dcterms:modified "2017-02-04"^^xsd:date .
+	dcterms:issued "2017-02-04T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2017-02-04T12:00:00Z"^^xsd:dateTime .
  
 art:Project a rdfs:Class ;
   rdfs:subClassOf prov:Collection ;
   rdfs:label "Project" ;
   rdfs:comment "A collaborative enterprise, involving research or design, that is planned to achieve a particular aim." ;
   rdfs:isDefinedBy art: ;
-  dcterms:issued "2017-02-04"^^xsd:date ;
-  dcterms:modified "2017-02-04"^^xsd:date .
+  dcterms:issued "2017-02-04T12:00:00Z"^^xsd:dateTime ;
+  dcterms:modified "2017-02-04T12:00:00Z"^^xsd:dateTime .
 
 art:View a rdfs:Class ;
     rdfs:label "View" ;
@@ -694,7 +694,7 @@ art:DatabaseState a rdfs:Class ;
 art:atTime a rdf:Property ;
     rdfs:label "atTime" ;
     rdfs:domain art:DatabaseState ;
-    rdfs:range xsd:dateTime .
+    rdfs:range xsd:dateTimeTime .
 
 art:factsCount a rdf:Property ;
     rdfs:label "factsCount" ;

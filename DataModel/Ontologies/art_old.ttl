@@ -36,7 +36,7 @@ art:DatabaseState a rdfs:Class ;
 art:atTime a rdf:Property ;
     rdfs:label "atTime" ;
     rdfs:domain art:DatabaseState ;
-    rdfs:range xsd:dateTime .
+    rdfs:range xsd:dateTimeTime .
 
 art:factsCount a rdf:Property ;
     rdfs:label "factsCount" ;
@@ -337,8 +337,8 @@ art:PartialRenderingDataObject
     rdfs:label "PartialRenderingDataObject"@en ;
 	rdfs:comment "Rasterized bitmap data of a specific region of an image."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
 art:RenderingDataObject
 	rdf:type rdfs:Class ;
@@ -346,8 +346,8 @@ art:RenderingDataObject
     rdfs:label "RenderingDataObject"@en ;
 	rdfs:comment "Rasterized bitmap data of the entire extents of an image."@en ;
     rdfs:isDefinedBy art: ;
-	dcterms:issued "2016-06-06"^^xsd:date ;
-    dcterms:modified "2016-06-06"^^xsd:date .
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
     
 art:Project a rdfs:Class;
   rdfs:label "Project";

@@ -870,7 +870,7 @@ When :x prov:mentionOf :y and :y is described in Bundle :b, the triple :x prov:a
     <prov:component>entities-activities</prov:component>
     <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#EntityInfluence"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/prov-o#"/>
-    <rdfs:comment xml:lang="en">An instance of prov:Start provides additional descriptions about the binary prov:wasStartedBy relation from some started prov:Activity to an prov:Entity that started it. For example, :foot_race prov:wasStartedBy :bang; prov:qualifiedStart [ a prov:Start; prov:entity :bang; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTime ] .</rdfs:comment>
+    <rdfs:comment xml:lang="en">An instance of prov:Start provides additional descriptions about the binary prov:wasStartedBy relation from some started prov:Activity to an prov:Entity that started it. For example, :foot_race prov:wasStartedBy :bang; prov:qualifiedStart [ a prov:Start; prov:entity :bang; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTimeTime ] .</rdfs:comment>
     <prov:dm rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://www.w3.org/TR/2013/REC-prov-dm-20130430/#term-Start</prov:dm>
     <prov:category>qualified</prov:category>
     <prov:n rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://www.w3.org/TR/2013/REC-prov-n-20130430/#expression-Start</prov:n>
@@ -882,7 +882,7 @@ When :x prov:mentionOf :y and :y is described in Bundle :b, the triple :x prov:a
     <prov:dm rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://www.w3.org/TR/2013/REC-prov-dm-20130430/#term-End</prov:dm>
     <rdfs:label>End</rdfs:label>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/prov-o#"/>
-    <rdfs:comment xml:lang="en">An instance of prov:End provides additional descriptions about the binary prov:wasEndedBy relation from some ended prov:Activity to an prov:Entity that ended it. For example, :ball_game prov:wasEndedBy :buzzer; prov:qualifiedEnd [ a prov:End; prov:entity :buzzer; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTime ].</rdfs:comment>
+    <rdfs:comment xml:lang="en">An instance of prov:End provides additional descriptions about the binary prov:wasEndedBy relation from some ended prov:Activity to an prov:Entity that ended it. For example, :ball_game prov:wasEndedBy :buzzer; prov:qualifiedEnd [ a prov:End; prov:entity :buzzer; :foo :bar; prov:atTime '2012-03-09T08:05:08-05:00'^^xsd:dateTimeTime ].</rdfs:comment>
     <prov:component>entities-activities</prov:component>
     <prov:unqualifiedForm rdf:resource="http://www.w3.org/ns/prov#wasEndedBy"/>
     <prov:category>qualified</prov:category>
@@ -1074,7 +1074,7 @@ A primary source relation is a particular case of derivation of secondary materi
     <prov:component>entities-activities</prov:component>
     <rdfs:label>atTime</rdfs:label>
     <prov:unqualifiedForm rdf:resource="http://www.w3.org/ns/prov#startedAtTime"/>
-    <rdfs:comment xml:lang="en">The time at which an InstantaneousEvent occurred, in the form of xsd:dateTime.</rdfs:comment>
+    <rdfs:comment xml:lang="en">The time at which an InstantaneousEvent occurred, in the form of xsd:dateTimeTime.</rdfs:comment>
     <prov:sharesDefinitionWith rdf:resource="http://www.w3.org/ns/prov#InstantaneousEvent"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
     <prov:unqualifiedForm rdf:resource="http://www.w3.org/ns/prov#invalidatedAtTime"/>

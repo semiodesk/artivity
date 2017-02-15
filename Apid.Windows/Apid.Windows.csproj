@@ -105,6 +105,7 @@
   <ItemGroup>
     <None Include="app.config">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="log.config.debug">
       <SubType>Designer</SubType>
