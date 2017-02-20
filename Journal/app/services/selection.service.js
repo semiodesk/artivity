@@ -20,6 +20,7 @@
             selectedItems: selectedItems,
             selectNext: selectNext,
             selectPrev: selectPrev,
+            clear: clear,
             mute: mute,
             unmute: unmute,
             on: on,
@@ -84,6 +85,16 @@
 
             if (0 < i) {
                 selectedItem(t.dataContext[i - 1]);
+            }
+        }
+
+        function clear() {
+            if(t.selectedItem) {
+                selectedItem(null);
+            }
+
+            if (t.selectedItems && t.selectedItems.length > 0) {
+                selectedItems([]);
             }
         }
 

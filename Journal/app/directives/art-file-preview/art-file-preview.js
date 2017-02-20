@@ -7,7 +7,7 @@
             scope: {},
             templateUrl: 'app/directives/art-file-preview/art-file-preview.html',
             controller: FilePreviewDirectiveController,
-            controllerAs: 'vm',
+            controllerAs: 't',
             link: function (scope, element, attr, ctrl) {
                 ctrl.setFile(attr.file);
             }
@@ -17,33 +17,18 @@
     angular.module('app').controller('FilePreviewDirectiveController', FilePreviewDirectiveController);
 
     function FilePreviewDirectiveController(api, $scope, entityService, derivationService, commentService) {
-        var vm = this;
+        var t = this;
 
-        vm.imageFileId = null;
-        vm.entity = null;
-        vm.derivations = [];
-        vm.comments = {};
-        vm.selectedDerivation = null;
-        vm.setFile = setFile;
-        vm.selectDerivation = selectDerivation;
-        vm.loadDerivations = loadDerivations;
-        vm.loadImages = loadImages;
-        vm.createNewCollection = createNewCollection;
-        vm.createNewComment = createNewComment;
-        vm.saveCurrentComment = saveCurrentComment;
-        vm.selectComment = selectComment;
-        vm.removeComment = removeComment;
-        vm.setRectangleMode = setRectangleMode;
-        vm.setPanMode = setPanMode;
-        vm.commit = commit;
-        vm.showRegions = showRegions;
-        vm.hideRegions = hideRegions;
-        vm.stage = null;
-        vm.currentCollection = null;
-        vm.currentComment = null;
-        vm.canvasContainer = null;
-        vm.commentContainer = null;
-        vm.imageContainer = null;
+        t.setFile = setFile;
+        t.entity = null;
+        t.derivations = [];
+
+        t.stage = new createjs.Stage("canvas");
+        t.layers = {
+            image: new createjs.Container(),
+            canvas: new createjs.Container(),
+            comments: new createjs.Container()
+        };
 
         initialize();
 
@@ -51,147 +36,65 @@
             var canvas = document.getElementById("canvas");
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            vm.stage = new createjs.Stage("canvas");
 
             initializeCanvas(canvas);
-            initializeCommenting();
-            vm.imageContainer = new createjs.Container();
-            vm.canvasContainer = new createjs.Container();
-            vm.commentContainer = new createjs.Container()
-            vm.stage.addChild(vm.imageContainer, vm.canvasContainer, vm.commentContainer);
+
+            t.stage.autoClear = true;
+            t.stage.autoFit = true;
+            t.stage.addChild(t.layers.image);
+            t.stage.addChild(t.layers.canvas);
+            t.stage.addChild(t.layers.comments);
         }
-
-        function setFile(file) {
-            imageFileId = file;
-            entityService.getById(imageFileId).then(function (res) {
-                vm.entity = res;
-                vm.currentCollection.entity = res.Uri;
-                if (vm.entity.Revisions != null)
-                    loadDerivations();
-            });
-        }
-
-        function loadDerivations() {
-            var promises = [];
-            vm.entity.Revisions.forEach(function (item) {
-                var p = derivationService.getById(item);
-
-                p.then(function (res) {
-                    res.images = [];
-                    res.RenderedAs.forEach(function (img) {
-                        img.url = derivationService.getImageUrl(img.Uri);
-                        res.images.push(img);
-
-                    });
-                    vm.derivations.push(res);
-
-                });
-                promises.push(p);
-            })
-            Promise.all(promises).then(function () {
-                if (vm.selectDerivationed == null) {
-                    vm.selectDerivation(vm.derivations[0]);
-                }
-                $scope.$apply();
-            });
-        }
-
-        function selectDerivation(derivation) {
-            vm.selectedDerivation = derivation;
-            vm.influence = derivation.Uri;
-            vm.loadImages(derivation);
-            loadComments(derivation);
-            hideRegions();
-        }
-
-        function loadImages(deriv) {
-            vm.imageContainer.removeAllChildren();
-            vm.stage.update();
-            deriv.images.forEach(function (img) {
-                var image = new Image();
-                image.src = img.url;
-                image.onload = function handleImageLoad(event) {
-                    var image = event.target;
-                    var bitmap = new createjs.Bitmap(image);
-                    bitmap.x = img.Region.x;
-                    bitmap.y = -img.Region.y;
-                    vm.imageContainer.addChild(bitmap);
-                    vm.stage.update();
-                };
-            });
-
-        }
-
-        function loadComments(deriv){
-            if( !vm.comments.hasOwnProperty(deriv.Uri)){
-                commentService.get(deriv.Uri).then(function(data){
-                    vm.comments[deriv.Uri] = data;
-                });
-            }
-        }
-
-        function showRegions(comment){
-            vm.hideRegions();
-            for (i = comment.Regions.length - 1; i >= 0; i--) {
-                region = comment.Regions[i];
-                var square = new createjs.Shape();
-                square.graphics.setStrokeStyle(1).beginStroke("#00FF00").drawRect(region.x, region.y, region.Width, region.Height);
-                vm.commentContainer.addChild(square);
-            }
-             vm.stage.update();
-        }
-
-        function hideRegions(){
-            vm.commentContainer.removeAllChildren();
-             vm.stage.update();
-        }
-
 
         function initializeCanvas(canvas) {
             canvas.addEventListener("mousewheel", MouseWheelHandler, false);
             canvas.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
 
             var zoom;
+
             function MouseWheelHandler(e) {
-                if (Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail))) > 0)
+                if (Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail))) > 0) {
                     zoom = 1.1;
-                else
+                } else {
                     zoom = 1 / 1.1;
-                var local = vm.stage.globalToLocal(vm.stage.mouseX, vm.stage.mouseY);
-                vm.stage.regX = local.x;
-                vm.stage.regY = local.y;
-                vm.stage.x = vm.stage.mouseX;
-                vm.stage.y = vm.stage.mouseY;
-                vm.stage.scaleX = vm.stage.scaleY *= zoom;
+                }
 
-                vm.stage.update();
-
+                var local = t.stage.globalToLocal(t.stage.mouseX, t.stage.mouseY);
+                t.stage.regX = local.x;
+                t.stage.regY = local.y;
+                t.stage.x = t.stage.mouseX;
+                t.stage.y = t.stage.mouseY;
+                t.stage.scaleX = t.stage.scaleY *= zoom;
+                t.stage.update();
             }
+
             setPanMode();
         }
 
         function setPanMode() {
-            vm.stage.removeAllEventListeners("stagemousedown");
-            vm.stage.addEventListener("stagemousedown", function (e) {
-                var offset = { x: vm.stage.x - e.stageX, y: vm.stage.y - e.stageY };
-                vm.stage.addEventListener("stagemousemove", function (ev) {
-                    vm.stage.x = ev.stageX + offset.x;
-                    vm.stage.y = ev.stageY + offset.y;
-                    vm.stage.update();
-                });
-                vm.stage.addEventListener("stagemouseup", function () {
-                    vm.stage.removeAllEventListeners("stagemousemove");
+            t.stage.removeAllEventListeners("stagemousedown");
+            t.stage.addEventListener("stagemousedown", function (e) {
+                var offset = {
+                    x: t.stage.x - e.stageX,
+                    y: t.stage.y - e.stageY
+                };
+
+                t.stage.addEventListener("stagemousemove", function (ev) {
+                    t.stage.x = ev.stageX + offset.x;
+                    t.stage.y = ev.stageY + offset.y;
+                    t.stage.update();
                 });
 
+                t.stage.addEventListener("stagemouseup", function () {
+                    t.stage.removeAllEventListeners("stagemousemove");
+                });
             });
         }
 
-
         function setRectangleMode() {
-
-            vm.stage.removeAllEventListeners("stagemousedown");
-            vm.stage.addEventListener("stagemousedown", function (e) {
-                var offset = vm.stage.globalToLocal(e.stageX, e.stageY)
+            t.stage.removeAllEventListeners("stagemousedown");
+            t.stage.addEventListener("stagemousedown", function (e) {
+                var offset = t.stage.globalToLocal(e.stageX, e.stageY)
                 var width = 1;
                 var height = 1;
                 var color = "#0000FF";
@@ -202,26 +105,26 @@
                 square.graphics.setStrokeStyle(1).beginStroke(color).drawRect(offset.x, offset.y, width, height);
 
                 square.name = "marker" + new Date().valueOf();
-                vm.stage.addEventListener("stagemousemove", function (ev) {
+                t.stage.addEventListener("stagemousemove", function (ev) {
                     if (added == false) {
-                        vm.canvasContainer.addChild(square);
+                        t.layers.canvas.addChild(square);
                         added = true;
                     }
-                    var loc = vm.stage.globalToLocal(ev.stageX, ev.stageY);
+                    var loc = t.stage.globalToLocal(ev.stageX, ev.stageY);
                     width = loc.x - offset.x;
                     height = loc.y - offset.y;
 
                     square.graphics.clear().setStrokeStyle(1).beginStroke(color).drawRect(offset.x, offset.y, width, height);
-                    vm.stage.update();
+                    t.stage.update();
                 });
-                vm.stage.addEventListener("stagemouseup", function () {
-                    vm.stage.removeAllEventListeners("stagemousemove");
+                t.stage.addEventListener("stagemouseup", function () {
+                    t.stage.removeAllEventListeners("stagemousemove");
                     if (circle == null && added == true) {
                         circle = new createjs.Shape();
                         circle.graphics.setStrokeStyle(2).beginStroke("#000000").beginFill("#FF0000").drawCircle(offset.x, offset.y, 10);
                         circle.on("click", function () {
-                            vm.canvasContainer.removeChild(square, circle);
-                            vm.stage.update();
+                            t.layers.canvas.removeChild(square, circle);
+                            t.stage.update();
                         });
                         addMarker({
                             x: offset.x,
@@ -230,125 +133,74 @@
                             height: height,
                             color: color
                         });
-                        vm.canvasContainer.addChild(circle);
-                        vm.stage.update();
+                        t.layers.canvas.addChild(circle);
+                        t.stage.update();
                     }
 
                 });
-
-
             });
         }
 
-        function setPathMode() {
-
-        }
-
-        /**
-         * Creates a new comment collection. Resets the current comment.
-         */
-        function createNewCollection() {
-            vm.currentCollection = {
-                startTime: new Date(),
-                comments: []
-            }
-            if( vm.canvasContainer != null ){
-                vm.canvasContainer.removeAllChildren();
-                vm.stage.update();
-            }
-                
-            vm.createNewComment();
-        }
-
-        /**
-         * Creates a new comment. Removes any previous unsafed comment.
-         */
-        function createNewComment() {
-            vm.currentComment = { text: '', marker: [] };
-            vm.currentComment.id = vm.currentCollection.comments.length;
-            vm.currentComment.time = new Date();
-            vm.currentCollection.comments.push(vm.currentComment);
-        }
-
-        /**
-         * Saves current comment tothe collection.
-         */
-        function saveCurrentComment() {
-            if (vm.currentCollection != null) {
-
-                vm.currentCollection.comments[vm.currentComment.id] = vm.currentComment;
-                createNewComment();
-                vm.canvasContainer.removeAllChildren();
-                vm.stage.update();
-            }
-        }
-
-        function loadMarker(m) {
-            var square = new createjs.Shape();
-            square.graphics.setStrokeStyle(1).beginStroke(m.color).drawRect(m.x, m.y, m.width, m.height);
-            var circle = new createjs.Shape();
-            circle.graphics.setStrokeStyle(2).beginStroke("#000000").beginFill("#FF0000").drawCircle(m.x, m.y, 10);
-            circle.on("click", function () {
-                vm.canvasContainer.removeChild(square, circle);
-                vm.stage.update();
-            });
-            vm.canvasContainer.addChild(square, circle);
-        }
-
-        /**
-         * Selects a comment from the collection and sets it as current.
-         * @param {Number} index
-         */
-        function selectComment(index) {
-            if (vm.currentCollection != null) {
-                vm.currentComment = vm.currentCollection.comments[index];
-
-                vm.canvasContainer.removeAllChildren();
-                for (i = vm.currentComment.marker.length - 1; i >= 0; i--) {
-
-                    var m = vm.currentComment.marker[i];
-                    loadMarker(m);
-
+        function setFile(entityUri) {
+            api.getCanvasRenderingsFromEntity(entityUri).then(function(data) {
+                for(i = 0; i < data.length; i++) {
+                    console.log(data[i]);
                 }
+            });
 
-                vm.stage.update();
-            }
+            entityService.getById(entityUri).then(function (response) {
+                t.entity = response;
+
+                if (t.entity.Revisions != null) {
+                    loadDerivations();
+                }
+            });
         }
 
-        /**
-         * Removes a comment from the collection.
-         * @param {Number} index
-         */
-        function removeComment(index) {
-            vm.currentCollection.comments.splice(index, 1);
+        function loadDerivations() {
+            var promises = [];
+
+            t.entity.Revisions.forEach(function (item) {
+                var p = derivationService.getById(item);
+
+                promises.push(p);
+
+                p.then(function (derivation) {
+                    derivation.images = [];
+                    derivation.RenderedAs.forEach(function (rendering) {
+                        rendering.url = derivationService.getImageUrl(rendering.Uri);
+
+                        derivation.images.push(rendering);
+                    });
+
+                    t.derivations.push(derivation);
+                });
+            });
+
+            Promise.all(promises).then(function () {
+                if (t.derivations.length > 0) {
+                    render(t.derivations[0]);
+                }
+            });
         }
 
-        function initializeCommenting() {
-            vm.createNewCollection();
-        }
+        function render(derivation) {
+            t.layers.image.removeAllChildren();
 
-        function addMarker(marker) {
-            vm.currentComment.marker.push(marker);
-        }
+            t.stage.update();
 
-        function removeMarker(markerName) {
-            for (i = vm.currentComment.marker.length - 1; i >= 0; i--) {
-                if (vm.currentComment.marker[i].name == markerName)
-                    vm.currentComment.marker.splice(i, 1);
-            }
+            derivation.images.forEach(function (img) {
+                var image = new Image();
+                image.src = img.url;
+                image.onload = function handleImageLoad(event) {
+                    var image = event.target;
+                    var bitmap = new createjs.Bitmap(image);
+                    bitmap.x = img.Region.x;
+                    bitmap.y = -img.Region.y;
+                    t.layers.image.addChild(bitmap);
+                    t.stage.update();
+                };
+            });
         }
-
-        function commit(){
-            vm.currentCollection.endTime = new Date();
-            vm.currentCollection.influence = vm.selectedDerivation.Uri;
-            vm.currentCollection.entity = vm.entity.Uri;
-            commentService.post(vm.currentCollection).then(function(r){
-                vm.createNewCollection();
-                delete vm.comments[vm.selectedDerivation.Uri]
-                loadComments(vm.selectedDerivation);
-            })
-            
-        }
-
     }
 })();

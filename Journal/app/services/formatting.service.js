@@ -8,8 +8,15 @@
             getFormattedTimeFromNow: getFormattedTimeFromNow
         }
 
-        function getFormattedTime(time) {
-            return moment(time).format('hh:mm:ss');
+        function getFormattedTime(time, format) {
+            if(format)
+            {
+                return moment(time).format(format);
+            }
+            else
+            {
+                return moment(time).format('hh:mm:ss');
+            }
         };
 
         function getFormattedDate(time) {

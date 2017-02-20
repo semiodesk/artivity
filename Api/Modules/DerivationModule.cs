@@ -45,6 +45,7 @@ namespace Artivity.Api.Modules
             Get["/rendering"] = parameters =>
             {
                 LoadCurrentUser();
+
                 string uri = Request.Query.uri;
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
@@ -60,40 +61,45 @@ namespace Artivity.Api.Modules
 
         protected Response GetImage(UriRef rendering)
         {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT DISTINCT ?entity, ?name WHERE
+                {
+                    ?entity prov:qualifiedRevision / art:renderedAs @rendering .
 
-            var query = new SparqlQuery(string.Format(@"SELECT DISTINCT ?entity, ?name WHERE {{
- ?s1 <http://w3id.org/art/terms/1.0/renderedAs> <{0}> . 
- ?entity <http://www.w3.org/ns/prov#qualifiedRevision> ?s1 . 
- <{0}> rdfs:label ?name. }} ", rendering.AbsoluteUri), true);
+                    @rendering rdfs:label ?name .
+                }
+                LIMIT 1");
 
-            var q = UserModel.ExecuteQuery(query, true);
-            var e = q.GetBindings().ToList();
+            query.Bind("@rendering", rendering);
 
-            if( e.Count == 0)
-                return null;
+            ISparqlQueryResult result = UserModel.ExecuteQuery(query, true);
 
-            var uri = e[0]["entity"] as UriRef;
-            var name = e[0]["name"] as string;
-            if (uri == null)
-                return null;
-            //UriRef entityUri = new UriRef(uri);// =new UriRef( "" as string);
-            string file = Path.Combine(PlatformProvider.GetRenderOutputPath(uri), name);
-            
-            if (File.Exists(file))
+            foreach(BindingSet b in result.GetBindings())
             {
-                FileStream fileStream = new FileStream(file, FileMode.Open);
+                UriRef uri = b["entity"] as UriRef;
+                string name = b["name"] as string;
 
-                StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
-                response.Headers["Allow-Control-Allow-Origin"] = "127.0.0.1";
+                if(uri != null && !string.IsNullOrEmpty(name))
+                {
+                    string file = Path.Combine(PlatformProvider.GetRenderOutputPath(uri), name);
 
-                return response.AsAttachment(file);
+                    if (File.Exists(file))
+                    {
+                        FileStream fileStream = new FileStream(file, FileMode.Open);
+
+                        StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
+                        response.Headers["Allow-Control-Allow-Origin"] = "127.0.0.1";
+
+                        return response.AsAttachment(file);
+                    }
+                }
+                else
+                {
+                    return HttpStatusCode.InternalServerError;
+                }
             }
-            else
-            {
-                return null;
-            }
+
+            return HttpStatusCode.NoContent;
         }
-
-
     }
 }

@@ -31,20 +31,7 @@ namespace Artivity.Api.Parameters
 {
     public class CommentCollection
     {
-        public class Marker
-        {
-            public float x, y, width, height;
-            public string color;
-        }
-
-        public class Comment
-        {
-            public string text { get; set; }
-
-            public DateTime time { get; set; }
-
-            public Marker[] marker { get; set; }
-        }
+        #region Members
 
         public string influence { get; set; }
 
@@ -54,10 +41,34 @@ namespace Artivity.Api.Parameters
 
         public DateTime endTime { get; set; }
 
-        public Comment[] Comments { get; set; }
+        public Comment[] comments { get; set; }
 
- 
+        #endregion
+
+        #region Classes
+
+        public class Marker
+        {
+            public float x { get; set; }
+
+            public float y { get; set; }
+
+            public float width { get; set; }
+
+            public float height { get; set; }
+
+            public string color { get; set; }
+        }
+
+        public class Comment
+        {
+            public string text { get; set; }
+
+            public DateTime time { get; set; }
+
+            public Marker[] markers { get; set; }
+        }
+
+        #endregion
     }
-
-    
 }

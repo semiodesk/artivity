@@ -6,14 +6,15 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<!-- bower:css -->
 	<link rel="stylesheet" href="bower_components/jquery-editable-select/dist/jquery-editable-select.min.css" />
+	<link rel="stylesheet" href="bower_components/angular-hotkeys/build/hotkeys.css" />
+	<link rel="stylesheet" href="bower_components/angular-ui-layout/src/ui-layout.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" />
-	<link rel="stylesheet" href="bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
-	<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css" />
-	<link rel="stylesheet" href="bower_components/angular-hotkeys/build/hotkeys.css" />
 	<link rel="stylesheet" href="bower_components/font-roboto/dist/styles/roboto.css" />
+	<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css" />
+	<link rel="stylesheet" href="bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
 	<!-- endbower -->
 	<link rel="stylesheet" href="bower_components/yasgui/dist/yasgui.min.css" />
 	<link rel="stylesheet" href="app/style.css">
@@ -27,28 +28,29 @@
 	<!-- endcomments -->
 	<!-- bower:js -->
 	<script src="bower_components/jquery/dist/jquery.js"></script>
-	<script src="bower_components/jquery-ui/jquery-ui.js"></script>
 	<script src="bower_components/jquery-editable-select/dist/jquery-editable-select.min.js"></script>
+	<script src="bower_components/jquery-ui/jquery-ui.js"></script>
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="bower_components/angular-animate/angular-animate.js"></script>
-	<script src="bower_components/angular-route/angular-route.js"></script>
 	<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+	<script src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
+	<script src="bower_components/angular-hotkeys/build/hotkeys.js"></script>
 	<script src="bower_components/angular-input-modified/dist/angular-input-modified.js"></script>
 	<script src="bower_components/moment/moment.js"></script>
 	<script src="bower_components/angular-moment/angular-moment.js"></script>
+	<script src="bower_components/angular-route/angular-route.js"></script>
+	<script src="bower_components/angular-translate/angular-translate.js"></script>
+	<script src="bower_components/angular-ui-layout/src/ui-layout.js"></script>
+	<script src="bower_components/base64/base64.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 	<script src="bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script>
 	<script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
 	<script src="bower_components/color-thief/src/color-thief.js"></script>
-	<script src="bower_components/EaselJS/lib/easeljs-0.8.2.combined.js"></script>
-	<script src="bower_components/moment-duration-format/lib/moment-duration-format.js"></script>
-	<script src="bower_components/base64/base64.js"></script>
 	<script src="bower_components/d3/d3.js"></script>
 	<script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
+	<script src="bower_components/moment-duration-format/lib/moment-duration-format.js"></script>
+	<script src="bower_components/EaselJS/lib/easeljs-0.8.2.combined.js"></script>
 	<script src="bower_components/yasgui/dist/yasgui.bundled.min.js"></script>
-	<script src="bower_components/angular-hotkeys/build/hotkeys.js"></script>
-	<script src="bower_components/angular-translate/angular-translate.js"></script>
-	<script src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
 	<!-- endbower -->
 	<!-- start auto template tags -->
 	<script type="text/javascript" src="app/app.conf.js"></script>
@@ -65,6 +67,7 @@
 	<script type="text/javascript" src="app/classes/activity.js"></script>
 	<script type="text/javascript" src="app/classes/document-renderer-cache.js"></script>
 	<script type="text/javascript" src="app/classes/document-renderer.js"></script>
+	<script type="text/javascript" src="app/classes/document-viewer.js"></script>
 	<script type="text/javascript" src="app/classes/editing-statistics.js"></script>
 	<script type="text/javascript" src="app/classes/entity-cache.js"></script>
 	<script type="text/javascript" src="app/classes/entity.js"></script>
@@ -94,6 +97,7 @@
 	<script type="text/javascript" src="app/services/window.service.js"></script>
 	<script type="text/javascript" src="app/filters/reverse.js"></script>
 	<script type="text/javascript" src="app/directives/art-calendar/art-calendar.js"></script>
+	<script type="text/javascript" src="app/directives/art-chat-control/art-chat-control.js"></script>
 	<script type="text/javascript" src="app/directives/art-client-state-info/art-client-state-info.js"></script>
 	<script type="text/javascript" src="app/directives/art-color-picker/art-color-picker.js"></script>
 	<script type="text/javascript" src="app/directives/art-editing-history/art-editing-history.js"></script>

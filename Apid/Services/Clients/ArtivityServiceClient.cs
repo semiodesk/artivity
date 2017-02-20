@@ -173,6 +173,7 @@ namespace Artivity.Apid.Accounts
         {
             _socket = new ClientWebSocket();
             _socket.Options.AddSubProtocol("sync");
+            _socket.Options.KeepAliveInterval = TimeSpan.FromDays(1);
 
             await _socket.ConnectAsync(_socketUrl, CancellationToken.None);
 

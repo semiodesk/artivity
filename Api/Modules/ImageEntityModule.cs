@@ -39,9 +39,6 @@ namespace Artivity.Api.Modules
         public ImageEntityModule(IModelProvider modelProvider, IPlatformProvider platformProvider) : 
             base("/artivity/api/1.0/entity/images", modelProvider, platformProvider)
         {
-
         }
-
-
     }
 }
