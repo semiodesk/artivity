@@ -6,6 +6,6 @@
     <div class="file-name">{{t.fileName}}</div>
     <div class="file-extension" style="background-color: {{t.file.agentColor}};">{{t.fileExtension}}</div>
 
-    <a ng-if="t.link" href="#/files/view?uri={{t.file.uri}}"></a>
-	<!--<a ng-if="t.link" href="#/files/preview?uri={{t.file.uri}}"></a>-->
+    <!--<a ng-if="t.link" href="#/files/view?uri={{t.file.uri}}"></a>-->
+	<a ng-if="t.link" ng-click="t.onClick($event)" href="#"></a>
 </div>

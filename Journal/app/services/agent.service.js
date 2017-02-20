@@ -22,7 +22,5 @@
                 console.log("Agent: ", t.agent);
             });
         }
-
-
     }
 })();

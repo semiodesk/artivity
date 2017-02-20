@@ -104,8 +104,6 @@
     <Compile Include="ObjectModel\Influences\Undo.cs" />
     <Compile Include="ObjectModel\Activities\DeleteFile.cs" />
     <Compile Include="ObjectModel\Influences\View.cs" />
-    <Compile Include="ObjectModel\Database.cs" />
-    <Compile Include="ObjectModel\DatabaseState.cs" />
     <Compile Include="ModelProviderFactory.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />
     <Compile Include="ObjectModel\ModelSynchronizationState.cs" />
