@@ -30,7 +30,7 @@
             comments: new createjs.Container()
         };
 
-        initialize();
+        //initialize();
 
         function initialize() {
             var canvas = document.getElementById("canvas");
@@ -142,64 +142,27 @@
         }
 
         function setFile(entityUri) {
-            api.getCanvasRenderingsFromEntity(entityUri).then(function(data) {
-                for(i = 0; i < data.length; i++) {
-                    console.log(data[i]);
-                }
-            });
-
             entityService.getById(entityUri).then(function (response) {
                 t.entity = response;
 
-                if (t.entity.Revisions != null) {
-                    loadDerivations();
-                }
-            });
-        }
+                if (t.entity.Revisions.length > 0) {
+                    // Initialize the viewer and load the renderings when the document is ready.
+                    $(document).ready(function () {
+                        t.canvas = document.getElementById('canvas');
 
-        function loadDerivations() {
-            var promises = [];
+                        if (t.canvas) {
+                            t.viewer = new DocumentViewer(t.canvas, api.getRenderingUrl(entityUri));
 
-            t.entity.Revisions.forEach(function (item) {
-                var p = derivationService.getById(item);
+                            api.getCanvasRenderingsFromEntity(t.entity.Uri).then(function (data) {
+                                t.viewer.pageCache.load(data, function () {
+                                    console.log('Loaded pages:', data);
 
-                promises.push(p);
-
-                p.then(function (derivation) {
-                    derivation.images = [];
-                    derivation.RenderedAs.forEach(function (rendering) {
-                        rendering.url = derivationService.getImageUrl(rendering.Uri);
-
-                        derivation.images.push(rendering);
+                                    t.viewer.render(t.entity.Revisions[0]);
+                                });
+                            });
+                        }
                     });
-
-                    t.derivations.push(derivation);
-                });
-            });
-
-            Promise.all(promises).then(function () {
-                if (t.derivations.length > 0) {
-                    render(t.derivations[0]);
                 }
-            });
-        }
-
-        function render(derivation) {
-            t.layers.image.removeAllChildren();
-
-            t.stage.update();
-
-            derivation.images.forEach(function (img) {
-                var image = new Image();
-                image.src = img.url;
-                image.onload = function handleImageLoad(event) {
-                    var image = event.target;
-                    var bitmap = new createjs.Bitmap(image);
-                    bitmap.x = img.Region.x;
-                    bitmap.y = -img.Region.y;
-                    t.layers.image.addChild(bitmap);
-                    t.stage.update();
-                };
             });
         }
     }

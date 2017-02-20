@@ -1006,10 +1006,10 @@ namespace Artivity.Api.Modules
         {
             string queryString = @"
                 SELECT DISTINCT
-	                ?revision
                     ?time
                     ?type
                     ?file
+                    ?layer
                   	COALESCE(?x, 0) AS ?x
 	                COALESCE(?y, 0) AS ?y
 	                COALESCE(?w, 0) AS ?w
@@ -1028,6 +1028,8 @@ namespace Artivity.Api.Modules
                             art:height ?h
                         ]
                     ] .
+
+                    BIND(?revision AS ?layer)
                 }
                 ORDER BY DESC(?time)";
 
