@@ -3,6 +3,7 @@ var app = angular.module('app', [
 	'ngInputModified',
 	'ngRoute',
 	'angularMoment',
+	'ui.layout',
 	'ui.bootstrap',
 	'ui.bootstrap.modal',
 	'ui.bootstrap.progressbar',

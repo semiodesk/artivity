@@ -8,27 +8,25 @@
     function commentService($http) {
         var endpoint = apid.endpointUrl + "entity/derivations/comments";
 
-        var service = {};
-
-        
-        service.post = post;
-        service.get = get;
+        var service = {
+            post: post,
+            get: get
+        };
 
         return service;
 
         function get(derivationUri) {
             var uri = encodeURIComponent(derivationUri);
+
             return $http.get(endpoint+'?uri='+uri).then(function (response) {
                 return response.data;
             }, handleError('Error while retrieving comments.'));
-           
         }
 
         function post(commentCollection) {
             return $http.post(endpoint, commentCollection).then(function (response) {
                 return response.data;
             }, handleError('Error when pushing comments.'));
-           
         }
 
         // private functions

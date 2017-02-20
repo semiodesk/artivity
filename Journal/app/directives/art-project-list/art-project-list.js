@@ -84,8 +84,11 @@
         }
 
         function addFileToProject(event) {
+            var target = $(event.target);
+
             var file = t.droppedFile;
-            var project = $(event.target).scope().project;
+            var project = angular.element(target[0]).scope().project;
+
             // Project is mapped automatically, file manually. this is why the caps of the uri property are different
             projectService.addFileToProject(project.Uri, file.uri);
         }

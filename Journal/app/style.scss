@@ -1860,83 +1860,133 @@ button[disabled]:hover {
 	color: white;
 }
 
-.lst-activities li a.comment {
-	position: relative;
-	margin: 0 15px 10px 30px;
+.no-outline:focus,
+.ctl-history:focus {
+	outline: none;
 }
 
-.lst-activities li a.comment .avatar {
-	float: left;
-	margin-right: 15px;
-	margin-bottom: 15px;
+
+/* COMMENTS */
+
+.ctl-protocol {
+	height: 100%;
 }
 
-.lst-activities li a.comment .avatar img {
-	width: 42px;
-	height: 42px;
-}
-
-.lst-activities li a.comment .time {
-	padding-right: 10px;
-}
-
-.lst-activities li a.comment .tip {
-	width: 0px;
-	height: 0px;
+.comment-list {
 	position: absolute;
-	background: transparent;
-	border: 10px solid $headerBackgroundColor;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 0;
+	margin: 0 10px;
+	max-height: 100%;
 }
 
-.lst-activities li a.comment .tip.tip-right {
-	top: 0px;
-	right: -15px;
-	border-right-color: transparent;
-	border-bottom-color: transparent;
+.comment-list .comment-item {
+	position: relative;
+	display: block;
+	box-sizing: content-box;
+	width: 100%;
+	margin: 10px 0;
+	padding: 0;
 }
 
-.lst-activities li a.comment .tip.tip-left {
+.comment-list .comment .comment-avatar {
+	position: absolute;
+	left: 0;
+	top: -1px;
+	border-radius: 50%;
+	width: 28px;
+	height: 28px;
+	overflow: hidden;
+}
+
+.comment-list .comment .comment-avatar img {
+	width: 28px;
+	height: 28px;
+}
+
+.comment-list .comment .comment-bubble {
+	display: block;
+	position: relative;
+	margin-left: 35px;
+	margin-right: 70px;
+}
+
+.comment-list .comment .comment-time {
+	position: absolute;
+	top: -3px;
+	right: 0;
+	padding: 0;
+}
+
+.comment-list .comment .bubble-text {
+	float: left;
+	min-height: 2em;
+	max-width: 100%;
+	padding: 10px;
+	margin-left: 12px;
+	color: white;
+	background: $headerBackgroundColor;
+	word-wrap: break-word;
+	text-overflow: ellipsis;
+}
+
+.comment-list .comment .bubble-tip {
+	position: absolute;
 	top: 0;
-	left: -15px;
+	right: auto;
+	left: 0;
+	width: 0;
+	height: 0;
+	background: transparent;
+	border: 6px solid $headerBackgroundColor;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
 }
 
-.lst-activities li a.comment .txt {
-	background: $headerBackgroundColor;
-	padding: 10px;
-	color: white;
-	min-height: 2em;
-}
-
-.lst-activities li a.comment .txt .time {
-	position: absolute;
-	bottom: 5px;
-	right: 5px;
-	z-index: 0;
-}
-
-.lst-activities li a.comment:hover .txt,
-.lst-activities li.selected a.comment .txt {
+.comment-list .comment:hover .bubble-text,
+.comment-list .comment.selected .bubble-text {
 	background: $accentColor;
 	color: black;
 }
 
-.lst-activities li a.comment:hover .tip.tip-left,
-.lst-activities li.selected a.comment .tip.tip-left {
+.comment-list .comment:hover .bubble-tip,
+.comment-list .comment.selected .bubble-tip {
 	border-top-color: $accentColor;
 	border-right-color: $accentColor;
+	border-bottom-color: transparent;
+	border-left-color: transparent;
 }
 
-.lst-activities li a.comment:hover .tip.tip-right,
-.lst-activities li.selected a.comment .tip.tip-right {
+.comment-list .comment.comment-user .comment-avatar {
+	display: none;
+}
+
+.comment-list .comment.comment-user .comment-bubble {
+	margin-left: 60px;
+	margin-right: 50px;
+}
+
+.comment-list .comment.comment-user .bubble-text {
+	float: right;
+}
+
+.comment-list .comment.comment-user .bubble-tip {
+	top: 0px;
+	left: auto;
+	right: -12px;
+	border: 6px solid $headerBackgroundColor;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
+}
+
+.comment-list .comment.comment-user:hover .bubble-tip,
+.comment-list .comment.comment-user.selected .bubble-tip {
 	border-top-color: $accentColor;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
 	border-left-color: $accentColor;
-}
-
-.no-outline:focus,
-.ctl-history:focus {
-	outline: none;
 }
 
 .ctl-comment textarea,
@@ -1945,16 +1995,20 @@ button[disabled]:hover {
 }
 
 .ctl-comment textarea {
+	height: 38px;
 	line-height: 1.3em;
 	border: none;
 	width: 100%;
 	padding: 10px;
 	color: $inputTextColor;
 	resize: none;
-	height: 10em;
+	overflow:hidden;
+    overflow-x:hidden;
+    overflow-y:hidden;
+	transition: none;
 }
 
-.ctl-comment input[type=button] {
+.ctl-comment .btn-post {
 	float: right;
 	margin: 5px;
 }

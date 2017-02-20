@@ -253,6 +253,25 @@ namespace Artivity.Api.Modules
                 }
             };
 
+            Get["/renderings/canvases"] = parameters =>
+            {
+                if (Request.Query.entity)
+                {
+                    string entity = Request.Query.entity;
+
+                    if (string.IsNullOrEmpty(entity) || !IsUri(entity))
+                    {
+                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+
+                    return GetCanvasRenderingsFromEntity(new UriRef(entity));
+                }
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+            };
+
             Get["/renderings/path"] = parameters =>
             {
                 string uri = Request.Query.uri;
@@ -978,6 +997,43 @@ namespace Artivity.Api.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@maxTime", maxTime);
             
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
+
+            return Response.AsJsonSync(bindings);
+        }
+
+        private Response GetCanvasRenderingsFromEntity(UriRef entity)
+        {
+            string queryString = @"
+                SELECT DISTINCT
+	                ?revision
+                    ?time
+                    ?type
+                    ?file
+                  	COALESCE(?x, 0) AS ?x
+	                COALESCE(?y, 0) AS ?y
+	                COALESCE(?w, 0) AS ?w
+	                COALESCE(?h, 0) AS ?h  
+                WHERE
+                {
+                    @entity prov:qualifiedRevision ?revision .
+  
+                    ?revision prov:atTime ?time ; art:renderedAs [
+                        rdf:type ?type ;
+                        rdfs:label ?file ;
+                        art:region [
+                            art:x ?x ;
+                            art:y ?y ;
+                            art:width ?w ;
+                            art:height ?h
+                        ]
+                    ] .
+                }
+                ORDER BY DESC(?time)";
+
+            ISparqlQuery query = new SparqlQuery(queryString);
+            query.Bind("@entity", entity);
+
             List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJsonSync(bindings);

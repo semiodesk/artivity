@@ -213,6 +213,12 @@ app.factory('api', function ($http) {
 					});
 			}
 		},
+		getCanvasRenderingsFromEntity: function(entityUri) {
+			return $http.get(endpoint + '/renderings/canvases?entity=' + entityUri).then(
+				function (response) {
+					return response.data;
+				});
+		},
 		getLayers: function (entityUri) {
 			return $http.get(endpoint + '/influences/layers?uri=' + entityUri).then(
 				function (response) {

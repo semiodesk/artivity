@@ -96,14 +96,34 @@ namespace Artivity.Apid
 		{
             PlatformProvider.Logger.LogRequest(HttpStatusCode.OK, Request);
 
-            string res = GetFileUri(Request.Query.file);
+            Uri fileUrl = new FileInfo(Request.Query.file).ToUriRef();
 
-            if (!string.IsNullOrEmpty(res))
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT ?entity WHERE
+                {
+                    ?entity nfo:fileUrl @fileUrl .
+                    ?entity nfo:fileLastModified ?time .
+                }
+                ORDER BY DESC(?time) LIMIT 1
+            ");
+
+            query.Bind("@fileUrl", fileUrl.AbsoluteUri);
+
+            IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
+
+            if (bindings.Any())
             {
-                return Response.AsJsonSync(res);
+                BindingSet binding = bindings.First();
+
+                string uri = binding["entity"].ToString();
+
+                if (!string.IsNullOrEmpty(uri))
+                {
+                    return Response.AsJsonSync(uri);
+                }
             }
-    
-            return "";
+
+            return HttpStatusCode.NotFound;
 		}
 
         private Response GetCanvasUri()
@@ -173,40 +193,6 @@ namespace Artivity.Apid
 
             return "";
         }
-
-
-        private string GetFileUri(string path)
-        {
-            Uri fileUrl = new FileInfo(path).ToUriRef();
-
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?entity WHERE
-                {
-                    ?entity nfo:fileUrl @fileUrl .
-                    ?entity nfo:fileLastModified ?time .
-                }
-                ORDER BY DESC(?time) LIMIT 1
-            ");
-
-            query.Bind("@fileUrl", fileUrl.AbsoluteUri);
-
-            IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
-
-            if (bindings.Any())
-            {
-                BindingSet binding = bindings.First();
-
-                string uri = binding["entity"].ToString();
-
-                if (!string.IsNullOrEmpty(uri))
-                {
-                    return uri;
-                }
-            }
-
-            return null;
-        }
-
 
 		#endregion
 	}

@@ -16,9 +16,7 @@ namespace Artivity.Api.Modules
 {
     public class CommentModule : ModuleBase
     {
-        #region Members
-
-        #endregion
+        #region Constructors
 
         public CommentModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
             : base("/artivity/api/1.0/entity/derivations", modelProvider, platformProvider)
@@ -32,7 +30,7 @@ namespace Artivity.Api.Modules
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return GetInfluenceComments(new UriRef(uri));
+                return GetCommentsFromInfluence(new UriRef(uri));
             };
 
             Get["/comments/clean"] = parameters =>
@@ -44,41 +42,18 @@ namespace Artivity.Api.Modules
             {
                 CommentCollection comment = this.Bind<CommentCollection>();
 
-                if (comment.Comments.Length == 0)
+                if (comment.comments.Any())
                 {
-                    return HttpStatusCode.BadRequest;
+                    return PostComment(comment);
                 }
-                return PostComment(comment);
 
+                return HttpStatusCode.BadRequest;
             };
         }
 
-        private Response GetInfluenceComments(UriRef uriRef)
-        {
-            LoadCurrentUser();
+        #endregion
 
-            ISparqlQuery query = new SparqlQuery(@"
-                DESCRIBE ?comment
-                WHERE
-                {
-                  
-                  ?comment
-                    a art:Comment ;
-                    prov:atTime ?time ; 
-                    art:refersTo @uri ;
-                    prov:hadActivity ?act .
-
-                  ?act prov:endedAtTime ?actTime .
-                }
-                ORDER BY DESC(?actTime) DESC(?time) ");
-
-            query.Bind("@uri", uriRef);
-            var res = UserModel.ExecuteQuery(query, true).GetResources<Comment>();
-            var list = res.ToList();
-
-            return Response.AsJsonSync(list);
-        }
-
+        #region Methods
 
         private Response GetComments(UriRef entityUri)
         {
@@ -93,8 +68,7 @@ namespace Artivity.Api.Modules
                 {
                   ?activity prov:generated | prov:used @entity .
 
-                  ?comment
-                    a art:Comment ;
+                  ?comment a art:Comment ;
                     rdfs:comment ?message ;
                     prov:activity ?activity ;
                     prov:atTime ?time ;
@@ -109,6 +83,30 @@ namespace Artivity.Api.Modules
             return Response.AsJson(bindings);
         }
 
+        private Response GetCommentsFromInfluence(UriRef uriRef)
+        {
+            LoadCurrentUser();
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT ?s ?p ?o WHERE
+                {
+                  ?s ?p ?o .
+
+                  ?s a art:Comment ;
+                    prov:atTime ?time ; 
+                    art:refersTo @uri .
+                }
+                ORDER BY DESC(?time)");
+
+            query.Bind("@uri", uriRef);
+
+            ISparqlQueryResult result = UserModel.ExecuteQuery(query, true);
+
+            List<Comment> comments = result.GetResources<Comment>().ToList();
+
+            return Response.AsJsonSync(comments);
+        }
+
         private Response CleanComments()
         {
             ISparqlQuery query = new SparqlQuery(@"
@@ -116,7 +114,7 @@ namespace Artivity.Api.Modules
                     ?comment
                 WHERE
                 {
-                    ?comment a art:Comment ; prov:activity ?activity .
+                    ?comment a art:Comment ; prov:activity | prov:hadActivity ?activity .
 
                     FILTER NOT EXISTS { ?comment rdfs:comment ?value . }
                 }");
@@ -134,8 +132,6 @@ namespace Artivity.Api.Modules
 
             return HttpStatusCode.OK;
         }
-
-        private UriRef GetAgentUri() { return new UriRef(""); }
 
         private Response PostComment(CommentCollection parameter)
         {
@@ -170,7 +166,7 @@ namespace Artivity.Api.Modules
                 activity.UsedEntities.Add(new Entity(entityUri));
                 //activity.StartedBy = new Agent(agentUri);
 
-                foreach (var c in parameter.Comments)
+                foreach (var c in parameter.comments)
                 {
                     Comment comment = UserModel.CreateResource<Comment>();
                     comment.Activity_ = activity;
@@ -178,7 +174,7 @@ namespace Artivity.Api.Modules
                     comment.Message = c.text;
                     comment.Time = c.time;
 
-                    foreach (var marker in c.marker)
+                    foreach (var marker in c.markers)
                     {
                         RectangleEntity rect = UserModel.CreateResource<RectangleEntity>();
                         rect.x = marker.x;
@@ -186,13 +182,16 @@ namespace Artivity.Api.Modules
                         rect.Width = marker.width;
                         rect.Height = marker.height;
                         rect.Commit();
+
                         comment.Regions.Add(rect);
+
                         activity.GeneratedEntities.Add(rect);
                     }
+
                     comment.Commit();
+
                     activity.GeneratedEntities.Add(comment);
                 }
-
 
                 activity.Commit();
 
@@ -205,5 +204,7 @@ namespace Artivity.Api.Modules
                 return HttpStatusCode.BadRequest;
             }
         }
+
+        #endregion
     }
 }
