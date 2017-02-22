@@ -5,6 +5,21 @@ function EventDispatcher() {
     t.listeners = {};
 };
 
+function EventDispatcher(parent) {
+    var t = this;
+
+    t.muted = false;
+    t.listeners = {};
+
+    if(parent) {
+        if(!parent.on) parent.on = function(event, callback) { t.on(event, callback); };
+        if(!parent.off) parent.off = function(event, callback) { t.off(event, callback); };
+        if(!parent.raise) parent.raise = function(event, params) { t.on(event, params); };
+        if(!parent.mute) parent.mute = function() { t.mute(); };
+        if(!parent.unmute) parent.unmute = function() { t.unmute(); };
+    }
+}
+
 EventDispatcher.prototype.on = function (event, callback) {
     var t = this;
 
@@ -32,7 +47,7 @@ EventDispatcher.prototype.off = function (event, callback) {
 EventDispatcher.prototype.raise = function (event, params) {
     var t = this;
 
-    if(t.muted) {
+    if (t.muted) {
         return;
     }
 
@@ -45,13 +60,13 @@ EventDispatcher.prototype.raise = function (event, params) {
     }
 };
 
-EventDispatcher.prototype.mute = function() {
+EventDispatcher.prototype.mute = function () {
     var t = this;
 
     t.muted = true;
 }
 
-EventDispatcher.prototype.unmute = function() {
+EventDispatcher.prototype.unmute = function () {
     var t = this;
 
     t.muted = false;

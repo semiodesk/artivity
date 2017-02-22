@@ -6,7 +6,7 @@ function DocumentHistoryViewer(canvas, endpointUrl) {
 
     // Call the base constructor.
     DocumentViewerBase.call(t, canvas, endpointUrl);
-    
+
     t.canvas = canvas;
     t.canvasCache = new CanvasCache();
 
@@ -24,12 +24,9 @@ DocumentHistoryViewer.prototype = Object.create(DocumentViewerBase.prototype);
 DocumentHistoryViewer.prototype.render = function (influence) {
     var t = this;
 
+    t.clearStage();
+
     t.influence = influence;
-
-    t.stage.removeAllChildren();
-    t.stage.addChild(t.scene);
-
-    t.scene.removeAllChildren();
 
     if (influence === undefined || t.canvasCache === undefined) {
         t.stage.update();
@@ -38,13 +35,6 @@ DocumentHistoryViewer.prototype.render = function (influence) {
     }
 
     var time = new Date(influence.time);
-
-    var extents = {
-        t: 0,
-        l: 0,
-        b: 0,
-        r: 0
-    };
 
     t.canvasCache.getAll(time, function (c) {
         var s = new createjs.Shape();
@@ -191,6 +181,10 @@ DocumentHistoryViewer.prototype.render = function (influence) {
 
         t.scene.addChild(s);
         t.scene.addChild(s2);
+    }
+
+    if (t.stage.autoFit) {
+        t.zoomToFit();
     }
 
     t.stage.update();

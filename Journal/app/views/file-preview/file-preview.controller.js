@@ -17,7 +17,6 @@
         initialize();
 
         function initialize() {
-
             // File metadata
             api.getFile(fileUri).then(function (data) {
                 t.file = data;
