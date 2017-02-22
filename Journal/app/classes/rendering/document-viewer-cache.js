@@ -1,7 +1,7 @@
 /**
  * Loads a set of images from a server and keeps a cached version of the bitmaps.
  */
-function DocumentRendererCache() {
+function DocumentViewerCache() {
     var t = this;
 
     t.endpointUrl;
@@ -10,7 +10,7 @@ function DocumentRendererCache() {
     t.loaded = false;
 };
 
-DocumentRendererCache.prototype.load = function (data, complete) {
+DocumentViewerCache.prototype.load = function (data, complete) {
     var t = this;
 
     // Sanitize parameters.
@@ -44,7 +44,7 @@ DocumentRendererCache.prototype.load = function (data, complete) {
     }
 };
 
-DocumentRendererCache.prototype.loadRender = function (data, i, complete) {
+DocumentViewerCache.prototype.loadRender = function (data, i, complete) {
     var t = this;
     var d = data[i];
     var r = new Image();
@@ -88,20 +88,27 @@ DocumentRendererCache.prototype.loadRender = function (data, i, complete) {
     r.src = t.endpointUrl + d.file;
 };
 
-DocumentRendererCache.prototype.get = function (time, layer, fn) {
+DocumentViewerCache.prototype.get = function (time, layer, fn) {
     var t = this;
+    var uri = layer;
 
-    if (layer !== undefined && layer.uri in t.renders) {
-        var R = t.renders[layer.uri];
+    if (layer.uri) {
+        uri = layer.uri;
+    }
+
+    if (uri !== undefined && uri in t.renders) {
+        var R = t.renders[uri];
 
         for (var i = 0; i < R.length; i++) {
             var r = R[i];
 
             if (r.time <= time) {
-                return r;
+                if (fn) {
+                    fn(r);
+                } else {
+                    return r;
+                }
             }
         }
     }
-
-    return undefined;
 };

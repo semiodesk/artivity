@@ -78,7 +78,7 @@
 
         // RENDERING
         var canvas = document.getElementById('canvas');
-        var renderer = new DocumentRenderer(canvas, api.getRenderingUrl(fileUri));
+        var renderer = new DocumentHistoryViewer(canvas, api.getRenderingUrl(fileUri));
 
         $rootScope.$on('redraw', function () {
             t.renderInfluence(t.selectedInfluence);
@@ -188,8 +188,6 @@
 
                                                 if (t.influences.length > 0) {
                                                     selectionService.selectedItem(t.influences[0]);
-
-                                                    $rootScope.$broadcast('redraw');
                                                 }
                                             });;
                                         });
@@ -348,7 +346,7 @@
             }
         });
 
-        t.toggleInfluencedRegions = function() {
+        t.toggleInfluencedRegions = function () {
             renderer.renderInfluencedRegions = !renderer.renderInfluencedRegions;
 
             t.renderInfluence(t.selectedInfluence);
@@ -362,7 +360,7 @@
             }
         });
 
-        t.toggleEditingFrequency = function() {
+        t.toggleEditingFrequency = function () {
             renderer.renderEditingFrequency = !renderer.renderEditingFrequency;
 
             t.renderInfluence(t.selectedInfluence);

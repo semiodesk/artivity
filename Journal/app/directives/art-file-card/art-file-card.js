@@ -28,6 +28,37 @@
             t.link = enableLink === undefined || enableLink === true;
 
             $(element).find('.file-thumbnail').css('background-image', 'url(' + t.thumbnailUrl + ')');
+        };
+
+        t.onClick = function (e) {
+            e.preventDefault();
+
+            if (event.ctrlKey) {
+                t.navigateToFragment("/files/preview?uri=" + t.file.uri);
+            } else {
+                t.navigateToFragment("/files/view?uri=" + t.file.uri);               
+            }
+        };
+
+        t.navigateToFragment = function (fragment) {
+            var url = t.getUrlWithFragment(fragment);
+
+            if (url !== '') {
+                window.location.href = url;
+            }
+        };
+
+        // TODO: Taken from art-keyboard-input-handler directive. Move into window service.
+        t.getUrlWithFragment = function (fragment) {
+            var url = window.location.href.split('#');
+
+            if (url.length < 2) {
+                console.log('Unable to parse fragment from url:' + window.location.href);
+
+                return '';
+            } else {
+                return url[0] + '#' + fragment;
+            }
         }
     }
 })();
