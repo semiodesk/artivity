@@ -273,7 +273,11 @@ module.exports = function (grunt) {
 	      mode: '755'
 	   },
 	   mainMac: {
-              src: [buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/MacOS/artivity-apid']
+              src: [
+		buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/MacOS/artivity-apid',
+		buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/Resources/TinyVirtuoso/virtuoso/osx/virtuoso-t',
+		buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/Resources/TinyVirtuoso/virtuoso/osx/isql'
+	     ]
 	   }
 	}
     });
