@@ -6,7 +6,7 @@
     commentService.$inject = ['$http'];
 
     function commentService($http) {
-        var endpoint = apid.endpointUrl + "entity/derivations/comments";
+        var endpoint = apid.endpointUrl + "comments";
 
         var service = {
             post: post,

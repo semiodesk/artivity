@@ -644,6 +644,8 @@ art:Geometry a rdfs:Class ;
     rdfs:label "Geometry" ;
     owl:sameAs geo:Geometry .
 
+# --- BEGIN: TODO: Move into Artivity Service Integration (arts) ontology. ---
+
 art:accountFeature a rdf:Property ;
 	rdfs:label "accountFeature" ;
 	rdfs:domain art:OnlineAccountFeature .
@@ -671,32 +673,8 @@ art:HttpAuthenticationProtocol a rdfs:Class ;
 art:HttpAuthenticationParameter a rdfs:Class ;
 	rdfs:label "HttpAuthenticationParameter" .
 
+# --- END: TODO: Move into Artivity Service Integration (arts) ontology. ---
+
 art:Browse a rdfs:Class ;
     rdfs:label "Browse" ;
     rdfs:subClassOf prov:Activity .
-
-art:Database a rdfs:Class ;
-    rdfs:label "Database" .
-
-art:isMonitoringEnabled a rdf:Property ;
-    rdfs:label "isMonitoringEnabled" ;
-    rdfs:domain art:Database ;
-    rdfs:range xsd:boolean .
-
-art:hadState a rdf:Property ;
-    rdfs:label "hadState" ;
-    rdfs:domain art:Database ;
-    rdfs:range art:DatabaseState .
-
-art:DatabaseState a rdfs:Class ;
-    rdfs:label "DatabaseState" .
-
-art:atTime a rdf:Property ;
-    rdfs:label "atTime" ;
-    rdfs:domain art:DatabaseState ;
-    rdfs:range xsd:dateTimeTime .
-
-art:factsCount a rdf:Property ;
-    rdfs:label "factsCount" ;
-    rdfs:domain art:DatabaseState ;
-    rdfs:range xsd:integer .

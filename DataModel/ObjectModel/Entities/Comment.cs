@@ -39,24 +39,25 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        [RdfProperty(RDFS.comment)]
-        public string Message { get; set; }
-
-        [JsonIgnore]
-        [RdfProperty(PROV.hadActivity)]
+        [RdfProperty(PROV.hadActivity), JsonIgnore]
         public LeaveComment Activity_ { get; set; }
+
         public string Activity { get { return Activity_.Uri.AbsoluteUri; } }
 
         [RdfProperty(PROV.atTime)]
         public DateTime Time { get; set; }
 
-        [JsonIgnore]
-        [RdfProperty(ART.refersTo)]
+        [RdfProperty(ART.refersTo), JsonIgnore]
         public EntityInfluence RefersTo_ { get; set; }
+
         public string RefersTo { get { return RefersTo_.Uri.AbsoluteUri; } }
 
         [RdfProperty(ART.region)]
         public List<RectangleEntity> Regions { get; set; }
+
+        [RdfProperty(RDFS.comment)]
+        public string Message { get; set; }
+
         #endregion
 
         #region Constructors

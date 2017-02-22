@@ -16,7 +16,6 @@
         return service;
 
         function getAll() {
-
             return new Promise(function (resolve, reject) {
                 $http.get(endpoint).then(function (result) {
                     var data = result.data;
