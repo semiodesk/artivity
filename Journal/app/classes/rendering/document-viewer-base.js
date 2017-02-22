@@ -4,8 +4,41 @@
 function DocumentViewerBase(canvas, endpointUrl) {
     var t = this;
 
+    // Indicates if debug information like scene extents and center points should be rendered.
+    t.enableDebug = false;
+
     // HTML5 canvas element.
     t.canvas = canvas;
+
+    // Shadow that is drawn below the canvases / artboards / pages.
+    t.pageShadow = new createjs.Shadow('rgba(0,0,0,.2)', 3, 3, 6);
+
+    t.initializeEventDispatcher();
+    t.initializeScene();
+    t.initializeCanvasDragMove();
+    t.initializeCanvasResize();
+    t.initializeCanvasZoom();
+}
+
+DocumentViewerBase.prototype.initializeEventDispatcher = function () {
+    var t = this;
+
+    // Adds the event handling methods 'on', 'off', 'raise', etc to this class.
+    t.dispatcher = new EventDispatcher(t);
+}
+
+DocumentViewerBase.prototype.initializeScene = function () {
+    var t = this;
+
+    // EaselJS drawing context.
+    t.stage = new createjs.Stage("canvas");
+    t.stage.autoClear = true;
+    t.stage.autoFit = true;
+    t.stage.debug = new createjs.Container();
+    t.stage.enableMouseOver();
+    t.stage.on('drawstart', function (e) {
+        t.onDrawStart(t, e);
+    });
 
     // Scene element which is being manipulated when zooming or panning.
     t.scene = new createjs.Container();
@@ -17,24 +50,17 @@ function DocumentViewerBase(canvas, endpointUrl) {
         r: 0 // Right
     };
 
-    // EaselJS drawing context.
-    t.stage = new createjs.Stage("canvas");
-    t.stage.autoClear = true;
-    t.stage.autoFit = true;
-    t.stage.debug = new createjs.Container();
-    t.stage.addChild(t.scene);
-    t.stage.addChild(t.stage.debug);
+    // Add an 'infinitly' large shape to the background which
+    // makes the stage respond to click and drag events.
+    var min = -100000;
+    var max = 1000000;
 
-    t.stage.on('drawstart', function (e) {
-        t.onDrawStart(t, e);
-    });
+    t.background = new createjs.Shape();
 
-    // Shadow that is drawn below the canvases / artboards / pages.
-    t.pageShadow = new createjs.Shadow('rgba(0,0,0,.3)', 3, 3, 8);
-
-    t.initializeCanvasDragMove();
-    t.initializeCanvasResize();
-    t.initializeCanvasZoom();
+    // The fill renders the shape visible for hit tests.
+    var g = t.background.graphics;
+    g.beginFill('rgba(0,0,0,0.01)');
+    g.drawRect(min, min, max, max);
 }
 
 DocumentViewerBase.prototype.initializeCanvasZoom = function () {
@@ -50,21 +76,31 @@ DocumentViewerBase.prototype.initializeCanvasZoom = function () {
                 t.scene.scaleY += delta;
 
                 t.stage.update();
+
+                t.dispatcher.raise('zoom');
             }
         }
     });
 
     window.addEventListener("keydown", function (e) {
+        console.log(e.key);
+
         if (e.key === 'Home' || e.ctrlKey && e.key === '1') {
-            t.stage.autoFit = true;
-            t.stage.update();
+            e.preventDefault();
+            t.zoomToFit();
+            t.dispatcher.raise('zoom');
         } else if (e.ctrlKey && e.key === '+') {
             e.preventDefault();
             t.scene.zoom(1);
             t.stage.update();
+            t.dispatcher.raise('zoom');
         } else if (e.ctrlKey && e.key === '-') {
             e.preventDefault();
             t.scene.zoom(-1);
+            t.stage.update();
+            t.dispatcher.raise('zoom');
+        } else if (e.ctrlKey && e.key === 'F5') {
+            t.enableDebug = !t.enableDebug;
             t.stage.update();
         }
     });
@@ -92,7 +128,7 @@ DocumentViewerBase.prototype.initializeCanvasDragMove = function () {
 
     // Listen to mouse up events on the window because while dragging
     // the cursor might leave the canvas.
-    window.addEventListener('mouseup', function(e) {
+    window.addEventListener('mouseup', function (e) {
         // TODO: Implement x-browser.
         if (e.button === 1) {
             t.stopPanning();
@@ -103,36 +139,50 @@ DocumentViewerBase.prototype.initializeCanvasDragMove = function () {
         if (t.isPanning) {
             this.x = this.stageX + (e.stageX - this.downX);
             this.y = this.stageY + (e.stageY - this.downY);
-
             t.stage.update();
         }
     });
 
     window.addEventListener("keydown", function (e) {
         if (e.key === ' ') {
+            // Prevent electron from resizing the window when pressing spacebar.
+            e.preventDefault();
             t.startPanning();
         }
     });
 
     window.addEventListener("keyup", function (e) {
         if (e.key === ' ') {
+            // Prevent electron from resizing the window when pressing spacebar.
+            e.preventDefault();
             t.stopPanning();
         }
     });
 }
 
+DocumentViewerBase.prototype.clearStage = function () {
+    var t = this;
+
+    // Clear the stage.
+    t.stage.removeAllChildren();
+    t.stage.addChild(t.background);
+    t.stage.addChild(t.scene);
+    t.stage.addChild(t.overlay);
+
+    // Clear the scene.
+    t.scene.removeAllChildren();
+}
+
 DocumentViewerBase.prototype.startPanning = function () {
     var t = this;
     t.isPanning = true;
-
-    $(t.canvas).css('cursor', 'move');
+    t.cursor('move');
 }
 
 DocumentViewerBase.prototype.stopPanning = function () {
     var t = this;
     t.isPanning = false;
-
-    $(t.canvas).css('cursor', 'default');
+    t.cursor('crosshair');
 }
 
 DocumentViewerBase.prototype.initializeCanvasResize = function () {
@@ -183,14 +233,63 @@ DocumentViewerBase.prototype.onResize = function () {
 
         // Draw temp canvas back to the current canvas
         bufferContext.drawImage(tempContext.canvas, 0, 0);
+    }
 
-        // Update the buffer.
-        t.stage.update();
+    if (t.stage.autoFit) {
+        t.zoomToFit();
+    }
+
+    // Update the buffer.
+    t.stage.update();
+}
+
+DocumentViewerBase.prototype.onDrawStart = function (t, e) {
+    t.scene.debug.removeAllChildren();
+    t.stage.debug.removeAllChildren();
+
+    if (t.enableDebug && t.scene.extents != null) {
+        var extents = t.scene.extents;
+
+        // Draw extents position marker.
+        var ce = {
+            x: extents.x + extents.width / 2,
+            y: -extents.y + extents.height / 2
+        };
+
+        // Draw center position marker.
+        var cc = {
+            x: $(t.canvas).innerWidth() / 2,
+            y: $(t.canvas).innerHeight() / 2
+        };
+
+        // Uncomment this when debugging:
+        t.drawSceneMarkers(extents, cc, ce);
     }
 }
 
-DocumentViewerBase.prototype.zoomToFit = function (extents) {
+DocumentViewerBase.prototype.zoomToFit = function () {
     var t = this;
+    var extents = t.scene.extents;
+
+    // Draw extents position marker.
+    var ce = {
+        x: extents.x + extents.width / 2,
+        y: -extents.y + extents.height / 2
+    };
+
+    // Draw center position marker.
+    var cc = {
+        x: $(t.canvas).innerWidth() / 2,
+        y: $(t.canvas).innerHeight() / 2
+    };
+
+    // Set the registration point of the scene to the center of the extents (currently the canvas center).
+    t.scene.regX = ce.x;
+    t.scene.regY = ce.y;
+
+    // Move the scene into the center of the stage.
+    t.scene.x = cc.x;
+    t.scene.y = cc.y;
 
     // One zoom factor for scaling both axes.
     var z = 1.0;
@@ -209,39 +308,11 @@ DocumentViewerBase.prototype.zoomToFit = function (extents) {
 
     t.scene.scaleX = z;
     t.scene.scaleY = z;
-}
 
-DocumentViewerBase.prototype.onDrawStart = function (t, e) {
-    if (t.scene.extents != null) {
-        var extents = t.scene.extents;
+    t.stage.x = 0;
+    t.stage.y = 0;
 
-        // Draw extents position marker.
-        var ce = {
-            x: extents.x + extents.width / 2,
-            y: -extents.y + extents.height / 2
-        };
-
-        // Draw center position marker.
-        var cc = {
-            x: $(t.canvas).innerWidth() / 2,
-            y: $(t.canvas).innerHeight() / 2
-        };
-
-        // Uncomment this when debugging:
-        t.drawSceneMarkers(extents, cc, ce);
-
-        if (t.stage.autoFit) {
-            // Set the registration point of the scene to the center of the extents (currently the canvas center).
-            t.scene.regX = ce.x;
-            t.scene.regY = ce.y;
-
-            // Move the scene into the center of the stage.
-            t.scene.x = cc.x;
-            t.scene.y = cc.y;
-
-            t.zoomToFit(extents);
-        }
-    }
+    t.stage.update();
 }
 
 DocumentViewerBase.prototype.measureExtents = function (x, y, w, h) {
@@ -270,9 +341,6 @@ DocumentViewerBase.prototype.drawSceneMarkers = function (extents, canvasCenter,
     if (t.scene.debug != null) {
         // Ensure that the debug layer is the top most layer.
         t.scene.addChild(t.scene.debug);
-
-        // Draw elements on the debug layer.
-        t.scene.debug.removeAllChildren();
 
         // Draw extents of the scene.
         var s = new createjs.Shape();
@@ -319,11 +387,7 @@ DocumentViewerBase.prototype.drawSceneMarkers = function (extents, canvasCenter,
     // Elements in this container are in global coordinate space and do not get scaled when zooming.
     if (t.stage.debug != null) {
         // Make the stage debug container the top most one.
-        t.stage.removeChild(t.stage.debug);
         t.stage.addChild(t.stage.debug);
-
-        // Draw elements on the debug layer.
-        t.stage.debug.removeAllChildren();
 
         // Draw the actual canvas center marker.
         if (cc !== undefined) {
@@ -345,4 +409,10 @@ DocumentViewerBase.prototype.drawSceneMarkers = function (extents, canvasCenter,
             t.stage.debug.addChild(s);
         }
     }
+}
+
+DocumentViewerBase.prototype.cursor = function (cursor) {
+    var t = this;
+
+    t.stage.cursor = cursor;
 }

@@ -19,9 +19,9 @@ namespace Artivity.Api.Modules
         #region Constructors
 
         public CommentModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/entity/derivations", modelProvider, platformProvider)
+            : base("/artivity/api/1.0/comments", modelProvider, platformProvider)
         {
-            Get["/comments"] = parameters =>
+            Get["/"] = parameters =>
             {
                 string uri = Request.Query.uri;
 
@@ -33,12 +33,7 @@ namespace Artivity.Api.Modules
                 return GetCommentsFromInfluence(new UriRef(uri));
             };
 
-            Get["/comments/clean"] = parameters =>
-            {
-                return CleanComments();
-            };
-
-            Post["/comments"] = parameters =>
+            Post["/"] = parameters =>
             {
                 CommentCollection comment = this.Bind<CommentCollection>();
 
@@ -48,6 +43,11 @@ namespace Artivity.Api.Modules
                 }
 
                 return HttpStatusCode.BadRequest;
+            };
+
+            Get["/clean"] = parameters =>
+            {
+                return CleanComments();
             };
         }
 
@@ -105,32 +105,6 @@ namespace Artivity.Api.Modules
             List<Comment> comments = result.GetResources<Comment>().ToList();
 
             return Response.AsJsonSync(comments);
-        }
-
-        private Response CleanComments()
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?comment
-                WHERE
-                {
-                    ?comment a art:Comment ; prov:activity | prov:hadActivity ?activity .
-
-                    FILTER NOT EXISTS { ?comment rdfs:comment ?value . }
-                }");
-
-            IModel model = ModelProvider.GetActivities();
-
-            List<BindingSet> bindings = model.GetBindings(query).ToList();
-
-            foreach (BindingSet b in bindings)
-            {
-                Uri uri = new Uri(b["comment"].ToString());
-
-                model.DeleteResource(uri);
-            }
-
-            return HttpStatusCode.OK;
         }
 
         private Response PostComment(CommentCollection parameter)
@@ -203,6 +177,32 @@ namespace Artivity.Api.Modules
 
                 return HttpStatusCode.BadRequest;
             }
+        }
+
+        private Response CleanComments()
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?comment
+                WHERE
+                {
+                    ?comment a art:Comment ; prov:activity | prov:hadActivity ?activity .
+
+                    FILTER NOT EXISTS { ?comment rdfs:comment ?value . }
+                }");
+
+            IModel model = ModelProvider.GetActivities();
+
+            List<BindingSet> bindings = model.GetBindings(query).ToList();
+
+            foreach (BindingSet b in bindings)
+            {
+                Uri uri = new Uri(b["comment"].ToString());
+
+                model.DeleteResource(uri);
+            }
+
+            return HttpStatusCode.OK;
         }
 
         #endregion
