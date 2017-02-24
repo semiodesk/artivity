@@ -42,8 +42,9 @@
     <Compile Include="IViewModule.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />
-    <Compile Include="ObjectModel\Activities\EditFile.cs" />
-    <Compile Include="ObjectModel\Activities\LeaveComment.cs" />
+    <Compile Include="ObjectModel\Activities\CreateEntity.cs" />
+    <Compile Include="ObjectModel\Activities\DeleteEntity.cs" />
+    <Compile Include="ObjectModel\Activities\EditEntity.cs" />
     <Compile Include="ObjectModel\Activities\Publish.cs" />
     <Compile Include="ObjectModel\Communication.cs" />
     <Compile Include="ObjectModel\Entities\Collection.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="ObjectModel\Entities\Folder.cs" />
     <Compile Include="ObjectModel\Entities\Image.cs" />
     <Compile Include="ObjectModel\Entities\InformationElement.cs" />
+    <Compile Include="ObjectModel\Entities\Mark.cs" />
     <Compile Include="ObjectModel\Entities\Post.cs" />
     <Compile Include="ObjectModel\Entities\Project.cs" />
     <Compile Include="ObjectModel\Entities\RasterImage.cs" />
@@ -60,7 +62,7 @@
     <Compile Include="ObjectModel\FileDataObject\RenderingDataObject.cs" />
     <Compile Include="ObjectModel\HttpAuthenticationProtocol.cs" />
     <Compile Include="ObjectModel\Influences\Derivation.cs" />
-    <Compile Include="ObjectModel\IUserAgent.cs" />
+    <Compile Include="IUserAgent.cs" />
     <Compile Include="ObjectModel\Influences\Revision.cs" />
     <Compile Include="ObjectModel\Influences\Save.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
@@ -99,10 +101,8 @@
     <Compile Include="ObjectModel\Geometry\Rectangle.cs" />
     <Compile Include="ObjectModel\Geometry\Viewport.cs" />
     <Compile Include="ObjectModel\Activities\Browse.cs" />
-    <Compile Include="ObjectModel\Activities\CreateFile.cs" />
     <Compile Include="ObjectModel\Influences\Redo.cs" />
     <Compile Include="ObjectModel\Influences\Undo.cs" />
-    <Compile Include="ObjectModel\Activities\DeleteFile.cs" />
     <Compile Include="ObjectModel\Influences\View.cs" />
     <Compile Include="ModelProviderFactory.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />

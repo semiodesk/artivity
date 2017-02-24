@@ -1,7 +1,9 @@
 (function () {
     angular.module('app').controller('FilePreviewController', FilePreviewController);
 
-    function FilePreviewController(api, $rootScope, $scope, $location, $routeParams, $uibModal, selectionService, hotkeys) {
+    FilePreviewController.$inject = ['$rootScope', '$scope', '$location', '$routeParams', '$uibModal', 'api', 'selectionService', 'hotkeys'];
+    
+    function FilePreviewController($rootScope, $scope, $location, $routeParams, $uibModal, api, selectionService, hotkeys) {
         var t = this;
         var fileUri = $location.search().uri;
 

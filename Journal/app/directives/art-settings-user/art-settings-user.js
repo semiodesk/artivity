@@ -13,7 +13,9 @@
 
     angular.module('app').controller('UserSettingsDirectiveFormController', UserSettingsDirectiveFormController);
 
-    function UserSettingsDirectiveFormController(api, $scope, settingsService) {
+    UserSettingsDirectiveFormController.$inject = ['$scope', 'api', 'settingsService'];
+
+    function UserSettingsDirectiveFormController($scope, api, settingsService) {
         var t = this;
         var s = $scope;
 

@@ -9,15 +9,18 @@ namespace Artivity.DataModel
     [RdfClass(ART.PartialRenderingDataObject)]
     public class PartialRenderingDataObject : RenderingDataObject
     {
-        #region Constructor
-        public PartialRenderingDataObject(Uri uri) : base(uri) { }
-        public PartialRenderingDataObject(string uri) : base(uri) { }
-        #endregion
-
         #region Members
 
         [RdfProperty(ART.region)]
         public Rectangle Region { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        public PartialRenderingDataObject(Uri uri) : base(uri) { }
+
+        public PartialRenderingDataObject(string uri) : base(uri) { }
 
         #endregion
     }

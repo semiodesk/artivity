@@ -8,30 +8,23 @@
     function commentService($http) {
         var endpoint = apid.endpointUrl + "comments";
 
-        var service = {
-            post: post,
-            get: get
+        return {
+            get: get,
+            post: post
         };
 
-        return service;
+        function get(entityUri) {
+            var uri = encodeURIComponent(entityUri);
 
-        function get(derivationUri) {
-            var uri = encodeURIComponent(derivationUri);
-
-            return $http.get(endpoint+'?uri='+uri).then(function (response) {
+            return $http.get(endpoint + '?entityUri=' + uri).then(function (response) {
                 return response.data;
             }, handleError('Error while retrieving comments.'));
         }
 
-        function post(commentCollection) {
-            return $http.post(endpoint, commentCollection).then(function (response) {
+        function post(comment) {
+            return $http.post(endpoint, comment).then(function (response) {
                 return response.data;
             }, handleError('Error when pushing comments.'));
-        }
-
-        // private functions
-        function handleSuccess(res) {
-            return res.data;
         }
 
         function handleError(error) {

@@ -2,7 +2,6 @@
   var dragging = 0;
 
   window.ondragenter = (ev) => {
-
     if (ev.dataTransfer.files != null && ev.dataTransfer.files.length > 0 && dragging === 0) {
       var filePath = ev.dataTransfer.files[0].path;
 
@@ -11,14 +10,14 @@
       else
         showOverlay("#msg-add-app");
     }
+
     dragging++;
+
     ev.stopPropagation();
     ev.preventDefault();
-    console.log(dragging);
   }
 
   document.ondrop = (ev) => {
-
     if (ev.dataTransfer != null && ev.dataTransfer.files != null && ev.dataTransfer.files.length > 0) {
       var fileUrl = require('file-url');
       var filePath = ev.dataTransfer.files[0].path;
@@ -28,13 +27,17 @@
       } else {
         var endpoint = apid.endpointUrl + '/agents/software/paths/add?url=' + fileUrl(filePath);
       }
+
       $.get(endpoint)
     }
+
     ev.preventDefault();
     ev.stopPropagation();
 
     hideOverlays();
+
     dragging = 0;
+
     return false;
   }
 
@@ -49,7 +52,6 @@
   }
 
   window.ondragleave = (ev) => {
-
     dragging--;
 
     ev.stopPropagation();
@@ -57,7 +59,6 @@
 
     if (dragging === 0) {
       hideOverlays();
-      console.log("leaving");
     }
 
     return false;

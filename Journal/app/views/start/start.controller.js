@@ -1,7 +1,9 @@
 (function () {
     angular.module('app').controller('StartController', StartController);
 
-    function StartController($location, api, $http, windowService, appService) {
+    StartController.$inject = ['$location', '$http', 'api', 'windowService', 'appService'];
+
+    function StartController($location, $http, api, windowService, appService) {
         var t = this;
 
         windowService.setClosable(true);

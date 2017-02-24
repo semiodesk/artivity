@@ -17,6 +17,8 @@
 
     angular.module('app').controller('ClientStateInfoDirectiveController', ClientStateInfoDirectiveController);
 
+    ClientStateInfoDirectiveController.$inject = ['$scope'];
+
     function ClientStateInfoDirectiveController($scope) {
         var t = this;
 

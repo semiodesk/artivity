@@ -13,6 +13,8 @@
 		}
 	});
 
+	PlaybackControlDirectiveController.$inject = ['$rootScope', '$scope', 'selectionService'];
+
 	function PlaybackControlDirectiveController($rootScope, $scope, selectionService) {
 		var t = this;
 
@@ -453,7 +455,7 @@
 		t.selectionService.selectPrev();
 
 		t.rootScope.$broadcast('redraw');
-		
+
 		if (t.playloop) {
 			var i = t.selectionService.selectedIndex();
 

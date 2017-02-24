@@ -9,12 +9,12 @@ namespace Artivity.DataModel
     [RdfClass(ART.RenderingDataObject)]
     public class RenderingDataObject : FileDataObject
     {
-        #region Constructor
-        public RenderingDataObject(Uri uri) : base(uri) { }
-        public RenderingDataObject(string uri) : base(uri) { }
-        #endregion
+        #region Constructors
 
-        #region Members
+        public RenderingDataObject(Uri uri) : base(uri) { }
+
+        public RenderingDataObject(string uri) : base(uri) { }
+
         #endregion
     }
 }

@@ -54,11 +54,6 @@ namespace Artivity.DataModel
         public Rectangle(Uri uri) : base(uri) {}
 
         #endregion
-
-        #region Methods
-
-
-        #endregion
     }
 
     [RdfClass(ART.Rectangle)]
@@ -83,11 +78,6 @@ namespace Artivity.DataModel
         #region Constructors
 
         public RectangleEntity(Uri uri) : base(uri) { }
-
-        #endregion
-
-        #region Methods
-
 
         #endregion
     }

@@ -1989,6 +1989,10 @@ button[disabled]:hover {
 	border-left-color: $accentColor;
 }
 
+.ctl-comment {
+	padding: 0 5px;
+}
+
 .ctl-comment textarea,
 .ctl-comment input {
 	display: block;
@@ -1996,9 +2000,9 @@ button[disabled]:hover {
 
 .ctl-comment textarea {
 	height: 38px;
+	width: 100%;
 	line-height: 1.3em;
 	border: none;
-	width: 100%;
 	padding: 10px;
 	color: $inputTextColor;
 	resize: none;
@@ -2010,7 +2014,7 @@ button[disabled]:hover {
 
 .ctl-comment .btn-post {
 	float: right;
-	margin: 5px;
+	margin: 5px 0;
 }
 
 

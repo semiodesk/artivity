@@ -1,7 +1,9 @@
 (function () {
     angular.module('app').controller('UpdateProjectDialogController', UpdateProjectDialogController);
 
-    function UpdateProjectDialogController(api, $scope, $filter, $uibModalInstance, $sce, projectService) {
+    UpdateProjectDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'api', 'projectService'];
+
+    function UpdateProjectDialogController($scope, $filter, $uibModalInstance, $sce, api, projectService) {
         var t = this;
 
         // Public members

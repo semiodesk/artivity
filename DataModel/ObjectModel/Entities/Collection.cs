@@ -38,10 +38,13 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        [JsonIgnore]
-        [RdfProperty(PROV.hadMember)]
-        public List<Entity> Members_ { get; set; }
-        public IEnumerable<string> Members { get { return from a in Members_ select a.Uri.AbsoluteUri; } }
+        [RdfProperty(PROV.hadMember), JsonIgnore]
+        public List<Entity> Members { get; set; }
+
+        public IEnumerable<string> MemberUris
+        {
+            get { return from a in Members select a.Uri.AbsoluteUri; }
+        }
 
         #endregion
 

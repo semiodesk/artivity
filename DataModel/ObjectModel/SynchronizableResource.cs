@@ -45,13 +45,13 @@ namespace Artivity.DataModel
         protected bool IsSynchronizable;
 
         [RdfProperty(NIE.created)]
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationTimeUtc { get; set; }
 
-        [RdfProperty(NIE.modified)]
-        public DateTime ModificationDate { get; set; }
+        [RdfProperty(NIE.lastModified)]
+        public DateTime ModificationTimeUtc { get; set; }
 
         [RdfProperty(ART.deleted)]
-        public DateTime DeletionDate { get; set; }
+        public DateTime DeletionTimeUtc { get; set; }
 
         [RdfProperty(ARTS.synchronizationState), JsonIgnore]
         public ResourceSynchronizationState SynchronizationState { get; set; }
@@ -103,13 +103,13 @@ namespace Artivity.DataModel
 
         public void Commit(int revision)
         {
-            if (IsNew || CreationDate == DateTime.MinValue)
+            if (IsNew || CreationTimeUtc == DateTime.MinValue)
             {
-                CreationDate = DateTime.UtcNow;
-                DeletionDate = DateTime.MinValue;
+                CreationTimeUtc = DateTime.UtcNow;
+                DeletionTimeUtc = DateTime.MinValue;
             }
 
-            ModificationDate = DateTime.UtcNow;
+            ModificationTimeUtc = DateTime.UtcNow;
 
             if (IsSynchronizable)
             {

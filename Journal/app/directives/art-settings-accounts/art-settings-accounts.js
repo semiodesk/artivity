@@ -11,7 +11,9 @@
 
     angular.module('app').controller('AccountsSettingsDirectiveFormController', AccountsSettingsDirectiveFormController);
 
-    function AccountsSettingsDirectiveFormController(api, $scope, settingsService, $uibModal) {
+    AccountsSettingsDirectiveFormController.$inject = ['$scope', '$uibModal', 'api', 'settingsService'];
+
+    function AccountsSettingsDirectiveFormController($scope, $uibModal, api, settingsService) {
         var t = this;
         var s = $scope;
 

@@ -9,7 +9,9 @@
         }
     };
 
-    function KeyboardInputHandlerDirectiveController(api, $scope, hotkeys, windowService, syncService) {
+    KeyboardInputHandlerDirectiveController.$inject = ['$scope', 'api', 'hotkeys', 'windowService', 'syncService'];
+
+    function KeyboardInputHandlerDirectiveController($scope, api, hotkeys, windowService, syncService) {
         $scope.getUrlWithFile = function (file) {
             var url = window.location.href.split('#');
 

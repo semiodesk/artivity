@@ -61,9 +61,9 @@ namespace Artivity.Api.Modules
             Project proj = model.GetResource<Project>(new Uri(projectUri));
             Entity entity = model.GetResource<Entity>(new Uri(fileUri));
 
-            if (!proj.Members_.Contains(entity))
+            if (!proj.Members.Contains(entity))
             {
-                proj.Members_.Add(entity);
+                proj.Members.Add(entity);
                 proj.Commit();
             }
 

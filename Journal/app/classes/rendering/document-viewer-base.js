@@ -1,14 +1,20 @@
 /**
  * Renders a document onto a canvas.
  */
-function DocumentViewerBase(canvas, endpointUrl) {
+function DocumentViewerBase(user, canvas, endpointUrl) {
     var t = this;
 
     // Indicates if debug information like scene extents and center points should be rendered.
     t.enableDebug = false;
 
+    // The user agent.
+    t.user = user;
+
     // HTML5 canvas element.
     t.canvas = canvas;
+
+    // The rendered entity or derivation.
+    t.entity = null;
 
     // Shadow that is drawn below the canvases / artboards / pages.
     t.pageShadow = new createjs.Shadow('rgba(0,0,0,.2)', 3, 3, 6);
@@ -18,6 +24,8 @@ function DocumentViewerBase(canvas, endpointUrl) {
     t.initializeCanvasDragMove();
     t.initializeCanvasResize();
     t.initializeCanvasZoom();
+
+    t.raise('initialized', t);
 }
 
 DocumentViewerBase.prototype.initializeEventDispatcher = function () {
@@ -61,6 +69,14 @@ DocumentViewerBase.prototype.initializeScene = function () {
     var g = t.background.graphics;
     g.beginFill('rgba(0,0,0,0.01)');
     g.drawRect(min, min, max, max);
+
+    // An overlay container for elements which are rendered above the scene.
+    t.overlay = new createjs.Container();
+
+    // Initialize the stage containers.
+    t.stage.addChild(t.background);
+    t.stage.addChild(t.scene);
+    t.stage.addChild(t.overlay);
 }
 
 DocumentViewerBase.prototype.initializeCanvasZoom = function () {
@@ -83,8 +99,6 @@ DocumentViewerBase.prototype.initializeCanvasZoom = function () {
     });
 
     window.addEventListener("keydown", function (e) {
-        console.log(e.key);
-
         if (e.key === 'Home' || e.ctrlKey && e.key === '1') {
             e.preventDefault();
             t.zoomToFit();
@@ -145,44 +159,56 @@ DocumentViewerBase.prototype.initializeCanvasDragMove = function () {
 
     window.addEventListener("keydown", function (e) {
         if (e.key === ' ') {
-            // Prevent electron from resizing the window when pressing spacebar.
-            e.preventDefault();
             t.startPanning();
         }
     });
 
     window.addEventListener("keyup", function (e) {
         if (e.key === ' ') {
-            // Prevent electron from resizing the window when pressing spacebar.
-            e.preventDefault();
             t.stopPanning();
+            e.preventDefault(); // Prevent electron from resizing the window when pressing spacebar.
         }
-    });
+    }, true);
 }
 
 DocumentViewerBase.prototype.clearStage = function () {
     var t = this;
 
-    // Clear the stage.
-    t.stage.removeAllChildren();
-    t.stage.addChild(t.background);
-    t.stage.addChild(t.scene);
-    t.stage.addChild(t.overlay);
+    if (t.scene) {
+        // Clear the scene container.
+        t.scene.removeAllChildren();
+    }
 
-    // Clear the scene.
-    t.scene.removeAllChildren();
+    if (t.overlay) {
+        // Clear the overlay container.
+        t.overlay.removeAllChildren();
+    }
+}
+
+DocumentViewerBase.prototype.setEntity = function (entity) {
+    var t = this;
+
+    t.entity = entity;
+
+    // Rebuild the scene.
+    t.render();
+
+    // Raise the entity changed event.
+    t.raise('entityChanged', entity);
 }
 
 DocumentViewerBase.prototype.startPanning = function () {
     var t = this;
     t.isPanning = true;
-    t.cursor('move');
+    t.cursor = 'move'; 
+    t.stage.update();
 }
 
 DocumentViewerBase.prototype.stopPanning = function () {
     var t = this;
     t.isPanning = false;
-    t.cursor('crosshair');
+    t.cursor = 'crosshair';
+    t.stage.update();
 }
 
 DocumentViewerBase.prototype.initializeCanvasResize = function () {
@@ -237,6 +263,8 @@ DocumentViewerBase.prototype.onResize = function () {
 
     if (t.stage.autoFit) {
         t.zoomToFit();
+    } else {
+        t.raise('zoom');
     }
 
     // Update the buffer.
@@ -313,6 +341,8 @@ DocumentViewerBase.prototype.zoomToFit = function () {
     t.stage.y = 0;
 
     t.stage.update();
+
+    t.raise('zoom');
 }
 
 DocumentViewerBase.prototype.measureExtents = function (x, y, w, h) {
@@ -409,6 +439,12 @@ DocumentViewerBase.prototype.drawSceneMarkers = function (extents, canvasCenter,
             t.stage.debug.addChild(s);
         }
     }
+}
+
+DocumentViewerBase.prototype.render = function (cursor) {
+    var t = this;
+
+    t.clearStage();
 }
 
 DocumentViewerBase.prototype.cursor = function (cursor) {

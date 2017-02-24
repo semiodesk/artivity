@@ -1,7 +1,9 @@
 (function () {
     angular.module('app').controller('UpdateDialogController', UpdateDialogController);
 
-    function UpdateDialogController(api, $scope, $filter, $uibModalInstance, $sce, updateService) {
+    UpdateDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'api', 'updateService'];
+
+    function UpdateDialogController($scope, $filter, $uibModalInstance, $sce, api, updateService) {
         var t = this;
 
         t.title = $filter('translate')('UPDATE.TITLE');

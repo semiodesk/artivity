@@ -11,10 +11,12 @@
         }
     });
 
+    LayerControlDirectiveController.$inject = ['$rootScope', '$scope', 'selectionService'];
+
     function LayerControlDirectiveController($rootScope, $scope, selectionService) {
         var t = this;
 
-        selectionService.on('selectedItemChanged', function(influence) {
+        selectionService.on('selectedItemChanged', function (influence) {
             if (!$rootScope.$$phase) {
                 $rootScope.$digest();
             }

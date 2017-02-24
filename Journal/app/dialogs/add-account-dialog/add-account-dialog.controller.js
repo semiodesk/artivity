@@ -1,7 +1,9 @@
 (function () {
     angular.module('app').controller('AddAccountDialogController', AddAccountDialogController);
 
-    function AddAccountDialogController(api, $scope, $filter, $uibModalInstance, $sce, clientService) {
+    AddAccountDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'api', 'clientService'];
+
+    function AddAccountDialogController($scope, $filter, $uibModalInstance, $sce, api, clientService) {
         var t = this;
         var interval = undefined;
 
@@ -18,7 +20,7 @@
 
         t.selectClient = function (client) {
             // On macOS the Mono serializes the URIs differently - of course - and appends a trailing slash.. :/
-            if(client.Uri.endsWith('/')) {
+            if (client.Uri.endsWith('/')) {
                 client.Uri = client.Uri.slice(0, -1);
             }
 

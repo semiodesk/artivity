@@ -11,12 +11,22 @@ function EventDispatcher(parent) {
     t.muted = false;
     t.listeners = {};
 
-    if(parent) {
-        if(!parent.on) parent.on = function(event, callback) { t.on(event, callback); };
-        if(!parent.off) parent.off = function(event, callback) { t.off(event, callback); };
-        if(!parent.raise) parent.raise = function(event, params) { t.on(event, params); };
-        if(!parent.mute) parent.mute = function() { t.mute(); };
-        if(!parent.unmute) parent.unmute = function() { t.unmute(); };
+    if (parent) {
+        if (!parent.on) parent.on = function (event, callback) {
+            t.on(event, callback);
+        };
+        if (!parent.off) parent.off = function (event, callback) {
+            t.off(event, callback);
+        };
+        if (!parent.raise) parent.raise = function (event, params) {
+            t.raise(event, params);
+        };
+        if (!parent.mute) parent.mute = function () {
+            t.mute();
+        };
+        if (!parent.unmute) parent.unmute = function () {
+            t.unmute();
+        };
     }
 }
 

@@ -1,4 +1,3 @@
-// STATS
 function EditingStatistics() {
     var t = this;
 

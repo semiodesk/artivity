@@ -43,8 +43,11 @@ namespace Artivity.Api.Modules
         #region Members
 
         private bool _create;
+
         private bool _retrieve;
+
         private bool _update;
+
         private bool _delete;
 
         #endregion
