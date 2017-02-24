@@ -17,7 +17,9 @@
 
     angular.module('app').controller('SyncIndicatorDirectiveController', SyncIndicatorDirectiveController);
 
-    function SyncIndicatorDirectiveController(api, $scope, settingsService, $uibModal, syncService) {
+    SyncIndicatorDirectiveController.$inject = ['$scope', '$uibModal', 'api', 'settingsService', 'syncService'];
+
+    function SyncIndicatorDirectiveController($scope, $uibModal, api, settingsService, syncService) {
         var t = this;
 
         $scope.synchronizing = false;

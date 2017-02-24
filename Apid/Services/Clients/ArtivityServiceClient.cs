@@ -425,17 +425,17 @@ namespace Artivity.Apid.Accounts
 
                         if(data.CreationDate != null)
                         {
-                            project.CreationDate = data.CreationDate;
+                            project.CreationTimeUtc = data.CreationDate;
                         }
 
                         if(data.ModificationDate != null)
                         {
-                            project.ModificationDate = data.ModificationDate;
+                            project.ModificationTimeUtc = data.ModificationDate;
                         }
 
                         if (data.DeletionDate != null)
                         {
-                            project.DeletionDate = data.DeletionDate;
+                            project.DeletionTimeUtc = data.DeletionDate;
                         }
 
                         // Do not commit _after_ setting the revision.

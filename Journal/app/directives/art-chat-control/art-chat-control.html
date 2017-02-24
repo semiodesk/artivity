@@ -6,7 +6,7 @@
                     <ul class="comment-list list-unstyled">
                         <li class="comment-item list-item list-item-unstyled" ng-repeat="comment in t.comments" ng-class="{selected: t.selectedComment === comment}">
                             <div class="comment-container" ng-click="t.selectComment(comment)">
-                                <div class="comment" ng-class="{'comment-user': comment.isUser == true}">
+                                <div class="comment" ng-class="{'comment-user': t.isUserComment(comment)}">
                                     <div class="comment-avatar">
                                         <img src="app/resources/user.svg" width="28" height="28" class="img img-circular">
                                     </div>
@@ -30,7 +30,8 @@
     <div class="row">
         <div class="layout-container">
             <div class="ctl-comment">
-                <textarea class="ui-autosize" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-model="t.comment.text" ng-enter="t.postComment(t.comment)">
+                <textarea class="ui-autosize" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-enter="t.postComment()" ng-model="t.comment.text"
+                    ng-change="t.updateComment()" ng-esc="t.resetComment()">
                 </textarea>
                 <button class="btn btn-default btn-post pull-right" ng-click="t.postComment(t.comment)">Post</button>
                 <div class="clearfix"></div>

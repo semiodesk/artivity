@@ -1,119 +1,74 @@
 /**
  * Renders a document onto a canvas.
  */
-function DocumentViewer(canvas, endpointUrl) {
+function DocumentViewer(user, canvas, endpointUrl, selectionService) {
     var t = this;
 
     // Call the base constructor.
-    DocumentViewerBase.call(t, canvas, endpointUrl);
+    DocumentViewerBase.call(t, user, canvas, endpointUrl);
+
+    // Manages the selection of items.
+    t.selection = selectionService;
 
     // Loads and caches the document pages and renderings.
     t.pageCache = new DocumentViewerCache();
     t.pageCache.endpointUrl = endpointUrl;
 
-    // Unscaled overlay layer which can be used for drawing dialogs, tools or makers.
-    t.markerContainer = new createjs.Container();
-    t.markers = [];
+    // Lists all the features which are enabled for this viewer.
+    t.features = [];
 
-    t.initializeMarkers();
-
-    t.cursor('crosshair');
+    // Handle selection changes.
+    t.on('itemSelected', function(item) { t.onItemSelected(item); });
+    t.on('itemChanged', function(item) { t.onItemChanged(item); });
 }
 
 DocumentViewer.prototype = Object.create(DocumentViewerBase.prototype);
 
-DocumentViewer.prototype.initializeMarkers = function () {
+DocumentViewer.prototype.addFeature = function (feature) {
     var t = this;
 
-    var x1 = 0;
-    var y1 = 0;
-    var isDragging = false;
+    feature.initialize(t);
 
-    t.scene.on("mousedown", function (e) {
-        isDragging = true;
-
-        // Remember mouse down position for creating new markers.
-        x1 = e.stageX;
-        y1 = e.stageY;
-    });
-
-    t.scene.on("pressmove", function (e) {
-        if (t.isPanning || !isDragging) {
-            return;
-        }
-
-        // Create a new marker at the mouse down position.
-        var x2 = e.stageX;
-        var y2 = e.stageY;
-
-        var m = t.markers[t.markers.length - 1];
-
-        if (!m || !m.isNew) {
-            // Create a new marker with the geometry set in local (scene) coordinates..
-            m = new Marker();
-            m.p1 = t.scene.globalToLocal(x1, y1);
-            m.p2 = t.scene.globalToLocal(x2, y2);
-
-            var r = new MarkerRectangle(t, t.scene, m);
-
-            t.markers.push(m);
-            t.markerContainer.addChild(r);
-
-            t.stage.update();
-        } else {
-            // Update the lower right point of the rectangle when dragging.
-            m.p2 = t.scene.globalToLocal(x2, y2);
-
-            // Redraw the existing marker rectangle.
-            var r = t.markerContainer.getChildAt(t.markers.length - 1);
-
-            if (r) {
-                r.initializeGeometry();
-                r.redraw();
-
-                t.stage.update();
-            }
-        }
-    });
-
-    $(window).mouseup(function (e) {
-        isDragging = false;
-
-        // Finalize the new marker.
-        if (t.markers.length > 0) {
-            t.markers[t.markers.length - 1].isNew = false;
-        }
-    });
-
-    t.on("zoom", function () {
-        t.markerContainer.removeAllChildren();
-
-        for (i = 0; i < t.markers.length; i++) {
-            var m = t.markers[i];
-            var r = new MarkerRectangle(t, t.scene, m);
-
-            t.markerContainer.addChild(r);
-        }
-
-        t.stage.update();
-    });
+    t.features.push(feature);
 }
 
-DocumentViewer.prototype.render = function (revision) {
+DocumentViewer.prototype.onItemSelected = function (item) {
+    var t = this;
+
+    var other = t.selection.selectedItem();
+
+    if (other && typeof other.deselect === 'function') {
+        other.deselect();
+    }
+
+    if (item && typeof item.select === 'function') {
+        item.select();
+    }
+
+    t.selection.selectedItem(item);
+
+    console.log("Selected:", item);
+}
+
+DocumentViewer.prototype.onItemChanged = function (item) {
+    var t = this;
+
+    console.log("Changed:", item);
+}
+
+DocumentViewer.prototype.render = function () {
     var t = this;
 
     t.clearStage();
 
-    t.stage.addChild(t.markerContainer);
-
     // Return if there's nothing to render.
-    if (revision === undefined || t.pageCache === undefined) {
+    if (t.entity === undefined || t.pageCache === undefined) {
         t.stage.update();
 
         return;
     }
 
-    t.pageCache.get(new Date(), revision, function (p) {
+    t.pageCache.get(new Date(), t.entity, function (p) {
         // Render the page sheets with a drop shadow.
         var s = new createjs.Shape();
         s.shadow = t.pageShadow;

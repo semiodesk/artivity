@@ -398,7 +398,9 @@ namespace Artivity.Apid.Modules
 
             if(model.ContainsResource(uid))
             {
-                return Response.AsJsonSync(model.GetResource<Person>(uid));
+                Person user = model.GetResource<Person>(uid);
+
+                return Response.AsJsonSync(user);
             }
             else
             {

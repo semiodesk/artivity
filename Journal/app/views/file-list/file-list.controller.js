@@ -1,7 +1,9 @@
 (function () {
     angular.module('app').controller('FileListController', FileListController);
 
-    function FileListController(api, $scope, $uibModal, filesystemService, windowService, hotkeys) {
+    FileListController.$inject = ['$scope', '$uibModal', 'api', 'filesystemService', 'windowService', 'hotkeys'];
+
+    function FileListController($scope, $uibModal, api, filesystemService, windowService, hotkeys) {
         var t = this;
 
         windowService.setMinimizable();

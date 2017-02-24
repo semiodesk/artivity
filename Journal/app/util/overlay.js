@@ -2,10 +2,10 @@ function showOverlay(id) {
     var element = $(id);
 
     if (element !== undefined) {
-        $('.overlay .msg').each(function(i, element) {
+        $('.overlay .msg').each(function (i, element) {
             $(element).addClass('invisible');
         });
-        
+
         element.removeClass('invisible');
 
         var overlay = $('#overlay');
@@ -22,10 +22,10 @@ function hideOverlays() {
 
     overlay.animate({
         opacity: 0
-    }, 500, function() {
+    }, 500, function () {
         overlay.addClass('collapse');
 
-        $('.overlay .msg').each(function(i, element) {
+        $('.overlay .msg').each(function (i, element) {
             $(element).addClass('invisible');
         });
     });

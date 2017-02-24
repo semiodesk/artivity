@@ -12,6 +12,8 @@
 
     angular.module('app').controller('ProjectListDirectiveController', ProjectListDirectiveController);
 
+    ProjectListDirectiveController.$inject = ['$rootScope', '$scope', '$uibModal', 'selectionService', 'projectService', 'fileService'];
+
     function ProjectListDirectiveController($rootScope, $scope, $uibModal, selectionService, projectService, fileService) {
         var t = this;
 
@@ -50,7 +52,7 @@
             projectService.getAll().then(function (response) {
                 var list = response.data;
 
-                if(list && list.length > 0) {
+                if (list && list.length > 0) {
                     list.sort(function compare(a, b) {
                         if (a.Name < b.Name) return -1;
                         if (a.Name > b.Name) return 1;

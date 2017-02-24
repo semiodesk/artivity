@@ -13,6 +13,8 @@
 
     angular.module('app').controller('QueryEditorDirectiveController', QueryEditorDirectiveController);
 
+    QueryEditorDirectiveController.$inject = ['$scope'];
+
     function QueryEditorDirectiveController($scope) {
         var t = this;
 

@@ -20,7 +20,9 @@
 
     angular.module('app').controller('EditingHistoryDirectiveController', EditingHistoryDirectiveController);
 
-    function EditingHistoryDirectiveController($rootScope, $scope, selectionService, translationService, formattingService) {
+    EditingHistoryDirectiveController.$inject = ['$rootScope', '$scope', 'selectionService', 'formattingService', 'translationService'];
+
+    function EditingHistoryDirectiveController($rootScope, $scope, selectionService, formattingService, translationService) {
         var t = this;
 
         t.autoScroll = true;

@@ -1,7 +1,9 @@
 (function () {
     angular.module('app').controller('SetupController', SetupController);
 
-    function SetupController(api, $scope, $location, settingsService, windowService) {
+    SetupController.$inject = ['$scope', '$location', 'api', 'settingsService', 'windowService'];
+
+    function SetupController($scope, $location, api, settingsService, windowService) {
         var t = this;
 
         windowService.setMinimizable(false);

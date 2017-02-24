@@ -23,27 +23,32 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
-using System;
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(NFO.Folder)]
-    public class Folder : Entity
+    [RdfClass(ART.Mark)]
+    public class Mark : Entity
     {
         #region Members
 
-        [RdfProperty(NIE.url)]
-        public Resource Url { get; set; }
+        [RdfProperty(ART.region)]
+        public Rectangle Region { get; set; }
 
         #endregion
 
         #region Constructors
 
-        public Folder(Uri uri) : base(uri) { }
+        public Mark(Uri uri) : base(uri)
+        {
+        }
 
         #endregion
     }

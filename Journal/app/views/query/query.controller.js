@@ -1,6 +1,8 @@
 (function () {
 	angular.module('app').controller('QueryController', QueryController);
 
+    QueryController.$inject = ['$rootScope', '$scope'];
+
 	function QueryController($rootScope, $scope) {
 		var t = this;
 

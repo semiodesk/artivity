@@ -17,17 +17,6 @@ art: rdf:type owl:Ontology ;
 	dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime ;
     dcterms:publisher <http://artivity.io/about> .
 
-nie:InformationElement rdfs:subClassOf art:Entity .
-
-nfo:VectorImage
-	rdfs:subClassOf prov:Entity.
-
-nfo:RasterImage
-	rdfs:subClassOf prov:Entity.
-
-nfo:Website
-	rdfs:subClassOf prov:Entity.
-
 art:BoundingRectangle
 	rdf:type rdfs:Class ;
     rdfs:subClassOf art:Rectangle ;
@@ -66,29 +55,39 @@ art:CoordinateSystem
 	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
-art:CreateFile
+art:Geometry
+	rdf:type rdfs:Class ;
+    rdfs:label "Geometry" ;
+	rdfs:comment "An entity that defines the shape, size, relative position of figures, and the properties of space."@en ;
+    rdfs:isDefinedBy art: ;
+	rdfs:seeAlso <https://en.wikipedia.org/wiki/Geometry> ;
+    owl:sameAs geo:Geometry ;
+	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
+
+art:CreateEntity
 	rdf:type rdfs:Class ;
     rdfs:subClassOf prov:Activity ;
-    rdfs:label "CreateFile"@en ;
-	rdfs:comment "An activity which resulted in a new file being generated."@en ;
+    rdfs:label "CreateEntity"@en ;
+	rdfs:comment "An activity which resulted in a new entity being generated."@en ;
     rdfs:isDefinedBy art: ;
 	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
-art:EditFile
+art:EditEntity
 	rdf:type rdfs:Class ;
     rdfs:subClassOf prov:Activity ;
-    rdfs:label "EditFile"@en ;
-	rdfs:comment "An activity which may result in an existing file being revised and/or modified."@en ;
+    rdfs:label "EditEntity"@en ;
+	rdfs:comment "An activity which may result in an existing entity being revised and/or modified."@en ;
     rdfs:isDefinedBy art: ;
 	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
 
-art:DeleteFile
+art:DeleteEntity
 	rdf:type rdfs:Class ;
     rdfs:subClassOf prov:Activity ;
-    rdfs:label "DeleteFile"@en ;
-	rdfs:comment "An activity which resulted in an existing file being deleted."@en ;
+    rdfs:label "DeleteEntity"@en ;
+	rdfs:comment "An activity which resulted in an existing entity being deleted."@en ;
     rdfs:isDefinedBy art: ;
 	dcterms:issued "2016-06-06T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2016-06-06T12:00:00Z"^^xsd:dateTime .
@@ -582,13 +581,13 @@ art:px
 
 #--- Unsanitized additions 
 
-art:LeaveComment a rdfs:Class ;
-    rdfs:subClassOf prov:Activity ;
-    rdfs:label "LeaveComment"@en ;
-	rdfs:comment "Describes the activity of leaving a comment."@en ;
-    rdfs:isDefinedBy art: ;
-	dcterms:issued "2017-02-09T12:00:00Z"^^xsd:dateTime ;
-    dcterms:modified "2017-02-09T12:00:00Z"^^xsd:dateTime .
+art:Project a rdfs:Class ;
+	rdfs:subClassOf prov:Collection ;
+	rdfs:label "Project" ;
+	rdfs:comment "A collaborative enterprise, involving research or design, that is planned to achieve a particular aim." ;
+	rdfs:isDefinedBy art: ;
+	dcterms:issued "2017-02-04T12:00:00Z"^^xsd:dateTime ;
+	dcterms:modified "2017-02-04T12:00:00Z"^^xsd:dateTime .
 
 art:Comment a rdfs:Class ;
     rdfs:subClassOf prov:Entity ;
@@ -597,18 +596,23 @@ art:Comment a rdfs:Class ;
     rdfs:isDefinedBy art: ;
 	dcterms:issued "2017-02-04T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2017-02-04T12:00:00Z"^^xsd:dateTime .
- 
-art:Project a rdfs:Class ;
-  rdfs:subClassOf prov:Collection ;
-  rdfs:label "Project" ;
-  rdfs:comment "A collaborative enterprise, involving research or design, that is planned to achieve a particular aim." ;
-  rdfs:isDefinedBy art: ;
-  dcterms:issued "2017-02-04T12:00:00Z"^^xsd:dateTime ;
-  dcterms:modified "2017-02-04T12:00:00Z"^^xsd:dateTime .
+
+art:Mark
+	rdf:type rdfs:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Mark"@en ;
+	rdfs:comment "A marking which highlights points, regions or entities in a document."@en ;
+    rdfs:isDefinedBy art: ;
+	dcterms:issued "2017-02-23T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2017-02-23T12:00:00Z"^^xsd:dateTime .
 
 art:View a rdfs:Class ;
     rdfs:label "View" ;
     rdfs:subClassOf prov:Usage .
+
+art:Browse a rdfs:Class ;
+    rdfs:label "Browse" ;
+    rdfs:subClassOf prov:Activity .
 
 art:SoftwareAssociation a rdfs:Class ;
     rdfs:label "SoftwareAssociation" ;
@@ -628,21 +632,28 @@ art:deleted a rdf:Property ;
     rdfs:label "deleted" ;
     rdfs:subPropertyOf nie:modified .
 
-nfo:FileDataObject rdfs:subClassOf prov:Entity.
-nfo:WebDataObject rdfs:subClassOf prov:Entity.
-
 art:version a rdf:Property ;
     rdfs:label "version" .
 
-art:refersTo a rdf:Property ;
-    rdfs:label "refersTo" ;
-    rdfs:domain art:Comment ;
-    rdfs:range prov:EntityInfluence .
-#--
+nie:InformationElement
+	rdfs:subClassOf prov:Entity .
 
-art:Geometry a rdfs:Class ;
-    rdfs:label "Geometry" ;
-    owl:sameAs geo:Geometry .
+nfo:FileDataObject
+	rdfs:subClassOf prov:Entity.
+
+nfo:WebDataObject
+	rdfs:subClassOf prov:Entity.
+
+nfo:VectorImage
+	rdfs:subClassOf prov:Entity.
+
+nfo:RasterImage
+	rdfs:subClassOf prov:Entity.
+
+nfo:Website
+	rdfs:subClassOf prov:Entity.
+
+#--
 
 # --- BEGIN: TODO: Move into Artivity Service Integration (arts) ontology. ---
 
@@ -674,7 +685,3 @@ art:HttpAuthenticationParameter a rdfs:Class ;
 	rdfs:label "HttpAuthenticationParameter" .
 
 # --- END: TODO: Move into Artivity Service Integration (arts) ontology. ---
-
-art:Browse a rdfs:Class ;
-    rdfs:label "Browse" ;
-    rdfs:subClassOf prov:Activity .

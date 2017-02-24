@@ -16,7 +16,9 @@
 
     angular.module('app').controller('FileCardDirectiveController', FileCardDirectiveController);
 
-    function FileCardDirectiveController(api, $scope, filesystemService) {
+    FileCardDirectiveController.$inject = ['$scope', 'api', 'filesystemService'];
+
+    function FileCardDirectiveController($scope, api, filesystemService) {
         var t = this;
 
         t.setFile = function (element, file, enableLink) {
@@ -36,7 +38,7 @@
             if (event.ctrlKey) {
                 t.navigateToFragment("/files/preview?uri=" + t.file.uri);
             } else {
-                t.navigateToFragment("/files/view?uri=" + t.file.uri);               
+                t.navigateToFragment("/files/view?uri=" + t.file.uri);
             }
         };
 

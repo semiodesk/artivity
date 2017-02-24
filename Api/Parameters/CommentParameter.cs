@@ -29,11 +29,11 @@ using System;
 
 namespace Artivity.Api.Parameters
 {
-    public class CommentCollection
+    public class CommentParameter
     {
         #region Members
 
-        public string influence { get; set; }
+        public string agent { get; set; }
 
         public string entity { get; set; }
 
@@ -41,33 +41,9 @@ namespace Artivity.Api.Parameters
 
         public DateTime endTime { get; set; }
 
-        public Comment[] comments { get; set; }
+        public string text { get; set; }
 
-        #endregion
-
-        #region Classes
-
-        public class Marker
-        {
-            public float x { get; set; }
-
-            public float y { get; set; }
-
-            public float width { get; set; }
-
-            public float height { get; set; }
-
-            public string color { get; set; }
-        }
-
-        public class Comment
-        {
-            public string text { get; set; }
-
-            public DateTime time { get; set; }
-
-            public Marker[] markers { get; set; }
-        }
+        public string[] marks { get; set; }
 
         #endregion
     }

@@ -15,13 +15,14 @@
 
     angular.module('app').controller('FileListDirectiveController', FileListDirectiveController);
 
-    function FileListDirectiveController(api, $rootScope, $scope, fileService) {
+    FileListDirectiveController.$inject = ['$rootScope', '$scope', 'api', 'fileService'];
+
+    function FileListDirectiveController($rootScope, $scope, api, fileService) {
         var t = this;
 
         initialize();
 
-        function initialize()
-        {
+        function initialize() {
             fileService.loadRecentFiles();
             fileService.on('dataChanged', function () {
                 t.setFiles();
@@ -29,14 +30,14 @@
         }
 
         t.setFiles = function () {
-            t.files = fileService.files; 
+            t.files = fileService.files;
         }
 
-        t.onDragStart = function() {
+        t.onDragStart = function () {
             $rootScope.$broadcast('dragStarted');
         }
 
-        t.onDragStop = function() {
+        t.onDragStop = function () {
             $rootScope.$broadcast('dragStopped');
         }
     }

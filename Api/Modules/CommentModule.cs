@@ -23,21 +23,21 @@ namespace Artivity.Api.Modules
         {
             Get["/"] = parameters =>
             {
-                string uri = Request.Query.uri;
+                string uri = Request.Query.entityUri;
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return GetCommentsFromInfluence(new UriRef(uri));
+                return GetCommentsFromEntity(new UriRef(uri));
             };
 
             Post["/"] = parameters =>
             {
-                CommentCollection comment = this.Bind<CommentCollection>();
+                CommentParameter comment = this.Bind<CommentParameter>();
 
-                if (comment.comments.Any())
+                if (!string.IsNullOrEmpty(comment.text))
                 {
                     return PostComment(comment);
                 }
@@ -55,59 +55,38 @@ namespace Artivity.Api.Modules
 
         #region Methods
 
-        private Response GetComments(UriRef entityUri)
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?time
-                    ?activity
-                    ?comment
-                    ?agent
-                    ?message
-                WHERE
-                {
-                  ?activity prov:generated | prov:used @entity .
-
-                  ?comment a art:Comment ;
-                    rdfs:comment ?message ;
-                    prov:activity ?activity ;
-                    prov:atTime ?time ;
-                    nao:creator ?agent .
-                }
-                ORDER BY DESC(?time)");
-
-            query.Bind("@entity", entityUri);
-
-            var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
-
-            return Response.AsJson(bindings);
-        }
-
-        private Response GetCommentsFromInfluence(UriRef uriRef)
+        private Response GetCommentsFromEntity(UriRef entityUri)
         {
             LoadCurrentUser();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?s ?p ?o WHERE
+                SELECT
+                    ?uri
+                    ?agent
+                    ?time
+                    ?message
+                WHERE
                 {
-                  ?s ?p ?o .
+                    ?activity prov:generated ?uri ;
+                        prov:wasStartedBy ?agent .
 
-                  ?s a art:Comment ;
-                    prov:atTime ?time ; 
-                    art:refersTo @uri .
+                    ?uri a art:Comment ;
+                        prov:hadPrimarySource @entity ;
+                        nie:created ?time ;
+                        art:deleted @undefined ;
+                        sioc:content ?message .
                 }
                 ORDER BY DESC(?time)");
 
-            query.Bind("@uri", uriRef);
+            query.Bind("@entity", entityUri);
+            query.Bind("@undefined", DateTime.MinValue);
 
-            ISparqlQueryResult result = UserModel.ExecuteQuery(query, true);
+            var bindings = UserModel.GetBindings(query, true).ToList();
 
-            List<Comment> comments = result.GetResources<Comment>().ToList();
-
-            return Response.AsJsonSync(comments);
+            return Response.AsJson(bindings);
         }
 
-        private Response PostComment(CommentCollection parameter)
+        private Response PostComment(CommentParameter parameter)
         {
             LoadCurrentUser();
 
@@ -118,53 +97,31 @@ namespace Artivity.Api.Modules
                 return HttpStatusCode.BadRequest;
             }
 
-            if (!Uri.IsWellFormedUriString(parameter.influence, UriKind.Absolute))
+            Agent agent = new Agent(new UriRef(parameter.agent));
+            Entity entity = new Entity(new UriRef(parameter.entity));
+
+            if (UserModel.ContainsResource(entity))
             {
-                PlatformProvider.Logger.LogError("Invalid URI for parameter 'influence': {0}", parameter.influence);
+                Comment comment = UserModel.CreateResource<Comment>();
+                comment.CreationTimeUtc = parameter.endTime;
+                comment.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
+                comment.Message = parameter.text;
+                comment.Commit();
 
-                return HttpStatusCode.BadRequest;
-            }
-
-            UriRef entityUri = new UriRef(parameter.entity);
-            UriRef influenceUri = new UriRef(parameter.influence);
-
-            //UriRef agentUri = GetAgentUri();
-
-            if (UserModel.ContainsResource(entityUri) && UserModel.ContainsResource(influenceUri))
-            {
-                var influence = UserModel.GetResource<EntityInfluence>(influenceUri);
-
-                LeaveComment activity = UserModel.CreateResource<LeaveComment>();
+                CreateEntity activity = UserModel.CreateResource<CreateEntity>();
+                activity.StartedBy = agent;
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
-                activity.UsedEntities.Add(new Entity(entityUri));
-                //activity.StartedBy = new Agent(agentUri);
+                activity.GeneratedEntities.Add(comment); // Associate the comment with the activity.
+                activity.UsedEntities.Add(entity); // TODO: Correct this in the data provided by the plugins.
 
-                foreach (var c in parameter.comments)
+                if (parameter.marks != null)
                 {
-                    Comment comment = UserModel.CreateResource<Comment>();
-                    comment.Activity_ = activity;
-                    comment.RefersTo_ = influence;
-                    comment.Message = c.text;
-                    comment.Time = c.time;
-
-                    foreach (var marker in c.markers)
+                    foreach (var mark in parameter.marks)
                     {
-                        RectangleEntity rect = UserModel.CreateResource<RectangleEntity>();
-                        rect.x = marker.x;
-                        rect.y = marker.y;
-                        rect.Width = marker.width;
-                        rect.Height = marker.height;
-                        rect.Commit();
-
-                        comment.Regions.Add(rect);
-
-                        activity.GeneratedEntities.Add(rect);
+                        // The comment could not have been created without using the marker.
+                        activity.UsedEntities.Add(new Mark(new UriRef(mark)));
                     }
-
-                    comment.Commit();
-
-                    activity.GeneratedEntities.Add(comment);
                 }
 
                 activity.Commit();
@@ -173,7 +130,7 @@ namespace Artivity.Api.Modules
             }
             else
             {
-                PlatformProvider.Logger.LogError("Model does not contain entity {0}", entityUri);
+                PlatformProvider.Logger.LogError("Model does not contain entity {0}", entity);
 
                 return HttpStatusCode.BadRequest;
             }
@@ -186,9 +143,15 @@ namespace Artivity.Api.Modules
                     ?comment
                 WHERE
                 {
-                    ?comment a art:Comment ; prov:activity | prov:hadActivity ?activity .
+                    ?comment a art:Comment .
 
-                    FILTER NOT EXISTS { ?comment rdfs:comment ?value . }
+                    {
+                        FILTER NOT EXISTS { ?comment sioc:content ?value . }
+                    }
+                    UNION
+                    {
+                        FILTER NOT EXISTS { ?comment prov:hadActivity / prov:startedBy ?agent . }
+                    }
                 }");
 
             IModel model = ModelProvider.GetActivities();

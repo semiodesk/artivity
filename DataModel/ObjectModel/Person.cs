@@ -49,8 +49,7 @@ namespace Artivity.DataModel
         [RdfProperty(FOAF.img)]
         public string Photo { get; set; }
 
-        [JsonIgnore] // TODO: Implement support for serializing lists to JSON in Trinity.
-        [RdfProperty(FOAF.account)]
+        [RdfProperty(FOAF.account), JsonIgnore] // TODO: Implement support for serializing lists to JSON in Trinity.
         public List<OnlineAccount> Accounts { get; set; }
 
 		#endregion

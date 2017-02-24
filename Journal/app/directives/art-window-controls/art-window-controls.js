@@ -14,6 +14,8 @@
 
     angular.module('app').controller('WindowControlsDirectiveController', WindowControlsDirectiveController);
 
+    WindowControlsDirectiveController.$inject = ['$scope', 'windowService'];
+
     function WindowControlsDirectiveController($scope, windowService) {
         var t = this;
 

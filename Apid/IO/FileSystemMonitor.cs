@@ -740,7 +740,7 @@ namespace Artivity.Apid.IO
 
                     folderObject.Url = new Resource(folderUrl);
                     folderObject.CreationTimeUtc = folderInfo.CreationTimeUtc;
-                    folderObject.LastModificationTimeUtc = folderInfo.LastWriteTimeUtc;
+                    folderObject.ModificationTimeUtc = folderInfo.LastWriteTimeUtc;
                     folderObject.Commit();
 
                     FileDataObject fileObject = _model.CreateResource<FileDataObject>(r.Uri);
@@ -748,7 +748,7 @@ namespace Artivity.Apid.IO
                     fileObject.ByteSize = fileInfo.Length;
                     fileObject.Folder = folderObject;
                     fileObject.CreationTimeUtc = fileInfo.CreationTimeUtc;
-                    fileObject.LastModificationTimeUtc = fileInfo.LastWriteTimeUtc;
+                    fileObject.ModificationTimeUtc = fileInfo.LastWriteTimeUtc;
                     fileObject.LastAccessTimeUtc = fileInfo.LastAccessTimeUtc;
                     fileObject.Commit();
 
@@ -1035,7 +1035,7 @@ namespace Artivity.Apid.IO
                     fileObject.ByteSize = fileInfo.Length;
                     fileObject.CreationTimeUtc = fileInfo.CreationTimeUtc;
                     fileObject.LastAccessTimeUtc = fileInfo.LastAccessTimeUtc;
-                    fileObject.LastModificationTimeUtc = fileInfo.LastWriteTimeUtc;
+                    fileObject.ModificationTimeUtc = fileInfo.LastWriteTimeUtc;
 
                     // Remove any deletion dates.
                     foreach (DateTime v in fileObject.ListValues(nfo.deletionDate))
@@ -1052,7 +1052,7 @@ namespace Artivity.Apid.IO
                     // Update the folder data object.
                     Folder folderObject = fileObject.Folder;
                     folderObject.CreationTimeUtc = folderInfo.CreationTimeUtc;
-                    folderObject.LastModificationTimeUtc = folderInfo.LastWriteTimeUtc;
+                    folderObject.ModificationTimeUtc = folderInfo.LastWriteTimeUtc;
                     folderObject.Commit();
 
                     _platformProvider.Logger.LogDebug("Updated folder: {0} ; <{1}>", folderInfo.FullName, folderObject.Uri);
@@ -1157,7 +1157,7 @@ namespace Artivity.Apid.IO
 
                     folderObject.Url = new Resource(folderUrl);
                     folderObject.CreationTimeUtc = folderInfo.CreationTimeUtc;
-                    folderObject.LastModificationTimeUtc = folderInfo.LastWriteTimeUtc;
+                    folderObject.ModificationTimeUtc = folderInfo.LastWriteTimeUtc;
                     folderObject.Commit();
                 }
 
@@ -1167,7 +1167,7 @@ namespace Artivity.Apid.IO
                 fileObject.ByteSize = fileInfo.Length;
                 fileObject.CreationTimeUtc = fileInfo.CreationTimeUtc;
                 fileObject.LastAccessTimeUtc = fileInfo.LastAccessTimeUtc;
-                fileObject.LastModificationTimeUtc = fileInfo.LastWriteTimeUtc;
+                fileObject.ModificationTimeUtc = fileInfo.LastWriteTimeUtc;
 
                 if (folderObject != null)
                 {

@@ -38,29 +38,29 @@ namespace Artivity.DataModel
 	{
 		#region Members
 
-        [JsonIgnore]
-        [RdfProperty(PROV.qualifiedRevision)]
-        public List<Save> Revisions_ { get; set; }
-        public IEnumerable<string> Revisions { get { return from a in Revisions_ select a.Uri.AbsoluteUri; } }
-
-        [JsonIgnore]
-		[RdfProperty(PROV.specializationOf)]
+		[RdfProperty(PROV.specializationOf), JsonIgnore]
 		public Entity GenericEntity { get; set; }
 
-        [JsonIgnore]
-		[RdfProperty(PROV.wasRevisionOf)]
+		[RdfProperty(PROV.wasRevisionOf), JsonIgnore]
 		public Entity RevisedEntity { get; set; }
 
-        [JsonIgnore]
-        [RdfProperty(PROV.hadPrimarySource)]
+        [RdfProperty(PROV.hadPrimarySource), JsonIgnore]
         public Entity PrimarySource { get; set; }
+
+        [RdfProperty(PROV.qualifiedRevision), JsonIgnore]
+        public List<Save> Revisions { get; set; }
+
+        public IEnumerable<string> RevisionUris
+        {
+            get { return from a in Revisions select a.Uri.AbsoluteUri; }
+        }
 
 		#endregion
 
 		#region Constructors
 
         public Entity(Uri uri) : base(uri) {}
-        //public Entity(string uri) : base(uri) { }
+
 		#endregion
     }
 }

@@ -37,32 +37,25 @@ namespace Artivity.DataModel
 	{
 		#region Members
 
-        [JsonIgnore]
-        [RdfProperty(RDFS.label)]
+        [RdfProperty(RDFS.label), JsonIgnore]
         public string Name { get; set; }
 
-        [JsonIgnore]
-		[RdfProperty(NFO.fileSize)]
+		[RdfProperty(NFO.fileSize), JsonIgnore]
 		public long ByteSize { get; set; }
 
-        [JsonIgnore]
-		[RdfProperty(NIE.created)]
+		[RdfProperty(NIE.created), JsonIgnore]
 		public DateTime CreationTimeUtc { get; set; }
 
-        [JsonIgnore]
-		[RdfProperty(NFO.fileLastAccessed)]
+		[RdfProperty(NFO.fileLastAccessed), JsonIgnore]
 		public DateTime LastAccessTimeUtc { get; set; }
 
-        [JsonIgnore]
-		[RdfProperty(NIE.lastModified)]
-		public DateTime LastModificationTimeUtc { get; set; }
+		[RdfProperty(NIE.lastModified), JsonIgnore]
+		public DateTime ModificationTimeUtc { get; set; }
 
-        [JsonIgnore]
-        [RdfProperty(NFO.deletionDate)]
+        [RdfProperty(NFO.deletionDate), JsonIgnore]
         public DateTime? DeletionTimeUtc { get; set; }
 
-        [JsonIgnore]
-        [RdfProperty(NFO.belongsToContainer)]
+        [RdfProperty(NFO.belongsToContainer), JsonIgnore]
         public Folder Folder { get; set; }
 
 		#endregion
@@ -70,7 +63,8 @@ namespace Artivity.DataModel
 		#region Constructors
 
 		public FileDataObject(Uri uri) : base(uri) {}
-        public FileDataObject(string uri) : base(uri) { }
+
+        public FileDataObject(string uri) : base(uri) {}
 
 		#endregion
 	}

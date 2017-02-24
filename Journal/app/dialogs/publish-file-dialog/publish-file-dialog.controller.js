@@ -1,7 +1,9 @@
 (function () {
     angular.module('app').controller('PublishFileDialogController', PublishFileDialogController);
 
-    function PublishFileDialogController(api, $scope, $filter, $uibModalInstance, $sce, selectionService, filesystemService, clientService) {
+    PublishFileDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'api', 'selectionService', 'filesystemService', 'clientService'];
+
+    function PublishFileDialogController($scope, $filter, $uibModalInstance, $sce, api, selectionService, filesystemService, clientService) {
         var t = this;
 
         t.dialog = {

@@ -1,13 +1,12 @@
 /**
  * Renders a document onto a canvas.
  */
-function DocumentHistoryViewer(canvas, endpointUrl) {
+function DocumentHistoryViewer(user, canvas, endpointUrl) {
     var t = this;
 
     // Call the base constructor.
-    DocumentViewerBase.call(t, canvas, endpointUrl);
+    DocumentViewerBase.call(t, user, canvas, endpointUrl);
 
-    t.canvas = canvas;
     t.canvasCache = new CanvasCache();
 
     t.renderCache = new DocumentViewerCache();
@@ -84,16 +83,16 @@ DocumentHistoryViewer.prototype.render = function (influence) {
 
                 /*
                 if (layer.uri == influence.layer) {
-                	context.font = "1em Roboto";
-                	context.fillStyle = "blue";
-                	context.textAlign = "left";
-                	context.fillText(layer.getLabel(time), r.x, -r.y - 10);
+                    context.font = "1em Roboto";
+                    context.fillStyle = "blue";
+                    context.textAlign = "left";
+                    context.fillText(layer.getLabel(time), r.x, -r.y - 10);
 
-                	context.lineJoin = 'miter';
-                	context.lineWidth = 1;
-                	context.strokeStyle = 'blue';
-                	context.setLineDash([1, 2]);
-                	context.strokeRect(r.x, -r.y, r.w, r.h);
+                    context.lineJoin = 'miter';
+                    context.lineWidth = 1;
+                    context.strokeStyle = 'blue';
+                    context.setLineDash([1, 2]);
+                    context.strokeRect(r.x, -r.y, r.w, r.h);
                 }
                 */
             }

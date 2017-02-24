@@ -25,25 +25,17 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using System;
 using Semiodesk.Trinity;
-using System.Collections.Generic;
+using System;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(NFO.Folder)]
-    public class Folder : Entity
+    [RdfClass(ART.DeleteEntity)]
+    public class DeleteEntity : Activity
     {
-        #region Members
-
-        [RdfProperty(NIE.url)]
-        public Resource Url { get; set; }
-
-        #endregion
-
         #region Constructors
 
-        public Folder(Uri uri) : base(uri) { }
+        public DeleteEntity(Uri uri) : base(uri) { }
 
         #endregion
     }

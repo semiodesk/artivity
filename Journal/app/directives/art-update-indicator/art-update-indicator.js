@@ -17,7 +17,9 @@
 
     angular.module('app').controller('UpdateIndicatorDirectiveController', UpdateIndicatorDirectiveController);
 
-    function UpdateIndicatorDirectiveController(api, $scope, settingsService, $uibModal, updateService) {
+    UpdateIndicatorDirectiveController.$inject = ['$scope', '$uibModal', 'api', 'settingsService', 'updateService'];
+
+    function UpdateIndicatorDirectiveController($scope, $uibModal, api, settingsService, updateService) {
         var t = this;
         t.modalInstance = null;
         updateService.isUpdateAvailable();

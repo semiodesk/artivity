@@ -23,27 +23,19 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
-using System;
 using Semiodesk.Trinity;
-using System.Collections.Generic;
+using System;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(NFO.Folder)]
-    public class Folder : Entity
+    [RdfClass(ART.EditEntity)]
+    public class EditEntity : Activity
     {
-        #region Members
-
-        [RdfProperty(NIE.url)]
-        public Resource Url { get; set; }
-
-        #endregion
-
         #region Constructors
 
-        public Folder(Uri uri) : base(uri) { }
+        public EditEntity(Uri uri) : base(uri) { }
 
         #endregion
     }

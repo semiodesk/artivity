@@ -18,20 +18,22 @@
 
     angular.module('app').controller('ChatControlDirectiveController', ChatControlDirectiveController);
 
-    function ChatControlDirectiveController(api, $scope, selectionService, formattingService, entityService, derivationService, commentService) {
+    ChatControlDirectiveController.$inject = ['$scope', 'api', 'agentService', 'entityService', 'commentService', 'selectionService', 'formattingService'];
+
+    function ChatControlDirectiveController($scope, api, agentService, entityService, commentService, selectionService, formattingService) {
         var t = this;
 
-        t.element = null;
-
+        t.user = null;
         t.entity = null;
-        t.derivation = null;
         t.comment = null;
         t.comments = [];
-        t.selectedComment = null;
-        t.selectComment = selectComment;
-        t.postComment = postComment;
+
+        t.isUserComment = isUserComment;
         t.validateComment = validateComment;
-        t.removeComment = removeComment;
+        t.updateComment = updateComment;
+        t.postComment = postComment;
+        t.resetComment = resetComment;
+
         t.getFormattedTime = formattingService.getFormattedTime;
         t.getFormattedDate = formattingService.getFormattedDate;
         t.getFormattedTimeFromNow = formattingService.getFormattedTimeFromNow;
@@ -44,27 +46,39 @@
         }
 
         function initializeData() {
-            entityService.getById($scope.entity).then(function (response) {
-                var entity = response;
+            agentService.getUser().then(function (data) {
+                t.user = data;
 
-                if (entity.Revisions.length > 0) {
-                    t.entity = entity;
-                    t.derivation = entity.Revisions[0];
+                // Set the user URI for the new comments.
+                t.comment.agent = t.user.Uri;
 
-                    commentService.get(t.derivation).then(function (data) {
-                        t.comments = [];
+                // Make sure the user is properly initialized before retrieving the entity derivations.
+                entityService.getById($scope.entity).then(function (response) {
+                    var entity = response;
 
-                        for (i = 0; i < data.length; i++) {
-                            var c = data[i];
+                    if (entity.RevisionUris && entity.RevisionUris.length > 0) {
+                        t.entity = entity.RevisionUris[0];
 
-                            t.comments.unshift({
-                                time: c.Time,
-                                text: c.Message,
-                                isUser: t.comments.length % 2 == 1
-                            });
-                        }
-                    });
-                }
+                        // Set the entity URI as primary source for the comments.
+                        t.comment.entity = t.entity;
+
+                        commentService.get(t.entity).then(function (data) {
+                            t.comments = [];
+
+                            for (i = 0; i < data.length; i++) {
+                                var c = data[i];
+
+                                // Insert at the beginning of the list.
+                                t.comments.unshift({
+                                    agent: c.agent,
+                                    time: c.time,
+                                    text: c.message,
+                                    isUser: t.comments.length % 2 == 1
+                                });
+                            }
+                        });
+                    }
+                });
             });
 
             resetComment();
@@ -76,89 +90,55 @@
             });
         }
 
-        function loadComments(deriv) {
-            if (!t.comments.hasOwnProperty(deriv.Uri)) {
-                commentService.get(deriv.Uri).then(function (data) {
-                    t.comments[deriv.Uri] = data;
-                });
-            }
+        function isUserComment(comment) {
+            return t.user && t.user.Uri === comment.agent;
         }
 
-        function postComment(comment) {
-            if (validateComment(comment)) {
-                comment.isUser = t.comments.length % 2 == 1;
-                comment.time = new Date();
+        function validateComment() {
+            return t.comment.agent && t.comment.entity && t.comment.startTime && t.comment.text.length > 0;
+        }
 
-                t.comments.push(comment);
+        function updateComment() {
+            if (!t.comment.startTime) {
+                t.comment.startTime = new Date();
 
+                console.log("Start comment: ", t.comment);
+            }
+        };
+
+        function postComment() {
+            if (!validateComment()) {
+                console.log("Invalid comment: ", t.comment);
+
+                return;
+            }
+
+            t.comment.endTime = new Date();
+
+            commentService.post(t.comment).then(function (response) {
+                // Show the comment in the list of comments.
+                t.comments.push(t.comment);
+
+                // Clear the text and create a new comment.
                 resetComment();
 
-                var collection = {
-                    influence: t.derivation,
-                    entity: t.entity.Uri,
-                    startTime: comment.time, // TODO: record actual start time of comment writing.
-                    endTime: new Date(),
-                    comments: [comment]
-                }
-
-                commentService.post(collection).then(function (response) {
-                    console.log(response);
-                }, function (response) {
-                    console.log(response);
-
-                    // TODO: Show error message in frontend.
-                });
-            }
+                console.log("Posted comment: ", t.comment);
+            }, function (response) {
+                console.error(response);
+            });
         }
 
-        function validateComment(comment) {
-            return comment.text.length > 0 &&
-                t.entity != undefined &&
-                t.derivation != undefined;
-        }
-
-        function resetComment() {
+        function resetComment(clearText) {
             t.comment = {
-                time: new Date(),
+                agent: null,
+                entity: t.entity,
+                startTime: null,
+                endTime: null,
                 text: '',
                 markers: []
             };
 
-            t.selectedComment = t.comment;
-        }
-
-        function selectComment(i) {
-            if (i < t.comments.length) {
-                var comment = t.comments[i];
-
-                t.selectedComment = comment;
-
-                selectionService.selectedItem(comment);
-            }
-        }
-
-        function removeComment(i) {
-            if (i < t.comments.length) {
-                var comment = t.comments[i];
-
-                t.comments.splice(i, 1);
-
-                if (selectionService.selectedItem() === comment) {
-                    selectionService.clear();
-                }
-            }
-        }
-
-        function addMarker(marker) {
-            t.selectedComment.marker.push(marker);
-        }
-
-        function removeMarker(markerName) {
-            for (i = t.selectedComment.marker.length - 1; i >= 0; i--) {
-                if (t.selectedComment.marker[i].name == markerName) {
-                    t.selectedComment.marker.splice(i, 1);
-                }
-            }
+            console.log("Reset comment: ", t.comment);
         }
     }
 })();

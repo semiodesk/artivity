@@ -1,7 +1,9 @@
 (function () {
     angular.module('app').controller('FileViewController', FileViewController);
 
-    function FileViewController(api, $rootScope, $scope, $location, $routeParams, $uibModal, selectionService, hotkeys) {
+    FileViewController.$inject = ['$rootScope', '$scope', '$location', '$routeParams', '$uibModal', 'api', 'selectionService', 'hotkeys'];
+
+    function FileViewController($rootScope, $scope, $location, $routeParams, $uibModal, api, selectionService, hotkeys) {
         var t = this;
         var fileUri = $location.search().uri;
 
@@ -78,7 +80,7 @@
 
         // RENDERING
         var canvas = document.getElementById('canvas');
-        var renderer = new DocumentHistoryViewer(canvas, api.getRenderingUrl(fileUri));
+        var renderer = new DocumentHistoryViewer(t.user, canvas, api.getRenderingUrl(fileUri));
 
         $rootScope.$on('redraw', function () {
             t.renderInfluence(t.selectedInfluence);

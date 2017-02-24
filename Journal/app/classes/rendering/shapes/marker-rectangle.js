@@ -1,11 +1,13 @@
-function MarkerRectangle(viewer, container, marker) {
+function MarkerRectangle(viewer, container, mark) {
     createjs.Container.call(this);
 
     var t = this;
 
+    t.cursor = 'default';
+    t.modified = false;
     t.viewer = viewer;
     t.container = container;
-    t.marker = marker;
+    t.mark = mark;
 
     t.initializeGeometry();
     t.initializeContainer();
@@ -18,8 +20,8 @@ MarkerRectangle.prototype.initializeGeometry = function () {
 
     // The markers are created on a unscaled drawing context.
     // Therefore, we need to translate from the scene coordinate system to the global one.
-    var p1 = t.container.localToGlobal(t.marker.p1.x, t.marker.p1.y);
-    var p2 = t.container.localToGlobal(t.marker.p2.x, t.marker.p2.y);
+    var p1 = t.container.localToGlobal(t.mark.p1.x, t.mark.p1.y);
+    var p2 = t.container.localToGlobal(t.mark.p2.x, t.mark.p2.y);
 
     t.resize(p1, p2);
 }
@@ -28,13 +30,18 @@ MarkerRectangle.prototype.initializeContainer = function () {
     var t = this;
 
     t.on('mouseover', function (e) {
-        t.hitTest(e);
+        t.hitTest(e.stageX, e.stageY);
         t.container.stage.update();
     });
 
     t.on('mouseout', function (e) {
-        t.hitTest(e);
+        t.hitTest(e.stageX, e.stageY);
         t.container.stage.update();
+    });
+
+    t.on('mousedown', function (e) {
+        t.viewer.raise('itemSelected', this);
+        t.viewer.raise('markSelected', this.mark);
     });
 
     t.fillRectangle = t.createFillRectangle();
@@ -45,22 +52,29 @@ MarkerRectangle.prototype.initializeContainer = function () {
     t.resizeHandles = t.resizeHandles.concat(t.createResizeGrips());
 }
 
-MarkerRectangle.prototype.hitTest = function (e) {
+MarkerRectangle.prototype.hitTest = function (x, y) {
     var t = this;
 
-    if (!t.marker.isNew) {
-        var x = e.stageX - t.container.stage.x;
-        var y = e.stageY - t.container.stage.y;
+    if (!t.mark.new || t.selected) {
+        var p = {
+            x: x - t.container.stage.x,
+            y: y - t.container.stage.y
+        };
 
-        var mouseover = t.hitTestObject(t.fillRectangle, x, y);
+        // Highlight the marker if it's not being created and when the mouse hovers it.
+        var mouseover = t.hitTestObject(t.fillRectangle, p.x, p.y);
 
-        for (i = 0; i < t.resizeHandles.length; i++) {
-            mouseover |= t.hitTestObject(t.resizeHandles[i], x, y);
+        if (t.selected) {
+            // Only show the resize handles when the marker is selected.
+            for (i = 0; i < t.resizeHandles.length; i++) {
+                mouseover |= t.hitTestObject(t.resizeHandles[i], p.x, p.y);
+            }
         }
+    }
 
-        for (i = 0; i < t.resizeHandles.length; i++) {
-            t.resizeHandles[i].visible = mouseover;
-        }
+    // Only show the resize handles when the marker is selected.
+    for (i = 0; i < t.resizeHandles.length; i++) {
+        t.resizeHandles[i].visible = t.selected;
     }
 }
 
@@ -68,11 +82,11 @@ MarkerRectangle.prototype.hitTestObject = function (object, x, y) {
     var hit = object.hitTest(x, y);
 
     if (hit) {
-        if (object.highlight) {
+        if (typeof object.highlight === 'function') {
             object.highlight();
         }
     } else {
-        if (object.normal) {
+        if (typeof object.normal === 'function') {
             object.normal();
         }
     }
@@ -308,9 +322,6 @@ MarkerRectangle.prototype.createResizeGrip = function (cursor) {
 MarkerRectangle.prototype.enableDragMove = function (s) {
     var t = this;
 
-    // Set the move cursor.
-    s.cursor = 'move';
-
     s.on('mousedown', function (e) {
         if (!t.viewer.isPanning) {
             t.downX = e.stageX;
@@ -332,8 +343,15 @@ MarkerRectangle.prototype.enableDragMove = function (s) {
             var dx = t.regX - t.container.stage.x;
             var dy = t.regY - t.container.stage.y;
 
-            t.marker.p1 = t.container.globalToLocal(t.x1 - dx, t.y1 - dy);
-            t.marker.p2 = t.container.globalToLocal(t.x2 - dx, t.y2 - dy);
+            t.mark.p1 = t.container.globalToLocal(t.x1 - dx, t.y1 - dy);
+            t.mark.p2 = t.container.globalToLocal(t.x2 - dx, t.y2 - dy);
+
+            t.modified = dx != 0 || dy != 0;
+
+            if (t.modified) {
+                t.viewer.raise('itemChanged', t);
+                t.viewer.raise('markChanged', t.mark);
+            }
         }
     });
 }
@@ -355,6 +373,8 @@ MarkerRectangle.prototype.enableDragResize = function (s) {
 
             if (dx != 0 || dy != 0) {
                 t.onResize(s, dx, dy);
+
+                t.modified = true;
             }
         }
     });
@@ -366,8 +386,13 @@ MarkerRectangle.prototype.enableDragResize = function (s) {
             var x2 = t.x2 - t.container.stage.x;
             var y2 = t.y2 - t.container.stage.y;
 
-            t.marker.p1 = t.container.globalToLocal(x1, y1);
-            t.marker.p2 = t.container.globalToLocal(x2, y2);
+            t.mark.p1 = t.container.globalToLocal(x1, y1);
+            t.mark.p2 = t.container.globalToLocal(x2, y2);
+
+            if (t.modified) {
+                t.viewer.raise('itemChanged', t);
+                t.viewer.raise('markChanged', t.mark);
+            }
         }
     });
 }
@@ -376,7 +401,7 @@ MarkerRectangle.prototype.onResize = function (src, dx, dy) {
     var t = this;
     var c = src.cursor;
 
-    var p1 = t.container.localToGlobal(t.marker.p1.x, t.marker.p1.y);
+    var p1 = t.container.localToGlobal(t.mark.p1.x, t.mark.p1.y);
 
     // Resize west: p1.x
     if (c == 'nw-resize' || c == 'w-resize' || c == 'sw-resize') {
@@ -388,7 +413,7 @@ MarkerRectangle.prototype.onResize = function (src, dx, dy) {
         p1.y = p1.y - dy;
     }
 
-    var p2 = t.container.localToGlobal(t.marker.p2.x, t.marker.p2.y);
+    var p2 = t.container.localToGlobal(t.mark.p2.x, t.mark.p2.y);
 
     // Resize east: p2.x
     if (c == 'se-resize' || c == 'e-resize' || c == 'ne-resize') {
@@ -419,7 +444,7 @@ MarkerRectangle.prototype.resize = function (p1, p2) {
     t.h = t.y2 - t.y1;
 }
 
-MarkerRectangle.prototype.redraw = function(src) {
+MarkerRectangle.prototype.redraw = function (src) {
     var t = this;
 
     t.fillRectangle.normal();
@@ -429,10 +454,37 @@ MarkerRectangle.prototype.redraw = function(src) {
     for (i = 0; i < t.resizeHandles.length; i++) {
         var handle = t.resizeHandles[i];
 
-        if (src && src === handle) {
+        // Only draw the resize handles if the marker is selected.
+        if (t.selected && src && src === handle) {
             handle.highlight();
         } else {
             handle.normal();
         }
     }
+}
+
+MarkerRectangle.prototype.select = function () {
+    var t = this;
+
+    t.cursor = 'move';
+    t.selected = true;
+
+    var stage = t.container.stage;
+
+    t.hitTest(stage.mouseX, stage.mouseY);
+
+    stage.update();
+}
+
+MarkerRectangle.prototype.deselect = function () {
+    var t = this;
+
+    t.cursor = 'default';
+    t.selected = false;
+
+    var stage = t.container.stage;
+
+    t.hitTest(stage.mouseX, stage.mouseY);
+
+    stage.update();
 }

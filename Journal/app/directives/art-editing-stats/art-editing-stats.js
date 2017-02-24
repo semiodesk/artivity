@@ -11,6 +11,8 @@
         }
     });
 
+    EditingStatsDirectiveController.$inject = ['$scope', 'selectionService'];
+
     function EditingStatsDirectiveController($scope, selectionService) {
         var t = this;
     };
