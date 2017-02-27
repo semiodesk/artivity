@@ -1,7 +1,7 @@
 /**
  * Renders a document onto a canvas.
  */
-function DocumentViewerBase(user, canvas, endpointUrl) {
+function ViewerBase(user, canvas, endpointUrl) {
     var t = this;
 
     // Indicates if debug information like scene extents and center points should be rendered.
@@ -16,26 +16,31 @@ function DocumentViewerBase(user, canvas, endpointUrl) {
     // The rendered entity or derivation.
     t.entity = null;
 
+    // Renderers provide additional rendering functionality.
+    t.renderers = [];
+
+    // Available viewer commands.
+    t.commands = {};
+
     // Shadow that is drawn below the canvases / artboards / pages.
     t.pageShadow = new createjs.Shadow('rgba(0,0,0,.2)', 3, 3, 6);
 
     t.initializeEventDispatcher();
     t.initializeScene();
-    t.initializeCanvasDragMove();
     t.initializeCanvasResize();
     t.initializeCanvasZoom();
 
     t.raise('initialized', t);
 }
 
-DocumentViewerBase.prototype.initializeEventDispatcher = function () {
+ViewerBase.prototype.initializeEventDispatcher = function () {
     var t = this;
 
     // Adds the event handling methods 'on', 'off', 'raise', etc to this class.
     t.dispatcher = new EventDispatcher(t);
 }
 
-DocumentViewerBase.prototype.initializeScene = function () {
+ViewerBase.prototype.initializeScene = function () {
     var t = this;
 
     // EaselJS drawing context.
@@ -79,7 +84,7 @@ DocumentViewerBase.prototype.initializeScene = function () {
     t.stage.addChild(t.overlay);
 }
 
-DocumentViewerBase.prototype.initializeCanvasZoom = function () {
+ViewerBase.prototype.initializeCanvasZoom = function () {
     var t = this;
 
     t.canvas.addEventListener("wheel", function (e) {
@@ -120,58 +125,7 @@ DocumentViewerBase.prototype.initializeCanvasZoom = function () {
     });
 }
 
-DocumentViewerBase.prototype.initializeCanvasDragMove = function () {
-    var t = this;
-
-    // Indicates if we are in pan mode.
-    t.isPanning = false;
-
-    t.stage.on("mousedown", function (e) {
-        t.stage.autoFit = false;
-
-        this.downX = e.stageX;
-        this.downY = e.stageY;
-        this.stageX = this.x;
-        this.stageY = this.y;
-
-        // TODO: Implement x-browser.
-        if (e.nativeEvent.button === 1) {
-            t.startPanning();
-        }
-    });
-
-    // Listen to mouse up events on the window because while dragging
-    // the cursor might leave the canvas.
-    window.addEventListener('mouseup', function (e) {
-        // TODO: Implement x-browser.
-        if (e.button === 1) {
-            t.stopPanning();
-        }
-    });
-
-    t.stage.on("pressmove", function (e) {
-        if (t.isPanning) {
-            this.x = this.stageX + (e.stageX - this.downX);
-            this.y = this.stageY + (e.stageY - this.downY);
-            t.stage.update();
-        }
-    });
-
-    window.addEventListener("keydown", function (e) {
-        if (e.key === ' ') {
-            t.startPanning();
-        }
-    });
-
-    window.addEventListener("keyup", function (e) {
-        if (e.key === ' ') {
-            t.stopPanning();
-            e.preventDefault(); // Prevent electron from resizing the window when pressing spacebar.
-        }
-    }, true);
-}
-
-DocumentViewerBase.prototype.clearStage = function () {
+ViewerBase.prototype.clearStage = function () {
     var t = this;
 
     if (t.scene) {
@@ -185,7 +139,7 @@ DocumentViewerBase.prototype.clearStage = function () {
     }
 }
 
-DocumentViewerBase.prototype.setEntity = function (entity) {
+ViewerBase.prototype.setEntity = function (entity) {
     var t = this;
 
     t.entity = entity;
@@ -197,21 +151,53 @@ DocumentViewerBase.prototype.setEntity = function (entity) {
     t.raise('entityChanged', entity);
 }
 
-DocumentViewerBase.prototype.startPanning = function () {
+ViewerBase.prototype.addRenderer = function (renderer) {
     var t = this;
-    t.isPanning = true;
-    t.cursor = 'move'; 
-    t.stage.update();
+
+    if (renderer.id) {
+        t.renderers.push(renderer);
+
+        console.log("Enabled renderer:", renderer.id);
+    } else {
+        console.error("Invalid renderer:", renderer);
+    }
 }
 
-DocumentViewerBase.prototype.stopPanning = function () {
+ViewerBase.prototype.addCommand = function (command) {
     var t = this;
-    t.isPanning = false;
-    t.cursor = 'crosshair';
-    t.stage.update();
+
+    if (command.id) {
+        t.commands[command.id] = command;
+
+        console.log("Enabled command:", command.id);
+    } else {
+        console.error("Invalid command:", command);
+    }
 }
 
-DocumentViewerBase.prototype.initializeCanvasResize = function () {
+ViewerBase.prototype.canExecuteCommand = function (id, param) {
+    var t = this;
+    var c = t.commands[id];
+
+    if (c) {
+        return c.canExecute(param);
+    }
+
+    return false;
+}
+
+ViewerBase.prototype.executeCommand = function (id, param) {
+    var t = this;
+    var c = t.commands[id];
+
+    if (c && c.canExecute(param)) {
+        return c.execute(param);
+    }
+
+    return false;
+}
+
+ViewerBase.prototype.initializeCanvasResize = function () {
     var t = this;
 
     // Finally, adjust the canvas size when the window is being resized.
@@ -222,7 +208,7 @@ DocumentViewerBase.prototype.initializeCanvasResize = function () {
     });
 }
 
-DocumentViewerBase.prototype.onResize = function () {
+ViewerBase.prototype.onResize = function () {
     var t = this;
 
     // This seems to be the only reliable way to compute the correct height of the body area.
@@ -271,7 +257,7 @@ DocumentViewerBase.prototype.onResize = function () {
     t.stage.update();
 }
 
-DocumentViewerBase.prototype.onDrawStart = function (t, e) {
+ViewerBase.prototype.onDrawStart = function (t, e) {
     t.scene.debug.removeAllChildren();
     t.stage.debug.removeAllChildren();
 
@@ -295,7 +281,7 @@ DocumentViewerBase.prototype.onDrawStart = function (t, e) {
     }
 }
 
-DocumentViewerBase.prototype.zoomToFit = function () {
+ViewerBase.prototype.zoomToFit = function () {
     var t = this;
     var extents = t.scene.extents;
 
@@ -345,7 +331,7 @@ DocumentViewerBase.prototype.zoomToFit = function () {
     t.raise('zoom');
 }
 
-DocumentViewerBase.prototype.measureExtents = function (x, y, w, h) {
+ViewerBase.prototype.measureExtents = function (x, y, w, h) {
     var t = this;
 
     if (t.scene.extents) {
@@ -361,7 +347,7 @@ DocumentViewerBase.prototype.measureExtents = function (x, y, w, h) {
     }
 }
 
-DocumentViewerBase.prototype.drawSceneMarkers = function (extents, canvasCenter, extentsCenter) {
+ViewerBase.prototype.drawSceneMarkers = function (extents, canvasCenter, extentsCenter) {
     var t = this;
 
     var cc = canvasCenter;
@@ -441,14 +427,18 @@ DocumentViewerBase.prototype.drawSceneMarkers = function (extents, canvasCenter,
     }
 }
 
-DocumentViewerBase.prototype.render = function (cursor) {
+ViewerBase.prototype.render = function (cursor) {
     var t = this;
 
     t.clearStage();
 }
 
-DocumentViewerBase.prototype.cursor = function (cursor) {
+ViewerBase.prototype.cursor = function (target, cursor) {
     var t = this;
 
-    t.stage.cursor = cursor;
+    target.cursor = cursor;
+
+    t.stage.update();
+
+    $(window).css('cursor', cursor);
 }

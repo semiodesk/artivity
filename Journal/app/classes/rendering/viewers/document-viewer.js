@@ -5,32 +5,24 @@ function DocumentViewer(user, canvas, endpointUrl, selectionService) {
     var t = this;
 
     // Call the base constructor.
-    DocumentViewerBase.call(t, user, canvas, endpointUrl);
+    ViewerBase.call(t, user, canvas, endpointUrl);
 
     // Manages the selection of items.
     t.selection = selectionService;
 
     // Loads and caches the document pages and renderings.
-    t.pageCache = new DocumentViewerCache();
+    t.pageCache = new ViewerCache();
     t.pageCache.endpointUrl = endpointUrl;
 
     // Lists all the features which are enabled for this viewer.
-    t.features = [];
+    t.commands = [];
 
     // Handle selection changes.
     t.on('itemSelected', function(item) { t.onItemSelected(item); });
-    t.on('itemChanged', function(item) { t.onItemChanged(item); });
+    t.on('itemModified', function(item) { t.onItemModified(item); });
 }
 
-DocumentViewer.prototype = Object.create(DocumentViewerBase.prototype);
-
-DocumentViewer.prototype.addFeature = function (feature) {
-    var t = this;
-
-    feature.initialize(t);
-
-    t.features.push(feature);
-}
+DocumentViewer.prototype = Object.create(ViewerBase.prototype);
 
 DocumentViewer.prototype.onItemSelected = function (item) {
     var t = this;
@@ -50,10 +42,10 @@ DocumentViewer.prototype.onItemSelected = function (item) {
     console.log("Selected:", item);
 }
 
-DocumentViewer.prototype.onItemChanged = function (item) {
+DocumentViewer.prototype.onItemModified = function (item) {
     var t = this;
 
-    console.log("Changed:", item);
+    console.log("Modified:", item);
 }
 
 DocumentViewer.prototype.render = function () {

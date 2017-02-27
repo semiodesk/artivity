@@ -13,11 +13,14 @@ module.exports = function (grunt) {
         'app/app.translation.js',
         'app/host/*.js',
         'app/util/*.js',
-        'app/classes/*.js',
-        'app/classes/*/*.js',
-        'app/classes/*/*/*.js',
         'app/services/*.js',
         'app/filters/*.js',
+        'app/classes/*.js',
+        'app/classes/rendering/*.js',
+        'app/classes/rendering/caching/*.js',
+        'app/classes/rendering/viewers/commands/*.js',
+        'app/classes/rendering/viewers/renderers/*.js',
+        'app/classes/rendering/viewers/*.js',
         'app/directives/**/*.js',
         'app/dialogs/**/*.js',
         'app/views/**/*.js'
@@ -268,18 +271,18 @@ module.exports = function (grunt) {
                 ],
             },
         },
-	chmod: {
-           options: {
-	      mode: '755'
-	   },
-	   mainMac: {
-              src: [
-		buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/MacOS/artivity-apid',
-		buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/Resources/TinyVirtuoso/virtuoso/osx/virtuoso-t',
-		buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/Resources/TinyVirtuoso/virtuoso/osx/isql'
-	     ]
-	   }
-	}
+        chmod: {
+            options: {
+                mode: '755'
+            },
+            mainMac: {
+                src: [
+                    buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/MacOS/artivity-apid',
+                    buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/Resources/TinyVirtuoso/virtuoso/osx/virtuoso-t',
+                    buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/Resources/TinyVirtuoso/virtuoso/osx/isql'
+                ]
+            }
+        }
     });
 
     grunt.loadNpmTasks('grunt-wiredep');
@@ -401,7 +404,7 @@ module.exports = function (grunt) {
             'assemblyVersion',
             'xbuild',
             'copy:mainMac',
-	    'chmod:mainMac'
+            'chmod:mainMac'
         ]);
     }
 

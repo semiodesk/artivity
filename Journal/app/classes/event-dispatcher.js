@@ -30,29 +30,63 @@ function EventDispatcher(parent) {
     }
 }
 
-EventDispatcher.prototype.on = function (event, callback) {
+EventDispatcher.prototype.on = function (events, callback) {
     var t = this;
 
-    if (callback) {
+    if (!callback) {
+        return;
+    }
+
+    var E = null;
+
+    if (Array.isArray(events)) {
+        E = events;
+    } else if (typeof events === 'string') {
+        E = events.split(' ');
+    } else {
+        return;
+    }
+
+    for (i = 0; i < E.length; i++) {
+        var event = E[i];
+
         if (!t.listeners[event]) {
             t.listeners[event] = [];
         }
 
         t.listeners[event].push(callback);
     }
-};
+}
 
-EventDispatcher.prototype.off = function (event, callback) {
+EventDispatcher.prototype.off = function (events, callback) {
     var t = this;
 
-    if (callback && event in t.listeners) {
-        var i = t.listeners[event].indexOf(callback);
+    if (!callback) {
+        return;
+    }
 
-        if (i > -1) {
-            t.listeners[event].splice(i, 1);
+    var E = null;
+
+    if (Array.isArray(events)) {
+        E = events;
+    } else if (typeof events === 'string') {
+        E = events.split(' ');
+    } else {
+        return;
+    }
+
+    for (i = 0; i < E.length; i++) {
+        var event = E[i];
+        
+        if (event in t.listeners) {
+            var i = t.listeners[event].indexOf(callback);
+
+            if (i > -1) {
+                t.listeners[event].splice(i, 1);
+            }
         }
     }
-};
+}
 
 EventDispatcher.prototype.raise = function (event, params) {
     var t = this;
