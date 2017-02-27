@@ -1,7 +1,7 @@
 /**
  * Loads a set of images from a server and keeps a cached version of the bitmaps.
  */
-function DocumentViewerCache() {
+function ViewerCache() {
     var t = this;
 
     t.endpointUrl;
@@ -10,7 +10,7 @@ function DocumentViewerCache() {
     t.loaded = false;
 };
 
-DocumentViewerCache.prototype.load = function (data, complete) {
+ViewerCache.prototype.load = function (data, complete) {
     var t = this;
 
     // Sanitize parameters.
@@ -44,7 +44,7 @@ DocumentViewerCache.prototype.load = function (data, complete) {
     }
 };
 
-DocumentViewerCache.prototype.loadRender = function (data, i, complete) {
+ViewerCache.prototype.loadRender = function (data, i, complete) {
     var t = this;
     var d = data[i];
     var r = new Image();
@@ -88,7 +88,7 @@ DocumentViewerCache.prototype.loadRender = function (data, i, complete) {
     r.src = t.endpointUrl + d.file;
 };
 
-DocumentViewerCache.prototype.get = function (time, layer, fn) {
+ViewerCache.prototype.get = function (time, layer, fn) {
     var t = this;
     var uri = layer;
 

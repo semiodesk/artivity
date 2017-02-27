@@ -1,12 +1,12 @@
 (function () {
-    angular.module('app').directive('artFilePreview', artFilePreviewDirective);
+    angular.module('app').directive('artDocumentViewer', DocumentViewerDirective);
 
-    function artFilePreviewDirective() {
+    function DocumentViewerDirective() {
         return {
             restrict: 'E',
             scope: {},
-            templateUrl: 'app/directives/art-file-preview/art-file-preview.html',
-            controller: FilePreviewDirectiveController,
+            templateUrl: 'app/directives/art-document-viewer/art-document-viewer.html',
+            controller: DocumentViewerDirectiveController,
             controllerAs: 't',
             link: function (scope, element, attr, ctrl) {
                 ctrl.setFile(attr.file);
@@ -14,11 +14,11 @@
         }
     }
 
-    angular.module('app').controller('FilePreviewDirectiveController', FilePreviewDirectiveController);
+    angular.module('app').controller('DocumentViewerDirectiveController', DocumentViewerDirectiveController);
 
-    FilePreviewDirectiveController.$inject = ['$scope', 'api', 'agentService', 'entityService', 'selectionService', 'commentService', 'markService'];
+    DocumentViewerDirectiveController.$inject = ['$scope', 'api', 'agentService', 'entityService', 'selectionService', 'commentService', 'markService'];
 
-    function FilePreviewDirectiveController($scope, api, agentService, entityService, selectionService, commentService, markService) {
+    function DocumentViewerDirectiveController($scope, api, agentService, entityService, selectionService, commentService, markService) {
         var t = this;
 
         t.user = null;
@@ -54,7 +54,14 @@
             var url = api.getRenderingUrl(t.entity.Uri);
 
             t.viewer = new DocumentViewer(t.user, t.canvas, url, selectionService);
-            t.viewer.addFeature(new MarkFeature(markService));
+            t.viewer.addCommand(new PanCommand(t.viewer));
+            t.viewer.addCommand(new SelectCommand(t.viewer, selectionService));
+            t.viewer.addCommand(new CreateMarkCommand(t.viewer, markService));
+            t.viewer.addCommand(new UpdateMarkCommand(t.viewer, markService));
+            t.viewer.addCommand(new DeleteMarkCommand(t.viewer, markService));
+            t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
+            
+            $scope.$broadcast('viewerInitialized', t.viewer);
 
             api.getCanvasRenderingsFromEntity(t.entity.Uri).then(function (data) {
                 t.viewer.pageCache.load(data, function () {

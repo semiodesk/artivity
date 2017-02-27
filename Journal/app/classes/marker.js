@@ -1,7 +1,7 @@
 function Marker() {
     var t = this;
 
-    t.new = true;
+    t.startTime = new Date();
     t.p1 = {
         x: 0,
         y: 0

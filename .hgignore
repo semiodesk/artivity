@@ -30,6 +30,9 @@ syntax: glob
 *.suo
 *.swo
 *.swp
+*.zip
+*.map
+*.log
 *.tar.gz
 *.tlog
 *.userprefs

@@ -81,6 +81,7 @@
         // RENDERING
         var canvas = document.getElementById('canvas');
         var renderer = new DocumentHistoryViewer(t.user, canvas, api.getRenderingUrl(fileUri));
+        renderer.addCommand(new PanCommand(renderer));
 
         $rootScope.$on('redraw', function () {
             t.renderInfluence(t.selectedInfluence);

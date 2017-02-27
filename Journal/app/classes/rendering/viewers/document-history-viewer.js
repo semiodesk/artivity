@@ -5,11 +5,11 @@ function DocumentHistoryViewer(user, canvas, endpointUrl) {
     var t = this;
 
     // Call the base constructor.
-    DocumentViewerBase.call(t, user, canvas, endpointUrl);
+    ViewerBase.call(t, user, canvas, endpointUrl);
 
     t.canvasCache = new CanvasCache();
 
-    t.renderCache = new DocumentViewerCache();
+    t.renderCache = new ViewerCache();
     t.renderCache.endpointUrl = endpointUrl;
     t.renderInfluencedRegions = false;
 
@@ -18,7 +18,7 @@ function DocumentHistoryViewer(user, canvas, endpointUrl) {
     t.renderedLayers = [];
 }
 
-DocumentHistoryViewer.prototype = Object.create(DocumentViewerBase.prototype);
+DocumentHistoryViewer.prototype = Object.create(ViewerBase.prototype);
 
 DocumentHistoryViewer.prototype.render = function (influence) {
     var t = this;
