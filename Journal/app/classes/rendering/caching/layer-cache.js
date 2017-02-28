@@ -7,7 +7,7 @@ function LayerCache() {
     EntityCache.call(t);
 };
 
-LayerCache.prototype = Object.create(EntityCache.prototype);
+LayerCache.prototype = new EntityCache();
 
 /**
  * Enumerates the layers in rendering order: from bottom to top.

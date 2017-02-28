@@ -22,7 +22,7 @@ function DocumentViewer(user, canvas, endpointUrl, selectionService) {
     t.on('itemModified', function(item) { t.onItemModified(item); });
 }
 
-DocumentViewer.prototype = Object.create(ViewerBase.prototype);
+DocumentViewer.prototype = new ViewerBase();
 
 DocumentViewer.prototype.onItemSelected = function (item) {
     var t = this;

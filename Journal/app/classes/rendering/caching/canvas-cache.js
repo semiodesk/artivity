@@ -9,7 +9,7 @@ function CanvasCache() {
     t.canvases = [];
 };
 
-CanvasCache.prototype = Object.create(EntityCache.prototype);
+CanvasCache.prototype = new EntityCache();
 
 CanvasCache.prototype.load = function (data, complete) {
     var t = this;

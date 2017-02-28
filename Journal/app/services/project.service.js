@@ -1,6 +1,4 @@
 ﻿(function () {
-    'use strict';
-
     angular.module('app').factory('projectService', projectService);
 
     projectService.$inject = ['$http'];

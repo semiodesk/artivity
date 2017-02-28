@@ -1,6 +1,6 @@
 {
   "name": "artivity",
-  "version": "1.6.151",
+  "version": "1.6.167",
   "description": "Artivity is a tool to track the creative process.",
   "main": "main.js",
   "scripts": {

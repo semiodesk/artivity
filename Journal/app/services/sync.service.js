@@ -1,6 +1,4 @@
 (function () {
-    'use strict';
-
     angular.module('app').factory('syncService', syncService);
 
     syncService.$inject = ['api', '$http'];
