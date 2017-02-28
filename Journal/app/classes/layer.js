@@ -3,4 +3,4 @@
  */
 function Layer(uri) {};
 
-Layer.prototype = new Entity();
+Layer.prototype = Object.create(Entity.prototype);

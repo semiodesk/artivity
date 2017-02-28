@@ -54,7 +54,6 @@
 			});
 		}
 
-
 		function isDownloading() {
 			return downloading;
 		}

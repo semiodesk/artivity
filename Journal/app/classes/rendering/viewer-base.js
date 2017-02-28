@@ -22,6 +22,18 @@ function ViewerBase(user, canvas, endpointUrl) {
     // Available viewer commands.
     t.commands = {};
 
+    // Default command is executed when the user aborts other commands.
+    t.defaultCommand = null;
+
+    // The command which was executed before the selecterd command.
+    t.previousCommand = null;
+
+    // The currently selected command mode.
+    t.selectedCommand = null;
+
+    // Indicates if the pan command is being executed.
+    t.isPanning = false;
+
     // Shadow that is drawn below the canvases / artboards / pages.
     t.pageShadow = new createjs.Shadow('rgba(0,0,0,.2)', 3, 3, 6);
 
@@ -90,40 +102,37 @@ ViewerBase.prototype.initializeScene = function () {
 ViewerBase.prototype.initializeCanvasZoom = function () {
     var t = this;
 
-    t.canvas.addEventListener("wheel", function (e) {
-        if (!t.isPanning) {
-            var dZ = 0.1;
-            var delta = -e.deltaY > 0 ? dZ : -dZ;
+    t.stage.on('pressup', function (e) {
+        var item = t.selection.selectedItem();
 
-            if ((t.scene.scaleX + delta) > dZ) {
-                t.scene.scaleX += delta;
-                t.scene.scaleY += delta;
+        if (item && typeof item.hitTest === 'function') {
+            var p = item.globalToLocal(e.stageX, e.stageY);
 
-                t.stage.update();
+            var hit = item.hitTest(p.x, p.y);
 
-                t.dispatcher.raise('zoom');
+            if(hit === false) {
+                t.resetSelection();
             }
         }
     });
 
-    window.addEventListener("keydown", function (e) {
+    t.canvas.addEventListener('wheel', function (e) {
+        if (!t.isPanning) {
+            t.zoom(e.deltaY);
+        }
+    });
+
+    window.addEventListener('keydown', function (e) {
         if (e.key === 'Home' || e.ctrlKey && e.key === '1') {
             e.preventDefault();
             t.zoomToFit();
             t.dispatcher.raise('zoom');
-        } else if (e.ctrlKey && e.key === '+') {
-            e.preventDefault();
-            t.scene.zoom(1);
-            t.stage.update();
-            t.dispatcher.raise('zoom');
-        } else if (e.ctrlKey && e.key === '-') {
-            e.preventDefault();
-            t.scene.zoom(-1);
-            t.stage.update();
-            t.dispatcher.raise('zoom');
         } else if (e.ctrlKey && e.key === 'F5') {
             t.enableDebug = !t.enableDebug;
             t.stage.update();
+        } else if (e.key === 'Escape') {
+            t.resetCommand(true);
+            t.resetSelection();
         }
     });
 }
@@ -166,21 +175,50 @@ ViewerBase.prototype.addRenderer = function (renderer) {
     }
 }
 
-ViewerBase.prototype.addCommand = function (command) {
+ViewerBase.prototype.addCommand = function (command, defaultCommand) {
     var t = this;
 
     if (command.id) {
         t.commands[command.id] = command;
 
-        console.log("Enabled command:", command.id);
+        if (defaultCommand) {
+            t.defaultCommand = command;
+            t.selectedCommand = command;
+
+            console.log("Enabled command (default):", command.id);
+        } else {
+            console.log("Enabled command:", command.id);
+        }
     } else {
         console.error("Invalid command:", command);
     }
 }
 
+ViewerBase.prototype.getCommand = function (c) {
+    var t = this;
+
+    var id = null;
+
+    if (typeof c === 'string') {
+        id = c;
+    } else if (typeof c.id === 'string') {
+        id = c.id;
+    }
+
+    if (id) {
+        for (i in t.commands) {
+            var c = t.commands[i];
+
+            if (c.id == id) {
+                return c;
+            }
+        }
+    }
+}
+
 ViewerBase.prototype.canExecuteCommand = function (id, param) {
     var t = this;
-    var c = t.commands[id];
+    var c = t.getCommand(id);
 
     if (c) {
         return c.canExecute(param);
@@ -191,13 +229,57 @@ ViewerBase.prototype.canExecuteCommand = function (id, param) {
 
 ViewerBase.prototype.executeCommand = function (id, param) {
     var t = this;
-    var c = t.commands[id];
+    var c = t.getCommand(id);
 
     if (c && c.canExecute(param)) {
         return c.execute(param);
     }
 
     return false;
+}
+
+ViewerBase.prototype.selectCommand = function (id, param) {
+    var t = this;
+    var c = t.getCommand(id);
+
+    if (c && c.canExecute(param)) {
+        var e = {
+            command: c,
+            parameter: param
+        };
+
+        if (t.selectedCommand && t.selectedCommand.id != c.id) {
+            t.previousCommand = t.selectedCommand;
+        }
+
+        t.selectedCommand = c;
+
+        t.raise('commandSelected', e);
+    }
+}
+
+ViewerBase.prototype.resetCommand = function (resetDefault) {
+    var t = this;
+
+    if (!resetDefault && t.previousCommand) {
+        t.executeCommand(t.previousCommand.id);
+    } else if (t.defaultCommand) {
+        t.executeCommand(t.defaultCommand.id);
+    }
+}
+
+ViewerBase.prototype.resetSelection = function () {
+    var t = this;
+
+    var item = t.selection.selectedItem();
+
+    if (item && typeof item.deselect === 'function') {
+        item.deselect();
+
+        t.selection.clear();
+
+        t.stage.update();
+    }
 }
 
 ViewerBase.prototype.initializeCanvasResize = function () {
@@ -282,6 +364,30 @@ ViewerBase.prototype.onDrawStart = function (t, e) {
         // Uncomment this when debugging:
         t.drawSceneMarkers(extents, cc, ce);
     }
+}
+
+ViewerBase.prototype.zoom = function (dY) {
+    var t = this;
+
+    var dZ = 0.1;
+    var delta = -dY > 0 ? dZ : -dZ;
+
+    if ((t.scene.scaleX + delta) > dZ) {
+        t.scene.scaleX += delta;
+        t.scene.scaleY += delta;
+
+        t.stage.update();
+
+        t.raise('zoom');
+    }
+}
+
+ViewerBase.prototype.zoomIn = function () {
+    this.zoom(-1);
+}
+
+ViewerBase.prototype.zoomOut = function () {
+    this.zoom(1);
 }
 
 ViewerBase.prototype.zoomToFit = function () {

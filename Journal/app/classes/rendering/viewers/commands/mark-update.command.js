@@ -1,7 +1,7 @@
 function UpdateMarkCommand(viewer, service) {
     var t = this;
 
-    t.id = 'mark-update';
+    t.id = 'markUpdate';
 
     // The mark service instance.
     t.service = service;

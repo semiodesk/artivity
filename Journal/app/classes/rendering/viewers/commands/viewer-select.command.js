@@ -1,11 +1,12 @@
 function SelectCommand(viewer, service) {
     var t = this;
 
-    t.id = 'viewer-select';
+    ViewerCommand.call(t, viewer, 'viewerSelect');
 
-    t.viewer = viewer;
     t.service = service;
 }
+
+SelectCommand.prototype = Object.create(ViewerCommand.prototype);
 
 SelectCommand.prototype.canExecute = function (e) {
     var t = this;
@@ -14,12 +15,9 @@ SelectCommand.prototype.canExecute = function (e) {
 }
 
 SelectCommand.prototype.execute = function (e) {
-    var t = this;
+    var t = ViewerCommand.prototype.execute.call(this, e);
 
-    t.viewer.selection.clear();
-    
-    t.viewer.stage.cursor = 'default';
-    t.viewer.stage.update();
+    t.viewer.selectCommand(t);
 
-    return true;
+    t.stage.cursor = 'default';
 }

@@ -54,13 +54,15 @@
             var url = api.getRenderingUrl(t.entity.Uri);
 
             t.viewer = new DocumentViewer(t.user, t.canvas, url, selectionService);
+            t.viewer.addCommand(new SelectCommand(t.viewer, selectionService), true);
             t.viewer.addCommand(new PanCommand(t.viewer));
-            t.viewer.addCommand(new SelectCommand(t.viewer, selectionService));
+            t.viewer.addCommand(new ZoomInCommand(t.viewer));
+            t.viewer.addCommand(new ZoomOutCommand(t.viewer));
             t.viewer.addCommand(new CreateMarkCommand(t.viewer, markService));
             t.viewer.addCommand(new UpdateMarkCommand(t.viewer, markService));
             t.viewer.addCommand(new DeleteMarkCommand(t.viewer, markService));
             t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
-            
+
             $scope.$broadcast('viewerInitialized', t.viewer);
 
             api.getCanvasRenderingsFromEntity(t.entity.Uri).then(function (data) {

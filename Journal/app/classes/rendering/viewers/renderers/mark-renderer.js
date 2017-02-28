@@ -88,12 +88,12 @@ MarkRenderer.prototype.onMarkAdded = function (mark) {
     var t = this;
 
     if (!mark || (!mark.uri && !mark.p1)) {
-        console.error("Invalid mark:", mark);
+        console.warn("Invalid mark:", mark);
         return false;
     }
 
     if (mark.uri && (mark.w === 0 || mark.h === 0)) {
-        console.error("Ingoring zero-sized mark:", mark.uri);
+        console.warn("Ingoring zero-sized mark:", mark.uri);
         return false;
     }
 
