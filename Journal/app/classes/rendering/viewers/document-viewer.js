@@ -14,15 +14,12 @@ function DocumentViewer(user, canvas, endpointUrl, selectionService) {
     t.pageCache = new ViewerCache();
     t.pageCache.endpointUrl = endpointUrl;
 
-    // Lists all the features which are enabled for this viewer.
-    t.commands = [];
-
     // Handle selection changes.
     t.on('itemSelected', function(item) { t.onItemSelected(item); });
     t.on('itemModified', function(item) { t.onItemModified(item); });
 }
 
-DocumentViewer.prototype = new ViewerBase();
+DocumentViewer.prototype = Object.create(ViewerBase.prototype);
 
 DocumentViewer.prototype.onItemSelected = function (item) {
     var t = this;

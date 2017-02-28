@@ -13,7 +13,7 @@ function MarkRectangle(viewer, container, mark) {
     t.initializeContainer();
 }
 
-MarkRectangle.prototype = new createjs.Container();
+MarkRectangle.prototype = Object.create(createjs.Container.prototype);
 
 MarkRectangle.prototype.initializeGeometry = function () {
     var t = this;
@@ -30,12 +30,12 @@ MarkRectangle.prototype.initializeContainer = function () {
     var t = this;
 
     t.on('mouseover', function (e) {
-        t.hitTest(e.stageX, e.stageY);
+        t.hitTestPoint(e.stageX, e.stageY);
         t.container.stage.update();
     });
 
     t.on('mouseout', function (e) {
-        t.hitTest(e.stageX, e.stageY);
+        t.hitTestPoint(e.stageX, e.stageY);
         t.container.stage.update();
     });
 
@@ -52,7 +52,7 @@ MarkRectangle.prototype.initializeContainer = function () {
     t.resizeHandles = t.resizeHandles.concat(t.createResizeGrips());
 }
 
-MarkRectangle.prototype.hitTest = function (x, y) {
+MarkRectangle.prototype.hitTestPoint = function (x, y) {
     var t = this;
 
     if (!t.mark.new || t.selected) {
@@ -323,35 +323,29 @@ MarkRectangle.prototype.enableDragMove = function (s) {
     var t = this;
 
     s.on('mousedown', function (e) {
-        if (!t.viewer.isPanning) {
-            t.downX = e.stageX;
-            t.downY = e.stageY;
-        }
+        t.downX = e.stageX;
+        t.downY = e.stageY;
     });
 
     s.on('pressmove', function (e) {
-        if (!t.viewer.isPanning) {
-            t.regX = t.downX - e.stageX;
-            t.regY = t.downY - e.stageY;
+        t.regX = t.downX - e.stageX;
+        t.regY = t.downY - e.stageY;
 
-            t.container.stage.update();
-        }
+        t.container.stage.update();
     });
 
     s.on('pressup', function (e) {
-        if (!t.viewer.isPanning) {
-            var dx = t.regX - t.container.stage.x;
-            var dy = t.regY - t.container.stage.y;
+        var dx = t.regX - t.container.stage.x;
+        var dy = t.regY - t.container.stage.y;
 
-            t.mark.p1 = t.container.globalToLocal(t.x1 - dx, t.y1 - dy);
-            t.mark.p2 = t.container.globalToLocal(t.x2 - dx, t.y2 - dy);
+        t.mark.p1 = t.container.globalToLocal(t.x1 - dx, t.y1 - dy);
+        t.mark.p2 = t.container.globalToLocal(t.x2 - dx, t.y2 - dy);
 
-            t.modified = dx != 0 || dy != 0;
+        t.modified = dx != 0 || dy != 0;
 
-            if (t.modified) {
-                t.viewer.raise('itemModified', t);
-                t.viewer.raise('markModified', t.mark);
-            }
+        if (t.modified) {
+            t.viewer.raise('itemModified', t);
+            t.viewer.raise('markModified', t.mark);
         }
     });
 }
@@ -360,39 +354,33 @@ MarkRectangle.prototype.enableDragResize = function (s) {
     var t = this;
 
     s.on('mousedown', function (e) {
-        if (!t.viewer.isPanning) {
-            t.downX = e.stageX;
-            t.downY = e.stageY;
-        }
+        t.downX = e.stageX;
+        t.downY = e.stageY;
     });
 
     s.on('pressmove', function (e) {
-        if (!t.viewer.isPanning) {
-            var dx = t.downX - e.stageX;
-            var dy = t.downY - e.stageY;
+        var dx = t.downX - e.stageX;
+        var dy = t.downY - e.stageY;
 
-            if (dx != 0 || dy != 0) {
-                t.onResize(s, dx, dy);
+        if (dx != 0 || dy != 0) {
+            t.onResize(s, dx, dy);
 
-                t.modified = true;
-            }
+            t.modified = true;
         }
     });
 
     s.on('pressup', function (e) {
-        if (!t.viewer.isPanning) {
-            var x1 = t.x1 - t.container.stage.x;
-            var y1 = t.y1 - t.container.stage.y;
-            var x2 = t.x2 - t.container.stage.x;
-            var y2 = t.y2 - t.container.stage.y;
+        var x1 = t.x1 - t.container.stage.x;
+        var y1 = t.y1 - t.container.stage.y;
+        var x2 = t.x2 - t.container.stage.x;
+        var y2 = t.y2 - t.container.stage.y;
 
-            t.mark.p1 = t.container.globalToLocal(x1, y1);
-            t.mark.p2 = t.container.globalToLocal(x2, y2);
+        t.mark.p1 = t.container.globalToLocal(x1, y1);
+        t.mark.p2 = t.container.globalToLocal(x2, y2);
 
-            if (t.modified) {
-                t.viewer.raise('itemModified', t);
-                t.viewer.raise('markModified', t.mark);
-            }
+        if (t.modified) {
+            t.viewer.raise('itemModified', t);
+            t.viewer.raise('markModified', t.mark);
         }
     });
 }
@@ -472,7 +460,7 @@ MarkRectangle.prototype.select = function () {
 
     var stage = t.container.stage;
 
-    t.hitTest(stage.mouseX, stage.mouseY);
+    t.hitTestPoint(stage.mouseX, stage.mouseY);
 
     stage.update();
 }
@@ -486,7 +474,7 @@ MarkRectangle.prototype.deselect = function () {
 
     var stage = t.container.stage;
 
-    t.hitTest(stage.mouseX, stage.mouseY);
+    t.hitTestPoint(stage.mouseX, stage.mouseY);
 
     stage.update();
 }

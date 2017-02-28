@@ -264,7 +264,8 @@ button:hover,
 button:active,
 button:focus,
 .btn:active,
-.btn:focus {
+.btn:focus,
+.btn.btn-active {
 	background: $buttonHoverBackgroundColor;
 	color: $buttonTextColor;
 	outline: none !important;
@@ -954,7 +955,9 @@ h4 {
 	height: $toolbarHeight;
 }
 
-.toolbar .btn:hover {
+.toolbar .btn:hover,
+.toolbar .btn:active,
+.toolbar .btn.btn-active {
 	background: rgba(255, 255, 255, .1);
 	color: rgba($textColor, 1);
 }

@@ -30,17 +30,29 @@
             $scope.$on('viewerInitialized', function (e, viewer) {
                 t.viewer = viewer;
 
-                t.viewer.on('startExecute', function (command, param) {
-                    console.log(command);
+                $('.btn[data-command]').each(function (i, btn) {
+                    $(btn).click(t.executeCommand);
                 });
 
-                t.viewer.on('stopExecute', function (command, param) {
-                    console.log(command);
+                t.viewer.on('commandSelected', function (e) {
+                    updateButtonStates(e);
                 });
 
-                $('.btn[data-command]').each(function (i, element) {
-                    $(element).click(t.executeCommand);
-                });
+                updateButtonStates(e);
+            });
+        }
+
+        function updateButtonStates(e) {
+            var selected = t.viewer.selectedCommand;
+
+            $('.btn[data-command]').each(function (i, btn) {
+                var b = $(btn);
+
+                if (b.data('command') === selected.id) {
+                    b.addClass('btn-active');
+                } else {
+                    b.removeClass('btn-active');
+                }
             });
         }
 

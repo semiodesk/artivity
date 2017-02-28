@@ -1,24 +1,28 @@
 function ViewerCommand(viewer, id) {
-    this.viewer = viewer;
     this.id = id;
+
+    if (viewer) {
+        this.viewer = viewer;
+        this.stage = viewer.stage;
+        this.selection = viewer.selection;
+    } else {
+        console.warn("Argument 'viewer' is undefined in command:", id);
+    }
 }
 
-ViewerCommand.prototype.canExecute = function(param) {
+ViewerCommand.prototype.canExecute = function (param) {
     return this.viewer;
 }
 
-ViewerCommand.prototype.execute = function(param) {
-    this.startExecute(param);
-}
+ViewerCommand.prototype.execute = function (param) {
+    var e = {
+        command: this,
+        parameter: param
+    };
 
-ViewerCommand.prototype.startExecute = function(param) {
-    this.viewer.raise('startExecute', this);
+    this.viewer.raise('commandExecuted', e);
 
-    return this;
-}
-
-ViewerCommand.prototype.stopExecute = function(param) {
-    this.viewer.raise('stopExecute', this);
+    console.log('Executing command:', e);
 
     return this;
 }
