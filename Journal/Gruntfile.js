@@ -6,25 +6,34 @@ module.exports = function (grunt) {
     var buildReleaseDir = '../build/Release';
     var buildDistDir = '../build/dist';
 
-    // The order of the following files is important:
-    var jsFiles = [
-        'app/app.route.js',
-        'app/app.api.js',
-        'app/app.translation.js',
-        'app/host/*.js',
-        'app/util/*.js',
-        'app/services/*.js',
-        'app/filters/*.js',
-        'app/classes/*.js',
-        'app/classes/rendering/*.js',
-        'app/classes/rendering/caching/*.js',
-        'app/classes/rendering/viewers/commands/*.js',
-        'app/classes/rendering/viewers/renderers/*.js',
-        'app/classes/rendering/viewers/*.js',
-        'app/directives/**/*.js',
-        'app/dialogs/**/*.js',
-        'app/views/**/*.js'
-    ];
+    // We have to treat the prototype class library files seperately from the
+    // rest of the files, because they need to be bannered with a IFFY when being
+    // concatenated in release mode. Also, the order of the files is important
+    // for the dependencies to be resolved. 
+    var srcFiles = {
+        libs: [
+            'app/classes/*.js',
+            'app/classes/rendering/*.js',
+            'app/classes/rendering/caching/*.js',
+            'app/classes/rendering/viewers/commands/*.js',
+            'app/classes/rendering/viewers/renderers/*.js',
+            'app/classes/rendering/viewers/*.js'
+        ],
+        app: [
+            'app/app.js',
+            'app/host/*.js',
+            'app/util/*.js',
+            'app/services/*.js',
+            'app/filters/*.js',
+            'app/directives/**/*.js',
+            'app/dialogs/**/*.js',
+            'app/views/**/*.js',
+            'app/translation.js',
+            'app/route.js'
+        ]
+    }
+
+    var jsFiles = srcFiles.libs.concat(srcFiles.app);
 
     // These files are NOT bundled.
     var devFiles = [
@@ -36,7 +45,7 @@ module.exports = function (grunt) {
     ];
 
     // All the above files are bundled into this file in the relase version.
-    var appJsFile = 'app/app.src.js';
+    var appJsFile = 'app/src.js';
 
     function ignore(file) {
         var minimatch = require("minimatch")
@@ -105,24 +114,46 @@ module.exports = function (grunt) {
         },
         tags: {
             build: {
-                src: ['app/app.conf.js', jsFiles],
+                src: ['app/conf.js', jsFiles],
                 dest: 'index.html'
             },
             release: {
-                src: ['app/app.conf.release.js', appJsFile],
+                src: ['app/conf.release.js', appJsFile],
                 dest: 'index.html'
             }
         },
         concat: {
-            js: {
+            // The libs need to be concatenated separately because they need to be contained
+            // in a common IFFY to work properly in release mode.
+            libs: {
                 options: {
-                    banner: "(function () {\n\n'use strict';\n\n",
-                    footer: "\n})();",
+                    sourceMap: true,
+                    banner: '\n(function(){\n',
+                    footer: '})();'
+                },
+                nonull: true,
+                src: srcFiles.libs,
+                dest: 'app/src.libs.js'
+            },
+            app: {
+                options: {
                     sourceMap: true
                 },
                 nonull: true,
-                dest: appJsFile,
-                src: jsFiles
+                src: srcFiles.app,
+                dest: 'app/src.app.js'
+            },
+            src: {
+                options: {
+                    sourceMap: true,
+                    banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */'
+                },
+                nonull: true,
+                src: [
+                    'app/src.libs.js',
+                    'app/src.app.js'
+                ],
+                dest: appJsFile
             }
         },
         clean: {
@@ -250,8 +281,8 @@ module.exports = function (grunt) {
                         dest: buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app'
                     },
                     {
-                        src: buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Resources/app/app/app.conf.release.js',
-                        dest: buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Resources/app/app/app.conf.js',
+                        src: buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Resources/app/app/conf.release.js',
+                        dest: buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Resources/app/app/conf.js',
                         force: true
                     },
                 ],
@@ -264,8 +295,8 @@ module.exports = function (grunt) {
                         dest: buildDistDir + '/Artivity-win32-x64/apid/'
                     },
                     {
-                        src: buildDistDir + '/Artivity-win32-x64/Resources/app/app/app.conf.release.js',
-                        dest: buildDistDir + '/Artivity-win32-x64/Resources/app/app/app.conf.js',
+                        src: buildDistDir + '/Artivity-win32-x64/Resources/app/app/conf.release.js',
+                        dest: buildDistDir + '/Artivity-win32-x64/Resources/app/app/conf.js',
                         force: true
                     },
                 ],
@@ -302,6 +333,28 @@ module.exports = function (grunt) {
         // TODO: Read dest file from config 'concat:js:dest'.
         grunt.file.write(appJsFile, '');
         grunt.file.write(appJsFile + '.map', '');
+
+        if (grunt.file.exists('app/src.libs.js')) {
+            grunt.file.delete('app/src.libs.js');
+            grunt.file.delete('app/src.libs.js.map');
+        }
+
+        if (grunt.file.exists('app/src.app.js')) {
+            grunt.file.delete('app/src.app.js');
+            grunt.file.delete('app/src.app.js.map');
+        }
+    });
+
+    grunt.registerTask('concat:js:clean', 'Removes temporary files which are required for concatenation.', function () {
+        if (grunt.file.exists('app/src.libs.js')) {
+            grunt.file.delete('app/src.libs.js');
+            grunt.file.delete('app/src.libs.js.map');
+        }
+
+        if (grunt.file.exists('app/src.app.js')) {
+            grunt.file.delete('app/src.app.js');
+            grunt.file.delete('app/src.app.js.map');
+        }
     });
 
     // Task to restore nuget package
@@ -344,9 +397,9 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('assemblyVersion', function () {
         const path = require('path');
-
         var version = this.data['version'];
         var done = this.async();
+
         grunt.util.async.forEachSeries(this.data['src'], function (filePath, next) {
             var targetFile = path.resolve(filePath);
             var assemblyInfoContent = grunt.file.read(targetFile);
@@ -378,7 +431,10 @@ module.exports = function (grunt) {
     grunt.registerTask('release', [
         'wiredep',
         'concat:js:clear',
-        'concat:js',
+        'concat:libs',
+        'concat:app',
+        'concat:src',
+        'concat:js:clean',
         'tags:release',
         'sass:dist'
     ]);

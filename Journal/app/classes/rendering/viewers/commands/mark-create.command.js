@@ -30,7 +30,7 @@ function CreateMarkCommand(viewer, service) {
     };
 }
 
-CreateMarkCommand.prototype = Object.create(ViewerCommand.prototype);
+CreateMarkCommand.prototype = new ViewerCommand();
 
 CreateMarkCommand.prototype.canExecute = function (e) {
     return true;

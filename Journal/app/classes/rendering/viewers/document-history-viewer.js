@@ -18,7 +18,7 @@ function DocumentHistoryViewer(user, canvas, endpointUrl) {
     t.renderedLayers = [];
 }
 
-DocumentHistoryViewer.prototype = Object.create(ViewerBase.prototype);
+DocumentHistoryViewer.prototype = new ViewerBase();
 
 DocumentHistoryViewer.prototype.render = function (influence) {
     var t = this;

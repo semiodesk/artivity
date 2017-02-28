@@ -13,7 +13,7 @@ function MarkRectangle(viewer, container, mark) {
     t.initializeContainer();
 }
 
-MarkRectangle.prototype = Object.create(createjs.Container.prototype);
+MarkRectangle.prototype = new createjs.Container();
 
 MarkRectangle.prototype.initializeGeometry = function () {
     var t = this;

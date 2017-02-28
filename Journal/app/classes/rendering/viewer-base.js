@@ -25,12 +25,15 @@ function ViewerBase(user, canvas, endpointUrl) {
     // Shadow that is drawn below the canvases / artboards / pages.
     t.pageShadow = new createjs.Shadow('rgba(0,0,0,.2)', 3, 3, 6);
 
-    t.initializeEventDispatcher();
-    t.initializeScene();
-    t.initializeCanvasResize();
-    t.initializeCanvasZoom();
+    // Only initialize if we have a canvas object.
+    if (t.canvas) {
+        t.initializeEventDispatcher();
+        t.initializeScene();
+        t.initializeCanvasResize();
+        t.initializeCanvasZoom();
 
-    t.raise('initialized', t);
+        t.raise('initialized', t);
+    }
 }
 
 ViewerBase.prototype.initializeEventDispatcher = function () {
@@ -222,7 +225,7 @@ ViewerBase.prototype.onResize = function () {
 
     var buffer = t.canvas;
 
-    if (buffer !== null) {
+    if (buffer) {
         // To prevent flickering, store the current context before setting the size.
         var bufferContext = buffer.getContext('2d');
 
@@ -283,6 +286,7 @@ ViewerBase.prototype.onDrawStart = function (t, e) {
 
 ViewerBase.prototype.zoomToFit = function () {
     var t = this;
+
     var extents = t.scene.extents;
 
     // Draw extents position marker.
