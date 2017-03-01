@@ -23,50 +23,64 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
+using Artivity.Api;
 using Artivity.Api.Modules;
 using Artivity.Api.Parameters;
 using Artivity.Api.Platform;
-using Artivity.Apid.Synchronization;
 using Artivity.DataModel;
 using Semiodesk.Trinity;
 using Semiodesk.Trinity.Store;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Text;
+using System.IO;
 using Nancy;
 using Nancy.IO;
 using Nancy.ModelBinding;
-using VDS.RDF;
+using Nancy.Responses;
+using Nancy.Extensions;
+using Newtonsoft.Json;
 
 namespace Artivity.Apid.Modules
 {
-    public class SyncModule : ModuleBase
+    public class SetupModule : ModuleBase
     {
         #region Constructors
 
-        public SyncModule(IModelProvider model, IPlatformProvider platform, IArtivityServiceSynchronizationProvider syncProvider)
-            : base("/artivity/api/1.0/sync", model, platform)
+        public SetupModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/setup", modelProvider, platformProvider)
         {
-            Get[""] = parameters => { return Synchronize(syncProvider); };
-        }
+            Get["/"] = parameters =>
+            {
+                return Response.AsJsonSync(platformProvider.DidSetupRun);
+            };
 
-        #endregion
+            Post["/"] = parameters =>
+            {
+                string data = Request.Body.AsString();
 
-        #region Methods
+                Dictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(data);
 
-        private Response Synchronize(IArtivityServiceSynchronizationProvider syncProvider)
-        {
-            syncProvider.TrySynchronize();
+                if (values.ContainsKey("runSetup"))
+                {
+                    bool value = Convert.ToBoolean(values["runSetup"]);
 
-            return HttpStatusCode.OK;
+                    platformProvider.DidSetupRun = value;
+                    platformProvider.WriteConfig(platformProvider.Config);
+
+                    return HttpStatusCode.OK;
+                }
+                else
+                {
+                    return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+            };
         }
 
         #endregion

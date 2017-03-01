@@ -30,11 +30,13 @@ using Artivity.Api.Modules;
 using Artivity.Api.Parameters;
 using Artivity.Api.Platform;
 using Artivity.Apid.Plugins;
+using Artivity.Apid.Accounts;
 using Artivity.DataModel;
 using Nancy;
 using Nancy.Responses;
 using Nancy.ModelBinding;
 using Nancy.IO;
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -43,8 +45,6 @@ using System.Linq;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
-using Newtonsoft.Json;
-using Artivity.Apid.Accounts;
 
 namespace Artivity.Apid.Modules
 {

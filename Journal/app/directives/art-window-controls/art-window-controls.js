@@ -62,10 +62,12 @@
             if (!window.isMaximized()) {
                 window.maximize();
 
+                $('#window').addClass("maximized");
                 $('.window-title-btns .btn-max').addClass("maximized");
             } else {
                 window.unmaximize();
 
+                $('#window').removeClass("maximized");
                 $('.window-title-btns .btn-max').removeClass("maximized");
             }
         }

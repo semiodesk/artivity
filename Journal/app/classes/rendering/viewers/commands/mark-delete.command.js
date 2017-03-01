@@ -1,7 +1,7 @@
 function DeleteMarkCommand(viewer, service) {
     var t = this;
 
-    t.id = 'markDelete';
+    t.id = 'deleteMark';
 
     // The mark service instance.
     t.service = service;

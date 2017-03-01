@@ -18,12 +18,28 @@
 		<div class="layout-container ui-pane-container">
 			<div class="ui-resizable ui-pane ui-pane-left">
 				<div class="pane-content">
-					<art-chat-control entity="{{t.entity.uri}}"></art-chat-control>
+					<art-tab-control>
+						<art-tab heading="Conversation">
+							<div class="layout-container">
+								<art-chat-control id="ctl-chat" entity="{{t.entity.uri}}"></art-chat-control>
+							</div>
+						</art-tab>
+						<art-tab heading="Topics">
+							<div class="layout-container">
+								<art-topic-control id="ctl-topic" entity="{{t.entity.uri}}"></art-topic-control>
+							</div>
+						</art-tab>
+						<art-tab heading="Todo">
+							<div class="layout-container padding-x-xl padding-y-xl text-center">
+								Under construction.
+							</div>
+						</art-tab>
+					</art-tab-control>
 				</div>
 			</div>
 			<div class="ui-resizable ui-pane ui-pane-center">
 				<div class="pane-content">
-					<art-document-viewer file="{{t.entity.uri}}"></art-document-viewer>
+					<art-document-viewer id="ctl-viewer" file="{{t.entity.uri}}"></art-document-viewer>
 				</div>
 			</div>
 		</div>

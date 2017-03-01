@@ -41,12 +41,12 @@ using Nancy.ModelBinding;
 
 namespace Artivity.Api.Modules
 {
-    public class CommentModule : ModuleBase
+    public class TopicModule : ModuleBase
     {
         #region Constructors
 
-        public CommentModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/comments", modelProvider, platformProvider)
+        public TopicModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/topics", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>
             {
@@ -57,24 +57,19 @@ namespace Artivity.Api.Modules
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return GetCommentsFromEntity(new UriRef(uri));
+                return GetTopicsFromEntity(new UriRef(uri));
             };
 
             Post["/"] = parameters =>
             {
-                CommentParameter comment = this.Bind<CommentParameter>();
+                TopicParameter topic = this.Bind<TopicParameter>();
 
-                if (!string.IsNullOrEmpty(comment.text))
+                if (!string.IsNullOrEmpty(topic.title))
                 {
-                    return PostComment(comment);
+                    return PostTopic(topic);
                 }
 
                 return HttpStatusCode.BadRequest;
-            };
-
-            Get["/clean"] = parameters =>
-            {
-                return CleanComments();
             };
         }
 
@@ -82,7 +77,7 @@ namespace Artivity.Api.Modules
 
         #region Methods
 
-        private Response GetCommentsFromEntity(UriRef entityUri)
+        private Response GetTopicsFromEntity(UriRef entityUri)
         {
             LoadCurrentUser();
 
@@ -91,17 +86,17 @@ namespace Artivity.Api.Modules
                     ?uri
                     ?agent
                     ?time
-                    ?message
+                    ?title
                 WHERE
                 {
                     ?activity prov:generated ?uri ;
                         prov:wasStartedBy ?agent .
 
-                    ?uri a art:Comment ;
+                    ?uri a art:Topic ;
                         prov:hadPrimarySource @entity ;
                         nie:created ?time ;
                         art:deleted @undefined ;
-                        sioc:content ?message .
+                        dces:title ?title .
                 }
                 ORDER BY DESC(?time)");
 
@@ -113,7 +108,7 @@ namespace Artivity.Api.Modules
             return Response.AsJson(bindings);
         }
 
-        private Response PostComment(CommentParameter parameter)
+        private Response PostTopic(TopicParameter parameter)
         {
             LoadCurrentUser();
 
@@ -129,27 +124,18 @@ namespace Artivity.Api.Modules
 
             if (UserModel.ContainsResource(entity))
             {
-                Comment comment = UserModel.CreateResource<Comment>();
-                comment.CreationTimeUtc = parameter.endTime;
-                comment.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
-                comment.Message = parameter.text;
-                comment.Commit();
+                Topic topic = UserModel.CreateResource<Topic>();
+                topic.CreationTimeUtc = parameter.endTime;
+                topic.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
+                topic.Title = parameter.title;
+                topic.Commit();
 
                 CreateEntity activity = UserModel.CreateResource<CreateEntity>();
                 activity.StartedBy = agent;
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
-                activity.GeneratedEntities.Add(comment); // Associate the comment with the activity.
+                activity.GeneratedEntities.Add(topic); // Associate the comment with the activity.
                 activity.UsedEntities.Add(entity); // TODO: Correct this in the data provided by the plugins.
-
-                if (parameter.marks != null)
-                {
-                    foreach (var mark in parameter.marks)
-                    {
-                        // The comment could not have been created without using the marker.
-                        activity.UsedEntities.Add(new Mark(new UriRef(mark)));
-                    }
-                }
 
                 activity.Commit();
 
@@ -161,38 +147,6 @@ namespace Artivity.Api.Modules
 
                 return HttpStatusCode.BadRequest;
             }
-        }
-
-        private Response CleanComments()
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?comment
-                WHERE
-                {
-                    ?comment a art:Comment .
-
-                    {
-                        FILTER NOT EXISTS { ?comment sioc:content ?value . }
-                    }
-                    UNION
-                    {
-                        FILTER NOT EXISTS { ?comment prov:hadActivity / prov:startedBy ?agent . }
-                    }
-                }");
-
-            IModel model = ModelProvider.GetActivities();
-
-            List<BindingSet> bindings = model.GetBindings(query).ToList();
-
-            foreach (BindingSet b in bindings)
-            {
-                Uri uri = new Uri(b["comment"].ToString());
-
-                model.DeleteResource(uri);
-            }
-
-            return HttpStatusCode.OK;
         }
 
         #endregion

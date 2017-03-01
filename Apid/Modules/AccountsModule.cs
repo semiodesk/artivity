@@ -27,6 +27,7 @@
 
 using Artivity.Api;
 using Artivity.Api.IO;
+using Artivity.Api.Modules;
 using Artivity.Api.Platform;
 using Artivity.Apid;
 using Artivity.Apid.Accounts;
@@ -42,7 +43,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Artivity.Api.Modules
+namespace Artivity.Apid.Modules
 {
     /// <summary>
     /// Handles the authorization and installation of online service accounts.

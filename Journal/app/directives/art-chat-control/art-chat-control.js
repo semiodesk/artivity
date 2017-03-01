@@ -52,33 +52,34 @@
                 // Set the user URI for the new comments.
                 t.comment.agent = t.user.Uri;
 
-                // Make sure the user is properly initialized before retrieving the entity derivations.
-                entityService.getById($scope.entity).then(function (response) {
-                    var entity = response;
+                if ($scope.entity) {
+                    // Make sure the user is properly initialized before retrieving the entity derivations.
+                    entityService.getById($scope.entity).then(function (response) {
+                        var entity = response;
 
-                    if (entity.RevisionUris && entity.RevisionUris.length > 0) {
-                        t.entity = entity.RevisionUris[0];
+                        if (entity.RevisionUris && entity.RevisionUris.length > 0) {
+                            t.entity = entity.RevisionUris[0];
 
-                        // Set the entity URI as primary source for the comments.
-                        t.comment.entity = t.entity;
+                            // Set the entity URI as primary source for the comments.
+                            t.comment.entity = t.entity;
 
-                        commentService.get(t.entity).then(function (data) {
-                            t.comments = [];
+                            commentService.get(t.entity).then(function (data) {
+                                t.comments = [];
 
-                            for (i = 0; i < data.length; i++) {
-                                var c = data[i];
+                                for (i = 0; i < data.length; i++) {
+                                    var c = data[i];
 
-                                // Insert at the beginning of the list.
-                                t.comments.unshift({
-                                    agent: c.agent,
-                                    time: c.time,
-                                    text: c.message,
-                                    isUser: t.comments.length % 2 == 1
-                                });
-                            }
-                        });
-                    }
-                });
+                                    // Insert at the beginning of the list.
+                                    t.comments.unshift({
+                                        agent: c.agent,
+                                        time: c.time,
+                                        text: c.message
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             });
 
             resetComment();

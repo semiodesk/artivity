@@ -1,7 +1,10 @@
 function CreateMarkCommand(viewer, service) {
     var t = this;
 
-    ViewerCommand.call(t, viewer, 'markCreate');
+    ViewerCommand.call(t, viewer, 'createMark');
+
+    // The entity to be marked.
+    t.param = null;
 
     // The mark service instance.
     t.service = service;
@@ -35,12 +38,20 @@ function CreateMarkCommand(viewer, service) {
 
 CreateMarkCommand.prototype = Object.create(ViewerCommand.prototype);
 
-CreateMarkCommand.prototype.execute = function (e) {
-    var t = ViewerCommand.prototype.execute.call(this, e);
+CreateMarkCommand.prototype.canExecute = function(param) {
+    var t = this;
 
-    t.viewer.selectCommand(t);
+    return t.viewer && param && param.length > 0;
+}
+
+CreateMarkCommand.prototype.execute = function (param) {
+    var t = ViewerCommand.prototype.execute.call(this, param);
+
+    t.viewer.selectCommand(t, param);
 
     t.stage.cursor = 'crosshair';
+
+    t.param = param;
 }
 
 CreateMarkCommand.prototype.onMouseDown = function (e) {
@@ -101,7 +112,7 @@ CreateMarkCommand.prototype.createMark = function (mark) {
 
     var m = {
         agent: t.viewer.user.Uri,
-        entity: t.viewer.entity,
+        entity: t.param,
         startTime: mark.startTime,
         endTime: new Date(),
         x: mark.p1.x,

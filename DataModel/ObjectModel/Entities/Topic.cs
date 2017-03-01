@@ -25,51 +25,32 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Artivity.Api.Modules;
-using Artivity.Api.Parameters;
-using Artivity.Api.Platform;
-using Artivity.Apid.Synchronization;
-using Artivity.DataModel;
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
-using Semiodesk.Trinity.Store;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using Nancy;
-using Nancy.IO;
-using Nancy.ModelBinding;
-using VDS.RDF;
 
-namespace Artivity.Apid.Modules
+namespace Artivity.DataModel
 {
-    public class SyncModule : ModuleBase
+    [RdfClass(ART.Topic)]
+    public class Topic : Entity
     {
-        #region Constructors
+        #region Members
 
-        public SyncModule(IModelProvider model, IPlatformProvider platform, IArtivityServiceSynchronizationProvider syncProvider)
-            : base("/artivity/api/1.0/sync", model, platform)
-        {
-            Get[""] = parameters => { return Synchronize(syncProvider); };
-        }
+        [RdfProperty(DCES.title)]
+        public string Title { get; set; }
 
         #endregion
 
-        #region Methods
+        #region Constructors
 
-        private Response Synchronize(IArtivityServiceSynchronizationProvider syncProvider)
+        public Topic(Uri uri)
+            : base(uri)
         {
-            syncProvider.TrySynchronize();
-
-            return HttpStatusCode.OK;
         }
 
         #endregion
     }
 }
-

@@ -45,7 +45,7 @@ using Nancy.IO;
 using Nancy.ModelBinding;
 using VDS.RDF;
 
-namespace Artivity.Apid
+namespace Artivity.Apid.Modules
 {
 	public class UriModule : ModuleBase
 	{

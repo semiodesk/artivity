@@ -1,0 +1,17 @@
+<div class="ctl-topic padding-x-xs padding-y-xs">
+    <input type="text" class="form-control stretch-horizontal no-margin" style="margin-bottom: 5px;" placeholder="Create a new topic"
+        ng-model="t.topic.title" ng-change="t.updateTopic()" ng-enter="t.postTopic()" ng-esc="t.resetTopic()"></input><br>
+    <button class="btn btn-default pull-right" ng-click="t.postTopic()">Create</button>
+    <div class="clearfix"></div>
+</div>
+
+<ul class="list-view">
+    <li class="list-item" role="presentation" ng-repeat="topic in t.topics" ng-mouseenter="t.showMarks(topic)" ng-mouseleave="t.hideMarks(topic)">
+        <div class="col expand padding-x-md padding-y-md">
+            <a href="">{{topic.title}}</a>
+        </div>
+        <div class="col">
+            <a class="btn" ng-click="t.createMark(topic)"><i class="zmdi zmdi-photo-size-select-small"></i></a>
+        </div>
+    </li>
+</ul>

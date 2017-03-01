@@ -80,6 +80,25 @@
                 w.focus();
             });
 
+            /* TODO: The main window is loaded manually in main.js which does not have angular loaded.
+            // On Windows, the window content gets clipped with a 5px border when
+            // maximized. In order to compensate for this, we add the necessary
+            // CSS classes to the window when its state changes.
+            if (process.platform === 'win32') {
+                $('#window').addClass('win');
+
+                w.on('maximize', function () {
+                    $('#window').addClass('maximized');
+                });
+
+                w.on('unmaximize', function () {
+                    $('#window').removeClass('maximized');
+                });
+            } else if (process.platform === 'darwin') {
+                $('#window').addClass('mac');
+            }
+            */
+
             return w;
         }
 

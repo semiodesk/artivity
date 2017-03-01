@@ -279,12 +279,6 @@
 						return response.data;
 					});
 			},
-			postComment: function (comment) {
-				return $http.post(endpoint + '/activities/comments', comment).then(
-					function (response) {
-						return response.data;
-					});
-			},
 			setRunSetup: function (enabled) {
 				return $http.post(endpoint + '/setup', {
 					runSetup: enabled

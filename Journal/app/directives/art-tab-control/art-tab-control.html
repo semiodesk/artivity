@@ -1,0 +1,8 @@
+<div role="tabpanel">
+    <ul class="nav nav-tabs" ng-class="t.classes" role="tablist">
+        <li role="presentation" ng-repeat="tab in t.tabs" ng-class="{'active': tab.active}">
+            <a href="" role="tab" ng-click="t.selectTab(tab)">{{tab.heading}}</a>
+        </li>
+    </ul>
+    <ng-transclude></ng-transclude>
+</div>
