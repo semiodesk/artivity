@@ -2,7 +2,7 @@
     angular.module('app').controller('FilePreviewController', FilePreviewController);
 
     FilePreviewController.$inject = ['$rootScope', '$scope', '$location', '$routeParams', '$uibModal', 'api', 'selectionService', 'hotkeys'];
-    
+
     function FilePreviewController($rootScope, $scope, $location, $routeParams, $uibModal, api, selectionService, hotkeys) {
         var t = this;
         var fileUri = $location.search().uri;
@@ -40,6 +40,14 @@
                 t.user.photoUrl = api.getUserPhotoUrl();
 
                 console.log("Loaded user agent: ", t.user);
+            });
+
+            // Make the left and right panes resizable.
+            $(".ui-pane-left").resizable({
+                handles: "e"
+            });
+            $(".ui-pane-left").resize(function() {
+                $rootScope.$broadcast('resize');
             });
         }
     }

@@ -16,9 +16,9 @@
 
     angular.module('app').controller('DocumentViewerDirectiveController', DocumentViewerDirectiveController);
 
-    DocumentViewerDirectiveController.$inject = ['$scope', 'api', 'agentService', 'entityService', 'selectionService', 'commentService', 'markService'];
+    DocumentViewerDirectiveController.$inject = ['$rootScope', '$scope', 'api', 'viewerService', 'agentService', 'entityService', 'selectionService', 'commentService', 'markService'];
 
-    function DocumentViewerDirectiveController($scope, api, agentService, entityService, selectionService, commentService, markService) {
+    function DocumentViewerDirectiveController($rootScope, $scope, api, viewerService, agentService, entityService, selectionService, commentService, markService) {
         var t = this;
 
         t.user = null;
@@ -26,6 +26,7 @@
         t.canvas = null;
         t.viewer = null;
         t.setFile = setFile;
+        t.update = update;
 
         $(document).ready(function () {
             // Initialize the viewer and load the renderings when the document is ready.
@@ -61,9 +62,18 @@
             t.viewer.addCommand(new CreateMarkCommand(t.viewer, markService));
             t.viewer.addCommand(new UpdateMarkCommand(t.viewer, markService));
             t.viewer.addCommand(new DeleteMarkCommand(t.viewer, markService));
+            t.viewer.addCommand(new ShowMarksCommand(t.viewer, markService));
+            t.viewer.addCommand(new HideMarksCommand(t.viewer, markService));
             t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
 
             $scope.$broadcast('viewerInitialized', t.viewer);
+
+            viewerService.setViewer(t.viewer);
+
+            // Handle the resize of UI panes.
+            $scope.$on('resize', function () {
+                t.viewer.onResize();
+            });
 
             api.getCanvasRenderingsFromEntity(t.entity.Uri).then(function (data) {
                 t.viewer.pageCache.load(data, function () {
@@ -75,6 +85,12 @@
                     t.viewer.zoomToFit();
                 });
             });
+        }
+
+        function update() {
+            if (t.viewer) {
+                t.viewer.stage.update();
+            }
         }
     }
 })();

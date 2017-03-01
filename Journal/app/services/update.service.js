@@ -36,7 +36,8 @@
 					}, function () {
 						service.update = null;
 
-						reject(null);
+						// TODO: Throws exception. Investigate.
+						//reject();
 					});
 				}
 			});

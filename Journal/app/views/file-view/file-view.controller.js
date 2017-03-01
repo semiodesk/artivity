@@ -397,50 +397,6 @@
             });
         }
 
-        t.comment = {
-            text: ''
-        };
-
-        t.updateComment = function () {
-            if (!t.comment.startTime) {
-                t.comment.activity = t.activities[0].uri;
-                t.comment.agent = t.user.Uri;
-                t.comment.entity = t.entity.uri;
-                t.comment.startTime = new Date();
-
-                console.log("Start comment: ", t.comment);
-            }
-        };
-
-        t.resetComment = function (clearText) {
-            if (clearText) {
-                t.comment.text = '';
-            }
-
-            if (t.comment.text === '') {
-                t.comment.startTime = undefined;
-                t.comment.endTime = undefined;
-            }
-
-            console.log("Reset comment: ", t.comment);
-        };
-
-        t.postComment = function () {
-            var comment = t.comment;
-
-            if (comment.agent && comment.text !== '') {
-                t.resetComment(true);
-
-                comment.endTime = new Date();
-
-                console.log("Post comment: ", comment);
-
-                api.postComment(comment).then(function (data) {
-                    t.loadActivities();
-                });
-            }
-        };
-
         // Initialize the view.
         t.initView();
     }

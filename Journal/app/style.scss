@@ -377,11 +377,11 @@ button:focus,
 .nav-tabs li a {
 	border-radius: 0;
 	border: none;
-	border-bottom: 3px solid transparent;
+	border-bottom: 2px solid transparent;
 	color: $labelTextColor;
 	text-transform: uppercase;
 	transition: all .1s linear;
-	padding: .6em 1em;
+	padding: .9em 1em;
 }
 
 .nav-tabs.nav-tabs-top li a {
@@ -408,16 +408,18 @@ button:focus,
 }
 
 .nav-tabs li.active a,
-.nav-tabs li.active a:hover {
+.nav-tabs li.active a:hover,
+.nav-tabs li.active a:active,
+.nav-tabs li.active a:focus {
 	border: none;
-	border-bottom: 2px solid $accentColor;
+	border-bottom: 2px solid $textColor;
 	background: transparent;
-	color: $accentColor;
+	color: $textColor;
 }
 
 .nav-tabs.nav-stacked li a {
 	border: none;
-	border-left: 1px solid transparent;
+	border-left: 2px solid transparent;
 	margin: 0;
 	text-transform: none;
 }
@@ -425,9 +427,8 @@ button:focus,
 .nav-tabs.nav-stacked li.active a,
 .nav-tabs.nav-stacked li.active a:hover {
 	border: none;
-	border-left: 1px solid $accentColor !important;
+	border-left: 2px solid $textColor !important;
 	color: $highlightTextColor;
-	background: $accentColor;
 }
 
 .center-parent {
@@ -745,9 +746,8 @@ h4 {
 }
 
 .ui-pane .tab-content {
-	overflow-y: scroll;
 	position: absolute;
-	top: 30px;
+	top: 40px;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -1345,6 +1345,7 @@ label.form-label-top {
 input.form-control {
 	border-radius: 0;
 	border-color: white;
+	border-style: solid;
 	box-shadow: none;
 	margin-bottom: 6px;
 }
@@ -1894,6 +1895,10 @@ button[disabled]:hover {
 	padding: 0;
 }
 
+.comment-list .comment-item:hover {
+	background: transparent;
+}
+
 .comment-list .comment .comment-avatar {
 	position: absolute;
 	left: 0;
@@ -2009,9 +2014,9 @@ button[disabled]:hover {
 	padding: 10px;
 	color: $inputTextColor;
 	resize: none;
-	overflow:hidden;
-    overflow-x:hidden;
-    overflow-y:hidden;
+	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: hidden;
 	transition: none;
 }
 
@@ -2549,6 +2554,10 @@ iframe {
 	width: 100%;
 	height: 100%;
 	z-index: 0;
+}
+
+#window.win.maximized>.layout-root {
+	margin: 5px;
 }
 
 #window-title {

@@ -103,15 +103,17 @@ ViewerBase.prototype.initializeCanvasZoom = function () {
     var t = this;
 
     t.stage.on('pressup', function (e) {
-        var item = t.selection.selectedItem();
+        if (t.selection) {
+            var item = t.selection.selectedItem();
 
-        if (item && typeof item.hitTest === 'function') {
-            var p = item.globalToLocal(e.stageX, e.stageY);
+            if (item && typeof item.hitTest === 'function') {
+                var p = item.globalToLocal(e.stageX, e.stageY);
 
-            var hit = item.hitTest(p.x, p.y);
+                var hit = item.hitTest(p.x, p.y);
 
-            if(hit === false) {
-                t.resetSelection();
+                if (hit === false) {
+                    t.resetSelection();
+                }
             }
         }
     });
@@ -175,6 +177,27 @@ ViewerBase.prototype.addRenderer = function (renderer) {
     }
 }
 
+ViewerBase.prototype.getRenderer = function (r) {
+    var t = this;
+    var id = null;
+
+    if (typeof r === 'string') {
+        id = r;
+    } else if (typeof r.id === 'string') {
+        id = r.id;
+    }
+
+    if (id) {
+        for (i in t.renderers) {
+            var r = t.renderers[i];
+
+            if (r.id == id) {
+                return r;
+            }
+        }
+    }
+}
+
 ViewerBase.prototype.addCommand = function (command, defaultCommand) {
     var t = this;
 
@@ -196,7 +219,6 @@ ViewerBase.prototype.addCommand = function (command, defaultCommand) {
 
 ViewerBase.prototype.getCommand = function (c) {
     var t = this;
-
     var id = null;
 
     if (typeof c === 'string') {

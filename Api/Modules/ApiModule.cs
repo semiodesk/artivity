@@ -53,32 +53,6 @@ namespace Artivity.Api.Modules
         public ApiModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
             : base("/artivity/api/1.0", modelProvider, platformProvider)
         {
-            Get["/setup"] = parameters =>
-            {
-                return Response.AsJsonSync(platformProvider.DidSetupRun);
-            };
-
-            Post["/setup"] = parameters =>
-            {
-                string data = Request.Body.AsString();
-
-                Dictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(data);
-
-                if (values.ContainsKey("runSetup"))
-                {
-                    bool value = Convert.ToBoolean(values["runSetup"]);
-
-                    platformProvider.DidSetupRun = value;
-                    platformProvider.WriteConfig(platformProvider.Config);
-
-                    return HttpStatusCode.OK;
-                }
-                else
-                {
-                    return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                }
-            };
-
             Get["/uris"] = parameters =>
             {
                 string fileUrl = Request.Query["fileUrl"];

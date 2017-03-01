@@ -110,6 +110,7 @@
     <Compile Include="Helpers\ProgressStreamContent.cs" />
     <Compile Include="IO\JsonNetBodyDeserializer.cs" />
     <Compile Include="IO\JsonNetSerializer.cs" />
+    <Compile Include="Modules\SetupModule.cs" />
     <Compile Include="Modules\SyncModule.cs" />
     <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />
     <Compile Include="Plugins\ProgramInstallationWatchdogFactory.cs" />

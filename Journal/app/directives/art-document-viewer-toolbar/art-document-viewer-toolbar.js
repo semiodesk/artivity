@@ -13,9 +13,9 @@
 
     angular.module('app').controller('DocumentViewerToolbarDirectiveController', DocumentViewerToolbarDirectiveController);
 
-    DocumentViewerToolbarDirectiveController.$inject = ['$scope', 'api', 'selectionService'];
+    DocumentViewerToolbarDirectiveController.$inject = ['$scope', '$parse', 'api', 'selectionService'];
 
-    function DocumentViewerToolbarDirectiveController($scope, api, selectionService) {
+    function DocumentViewerToolbarDirectiveController($scope, $parse, api, selectionService) {
         var t = this;
 
         t.viewer = null;
@@ -59,10 +59,17 @@
         function canExecuteCommand(e) {
             if (t.viewer) {
                 var command = $(e.currentTarget).data('command');
-                var param = undefined;
 
                 if (command) {
-                    t.viewer.canExecuteCommand(command, param);
+                    var exp = $(e.currentTarget).data('param');
+
+                    if (exp) {
+                        var param = $parse(exp)($scope);
+
+                        t.viewer.canExecuteCommand(command, param);
+                    } else {
+                        t.viewer.canExecuteCommand(command);
+                    }
                 }
             }
         }
@@ -70,10 +77,17 @@
         function executeCommand(e) {
             if (t.viewer) {
                 var command = $(e.currentTarget).data('command');
-                var param = undefined;
 
                 if (command) {
-                    t.viewer.executeCommand(command, param);
+                    var exp = $(e.currentTarget).data('param');
+
+                    if (exp) {
+                        var param = $parse(exp)($scope);
+
+                        t.viewer.executeCommand(command, param);
+                    } else {
+                        t.viewer.executeCommand(command);
+                    }
                 }
             }
         }

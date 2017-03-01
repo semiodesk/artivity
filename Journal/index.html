@@ -71,6 +71,8 @@
 	<script type="text/javascript" src="app/classes/rendering/viewers/commands/mark-create.command.js"></script>
 	<script type="text/javascript" src="app/classes/rendering/viewers/commands/mark-delete.command.js"></script>
 	<script type="text/javascript" src="app/classes/rendering/viewers/commands/mark-update.command.js"></script>
+	<script type="text/javascript" src="app/classes/rendering/viewers/commands/marks-hide.command.js"></script>
+	<script type="text/javascript" src="app/classes/rendering/viewers/commands/marks-show.command.js"></script>
 	<script type="text/javascript" src="app/classes/rendering/viewers/commands/viewer-pan.command.js"></script>
 	<script type="text/javascript" src="app/classes/rendering/viewers/commands/viewer-select.command.js"></script>
 	<script type="text/javascript" src="app/classes/rendering/viewers/commands/viewer-zoom-in.command.js"></script>
@@ -101,8 +103,10 @@
 	<script type="text/javascript" src="app/services/selection.service.js"></script>
 	<script type="text/javascript" src="app/services/settings.service.js"></script>
 	<script type="text/javascript" src="app/services/sync.service.js"></script>
+	<script type="text/javascript" src="app/services/topic.service.js"></script>
 	<script type="text/javascript" src="app/services/translation.service.js"></script>
 	<script type="text/javascript" src="app/services/update.service.js"></script>
+	<script type="text/javascript" src="app/services/viewer.service.js"></script>
 	<script type="text/javascript" src="app/services/window.service.js"></script>
 	<script type="text/javascript" src="app/filters/reverse.js"></script>
 	<script type="text/javascript" src="app/directives/art-calendar/art-calendar.js"></script>
@@ -126,6 +130,10 @@
 	<script type="text/javascript" src="app/directives/art-settings-user/art-settings-user.js"></script>
 	<script type="text/javascript" src="app/directives/art-style-binder/art-style-binder.js"></script>
 	<script type="text/javascript" src="app/directives/art-sync-indicator/art-sync-indicator.js"></script>
+	<script type="text/javascript" src="app/directives/art-tab-control/art-tab-control.js"></script>
+	<script type="text/javascript" src="app/directives/art-tab-heading/art-tab-heading.js"></script>
+	<script type="text/javascript" src="app/directives/art-tab/art-tab.js"></script>
+	<script type="text/javascript" src="app/directives/art-topic-control/art-topic-control.js"></script>
 	<script type="text/javascript" src="app/directives/art-update-indicator/art-update-indicator.js"></script>
 	<script type="text/javascript" src="app/directives/art-window-controls/art-window-controls.js"></script>
 	<script type="text/javascript" src="app/directives/bs-switch/bs-switch.js"></script>
@@ -151,79 +159,83 @@
 		if (window.module) module = window.module;
 	</script>
 </head>
-<body>
+
+<body id="window">
 	<div art-keyboard-input-handler></div>
-	<div id="window-title">
-		<div art-window-controls></div>
-		<div class="window-title-btns pull-right">
-			<button class="btn-title btn-info" id="btn-update"><art-update-indicator></art-update-indicator></button>
-		</div>
-		<div class="window-title-btns pull-right">
-			<button class="btn-title btn-info" id="btn-sync"><art-sync-indicator></art-sync-indicator></button>
-		</div>
-		<div id="window-title-text">
-			<span><img src="app/resources/images/artivity-66x20.png" width="66" height="20" alt="artivity"/></span>
-		</div>
-	</div>
-	<div id="window-view-container">
-		<div ng-view></div>
-	</div>
-	<div class="overlay collapse" id="overlay">
-		<div class="msg center-xy invisible" id="msg-add-app">
-			<div class="row">
-				<div class="col-xs-2">
-					<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
-				</div>
-				<div class="col-xs-10">
-					<h1>Add Application</h1>
-					<label>Drop the application icon here to register it with the plugin installer.</label>
-				</div>
+	<div class="layout-root">
+		<div id="window-title">
+			<div art-window-controls></div>
+			<div class="window-title-btns pull-right">
+				<button class="btn-title btn-info" id="btn-update"><art-update-indicator></art-update-indicator></button>
+			</div>
+			<div class="window-title-btns pull-right">
+				<button class="btn-title btn-info" id="btn-sync"><art-sync-indicator></art-sync-indicator></button>
+			</div>
+			<div id="window-title-text">
+				<span><img src="app/resources/images/artivity-66x20.png" width="66" height="20" alt="artivity"/></span>
 			</div>
 		</div>
-		<div class="msg center-xy invisible" id="msg-add-app-success">
-			<div class="row">
-				<div class="col-xs-2">
-					<i class="zmdi zmdi-hc-fw zmdi-check-circle zdmi-xl pull-right"></i>
-				</div>
-				<div class="col-xs-10">
-					<h1>Application Installed</h1>
-					<label>Go to the application preferences to enable the plugin.</label>
+		<div id="window-view-container">
+			<div ng-view></div>
+		</div>
+		<div class="overlay collapse" id="overlay">
+			<div class="msg center-xy invisible" id="msg-add-app">
+				<div class="row">
+					<div class="col-xs-2">
+						<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
+					</div>
+					<div class="col-xs-10">
+						<h1>Add Application</h1>
+						<label>Drop the application icon here to register it with the plugin installer.</label>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="msg center-xy invisible" id="msg-import">
-			<div class="row">
-				<div class="col-xs-2">
-					<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
-				</div>
-				<div class="col-xs-10">
-					<h1>Import File</h1>
-					<label>Drop the file here to import the Artivity archive.</label>
-				</div>
-			</div>
-		</div>
-		<div class="msg center-xy invisible" id="msg-import-success">
-			<div class="row">
-				<div class="col-xs-2">
-					<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
-				</div>
-				<div class="col-xs-10">
-					<h1>Import Success</h1>
-					<label>The Artivity archive was sucessfully imported.</label>
+			<div class="msg center-xy invisible" id="msg-add-app-success">
+				<div class="row">
+					<div class="col-xs-2">
+						<i class="zmdi zmdi-hc-fw zmdi-check-circle zdmi-xl pull-right"></i>
+					</div>
+					<div class="col-xs-10">
+						<h1>Application Installed</h1>
+						<label>Go to the application preferences to enable the plugin.</label>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="msg center-xy invisible" id="msg-unsupported-file-type">
-			<div class="row">
-				<div class="col-xs-2">
-					<i class="zmdi zmdi-hc-fw zmdi-info zdmi-xl pull-right"></i>
+			<div class="msg center-xy invisible" id="msg-import">
+				<div class="row">
+					<div class="col-xs-2">
+						<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
+					</div>
+					<div class="col-xs-10">
+						<h1>Import File</h1>
+						<label>Drop the file here to import the Artivity archive.</label>
+					</div>
 				</div>
-				<div class="col-xs-10">
-					<h1>Unsupported File Format</h1>
-					<label>Currently you can only drop applications here to register them with the plugin installer.</label>
+			</div>
+			<div class="msg center-xy invisible" id="msg-import-success">
+				<div class="row">
+					<div class="col-xs-2">
+						<i class="zmdi zmdi-hc-fw zmdi-plus-circle zdmi-xl pull-right"></i>
+					</div>
+					<div class="col-xs-10">
+						<h1>Import Success</h1>
+						<label>The Artivity archive was sucessfully imported.</label>
+					</div>
+				</div>
+			</div>
+			<div class="msg center-xy invisible" id="msg-unsupported-file-type">
+				<div class="row">
+					<div class="col-xs-2">
+						<i class="zmdi zmdi-hc-fw zmdi-info zdmi-xl pull-right"></i>
+					</div>
+					<div class="col-xs-10">
+						<h1>Unsupported File Format</h1>
+						<label>Currently you can only drop applications here to register them with the plugin installer.</label>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </body>
+
 </html>

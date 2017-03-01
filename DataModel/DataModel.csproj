@@ -48,6 +48,7 @@
     <Compile Include="ObjectModel\Activities\Publish.cs" />
     <Compile Include="ObjectModel\Communication.cs" />
     <Compile Include="ObjectModel\Entities\Collection.cs" />
+    <Compile Include="ObjectModel\Entities\Topic.cs" />
     <Compile Include="ObjectModel\Entities\Comment.cs" />
     <Compile Include="ObjectModel\Entities\Folder.cs" />
     <Compile Include="ObjectModel\Entities\Image.cs" />

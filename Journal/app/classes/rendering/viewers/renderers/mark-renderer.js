@@ -1,7 +1,7 @@
 function MarkRenderer(viewer, service) {
     var t = this;
 
-    t.id = "mark-renderer";
+    t.id = "marksRenderer";
 
     // Contains the marks to be rendered.
     t.marks = [];
@@ -61,12 +61,38 @@ MarkRenderer.prototype.setEntity = function (entity) {
     }
 
     t.service.getMarksForEntity(entity).then(function (data) {
-        for (i = 0; i < data.length; i++) {
-            t.onMarkAdded(data[i]);
-        }
-
-        t.render();
+        t.addMarks(data);
     });
+}
+
+MarkRenderer.prototype.addMarks = function (marks) {
+    var t = this;
+
+    for (i = 0; i < marks.length; i++) {
+        t.onMarkAdded(marks[i]);
+    }
+
+    t.render();
+}
+
+MarkRenderer.prototype.removeMarks = function (marks) {
+    var t = this;
+
+    var M = {};
+
+    for (i = 0; i < marks.length; i++) {
+        var m = marks[i];
+
+        if (m.uri) {
+            M[m.uri] = m;
+        }
+    }
+
+    t.marks = t.marks.filter(function (m) {
+        return m.uri && M[m.uri] === undefined;
+    });
+
+    t.render();
 }
 
 MarkRenderer.prototype.render = function () {
