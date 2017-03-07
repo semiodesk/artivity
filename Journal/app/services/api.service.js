@@ -1,10 +1,27 @@
 (function () {
+
 	angular.module('app').factory('api', api);
 
 	api.$inject = ['$http'];
 
 	function api($http) {
 		var endpoint = apid.endpointUrl;
+
+		var serialize = function (obj, prefix) {
+			var str = [];
+
+			for (var p in obj) {
+				if (obj.hasOwnProperty(p)) {
+					var k = prefix ? prefix + "[" + p + "]" : p,
+						v = obj[p];
+					str.push(typeof v == "object" ?
+						serialize(v, k) :
+						encodeURIComponent(k) + "=" + encodeURIComponent(v));
+				}
+			}
+
+			return str.join("&");
+		}
 
 		return {
 			getAccounts: function () {
@@ -295,20 +312,6 @@
 			}
 		};
 
-		var serialize = function (obj, prefix) {
-			var str = [];
 
-			for (var p in obj) {
-				if (obj.hasOwnProperty(p)) {
-					var k = prefix ? prefix + "[" + p + "]" : p,
-						v = obj[p];
-					str.push(typeof v == "object" ?
-						serialize(v, k) :
-						encodeURIComponent(k) + "=" + encodeURIComponent(v));
-				}
-			}
-
-			return str.join("&");
-		}
 	}
 })();

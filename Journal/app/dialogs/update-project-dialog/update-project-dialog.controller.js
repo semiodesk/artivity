@@ -10,7 +10,7 @@
         t.project = null;
 
         // Public methods
-        t.save = save;
+        t.commit = commit;
         t.cancel = cancel;
 
         // Initaliziation
@@ -21,7 +21,7 @@
         }
 
         // Methods
-        function save() {
+        function commit() {
             if ($scope.projectForm.$valid) {
                 projectService.update(t.project);
                 
