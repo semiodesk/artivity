@@ -128,8 +128,7 @@ module.exports = function (grunt) {
             libs: {
                 options: {
                     sourceMap: true,
-                    banner: '\n(function(){\n',
-                    footer: '})();'
+
                 },
                 nonull: true,
                 src: srcFiles.libs,
@@ -146,7 +145,8 @@ module.exports = function (grunt) {
             src: {
                 options: {
                     sourceMap: true,
-                    banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */'
+                    banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */\n(function(){\n',
+                    footer: '})();'
                 },
                 nonull: true,
                 src: [

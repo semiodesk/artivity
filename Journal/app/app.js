@@ -1,4 +1,4 @@
-(function () {
+
     angular.module('app', [
         'ngAnimate',
         'ngInputModified',
@@ -12,4 +12,3 @@
         'cfp.hotkeys',
         'ngDragDrop'
     ]);
-})();
