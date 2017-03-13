@@ -57,7 +57,6 @@
 #include "ObjectModel/Influences/Revision.h"
 #include "ObjectModel/Influences/Undo.h"
 #include "ObjectModel/Influences/Redo.h"
-#include "ObjectModel/Influences/SaveAs.h"
 #include "ObjectModel/FileDataObject.h"
 #include "ObjectModel/Entities/Image.h"
 
@@ -80,6 +79,9 @@ namespace artivity
 
         ImageRef _entity;
 
+        // Contains a handle to the previous revision of the image
+        ImageRef _prevEntity;
+
 		std::vector<AssociationRef> _associations;
 
         // Influences which need to be transmitted separatly, because they have 
@@ -97,7 +99,7 @@ namespace artivity
 
 		std::string getTime();
 
-		std::string getEntityUri(std::string path);
+        std::string getEntityUri(std::string path, std::string* fileUri);
 
 		void dump(boost::property_tree::ptree const& pt);
 
@@ -132,12 +134,16 @@ namespace artivity
 		// Send all items in the queue to the Artivity server.
 		void transmit();
 
+        void save();
+
 		ActivityRef getActivity() { return _activity; }
 
 		// Set the file being edited.
 		void setDocument(ImageRef image, std::string path, bool create);
         
-        void createDerivation(SaveAsRef saveAs, ImageRef image, std::string path);
+        void populateRevision(RevisionRef revision);
+
+        void createDerivation(DerivationRef saveAs, ImageRef targetImage, std::string targetPath);
 
         ImageRef getDocument();
 

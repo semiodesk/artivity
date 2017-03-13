@@ -51,8 +51,8 @@ namespace artivity
 
     void EditingSession::initialize(string server, bool newDocument)
     {
-		document = getDocument();
-
+        document = getDocument();
+       
         if (!newDocument)
         {
             _filePath = getDocumentFilePath();
@@ -198,12 +198,15 @@ namespace artivity
 
     void EditingSession::eventSave()
     {
+        time_t now;
+        time(&now);
         string filePath = getDocumentFilePath();
 
         if (_filePath.empty())
         {
             if (!filePath.empty())
             {
+               
                 // A new document was saved.
                 _log->createDataObject(filePath);
                 
@@ -233,8 +236,9 @@ namespace artivity
             return;
         }
 
-        SaveRef save = onEventSave();
-
+        RevisionRef save = onEventSave();
+        save->setIsSave(true);
+        _log->populateRevision(save);
         consumer->push(save);
     }
 
@@ -244,13 +248,14 @@ namespace artivity
         {
             consumer->stop();
             
-            SaveAsRef saveAs = onEventSaveAs();
+            DerivationRef derivation = onEventSaveAs();
 
             ImageRef targetImage = ImageRef(new Image());
+            
             targetImage->setType(document->getType());
 
             // Replace the current activity with a new one.
-            _log->createDerivation(saveAs, targetImage, targetPath);
+            _log->createDerivation(derivation, targetImage, targetPath);
 
             // Update the new document handle.
             document = targetImage;
@@ -261,6 +266,8 @@ namespace artivity
             consumer->start();
 		}
     }
+
+
 
     bool EditingSession::fileExists(const std::string& name)
     {
@@ -280,7 +287,7 @@ namespace artivity
 
         if (influence->getIsSave())
         {
-            _log->transmit();
+            _log->save();
         }
     }
 
@@ -321,6 +328,7 @@ namespace artivity
             {
                 ss.str(string()); // empty string
                 ss << _imagePath << sep << time << "-" << count << ".png";
+                count++;
             } while (boost::filesystem::exists(ss.str()));
 
             resPath = ss.str();
@@ -423,24 +431,23 @@ namespace artivity
         return canvas;
     }
 
-    SaveRef EditingSession::onEventSave()
+    RevisionRef EditingSession::onEventSave()
     {
         time_t now;
         time(&now);
 
-        SaveRef save = createSave();
-        save->addEntity(document);
+        RevisionRef save = createRevision();
         save->setTime(now);
 
         return save;
     }
 
-    SaveAsRef EditingSession::onEventSaveAs()
+    DerivationRef EditingSession::onEventSaveAs()
     {
         time_t now;
         time(&now);
 
-        SaveAsRef saveAs = createSaveAs();
+        DerivationRef saveAs = createDerivation();
         saveAs->addEntity(document);
         saveAs->setTime(now);
 

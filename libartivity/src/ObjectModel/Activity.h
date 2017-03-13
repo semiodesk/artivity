@@ -57,7 +57,7 @@ namespace artivity
         
         std::list<InfluenceRef> _influences;
 
-        std::list<EntityRef> _usedEntites;
+        std::list<EntityRef> _usedEntities;
 
         std::list<EntityRef> _generatedEntities;
 

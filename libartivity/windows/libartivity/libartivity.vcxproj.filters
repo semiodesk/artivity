@@ -34,6 +34,9 @@
     <Filter Include="Header Files\DataObjects">
       <UniqueIdentifier>{3d1507fa-c5d5-44a1-8172-2b2b2ab27fd0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entites">
+      <UniqueIdentifier>{fb1d23b0-1b5d-43e9-b9a6-297f5fcba04a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ActivityLog.h">
@@ -246,12 +249,6 @@
     <ClInclude Include="..\..\src\ObjectModel\Influences\Derivation.h">
       <Filter>Header Files\Influences</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h">
-      <Filter>Header Files\Influences</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ObjectModel\Influences\SaveAs.h">
-      <Filter>Header Files\Influences</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp">
@@ -310,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\ObjectModel\Influence.cpp">
       <Filter>Source Files\Influences</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectModel\Entities\Image.cpp">
+      <Filter>Source Files\Entites</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

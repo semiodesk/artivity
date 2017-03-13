@@ -861,7 +861,7 @@ namespace Artivity.Api.Modules
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?uri
+                    ?uri ?file
                 WHERE
                 {
                     ?uri nie:isStoredAs ?file .
@@ -871,6 +871,9 @@ namespace Artivity.Api.Modules
                     ?file nfo:belongsToContainer ?folder .
 
                     ?folder nie:url @folderUrl .
+                    
+                    FILTER NOT EXISTS{ ?var prov:invalidated ?uri }
+                   
                 }
                 ORDER BY DESC(?time) LIMIT 1");
 

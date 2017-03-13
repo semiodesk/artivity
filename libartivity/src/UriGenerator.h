@@ -56,6 +56,27 @@ namespace artivity
             static std::string getUrl(std::string path);
 
             static std::string escapePath(std::string path);
+
+            static std::string appendTimeFragment(std::string uri, time_t time)
+            {
+                std::ostringstream stream;
+                stream << uri << "#" << time;
+                return stream.str();
+            }
+
+            static std::string updateTimeFragment(std::string uri, time_t time)
+            {
+                std::string token = uri.substr(0, uri.find("#"));
+                std::ostringstream stream;
+                stream << token << "#" << time;
+                return stream.str();
+            }
+
+            static std::string removeTimeFragment(std::string uri)
+            {
+                std::string token = uri.substr(0, uri.find("#"));
+                return token;
+            }
     };
 }
 

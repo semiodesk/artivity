@@ -45,6 +45,8 @@ namespace artivity
     private:
         std::string _path;
 
+        std::list<RenderingDataObjectRef> _renderings;
+
     public:
         Image() : Media()
         {
@@ -55,6 +57,14 @@ namespace artivity
         {
             setType(nfo::Image);
         }
+
+        std::list<RenderingDataObjectRef> getRenderings();
+
+        void addRendering(RenderingDataObjectRef entity);
+
+        void removeRendering(RenderingDataObjectRef entity);
+
+        void clearRenderings();
     };
 }
 
