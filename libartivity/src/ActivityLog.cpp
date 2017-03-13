@@ -143,21 +143,24 @@ namespace artivity
 
 	bool ActivityLog::connect(string endpointUrl)
 	{
+        time_t now;
+        time(&now);
+
 		_endpointUrl = endpointUrl;
 
 		// Initialize the entity.
-		string uri = getEntityUri(_fileUrl);
+        string fileUri;
+		string prevUri = getEntityUri(_fileUrl, &fileUri);
 
-		if(!uri.empty())
+        if (!prevUri.empty())
 		{
-        	_entity->uri = uri;
-		}
+            _prevEntity = ImageRef(new Image(prevUri.c_str()));
+            _entity->uri = UriGenerator::removeTimeFragment(prevUri);
+            _entity->setDataObject(FileDataObjectRef(new FileDataObject(fileUri.c_str())));
+        }
 
 		// Remember that we need to add the file to the index.
-		_hasDataObject = !uri.empty();
-
-		time_t now;
-		time(&now);
+        _hasDataObject = !prevUri.empty();
 
 		_activity->setStartTime(now);
 
@@ -202,7 +205,7 @@ namespace artivity
 		if(_transmitCount > 0 || !_activity->empty())
 		{
 			_activity->setEndTime(time);
-
+            _activity->clearUsedEntities();
 			transmit();
 		}
 	}
@@ -315,8 +318,24 @@ namespace artivity
             _activity->addUsed(_entity);
         }
 	}
-    
-    void ActivityLog::createDerivation(SaveAsRef saveAs, ImageRef targetImage, std::string targetPath)
+
+    void ActivityLog::save()
+    {
+        time_t now;
+        time(&now);
+
+        auto uri = _entity->uri;
+        _entity->uri = UriGenerator::appendTimeFragment(uri, now);
+        if ( _prevEntity != NULL )
+            _prevEntity->serialize = false;
+        transmit();
+
+        _prevEntity = ImageRef(new Image(_entity->uri.c_str()));
+        _entity->uri = uri;
+        _entity->clearRenderings();
+    }
+
+    void ActivityLog::createDerivation(DerivationRef saveAs, ImageRef targetImage, std::string targetPath)
     {
         // We cannot create derivations of newly created files or overwritten files.
         if (_fileUrl.empty() || _fileUrl == UriGenerator::getUrl(targetPath))
@@ -328,49 +347,57 @@ namespace artivity
 
         // Temporarily store a copy of all untransmitted influences.
         std::list<InfluenceRef> influences = _activity->getInfluences();
-        
+
         // NOTE: These are only influences which are not directly associated with
         // an Entity such as undos and redos.
         influences.insert(influences.end(), _influences.begin(), _influences.end());
-        
+
         for (auto it = influences.begin(); it != influences.end(); it++)
         {
             removeInfluence(*it);
         }
 
-        // Add the SaveAs event to the old activity.
-        addInfluence(saveAs);
-        
-        // Close and transmit the current activity.
         time_t now;
         time(&now);
-        
-        _activity->setEndTime(now);
 
-        transmit();
+        // Close and transmit the current activity, but only if it changes to the original have been made
+        if (_transmitCount > 0)
+        {
 
-        // Assert a qualified derivation of the new file from the old one.
-        DerivationRef derivation = DerivationRef(new Derivation());
-        derivation->addEntity(_entity);
-        derivation->setActivity(_activity);
-        derivation->setTime(now);
 
-        // Get document creates a new instance of the plugin's entity type.
-        targetImage->addInfluence(derivation);
 
+            _activity->clearUsedEntities();
+            _activity->setEndTime(now);
+
+            transmit();
+        }
         // Check if there is already a file at the given location.
-        string uri = getEntityUri(targetPath);
+        string fileUri;
+        string uri = getEntityUri(targetPath, &fileUri);
 
         if (!uri.empty())
         {
             targetImage->uri = uri;
+            targetImage->setDataObject(FileDataObjectRef(new FileDataObject(fileUri.c_str())));
         }
 
         // Create a new activity for the new image.
         setDocument(targetImage, targetPath, true);
 
+        if (_prevEntity != NULL)
+        {
+            // Assert a qualified derivation of the new file from the old one.
+            DerivationRef derivation = DerivationRef(new Derivation());
+            derivation->addEntity(_prevEntity);
+            derivation->setActivity(_activity);
+            derivation->setTime(now);
+
+            // Get document creates a new instance of the plugin's entity type.
+            targetImage->addInfluence(derivation);
+        }
+
         _activity->setStartTime(now);
-        _activity->addUsed(sourceImage);
+        _activity->addUsed(_prevEntity);
 
         // Do not serialize the old image as it should already be stored in the database.
         sourceImage->serialize = false;
@@ -391,7 +418,31 @@ namespace artivity
             addInfluence(*it);
         }
 
+        uri = _entity->uri;
+        _entity->uri = UriGenerator::appendTimeFragment(uri, now);
+        if (_prevEntity != NULL)
+            _prevEntity->serialize = false;
         transmit();
+
+        _prevEntity = ImageRef(new Image(_entity->uri.c_str()));
+        _entity->uri = uri;
+    }
+
+    
+    void ActivityLog::populateRevision(RevisionRef revision)
+    {
+
+        if (_prevEntity != NULL)
+        {
+            _activity->addInvalidated(_prevEntity);
+            revision->addEntity(_prevEntity);
+            _entity->addInfluence(revision);
+        }
+        _activity->addGenerated(_entity);
+        revision->setActivity(_activity);
+        if ( _prevEntity != NULL )
+        revision->addEntity(_prevEntity);
+
     }
 
 	ImageRef ActivityLog::getDocument()
@@ -399,7 +450,7 @@ namespace artivity
 		return _entity;
 	}
 
-	string ActivityLog::getEntityUri(string fileUrl)
+	string ActivityLog::getEntityUri(string fileUrl, string* fileUri)
 	{
         string uri = "";
 
@@ -427,6 +478,7 @@ namespace artivity
             read_json(stream, tree);
 
             uri = tree.get_child("uri").get_value<string>();
+            fileUri->assign(tree.get_child("file").get_value<string>());
         }
         catch (...)
         {
@@ -459,6 +511,8 @@ namespace artivity
             for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
             {
                 EntityRef entity = *it;
+                if (entity == NULL)
+                    continue;
 
                 if (influence->is(prov::Generation))
                 {
@@ -517,7 +571,7 @@ namespace artivity
                         _activity->addUsed(entity);
                     }
                 }
-                else if (influence->is(prov::Revision) || influence->is(art::Save) || influence->is(art::SaveAs))
+                else if (influence->is(prov::Revision))
                 {
                     EntityRef r = _activity->getEntity(entity->uri);
                     
@@ -746,6 +800,7 @@ namespace artivity
     bool ActivityLog::createDataObject(std::string path)
     {
         std::string fileUri = UriGenerator::getUri();
+
         std::string fileUrl = UriGenerator::getUrl(path);
 
         CURL* curl = initializeRequest();

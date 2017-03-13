@@ -38,6 +38,8 @@ namespace artivity
 
     class Revision : public Derivation
     {        
+        private:
+        bool isSave = false;
     public:
         Revision() : Derivation()
         {
@@ -48,6 +50,10 @@ namespace artivity
         {
             setType(prov::Revision);
         }
+
+        void setIsSave(bool isSave) { this->isSave = isSave; }
+        bool getIsSave() { return this->isSave; }
+
     };
 }
 

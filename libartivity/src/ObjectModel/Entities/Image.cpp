@@ -25,31 +25,44 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Newtonsoft.Json;
-using Semiodesk.Trinity;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
-namespace Artivity.DataModel
+#include "../../Resource.h"
+#include "../../Property.h"
+#include "../../PropertyMap.h"
+#include "../RenderingDataObject.h"
+
+#include "../Activity.h"
+#include "Image.h"
+
+namespace artivity
 {
-	[RdfClass(ART.Save)]
-    public class Save : Revision
-	{
-        #region Members
+    using namespace std;
+    using namespace boost::filesystem;
 
-        [RdfProperty(ART.renderedAs)]
-        public List<PartialRenderingDataObject> RenderedAs { get; set; }
-        //public IEnumerable<string> RenderedAs { get { return from a in RenderedAs_ select a.Uri.AbsoluteUri; } }
+    list<RenderingDataObjectRef> Image::getRenderings()
+    {
+        return _renderings;
+    }
 
-        [RdfProperty(PROV.atTime)]
-        public DateTime AtTime { get; set; }
-        #endregion
+    void Image::addRendering(RenderingDataObjectRef rendering)
+    {
+        _renderings.push_back(rendering);
+        addProperty(art::renderedAs, rendering);
+    }
 
-		#region Constructors
+    void Image::removeRendering(RenderingDataObjectRef rendering)
+    {
+        _renderings.remove(rendering);
+        removeProperty(art::renderedAs, rendering);
+    }
 
-        public Save(Uri uri) : base(uri) { }
-
-		#endregion
-	}
+    void Image::clearRenderings()
+    {
+        for (auto i : _renderings)
+        {
+            removeProperty(art::renderedAs, i);
+        }
+        _renderings.clear();
+    }
 }
+

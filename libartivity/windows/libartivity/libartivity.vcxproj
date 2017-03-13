@@ -223,8 +223,6 @@
     <ClInclude Include="..\..\src\ObjectModel\Influences\Invalidation.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Redo.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Revision.h" />
-    <ClInclude Include="..\..\src\ObjectModel\Influences\Save.h" />
-    <ClInclude Include="..\..\src\ObjectModel\Influences\SaveAs.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Start.h" />
     <ClInclude Include="..\..\src\ObjectModel\Influences\Undo.h" />
     <ClInclude Include="..\..\src\ObjectModel\PartialRenderingDataObject.h" />
@@ -261,6 +259,7 @@
     <ClCompile Include="..\..\src\ObjectModel\Activity.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Association.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Change.cpp" />
+    <ClCompile Include="..\..\src\ObjectModel\Entities\Image.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Entities\InformationElement.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Entity.cpp" />
     <ClCompile Include="..\..\src\ObjectModel\Influence.cpp" />
