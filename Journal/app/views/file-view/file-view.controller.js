@@ -6,9 +6,11 @@
     function FileViewController($rootScope, $scope, $location, $routeParams, $uibModal, api, selectionService, hotkeys) {
         var t = this;
         var fileUri = $location.search().uri;
+        var entityUri = $location.search().entityUri;
 
         t.entity = {
-            uri: fileUri
+            uri: fileUri,
+            entityUri: entityUri
         };
 
         // File metadata
@@ -26,10 +28,12 @@
         };
 
         api.getAgent(fileUri).then(function (data) {
-            t.agent = data;
-            t.agent.iconUrl = api.getAgentIconUrl(data.agent);
+            if( data != null ){
+                t.agent = data;
+                t.agent.iconUrl = api.getAgentIconUrl(data.agent);
 
-            console.log("Agent: ", t.agent);
+                console.log("Agent: ", t.agent);
+            }
         });
 
         t.initView = function () {
@@ -80,7 +84,7 @@
 
         // RENDERING
         var canvas = document.getElementById('canvas');
-        var renderer = new DocumentHistoryViewer(t.user, canvas, api.getRenderingUrl(fileUri));
+        var renderer = new DocumentHistoryViewer(t.user, canvas, api.getRenderingUrl(entityUri));
         renderer.addCommand(new PanCommand(renderer));
 
         $rootScope.$on('redraw', function () {

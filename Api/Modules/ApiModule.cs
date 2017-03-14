@@ -44,8 +44,6 @@ namespace Artivity.Api.Modules
     {
         #region Members
 
-        private static object _modelLock = new object();
-
         #endregion
 
         #region Constructors
@@ -92,7 +90,8 @@ namespace Artivity.Api.Modules
 
             Get["/files/recent"] = parameters =>
             {
-                return GetRecentlyUsedFiles();
+                var settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
+                return GetFiles(settings);
             };
 
             Get["/files/project"] = parameters =>
@@ -288,171 +287,111 @@ namespace Artivity.Api.Modules
                 return GetCompositionStats(new UriRef(uri));
             };
 
-            Post["/query"] = parameters =>
-            {
-                using (var reader = new StreamReader(Request.Body))
-                {
-                    string query = reader.ReadToEnd();
 
-                    if (string.IsNullOrEmpty(query))
-                    {
-                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                    }
-
-                    if (Request.Query.inference)
-                    {
-                        return ExecuteQuery(query, true);
-                    }
-                    else
-                    {
-                        return ExecuteQuery(query);
-                    }
-                }
-            };
-
-            Post["/sparql"] = parameters =>
-            {
-                string query = Request.Form.query;
-
-                if (string.IsNullOrEmpty(query))
-                {
-                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                }
-
-                if (Request.Query.inference)
-                {
-                    return ExecuteQuery(query, true);
-                }
-                else
-                {
-                    return ExecuteQuery(query);
-                }
-            };
         }
 
         #endregion
 
         #region Methods
+        enum Ordering { Ascending, Descending }
+        enum OrderBy { None, Name, Time, Size }
+        enum FilterBy { None, SoftwareAgent, UserAgent, Project }
 
-        private Response ExecuteQuery(string queryString, bool inferenceEnabled = false)
+        class GetFilesSettings
         {
-            try
+            public Ordering Ordering = Ordering.Descending;
+            public OrderBy OrderBy;
+            public FilterBy FilterBy;
+            public string FilterValue;
+            public int Offset = 0;
+            public int Limit = 100;
+
+            public string GetOrderClause()
             {
-                lock (_modelLock)
+                string ordering = "";
+                if (Ordering == ApiModule.Ordering.Ascending)
+                    ordering = "ASC";
+                else
+                    ordering = "DESC";
+
+                switch (OrderBy)
                 {
-                    IModel model = ModelProvider.GetAll();
+                    case ApiModule.OrderBy.None:
+                        return "";
 
-                    if (model == null)
-                    {
-                        PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, "Could not establish connection to model <{0}>", model.Uri);
-                    }
+                    case ApiModule.OrderBy.Name:
+                        return string.Format("ORDER BY {0}(?label) ", ordering);
 
-                    SparqlQuery query = new SparqlQuery(queryString, false);
+                    case ApiModule.OrderBy.Time:
+                        return string.Format("ORDER BY {0}(?time) ", ordering);
 
-                    var results = model.ExecuteQuery(query, inferenceEnabled).GetBindings();
+                    case ApiModule.OrderBy.Size:
+                        return "";
 
-                    if (results != null && results.Any())
-                    {
-                        var vars = results.First().Keys.ToList();
-                        var bindings = new List<Dictionary<string, object>>();
 
-                        foreach(BindingSet row in results)
-                        {
-                            var item = new Dictionary<string, object>();
-
-                            foreach(KeyValuePair<string, object> column in row)
-                            {
-                                string type = column.Value is Uri ? "uri" : "literal";
-                                string value = column.Value.ToString();
-
-                                var b = new Dictionary<string, string>() { { "type", type }, { "value", value } };
-
-                                if(type == "literal" && !(column.Value is string))
-                                {
-                                    Type valueType = column.Value.GetType();
-
-                                    if(!valueType.IsAssignableFrom(typeof(DBNull)))
-                                    {
-                                        b["datatype"] = XsdTypeMapper.GetXsdTypeUri(valueType).ToString();
-                                    }
-                                }
-
-                                item[column.Key] = b;
-                            }
-
-                            bindings.Add(item);
-                        }
-
-                        Dictionary<string, object> result = new Dictionary<string, object>();
-                        result["head"] = new Dictionary<string, List<string>>() { { "vars", vars } };
-                        result["results"] = new Dictionary<string, List<Dictionary<string, object>>> { { "bindings", bindings } };
-
-                        Response response = Response.AsJsonSync(result);
-                        response.ContentType = "application/sparql-results+json";
-
-                        return response;
-                    }
-                    else
-                    {
-                        Dictionary<string, object> result = new Dictionary<string, object>();
-                        result["head"] = new Dictionary<string, List<string>>() { };
-                        result["results"] = new Dictionary<string, List<Dictionary<string, object>>> { { "bindings", new List<Dictionary<string, object>>() } };
-
-                        Response response = Response.AsJsonSync(result);
-                        response.ContentType = "application/sparql-results+json";
-
-                        return response;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
-
-                List<string> messages = new List<string>() { e.Message };
-
-                if(e.InnerException != null)
-                {
-                    messages.Add(e.InnerException.Message);
+                    default:
+                        return "";
                 }
 
-                return Response.AsJsonSync(messages);
             }
+            public string GetFilterClause() 
+            {
+                if (FilterBy == ApiModule.FilterBy.None)
+                    return "";
+                Uri u = new Uri(FilterValue);
+                switch( FilterBy )
+                {
+                    case ApiModule.FilterBy.SoftwareAgent:
+                        return string.Format("FILTER(?agent = <{0}>)", u.AbsoluteUri);
+
+                    case ApiModule.FilterBy.UserAgent:
+                        return "";
+
+                    case ApiModule.FilterBy.Project:
+                        return string.Format("<{0}> prov:hadMember ?entity .", u.AbsoluteUri);
+
+                    default:
+                        return "";
+                }
+ 
+            }
+            public string GetLimitClause() { return string.Format("LIMIT {0}", Limit); }
+            public string GetOffsetClause() { return string.Format("OFFSET {0}", Offset); }
         }
 
-        private Response GetRecentlyUsedFiles()
+        private Response GetFiles(GetFilesSettings settings)
         {
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT DISTINCT
-	                ?t1 AS ?time
-	                ?entity AS ?uri
-	                ?label
-                    SAMPLE(COALESCE(?agentColor, '#FF0000')) AS ?agentColor
-                WHERE
-                {
-                    ?a1
-                        prov:generated | prov:used ?entity ;
-                        prov:endedAtTime ?t1 .
-
-	                ?entity nie:isStoredAs [ rdfs:label ?label ] .
-	
-	                OPTIONAL
-	                {
-                        ?a2
-                            prov:generated | prov:used ?entity ;
-                            prov:endedAtTime ?t2 .
-		
-		                FILTER(?t1 > ?t2)
-	                }
-	
-	                FILTER(!BOUND(?t2))
-
-                    OPTIONAL
-                    {
-                        ?a1 prov:qualifiedAssociation / prov:agent / art:hasColourCode ?agentColor .
-                    }
-                }
-                ORDER BY DESC(?t1) LIMIT 100");
+            string OrderClause = settings.GetOrderClause();
+            string FilterClause = settings.GetFilterClause();
+            string LimitClause = settings.GetLimitClause();
+            string OffsetClause = settings.GetOffsetClause();
+            string queryString = @"
+                SELECT  
+                    ?label 
+                    ?file as ?uri
+                    ?q as ?entityUri
+                    SAMPLE(?p) as ?thumbnail 
+                    MIN(?t) as ?time 
+                    SAMPLE(COALESCE(?agentColor, '#cecece')) AS ?agentColor
+                    WHERE {{
+                        ?a prov:generated | prov:used ?entity ;
+                            prov:endedAtTime ?ended ;
+                            prov:startedAtTime ?started ;
+                            prov:qualifiedAssociation / prov:agent ?agent.
+                    ?agent a prov:SoftwareAgent.
+                    ?entity nie:isStoredAs ?file.
+                    ?file rdfs:label ?label .
+                    BIND( STRBEFORE( STR(?entity), '#' ) as ?e ).
+                    BIND( if(?e != '', ?e, str(?entity)) as ?q).
+                    BIND( CONCAT('http://localhost:8262/artivity/api/1.0/thumbnails?entityUri=', ?q) as ?p ).
+                    BIND(if(bound(?ended), ?ended, ?started) as ?t).
+                    OPTIONAL{{
+                        ?agent art:hasColourCode ?agentColor .
+                    }}
+                    {0}
+                    }}GROUP BY ?label ?file ?q {1} {2} {3}";
+            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause);
+            ISparqlQuery query = new SparqlQuery(queryString);
 
             var bindings = ModelProvider.GetAll().GetBindings(query);
 
@@ -525,8 +464,9 @@ namespace Artivity.Api.Modules
                 WHERE 
                 {
                     ?activity
-                        prov:generated | prov:used @entity ;
+                        prov:generated | prov:used ?e ;
                         prov:qualifiedAssociation ?association .
+                    ?e nie:isStoredAs @entity.
 
                     OPTIONAL
                     {
@@ -694,7 +634,9 @@ namespace Artivity.Api.Modules
                     COALESCE(?h, 0) AS ?h
                 WHERE 
                 {
-			        ?activity prov:generated | prov:used @entity .
+			        ?activity prov:generated | prov:used  ?e.
+                    ?e nie:isStoredAs @entity.
+                    
 
 			        ?influence
                         prov:activity | prov:hadActivity ?activity ;
@@ -808,7 +750,8 @@ namespace Artivity.Api.Modules
                     ?type count(?type) as ?count
                 WHERE
                 {
-                    ?activity prov:generated | prov:used @entity .
+                    ?activity prov:generated | prov:used ?e.
+                    ?e nie:isStoredAs @entity.
 
 	                ?influence a ?type .
 	                ?influence prov:activity | prov:hadActivity ?activity .
@@ -829,7 +772,8 @@ namespace Artivity.Api.Modules
                     ?type count(?type) AS ?count
                 WHERE
                 {
-                    ?activity prov:generated | prov:used @entity .
+                    ?activity prov:generated | prov:used ?e.
+                    ?e nie:isStoredAs @entity.
 
 	                ?influence a ?type .
 	                ?influence prov:activity | prov:hadActivity ?activity .
@@ -887,14 +831,14 @@ namespace Artivity.Api.Modules
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetFile(Uri entityUri)
+        private Response GetFile(Uri fileUri)
         {
             string queryString = @"
                 SELECT
                     ?uri ?folder ?label ?created ?lastModified
                 WHERE
                 {
-                    @entity nie:isStoredAs ?uri .
+                    BIND(@uri as ?uri).
 
                     ?uri rdfs:label ?label .
                     ?uri nie:created ?created .
@@ -904,7 +848,7 @@ namespace Artivity.Api.Modules
                 }";
 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@entity", entityUri);
+            query.Bind("@uri", fileUri);
 
             BindingSet bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
@@ -939,7 +883,8 @@ namespace Artivity.Api.Modules
                 WHERE
                 {
 	                ?activity
-                        prov:generated | prov:used @entity.
+                        prov:generated | prov:used ?e.
+                    ?e nie:isStoredAs @entity.
 
                     ?canvas a art:Canvas ;
                         ?qualifiedInfluence ?influence .
@@ -1030,7 +975,8 @@ namespace Artivity.Api.Modules
                 WHERE
                 {
 	                ?activity
-                        prov:generated | prov:used @entity .
+                        prov:generated | prov:used ?e.
+                    ?e nie:isStoredAs @entity.
 
 	                ?layer a art:Layer ;
                         ?qualifiedInfluence ?influence .

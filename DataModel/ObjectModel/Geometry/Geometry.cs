@@ -31,7 +31,7 @@ using Semiodesk.Trinity;
 namespace Artivity.DataModel
 {
     [RdfClass(ART.Geometry)]
-    public class Geometry : Resource
+    public class Geometry : SynchronizableResource
     {
         #region Constructors
 

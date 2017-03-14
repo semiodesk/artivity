@@ -25,8 +25,11 @@
             t.file = file;
             t.fileName = filesystemService.getFileNameWithoutExtension(file.label);
             t.fileExtension = filesystemService.getFileExtension(file.label);
-            t.thumbnail = api.hasThumbnail(file.uri);
-            t.thumbnailUrl = api.getThumbnailUrl(file.uri);
+            if( file.thumbnail !== undefined)
+            {
+                t.thumbnail = true;
+                t.thumbnailUrl = file.thumbnail;
+            }
             t.link = enableLink === undefined || enableLink === true;
 
             $(element).find('.file-thumbnail').css('background-image', 'url(' + t.thumbnailUrl + ')');
@@ -38,7 +41,7 @@
             if (event.ctrlKey) {
                 t.navigateToFragment("/files/preview?uri=" + t.file.uri);
             } else {
-                t.navigateToFragment("/files/view?uri=" + t.file.uri);
+                t.navigateToFragment("/files/view?uri=" + t.file.uri+"&entityUri="+t.file.entityUri);
             }
         };
 
