@@ -67,12 +67,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IO\ArchiveWriters\ArtOnlineArchiveWriter.cs" />
     <Compile Include="Modules\CommentModule.cs" />
     <Compile Include="Infrastructure\StreamExtensions.cs" />
     <Compile Include="IO\ArchiveWriters\ActivityArchiveWriter.cs" />
     <Compile Include="IO\ArchiveWriters\EntityArchiveWriter.cs" />
     <Compile Include="Modules\ImageEntityModule.cs" />
     <Compile Include="Modules\MarkModule.cs" />
+    <Compile Include="Modules\SparqlModule.cs" />
     <Compile Include="Modules\TopicModule.cs" />
     <Compile Include="Parameters\MarkParameter.cs" />
     <Compile Include="Parameters\TopicParameter.cs" />

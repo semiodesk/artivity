@@ -297,7 +297,8 @@ namespace Artivity.Apid.Modules
                     ?agent ?color ?association
                 WHERE 
                 {
-                    ?activity prov:used | prov:generated @entity .
+                    ?activity prov:used | prov:generated ?e.
+                    ?e nie:isStoredAs @entity .
                     ?activity prov:qualifiedAssociation ?association .
 
                     ?association prov:hadRole art:SOFTWARE .

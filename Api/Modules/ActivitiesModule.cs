@@ -153,8 +153,9 @@ namespace Artivity.Api.Modules
                 WHERE
                 {
                   ?activity
-                    prov:generated | prov:used @entity ;
+                    prov:generated | prov:used ?entity ;
                     prov:startedAtTime ?startTime .
+                    ?entity nie:isStoredAs @entity.
 
                   OPTIONAL
                   {
