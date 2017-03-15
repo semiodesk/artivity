@@ -48,7 +48,7 @@ namespace Artivity.DataModel
         public Entity PrimarySource { get; set; }
 
         [RdfProperty(PROV.qualifiedRevision), JsonIgnore]
-        public List<Save> Revisions { get; set; }
+        public List<Revision> Revisions { get; set; }
 
         public IEnumerable<string> RevisionUris
         {

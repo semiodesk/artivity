@@ -25,8 +25,10 @@
         t.entity = null;
         t.canvas = null;
         t.viewer = null;
+        t.fileUri = null;
         t.setFile = setFile;
         t.update = update;
+
 
         $(document).ready(function () {
             // Initialize the viewer and load the renderings when the document is ready.
@@ -37,8 +39,10 @@
             }
         });
 
-        function setFile(entityUri) {
-            entityService.getById(entityUri).then(function (entity) {
+        function setFile(fileUri) {
+            t.fileUri = fileUri;
+            // TODO: this only loads the most recent entity by file
+            entityService.getRecentByFile(fileUri).then(function (entity) {
                 t.entity = entity;
 
                 agentService.getUser().then(function (agent) {
@@ -52,9 +56,8 @@
         }
 
         function initializeViewer() {
-            var url = api.getRenderingUrl(t.entity.Uri);
 
-            t.viewer = new DocumentViewer(t.user, t.canvas, url, selectionService);
+            t.viewer = new DocumentViewer(t.user, t.canvas, "", selectionService);
             t.viewer.addCommand(new SelectCommand(t.viewer, selectionService), true);
             t.viewer.addCommand(new PanCommand(t.viewer));
             t.viewer.addCommand(new ZoomInCommand(t.viewer));
@@ -79,7 +82,7 @@
                 t.viewer.pageCache.load(data, function () {
                     console.log('Loaded pages:', data);
 
-                    var derivation = t.entity.RevisionUris[0];
+                    var derivation = t.entity.Uri;
 
                     t.viewer.setEntity(derivation);
                     t.viewer.zoomToFit();

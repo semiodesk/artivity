@@ -9,6 +9,7 @@
         var service = {};
         service.getAll = getAll;
         service.getById = getById;
+        service.getRecentByFile = getRecentByFile;
         service.selectedEntity = null;
 
         return service;
@@ -24,6 +25,10 @@
 
         function getById(uri) {
             return $http.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
+        }
+
+        function getRecentByFile(uri) {
+            return $http.get(endpoint + "/recent" + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
         }
 
         // private functions

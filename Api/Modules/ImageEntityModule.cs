@@ -30,7 +30,9 @@ using Artivity.DataModel;
 using Nancy;
 using Semiodesk.Trinity;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using Nancy.Security;
 
 namespace Artivity.Api.Modules
 {
@@ -39,6 +41,47 @@ namespace Artivity.Api.Modules
         public ImageEntityModule(IModelProvider modelProvider, IPlatformProvider platformProvider) : 
             base("/artivity/api/1.0/entity/images", modelProvider, platformProvider)
         {
+            Get["/recent"] = parameters =>
+            {
+                if (!string.IsNullOrEmpty(Request.Query["uri"]))
+                {
+                    string fileUriString = Request.Query["uri"];
+                    Uri uri = new Uri(fileUriString);
+                    return GetRecentByFile(uri);
+                }else
+                    return HttpStatusCode.InternalServerError;
+            };
+        }
+
+        protected Response GetRecentByFile(Uri fileUri)
+        {
+            if (PlatformProvider.RequiresAuthentication)
+            {
+                this.RequiresAuthentication();
+            }
+
+            LoadCurrentUser();
+
+            if (UserModel == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+            string queryString = @"
+            DESCRIBE ?entity WHERE
+            {
+                ?entity a nfo:Image ;
+                  nie:isStoredAs @fileUri .
+                FILTER NOT EXISTS {{
+                      ?entity prov:qualifiedRevision ?r .
+                    }}
+            }";
+            SparqlQuery query = new SparqlQuery(queryString);
+            query.Bind("@fileUri", fileUri);
+
+            var entity = UserModel.ExecuteQuery(query, true).GetResources<Image>().First();
+
+            return Response.AsJsonSync(entity);
+
         }
     }
 }

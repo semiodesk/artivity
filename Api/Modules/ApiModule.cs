@@ -366,18 +366,21 @@ namespace Artivity.Api.Modules
             string LimitClause = settings.GetLimitClause();
             string OffsetClause = settings.GetOffsetClause();
             string queryString = @"
-                SELECT  
+                SELECT DISTINCT
                     ?label 
                     ?file as ?uri
                     ?q as ?entityUri
                     SAMPLE(?p) as ?thumbnail 
-                    MIN(?t) as ?time 
+                    MAX(?t) as ?time 
                     SAMPLE(COALESCE(?agentColor, '#cecece')) AS ?agentColor
+                    COUNT(?rr) as ?revisions
                     WHERE {{
-                        ?a prov:generated | prov:used ?entity ;
+                            ?a prov:generated | prov:used ?entity ;
                             prov:endedAtTime ?ended ;
                             prov:startedAtTime ?started ;
                             prov:qualifiedAssociation / prov:agent ?agent.
+  
+                    ?entity prov:qualifiedRevision* ?rr.
                     ?agent a prov:SoftwareAgent.
                     ?entity nie:isStoredAs ?file.
                     ?file rdfs:label ?label .
@@ -388,8 +391,11 @@ namespace Artivity.Api.Modules
                     OPTIONAL{{
                         ?agent art:hasColourCode ?agentColor .
                     }}
+                    FILTER NOT EXISTS {{
+                      ?entity prov:qualifiedRevision ?r .
+                    }}
                     {0}
-                    }}GROUP BY ?label ?file ?q {1} {2} {3}";
+                    }}GROUP BY ?label ?file ?q ?time {1} {2} {3}";
             queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause);
             ISparqlQuery query = new SparqlQuery(queryString);
 
@@ -924,25 +930,30 @@ namespace Artivity.Api.Modules
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetCanvasRenderingsFromEntity(UriRef entity)
+        private Response GetCanvasRenderingsFromEntity(UriRef entityUri)
         {
+            string baseUri = "http://localhost:8262/artivity/api/1.0/renderings?uri=";
             string queryString = @"
                 SELECT DISTINCT
                     ?time
                     ?type
                     ?file
-                    ?layer
+                    ?entity as ?layer
                   	COALESCE(?x, 0) AS ?x
 	                COALESCE(?y, 0) AS ?y
 	                COALESCE(?w, 0) AS ?w
 	                COALESCE(?h, 0) AS ?h  
                 WHERE
                 {
-                    @entity prov:qualifiedRevision ?revision .
-  
-                    ?revision prov:atTime ?time ; art:renderedAs [
+                    BIND( @entity as ?entity) .
+                    ?entity prov:qualifiedGeneration ?gen . 
+                    ?gen prov:atTime ?time . 
+                    BIND( STRBEFORE( STR(?entity), '#' ) as ?strippedEntity ).
+                    BIND( if(?strippedEntity != '', ?strippedEntity, str(?entity)) as ?entityStub).
+
+                    ?entity art:renderedAs [
                         rdf:type ?type ;
-                        rdfs:label ?file ;
+                        rdfs:label ?f ;
                         art:region [
                             art:x ?x ;
                             art:y ?y ;
@@ -950,13 +961,14 @@ namespace Artivity.Api.Modules
                             art:height ?h
                         ]
                     ] .
-
+                    BIND( CONCAT(@baseUri, ?entityStub, '&file=', STR(?f) ) as ?file ).
                     BIND(?revision AS ?layer)
                 }
                 ORDER BY DESC(?time)";
 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@entity", entity);
+            query.Bind("@entity", entityUri);
+            query.Bind("@baseUri", baseUri);
 
             List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 

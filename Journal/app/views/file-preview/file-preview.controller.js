@@ -12,7 +12,7 @@
             iconUrl: ''
         };
         t.entity = {
-            uri: fileUri
+            uri: fileUri,
         };
         t.file = {};
 
