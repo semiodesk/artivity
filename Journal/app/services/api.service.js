@@ -222,19 +222,19 @@
 			},
 			getCanvases: function (entityUri, time) {
 				if (time !== undefined) {
-					return $http.get(endpoint + '/influences/canvas?uri=' + entityUri + '&timestamp=' + time).then(
+					return $http.get(endpoint + '/influences/canvas?uri=' + encodeURIComponent(entityUri) + '&timestamp=' + time).then(
 						function (response) {
 							return response.data;
 						});
 				} else {
-					return $http.get(endpoint + '/influences/canvas?uri=' + entityUri).then(
+					return $http.get(endpoint + '/influences/canvas?uri=' + encodeURIComponent(entityUri)).then(
 						function (response) {
 							return response.data;
 						});
 				}
 			},
 			getCanvasRenderingsFromEntity: function (entityUri) {
-				return $http.get(endpoint + '/renderings/canvases?entity=' + entityUri).then(
+				return $http.get(endpoint + '/renderings/canvases?entity=' + encodeURIComponent(entityUri)).then(
 					function (response) {
 						return response.data;
 					});
@@ -252,23 +252,23 @@
 					});
 			},
 			getThumbnailUrl: function (entityUri) {
-				return endpoint + '/thumbnails?entityUri=' + entityUri;
+				return endpoint + '/thumbnails?entityUri=' + encodeURIComponent(entityUri);
 			},
 			getRenderings: function (entityUri, time) {
 				if (time !== undefined) {
-					return $http.get(endpoint + '/renderings?uri=' + entityUri + '&timestamp=' + time).then(
+					return $http.get(endpoint + '/renderings?uri=' + encodeURIComponent(entityUri) + '&timestamp=' + time).then(
 						function (response) {
 							return response.data;
 						});
 				} else {
-					return $http.get(endpoint + '/renderings?uri=' + entityUri).then(
+					return $http.get(endpoint + '/renderings?uri=' + encodeURIComponent(entityUri)).then(
 						function (response) {
 							return response.data;
 						});
 				}
 			},
 			getRenderingUrl: function (entityUri) {
-				return endpoint + '/renderings?uri=' + entityUri + '&file=';
+				return endpoint + '/renderings?uri=' + encodeURIComponent(entityUri) + '&file=';
 			},
 			getStats: function (entityUri, time) {
 				if (time !== undefined) {
@@ -291,7 +291,7 @@
 					});
 			},
 			exportFile: function (entityUri, fileName) {
-				return $http.get(endpoint + '/export?entityUri=' + entityUri + '&fileName=' + fileName).then(
+				return $http.get(endpoint + '/export?entityUri=' + encodeURIComponent(entityUri) + '&fileName=' + fileName).then(
 					function (response) {
 						return response.data;
 					});
