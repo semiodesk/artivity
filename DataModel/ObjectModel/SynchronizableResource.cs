@@ -64,6 +64,8 @@ namespace Artivity.DataModel
         {
         }
 
+        public SynchronizableResource(string uri) : base(uri) { }
+
         #endregion
 
         #region Methods

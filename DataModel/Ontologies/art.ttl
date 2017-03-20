@@ -640,6 +640,11 @@ art:deleted a rdf:Property ;
     rdfs:label "deleted" ;
     rdfs:subPropertyOf nie:modified .
 
+art:publish a rdf:Property ;
+    rdfs:label "publish" ;
+    rdfs:domain prov:Entity ;
+    rdfs:range xsd:boolean .
+
 art:version a rdf:Property ;
     rdfs:label "version" .
 

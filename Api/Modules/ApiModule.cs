@@ -106,6 +106,18 @@ namespace Artivity.Api.Modules
                 return GetProjectFilese(new UriRef(uri));
             };
 
+            Get["/files/publish"] = parameters =>
+            {
+                string uri = Request.Query.uri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return PublishMostRecentEntity(uri);
+            };
+
             Get["/influences"] = parameters =>
             {
                 string uri = Request.Query.uri;
@@ -290,6 +302,7 @@ namespace Artivity.Api.Modules
 
         }
 
+
         #endregion
 
         #region Methods
@@ -444,7 +457,7 @@ namespace Artivity.Api.Modules
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetInfluences(UriRef entityUri)
+        private Response GetInfluences(UriRef fileUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT DISTINCT
@@ -472,7 +485,7 @@ namespace Artivity.Api.Modules
                     ?activity
                         prov:generated | prov:used ?e ;
                         prov:qualifiedAssociation ?association .
-                    ?e nie:isStoredAs @entity.
+                    ?e nie:isStoredAs @fileUri.
 
                     OPTIONAL
                     {
@@ -535,7 +548,7 @@ namespace Artivity.Api.Modules
                 }
                 ORDER BY DESC(?time)");
 
-            query.Bind("@entity", entityUri);
+            query.Bind("@fileUri", fileUri);
 
             IEnumerable<BindingSet> bindings = ModelProvider.GetAll().GetBindings(query);
 
@@ -621,12 +634,12 @@ namespace Artivity.Api.Modules
             }
         }
 
-        private Response GetRenderings(UriRef entityUri)
+        private Response GetRenderings(UriRef fileUri)
         {
-            return GetRenderings(entityUri, DateTime.UtcNow);
+            return GetRenderings(fileUri, DateTime.UtcNow);
         }
 
-        private Response GetRenderings(UriRef entityUri, DateTime time)
+        private Response GetRenderings(UriRef fileUri, DateTime time)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -641,7 +654,7 @@ namespace Artivity.Api.Modules
                 WHERE 
                 {
 			        ?activity prov:generated | prov:used  ?e.
-                    ?e nie:isStoredAs @entity.
+                    ?e nie:isStoredAs @fileUri.
                     
 
 			        ?influence
@@ -672,7 +685,7 @@ namespace Artivity.Api.Modules
                 }
                 ORDER BY DESC(?time)");
 
-            query.Bind("@entity", entityUri);
+            query.Bind("@fileUri", fileUri);
             query.Bind("@time", time);
 
             var bindings = ModelProvider.GetActivities().GetBindings(query);
@@ -749,7 +762,7 @@ namespace Artivity.Api.Modules
             return null;
         }
 
-        private Response GetCompositionStats(UriRef entityUri)
+        private Response GetCompositionStats(UriRef fileUri)
         {
             string queryString = @"
                 SELECT
@@ -757,21 +770,21 @@ namespace Artivity.Api.Modules
                 WHERE
                 {
                     ?activity prov:generated | prov:used ?e.
-                    ?e nie:isStoredAs @entity.
+                    ?e nie:isStoredAs @fileUri.
 
 	                ?influence a ?type .
 	                ?influence prov:activity | prov:hadActivity ?activity .
                 }";
 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@entity", entityUri);
+            query.Bind("@fileUri", fileUri);
 
             IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
 
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetCompositionStats(UriRef entityUri, DateTime time)
+        private Response GetCompositionStats(UriRef fileUri, DateTime time)
         {
             string queryString = @"
                 SELECT
@@ -779,7 +792,7 @@ namespace Artivity.Api.Modules
                 WHERE
                 {
                     ?activity prov:generated | prov:used ?e.
-                    ?e nie:isStoredAs @entity.
+                    ?e nie:isStoredAs @fileUri.
 
 	                ?influence a ?type .
 	                ?influence prov:activity | prov:hadActivity ?activity .
@@ -789,7 +802,7 @@ namespace Artivity.Api.Modules
                 }";
 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@entity", entityUri);
+            query.Bind("@fileUri", fileUri);
             query.Bind("@time", time);
 
             List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
@@ -868,12 +881,58 @@ namespace Artivity.Api.Modules
             return HttpStatusCode.OK;
         }
 
-        private Response GetCanvases(UriRef entityUri)
+        /// <summary>
+        /// This function publishes the most recent version of a file.
+        /// </summary>
+        /// <param name="fileUri"></param>
+        /// <returns></returns>
+        private Response PublishMostRecentEntity(string fileUri)
         {
-            return GetCanvases(entityUri, DateTime.UtcNow);
+            bool res = false;
+            var uri = new UriRef(fileUri);
+            IModel Model = ModelProvider.GetActivities();
+
+            string query = @"
+            DESCRIBE ?entity 
+            WHERE 
+            {
+                ?entity nie:isStoredAs @fileUri .
+                FILTER NOT EXISTS 
+                {
+                    ?v prov:qualifiedRevision / prov:entity ?entity
+                }
+            }
+            ";
+            SparqlQuery q = new SparqlQuery(query);
+            q.Bind("@fileUri", uri);
+            
+            var entity = Model.ExecuteQuery(q).GetResources<Entity>().First();
+
+            if (entity != null)
+            {
+                entity.Publish = true;
+                entity.Commit();
+                res = true;
+
+                // Now we make sure the file has the synchronization state attached.
+                var file = Model.GetResource<FileDataObject>(uri);
+                if (file.SynchronizationState == null)
+                    file.Commit();
+            }
+            else
+            {
+            }
+
+            return Response.AsJsonSync(res);
         }
 
-        private Response GetCanvases(UriRef entityUri, DateTime maxTime)
+
+        private Response GetCanvases(UriRef fileUri)
+        {
+            return GetCanvases(fileUri, DateTime.UtcNow);
+        }
+
+        private Response GetCanvases(UriRef fileUri, DateTime maxTime)
         {
             string queryString = @"
                 SELECT DISTINCT
@@ -890,7 +949,7 @@ namespace Artivity.Api.Modules
                 {
 	                ?activity
                         prov:generated | prov:used ?e.
-                    ?e nie:isStoredAs @entity.
+                    ?e nie:isStoredAs @fileUri.
 
                     ?canvas a art:Canvas ;
                         ?qualifiedInfluence ?influence .
@@ -922,7 +981,7 @@ namespace Artivity.Api.Modules
                 ORDER BY DESC(?time)";
                 
             ISparqlQuery query = new SparqlQuery(queryString);
-            query.Bind("@entity", entityUri);
+            query.Bind("@fileUri", fileUri);
             query.Bind("@maxTime", maxTime);
             
             List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
@@ -988,7 +1047,7 @@ namespace Artivity.Api.Modules
                 {
 	                ?activity
                         prov:generated | prov:used ?e.
-                    ?e nie:isStoredAs @entity.
+                    ?e nie:isStoredAs @fileUri.
 
 	                ?layer a art:Layer ;
                         ?qualifiedInfluence ?influence .
@@ -1015,7 +1074,7 @@ namespace Artivity.Api.Modules
                 }
                 ORDER BY DESC(?time)");
 
-            query.Bind("@entity", uriRef);
+            query.Bind("@fileUri", uriRef);
 
             IList<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 

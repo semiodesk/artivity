@@ -50,6 +50,8 @@ namespace Artivity.Api.Modules
 
         private bool _delete;
 
+        private bool _initQueryCalled = false;
+
         #endregion
 
         #region Constructors
@@ -101,37 +103,7 @@ namespace Artivity.Api.Modules
             {
                 Get["/"] = parameters =>
                 {
-                    if (PlatformProvider.RequiresAuthentication)
-                    {
-                        this.RequiresAuthentication();
-                    }
-
-                    LoadCurrentUser();
-
-                    if (UserModel == null)
-                    {
-                        return HttpStatusCode.InternalServerError;
-                    }
-
-                    if (Request.Query["uri"] != null && !string.IsNullOrEmpty(Request.Query["uri"]))
-                    {
-                        Uri uri = new Uri(Request.Query["uri"]);
-
-                        T entity = UserModel.GetResource<T>(uri);
-
-                        return Response.AsJsonSync(entity);
-                    }
-                    else
-                    {
-                        T t = (T)Activator.CreateInstance(typeof(T), new Uri("http://localhost"));
-
-                        ResourceQuery query = new ResourceQuery(t.GetTypes());
-                        query.Where(art.deleted, DateTime.MinValue);
-
-                        List<T> list = UserModel.GetResources<T>(query).ToList();
-
-                        return Response.AsJsonSync(new Dictionary<string, object> { { "success", true }, { "data", list } });
-                    }
+                    return GetEntity();
                 };
             }
 
@@ -229,6 +201,82 @@ namespace Artivity.Api.Modules
 
         public virtual void OnBeforeEntityDeleted(Uri uri) { }
 
+        /// <summary>
+        /// This method initializes the Authentication and loads the current user.
+        /// If you overload it, return null if you want to continue processing the request.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Response InitQuery()
+        {
+            if (PlatformProvider.RequiresAuthentication)
+            {
+                this.RequiresAuthentication();
+            }
+
+            LoadCurrentUser();
+
+            if (UserModel == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            _initQueryCalled = true;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Processes the regular get function for this endpoint.
+        /// Takes an 'uri' parameter if you want a specific entity.
+        /// Returns a list of entities if no parameter was specified.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Response GetEntity()
+        {
+            if( !_initQueryCalled )
+            {
+                var res = InitQuery();
+                if (res != null)
+                    return res;
+            }
+
+            int offset = -1;
+            int limit = -1;
+            GetOffsetLimit(out offset, out limit);
+
+            if (Request.Query["uri"] != null && !string.IsNullOrEmpty(Request.Query["uri"]))
+            {
+                Uri uri = new Uri(Request.Query["uri"]);
+
+                T entity = UserModel.GetResource<T>(uri);
+
+                return Response.AsJsonSync(entity);
+            }
+            else
+            {
+                T t = (T)Activator.CreateInstance(typeof(T), new Uri("http://localhost"));
+
+                ResourceQuery query = new ResourceQuery(t.GetTypes());
+                query.Where(art.deleted, DateTime.MinValue);
+ 
+                var queryResult = UserModel.ExecuteQuery(query);
+                int count = queryResult.Count();
+
+                List<T> list = queryResult.GetResources<T>(offset, limit).ToList();
+
+                return Response.AsJsonSync(new Dictionary<string, object> { { "success", true }, { "data", list } });
+            }
+        }
+
+        protected void GetOffsetLimit(out int offset, out int limit)
+        {
+            offset = 0;
+            limit = 10;
+            if (Request.Query["offset"])
+                offset = (int)Request.Query["offset"];
+            if (Request.Query["limit"])
+                limit = (int)Request.Query["limit"];
+        }
         #endregion
     }
 }

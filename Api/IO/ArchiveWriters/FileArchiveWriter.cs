@@ -37,11 +37,11 @@ using System.Threading.Tasks;
 
 namespace Artivity.Api.IO
 {
-    public class ArtOnlineArchiveWriter : ArchiveWriterBase
+    public class FileArchiveWriter : ArchiveWriterBase
     {
         #region Constructors
 
-        public ArtOnlineArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
+        public FileArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
             : base(platformProvider, modelProvider)
         {
         }
@@ -50,27 +50,20 @@ namespace Artivity.Api.IO
 
         #region Methods
 
-        protected override IEnumerable<EntityRenderingInfo> GetRenderings(Uri uri, DateTime minTime)
+        protected override IEnumerable<EntityRenderingInfo> GetRenderings(Uri fileUri, DateTime minTime)
         {
             IModel model = ModelProvider.GetActivities();
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT ?entity ?file WHERE
                 {
-                    ?activity prov:generated | prov:used @entity .
-
-                    ?influence
-                        prov:activity | prov:hadActivity ?activity ;
-                        prov:atTime ?time ;
-                        art:renderedAs / rdfs:label ?file .
-
-                    FILTER(@minTime <= ?time) .
-
-                    BIND(@entity AS ?entity)
+                    ?activity prov:generated | prov:used ?entity .
+                    ?entity nie:isStoredAs @fileUri .
+                    ?fileEntity art:publish ""true""^^xsd:boolean_ . 
+                    ?entity art:renderdAs / rdfs:label ?file .
                 }");
 
-            query.Bind("@entity", uri);
-            query.Bind("@minTime", minTime);
+            query.Bind("@fileUri", fileUri);
 
             IEnumerable<BindingSet> bindings = model.GetBindings(query);
 
@@ -83,7 +76,7 @@ namespace Artivity.Api.IO
             }
         }
 
-        protected override ISparqlQuery GetAgentsQuery(Uri uri, DateTime minTime)
+        protected override ISparqlQuery GetAgentsQuery(Uri fileUri, DateTime minTime)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
@@ -91,46 +84,54 @@ namespace Artivity.Api.IO
                     ?association
                 WHERE
                 {
-                  ?activity prov:generated | prov:used @entity .
+                  ?activity prov:generated | prov:used ?entity .
+                  ?entity nie:isStoredAs @fileUri .
+                  ?entity art:publish ""true""^^xsd:boolean_ . 
                   ?activity prov:qualifiedAssociation ?association .
-
                   ?association prov:agent ?agent .
                 }");
 
-            query.Bind("@entity", uri);
+            query.Bind("@fileUri", fileUri);
 
             return query;
         }
 
         protected override ISparqlQuery GetActivitiesQuery(Uri uri, DateTime minTime)
         {
+
+
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
-                    @entity
-                    ?file
                     ?activity
+                    ?file
                     ?influence
                     ?entity
+                    ?fileEntity
                     ?bounds
                     ?change
                     ?render
                     ?renderRegion
                 WHERE
                 {
-                  ?activity prov:generated | prov:used @entity .
+                  BIND( @file as ?file ).
+                  ?fileEntity nie:isStoredAs @file .
+                  ?fileEntity art:publish ""true""^^xsd:boolean_ . 
+
+                  ?activity prov:generated | prov:used ?entity .
+                  ?activity prov:generated | prov:used ?fileEntity .
                   ?activity prov:startedAtTime ?startTime .
 
-                  FILTER(@minTime <= ?startTime) .
-
-                  @entity nie:isStoredAs ?file .
-
                   ?influence prov:activity | prov:hadActivity ?activity .
+                  ?influence prov:entity ?entity .
+                  ?entity rdf:type ?entityType .
+                  FILTER ( ?entityType = nfo:VectorImage || ?entityType = nfo:RasterImage || ?entityType = art:Canvas )
 
                   OPTIONAL
                   {
-                     ?influence art:renderedAs ?render .
+                     ?fileEntity art:renderedAs ?render .
 
                      OPTIONAL { ?render art:region ?renderRegion . }
+                     OPTIONAL { ?render art:renderedLayer ?layer . }
                   }
 
                   OPTIONAL { ?influence art:hadViewport ?viewport . }
@@ -141,11 +142,10 @@ namespace Artivity.Api.IO
 
                      OPTIONAL { ?change art:entity ?entity . }
                   }
-
                 }");
 
-            query.Bind("@entity", uri);
-            query.Bind("@minTime", minTime);
+
+            query.Bind("@file", uri);
 
             return query;
         }

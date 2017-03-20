@@ -16,12 +16,15 @@
 
     angular.module('app').controller('FileCardDirectiveController', FileCardDirectiveController);
 
-    FileCardDirectiveController.$inject = ['$scope', 'api', 'filesystemService'];
+    FileCardDirectiveController.$inject = ['$scope', 'api', 'filesystemService', '$location'];
 
-    function FileCardDirectiveController($scope, api, filesystemService) {
+    function FileCardDirectiveController($scope, api, filesystemService, $location) {
         var t = this;
 
-        t.setFile = function (element, file, enableLink) {
+        t.setFile = setFile;
+        t.onClick = onClick;
+
+        function setFile (element, file, enableLink) {
             t.file = file;
             t.fileName = filesystemService.getFileNameWithoutExtension(file.label);
             t.fileExtension = filesystemService.getFileExtension(file.label);
@@ -33,36 +36,15 @@
             t.link = enableLink === undefined || enableLink === true;
 
             $(element).find('.file-thumbnail').css('background-image', 'url(' + t.thumbnailUrl + ')');
-        };
+        }
 
-        t.onClick = function (e) {
+        function onClick (e) {
             e.preventDefault();
 
             if (event.ctrlKey) {
-                t.navigateToFragment("/files/preview?uri=" + t.file.uri);
+                $location.path("/files/preview").search("uri", t.file.uri);
             } else {
-                t.navigateToFragment("/files/view?uri=" + t.file.uri+"&entityUri="+t.file.entityUri);
-            }
-        };
-
-        t.navigateToFragment = function (fragment) {
-            var url = t.getUrlWithFragment(fragment);
-
-            if (url !== '') {
-                window.location.href = url;
-            }
-        };
-
-        // TODO: Taken from art-keyboard-input-handler directive. Move into window service.
-        t.getUrlWithFragment = function (fragment) {
-            var url = window.location.href.split('#');
-
-            if (url.length < 2) {
-                console.log('Unable to parse fragment from url:' + window.location.href);
-
-                return '';
-            } else {
-                return url[0] + '#' + fragment;
+                $location.path("/files/view").search("uri", t.file.uri).search("entityUri", t.file.entityUri);
             }
         }
     }

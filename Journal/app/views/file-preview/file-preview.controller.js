@@ -12,9 +12,9 @@
             iconUrl: ''
         };
         t.entity = {
-            uri: fileUri,
         };
         t.file = {};
+        t.fileUri = fileUri;
 
         initialize();
 
@@ -25,6 +25,9 @@
 
                 console.log("Loaded entity: ", t.file);
             });
+
+           
+           
 
             // Agent metadata
             api.getAgent(fileUri).then(function (data) {

@@ -218,7 +218,7 @@ namespace Artivity.Apid.Accounts
 
                 PlatformProvider.Logger.LogInfo("Starting synchronization..");
 
-                InitializeActivitySynchronizationState();
+                //InitializeActivitySynchronizationState();
 
                 // TODO: Here we can query the server here to see if another client is currently syncing.
                 return true;
@@ -557,10 +557,13 @@ namespace Artivity.Apid.Accounts
             {
                 return await TryPushActivityAsync(account, uri, revision);
             }
-            else
+            else if(IsInstanceOf(uri, nfo.FileDataObject))
             {
-                return false;
+                return await TryPushFileAsync(account, uri, revision);
             }
+
+            return false;
+                
         }
 
         private async Task<bool> TryPushProjectAsync(OnlineAccount account, Uri uri, int revision)
@@ -660,6 +663,86 @@ namespace Artivity.Apid.Accounts
                     }
                 }
                 catch(Exception ex)
+                {
+                    Logger.LogError(ex);
+
+                    return false;
+                }
+                finally
+                {
+                    if (archive.Exists)
+                    {
+                        File.Delete(archive.FullName);
+                    }
+                }
+            }
+        }
+
+        private async Task<bool> TryPushFileAsync(OnlineAccount account, Uri uri, int revision)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            Uri url = new Uri(baseUrl + "/api/1.0/sync/file/");
+
+            using (HttpClient client = GetHttpClient(account))
+            {
+                string archiveName = FileNameEncoder.Encode(uri.AbsoluteUri) + ".arta";
+                string archivePath = Path.Combine(PlatformProvider.TempFolder, archiveName);
+
+                FileInfo archive = new FileInfo(archivePath);
+
+                try
+                {
+                    if (archive.Exists)
+                    {
+                        File.Delete(archive.FullName);
+                    }
+
+                    Uri userUri = new UriRef(PlatformProvider.Config.Uid);
+
+                    FileArchiveWriter writer = new FileArchiveWriter(PlatformProvider, ModelProvider);
+
+                    await writer.WriteAsync(userUri, uri, archive.FullName, DateTime.MinValue);
+
+                    using (FileStream stream = File.Open(archive.FullName, FileMode.Open))
+                    {
+                        HttpContent content = new StreamContent(stream);
+                        content.Headers.ContentType = new MediaTypeHeaderValue("application/artivity+zip");
+
+                        MultipartFormDataContent form = new MultipartFormDataContent();
+                        form.Add(content, "file", archive.Name + archive.Extension);
+
+                        HttpResponseMessage response = await client.PostAsync(url, form);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            int r = await GetLastRemoteRevision(response);
+
+                            IModel model = ModelProvider.GetActivities();
+
+                            SparqlUpdate update = new SparqlUpdate(@"
+                                WITH @model
+                                DELETE { ?state arts:lastRemoteRevision ?revision . }
+                                INSERT { ?state arts:lastRemoteRevision @revision . }
+                                WHERE
+                                { 
+                                    @activity arts:synchronizationState ?state .
+
+                                    ?state arts:lastRemoteRevision ?revision .
+                                }
+                            ");
+
+                            update.Bind("@model", model);
+                            update.Bind("@activity", uri);
+                            update.Bind("@revision", r);
+
+                            model.ExecuteUpdate(update);
+                        }
+
+                        return response.IsSuccessStatusCode;
+                    }
+                }
+                catch (Exception ex)
                 {
                     Logger.LogError(ex);
 

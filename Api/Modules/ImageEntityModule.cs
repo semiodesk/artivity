@@ -53,26 +53,32 @@ namespace Artivity.Api.Modules
             };
         }
 
+        protected override Response GetEntity()
+        {
+            InitQuery();
+
+            if (Request.Query["fileUri"] != null) 
+            {
+                Uri fileUri = new Uri(Request.Query["fileUri"]);
+                return GetByFile(fileUri);
+            }
+
+
+            return base.GetEntity();
+           
+        }
+
         protected Response GetRecentByFile(Uri fileUri)
         {
-            if (PlatformProvider.RequiresAuthentication)
-            {
-                this.RequiresAuthentication();
-            }
+            InitQuery();
 
-            LoadCurrentUser();
-
-            if (UserModel == null)
-            {
-                return HttpStatusCode.InternalServerError;
-            }
             string queryString = @"
             DESCRIBE ?entity WHERE
             {
                 ?entity a nfo:Image ;
                   nie:isStoredAs @fileUri .
                 FILTER NOT EXISTS {{
-                      ?entity prov:qualifiedRevision ?r .
+                      ?v prov:qualifiedRevision / prov:entity ?entity .
                     }}
             }";
             SparqlQuery query = new SparqlQuery(queryString);
@@ -81,6 +87,36 @@ namespace Artivity.Api.Modules
             var entity = UserModel.ExecuteQuery(query, true).GetResources<Image>().First();
 
             return Response.AsJsonSync(entity);
+
+        }
+
+        protected Response GetByFile(Uri fileUri)
+        {
+            ResourceQuery entity = new ResourceQuery(nfo.Image);
+            //ResourceQuery file = new ResourceQuery(fileUri);
+            entity.Where(nie.isStoredAs, fileUri);
+
+            if (Request.Query["sort"] != null)
+            {
+                ResourceQuery influence = new ResourceQuery();
+                entity.Where(prov.qualifiedInfluence, influence);
+                if( Request.Query["sort"] == "asc")
+                    influence.Where(prov.atTime).SortAscending();
+                if( Request.Query["sort"] == "desc")
+                    influence.Where(prov.atTime).SortDescending();
+            }
+
+            var queryResult = UserModel.ExecuteQuery(entity, true);
+            
+            int count = queryResult.Count();
+
+            int offset = -1;
+            int limit = -1;
+            GetOffsetLimit(out offset, out limit);
+
+            List<Image> list = queryResult.GetResources<Image>(offset, limit).ToList();
+
+            return Response.AsJsonSync(new Dictionary<string, object> { { "success", true },{"count", count},{"offset", offset}, {"limit", limit},{ "data", list },  });
 
         }
     }

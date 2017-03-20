@@ -31,7 +31,7 @@ using System;
 namespace Artivity.DataModel
 {
 	[RdfClass(PROV.Influence)]
-	public class Influence : SynchronizableResource
+	public class Influence : Resource
 	{
 		#region Constructors
 

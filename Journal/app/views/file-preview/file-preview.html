@@ -21,12 +21,12 @@
 					<art-tab-control>
 						<art-tab heading="Conversation">
 							<div class="layout-container">
-								<art-chat-control id="ctl-chat" entity="{{t.entity.uri}}"></art-chat-control>
+								<art-chat-control id="ctl-chat" entity="{{t.fileUri}}"></art-chat-control>
 							</div>
 						</art-tab>
 						<art-tab heading="Topics">
 							<div class="layout-container">
-								<art-topic-control id="ctl-topic" entity="{{t.entity.uri}}"></art-topic-control>
+								<art-topic-control id="ctl-topic" entity="{{t.fileUri}}"></art-topic-control>
 							</div>
 						</art-tab>
 						<art-tab heading="Todo">
@@ -39,7 +39,7 @@
 			</div>
 			<div class="ui-resizable ui-pane ui-pane-center">
 				<div class="pane-content">
-					<art-document-viewer id="ctl-viewer" file="{{t.entity.uri}}"></art-document-viewer>
+					<art-document-viewer id="ctl-viewer" file="{{t.fileUri}}"></art-document-viewer>
 				</div>
 			</div>
 		</div>
