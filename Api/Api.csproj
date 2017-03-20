@@ -76,7 +76,9 @@
     <Compile Include="Modules\MarkModule.cs" />
     <Compile Include="Modules\SparqlModule.cs" />
     <Compile Include="Modules\TopicModule.cs" />
+    <Compile Include="Modules\TaskModule.cs" />
     <Compile Include="Parameters\MarkParameter.cs" />
+    <Compile Include="Parameters\TaskParameter.cs" />
     <Compile Include="Parameters\TopicParameter.cs" />
     <Compile Include="Platform\IThumbnailProvider.cs" />
     <Compile Include="IO\ArchiveManifest.cs" />

@@ -29,10 +29,10 @@
         t.updateTopic = updateTopic;
         t.postTopic = postTopic;
         t.resetTopic = resetTopic;
-        t.createMark = createMark;
 
         t.marks = [];
 
+        t.createMark = createMark;
         t.showMarks = showMarks;
         t.hideMarks = hideMarks;
 
@@ -71,7 +71,8 @@
                                         uri: d.uri,
                                         agent: d.agent,
                                         time: d.time,
-                                        title: d.title
+                                        title: d.title,
+                                        completed: d.completed
                                     });
                                 }
                             });
@@ -103,7 +104,9 @@
 
             t.topic.endTime = new Date();
 
-            topicService.post(t.topic).then(function (response) {
+            topicService.post(t.topic).then(function (data) {
+                t.topic.uri = data.uri;
+
                 // Show the topic in the list of topics.
                 t.topics.push(t.topic);
 
