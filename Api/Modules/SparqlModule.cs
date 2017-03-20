@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VDS.RDF;
+using VDS.RDF.Storage;
 
 namespace Artivity.Api.Modules
 {
@@ -42,6 +44,32 @@ namespace Artivity.Api.Modules
                     }
                 }
             };
+#if DEBUG
+            Get["/dump"] = parameters =>
+            {
+                var m = ModelProvider.Activities;
+                VirtuosoManager man = new VirtuosoManager(ModelProvider.NativeConnectionString);
+                var g = man.Query(string.Format("DESCRIBE ?s FROM <{0}> WHERE {{ ?s ?p ?o . }}", m.AbsoluteUri));
+                IGraph graph = g as IGraph;
+
+                if (graph != null && !graph.IsEmpty)
+                {
+                    var syntax = VDS.RDF.Parsing.TurtleSyntax.W3C;
+
+                    var writer = new VDS.RDF.Writing.CompressingTurtleWriter(syntax);
+                    writer.DefaultNamespaces.AddNamespace("art", ART.Namespace);
+                    writer.DefaultNamespaces.AddNamespace("dc", DCES.Namespace);
+                    writer.DefaultNamespaces.AddNamespace("nie", NIE.Namespace);
+                    writer.DefaultNamespaces.AddNamespace("nfo", NFO.Namespace);
+                    writer.DefaultNamespaces.AddNamespace("prov", PROV.Namespace);
+
+
+                    graph.SaveToFile("activities.ttl", writer);
+                    
+                }
+                return Response.AsText("Hello");
+            };
+#endif
 
             Post["/sparql"] = parameters =>
             {

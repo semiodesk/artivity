@@ -67,7 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IO\ArchiveWriters\ArtOnlineArchiveWriter.cs" />
+    <Compile Include="IO\ArchiveWriters\FileArchiveWriter.cs" />
     <Compile Include="Modules\CommentModule.cs" />
     <Compile Include="Infrastructure\StreamExtensions.cs" />
     <Compile Include="IO\ArchiveWriters\ActivityArchiveWriter.cs" />

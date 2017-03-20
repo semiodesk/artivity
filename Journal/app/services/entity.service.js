@@ -31,6 +31,13 @@
             return $http.get(endpoint + "/recent" + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
         }
 
+        function getByFile(uri, offset, limit, sort) {
+            // offset and limit should be ints
+            // sort should either be 'asc' or 'desc'
+            // TODO: handle res.count in handleSuccess
+            return $http.get(endpoint + "?offset="+offset+"&limit="+limit+"&sort="+sort + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
+        }
+
         // private functions
         function handleSuccess(res) {
             return res.data;

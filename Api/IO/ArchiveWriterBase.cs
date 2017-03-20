@@ -123,33 +123,37 @@ namespace Artivity.Api.IO
                 Directory.CreateDirectory(dataExport);
             }
 
-            ExportAgents(uri, dataExport, minTime);
-            ExportActivities(uri, dataExport, minTime);
+            using(FileStream fs = new FileStream(Path.Combine(dataExport, "agents.ttl"), FileMode.CreateNew))
+            {
+                ExportAgents(uri, fs, minTime);
+            }
+            Progress.Completed++;
+            RaiseProgressChanged();
+
+            using (FileStream fs = new FileStream(Path.Combine(dataExport, "activities.ttl"), FileMode.CreateNew))
+            {
+                ExportActivities(uri, fs, minTime);
+            }
+            
+            Progress.Completed++;
+            RaiseProgressChanged();
         }
 
-        private void ExportAgents(Uri uri, string targetDir, DateTime minTime)
+        private void ExportAgents(Uri uri, Stream stream, DateTime minTime)
         {
             ISparqlQuery query = GetAgentsQuery(uri, minTime);
 
-            WriteTurtle(query, targetDir, "agents.ttl");
-
-            Progress.Completed++;
-
-            RaiseProgressChanged();
+            WriteTurtle(query, stream);
         }
 
-        private void ExportActivities(Uri uri, string targetDir, DateTime minTime)
+        private void ExportActivities(Uri uri, Stream stream, DateTime minTime)
         {
             ISparqlQuery query = GetActivitiesQuery(uri, minTime);
 
-            WriteTurtle(query, targetDir, "activities.ttl");
-
-            Progress.Completed++;
-
-            RaiseProgressChanged();
+            WriteTurtle(query, stream);
         }
 
-        private void ExportRenderings(Uri uri, DirectoryInfo appFolder, DirectoryInfo exportFolder, DateTime minTime)
+        protected virtual void ExportRenderings(Uri uri, DirectoryInfo appFolder, DirectoryInfo exportFolder, DateTime minTime)
         {
             foreach(EntityRenderingInfo info in GetRenderings(uri, minTime))
             {
@@ -212,6 +216,32 @@ namespace Artivity.Api.IO
             if (File.Exists(file))
             {
                 File.Copy(file, file.Replace(sourceFolder, targetFolder), true);
+            }
+
+            Progress.Completed++;
+
+            RaiseProgressChanged();
+        }
+
+        private void WriteTurtle(ISparqlQuery query, Stream output)
+        {
+            IGraph graph = VirtuosoManager.Query(query.ToString()) as IGraph;
+
+            if (graph != null && !graph.IsEmpty)
+            {
+                var syntax = VDS.RDF.Parsing.TurtleSyntax.W3C;
+
+                var writer = new VDS.RDF.Writing.CompressingTurtleWriter(syntax);
+                writer.DefaultNamespaces.AddNamespace("art", ART.Namespace);
+                writer.DefaultNamespaces.AddNamespace("dc", DCES.Namespace);
+                writer.DefaultNamespaces.AddNamespace("nie", NIE.Namespace);
+                writer.DefaultNamespaces.AddNamespace("nfo", NFO.Namespace);
+                writer.DefaultNamespaces.AddNamespace("prov", PROV.Namespace);
+
+                using (StreamWriter wr = new StreamWriter(output) )
+                {
+                    graph.SaveToStream(wr, writer);
+                }
             }
 
             Progress.Completed++;
