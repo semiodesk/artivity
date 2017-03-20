@@ -2138,6 +2138,10 @@ path.color1 {
 	margin-top: 12px;
 }
 
+.yasgui .yasqe .cm-ws {
+	visibility: hidden;
+}
+
 .yasqe_queryButton.query_valid .btn {
 	font-size: 26px;
 	line-height: 30px;
@@ -2271,7 +2275,7 @@ path.color1 {
 }
 
 .yasgui .yasr .nonUri {
-	color: $textColor;
+	color: $editorTextColor;
 }
 
 .yasgui .yasr sup {

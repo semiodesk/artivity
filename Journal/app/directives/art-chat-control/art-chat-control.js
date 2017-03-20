@@ -18,9 +18,9 @@
 
     angular.module('app').controller('ChatControlDirectiveController', ChatControlDirectiveController);
 
-    ChatControlDirectiveController.$inject = ['$scope', 'api', 'agentService', 'entityService', 'commentService', 'selectionService', 'formattingService'];
+    ChatControlDirectiveController.$inject = ['$scope', 'api', 'viewerService', 'agentService', 'entityService', 'commentService', 'markService', 'selectionService', 'formattingService'];
 
-    function ChatControlDirectiveController($scope, api, agentService, entityService, commentService, selectionService, formattingService) {
+    function ChatControlDirectiveController($scope, api, viewerService, agentService, entityService, commentService, markService, selectionService, formattingService) {
         var t = this;
 
         t.user = null;
@@ -37,6 +37,12 @@
         t.getFormattedTime = formattingService.getFormattedTime;
         t.getFormattedDate = formattingService.getFormattedDate;
         t.getFormattedTimeFromNow = formattingService.getFormattedTimeFromNow;
+
+        t.marks = [];
+
+        t.createMark = createMark;
+        t.showMarks = showMarks;
+        t.hideMarks = hideMarks;
 
         initialize();
 
@@ -71,6 +77,7 @@
 
                                     // Insert at the beginning of the list.
                                     t.comments.unshift({
+                                        uri: c.uri,
                                         agent: c.agent,
                                         time: c.time,
                                         text: c.message
@@ -100,6 +107,10 @@
         }
 
         function updateComment() {
+            if (!t.comment.agent && t.user) {
+                t.comment.agent = t.user.Uri;
+            }
+
             if (!t.comment.startTime) {
                 t.comment.startTime = new Date();
 
@@ -107,7 +118,7 @@
             }
         };
 
-        function postComment() {
+        function postComment(e) {
             if (!validateComment()) {
                 console.log("Invalid comment: ", t.comment);
 
@@ -116,7 +127,13 @@
 
             t.comment.endTime = new Date();
 
-            commentService.post(t.comment).then(function (response) {
+            if (e && e.ctrlKey) {
+                t.comment.agent = 'http://artivity.online/faubulous';
+            }
+
+            commentService.post(t.comment).then(function (data) {
+                t.comment.uri = data.uri;
+
                 // Show the comment in the list of comments.
                 t.comments.push(t.comment);
 
@@ -139,7 +156,35 @@
                 markers: []
             };
 
+            if(t.user) {
+                t.comment.agent = user.Uri;
+            }
+
             console.log("Reset comment: ", t.comment);
+        }
+
+        function createMark(comment) {
+            if (comment && comment.uri) {
+                viewerService.executeCommand('createMark', comment.uri);
+            }
+        }
+
+        function showMarks(comment) {
+            if (comment && comment.uri) {
+                markService.getMarksForEntity(comment.uri).then(function (data) {
+                    t.marks = data;
+
+                    viewerService.executeCommand('showMarks', t.marks);
+                });
+            }
+        }
+
+        function hideMarks(comment) {
+            if (comment && comment.uri && t.marks.length > 0) {
+                viewerService.executeCommand('hideMarks', t.marks);
+
+                t.marks = [];
+            }
         }
     }
 })();

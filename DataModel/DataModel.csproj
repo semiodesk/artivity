@@ -48,6 +48,9 @@
     <Compile Include="ObjectModel\Activities\Publish.cs" />
     <Compile Include="ObjectModel\Communication.cs" />
     <Compile Include="ObjectModel\Entities\Collection.cs" />
+    <Compile Include="ObjectModel\Entities\Task.cs" />
+    <Compile Include="ObjectModel\Entities\TaskPriority.cs" />
+    <Compile Include="ObjectModel\Entities\TaskState.cs" />
     <Compile Include="ObjectModel\Entities\Topic.cs" />
     <Compile Include="ObjectModel\Entities\Comment.cs" />
     <Compile Include="ObjectModel\Entities\Folder.cs" />
@@ -131,6 +134,7 @@
     <None Include="Ontologies\sioc.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Ontologies\tmo.trig" />
     <None Include="Ontologies\xml.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
