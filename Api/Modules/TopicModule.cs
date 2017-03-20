@@ -139,7 +139,10 @@ namespace Artivity.Api.Modules
 
                 activity.Commit();
 
-                return HttpStatusCode.OK;
+                // Return the URI to the frontend.
+                var data = new { uri = topic.Uri };
+
+                return Response.AsJsonSync(data, HttpStatusCode.OK);
             }
             else
             {
