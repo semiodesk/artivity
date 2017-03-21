@@ -122,7 +122,7 @@ namespace Artivity.DataModel
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Caught exception when trying to access sync state of resource {1}", Uri);
+                    Console.WriteLine("Caught exception when trying to access sync state of resource {0}", Uri);
 
                     Sanitize();
                 }
