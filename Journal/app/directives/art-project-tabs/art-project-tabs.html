@@ -1,0 +1,29 @@
+<div class="header-tabs">
+    <uib-tabset>
+        <uib-tab>
+            <uib-tab-heading>
+                <i class="zmdi zmdi-lg zmdi-view-dashboard"></i>
+            </uib-tab-heading>
+
+            <art-file-list></art-file-list>
+        </uib-tab>
+        <uib-tab ng-repeat="project in t.projectList" ng-click="t.selectProject(project)">
+            <uib-tab-heading>
+                <a class="btn btn-chromeless pull-right" ng-click="t.deleteProject(project)">
+                    <i class="zmdi zmdi-xs zmdi-close"></i>
+                </a>
+
+                <div ng-bind="project.Name" style="min-width: 130px;"></div>
+            </uib-tab-heading>
+
+            <art-file-list></art-file-list>
+        </uib-tab>
+        <uib-tab>
+            <uib-tab-heading>
+                <i class="zmdi zmdi-lg zmdi-plus"></i>
+            </uib-tab-heading>
+
+            <art-project-header create="true"></art-project-header>
+        </uib-tab>
+    </uib-tabset>
+</div>
