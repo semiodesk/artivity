@@ -1005,7 +1005,7 @@ namespace Artivity.Api.Modules
                 WHERE
                 {
                     BIND( @entity as ?entity) .
-                    ?entity prov:qualifiedGeneration ?gen . 
+                    ?entity prov:qualifiedInfluence ?gen . 
                     ?gen prov:atTime ?time . 
                     BIND( STRBEFORE( STR(?entity), '#' ) as ?strippedEntity ).
                     BIND( if(?strippedEntity != '', ?strippedEntity, str(?entity)) as ?entityStub).
@@ -1021,7 +1021,7 @@ namespace Artivity.Api.Modules
                         ]
                     ] .
                     BIND( CONCAT(@baseUri, ?entityStub, '&file=', STR(?f) ) as ?file ).
-                    BIND(?revision AS ?layer)
+                    BIND(?entity AS ?layer)
                 }
                 ORDER BY DESC(?time)";
 
@@ -1029,7 +1029,7 @@ namespace Artivity.Api.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@baseUri", baseUri);
 
-            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query, true).ToList();
 
             return Response.AsJsonSync(bindings);
         }
