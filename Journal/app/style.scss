@@ -12,18 +12,18 @@ $successTextColor: #FFFFFF;
 $iconFont: 'Material-Design-Iconic-Font';
 $iconFontSize: 24px;
 $textFont: 'Roboto','Helvetica','Arial',sans-serif;
-$textColor: #303030;
-$labelTextColor: lighten($textColor, 20%);
+$textColor: #393939;
+$labelTextColor: $textColor;
 $labelBackgroundColor: transparent;
 $itemTextColor: $textColor;
-$itemBackgroundColor: rgba($textColor, .025);
+$itemBackgroundColor: rgba($textColor, .05);
 $highlightTextColor: $textColor;
 $highlightBackgroundColor: rgba($textColor, .075);
 $selectionTextColor: $textColor;
 $selectionBorderColor: transparent;
 $selectionBackgroundColor: rgba($textColor, .1);
 $windowBackgroundColor: #ededed;
-$headerBackgroundColor: #303030;
+$headerBackgroundColor: #393939;
 $headerTextColor: #ededed;
 $headerHeight: 40px;
 $toolbarHeight: 40px;
@@ -32,9 +32,9 @@ $toolbarBackgroundColor: $headerBackgroundColor;
 $toolbarTextColor: $headerTextColor;
 $overlayTextColor: $textColor;
 $overlayBackgroundColor: rgba($windowBackgroundColor, .95);
-$buttonBackgroundColor: $headerBackgroundColor;
-$buttonHoverBackgroundColor: rgba($headerBackgroundColor, .4);
-$buttonTextColor: $headerTextColor;
+$buttonBackgroundColor: $itemBackgroundColor;
+$buttonHoverBackgroundColor: lighten($itemBackgroundColor, 5%);
+$buttonTextColor: $textColor;
 $inputBackgroundColor: #FFFFFF;
 $inputTextColor: #000000;
 $windowTitlebarHeight: 37px;
@@ -225,9 +225,19 @@ input.disabled,
 	cursor: default;
 }
 
+input[type="text"][readonly] {
+	background: transparent;
+	border: 1px solid transparent;
+	color: $labelTextColor;
+}
+
+input[type="text"][readonly]:focus {
+	border: 1px solid transparent;
+}
+
 .btn-default {
 	border: none !important;
-	border-radius: 0;
+	border-radius: 1px;
 	background: $buttonBackgroundColor;
 	color: $labelTextColor;
 	padding: 7px 10px;
@@ -297,8 +307,8 @@ button:focus,
 }
 
 .btn-chromeless:hover {
-	color: $buttonTextColor !important;
-	background: transparent;
+	color: darken($labelTextColor, 5%) !important;
+	background: rgba($labelTextColor, .05);
 }
 
 .btn-sm {
@@ -342,8 +352,11 @@ button:focus,
 .circular,
 .btn-circular {
 	border-radius: 50%;
-	width: 45px;
-	height: 45px;
+}
+
+.btn-circular {
+	width: $toolbarHeight;
+	height: $toolbarHeight;
 }
 
 .btn-paging {
@@ -430,7 +443,7 @@ button:focus,
 .nav-tabs.nav-stacked li.active a,
 .nav-tabs.nav-stacked li.active a:hover {
 	border: none;
-	border-left: 2px solid $textColor !important;
+	border-left: 2px solid $textColor;
 	color: $highlightTextColor;
 }
 
@@ -441,27 +454,88 @@ button:focus,
 	margin: 0;
 }
 
-.header-tabs .nav-tabs li a {
-	height: $headerHeight;
-	border: none;
-	background: rgba(255, 255, 255, .05);
-	color: $headerTextColor;
-	text-transform: none;
+.header-tabs .nav-tabs li a.nav-link .zmdi,
+.header-tabs .nav-tabs img {
+	position: relative;
+	top: -2px;
 }
 
-.header-tabs .nav-tabs li a:hover {
-	border: none;
-	background: lighten($headerBackgroundColor, 15%);
-	color: $headerTextColor;
-	text-transform: none;
+.header-tabs .nav-tabs li a.nav-link .zmdi {
+	color: darken($headerTextColor, 10%);
 }
 
-.header-tabs .nav-tabs li.active a {
-	border: none;
-	background: $windowBackgroundColor;
+.header-tabs .nav-tabs li.active a.nav-link .zmdi {
 	color: $textColor;
-	font-weight: 500;
+}
+
+.header-tabs .nav-tabs li a.nav-link:focus {
+	outline: none;
+}
+
+.header-tabs .nav-tabs li a {
+	border: none;
+	margin: 0;
+}
+
+.header-tabs .nav-tabs li a.nav-link {
+	border-right: 1px solid rgba(255, 255, 255, .05);
+	background: transparent;
+	color: $headerTextColor;
+	height: $headerHeight;
 	text-transform: none;
+}
+
+.header-tabs .nav-tabs li:last-child a.nav-link {
+	border-right: 1px solid transparent;
+}
+
+.header-tabs .nav-tabs li a.nav-link:hover {
+	border-right: 1px solid transparent;
+	border-radius: 1px 1px 0 0;
+	background: lighten($headerBackgroundColor, 5%);
+}
+
+.header-tabs .nav-tabs li.active a.nav-link {
+	border-bottom: none;
+	border-radius: 1px 1px 0 0;
+	background: $windowBackgroundColor;
+	text-transform: none;
+}
+
+.header-tabs .nav-tabs li.active a.nav-link,
+.header-tabs .nav-tabs li.active a.nav-link a.btn {
+	color: $textColor !important;
+}
+
+.header-tabs .nav-tabs li.active a.nav-link:hover,
+.header-tabs .nav-tabs li.active a.nav-link:hover a.btn {
+	color: $highlightTextColor;
+}
+
+.header-tabs .nav-tabs li a.btn-close {
+	position: relative;
+	top: -2px;
+	right: -5px;
+	width: 24px;
+	height: 24px;
+	padding: 3px;
+	border: none;
+	border-radius: 2px;
+	color: darken($headerTextColor, 10%);
+}
+
+.header-tabs .nav-tabs li a.btn-close .zmdi {
+	top: 0;
+	font-size: 18px;
+	font-weight: 300;
+}
+
+.header-tabs .nav-tabs li a.btn-close:hover {
+	background: rgba(255, 255, 255, .05);
+}
+
+.header-tabs .nav-tabs li.active a.btn-close:hover {
+	background: lighten($windowBackgroundColor, 3%);
 }
 
 .center-parent {
@@ -577,7 +651,7 @@ button:focus,
 
 .label,
 .text-label {
-	font-size: 1em;
+	font-size: 1.1em;
 	font-weight: normal;
 	color: $labelTextColor;
 }
@@ -604,6 +678,12 @@ button:focus,
 	width: 30px;
 }
 
+.zmdi {
+	font-size: 24px !important;
+	line-height: 24px;
+	vertical-align: middle;
+}
+
 .zmdi-sm {
 	display: inline-block;
 	font-size: 20px;
@@ -613,12 +693,6 @@ button:focus,
 	line-height: 20px;
 	text-align: center;
 	vertical-align: middle
-}
-
-.zmdi-lg {
-	font-size: 24px !important;
-	line-height: 24px;
-	vertical-align: middle;
 }
 
 .account,
@@ -1053,6 +1127,7 @@ h4 {
 	margin-right: 7px;
 }
 
+
 /* ACTIVITIES CHART */
 
 svg {
@@ -1268,6 +1343,35 @@ svg {
 	transform: scale(1.02);
 }
 
+.btn-avatar {
+	display: inline-block;
+	position: relative;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+}
+
+.btn-avatar .placeholder {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: url('resources/images/placeholder-avatar-black.svg') top left no-repeat;
+	background-size: cover;
+	opacity: .2;
+	z-index: 1;
+}
+
+.btn-avatar img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 2;
+}
+
 
 /* CARDS */
 
@@ -1305,13 +1409,13 @@ svg {
 }
 
 .card:hover {
-	background: darken($windowBackgroundColor, 10%);
+	background: darken($windowBackgroundColor, 5%);
 }
 
 .card .file-thumbnail-container {
 	position: relative;
-	border: none;
-	border-radius: 0;
+	border: 1px solid rgba(0,0,0,.15);
+	border-radius: 1;
 	box-shadow: none;
 	width: 100%;
 	height: 201px;
@@ -1491,6 +1595,12 @@ select.form-control:focus {
 .modal-dialog {
 	width: 700px;
 	margin-top: $windowTitlebarHeight;
+	color: $headerTextColor;
+}
+
+.modal-dialog label,
+.modal-dialog p.description {
+	color: darken($headerTextColor, 10%);
 }
 
 .modal-dialog .toolbar {
@@ -1553,7 +1663,7 @@ select.form-control:focus {
 }
 
 .modal-backdrop.in {
-	background: darken($windowBackgroundColor, 5%);
+	background: darken($headerBackgroundColor, 50%);
 	opacity: .9 !important;
 	transition: opacity linear .4s;
 }
@@ -1737,11 +1847,11 @@ button[disabled]:hover {
 }
 
 .nav-pills.border-bottom {
-	border-bottom: 1px solid $headerBackgroundColor;
+	border-bottom: 2px solid $highlightBackgroundColor;
 }
 
 .nav-pills.border-bottom>li>a {
-	bottom: -1px;
+	bottom: -2px;
 }
 
 .nav-pills>li+li {
@@ -2624,6 +2734,7 @@ iframe {
 	z-index: 0;
 }
 
+
 /* WINDOW */
 
 #window.win.maximized>.layout-root {
@@ -2785,6 +2896,7 @@ iframe {
 	left: 0;
 	right: 0;
 	bottom: 0;
+	border-radius: 1px;
 }
 
 #window-view-container>.ng-scope {

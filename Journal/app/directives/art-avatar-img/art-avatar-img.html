@@ -1,0 +1,7 @@
+<a class="btn btn-avatar circular" ng-style="t.style" ng-click="t.selectFile($event);">
+    <input type="file" accept="image/*" style="display: none;"/>
+
+    <div class="placeholder"></div>
+
+    <img ng-show="t.src" ng-src="{{t.src}}" width={{t.width}} height="{{t.height}}">
+</a>

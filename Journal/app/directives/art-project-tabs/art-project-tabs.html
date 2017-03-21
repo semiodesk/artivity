@@ -1,15 +1,15 @@
 <div class="header-tabs">
     <uib-tabset>
-        <uib-tab>
+        <uib-tab ng-click="t.selectProject(null)">
             <uib-tab-heading>
-                <i class="zmdi zmdi-lg zmdi-view-dashboard"></i>
+                <i class="zmdi zmdi-lg zmdi-time-restore"></i>
             </uib-tab-heading>
 
             <art-file-list></art-file-list>
         </uib-tab>
-        <uib-tab ng-repeat="project in t.projectList" ng-click="t.selectProject(project)">
+        <uib-tab ng-repeat="project in t.projects" ng-click="t.selectProject(project)">
             <uib-tab-heading>
-                <a class="btn btn-chromeless pull-right" ng-click="t.deleteProject(project)">
+                <a class="btn btn-close pull-right" ng-click="t.closeProject(project)">
                     <i class="zmdi zmdi-xs zmdi-close"></i>
                 </a>
 
