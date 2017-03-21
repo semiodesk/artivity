@@ -72,19 +72,17 @@ namespace Artivity.Api.Modules
         {
             InitQuery();
 
-            string queryString = @"
-            DESCRIBE ?entity WHERE
-            {
-                ?entity a nfo:Image ;
-                  nie:isStoredAs @fileUri .
-                FILTER NOT EXISTS {{
-                      ?v prov:qualifiedRevision / prov:entity ?entity .
-                    }}
-            }";
-            SparqlQuery query = new SparqlQuery(queryString);
+            SparqlQuery query = new SparqlQuery(@"
+                DESCRIBE ?entity WHERE
+                {
+                    ?entity a nfo:Image ; nie:isStoredAs @fileUri .
+
+                    FILTER NOT EXISTS { ?v prov:qualifiedRevision / prov:entity ?entity . }
+                }");
+
             query.Bind("@fileUri", fileUri);
 
-            var entity = UserModel.ExecuteQuery(query, true).GetResources<Image>().First();
+            Image entity = UserModel.ExecuteQuery(query, true).GetResources<Image>().FirstOrDefault();
 
             return Response.AsJsonSync(entity);
 

@@ -25,25 +25,47 @@
 //
 // Copyright (c) Semiodesk GmbH 2017
 
-using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Semiodesk.Trinity;
 
-namespace Artivity.DataModel.ObjectModel.Entities
+namespace Artivity.DataModel.Tasks
 {
-    [RdfClass(SIOC.Post)]
-    public class Post : Entity
+    /// <summary>
+    /// An item's relative importance.
+    /// <see href="http://oscaf.sourceforge.net/tmo.html#tmo:Priority"/>
+    /// </summary>
+    [RdfClass(TMO.Priority)]
+    public class TaskPriority : Resource
     {
-        #region Constructor
+        #region Constructors
 
-        public Post(Uri uri) : base(uri)
-        {
-        }
+        public TaskPriority(Uri uri) : base(uri) { }
+
+        public TaskPriority(string uriString) : base(uriString) { }
 
         #endregion
+    }
 
+    /// <summary>
+    /// Defines priority types used in the NEPOMUK Task Ontology.
+    /// <see href="http://oscaf.sourceforge.net/tmo.html#tmo:Priority"/>
+    /// </summary>
+    public static class TaskPriorityTypes
+    {
+        /// <summary>
+        /// An item has a relatively high importance.
+        /// </summary>
+        public static readonly TaskPriority High = new TaskPriority(TMO.TMO_Instance_Priority_High);
 
+        /// <summary>
+        /// An item is of normal importance.
+        /// </summary>
+        public static readonly TaskPriority Medium = new TaskPriority(TMO.TMO_Instance_Priority_Medium);
+
+        /// <summary>
+        /// An item has a relatively low importance.
+        /// </summary>
+        public static readonly TaskPriority Low = new TaskPriority(TMO.TMO_Instance_Priority_Low);
     }
 }
