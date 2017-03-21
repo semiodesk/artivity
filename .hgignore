@@ -67,3 +67,4 @@ packages/*
 tmp/*
 app.src.js
 app.src.js.map
+Test/TinyVirtuoso/virtuoso/*
