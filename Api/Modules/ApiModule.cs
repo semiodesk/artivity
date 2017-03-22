@@ -420,7 +420,7 @@ namespace Artivity.Api.Modules
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT DISTINCT
 	                ?t1 AS ?time
-	                ?entity AS ?uri
+	                ?file AS ?uri
 	                ?label
                     SAMPLE(COALESCE(?agentColor, '#FF0000')) AS ?agentColor
                 WHERE
@@ -429,7 +429,10 @@ namespace Artivity.Api.Modules
                         prov:generated | prov:used ?entity ;
                         prov:endedAtTime ?t1 .
 
-	                ?entity nie:isStoredAs [ rdfs:label ?label ] .
+	                ?entity nie:isStoredAs ?file .
+
+                    ?file rdfs:label ?label .
+
                     <" + projectUri.AbsoluteUri + @"> prov:hadMember ?entity .
 	
 	                OPTIONAL
