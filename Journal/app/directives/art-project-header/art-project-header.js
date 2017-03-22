@@ -7,11 +7,11 @@
 			controllerAs: 't',
 			bindToController: true,
 			scope: {
-				project: "@project",
-				create: "@create"
+				project: "=project",
+				collapsed: "=?"
 			},
-			link: function(scope, element, attributes) {
-				$('.btn-select-folder').click(function() {
+			link: function (scope, element, attributes) {
+				$('.btn-select-folder').click(function () {
 					$('.form-input-folder').click();
 				});
 			}
@@ -23,12 +23,19 @@
 	function ProjectHeaderDirectiveController($rootScope, $scope, $sce, projectService) {
 		var t = this;
 
-		if (t.create) {
+		if (t.project === null) {
+			t.new = true;
+			t.collapsed = false;
+
 			projectService.create().then(function (result) {
 				t.project = result;
+				t.project.Folder = '';
 
 				console.log(t.project);
 			});
+		} else {
+			t.new = false;
+			t.collapsed = true;
 		}
 
 		t.rootScope = $rootScope;
@@ -63,11 +70,19 @@
 				projectService.update(t.project).then(function () {
 					$rootScope.$broadcast('projectAdded', t.project);
 				});
+
+				if (!t.new) {
+					t.collapsed = true;
+				}
 			}
 		}
 
 		function cancel() {
 			projectService.selectedProject = null;
+
+			if (!t.new) {
+				t.collapsed = true;
+			}
 		}
 	}
 })();
