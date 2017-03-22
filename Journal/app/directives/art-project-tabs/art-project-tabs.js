@@ -17,17 +17,14 @@
     function ProjectTabsDirectiveController($rootScope, $scope, $uibModal, selectionService, projectService, fileService) {
         var t = this;
 
-        t.droppedFile = null;
-        t.projectList = [];
-        t.addProject = addProject;
-        t.addFileToProject = addFileToProject;
-        t.updateProject = updateProject;
-        t.deleteProject = deleteProject;
-        t.refreshProjectList = refreshProjectList;
-        t.selectedProject = null;
+        t.projects = [];
+        t.refresh = refresh;
         t.selectProject = selectProject;
-        t.isDeleting = false;
-        t.toggleDelete = toggleDelete;
+        t.closeProject = closeProject;
+
+        // Drag & Drop
+        t.droppedFile = null;
+        t.addFileToProject = addFileToProject;
 
         initialize();
 
@@ -45,14 +42,16 @@
                 $('.project-item').removeClass('drop-target');
             });
 
-            $rootScope.$on('projectAdded', function() {
-                t.refreshProjectList();
+            $rootScope.$on('projectAdded', function(project) {
+                t.refresh();
+
+                t.selectProject(project);
             });
 
-            t.refreshProjectList();
+            t.refresh();
         }
 
-        function refreshProjectList() {
+        function refresh() {
             projectService.getAll().then(function (response) {
                 var list = response.data;
 
@@ -63,29 +62,10 @@
                         return 0;
                     });
 
-                    t.projectList = list;
+                    t.projects = list;
                 }
 
                 $scope.$apply();
-            });
-        }
-
-        function updateProject(project) {
-            projectService.selectedProject = project;
-
-            var modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/dialogs/update-project-dialog/update-project-dialog.html',
-                controller: 'UpdateProjectDialogController',
-                controllerAs: 't'
-            }).closed.then(function (account) {
-                t.refreshProjectList();
-            });
-        };
-
-        function addProject() {
-            projectService.create().then(function (result) {
-                t.updateProject(result);
             });
         }
 
@@ -99,26 +79,27 @@
             projectService.addFileToProject(project.Uri, file.uri);
         }
 
-        function deleteProject(project) {
-            projectService.remove(project.Uri).then(function (result) {
-                t.refreshProjectList();
+        function closeProject(project) {
+            projectService.selectedProject = project;
+
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/dialogs/close-project-dialog/close-project-dialog.html',
+                controller: 'CloseProjectDialogController',
+                controllerAs: 't'
+            }).closed.then(function (account) {
+                t.refresh();
             });
         }
 
         function selectProject(project) {
             selectionService.selectedItem(project);
 
-            t.selectedProject = project;
-
             if (project === null) {
                 fileService.removeFilter();
             } else {
                 fileService.filterFilesByProject(project.Uri);
             }
-        }
-
-        function toggleDelete() {
-            t.isDeleting = !t.isDeleting;
         }
     }
 })();
