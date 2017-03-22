@@ -36,6 +36,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -68,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IO\ArchiveWriters\FileArchiveWriter.cs" />
+    <Compile Include="IO\S3Uploader.cs" />
     <Compile Include="Modules\CommentModule.cs" />
     <Compile Include="Infrastructure\StreamExtensions.cs" />
     <Compile Include="IO\ArchiveWriters\ActivityArchiveWriter.cs" />

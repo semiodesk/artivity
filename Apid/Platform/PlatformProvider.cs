@@ -64,6 +64,10 @@ namespace Artivity.Apid.Platform
 
         public string RenderingsFolder { get; private set; }
 
+        public string RenderingQueryModifier { get; set; }
+
+        public string GetFilesQueryModifier { get; set; }
+
         public string ExportFolder { get; private set; }
 
         public string ImportFolder { get; private set; }
@@ -96,6 +100,8 @@ namespace Artivity.Apid.Platform
 
         public bool RequiresAuthentication { get { return false; } }
 
+
+
         #endregion
 
         #region Constructors
@@ -118,6 +124,9 @@ namespace Artivity.Apid.Platform
             RenderingsFolder = Path.Combine(ArtivityDataFolder, "Renderings");
             EnsureFolderExists(RenderingsFolder);
 
+            RenderingQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings?uri=', ?entityStub, '&file=', STR(?f) ) as ?file ).";
+            GetFilesQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/thumbnails?entityUri=', ?q) as ?p ).";
+
             ExportFolder = Path.Combine(ArtivityDataFolder, "Export");
             EnsureFolderExists(ExportFolder);
 
@@ -139,6 +148,8 @@ namespace Artivity.Apid.Platform
             IsLinux = TestLinux();
 
             SetDeploymentDir(Environment.CurrentDirectory);
+
+
         }
 
         #endregion
@@ -268,5 +279,7 @@ namespace Artivity.Apid.Platform
             return Path.Combine(RenderingsFolder, entityName);
         }
         #endregion
+
+
     }
 }

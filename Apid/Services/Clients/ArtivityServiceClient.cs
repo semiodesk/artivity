@@ -701,6 +701,8 @@ namespace Artivity.Apid.Accounts
                     Uri userUri = new UriRef(PlatformProvider.Config.Uid);
 
                     FileArchiveWriter writer = new FileArchiveWriter(PlatformProvider, ModelProvider);
+                    var l = writer.ListRenderings(uri).ToList();
+                    await TryPushRenderingsAsync(account, l);
 
                     await writer.WriteAsync(userUri, uri, archive.FullName, DateTime.MinValue);
 
@@ -738,7 +740,6 @@ namespace Artivity.Apid.Accounts
 
                             model.ExecuteUpdate(update);
                         }
-
                         return response.IsSuccessStatusCode;
                     }
                 }
@@ -756,6 +757,33 @@ namespace Artivity.Apid.Accounts
                     }
                 }
             }
+        }
+
+        private async Task<bool> TryPushRenderingsAsync(OnlineAccount account, IEnumerable<FileInfo> renderings)
+        {
+           
+
+            S3Uploader.Policy p = null;
+            foreach(var x in renderings)
+            {
+                if (p == null) // We could reuse a policy here if we test for expiration. Caveat: How long should the grace period be?
+                    p = await GetPolicy(account);
+
+                var parts = x.FullName.Split(Path.DirectorySeparatorChar);
+                if( parts.Count() > 2)
+                { 
+                    string folder = parts[parts.Count() - 2];
+
+                    var res = await S3Uploader.Upload(p, x, folder);
+                }
+                else
+                {
+                    throw new Exception(string.Format("Got unexpected file path {0}", x.FullName));
+                }
+
+            }
+
+            return false;
         }
 
         private async Task<int> GetLastRemoteRevision(HttpResponseMessage response)
@@ -787,6 +815,21 @@ namespace Artivity.Apid.Accounts
             }
         }
 
+        protected async Task<S3Uploader.Policy> GetPolicy(OnlineAccount account)
+        {
+            if (account != null && account.ServiceUrl != null)
+            {
+                string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+                Uri url = new Uri(baseUrl + "/api/1.0/asset/policy");
+                using (var c = GetHttpClient(account))
+                {
+                    var res = await c.GetStringAsync(url);
+                    return JsonConvert.DeserializeObject<S3Uploader.Policy>(res);
+                }
+            }
+            return null;
+        }
+
         private bool IsInstanceOf(Uri resource, Class type)
         {
             ISparqlQuery query = new SparqlQuery(@"
@@ -801,6 +844,7 @@ namespace Artivity.Apid.Accounts
             return _modelProvider.GetActivities().ExecuteQuery(query, true).GetAnwser();
         }
 
+        
         #endregion
     }
 }

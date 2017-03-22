@@ -50,30 +50,46 @@ namespace Artivity.Api.IO
 
         #region Methods
 
-        protected override IEnumerable<EntityRenderingInfo> GetRenderings(Uri fileUri, DateTime minTime)
+        protected override IEnumerable<ArchiveWriterBase.EntityRenderingInfo> GetRenderings(Uri uri, DateTime minTime)
+        {
+            return new EntityRenderingInfo[]{};
+        }
+
+        public IEnumerable<FileInfo> ListRenderings(Uri fileUri)
         {
             IModel model = ModelProvider.GetActivities();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?entity ?file WHERE
+                SELECT ?entityStub ?file WHERE
                 {
-                    ?activity prov:generated | prov:used ?entity .
                     ?entity nie:isStoredAs @fileUri .
-                    ?fileEntity art:publish ""true""^^xsd:boolean_ . 
-                    ?entity art:renderdAs / rdfs:label ?file .
+                    ?entity art:publish ""true""^^xsd:boolean_ . 
+                    ?entity art:renderedAs / rdfs:label ?file .
+                    BIND( STRBEFORE( STR(?entity), '#' ) as ?strippedEntity ).
+                    BIND( if(?strippedEntity != '', ?strippedEntity, str(?entity)) as ?entityStub).
                 }");
 
             query.Bind("@fileUri", fileUri);
 
             IEnumerable<BindingSet> bindings = model.GetBindings(query);
 
+            List<string> thumbnails = new List<string>();
+
             foreach (BindingSet b in bindings)
             {
-                string entity = b["entity"].ToString();
+                string entity = b["entityStub"].ToString();
                 string file = b["file"].ToString();
+                string entityFolder = FileNameEncoder.Encode(entity);
+                string filePath = Path.Combine(PlatformProvider.RenderingsFolder, entityFolder, file);
+                string thumbnail = Path.Combine(PlatformProvider.RenderingsFolder, entityFolder, "thumbnail.png");
+                if (!thumbnails.Contains(thumbnail))
+                    thumbnails.Add(thumbnail);
 
-                yield return new EntityRenderingInfo(entity, file);
+                yield return new FileInfo(filePath);
             }
+
+            foreach (var x in thumbnails)
+                yield return new FileInfo(x);
         }
 
         protected override ISparqlQuery GetAgentsQuery(Uri fileUri, DateTime minTime)
