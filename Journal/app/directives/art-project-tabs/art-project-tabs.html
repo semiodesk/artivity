@@ -16,6 +16,7 @@
                 <div ng-bind="project.Name" style="min-width: 130px;"></div>
             </uib-tab-heading>
 
+	        <art-project-header project="project"></art-project-header>
             <art-file-list></art-file-list>
         </uib-tab>
         <uib-tab>
@@ -23,7 +24,7 @@
                 <i class="zmdi zmdi-lg zmdi-plus"></i>
             </uib-tab-heading>
 
-            <art-project-header create="true"></art-project-header>
+            <art-project-header project="null"></art-project-header>
         </uib-tab>
     </uib-tabset>
 </div>

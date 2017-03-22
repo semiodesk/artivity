@@ -39,6 +39,10 @@ namespace Artivity.DataModel
         [RdfProperty(RDFS.label)]
         public string Name { get; set; }
 
+
+        [RdfProperty(DCES.description)]
+        public string Description { get; set; }
+
         #endregion
 
         #region Constructors
