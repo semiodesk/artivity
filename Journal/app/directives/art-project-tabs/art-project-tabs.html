@@ -2,26 +2,33 @@
     <uib-tabset>
         <uib-tab ng-click="t.selectProject(null)">
             <uib-tab-heading>
-                <i class="zmdi zmdi-lg zmdi-time-restore"></i>
+                <div class="nav-link-container">
+                    <i class="zmdi zmdi-lg zmdi-time-restore"></i>
+                </div>
             </uib-tab-heading>
 
             <art-file-list></art-file-list>
         </uib-tab>
         <uib-tab ng-repeat="project in t.projects" ng-click="t.selectProject(project)">
             <uib-tab-heading>
-                <a class="btn btn-close pull-right" ng-click="t.closeProject(project)">
-                    <i class="zmdi zmdi-xs zmdi-close"></i>
-                </a>
+                <div class="nav-link-container" ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
+                    jqyoui-droppable="{onDrop: 't.onFileDropped'}">
+                    <a class="btn btn-close pull-right" ng-click="t.closeProject(project)">
+                        <i class="zmdi zmdi-xs zmdi-close"></i>
+                    </a>
 
-                <div ng-bind="project.Name" style="min-width: 130px;"></div>
+                    <div ng-bind="project.Name" style="min-width: 130px;"></div>
+                </div>
             </uib-tab-heading>
 
-	        <art-project-header project="project"></art-project-header>
+            <art-project-header project="project"></art-project-header>
             <art-file-list></art-file-list>
         </uib-tab>
         <uib-tab>
             <uib-tab-heading>
-                <i class="zmdi zmdi-lg zmdi-plus"></i>
+                <div class="nav-link-container">
+                    <i class="zmdi zmdi-lg zmdi-plus"></i>
+                </div>
             </uib-tab-heading>
 
             <art-project-header project="null"></art-project-header>

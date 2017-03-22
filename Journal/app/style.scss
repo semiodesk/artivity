@@ -478,6 +478,7 @@ button:focus,
 }
 
 .header-tabs .nav-tabs li a.nav-link {
+	padding: 0;
 	border-right: 1px solid rgba(255, 255, 255, .05);
 	background: transparent;
 	color: $headerTextColor;
@@ -485,13 +486,21 @@ button:focus,
 	text-transform: none;
 }
 
+.header-tabs .nav-tabs li a.nav-link .nav-link-container {
+	padding: 9px 11px;
+}
+
 .header-tabs .nav-tabs li:last-child a.nav-link {
 	border-right: 1px solid transparent;
 }
 
 .header-tabs .nav-tabs li a.nav-link:hover {
-	border-right: 1px solid transparent;
 	border-radius: 1px 1px 0 0;
+	border-right: 1px solid transparent;
+}
+
+.header-tabs .nav-tabs li a.nav-link:hover,
+.header-tabs .nav-tabs li a.nav-link .nav-link-container.drop-target-valid {
 	background: lighten($headerBackgroundColor, 5%);
 }
 
@@ -746,6 +755,11 @@ h4 {
 	font-size: 20px !important;
 }
 
+.header-container {
+	min-height: $toolbarHeight;
+	border-bottom: 1px solid $itemBackgroundColor;
+}
+
 .header-toolbar {
 	display: block;
 	height: $toolbarHeight;
@@ -864,8 +878,13 @@ h4 {
 }
 
 .ui-pane.ui-pane-right {
-	width: 300px;
+	width: 370px;
 	border-left: 1px solid rgba(255, 255, 255, .025);
+}
+
+.ui-pane .tab-pane {
+	width: 100%;
+	height: 100%;
 }
 
 .ui-pane .tab-content {
@@ -892,6 +911,41 @@ h4 {
 	left: 0;
 	right: 0;
 	bottom: 0;
+}
+
+.ui-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 0;
+}
+
+.ui-sidebar {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	z-index: 1;
+	width: 350px;
+	min-width: 250px;
+	background: darken($windowBackgroundColor, 1%);
+}
+
+.ui-sidebar-right {
+	right: 0;
+}
+
+.ui-sidebar .tab-content {
+	position: absolute;
+	top: $toolbarHeight;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.ui-sidebar .tab-pane {
+	height: 100%;
 }
 
 .scroll-vertical {
@@ -1468,8 +1522,8 @@ svg {
 .card .file-extension {
 	z-index: 100;
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: 6px;
+	right: 6px;
 	font-size: 11px;
 	text-transform: uppercase;
 	padding: 2px;

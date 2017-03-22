@@ -12,7 +12,7 @@
         service.create = create;
         service.update = update;
         service.remove = remove;
-        service.addFileToProject = addFileToProject;
+        service.addFile = addFile;
         service.selectedProject = null;
         service.projects = null;
 
@@ -75,10 +75,10 @@
             }, handleError('Error when deleting project.'));
         }
 
-        function addFileToProject(projectUri, fileUri) {
+        function addFile(projectUri, fileUri) {
             var uri = encodeURIComponent(projectUri);
 
-            return $http.get(endpoint + '/addFileToProject?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError('Error when adding file to project.'));
+            return $http.post(endpoint + '/files/?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError('Error when adding file to project.'));
         }
 
         // private functions

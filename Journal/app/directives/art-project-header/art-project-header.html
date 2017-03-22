@@ -1,74 +1,74 @@
-<div class="header-toolbar" ng-show="t.collapsed">
-    <div class="pull-right" ng-show="!t.new">
-        <button class="btn btn-chromeless btn-icn" ng-click="t.collapsed = !t.collapsed"><i class="zmdi zmdi-more-vert"></i></button>
+<div class="header-container">
+    <div class="header-toolbar" ng-show="t.collapsed">
+        <div class="pull-right" ng-show="!t.new">
+            <button class="btn btn-chromeless btn-icn" ng-click="t.collapsed = !t.collapsed"><i class="zmdi zmdi-more-vert"></i></button>
+        </div>
+
+        <div class="padding-x-xl">
+            <b>Projekt:</b>
+
+            <span ng-if="t.project.Description" ng-bind="t.project.Description"></span>
+            <span ng-if="!t.project.Description">Keine Beschreibung verfügbar.</span>
+        </div>
+
+        <div class="clearfix"></div>
     </div>
 
-    <div class="padding-x-xl">
-        <b>Projekt:</b>
+    <form id="project-form" name="projectForm" class="container padding-x-xl padding-y-xl" ng-submit="t.save()" uib-collapse="t.collapsed">
+        <div class="form-group">
+            <label for="title">Name</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Projektname" ng-model="t.project.Name" required>
+        </div>
 
-        <span ng-if="t.project.Description" ng-bind="t.project.Description">
-    </span>
-        <span ng-if="!t.project.Description">
-        Keine Beschreibung verfügbar.
-    </span>
-    </div>
-</div>
+        <div class="form-group">
+            <label for="description">Beschreibung</label>
+            <input type="text" class="form-control" id="description" name="description" placeholder="Beschreibung des Projekts" ng-model="t.project.Description">
+        </div>
 
-<form id="project-form" name="projectForm" class="container padding-x-xl padding-y-xl" ng-submit="t.save()" uib-collapse="t.collapsed">
-    <div class="form-group">
-        <label for="title">Name</label>
-        <input type="text" class="form-control" id="title" name="title" placeholder="Projektname" ng-model="t.project.Name" required>
-    </div>
-
-    <div class="form-group">
-        <label for="description">Beschreibung</label>
-        <input type="text" class="form-control" id="description" name="description" placeholder="Beschreibung des Projekts" ng-model="t.project.Description"
-            required>
-    </div>
-
-    <div class="form-group">
-        <label for="folder">Ordner</label>
-        <div class="row">
-            <div class="col-xs-9">
-                <input ng-model="t.project.Folder" class="form-input-folder" type="file" style="display: none;" webkitdirectory>
-                <input ng-model="t.project.Folder" class="form-control" type="text" placeholder="Bitte wählen Sie einen Projektordner aus."
-                    readonly>
-            </div>
-            <div class="col-xs-3">
-                <a class="btn btn-chromeless btn-select-folder pull-right"><i class="zmdi zmdi-folder"></i> Ordner auswählen</a>
+        <div class="form-group">
+            <label for="folder">Ordner</label>
+            <div class="row">
+                <div class="col-xs-9">
+                    <input ng-model="t.project.Folder" class="form-input-folder" type="file" style="display: none;" webkitdirectory>
+                    <input ng-model="t.project.Folder" class="form-control" type="text" placeholder="Bitte wählen Sie einen Projektordner aus."
+                        readonly>
+                </div>
+                <div class="col-xs-3">
+                    <a class="btn btn-chromeless btn-select-folder pull-right"><i class="zmdi zmdi-folder"></i> Ordner auswählen</a>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <a class="btn btn-chromeless pull-right" ng-click="t.createUser()">
-            <i class="zmdi zmdi-lg zmdi-account-add"></i> <span class="btn-label">Teilnehmer hinzufügen</span>
-        </a>
+        <div class="form-group">
+            <a class="btn btn-chromeless pull-right" ng-click="t.createUser()">
+                <i class="zmdi zmdi-lg zmdi-account-add"></i> <span class="btn-label">Teilnehmer hinzufügen</span>
+            </a>
 
-        <label for="members">Teilnehmer</label>
+            <label for="members">Teilnehmer</label>
 
-        <ul class="list-unstyled list-view">
-            <li class="list-item" ng-repeat="user in t.users">
-                <div class="layout-container padding-x-xs padding-y-xs">
-                    <div class="col">
-                        <art-avatar-img width="40" height="40" src="{{user.photoUrl}}"></art-avatar-img>
-                    </div>
-                    <div class="col expand">
-                        <div class="padding-x-md">
-                            <h5 ng-bind="user.name"></h5>
-                            <label ng-bind="user.email"></label>
+            <ul class="list-unstyled list-view">
+                <li class="list-item" ng-repeat="user in t.users">
+                    <div class="layout-container padding-x-xs padding-y-xs">
+                        <div class="col">
+                            <art-avatar-img width="40" height="40" src="{{user.photoUrl}}"></art-avatar-img>
+                        </div>
+                        <div class="col expand">
+                            <div class="padding-x-md">
+                                <h5 ng-bind="user.name"></h5>
+                                <label ng-bind="user.email"></label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-chromeless" ng-click="t.removeUser(user);"><i class="zmdi zmdi-close"></i></a>
                         </div>
                     </div>
-                    <div class="col">
-                        <a class="btn btn-chromeless" ng-click="t.removeUser(user);"><i class="zmdi zmdi-close"></i></a>
-                    </div>
-                </div>
-            </li>
-        </ul>
-    </div>
+                </li>
+            </ul>
+        </div>
 
-    <div class="form-group">
-        <button class="btn btn-success" ng-show="!t.collapsed" ng-click="t.commit()" ng-disabled="projectForm.title.$invalid"><i class="zmdi zmdi-check"></i></button>
-        <button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
-    </div>
-</form>
+        <div class="form-group">
+            <button class="btn btn-success" ng-show="!t.collapsed" ng-click="t.commit()" ng-disabled="projectForm.title.$invalid"><i class="zmdi zmdi-check"></i></button>
+            <button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
+        </div>
+    </form>
+</div>

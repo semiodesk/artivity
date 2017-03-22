@@ -58,35 +58,26 @@
                 // Set the user URI for the new comments.
                 t.comment.agent = t.user.Uri;
 
-                if ($scope.entity) {
-                    // Make sure the user is properly initialized before retrieving the entity derivations.
-                    entityService.getById($scope.entity).then(function (response) {
-                        var entity = response;
+                entityService.getRecentByFile($scope.entity).then(function (entity) {
+                    // Set the entity URI as primary source for the comments.
+                    t.comment.entity = entity.Uri;
 
-                        if (entity.RevisionUris && entity.RevisionUris.length > 0) {
-                            t.entity = entity.RevisionUris[0];
+                    commentService.get(entity.Uri).then(function (data) {
+                        t.comments = [];
 
-                            // Set the entity URI as primary source for the comments.
-                            t.comment.entity = t.entity;
+                        for (i = 0; i < data.length; i++) {
+                            var c = data[i];
 
-                            commentService.get(t.entity).then(function (data) {
-                                t.comments = [];
-
-                                for (i = 0; i < data.length; i++) {
-                                    var c = data[i];
-
-                                    // Insert at the beginning of the list.
-                                    t.comments.unshift({
-                                        uri: c.uri,
-                                        agent: c.agent,
-                                        time: c.time,
-                                        text: c.message
-                                    });
-                                }
+                            // Insert at the beginning of the list.
+                            t.comments.unshift({
+                                uri: c.uri,
+                                agent: c.agent,
+                                time: c.time,
+                                text: c.message
                             });
                         }
                     });
-                }
+                });
             });
 
             resetComment();
@@ -156,7 +147,7 @@
                 markers: []
             };
 
-            if(t.user) {
+            if (t.user) {
                 t.comment.agent = user.Uri;
             }
 

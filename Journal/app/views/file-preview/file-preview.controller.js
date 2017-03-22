@@ -11,8 +11,7 @@
         t.agent = {
             iconUrl: ''
         };
-        t.entity = {
-        };
+        t.entity = {};
         t.file = {};
         t.fileUri = fileUri;
 
@@ -25,9 +24,6 @@
 
                 console.log("Loaded entity: ", t.file);
             });
-
-           
-           
 
             // Agent metadata
             api.getAgent(fileUri).then(function (data) {
@@ -46,12 +42,25 @@
             });
 
             // Make the left and right panes resizable.
-            $(".ui-pane-left").resizable({
-                handles: "e"
+            var content = $('.ui-content');
+            var sidebar = $('.ui-sidebar-right');
+
+            sidebar.resizable({
+                handles: 'w'
             });
-            $(".ui-pane-left").resize(function() {
+
+            sidebar.resize(function(event, ui) {
+                var width = ui.size.width + 'px';
+
+                sidebar.css('left', 'auto');
+                sidebar.css('right', 0);
+                sidebar.css('width', width);
+                content.css('right', width);
+
                 $rootScope.$broadcast('resize');
             });
+
+            content.css('right', sidebar.outerWidth() + 'px');
         }
     }
 })();

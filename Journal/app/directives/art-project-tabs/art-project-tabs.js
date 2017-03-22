@@ -24,7 +24,7 @@
 
         // Drag & Drop
         t.droppedFile = null;
-        t.addFileToProject = addFileToProject;
+        t.onFileDropped = onFileDropped;
 
         initialize();
 
@@ -42,7 +42,7 @@
                 $('.project-item').removeClass('drop-target');
             });
 
-            $rootScope.$on('projectAdded', function(project) {
+            $rootScope.$on('projectAdded', function (project) {
                 t.refresh();
 
                 t.selectProject(project);
@@ -69,14 +69,22 @@
             });
         }
 
-        function addFileToProject(event) {
-            var target = $(event.target);
+        function onFileDropped(event) {
+            if (event.target) {
+                var target = $(event.target);
 
-            var file = t.droppedFile;
-            var project = angular.element(target[0]).scope().project;
+                if (target.length > 0) {
+                    var scope = angular.element(target[0]).scope();
 
-            // Project is mapped automatically, file manually. this is why the caps of the uri property are different
-            projectService.addFileToProject(project.Uri, file.uri);
+                    if (scope) {
+                        var project = scope.project;
+                        var file = t.droppedFile;
+
+                        // Project is mapped automatically, file manually. this is why the caps of the uri property are different
+                        projectService.addFile(project.Uri, file.uri);
+                    }
+                }
+            }
         }
 
         function closeProject(project) {

@@ -24,7 +24,7 @@
         <div class="scroll-container scroll-y layout-fix">
             <ul class="list-view list-view-compact">
                 <li class="list-item list-item-unstyled list-item-link project-item" ng-repeat="project in t.projectList" ng-click="t.selectProject(project)" ng-class="{selected: t.selectedProject === project}"
-                    ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}" jqyoui-droppable="{onDrop: 't.addFileToProject'}">
+                    ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}" jqyoui-droppable="{onDrop: 't.addFile'}">
                     <div class="padding-x-xl padding-y-none" style="padding-right: 0 !important;">
                         <div class="col expand">
                             <span class="label">{{project.Name}}</span>
