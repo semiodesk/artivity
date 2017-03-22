@@ -386,14 +386,12 @@ namespace Artivity.Api.Modules
                     SAMPLE(?p) as ?thumbnail 
                     MAX(?t) as ?time 
                     SAMPLE(COALESCE(?agentColor, '#cecece')) AS ?agentColor
-                    COUNT(?rr) as ?revisions
                     WHERE {{
                             ?a prov:generated | prov:used ?entity ;
                             prov:endedAtTime ?ended ;
                             prov:startedAtTime ?started ;
                             prov:qualifiedAssociation / prov:agent ?agent.
   
-                    ?entity prov:qualifiedRevision* ?rr.
                     ?agent a prov:SoftwareAgent.
                     ?entity nie:isStoredAs ?file.
                     ?file rdfs:label ?label .
@@ -405,7 +403,7 @@ namespace Artivity.Api.Modules
                         ?agent art:hasColourCode ?agentColor .
                     }}
                     FILTER NOT EXISTS {{
-                      ?entity prov:qualifiedRevision ?r .
+                      ?entity prov:qualifiedRevision / prov:entity ?x .
                     }}
                     {0}
                     }}GROUP BY ?label ?file ?q ?time {1} {2} {3}";
