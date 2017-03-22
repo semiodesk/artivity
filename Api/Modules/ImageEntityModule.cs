@@ -55,7 +55,7 @@ namespace Artivity.Api.Modules
 
         protected override Response GetEntity()
         {
-            InitQuery();
+            InitializeQueryContext();
 
             if (Request.Query["fileUri"] != null) 
             {
@@ -70,7 +70,7 @@ namespace Artivity.Api.Modules
 
         protected Response GetRecentByFile(Uri fileUri)
         {
-            InitQuery();
+            InitializeQueryContext();
 
             SparqlQuery query = new SparqlQuery(@"
                 DESCRIBE ?entity WHERE

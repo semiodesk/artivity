@@ -1,6 +1,7 @@
 ﻿using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
+using Nancy.Extensions;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace Artivity.Api.Modules
         #endregion
 
         #region Constructor
+
         public SparqlModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
             : base("/artivity/api/1.0", modelProvider, platformProvider)
         {
@@ -75,24 +77,38 @@ namespace Artivity.Api.Modules
             {
                 string query = Request.Form.query;
 
-                if (string.IsNullOrEmpty(query))
+                if (string.IsNullOrEmpty(query) && Request.Body.Length == 0)
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                if (Request.Query.inference)
+                if(!string.IsNullOrEmpty(query))
                 {
-                    return ExecuteQuery(query, true);
+                    if (Request.Query.inference)
+                    {
+                        return ExecuteQuery(query, true);
+                    }
+                    else
+                    {
+                        return ExecuteQuery(query);
+                    }
                 }
                 else
                 {
-                    return ExecuteQuery(query);
+                    // Remove the 'update=' at the start of the string.
+                    string update = Context.Request.Body.AsString().Remove(0, 7);
+                    update = Uri.UnescapeDataString(update);
+                    update = update.Replace('+', ' ');
+
+                    return ExecuteUpdate(update);
                 }
             };
         }
+
         #endregion
 
-        #region Members
+        #region Methods
+
         private Response ExecuteQuery(string queryString, bool inferenceEnabled = false)
         {
             try
@@ -177,6 +193,16 @@ namespace Artivity.Api.Modules
 
                 return Response.AsJsonSync(messages);
             }
+        }
+
+        private Response ExecuteUpdate(string updateString)
+        {
+            SparqlUpdate update = new SparqlUpdate(updateString);
+
+            IModel model = ModelProvider.GetActivities();
+            model.ExecuteUpdate(update);
+
+            return HttpStatusCode.OK;
         }
 
         #endregion

@@ -42,6 +42,8 @@ namespace Artivity.Api.Modules
     {
         #region Members
 
+        private Class _entityType;
+
         private bool _create;
 
         private bool _retrieve;
@@ -50,7 +52,7 @@ namespace Artivity.Api.Modules
 
         private bool _delete;
 
-        private bool _initQueryCalled = false;
+        private bool _queryInitialized = false;
 
         #endregion
 
@@ -84,21 +86,25 @@ namespace Artivity.Api.Modules
 
         private static string GetTypename()
         {
-            return typeof(T).Name;
+            return typeof(T).Name.ToLowerInvariant();
         }
 
         protected virtual Uri CreateUri(string guid)
         {
-            return new Uri(string.Format("http://artivity.io/{0}/{1}", typeof(T).Name, guid));
+            return new Uri(string.Format("http://artivity.io/{0}/{1}", typeof(T).Name.ToLowerInvariant(), guid));
         }
 
         protected virtual Uri CreateUri()
         {
-            return new Uri(string.Format("http://artivity.io/{0}/{1}", typeof(T).Name, Guid.NewGuid().ToString()));
+            return new Uri(string.Format("http://artivity.io/{0}/{1}", typeof(T).Name.ToLowerInvariant(), Guid.NewGuid().ToString()));
         }
 
         private void Initialize()
         {
+            T t = (T)Activator.CreateInstance(typeof(T), new Uri("http://localhost/temp"));
+
+            _entityType = t.GetTypes().FirstOrDefault();
+
             if (_retrieve)
             {
                 Get["/"] = parameters =>
@@ -184,9 +190,17 @@ namespace Artivity.Api.Modules
 
                     OnBeforeEntityDeleted(uri);
 
-                    IResource resource = UserModel.GetResource(uri);
-                    resource.AddProperty(art.deleted, DateTime.UtcNow);
-                    resource.Commit();
+                    SparqlUpdate update = new SparqlUpdate(@"
+                        WITH @model
+                        DELETE { @subject art:deleted ?deletionTime . }
+                        INSERT { @subject art:deleted @deletionTime . }
+                    ");
+
+                    update.Bind("@model", UserModel.Uri);
+                    update.Bind("@subject", uri);
+                    update.Bind("@deletionTime", DateTime.UtcNow);
+
+                    UserModel.ExecuteUpdate(update);
 
                     return Response.AsJsonSync(new { success = true });
                 };
@@ -206,7 +220,7 @@ namespace Artivity.Api.Modules
         /// If you overload it, return null if you want to continue processing the request.
         /// </summary>
         /// <returns></returns>
-        protected virtual Response InitQuery()
+        protected virtual Response InitializeQueryContext()
         {
             if (PlatformProvider.RequiresAuthentication)
             {
@@ -220,7 +234,7 @@ namespace Artivity.Api.Modules
                 return HttpStatusCode.InternalServerError;
             }
 
-            _initQueryCalled = true;
+            _queryInitialized = true;
 
             return null;
         }
@@ -233,15 +247,19 @@ namespace Artivity.Api.Modules
         /// <returns></returns>
         protected virtual Response GetEntity()
         {
-            if( !_initQueryCalled )
+            if(!_queryInitialized)
             {
-                var res = InitQuery();
-                if (res != null)
-                    return res;
+                var response = InitializeQueryContext();
+
+                if (response != null)
+                {
+                    return response;
+                }
             }
 
             int offset = -1;
             int limit = -1;
+
             GetOffsetLimit(out offset, out limit);
 
             if (Request.Query["uri"] != null && !string.IsNullOrEmpty(Request.Query["uri"]))
@@ -254,29 +272,81 @@ namespace Artivity.Api.Modules
             }
             else
             {
-                T t = (T)Activator.CreateInstance(typeof(T), new Uri("http://localhost"));
+                
+                int count = 0;
 
-                ResourceQuery query = new ResourceQuery(t.GetTypes());
-                query.Where(art.deleted, DateTime.MinValue);
- 
-                var queryResult = UserModel.ExecuteQuery(query);
-                int count = queryResult.Count();
+                SparqlQuery countQuery = new SparqlQuery(@"
+                    SELECT COUNT(?s) AS ?count WHERE
+                    {
+	                    ?s a @type .
+	
+	                    OPTIONAL { ?s art:deleted ?deletionTime . }
+	
+	                    FILTER(!BOUND(?deletionTime) || ?deletionTime = @minDate)
+                    }");
 
-                List<T> list = queryResult.GetResources<T>(offset, limit).ToList();
+                countQuery.Bind("@type", _entityType.Uri);
+                countQuery.Bind("@minDate", DateTime.MinValue);
 
-                return Response.AsJsonSync(new Dictionary<string, object> { { "success", true }, { "data", list } });
+                BindingSet b = UserModel.ExecuteQuery(countQuery).GetBindings().FirstOrDefault();
+
+                if (b != null)
+                {
+                    count = (int)b["count"];
+                }
+                else
+                {
+                    return Response.AsJsonSync(new Dictionary<string, object>
+                    {
+                        {"success", false},
+                        {"count", 0},
+                        {"offset", 0},
+                        {"limit", 0},
+                        {"data", ""}
+                    });
+                }
+
+                SparqlQuery query = new SparqlQuery(@"
+                    SELECT ?s ?p ?o WHERE
+                    {
+                        ?s ?p ?o
+                        {
+                            SELECT ?s WHERE
+                            {
+	                            ?s a @type .
+	
+	                            OPTIONAL { ?s art:deleted ?deletionTime . }
+	
+	                            FILTER(!BOUND(?deletionTime) || ?deletionTime = @minDate)
+                            }
+                            OFFSET @offset LIMIT @limit
+                        }
+                    }");
+
+                query.Bind("@type", _entityType.Uri);
+                query.Bind("@minDate", DateTime.MinValue);
+                query.Bind("@offset", offset);
+                query.Bind("@limit", limit);
+
+                List<T> data = UserModel.GetResources<T>(query).ToList();
+
+                return Response.AsJsonSync(new Dictionary<string, object>
+                {
+                    {"success", true},
+                    {"count", count},
+                    {"offset", offset},
+                    {"limit", limit},
+                    {"data", data}
+                });
             }
         }
 
         protected void GetOffsetLimit(out int offset, out int limit)
         {
-            offset = 0;
-            limit = 10;
-            if (Request.Query["offset"])
-                offset = (int)Request.Query["offset"];
-            if (Request.Query["limit"])
-                limit = (int)Request.Query["limit"];
+            offset = Request.Query["offset"] ? (int)Request.Query["offset"] : 0;
+            limit = Request.Query["limit"] ? (int)Request.Query["limit"] : 10;
         }
+
         #endregion
     }
 }
