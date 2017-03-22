@@ -2,22 +2,21 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="container padding-x-xl padding-y-xl">
-				<h2 class="modal-title">Add Project</h2>
+				<h2 class="modal-title">Archive '<span ng-bind="t.project.Name"></span>'?</h2>
 			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="layout-container padding-x-xl">
-				<label for="title">Title</label>
-				<input type="text" class="form-control" id="title" name="title" placeholder="Example Project" ng-model="t.project.Name" ng-enter="t.commit()" required>
+				<p class="description">The project will be marked as archived and no content will be deleted.<br> You can restore the project at any time in the future.</p>
 			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="toolbar pull-right">
-				<button class="btn btn-success" type="submit" ng-click="t.commit()" ng-disabled="projectForm.title.$invalid"><i class="zmdi zmdi-check"></i></button>
+				<button class="btn btn-success" type="submit" ng-click="t.commit()"><i class="zmdi zmdi-check"></i></button>
 				<button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
 			</div>
 		</div>

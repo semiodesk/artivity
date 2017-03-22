@@ -14,8 +14,8 @@
    viewBox="0 0 50 50"
    version="1.1"
    id="svg4874"
-   inkscape:version="0.92.0 r15299"
-   sodipodi:docname="user.svg">
+   inkscape:version="0.92.1 r15371"
+   sodipodi:docname="placeholder-avatar-white.svg">
   <defs
      id="defs4868" />
   <sodipodi:namedview
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="0.8567272"
-     inkscape:cy="129.46651"
+     inkscape:zoom="1.4"
+     inkscape:cx="-238.82132"
+     inkscape:cy="143.95866"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -72,9 +72,9 @@
      id="layer1"
      transform="translate(0,-247)">
     <path
-       style="opacity:1;fill:#000000;fill-opacity:0.09803922;stroke:none;stroke-width:1.99999988;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 0 0 L 0 188.97656 L 188.97656 188.97656 L 188.97656 0 L 0 0 z M 92.683594 19.335938 A 42.12139 42.12139 0 0 1 134.80469 61.457031 A 42.12139 42.12139 0 0 1 92.683594 103.57812 A 42.12139 42.12139 0 0 1 50.5625 61.457031 A 42.12139 42.12139 0 0 1 92.683594 19.335938 z M 68.28125 107.35547 L 68.46875 107.35547 A 42.121391 42.121391 0 0 0 92.683594 115.04102 A 42.121391 42.121391 0 0 0 116.84961 107.35547 L 120.69531 107.35547 C 155.26386 107.35547 157.87695 126.81836 157.87695 126.81836 L 164.84766 188.40039 L 94.539062 188.40039 L 94.4375 188.40039 L 24.128906 188.40039 L 31.099609 126.81836 C 31.099609 126.81836 33.712682 107.35547 68.28125 107.35547 z "
-       transform="matrix(0.26458333,0,0,0.26458333,0,247)"
-       id="rect5451" />
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:10;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 24.52251,252.26836 A 11.144617,11.144617 0 0 0 13.377971,263.4129 11.144617,11.144617 0 0 0 24.52251,274.55744 11.144617,11.144617 0 0 0 35.66705,263.4129 11.144617,11.144617 0 0 0 24.52251,252.26836 Z m -6.456453,23.2885 c -9.1462669,0 -9.8376425,5.14956 -9.8376425,5.14956 L 6.3840827,297 h 18.6024813 0.02687 18.602483 l -1.844334,-16.29358 c 0,0 -0.69138,-5.14956 -9.837642,-5.14956 h -1.017508 a 11.144618,11.144618 0 0 1 -6.393925,2.03347 11.144618,11.144618 0 0 1 -6.406844,-2.03347 z"
+       id="rect4486"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

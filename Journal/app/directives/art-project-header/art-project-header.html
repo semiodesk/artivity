@@ -1,23 +1,5 @@
-<div class=" padding-x-xl padding-y-xl">
+<div class="container padding-x-xl padding-y-xl">
     <form name="projectForm" ng-submit="t.save()">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="layout-container">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="Projektname" ng-model="t.project.Name" ng-enter="t.commit()"
-                        required>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="layout-container">
-                    <label for="description">Description</label>
-                    <input type="text" class="form-control" id="description" name="description" placeholder="Beschreibung des Projekts" ng-model="t.project.Description"
-                        ng-enter="t.commit()" required>
-                </div>
-            </div>
-        </div>
         <div class="row">
             <div class="col-xs-12">
                 <div class="toolbar pull-right">
@@ -26,5 +8,61 @@
                 </div>
             </div>
         </div>
-    </form>
+        <div class="row" class="collapse in" id="header-expanded">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="title">Name</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Projektname" ng-model="t.project.Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Beschreibung</label>
+                    <input type="text" class="form-control" id="description" name="description" placeholder="Beschreibung des Projekts" ng-model="t.project.Description"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="folder">Ordner</label>
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <input ng-model="t.project.Folder" class="form-input-folder" type="file" style="display: none;" webkitdirectory>
+                            <input ng-model="t.project.Folder" class="form-control" type="text" placeholder="Bitte wählen Sie einen Projektordner aus."
+                                readonly>
+                        </div>
+                        <div class="col-xs-3">
+                            <a class="btn btn-chromeless btn-select-folder pull-right"><i class="zmdi zmdi-folder"></i> Ordner auswählen</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <a class="btn btn-chromeless pull-right" ng-click="t.createUser()">
+                        <i class="zmdi zmdi-lg zmdi-account-add"></i> <span class="btn-label">Teilnehmer hinzufügen</span>
+                    </a>
+
+                    <label for="members">Teilnehmer</label>
+
+                    <ul class="list-unstyled list-view">
+                        <li class="list-item" ng-repeat="user in t.users">
+                            <div class="layout-container padding-x-xs padding-y-xs">
+                                <div class="col">
+                                    <art-avatar-img width="40" height="40" src="{{user.photoUrl}}"></art-avatar-img>
+                                </div>
+                                <div class="col expand">
+                                    <div class="padding-x-md">
+                                        <h5 ng-bind="user.name"></h5>
+                                        <label ng-bind="user.email"></label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <a class="btn btn-chromeless" ng-click="t.removeUser(user);"><i class="zmdi zmdi-close"></i></a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+</div>
+</form>
 </div>
