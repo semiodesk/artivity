@@ -24,12 +24,11 @@
         t.setFile = setFile;
         t.onClick = onClick;
 
-        function setFile (element, file, enableLink) {
+        function setFile(element, file, enableLink) {
             t.file = file;
             t.fileName = filesystemService.getFileNameWithoutExtension(file.label);
             t.fileExtension = filesystemService.getFileExtension(file.label);
-            if( file.thumbnail !== undefined)
-            {
+            if (file.thumbnail !== undefined) {
                 t.thumbnail = true;
                 t.thumbnailUrl = file.thumbnail;
             }
@@ -38,13 +37,13 @@
             $(element).find('.file-thumbnail').css('background-image', 'url(' + t.thumbnailUrl + ')');
         }
 
-        function onClick (e) {
+        function onClick(e) {
             e.preventDefault();
 
             if (event.ctrlKey) {
-                $location.path("/files/preview").search("uri", t.file.uri);
-            } else {
                 $location.path("/files/view").search("uri", t.file.uri).search("entityUri", t.file.entityUri);
+            } else {
+                $location.path("/files/preview").search("uri", t.file.uri);
             }
         }
     }

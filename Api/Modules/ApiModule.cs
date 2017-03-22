@@ -421,6 +421,8 @@ namespace Artivity.Api.Modules
                 SELECT DISTINCT
 	                ?t1 AS ?time
 	                ?file AS ?uri
+                    ?q as ?entityUri
+                    SAMPLE(?p) as ?thumbnail 
 	                ?label
                     SAMPLE(COALESCE(?agentColor, '#FF0000')) AS ?agentColor
                 WHERE
@@ -430,10 +432,12 @@ namespace Artivity.Api.Modules
                         prov:endedAtTime ?t1 .
 
 	                ?entity nie:isStoredAs ?file .
-
+                    BIND( STRBEFORE( STR(?entity), '#' ) as ?e ).
+                    BIND( if(?e != '', ?e, str(?entity)) as ?q).
+                    "+PlatformProvider.GetFilesQueryModifier+@"
                     ?file rdfs:label ?label .
 
-                    <" + projectUri.AbsoluteUri + @"> prov:hadMember ?entity .
+                    <" + projectUri.AbsoluteUri + @"> prov:hadMember ?file .
 	
 	                OPTIONAL
 	                {

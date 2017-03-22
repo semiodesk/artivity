@@ -32,6 +32,7 @@ using Nancy;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Artivity.Api.Modules
 {
@@ -40,34 +41,96 @@ namespace Artivity.Api.Modules
         public ProjectModule(IModelProvider modelProvider, IPlatformProvider platformProvider) : 
             base("/artivity/api/1.0/projects", modelProvider, platformProvider)
         {
-            Get["/addFileToProject"] = parameters =>
+            Post["/agents"] = parameters =>
             {
                 string projectUri = Request.Query.projectUri;
-                string fileUri = Request.Query.fileUri;
+                string agentUri = Request.Query.agentUri;
 
-                if ((string.IsNullOrEmpty(fileUri) || !IsUri(fileUri)) && (string.IsNullOrEmpty(projectUri) || !IsUri(projectUri)))
+                if (!IsUri(projectUri) || !IsUri(agentUri))
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return AddFileToProject(projectUri, fileUri);
+                return PostAgent(projectUri, agentUri);
+            };
+
+            Post["/files"] = parameters =>
+            {
+                string projectUri = Request.Query.projectUri;
+                string fileUri = Request.Query.fileUri;
+
+                if(!IsUri(projectUri) || !IsUri(fileUri))
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return PostFile(projectUri, fileUri);
+            };
+
+            Post["/folders"] = parameters =>
+            {
+                string projectUri = Request.Query.projectUri;
+                string folderUrl = Request.Query.folderUrl;
+
+                if(!IsUri(projectUri) || !IsUri(folderUrl))
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return PostFolder(projectUri, folderUrl);
             };
         }
 
-        protected Response AddFileToProject(string projectUri, string fileUri)
+        protected Response PostAgent(string projectUri, string agentUri)
         {
-            IModel model = ModelProvider.GetActivities();
+            IModel activities = ModelProvider.GetActivities();
+            IModel agents = ModelProvider.GetAgents();
 
-            Project proj = model.GetResource<Project>(new Uri(projectUri));
-            Entity entity = model.GetResource<Entity>(new Uri(fileUri));
+            Project project = activities.GetResource<Project>(new Uri(projectUri));
+            Agent agent = agents.GetResource<Agent>(new Uri(agentUri));
 
-            if (!proj.Members.Contains(entity))
+            if (!project.Associations.Any(a => a.Agent == agent))
             {
-                proj.Members.Add(entity);
-                proj.Commit();
+                Association association = activities.CreateResource<Association>();
+                association.Agent = agent;
+
+                project.Associations.Add(association);
+                project.Commit();
+            }
+
+            return Response.AsJsonSync(new Dictionary<string, bool> { { "success", true } });
+        }
+
+        protected Response PostFile(string projectUri, string fileUri)
+        {
+            IModel activities = ModelProvider.GetActivities();
+
+            Project project = activities.GetResource<Project>(new Uri(projectUri));
+            Entity entity = activities.GetResource<Entity>(new Uri(fileUri));
+
+            if (!project.Members.Contains(entity))
+            {
+                project.Members.Add(entity);
+                project.Commit();
             }
 
             return Response.AsJsonSync(new Dictionary<string, bool>{ {"success", true}});
+        }
+
+        protected Response PostFolder(string projectUri, string folderUrl)
+        {
+            IModel activities = ModelProvider.GetActivities();
+
+            Project project = activities.GetResource<Project>(new Uri(projectUri));
+            Folder folder = activities.GetResource<Folder>(new Uri(folderUrl));
+
+            if (!project.Usages.Any(u => u.Entity is Folder))
+            {
+                //project.Usages.Add(folder);
+                //project.Commit();
+            }
+
+            return Response.AsJsonSync(new Dictionary<string, bool> { { "success", true } });
         }
     }
 }

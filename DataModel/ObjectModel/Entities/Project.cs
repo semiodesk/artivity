@@ -39,9 +39,17 @@ namespace Artivity.DataModel
         [RdfProperty(RDFS.label)]
         public string Name { get; set; }
 
-
         [RdfProperty(DCES.description)]
         public string Description { get; set; }
+
+        [RdfProperty(ART.colorCode)]
+        public string ColorCode { get; set; }
+
+        [RdfProperty(PROV.qualifiedAssociation)]
+        public List<Association> Associations { get; set; }
+
+        [RdfProperty(PROV.qualifiedUsage)]
+        public List<Usage> Usages { get; set; }
 
         #endregion
 
