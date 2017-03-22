@@ -57,6 +57,9 @@ namespace ArtivityTest
             set;
         }
 
+        public string RenderingQueryModifier { get; set; }
+        public string GetFilesQueryModifier { get; set; }
+
         public string ExportFolder
         {
             get;

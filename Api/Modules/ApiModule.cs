@@ -399,17 +399,17 @@ namespace Artivity.Api.Modules
                     ?file rdfs:label ?label .
                     BIND( STRBEFORE( STR(?entity), '#' ) as ?e ).
                     BIND( if(?e != '', ?e, str(?entity)) as ?q).
-                    BIND( CONCAT('http://localhost:8262/artivity/api/1.0/thumbnails?entityUri=', ?q) as ?p ).
+                    {4}
                     BIND(if(bound(?ended), ?ended, ?started) as ?t).
                     OPTIONAL{{
                         ?agent art:hasColourCode ?agentColor .
                     }}
                     FILTER NOT EXISTS {{
-                      ?entity prov:qualifiedRevision ?r .
+                      ?entity prov:qualifiedRevision / prov:entity ?x .
                     }}
                     {0}
                     }}GROUP BY ?label ?file ?q ?time {1} {2} {3}";
-            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause);
+            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, PlatformProvider.GetFilesQueryModifier);
             ISparqlQuery query = new SparqlQuery(queryString);
 
             var bindings = ModelProvider.GetAll().GetBindings(query);
@@ -991,11 +991,11 @@ namespace Artivity.Api.Modules
 
         private Response GetCanvasRenderingsFromEntity(UriRef entityUri)
         {
-            string baseUri = "http://localhost:8262/artivity/api/1.0/renderings?uri=";
+
             string queryString = @"
                 SELECT DISTINCT
                     ?time
-                    ?type
+                    MIN(?type) as ?type
                     ?file
                     ?entity as ?layer
                   	COALESCE(?x, 0) AS ?x
@@ -1020,16 +1020,16 @@ namespace Artivity.Api.Modules
                             art:height ?h
                         ]
                     ] .
-                    BIND( CONCAT(@baseUri, ?entityStub, '&file=', STR(?f) ) as ?file ).
+                    "+PlatformProvider.RenderingQueryModifier+@"
                     BIND(?entity AS ?layer)
                 }
                 ORDER BY DESC(?time)";
 
+            //queryString = String.Format(queryString, );
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@entity", entityUri);
-            query.Bind("@baseUri", baseUri);
 
-            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query, true).ToList();
+            var bindings = ModelProvider.GetActivities().GetBindings(query, true);
 
             return Response.AsJsonSync(bindings);
         }

@@ -54,6 +54,10 @@ namespace Artivity.Api.Platform
 
         string RenderingsFolder { get; }
 
+        string RenderingQueryModifier { get; }
+
+        string GetFilesQueryModifier { get; }
+
         string ExportFolder { get; }
 
         string ImportFolder { get; }
