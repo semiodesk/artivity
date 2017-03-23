@@ -114,7 +114,7 @@ namespace Artivity.Api.Modules
 
         protected bool IsUri(string uri, UriKind kind = UriKind.Absolute)
         {
-            return Uri.IsWellFormedUriString(uri, kind);
+            return !string.IsNullOrEmpty(uri) && Uri.IsWellFormedUriString(uri, kind);
         }
 
         protected bool IsFileUrl(string url)
