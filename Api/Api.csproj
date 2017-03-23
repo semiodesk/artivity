@@ -70,15 +70,16 @@
   <ItemGroup>
     <Compile Include="IO\ArchiveWriters\FileArchiveWriter.cs" />
     <Compile Include="IO\S3Uploader.cs" />
-    <Compile Include="Modules\CommentModule.cs" />
+    <Compile Include="Modules\CommentsModule.cs" />
     <Compile Include="Infrastructure\StreamExtensions.cs" />
     <Compile Include="IO\ArchiveWriters\ActivityArchiveWriter.cs" />
     <Compile Include="IO\ArchiveWriters\EntityArchiveWriter.cs" />
-    <Compile Include="Modules\ImageEntityModule.cs" />
-    <Compile Include="Modules\MarkModule.cs" />
-    <Compile Include="Modules\SparqlModule.cs" />
-    <Compile Include="Modules\TopicModule.cs" />
-    <Compile Include="Modules\TaskModule.cs" />
+    <Compile Include="Modules\FilesModule.cs" />
+    <Compile Include="Modules\InfluencesModule.cs" />
+    <Compile Include="Modules\MarksModule.cs" />
+    <Compile Include="Modules\RenderingsModule.cs" />
+    <Compile Include="Modules\TopicsModule.cs" />
+    <Compile Include="Modules\TasksModule.cs" />
     <Compile Include="Parameters\MarkParameter.cs" />
     <Compile Include="Parameters\TaskParameter.cs" />
     <Compile Include="Parameters\TopicParameter.cs" />
@@ -97,11 +98,9 @@
     <Compile Include="Platform\UserConfig.cs" />
     <Compile Include="Modules\ActivitiesModule.cs" />
     <Compile Include="Modules\ApiModule.cs" />
-    <Compile Include="Modules\ImportModule.cs" />
-    <Compile Include="Modules\ProjectModule.cs" />
+    <Compile Include="Modules\ProjectsModule.cs" />
     <Compile Include="Parameters\ActivityParameter.cs" />
     <Compile Include="Parameters\AgentParameter.cs" />
-    <Compile Include="Parameters\CommentParameter.cs" />
     <Compile Include="Parameters\UriParameter.cs" />
     <Compile Include="Progress\INotifyProgressChanged.cs" />
     <Compile Include="Progress\TaskProgressInfo.cs" />

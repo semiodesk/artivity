@@ -43,6 +43,10 @@ namespace Artivity.DataModel
         [RdfProperty(ART.coordinateSystem)]
         public CoordinateSystem CoordinateSystem { get; set; }
 
+        [RdfProperty(ART.renderedAs)]
+        public List<PartialRenderingDataObject> RenderedAs { get; set; }
+        //public IEnumerable<string> RenderedAs { get { return from a in RenderedAs_ select a.Uri.AbsoluteUri; } }
+
         #endregion
 
         #region Constructors

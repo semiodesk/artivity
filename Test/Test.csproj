@@ -89,9 +89,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="TinyVirtuoso\database\virtuoso.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="TinyVirtuoso\database\virtuoso.ini" />
     <None Include="TinyVirtuoso\virtuoso\doc\AUTHORS" />
     <None Include="TinyVirtuoso\virtuoso\doc\COPYING" />
     <None Include="TinyVirtuoso\virtuoso\doc\CREDITS" />

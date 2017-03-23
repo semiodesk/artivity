@@ -25,22 +25,20 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using System;
-using Artivity.Apid.IO;
-using Artivity.Apid.Plugin;
-using Artivity.Apid;
-using Artivity.Apid.Platforms;
+using Artivity.Api.IO;
+using Artivity.Api.Modules;
+using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
+using System;
 
-namespace Artivity.Api
+namespace Artivity.Apid.Modules
 {
     public class ImportModule : ModuleBase
     {
-
         #region Constructors
 
-        public ImportModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform)
+        public ImportModule(IModelProvider modelProvider, IPlatformProvider platform)
             : base("/artivity/api/1.0/import", modelProvider, platform)
         {
             Get["/"] = parameters =>
@@ -49,7 +47,7 @@ namespace Artivity.Api
 
                 if (!IsFileUrl(fileUrl))
                 {
-                    return Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
                 return Import(new Uri(fileUrl));
@@ -69,7 +67,7 @@ namespace Artivity.Api
             }
             catch (Exception e)
             {
-                Logger.LogError(e.Message);
+                PlatformProvider.Logger.LogError(e.Message);
 
                 return HttpStatusCode.InternalServerError;
             }

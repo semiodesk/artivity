@@ -110,7 +110,11 @@
     <Compile Include="Helpers\ProgressStreamContent.cs" />
     <Compile Include="IO\JsonNetBodyDeserializer.cs" />
     <Compile Include="IO\JsonNetSerializer.cs" />
+    <Compile Include="Modules\ImportModule.cs" />
+    <Compile Include="Modules\PluginModule.cs" />
     <Compile Include="Modules\SetupModule.cs" />
+    <Compile Include="Modules\UsersModule.cs" />
+    <Compile Include="Modules\SparqlModule.cs" />
     <Compile Include="Modules\SyncModule.cs" />
     <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />
     <Compile Include="Plugins\ProgramInstallationWatchdogFactory.cs" />
@@ -136,7 +140,7 @@
     <Compile Include="IO\FileEventRecord.cs" />
     <Compile Include="IO\FileSystemWatcherInfo.cs" />
     <Compile Include="Modules\AccountsModule.cs" />
-    <Compile Include="Modules\AgentsModule.cs" />
+    <Compile Include="Modules\SoftwareModule.cs" />
     <Compile Include="Platform\ThumbnailProviderFactory.cs" />
     <Compile Include="Platform\PlatformProvider.cs" />
     <Compile Include="Plugins\PluginCheckerFactory.cs" />
