@@ -70,13 +70,16 @@ namespace Artivity.Apid.Windows.Platform
 
         protected override IEnumerable<DirectoryInfo> GetApplicationLocations(PluginManifest manifest)
         {
-            foreach (PluginManifestRegistryKey key in manifest.RegistryInfo.ApplicationKeys)
+            if (manifest.RegistryInfo != null)
             {
-                RegistryEntry entry = InstalledPrograms.FindInstalledProgram(key.Name);
-
-                if (entry != null)
+                foreach (PluginManifestRegistryKey key in manifest.RegistryInfo.ApplicationKeys)
                 {
-                    yield return new DirectoryInfo(entry.InstallLocation);
+                    RegistryEntry entry = InstalledPrograms.FindInstalledProgram(key.Name);
+
+                    if (entry != null)
+                    {
+                        yield return new DirectoryInfo(entry.InstallLocation);
+                    }
                 }
             }
         }

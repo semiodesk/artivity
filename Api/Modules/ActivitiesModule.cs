@@ -59,7 +59,7 @@ namespace Artivity.Api.Modules
                 }
                 else if (IsUri(uri))
                 {
-                    return GetActivitiesFromEntityUri(new UriRef(uri));
+                    return GetActivitiesFromFileUri(new UriRef(uri));
                 }
                 else
                 {
@@ -113,7 +113,7 @@ namespace Artivity.Api.Modules
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetActivitiesFromEntityUri(UriRef entityUri)
+        private Response GetActivitiesFromFileUri(UriRef fileUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT DISTINCT
@@ -128,7 +128,7 @@ namespace Artivity.Api.Modules
                   ?activity
                     prov:generated | prov:used ?entity ;
                     prov:startedAtTime ?startTime .
-                    ?entity nie:isStoredAs @entity.
+                    ?entity nie:isStoredAs @file.
 
                   OPTIONAL
                   {
@@ -155,7 +155,7 @@ namespace Artivity.Api.Modules
                 }
                 ORDER BY DESC(?startTime)");
 
-            query.Bind("@entity", entityUri);
+            query.Bind("@file", fileUri);
 
             var bindings = ModelProvider.GetAll().GetBindings(query).ToList();
 

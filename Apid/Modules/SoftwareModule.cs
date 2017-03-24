@@ -72,11 +72,11 @@ namespace Artivity.Apid.Modules
 
                     return GetSoftwareAgentFromUri(uri);
                 }
-                else if (IsUri(Request.Query.entityUri))
+                else if (IsUri(Request.Query.fileUri))
                 {
-                    UriRef entityUri = new UriRef(Request.Query.entityUri);
+                    UriRef fileUri = new UriRef(Request.Query.fileUri);
 
-                    return GetSoftwareAgentFromEntityUri(entityUri);
+                    return GetSoftwareAgentFromFileUri(fileUri);
                 }
                 else if(Request.Query.Count == 0)
                 {
@@ -229,7 +229,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJsonSync(_checker.Plugins.FirstOrDefault(p => p.Manifest.AgentUri == uri.AbsoluteUri));
         }
 
-        private Response GetSoftwareAgentFromEntityUri(Uri entityUri)
+        private Response GetSoftwareAgentFromFileUri(Uri fileUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -237,7 +237,7 @@ namespace Artivity.Apid.Modules
                 WHERE 
                 {
                     ?activity prov:used | prov:generated ?e.
-                    ?e nie:isStoredAs @entity .
+                    ?e nie:isStoredAs @file .
                     ?activity prov:qualifiedAssociation ?association .
 
                     ?association prov:hadRole art:SOFTWARE .
@@ -247,7 +247,7 @@ namespace Artivity.Apid.Modules
                 }
                 LIMIT 1");
 
-            query.Bind("@entity", entityUri);
+            query.Bind("@entity", fileUri);
 
             BindingSet bindings = ModelProvider.GetAll().GetBindings(query).FirstOrDefault();
 
