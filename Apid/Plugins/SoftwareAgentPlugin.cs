@@ -76,11 +76,14 @@ namespace Artivity.Apid.Plugins
 
         public IEnumerable<UriRef> GetAssociationUris()
         {
+            
             HashSet<UriRef> result = new HashSet<UriRef>();
-
-            foreach(string version in DetectedVersions)
+            if (DetectedVersions != null)
             {
-                result.Add(new UriRef(Manifest.AgentUri + "/" + version));
+                foreach(string version in DetectedVersions)
+                {
+                    result.Add(new UriRef(Manifest.AgentUri + "/" + version));
+                }
             }
 
             return result;

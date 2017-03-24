@@ -141,6 +141,61 @@ namespace artivity
 		return responseCode;
 	}
 
+    bool ActivityLog::fetchInitialData(string fileUrl, string* latestEntityUri, string* fileDataObjectUri, string* renderOutputPath, string* userAssociationUri)
+    {
+        try
+        {
+            CURL* curl = initializeRequest();
+
+            stringstream url;
+            url << _endpointUrl << "/plugin/file/open?fileUrl=" << fileUrl;
+
+            string response;
+
+            executeRequest(curl, url.str(), "", response);
+
+            stringstream stream;
+            stream << response;
+
+            if (response.empty())
+            {
+                return false;
+            }
+
+            ptree tree;
+
+            read_json(stream, tree);
+
+
+
+            // storing latest entity
+            if (latestEntityUri != NULL)
+                latestEntityUri->assign(tree.get_child("latestEntityUri").get_value<string>());
+
+            // connecting file data object
+            if ( fileDataObjectUri != NULL)
+                fileDataObjectUri->assign(tree.get_child("fileDataObjectUri").get_value<string>());
+
+            // store render output path
+            if ( renderOutputPath != NULL)
+                renderOutputPath->assign(tree.get_child("renderOutputPath").get_value<string>()); 
+            
+            
+            // Create user association
+            if ( userAssociationUri != NULL )
+                userAssociationUri->assign(tree.get_child("userAssociationUri").get_value<string>());
+            
+            return true;
+
+        }
+        catch (...)
+        {
+            return false;
+        }
+
+
+    }
+
 	bool ActivityLog::connect(string endpointUrl)
 	{
         time_t now;
@@ -148,34 +203,48 @@ namespace artivity
 
 		_endpointUrl = endpointUrl;
 
-		// Initialize the entity.
-        string fileUri;
-		string prevUri = getEntityUri(_fileUrl, &fileUri);
+        string latestEntityUri = "";
+        string fileDataObjectUri = "";
+        string renderOutputPath = "";
+        string userAssociationUri = "";
+        fetchInitialData(_fileUrl, &latestEntityUri, &fileDataObjectUri, &renderOutputPath, &userAssociationUri);
 
-        if (!prevUri.empty())
-		{
-            _prevEntity = ImageRef(new Image(prevUri.c_str()));
-            _entity->uri = UriGenerator::removeTimeFragment(prevUri);
-            _entity->setDataObject(FileDataObjectRef(new FileDataObject(fileUri.c_str())));
+        if (!latestEntityUri.empty())
+        {
+            _prevEntity = ImageRef(new Image(latestEntityUri.c_str()));
+            _entity->uri = UriGenerator::removeTimeFragment(latestEntityUri);
         }
 
-		// Remember that we need to add the file to the index.
-        _hasDataObject = !prevUri.empty();
+
+        if (!fileDataObjectUri.empty())
+        {
+            _entity->setDataObject(FileDataObjectRef(new FileDataObject(fileDataObjectUri.c_str())));
+            _hasDataObject = true;
+        }
+        else
+        {
+            _hasDataObject = false;
+        }
+
+        if (!renderOutputPath.empty())
+            _renderOutputPath = renderOutputPath;
+
+        if (!userAssociationUri.empty())
+        {
+            AssociationRef a = AssociationRef(new Association(userAssociationUri));
+            a->setRole(RoleRef(new Role(art::USER)));
+
+            _associations.push_back(a);
+        }
 
 		_activity->setStartTime(now);
 
 		// Initialize the associations.
-		vector<AssociationRef>::iterator it = _associations.begin();
+		auto it = _associations.begin();
 
 		while (it != _associations.end())
 		{
-			AssociationRef association = *it;
-
-            if (!association->uri.empty() || fetchAssociationUri(association))
-			{
-                _activity->addAssociation(association);
-            }
-
+            _activity->addAssociation(*it);
             it++;
 		}
 
@@ -210,13 +279,6 @@ namespace artivity
 		}
 	}
 
-	void ActivityLog::addAssociation(const char* roleUri)
-	{
-		AssociationRef a = AssociationRef(new Association(""));
-		a->setRole(RoleRef(new Role(roleUri)));
-
-		_associations.push_back(a);
-	}
 
 	void ActivityLog::addAssociation(const char* roleUri, const char* agentUri, const char* version)
 	{
@@ -233,67 +295,9 @@ namespace artivity
 		_associations.push_back(a);
 	}
 
-	void ActivityLog::addAssociation(const char* roleUri, string agentUri, string version)
+	void ActivityLog::addAssociation(string roleUri, string agentUri, string version)
 	{
-        if (strcmp(roleUri, art::SOFTWARE) != 0 || version.empty()) return;
-
-        stringstream str;
-        str << agentUri << "/" << version;
-
-        SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(str.str()));
-        a->setAgent(AgentRef(new Agent(agentUri)));
-        a->setRole(RoleRef(new Role(roleUri)));
-        a->setVersion(version);
-
-        _associations.push_back(a);
-	}
-
-	bool ActivityLog::fetchAssociationUri(AssociationRef association)
-	{
-		CURL* curl = initializeRequest();
-
-		stringstream url;
-
-		url << _endpointUrl << "/agents/associations";
-
-		if (strcmp(association->getType(), art::SoftwareAssociation) == 0)
-		{
-			SoftwareAssociationRef software = boost::dynamic_pointer_cast<SoftwareAssociation>(association);
-			url << "?role=" << software->getRole()->uri;
-			url << "&agent=" << software->getAgent()->uri;
-			url << "&version=" << software->getVersion();
-		}
-		else
-		{
-			url << "?role=" << association->getRole()->uri;
-		}
-
-		string response;
-
-		executeRequest(curl, url.str(), "", response);
-
-		stringstream stream;
-		stream << response;
-
-		if (response.empty())
-		{
-			return false;
-		}
-
-		ptree tree;
-
-		read_json(stream, tree);
-
-		string uri = tree.get_child("association").get_value<string>();
-
-		if (uri.empty())
-		{
-			return false;
-		}
-
-		association->uri = uri;
-
-		return true;
+        addAssociation(roleUri.c_str(), agentUri.c_str(), version.c_str());
 	}
 
     void ActivityLog::setDocument(ImageRef image, std::string path, bool create)
@@ -363,26 +367,28 @@ namespace artivity
         // Close and transmit the current activity, but only if it changes to the original have been made
         if (_transmitCount > 0)
         {
-
-
-
             _activity->clearUsedEntities();
             _activity->setEndTime(now);
 
             transmit();
         }
-        // Check if there is already a file at the given location.
-        string fileUri;
-        string uri = getEntityUri(targetPath, &fileUri);
 
-        if (!uri.empty())
+        // Check if there is already a file at the given location.
+        string latestEntityUri = "";
+        string fileDataObjectUri = "";
+        string renderOutputPath = "";
+        string userAssociationUri = "";
+        fetchInitialData(targetPath, &latestEntityUri, &fileDataObjectUri, &renderOutputPath, &userAssociationUri);
+
+        if (!latestEntityUri.empty())
         {
-            targetImage->uri = uri;
-            targetImage->setDataObject(FileDataObjectRef(new FileDataObject(fileUri.c_str())));
+            targetImage->uri = latestEntityUri;
+            targetImage->setDataObject(FileDataObjectRef(new FileDataObject(fileDataObjectUri.c_str())));
         }
 
         // Create a new activity for the new image.
         setDocument(targetImage, targetPath, true);
+        
 
         if (_prevEntity != NULL)
         {
@@ -403,7 +409,7 @@ namespace artivity
         sourceImage->serialize = false;
 
         // NOTE: This assumes that the file system monitor will update any existing file data objects.
-        createDataObject(targetPath);
+        fetchNewDataObject(targetPath);
 
         // Transfer the current associations to the new activity.
         for (auto it = _associations.begin(); it != _associations.end(); it++)
@@ -418,17 +424,16 @@ namespace artivity
             addInfluence(*it);
         }
 
-        uri = _entity->uri;
-        _entity->uri = UriGenerator::appendTimeFragment(uri, now);
+        latestEntityUri = _entity->uri;
+        _entity->uri = UriGenerator::appendTimeFragment(latestEntityUri, now);
         if (_prevEntity != NULL)
             _prevEntity->serialize = false;
         transmit();
 
         _prevEntity = ImageRef(new Image(_entity->uri.c_str()));
-        _entity->uri = uri;
+        _entity->uri = latestEntityUri;
     }
 
-    
     void ActivityLog::populateRevision(RevisionRef revision)
     {
 
@@ -450,7 +455,7 @@ namespace artivity
 		return _entity;
 	}
 
-	string ActivityLog::getEntityUri(string fileUrl, string* fileUri)
+	string ActivityLog::fetchEntityUri(string fileUrl, string* fileUri)
 	{
         string uri = "";
 
@@ -487,6 +492,88 @@ namespace artivity
 
 		return uri;
 	}
+
+    string ActivityLog::fetchRenderOutputPath()
+    {
+        if (_entity->uri.empty())
+        {
+            return "";
+        }
+
+        CURL* curl = initializeRequest();
+
+        stringstream url;
+        url << _endpointUrl << "/renderings/path?uri=" << UriGenerator::escapePath(_entity->uri) << "&create";
+
+        string response;
+
+        executeRequest(curl, url.str(), "", response);
+
+        stringstream stream;
+        stream << response;
+
+        if (response.empty())
+        {
+            return "";
+        }
+
+        ptree tree;
+
+        read_json(stream, tree);
+
+        string path = tree.front().second.get_value<string>();
+
+        return path;
+    }
+
+    bool ActivityLog::fetchAssociationUri(AssociationRef association)
+    {
+        CURL* curl = initializeRequest();
+
+        stringstream url;
+
+        url << _endpointUrl << "/agents/associations";
+
+        if (strcmp(association->getType(), art::SoftwareAssociation) == 0)
+        {
+            SoftwareAssociationRef software = boost::dynamic_pointer_cast<SoftwareAssociation>(association);
+            url << "?role=" << software->getRole()->uri;
+            url << "&agent=" << software->getAgent()->uri;
+            url << "&version=" << software->getVersion();
+        }
+        else
+        {
+            url << "?role=" << association->getRole()->uri;
+        }
+
+        string response;
+
+        executeRequest(curl, url.str(), "", response);
+
+        stringstream stream;
+        stream << response;
+
+        if (response.empty())
+        {
+            return false;
+        }
+
+        ptree tree;
+
+        read_json(stream, tree);
+
+        string uri = tree.get_child("association").get_value<string>();
+
+        if (uri.empty())
+        {
+            return false;
+        }
+
+        association->uri = uri;
+
+        return true;
+    }
+
 
     void ActivityLog::addInfluence(InfluenceRef influence)
     {
@@ -662,38 +749,10 @@ namespace artivity
         }
 	}
 
-	string ActivityLog::getRenderOutputPath()
-	{
-		if (_entity->uri.empty())
-		{
-			return "";
-		}
-
-		CURL* curl = initializeRequest();
-
-		stringstream url;
-        url << _endpointUrl << "/renderings/path?uri=" << UriGenerator::escapePath(_entity->uri) << "&create";
-
-		string response;
-
-		executeRequest(curl, url.str(), "", response);
-
-		stringstream stream;
-		stream << response;
-
-		if (response.empty())
-		{
-			return "";
-		}
-
-		ptree tree;
-
-		read_json(stream, tree);
-
-		string path = tree.front().second.get_value<string>();
-
-		return path;
-	}
+    string ActivityLog::getRenderOutputPath()
+    {
+        return _renderOutputPath;
+    }
 
     void ActivityLog::transmit()
     {
@@ -797,7 +856,7 @@ namespace artivity
 		}
 	}
 
-    bool ActivityLog::createDataObject(std::string path)
+    bool ActivityLog::fetchNewDataObject(std::string path)
     {
         std::string fileUri = UriGenerator::getUri();
 

@@ -64,7 +64,6 @@ namespace artivity
         consumer->start();
 
         _log = ActivityLogRef(new ActivityLog());
-        _log->addAssociation(art::USER);
         _log->addAssociation(art::SOFTWARE, getSoftwareAgent(), getSoftwareAgentVersion());
         _log->setDocument(document, _filePath, newDocument);
 
@@ -208,7 +207,7 @@ namespace artivity
             {
                
                 // A new document was saved.
-                _log->createDataObject(filePath);
+                _log->fetchNewDataObject(filePath);
                 
                 _filePath = filePath;
             }
@@ -225,7 +224,7 @@ namespace artivity
             if (!_log->hasDataObject())
             {
                 // Create a data object if we edit a non-indexed file.
-                _log->createDataObject(filePath);
+                _log->fetchNewDataObject(filePath);
             }
         }
         else
