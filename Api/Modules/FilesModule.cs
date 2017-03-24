@@ -78,22 +78,24 @@ namespace Artivity.Api.Modules
             {
                 GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
 
-                return GetLatestDerivedEntityFromFile(settings);
+                return GetRecentFiles(settings);
             };
 
-            Get["/derivations"] = parameters =>
+            Get["/revisions"] = parameters =>
             {
-                return HttpStatusCode.NotImplemented;
+                GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
+
+                return GetDerivedEntitiesFromFile(settings);
             };
 
-            Get["/derivations/latest"] = parameters =>
+            Get["/revisions/latest"] = parameters =>
             {
                 GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
 
                 return GetLatestDerivedEntityFromFile(settings);
             };
 
-            Put["/derivations/latest/publish"] = parameters =>
+            Put["/revisions/latest/publish"] = parameters =>
             {
                 string fileUri = Request.Query.uri;
 
@@ -109,6 +111,112 @@ namespace Artivity.Api.Modules
         #endregion
 
         #region Methods
+
+        private Response GetRecentFiles(GetFilesSettings settings)
+        {
+            string OrderClause = settings.GetOrderClause();
+            string FilterClause = settings.GetFilterClause();
+            string LimitClause = settings.GetLimitClause();
+            string OffsetClause = settings.GetOffsetClause();
+
+            string queryString = @"
+                SELECT DISTINCT
+                    MAX(?t) AS ?time 
+                    ?entityUri
+                    ?file AS ?uri
+                    ?label 
+                    SAMPLE(?p) AS ?thumbnail 
+                    COALESCE(?agentColor, '#cecece') AS ?agentColor
+                WHERE
+                {{
+                    ?activity prov:generated | prov:used ?entity ;
+                        prov:startedAtTime ?startTime ;
+                        prov:endedAtTime ?endTime .
+  
+                    ?entity nie:isStoredAs ?file.
+                    ?file rdfs:label ?label .
+
+                    BIND(STRBEFORE(STR(?entity), '#') AS ?e).
+                    BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
+                    {4}
+                    BIND(IF(BOUND(?endTime), ?endTime, ?startTime) AS ?t).
+
+                    OPTIONAL {{
+                        ?activity prov:qualifiedAssociation / prov:agent ?agent .
+
+                        ?agent a prov:SoftwareAgent.
+                        ?agent art:hasColourCode ?agentColor .
+                    }}
+
+                    FILTER NOT EXISTS {{
+                      ?entity prov:qualifiedRevision / prov:entity ?x .
+                    }}
+
+                    {0}
+                }}
+                GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
+
+            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, PlatformProvider.GetFilesQueryModifier);
+
+            ISparqlQuery query = new SparqlQuery(queryString);
+
+            var bindings = ModelProvider.GetAll().GetBindings(query);
+
+            return Response.AsJsonSync(bindings);
+        }
+
+        private Response GetDerivedEntitiesFromFile(GetFilesSettings settings)
+        {
+            string OrderClause = settings.GetOrderClause();
+            string FilterClause = settings.GetFilterClause();
+            string LimitClause = settings.GetLimitClause();
+            string OffsetClause = settings.GetOffsetClause();
+
+            string queryString = @"
+                SELECT DISTINCT
+                    MAX(?t) AS ?time 
+                    ?entityUri
+                    ?file AS ?uri
+                    ?label 
+                    SAMPLE(?p) AS ?thumbnail 
+                    COALESCE(?agentColor, '#cecece') AS ?agentColor
+                WHERE
+                {{
+                    ?activity prov:generated | prov:used ?entity ;
+                        prov:startedAtTime ?startTime ;
+                        prov:endedAtTime ?endTime .
+  
+                    ?entity nie:isStoredAs ?file.
+                    ?file rdfs:label ?label .
+
+                    BIND(STRBEFORE(STR(?entity), '#') AS ?e).
+                    BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
+                    {4}
+                    BIND(IF(BOUND(?endTime), ?endTime, ?startTime) AS ?t).
+
+                    OPTIONAL {{
+                        ?activity prov:qualifiedAssociation / prov:agent ?agent .
+
+                        ?agent a prov:SoftwareAgent.
+                        ?agent art:hasColourCode ?agentColor .
+                    }}
+
+                    FILTER NOT EXISTS {{
+                      ?entity prov:qualifiedRevision / prov:entity ?x .
+                    }}
+
+                    {0}
+                }}
+                GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
+
+            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, PlatformProvider.GetFilesQueryModifier);
+
+            ISparqlQuery query = new SparqlQuery(queryString);
+
+            var bindings = ModelProvider.GetAll().GetBindings(query);
+
+            return Response.AsJsonSync(bindings);
+        }
 
         private Response GetLatestDerivedEntityFromFile(GetFilesSettings settings)
         {
