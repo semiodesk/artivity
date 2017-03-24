@@ -90,8 +90,6 @@ namespace artivity
         std::list<InfluenceRef> _influences;
 
         std::string _fileUrl;
-        
-		bool fetchAssociationUri(AssociationRef association);
 
         CURL* initializeRequest();
         
@@ -99,13 +97,21 @@ namespace artivity
 
 		std::string getTime();
 
-        std::string getEntityUri(std::string path, std::string* fileUri);
+        bool fetchInitialData(std::string fileUrl, std::string* latestEntityUri, std::string* fileDataObjectUri, std::string* renderOutputPath, std::string* userAssociationUri);
+
+        std::string fetchEntityUri(std::string path, std::string* fileUri);
+
+        std::string ActivityLog::fetchRenderOutputPath();
+
+        bool fetchAssociationUri(AssociationRef association);
 
 		void dump(boost::property_tree::ptree const& pt);
 
 		int _transmitCount;
 
 		bool _hasDataObject;
+
+        std::string _renderOutputPath;
 
     public:
         bool debug;
@@ -149,11 +155,10 @@ namespace artivity
 
 		bool hasDataObject() { return _hasDataObject; }
 
-        bool createDataObject(std::string path);
+        bool fetchNewDataObject(std::string path);
 
-        void addAssociation(const char* roleUri);
 		void addAssociation(const char* roleUri, const char* agentUri, const char* version);
-		void addAssociation(const char* roleUri, std::string agentUri, std::string version);
+        void addAssociation(std::string roleUri, std::string agentUri, std::string version);
 
 		// Add an entity influence to the transmitted RDF stream.
 		void addInfluence(InfluenceRef influence);
