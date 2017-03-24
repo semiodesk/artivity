@@ -49,11 +49,10 @@
     <Compile Include="ObjectModel\Activities\Publish.cs" />
     <Compile Include="ObjectModel\Agents\Contact.cs" />
     <Compile Include="ObjectModel\Agents\Roles\AccountOwnerRole.cs" />
-    <Compile Include="ObjectModel\Agents\Roles\ContactRole.cs" />
     <Compile Include="ObjectModel\Agents\Roles\EditingSoftwareRole.cs" />
     <Compile Include="ObjectModel\Agents\Roles\EditorRole.cs" />
     <Compile Include="ObjectModel\Agents\Roles\ProjectMemberRole.cs" />
-    <Compile Include="ObjectModel\Agents\Roles\ProjectOwnerRole.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\ProjectAdministratorRole.cs" />
     <Compile Include="ObjectModel\Agents\User.cs" />
     <Compile Include="ObjectModel\Communication.cs" />
     <Compile Include="ObjectModel\Entities\Collection.cs" />

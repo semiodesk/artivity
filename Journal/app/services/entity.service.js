@@ -27,8 +27,8 @@
             return $http.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
         }
 
-        function getRecentByFile(uri) {
-            return $http.get(endpoint + "/recent" + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
+        function getLatestDerivationFromFile(uri) {
+            return $http.get(endpoint + "/derivations/latest?fileUri=" + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
         }
 
         function getByFile(uri, offset, limit, sort) {
