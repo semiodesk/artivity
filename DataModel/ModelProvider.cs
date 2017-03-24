@@ -132,12 +132,12 @@ namespace Artivity.DataModel
             model.Clear();
 
             // Create a default user..
-            Person user = model.CreateResource<Person>(new UriRef("urn:art:uid:" + Uid));
+            User user = model.CreateResource<User>(new UriRef("urn:art:uid:" + Uid));
             user.Commit();
 
             Association association = model.CreateResource<Association>();
             association.Agent = user;
-            association.Role = new Role(art.USER);
+            association.Role = new Role(art.AccountOwnerRole);
             association.Commit();
         }
 
@@ -243,7 +243,7 @@ namespace Artivity.DataModel
             return Store.GetModel(Default);
         }
 
-        public IModelSynchronizationState GetModelSynchronizationState(IUserAgent user)
+        public IModelSynchronizationState GetModelSynchronizationState(IPerson user)
         {
             return Store.GetModel(Default).GetResource<ModelSynchronizationState>(_synchronizationStateUrl); ;
         }

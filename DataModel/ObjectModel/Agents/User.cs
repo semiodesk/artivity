@@ -23,34 +23,31 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(PROV.SoftwareAgent)]
-    public class SoftwareAgent : Agent
+    [RdfClass(ART.User)]
+    public class User : Person, IUser
     {
-		#region Members
+        #region Members
 
-        [RdfProperty(ART.isCaptureEnabled)]
-        public bool IsCaptureEnabled { get; set; }
+        [RdfProperty(FOAF.account), JsonIgnore] // TODO: Implement support for serializing lists to JSON in Trinity.
+        public List<OnlineAccount> Accounts { get; set; }
 
-        [DefaultValue("#FF0000")]
-        [RdfProperty(ART.colorCode), NotifyPropertyChanged]
-        public string ColourCode { get; set; }
-
-		#endregion
+        #endregion
 
         #region Constructors
 
-		public SoftwareAgent(Uri uri) : base(uri) {}
+        public User(Uri uri) : base(uri) { }
 
         #endregion
     }

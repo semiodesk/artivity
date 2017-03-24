@@ -75,7 +75,7 @@ namespace Artivity.DataModel
 
         IModelGroup CreateModelGroup(params Uri[] models);
 
-        IModelSynchronizationState GetModelSynchronizationState(IUserAgent user);
+        IModelSynchronizationState GetModelSynchronizationState(IPerson user);
 
         #endregion
     }

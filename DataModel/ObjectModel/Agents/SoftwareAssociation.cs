@@ -23,10 +23,8 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
-using Artivity.DataModel.ObjectModel;
-using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -35,28 +33,22 @@ using System.Text;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(PROV.Person)]
-    public class Person : Agent, IUserAgent
+    [RdfClass(ART.SoftwareAssociation)]
+    public class SoftwareAssociation : Association
     {
 		#region Members
 
-        [RdfProperty(FOAF.description)] // TODO: Implement properly.
-        public string Organization { get; set; }
+        [RdfProperty(ART.version)]
+        public string ExecutableVersion { get; set; }
 
-        [RdfProperty(FOAF.mbox)]
-        public string EmailAddress { get; set; }
-
-        [RdfProperty(FOAF.img)]
-        public string Photo { get; set; }
-
-        [RdfProperty(FOAF.account), JsonIgnore] // TODO: Implement support for serializing lists to JSON in Trinity.
-        public List<OnlineAccount> Accounts { get; set; }
+        [RdfProperty(ART.executablePath), NotifyPropertyChanged]
+        public string ExecutablePath { get; set; }
 
 		#endregion
 
-        #region Constructors
+        #region Constructor
 
-        public Person(Uri uri) : base(uri) {}
+		public SoftwareAssociation(Uri uri) : base(uri) {}
 
         #endregion
     }

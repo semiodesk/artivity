@@ -29,8 +29,6 @@ using Artivity.Api;
 using Artivity.Api.Modules;
 using Artivity.Api.Parameters;
 using Artivity.Api.Platform;
-using Artivity.Apid.Plugins;
-using Artivity.Apid.Accounts;
 using Artivity.DataModel;
 using Nancy;
 using Nancy.Responses;
@@ -52,12 +50,31 @@ namespace Artivity.Apid.Modules
     {
         #region Constructors
 
-        public UsersModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platformProvider)
+        public UsersModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
             : base("/artivity/api/1.0/agents/users", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>
             {
-                return GetUserAgent();
+                if(Request.Query.Count == 0)
+                {
+                    return GetUserAgents();
+                }
+                else if(IsUri(Request.Query.agentUri))
+                {
+                    UriRef agentUri = new UriRef(Request.Query.agentUri);
+
+                    return GetUserAgent(agentUri);
+                }
+                //else if (!string.IsNullOrEmpty(Request.Query.type))
+                //{
+                //    string typeUri = Request.Query.typeUri;
+
+                //    return GetUserAgentsFromType(type);
+                //}
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
 
             Post["/"] = parameters =>
@@ -82,7 +99,14 @@ namespace Artivity.Apid.Modules
 
         #region Methods
 
-        private Response GetUserAgent()
+        private Response GetUserAgents()
+        {
+            IModel model = ModelProvider.GetAgents();
+
+            return HttpStatusCode.NotImplemented;
+        }
+
+        private Response GetUserAgent(Uri agentUri)
         {
             UriRef uid = new UriRef(PlatformProvider.Config.Uid);
 
@@ -100,6 +124,11 @@ namespace Artivity.Apid.Modules
 
                 return Response.AsJsonSync(association.Agent);
             }
+        }
+
+        private Response GetUserAgentsFromType(string type)
+        {
+            return HttpStatusCode.NotImplemented;
         }
 
         private Association CreateUserAssociation(UriRef uid)
@@ -127,7 +156,7 @@ namespace Artivity.Apid.Modules
             // Add the user role association.
             Association association = model.CreateResource<Association>();
             association.Agent = user;
-            association.Role = new Role(art.USER);
+            association.Role = new Role(art.AccountOwnerRole);
             association.Commit();
 
             return association;
@@ -231,4 +260,6 @@ namespace Artivity.Apid.Modules
 
         #endregion
     }
+
+    enum UserRoles { AccountOwner, Contact };
 }

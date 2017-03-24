@@ -107,6 +107,7 @@ namespace Artivity.Api.Modules
 
         protected Response PostAgent(string projectUri, string agentUri)
         {
+            /*
             IModel activities = ModelProvider.GetActivities();
             IModel agents = ModelProvider.GetAgents();
 
@@ -123,26 +124,34 @@ namespace Artivity.Api.Modules
             }
 
             return Response.AsJsonSync(new Dictionary<string, bool> { { "success", true } });
+            */
+
+            return HttpStatusCode.NotImplemented;
         }
 
         protected Response PostFile(string projectUri, string fileUri)
         {
+            /*
             IModel activities = ModelProvider.GetActivities();
 
             Project project = activities.GetResource<Project>(new Uri(projectUri));
             Entity entity = activities.GetResource<Entity>(new Uri(fileUri));
 
-            if (!project.Members.Contains(entity))
+            if (!project.Usages.Contains(entity))
             {
-                project.Members.Add(entity);
+                project.Usages.Add(entity);
                 project.Commit();
             }
 
             return Response.AsJsonSync(new Dictionary<string, bool>{ {"success", true}});
+            */
+
+            return HttpStatusCode.NotImplemented;
         }
 
         protected Response PostFolder(string projectUri, string folderUrl)
         {
+            /*
             IModel activities = ModelProvider.GetActivities();
 
             Project project = activities.GetResource<Project>(new Uri(projectUri));
@@ -150,11 +159,14 @@ namespace Artivity.Api.Modules
 
             if (!project.Usages.Any(u => u.Entity is Folder))
             {
-                //project.Usages.Add(folder);
-                //project.Commit();
+                project.Usages.Add(folder);
+                project.Commit();
             }
 
             return Response.AsJsonSync(new Dictionary<string, bool> { { "success", true } });
+            */
+
+            return HttpStatusCode.NotImplemented;
         }
 
         private Response GetFilesFromProject(UriRef projectUri)

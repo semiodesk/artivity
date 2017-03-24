@@ -23,53 +23,34 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
 using Semiodesk.Trinity;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
+
 
 namespace Artivity.DataModel
 {
-    [RdfClass(PROV.Activity)]
-    public class Activity : SynchronizableResource
+    [RdfClass(PROV.SoftwareAgent)]
+    public class SoftwareAgent : Agent
     {
 		#region Members
 
-		[RdfProperty(PROV.qualifiedAssociation)]
-		public List<Association> Associations { get; private set; }
+        [RdfProperty(ART.isCaptureEnabled)]
+        public bool IsCaptureEnabled { get; set; }
 
-        [RdfProperty(PROV.qualifiedCommunication)]
-        public List<Communication> Communications { get; private set; }
-
-        [RdfProperty(PROV.qualifiedUsage)]
-		public List<Usage> Usages { get; private set; }
-
-		[RdfProperty(PROV.invalidated)]
-		public List<Entity> InvalidatedEntities { get; set; }
-
-		[RdfProperty(PROV.generated)]
-		public List<Entity> GeneratedEntities { get; set; }
-
-        [RdfProperty(PROV.used)]
-        public List<Entity> UsedEntities { get; set; }
-
-		[RdfProperty(PROV.startedAtTime)]
-		public DateTime StartTime { get; set; }
-
-		[RdfProperty(PROV.endedAtTime)]
-		public DateTime EndTime { get; set; }
-
-        [RdfProperty(PROV.wasStartedBy)]
-        public Agent StartedBy { get; set; }
+        [DefaultValue("#FF0000")]
+        [RdfProperty(ART.colorCode), NotifyPropertyChanged]
+        public string ColourCode { get; set; }
 
 		#endregion
 
         #region Constructors
 
-        public Activity(Uri uri) : base(uri) {}
+		public SoftwareAgent(Uri uri) : base(uri) {}
 
         #endregion
     }

@@ -52,13 +52,13 @@
         }
 
         function refresh() {
-            projectService.getAll().then(function (response) {
-                var list = response.data;
+            projectService.getAll().then(function (data) {
+                var list = data;
 
                 if (list && list.length > 0) {
                     list.sort(function compare(a, b) {
-                        if (a.Name < b.Name) return -1;
-                        if (a.Name > b.Name) return 1;
+                        if (a.Title < b.Title) return -1;
+                        if (a.Title > b.Title) return 1;
                         return 0;
                     });
 

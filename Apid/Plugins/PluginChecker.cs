@@ -393,7 +393,7 @@ namespace Artivity.Apid.Plugins
 
                     SoftwareAssociation association = model.CreateResource<SoftwareAssociation>(uri);
                     association.Agent = new SoftwareAgent(new UriRef(plugin.Manifest.AgentUri));
-                    association.Role = new Role(new UriRef(ART.SOFTWARE));
+                    association.Role = new Role(new UriRef(ART.EditingSoftwareRole));
                     association.ExecutableVersion = plugin.Manifest.ExecutableVersion;
                     association.ExecutablePath = plugin.Manifest.ExecutablePath;
                     association.Commit();

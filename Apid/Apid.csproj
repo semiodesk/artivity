@@ -113,7 +113,6 @@
     <Compile Include="Modules\ImportModule.cs" />
     <Compile Include="Modules\PluginModule.cs" />
     <Compile Include="Modules\SetupModule.cs" />
-    <Compile Include="Modules\UsersModule.cs" />
     <Compile Include="Modules\SparqlModule.cs" />
     <Compile Include="Modules\SyncModule.cs" />
     <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />

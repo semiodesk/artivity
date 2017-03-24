@@ -121,7 +121,7 @@ namespace ArtivityTest
             throw new NotImplementedException();
         }
 
-        public IModelSynchronizationState GetModelSynchronizationState(IUserAgent user)
+        public IModelSynchronizationState GetModelSynchronizationState(IPerson user)
         {
             throw new NotImplementedException();
         }
