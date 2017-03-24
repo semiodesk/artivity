@@ -46,7 +46,8 @@
   },
   "resolutions": {
     "angular": "1.5.8",
-    "moment": "^2.10.0"
+    "moment": "^2.10.0",
+    "jquery": ">=1.6"
   },
   "overrides": {
     "bootstrap": {
