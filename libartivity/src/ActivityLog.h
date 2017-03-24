@@ -99,12 +99,6 @@ namespace artivity
 
         bool fetchInitialData(std::string fileUrl, std::string* latestEntityUri, std::string* fileDataObjectUri, std::string* renderOutputPath, std::string* userAssociationUri);
 
-        std::string fetchEntityUri(std::string path, std::string* fileUri);
-
-        std::string ActivityLog::fetchRenderOutputPath();
-
-        bool fetchAssociationUri(AssociationRef association);
-
 		void dump(boost::property_tree::ptree const& pt);
 
 		int _transmitCount;
