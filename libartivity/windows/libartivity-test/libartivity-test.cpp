@@ -24,7 +24,6 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
 
 	// Set the agent association with the current agent version.
-	log->addAssociation(art::USER);
 	log->addAssociation(art::SOFTWARE, "http://adobe.com/products/photoshop", "2015.1");
 
 	// Set the file and retrive, if possible, the URI of the vector image.
