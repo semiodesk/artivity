@@ -50,33 +50,7 @@ namespace Artivity.Api.Modules
         public RenderingsModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
             : base("/artivity/api/1.0/renderings", modelProvider, platformProvider)
         {
-            Get["/thumbnails"] = parameters =>
-            {
-                if (Request.Query.entityUri)
-                {
-                    string uri = Request.Query.entityUri;
-
-                    if (string.IsNullOrEmpty(uri) || !IsUri(uri))
-                    {
-                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                    }
-
-                    if (Request.Query.exists)
-                    {
-                        return HasThumbnail(new UriRef(uri));
-                    }
-                    else
-                    {
-                        return GetThumbnail(new UriRef(uri));
-                    }
-                }
-                else
-                {
-                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                }
-            };
-
-            Get["/renderings"] = parameters =>
+            Get["/"] = parameters =>
             {
                 if (Request.Query.uri)
                 {
@@ -116,7 +90,7 @@ namespace Artivity.Api.Modules
                 }
             };
 
-            Get["/renderings/canvases"] = parameters =>
+            Get["/canvases"] = parameters =>
             {
                 if (Request.Query.entity)
                 {
@@ -135,7 +109,7 @@ namespace Artivity.Api.Modules
                 }
             };
 
-            Get["/renderings/path"] = parameters =>
+            Get["/path"] = parameters =>
             {
                 string uri = Request.Query.uri;
 
@@ -147,6 +121,32 @@ namespace Artivity.Api.Modules
                 bool create = Request.Query.create != null;
 
                 return GetRenderOutputPath(new UriRef(uri), create);
+            };
+
+            Get["/thumbnails"] = parameters =>
+            {
+                if (Request.Query.entityUri)
+                {
+                    string uri = Request.Query.entityUri;
+
+                    if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                    {
+                        return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                    }
+
+                    if (Request.Query.exists)
+                    {
+                        return HasThumbnail(new UriRef(uri));
+                    }
+                    else
+                    {
+                        return GetThumbnail(new UriRef(uri));
+                    }
+                }
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
             };
         }
 

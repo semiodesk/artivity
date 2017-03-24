@@ -125,7 +125,7 @@ namespace Artivity.Apid.Platform
             EnsureFolderExists(RenderingsFolder);
 
             RenderingQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings?uri=', ?entityStub, '&file=', STR(?f) ) as ?file ).";
-            GetFilesQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/thumbnails?entityUri=', ?q) as ?p ).";
+            GetFilesQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings/thumbnails?entityUri=', ?entityUri) as ?p).";
 
             ExportFolder = Path.Combine(ArtivityDataFolder, "Export");
             EnsureFolderExists(ExportFolder);

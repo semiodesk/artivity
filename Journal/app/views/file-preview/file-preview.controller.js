@@ -34,7 +34,7 @@
             });
 
             // Load the user data.
-            api.getUser().then(function (data) {
+            api.getAccountOwner().then(function (data) {
                 t.user = data;
                 t.user.photoUrl = api.getUserPhotoUrl();
 

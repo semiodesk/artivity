@@ -75,7 +75,7 @@
         // Load the user data.
         t.user = {};
 
-        api.getUser().then(function (data) {
+        api.getAccountOwner().then(function (data) {
             t.user = data;
             t.user.photoUrl = api.getUserPhotoUrl();
 

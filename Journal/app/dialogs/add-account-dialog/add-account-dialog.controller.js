@@ -32,7 +32,7 @@
             };
 
             // TODO: Remove hard-wiring. Receive presets and target sites from client.
-            if (client.Uri.startsWith === 'http://orcid.org') {
+            if (client.Uri.startsWith('http://orcid.org')) {
                 t.parameter.presetId = 'orcid.org';
 
                 t.connectAccount(t.selectedClient);

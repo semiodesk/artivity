@@ -43,20 +43,48 @@ namespace Artivity.Api.Modules
         {
             Get["/agents"] = parameters =>
             {
-                return HttpStatusCode.NotImplemented;
+                if (IsUri(Request.Query.projectUri))
+                {
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+
+                    return GetProjectMembers(projectUri);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
 
             Post["/agents"] = parameters =>
             {
-                string projectUri = Request.Query.projectUri;
-                string agentUri = Request.Query.agentUri;
+                UserRoles role = UserRoles.ProjectMember;
 
-                if (!IsUri(projectUri) || !IsUri(agentUri))
+                if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.agentUri) && Enum.TryParse(Request.Query.role, out role))
                 {
-                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                }
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+                    UriRef agentUri = new UriRef(Request.Query.agentUri);
 
-                return PostAgent(projectUri, agentUri);
+                    return PostProjectMemberWithRole(projectUri, agentUri, role);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+            };
+
+            Delete["/agents"] = parameters =>
+            {
+                if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.agentUri))
+                {
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+                    UriRef agentUri = new UriRef(Request.Query.agentUri);
+
+                    return DeleteProjectMember(projectUri, agentUri);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
 
             Get["/files"] = parameters =>
@@ -68,135 +96,187 @@ namespace Artivity.Api.Modules
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return GetFilesFromProject(new UriRef(uri));
+                return GetProjectFiles(new UriRef(uri));
             };
 
             Post["/files"] = parameters =>
             {
-                string projectUri = Request.Query.projectUri;
-                string fileUri = Request.Query.fileUri;
+                if(IsUri(Request.Query.projectUri) && IsUri(Request.Query.fileUri))
+                {
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+                    UriRef fileUri = new UriRef(Request.Query.fileUri);
 
-                if(!IsUri(projectUri) || !IsUri(fileUri))
+                    return PostProjectFile(projectUri, fileUri);
+                }
+                else
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
+            };
 
-                return PostFile(projectUri, fileUri);
+            Delete["/files"] = parameters =>
+            {
+                if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.fileUri))
+                {
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+                    UriRef fileUri = new UriRef(Request.Query.fileUri);
+
+                    return DeleteProjetFile(projectUri, fileUri);
+                }
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
             };
 
             Get["/folders"] = parameters =>
             {
-                return HttpStatusCode.NotImplemented;
+                if (IsUri(Request.Query.projectUri))
+                {
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+
+                    return GetProjectFolders(projectUri);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
 
             Post["/folders"] = parameters =>
             {
-                string projectUri = Request.Query.projectUri;
-                string folderUrl = Request.Query.folderUrl;
-
-                if(!IsUri(projectUri) || !IsUri(folderUrl))
+                if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.folderUrl))
                 {
-                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                }
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+                    UriRef folderUrl = new UriRef(Request.Query.folderUrl);
 
-                return PostFolder(projectUri, folderUrl);
+                    return PostProjectFolder(projectUri, folderUrl);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+            };
+
+            Delete["/folders"] = parameters =>
+            {
+                if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.folderUrl))
+                {
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+                    UriRef folderUrl = new UriRef(Request.Query.folderUrl);
+
+                    return DeleteProjectFolder(projectUri, folderUrl);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
         }
 
         #region Methods
 
-        protected Response PostAgent(string projectUri, string agentUri)
+        protected Response GetProjectMembers(UriRef projectUri)
         {
-            /*
-            IModel activities = ModelProvider.GetActivities();
-            IModel agents = ModelProvider.GetAgents();
-
-            Project project = activities.GetResource<Project>(new Uri(projectUri));
-            Agent agent = agents.GetResource<Agent>(new Uri(agentUri));
-
-            if (!project.Associations.Any(a => a.Agent == agent))
-            {
-                Association association = activities.CreateResource<Association>();
-                association.Agent = agent;
-
-                project.Associations.Add(association);
-                project.Commit();
-            }
-
-            return Response.AsJsonSync(new Dictionary<string, bool> { { "success", true } });
-            */
-
-            return HttpStatusCode.NotImplemented;
-        }
-
-        protected Response PostFile(string projectUri, string fileUri)
-        {
-            /*
             IModel activities = ModelProvider.GetActivities();
 
-            Project project = activities.GetResource<Project>(new Uri(projectUri));
-            Entity entity = activities.GetResource<Entity>(new Uri(fileUri));
-
-            if (!project.Usages.Contains(entity))
+            if(activities.ContainsResource(projectUri))
             {
-                project.Usages.Add(entity);
-                project.Commit();
+                Project project = activities.GetResource<Project>(projectUri);
+
+                return Response.AsJsonSync(project.Memberships);
             }
-
-            return Response.AsJsonSync(new Dictionary<string, bool>{ {"success", true}});
-            */
-
-            return HttpStatusCode.NotImplemented;
+            else
+            {
+                return HttpStatusCode.NoContent;
+            }
         }
 
-        protected Response PostFolder(string projectUri, string folderUrl)
+        protected Response PostProjectMemberWithRole(UriRef projectUri, UriRef agentUri, UserRoles userRole)
         {
-            /*
             IModel activities = ModelProvider.GetActivities();
 
-            Project project = activities.GetResource<Project>(new Uri(projectUri));
-            Folder folder = activities.GetResource<Folder>(new Uri(folderUrl));
+            ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @project art:qualifiedMembership / art:agent @agent }");
+            query.Bind("@project", projectUri);
+            query.Bind("@agent", agentUri);
 
-            if (!project.Usages.Any(u => u.Entity is Folder))
+            ISparqlQueryResult result = activities.ExecuteQuery(query);
+
+            if (!result.GetAnwser())
             {
-                project.Usages.Add(folder);
+                Resource role;
+
+                switch (userRole)
+                {
+                    case UserRoles.ProjectAdministrator: role = art.ProjectAdministratorRole; break;
+                    case UserRoles.ProjectMember: role = art.ProjectMemberRole; break;
+                    default: throw new ArgumentException("userRole");
+                }
+
+                ProjectMembership membership = activities.CreateResource<ProjectMembership>();
+                membership.Agent = new Agent(agentUri);
+                membership.Role = new Role(role);
+                membership.Commit();
+
+                Project project = activities.GetResource<Project>(projectUri);
+                project.Memberships.Add(membership);
                 project.Commit();
+
+                return Response.AsJsonSync(new { success = true });
             }
-
-            return Response.AsJsonSync(new Dictionary<string, bool> { { "success", true } });
-            */
-
-            return HttpStatusCode.NotImplemented;
+            else
+            {
+                return HttpStatusCode.NotModified;
+            }
         }
 
-        private Response GetFilesFromProject(UriRef projectUri)
+        protected Response DeleteProjectMember(UriRef projectUri, UriRef agentUri)
+        {
+            IModel activities = ModelProvider.GetActivities();
+
+            if (activities.ContainsResource(projectUri))
+            {
+                Project project = activities.GetResource<Project>(projectUri);
+                project.Memberships.RemoveAll(m => m.Agent.Uri == agentUri);
+                project.Commit();
+
+                return Response.AsJsonSync(project.Memberships);
+            }
+            else
+            {
+                return HttpStatusCode.NoContent;
+            }
+        }
+
+        private Response GetProjectFiles(UriRef projectUri)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT DISTINCT
 	                ?t1 AS ?time
+                    ?entityUri
 	                ?file AS ?uri
-                    ?q as ?entityUri
-                    SAMPLE(?p) as ?thumbnail 
 	                ?label
-                    SAMPLE(COALESCE(?agentColor, '#FF0000')) AS ?agentColor
+                    SAMPLE(?p) AS ?thumbnail 
+                    COALESCE(?agentColor, '#cecece') AS ?agentColor
                 WHERE
                 {
-                    ?a1
-                        prov:generated | prov:used ?entity ;
+                    ?a1 prov:generated | prov:used ?entity ;
                         prov:endedAtTime ?t1 .
 
 	                ?entity nie:isStoredAs ?file .
-                    BIND( STRBEFORE( STR(?entity), '#' ) as ?e ).
-                    BIND( if(?e != '', ?e, str(?entity)) as ?q).
-                    " + PlatformProvider.GetFilesQueryModifier + @"
+
+                    @project prov:qualifiedUsage / prov:entity ?file .
+
+                    ?file a nfo:FileDataObject .
                     ?file rdfs:label ?label .
 
-                    <" + projectUri.AbsoluteUri + @"> prov:hadMember ?file .
+                    BIND(STRBEFORE(STR(?entity), '#') AS ?e).
+                    BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
+                    " + PlatformProvider.GetFilesQueryModifier + @"
 	
 	                OPTIONAL
 	                {
-                        ?a2
-                            prov:generated | prov:used ?entity ;
+                        ?a2 prov:generated | prov:used ?entity ;
                             prov:endedAtTime ?t2 .
 		
 		                FILTER(?t1 > ?t2)
@@ -204,16 +284,151 @@ namespace Artivity.Api.Modules
 	
 	                FILTER(!BOUND(?t2))
 
-                    OPTIONAL
-                    {
-                        ?a1 prov:qualifiedAssociation / prov:agent / art:hasColourCode ?agentColor .
+                    OPTIONAL {
+                        ?a1 prov:qualifiedAssociation / prov:agent ?agent .
+
+                        ?agent a prov:SoftwareAgent.
+                        ?agent art:hasColourCode ?agentColor .
                     }
                 }
                 ORDER BY DESC(?t1) LIMIT 100");
 
+            query.Bind("@project", projectUri);
+
             var bindings = ModelProvider.GetAll().GetBindings(query);
 
             return Response.AsJsonSync(bindings);
+        }
+
+        protected Response PostProjectFile(UriRef projectUri, UriRef fileUri)
+        {
+            IModel activities = ModelProvider.GetActivities();
+
+            ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @project prov:qualifiedUsage / prov:entity @file }");
+            query.Bind("@project", projectUri);
+            query.Bind("@file", fileUri);
+
+            ISparqlQueryResult result = activities.ExecuteQuery(query);
+
+            if(!result.GetAnwser())
+            {
+                Usage usage = activities.CreateResource<Usage>();
+                usage.Entity = new Entity(fileUri);
+                usage.Time = DateTime.UtcNow;
+                usage.Commit();
+
+                Project project = activities.GetResource<Project>(projectUri);
+                project.Usages.Add(usage);
+                project.Commit();
+
+                return Response.AsJsonSync(new { success = true });
+            }
+            else
+            {
+                return HttpStatusCode.NotModified;
+            }
+        }
+
+        protected Response DeleteProjetFile(UriRef projectUri, UriRef fileUri)
+        {
+            IModel activities = ModelProvider.GetActivities();
+
+            ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @project prov:qualifiedUsage / prov:entity @file }");
+            query.Bind("@project", projectUri);
+            query.Bind("@file", fileUri);
+
+            ISparqlQueryResult result = activities.ExecuteQuery(query);
+
+            if (result.GetAnwser())
+            {
+                Project project = activities.GetResource<Project>(projectUri);
+                project.Usages.RemoveAll(u => u.Entity.Uri == fileUri);
+                project.Commit();
+
+                return Response.AsJsonSync(new { success = true });
+            }
+            else
+            {
+                return HttpStatusCode.NotModified;
+            }
+        }
+
+        protected Response GetProjectFolders(UriRef projectUri)
+        {
+            IModel activities = ModelProvider.GetActivities();
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT ?s ?p ?o
+                WHERE
+                {
+                    @project prov:qualifiedUsage / prov:entity ?s .
+
+                    ?s a nfo:Folder ; ?p ?o .
+                }");
+
+            query.Bind("@project", projectUri);
+
+            List<Folder> folders = activities.GetResources<Folder>(query).ToList();
+
+            return Response.AsJsonSync(folders);
+        }
+
+        protected Response PostProjectFolder(UriRef projectUri, UriRef folderUrl)
+        {
+            IModel activities = ModelProvider.GetActivities();
+
+            ISparqlQuery query = new SparqlQuery(@"SELECT ?folder WHERE { ?folder a nfo:Folder ; nie:url @url . }");
+            query.Bind("@url", folderUrl);
+
+            IEnumerable<BindingSet> bindings = activities.GetBindings(query);
+
+            Folder folder;
+
+            if(bindings.Any())
+            {
+                folder = new Folder(new Uri(bindings.First()["folder"].ToString()));
+            }
+            else
+            {
+                folder = activities.CreateResource<Folder>();
+                folder.Url = new Resource(folderUrl);
+                folder.Commit();
+            }
+
+            Usage usage = activities.CreateResource<Usage>();
+            usage.Entity = folder;
+            usage.Time = DateTime.UtcNow;
+            usage.Commit();
+
+            Project project = activities.GetResource<Project>(projectUri);
+            project.Usages.Add(usage);
+            project.Commit();
+
+            return HttpStatusCode.OK;
+        }
+
+        protected Response DeleteProjectFolder(UriRef projectUri, UriRef folderUrl)
+        {
+            IModel activities = ModelProvider.GetActivities();
+
+            ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @project prov:qualifiedUsage / prov:entity [ nie:url @url ] }");
+            query.Bind("@project", projectUri);
+            query.Bind("@url", folderUrl);
+
+            ISparqlQueryResult result = activities.ExecuteQuery(query);
+
+            if (result.GetAnwser())
+            {
+                Project project = activities.GetResource<Project>(projectUri);
+                project.Usages.RemoveAll(u => u.Entity is Folder && (u.Entity as Folder).Url.Uri == folderUrl);
+                project.Commit();
+
+                return Response.AsJsonSync(new { success = true });
+            }
+            else
+            {
+                return HttpStatusCode.NotModified;
+            }
         }
 
         #endregion

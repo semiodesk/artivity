@@ -1,24 +1,25 @@
 (function () {
-    angular.module('app').directive('artAvatarImg', AvatarImageDirective);
+    angular.module('app').directive('artUserPhotoImg', AvatarImageDirective);
 
     function AvatarImageDirective() {
         return {
             restrict: 'E',
-            templateUrl: 'app/directives/art-avatar-img/art-avatar-img.html',
+            templateUrl: 'app/directives/art-user-photo-img/art-user-photo-img.html',
             controller: AvatarImageDirectiveController,
             controllerAs: 't',
             bindToController: true,
             scope: {
-                src: "@src",
+                src: "=src",
                 width: "=width",
-                height: "=height"
+                height: "=height",
+                changed: "&?"
             }
         }
     }
 
-    AvatarImageDirectiveController.$inject = ['$rootScope', '$scope', '$sce', '$timeout'];
+    AvatarImageDirectiveController.$inject = ['$rootScope', '$scope', '$sce'];
 
-    function AvatarImageDirectiveController($rootScope, $scope, $sce, $timeout) {
+    function AvatarImageDirectiveController($rootScope, $scope, $sce) {
         var t = this;
 
         $scope.$watch(function () {
@@ -37,16 +38,27 @@
 
         t.selectFile = function (e) {
             e.preventDefault();
-            
+
             var input = $(e.currentTarget).find('input[type="file"]');
 
             if (input) {
                 $scope.$evalAsync(function () {
                     var handler = function (args) {
-                        $scope.$apply(function () {
-                            // Store the selected picture in the model for saving when the changes are applied.
-                            t.src = $sce.trustAsResourceUrl('file://' + args.target.files[0].path);
-                        });
+                        var reader = new FileReader();
+
+                        reader.onload = function () {
+                            if (reader.result) {
+                                $scope.$apply(function () {
+                                    t.src = reader.result;
+                                });
+
+                                if (t.changed) {
+                                    t.changed()(args.target.files[0]);
+                                }
+                            }
+                        }
+
+                        reader.readAsDataURL(args.target.files[0]);
 
                         input.unbind('change', handler);
                     };

@@ -95,7 +95,7 @@
 					});
 			},
 			getAgents: function () {
-				return $http.get(endpoint + '/agents').then(
+				return $http.get(endpoint + '/agents/software').then(
 					function (response) {
 						return response.data;
 					});
@@ -107,7 +107,7 @@
 					});
 			},
 			setAgents: function (agents) {
-				return $http.post(endpoint + '/agents', agents);
+				return $http.post(endpoint + '/agents/software', agents);
 			},
 			getAgent: function (entityUri) {
 				return $http.get(endpoint + '/agents?entityUri=' + entityUri).then(
@@ -155,20 +155,22 @@
 					}
 				);
 			},
-			getUser: function () {
-				return $http.get(endpoint + '/agents/user').then(
+			getAccountOwner: function () {
+				return $http.get(endpoint + '/agents/users?role=AccountOwner').then(
 					function (response) {
-						return response.data;
+						if(response.data.length === 1) {
+							return response.data[0];
+						}
 					});
 			},
-			setUser: function (data) {
-				return $http.post(endpoint + '/agents/user', data);
+			putUser: function (data) {
+				return $http.put(endpoint + '/agents/users', data);
 			},
-			setUserPhoto: function (data) {
-				return $http.post(endpoint + '/agents/user/photo', data);
+			getUserPhotoUrl: function (uri) {
+				return endpoint + '/agents/users/photo?agentUri=' + uri;
 			},
-			getUserPhotoUrl: function () {
-				return endpoint + '/agents/user/photo';
+			putUserPhoto: function (uri, data) {
+				return $http.put(endpoint + '/agents/users/photo?agentUri=' + uri, data);
 			},
 			backupUserProfile: function (fileName) {
 				return $http.get(endpoint + '/export/backup?fileName=' + fileName).then(
@@ -195,7 +197,7 @@
 					});
 			},
 			getProjectFiles: function (projectUri) {
-				return $http.get(endpoint + '/files/project?uri=' + projectUri).then(
+				return $http.get(endpoint + '/projects/files?uri=' + projectUri).then(
 					function (response) {
 						return response.data;
 					});
@@ -245,13 +247,13 @@
 					});
 			},
 			hasThumbnail: function (entityUri) {
-				return $http.get(endpoint + '/thumbnails?entityUri=' + entityUri + '&exists').then(
+				return $http.get(endpoint + '/renderings/thumbnails?entityUri=' + entityUri + '&exists').then(
 					function (response) {
 						return response.data;
 					});
 			},
 			getThumbnailUrl: function (entityUri) {
-				return endpoint + '/thumbnails?entityUri=' + encodeURIComponent(entityUri);
+				return endpoint + '/renderings/thumbnails?entityUri=' + encodeURIComponent(entityUri);
 			},
 			getRenderings: function (entityUri, time) {
 				if (time !== undefined) {
@@ -310,7 +312,5 @@
 					});
 			}
 		};
-
-
 	}
 })();
