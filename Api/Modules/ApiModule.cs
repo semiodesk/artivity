@@ -113,6 +113,8 @@ namespace Artivity.Api.Modules
             }
 
             ISparqlQuery query = new SparqlQuery(@"
+
+                
                 SELECT
                     ?uri ?file
                 WHERE

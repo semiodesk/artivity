@@ -72,9 +72,18 @@ namespace Artivity.Apid.Modules
                 }
             };
 
-            Post["/file/open"] = parameters =>
+            Get["/file/open"] = parameters =>
             {
-                return HttpStatusCode.NotImplemented;
+                string fileUrl = Request.Query["fileUrl"];
+
+                if (!IsFileUrl(fileUrl))
+                {
+                    return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return GetUri(new UriRef(fileUrl));
+
+
             };
 
             Post["/file/new"] = parameters =>
@@ -358,6 +367,133 @@ namespace Artivity.Apid.Modules
             {
                 return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, Request.Url, e);
             }
+        }
+
+        private Response FileOpen(Uri fileUrl)
+        {
+            string file = Path.GetFileName(fileUrl.LocalPath);
+            string folder = Path.GetDirectoryName(fileUrl.LocalPath);
+
+            if (string.IsNullOrEmpty(file) || string.IsNullOrEmpty(folder))
+            {
+                PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+
+                return Response.AsJsonSync(new { });
+            }
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT 
+                    ?uri ?file ?association
+                WHERE
+                {
+                    {
+                        SELECT
+                            ?uri ?file
+                        WHERE
+                        {
+                            ?uri nie:isStoredAs ?file .
+
+                            ?file rdfs:label @fileName .
+                            ?file nie:lastModified ?time .
+                            ?file nfo:belongsToContainer ?folder .
+
+                            ?folder nie:url @folderUrl .
+                    
+                            FILTER NOT EXISTS { ?var prov:invalidated ?uri }
+                   
+                        }
+                        ORDER BY DESC(?time) LIMIT 1
+                        }UNION
+                        {
+                            SELECT
+                            ?association
+                            WHERE
+                            {
+                                ?association prov:hadRole art:AccountOwnerRole .
+                            }
+                    }
+                }
+                ");
+
+            query.Bind("@fileName", file);
+            query.Bind("@folderUrl", new Uri(folder));
+            var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
+
+            return Response.AsJsonSync(bindings);
+        }
+
+        private string GetEntityUri(string path)
+        {
+            Uri fileUrl = new FileInfo(path).ToUriRef();
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?entity
+                WHERE
+                {
+                    ?entity nie:isStoredAs ?file .
+
+                    ?file nie:url @fileUrl .
+                    ?file nie:lastModified ?time .
+                }
+                ORDER BY DESC(?time) LIMIT 1
+            ");
+
+            query.Bind("@fileUrl", fileUrl.AbsoluteUri);
+
+            IEnumerable<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query);
+
+            if (bindings.Any())
+            {
+                BindingSet binding = bindings.First();
+
+                string uri = binding["entity"].ToString();
+
+                if (!string.IsNullOrEmpty(uri))
+                {
+                    return uri;
+                }
+            }
+
+            return null;
+        }
+
+        private Response GetUri(Uri fileUrl)
+        {
+            string file = Path.GetFileName(fileUrl.LocalPath);
+            string folder = Path.GetDirectoryName(fileUrl.LocalPath);
+
+            if (string.IsNullOrEmpty(file) || string.IsNullOrEmpty(folder))
+            {
+                PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+
+                return Response.AsJsonSync(new { });
+            }
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?uri ?file
+                WHERE
+                {
+                    ?uri nie:isStoredAs ?file .
+
+                    ?file rdfs:label @fileName .
+                    ?file nie:lastModified ?time .
+                    ?file nfo:belongsToContainer ?folder .
+
+                    ?folder nie:url @folderUrl .
+                    
+                    FILTER NOT EXISTS { ?var prov:invalidated ?uri }
+                   
+                }
+                ORDER BY DESC(?time) LIMIT 1");
+
+            query.Bind("@fileName", file);
+            query.Bind("@folderUrl", new Uri(folder));
+
+            var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
+
+            return Response.AsJsonSync(bindings);
         }
 
         #endregion
