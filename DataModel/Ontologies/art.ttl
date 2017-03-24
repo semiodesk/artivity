@@ -595,12 +595,6 @@ art:Contact a rdfs:Class ;
 	dcterms:issued "2017-03-24T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2017-03-24T12:00:00Z"^^xsd:dateTime .
 
-art:ContactRole a prov:Role;
-	rdfs:label "ContactRole" ;
-	rdfs:isDefinedBy art: ;
-	dcterms:issued "2017-03-24T12:00:00Z"^^xsd:dateTime ;
-    dcterms:modified "2017-03-24T12:00:00Z"^^xsd:dateTime .
-
 art:EditorRole a prov:Role;
 	rdfs:label "EditorRole" ;
 	rdfs:isDefinedBy art: ;
@@ -631,6 +625,18 @@ art:ProjectMembership a rdf:Property ;
 art:qualifiedMembership a rdf:Property ;
 	rdfs:label "qualifiedMembership" ;
 	rdfs:comment "A project membership is an invitation for participation to an agent for a project, indicating that the agent has a role in the project." ;
+	rdfs:isDefinedBy art: ;
+	dcterms:issued "2017-03-24T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2017-03-24T12:00:00Z"^^xsd:dateTime .
+
+art:ProjectAdministratorRole a prov:Role;
+	rdfs:label "ProjectAdministratorRole" ;
+	rdfs:isDefinedBy art: ;
+	dcterms:issued "2017-03-24T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2017-03-24T12:00:00Z"^^xsd:dateTime .
+
+art:ProjectMemberRole a prov:Role;
+	rdfs:label "ProjectMemberRole" ;
 	rdfs:isDefinedBy art: ;
 	dcterms:issued "2017-03-24T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2017-03-24T12:00:00Z"^^xsd:dateTime .

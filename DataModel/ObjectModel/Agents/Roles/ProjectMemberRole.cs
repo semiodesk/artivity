@@ -32,9 +32,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-/*
 namespace Artivity.DataModel
 {
+    [RdfClass(ART.ProjectMemberRole)]
     public class ProjectMemberRole : Role
     {
         #region Constructors
@@ -44,4 +44,3 @@ namespace Artivity.DataModel
         #endregion
     }
 }
-*/

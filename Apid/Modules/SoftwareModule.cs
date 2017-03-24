@@ -104,12 +104,11 @@ namespace Artivity.Apid.Modules
                 }
             };
 
-            /*
             Get["/associations"] = parameters =>
             {
                 if (Request.Query.Count == 0)
                 {
-                    return GetAgentAssociations();
+                    return GetSoftwareAgentAssociations();
                 }
 
                 string role = Request.Query["role"];
@@ -124,7 +123,7 @@ namespace Artivity.Apid.Modules
 
                 if (string.IsNullOrEmpty(agent))
                 {
-                    return GetAgentAssociation(new UriRef(role));
+                    return GetSoftwareAgentAssociation(new UriRef(role));
                 }
 
                 if (string.IsNullOrEmpty(version) || !Uri.IsWellFormedUriString(agent, UriKind.Absolute))
@@ -132,9 +131,8 @@ namespace Artivity.Apid.Modules
                     return HttpStatusCode.BadRequest;
                 }
 
-                return GetAgentAssociation(new UriRef(role), new UriRef(agent), version);
+                return GetSoftwareAgentAssociation(new UriRef(role), new UriRef(agent), version);
             };
-            */
 
             #if DEBUG
             Get["/initialize"] = parameters =>
@@ -209,6 +207,13 @@ namespace Artivity.Apid.Modules
 
                 return DeletePluginSearchDirectory(new Uri(url));
             };
+
+            #if DEBUG
+            Get["/clear"] = parameters =>
+            {
+                return ClearAgents();
+            };
+            #endif
         }
 
         #endregion
@@ -359,8 +364,7 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        /*
-        private Response GetAgentAssociations()
+        private Response GetSoftwareAgentAssociations()
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT DISTINCT
@@ -379,7 +383,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetAgentAssociation(UriRef role)
+        private Response GetSoftwareAgentAssociation(UriRef role)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -402,7 +406,7 @@ namespace Artivity.Apid.Modules
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetAgentAssociation(UriRef role, UriRef agent, string version)
+        private Response GetSoftwareAgentAssociation(UriRef role, UriRef agent, string version)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -452,7 +456,6 @@ namespace Artivity.Apid.Modules
 
             return Response.AsJsonSync(bindings);
         }
-        */
 
         private Response GetPluginSearchDirectories()
         {
@@ -487,6 +490,13 @@ namespace Artivity.Apid.Modules
             }
 
             PlatformProvider.Logger.LogInfo("Removed software agent search path: {0}", url.LocalPath);
+
+            return HttpStatusCode.OK;
+        }
+
+        private Response ClearAgents()
+        {
+            ModelProvider.GetAgents().Clear();
 
             return HttpStatusCode.OK;
         }
