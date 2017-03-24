@@ -25,52 +25,65 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
-using Semiodesk.Trinity;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using Semiodesk.Trinity;
+using Newtonsoft.Json;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(PROV.Activity)]
-    public class Activity : SynchronizableResource
+    [RdfClass(ART.Project)]
+    public class Project : Activity
     {
-		#region Members
+        #region Members
 
-		[RdfProperty(PROV.qualifiedAssociation)]
-		public List<Association> Associations { get; private set; }
+        [RdfProperty(DCES.title)]
+        public string Title { get; set; }
 
-        [RdfProperty(PROV.qualifiedCommunication)]
-        public List<Communication> Communications { get; private set; }
+        [RdfProperty(DCES.description)]
+        public string Description { get; set; }
 
-        [RdfProperty(PROV.qualifiedUsage)]
-		public List<Usage> Usages { get; private set; }
+        [RdfProperty(ART.colorCode)]
+        public string ColorCode { get; set; }
 
-		[RdfProperty(PROV.invalidated)]
-		public List<Entity> InvalidatedEntities { get; set; }
+        [RdfProperty(ART.qualifiedMembership)]
+        public List<ProjectMembership> Memberships { get; set; }
 
-		[RdfProperty(PROV.generated)]
-		public List<Entity> GeneratedEntities { get; set; }
+        [JsonIgnore]
+        public IEnumerable<Agent> Members
+        {
+            get
+            {
+                foreach (ProjectMembership membership in Memberships)
+                {
+                    yield return membership.Agent;
+                }
+            }
+        }
 
-        [RdfProperty(PROV.used)]
-        public List<Entity> UsedEntities { get; set; }
+        [JsonIgnore]
+        public IEnumerable<Entity> UsedEntities
+        {
+            get
+            {
+                foreach(Usage usage in Usages)
+                {
+                    yield return usage.Entity;
+                }
+            }
+        }
 
-		[RdfProperty(PROV.startedAtTime)]
-		public DateTime StartTime { get; set; }
-
-		[RdfProperty(PROV.endedAtTime)]
-		public DateTime EndTime { get; set; }
-
-        [RdfProperty(PROV.wasStartedBy)]
-        public Agent StartedBy { get; set; }
-
-		#endregion
+        #endregion
 
         #region Constructors
 
-        public Activity(Uri uri) : base(uri) {}
+        public Project(Uri uri) : base(uri)
+        {
+            IsSynchronizable = true;
+        }
 
         #endregion
     }
 }
+

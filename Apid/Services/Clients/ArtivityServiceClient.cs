@@ -210,7 +210,7 @@ namespace Artivity.Apid.Accounts
             }
         }
 
-        public bool BeginSynchronization(IUserAgent user, OnlineAccount account)
+        public bool BeginSynchronization(IPerson user, OnlineAccount account)
         {
             if (!_isSynchronizing)
             {
@@ -227,7 +227,7 @@ namespace Artivity.Apid.Accounts
             return false;
         }
 
-        public IModelSynchronizationState EndSynchronization(IUserAgent user, OnlineAccount account)
+        public IModelSynchronizationState EndSynchronization(IPerson user, OnlineAccount account)
         {
             IModelSynchronizationState state = ModelProvider.GetModelSynchronizationState(user);
 
@@ -281,7 +281,7 @@ namespace Artivity.Apid.Accounts
             model.ExecuteUpdate(update);
         }
 
-        public async Task<int> TryGetSynchronizationState(IUserAgent user, OnlineAccount account)
+        public async Task<int> TryGetSynchronizationState(IPerson user, OnlineAccount account)
         {
             if (account != null && account.ServiceUrl != null)
             {
@@ -313,7 +313,7 @@ namespace Artivity.Apid.Accounts
             return -1;
         }
 
-        public async Task<SynchronizationChangeset> TryGetChangesetAsync(IUserAgent user, OnlineAccount account)
+        public async Task<SynchronizationChangeset> TryGetChangesetAsync(IPerson user, OnlineAccount account)
         {
             if(account.ServiceUrl != null)
             {
@@ -420,7 +420,7 @@ namespace Artivity.Apid.Accounts
 
                         if (data.Name != null)
                         {
-                            project.Name = data.Name;
+                            project.Title = data.Name;
                         }
 
                         if(data.CreationDate != null)

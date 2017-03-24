@@ -23,44 +23,22 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
 using System;
 using System.Collections.Generic;
-using Semiodesk.Trinity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.Project)]
-    public class Project : Collection
+    public class Contact : Person
     {
-        #region Members
-
-        [RdfProperty(RDFS.label)]
-        public string Name { get; set; }
-
-        [RdfProperty(DCES.description)]
-        public string Description { get; set; }
-
-        [RdfProperty(ART.colorCode)]
-        public string ColorCode { get; set; }
-
-        [RdfProperty(PROV.qualifiedAssociation)]
-        public List<Association> Associations { get; set; }
-
-        [RdfProperty(PROV.qualifiedUsage)]
-        public List<Usage> Usages { get; set; }
-
-        #endregion
-
         #region Constructors
 
-        public Project(Uri uri) : base(uri)
-        {
-            IsSynchronizable = true;
-        }
+        public Contact(Uri uri) : base(uri) {}
 
         #endregion
     }
 }
-

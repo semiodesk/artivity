@@ -80,6 +80,7 @@
     <Compile Include="Modules\RenderingsModule.cs" />
     <Compile Include="Modules\TopicsModule.cs" />
     <Compile Include="Modules\TasksModule.cs" />
+    <Compile Include="Modules\UsersModule.cs" />
     <Compile Include="Parameters\MarkParameter.cs" />
     <Compile Include="Parameters\TaskParameter.cs" />
     <Compile Include="Parameters\TopicParameter.cs" />

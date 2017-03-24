@@ -159,7 +159,7 @@ namespace Artivity.Apid.Modules
 
         private Response GetAccounts()
         {
-            Person user = ModelProvider.GetAgents().GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
+            User user = ModelProvider.GetAgents().GetResource<User>(new UriRef(PlatformProvider.Config.Uid));
 
             return ResponseAsJsonSync(user.Accounts);
         }
@@ -324,7 +324,7 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.GetAgents();
 
             // Associate the account with the user.
-            Person user = model.GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
+            User user = model.GetResource<User>(new UriRef(PlatformProvider.Config.Uid));
 
             if (user == null)
             {
@@ -353,7 +353,7 @@ namespace Artivity.Apid.Modules
 
             IModel model = ModelProvider.GetAgents();
 
-            Person user = model.GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
+            User user = model.GetResource<User>(new UriRef(PlatformProvider.Config.Uid));
 
             if (user == null)
             {

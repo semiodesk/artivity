@@ -23,32 +23,37 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.SoftwareAssociation)]
-    public class SoftwareAssociation : Association
+    [RdfClass(ART.ProjectMembership)]
+    public class ProjectMembership : SynchronizableResource
     {
-		#region Members
+        #region Members
 
-        [RdfProperty(ART.version)]
-        public string ExecutableVersion { get; set; }
+        [RdfProperty(ART.agent)]
+        public Agent Agent { get; set; }
 
-        [RdfProperty(ART.executablePath), NotifyPropertyChanged]
-        public string ExecutablePath { get; set; }
+        [RdfProperty(ART.hasRole)]
+        public Role Role { get; set; }
 
-		#endregion
+        #endregion
 
-        #region Constructor
+        #region Constructors
 
-		public SoftwareAssociation(Uri uri) : base(uri) {}
+        public ProjectMembership(Uri uri)
+            : base(uri)
+        {
+            IsSynchronizable = true;
+        }
 
         #endregion
     }

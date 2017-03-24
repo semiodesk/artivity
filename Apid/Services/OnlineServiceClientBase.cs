@@ -210,7 +210,7 @@ namespace Artivity.Apid.Accounts
             }
 
             // Associate the account with the user.
-            Person user = model.GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
+            User user = model.GetResource<User>(new UriRef(PlatformProvider.Config.Uid));
 
             if (user == null)
             {

@@ -11,7 +11,7 @@
         };
 
         function getUser() {
-            return $http.get(endpoint + '/user').then(function (response) {
+            return $http.get(endpoint + '/users').then(function (response) {
                 return response.data;
             }, handleError('Error while retrieving user agent.'));
         }

@@ -1,5 +1,4 @@
 (function () {
-
 	angular.module('app').factory('api', api);
 
 	api.$inject = ['$http'];

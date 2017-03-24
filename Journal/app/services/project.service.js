@@ -27,21 +27,15 @@
 
             return new Promise(function (resolve, reject) {
                 $http.get(endpoint).then(function (result) {
-                    var data = result.data;
+                        var response = result.data;
 
-                    if(data && data.length > 1) {
-                        data.sort(function compare(a, b) {
-                            if (a.Title < b.Title) return -1;
-                            if (a.Title > b.Title) return 1;
-                            return 0;
-                        });
-                    }
+                        if (response && response.success) {
+                            service.projects = response.data;
 
-                    service.projects = data;
-
-                    resolve(data);
-                },
-                handleError('Error when getting all projects.'));
+                            resolve(service.projects);
+                        }
+                    },
+                    handleError('Error when getting all projects.'));
             });
         }
 

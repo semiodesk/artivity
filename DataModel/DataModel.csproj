@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="IModelSynchronizationState.cs" />
+    <Compile Include="IUser.cs" />
     <Compile Include="IViewModule.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />
@@ -46,6 +47,14 @@
     <Compile Include="ObjectModel\Activities\DeleteEntity.cs" />
     <Compile Include="ObjectModel\Activities\EditEntity.cs" />
     <Compile Include="ObjectModel\Activities\Publish.cs" />
+    <Compile Include="ObjectModel\Agents\Contact.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\AccountOwnerRole.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\ContactRole.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\EditingSoftwareRole.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\EditorRole.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\ProjectMemberRole.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\ProjectOwnerRole.cs" />
+    <Compile Include="ObjectModel\Agents\User.cs" />
     <Compile Include="ObjectModel\Communication.cs" />
     <Compile Include="ObjectModel\Entities\Collection.cs" />
     <Compile Include="ObjectModel\Entities\Task.cs" />
@@ -58,7 +67,7 @@
     <Compile Include="ObjectModel\Entities\InformationElement.cs" />
     <Compile Include="ObjectModel\Entities\Mark.cs" />
     <Compile Include="ObjectModel\Entities\Post.cs" />
-    <Compile Include="ObjectModel\Entities\Project.cs" />
+    <Compile Include="ObjectModel\Activities\Project.cs" />
     <Compile Include="ObjectModel\Entities\RasterImage.cs" />
     <Compile Include="ObjectModel\Entities\VectorImage.cs" />
     <Compile Include="ObjectModel\Entities\Website.cs" />
@@ -66,21 +75,22 @@
     <Compile Include="ObjectModel\FileDataObject\RenderingDataObject.cs" />
     <Compile Include="ObjectModel\HttpAuthenticationProtocol.cs" />
     <Compile Include="ObjectModel\Influences\Derivation.cs" />
-    <Compile Include="IUserAgent.cs" />
+    <Compile Include="IPerson.cs" />
     <Compile Include="ObjectModel\Influences\Revision.cs" />
     <Compile Include="ObjectModel\Influences\Save.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
     <Compile Include="ObjectModel\HttpAuthenticationParameter.cs" />
-    <Compile Include="ObjectModel\Person.cs" />
+    <Compile Include="ObjectModel\Agents\Person.cs" />
     <Compile Include="ObjectModel\Activity.cs" />
-    <Compile Include="ObjectModel\SoftwareAssociation.cs" />
+    <Compile Include="ObjectModel\Agents\SoftwareAssociation.cs" />
+    <Compile Include="ObjectModel\Activities\ProjectMembership.cs" />
     <Compile Include="ObjectModel\SynchronizableResource.cs" />
     <Compile Include="ObjectModel\ResourceSynchronizationState.cs" />
     <Compile Include="Ontologies\Ontologies.g.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ObjectModel\SoftwareAgent.cs" />
+    <Compile Include="ObjectModel\Agents\SoftwareAgent.cs" />
     <Compile Include="ObjectModel\Agent.cs" />
     <Compile Include="ObjectModel\Association.cs" />
     <Compile Include="ObjectModel\Entities\XmlAttribute.cs" />

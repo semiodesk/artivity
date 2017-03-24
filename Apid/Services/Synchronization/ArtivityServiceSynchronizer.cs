@@ -61,7 +61,7 @@ namespace Artivity.Apid.Synchronization
 
             IModel model = _modelProvider.GetAgents();
 
-            Person user = model.GetResource<Person>(new UriRef(_platformProvider.Config.Uid));
+            User user = model.GetResource<User>(new UriRef(_platformProvider.Config.Uid));
 
             IEnumerable<OnlineAccount> accounts = user.Accounts.Where(a => _clients.ContainsKey(a.ServiceClient.Uri));
 

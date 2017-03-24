@@ -20,7 +20,7 @@ namespace Artivity.DataModel
 		[RdfProperty(PROV.value)]
 		public string Value { get; set; }
 
-		[RdfProperty(ART.viewport)]
+		[RdfProperty(ART.hadViewport)]
 		public Viewport Viewport { get; set; }
 
         [RdfProperty(ART.boundaries)]
