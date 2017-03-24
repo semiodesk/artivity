@@ -34,12 +34,12 @@ using System.Threading.Tasks;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.ContactRole)]
-    public class ContactRole : Role
+    [RdfClass(ART.ProjectAdministratorRole)]
+    public class ProjectAdministratorRole : Role
     {
         #region Constructors
 
-        public ContactRole(UriRef uri) : base(uri) { }
+        public ProjectAdministratorRole(UriRef uri) : base(uri) { }
 
         #endregion
     }

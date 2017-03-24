@@ -12,12 +12,12 @@
         // USER INFO
         t.user = {};
 
-        api.getUser().then(function (data) {
+        api.getAccountOwner().then(function (data) {
             t.user = data;
 
             // Note: For some reason, binding does not work reliably with the user data and image source.
             $('#userName').text(data.Name);
-            $('#userPhoto').attr('src', api.getUserPhotoUrl());
+            $('#userPhoto').attr('src', api.getUserPhotoUrl(data.Uri));
         });
 
         t.activities = [];

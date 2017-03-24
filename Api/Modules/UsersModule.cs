@@ -43,8 +43,9 @@ using System.Linq;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
+using Artivity.Api.IO;
 
-namespace Artivity.Apid.Modules
+namespace Artivity.Api.Modules
 {
     public class UsersModule : ModuleBase
     {
@@ -57,41 +58,66 @@ namespace Artivity.Apid.Modules
             {
                 if(Request.Query.Count == 0)
                 {
-                    return GetUserAgents();
+                    return GetPersons();
                 }
                 else if(IsUri(Request.Query.agentUri))
                 {
                     UriRef agentUri = new UriRef(Request.Query.agentUri);
 
-                    return GetUserAgent(agentUri);
+                    return GetPersonFromUri(agentUri);
                 }
-                //else if (!string.IsNullOrEmpty(Request.Query.type))
-                //{
-                //    string typeUri = Request.Query.typeUri;
+                else if (!string.IsNullOrEmpty(Request.Query.role))
+                {
+                    UserRoles role;
 
-                //    return GetUserAgentsFromType(type);
-                //}
+                    if (Enum.TryParse(Request.Query.role, out role))
+                    {
+                        return GetPersonsFromRole(role);
+                    }
+                    else
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+                }
                 else
                 {
                     return HttpStatusCode.BadRequest;
                 }
             };
 
-            Post["/"] = parameters =>
+            Put["/"] = parameters =>
             {
-                return PostUserAgent(Request.Body);
+                return PutPerson(Request.Body);
             };
 
             Get["/photo"] = parameters =>
             {
-                return GetUserAgentPhoto();
+                if (IsUri(Request.Query.agentUri))
+                {
+                    UriRef agentUri = new UriRef(Request.Query.agentUri);
+
+                    return GetPersonPhoto(agentUri);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
 
-            Post["/photo"] = parameters =>
+            Put["/photo"] = parameters =>
             {
-                RequestStream stream = Request.Body;
+                if (IsUri(Request.Query.agentUri))
+                {
+                    UriRef agentUri = new UriRef(Request.Query.agentUri);
 
-                return PostUserAgentPhoto(stream);
+                    RequestStream stream = Request.Body;
+
+                    return PutPersonPhoto(agentUri, stream);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
         }
 
@@ -99,39 +125,49 @@ namespace Artivity.Apid.Modules
 
         #region Methods
 
-        private Response GetUserAgents()
+        private Response GetPersons()
         {
-            IModel model = ModelProvider.GetAgents();
+            List<Person> persons = ModelProvider.GetAgents().GetResources<Person>(true).ToList();
 
-            return HttpStatusCode.NotImplemented;
+            return Response.AsJsonSync(persons);
         }
 
-        private Response GetUserAgent(Uri agentUri)
+        private Response GetPersonFromUri(Uri agentUri)
         {
-            UriRef uid = new UriRef(PlatformProvider.Config.Uid);
+            Person person = ModelProvider.GetAgents().GetResource<Person>(agentUri);
 
-            IModel model = ModelProvider.GetAgents();
+            return Response.AsJsonSync(person);
+        }
 
-            if (model.ContainsResource(uid))
+        private Response GetPersonsFromRole(UserRoles userRole)
+        {
+            Resource role;
+
+            switch(userRole)
             {
-                Person user = model.GetResource<Person>(uid);
-
-                return Response.AsJsonSync(user);
+                case UserRoles.AccountOwner: role = art.AccountOwnerRole; break;
+                case UserRoles.ProjectAdministrator: role = art.ProjectAdministratorRole; break;
+                case UserRoles.ProjectMember: role = art.ProjectMemberRole; break;
+                default: throw new ArgumentException("userRole");
             }
-            else
-            {
-                Association association = CreateUserAssociation(uid);
 
-                return Response.AsJsonSync(association.Agent);
-            }
+            SparqlQuery query = new SparqlQuery(@"
+                SELECT ?s ?p ?o WHERE
+                {
+                    ?s ?p ?o .
+
+                    ?association prov:agent ?s; prov:hadRole @role .
+                }
+            ");
+
+            query.Bind("@role", role);
+
+            List<Person> persons = ModelProvider.GetAgents().GetResources<Person>(query, true).ToList();
+
+            return Response.AsJsonSync(persons);
         }
 
-        private Response GetUserAgentsFromType(string type)
-        {
-            return HttpStatusCode.NotImplemented;
-        }
-
-        private Association CreateUserAssociation(UriRef uid)
+        private Association CreateAgentAssociation(UriRef uid)
         {
             // See if there is already a person defined..
             Person user;
@@ -162,7 +198,7 @@ namespace Artivity.Apid.Modules
             return association;
         }
 
-        private Response PostUserAgent(RequestStream stream)
+        private Response PutPerson(RequestStream stream)
         {
             Person user = Bind<Person>(ModelProvider.Store, stream);
 
@@ -188,24 +224,16 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response GetUserAgentPhoto()
+        private Response GetPersonPhoto(Uri agentUri)
         {
             try
             {
-                string uid = PlatformProvider.Config.GetUserId();
-                string file = Path.Combine(PlatformProvider.AvatarsFolder, uid + ".jpg");
+                string uri = FileNameEncoder.Encode(agentUri.AbsoluteUri);
+                string file = Path.Combine(PlatformProvider.AvatarsFolder, uri + ".jpg");
 
                 if (!File.Exists(file))
                 {
-                    Assembly assembly = Assembly.GetExecutingAssembly();
-
-                    using (Stream source = assembly.GetManifestResourceStream("Artivity.Apid.Resources.user.jpg"))
-                    {
-                        using (FileStream target = File.Create(file))
-                        {
-                            source.CopyTo(target);
-                        }
-                    }
+                    return HttpStatusCode.NoContent;
                 }
 
                 FileStream fileStream = new FileStream(file, FileMode.Open);
@@ -223,12 +251,12 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response PostUserAgentPhoto(RequestStream stream)
+        private Response PutPersonPhoto(Uri agentUri, RequestStream stream)
         {
             try
             {
-                string uid = PlatformProvider.Config.GetUserId();
-                string file = Path.Combine(PlatformProvider.AvatarsFolder, uid + ".jpg");
+                string uri = FileNameEncoder.Encode(agentUri.AbsoluteUri);
+                string file = Path.Combine(PlatformProvider.AvatarsFolder, uri + ".jpg");
 
                 Bitmap source = new Bitmap(stream);
 
@@ -261,5 +289,10 @@ namespace Artivity.Apid.Modules
         #endregion
     }
 
-    enum UserRoles { AccountOwner, Contact };
+    public enum UserRoles
+    {
+        AccountOwner,
+        ProjectAdministrator,
+        ProjectMember
+    };
 }

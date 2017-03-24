@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2017
 
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -39,11 +40,21 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        [RdfProperty(ART.agent)]
+        [RdfProperty(ART.agent), JsonIgnore]
         public Agent Agent { get; set; }
 
-        [RdfProperty(ART.hasRole)]
+        public Uri AgentUri
+        {
+            get { return Agent.Uri ?? null; }
+        }
+
+        [RdfProperty(ART.hasRole), JsonIgnore]
         public Role Role { get; set; }
+
+        public Uri RoleUri
+        {
+            get { return Role.Uri ?? null; }
+        }
 
         #endregion
 

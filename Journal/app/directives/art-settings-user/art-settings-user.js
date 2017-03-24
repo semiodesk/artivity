@@ -25,28 +25,15 @@
         }
 
         // Load the user data.
-        api.getUser().then(function (data) {
+        api.getAccountOwner().then(function (data) {
             s.user = data;
+            s.userPhoto = null;
+            s.userPhotoUrl = api.getUserPhotoUrl(s.user.Uri);
         });
 
-        // Set the user photo URL.
-        s.userPhotoUrl = api.getUserPhotoUrl();
-
-        s.onPhotoChanged = function (e) {
-            // Update the preview image..
-            var files = window.event.srcElement.files;
-
-            if (FileReader && files.length) {
-                var reader = new FileReader();
-
-                reader.onload = function () {
-                    document.getElementById('photo-img').src = reader.result;
-                }
-
-                reader.readAsDataURL(files[0]);
-
-                s.form.$pristine = false;
-            }
+        s.onPhotoChanged = function (file) {
+            s.userPhoto = file;
+            s.form.$pristine = false;
         };
 
         // Set attribute default values.
@@ -93,13 +80,13 @@
             console.log("Submitting Profile");
 
             if (s.user) {
-                api.setUser(s.user);
+                api.putUser(s.user);
             }
 
             if (s.userPhoto) {
-                api.setUserPhoto(s.userPhoto).then(function () {
+                api.putUserPhoto(s.user.Uri, s.userPhoto).then(function () {
                     s.userPhotoUrl = '';
-                    s.userPhotoUrl = api.getUserPhotoUrl();
+                    s.userPhotoUrl = api.getUserPhotoUrl(s.user.Uri);
                 });
             }
         };

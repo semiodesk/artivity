@@ -102,7 +102,7 @@
         // Load author information.
         t.userPhotoUrl = api.getUserPhotoUrl();
 
-        api.getUser().then(function (data) {
+        api.getAccountOwner().then(function (data) {
             t.user = data;
 
             t.archive.creators = [{

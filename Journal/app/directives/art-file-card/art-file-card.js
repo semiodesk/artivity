@@ -28,10 +28,12 @@
             t.file = file;
             t.fileName = filesystemService.getFileNameWithoutExtension(file.label);
             t.fileExtension = filesystemService.getFileExtension(file.label);
+
             if (file.thumbnail !== undefined) {
                 t.thumbnail = true;
                 t.thumbnailUrl = file.thumbnail;
             }
+            
             t.link = enableLink === undefined || enableLink === true;
 
             $(element).find('.file-thumbnail').css('background-image', 'url(' + t.thumbnailUrl + ')');

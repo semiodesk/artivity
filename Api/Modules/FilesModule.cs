@@ -74,6 +74,13 @@ namespace Artivity.Api.Modules
                 return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
             };
 
+            Get["/recent"] = parameters =>
+            {
+                GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
+
+                return GetLatestDerivedEntityFromFile(settings);
+            };
+
             Get["/derivations"] = parameters =>
             {
                 return HttpStatusCode.NotImplemented;
@@ -95,7 +102,7 @@ namespace Artivity.Api.Modules
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return PutLatestDerivedEntityFromFile(new UriRef(fileUri));
+                return PublishLatestDerivedEntityFromFile(new UriRef(fileUri));
             };
         }
 
@@ -109,36 +116,46 @@ namespace Artivity.Api.Modules
             string FilterClause = settings.GetFilterClause();
             string LimitClause = settings.GetLimitClause();
             string OffsetClause = settings.GetOffsetClause();
+
             string queryString = @"
                 SELECT DISTINCT
+                    MAX(?t) AS ?time 
+                    ?entityUri
+                    ?file AS ?uri
                     ?label 
-                    ?file as ?uri
-                    ?q as ?entityUri
-                    SAMPLE(?p) as ?thumbnail 
-                    MAX(?t) as ?time 
-                    SAMPLE(COALESCE(?agentColor, '#cecece')) AS ?agentColor
-                    WHERE {{
-                            ?a prov:generated | prov:used ?entity ;
-                            prov:endedAtTime ?ended ;
-                            prov:startedAtTime ?started ;
-                            prov:qualifiedAssociation / prov:agent ?agent.
+                    SAMPLE(?p) AS ?thumbnail 
+                    COALESCE(?agentColor, '#cecece') AS ?agentColor
+                WHERE
+                {{
+                    ?activity prov:generated | prov:used ?entity ;
+                        prov:startedAtTime ?startTime ;
+                        prov:endedAtTime ?endTime .
   
-                    ?agent a prov:SoftwareAgent.
                     ?entity nie:isStoredAs ?file.
                     ?file rdfs:label ?label .
-                    BIND( STRBEFORE( STR(?entity), '#' ) as ?e ).
-                    BIND( if(?e != '', ?e, str(?entity)) as ?q).
+
+                    BIND(STRBEFORE(STR(?entity), '#') AS ?e).
+                    BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
                     {4}
-                    BIND(if(bound(?ended), ?ended, ?started) as ?t).
-                    OPTIONAL{{
+                    BIND(IF(BOUND(?endTime), ?endTime, ?startTime) AS ?t).
+
+                    OPTIONAL {{
+                        ?activity prov:qualifiedAssociation / prov:agent ?agent .
+
+                        ?agent a prov:SoftwareAgent.
                         ?agent art:hasColourCode ?agentColor .
                     }}
+
                     FILTER NOT EXISTS {{
                       ?entity prov:qualifiedRevision / prov:entity ?x .
                     }}
+
                     {0}
-                    }}GROUP BY ?label ?file ?q ?time {1} {2} {3}";
+                }}
+                GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
+
             queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, PlatformProvider.GetFilesQueryModifier);
+
             ISparqlQuery query = new SparqlQuery(queryString);
 
             var bindings = ModelProvider.GetAll().GetBindings(query);
@@ -151,7 +168,7 @@ namespace Artivity.Api.Modules
         /// </summary>
         /// <param name="fileUri"></param>
         /// <returns></returns>
-        private Response PutLatestDerivedEntityFromFile(Uri fileUri)
+        private Response PublishLatestDerivedEntityFromFile(Uri fileUri)
         {
             IModel Model = ModelProvider.GetActivities();
 
