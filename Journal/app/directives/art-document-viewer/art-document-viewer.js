@@ -29,7 +29,6 @@
         t.setFile = setFile;
         t.update = update;
 
-
         $(document).ready(function () {
             // Initialize the viewer and load the renderings when the document is ready.
             t.canvas = document.getElementById('canvas');
@@ -41,8 +40,9 @@
 
         function setFile(fileUri) {
             t.fileUri = fileUri;
+
             // TODO: this only loads the most recent entity by file
-            entityService.getRecentByFile(fileUri).then(function (entity) {
+            entityService.getLatestDerivationFromFile(fileUri).then(function (entity) {
                 t.entity = entity;
 
                 agentService.getUser().then(function (agent) {
