@@ -67,6 +67,7 @@ namespace artivity
         Resource::clear();
         
         _influences.clear();
+        // Note: The association can be cleared here because it only needs to be transmitted once.
 		_associations.clear();
         _usedEntities.clear();
         _generatedEntities.clear();
