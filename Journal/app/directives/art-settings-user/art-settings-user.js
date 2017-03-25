@@ -13,9 +13,9 @@
 
     angular.module('app').controller('UserSettingsDirectiveFormController', UserSettingsDirectiveFormController);
 
-    UserSettingsDirectiveFormController.$inject = ['$scope', 'api', 'settingsService'];
+    UserSettingsDirectiveFormController.$inject = ['$scope', 'api', 'agentService', 'settingsService'];
 
-    function UserSettingsDirectiveFormController($scope, api, settingsService) {
+    function UserSettingsDirectiveFormController($scope, api, agentService, settingsService) {
         var t = this;
         var s = $scope;
 
@@ -25,7 +25,7 @@
         }
 
         // Load the user data.
-        api.getAccountOwner().then(function (data) {
+        agentService.getAccountOwner().then(function (data) {
             s.user = data;
             s.userPhoto = null;
             s.userPhotoUrl = api.getUserPhotoUrl(s.user.Uri);

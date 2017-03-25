@@ -4,6 +4,7 @@
     function windowService() {
         const remote = require('electron').remote;
         const window = require('electron').remote.getCurrentWindow();
+        const dialog = require('electron').remote.dialog;
 
         return {
             currentWindow: currentWindow,
@@ -13,7 +14,8 @@
             setClosable: setClosable,
             setMinimizable: setMinimizable,
             setMaximizable: setMaximizable,
-            setWidth: setWidth
+            setWidth: setWidth,
+            selectFolder: selectFolder
         }
 
         function close() {
@@ -108,6 +110,16 @@
 
         function reload() {
             window.reload();
+        }
+
+        function selectFolder() {
+            var result = dialog.showOpenDialog({
+                properties: ['openDirectory']
+            });
+
+            if(result && result.length > 0) {
+                return result[0];
+            }
         }
     }
 })();

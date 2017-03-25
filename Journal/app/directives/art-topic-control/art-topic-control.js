@@ -7,7 +7,7 @@
             templateUrl: 'app/directives/art-topic-control/art-topic-control.html',
             bindToController: true,
             scope: {
-                entity: '@'
+                file: '@'
             },
             controller: TopicControlDirectiveController,
             controllerAs: 't'
@@ -20,6 +20,8 @@
 
     function TopicControlDirectiveController($scope, agentService, entityService, topicService, markService, viewerService) {
         var t = this;
+
+        t.revision = null;
 
         t.topics = [];
         t.topic = {
@@ -43,40 +45,36 @@
         }
 
         function initializeData() {
-            agentService.getUser().then(function (data) {
+            agentService.getAccountOwner().then(function (data) {
                 t.user = data;
 
                 // Set the user URI for the new comments.
                 t.topic.agent = t.user.Uri;
 
-                if (t.entity) {
+                if (t.file) {
                     // Make sure the user is properly initialized before retrieving the entity derivations.
-                    entityService.getById(t.entity).then(function (response) {
-                        var entity = response;
+                    entityService.getLatestRevision(t.file).then(function (data) {
+                        t.revision = data.revision;
 
-                        if (entity.RevisionUris && entity.RevisionUris.length > 0) {
-                            t.derivation = entity.RevisionUris[0];
+                        // Set the entity URI as primary source for the comments.
+                        t.topic.entity = t.revision;
 
-                            // Set the entity URI as primary source for the comments.
-                            t.topic.entity = t.derivation;
+                        topicService.get(t.revision).then(function (data) {
+                            t.topics = [];
 
-                            topicService.get(t.derivation).then(function (data) {
-                                t.topics = [];
+                            for (i = 0; i < data.length; i++) {
+                                var d = data[i];
 
-                                for (i = 0; i < data.length; i++) {
-                                    var d = data[i];
-
-                                    // Insert at the beginning of the list.
-                                    t.topics.unshift({
-                                        uri: d.uri,
-                                        agent: d.agent,
-                                        time: d.time,
-                                        title: d.title,
-                                        completed: d.completed
-                                    });
-                                }
-                            });
-                        }
+                                // Insert at the beginning of the list.
+                                t.topics.unshift({
+                                    uri: d.uri,
+                                    agent: d.agent,
+                                    time: d.time,
+                                    title: d.title,
+                                    completed: d.completed
+                                });
+                            }
+                        });
                     });
                 }
             });
@@ -88,7 +86,7 @@
 
         function updateTopic() {
             if (!t.topic.startTime) {
-                t.topic.entity = t.derivation;
+                t.topic.entity = t.revision;
                 t.topic.startTime = new Date();
 
                 console.log("Start topic: ", t.topic);
@@ -122,7 +120,7 @@
         function resetTopic() {
             t.topic = {
                 agent: null,
-                entity: t.derivation,
+                entity: t.revision,
                 startTime: null,
                 endTime: null,
                 title: '',

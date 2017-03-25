@@ -6,7 +6,7 @@
             restrict: 'E',
             templateUrl: 'app/directives/art-chat-control/art-chat-control.html',
             scope: {
-                entity: '@'
+                file: '@'
             },
             controller: ChatControlDirectiveController,
             controllerAs: 't',
@@ -24,7 +24,7 @@
         var t = this;
 
         t.user = null;
-        t.entity = null;
+        t.file = null;
         t.comment = null;
         t.comments = [];
 
@@ -52,17 +52,17 @@
         }
 
         function initializeData() {
-            agentService.getUser().then(function (data) {
+            agentService.getAccountOwner().then(function (data) {
                 t.user = data;
 
                 // Set the user URI for the new comments.
                 t.comment.agent = t.user.Uri;
 
-                entityService.getRecentByFile($scope.entity).then(function (entity) {
+                entityService.getLatestRevision($scope.file).then(function (data) {
                     // Set the entity URI as primary source for the comments.
-                    t.comment.entity = entity.Uri;
+                    t.comment.entity = data.revision;
 
-                    commentService.get(entity.Uri).then(function (data) {
+                    commentService.get(data.revision).then(function (data) {
                         t.comments = [];
 
                         for (i = 0; i < data.length; i++) {
@@ -140,7 +140,7 @@
         function resetComment(clearText) {
             t.comment = {
                 agent: null,
-                entity: t.entity,
+                entity: t.file,
                 startTime: null,
                 endTime: null,
                 text: '',

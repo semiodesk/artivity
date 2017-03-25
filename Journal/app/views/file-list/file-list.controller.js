@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('FileListController', FileListController);
 
-    FileListController.$inject = ['$scope', '$uibModal', 'api', 'filesystemService', 'windowService', 'hotkeys'];
+    FileListController.$inject = ['$scope', '$uibModal', 'api', 'agentService', 'filesystemService', 'windowService', 'hotkeys'];
 
-    function FileListController($scope, $uibModal, api, filesystemService, windowService, hotkeys) {
+    function FileListController($scope, $uibModal, api, agentService, filesystemService, windowService, hotkeys) {
         var t = this;
 
         windowService.setMinimizable();
@@ -12,7 +12,7 @@
         // USER INFO
         t.user = {};
 
-        api.getAccountOwner().then(function (data) {
+        agentService.getAccountOwner().then(function (data) {
             t.user = data;
 
             // Note: For some reason, binding does not work reliably with the user data and image source.

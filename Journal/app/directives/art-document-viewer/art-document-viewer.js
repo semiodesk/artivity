@@ -22,10 +22,10 @@
         var t = this;
 
         t.user = null;
-        t.entity = null;
         t.canvas = null;
         t.viewer = null;
         t.fileUri = null;
+        t.revisionUri = null;
         t.setFile = setFile;
         t.update = update;
 
@@ -33,7 +33,7 @@
             // Initialize the viewer and load the renderings when the document is ready.
             t.canvas = document.getElementById('canvas');
 
-            if (t.user != null && t.entity != null) {
+            if (t.user && t.canvas && t.revisionUri) {
                 initializeViewer();
             }
         });
@@ -41,14 +41,13 @@
         function setFile(fileUri) {
             t.fileUri = fileUri;
 
-            // TODO: this only loads the most recent entity by file
-            entityService.getLatestDerivationFromFile(fileUri).then(function (entity) {
-                t.entity = entity;
+            entityService.getLatestRevision(fileUri).then(function (data) {
+                t.revisionUri = data.revision;
 
-                agentService.getUser().then(function (agent) {
+                agentService.getAccountOwner().then(function (agent) {
                     t.user = agent;
 
-                    if (t.canvas != null) {
+                    if (t.user && t.canvas && t.revisionUri) {
                         initializeViewer();
                     }
                 });
@@ -56,7 +55,6 @@
         }
 
         function initializeViewer() {
-
             t.viewer = new DocumentViewer(t.user, t.canvas, "", selectionService);
             t.viewer.addCommand(new SelectCommand(t.viewer, selectionService), true);
             t.viewer.addCommand(new PanCommand(t.viewer));
@@ -78,16 +76,18 @@
                 t.viewer.onResize();
             });
 
-            api.getCanvasRenderingsFromEntity(t.entity.Uri).then(function (data) {
-                t.viewer.pageCache.load(data, function () {
-                    console.log('Loaded pages:', data);
+            if (t.revisionUri) {
+                api.getCanvasRenderingsFromEntity(t.revisionUri).then(function (data) {
+                    t.viewer.pageCache.load(data, function () {
+                        console.log('Loaded pages:', data);
 
-                    var derivation = t.entity.Uri;
+                        var revision = t.revisionUri;
 
-                    t.viewer.setEntity(derivation);
-                    t.viewer.zoomToFit();
+                        t.viewer.setEntity(revision);
+                        t.viewer.zoomToFit();
+                    });
                 });
-            });
+            }
         }
 
         function update() {

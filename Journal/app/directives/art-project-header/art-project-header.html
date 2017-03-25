@@ -27,16 +27,7 @@
 
         <div class="form-group">
             <label for="folder">Ordner</label>
-            <div class="row">
-                <div class="col-xs-9">
-                    <input ng-model="t.project.Folder" class="form-input-folder" type="file" style="display: none;" webkitdirectory>
-                    <input ng-model="t.project.Folder" class="form-control" type="text" placeholder="Bitte wählen Sie einen Projektordner aus."
-                        readonly>
-                </div>
-                <div class="col-xs-3">
-                    <a class="btn btn-chromeless btn-select-folder pull-right"><i class="zmdi zmdi-folder"></i> Ordner auswählen</a>
-                </div>
-            </div>
+            <art-folder-picker folder="t.folder" changed="t.setFolder"></art-folder-picker>
         </div>
 
         <div class="form-group">
@@ -47,19 +38,19 @@
             <label for="members">Teilnehmer</label>
 
             <ul class="list-unstyled list-view">
-                <li class="list-item" ng-repeat="user in t.users">
+                <li class="list-item" ng-repeat="member in t.members" ng-click="t.editUser(member)" style="cursor: pointer">
                     <div class="layout-container padding-x-xs padding-y-xs">
                         <div class="col">
-                            <art-user-photo-img width="40" height="40" src="{{user.photoUrl}}"></art-user-photo-img>
+                            <art-user-photo-img width="40" height="40" src="member.photoUrl"></art-user-photo-img>
                         </div>
                         <div class="col expand">
                             <div class="padding-x-md">
-                                <h5 ng-bind="user.name"></h5>
-                                <label ng-bind="user.email"></label>
+                                <h5 ng-bind="member.Agent.Name"></h5>
+                                <label ng-bind="member.Agent.EmailAddress"></label>
                             </div>
                         </div>
                         <div class="col">
-                            <a class="btn btn-chromeless" ng-click="t.removeUser(user);"><i class="zmdi zmdi-close"></i></a>
+                            <a class="btn btn-chromeless" ng-click="t.removeUser(member);"><i class="zmdi zmdi-close"></i></a>
                         </div>
                     </div>
                 </li>
