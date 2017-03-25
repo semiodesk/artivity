@@ -196,6 +196,12 @@
 						return response.data;
 					});
 			},
+			getLatestFileRevision: function(fileUri) {
+				return $http.get(endpoint + '/files/revisions/latest?fileUri=' + fileUri).then(
+					function (response) {
+						return response.data;
+					});
+			},
 			getProjectFiles: function (projectUri) {
 				return $http.get(endpoint + '/projects/files?uri=' + projectUri).then(
 					function (response) {

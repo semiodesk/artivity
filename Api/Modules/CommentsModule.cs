@@ -50,14 +50,16 @@ namespace Artivity.Api.Modules
         {
             Get["/"] = parameters =>
             {
-                string uri = Request.Query.entityUri;
+                if(IsUri(Request.Query.entityUri))
+                {
+                    UriRef entityUri = new UriRef(Request.Query.entityUri);
 
-                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                    return GetCommentsFromEntity(entityUri);
+                }
+                else
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
-
-                return GetCommentsFromEntity(new UriRef(uri));
             };
 
             Post["/"] = parameters =>
@@ -68,8 +70,10 @@ namespace Artivity.Api.Modules
                 {
                     return PostComment(comment);
                 }
-
-                return HttpStatusCode.BadRequest;
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
             };
 
             #if DEBUG

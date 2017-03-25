@@ -9,33 +9,39 @@
 			scope: {
 				project: "=project",
 				collapsed: "=?"
-			},
-			link: function (scope, element, attributes) {
-				$('.btn-select-folder').click(function () {
-					$('.form-input-folder').click();
-				});
 			}
 		}
 	});
 
-	ProjectHeaderDirectiveController.$inject = ['$rootScope', '$scope', '$sce', 'projectService'];
+	ProjectHeaderDirectiveController.$inject = ['$rootScope', '$scope', '$sce', '$uibModal', 'agentService', 'projectService'];
 
-	function ProjectHeaderDirectiveController($rootScope, $scope, $sce, projectService) {
+	function ProjectHeaderDirectiveController($rootScope, $scope, $sce, $uibModal, agentService, projectService) {
 		var t = this;
 
 		if (t.project === null) {
 			t.new = true;
 			t.collapsed = false;
+			t.folder = null;
 
 			projectService.create().then(function (result) {
 				t.project = result;
-				t.project.Folder = '';
-
-				console.log(t.project);
 			});
 		} else {
 			t.new = false;
 			t.collapsed = true;
+			t.folder = null;
+
+			projectService.getFolders(t.project.Uri).then(function (result) {
+				if (result.length > 0) {
+					t.folder = result[0].Url.Uri;
+				}
+			});
+
+			projectService.getMembers(t.project.Uri).then(function (result) {
+				if (result.length > 0) {
+					t.members = result;
+				}
+			});
 		}
 
 		t.rootScope = $rootScope;
@@ -43,15 +49,55 @@
 		t.commit = commit;
 		t.cancel = cancel;
 
-		t.users = [];
+		t.members = [];
 		t.createUser = createUser;
+		t.editUser = editUser;
 		t.removeUser = removeUser;
+		t.setFolder = setFolder;
+
+		function setFolder(folderUrl) {
+			if (t.folder) {
+				projectService.removeFolder(t.project.Uri, t.folder);
+			}
+
+			t.folder = folderUrl;
+
+			projectService.addFolder(t.project.Uri, t.folder);
+		}
 
 		function createUser() {
-			t.users.push({
-				name: 'Max Mustermann',
-				email: 'max@mustermann.de',
-				photoUrl: $sce.trustAsResourceUrl('http://127.0.0.1:8262/artivity/api/1.0//agents/user/photo')
+			agentService.newPerson().then(function (person) {
+				if (person) {
+					var modalInstance = $uibModal.open({
+						animation: true,
+						templateUrl: 'app/dialogs/edit-person-dialog/edit-person-dialog.html',
+						controller: 'EditPersonDialogController',
+						controllerAs: 't',
+						resolve: {
+							person: function () {
+								return person;
+							}
+						}
+					});
+
+					modalInstance.result.then(function () {
+						projectService.addMember(t.project.Uri, person.Uri);
+					});
+				}
+			});
+		}
+
+		function editUser(user) {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				templateUrl: 'app/dialogs/edit-person-dialog/edit-person-dialog.html',
+				controller: 'EditPersonDialogController',
+				controllerAs: 't',
+				resolve: {
+					person: function () {
+						return user;
+					}
+				}
 			});
 		}
 
@@ -64,8 +110,6 @@
 		}
 
 		function commit() {
-			console.log(t.project);
-
 			if ($scope.projectForm.$valid) {
 				projectService.update(t.project).then(function () {
 					$rootScope.$broadcast('projectAdded', t.project);

@@ -4,12 +4,13 @@
     entityService.$inject = ['$http'];
 
     function entityService($http) {
-        var endpoint = apid.endpointUrl + "entity/images";
+        var endpoint = apid.endpointUrl + "files";
 
         var service = {};
         service.getAll = getAll;
         service.getById = getById;
-        service.getRecentByFile = getRecentByFile;
+        service.getRevisions = getRevisions;
+        service.getLatestRevision = getLatestRevision;
         service.selectedEntity = null;
 
         return service;
@@ -27,15 +28,27 @@
             return $http.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
         }
 
-        function getLatestDerivationFromFile(uri) {
-            return $http.get(endpoint + "/derivations/latest?fileUri=" + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
-        }
-
         function getByFile(uri, offset, limit, sort) {
             // offset and limit should be ints
             // sort should either be 'asc' or 'desc'
             // TODO: handle res.count in handleSuccess
-            return $http.get(endpoint + "?offset="+offset+"&limit="+limit+"&sort="+sort + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
+            return $http.get(endpoint + "?offset=" + offset + "&limit=" + limit + "&sort=" + sort + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
+        }
+
+        function getRevisions(fileUri) {
+            return $http.get(endpoint + "/revisions?fileUri=" + fileUri).then(function (response) {
+                if (response.data.length) {
+                    return response.data;
+                }
+            }, handleError('Error when retrieving revision from file URI.'));
+        }
+
+        function getLatestRevision(fileUri) {
+            return $http.get(endpoint + "/revisions/latest?fileUri=" + fileUri).then(function (response) {
+                if (response.data.length) {
+                    return response.data[0];
+                }
+            }, handleError('Error when retrieving latest revision from file URI.'));
         }
 
         // private functions

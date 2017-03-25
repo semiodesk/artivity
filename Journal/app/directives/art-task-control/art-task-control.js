@@ -7,7 +7,7 @@
             templateUrl: 'app/directives/art-task-control/art-task-control.html',
             bindToController: true,
             scope: {
-                entity: '@'
+                file: '@'
             },
             controller: TaskControlDirectiveController,
             controllerAs: 't'
@@ -44,39 +44,35 @@
         }
 
         function initializeData() {
-            agentService.getUser().then(function (data) {
+            agentService.getAccountOwner().then(function (data) {
                 t.user = data;
 
                 // Set the user URI for the new comments.
                 t.task.agent = t.user.Uri;
 
-                if (t.entity) {
+                if (t.file) {
                     // Make sure the user is properly initialized before retrieving the entity derivations.
-                    entityService.getById(t.entity).then(function (response) {
-                        var entity = response;
+                    entityService.getLatestRevision(t.file).then(function (data) {
+                        t.revision = data.revision;
 
-                        if (entity.RevisionUris && entity.RevisionUris.length > 0) {
-                            t.derivation = entity.RevisionUris[0];
+                        // Set the entity URI as primary source for the comments.
+                        t.task.entity = t.revision;
 
-                            // Set the entity URI as primary source for the comments.
-                            t.task.entity = t.derivation;
+                        taskService.get(revision).then(function (data) {
+                            t.tasks = [];
 
-                            taskService.get(t.derivation).then(function (data) {
-                                t.tasks = [];
+                            for (i = 0; i < data.length; i++) {
+                                var d = data[i];
 
-                                for (i = 0; i < data.length; i++) {
-                                    var d = data[i];
-
-                                    // Insert at the beginning of the list.
-                                    t.tasks.unshift({
-                                        uri: d.uri,
-                                        agent: d.agent,
-                                        time: d.time,
-                                        name: d.name
-                                    });
-                                }
-                            });
-                        }
+                                // Insert at the beginning of the list.
+                                t.tasks.unshift({
+                                    uri: d.uri,
+                                    agent: d.agent,
+                                    time: d.time,
+                                    name: d.name
+                                });
+                            }
+                        });
                     });
                 }
             });
@@ -88,7 +84,7 @@
 
         function updateTask(task) {
             if (!task.startTime) {
-                task.entity = t.derivation;
+                task.entity = t.revision;
                 task.startTime = new Date();
 
                 console.log("Start task: ", t.task);
@@ -142,7 +138,7 @@
         function resetTask() {
             t.task = {
                 agent: null,
-                entity: t.derivation,
+                entity: t.revision,
                 startTime: null,
                 endTime: null,
                 name: '',

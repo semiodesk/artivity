@@ -22,17 +22,17 @@
 				<uib-tabset>
 					<uib-tab heading="Comments">
 						<div class="layout-container">
-							<art-chat-control id="ctl-chat" entity="{{t.fileUri}}"></art-chat-control>
+							<art-chat-control id="ctl-chat" file="{{t.fileUri}}"></art-chat-control>
 						</div>
 					</uib-tab>
 					<uib-tab heading="Topics">
 						<div class="layout-container">
-							<art-topic-control id="ctl-topic" entity="{{t.fileUri}}"></art-topic-control>
+							<art-topic-control id="ctl-topic" file="{{t.fileUri}}"></art-topic-control>
 						</div>
 					</uib-tab>
 					<uib-tab heading="Todo">
 						<div class="layout-container padding-x-xl padding-y-xl text-center">
-							<art-task-control id="ctl-topic" entity="{{t.entity.uri}}"></art-task-control>
+							<art-task-control id="ctl-topic" file="{{t.fileUri}}"></art-task-control>
 						</div>
 					</uib-tab>
 				</uib-tabset>

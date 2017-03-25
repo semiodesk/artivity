@@ -7,13 +7,44 @@
         var endpoint = apid.endpointUrl + "agents";
 
         return {
-            getUser: getUser
+            newPerson: newPerson,
+            putPerson: putPerson,
+            putPhoto: putPhoto,
+            getAccountOwner: getAccountOwner
         };
 
-        function getUser() {
-            return $http.get(endpoint + '/users').then(function (response) {
-                return response.data;
-            }, handleError('Error while retrieving user agent.'));
+        function getAccountOwner() {
+            return $http.get(endpoint + '/users?role=AccountOwner').then(
+                function (response) {
+                    if (response && response.data.length === 1) {
+                        return response.data[0];
+                    }
+                });
+        }
+
+        function newPerson() {
+            return $http.get(endpoint + '/users/new').then(
+                function (response) {
+                    if (response && response.data) {
+                        return response.data;
+                    }
+                });
+        }
+
+        function putPerson(person) {
+            return $http.put(endpoint + '/users/', person).then(
+                function (response) {
+                    if (response && response.data.length === 1) {
+                        return response.data[0];
+                    }
+                });
+        }
+
+        function putPhoto(agentUri, data) {
+            return $http.put(endpoint + '/users/photo?agentUri=' + agentUri, data).then(
+                function (response) {
+                    return response;
+                });
         }
 
         function handleError(error) {

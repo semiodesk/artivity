@@ -83,16 +83,30 @@ namespace Artivity.Api.Modules
 
             Get["/revisions"] = parameters =>
             {
-                GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
+                if (IsUri(Request.Query.fileUri))
+                {
+                    UriRef fileUri = new UriRef(Request.Query.fileUri);
 
-                return GetDerivedEntitiesFromFile(settings);
+                    return GetRevisionsFromFile(fileUri);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
 
             Get["/revisions/latest"] = parameters =>
             {
-                GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
+                if (IsUri(Request.Query.fileUri))
+                {
+                    UriRef fileUri = new UriRef(Request.Query.fileUri);
 
-                return GetLatestDerivedEntityFromFile(settings);
+                    return GetLatestRevisionFromFile(fileUri);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
 
             Put["/revisions/latest/publish"] = parameters =>
@@ -104,7 +118,7 @@ namespace Artivity.Api.Modules
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return PublishLatestDerivedEntityFromFile(new UriRef(fileUri));
+                return PublishLatestRevision(new UriRef(fileUri));
             };
         }
 
@@ -165,108 +179,59 @@ namespace Artivity.Api.Modules
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetDerivedEntitiesFromFile(GetFilesSettings settings)
+        private Response GetRevisionsFromFile(UriRef fileUri)
         {
-            string OrderClause = settings.GetOrderClause();
-            string FilterClause = settings.GetFilterClause();
-            string LimitClause = settings.GetLimitClause();
-            string OffsetClause = settings.GetOffsetClause();
-
-            string queryString = @"
-                SELECT DISTINCT
-                    MAX(?t) AS ?time 
-                    ?entityUri
-                    ?file AS ?uri
-                    ?label 
-                    SAMPLE(?p) AS ?thumbnail 
-                    COALESCE(?agentColor, '#cecece') AS ?agentColor
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?time
+                    ?revision
+                    COALESCE(?remote, -1) AS ?remote
                 WHERE
-                {{
-                    ?activity prov:generated | prov:used ?entity ;
-                        prov:startedAtTime ?startTime ;
-                        prov:endedAtTime ?endTime .
-  
-                    ?entity nie:isStoredAs ?file.
-                    ?file rdfs:label ?label .
+                {
+                    ?revision nie:isStoredAs @file ; nie:created ?time .
 
-                    BIND(STRBEFORE(STR(?entity), '#') AS ?e).
-                    BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
-                    {4}
-                    BIND(IF(BOUND(?endTime), ?endTime, ?startTime) AS ?t).
+                    OPTIONAL
+                    {
+                        ?revision arts:synchronizationState / arts:lastRemoteRevision ?remote .
+                    }
+                }
+                ORDER BY DESC(?time)
+            ");
 
-                    OPTIONAL {{
-                        ?activity prov:qualifiedAssociation / prov:agent ?agent .
+            query.Bind("@file", fileUri);
 
-                        ?agent a prov:SoftwareAgent.
-                        ?agent art:hasColourCode ?agentColor .
-                    }}
-
-                    FILTER NOT EXISTS {{
-                      ?entity prov:qualifiedRevision / prov:entity ?x .
-                    }}
-
-                    {0}
-                }}
-                GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
-
-            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, PlatformProvider.GetFilesQueryModifier);
-
-            ISparqlQuery query = new SparqlQuery(queryString);
-
-            var bindings = ModelProvider.GetAll().GetBindings(query);
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetLatestDerivedEntityFromFile(GetFilesSettings settings)
+        private Response GetLatestRevisionFromFile(UriRef fileUri)
         {
-            string OrderClause = settings.GetOrderClause();
-            string FilterClause = settings.GetFilterClause();
-            string LimitClause = settings.GetLimitClause();
-            string OffsetClause = settings.GetOffsetClause();
-
-            string queryString = @"
-                SELECT DISTINCT
-                    MAX(?t) AS ?time 
-                    ?entityUri
-                    ?file AS ?uri
-                    ?label 
-                    SAMPLE(?p) AS ?thumbnail 
-                    COALESCE(?agentColor, '#cecece') AS ?agentColor
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?time
+                    ?revision
+                    COALESCE(?remote, -1) AS ?remote
                 WHERE
-                {{
-                    ?activity prov:generated | prov:used ?entity ;
-                        prov:startedAtTime ?startTime ;
-                        prov:endedAtTime ?endTime .
-  
-                    ?entity nie:isStoredAs ?file.
-                    ?file rdfs:label ?label .
+                {
+                    ?revision nie:isStoredAs @file ; nie:created ?time .
 
-                    BIND(STRBEFORE(STR(?entity), '#') AS ?e).
-                    BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
-                    {4}
-                    BIND(IF(BOUND(?endTime), ?endTime, ?startTime) AS ?t).
+                    OPTIONAL
+                    {
+                        ?revision arts:synchronizationState / arts:lastRemoteRevision ?remote .
+                    }
 
-                    OPTIONAL {{
-                        ?activity prov:qualifiedAssociation / prov:agent ?agent .
+                    FILTER NOT EXISTS
+                    {
+                        ?revision prov:qualifiedRevision / prov:entity ?newer .
+                    }
+                }
+                LIMIT 1
+            ");
 
-                        ?agent a prov:SoftwareAgent.
-                        ?agent art:hasColourCode ?agentColor .
-                    }}
+            query.Bind("@file", fileUri);
 
-                    FILTER NOT EXISTS {{
-                      ?entity prov:qualifiedRevision / prov:entity ?x .
-                    }}
-
-                    {0}
-                }}
-                GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
-
-            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, PlatformProvider.GetFilesQueryModifier);
-
-            ISparqlQuery query = new SparqlQuery(queryString);
-
-            var bindings = ModelProvider.GetAll().GetBindings(query);
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJsonSync(bindings);
         }
@@ -276,7 +241,7 @@ namespace Artivity.Api.Modules
         /// </summary>
         /// <param name="fileUri"></param>
         /// <returns></returns>
-        private Response PublishLatestDerivedEntityFromFile(Uri fileUri)
+        private Response PublishLatestRevision(Uri fileUri)
         {
             IModel Model = ModelProvider.GetActivities();
 
@@ -288,7 +253,7 @@ namespace Artivity.Api.Modules
 
                     FILTER NOT EXISTS 
                     {
-                        ?v prov:qualifiedRevision / prov:entity ?entity
+                        ?entity prov:qualifiedRevision / prov:entity ?newer .
                     }
                 }");
 

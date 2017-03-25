@@ -85,6 +85,11 @@ namespace Artivity.Api.Modules
                 }
             };
 
+            Get["/new"] = parameters =>
+            {
+                return CreatePerson();
+            };
+
             Put["/"] = parameters =>
             {
                 return PutPerson(Request.Body);
@@ -167,35 +172,11 @@ namespace Artivity.Api.Modules
             return Response.AsJsonSync(persons);
         }
 
-        private Association CreateAgentAssociation(UriRef uid)
+        private Response CreatePerson()
         {
-            // See if there is already a person defined..
-            Person user;
+            Person person = ModelProvider.GetAgents().CreateResource<Person>();
 
-            IModel model = ModelProvider.GetAgents();
-
-            if (!model.ContainsResource(uid))
-            {
-                PlatformProvider.Logger.LogInfo("Creating new user profile..");
-
-                // If not, create one.
-                user = model.CreateResource<Person>(uid);
-                user.Commit();
-            }
-            else
-            {
-                PlatformProvider.Logger.LogInfo("Upgrading user profile..");
-
-                user = model.GetResource<Person>(uid);
-            }
-
-            // Add the user role association.
-            Association association = model.CreateResource<Association>();
-            association.Agent = user;
-            association.Role = new Role(art.AccountOwnerRole);
-            association.Commit();
-
-            return association;
+            return Response.AsJsonSync(person);
         }
 
         private Response PutPerson(RequestStream stream)
