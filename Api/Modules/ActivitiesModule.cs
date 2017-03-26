@@ -88,7 +88,7 @@ namespace Artivity.Api.Modules
                     ?endTime
                     MAX(?time) as ?maxTime
                     ?agent
-                    SAMPLE(COALESCE(?agentColor,'#FF0000')) AS ?agentColor
+                    COALESCE(?agentColor,'#FF0000') AS ?agentColor
                 WHERE
                 {
                   ?activity
@@ -122,7 +122,7 @@ namespace Artivity.Api.Modules
                     ?endTime
                     MAX(?time) as ?maxTime
                     ?agent
-                    SAMPLE(COALESCE(?agentColor,'#FF0000')) AS ?agentColor
+                    COALESCE(?agentColor,'#FF0000') AS ?agentColor
                 WHERE
                 {
                   ?activity
