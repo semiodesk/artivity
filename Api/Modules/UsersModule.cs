@@ -79,6 +79,29 @@ namespace Artivity.Api.Modules
                         return HttpStatusCode.BadRequest;
                     }
                 }
+                else if(!string.IsNullOrEmpty(Request.Query.q))
+                {
+                    return GetPersonsFromQuery(Request.Query.q);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+            };
+
+            Put["/"] = parameters =>
+            {
+                return PutPerson(Request.Body);
+            };
+
+            Delete["/"] = parameters =>
+            {
+                if (IsUri(Request.Query.agentUri))
+                {
+                    UriRef agentUri = new UriRef(Request.Query.agentUri);
+
+                    return DeletePerson(agentUri);
+                }
                 else
                 {
                     return HttpStatusCode.BadRequest;
@@ -88,11 +111,6 @@ namespace Artivity.Api.Modules
             Get["/new"] = parameters =>
             {
                 return CreatePerson();
-            };
-
-            Put["/"] = parameters =>
-            {
-                return PutPerson(Request.Body);
             };
 
             Get["/photo"] = parameters =>
@@ -170,6 +188,43 @@ namespace Artivity.Api.Modules
             List<Person> persons = ModelProvider.GetAgents().GetResources<Person>(query, true).ToList();
 
             return Response.AsJsonSync(persons);
+        }
+
+        private Response GetPersonsFromQuery(string q)
+        {
+            IModel agents = ModelProvider.GetAgents();
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT ?s ?p ?o WHERE
+                {
+                    ?s ?p ?o .
+                    ?s foaf:name ?name .
+                    ?s foaf:mbox ?email .
+
+                    FILTER(STRSTARTS(LCASE(?name), @q) || STRSTARTS(LCASE(?email), @q))
+                }");
+
+            query.Bind("@q", q.ToLowerInvariant());
+
+            List<Person> persons = agents.GetResources<Person>(query).ToList();
+
+            return Response.AsJsonSync(persons);
+        }
+
+        private Response DeletePerson(Uri agentUri)
+        {
+            IModel agents = ModelProvider.GetAgents();
+
+            if(agents.ContainsResource(agentUri))
+            {
+                agents.DeleteResource(agentUri);
+
+                return HttpStatusCode.OK;
+            }
+            else
+            {
+                return HttpStatusCode.NotModified;
+            }
         }
 
         private Response CreatePerson()

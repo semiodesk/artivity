@@ -1,24 +1,25 @@
 (function () {
-	angular.module('app').directive('artProjectHeader', function () {
+	angular.module('app').directive('artProjectView', function () {
 		return {
 			restrict: 'E',
-			templateUrl: 'app/directives/art-project-header/art-project-header.html',
-			controller: ProjectHeaderDirectiveController,
+			templateUrl: 'app/directives/art-project-view/art-project-view.html',
+			controller: ProjectViewDirectiveController,
 			controllerAs: 't',
 			bindToController: true,
 			scope: {
 				project: "=project",
 				collapsed: "=?"
-			}
+			},
+			link: function (scope, element, attributes, ctrl) {}
 		}
 	});
 
-	ProjectHeaderDirectiveController.$inject = ['$rootScope', '$scope', '$sce', '$uibModal', 'agentService', 'projectService'];
+	ProjectViewDirectiveController.$inject = ['$rootScope', '$scope', '$sce', '$uibModal', 'agentService', 'projectService'];
 
-	function ProjectHeaderDirectiveController($rootScope, $scope, $sce, $uibModal, agentService, projectService) {
+	function ProjectViewDirectiveController($rootScope, $scope, $sce, $uibModal, agentService, projectService) {
 		var t = this;
 
-		if (t.project === null) {
+		if (!t.project) {
 			t.new = true;
 			t.collapsed = false;
 			t.folder = null;
@@ -50,9 +51,11 @@
 		t.cancel = cancel;
 
 		t.members = [];
-		t.createUser = createUser;
-		t.editUser = editUser;
-		t.removeUser = removeUser;
+		t.addMember = addMember;
+		t.editMember = editMember;
+		t.removeMember = removeMember;
+		t.getPhotoUrl = agentService.getPhotoUrl;
+
 		t.setFolder = setFolder;
 
 		function setFolder(folderUrl) {
@@ -65,9 +68,9 @@
 			projectService.addFolder(t.project.Uri, t.folder);
 		}
 
-		function createUser() {
-			agentService.newPerson().then(function (person) {
-				if (person) {
+		function addMember() {
+			agentService.newPerson().then(function (member) {
+				if (member) {
 					var modalInstance = $uibModal.open({
 						animation: true,
 						templateUrl: 'app/dialogs/edit-person-dialog/edit-person-dialog.html',
@@ -75,19 +78,25 @@
 						controllerAs: 't',
 						resolve: {
 							person: function () {
-								return person;
+								return member;
 							}
 						}
 					});
 
-					modalInstance.result.then(function () {
-						projectService.addMember(t.project.Uri, person.Uri);
+					modalInstance.result.then(function (m) {
+						projectService.addMember(t.project.Uri, m.Uri);
+
+						projectService.getMembers(t.project.Uri).then(function (result) {
+							if (result.length > 0) {
+								t.members = result;
+							}
+						});
 					});
 				}
 			});
 		}
 
-		function editUser(user) {
+		function editMember(member) {
 			var modalInstance = $uibModal.open({
 				animation: true,
 				templateUrl: 'app/dialogs/edit-person-dialog/edit-person-dialog.html',
@@ -95,18 +104,28 @@
 				controllerAs: 't',
 				resolve: {
 					person: function () {
-						return user;
+						return member.Agent;
 					}
 				}
 			});
+
+			modalInstance.result.then(function () {
+				projectService.getMembers(t.project.Uri).then(function (result) {
+					if (result.length > 0) {
+						t.members = result;
+					}
+				});
+			});
 		}
 
-		function removeUser(user) {
-			var i = t.users.indexOf(user);
+		function removeMember(member) {
+			projectService.removeMember(t.project.Uri, member.Agent.Uri).then(function () {
+				var i = t.members.indexOf(member);
 
-			if (i > -1) {
-				t.users.splice(i, 1);
-			}
+				if (i > -1) {
+					t.members.splice(i, 1);
+				}
+			});
 		}
 
 		function commit() {

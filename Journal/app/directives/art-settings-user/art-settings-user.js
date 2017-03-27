@@ -28,7 +28,7 @@
         agentService.getAccountOwner().then(function (data) {
             s.user = data;
             s.userPhoto = null;
-            s.userPhotoUrl = api.getUserPhotoUrl(s.user.Uri);
+            s.userPhotoUrl = agentService.getPhotoUrl(s.user.Uri);
         });
 
         s.onPhotoChanged = function (file) {

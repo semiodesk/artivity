@@ -10,7 +10,9 @@
             newPerson: newPerson,
             putPerson: putPerson,
             putPhoto: putPhoto,
-            getAccountOwner: getAccountOwner
+            getPhotoUrl: getPhotoUrl,
+            getAccountOwner: getAccountOwner,
+            findPersons: findPersons
         };
 
         function getAccountOwner() {
@@ -47,6 +49,10 @@
                 });
         }
 
+        function getPhotoUrl(agentUri) {
+            return endpoint + '/users/photo?agentUri=' + agentUri;
+        }
+
         function handleError(error) {
             return function () {
                 return {
@@ -54,6 +60,13 @@
                     message: error
                 };
             };
+        }
+
+        function findPersons(query) {
+            return $http.get(endpoint + '/users?q=' + query).then(
+                function (response) {
+                    return response.data;
+                });
         }
     }
 })();

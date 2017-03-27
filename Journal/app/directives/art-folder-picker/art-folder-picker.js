@@ -19,6 +19,12 @@
                         scope.t.selectFolder();
                     });
                 }
+
+                scope.$watch('folder', function (newValue, oldValue) {
+                    if (newValue) {
+                        scope.folderPath = new URL(newValue).pathname;
+                    }
+                }, true);
             }
         }
     }
@@ -31,11 +37,11 @@
         t.selectFolder = function () {
             var f = windowService.selectFolder();
 
-            if (f !== $scope.folder) {
+            if (f && f !== $scope.folder) {
                 $scope.folder = f;
                 $scope.$apply();
 
-                if($scope.changed) {
+                if ($scope.changed) {
                     $scope.changed("file:///" + f.replace(/\\/g, '/'));
                 }
             }

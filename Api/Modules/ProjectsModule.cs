@@ -178,13 +178,24 @@ namespace Artivity.Api.Modules
 
         protected Response GetProjectMembers(UriRef projectUri)
         {
-            IModel activities = ModelProvider.GetActivities();
+            IModel all = ModelProvider.GetAll();
 
-            if(activities.ContainsResource(projectUri))
+            if(all.ContainsResource(projectUri))
             {
-                Project project = activities.GetResource<Project>(projectUri);
+                ISparqlQuery query = new SparqlQuery(@"
+                    SELECT ?s ?p ?o
+                    WHERE
+                    {
+                        @project art:qualifiedMembership ?s .
 
-                return Response.AsJsonSync(project.Memberships);
+                        ?s a art:ProjectMembership ; ?p ?o .
+                    }");
+
+                query.Bind("@project", projectUri);
+
+                List<ProjectMembership> members = all.GetResources<ProjectMembership>(query).ToList();
+
+                return Response.AsJsonSync(members);
             }
             else
             {
@@ -214,7 +225,7 @@ namespace Artivity.Api.Modules
                 }
 
                 ProjectMembership membership = activities.CreateResource<ProjectMembership>();
-                membership.Agent = new Agent(agentUri);
+                membership.Agent = new Person(agentUri);
                 membership.Role = new Role(role);
                 membership.Commit();
 
@@ -237,10 +248,16 @@ namespace Artivity.Api.Modules
             if (activities.ContainsResource(projectUri))
             {
                 Project project = activities.GetResource<Project>(projectUri);
-                project.Memberships.RemoveAll(m => m.Agent.Uri == agentUri);
-                project.Commit();
 
-                return Response.AsJsonSync(project.Memberships);
+                if (project.Memberships.Any(m => m.Agent.Uri == agentUri))
+                {
+                    project.Memberships.RemoveAll(m => m.Agent.Uri == agentUri);
+                    project.Commit();
+
+                    return HttpStatusCode.OK;
+                }
+
+                return HttpStatusCode.NotModified;
             }
             else
             {

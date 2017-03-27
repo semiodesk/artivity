@@ -1,0 +1,61 @@
+<div class="view-container">
+    <div class="view-primary-content">
+        <div class="view-toolbar"></div>
+
+        <art-file-list></art-file-list>
+    </div>
+    <div class="view-secondary-content">
+        <div class="view-toolbar">
+            <button class="btn btn-chromeless" ng-click="t.commit()" ng-disabled="projectForm.title.$invalid"><i class="zmdi zmdi-check"></i> <span class="btn-label">Speichern</span></button>
+            <button class="btn btn-chromeless pull-right" ng-click="t.cancel()">Cancel</button>
+        </div>
+
+        <div class="container-fluid padding-y-md">
+            <form id="project-form" name="projectForm" ng-submit="t.save()">
+                <div class="form-group">
+                    <label for="title">Name</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Projektname" ng-model="t.project.Title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Beschreibung</label>
+                    <input type="text" class="form-control" id="description" name="description" placeholder="Beschreibung des Projekts" ng-model="t.project.Description">
+                </div>
+
+                <div class="form-group">
+                    <label for="folder">Ordner</label>
+                    <art-folder-picker folder="t.folder" changed="t.setFolder"></art-folder-picker>
+                </div>
+
+                <div class="form-group">
+                    <label for="members">Teilnehmer</label>
+
+                    <div>
+                        <a class="btn btn-chromeless" ng-click="t.addMember()">
+                            <i class="zmdi zmdi-lg zmdi-account-add"></i> <span class="btn-label">Teilnehmer hinzufügen</span>
+                        </a>
+                    </div>
+
+                    <ul class="list-unstyled list-view">
+                        <li class="list-item list-item-link" ng-repeat="member in t.members">
+                            <div class="layout-container padding-x-xs padding-y-xs">
+                                <div class="col">
+                                    <art-user-photo-img width="40" height="40" src="t.getPhotoUrl(member.Agent.Uri)"></art-user-photo-img>
+                                </div>
+                                <div class="col expand" ng-click="t.editMember(member)">
+                                    <div class="padding-x-md">
+                                        <h5 ng-bind="member.Agent.Name"></h5>
+                                        <label ng-bind="member.Agent.EmailAddress"></label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <a class="btn btn-chromeless" ng-click="t.removeMember(member);"><i class="zmdi zmdi-close"></i></a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -6,34 +6,44 @@
     function EditPersonDialogController($scope, $filter, $uibModalInstance, $sce, api, agentService, person) {
         var t = this;
 
+        t.persons = [];
         t.person = person;
         t.photo = null;
-        t.photoUrl = api.getUserPhotoUrl(t.person.Uri);
+        t.photoUrl = agentService.getPhotoUrl(t.person.Uri);
+        t.getPhotoUrl = agentService.getPhotoUrl;
 
         t.onPhotoChanged = function (file) {
             t.photo = file;
         };
 
+        t.findPersons = function (query) {
+            if (query.length > 0) {
+                agentService.findPersons(query).then(function (result) {
+                    t.persons = result;
+                });
+            } else {
+                t.persons = [];
+            }
+        }
+
+        t.selectPerson = function(person) {
+            t.persons = [];
+            t.person = person;
+            t.photoUrl = agentService.getPhotoUrl(person.Uri);
+        }
+
         t.commit = function () {
-            console.log(t.person);
-            
             agentService.putPerson(t.person).then(function () {
                 if (t.photo) {
-                    agentService.putPhoto(t.person.Uri, t.photo).then(function(response) {
-                        console.log(response);
-                    });
+                    agentService.putPhoto(t.person.Uri, t.photo);
                 }
 
-                $uibModalInstance.close();
+                $uibModalInstance.close(t.person);
             });
         };
 
         t.cancel = function () {
             $uibModalInstance.dismiss('cancel');
-
-            if (interval) {
-                window.clearInterval(interval);
-            }
         };
     };
 })();
