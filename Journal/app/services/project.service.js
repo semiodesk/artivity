@@ -121,7 +121,7 @@
             return $http.post(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri + '&role=ProjectMember').then(handleSuccess, handleError(addMember));
         }
 
-        function removeMember(projectUri, folderUrl) {
+        function removeMember(projectUri, agentUri) {
             return $http.delete(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri).then(handleSuccess, handleError(removeMember));
         }
 

@@ -1,8 +1,7 @@
-<div class="row">
-    <div class="col-xs-9">
-        <input ng-model="folder" class="form-control" type="text" placeholder="Bitte wählen Sie einen Projektordner aus.">
-    </div>
-    <div class="col-xs-3">
-        <a class="btn btn-chromeless btn-select-folder pull-right"><i class="zmdi zmdi-folder"></i> Ordner auswählen</a>
-    </div>
+<div>
+    <a class="btn btn-chromeless btn-select-folder">
+        <i class="zmdi zmdi-folder"></i>
+        <span class="btn-label" ng-show="folder" ng-bind="folderPath"></span>
+        <span class="btn-label" ng-show="!folder">Ordner auswählen</span>
+    </a>
 </div>

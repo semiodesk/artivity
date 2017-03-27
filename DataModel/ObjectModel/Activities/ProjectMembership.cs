@@ -41,7 +41,7 @@ namespace Artivity.DataModel
         #region Members
 
         [RdfProperty(ART.agent)]
-        public Agent Agent { get; set; }
+        public Person Agent { get; set; }
 
         [RdfProperty(ART.hasRole), JsonIgnore]
         public Role Role { get; set; }

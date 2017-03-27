@@ -13,6 +13,25 @@
                 width: "=width",
                 height: "=height",
                 changed: "&?"
+            },
+            link: function (scope, element, attributes, t) {
+                scope.$watch('src', function () {
+                    t.hasPhoto = t.src !== null && t.src !== undefined;
+                });
+
+                scope.$watch(['height', 'width'], function () {
+                    if (t.height > 0 && t.width > 0) {
+                        t.style = {
+                            height: t.height + 'px',
+                            width: t.width + 'px'
+                        };
+                    } else {
+                        t.style = {
+                            height: '100%',
+                            width: '100%'
+                        };
+                    }
+                });
             }
         }
     }
@@ -21,20 +40,6 @@
 
     function AvatarImageDirectiveController($rootScope, $scope, $sce) {
         var t = this;
-
-        $scope.$watch(function () {
-            if (t.height > 0 && t.width > 0) {
-                t.style = {
-                    height: t.height + 'px',
-                    width: t.width + 'px'
-                };
-            } else {
-                t.style = {
-                    height: '100%',
-                    width: '100%'
-                };
-            }
-        });
 
         t.selectFile = function (e) {
             e.preventDefault();

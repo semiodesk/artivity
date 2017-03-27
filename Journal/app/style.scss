@@ -12,8 +12,8 @@ $successTextColor: #FFFFFF;
 $iconFont: 'Material-Design-Iconic-Font';
 $iconFontSize: 24px;
 $textFont: 'Roboto','Helvetica','Arial',sans-serif;
-$textColor: #393939;
-$labelTextColor: $textColor;
+$textColor: #404040;
+$labelTextColor: #606060;
 $labelBackgroundColor: transparent;
 $itemTextColor: $textColor;
 $itemBackgroundColor: rgba($textColor, .05);
@@ -26,7 +26,7 @@ $windowBackgroundColor: #e6e6e6;
 $headerBackgroundColor: #393939;
 $headerTextColor: #ededed;
 $headerHeight: 40px;
-$toolbarHeight: 40px;
+$toolbarHeight: 45px;
 $toolbarIconHeight: 32px;
 $toolbarBackgroundColor: $headerBackgroundColor;
 $toolbarTextColor: $headerTextColor;
@@ -226,9 +226,9 @@ input.disabled,
 }
 
 input[type="text"][readonly] {
-	background: transparent;
+	background: rgba($inputBackgroundColor, .5);
 	border: 1px solid transparent;
-	color: $labelTextColor;
+	color: rgba($labelTextColor, .75);
 }
 
 input[type="text"][readonly]:focus {
@@ -337,12 +337,16 @@ button:focus,
 
 .btn-header {
 	margin: 0 !important;
-	min-width: $headerHeight;
-	height: $headerHeight;
-	line-height: $headerHeight;
+	min-width: $toolbarHeight;
+	height: $toolbarHeight;
+	line-height: $toolbarHeight;
 	vertical-align: middle;
 	background: none;
 	color: $headerTextColor;
+}
+
+.btn-header:hover {
+	color: $headerTextColor !important;
 }
 
 .btn-header.btn-text {
@@ -382,7 +386,6 @@ button:focus,
 	text-align: left;
 }
 
-
 /* TABS */
 
 .nav-tabs {
@@ -397,7 +400,7 @@ button:focus,
 	color: $labelTextColor;
 	text-transform: uppercase;
 	transition: all .1s linear;
-	padding: 9px 11px;
+	padding: 11px;
 }
 
 .nav-tabs.nav-tabs-top li a {
@@ -448,7 +451,7 @@ button:focus,
 }
 
 .header-tabs .nav-tabs {
-	height: $headerHeight;
+	height: $toolbarHeight;
 	background: $headerBackgroundColor;
 	padding: 0;
 	margin: 0;
@@ -482,12 +485,12 @@ button:focus,
 	border-right: 1px solid rgba(255, 255, 255, .05);
 	background: transparent;
 	color: $headerTextColor;
-	height: $headerHeight;
+	height: $toolbarHeight;
 	text-transform: none;
 }
 
 .header-tabs .nav-tabs li a.nav-link .nav-link-container {
-	padding: 9px 11px;
+	padding: 12px 11px;
 }
 
 .header-tabs .nav-tabs li:last-child a.nav-link {
@@ -546,6 +549,18 @@ button:focus,
 
 .header-tabs .nav-tabs li.active a.btn-close:hover {
 	background: lighten($windowBackgroundColor, 3%);
+}
+
+.header-tabs .tab-content {
+	position:absolute;
+	top: $toolbarHeight;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.header-tabs .tab-pane {
+	height: 100%;
 }
 
 .center-parent {
@@ -615,9 +630,9 @@ button:focus,
 }
 
 .list-item .col h5 {
-	margin-top: 6px;
+	margin-top: 0;
 	margin-bottom: 6px;
-	color: lighten($labelTextColor, 15%);
+	color: $labelTextColor;
 	font-size: 15px;
 }
 
@@ -889,7 +904,7 @@ h4 {
 
 .ui-pane .tab-content {
 	position: absolute;
-	top: 40px;
+	top: $toolbarHeight;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -1187,6 +1202,12 @@ h4 {
 	height: $toolbarIconHeight;
 }
 
+.toolbar .icn.icn-user {
+	margin-top: 6px;
+	width: 28px;
+	height: 28px;
+}
+
 .toolbar .icn-circle,
 .toolbar .icn-circle {
 	border-radius: 50%;
@@ -1196,6 +1217,54 @@ h4 {
 	margin: ($toolbarHeight - $toolbarIconHeight) / 2;
 	margin-left: 7px;
 	margin-right: 7px;
+}
+
+/* VIEWS */
+
+.view-container {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.view-container .view-toolbar {
+	height: $toolbarHeight;
+	border-bottom: 1px solid darken($windowBackgroundColor, 3%);
+}
+
+.view-container .view-primary-content,
+.view-container .view-secondary-content {
+	transition: width ease-out .2s;
+}
+
+.view-container .view-primary-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	z-index: 1;
+}
+
+.view-container .view-secondary-content {
+	border-left: 1px solid darken($windowBackgroundColor, 3%);
+	background: lighten($windowBackgroundColor, 4%);
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 40%;
+	z-index: 2;
+}
+
+.view-container .view-secondary-content.invisible {
+	width: 0;
+}
+
+.view-toolbar .btn {
+	height: $toolbarHeight;
 }
 
 /* ACTIVITIES CHART */
@@ -1427,7 +1496,7 @@ svg {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background: url('resources/images/placeholder-avatar-black.svg') top left no-repeat;
+	background: rgba(0,0,0,.25) url('resources/images/placeholder-avatar-black.svg') top left no-repeat;
 	background-size: cover;
 	opacity: .2;
 	z-index: 1;
@@ -1584,6 +1653,7 @@ input.form-control {
 	border-radius: 0;
 	border-color: white;
 	border-style: solid;
+	border-color: rgba(0,0,0,.05);
 	box-shadow: none;
 	margin-bottom: 6px;
 }
@@ -1733,8 +1803,8 @@ select.form-control:focus {
 }
 
 .modal-backdrop.in {
-	background: darken($headerBackgroundColor, 50%);
-	opacity: .9 !important;
+	background: $headerBackgroundColor;
+	opacity: .8 !important;
 	transition: opacity linear .4s;
 }
 

@@ -30,10 +30,6 @@
 
         function initialize() {
             // Make the left and right panes resizable.
-            $(".ui-pane-left").resizable({
-                handles: "e"
-            });
-
             $rootScope.$on('dragStarted', function () {
                 $('.project-item').addClass('drop-target');
             });
