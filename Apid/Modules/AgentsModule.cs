@@ -334,7 +334,7 @@ namespace Artivity.Apid.Modules
 
             if (File.Exists(iconPath))
             {
-                FileStream fileStream = new FileStream(iconPath, FileMode.Open);
+                FileStream fileStream = File.OpenRead(iconPath);
 
                 StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(iconPath));
 
