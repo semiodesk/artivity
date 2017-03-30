@@ -54,8 +54,8 @@ namespace Artivity.Apid.Modules
 
         #region Constructors
 
-        public ExportModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform)
-            : base("/artivity/api/1.0/export", modelProvider, platform)
+        public ExportModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform, IUserProvider userProvider)
+            : base("/artivity/api/1.0/export", modelProvider, platform, userProvider)
         {
             Get["/"] = parameters =>
             {

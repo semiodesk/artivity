@@ -45,8 +45,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public TopicsModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/topics", modelProvider, platformProvider)
+        public TopicsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/topics", modelProvider, platformProvider, userProvider)
         {
             Get["/"] = parameters =>
             {
@@ -128,6 +128,7 @@ namespace Artivity.Api.Modules
                 topic.CreationTimeUtc = parameter.endTime;
                 topic.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 topic.Title = parameter.title;
+                topic.IsSynchronizable = true;
                 topic.Commit();
 
                 CreateEntity activity = UserModel.CreateResource<CreateEntity>();

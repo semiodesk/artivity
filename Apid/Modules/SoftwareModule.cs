@@ -58,8 +58,8 @@ namespace Artivity.Apid.Modules
 
         #region Constructors
 
-        public SoftwareModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/agents/software", modelProvider, platformProvider)
+        public SoftwareModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/agents/software", modelProvider, platformProvider, userProvider)
         {
             _checker = checker;
 

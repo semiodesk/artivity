@@ -26,13 +26,13 @@ namespace ArtivityTest.Api.IO.ArchiveWriter
         [Test]
         public void ConstructorTest()
         {
-            FileArchiveWriter writer = new FileArchiveWriter(PlatformProvider, ModelProvider);
+            RevisionArchiveWriter writer = new RevisionArchiveWriter(PlatformProvider, ModelProvider);
         }
 
         //[Test]
         public void Test()
         {
-            FileArchiveWriter writer = new FileArchiveWriter(PlatformProvider, ModelProvider);
+            RevisionArchiveWriter writer = new RevisionArchiveWriter(PlatformProvider, ModelProvider);
 
             //writer.Write();
         }

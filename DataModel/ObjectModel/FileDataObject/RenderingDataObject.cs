@@ -11,9 +11,9 @@ namespace Artivity.DataModel
     {
         #region Constructors
 
-        public RenderingDataObject(Uri uri) : base(uri) { IsSynchronizable = false; }
+        public RenderingDataObject(Uri uri) : base(uri) {  }
 
-        public RenderingDataObject(string uri) : base(uri) { IsSynchronizable = false; }
+        public RenderingDataObject(string uri) : base(uri) { }
 
         #endregion
     }

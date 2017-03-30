@@ -47,8 +47,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public RenderingsModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/renderings", modelProvider, platformProvider)
+        public RenderingsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/renderings", modelProvider, platformProvider, userProvider)
         {
             Get["/"] = parameters =>
             {
@@ -303,7 +303,7 @@ namespace Artivity.Api.Modules
                             art:height ?h
                         ]
                     ] .
-                    " + PlatformProvider.RenderingQueryModifier + @"
+                    " + ModelProvider.RenderingQueryModifier + @"
                     BIND(?entity AS ?layer)
                 }
                 ORDER BY DESC(?time)";

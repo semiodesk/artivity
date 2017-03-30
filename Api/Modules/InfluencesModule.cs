@@ -46,8 +46,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public InfluencesModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/influences", modelProvider, platformProvider)
+        public InfluencesModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/influences", modelProvider, platformProvider, userProvider)
         {
             Get["/"] = parameters =>
             {

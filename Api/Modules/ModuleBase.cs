@@ -34,6 +34,7 @@ using Semiodesk.Trinity;
 using Nancy;
 using Nancy.IO;
 using Newtonsoft.Json;
+using Nancy.Security;
 
 namespace Artivity.Api.Modules
 {
@@ -47,16 +48,19 @@ namespace Artivity.Api.Modules
 
         public IModel UserModel { get; private set; }
 
+        public IUserProvider UserProvider {get; private set;}
+
         protected string ArtivityModulePath { get; set; }
 
         #endregion
 
         #region Constructors
 
-        public ModuleBase(IModelProvider modelProvider, IPlatformProvider platformProvider) 
+        public ModuleBase(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider) 
         {
             ModelProvider = modelProvider;
             PlatformProvider = platformProvider;
+            UserProvider = userProvider;
 
             After.AddItemToEndOfPipeline((ctx) =>
             {
@@ -71,12 +75,13 @@ namespace Artivity.Api.Modules
             });
         }
 
-        public ModuleBase(string modulePath, IModelProvider modelProvider, IPlatformProvider platformProvider)
+        public ModuleBase(string modulePath, IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
             : base(modulePath)
         {
             ModelProvider = modelProvider;
             PlatformProvider = platformProvider;
             ArtivityModulePath = modulePath;
+            UserProvider = userProvider;
 
             After.AddItemToEndOfPipeline((ctx) =>
             {
@@ -95,8 +100,29 @@ namespace Artivity.Api.Modules
 
         #region Methods
 
+        public Response InitializeRequest()
+        {
+            if (PlatformProvider.RequiresAuthentication)
+            {
+                this.RequiresAuthentication();
+            }
+            if( UserProvider != null )
+                LoadCurrentUser();
+
+            string project = Request.Query.project;
+            if (project != null)
+                ModelProvider.SetProject(project);
+
+            if (UserModel == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+            return null;
+        }
+
         public virtual void LoadCurrentUser()
         {
+            UserProvider.LoadCurrentUser(Context.CurrentUser);
             UserModel = ModelProvider.GetActivities();
         }
 

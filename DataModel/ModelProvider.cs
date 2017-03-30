@@ -83,6 +83,10 @@ namespace Artivity.DataModel
 
         public UriRef WebActivities { get; set; }
 
+        public string RenderingQueryModifier { get; set; }
+
+        public string GetFilesQueryModifier { get; set; }
+
         #endregion
 
         #region Constructor
@@ -108,6 +112,9 @@ namespace Artivity.DataModel
                 Agents = new UriRef(baseUrl + "/agents");
                 Activities = new UriRef(baseUrl + "/activities");
                 WebActivities = new UriRef(baseUrl + "/activities/web");
+
+                RenderingQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings?uri=', ?entityStub, '&file=', STR(?f) ) as ?file ).";
+                GetFilesQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings/thumbnails?entityUri=', ?entityUri) as ?p).";
 
                 IModel model = GetDefault();
 
@@ -273,6 +280,7 @@ namespace Artivity.DataModel
             return id;
         }
 
+        public void SetProject(string project) { }
         #endregion
     }
 }

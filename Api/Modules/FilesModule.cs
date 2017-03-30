@@ -46,11 +46,15 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public FilesModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/files", modelProvider, platformProvider)
+        public FilesModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/files", modelProvider, platformProvider, userProvider)
         {
+            
+
             Get["/"] = parameters =>
             {
+                InitializeRequest();
+
                 string uri = Request.Query.uri;
                 string url = Request.Query.url;
                 string create = Request.Query.create;
@@ -76,6 +80,8 @@ namespace Artivity.Api.Modules
 
             Get["/recent"] = parameters =>
             {
+                InitializeRequest();
+
                 GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
 
                 return GetRecentFiles(settings);
@@ -83,6 +89,8 @@ namespace Artivity.Api.Modules
 
             Get["/revisions"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.fileUri))
                 {
                     UriRef fileUri = new UriRef(Request.Query.fileUri);
@@ -97,6 +105,8 @@ namespace Artivity.Api.Modules
 
             Get["/revisions/latest"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.fileUri))
                 {
                     UriRef fileUri = new UriRef(Request.Query.fileUri);
@@ -111,6 +121,8 @@ namespace Artivity.Api.Modules
 
             Put["/revisions/latest/publish"] = parameters =>
             {
+                InitializeRequest();
+
                 string fileUri = Request.Query.uri;
 
                 if (string.IsNullOrEmpty(fileUri) || !IsUri(fileUri))
@@ -170,7 +182,7 @@ namespace Artivity.Api.Modules
                 }}
                 GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
 
-            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, PlatformProvider.GetFilesQueryModifier);
+            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, ModelProvider.GetFilesQueryModifier);
 
             ISparqlQuery query = new SparqlQuery(queryString);
 
@@ -263,7 +275,7 @@ namespace Artivity.Api.Modules
 
             if (entity != null)
             {
-                entity.Publish = true;
+                entity.IsSynchronizable = true;
                 entity.Commit();
 
                 // Now we make sure the file has the synchronization state attached.

@@ -61,8 +61,8 @@ namespace Artivity.Apid.Modules
 
         #region Constructors
 
-        public AccountsModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform)
-            : base("/artivity/api/1.0/accounts", modelProvider, platform)
+        public AccountsModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform, IUserProvider userProvider)
+            : base("/artivity/api/1.0/accounts", modelProvider, platform, userProvider)
         {
             // Get a list of all installed online accounts.
             Get["/"] = parameters =>

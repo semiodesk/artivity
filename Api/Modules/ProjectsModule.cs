@@ -38,8 +38,8 @@ namespace Artivity.Api.Modules
 {
     public class ProjectsModule : EntityModuleBase<Project>
     {
-        public ProjectsModule(IModelProvider modelProvider, IPlatformProvider platformProvider) : 
-            base("/artivity/api/1.0/projects", modelProvider, platformProvider)
+        public ProjectsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider) : 
+            base("/artivity/api/1.0/projects", modelProvider, platformProvider, userProvider)
         {
             Get["/agents"] = parameters =>
             {
@@ -289,7 +289,7 @@ namespace Artivity.Api.Modules
 
                     BIND(STRBEFORE(STR(?entity), '#') AS ?e).
                     BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
-                    " + PlatformProvider.GetFilesQueryModifier + @"
+                    " + ModelProvider.GetFilesQueryModifier + @"
 	
 	                OPTIONAL
 	                {

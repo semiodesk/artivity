@@ -37,11 +37,11 @@ using System.Threading.Tasks;
 
 namespace Artivity.Api.IO
 {
-    public class FileArchiveWriter : ArchiveWriterBase
+    public class RevisionArchiveWriter : ArchiveWriterBase
     {
         #region Constructors
 
-        public FileArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
+        public RevisionArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
             : base(platformProvider, modelProvider)
         {
         }
@@ -50,26 +50,54 @@ namespace Artivity.Api.IO
 
         #region Methods
 
+        public string GetProjectId(Uri revisionUri,IModel model= null)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?project
+                WHERE
+                {
+                  ?project prov:qualifiedUsage / prov:entity ?file .
+                  ?file nie:isStoredAs @revision .
+                }");
+
+            query.Bind("@revision", revisionUri);
+            if (model == null)
+                model = DefaultModel;
+            IEnumerable<BindingSet> bindings =  model.GetBindings(query);
+            if (bindings.Any())
+            {
+                BindingSet binding = bindings.First();
+                string uri = binding["project"].ToString();
+
+                if (!string.IsNullOrEmpty(uri))
+                {
+                    Path.GetFileName(new Uri(uri).AbsolutePath);
+                }
+            }
+            return null;
+        }
+
         protected override IEnumerable<ArchiveWriterBase.EntityRenderingInfo> GetRenderings(Uri uri, DateTime minTime)
         {
             return new EntityRenderingInfo[]{};
         }
 
-        public IEnumerable<FileInfo> ListRenderings(Uri fileUri)
+        public IEnumerable<FileInfo> ListRenderings(Uri revisionUri)
         {
             IModel model = ModelProvider.GetActivities();
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT ?entityStub ?file WHERE
                 {
-                    ?entity nie:isStoredAs @fileUri .
+                    BIND( @revision as ?entity) .
                     ?entity art:publish ""true""^^xsd:boolean_ . 
                     ?entity art:renderedAs / rdfs:label ?file .
                     BIND( STRBEFORE( STR(?entity), '#' ) as ?strippedEntity ).
                     BIND( if(?strippedEntity != '', ?strippedEntity, str(?entity)) as ?entityStub).
                 }");
 
-            query.Bind("@fileUri", fileUri);
+            query.Bind("@revision", revisionUri);
 
             IEnumerable<BindingSet> bindings = model.GetBindings(query);
 
@@ -92,7 +120,7 @@ namespace Artivity.Api.IO
                 yield return new FileInfo(x);
         }
 
-        protected override ISparqlQuery GetAgentsQuery(Uri fileUri, DateTime minTime)
+        protected override ISparqlQuery GetAgentsQuery(Uri revisionUri, DateTime minTime)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
@@ -101,18 +129,18 @@ namespace Artivity.Api.IO
                 WHERE
                 {
                   ?activity prov:generated | prov:used ?entity .
-                  ?entity nie:isStoredAs @fileUri .
+                  BIND( @revisionUri as ?entity) .
                   ?entity art:publish ""true""^^xsd:boolean_ . 
                   ?activity prov:qualifiedAssociation ?association .
                   ?association prov:agent ?agent .
                 }");
 
-            query.Bind("@fileUri", fileUri);
+            query.Bind("@revisionUri", revisionUri);
 
             return query;
         }
 
-        protected override ISparqlQuery GetActivitiesQuery(Uri uri, DateTime minTime)
+        protected override ISparqlQuery GetActivitiesQuery(Uri revisionUri, DateTime minTime)
         {
 
 
@@ -129,9 +157,8 @@ namespace Artivity.Api.IO
                     ?renderRegion
                 WHERE
                 {
-                  BIND( @file as ?file ).
-                  ?fileEntity nie:isStoredAs @file .
-                  ?fileEntity art:publish ""true""^^xsd:boolean_ . 
+                  BIND( @entity as ?fileEntity ).
+                  ?fileEntity nie:isStoredAs ?file .
 
                   ?activity prov:generated | prov:used ?entity .
                   ?activity prov:generated | prov:used ?fileEntity .
@@ -161,7 +188,7 @@ namespace Artivity.Api.IO
                 }");
 
 
-            query.Bind("@file", uri);
+            query.Bind("@entity", revisionUri);
 
             return query;
         }

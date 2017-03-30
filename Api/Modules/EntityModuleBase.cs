@@ -58,8 +58,8 @@ namespace Artivity.Api.Modules
 
         #region Constructors
 
-        public EntityModuleBase(string path, IModelProvider modelProvider, IPlatformProvider platformProvider, bool create = true, bool retrieve = true, bool update = true, bool delete = true)
-            : base(path, modelProvider, platformProvider)
+        public EntityModuleBase(string path, IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider, bool create = true, bool retrieve = true, bool update = true, bool delete = true)
+            : base(path, modelProvider, platformProvider, userProvider)
         {
             _create = create;
             _retrieve = retrieve;
@@ -69,8 +69,8 @@ namespace Artivity.Api.Modules
             Initialize();
         }
 
-        public EntityModuleBase(IModelProvider modelProvider, IPlatformProvider platformProvider, bool create = true, bool retrieve = true, bool update = true, bool delete = true)
-            : base(GetTypename(), modelProvider, platformProvider)
+        public EntityModuleBase(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider, bool create = true, bool retrieve = true, bool update = true, bool delete = true)
+            : base(GetTypename(), modelProvider, platformProvider, userProvider)
         {
             _create = create;
             _retrieve = retrieve;

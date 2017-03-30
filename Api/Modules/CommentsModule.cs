@@ -45,8 +45,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public CommentsModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/comments", modelProvider, platformProvider)
+        public CommentsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/comments", modelProvider, platformProvider, userProvider)
         {
             Get["/"] = parameters =>
             {
@@ -139,6 +139,7 @@ namespace Artivity.Api.Modules
                 comment.CreationTimeUtc = parameter.endTime;
                 comment.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 comment.Message = parameter.text;
+                comment.IsSynchronizable = true;
                 comment.Commit();
 
                 CreateEntity activity = UserModel.CreateResource<CreateEntity>();
@@ -147,6 +148,7 @@ namespace Artivity.Api.Modules
                 activity.EndTime = parameter.endTime;
                 activity.GeneratedEntities.Add(comment); // Associate the comment with the activity.
                 activity.UsedEntities.Add(entity); // TODO: Correct this in the data provided by the plugins.
+                
 
                 if (parameter.marks != null)
                 {

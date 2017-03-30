@@ -51,11 +51,13 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public UsersModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/agents/users", modelProvider, platformProvider)
+        public UsersModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/agents/users", modelProvider, platformProvider, userProvider)
         {
             Get["/"] = parameters =>
             {
+                InitializeRequest();
+
                 if(Request.Query.Count == 0)
                 {
                     return GetPersons();
@@ -91,11 +93,15 @@ namespace Artivity.Api.Modules
 
             Put["/"] = parameters =>
             {
+                InitializeRequest();
+
                 return PutPerson(Request.Body);
             };
 
             Delete["/"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.agentUri))
                 {
                     UriRef agentUri = new UriRef(Request.Query.agentUri);
@@ -110,11 +116,15 @@ namespace Artivity.Api.Modules
 
             Get["/new"] = parameters =>
             {
+                InitializeRequest();
+
                 return CreatePerson();
             };
 
             Get["/photo"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.agentUri))
                 {
                     UriRef agentUri = new UriRef(Request.Query.agentUri);
@@ -129,6 +139,8 @@ namespace Artivity.Api.Modules
 
             Put["/photo"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.agentUri))
                 {
                     UriRef agentUri = new UriRef(Request.Query.agentUri);
