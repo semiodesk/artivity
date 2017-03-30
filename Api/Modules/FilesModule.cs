@@ -166,6 +166,12 @@ namespace Artivity.Api.Modules
                       ?entity prov:qualifiedRevision / prov:entity ?x .
                     }}
 
+                    FILTER NOT EXISTS
+                    {{
+                        ?activity a art:Project .
+                        ?activity prov:qualifiedUsage / prov:entity ?file .
+                    }}
+
                     {0}
                 }}
                 GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
@@ -174,7 +180,7 @@ namespace Artivity.Api.Modules
 
             ISparqlQuery query = new SparqlQuery(queryString);
 
-            var bindings = ModelProvider.GetAll().GetBindings(query);
+            List<BindingSet> bindings = ModelProvider.GetAll().GetBindings(query).ToList();
 
             return Response.AsJsonSync(bindings);
         }
@@ -214,7 +220,9 @@ namespace Artivity.Api.Modules
                     COALESCE(?remote, -1) AS ?remote
                 WHERE
                 {
-                    ?revision nie:isStoredAs @file ; nie:created ?time .
+                    ?revision nie:isStoredAs @file .
+
+                    @file nie:created ?time .
 
                     OPTIONAL
                     {

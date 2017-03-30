@@ -59,7 +59,7 @@ ViewerBase.prototype.initializeScene = function () {
     var t = this;
 
     // EaselJS drawing context.
-    t.stage = new createjs.Stage("canvas");
+    t.stage = new createjs.Stage(t.canvas.id);
     t.stage.autoClear = true;
     t.stage.autoFit = true;
     t.stage.debug = new createjs.Container();

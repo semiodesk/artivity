@@ -78,9 +78,7 @@
         }
 
         function getFiles(projectUri) {
-            var uri = encodeURIComponent(projectUri);
-
-            return $http.post(endpoint + '/files/?projectUri=' + uri).then(handleSuccess, handleError(getFiles));
+            return $http.get(endpoint + '/files/?projectUri=' + projectUri).then(handleSuccess, handleError(getFiles));
         }
 
         function addFile(projectUri, fileUri) {

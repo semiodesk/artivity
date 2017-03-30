@@ -7,7 +7,7 @@
             templateUrl: 'app/directives/art-task-control/art-task-control.html',
             bindToController: true,
             scope: {
-                file: '@'
+                file: '='
             },
             controller: TaskControlDirectiveController,
             controllerAs: 't'
@@ -58,7 +58,7 @@
                         // Set the entity URI as primary source for the comments.
                         t.task.entity = t.revision;
 
-                        taskService.get(revision).then(function (data) {
+                        taskService.get(t.revision).then(function (data) {
                             t.tasks = [];
 
                             for (i = 0; i < data.length; i++) {
