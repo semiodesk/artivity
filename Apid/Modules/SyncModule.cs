@@ -52,8 +52,8 @@ namespace Artivity.Apid.Modules
     {
         #region Constructors
 
-        public SyncModule(IModelProvider model, IPlatformProvider platform, IArtivityServiceSynchronizationProvider syncProvider)
-            : base("/artivity/api/1.0/sync", model, platform)
+        public SyncModule(IModelProvider model, IPlatformProvider platform, IArtivityServiceSynchronizationProvider syncProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/sync", model, platform, userProvider)
         {
             Get[""] = parameters => { return Synchronize(syncProvider); };
         }

@@ -53,8 +53,8 @@ namespace Artivity.Apid.Modules
     {
         #region Constructors
 
-        public SetupModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/setup", modelProvider, platformProvider)
+        public SetupModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/setup", modelProvider, platformProvider, userProvider)
         {
             Get["/"] = parameters =>
             {

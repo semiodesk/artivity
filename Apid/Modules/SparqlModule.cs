@@ -53,8 +53,8 @@ namespace Artivity.Apid.Modules
 
         #region Constructor
 
-        public SparqlModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/sparql", modelProvider, platformProvider)
+        public SparqlModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/sparql", modelProvider, platformProvider, userProvider)
         {
             Post["/"] = parameters =>
             {

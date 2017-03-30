@@ -53,6 +53,7 @@ namespace Artivity.Api.IO
 
         public TaskProgressInfo Progress { get; private set; }
 
+        public IModel DefaultModel { get; set; }
         #endregion
 
         #region Constructors
@@ -142,14 +143,16 @@ namespace Artivity.Api.IO
         private void ExportAgents(Uri uri, Stream stream, DateTime minTime)
         {
             ISparqlQuery query = GetAgentsQuery(uri, minTime);
-
+            if (DefaultModel != null)
+                query.Model = DefaultModel;
             WriteTurtle(query, stream);
         }
 
         private void ExportActivities(Uri uri, Stream stream, DateTime minTime)
         {
             ISparqlQuery query = GetActivitiesQuery(uri, minTime);
-
+            if (DefaultModel != null)
+                query.Model = DefaultModel;
             WriteTurtle(query, stream);
         }
 

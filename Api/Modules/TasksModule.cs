@@ -45,8 +45,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public TasksModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/tasks", modelProvider, platformProvider)
+        public TasksModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/tasks", modelProvider, platformProvider, userProvider)
         {
             Get["/"] = parameters =>
             {
@@ -145,6 +145,7 @@ namespace Artivity.Api.Modules
                 task.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 task.Name = parameter.name;
                 task.IsCompleted = parameter.completed;
+                task.IsSynchronizable = true;
                 task.Commit();
 
                 CreateEntity activity = UserModel.CreateResource<CreateEntity>();

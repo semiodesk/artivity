@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 namespace Artivity.DataModel
 {
     [RdfClass(ART.ProjectMembership)]
-    public class ProjectMembership : SynchronizableResource
+    public class ProjectMembership : Resource
     {
         #region Members
 
@@ -58,7 +58,6 @@ namespace Artivity.DataModel
         public ProjectMembership(Uri uri)
             : base(uri)
         {
-            IsSynchronizable = true;
         }
 
         #endregion

@@ -37,11 +37,11 @@ using System.Threading.Tasks;
 
 namespace Artivity.Api.IO
 {
-    public class ActivityArchiveWriter : ArchiveWriterBase
+    public class CommunicationArchiveWriter : ArchiveWriterBase
     {
         #region Constructors
 
-        public ActivityArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
+        public CommunicationArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
             : base(platformProvider, modelProvider)
         {
         }
@@ -49,7 +49,7 @@ namespace Artivity.Api.IO
         #endregion
 
         #region Methods
-        public string GetProjectId(Uri activityUri, IModel model=null)
+        public string GetProjectId(Uri entityUri, IModel model=null)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -58,10 +58,10 @@ namespace Artivity.Api.IO
                 {
                   ?project prov:qualifiedUsage / prov:entity ?file .
                   ?entity nie:isStoredAs ?file .
-                  @activityUri prov:used ?entity .
+                  @entityUri prov:hadPrimarySource ?entity .
                 }");
 
-            query.Bind("@activityUri", activityUri);
+            query.Bind("@entityUri", entityUri);
 
             if (model == null)
                 model = DefaultModel;
@@ -82,40 +82,10 @@ namespace Artivity.Api.IO
 
         protected override IEnumerable<EntityRenderingInfo> GetRenderings(Uri uri, DateTime minTime)
         {
-            IModel model = ModelProvider.GetActivities();
-
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?entity ?file WHERE
-                {
-                    @activity prov:generated | prov:used ?entity .
-
-                    ?entity nie:isStoredAs ?dataObject .
-
-                    ?influence
-                        prov:activity | prov:hadActivity @activity ;
-                        prov:atTime ?time ;
-                        art:renderedAs / rdfs:label ?file .
-
-                    FILTER(@minTime <= ?time) .
-                }
-                ORDER BY ?entity ?time
-                ");
-
-            query.Bind("@activity", uri);
-            query.Bind("@minTime", minTime);
-
-            IEnumerable<BindingSet> bindings = model.GetBindings(query);
-
-            foreach(BindingSet b in bindings)
-            {
-                string entity = b["entity"].ToString();
-                string file = b["file"].ToString();
-
-                yield return new EntityRenderingInfo(entity, file);
-            }
+            return new EntityRenderingInfo[] { };
         }
 
-        protected override ISparqlQuery GetAgentsQuery(Uri uri, DateTime minTime)
+        protected override ISparqlQuery GetAgentsQuery(Uri entityUri, DateTime minTime)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
@@ -123,63 +93,38 @@ namespace Artivity.Api.IO
                     ?association
                 WHERE
                 {
-                  @activity prov:qualifiedAssociation ?association .
-
+                  ?activity prov:qualifiedAssociation ?association .
+                  ?activity prov:generated @entityUri .
                   ?association prov:agent ?agent .
                 }");
 
-            query.Bind("@activity", uri);
+            query.Bind("@entityUri", entityUri);
 
             return query;
         }
 
-        protected override ISparqlQuery GetActivitiesQuery(Uri uri, DateTime minTime)
+        protected override ISparqlQuery GetActivitiesQuery(Uri entityUri, DateTime minTime)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
-                    @activity
-                    ?file
-                    ?influence
                     ?entity
-                    ?undo
-                    ?redo
+                    ?activity
+                    ?entity
                     ?bounds
-                    ?change
-                    ?render
-                    ?renderRegion
+
                 WHERE
                 {
-                  @activity prov:generated | prov:used ?entity .
-                  @activity prov:startedAtTime ?startTime .
+                  BIND( @entity as ?entity ).
+                  ?activity prov:generated ?entity .
+                  ?activity prov:startedAtTime ?startTime .
 
                   FILTER(@minTime <= ?startTime) .
+                  OPTIONAL { ?entity art:region ?bounds. }
 
-                  ?influence prov:activity | prov:hadActivity @activity .
 
-                  OPTIONAL { ?entity nie:isStoredAs ?file . }
-
-                  OPTIONAL
-                  {
-                     ?influence art:renderedAs ?render .
-
-                     OPTIONAL { ?render art:region ?renderRegion . }
-                     OPTIONAL { ?render art:renderedLayer ?layer . }
-                  }
-
-                  OPTIONAL { ?influence art:hadViewport ?viewport . }
-                  OPTIONAL { ?influence art:hadBoundaries ?bounds . }
-                  OPTIONAL
-                  {
-                     ?influence art:hadChange ?change .
-
-                     OPTIONAL { ?change art:entity ?entity . }
-                  }
-
-                  OPTIONAL { ?undo art:reverted ?influence . }
-                  OPTIONAL { ?redo art:restored ?influence . }
                 }");
 
-            query.Bind("@activity", uri);
+            query.Bind("@entity", entityUri);
             query.Bind("@minTime", minTime);
 
             return query;

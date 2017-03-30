@@ -18,8 +18,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public MarksModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
-            : base("/artivity/api/1.0/marks", modelProvider, platformProvider)
+        public MarksModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+            : base("/artivity/api/1.0/marks", modelProvider, platformProvider, userProvider)
         {
             Get["/"] = parameters =>
             {
@@ -124,6 +124,7 @@ namespace Artivity.Api.Modules
                 mark.CreationTimeUtc = parameter.endTime;
                 mark.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 mark.Region = rectangle;
+                mark.IsSynchronizable = true;
                 mark.Commit();
 
                 // Associate the comment with the activity.

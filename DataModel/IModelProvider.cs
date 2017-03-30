@@ -50,6 +50,10 @@ namespace Artivity.DataModel
         UriRef Default { get; set; }
 
         string Uid { get; set; }
+   
+        string RenderingQueryModifier { get; }
+
+        string GetFilesQueryModifier { get; }
 
         #endregion
 
@@ -77,6 +81,7 @@ namespace Artivity.DataModel
 
         IModelSynchronizationState GetModelSynchronizationState(IPerson user);
 
+        void SetProject(string project);
         #endregion
     }
 }
