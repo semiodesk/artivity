@@ -6,8 +6,29 @@ const {
     BrowserWindow
 } = electron;
 
+var isDebug = process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath);
+
 var userData = app.getPath('userData');
 app.setPath('userData', path.join(userData, 'App'));
+
+var appPath = path.resolve(path.join(app.getAppPath(), "../../"));
+
+if (process.platform === "darwin") {
+    if( !isDebug )
+    {
+        var AgentLauncher = require('./app/platform/agentLauncher');
+
+        var ag = new AgentLauncher("com.semiodesk.artivity", process.env.HOME+"/Library/LaunchAgents", appPath);
+            
+        if( ag.getStatus() == -1 || !ag.plistExists) {
+            console.log("Installing Agent");
+            ag.installAgent();
+        }else
+        {
+            console.log("Agent already installed.")
+        }
+    }
+}
 
 app.on('ready', () => {
     // NOTE: Setting the background color minimizes flickering on resize:
