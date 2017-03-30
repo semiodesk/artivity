@@ -1,8 +1,8 @@
 <div class="view-container">
-    <div class="view-primary-content" ng-switch="t.fileUri">
+    <div class="view-primary-content" ng-switch="t.file">
         <!-- Show the document view when no file is selected. -->
         <div class="layout-container" ng-switch-default>
-            <art-document-view file-uri="t.fileUri"></art-document-view>
+            <art-document-view file="t.file"></art-document-view>
         </div>
 
         <!-- Otherwhise show the file list. -->

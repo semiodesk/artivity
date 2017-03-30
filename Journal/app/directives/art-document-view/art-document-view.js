@@ -5,7 +5,7 @@
         return {
             restrict: 'E',
             scope: {
-                'fileUri': '='
+                'file': '='
             },
             templateUrl: 'app/directives/art-document-view/art-document-view.html',
             controller: DocumentViewDirectiveController,

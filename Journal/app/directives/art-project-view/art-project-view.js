@@ -33,17 +33,17 @@
 			t.project.new = false;
 		}
 
-		t.fileUri = null;
+		t.file = null;
 
 		t.viewFile = function (e, file) {
-			t.fileUri = file.uri;
+			t.file = file;
 		}
 
 		navigationService.registerScope($scope);
 
 		$scope.onNavigateBack = function (e) {
-			if (t.fileUri) {
-				t.fileUri = null;
+			if (t.file) {
+				t.file = null;
 				e.handled = true;
 			}
 		}
