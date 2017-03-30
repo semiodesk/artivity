@@ -203,7 +203,7 @@
 					});
 			},
 			getProjectFiles: function (projectUri) {
-				return $http.get(endpoint + '/projects/files?uri=' + projectUri).then(
+				return $http.get(endpoint + '/projects/files?projectUri=' + projectUri).then(
 					function (response) {
 						return response.data;
 					});

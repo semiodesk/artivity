@@ -89,14 +89,16 @@ namespace Artivity.Api.Modules
 
             Get["/files"] = parameters =>
             {
-                string uri = Request.Query.uri;
+                if (IsUri(Request.Query.projectUri))
+                {
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
 
-                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                    return GetProjectFiles(projectUri);
+                }
+                else
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
-
-                return GetProjectFiles(new UriRef(uri));
             };
 
             Post["/files"] = parameters =>
@@ -375,7 +377,7 @@ namespace Artivity.Api.Modules
             IModel activities = ModelProvider.GetActivities();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?s ?p ?o
+                SELECT DISTINCT ?s ?p ?o
                 WHERE
                 {
                     @project prov:qualifiedUsage / prov:entity ?s .

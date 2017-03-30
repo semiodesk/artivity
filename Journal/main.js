@@ -10,7 +10,7 @@ var userData = app.getPath('userData');
 app.setPath('userData', path.join(userData, 'App'));
 
 app.on('ready', () => {
-    // NOTE: Setting the background color prevents flickering on resize:
+    // NOTE: Setting the background color minimizes flickering on resize:
     // http://www.christianengvall.se/electron-white-screen-app-startup/
     var options = {
         frame: false,

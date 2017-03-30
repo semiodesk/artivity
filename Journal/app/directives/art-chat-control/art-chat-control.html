@@ -12,7 +12,7 @@
                                         <img src="app/resources/user.svg" width="28" height="28" class="img img-circular">
                                     </div>
                                     <div class="comment-bubble">
-                                        <div class="bubble-text">{{comment.text}}</div>
+                                        <div class="bubble-text" emojione="{{comment.text}}"></div>
                                         <div class="bubble-tip"></div>
                                         <div class="clearfix"></div>
                                     </div>
@@ -20,7 +20,7 @@
                                         <label class="time pull-right small">{{t.getFormattedTime(comment.time, 'hh:mm')}}</label>
                                     </div>
 
-                                    <a class="btn" ng-click="t.createMark(comment)" style="position: absolute; bottom: 0; right: 0;">
+                                    <a class="btn" ng-show="false" ng-click="t.createMark(comment)" style="position: absolute; bottom: 0; right: 0;">
                                         <i class="zmdi zmdi-photo-size-select-small"></i>
                                     </a>
                                 </div>
@@ -34,12 +34,10 @@
     </div>
     <div class="row">
         <div class="layout-container">
-            <div class="ctl-comment">
+            <div class="ctl-comment padding-x-xs padding-y-xs">
                 <textarea class="ui-autosize" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-enter="t.postComment($event)" ng-model="t.comment.text"
                     ng-change="t.updateComment()" ng-esc="t.resetComment()">
                 </textarea>
-                <button class="btn btn-default btn-post pull-right" ng-click="t.postComment($event)">Post</button>
-                <div class="clearfix"></div>
             </div>
         </div>
     </div>

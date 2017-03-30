@@ -4,12 +4,17 @@
     function DocumentViewerDirective() {
         return {
             restrict: 'E',
-            scope: {},
+            scope: {
+                'fileUri': '='
+            },
             templateUrl: 'app/directives/art-document-viewer/art-document-viewer.html',
             controller: DocumentViewerDirectiveController,
             controllerAs: 't',
-            link: function (scope, element, attr, ctrl) {
-                ctrl.setFile(attr.file);
+            bindToController: true,
+            link: function (scope, element, attr, t) {
+                $(document).ready(function () {
+                    t.initialize(element);
+                });
             }
         }
     }
@@ -21,73 +26,73 @@
     function DocumentViewerDirectiveController($rootScope, $scope, api, viewerService, agentService, entityService, selectionService, commentService, markService) {
         var t = this;
 
-        t.user = null;
-        t.canvas = null;
         t.viewer = null;
-        t.fileUri = null;
-        t.revisionUri = null;
-        t.setFile = setFile;
         t.update = update;
+        t.initialize = initialize;
 
-        $(document).ready(function () {
-            // Initialize the viewer and load the renderings when the document is ready.
-            t.canvas = document.getElementById('canvas');
+        function initialize(element) {
+            var canvas = $(element).find('canvas')[0];
 
-            if (t.user && t.canvas && t.revisionUri) {
-                initializeViewer();
-            }
-        });
+            if (canvas) {
+                // EaselJS addresses the canvas by its id.
+                canvas.id = 'canvas-' + $scope.$id;
 
-        function setFile(fileUri) {
-            t.fileUri = fileUri;
+                t.viewer = new DocumentViewer(agentService.currentUser, canvas, "", selectionService);
+                t.viewer.addCommand(new SelectCommand(t.viewer, selectionService), true);
+                t.viewer.addCommand(new PanCommand(t.viewer));
+                t.viewer.addCommand(new ZoomInCommand(t.viewer));
+                t.viewer.addCommand(new ZoomOutCommand(t.viewer));
+                t.viewer.addCommand(new CreateMarkCommand(t.viewer, markService));
+                t.viewer.addCommand(new UpdateMarkCommand(t.viewer, markService));
+                t.viewer.addCommand(new DeleteMarkCommand(t.viewer, markService));
+                t.viewer.addCommand(new ShowMarksCommand(t.viewer, markService));
+                t.viewer.addCommand(new HideMarksCommand(t.viewer, markService));
+                t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
 
-            entityService.getLatestRevision(fileUri).then(function (data) {
-                t.revisionUri = data.revision;
+                $scope.$broadcast('viewerInitialized', t.viewer);
 
-                agentService.getAccountOwner().then(function (agent) {
-                    t.user = agent;
+                viewerService.setViewer(t.viewer);
 
-                    if (t.user && t.canvas && t.revisionUri) {
-                        initializeViewer();
+                // Handle the resize of UI panes.
+                $scope.$on('resize', function () {
+                    t.viewer.onResize();
+                });
+
+                if(t.fileUri) {
+                    t.load(t.fileUri);
+                }
+
+                $scope.$watch('fileUri', function () {
+                    if (t.fileUri) {
+                        t.load(t.fileUri);
                     }
                 });
-            });
+            } else {
+                console.warn('Unable to find canvas for viewer element:', canvas);
+            }
         }
 
-        function initializeViewer() {
-            t.viewer = new DocumentViewer(t.user, t.canvas, "", selectionService);
-            t.viewer.addCommand(new SelectCommand(t.viewer, selectionService), true);
-            t.viewer.addCommand(new PanCommand(t.viewer));
-            t.viewer.addCommand(new ZoomInCommand(t.viewer));
-            t.viewer.addCommand(new ZoomOutCommand(t.viewer));
-            t.viewer.addCommand(new CreateMarkCommand(t.viewer, markService));
-            t.viewer.addCommand(new UpdateMarkCommand(t.viewer, markService));
-            t.viewer.addCommand(new DeleteMarkCommand(t.viewer, markService));
-            t.viewer.addCommand(new ShowMarksCommand(t.viewer, markService));
-            t.viewer.addCommand(new HideMarksCommand(t.viewer, markService));
-            t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
+        t.load = function(fileUri) {
+            console.log('Loading file:', fileUri);
 
-            $scope.$broadcast('viewerInitialized', t.viewer);
+            entityService.getLatestRevision(fileUri).then(function (data) {
+                if (data.revision) {
+                    var revisionUri = data.revision;
 
-            viewerService.setViewer(t.viewer);
+                    console.log('Loading revision:', revisionUri);
 
-            // Handle the resize of UI panes.
-            $scope.$on('resize', function () {
-                t.viewer.onResize();
+                    if (revisionUri) {
+                        api.getCanvasRenderingsFromEntity(revisionUri).then(function (data) {
+                            t.viewer.pageCache.load(data, function () {
+                                console.log('Loaded pages:', data);
+
+                                t.viewer.setEntity(revisionUri);
+                                t.viewer.zoomToFit();
+                            });
+                        });
+                    }
+                }
             });
-
-            if (t.revisionUri) {
-                api.getCanvasRenderingsFromEntity(t.revisionUri).then(function (data) {
-                    t.viewer.pageCache.load(data, function () {
-                        console.log('Loaded pages:', data);
-
-                        var revision = t.revisionUri;
-
-                        t.viewer.setEntity(revision);
-                        t.viewer.zoomToFit();
-                    });
-                });
-            }
         }
 
         function update() {

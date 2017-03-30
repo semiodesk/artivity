@@ -1,11 +1,10 @@
 <div class="card">
     <div class="file-thumbnail-container">
-        <div class="file-thumbnail"></div>
+        <div ng-show="t.file.thumbnail" class="file-thumbnail" ng-style="t.thumbnailStyle"></div>
     </div>
 
     <div class="file-name">{{t.fileName}}</div>
-    <div class="file-extension" style="background-color: {{t.file.agentColor}};">{{t.fileExtension}}</div>
+    <div class="file-extension" style="background-color: {{t.file.agentColor}}">{{t.fileExtension}}</div>
 
-    <!--<a ng-if="t.link" href="#/files/view?uri={{t.file.uri}}"></a>-->
-	<a ng-if="t.link" ng-click="t.onClick($event)" href="#"></a>
+	<a ng-if="t.clicked" ng-click="t.onClicked($event)" href="#"></a>
 </div>

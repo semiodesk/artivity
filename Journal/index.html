@@ -13,8 +13,8 @@
 	<link rel="stylesheet" href="bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" />
 	<link rel="stylesheet" href="bower_components/font-roboto/dist/styles/roboto.css" />
-	<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css" />
 	<link rel="stylesheet" href="bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
+	<link rel="stylesheet" href="bower_components/emojione/assets/css/emojione.css" />
 	<!-- endbower -->
 	<link rel="stylesheet" href="bower_components/yasgui/dist/yasgui.min.css" />
 	<link rel="stylesheet" href="app/style.css">
@@ -31,7 +31,6 @@
 	<script src="bower_components/jquery-editable-select/dist/jquery-editable-select.min.js"></script>
 	<script src="bower_components/jquery-ui/jquery-ui.js"></script>
 	<script src="bower_components/angular/angular.js"></script>
-	<script src="bower_components/angular-animate/angular-animate.js"></script>
 	<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 	<script src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
 	<script src="bower_components/angular-hotkeys/build/hotkeys.js"></script>
@@ -41,16 +40,18 @@
 	<script src="bower_components/angular-route/angular-route.js"></script>
 	<script src="bower_components/angular-translate/angular-translate.js"></script>
 	<script src="bower_components/angular-ui-layout/src/ui-layout.js"></script>
+	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
 	<script src="bower_components/base64/base64.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 	<script src="bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script>
 	<script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
-	<script src="bower_components/color-thief/src/color-thief.js"></script>
 	<script src="bower_components/d3/d3.js"></script>
-	<script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
 	<script src="bower_components/moment-duration-format/lib/moment-duration-format.js"></script>
 	<script src="bower_components/EaselJS/lib/easeljs-0.8.2.combined.js"></script>
 	<script src="bower_components/yasgui/dist/yasgui.bundled.min.js"></script>
+	<script src="bower_components/jquery-appear/src/jquery.appear.js"></script>
+	<script src="bower_components/emojione/lib/js/emojione.js"></script>
+	<script src="bower_components/angular-emojione/angular-emojione.js"></script>
 	<!-- endbower -->
 	<!-- start auto template tags -->
 	<script type="text/javascript" src="app/conf.js"></script>
@@ -94,11 +95,12 @@
 	<script type="text/javascript" src="app/services/app.service.js"></script>
 	<script type="text/javascript" src="app/services/client.service.js"></script>
 	<script type="text/javascript" src="app/services/comment.service.js"></script>
+	<script type="text/javascript" src="app/services/cookie.service.js"></script>
 	<script type="text/javascript" src="app/services/entity.service.js"></script>
-	<script type="text/javascript" src="app/services/file.service.js"></script>
 	<script type="text/javascript" src="app/services/filesystem.service.js"></script>
 	<script type="text/javascript" src="app/services/formatting.service.js"></script>
 	<script type="text/javascript" src="app/services/mark.service.js"></script>
+	<script type="text/javascript" src="app/services/navigation.service.js"></script>
 	<script type="text/javascript" src="app/services/project.service.js"></script>
 	<script type="text/javascript" src="app/services/selection.service.js"></script>
 	<script type="text/javascript" src="app/services/settings.service.js"></script>
@@ -113,6 +115,9 @@
 	<script type="text/javascript" src="app/directives/art-chat-control/art-chat-control.js"></script>
 	<script type="text/javascript" src="app/directives/art-client-state-info/art-client-state-info.js"></script>
 	<script type="text/javascript" src="app/directives/art-color-picker/art-color-picker.js"></script>
+	<script type="text/javascript" src="app/directives/art-document-history-view/art-document-history-view.js"></script>
+	<script type="text/javascript" src="app/directives/art-document-history-viewer/art-document-history-viewer.js"></script>
+	<script type="text/javascript" src="app/directives/art-document-view/art-document-view.js"></script>
 	<script type="text/javascript" src="app/directives/art-document-viewer-toolbar/art-document-viewer-toolbar.js"></script>
 	<script type="text/javascript" src="app/directives/art-document-viewer/art-document-viewer.js"></script>
 	<script type="text/javascript" src="app/directives/art-editing-history/art-editing-history.js"></script>
@@ -135,6 +140,7 @@
 	<script type="text/javascript" src="app/directives/art-task-control/art-task-control.js"></script>
 	<script type="text/javascript" src="app/directives/art-topic-control/art-topic-control.js"></script>
 	<script type="text/javascript" src="app/directives/art-update-indicator/art-update-indicator.js"></script>
+	<script type="text/javascript" src="app/directives/art-user-menu/art-user-menu.js"></script>
 	<script type="text/javascript" src="app/directives/art-user-photo-img/art-user-photo-img.js"></script>
 	<script type="text/javascript" src="app/directives/art-window-controls/art-window-controls.js"></script>
 	<script type="text/javascript" src="app/directives/bs-switch/bs-switch.js"></script>

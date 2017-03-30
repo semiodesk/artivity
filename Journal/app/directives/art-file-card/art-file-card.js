@@ -4,48 +4,45 @@
     function FileCardDirective() {
         return {
             restrict: 'E',
-            scope: {},
+            scope: {
+                'file': '=',
+                'clicked': '=?'
+            },
             templateUrl: 'app/directives/art-file-card/art-file-card.html',
             controller: FileCardDirectiveController,
             controllerAs: 't',
-            link: function (scope, element, attr, ctrl) {
-                ctrl.setFile(element, JSON.parse(attr.file), attr.enableLink);
+            bindToController: true,
+            link: function (scope, element, attr, t) {
+                t.setFile(element);
             }
         }
     }
 
     angular.module('app').controller('FileCardDirectiveController', FileCardDirectiveController);
 
-    FileCardDirectiveController.$inject = ['$scope', 'api', 'filesystemService', '$location'];
+    FileCardDirectiveController.$inject = ['$scope', '$location', 'api', 'selectionService', 'filesystemService'];
 
-    function FileCardDirectiveController($scope, api, filesystemService, $location) {
+    function FileCardDirectiveController($scope, $location, api, selectionService, filesystemService) {
         var t = this;
 
-        t.setFile = setFile;
-        t.onClick = onClick;
+        t.thumbnailStyle = {};
 
-        function setFile(element, file, enableLink) {
-            t.file = file;
-            t.fileName = filesystemService.getFileNameWithoutExtension(file.label);
-            t.fileExtension = filesystemService.getFileExtension(file.label);
+        t.setFile = function (element) {
+            t.fileName = filesystemService.getFileNameWithoutExtension(t.file.label);
+            t.fileExtension = filesystemService.getFileExtension(t.file.label);
 
-            if (file.thumbnail !== undefined) {
-                t.thumbnail = true;
-                t.thumbnailUrl = file.thumbnail;
+            if(t.file.thumbnail) {
+                t.thumbnailStyle = {
+                    'background-image': 'url(' + t.file.thumbnail + ')'
+                }
             }
-            
-            t.link = enableLink === undefined || enableLink === true;
-
-            $(element).find('.file-thumbnail').css('background-image', 'url(' + t.thumbnailUrl + ')');
         }
 
-        function onClick(e) {
+        t.onClicked = function (e) {
             e.preventDefault();
 
-            if (event.ctrlKey) {
-                $location.path("/files/view").search("uri", t.file.uri).search("entityUri", t.file.entityUri);
-            } else {
-                $location.path("/files/preview").search("uri", t.file.uri);
+            if (t.clicked) {
+                t.clicked(e, t.file);
             }
         }
     }
