@@ -7,11 +7,14 @@ $infoColor: #00A7E4;
 $infoTextColor: #FFFFFF;
 $errorColor: #D62828;
 $errorTextColor: #FFFFFF;
-$successColor: #5e2f63;
+$successColor: #3BC14A;
 $successTextColor: #FFFFFF;
 $iconFont: 'Material-Design-Iconic-Font';
 $iconFontSize: 24px;
-$textFont: 'Roboto','Helvetica','Arial',sans-serif;
+$textFont: 'Roboto',
+'Helvetica',
+'Arial',
+sans-serif;
 $textColor: #404040;
 $labelTextColor: #606060;
 $labelBackgroundColor: transparent;
@@ -386,6 +389,7 @@ button:focus,
 	text-align: left;
 }
 
+
 /* TABS */
 
 .nav-tabs {
@@ -552,7 +556,7 @@ button:focus,
 }
 
 .header-tabs .tab-content {
-	position:absolute;
+	position: absolute;
 	top: $toolbarHeight;
 	left: 0;
 	right: 0;
@@ -720,6 +724,12 @@ button:focus,
 	vertical-align: middle
 }
 
+.zmdi.zmdi-menu {
+	/* Renders the icon without blurred edges. */
+	font-size: 21px !important;
+	margin-top: 3px;
+}
+
 .account,
 .ok {
 	font-size: $iconFontSize;
@@ -780,6 +790,7 @@ h4 {
 	height: $toolbarHeight;
 	line-height: $toolbarHeight;
 }
+
 
 /* BODY */
 
@@ -932,11 +943,12 @@ h4 {
 	z-index: 1;
 	width: 350px;
 	min-width: 250px;
-	background: darken($windowBackgroundColor, 1%);
+	background: #f1f1f1;
 }
 
 .ui-sidebar-right {
 	right: 0;
+	border-left: 1px solid $itemBackgroundColor;
 }
 
 .ui-sidebar .tab-content {
@@ -1036,8 +1048,10 @@ h4 {
 }
 
 ::-webkit-scrollbar {
-	width: $scrollbarSize; /* for vertical scrollbars */
-	height: $scrollbarSize;	/* for horizontal scrollbars */
+	width: $scrollbarSize;
+	/* for vertical scrollbars */
+	height: $scrollbarSize;
+	/* for horizontal scrollbars */
 }
 
 ::-webkit-scrollbar-track {
@@ -1094,6 +1108,7 @@ h4 {
 	padding-bottom: 24px !important;
 }
 
+
 /* FOOTER */
 
 .statusbar {
@@ -1107,6 +1122,7 @@ h4 {
 	min-height: 1em;
 	background: $windowBackgroundColor;
 }
+
 
 /* VIEWS */
 
@@ -1160,10 +1176,11 @@ h4 {
 	height: 100%;
 }
 
+
 /* TOOLBARS */
 
 .toolbar {
-	height: $toolbarHeight;	
+	height: $toolbarHeight;
 }
 
 .toolbar .btn {
@@ -1171,19 +1188,51 @@ h4 {
 	border-radius: 1px;
 	height: $toolbarHeight;
 	min-width: $toolbarHeight;
-	transition: all .2s linear;
+	transition: all .2s ease-in;
 	padding: 0;
 	line-height: $toolbarHeight - 1px;
 }
 
-.toolbar.toolbar-dark .btn {
-	background-color: $toolbarBackgroundColor;
-	color: $toolbarTextColor;
+.toolbar .btn-primary {
+	padding-left: 16px;
+	padding-right: 16px;
+	background: transparent;
+	border: none;
+	text-shadow: none !important;
+	color: $textColor;
 }
 
-.toolbar.toolbar-dark .btn:hover {
-	background-color: lighten($toolbarBackgroundColor, 3%);
-	color: $toolbarTextColor;
+.toolbar .btn-primary:hover {
+	background: rgba($infoColor, .1) !important;
+	border: none;
+	color: $infoColor;
+}
+
+.toolbar.toolbar-floating {
+	border: 1px solid #dedede;
+	height: $toolbarHeight + 2px;
+	box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, .05);
+}
+
+.toolbar.toolbar-floating .btn {
+	background-color: #f1f1f1;
+	color: $textColor;
+}
+
+.toolbar.toolbar-floating .btn:hover,
+.toolbar.toolbar-floating .btn.active {
+	background-color: darken(#f1f1f1, 5%);
+	color: $textColor;
+}
+
+.toolbar .txt {
+	float: left;
+	height: $toolbarHeight;
+	line-height: $toolbarHeight;
+}
+
+.toolbar .txt-title {
+	font-weight: 500;
 }
 
 .toolbar-header .btn {
@@ -1204,19 +1253,27 @@ h4 {
 }
 
 .toolbar-header.pull-right .btn:first-child .btn-label {
+	display: none;
 	margin-left: 0;
 	margin-right: 15px;
+}
+
+@media (min-width: 992px) {
+	.toolbar-header .btn .btn-label {
+		display: inline-block !important;
+	}
 }
 
 .toolbar-header .icn.icn-user {
 	width: 26px;
 	height: 26px;
-	margin: 9px 6px 0 6px;
+	margin: 8px 6px 0 6px;
 }
 
 .toolbar-view {
 	border-bottom: 1px solid darken($windowBackgroundColor, 3%);
 }
+
 
 /* ACTIVITIES CHART */
 
@@ -1447,7 +1504,7 @@ svg {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background: rgba(0,0,0,.25) url('resources/images/placeholder-avatar-black.svg') top left no-repeat;
+	background: rgba(0, 0, 0, .25) url('resources/images/placeholder-avatar-black.svg') top left no-repeat;
 	background-size: cover;
 	opacity: .2;
 	z-index: 1;
@@ -1504,7 +1561,7 @@ svg {
 
 .card .file-thumbnail-container {
 	position: relative;
-	border: 1px solid rgba(0,0,0,.15);
+	border: 1px solid rgba(0, 0, 0, .15);
 	border-radius: 1;
 	box-shadow: none;
 	width: 100%;
@@ -1604,7 +1661,7 @@ input.form-control {
 	border-radius: 0;
 	border-color: white;
 	border-style: solid;
-	border-color: rgba(0,0,0,.05);
+	border-color: rgba(0, 0, 0, .05);
 	box-shadow: none;
 	margin-bottom: 6px;
 }
@@ -2114,6 +2171,7 @@ button[disabled]:hover {
 	outline: none;
 }
 
+
 /* COMMENTS */
 
 .ctl-protocol {
@@ -2182,6 +2240,7 @@ button[disabled]:hover {
 	background: $headerBackgroundColor;
 	word-wrap: break-word;
 	text-overflow: ellipsis;
+	border-radius: 3px 0 3px 3px;
 }
 
 .comment-list .comment .bubble-tip {
@@ -2268,6 +2327,7 @@ button[disabled]:hover {
 	float: right;
 	margin: 5px 0;
 }
+
 
 /* YASGUI */
 
@@ -2956,6 +3016,7 @@ iframe {
 	width: 100%;
 	height: 100%;
 }
+
 
 /* ANIMATIONS */
 

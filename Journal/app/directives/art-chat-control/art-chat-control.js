@@ -23,6 +23,9 @@
     function ChatControlDirectiveController($scope, api, viewerService, agentService, entityService, commentService, markService, selectionService, formattingService) {
         var t = this;
 
+        // Enable ASCII smileys.
+        emojione.ascii = true;
+
         t.user = null;
         t.revision = null;
         t.comment = null;

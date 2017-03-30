@@ -5,7 +5,7 @@
         return {
             restrict: 'E',
             scope: {
-                'fileUri': '='
+                'file': '='
             },
             templateUrl: 'app/directives/art-document-viewer/art-document-viewer.html',
             controller: DocumentViewerDirectiveController,
@@ -15,15 +15,19 @@
                 $(document).ready(function () {
                     t.initialize(element);
                 });
+
+                $(element).on('appear', function (event) {
+                    t.setViewer();
+                });
             }
         }
     }
 
     angular.module('app').controller('DocumentViewerDirectiveController', DocumentViewerDirectiveController);
 
-    DocumentViewerDirectiveController.$inject = ['$rootScope', '$scope', 'api', 'viewerService', 'agentService', 'entityService', 'selectionService', 'commentService', 'markService'];
+    DocumentViewerDirectiveController.$inject = ['$rootScope', '$scope', 'api', 'viewerService', 'agentService', 'entityService', 'selectionService', 'commentService', 'markService', 'hotkeys'];
 
-    function DocumentViewerDirectiveController($rootScope, $scope, api, viewerService, agentService, entityService, selectionService, commentService, markService) {
+    function DocumentViewerDirectiveController($rootScope, $scope, api, viewerService, agentService, entityService, selectionService, commentService, markService, hotkeys) {
         var t = this;
 
         t.viewer = null;
@@ -58,13 +62,13 @@
                     t.viewer.onResize();
                 });
 
-                if(t.fileUri) {
-                    t.load(t.fileUri);
+                if (t.file) {
+                    t.load(t.file);
                 }
 
-                $scope.$watch('fileUri', function () {
-                    if (t.fileUri) {
-                        t.load(t.fileUri);
+                $scope.$watch('file', function () {
+                    if (t.file) {
+                        t.load(t.file);
                     }
                 });
             } else {
@@ -72,27 +76,45 @@
             }
         }
 
-        t.load = function(fileUri) {
-            console.log('Loading file:', fileUri);
+        t.load = function (file) {
+            var fileUri;
 
-            entityService.getLatestRevision(fileUri).then(function (data) {
-                if (data.revision) {
-                    var revisionUri = data.revision;
+            if (file.uri) {
+                fileUri = file.uri;
+            } else if (file.Uri) {
+                fileUri = file.Uri;
+            }
 
-                    console.log('Loading revision:', revisionUri);
+            if (fileUri) {
+                console.log('Loading file:', fileUri);
 
-                    if (revisionUri) {
-                        api.getCanvasRenderingsFromEntity(revisionUri).then(function (data) {
-                            t.viewer.pageCache.load(data, function () {
-                                console.log('Loaded pages:', data);
+                entityService.getLatestRevision(fileUri).then(function (data) {
+                    if (data.revision) {
+                        var revisionUri = data.revision;
 
-                                t.viewer.setEntity(revisionUri);
-                                t.viewer.zoomToFit();
+                        console.log('Loading revision:', revisionUri);
+
+                        if (revisionUri) {
+                            api.getCanvasRenderingsFromEntity(revisionUri).then(function (data) {
+                                t.viewer.pageCache.load(data, function () {
+                                    console.log('Loaded pages:', data);
+
+                                    t.viewer.setEntity(revisionUri);
+                                    t.viewer.zoomToFit();
+                                });
                             });
-                        });
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                console.warn("Unable to determine URI from object:", file);
+            }
+        }
+
+        t.setViewer = function () {
+            if (t.viewer) {
+                viewerService.setViewer(t.viewer);
+            }
         }
 
         function update() {
@@ -100,5 +122,13 @@
                 t.viewer.stage.update();
             }
         }
+
+        hotkeys.add({
+            combo: 'f5',
+            description: 'Reload the document view.',
+            callback: function () {
+                update();
+            }
+        });
     }
 })();
