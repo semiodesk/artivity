@@ -7,30 +7,34 @@
 			controllerAs: 't',
 			bindToController: true,
 			scope: {
-				project: "=project",
-				collapsed: "=?"
+				project: "=?",
+				collapsed: "=?",
+				new: "=?"
 			}
 		}
 	});
 
-	ProjectViewDirectiveController.$inject = ['$rootScope', '$scope', '$sce', '$uibModal', 'agentService', 'navigationService', 'projectService', 'selectionService'];
+	ProjectViewDirectiveController.$inject = ['$rootScope', '$scope', '$sce', '$uibModal', 'agentService', 'navigationService', 'projectService', 'selectionService', 'hotkeys'];
 
-	function ProjectViewDirectiveController($rootScope, $scope, $sce, $uibModal, agentService, navigationService, projectService, selectionService) {
+	function ProjectViewDirectiveController($rootScope, $scope, $sce, $uibModal, agentService, navigationService, projectService, selectionService, hotkeys) {
 		var t = this;
 
-		t.collapsed = true;
-
-		if (!t.project) {
+		if (t.new) {
 			projectService.create().then(function (result) {
 				t.project = result;
-				t.project.new = true;
 				t.project.folder = null;
 				t.project.members = [];
 
 				t.collapsed = false;
 			});
 		} else {
-			t.project.new = false;
+			t.collapsed = true;
+
+			$scope.$watch('t.project', function (oldValue, newValue) {
+				if (newValue && newValue !== oldValue) {
+					$scope.$broadcast('refresh');
+				}
+			});
 		}
 
 		t.file = null;
