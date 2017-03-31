@@ -82,6 +82,8 @@ namespace Artivity.DataModel
         IModelSynchronizationState GetModelSynchronizationState(IPerson user);
 
         void SetProject(string project);
+
+        void SetUsername(string username);
         #endregion
     }
 }

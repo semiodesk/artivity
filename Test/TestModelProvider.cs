@@ -142,5 +142,11 @@ namespace ArtivityTest
         {
             throw new NotImplementedException();
         }
+
+
+        public void SetUsername(string username)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -123,7 +123,7 @@ namespace Artivity.Api.Modules
             {
                 InitializeRequest();
 
-                string fileUri = Request.Query.uri;
+                string fileUri = Request.Query.fileUri;
 
                 if (string.IsNullOrEmpty(fileUri) || !IsUri(fileUri))
                 {
@@ -140,6 +140,10 @@ namespace Artivity.Api.Modules
 
         private Response GetRecentFiles(GetFilesSettings settings)
         {
+            var model = ModelProvider.GetAll();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
+
             string OrderClause = settings.GetOrderClause();
             string FilterClause = settings.GetFilterClause();
             string LimitClause = settings.GetLimitClause();
@@ -186,13 +190,17 @@ namespace Artivity.Api.Modules
 
             ISparqlQuery query = new SparqlQuery(queryString);
 
-            var bindings = ModelProvider.GetAll().GetBindings(query);
+            var bindings = model.GetBindings(query);
 
             return Response.AsJsonSync(bindings);
         }
 
         private Response GetRevisionsFromFile(UriRef fileUri)
         {
+            var model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
+
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
                     ?time
@@ -212,13 +220,17 @@ namespace Artivity.Api.Modules
 
             query.Bind("@file", fileUri);
 
-            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
+            List<BindingSet> bindings = model.GetBindings(query).ToList();
 
             return Response.AsJsonSync(bindings);
         }
 
         private Response GetLatestRevisionFromFile(UriRef fileUri)
         {
+            var model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
+
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
                     ?time
@@ -243,7 +255,7 @@ namespace Artivity.Api.Modules
 
             query.Bind("@file", fileUri);
 
-            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
+            List<BindingSet> bindings = model.GetBindings(query).ToList();
 
             return Response.AsJsonSync(bindings);
         }
@@ -256,6 +268,8 @@ namespace Artivity.Api.Modules
         private Response PublishLatestRevision(Uri fileUri)
         {
             IModel Model = ModelProvider.GetActivities();
+            if (Model == null)
+                return HttpStatusCode.BadRequest;
 
             SparqlQuery q = new SparqlQuery(@"
                 DESCRIBE ?entity 
@@ -278,14 +292,6 @@ namespace Artivity.Api.Modules
                 entity.IsSynchronizable = true;
                 entity.Commit();
 
-                // Now we make sure the file has the synchronization state attached.
-                var file = Model.GetResource<FileDataObject>(fileUri);
-
-                if (file.SynchronizationState == null)
-                {
-                    file.Commit();
-                }
-
                 return Response.AsJsonSync(true);
             }
             else
@@ -296,6 +302,10 @@ namespace Artivity.Api.Modules
 
         private Response GetFileFromUri(Uri fileUri)
         {
+            var model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
+
             string queryString = @"
                 SELECT
                     ?uri ?folder ?label ?created ?lastModified
@@ -313,7 +323,8 @@ namespace Artivity.Api.Modules
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@uri", fileUri);
 
-            BindingSet bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
+            
+            BindingSet bindings = model.GetBindings(query).FirstOrDefault();
 
             return Response.AsJsonSync(bindings);
         }

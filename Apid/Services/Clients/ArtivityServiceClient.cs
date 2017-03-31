@@ -812,6 +812,9 @@ namespace Artivity.Apid.Accounts
 
                     CommunicationArchiveWriter writer = new CommunicationArchiveWriter(PlatformProvider, ModelProvider);
                     string projectId = writer.GetProjectId(uri, _modelProvider.GetActivities());
+                    
+                    if (string.IsNullOrEmpty(projectId))
+                        return false;
 
                     Uri url = new Uri(baseUrl + "/api/1.0/sync/project/" + projectId + "/entity/");
 
@@ -893,7 +896,8 @@ namespace Artivity.Apid.Accounts
 
                     RevisionArchiveWriter writer = new RevisionArchiveWriter(PlatformProvider, ModelProvider);
                     string projectId = writer.GetProjectId(uri, _modelProvider.GetActivities());
-
+                    if (string.IsNullOrEmpty(projectId))
+                        return false;
                     Uri url = new Uri(baseUrl + "/api/1.0/sync/project/"+projectId+"/file/");
 
                     var l = writer.ListRenderings(uri).ToList();
