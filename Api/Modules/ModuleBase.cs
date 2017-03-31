@@ -106,12 +106,16 @@ namespace Artivity.Api.Modules
             {
                 this.RequiresAuthentication();
             }
-            if( UserProvider != null )
-                LoadCurrentUser();
-
             string project = Request.Query.project;
             if (project != null)
                 ModelProvider.SetProject(project);
+
+            string user = Request.Query.user;
+            if (user != null)
+                ModelProvider.SetUsername(user);
+
+            if( UserProvider != null )
+                LoadCurrentUser();
 
             if (UserModel == null)
             {

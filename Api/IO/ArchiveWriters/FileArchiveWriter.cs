@@ -58,7 +58,7 @@ namespace Artivity.Api.IO
                 WHERE
                 {
                   ?project prov:qualifiedUsage / prov:entity ?file .
-                  ?file nie:isStoredAs @revision .
+                  @revision nie:isStoredAs ?file .
                 }");
 
             query.Bind("@revision", revisionUri);
@@ -72,7 +72,8 @@ namespace Artivity.Api.IO
 
                 if (!string.IsNullOrEmpty(uri))
                 {
-                    Path.GetFileName(new Uri(uri).AbsolutePath);
+                    string a = Path.GetFileName(uri);
+                    return Path.GetFileName(a);
                 }
             }
             return null;

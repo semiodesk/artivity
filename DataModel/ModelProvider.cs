@@ -280,7 +280,9 @@ namespace Artivity.DataModel
             return id;
         }
 
-        public void SetProject(string project) { }
+        public void SetProject(string x) { }
+
+        public void SetUsername(string x) { }
         #endregion
     }
 }
