@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('StartController', StartController);
 
-    StartController.$inject = ['$location', '$http', 'api', 'windowService', 'appService'];
+    StartController.$inject = ['$scope', '$location', '$http', 'appService', 'agentService', 'windowService'];
 
-    function StartController($location, $http, api, windowService, appService) {
+    function StartController($scope, $location, $http,  appService, agentService, windowService) {
         var t = this;
 
         windowService.setClosable(true);
@@ -19,17 +19,18 @@
         t.connectInterval = null;
         t.connectIntervalMs = appService.connectionInterval();
 
-        function init() {
-            showLoadingSpinner();
-
-            tryConnect();
-        }
-
         function tryConnect() {
             $http.get(apid.endpointUrl + '/setup').then(
                 function (response) {
                     stopConnect();
-                    showStartView(response);
+
+                    // Initialize the current user and view states.
+                    agentService.initialized.then(function () {
+                        $scope.$apply(function () {
+                            // Navigate to the start view.
+                            showStartView(response);
+                        });
+                    });
                 },
                 function () {
                     if (t.connectInterval === null) {
@@ -78,6 +79,12 @@
             init();
         }
 
+        function init() {
+            showLoadingSpinner();
+
+            tryConnect();
+        }
+        
         init();
     };
 })();

@@ -109,6 +109,12 @@ namespace Artivity.Api.Modules
             {
                 Get["/"] = parameters =>
                 {
+                    var response = InitializeRequest();
+                    if (response != null)
+                    {
+                        return response;
+                    } 
+
                     return GetEntity();
                 };
             }
@@ -118,12 +124,11 @@ namespace Artivity.Api.Modules
                 // Create a new resource
                 Get["/new"] = parameters =>
                 {
-                    if (PlatformProvider.RequiresAuthentication)
+                    var response = InitializeRequest();
+                    if (response != null)
                     {
-                        this.RequiresAuthentication();
-                    }
-
-                    LoadCurrentUser();
+                        return response;
+                    } 
 
                     if (UserModel == null)
                     {
@@ -145,17 +150,11 @@ namespace Artivity.Api.Modules
                 // Update entity. Check if user should be able to do that
                 Put["/"] = parameters =>
                 {
-                    if (PlatformProvider.RequiresAuthentication)
+                    var response = InitializeRequest();
+                    if (response != null)
                     {
-                        this.RequiresAuthentication();
-                    }
-
-                    LoadCurrentUser();
-
-                    if (UserModel == null)
-                    {
-                        return HttpStatusCode.InternalServerError;
-                    }
+                        return response;
+                    } 
 
                     Uri uri = new Uri(Request.Query["uri"]);
 
@@ -174,12 +173,11 @@ namespace Artivity.Api.Modules
             {
                 Delete["/"] = parameters =>
                 {
-                    if (PlatformProvider.RequiresAuthentication)
+                    var response = InitializeRequest();
+                    if (response != null)
                     {
-                        this.RequiresAuthentication();
-                    }
-
-                    LoadCurrentUser();
+                        return response;
+                    } 
 
                     Uri uri = new Uri(Request.Query["uri"]);
 
@@ -215,29 +213,6 @@ namespace Artivity.Api.Modules
 
         public virtual void OnBeforeEntityDeleted(Uri uri) { }
 
-        /// <summary>
-        /// This method initializes the Authentication and loads the current user.
-        /// If you overload it, return null if you want to continue processing the request.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual Response InitializeQueryContext()
-        {
-            if (PlatformProvider.RequiresAuthentication)
-            {
-                this.RequiresAuthentication();
-            }
-
-            LoadCurrentUser();
-
-            if (UserModel == null)
-            {
-                return HttpStatusCode.InternalServerError;
-            }
-
-            _queryInitialized = true;
-
-            return null;
-        }
 
         /// <summary>
         /// Processes the regular get function for this endpoint.
@@ -247,16 +222,7 @@ namespace Artivity.Api.Modules
         /// <returns></returns>
         protected virtual Response GetEntity()
         {
-            if(!_queryInitialized)
-            {
-                var response = InitializeQueryContext();
-
-                if (response != null)
-                {
-                    return response;
-                }
-            }
-
+            
             int offset = -1;
             int limit = -1;
 

@@ -1,12 +1,14 @@
 (function () {
     angular.module('app').factory('agentService', agentService);
 
-    agentService.$inject = ['$http'];
+    agentService.$inject = ['$http', 'api'];
 
-    function agentService($http) {
+    function agentService($http, api) {
         var endpoint = apid.endpointUrl + "agents";
 
-        return {
+        var t = {
+            initialized: null,
+            currentUser: null,
             newPerson: newPerson,
             putPerson: putPerson,
             putPhoto: putPhoto,
@@ -14,6 +16,29 @@
             getAccountOwner: getAccountOwner,
             findPersons: findPersons
         };
+
+        t.initialized = init();
+
+        return t;
+
+        function init() {
+            return new Promise(function (resolve, reject) {
+                if (t.currentUser) {
+                    resolve();
+                } else {
+                    getAccountOwner().then(function (user) {
+                        if (user && user.Uri) {
+                            t.currentUser = user;
+                            t.currentUser.PhotoUrl = api.getUserPhotoUrl(user.Uri);
+
+                            resolve();
+                        } else {
+                            reject();
+                        }
+                    });
+                }
+            });
+        }
 
         function getAccountOwner() {
             return $http.get(endpoint + '/users?role=AccountOwner').then(

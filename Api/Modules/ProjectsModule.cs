@@ -43,6 +43,8 @@ namespace Artivity.Api.Modules
         {
             Get["/agents"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.projectUri))
                 {
                     UriRef projectUri = new UriRef(Request.Query.projectUri);
@@ -57,6 +59,8 @@ namespace Artivity.Api.Modules
 
             Post["/agents"] = parameters =>
             {
+                InitializeRequest();
+
                 UserRoles role = UserRoles.ProjectMember;
 
                 if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.agentUri) && Enum.TryParse(Request.Query.role, out role))
@@ -74,6 +78,8 @@ namespace Artivity.Api.Modules
 
             Delete["/agents"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.agentUri))
                 {
                     UriRef projectUri = new UriRef(Request.Query.projectUri);
@@ -89,18 +95,24 @@ namespace Artivity.Api.Modules
 
             Get["/files"] = parameters =>
             {
-                string uri = Request.Query.uri;
+                InitializeRequest();
 
-                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                if (IsUri(Request.Query.projectUri))
+                {
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+
+                    return GetProjectFiles(projectUri);
+                }
+                else
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
-
-                return GetProjectFiles(new UriRef(uri));
             };
 
             Post["/files"] = parameters =>
             {
+                InitializeRequest();
+
                 if(IsUri(Request.Query.projectUri) && IsUri(Request.Query.fileUri))
                 {
                     UriRef projectUri = new UriRef(Request.Query.projectUri);
@@ -116,6 +128,8 @@ namespace Artivity.Api.Modules
 
             Delete["/files"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.fileUri))
                 {
                     UriRef projectUri = new UriRef(Request.Query.projectUri);
@@ -131,6 +145,8 @@ namespace Artivity.Api.Modules
 
             Get["/folders"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.projectUri))
                 {
                     UriRef projectUri = new UriRef(Request.Query.projectUri);
@@ -145,6 +161,8 @@ namespace Artivity.Api.Modules
 
             Post["/folders"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.folderUrl))
                 {
                     UriRef projectUri = new UriRef(Request.Query.projectUri);
@@ -160,6 +178,8 @@ namespace Artivity.Api.Modules
 
             Delete["/folders"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.folderUrl))
                 {
                     UriRef projectUri = new UriRef(Request.Query.projectUri);
@@ -298,6 +318,11 @@ namespace Artivity.Api.Modules
 		
 		                FILTER(?t1 > ?t2)
 	                }
+
+                    OPTIONAL
+                    {
+                        ?entity NIE.lastModified ?t1 .
+                    }
 	
 	                FILTER(!BOUND(?t2))
 
@@ -375,7 +400,7 @@ namespace Artivity.Api.Modules
             IModel activities = ModelProvider.GetActivities();
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?s ?p ?o
+                SELECT DISTINCT ?s ?p ?o
                 WHERE
                 {
                     @project prov:qualifiedUsage / prov:entity ?s .

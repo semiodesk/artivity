@@ -9,9 +9,9 @@
         }
     };
 
-    KeyboardInputHandlerDirectiveController.$inject = ['$scope', 'api', 'hotkeys', 'windowService', 'syncService'];
+    KeyboardInputHandlerDirectiveController.$inject = ['$scope', 'hotkeys', 'windowService', 'navigationService', 'syncService'];
 
-    function KeyboardInputHandlerDirectiveController($scope, api, hotkeys, windowService, syncService) {
+    function KeyboardInputHandlerDirectiveController($scope, hotkeys, windowService, navigationService, syncService) {
         $scope.getUrlWithFile = function (file) {
             var url = window.location.href.split('#');
 
@@ -56,7 +56,7 @@
             combo: 'backspace',
             description: 'Go back to the previous view.',
             callback: function () {
-                window.history.back();
+                navigationService.navigateBack();
             }
         });
 
@@ -64,7 +64,7 @@
             combo: 'shift+backspace',
             description: 'Go forward to the next view.',
             callback: function () {
-                window.history.forward();
+                navigationService.navigateForward();
             }
         });
 
@@ -86,8 +86,8 @@
         });
 
         hotkeys.add({
-            combo: 'f5',
-            description: 'Reload the current view.',
+            combo: 'shift+f5',
+            description: 'Reload the entire window.',
             callback: function () {
                 windowService.reload();
             }

@@ -59,6 +59,7 @@
             // Prevent navigation when the user clicks on tab headers.
             $('.tablist a').click(function (e) {
                 e.preventDefault();
+                
                 $(this).tab('show');
             });
 

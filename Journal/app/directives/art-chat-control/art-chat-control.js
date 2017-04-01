@@ -6,7 +6,7 @@
             restrict: 'E',
             templateUrl: 'app/directives/art-chat-control/art-chat-control.html',
             scope: {
-                file: '@'
+                file: '='
             },
             controller: ChatControlDirectiveController,
             controllerAs: 't',
@@ -18,13 +18,16 @@
 
     angular.module('app').controller('ChatControlDirectiveController', ChatControlDirectiveController);
 
-    ChatControlDirectiveController.$inject = ['$scope', 'api', 'viewerService', 'agentService', 'entityService', 'commentService', 'markService', 'selectionService', 'formattingService'];
+    ChatControlDirectiveController.$inject = ['$scope', 'viewerService', 'agentService', 'entityService', 'commentService', 'markService', 'selectionService', 'formattingService'];
 
-    function ChatControlDirectiveController($scope, api, viewerService, agentService, entityService, commentService, markService, selectionService, formattingService) {
+    function ChatControlDirectiveController($scope, viewerService, agentService, entityService, commentService, markService, selectionService, formattingService) {
         var t = this;
 
+        // Enable ASCII smileys.
+        emojione.ascii = true;
+
         t.user = null;
-        t.file = null;
+        t.revision = null;
         t.comment = null;
         t.comments = [];
 
@@ -59,10 +62,12 @@
                 t.comment.agent = t.user.Uri;
 
                 entityService.getLatestRevision($scope.file).then(function (data) {
-                    // Set the entity URI as primary source for the comments.
-                    t.comment.entity = data.revision;
+                    t.revision = data.revision;
 
-                    commentService.get(data.revision).then(function (data) {
+                    // Set the entity URI as primary source for the comments.
+                    t.comment.entity = t.revision;
+
+                    commentService.get(t.revision).then(function (data) {
                         t.comments = [];
 
                         for (i = 0; i < data.length; i++) {
@@ -140,7 +145,7 @@
         function resetComment(clearText) {
             t.comment = {
                 agent: null,
-                entity: t.file,
+                entity: t.revision,
                 startTime: null,
                 endTime: null,
                 text: '',
@@ -148,7 +153,7 @@
             };
 
             if (t.user) {
-                t.comment.agent = user.Uri;
+                t.comment.agent = t.user.Uri;
             }
 
             console.log("Reset comment: ", t.comment);

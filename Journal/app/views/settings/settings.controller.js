@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('SettingsController', SettingsController);
 
-    SettingsController.$inject = ['$location', 'api', 'settingsService'];
+    SettingsController.$inject = ['$location', 'settingsService'];
 
-    function SettingsController($location, api, settingsService) {
+    function SettingsController($location, settingsService) {
         var t = this;
 
         t.submit = function () {

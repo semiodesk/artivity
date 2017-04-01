@@ -88,6 +88,16 @@ namespace Artivity.Apid.Synchronization
             _items.Add(item);
         }
 
+        public void AddFront(SynchronizationChangesetItem item)
+        {
+            if (item.ResourceUri != null && !_resources.ContainsKey(item.ResourceUri))
+            {
+                _resources.Add(item.ResourceUri, item);
+            }
+
+            _items.Insert(0, item);
+        }
+
         #endregion
     }
 }
