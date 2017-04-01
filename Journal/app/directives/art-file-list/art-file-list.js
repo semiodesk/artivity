@@ -66,5 +66,9 @@
                 t.loadFiles();
             }
         });
+
+        $scope.$on('refresh', function() {
+            t.loadFiles();
+        });
     }
 })();
