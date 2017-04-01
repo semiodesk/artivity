@@ -20,6 +20,9 @@
                 $(element).on('appear', function (event) {
                     t.loadFiles();
                 });
+                scope.$watch('t.onload', function (newValue, oldValue) {
+						 t.loadFiles();
+				});
             }
         }
     }

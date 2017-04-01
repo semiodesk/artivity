@@ -50,6 +50,8 @@ namespace Artivity.Api.Modules
         {
             Get["/"] = parameters =>
             {
+                InitializeRequest();
+
                 string uri = Request.Query.entityUri;
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
@@ -62,6 +64,8 @@ namespace Artivity.Api.Modules
 
             Post["/"] = parameters =>
             {
+                InitializeRequest();
+
                 TopicParameter topic = this.Bind<TopicParameter>();
 
                 if (!string.IsNullOrEmpty(topic.title))

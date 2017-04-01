@@ -50,6 +50,8 @@ namespace Artivity.Api.Modules
         {
             Get["/"] = parameters =>
             {
+                InitializeRequest();
+
                 if(IsUri(Request.Query.entityUri))
                 {
                     UriRef entityUri = new UriRef(Request.Query.entityUri);
@@ -64,6 +66,8 @@ namespace Artivity.Api.Modules
 
             Post["/"] = parameters =>
             {
+                InitializeRequest();
+
                 CommentParameter comment = this.Bind<CommentParameter>();
 
                 if (!string.IsNullOrEmpty(comment.text))
@@ -90,7 +94,9 @@ namespace Artivity.Api.Modules
 
         private Response GetCommentsFromEntity(UriRef entityUri)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -114,14 +120,16 @@ namespace Artivity.Api.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@undefined", DateTime.MinValue);
 
-            var bindings = UserModel.GetBindings(query, true).ToList();
+            var bindings = model.GetBindings(query, true).ToList();
 
             return Response.AsJson(bindings);
         }
 
         private Response PostComment(CommentParameter parameter)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
             {
@@ -133,16 +141,16 @@ namespace Artivity.Api.Modules
             Agent agent = new Agent(new UriRef(parameter.agent));
             Entity entity = new Entity(new UriRef(parameter.entity));
 
-            if (UserModel.ContainsResource(entity))
+            if (model.ContainsResource(entity))
             {
-                Comment comment = UserModel.CreateResource<Comment>();
+                Comment comment = model.CreateResource<Comment>();
                 comment.CreationTimeUtc = parameter.endTime;
                 comment.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 comment.Message = parameter.text;
                 comment.IsSynchronizable = true;
                 comment.Commit();
 
-                CreateEntity activity = UserModel.CreateResource<CreateEntity>();
+                CreateEntity activity = model.CreateResource<CreateEntity>();
                 activity.StartedBy = agent;
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;

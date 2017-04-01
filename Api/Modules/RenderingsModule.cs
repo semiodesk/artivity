@@ -52,6 +52,8 @@ namespace Artivity.Api.Modules
         {
             Get["/"] = parameters =>
             {
+                InitializeRequest();
+
                 if (Request.Query.uri)
                 {
                     string uri = Request.Query.uri;
@@ -92,6 +94,8 @@ namespace Artivity.Api.Modules
 
             Get["/canvases"] = parameters =>
             {
+                InitializeRequest();
+
                 if (Request.Query.entity)
                 {
                     string entity = Request.Query.entity;
@@ -111,6 +115,8 @@ namespace Artivity.Api.Modules
 
             Get["/path"] = parameters =>
             {
+                InitializeRequest();
+
                 string uri = Request.Query.uri;
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
@@ -125,6 +131,8 @@ namespace Artivity.Api.Modules
 
             Get["/thumbnails"] = parameters =>
             {
+                InitializeRequest();
+
                 if (Request.Query.entityUri)
                 {
                     string uri = Request.Query.entityUri;

@@ -30,7 +30,7 @@
 		} else {
 			t.collapsed = true;
 
-			$scope.$watch('t.project', function (oldValue, newValue) {
+			$scope.$watch('t.project', function (newValue, oldValue) {
 				if (newValue && newValue !== oldValue) {
 					$scope.$broadcast('refresh');
 				}

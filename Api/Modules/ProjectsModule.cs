@@ -319,11 +319,6 @@ namespace Artivity.Api.Modules
 		                FILTER(?t1 > ?t2)
 	                }
 
-                    OPTIONAL
-                    {
-                        ?entity NIE.lastModified ?t1 .
-                    }
-	
 	                FILTER(!BOUND(?t2))
 
                     OPTIONAL {
