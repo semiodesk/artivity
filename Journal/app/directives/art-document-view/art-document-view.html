@@ -1,0 +1,34 @@
+<div class="table-layout">
+    <div class="row">
+        <div class="toolbar toolbar-view">
+            <a class="btn btn-chromeless" ng-click="t.back()"><i class="zmdi zmdi-chevron-left"></i></a>
+            <div class="txt txt-title" ng-bind="t.file.label"></div>
+            <a class="btn btn-primary pull-right" ng-lick="t.publish()"><i class="zmdi zmdi-share"></i><span class="btn-label">Teilen</span></a>
+        </div>
+    </div>
+    <div class="row expand">
+        <div class="layout-container">
+            <art-document-viewer file="t.file"></art-document-viewer>
+
+            <div class="ui-sidebar ui-sidebar-right">
+                <uib-tabset>
+                    <uib-tab heading="Comments">
+                        <div class="layout-container">
+                            <art-chat-control file="t.file.uri"></art-chat-control>
+                        </div>
+                    </uib-tab>
+                    <uib-tab heading="Topics">
+                        <div class="layout-container">
+                            <art-topic-control file="t.file.uri"></art-topic-control>
+                        </div>
+                    </uib-tab>
+                    <uib-tab heading="Todo">
+                        <div class="layout-container padding-x-xl padding-y-xl text-center">
+                            <art-task-control file="t.file.uri"></art-task-control>
+                        </div>
+                    </uib-tab>
+                </uib-tabset>
+            </div>
+        </div>
+    </div>
+</div>

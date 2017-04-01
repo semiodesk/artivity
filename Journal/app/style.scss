@@ -7,11 +7,14 @@ $infoColor: #00A7E4;
 $infoTextColor: #FFFFFF;
 $errorColor: #D62828;
 $errorTextColor: #FFFFFF;
-$successColor: #5e2f63;
+$successColor: #3BC14A;
 $successTextColor: #FFFFFF;
 $iconFont: 'Material-Design-Iconic-Font';
 $iconFontSize: 24px;
-$textFont: 'Roboto','Helvetica','Arial',sans-serif;
+$textFont: 'Roboto',
+'Helvetica',
+'Arial',
+sans-serif;
 $textColor: #404040;
 $labelTextColor: #606060;
 $labelBackgroundColor: transparent;
@@ -26,7 +29,7 @@ $windowBackgroundColor: #e6e6e6;
 $headerBackgroundColor: #393939;
 $headerTextColor: #ededed;
 $headerHeight: 40px;
-$toolbarHeight: 45px;
+$toolbarHeight: 42px;
 $toolbarIconHeight: 32px;
 $toolbarBackgroundColor: $headerBackgroundColor;
 $toolbarTextColor: $headerTextColor;
@@ -39,7 +42,7 @@ $inputBackgroundColor: #FFFFFF;
 $inputTextColor: #000000;
 $windowTitlebarHeight: 37px;
 $scrollbarSize: 12px;
-$tooltipBackgroundColor: #EEEEEE;
+$tooltipBackgroundColor: #F1F1F1;
 $tooltipTextColor: black;
 $editorBackgroundColor: #efefef;
 $editorContentColor: white;
@@ -268,7 +271,7 @@ button:hover,
 .btn:hover,
 .btn-default:hover {
 	background: $buttonHoverBackgroundColor;
-	color: $buttonTextColor !important;
+	color: $buttonTextColor;
 }
 
 button:active,
@@ -386,6 +389,7 @@ button:focus,
 	text-align: left;
 }
 
+
 /* TABS */
 
 .nav-tabs {
@@ -450,37 +454,37 @@ button:focus,
 	color: $highlightTextColor;
 }
 
-.header-tabs .nav-tabs {
+.header-tabs>.nav-tabs {
 	height: $toolbarHeight;
 	background: $headerBackgroundColor;
 	padding: 0;
 	margin: 0;
 }
 
-.header-tabs .nav-tabs li a.nav-link .zmdi,
-.header-tabs .nav-tabs img {
+.header-tabs>.nav-tabs li a.nav-link .zmdi,
+.header-tabs>.nav-tabs img {
 	position: relative;
-	top: -2px;
+	top: -3px;
 }
 
-.header-tabs .nav-tabs li a.nav-link .zmdi {
+.header-tabs>.nav-tabs li a.nav-link .zmdi {
 	color: darken($headerTextColor, 10%);
 }
 
-.header-tabs .nav-tabs li.active a.nav-link .zmdi {
+.header-tabs>.nav-tabs li.active a.nav-link .zmdi {
 	color: $textColor;
 }
 
-.header-tabs .nav-tabs li a.nav-link:focus {
+.header-tabs>.nav-tabs li a.nav-link:focus {
 	outline: none;
 }
 
-.header-tabs .nav-tabs li a {
+.header-tabs>.nav-tabs li a {
 	border: none;
 	margin: 0;
 }
 
-.header-tabs .nav-tabs li a.nav-link {
+.header-tabs>.nav-tabs li a.nav-link {
 	padding: 0;
 	border-right: 1px solid rgba(255, 255, 255, .05);
 	background: transparent;
@@ -489,42 +493,42 @@ button:focus,
 	text-transform: none;
 }
 
-.header-tabs .nav-tabs li a.nav-link .nav-link-container {
-	padding: 12px 11px;
+.header-tabs>.nav-tabs li a.nav-link .nav-link-container {
+	padding: 10px 11px;
 }
 
-.header-tabs .nav-tabs li:last-child a.nav-link {
+.header-tabs>.nav-tabs li:last-child a.nav-link {
 	border-right: 1px solid transparent;
 }
 
-.header-tabs .nav-tabs li a.nav-link:hover {
+.header-tabs>.nav-tabs li a.nav-link:hover {
 	border-radius: 1px 1px 0 0;
 	border-right: 1px solid transparent;
 }
 
-.header-tabs .nav-tabs li a.nav-link:hover,
-.header-tabs .nav-tabs li a.nav-link .nav-link-container.drop-target-valid {
+.header-tabs>.nav-tabs li a.nav-link:hover,
+.header-tabs>.nav-tabs li a.nav-link .nav-link-container.drop-target-valid {
 	background: lighten($headerBackgroundColor, 5%);
 }
 
-.header-tabs .nav-tabs li.active a.nav-link {
+.header-tabs>.nav-tabs li.active a.nav-link {
 	border-bottom: none;
 	border-radius: 1px 1px 0 0;
 	background: $windowBackgroundColor;
 	text-transform: none;
 }
 
-.header-tabs .nav-tabs li.active a.nav-link,
-.header-tabs .nav-tabs li.active a.nav-link a.btn {
+.header-tabs>.nav-tabs li.active a.nav-link,
+.header-tabs>.nav-tabs li.active a.nav-link a.btn {
 	color: $textColor !important;
 }
 
-.header-tabs .nav-tabs li.active a.nav-link:hover,
-.header-tabs .nav-tabs li.active a.nav-link:hover a.btn {
+.header-tabs>.nav-tabs li.active a.nav-link:hover,
+.header-tabs>.nav-tabs li.active a.nav-link:hover a.btn {
 	color: $highlightTextColor;
 }
 
-.header-tabs .nav-tabs li a.btn-close {
+.header-tabs>.nav-tabs li a.btn-close {
 	position: relative;
 	top: -2px;
 	right: -5px;
@@ -536,23 +540,23 @@ button:focus,
 	color: darken($headerTextColor, 10%);
 }
 
-.header-tabs .nav-tabs li a.btn-close .zmdi {
+.header-tabs>.nav-tabs li a.btn-close .zmdi {
 	top: 0;
 	font-size: 18px !important;
 	line-height: 18px;
 	font-weight: 300;
 }
 
-.header-tabs .nav-tabs li a.btn-close:hover {
+.header-tabs>.nav-tabs li a.btn-close:hover {
 	background: rgba(255, 255, 255, .05);
 }
 
-.header-tabs .nav-tabs li.active a.btn-close:hover {
+.header-tabs>.nav-tabs li.active a.btn-close:hover {
 	background: lighten($windowBackgroundColor, 3%);
 }
 
 .header-tabs .tab-content {
-	position:absolute;
+	position: absolute;
 	top: $toolbarHeight;
 	left: 0;
 	right: 0;
@@ -720,6 +724,12 @@ button:focus,
 	vertical-align: middle
 }
 
+.zmdi.zmdi-menu {
+	/* Renders the icon without blurred edges. */
+	font-size: 21px !important;
+	margin-top: 3px;
+}
+
 .account,
 .ok {
 	font-size: $iconFontSize;
@@ -744,12 +754,6 @@ h4 {
 
 
 /* HEADER */
-
-.toolbar {
-	display: table-row;
-	background: $toolbarBackgroundColor;
-	color: $toolbarTextColor;
-}
 
 .header {
 	background: $toolbarBackgroundColor;
@@ -787,13 +791,8 @@ h4 {
 	line-height: $toolbarHeight;
 }
 
-/* BODY */
 
-#canvas {
-	padding: 0;
-	width: 100%;
-	height: 100%;
-}
+/* BODY */
 
 .ui-resizable {
 	position: relative;
@@ -944,11 +943,12 @@ h4 {
 	z-index: 1;
 	width: 350px;
 	min-width: 250px;
-	background: darken($windowBackgroundColor, 1%);
+	background: #f1f1f1;
 }
 
 .ui-sidebar-right {
 	right: 0;
+	border-left: 1px solid $itemBackgroundColor;
 }
 
 .ui-sidebar .tab-content {
@@ -1047,6 +1047,27 @@ h4 {
 	overflow-y: scroll !important;
 }
 
+::-webkit-scrollbar {
+	width: $scrollbarSize;
+	/* for vertical scrollbars */
+	height: $scrollbarSize;
+	/* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: $headerBackgroundColor;
+	border: 2px solid $windowBackgroundColor;
+	border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: lighten($headerBackgroundColor, 10%);
+}
+
 .padding-x-none {
 	padding-left: 0 !important;
 	padding-right: 0 !important;
@@ -1103,122 +1124,6 @@ h4 {
 }
 
 
-/* TOOLBARS */
-
-.toolbar {
-	display: table;
-	text-align: center;
-	overflow-y: hidden;
-	transition-property: all;
-	transition-duration: 1s;
-	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
-	position: relative;
-	height: $toolbarHeight;
-	padding: 0;
-	margin: 0;
-}
-
-.toolbar.toolbar-floating {
-	border-radius: 2px;
-	box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.25);
-}
-
-.toolbar.hidden {
-	max-height: 0;
-}
-
-.toolbar.visible {
-	max-height: 99999px;
-}
-
-.toolbar .title {
-	font-size: 17px;
-	font-weight: 400;
-	text-align: left;
-	margin: 0 0 0 5px;
-	padding: 0;
-	position: relative;
-	top: 2px;
-}
-
-.toolbar .btn {
-	background: transparent;
-	color: rgba($textColor, .6);
-	border-radius: 0 !important;
-	border: none;
-	padding: 0;
-	margin: 0;
-	transition: all .2s linear;
-	height: $toolbarHeight;
-}
-
-.toolbar.toolbar-header .btn {
-	color: rgba($headerTextColor, .7);
-}
-
-.toolbar-header .btn .btn-label {
-	cursor: pointer;
-	color: $headerTextColor;
-}
-
-.toolbar-header.pull-right .btn:first-child .btn-label {
-	margin-left: 0;
-	margin-right: 15px;
-}
-
-.toolbar .btn:hover,
-.toolbar .btn:active,
-.toolbar .btn.btn-active {
-	background: rgba(255, 255, 255, .1);
-	color: rgba($textColor, 1);
-}
-
-.toolbar.toolbar-header .btn:hover,
-.toolbar.toolbar-header .btn:active,
-.toolbar.toolbar-header .btn.btn-active {
-	background: rgba(255, 255, 255, .1);
-	color: rgba($headerTextColor, 1);
-}
-
-.toolbar .btn i.zmdi {
-	color: $toolbarTextColor;
-	display: inline-block;
-	width: $toolbarHeight;
-	height: $toolbarHeight;
-	line-height: $toolbarHeight;
-	font-size: $iconFontSize;
-	text-align: center;
-}
-
-.toolbar .btn .btn-label {
-	line-height: $toolbarHeight;
-	vertical-align: middle;
-	margin: 0 7px;
-}
-
-.toolbar .icn,
-.toolbar .icn {
-	width: $toolbarIconHeight;
-	height: $toolbarIconHeight;
-}
-
-.toolbar .icn.icn-user {
-	margin-top: 6px;
-	width: 28px;
-	height: 28px;
-}
-
-.toolbar .icn-circle,
-.toolbar .icn-circle {
-	border-radius: 50%;
-}
-
-.toolbar img.icn {
-	margin: ($toolbarHeight - $toolbarIconHeight) / 2;
-	margin-left: 7px;
-	margin-right: 7px;
-}
-
 /* VIEWS */
 
 .view-container {
@@ -1229,17 +1134,12 @@ h4 {
 	overflow: hidden;
 }
 
-.view-container .view-toolbar {
-	height: $toolbarHeight;
-	border-bottom: 1px solid darken($windowBackgroundColor, 3%);
-}
-
-.view-container .view-primary-content,
-.view-container .view-secondary-content {
+.view-primary-content,
+.view-secondary-content {
 	transition: width ease-out .2s;
 }
 
-.view-container .view-primary-content {
+.view-primary-content {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -1248,7 +1148,7 @@ h4 {
 	z-index: 1;
 }
 
-.view-container .view-secondary-content {
+.view-secondary-content {
 	border-left: 1px solid darken($windowBackgroundColor, 3%);
 	background: lighten($windowBackgroundColor, 4%);
 	position: absolute;
@@ -1259,13 +1159,121 @@ h4 {
 	z-index: 2;
 }
 
-.view-container .view-secondary-content.invisible {
+.view-secondary-content.invisible {
 	width: 0;
 }
 
-.view-toolbar .btn {
+.view-primary-content>.ng-scope,
+.view-secondary-content>.ng-scope {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.viewer-canvas {
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+
+
+/* TOOLBARS */
+
+.toolbar {
 	height: $toolbarHeight;
 }
+
+.toolbar .btn {
+	float: left;
+	border-radius: 1px;
+	height: $toolbarHeight;
+	min-width: $toolbarHeight;
+	transition: all .2s ease-in;
+	padding: 0;
+	line-height: $toolbarHeight - 1px;
+}
+
+.toolbar .btn-primary {
+	padding-left: 16px;
+	padding-right: 16px;
+	background: transparent;
+	border: none;
+	text-shadow: none !important;
+	color: $textColor;
+}
+
+.toolbar .btn-primary:hover {
+	background: rgba($infoColor, .1) !important;
+	border: none;
+	color: $infoColor;
+}
+
+.toolbar.toolbar-floating {
+	border: 1px solid #dedede;
+	height: $toolbarHeight + 2px;
+	box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, .05);
+}
+
+.toolbar.toolbar-floating .btn {
+	background-color: #f1f1f1;
+	color: $textColor;
+}
+
+.toolbar.toolbar-floating .btn:hover,
+.toolbar.toolbar-floating .btn.active {
+	background-color: darken(#f1f1f1, 5%);
+	color: $textColor;
+}
+
+.toolbar .txt {
+	float: left;
+	height: $toolbarHeight;
+	line-height: $toolbarHeight;
+}
+
+.toolbar .txt-title {
+	font-weight: 500;
+}
+
+.toolbar-header .btn {
+	color: rgba($headerTextColor, .7);
+	padding: 0;
+}
+
+.toolbar-header .btn:hover,
+.toolbar-header .btn:active,
+.toolbar-header .btn.btn-active {
+	background: rgba(255, 255, 255, .1);
+	color: rgba($headerTextColor, 1);
+}
+
+.toolbar-header .btn .btn-label {
+	cursor: pointer;
+	color: $headerTextColor;
+}
+
+.toolbar-header.pull-right .btn:first-child .btn-label {
+	display: none;
+	margin-left: 0;
+	margin-right: 15px;
+}
+
+@media (min-width: 992px) {
+	.toolbar-header .btn .btn-label {
+		display: inline-block !important;
+	}
+}
+
+.toolbar-header .icn.icn-user {
+	width: 26px;
+	height: 26px;
+	margin: 8px 6px 0 6px;
+}
+
+.toolbar-view {
+	border-bottom: 1px solid darken($windowBackgroundColor, 3%);
+}
+
 
 /* ACTIVITIES CHART */
 
@@ -1496,7 +1504,7 @@ svg {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background: rgba(0,0,0,.25) url('resources/images/placeholder-avatar-black.svg') top left no-repeat;
+	background: rgba(0, 0, 0, .25) url('resources/images/placeholder-avatar-black.svg') top left no-repeat;
 	background-size: cover;
 	opacity: .2;
 	z-index: 1;
@@ -1553,7 +1561,7 @@ svg {
 
 .card .file-thumbnail-container {
 	position: relative;
-	border: 1px solid rgba(0,0,0,.15);
+	border: 1px solid rgba(0, 0, 0, .15);
 	border-radius: 1;
 	box-shadow: none;
 	width: 100%;
@@ -1653,7 +1661,7 @@ input.form-control {
 	border-radius: 0;
 	border-color: white;
 	border-style: solid;
-	border-color: rgba(0,0,0,.05);
+	border-color: rgba(0, 0, 0, .05);
 	box-shadow: none;
 	margin-bottom: 6px;
 }
@@ -1917,26 +1925,6 @@ button[disabled]:hover {
 	background: url('resources/images/construction.svg') center center no-repeat;
 	background-size: 100px 100px;
 	opacity: .2;
-}
-
-::-webkit-scrollbar {
-	width: $scrollbarSize;
-	/* for vertical scrollbars */
-	height: $scrollbarSize;
-	/* for horizontal scrollbars */
-}
-
-::-webkit-scrollbar-track {
-	background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-	background: $headerBackgroundColor;
-	border: 2px solid $windowBackgroundColor;
-}
-
-::-webkit-scrollbar-thumb:hover {
-	background: lighten($headerBackgroundColor, 10%);
 }
 
 .bootstrap-switch {
@@ -2252,6 +2240,7 @@ button[disabled]:hover {
 	background: $headerBackgroundColor;
 	word-wrap: break-word;
 	text-overflow: ellipsis;
+	border-radius: 3px 0 3px 3px;
 }
 
 .comment-list .comment .bubble-tip {
@@ -2337,23 +2326,6 @@ button[disabled]:hover {
 .ctl-comment .btn-post {
 	float: right;
 	margin: 5px 0;
-}
-
-
-/* STATS */
-
-.chart-donut {
-	width: 29rem;
-	height: 29rem;
-	margin: 0 auto;
-}
-
-path.color0 {
-	fill: #1072b8;
-}
-
-path.color1 {
-	fill: #35526b;
 }
 
 

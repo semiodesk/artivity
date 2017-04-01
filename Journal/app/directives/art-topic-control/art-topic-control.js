@@ -7,7 +7,7 @@
             templateUrl: 'app/directives/art-topic-control/art-topic-control.html',
             bindToController: true,
             scope: {
-                file: '@'
+                file: '='
             },
             controller: TopicControlDirectiveController,
             controllerAs: 't'

@@ -1,13 +1,23 @@
 <div class="view-container">
-    <div class="view-primary-content">
-        <div class="view-toolbar"></div>
+    <div class="view-primary-content" ng-switch="t.file">
+        <!-- Show the document view when no file is selected. -->
+        <div class="layout-container" ng-switch-default>
+            <art-document-view file="t.file"></art-document-view>
+        </div>
 
-        <art-file-list></art-file-list>
+        <!-- Otherwhise show the file list. -->
+        <div class="layout-container" ng-switch-when="null">
+            <art-file-list onload="t.getFiles" clicked="t.viewFile">
+                <empty>
+                    <h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+                </empty>
+            </art-file-list>
+        </div>
     </div>
-    <div class="view-secondary-content">
+    <div class="view-secondary-content" ng-show="!t.collapsed">
         <div class="view-toolbar">
-            <button class="btn btn-chromeless" ng-click="t.commit()" ng-disabled="projectForm.title.$invalid"><i class="zmdi zmdi-check"></i> <span class="btn-label">Speichern</span></button>
-            <button class="btn btn-chromeless pull-right" ng-click="t.cancel()">Cancel</button>
+            <a class="btn btn-chromeless" ng-click="t.commit()" ng-disabled="projectForm.title.$invalid"><i class="zmdi zmdi-check"></i> <span class="btn-label">Speichern</span></a>
+            <a class="btn btn-chromeless pull-right" ng-click="t.cancel()">Cancel</a>
         </div>
 
         <div class="container-fluid padding-y-md">

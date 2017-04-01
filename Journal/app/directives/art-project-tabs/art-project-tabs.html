@@ -1,36 +1,40 @@
-<div class="header-tabs">
-    <uib-tabset>
-        <uib-tab ng-click="t.selectProject(null)">
-            <uib-tab-heading>
-                <div class="nav-link-container">
-                    <i class="zmdi zmdi-lg zmdi-time-restore"></i>
-                </div>
-            </uib-tab-heading>
+<art-user-menu></art-user-menu>
 
-            <art-file-list></art-file-list>
-        </uib-tab>
-        <uib-tab ng-repeat="project in t.projects" ng-click="t.selectProject(project)">
-            <uib-tab-heading>
-                <div class="nav-link-container" ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
-                    jqyoui-droppable="{onDrop: 't.onFileDropped'}">
-                    <a class="btn btn-close pull-right" ng-click="t.closeProject(project)">
-                        <i class="zmdi zmdi-xs zmdi-close"></i>
-                    </a>
+<uib-tabset class="header-tabs" active="t.activeTab">
+    <uib-tab ng-click="t.selectProject(null)">
+        <uib-tab-heading>
+            <div class="nav-link-container">
+                <i class="zmdi zmdi-menu"></i>
+            </div>
+        </uib-tab-heading>
 
-                    <div ng-bind="project.Title" style="min-width: 130px;"></div>
-                </div>
-            </uib-tab-heading>
+        <art-file-list onload="t.getRecentlyUsedFiles">
+            <empty>
+                <h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+            </empty>
+        </art-file-list>
+    </uib-tab>
+    <uib-tab ng-repeat="project in t.projects" ng-click="t.selectProject(project)">
+        <uib-tab-heading>
+            <div class="nav-link-container" ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
+                jqyoui-droppable="{onDrop: 't.onFileDropped'}">
+                <a class="btn btn-close pull-right" ng-click="t.closeProject(project)">
+                    <i class="zmdi zmdi-xs zmdi-close"></i>
+                </a>
 
-            <art-project-view project="project"></art-project-view>
-        </uib-tab>
-        <uib-tab>
-            <uib-tab-heading>
-                <div class="nav-link-container">
-                    <i class="zmdi zmdi-lg zmdi-plus"></i>
-                </div>
-            </uib-tab-heading>
+                <div ng-bind="project.Title" style="min-width: 130px;"></div>
+            </div>
+        </uib-tab-heading>
 
-            <art-project-view project="null"></art-project-view>
-        </uib-tab>
-    </uib-tabset>
-</div>
+        <art-project-view project="project"></art-project-view>
+    </uib-tab>
+    <uib-tab>
+        <uib-tab-heading>
+            <div class="nav-link-container">
+                <i class="zmdi zmdi-lg zmdi-plus"></i>
+            </div>
+        </uib-tab-heading>
+
+        <art-project-view project="null"></art-project-view>
+    </uib-tab>
+</uib-tabset>

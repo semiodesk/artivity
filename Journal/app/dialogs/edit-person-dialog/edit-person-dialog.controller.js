@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('EditPersonDialogController', EditPersonDialogController);
 
-    EditPersonDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'api', 'agentService', 'person'];
+    EditPersonDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'agentService', 'person'];
 
-    function EditPersonDialogController($scope, $filter, $uibModalInstance, $sce, api, agentService, person) {
+    function EditPersonDialogController($scope, $filter, $uibModalInstance, $sce, agentService, person) {
         var t = this;
 
         t.persons = [];

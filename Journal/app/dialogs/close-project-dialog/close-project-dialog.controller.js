@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('CloseProjectDialogController', CloseProjectDialogController);
 
-    CloseProjectDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'api', 'projectService'];
+    CloseProjectDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'projectService'];
 
-    function CloseProjectDialogController($scope, $filter, $uibModalInstance, $sce, api, projectService) {
+    function CloseProjectDialogController($scope, $filter, $uibModalInstance, $sce, projectService) {
         var t = this;
 
         t.project = null;

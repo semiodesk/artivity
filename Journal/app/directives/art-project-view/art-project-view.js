@@ -9,66 +9,64 @@
 			scope: {
 				project: "=project",
 				collapsed: "=?"
-			},
-			link: function (scope, element, attributes, ctrl) {}
+			}
 		}
 	});
 
-	ProjectViewDirectiveController.$inject = ['$rootScope', '$scope', '$sce', '$uibModal', 'agentService', 'projectService'];
+	ProjectViewDirectiveController.$inject = ['$rootScope', '$scope', '$sce', '$uibModal', 'agentService', 'navigationService', 'projectService', 'selectionService'];
 
-	function ProjectViewDirectiveController($rootScope, $scope, $sce, $uibModal, agentService, projectService) {
+	function ProjectViewDirectiveController($rootScope, $scope, $sce, $uibModal, agentService, navigationService, projectService, selectionService) {
 		var t = this;
 
-		if (!t.project) {
-			t.new = true;
-			t.collapsed = false;
-			t.folder = null;
+		t.collapsed = true;
 
+		if (!t.project) {
 			projectService.create().then(function (result) {
 				t.project = result;
+				t.project.new = true;
+				t.project.folder = null;
+				t.project.members = [];
+
+				t.collapsed = false;
 			});
 		} else {
-			t.new = false;
-			t.collapsed = true;
-			t.folder = null;
-
-			projectService.getFolders(t.project.Uri).then(function (result) {
-				if (result.length > 0) {
-					t.folder = result[0].Url.Uri;
-				}
-			});
-
-			projectService.getMembers(t.project.Uri).then(function (result) {
-				if (result.length > 0) {
-					t.members = result;
-				}
-			});
+			t.project.new = false;
 		}
 
-		t.rootScope = $rootScope;
+		t.file = null;
 
-		t.commit = commit;
-		t.cancel = cancel;
+		t.viewFile = function (e, file) {
+			t.file = file;
+		}
 
-		t.members = [];
-		t.addMember = addMember;
-		t.editMember = editMember;
-		t.removeMember = removeMember;
-		t.getPhotoUrl = agentService.getPhotoUrl;
+		navigationService.registerScope($scope);
 
-		t.setFolder = setFolder;
+		$scope.onNavigateBack = function (e) {
+			if (t.file) {
+				t.file = null;
+				e.handled = true;
+			}
+		}
 
-		function setFolder(folderUrl) {
+		t.getFiles = function (callback) {
+			if (t.project) {
+				return projectService.getFiles(t.project.Uri).then(callback);
+			} else {
+				return callback([]);
+			}
+		}
+
+		t.setFolder = function (folderUrl) {
 			if (t.folder) {
-				projectService.removeFolder(t.project.Uri, t.folder);
+				projectService.removeFolder(t.project.Uri, t.project.folder);
 			}
 
-			t.folder = folderUrl;
+			t.project.folder = folderUrl;
 
-			projectService.addFolder(t.project.Uri, t.folder);
+			projectService.addFolder(t.project.Uri, t.project.folder);
 		}
 
-		function addMember() {
+		t.addMember = function () {
 			agentService.newPerson().then(function (member) {
 				if (member) {
 					var modalInstance = $uibModal.open({
@@ -88,7 +86,7 @@
 
 						projectService.getMembers(t.project.Uri).then(function (result) {
 							if (result.length > 0) {
-								t.members = result;
+								t.project.members = result;
 							}
 						});
 					});
@@ -96,7 +94,7 @@
 			});
 		}
 
-		function editMember(member) {
+		t.editMember = function (member) {
 			var modalInstance = $uibModal.open({
 				animation: true,
 				templateUrl: 'app/dialogs/edit-person-dialog/edit-person-dialog.html',
@@ -112,23 +110,29 @@
 			modalInstance.result.then(function () {
 				projectService.getMembers(t.project.Uri).then(function (result) {
 					if (result.length > 0) {
-						t.members = result;
+						t.project.members = result;
 					}
 				});
 			});
 		}
 
-		function removeMember(member) {
+		t.removeMember = function (member) {
 			projectService.removeMember(t.project.Uri, member.Agent.Uri).then(function () {
-				var i = t.members.indexOf(member);
+				var i = t.project.members.indexOf(member);
 
 				if (i > -1) {
-					t.members.splice(i, 1);
+					t.project.members.splice(i, 1);
 				}
 			});
 		}
 
-		function commit() {
+		t.getPhotoUrl = agentService.getPhotoUrl;
+
+		t.togglePropertyPane = function () {
+			t.collapsed = !t.collapsed;
+		}
+
+		t.commit = function () {
 			if ($scope.projectForm.$valid) {
 				projectService.update(t.project).then(function () {
 					$rootScope.$broadcast('projectAdded', t.project);
@@ -140,7 +144,7 @@
 			}
 		}
 
-		function cancel() {
+		t.cancel = function () {
 			projectService.selectedProject = null;
 
 			if (!t.new) {

@@ -1,9 +1,9 @@
 ﻿(function () {
     angular.module('app').factory('projectService', projectService);
 
-    projectService.$inject = ['$http'];
+    projectService.$inject = ['api'];
 
-    function projectService($http) {
+    function projectService(api) {
         var endpoint = apid.endpointUrl + "projects";
 
         var service = {};
@@ -27,7 +27,7 @@
         return service;
 
         function get(projectUri) {
-            return $http.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting projects by id.'));
+            return api.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting projects by id.'));
         }
 
         function getAll() {
@@ -38,7 +38,7 @@
             }
 
             return new Promise(function (resolve, reject) {
-                $http.get(endpoint).then(function (result) {
+                api.get(endpoint).then(function (result) {
                         var response = result.data;
 
                         if (response && response.success) {
@@ -53,7 +53,7 @@
 
         function create() {
             return new Promise(function (resolve, reject) {
-                $http.get(endpoint + '/new').then(function (result) {
+                api.get(endpoint + '/new').then(function (result) {
                     resolve(result.data);
                 }, handleError(create));
             });
@@ -62,7 +62,7 @@
         function update(project) {
             var uri = encodeURIComponent(project.Uri);
 
-            return $http.put(endpoint + '?uri=' + uri, project).then(function (response) {
+            return api.put(endpoint + '?uri=' + uri, project).then(function (response) {
                 service.projects = null;
                 return response.data;
             }, handleError(update));
@@ -78,51 +78,49 @@
         }
 
         function getFiles(projectUri) {
-            var uri = encodeURIComponent(projectUri);
-
-            return $http.post(endpoint + '/files/?projectUri=' + uri).then(handleSuccess, handleError(getFiles));
+            return api.get(endpoint + '/files/?projectUri=' + projectUri).then(handleSuccess, handleError(getFiles));
         }
 
         function addFile(projectUri, fileUri) {
             var uri = encodeURIComponent(projectUri);
 
-            return $http.post(endpoint + '/files/?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError(addFile));
+            return api.post(endpoint + '/files/?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError(addFile));
         }
 
         function removeFile(projectUri, fileUri) {
             var uri = encodeURIComponent(projectUri);
 
-            return $http.delete(endpoint + '/files/?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError(removeFile));
+            return api.delete(endpoint + '/files/?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError(removeFile));
         }
 
         function getFolders(projectUri) {
             var uri = encodeURIComponent(projectUri);
 
-            return $http.get(endpoint + '/folders/?projectUri=' + uri).then(handleSuccess, handleError(getFolders));
+            return api.get(endpoint + '/folders/?projectUri=' + uri).then(handleSuccess, handleError(getFolders));
         }
 
         function addFolder(projectUri, folderUrl) {
             var uri = encodeURIComponent(projectUri);
 
-            return $http.post(endpoint + '/folders/?projectUri=' + uri + "&folderUrl=" + encodeURIComponent(folderUrl)).then(handleSuccess, handleError(addFolder));
+            return api.post(endpoint + '/folders/?projectUri=' + uri + "&folderUrl=" + encodeURIComponent(folderUrl)).then(handleSuccess, handleError(addFolder));
         }
 
         function removeFolder(projectUri, folderUrl) {
             var uri = encodeURIComponent(projectUri);
 
-            return $http.delete(endpoint + '/folders/?projectUri=' + uri + "&folderUrl=" + encodeURIComponent(folderUrl)).then(handleSuccess, handleError(removeFolder));
+            return api.delete(endpoint + '/folders/?projectUri=' + uri + "&folderUrl=" + encodeURIComponent(folderUrl)).then(handleSuccess, handleError(removeFolder));
         }
 
         function getMembers(projectUri) {
-            return $http.get(endpoint + '/agents?projectUri=' + projectUri).then(handleSuccess, handleError(getMembers));
+            return api.get(endpoint + '/agents?projectUri=' + projectUri).then(handleSuccess, handleError(getMembers));
         }
 
         function addMember(projectUri, agentUri) {
-            return $http.post(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri + '&role=ProjectMember').then(handleSuccess, handleError(addMember));
+            return api.post(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri + '&role=ProjectMember').then(handleSuccess, handleError(addMember));
         }
 
         function removeMember(projectUri, agentUri) {
-            return $http.delete(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri).then(handleSuccess, handleError(removeMember));
+            return api.delete(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri).then(handleSuccess, handleError(removeMember));
         }
 
         // private functions

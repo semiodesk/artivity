@@ -176,6 +176,9 @@ namespace Artivity.Api.Modules
 
         private Response GetPersonsFromRole(UserRoles userRole)
         {
+            IModel Model = ModelProvider.GetAgents();
+            if( Model == null )
+                return HttpStatusCode.BadRequest;
             Resource role;
 
             switch(userRole)
@@ -197,7 +200,7 @@ namespace Artivity.Api.Modules
 
             query.Bind("@role", role);
 
-            List<Person> persons = ModelProvider.GetAgents().GetResources<Person>(query, true).ToList();
+            List<Person> persons = Model.GetResources<Person>(query, true).ToList();
 
             return Response.AsJsonSync(persons);
         }
