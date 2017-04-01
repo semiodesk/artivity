@@ -1,9 +1,9 @@
 ﻿(function () {
     angular.module('app').factory('markService', markService);
 
-    markService.$inject = ['$http'];
+    markService.$inject = ['api'];
 
-    function markService($http) {
+    function markService(api) {
         var endpoint = apid.endpointUrl + "marks";
 
         return {
@@ -16,7 +16,7 @@
         function getMarksForEntity(entityUri) {
             var uri = encodeURIComponent(entityUri);
 
-            return $http.get(endpoint + '?entityUri=' + uri).then(function (response) {
+            return api.get(endpoint + '?entityUri=' + uri).then(function (response) {
                 return response.data;
             }, function () {
                 console.error('Error while retrieving marks for entity: ' + uri)
@@ -24,7 +24,7 @@
         }
 
         function createMark(mark) {
-            return $http.post(endpoint, mark).then(function (response) {
+            return api.post(endpoint, mark).then(function (response) {
                 return response.data;
             }, function () {
                 console.error('Error when creating mark.')
@@ -40,7 +40,7 @@
         }
 
         function deleteMark(uri) {
-            return $http.delete(endpoint + '?uri=' + uri).then(function (response) {
+            return api.delete(endpoint + '?uri=' + uri).then(function (response) {
                 return response.data;
             }, function () {
                 console.error('Error when deleting mark.')

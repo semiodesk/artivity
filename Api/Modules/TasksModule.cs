@@ -50,6 +50,8 @@ namespace Artivity.Api.Modules
         {
             Get["/"] = parameters =>
             {
+                InitializeRequest();
+
                 string uri = Request.Query.entityUri;
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
@@ -62,6 +64,8 @@ namespace Artivity.Api.Modules
 
             Post["/"] = parameters =>
             {
+                InitializeRequest();
+
                 TaskParameter task = this.Bind<TaskParameter>();
 
                 if (!string.IsNullOrEmpty(task.name))
@@ -74,6 +78,8 @@ namespace Artivity.Api.Modules
 
             Put["/"] = parameters =>
             {
+                InitializeRequest();
+
                 TaskParameter task = this.Bind<TaskParameter>();
 
                 if (!string.IsNullOrEmpty(task.name))
@@ -91,7 +97,9 @@ namespace Artivity.Api.Modules
 
         private Response GetTasksFromEntity(UriRef entityUri)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -119,14 +127,16 @@ namespace Artivity.Api.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@undefined", DateTime.MinValue);
 
-            var bindings = UserModel.GetBindings(query, true).ToList();
+            var bindings = model.GetBindings(query, true).ToList();
 
             return Response.AsJson(bindings);
         }
 
         private Response PostTask(TaskParameter parameter)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
             {
@@ -138,9 +148,9 @@ namespace Artivity.Api.Modules
             Agent agent = new Agent(new UriRef(parameter.agent));
             Entity entity = new Entity(new UriRef(parameter.entity));
 
-            if (UserModel.ContainsResource(entity))
+            if (model.ContainsResource(entity))
             {
-                Task task = UserModel.CreateResource<Task>();
+                Task task = model.CreateResource<Task>();
                 task.CreationTimeUtc = parameter.endTime;
                 task.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 task.Name = parameter.name;
@@ -148,7 +158,7 @@ namespace Artivity.Api.Modules
                 task.IsSynchronizable = true;
                 task.Commit();
 
-                CreateEntity activity = UserModel.CreateResource<CreateEntity>();
+                CreateEntity activity = model.CreateResource<CreateEntity>();
                 activity.StartedBy = agent;
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
@@ -172,18 +182,20 @@ namespace Artivity.Api.Modules
 
         private Response PutTask(TaskParameter parameter)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             UriRef uri = new UriRef(parameter.uri);
 
-            if (UserModel.ContainsResource(uri))
+            if (model.ContainsResource(uri))
             {
-                Task task = UserModel.GetResource<Task>(uri);
+                Task task = model.GetResource<Task>(uri);
                 task.IsCompleted = parameter.completed;
                 task.Name = parameter.name;
                 task.Commit();
 
-                EditEntity activity = UserModel.CreateResource<EditEntity>();
+                EditEntity activity = model.CreateResource<EditEntity>();
                 activity.StartedBy = new Agent(new UriRef(parameter.agent));
                 activity.StartTime = DateTime.UtcNow;
                 activity.EndTime = DateTime.UtcNow;

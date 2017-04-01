@@ -1,9 +1,9 @@
 ﻿(function () {
     angular.module('app').factory('entityService', entityService);
 
-    entityService.$inject = ['$http'];
+    entityService.$inject = ['api'];
 
-    function entityService($http) {
+    function entityService(api) {
         var endpoint = apid.endpointUrl + "files";
 
         var service = {};
@@ -17,7 +17,7 @@
 
         function getAll() {
             return new Promise(function (resolve, reject) {
-                $http.get(endpoint).then(function (result) {
+                api.get(endpoint).then(function (result) {
                     var data = result.data;
                     resolve(data);
                 }, handleError('Error when getting all projects.'));
@@ -25,18 +25,18 @@
         }
 
         function getById(uri) {
-            return $http.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
+            return api.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
         }
 
         function getByFile(uri, offset, limit, sort) {
             // offset and limit should be ints
             // sort should either be 'asc' or 'desc'
             // TODO: handle res.count in handleSuccess
-            return $http.get(endpoint + "?offset=" + offset + "&limit=" + limit + "&sort=" + sort + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
+            return api.get(endpoint + "?offset=" + offset + "&limit=" + limit + "&sort=" + sort + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
         }
 
         function getRevisions(fileUri) {
-            return $http.get(endpoint + "/revisions?fileUri=" + fileUri).then(function (response) {
+            return api.get(endpoint + "/revisions?fileUri=" + fileUri).then(function (response) {
                 if (response.data.length) {
                     return response.data;
                 }
@@ -44,7 +44,7 @@
         }
 
         function getLatestRevision(fileUri) {
-            return $http.get(endpoint + "/revisions/latest?fileUri=" + fileUri).then(function (response) {
+            return api.get(endpoint + "/revisions/latest?fileUri=" + fileUri).then(function (response) {
                 if (response.data.length) {
                     return response.data[0];
                 }
