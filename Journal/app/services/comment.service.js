@@ -1,9 +1,9 @@
 ﻿(function () {
     angular.module('app').factory('commentService', commentService);
 
-    commentService.$inject = ['$http'];
+    commentService.$inject = ['api'];
 
-    function commentService($http) {
+    function commentService(api) {
         var endpoint = apid.endpointUrl + "comments";
 
         return {
@@ -14,13 +14,13 @@
         function get(entityUri) {
             var uri = encodeURIComponent(entityUri);
 
-            return $http.get(endpoint + '?entityUri=' + uri).then(function (response) {
+            return api.get(endpoint + '?entityUri=' + uri).then(function (response) {
                 return response.data;
             }, handleError('Error while retrieving comments.'));
         }
 
         function post(comment) {
-            return $http.post(endpoint, comment).then(function (response) {
+            return api.post(endpoint, comment).then(function (response) {
                 return response.data;
             }, handleError('Error when pushing comments.'));
         }

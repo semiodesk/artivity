@@ -32,7 +32,7 @@
         }
 
         function updateMark(mark) {
-            return $http.put(endpoint, mark).then(function (response) {
+            return api.put(endpoint, mark).then(function (response) {
                 return response.data;
             }, function () {
                 console.error('Error when updating mark.')
