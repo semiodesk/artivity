@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').factory('agentService', agentService);
 
-    agentService.$inject = ['$http', 'api'];
+    agentService.$inject = ['api'];
 
-    function agentService($http, api) {
+    function agentService(api) {
         var endpoint = apid.endpointUrl + "agents";
 
         var t = {
@@ -41,7 +41,7 @@
         }
 
         function getAccountOwner() {
-            return $http.get(endpoint + '/users?role=AccountOwner').then(
+            return api.get(endpoint + '/users?role=AccountOwner').then(
                 function (response) {
                     if (response && response.data.length === 1) {
                         return response.data[0];
@@ -50,7 +50,7 @@
         }
 
         function newPerson() {
-            return $http.get(endpoint + '/users/new').then(
+            return api.get(endpoint + '/users/new').then(
                 function (response) {
                     if (response && response.data) {
                         return response.data;
@@ -59,7 +59,7 @@
         }
 
         function putPerson(person) {
-            return $http.put(endpoint + '/users/', person).then(
+            return api.put(endpoint + '/users/', person).then(
                 function (response) {
                     if (response && response.data.length === 1) {
                         return response.data[0];
@@ -68,7 +68,7 @@
         }
 
         function putPhoto(agentUri, data) {
-            return $http.put(endpoint + '/users/photo?agentUri=' + agentUri, data).then(
+            return api.put(endpoint + '/users/photo?agentUri=' + agentUri, data).then(
                 function (response) {
                     return response;
                 });
@@ -88,7 +88,7 @@
         }
 
         function findPersons(query) {
-            return $http.get(endpoint + '/users?q=' + query).then(
+            return api.get(endpoint + '/users?q=' + query).then(
                 function (response) {
                     return response.data;
                 });
