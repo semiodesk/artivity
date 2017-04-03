@@ -7,7 +7,7 @@ function ViewerBase(user, canvas, endpointUrl) {
     // Indicates if debug information like scene extents and center points should be rendered.
     t.enableDebug = false;
 
-    // The user agent.
+    // The user agent. -- NOTE: why do we need the user here? Does this concern the viewer?
     t.user = user;
 
     // HTML5 canvas element.
