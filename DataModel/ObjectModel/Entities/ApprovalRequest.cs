@@ -23,33 +23,23 @@
 //  Moritz Eberl <moritz@semiodesk.com>
 //  Sebastian Faubel <sebastian@semiodesk.com>
 //
-// Copyright (c) Semiodesk GmbH 2015
+// Copyright (c) Semiodesk GmbH 2017
 
-using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Artivity.DataModel.Comments
 {
-    [RdfClass(ART.Comment)]
-    public class Comment : Entity
+    [RdfClass(ART.ApprovalRequest)]
+    public class ApprovalRequest : Request
     {
-        #region Members
-
-        [RdfProperty(SIOC.content)]
-        public string Message { get; set; }
-
-        #endregion
-
         #region Constructors
 
-        public Comment(Uri uri)
-            : base(uri)
-        {
-        }
+        public ApprovalRequest(Uri uri) : base(uri) { }
 
         #endregion
     }

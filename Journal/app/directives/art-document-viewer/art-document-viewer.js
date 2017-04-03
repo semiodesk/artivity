@@ -19,6 +19,12 @@
                 $(element).on('appear', function (event) {
                     t.setViewer();
                 });
+
+                scope.$watch('t.file', function () {
+                    if (t.file) {
+                        t.load(t.file);
+                    }
+                });
             }
         }
     }
@@ -61,16 +67,6 @@
                 $scope.$on('resize', function () {
                     t.viewer.onResize();
                 });
-
-                if (t.file) {
-                    t.load(t.file);
-                }
-
-                $scope.$watch('file', function () {
-                    if (t.file) {
-                        t.load(t.file);
-                    }
-                });
             } else {
                 console.warn('Unable to find canvas for viewer element:', canvas);
             }
@@ -88,7 +84,7 @@
             if (fileUri) {
                 console.log('Loading file:', fileUri);
 
-                entityService.getLatestRevision(fileUri).then(function (data) {
+                entityService.getLatestRevisionFromFileUri(fileUri).then(function (data) {
                     if (data.revision) {
                         var revisionUri = data.revision;
 

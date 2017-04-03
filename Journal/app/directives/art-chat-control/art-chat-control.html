@@ -34,11 +34,7 @@
     </div>
     <div class="row">
         <div class="layout-container">
-            <div class="ctl-comment padding-x-xs padding-y-xs">
-                <textarea class="ui-autosize" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-enter="t.postComment($event)" ng-model="t.comment.text"
-                    ng-change="t.updateComment()" ng-esc="t.resetComment()">
-                </textarea>
-            </div>
+            <art-chat-input entity-uri="t.entityUri" comments="t.comments"></art-chat-input>
         </div>
     </div>
 </div>

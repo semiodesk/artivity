@@ -28,6 +28,7 @@
 using Artivity.Api.Parameters;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
+using Artivity.DataModel.Comments;
 using Nancy;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
@@ -70,9 +71,32 @@ namespace Artivity.Api.Modules
 
                 CommentParameter comment = this.Bind<CommentParameter>();
 
-                if (!string.IsNullOrEmpty(comment.text))
+                if (!string.IsNullOrEmpty(comment.text) && IsUri(comment.entity))
                 {
                     return PostComment(comment);
+                }
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+            };
+
+            Post["/requests"] = parameters =>
+            {
+                InitializeRequest();
+
+                RequestParameter request = this.Bind<RequestParameter>();
+
+                if (!string.IsNullOrEmpty(request.text) && IsUri(request.entity) && request.associations.Any())
+                {
+                    if (request.requestType == RequestTypes.Approval)
+                    {
+                        return PostRequest<DataModel.Comments.ApprovalRequest>(request);
+                    }
+                    else
+                    {
+                        return PostRequest<DataModel.Comments.Request>(request);
+                    }
                 }
                 else
                 {
@@ -128,35 +152,29 @@ namespace Artivity.Api.Modules
         private Response PostComment(CommentParameter parameter)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
-                return HttpStatusCode.BadRequest;
-
-            if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
             {
-                PlatformProvider.Logger.LogError("Invalid URI for parameter 'entity': {0}", parameter.entity);
-
-                return HttpStatusCode.BadRequest;
+                return HttpStatusCode.InternalServerError;
             }
 
-            Agent agent = new Agent(new UriRef(parameter.agent));
             Entity entity = new Entity(new UriRef(parameter.entity));
 
             if (model.ContainsResource(entity))
             {
                 Comment comment = model.CreateResource<Comment>();
                 comment.CreationTimeUtc = parameter.endTime;
-                comment.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
+                comment.PrimarySource = entity;
                 comment.Message = parameter.text;
                 comment.IsSynchronizable = true;
                 comment.Commit();
 
                 CreateEntity activity = model.CreateResource<CreateEntity>();
-                activity.StartedBy = agent;
+                activity.StartedBy = new Agent(new UriRef(parameter.agent));
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
-                activity.GeneratedEntities.Add(comment); // Associate the comment with the activity.
-                activity.UsedEntities.Add(entity); // TODO: Correct this in the data provided by the plugins.
-                
+                activity.GeneratedEntities.Add(comment);
+                activity.UsedEntities.Add(entity);
 
                 if (parameter.marks != null)
                 {
@@ -171,6 +189,70 @@ namespace Artivity.Api.Modules
 
                 // Return the URI to the frontend.
                 var data = new { uri = comment.Uri };
+
+                return Response.AsJsonSync(data, HttpStatusCode.OK);
+            }
+            else
+            {
+                PlatformProvider.Logger.LogError("Model does not contain entity {0}", entity);
+
+                return HttpStatusCode.BadRequest;
+            }
+        }
+
+        private Response PostRequest<T>(RequestParameter parameter) where T : DataModel.Comments.Request
+        {
+            IModel model = ModelProvider.GetActivities();
+
+            if (model == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            Entity entity = new Entity(new UriRef(parameter.entity));
+
+            if (model.ContainsResource(entity))
+            {
+                var request = model.CreateResource<T>();
+
+                request.CreationTimeUtc = parameter.endTime;
+                request.PrimarySource = entity;
+                request.Message = parameter.text;
+                request.IsSynchronizable = true;
+                request.Commit();
+
+                CreateEntity activity = model.CreateResource<CreateEntity>();
+                activity.StartedBy = new Agent(new UriRef(parameter.agent));
+                activity.StartTime = parameter.startTime;
+                activity.EndTime = parameter.endTime;
+                activity.GeneratedEntities.Add(request);
+                activity.UsedEntities.Add(entity);
+
+                if (parameter.marks != null)
+                {
+                    foreach (var mark in parameter.marks)
+                    {
+                        activity.UsedEntities.Add(new Mark(new UriRef(mark)));
+                    }
+                }
+
+                if (parameter.associations != null)
+                {
+                    foreach (AssociationParameter a in parameter.associations)
+                    {
+                        Association association = model.CreateResource<Association>();
+                        association.Agent = new Agent(new UriRef(a.agent));
+                        association.Role = new Role(new UriRef(a.role));
+                        association.Commit();
+
+                        activity.Associations.Add(association);
+                    }
+                }
+
+                activity.Commit();
+
+                // Return the URI to the frontend.
+                var data = new { uri = request.Uri };
 
                 return Response.AsJsonSync(data, HttpStatusCode.OK);
             }
@@ -236,6 +318,30 @@ namespace Artivity.Api.Modules
 
             #endregion
         }
+
+        private class RequestParameter : CommentParameter
+        {
+            #region Members
+
+            public RequestTypes requestType { get; set; }
+
+            public List<AssociationParameter> associations { get; set; }
+
+            #endregion
+        }
+
+        private class AssociationParameter
+        {
+            #region Members
+
+            public string agent;
+
+            public string role;
+
+            #endregion
+        }
+
+        private enum RequestTypes { Request, Approval };
 
         #endregion
     }

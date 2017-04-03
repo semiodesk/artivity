@@ -14,7 +14,7 @@
         initialize();
 
         function initialize() {
-            t.project = projectService.selectedProject;
+            t.project = projectService.currentProject;
         }
 
         function commit() {

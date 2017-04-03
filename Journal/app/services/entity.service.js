@@ -10,7 +10,7 @@
         service.getAll = getAll;
         service.getById = getById;
         service.getRevisions = getRevisions;
-        service.getLatestRevision = getLatestRevision;
+        service.getLatestRevisionFromFileUri = getLatestRevisionFromFileUri;
         service.selectedEntity = null;
 
         return service;
@@ -43,7 +43,7 @@
             }, handleError('Error when retrieving revision from file URI.'));
         }
 
-        function getLatestRevision(fileUri) {
+        function getLatestRevisionFromFileUri(fileUri) {
             return api.get(endpoint + "/revisions/latest?fileUri=" + fileUri).then(function (response) {
                 if (response.data.length) {
                     return response.data[0];

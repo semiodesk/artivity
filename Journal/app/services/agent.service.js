@@ -78,6 +78,13 @@
             return endpoint + '/users/photo?agentUri=' + agentUri;
         }
 
+        function findPersons(query) {
+            return api.get(endpoint + '/users?q=' + query).then(
+                function (response) {
+                    return response.data;
+                });
+        }
+
         function handleError(error) {
             return function () {
                 return {
@@ -85,13 +92,6 @@
                     message: error
                 };
             };
-        }
-
-        function findPersons(query) {
-            return api.get(endpoint + '/users?q=' + query).then(
-                function (response) {
-                    return response.data;
-                });
         }
     }
 })();

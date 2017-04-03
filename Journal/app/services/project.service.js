@@ -7,7 +7,7 @@
         var endpoint = apid.endpointUrl + "projects";
 
         var service = {};
-        service.selectedProject = null;
+        service.currentProject = null;
         service.projects = null;
         service.create = create;
         service.update = update;
