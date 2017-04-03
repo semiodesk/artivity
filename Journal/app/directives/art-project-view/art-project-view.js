@@ -10,6 +10,13 @@
 				project: "=?",
 				collapsed: "=?",
 				new: "=?"
+			},
+			link: function (scope, element, attr, t) {
+				$(element).on('appear', function () {
+					if (t.project) {
+						t.selectProject(t.project);
+					}
+				});
 			}
 		}
 	});
@@ -35,6 +42,13 @@
 					$scope.$broadcast('refresh');
 				}
 			});
+		}
+
+		t.selectProject = function (project) {
+			if (project && project != projectService.currentProject) {
+				console.log('Setting current project: ', project);
+				projectService.currentProject = project;
+			}
 		}
 
 		t.file = null;
@@ -149,7 +163,7 @@
 		}
 
 		t.cancel = function () {
-			projectService.selectedProject = null;
+			projectService.currentProject = null;
 
 			if (!t.new) {
 				t.collapsed = true;

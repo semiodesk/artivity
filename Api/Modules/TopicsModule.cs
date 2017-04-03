@@ -52,14 +52,16 @@ namespace Artivity.Api.Modules
             {
                 InitializeRequest();
 
-                string uri = Request.Query.entityUri;
+                if(IsUri(Request.Query.entityUri))
+                {
+                    UriRef entityUri = new UriRef(Request.Query.entityUri);
 
-                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                    return GetTopicsFromEntity(entityUri);
+                }
+                else
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
-
-                return GetTopicsFromEntity(new UriRef(uri));
             };
 
             Post["/"] = parameters =>
@@ -72,8 +74,26 @@ namespace Artivity.Api.Modules
                 {
                     return PostTopic(topic);
                 }
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+            };
 
-                return HttpStatusCode.BadRequest;
+            Delete["/"] = parameters =>
+            {
+                InitializeRequest();
+
+                if (IsUri(Request.Query.topicUri))
+                {
+                    UriRef topicUri = new UriRef(Request.Query.topicUri);
+
+                    return DeleteTopic(topicUri);
+                }
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
             };
         }
 
@@ -153,7 +173,42 @@ namespace Artivity.Api.Modules
             {
                 PlatformProvider.Logger.LogError("Model does not contain entity {0}", entity);
 
-                return HttpStatusCode.BadRequest;
+                return HttpStatusCode.NotFound;
+            }
+        }
+
+        private Response DeleteTopic(UriRef topicUri)
+        {
+            LoadCurrentUser();
+
+            if(UserModel.ContainsResource(topicUri))
+            {
+                Topic topic = UserModel.GetResource<Topic>(topicUri);
+                topic.DeletionTimeUtc = DateTime.UtcNow;
+                topic.Commit();
+
+                DeleteEntity activity = UserModel.CreateResource<DeleteEntity>();
+                //activity.StartedBy = agent;
+                activity.StartTime = DateTime.UtcNow;
+                activity.EndTime = DateTime.UtcNow.AddSeconds(1);
+                activity.InvalidatedEntities.Add(topic);
+
+                if (topic.PrimarySource != null)
+                {
+                    activity.UsedEntities.Add(topic.PrimarySource);
+                }
+
+                activity.Commit();
+
+                var data = new { success = true };
+
+                return Response.AsJsonSync(data, HttpStatusCode.OK);
+            }
+            else
+            {
+                PlatformProvider.Logger.LogError("Model does not contain entity {0}", topicUri);
+
+                return HttpStatusCode.NotFound;
             }
         }
 

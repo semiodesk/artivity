@@ -7,11 +7,11 @@
         var endpoint = apid.endpointUrl + "comments";
 
         return {
-            get: get,
-            post: post
+            getCommentsForEntity: getCommentsForEntity,
+            postComment: postComment
         };
 
-        function get(entityUri) {
+        function getCommentsForEntity(entityUri) {
             var uri = encodeURIComponent(entityUri);
 
             return api.get(endpoint + '?entityUri=' + uri).then(function (response) {
@@ -19,10 +19,16 @@
             }, handleError('Error while retrieving comments.'));
         }
 
-        function post(comment) {
-            return api.post(endpoint, comment).then(function (response) {
-                return response.data;
-            }, handleError('Error when pushing comments.'));
+        function postComment(comment) {
+            if (comment.requestType) {
+                return api.post(endpoint + '/requests', request).then(function (response) {
+                    return response.data;
+                }, handleError('Error when pushing requests.'));
+            } else {
+                return api.post(endpoint, comment).then(function (response) {
+                    return response.data;
+                }, handleError('Error when pushing comments.'));
+            }
         }
 
         function handleError(error) {

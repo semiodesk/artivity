@@ -106,21 +106,31 @@ namespace Artivity.Api.Modules
             {
                 this.RequiresAuthentication();
             }
+
             string project = Request.Query.project;
+
             if (project != null)
+            {
                 ModelProvider.SetProject(project);
+            }
 
             string user = Request.Query.user;
-            if (user != null)
-                ModelProvider.SetUsername(user);
 
-            if( UserProvider != null )
+            if (user != null)
+            {
+                ModelProvider.SetUsername(user);
+            }
+
+            if (UserProvider != null)
+            {
                 LoadCurrentUser();
+            }
 
             if (UserModel == null)
             {
                 return HttpStatusCode.InternalServerError;
             }
+
             return null;
         }
 

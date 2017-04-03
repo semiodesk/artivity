@@ -108,6 +108,14 @@ a:hover {
 	text-decoration: none;
 }
 
+a.link {
+	cursor: pointer;
+}
+
+a.title {
+	font-weight: 500;
+}
+
 iframe {
 	border: none;
 }
@@ -1206,6 +1214,10 @@ h4 {
 	background: rgba($infoColor, .1) !important;
 	border: none;
 	color: $infoColor;
+}
+
+.toolbar .btn:last-child .btn-label {
+	padding-right: 10px;
 }
 
 .toolbar.toolbar-floating {

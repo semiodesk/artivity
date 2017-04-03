@@ -7,11 +7,12 @@
         var endpoint = apid.endpointUrl + "topics";
 
         return {
-            get: get,
-            post: post
+            getTopicsForEntity: getTopicsForEntity,
+            postTopic: postTopic,
+            deleteTopic: deleteTopic
         };
 
-        function get(entityUri) {
+        function getTopicsForEntity(entityUri) {
             var uri = encodeURIComponent(entityUri);
 
             return api.get(endpoint + '?entityUri=' + uri).then(function (response) {
@@ -19,8 +20,14 @@
             }, handleError('Error while retrieving topics.'));
         }
 
-        function post(topic) {
+        function postTopic(topic) {
             return api.post(endpoint, topic).then(function (response) {
+                return response.data;
+            }, handleError('Error when pushing topics.'));
+        }
+
+        function deleteTopic(topicUri) {
+            return api.delete(endpoint + '?topicUri=' + topicUri).then(function (response) {
                 return response.data;
             }, handleError('Error when pushing topics.'));
         }

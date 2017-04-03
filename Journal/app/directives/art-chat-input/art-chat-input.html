@@ -1,0 +1,20 @@
+<div class="ctl-comment padding-x-xs padding-y-xs" ng-blur="t.onBlurred()">
+    <textarea class="ui-autosize" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}"
+        ng-model="t.comment.text"
+        ng-enter="t.postComment($event, t.comment)"
+        ng-change="t.updateComment(t.comment)"
+        ng-focus="t.onFocused()"
+        ng-esc="t.resetComment()">
+    </textarea>
+    <div class="toolbar toolbar-viewer" ng-show="t.focused">
+        <a class="btn" ng-click="t.createMark($event)"><i class="zmdi zmdi-photo-size-select-small"></i></a>
+        <a class="btn" ng-click="t.selectEmoticon($event)"><i class="zmdi zmdi-mood"></i></a>
+        <a class="btn pull-right" ng-click="t.createRequest($event)"><i class="zmdi zmdi-refresh"></i><span class="btn-label">Feedback anfragen</span></a>
+    </div>
+    <div ng-show="t.selectedTool === 'emoticon'">
+        :-)
+    </div>
+    <div ng-show="t.selectedTool === 'request'">
+        Yes / No
+    </div>
+</div>

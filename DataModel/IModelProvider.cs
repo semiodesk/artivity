@@ -84,6 +84,7 @@ namespace Artivity.DataModel
         void SetProject(string project);
 
         void SetUsername(string username);
+
         #endregion
     }
 }

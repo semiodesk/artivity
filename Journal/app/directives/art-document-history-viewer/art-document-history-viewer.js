@@ -33,7 +33,7 @@
 
                 console.log('Loading file:', fileUri);
 
-                entityService.getLatestRevision(fileUri).then(function (data) {
+                entityService.getLatestRevisionFromFileUri(fileUri).then(function (data) {
                     if (data.revision) {
                         var revisionUri = data.revision;
 

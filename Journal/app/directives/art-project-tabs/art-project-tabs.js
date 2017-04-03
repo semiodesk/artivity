@@ -25,8 +25,6 @@
         });
 
         t.selectProject = function (project) {
-            projectService.selectedProject = project;
-
             if (project !== null) {
                 projectService.getFolders(project.Uri).then(function (result) {
                     if (result.length > 0) {
@@ -43,7 +41,7 @@
         }
 
         t.closeProject = function (project) {
-            projectService.selectedProject = project;
+            projectService.currentProject = project;
 
             var modalInstance = $uibModal.open({
                 animation: true,
@@ -97,7 +95,7 @@
                     t.projects = list;
 
                     // Set the currently active tab.
-                    var i = t.projects.indexOf(projectService.selectedProject);
+                    var i = t.projects.indexOf(projectService.currentProject);
 
                     if (i !== -1) {
                         t.activeTabIndex = i + 1;
