@@ -100,12 +100,12 @@
 					});
 
 					modalInstance.result.then(function (m) {
-						projectService.addMember(t.project.Uri, m.Uri);
-
-						projectService.getMembers(t.project.Uri).then(function (result) {
-							if (result.length > 0) {
-								t.project.members = result;
-							}
+						projectService.addMember(t.project.Uri, m.Uri).then(function () {
+							projectService.getMembers(t.project.Uri).then(function (result) {
+								if (result.length > 0) {
+									t.project.members = result;
+								}
+							});
 						});
 					});
 				}

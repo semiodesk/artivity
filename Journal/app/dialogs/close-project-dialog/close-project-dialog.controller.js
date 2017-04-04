@@ -7,24 +7,26 @@
         var t = this;
 
         t.project = null;
-        
-        t.commit = commit;
-        t.cancel = cancel;
 
-        initialize();
+        t.commit = function () {
+            if (t.project) {
+                projectService.remove(t.project.Uri).then(function () {
+                    $uibModalInstance.close();
+                });
+            }
+            else {
+                $uibModalInstance.close();
+            }
+        }
 
-        function initialize() {
+        t.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        function init() {
             t.project = projectService.currentProject;
         }
 
-        function commit() {
-            projectService.remove(t.project.Uri);
-
-            $uibModalInstance.close();
-        }
-
-        function cancel() {
-            $uibModalInstance.dismiss('cancel');
-        }
+        init();
     };
 })();

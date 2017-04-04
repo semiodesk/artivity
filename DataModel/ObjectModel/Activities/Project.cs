@@ -84,6 +84,15 @@ namespace Artivity.DataModel
         }
 
         #endregion
+
+        #region Methods
+
+        public override bool Validate()
+        {
+            return base.Validate() && !string.IsNullOrEmpty(Title);
+        }
+
+        #endregion
     }
 }
 

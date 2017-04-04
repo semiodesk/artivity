@@ -60,18 +60,14 @@
         }
 
         function update(project) {
-            var uri = encodeURIComponent(project.Uri);
-
-            return api.put(endpoint + '?uri=' + uri, project).then(function (response) {
+            return api.put(endpoint + '?uri=' + project.Uri, project).then(function (response) {
                 service.projects = null;
                 return response.data;
             }, handleError(update));
         }
 
         function remove(projectUri) {
-            var uri = encodeURIComponent(projectUri);
-
-            return $http.delete(endpoint + '?uri=' + uri).then(function (response) {
+            return api.delete(endpoint + '?uri=' + projectUri).then(function (response) {
                 service.projects = null;
                 return response.data;
             }, handleError(remove));

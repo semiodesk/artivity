@@ -26,24 +26,44 @@
             }
         }
 
-        t.selectPerson = function(person) {
+        t.selectPerson = function (person) {
             t.persons = [];
             t.person = person;
             t.photoUrl = agentService.getPhotoUrl(person.Uri);
+            $scope.personForm.$dirty = false;
         }
 
         t.commit = function () {
-            agentService.putPerson(t.person).then(function () {
-                if (t.photo) {
-                    agentService.putPhoto(t.person.Uri, t.photo);
-                }
-
+            if (t.person && (t.person.IsNew || $scope.personForm.$dirty)) {
+                agentService.putPerson(t.person).then(function () {
+                    if (t.photo) {
+                        agentService.putPhoto(t.person.Uri, t.photo).then(function () {
+                            $uibModalInstance.close(t.person);
+                        });
+                    } else {
+                        $uibModalInstance.close(t.person);
+                    }
+                });
+            } else {
                 $uibModalInstance.close(t.person);
-            });
+            }
         };
 
         t.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+
+        function init() {
+            if (t.person && t.person.Name === '') {
+                t.person.IsNew = true;
+            } else if(t.person.Uri) {
+                agentService.getPerson(t.person.Uri).then(function(data) {
+                    t.person = data;
+                    t.person.IsNew = false;
+                });
+            }
+        }
+
+        init();
     };
 })();

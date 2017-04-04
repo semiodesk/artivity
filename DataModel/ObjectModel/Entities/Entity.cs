@@ -34,7 +34,7 @@ using System.Collections.Generic;
 namespace Artivity.DataModel
 {
 	[RdfClass(PROV.Entity)]
-    public class Entity : SynchronizableResource
+    public class Entity : SynchronizableResource, IValidatable
 	{
 		#region Members
 
@@ -65,6 +65,15 @@ namespace Artivity.DataModel
         public Entity(Uri uri) : base(uri) {}
 
 		#endregion
+
+        #region Methods
+
+        public virtual bool Validate()
+        {
+            return true;
+        }
+
+        #endregion
     }
 }
 

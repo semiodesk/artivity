@@ -60,9 +60,7 @@ namespace Artivity.DataModel
 
         #region Constructors
 
-        public SynchronizableResource(Uri uri) : base(uri)
-        {
-        }
+        public SynchronizableResource(Uri uri) : base(uri) { }
 
         public SynchronizableResource(string uri) : base(uri) { }
 
