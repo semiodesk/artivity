@@ -103,11 +103,20 @@
                 t.comment.requestType = 'Request';
                 t.comment.associations = [];
 
-                projectService.getMembers(projectService.currentProject.Uri).then(function (response) {
-                    if (response.data && response.data.length) {
-                        for (i = 0; i < response.data.length; i++) {
-                            console.log(response.data[i]);
+                projectService.getMembers(projectService.currentProject.Uri).then(function (result) {
+                    if (result.length > 0) {
+                        for (i = 0; i < result.length; i++) {
+                            var member = result[i];
+
+                            var association = {
+                                agent: member.Agent.Uri,
+                                role: member.RoleUri
+                            };
+
+                            t.comment.associations.push(association);
                         }
+
+                        console.log('Requesting feedback from: ', t.comment.associations);
                     }
                 });
             }

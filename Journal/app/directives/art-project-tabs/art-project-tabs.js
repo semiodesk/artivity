@@ -24,22 +24,6 @@
             cookieService.set('tabs.activeTab', t.activeTab);
         });
 
-        t.selectProject = function (project) {
-            if (project !== null) {
-                projectService.getFolders(project.Uri).then(function (result) {
-                    if (result.length > 0) {
-                        project.folder = result[0].Url.Uri;
-                    }
-                });
-
-                projectService.getMembers(project.Uri).then(function (result) {
-                    if (result.length > 0) {
-                        project.members = result;
-                    }
-                });
-            }
-        }
-
         t.closeProject = function (project) {
             projectService.currentProject = project;
 
@@ -118,8 +102,6 @@
 
             $rootScope.$on('projectAdded', function (project) {
                 t.refresh();
-
-                t.selectProject(project);
             });
 
             t.refresh();

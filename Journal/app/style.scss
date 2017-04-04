@@ -81,6 +81,10 @@ h4 {
 	color: $labelTextColor;
 }
 
+h5.title {
+	text-transform: uppercase;
+}
+
 h1 .zmdi,
 h2 .zmdi {
 	margin-right: .3em;
@@ -265,6 +269,10 @@ input[type="text"][readonly]:focus {
 }
 
 .btn {
+	border: none;
+	border-radius: 1px;
+	background: $buttonBackgroundColor;
+	color: $labelTextColor;
 	margin: 0;
 	border-radius: 0;
 	-webkit-box-shadow: none;
@@ -1012,26 +1020,26 @@ h4 {
 	border-spacing: 30px;
 }
 
-.table-layout .row {
+.table-layout>.row {
 	display: table-row;
 	position: relative;
 	margin: 0;
 	padding: 0;
 }
 
-.table-layout .row.expand {
+.table-layout>.row.expand {
 	height: 100%;
 	overflow: hidden;
 }
 
-.table-layout .col {
+.table-layout>.row>.col {
 	display: table-cell;
 	position: relative;
 	margin: 0;
 	padding: 0;
 }
 
-.table-layout .col.expand {
+.table-layout>.row>.col.expand {
 	width: 100%;
 }
 
@@ -1171,6 +1179,7 @@ h4 {
 	width: 0;
 }
 
+.layout-container>.ng-scope,
 .view-primary-content>.ng-scope,
 .view-secondary-content>.ng-scope {
 	display: block;
