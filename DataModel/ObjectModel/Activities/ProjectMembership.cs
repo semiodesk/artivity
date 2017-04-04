@@ -48,7 +48,7 @@ namespace Artivity.DataModel
 
         public Uri RoleUri
         {
-            get { return Role.Uri ?? null; }
+            get { return Role != null ? Role.Uri : null; }
         }
 
         #endregion

@@ -10,6 +10,7 @@
             initialized: null,
             currentUser: null,
             newPerson: newPerson,
+            getPerson: getPerson,
             putPerson: putPerson,
             putPhoto: putPhoto,
             getPhotoUrl: getPhotoUrl,
@@ -49,6 +50,19 @@
                 });
         }
 
+        function getPerson(agentUri) {
+            var uri = encodeURIComponent(agentUri);
+
+            return api.get(endpoint + '/users?agentUri=' + uri).then(
+                function (response) {
+                    console.log(response);
+
+                    if (response && response.data) {
+                        return response.data;
+                    }
+                });
+        }
+
         function newPerson() {
             return api.get(endpoint + '/users/new').then(
                 function (response) {
@@ -68,14 +82,18 @@
         }
 
         function putPhoto(agentUri, data) {
-            return api.put(endpoint + '/users/photo?agentUri=' + agentUri, data).then(
+            var uri = encodeURIComponent(agentUri);
+
+            return api.put(endpoint + '/users/photo?agentUri=' + uri, data).then(
                 function (response) {
                     return response;
                 });
         }
 
         function getPhotoUrl(agentUri) {
-            return endpoint + '/users/photo?agentUri=' + agentUri;
+            var uri = encodeURIComponent(agentUri);
+
+            return endpoint + '/users/photo?agentUri=' + uri;
         }
 
         function findPersons(query) {

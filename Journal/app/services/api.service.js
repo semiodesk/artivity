@@ -28,7 +28,7 @@
 				return $http.get(url, config);
 			},
 			put: function(url, data, config){
-				return $http.get(url, data, config);
+				return $http.put(url, data, config);
 			},
 			post: function(url, data, config){
 				return $http.post(url, data, config);

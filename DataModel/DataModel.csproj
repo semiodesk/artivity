@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="IModelSynchronizationState.cs" />
     <Compile Include="IUser.cs" />
+    <Compile Include="IValidatable.cs" />
     <Compile Include="IViewModule.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />

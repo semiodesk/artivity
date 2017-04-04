@@ -58,7 +58,7 @@ namespace Artivity.Api.IO
                 {
                   ?project prov:qualifiedUsage / prov:entity ?file .
                   ?entity nie:isStoredAs ?file .
-                  @entityUri prov:hadPrimarySource ?entity .
+                  @entityUri prov:hadPrimarySource* ?entity .
                 }");
 
             query.Bind("@entityUri", entityUri);
