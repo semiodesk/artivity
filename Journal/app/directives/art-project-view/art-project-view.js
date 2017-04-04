@@ -148,6 +148,20 @@
 
 		t.togglePropertyPane = function () {
 			t.collapsed = !t.collapsed;
+
+			if (!t.collapsed && t.project) {
+				projectService.getFolders(t.project.Uri).then(function (result) {
+					if (result.length > 0) {
+						t.project.folder = result[0].Url.Uri;
+					}
+				});
+
+				projectService.getMembers(t.project.Uri).then(function (result) {
+					if (result.length > 0) {
+						t.project.members = result;
+					}
+				});
+			}
 		}
 
 		t.commit = function () {

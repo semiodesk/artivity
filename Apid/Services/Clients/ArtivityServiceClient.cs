@@ -648,7 +648,6 @@ namespace Artivity.Apid.Accounts
             }
         }
 
-
         public async Task<bool> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision)
         {
             if(IsInstanceOf(uri, art.Project))
@@ -689,7 +688,9 @@ namespace Artivity.Apid.Accounts
                 {
                     Project project = model.GetResource<Project>(uri);
 
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(project), Encoding.UTF8, "application/json");
+                    string json = JsonConvert.SerializeObject(project);
+
+                    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
                     HttpResponseMessage response = await client.PostAsync(url, content);
 
@@ -1000,7 +1001,7 @@ namespace Artivity.Apid.Accounts
         {
             HttpAuthenticationParameter token = account.AuthenticationParameters.FirstOrDefault(p => p.Name == "token");
 
-            if(token != null)
+            if(token != null && !string.IsNullOrEmpty(token.Value))
             {
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
@@ -1043,7 +1044,6 @@ namespace Artivity.Apid.Accounts
             return _modelProvider.GetActivities().ExecuteQuery(query, true).GetAnwser();
         }
 
-        
         #endregion
     }
 }
