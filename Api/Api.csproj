@@ -75,7 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IO\ArchiveWriters\CommunicationArchiveWriter.cs" />
-    <Compile Include="IO\ArchiveWriters\FileArchiveWriter.cs" />
+    <Compile Include="IO\ArchiveWriters\RevisionArchiveWriter.cs" />
     <Compile Include="IO\S3Uploader.cs" />
     <Compile Include="Modules\CommentsModule.cs" />
     <Compile Include="Infrastructure\StreamExtensions.cs" />
