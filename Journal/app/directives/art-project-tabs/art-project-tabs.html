@@ -1,7 +1,7 @@
 <art-user-menu></art-user-menu>
 
 <uib-tabset class="header-tabs" active="t.activeTab">
-    <uib-tab ng-click="t.selectProject(null)">
+    <uib-tab>
         <uib-tab-heading>
             <div class="nav-link-container">
                 <i class="zmdi zmdi-menu"></i>
@@ -14,7 +14,7 @@
             </empty>
         </art-file-list>
     </uib-tab>
-    <uib-tab ng-repeat="project in t.projects" ng-click="t.selectProject(project)">
+    <uib-tab ng-repeat="project in t.projects">
         <uib-tab-heading>
             <div class="nav-link-container" ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
                 jqyoui-droppable="{onDrop: 't.onFileDropped'}">

@@ -14,7 +14,8 @@
             },
             scope: {
                 'onload': '=',
-                'clicked': '=?'
+                'clicked': '=?',
+                'moreClicked' : '=?'
             },
             link: function (scope, element, attr, t) {
                 $(element).on('appear', function (event) {
@@ -51,6 +52,12 @@
         t.onClick = function (e, data) {
             if (t.clicked) {
                 t.clicked(e, data);
+            }
+        }
+
+        t.onMoreClicked = function(e) {
+            if(t.moreClicked && typeof(t.moreClicked) === 'function') {
+                t.moreClicked();
             }
         }
 

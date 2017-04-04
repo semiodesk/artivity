@@ -7,7 +7,7 @@
 
         <!-- Otherwhise show the file list. -->
         <div class="layout-container" ng-switch-when="null">
-            <art-file-list onload="t.getFiles" clicked="t.viewFile">
+            <art-file-list onload="t.getFiles" clicked="t.viewFile" more-clicked="t.togglePropertyPane">
                 <empty>
                     <h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
                 </empty>
@@ -34,7 +34,7 @@
 
                 <div class="form-group">
                     <label for="folder">Ordner</label>
-                    <art-folder-picker folder="t.folder" changed="t.setFolder"></art-folder-picker>
+                    <art-folder-picker folder="t.project.folder" changed="t.setFolder"></art-folder-picker>
                 </div>
 
                 <div class="form-group">
@@ -47,7 +47,7 @@
                     </div>
 
                     <ul class="list-unstyled list-view">
-                        <li class="list-item list-item-link" ng-repeat="member in t.members">
+                        <li class="list-item list-item-link" ng-repeat="member in t.project.members">
                             <div class="layout-container padding-x-xs padding-y-xs">
                                 <div class="col">
                                     <art-user-photo-img width="40" height="40" src="t.getPhotoUrl(member.Agent.Uri)"></art-user-photo-img>
