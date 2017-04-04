@@ -46,6 +46,9 @@ namespace Artivity.DataModel
         [RdfProperty(FOAF.img)]
         public string Photo { get; set; }
 
+        [RdfProperty(ART.guid)]
+        public string Guid { get; set; }
+
 		#endregion
 
         #region Constructors

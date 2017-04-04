@@ -764,6 +764,12 @@ nfo:RasterImage
 nfo:Website
 	rdfs:subClassOf prov:Entity.
 
+art:guid a rdf:Property ;
+    rdfs:label "guid" ;
+    rdfs:domain prov:Person ;
+    rdfs:range xsd:string .
+
+
 #--
 
 # --- BEGIN: TODO: Move into Artivity Service Integration (arts) ontology. ---
