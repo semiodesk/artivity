@@ -42,9 +42,9 @@ namespace Artivity.DataModel
 		#region Members
 
         // Caches the parsed GUID from the URI of the resource.
-        private string _guid = null;
+        private Guid? _guid = null;
 
-        public string Guid
+        public Guid? Guid
         {
             get
             {
@@ -76,21 +76,23 @@ namespace Artivity.DataModel
 
         #region Methods
 
-        private bool TryGetGuid(out string guid)
+        private bool TryGetGuid(out Guid? guid)
         {
             Regex guidExpression = new Regex(@"(?i)\b[\dA-F]{8}-[\dA-F]{4}-[\dA-F]{4}-[\dA-F]{4}-[\dA-F]{12}");
 
             MatchCollection matches = guidExpression.Matches(Uri.AbsoluteUri);
 
-            if(matches.Count == 1)
+            Guid g;
+
+            if(matches.Count == 1 && System.Guid.TryParse(matches[0].Value, out g))
             {
-                guid = matches[0].Value;
+                guid = g;
 
                 return true;
             }
             else
             {
-                guid = "";
+                guid = null;
 
                 return false;
             }

@@ -112,7 +112,7 @@
         }
 
         function addMember(projectUri, agentUri) {
-            return api.post(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri + '&role=ProjectMember').then(handleSuccess, handleError(addMember));
+            return api.post(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri + '&role=ProjectMemberRole').then(handleSuccess, handleError(addMember));
         }
 
         function removeMember(projectUri, agentUri) {

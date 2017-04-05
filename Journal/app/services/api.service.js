@@ -170,7 +170,7 @@
 				);
 			},
 			getAccountOwner: function () {
-				return $http.get(endpoint + '/agents/users?role=AccountOwner').then(
+				return $http.get(endpoint + '/agents/users?role=AccountOwnerRole').then(
 					function (response) {
 						if(response.data.length === 1) {
 							return response.data[0];
