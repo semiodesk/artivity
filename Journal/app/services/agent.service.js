@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').factory('agentService', agentService);
 
-    agentService.$inject = ['api'];
+    agentService.$inject = ['api', 'authenticationService'];
 
-    function agentService(api) {
+    function agentService(api, authenticationService) {
         var endpoint = apid.endpointUrl + "agents";
 
         var t = {
@@ -18,7 +18,10 @@
             findPersons: findPersons
         };
 
-        t.initialized = init();
+        t.initialized = init;
+
+        // Initialize the authenticated user in case of a page refresh.
+        init().then(function() {}, function() {});
 
         return t;
 
@@ -27,22 +30,23 @@
                 if (t.currentUser) {
                     resolve();
                 } else {
-                    getAccountOwner().then(function (user) {
-                        if (user && user.Uri) {
-                            t.currentUser = user;
-                            t.currentUser.PhotoUrl = api.getUserPhotoUrl(user.Uri);
+                    t.currentUser = authenticationService.getAuthenticatedUser().then(function (user) {
+                        t.currentUser = user;
 
+                        if (t.currentUser) {
                             resolve();
                         } else {
                             reject();
                         }
+                    }, function() {
+                        reject();
                     });
                 }
             });
         }
 
         function getAccountOwner() {
-            return api.get(endpoint + '/users?role=AccountOwner').then(
+            return api.get(endpoint + '/users?role=AccountOwnerRole').then(
                 function (response) {
                     if (response && response.data.length === 1) {
                         return response.data[0];

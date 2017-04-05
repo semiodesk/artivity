@@ -123,6 +123,7 @@
     <Compile Include="ModelProviderFactory.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />
     <Compile Include="ObjectModel\ModelSynchronizationState.cs" />
+    <Compile Include="ObjectModel\Agents\UserRoles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

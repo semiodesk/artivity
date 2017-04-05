@@ -3,7 +3,7 @@
 
     StartController.$inject = ['$scope', '$location', '$http', 'appService', 'agentService', 'windowService'];
 
-    function StartController($scope, $location, $http,  appService, agentService, windowService) {
+    function StartController($scope, $location, $http, appService, agentService, windowService) {
         var t = this;
 
         windowService.setClosable(true);
@@ -25,11 +25,14 @@
                     stopConnect();
 
                     // Initialize the current user and view states.
-                    agentService.initialized.then(function () {
+                    agentService.initialized().then(function () {
                         $scope.$apply(function () {
-                            // Navigate to the start view.
-                            showStartView(response);
-                        });
+                                // Navigate to the start view.
+                                showStartView(response);
+                            },
+                            function () {
+                                console.warn('Failed to initialize agent service.');
+                            });
                     });
                 },
                 function () {
@@ -84,7 +87,7 @@
 
             tryConnect();
         }
-        
+
         init();
     };
 })();

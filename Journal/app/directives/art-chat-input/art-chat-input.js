@@ -53,7 +53,7 @@
                     comment.agent = 'http://artivity.online/test';
                 }
 
-                commentService.post(comment).then(function (data) {
+                commentService.postComment(comment).then(function (data) {
                     comment.uri = data.uri;
 
                     // Show the comment in the list of comments.
