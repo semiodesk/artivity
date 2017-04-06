@@ -12,13 +12,10 @@
 
     angular.module('app').controller('ProjectTabsDirectiveController', ProjectTabsDirectiveController);
 
-    ProjectTabsDirectiveController.$inject = ['$rootScope', '$scope', '$uibModal', 'api', 'agentService', 'cookieService', 'selectionService', 'projectService'];
+    ProjectTabsDirectiveController.$inject = ['$scope', '$uibModal', 'api', 'agentService', 'cookieService', 'selectionService', 'projectService'];
 
-    function ProjectTabsDirectiveController($rootScope, $scope, $uibModal, api, agentService, cookieService, selectionService, projectService) {
+    function ProjectTabsDirectiveController($scope, $uibModal, api, agentService, cookieService, selectionService, projectService) {
         var t = this;
-
-        // USER
-        t.currentUser = agentService.currentUser;
 
         // PROJECTS
         t.projects = [];
@@ -91,27 +88,25 @@
             });
         }
 
-        function init() {
+        t.$onInit = function () {
             $scope.$watch('t.activeTab', function () {
                 cookieService.set('tabs.activeTab', t.activeTab);
             });
 
             // Make the left and right panes resizable.
-            $rootScope.$on('dragStarted', function () {
+            $scope.$on('dragStarted', function () {
                 $('.project-item').addClass('drop-target');
             });
 
-            $rootScope.$on('dragStopped', function () {
+            $scope.$on('dragStopped', function () {
                 $('.project-item').removeClass('drop-target');
             });
 
-            $rootScope.$on('projectAdded', function (project) {
+            $scope.$on('projectAdded', function (project) {
                 t.refresh();
             });
 
             t.refresh();
         }
-
-        init();
     }
 })();

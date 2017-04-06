@@ -73,16 +73,6 @@
             });
         }
 
-        // Load the user data.
-        t.user = {};
-
-        agentService.getAccountOwner().then(function (data) {
-            t.user = data;
-            t.user.photoUrl = api.getUserPhotoUrl();
-
-            console.log("User: ", t.user);
-        });
-
         // RENDERING
         var canvas = document.getElementById('canvas');
         var renderer = new DocumentHistoryViewer(t.user, canvas, api.getRenderingUrl(entityUri));

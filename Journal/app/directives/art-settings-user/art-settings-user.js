@@ -25,6 +25,8 @@
         }
 
         // Load the user data.
+        s.user = agentService.currentUser;
+        
         agentService.getAccountOwner().then(function (data) {
             s.user = data;
             s.userPhoto = null;
