@@ -50,6 +50,8 @@
 		}
 
 		t.getFiles = function (callback) {
+			console.log("Loading files:", callback);
+
 			if (t.project) {
 				return projectService.getFiles(t.project.Uri).then(callback);
 			} else {
@@ -168,7 +170,7 @@
 		}
 
 		t.$postLink = function () {
-			$scope.$watch('t.project', function () {
+			$scope.$watch('t.project', function (newValue, oldValue) {
 				$scope.$broadcast('refresh');
 			});
 

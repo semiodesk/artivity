@@ -18,9 +18,7 @@
     function UserMenuDirectiveController($scope, agentService) {
         var t = this;
 
-        agentService.on('currentUserChanged', function () {
-            var user = agentService.currentUser;
-
+        t.setUser = function (user) {
             if (user) {
                 t.name = user.Name;
                 t.photoUrl = user.PhotoUrl;
@@ -28,6 +26,18 @@
                 t.name = '';
                 t.photoUrl = '';
             }
-        });
+        }
+
+        t.$onInit = function () {
+            if (agentService.currentUser) {
+                t.setUser(agentService.currentUser);
+            }
+
+            agentService.on('currentUserChanged', t.setUser);
+        }
+
+        t.$onDestroy = function () {
+            agentService.off('currentUserChanged', t.setUser);
+        }
     }
 })();

@@ -25,13 +25,13 @@
         }
 
         // Load the user data.
-        s.user = agentService.currentUser;
-        
-        agentService.getAccountOwner().then(function (data) {
-            s.user = data;
+        s.user = null;
+
+        s.setUser = function (user) {
+            s.user = user;
             s.userPhoto = null;
-            s.userPhotoUrl = agentService.getPhotoUrl(s.user.Uri);
-        });
+            s.userPhotoUrl = user.PhotoUrl;
+        };
 
         s.onPhotoChanged = function (file) {
             s.userPhoto = file;
@@ -82,7 +82,11 @@
             console.log("Submitting Profile");
 
             if (s.user) {
-                api.putUser(s.user);
+                api.putUser(s.user).then(function () {
+                    agentService.off('currentUserChanged', s.setUser);
+                    agentService.initialize();
+                    agentService.on('currentUserChanged', s.setUser);
+                });
             }
 
             if (s.userPhoto) {
@@ -96,5 +100,17 @@
         t.reset = function () {
             s.form.reset();
         };
+
+        t.$onInit = function () {
+            if (agentService.currentUser) {
+                s.setUser(agentService.currentUser);
+            }
+
+            agentService.on('currentUserChanged', s.setUser);
+        }
+
+        t.$onDestroy = function () {
+            agentService.off('currentUserChanged', s.setUser);
+        }
     };
 })();
