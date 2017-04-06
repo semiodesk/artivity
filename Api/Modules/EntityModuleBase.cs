@@ -89,14 +89,19 @@ namespace Artivity.Api.Modules
             return typeof(T).Name.ToLowerInvariant();
         }
 
-        protected virtual Uri CreateUri(string guid)
+        public static Uri CreateDefaultUri(string guid)
         {
             return new Uri(string.Format("http://artivity.io/{0}/{1}", typeof(T).Name.ToLowerInvariant(), guid));
         }
 
+        protected virtual Uri CreateUri(string guid)
+        {
+            return CreateDefaultUri(guid);
+        }
+
         protected virtual Uri CreateUri()
         {
-            return new Uri(string.Format("http://artivity.io/{0}/{1}", typeof(T).Name.ToLowerInvariant(), Guid.NewGuid().ToString()));
+            return CreateDefaultUri(Guid.NewGuid().ToString());
         }
 
         private void Initialize()
