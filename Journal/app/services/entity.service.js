@@ -11,6 +11,7 @@
         service.getById = getById;
         service.getRevisions = getRevisions;
         service.getLatestRevisionFromFileUri = getLatestRevisionFromFileUri;
+        service.publishLatestRevisionFromFileUri = publishLatestRevisionFromFileUri;
         service.selectedEntity = null;
 
         return service;
@@ -47,6 +48,14 @@
             return api.get(endpoint + "/revisions/latest?fileUri=" + fileUri).then(function (response) {
                 if (response.data.length) {
                     return response.data[0];
+                }
+            }, handleError('Error when retrieving latest revision from file URI.'));
+        }
+
+        function publishLatestRevisionFromFileUri(fileUri) {
+            return api.put(endpoint + "/revisions/latest/publish?fileUri=" + fileUri).then(function (response) {
+                if (response.data) {
+                    return response.data;
                 }
             }, handleError('Error when retrieving latest revision from file URI.'));
         }

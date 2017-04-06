@@ -89,14 +89,19 @@ namespace Artivity.Api.Modules
             return typeof(T).Name.ToLowerInvariant();
         }
 
-        protected virtual Uri CreateUri(string guid)
+        public static Uri CreateDefaultUri(string guid)
         {
             return new Uri(string.Format("http://artivity.io/{0}/{1}", typeof(T).Name.ToLowerInvariant(), guid));
         }
 
+        protected virtual Uri CreateUri(string guid)
+        {
+            return CreateDefaultUri(guid);
+        }
+
         protected virtual Uri CreateUri()
         {
-            return new Uri(string.Format("http://artivity.io/{0}/{1}", typeof(T).Name.ToLowerInvariant(), Guid.NewGuid().ToString()));
+            return CreateDefaultUri(Guid.NewGuid().ToString());
         }
 
         private void Initialize()
@@ -115,7 +120,7 @@ namespace Artivity.Api.Modules
                         return response;
                     } 
 
-                    return GetEntity();
+                    return GetEntities();
                 };
             }
 
@@ -174,29 +179,39 @@ namespace Artivity.Api.Modules
                 Delete["/"] = parameters =>
                 {
                     var response = InitializeRequest();
+
                     if (response != null)
                     {
                         return response;
-                    } 
-
-                    Uri uri = new Uri(Request.Query["uri"]);
+                    }
 
                     if (UserModel == null)
                     {
                         return HttpStatusCode.InternalServerError;
                     }
 
+                    Uri uri = new Uri(Request.Query["uri"]);
+
                     OnBeforeEntityDeleted(uri);
 
                     SparqlUpdate update = new SparqlUpdate(@"
                         WITH @model
                         DELETE { @subject art:deleted ?deletionTime . }
+                        WHERE { @subject art:deleted ?deletionTime . }
                         INSERT { @subject art:deleted @deletionTime . }
+                        DELETE { ?state arts:lastRemoteRevision ?revision . }
+                        INSERT { ?state arts:lastRemoteRevision @undefined . }
+                        WHERE
+                        {
+                            @subject arts:synchronizationState ?state .
+                            ?state arts:lastRemoteRevision ?revision .
+                        }
                     ");
 
                     update.Bind("@model", UserModel.Uri);
                     update.Bind("@subject", uri);
                     update.Bind("@deletionTime", DateTime.UtcNow);
+                    update.Bind("@undefined", -1);
 
                     UserModel.ExecuteUpdate(update);
 
@@ -220,9 +235,8 @@ namespace Artivity.Api.Modules
         /// Returns a list of entities if no parameter was specified.
         /// </summary>
         /// <returns></returns>
-        protected virtual Response GetEntity()
+        protected virtual Response GetEntities()
         {
-            
             int offset = -1;
             int limit = -1;
 
@@ -238,7 +252,6 @@ namespace Artivity.Api.Modules
             }
             else
             {
-                
                 int count = 0;
 
                 SparqlQuery countQuery = new SparqlQuery(@"

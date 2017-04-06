@@ -377,6 +377,10 @@ namespace Artivity.Apid.Accounts
             {
                 return await TryPullProjectAsync(account, uri, revision);
             }
+            else if (IsInstanceOf(uri, prov.Person))
+            {
+                return await TryPullPersonAsync(account, uri, revision);
+            }
             else if (IsInstanceOf(uri, prov.Activity))
             {
                 return await TryPullActivityAsync(account, uri, revision);
@@ -440,6 +444,73 @@ namespace Artivity.Apid.Accounts
 
                         // Do not commit _after_ setting the revision.
                         project.Commit(revision);
+
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private async Task<bool> TryPullPersonAsync(OnlineAccount account, Uri uri, int revision)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            Uri url = new Uri(baseUrl + "/api/1.0/sync/agents/persons?agentUri=" + uri.AbsoluteUri);
+
+            using (HttpClient client = GetHttpClient(account))
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync();
+
+                    dynamic data = JsonConvert.DeserializeObject(json);
+
+                    if (data != null)
+                    {
+                        IModel model = ModelProvider.GetAgents();
+
+                        Person person;
+
+                        if (model.ContainsResource(uri))
+                        {
+                            person = model.GetResource<Person>(uri);
+                        }
+                        else
+                        {
+                            person = model.CreateResource<Person>(uri);
+                        }
+
+                        if (data.Name != null)
+                        {
+                            person.Name = data.Name;
+                        }
+
+                        if(data.EmailAddress != null)
+                        {
+                            person.EmailAddress = data.EmailAddress;
+                        }
+
+                        if (data.CreationDate != null)
+                        {
+                            person.CreationTimeUtc = data.CreationDate;
+                        }
+
+                        if (data.ModificationDate != null)
+                        {
+                            person.ModificationTimeUtc = data.ModificationDate;
+                        }
+
+                        if (data.DeletionDate != null)
+                        {
+                            person.DeletionTimeUtc = data.DeletionDate;
+                        }
+
+                        // Do not commit _after_ setting the revision.
+                        person.Commit(revision);
 
                         return true;
                     }
@@ -654,21 +725,22 @@ namespace Artivity.Apid.Accounts
             {
                 return await TryPushProjectAsync(account, uri, revision);
             }
-            else if (IsInstanceOf(uri, prov.Activity))
+            else if(IsInstanceOf(uri, prov.Person))
             {
-                return await TryPushActivityAsync(account, uri, revision);
+                return await TryPushPersonAsync(account, uri, revision);
             }
             else if(IsInstanceOf(uri, nie.InformationElement))
             {
                 return await TryPushRevisionAsync(account, uri, revision);
-            }else if(IsInstanceOf(uri, art.ProjectMembership))
-            {
-                return true;
             }
             else if (IsInstanceOf(uri, prov.Entity))
             {
                 return await TryPushEntityAsync(account, uri, revision);
             }
+            //else if (IsInstanceOf(uri, prov.Activity))
+            //{
+            //    return await TryPushActivityAsync(account, uri, revision);
+            //}
 
             return false;
                 
@@ -699,10 +771,54 @@ namespace Artivity.Apid.Accounts
                         int r = await GetLastRemoteRevision(response);
 
                         model = ModelProvider.GetActivities();
-                        project = model.GetResource<Project>(uri);
-                        project.Commit(r);
 
-                        return true;
+                        if (model.ContainsResource(uri))
+                        {
+                            project = model.GetResource<Project>(uri);
+                            project.Commit(r);
+
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private async Task<bool> TryPushPersonAsync(OnlineAccount account, Uri uri, int revision)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            Uri url = new Uri(baseUrl + "/api/1.0/sync/agents/persons");
+
+            using (HttpClient client = GetHttpClient(account))
+            {
+                IModel model = ModelProvider.GetAll();
+
+                if (model.ContainsResource(uri))
+                {
+                    Person person = model.GetResource<Person>(uri);
+
+                    string json = JsonConvert.SerializeObject(person);
+
+                    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(url, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        int r = await GetLastRemoteRevision(response);
+
+                        model = ModelProvider.GetAgents();
+
+                        if (model.ContainsResource(uri))
+                        {
+                            person = model.GetResource<Person>(uri);
+                            person.Commit(r);
+
+                            return true;
+                        }
                     }
                 }
             }
@@ -809,15 +925,18 @@ namespace Artivity.Apid.Accounts
                         File.Delete(archive.FullName);
                     }
 
-                    Uri userUri = new UriRef(PlatformProvider.Config.Uid);
-
                     CommunicationArchiveWriter writer = new CommunicationArchiveWriter(PlatformProvider, ModelProvider);
+
                     string projectId = writer.GetProjectId(uri, _modelProvider.GetActivities());
-                    
+
                     if (string.IsNullOrEmpty(projectId))
+                    {
                         return false;
+                    }
 
                     Uri url = new Uri(baseUrl + "/api/1.0/sync/project/" + projectId + "/entity/");
+
+                    Uri userUri = new UriRef(PlatformProvider.Config.Uid);
 
                     await writer.WriteAsync(userUri, uri, archive.FullName, DateTime.MinValue);
 
@@ -1041,7 +1160,7 @@ namespace Artivity.Apid.Accounts
 
             // NOTE: Execute the query with inferencing enabled so that the 
             // query evaluates the class inheritance in the ontology.
-            return _modelProvider.GetActivities().ExecuteQuery(query, true).GetAnwser();
+            return _modelProvider.GetAll().ExecuteQuery(query, true).GetAnwser();
         }
 
         #endregion

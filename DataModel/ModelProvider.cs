@@ -283,6 +283,7 @@ namespace Artivity.DataModel
         public void SetProject(string x) { }
 
         public void SetUsername(string x) { }
+
         #endregion
     }
 }

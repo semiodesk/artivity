@@ -53,6 +53,14 @@
             }
         }
 
+        t.publishLatestRevision = function (file) {
+            if (file && file.uri) {
+                entityService.publishLatestRevisionFromFileUri(file.uri).then(function (data) {
+                    console.log(data);
+                });
+            }
+        }
+
         t.navigateBack = function () {
             navigationService.navigateBack($scope);
         }

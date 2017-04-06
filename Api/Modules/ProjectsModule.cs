@@ -61,7 +61,7 @@ namespace Artivity.Api.Modules
             {
                 InitializeRequest();
 
-                UserRoles role = UserRoles.ProjectMember;
+                UserRoles role = UserRoles.ProjectMemberRole;
 
                 if (IsUri(Request.Query.projectUri) && IsUri(Request.Query.agentUri) && Enum.TryParse(Request.Query.role, out role))
                 {
@@ -239,8 +239,8 @@ namespace Artivity.Api.Modules
 
                 switch (userRole)
                 {
-                    case UserRoles.ProjectAdministrator: role = art.ProjectAdministratorRole; break;
-                    case UserRoles.ProjectMember: role = art.ProjectMemberRole; break;
+                    case UserRoles.ProjectAdministratorRole: role = art.ProjectAdministratorRole; break;
+                    case UserRoles.ProjectMemberRole: role = art.ProjectMemberRole; break;
                     default: throw new ArgumentException("userRole");
                 }
 

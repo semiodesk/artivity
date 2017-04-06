@@ -28,7 +28,7 @@
 				return $http.get(url, config);
 			},
 			put: function(url, data, config){
-				return $http.get(url, data, config);
+				return $http.put(url, data, config);
 			},
 			post: function(url, data, config){
 				return $http.post(url, data, config);
@@ -170,7 +170,7 @@
 				);
 			},
 			getAccountOwner: function () {
-				return $http.get(endpoint + '/agents/users?role=AccountOwner').then(
+				return $http.get(endpoint + '/agents/users?role=AccountOwnerRole').then(
 					function (response) {
 						if(response.data.length === 1) {
 							return response.data[0];

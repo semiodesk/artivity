@@ -15,8 +15,16 @@
                 changed: "&?"
             },
             link: function (scope, element, attributes, t) {
+                var img = $(element).find('img');
+
+                if (img) {
+                    img.error(function () {
+                        $(this).hide();
+                    });
+                }
+
                 scope.$watch('src', function () {
-                    t.hasPhoto = t.src !== null && t.src !== undefined;
+                    t.hasPhoto = t.src && t.src.length > 0;
                 });
 
                 scope.$watch(['height', 'width'], function () {
