@@ -7,8 +7,7 @@
             scope: {},
             templateUrl: 'app/directives/art-user-menu/art-user-menu.html',
             controller: UserMenuDirectiveController,
-            controllerAs: 't',
-            bindToController: true
+            controllerAs: 't'
         }
     }
 
@@ -19,13 +18,26 @@
     function UserMenuDirectiveController($scope, agentService) {
         var t = this;
 
-        agentService.initialized().then(function () {
-            $scope.$apply(function () {
-                t.name = agentService.currentUser.Name;
-                t.photoUrl = agentService.currentUser.PhotoUrl;
-            }, function () {
-                console.warn('Failed to initialize agent service.');
-            });
-        });
+        t.setUser = function (user) {
+            if (user) {
+                t.name = user.Name;
+                t.photoUrl = user.PhotoUrl;
+            } else {
+                t.name = '';
+                t.photoUrl = '';
+            }
+        }
+
+        t.$onInit = function () {
+            if (agentService.currentUser) {
+                t.setUser(agentService.currentUser);
+            }
+
+            agentService.on('currentUserChanged', t.setUser);
+        }
+
+        t.$onDestroy = function () {
+            agentService.off('currentUserChanged', t.setUser);
+        }
     }
 })();

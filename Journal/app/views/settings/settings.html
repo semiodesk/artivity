@@ -1,17 +1,13 @@
 <div class="layout-root table-layout">
-    <div class="row header">
-		<div class="toolbar toolbar-header table-layout">
-			<div class="col">
-				<a class="btn btn-header" ng-click="t.submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
-			</div>
-			<div class="col expand">
-				<h5 class="title" translate="SETTINGS.TITLE"></h5>
-			</div>
-			<div class="col">
-				<a class="btn btn-header btn-text" onclick="history.back()">Cancel</a>
-			</div>
+	<div class="row header">
+		<div class="toolbar toolbar-header">
+			<a class="btn btn-header" ng-click="t.submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
+
+			<span class="txt txt-title" translate="SETTINGS.TITLE"></span>
+
+			<a class="btn btn-header btn-text pull-right" onclick="history.back()">Cancel</a>
 		</div>
-    </div>
+	</div>
 	<div class="row expand">
 		<div class="layout-container padding-y-xl">
 			<div class="container">

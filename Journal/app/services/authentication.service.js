@@ -12,21 +12,26 @@
             getAuthenticatedUser: getAuthenticatedUser
         };
 
-        function getAuthenticatedUser() {
-            return api.get(endpoint + '/users?role=AccountOwnerRole').then(
-                function (response) {
-                    if (response && response.data.length === 1) {
-                        var user = response.data[0];
+        function getAuthenticatedUser(result) {
+            if (typeof (result) !== 'function') {
+                return;
+            }
 
-                        if (user && user.Uri) {
-                            user.PhotoUrl = api.getUserPhotoUrl(user.Uri);
+            api.get(endpoint + '/users?role=AccountOwnerRole').then(function (response) {
+                if (response && response.data.length === 1) {
+                    var user = response.data[0];
 
-                            return user;
-                        } else {
-                            return null;
-                        }
+                    if (user && user.Uri) {
+                        user.PhotoUrl = api.getUserPhotoUrl(user.Uri);
+
+                        result(user);
+                    } else {
+                        result(null);
                     }
-                });
+                }
+            }, function() {
+                result(null);
+            });
         }
     }
 })();
