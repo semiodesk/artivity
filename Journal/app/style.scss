@@ -50,6 +50,15 @@ $editorTextColor: #202020;
 $editorLabelColor: lighten($editorTextColor, 25%);
 $editorBorderColor: darken($editorBackgroundColor, 25%);
 
+@mixin transitionEaseInOutCubic ($property, $duration) {
+	-webkit-transition: $property $duration cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	-webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	-moz-transition: $property $duration cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	-moz-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	transition: $property $duration cubic-bezier(0.215, 0.610, 0.355, 1.000);
+}
+
 /* GENERAL STYLES */
 
 html,
@@ -2342,6 +2351,64 @@ button[disabled]:hover {
 }
 
 
+/* SEARCH */
+
+.ctl-search {
+	display: inline-block;
+	position: relative;
+	margin: 2px;
+	height: $toolbarHeight - 4px;
+}
+
+.ctl-search .btn {
+	position: absolute;
+	top: -2px;
+}
+
+.ctl-search input[type="text"] {
+	vertical-align: middle;
+	padding-left: $toolbarIconHeight + 2px;
+	height: 100%;
+	width: 200px;
+	@include transitionEaseInOutCubic(all, 500ms);
+}
+
+.ctl-search input[type="text"]:focus {
+	vertical-align: middle;
+	height: 100%;
+	width: 300px;
+}
+
+.ctl-search input[type="text"]::-webkit-input-placeholder {
+	font-style: italic;
+}
+
+.ctl-search input[type="text"]:-moz-placeholder {
+	font-style: italic;
+	opacity: 1;
+}
+
+.ctl-search input[type="text"]::-moz-placeholder {
+	font-style: italic;
+	opacity: 1;
+}
+
+.ctl-search input[type="text"]:-ms-input-placeholder {
+	font-style: italic;
+}
+
+.ctl-search.ctl-chromeless input {
+	background: transparent;
+	border: none;
+	outline: none;
+}
+
+.ctl-search.ctl-chromeless input:focus {
+	background: $inputBackgroundColor;
+	border: none;
+	outline: none;
+}
+
 /* YASGUI */
 
 #editor {
@@ -2738,8 +2805,8 @@ button[disabled]:hover {
 
 .cfp-hotkeys-key {
 	border: none;
-	background: $buttonTextColor;
-	color: $buttonBackgroundColor;
+	background: $headerBackgroundColor;
+	color: $headerTextColor;
 	box-shadow: none;
 }
 

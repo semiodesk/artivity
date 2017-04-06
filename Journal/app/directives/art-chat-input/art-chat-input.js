@@ -25,9 +25,9 @@
 
     angular.module('app').controller('ChatInputDirectiveController', ChatInputDirectiveController);
 
-    ChatInputDirectiveController.$inject = ['$scope', 'viewerService', 'agentService', 'entityService', 'commentService', 'markService', 'projectService', 'viewerService'];
+    ChatInputDirectiveController.$inject = ['$scope', 'agentService', 'entityService', 'commentService', 'markService', 'projectService', 'viewerService'];
 
-    function ChatInputDirectiveController($scope, viewerService, agentService, entityService, commentService, markService, projectService, viewerService) {
+    function ChatInputDirectiveController($scope, agentService, entityService, commentService, markService, projectService, viewerService) {
         var t = this;
 
         // COMMENT
