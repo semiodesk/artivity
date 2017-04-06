@@ -4,16 +4,10 @@
     function UserMenuDirective() {
         return {
             restrict: 'E',
-            scope: {
-                user: '='
-            },
+            scope: {},
             templateUrl: 'app/directives/art-user-menu/art-user-menu.html',
             controller: UserMenuDirectiveController,
-            controllerAs: 't',
-            bindToController: true,
-            link: function (scope, element, attr, t) {
-                scope.$watch('user', t.update);
-            }
+            controllerAs: 't'
         }
     }
 
@@ -24,14 +18,16 @@
     function UserMenuDirectiveController($scope, agentService) {
         var t = this;
 
-        t.update = function () {
-            if (t.user) {
-                t.name = t.user.Name;
-                t.photoUrl = t.user.PhotoUrl;
+        agentService.on('currentUserChanged', function () {
+            var user = agentService.currentUser;
+
+            if (user) {
+                t.name = user.Name;
+                t.photoUrl = user.PhotoUrl;
             } else {
                 t.name = '';
                 t.photoUrl = '';
             }
-        }
+        });
     }
 })();

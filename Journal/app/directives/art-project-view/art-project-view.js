@@ -12,43 +12,26 @@
 				new: "=?"
 			},
 			link: function (scope, element, attr, t) {
-				$(element).on('appear', function () {
-					if (t.project) {
-						t.selectProject(t.project);
-					}
-				});
+
 			}
 		}
 	});
 
-	ProjectViewDirectiveController.$inject = ['$rootScope', '$scope', '$sce', '$uibModal', 'agentService', 'navigationService', 'projectService', 'selectionService', 'hotkeys'];
+	ProjectViewDirectiveController.$inject = ['$scope', '$element', '$sce', '$uibModal', 'agentService', 'navigationService', 'projectService', 'hotkeys'];
 
-	function ProjectViewDirectiveController($rootScope, $scope, $sce, $uibModal, agentService, navigationService, projectService, selectionService, hotkeys) {
+	function ProjectViewDirectiveController($scope, $element, $sce, $uibModal, agentService, navigationService, projectService, hotkeys) {
 		var t = this;
 
 		if (t.new) {
+			t.collapsed = false;
+
 			projectService.create().then(function (result) {
 				t.project = result;
 				t.project.folder = null;
 				t.project.members = [];
-
-				t.collapsed = false;
 			});
 		} else {
 			t.collapsed = true;
-
-			$scope.$watch('t.project', function (newValue, oldValue) {
-				if (newValue && newValue !== oldValue) {
-					$scope.$broadcast('refresh');
-				}
-			});
-		}
-
-		t.selectProject = function (project) {
-			if (project && project != projectService.currentProject) {
-				console.log('Setting current project: ', project);
-				projectService.currentProject = project;
-			}
 		}
 
 		t.file = null;
@@ -70,7 +53,7 @@
 			if (t.project) {
 				return projectService.getFiles(t.project.Uri).then(callback);
 			} else {
-				return callback([]);
+				return callback();
 			}
 		}
 
@@ -167,7 +150,7 @@
 		t.commit = function () {
 			if ($scope.projectForm.$valid) {
 				projectService.update(t.project).then(function () {
-					$rootScope.$broadcast('projectAdded', t.project);
+					$scope.$emit('projectAdded', t.project);
 				});
 
 				if (!t.new) {
@@ -182,6 +165,22 @@
 			if (!t.new) {
 				t.collapsed = true;
 			}
+		}
+
+		t.$postLink = function () {
+			$scope.$watch('t.project', function () {
+				$scope.$broadcast('refresh');
+			});
+
+			$element.on('appear', function () {
+				if (t.project && t.project != projectService.currentProject) {
+					projectService.currentProject = t.project;
+
+					console.log('Selected project: ', t.project);
+				}
+
+				$scope.$broadcast('refresh');
+			});
 		}
 	}
 })();

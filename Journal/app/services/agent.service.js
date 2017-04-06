@@ -18,8 +18,12 @@
             findPersons: findPersons
         };
 
+        var dispatcher = new EventDispatcher(t);
+
         authenticationService.getAuthenticatedUser(function (user) {
             t.currentUser = user;
+
+            dispatcher.raise('currentUserChanged', user);
         });
 
         return t;
@@ -27,6 +31,8 @@
         function initialize(success, error) {
             authenticationService.getAuthenticatedUser(function (user) {
                 t.currentUser = user;
+
+                dispatcher.raise('currentUserChanged', user);
 
                 if (user) {
                     if (typeof (success) === 'function') {
