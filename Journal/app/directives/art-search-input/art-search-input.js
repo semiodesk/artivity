@@ -61,6 +61,7 @@
                 combo: 'ctrl+f',
                 description: 'Search the current view.',
                 callback: function () {
+                    e.preventDefault();
                     t.focus();
                 }
             })
