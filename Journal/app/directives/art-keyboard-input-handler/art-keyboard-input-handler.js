@@ -52,6 +52,16 @@
             }
         };
 
+        hotkeys.del('?');
+
+        hotkeys.add({
+            combo: 'f1',
+            description: 'Show / hide this help menu.',
+            callback: function() {
+                hotkeys.toggleCheatSheet();
+            }
+        })
+
         hotkeys.add({
             combo: 'backspace',
             description: 'Go back to the previous view.',
@@ -78,14 +88,6 @@
         });
 
         hotkeys.add({
-            combo: 'ctrl+shift+i',
-            description: 'Open development tools.',
-            callback: function () {
-                windowService.currentWindow().openDevTools();
-            }
-        });
-
-        hotkeys.add({
             combo: 'shift+f5',
             description: 'Reload the entire window.',
             callback: function () {
@@ -108,6 +110,14 @@
                 var url = $scope.getUrlWithFragment('/query');
 
                 windowService.openWindow(url);
+            }
+        });
+
+        hotkeys.add({
+            combo: 'ctrl+shift+i',
+            description: 'Open development tools.',
+            callback: function () {
+                windowService.currentWindow().openDevTools();
             }
         });
     }
