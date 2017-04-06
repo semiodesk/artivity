@@ -7,8 +7,8 @@
         var endpoint = apid.endpointUrl + "agents";
 
         var t = {
-            initialize: initialize,
             currentUser: null,
+            initialize: initialize,
             newPerson: newPerson,
             getPerson: getPerson,
             putPerson: putPerson,

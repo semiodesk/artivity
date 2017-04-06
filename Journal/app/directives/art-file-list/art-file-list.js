@@ -29,6 +29,7 @@
 
         t.loading = false;
         t.files = undefined;
+        t.query = '';
 
         t.loadFiles = function () {
             if (typeof (t.onload) === 'function') {
@@ -74,6 +75,24 @@
             });
 
             t.loadFiles();
+
+            $scope.$watch('t.query', function () {
+                if (t.files) {
+                    if (t.query) {
+                        var q = t.query.toLowerCase();
+
+                        for (i = 0; i < t.files.length; i++) {
+                            var f = t.files[i];
+
+                            f.visible = f.label.toLowerCase().includes(q);
+                        }
+                    } else {
+                        for (i = 0; i < t.files.length; i++) {
+                            t.files[i].visible = true;
+                        }
+                    }
+                }
+            });
 
             $scope.$on('refresh', function () {
                 t.loadFiles();
