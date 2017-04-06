@@ -60,7 +60,7 @@
             hotkeys.add({
                 combo: 'ctrl+f',
                 description: 'Search the current view.',
-                callback: function () {
+                callback: function (e) {
                     e.preventDefault();
                     t.focus();
                 }
