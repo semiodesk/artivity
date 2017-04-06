@@ -41,19 +41,33 @@ namespace Artivity.DataModel
     {
 		#region Members
 
-        // Caches the parsed GUID from the URI of the resource.
-        private Guid? _guid = null;
+        [RdfProperty(ART.guid), JsonIgnore]
+        public string __guid { get; set; }
 
+        [JsonIgnore]
         public Guid? Guid
         {
             get
             {
-                if (_guid == null)
+                if (!string.IsNullOrEmpty(__guid))
                 {
-                    TryGetGuid(out _guid);
+                    return new Guid(__guid);
                 }
-
-                return _guid;
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (value.HasValue)
+                {
+                    __guid = value.Value.ToString();
+                }
+                else
+                {
+                    __guid = null;
+                }
             }
         }
 
@@ -62,9 +76,6 @@ namespace Artivity.DataModel
 
         [RdfProperty(FOAF.img)]
         public string Photo { get; set; }
-
-        [RdfProperty(ART.guid)]
-        public string Guid { get; set; }
 
 		#endregion
 
