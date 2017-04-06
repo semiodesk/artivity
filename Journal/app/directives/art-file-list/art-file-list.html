@@ -3,16 +3,17 @@
     <a class="btn btn-chromeless pull-right" ng-click="t.onMoreClicked()"><i class="zmdi zmdi-more-vert"></i></a>
 </div>
 
-<div class="scroll-container scroll-y" ng-show="t.files">
-    <div class="layout-container">
-        <ul ng-show="t.files.length > 0" class="cards">
+<div class="layout-container">
+    <div ng-show="t.files.length > 0" class="scroll-container scroll-y">
+        <ul class="cards">
             <li ng-repeat="file in t.files">
                 <art-file-card file="file " ng-model="file " ng-hide="file.visible === false" jqyoui-draggable="{onStart: 't.onDragStart', onStop:
                         't.onDragStop'} " data-drag="true " data-jqyoui-options="{opacity:0.7, helper: 'clone', appendTo: 'body', placeholder: 'keep', cursorAt:
                         {top: 5, left: 5}} " clicked="t.onClick "></art-file-card>
             </li>
         </ul>
-        <div ng-show="t.files.length === 0" class="text-center" ng-transclude="emptySlot">
-        </div>
+    </div>
+    <div ng-show="t.files.length === 0">
+        <div ng-transclude="emptySlot"></div>
     </div>
 </div>

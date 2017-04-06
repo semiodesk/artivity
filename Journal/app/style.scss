@@ -1158,16 +1158,18 @@ h4 {
 .view-secondary-content {
 	border-left: 1px solid darken($windowBackgroundColor, 3%);
 	background: lighten($windowBackgroundColor, 4%);
+	z-index: 2;
 	position: absolute;
 	top: 0;
 	right: 0;
 	bottom: 0;
-	width: 40%;
-	z-index: 2;
+	width: 500px;
+	transform: translateX(500px);
+	@include transitionEaseInOutCubic(all, 400ms);
 }
 
-.view-secondary-content.invisible {
-	width: 0;
+.view-secondary-content.panel-visible {
+	transform: translateX(0);
 }
 
 .layout-container>.ng-scope,
@@ -1184,7 +1186,6 @@ h4 {
 	height: 100%;
 }
 
-
 /* TOOLBARS */
 
 .toolbar {
@@ -1197,7 +1198,7 @@ h4 {
 	height: $toolbarHeight;
 	min-width: $toolbarHeight;
 	transition: all .2s ease-in;
-	padding: 0;
+	padding: 0 10px;
 	line-height: $toolbarHeight - 1px;
 }
 

@@ -132,20 +132,25 @@
 		t.getPhotoUrl = agentService.getPhotoUrl;
 
 		t.togglePropertyPane = function () {
-			t.collapsed = !t.collapsed;
+			if (!t.new) {
+				// Note: This also works when invoked from keyboard shortcuts.
+				$($element).find('.view-secondary-content').toggleClass('panel-visible');
 
-			if (!t.collapsed && t.project) {
-				projectService.getFolders(t.project.Uri).then(function (result) {
-					if (result.length > 0) {
-						t.project.folder = result[0].Url.Uri;
-					}
-				});
+				t.collapsed = !t.collapsed;
 
-				projectService.getMembers(t.project.Uri).then(function (result) {
-					if (result.length > 0) {
-						t.project.members = result;
-					}
-				});
+				if (!t.collapsed && t.project) {
+					projectService.getFolders(t.project.Uri).then(function (result) {
+						if (result.length > 0) {
+							t.project.folder = result[0].Url.Uri;
+						}
+					});
+
+					projectService.getMembers(t.project.Uri).then(function (result) {
+						if (result.length > 0) {
+							t.project.members = result;
+						}
+					});
+				}
 			}
 		}
 
@@ -155,18 +160,24 @@
 					$scope.$emit('projectAdded', t.project);
 				});
 
-				if (!t.new) {
-					t.collapsed = true;
-				}
+				t.togglePropertyPane();
 			}
 		}
 
 		t.cancel = function () {
 			projectService.currentProject = null;
 
-			if (!t.new) {
-				t.collapsed = true;
-			}
+			t.togglePropertyPane();
+		}
+
+		t.$onInit = function () {
+			hotkeys.add({
+				combo: 'alt+enter',
+				description: 'Toggle the project properties panel.',
+				callback: function () {
+					t.togglePropertyPane();
+				}
+			});
 		}
 
 		t.$postLink = function () {
