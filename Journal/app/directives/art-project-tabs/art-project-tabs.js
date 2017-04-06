@@ -17,12 +17,12 @@
     function ProjectTabsDirectiveController($rootScope, $scope, $uibModal, api, agentService, cookieService, selectionService, projectService) {
         var t = this;
 
+        // USER
+        t.currentUser = agentService.currentUser;
+
+        // PROJECTS
         t.projects = [];
         t.activeTab = cookieService.get('tabs.activeTab', 0);
-
-        $scope.$watch('t.activeTab', function() {
-            cookieService.set('tabs.activeTab', t.activeTab);
-        });
 
         t.closeProject = function (project) {
             projectService.currentProject = project;
@@ -37,10 +37,11 @@
             });
         }
 
-		t.getRecentlyUsedFiles = function (callback) {
-			return api.getRecentFiles().then(callback);
-		}
+        t.getRecentlyUsedFiles = function (callback) {
+            return api.getRecentFiles().then(callback);
+        }
 
+        // DRAG & DROP
         t.droppedFile = null;
 
         t.onFileDropped = function (event) {
@@ -91,6 +92,10 @@
         }
 
         function init() {
+            $scope.$watch('t.activeTab', function () {
+                cookieService.set('tabs.activeTab', t.activeTab);
+            });
+
             // Make the left and right panes resizable.
             $rootScope.$on('dragStarted', function () {
                 $('.project-item').addClass('drop-target');

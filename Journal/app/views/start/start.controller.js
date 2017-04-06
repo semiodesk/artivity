@@ -24,15 +24,10 @@
                 function (response) {
                     stopConnect();
 
-                    // Initialize the current user and view states.
-                    agentService.initialized().then(function () {
-                        $scope.$apply(function () {
-                                // Navigate to the start view.
-                                showStartView(response);
-                            },
-                            function () {
-                                console.warn('Failed to initialize agent service.');
-                            });
+                    agentService.initialize(function () {
+                        showStartView(response);
+                    }, function() {
+                        console.warn('Failed to initialize agent service.');
                     });
                 },
                 function () {

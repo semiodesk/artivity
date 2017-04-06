@@ -7,7 +7,7 @@
         var endpoint = apid.endpointUrl + "agents";
 
         var t = {
-            initialized: null,
+            initialize: initialize,
             currentUser: null,
             newPerson: newPerson,
             getPerson: getPerson,
@@ -18,29 +18,24 @@
             findPersons: findPersons
         };
 
-        t.initialized = init;
-
-        // Initialize the authenticated user in case of a page refresh.
-        init().then(function() {}, function() {});
+        authenticationService.getAuthenticatedUser(function (user) {
+            t.currentUser = user;
+        });
 
         return t;
 
-        function init() {
-            return new Promise(function (resolve, reject) {
-                if (t.currentUser) {
-                    resolve();
-                } else {
-                    t.currentUser = authenticationService.getAuthenticatedUser().then(function (user) {
-                        t.currentUser = user;
+        function initialize(success, error) {
+            authenticationService.getAuthenticatedUser(function (user) {
+                t.currentUser = user;
 
-                        if (t.currentUser) {
-                            resolve();
-                        } else {
-                            reject();
-                        }
-                    }, function() {
-                        reject();
-                    });
+                if (user) {
+                    if (typeof (success) === 'function') {
+                        success(user);
+                    }
+                } else {
+                    if (typeof (error) === 'function') {
+                        error();
+                    }
                 }
             });
         }
