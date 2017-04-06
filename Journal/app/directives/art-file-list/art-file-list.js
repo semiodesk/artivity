@@ -15,28 +15,20 @@
             scope: {
                 'onload': '=',
                 'clicked': '=?',
-                'moreClicked' : '=?'
-            },
-            link: function (scope, element, attr, t) {
-                $(element).on('appear', function (event) {
-                    t.loadFiles();
-                });
-                scope.$watch('t.onload', function (newValue, oldValue) {
-						 t.loadFiles();
-				});
+                'moreClicked': '=?'
             }
         }
     }
 
     angular.module('app').controller('FileListDirectiveController', FileListDirectiveController);
 
-    FileListDirectiveController.$inject = ['$rootScope', '$scope', 'hotkeys'];
+    FileListDirectiveController.$inject = ['$scope', '$element', 'hotkeys'];
 
-    function FileListDirectiveController($rootScope, $scope, hotkeys) {
+    function FileListDirectiveController($scope, $element, hotkeys) {
         var t = this;
 
-        t.files = [];
         t.loading = false;
+        t.files = undefined;
 
         t.loadFiles = function () {
             if (typeof (t.onload) === 'function') {
@@ -46,6 +38,9 @@
                     t.loading = false;
                     t.files = data;
                 });
+            } else {
+                t.loading = false;
+                t.files = undefined;
             }
         }
 
@@ -55,30 +50,34 @@
             }
         }
 
-        t.onMoreClicked = function(e) {
-            if(t.moreClicked && typeof(t.moreClicked) === 'function') {
+        t.onMoreClicked = function (e) {
+            if (t.moreClicked && typeof (t.moreClicked) === 'function') {
                 t.moreClicked();
             }
         }
 
         t.onDragStart = function () {
-            $rootScope.$broadcast('dragStarted');
+            $scope.$emit('dragStarted');
         }
 
         t.onDragStop = function () {
-            $rootScope.$broadcast('dragStopped');
+            $scope.$emit('dragStopped');
         }
 
-        hotkeys.add({
-            combo: 'f5',
-            description: 'Reload the current view.',
-            callback: function () {
-                t.loadFiles();
-            }
-        });
+        t.$onInit = function () {
+            hotkeys.add({
+                combo: 'f5',
+                description: 'Reload the current view.',
+                callback: function () {
+                    t.loadFiles();
+                }
+            });
 
-        $scope.$on('refresh', function() {
             t.loadFiles();
-        });
+
+            $scope.$on('refresh', function () {
+                t.loadFiles();
+            });
+        }
     }
 })();

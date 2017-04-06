@@ -171,7 +171,7 @@ module.exports = function (grunt) {
                     dir: '.',
                     out: buildDistDir,
                     platform: 'win32',
-                    icon: 'app/resources/images/icon.ico',
+                    icon: 'app/resources/img/icon.ico',
                     arch: 'x64',
                     'app-copyright': 'Copyright © 2016 Semiodesk GmbH',
                     win32metadata: {
@@ -192,7 +192,7 @@ module.exports = function (grunt) {
                     dir: '.',
                     out: buildDistDir,
                     platform: 'darwin',
-                    icon: 'app/resources/images/Icons.icns',
+                    icon: 'app/resources/img/Icons.icns',
                     arch: 'x64'
                 }
             }

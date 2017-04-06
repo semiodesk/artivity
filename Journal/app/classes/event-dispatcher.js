@@ -79,10 +79,10 @@ EventDispatcher.prototype.off = function (events, callback) {
         var event = E[i];
         
         if (event in t.listeners) {
-            var i = t.listeners[event].indexOf(callback);
+            var n = t.listeners[event].indexOf(callback);
 
-            if (i > -1) {
-                t.listeners[event].splice(i, 1);
+            if (n > -1) {
+                t.listeners[event].splice(n, 1);
             }
         }
     }

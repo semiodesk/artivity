@@ -33,14 +33,6 @@
                 console.log("Loaded software agent: ", t.agent);
             });
 
-            // Load the user data.
-            agentService.getAccountOwner().then(function (data) {
-                t.user = data;
-                t.user.photoUrl = api.getUserPhotoUrl();
-
-                console.log("Loaded user agent: ", t.user);
-            });
-
             // Make the left and right panes resizable.
             var content = $('.ui-content');
             var sidebar = $('.ui-sidebar-right');
