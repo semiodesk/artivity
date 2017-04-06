@@ -9,13 +9,15 @@
         <div class="layout-container" ng-switch-when="null">
             <art-file-list onload="t.getFiles" clicked="t.viewFile" more-clicked="t.togglePropertyPane">
                 <empty>
-                    <h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+                    <div class="text-center">
+                        <h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+                    </div>
                 </empty>
             </art-file-list>
         </div>
     </div>
-    <div class="view-secondary-content" ng-show="!t.collapsed">
-        <div class="view-toolbar">
+    <div class="view-secondary-content">
+        <div class="toolbar">
             <a class="btn btn-chromeless" ng-click="t.commit()" ng-disabled="projectForm.title.$invalid"><i class="zmdi zmdi-check"></i> <span class="btn-label">Speichern</span></a>
             <a class="btn btn-chromeless pull-right" ng-click="t.cancel()">Cancel</a>
         </div>
