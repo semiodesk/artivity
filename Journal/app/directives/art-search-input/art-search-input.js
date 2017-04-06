@@ -22,18 +22,6 @@
         var t = this;
 
         // FOCUS
-        t.sourceElement = undefined;
-
-        t.onFocused = function (e) {
-            if (e.originalEvent && e.originalEvent.srcElement) {
-                t.sourceElement = $(e.originalEvent.srcElement);
-            }
-        }
-
-        t.onBlurred = function (e) {
-            t.sourceElement = undefined;
-        }
-
         t.onKeyUp = function (e) {
             if (e.keyCode === 27) {
                 if (t.query.length > 0) {
@@ -57,13 +45,15 @@
         }
 
         t.escape = function () {
-            if (t.sourceElement && t.sourceElement.length > 0) {
-                t.sourceElement.get(0).focus();
+            var input = $($element).find('input');
+
+            if (input.length === 1) {
+                input.get(0).blur();
             }
         }
 
         t.$onInit = function () {
-            if(!t.query) {
+            if (!t.query) {
                 t.query = '';
             }
 
