@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="IModelSynchronizationState.cs" />
     <Compile Include="IUser.cs" />
+    <Compile Include="IValidatable.cs" />
     <Compile Include="IViewModule.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="ModelProviderFactory.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />
     <Compile Include="ObjectModel\ModelSynchronizationState.cs" />
+    <Compile Include="ObjectModel\Agents\UserRoles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -32,7 +32,7 @@ using System.Text;
 namespace Artivity.DataModel
 {
 	[RdfClass(PROV.Role)]
-	public class Role : Agent
+	public class Role : SynchronizableResource
 	{
 		#region Constructors
 
@@ -41,5 +41,5 @@ namespace Artivity.DataModel
         public Role(Resource resource) : base(resource.Uri) { }
 
 		#endregion
-	}
+    }
 }

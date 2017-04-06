@@ -19,10 +19,12 @@
     function UserMenuDirectiveController($scope, agentService) {
         var t = this;
 
-        agentService.initialized.then(function () {
+        agentService.initialized().then(function () {
             $scope.$apply(function () {
                 t.name = agentService.currentUser.Name;
                 t.photoUrl = agentService.currentUser.PhotoUrl;
+            }, function () {
+                console.warn('Failed to initialize agent service.');
             });
         });
     }

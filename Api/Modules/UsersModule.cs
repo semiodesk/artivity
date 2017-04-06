@@ -183,9 +183,9 @@ namespace Artivity.Api.Modules
 
             switch(userRole)
             {
-                case UserRoles.AccountOwner: role = art.AccountOwnerRole; break;
-                case UserRoles.ProjectAdministrator: role = art.ProjectAdministratorRole; break;
-                case UserRoles.ProjectMember: role = art.ProjectMemberRole; break;
+                case UserRoles.AccountOwnerRole: role = art.AccountOwnerRole; break;
+                case UserRoles.ProjectAdministratorRole: role = art.ProjectAdministratorRole; break;
+                case UserRoles.ProjectMemberRole: role = art.ProjectMemberRole; break;
                 default: throw new ArgumentException("userRole");
             }
 
@@ -339,11 +339,4 @@ namespace Artivity.Api.Modules
 
         #endregion
     }
-
-    public enum UserRoles
-    {
-        AccountOwner,
-        ProjectAdministrator,
-        ProjectMember
-    };
 }

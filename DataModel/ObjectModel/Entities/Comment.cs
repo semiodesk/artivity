@@ -52,5 +52,14 @@ namespace Artivity.DataModel.Comments
         }
 
         #endregion
+
+        #region Methods
+
+        public override bool Validate()
+        {
+            return !string.IsNullOrEmpty(Message);
+        }
+
+        #endregion
     }
 }

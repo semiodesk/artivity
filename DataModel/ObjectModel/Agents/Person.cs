@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Artivity.DataModel
 {
@@ -39,6 +40,22 @@ namespace Artivity.DataModel
     public class Person : Agent, IPerson
     {
 		#region Members
+
+        // Caches the parsed GUID from the URI of the resource.
+        private Guid? _guid = null;
+
+        public Guid? Guid
+        {
+            get
+            {
+                if (_guid == null)
+                {
+                    TryGetGuid(out _guid);
+                }
+
+                return _guid;
+            }
+        }
 
         [RdfProperty(FOAF.mbox)]
         public string EmailAddress { get; set; }
@@ -53,7 +70,41 @@ namespace Artivity.DataModel
 
         #region Constructors
 
-        public Person(Uri uri) : base(uri) {}
+        public Person(Uri uri) : base(uri)
+        {
+            IsSynchronizable = true;
+        }
+
+        #endregion
+
+        #region Methods
+
+        private bool TryGetGuid(out Guid? guid)
+        {
+            Regex guidExpression = new Regex(@"(?i)\b[\dA-F]{8}-[\dA-F]{4}-[\dA-F]{4}-[\dA-F]{4}-[\dA-F]{12}");
+
+            MatchCollection matches = guidExpression.Matches(Uri.AbsoluteUri);
+
+            Guid g;
+
+            if(matches.Count == 1 && System.Guid.TryParse(matches[0].Value, out g))
+            {
+                guid = g;
+
+                return true;
+            }
+            else
+            {
+                guid = null;
+
+                return false;
+            }
+        }
+
+        public override bool Validate()
+        {
+            return base.Validate() && !string.IsNullOrEmpty(EmailAddress);
+        }
 
         #endregion
     }

@@ -1,15 +1,16 @@
 (function () {
     angular.module('app').factory('agentService', agentService);
 
-    agentService.$inject = ['api'];
+    agentService.$inject = ['api', 'authenticationService'];
 
-    function agentService(api) {
+    function agentService(api, authenticationService) {
         var endpoint = apid.endpointUrl + "agents";
 
         var t = {
             initialized: null,
             currentUser: null,
             newPerson: newPerson,
+            getPerson: getPerson,
             putPerson: putPerson,
             putPhoto: putPhoto,
             getPhotoUrl: getPhotoUrl,
@@ -17,7 +18,10 @@
             findPersons: findPersons
         };
 
-        t.initialized = init();
+        t.initialized = init;
+
+        // Initialize the authenticated user in case of a page refresh.
+        init().then(function() {}, function() {});
 
         return t;
 
@@ -26,25 +30,39 @@
                 if (t.currentUser) {
                     resolve();
                 } else {
-                    getAccountOwner().then(function (user) {
-                        if (user && user.Uri) {
-                            t.currentUser = user;
-                            t.currentUser.PhotoUrl = api.getUserPhotoUrl(user.Uri);
+                    t.currentUser = authenticationService.getAuthenticatedUser().then(function (user) {
+                        t.currentUser = user;
 
+                        if (t.currentUser) {
                             resolve();
                         } else {
                             reject();
                         }
+                    }, function() {
+                        reject();
                     });
                 }
             });
         }
 
         function getAccountOwner() {
-            return api.get(endpoint + '/users?role=AccountOwner').then(
+            return api.get(endpoint + '/users?role=AccountOwnerRole').then(
                 function (response) {
                     if (response && response.data.length === 1) {
                         return response.data[0];
+                    }
+                });
+        }
+
+        function getPerson(agentUri) {
+            var uri = encodeURIComponent(agentUri);
+
+            return api.get(endpoint + '/users?agentUri=' + uri).then(
+                function (response) {
+                    console.log(response);
+
+                    if (response && response.data) {
+                        return response.data;
                     }
                 });
         }
@@ -68,14 +86,18 @@
         }
 
         function putPhoto(agentUri, data) {
-            return api.put(endpoint + '/users/photo?agentUri=' + agentUri, data).then(
+            var uri = encodeURIComponent(agentUri);
+
+            return api.put(endpoint + '/users/photo?agentUri=' + uri, data).then(
                 function (response) {
                     return response;
                 });
         }
 
         function getPhotoUrl(agentUri) {
-            return endpoint + '/users/photo?agentUri=' + agentUri;
+            var uri = encodeURIComponent(agentUri);
+
+            return endpoint + '/users/photo?agentUri=' + uri;
         }
 
         function findPersons(query) {
