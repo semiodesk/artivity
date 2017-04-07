@@ -46,8 +46,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public FilesModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
-            : base("/artivity/api/1.0/files", modelProvider, platformProvider, userProvider)
+        public FilesModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/files", modelProvider, platformProvider)
         {
             
 

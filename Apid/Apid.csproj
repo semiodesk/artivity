@@ -121,7 +121,6 @@
     <Compile Include="Modules\SetupModule.cs" />
     <Compile Include="Modules\SparqlModule.cs" />
     <Compile Include="Modules\SyncModule.cs" />
-    <Compile Include="Platform\UserProvider.cs" />
     <Compile Include="Plugins\PluginManifestRegistryInfo.cs" />
     <Compile Include="Plugins\ProgramInstallationWatchdogFactory.cs" />
     <Compile Include="Protocols\Atom\AtomLink.cs" />

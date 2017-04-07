@@ -101,7 +101,6 @@ namespace Artivity.Apid
                 _container.Register<IArtivityServiceSynchronizationProvider>(SynchronizationProvider);
             }
 
-            container.Register<IUserProvider, UserProvider>();
         }
             
         protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container, IPipelines pipelines, NancyContext context)

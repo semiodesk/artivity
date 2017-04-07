@@ -25,10 +25,10 @@
                         user.PhotoUrl = api.getUserPhotoUrl(user.Uri);
 
                         result(user);
-                    } else {
-                        result(null);
-                    }
+                        return;
+                    } 
                 }
+                result(null);
             }, function() {
                 result(null);
             });
