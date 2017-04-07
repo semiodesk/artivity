@@ -57,7 +57,7 @@ namespace Artivity.Api.Modules
                 {
                     UriRef entityUri = new UriRef(Request.Query.entityUri);
 
-                    return GetCommentsFromEntity(entityUri);
+                    return GetCommentsFromPrimarySource(entityUri);
                 }
                 else
                 {
@@ -71,7 +71,7 @@ namespace Artivity.Api.Modules
 
                 CommentParameter comment = this.Bind<CommentParameter>();
 
-                if (!string.IsNullOrEmpty(comment.text) && IsUri(comment.entity))
+                if (comment.Validate() && IsUri(comment.primarySource))
                 {
                     return PostComment(comment);
                 }
@@ -85,17 +85,17 @@ namespace Artivity.Api.Modules
             {
                 InitializeRequest();
 
-                RequestParameter request = this.Bind<RequestParameter>();
+                CommentParameter request = this.Bind<CommentParameter>();
 
-                if (!string.IsNullOrEmpty(request.text) && IsUri(request.entity) && request.associations.Any())
+                if (request.Validate() && IsUri(request.primarySource) && request.associations.Any())
                 {
-                    if (request.requestType == RequestTypes.Approval)
+                    if (request.type == CommentTypes.ApprovalRequest)
                     {
                         return PostRequest<DataModel.Comments.ApprovalRequest>(request);
                     }
                     else
                     {
-                        return PostRequest<DataModel.Comments.Request>(request);
+                        return PostRequest<DataModel.Comments.FeedbackRequest>(request);
                     }
                 }
                 else
@@ -116,37 +116,65 @@ namespace Artivity.Api.Modules
 
         #region Methods
 
-        private Response GetCommentsFromEntity(UriRef entityUri)
+        private Response GetCommentsFromPrimarySource(UriRef entityUri)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
-                return HttpStatusCode.BadRequest;
+            {
+                return HttpStatusCode.InternalServerError;
+            }
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?uri
-                    ?agent
-                    ?time
-                    ?message
+	                ?type
+	                ?uri
+	                ?agent
+	                ?message
+	                ?primarySource
+	                ?startTime
+	                ?endTime
+	                CONCAT('[', STR(GROUP_CONCAT(DISTINCT ?association_; SEPARATOR=',')),']') AS ?associations
                 WHERE
                 {
-                    ?activity prov:generated ?uri ;
-                        prov:wasStartedBy ?agent .
-
-                    ?uri a art:Comment ;
-                        prov:hadPrimarySource @entity ;
-                        nie:created ?time ;
-                        art:deleted @undefined ;
-                        sioc:content ?message .
+	                ?activity prov:generated ?uri ;
+		                prov:wasStartedBy ?agent ;
+		                prov:startedAtTime ?startTime ;
+		                prov:endedAtTime ?endTime .
+		
+	                ?uri a ?t ;
+		                prov:hadPrimarySource @entity;
+		                nie:created ?time ;
+		                art:deleted @undefined;
+		                sioc:content ?message .
+	
+	                BIND(@entity AS ?primarySource)
+	                BIND(STRAFTER(STR(?t) , STR(art:)) AS ?type)
+	
+	                OPTIONAL
+	                {
+		                ?activity prov:qualifiedAssociation [ prov:agent ?a ; prov:hadRole ?r ] .
+	
+		                BIND(CONCAT('{{agent: \'', STR(?a),'\', role: \'', STR(?r), '\'}}') AS ?association_)
+	                }
                 }
-                ORDER BY DESC(?time)");
+                GROUP BY ?type ?uri ?agent ?message ?primarySource ?startTime ?endTime
+                ORDER BY DESC (?endTime)
+            ");
 
             query.Bind("@entity", entityUri);
             query.Bind("@undefined", DateTime.MinValue);
 
-            var bindings = model.GetBindings(query, true).ToList();
+            List<BindingSet> result = model.GetBindings(query).ToList();
 
-            return Response.AsJson(bindings);
+            foreach(BindingSet b in result)
+            {
+                string json = b["associations"].ToString();
+
+                b["associations"] = JsonConvert.DeserializeObject(json);
+            }
+
+            return Response.AsJsonSync(result);
         }
 
         private Response PostComment(CommentParameter parameter)
@@ -158,14 +186,14 @@ namespace Artivity.Api.Modules
                 return HttpStatusCode.InternalServerError;
             }
 
-            Entity entity = new Entity(new UriRef(parameter.entity));
+            Entity primarySource = new Entity(new UriRef(parameter.primarySource));
 
-            if (model.ContainsResource(entity))
+            if (model.ContainsResource(primarySource))
             {
                 Comment comment = model.CreateResource<Comment>();
                 comment.CreationTimeUtc = parameter.endTime;
-                comment.PrimarySource = entity;
-                comment.Message = parameter.text;
+                comment.PrimarySource = primarySource;
+                comment.Message = parameter.message;
                 comment.IsSynchronizable = true;
                 comment.Commit();
 
@@ -174,7 +202,7 @@ namespace Artivity.Api.Modules
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
                 activity.GeneratedEntities.Add(comment);
-                activity.UsedEntities.Add(entity);
+                activity.UsedEntities.Add(primarySource);
 
                 if (parameter.marks != null)
                 {
@@ -194,13 +222,13 @@ namespace Artivity.Api.Modules
             }
             else
             {
-                PlatformProvider.Logger.LogError("Model does not contain entity {0}", entity);
+                PlatformProvider.Logger.LogError("Model does not contain entity {0}", primarySource);
 
                 return HttpStatusCode.BadRequest;
             }
         }
 
-        private Response PostRequest<T>(RequestParameter parameter) where T : DataModel.Comments.Request
+        private Response PostRequest<T>(CommentParameter parameter) where T : FeedbackRequest
         {
             IModel model = ModelProvider.GetActivities();
 
@@ -209,15 +237,15 @@ namespace Artivity.Api.Modules
                 return HttpStatusCode.InternalServerError;
             }
 
-            Entity entity = new Entity(new UriRef(parameter.entity));
+            Entity primarySource = new Entity(new UriRef(parameter.primarySource));
 
-            if (model.ContainsResource(entity))
+            if (model.ContainsResource(primarySource))
             {
                 var request = model.CreateResource<T>();
 
                 request.CreationTimeUtc = parameter.endTime;
-                request.PrimarySource = entity;
-                request.Message = parameter.text;
+                request.PrimarySource = primarySource;
+                request.Message = parameter.message;
                 request.IsSynchronizable = true;
                 request.Commit();
 
@@ -226,7 +254,7 @@ namespace Artivity.Api.Modules
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
                 activity.GeneratedEntities.Add(request);
-                activity.UsedEntities.Add(entity);
+                activity.UsedEntities.Add(primarySource);
 
                 if (parameter.marks != null)
                 {
@@ -258,7 +286,7 @@ namespace Artivity.Api.Modules
             }
             else
             {
-                PlatformProvider.Logger.LogError("Model does not contain entity {0}", entity);
+                PlatformProvider.Logger.LogError("Model does not contain entity {0}", primarySource);
 
                 return HttpStatusCode.BadRequest;
             }
@@ -300,32 +328,46 @@ namespace Artivity.Api.Modules
 
         #region Types
 
-        private class CommentParameter
+        private class CommentParameter : IValidatable
         {
             #region Members
 
+            public CommentTypes type { get; set; }
+
             public string agent { get; set; }
 
-            public string entity { get; set; }
+            public string primarySource { get; set; }
 
             public DateTime startTime { get; set; }
 
             public DateTime endTime { get; set; }
 
-            public string text { get; set; }
+            public string message { get; set; }
 
             public string[] marks { get; set; }
 
-            #endregion
-        }
-
-        private class RequestParameter : CommentParameter
-        {
-            #region Members
-
-            public RequestTypes requestType { get; set; }
-
             public List<AssociationParameter> associations { get; set; }
+
+            #endregion
+
+            #region Constructors
+
+            public CommentParameter()
+            {
+                associations = new List<AssociationParameter>();
+            }
+
+            #endregion
+
+            #region Methods
+
+            public bool Validate() {
+                return !string.IsNullOrEmpty(message)
+                    && !string.IsNullOrEmpty(agent)
+                    && !string.IsNullOrEmpty(primarySource)
+                    && DateTime.MinValue < startTime
+                    && startTime < endTime;
+            }
 
             #endregion
         }
@@ -334,14 +376,14 @@ namespace Artivity.Api.Modules
         {
             #region Members
 
-            public string agent;
+            public string agent { get; set; }
 
-            public string role;
+            public string role { get; set; }
 
             #endregion
         }
 
-        private enum RequestTypes { Request, Approval };
+        private enum CommentTypes { Comment, FeedbackRequest, ApprovalRequest };
 
         #endregion
     }

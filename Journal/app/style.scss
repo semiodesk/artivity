@@ -600,10 +600,12 @@ button:focus,
 	display: table-row;
 	vertical-align: middle;
 	color: $itemTextColor;
-	background: $itemBackgroundColor;
+	border-top: 1px solid $itemBackgroundColor;
+	background: transparent;
 }
 
 .list-item-unstyled {
+	border: none;
 	background: transparent;
 }
 
@@ -2351,6 +2353,9 @@ button[disabled]:hover {
 	margin: 5px 0;
 }
 
+.comment-list .request-item {
+	background: $infoColor;
+}
 
 /* SEARCH */
 

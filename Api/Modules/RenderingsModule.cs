@@ -282,7 +282,6 @@ namespace Artivity.Api.Modules
 
         private Response GetCanvasRenderingsFromEntity(UriRef entityUri)
         {
-
             string queryString = @"
                 SELECT DISTINCT
                     ?time
