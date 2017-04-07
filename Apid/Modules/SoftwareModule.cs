@@ -111,15 +111,15 @@ namespace Artivity.Apid.Modules
                     return GetSoftwareAgentAssociations();
                 }
 
-                string role = Request.Query["role"];
+                string role = Request.Query.role;
 
                 if (string.IsNullOrEmpty(role) || !Uri.IsWellFormedUriString(role, UriKind.Absolute))
                 {
                     return HttpStatusCode.BadRequest;
                 }
 
-                string agent = Request.Query["agent"];
-                string version = Request.Query["version"];
+                string agent = Request.Query.agent;
+                string version = Request.Query.version;
 
                 if (string.IsNullOrEmpty(agent))
                 {
@@ -308,7 +308,7 @@ namespace Artivity.Apid.Modules
 
             if (File.Exists(iconPath))
             {
-                FileStream fileStream = new FileStream(iconPath, FileMode.Open);
+                FileStream fileStream = File.OpenRead(iconPath);
 
                 StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(iconPath));
 

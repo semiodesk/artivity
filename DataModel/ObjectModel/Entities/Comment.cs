@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.DataModel
+namespace Artivity.DataModel.Comments
 {
     [RdfClass(ART.Comment)]
     public class Comment : Entity
@@ -49,6 +49,15 @@ namespace Artivity.DataModel
         public Comment(Uri uri)
             : base(uri)
         {
+        }
+
+        #endregion
+
+        #region Methods
+
+        public override bool Validate()
+        {
+            return !string.IsNullOrEmpty(Message);
         }
 
         #endregion

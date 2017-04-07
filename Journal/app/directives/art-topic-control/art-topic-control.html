@@ -1,19 +1,37 @@
 <div class="layout-root">
-    <ul class="list-view">
-        <li class="list-item" role="presentation" ng-repeat="topic in t.topics" ng-mouseenter="t.showMarks(topic)" ng-mouseleave="t.hideMarks(topic)">
-            <div class="col expand padding-x-md padding-y-md">
-                <a href="">{{topic.title}}</a>
-            </div>
-            <div class="col">
-                <a class="btn" ng-click="t.createMark(topic)"><i class="zmdi zmdi-photo-size-select-small"></i></a>
-            </div>
-        </li>
-    </ul>
+    <div class="layout-container" ng-show="t.selectedTopic === null">
+        <ul class="list-view">
+            <li class="list-item" role="presentation" ng-repeat="topic in t.topics" ng-mouseenter="t.showMarks(topic)" ng-mouseleave="t.hideMarks(topic)">
+                <div class="col">
+                </div>
+                <div class="col expand padding-x-md padding-y-md">
+                    <a class="link title" ng-click="t.selectTopic(topic)">{{topic.title}}</a>
+                </div>
+                <div class="col">
+                    <a class="btn" ng-click="t.createMark(topic)"><i class="zmdi zmdi-photo-size-select-small"></i></a>
+                </div>
+                <div class="col">
+                    <a class="btn" ng-click="t.deleteTopic(topic)"><i class="zmdi zmdi-close-circle"></i></a>
+                </div>
+            </li>
+        </ul>
 
-    <div class="ctl-topic padding-x-xs padding-y-xs" style="position: absolute; bottom: 1px; left: 0; right: 0;">
-        <input type="text" class="form-control stretch-horizontal no-margin" style="margin-bottom: 5px;" placeholder="Create a new topic"
-            ng-model="t.topic.title" ng-change="t.updateTopic()" ng-enter="t.postTopic()" ng-esc="t.resetTopic()"></input>
-        <button class="btn btn-default pull-right" ng-click="t.postTopic()">Create</button>
-        <div class="clearfix"></div>
+        <div class="ctl-topic padding-x-xs padding-y-xs" style="position: absolute; bottom: 1px; left: 0; right: 0;">
+            <input type="text" class="form-control stretch-horizontal no-margin" style="margin-bottom: 5px;" placeholder="Create a new topic"
+                ng-model="t.topic.title" ng-change="t.updateTopic(t.newTopic)" ng-enter="t.postTopic(t.newTopic)" ng-esc="t.resetTopic()"></input>
+        </div>
+    </div>
+    <div class="table-layout" ng-show="t.selectedTopic">
+        <div class="row">
+            <div class="toolbar toolbar-view">
+                <a class="btn btn-chromeless" ng-click="t.selectTopic(null)"><i class="zmdi zmdi-chevron-left"></i></a>
+                <div class="txt txt-title" ng-bind="t.selectedTopic.title"></div>
+            </div>
+        </div>
+        <div class="row expand">
+            <div class="layout-container">
+                <art-chat-control entity-uri="t.selectedTopic.uri"></art-chat-control>
+            </div>
+        </div>
     </div>
 </div>

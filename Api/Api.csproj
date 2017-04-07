@@ -31,6 +31,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="dotNetRDF, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\dotNetRDF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dotNetRDF.Data.Virtuoso, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OpenLink.Data.Virtuoso, Version=7.2.3215.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity, Version=0.9.152.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -48,27 +68,14 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="dotNetRDF.Data.Virtuoso">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="dotNetRDF">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\dotNetRDF.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenLink.Data.Virtuoso">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-    </Reference>
-    <Reference Include="VDS.Common">
+    <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
       <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\VDS.Common.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IO\ArchiveWriters\FileArchiveWriter.cs" />
+    <Compile Include="IO\ArchiveWriters\CommunicationArchiveWriter.cs" />
+    <Compile Include="IO\ArchiveWriters\RevisionArchiveWriter.cs" />
     <Compile Include="IO\S3Uploader.cs" />
     <Compile Include="Modules\CommentsModule.cs" />
     <Compile Include="Infrastructure\StreamExtensions.cs" />
@@ -82,6 +89,7 @@
     <Compile Include="Modules\TasksModule.cs" />
     <Compile Include="Modules\UsersModule.cs" />
     <Compile Include="Parameters\MarkParameter.cs" />
+    <Compile Include="Parameters\ProjectParameter.cs" />
     <Compile Include="Parameters\TaskParameter.cs" />
     <Compile Include="Parameters\TopicParameter.cs" />
     <Compile Include="Platform\IThumbnailProvider.cs" />
@@ -90,7 +98,6 @@
     <Compile Include="IO\ArchiveReader.cs" />
     <Compile Include="IO\ArchiveWriterBase.cs" />
     <Compile Include="IO\BackupWriter.cs" />
-    <Compile Include="Modules\EntityModuleBase.cs" />
     <Compile Include="IO\FileNameEncoder.cs" />
     <Compile Include="Platform\IPlatformProvider.cs" />
     <Compile Include="Infrastructure\ILogger.cs" />

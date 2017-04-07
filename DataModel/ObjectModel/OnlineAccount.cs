@@ -34,7 +34,7 @@ using System.Text;
 namespace Artivity.DataModel
 {
     [RdfClass(FOAF.OnlineAccount)]
-    public class OnlineAccount : Resource
+    public class OnlineAccount : Resource, IValidatable
     {
         #region Members
 
@@ -53,10 +53,10 @@ namespace Artivity.DataModel
         [RdfProperty(FOAF.description)]
         public string Description { get; set; }
 
-        [RdfProperty(NAO.created)]
+        [RdfProperty(NIE.created)]
         public DateTime CreationTime { get; set; }
 
-        [RdfProperty(NAO.lastModified)]
+        [RdfProperty(NIE.lastModified)]
         public DateTime LastModificationTime { get; set; }
 
         /// <summary>
@@ -95,6 +95,11 @@ namespace Artivity.DataModel
             HttpAuthenticationParameter parameter = AuthenticationParameters.FirstOrDefault(p => p.Name == name);
 
             return parameter != null ? parameter.Value : null;
+        }
+
+        public virtual bool Validate()
+        {
+            return !string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(Title) && ServiceUrl != null && ServiceClient != null;
         }
 
         #endregion

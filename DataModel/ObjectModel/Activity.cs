@@ -34,7 +34,7 @@ using System.Text;
 namespace Artivity.DataModel
 {
     [RdfClass(PROV.Activity)]
-    public class Activity : SynchronizableResource
+    public class Activity : SynchronizableResource, IValidatable
     {
 		#region Members
 
@@ -70,6 +70,35 @@ namespace Artivity.DataModel
         #region Constructors
 
         public Activity(Uri uri) : base(uri) {}
+
+        #endregion
+
+        #region Methods
+
+        public virtual bool Validate()
+        {
+            /*
+            bool result = Associations.Count > 0 && StartTime > DateTime.MinValue;
+            
+            if(EndTime > DateTime.MinValue)
+            {
+                return result & EndTime > StartTime;
+            }
+            else
+            {
+                return result;
+            }
+            */
+
+            if (EndTime > DateTime.MinValue)
+            {
+                return EndTime > StartTime;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         #endregion
     }

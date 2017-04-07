@@ -56,6 +56,8 @@ namespace Artivity.Api.Modules
         {
             Get["/"] = parameters =>
             {
+                InitializeRequest();
+
                 if(Request.Query.Count == 0)
                 {
                     return GetPersons();
@@ -79,6 +81,10 @@ namespace Artivity.Api.Modules
                         return HttpStatusCode.BadRequest;
                     }
                 }
+                else if(!string.IsNullOrEmpty(Request.Query.q))
+                {
+                    return GetPersonsFromQuery(Request.Query.q);
+                }
                 else
                 {
                     return HttpStatusCode.BadRequest;
@@ -87,11 +93,38 @@ namespace Artivity.Api.Modules
 
             Put["/"] = parameters =>
             {
+                InitializeRequest();
+
                 return PutPerson(Request.Body);
+            };
+
+            Delete["/"] = parameters =>
+            {
+                InitializeRequest();
+
+                if (IsUri(Request.Query.agentUri))
+                {
+                    UriRef agentUri = new UriRef(Request.Query.agentUri);
+
+                    return DeletePerson(agentUri);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+            };
+
+            Get["/new"] = parameters =>
+            {
+                InitializeRequest();
+
+                return CreatePerson();
             };
 
             Get["/photo"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.agentUri))
                 {
                     UriRef agentUri = new UriRef(Request.Query.agentUri);
@@ -106,6 +139,8 @@ namespace Artivity.Api.Modules
 
             Put["/photo"] = parameters =>
             {
+                InitializeRequest();
+
                 if (IsUri(Request.Query.agentUri))
                 {
                     UriRef agentUri = new UriRef(Request.Query.agentUri);
@@ -141,13 +176,16 @@ namespace Artivity.Api.Modules
 
         private Response GetPersonsFromRole(UserRoles userRole)
         {
+            IModel Model = ModelProvider.GetAgents();
+            if( Model == null )
+                return HttpStatusCode.BadRequest;
             Resource role;
 
             switch(userRole)
             {
-                case UserRoles.AccountOwner: role = art.AccountOwnerRole; break;
-                case UserRoles.ProjectAdministrator: role = art.ProjectAdministratorRole; break;
-                case UserRoles.ProjectMember: role = art.ProjectMemberRole; break;
+                case UserRoles.AccountOwnerRole: role = art.AccountOwnerRole; break;
+                case UserRoles.ProjectAdministratorRole: role = art.ProjectAdministratorRole; break;
+                case UserRoles.ProjectMemberRole: role = art.ProjectMemberRole; break;
                 default: throw new ArgumentException("userRole");
             }
 
@@ -162,40 +200,53 @@ namespace Artivity.Api.Modules
 
             query.Bind("@role", role);
 
-            List<Person> persons = ModelProvider.GetAgents().GetResources<Person>(query, true).ToList();
+            List<Person> persons = Model.GetResources<Person>(query, true).ToList();
 
             return Response.AsJsonSync(persons);
         }
 
-        private Association CreateAgentAssociation(UriRef uid)
+        private Response GetPersonsFromQuery(string q)
         {
-            // See if there is already a person defined..
-            Person user;
+            IModel agents = ModelProvider.GetAgents();
 
-            IModel model = ModelProvider.GetAgents();
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT ?s ?p ?o WHERE
+                {
+                    ?s ?p ?o .
+                    ?s foaf:name ?name .
+                    ?s foaf:mbox ?email .
 
-            if (!model.ContainsResource(uid))
+                    FILTER(STRSTARTS(LCASE(?name), @q) || STRSTARTS(LCASE(?email), @q))
+                }");
+
+            query.Bind("@q", q.ToLowerInvariant());
+
+            List<Person> persons = agents.GetResources<Person>(query).ToList();
+
+            return Response.AsJsonSync(persons);
+        }
+
+        private Response DeletePerson(Uri agentUri)
+        {
+            IModel agents = ModelProvider.GetAgents();
+
+            if(agents.ContainsResource(agentUri))
             {
-                PlatformProvider.Logger.LogInfo("Creating new user profile..");
+                agents.DeleteResource(agentUri);
 
-                // If not, create one.
-                user = model.CreateResource<Person>(uid);
-                user.Commit();
+                return HttpStatusCode.OK;
             }
             else
             {
-                PlatformProvider.Logger.LogInfo("Upgrading user profile..");
-
-                user = model.GetResource<Person>(uid);
+                return HttpStatusCode.NotModified;
             }
+        }
 
-            // Add the user role association.
-            Association association = model.CreateResource<Association>();
-            association.Agent = user;
-            association.Role = new Role(art.AccountOwnerRole);
-            association.Commit();
+        private Response CreatePerson()
+        {
+            Person person = ModelProvider.GetAgents().CreateResource<Person>(ModelProvider.CreateUri<Person>());
 
-            return association;
+            return Response.AsJsonSync(person);
         }
 
         private Response PutPerson(RequestStream stream)
@@ -288,11 +339,4 @@ namespace Artivity.Api.Modules
 
         #endregion
     }
-
-    public enum UserRoles
-    {
-        AccountOwner,
-        ProjectAdministrator,
-        ProjectMember
-    };
 }

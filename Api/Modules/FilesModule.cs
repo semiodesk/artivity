@@ -49,8 +49,12 @@ namespace Artivity.Api.Modules
         public FilesModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
             : base("/artivity/api/1.0/files", modelProvider, platformProvider)
         {
+            
+
             Get["/"] = parameters =>
             {
+                InitializeRequest();
+
                 string uri = Request.Query.uri;
                 string url = Request.Query.url;
                 string create = Request.Query.create;
@@ -76,6 +80,8 @@ namespace Artivity.Api.Modules
 
             Get["/recent"] = parameters =>
             {
+                InitializeRequest();
+
                 GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
 
                 return GetRecentFiles(settings);
@@ -83,28 +89,48 @@ namespace Artivity.Api.Modules
 
             Get["/revisions"] = parameters =>
             {
-                GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
+                InitializeRequest();
 
-                return GetDerivedEntitiesFromFile(settings);
+                if (IsUri(Request.Query.fileUri))
+                {
+                    UriRef fileUri = new UriRef(Request.Query.fileUri);
+
+                    return GetRevisionsFromFile(fileUri);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
 
             Get["/revisions/latest"] = parameters =>
             {
-                GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
+                InitializeRequest();
 
-                return GetLatestDerivedEntityFromFile(settings);
+                if (IsUri(Request.Query.fileUri))
+                {
+                    UriRef fileUri = new UriRef(Request.Query.fileUri);
+
+                    return GetLatestRevisionFromFile(fileUri);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
             };
 
             Put["/revisions/latest/publish"] = parameters =>
             {
-                string fileUri = Request.Query.uri;
+                InitializeRequest();
+
+                string fileUri = Request.Query.fileUri;
 
                 if (string.IsNullOrEmpty(fileUri) || !IsUri(fileUri))
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return PublishLatestDerivedEntityFromFile(new UriRef(fileUri));
+                return PublishLatestRevision(new UriRef(fileUri));
             };
         }
 
@@ -114,6 +140,10 @@ namespace Artivity.Api.Modules
 
         private Response GetRecentFiles(GetFilesSettings settings)
         {
+            var model = ModelProvider.GetAll();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
+
             string OrderClause = settings.GetOrderClause();
             string FilterClause = settings.GetFilterClause();
             string LimitClause = settings.GetLimitClause();
@@ -152,121 +182,88 @@ namespace Artivity.Api.Modules
                       ?entity prov:qualifiedRevision / prov:entity ?x .
                     }}
 
+                    FILTER NOT EXISTS
+                    {{
+                        ?activity a art:Project .
+                        ?activity prov:qualifiedUsage / prov:entity ?file .
+                    }}
+
                     {0}
                 }}
                 GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
 
-            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, PlatformProvider.GetFilesQueryModifier);
+            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, ModelProvider.GetFilesQueryModifier);
 
             ISparqlQuery query = new SparqlQuery(queryString);
 
-            var bindings = ModelProvider.GetAll().GetBindings(query);
+            var bindings = model.GetBindings(query);
 
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetDerivedEntitiesFromFile(GetFilesSettings settings)
+        private Response GetRevisionsFromFile(UriRef fileUri)
         {
-            string OrderClause = settings.GetOrderClause();
-            string FilterClause = settings.GetFilterClause();
-            string LimitClause = settings.GetLimitClause();
-            string OffsetClause = settings.GetOffsetClause();
+            var model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
-            string queryString = @"
-                SELECT DISTINCT
-                    MAX(?t) AS ?time 
-                    ?entityUri
-                    ?file AS ?uri
-                    ?label 
-                    SAMPLE(?p) AS ?thumbnail 
-                    COALESCE(?agentColor, '#cecece') AS ?agentColor
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?time
+                    ?revision
+                    COALESCE(?remote, -1) AS ?remote
                 WHERE
-                {{
-                    ?activity prov:generated | prov:used ?entity ;
-                        prov:startedAtTime ?startTime ;
-                        prov:endedAtTime ?endTime .
-  
-                    ?entity nie:isStoredAs ?file.
-                    ?file rdfs:label ?label .
+                {
+                    ?revision nie:isStoredAs @file ; nie:created ?time .
 
-                    BIND(STRBEFORE(STR(?entity), '#') AS ?e).
-                    BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
-                    {4}
-                    BIND(IF(BOUND(?endTime), ?endTime, ?startTime) AS ?t).
+                    OPTIONAL
+                    {
+                        ?revision arts:synchronizationState / arts:lastRemoteRevision ?remote .
+                    }
+                }
+                ORDER BY DESC(?time)
+            ");
 
-                    OPTIONAL {{
-                        ?activity prov:qualifiedAssociation / prov:agent ?agent .
+            query.Bind("@file", fileUri);
 
-                        ?agent a prov:SoftwareAgent.
-                        ?agent art:hasColourCode ?agentColor .
-                    }}
-
-                    FILTER NOT EXISTS {{
-                      ?entity prov:qualifiedRevision / prov:entity ?x .
-                    }}
-
-                    {0}
-                }}
-                GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
-
-            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, PlatformProvider.GetFilesQueryModifier);
-
-            ISparqlQuery query = new SparqlQuery(queryString);
-
-            var bindings = ModelProvider.GetAll().GetBindings(query);
+            List<BindingSet> bindings = model.GetBindings(query).ToList();
 
             return Response.AsJsonSync(bindings);
         }
 
-        private Response GetLatestDerivedEntityFromFile(GetFilesSettings settings)
+        private Response GetLatestRevisionFromFile(UriRef fileUri)
         {
-            string OrderClause = settings.GetOrderClause();
-            string FilterClause = settings.GetFilterClause();
-            string LimitClause = settings.GetLimitClause();
-            string OffsetClause = settings.GetOffsetClause();
+            var model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
-            string queryString = @"
-                SELECT DISTINCT
-                    MAX(?t) AS ?time 
-                    ?entityUri
-                    ?file AS ?uri
-                    ?label 
-                    SAMPLE(?p) AS ?thumbnail 
-                    COALESCE(?agentColor, '#cecece') AS ?agentColor
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?time
+                    ?revision
+                    COALESCE(?remote, -1) AS ?remote
                 WHERE
-                {{
-                    ?activity prov:generated | prov:used ?entity ;
-                        prov:startedAtTime ?startTime ;
-                        prov:endedAtTime ?endTime .
-  
-                    ?entity nie:isStoredAs ?file.
-                    ?file rdfs:label ?label .
+                {
+                    ?revision nie:isStoredAs @file .
 
-                    BIND(STRBEFORE(STR(?entity), '#') AS ?e).
-                    BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
-                    {4}
-                    BIND(IF(BOUND(?endTime), ?endTime, ?startTime) AS ?t).
+                    @file nie:created ?time .
 
-                    OPTIONAL {{
-                        ?activity prov:qualifiedAssociation / prov:agent ?agent .
+                    OPTIONAL
+                    {
+                        ?revision arts:synchronizationState / arts:lastRemoteRevision ?remote .
+                    }
 
-                        ?agent a prov:SoftwareAgent.
-                        ?agent art:hasColourCode ?agentColor .
-                    }}
+                    FILTER NOT EXISTS
+                    {
+                        ?revision prov:qualifiedRevision / prov:entity ?newer .
+                    }
+                }
+                LIMIT 1
+            ");
 
-                    FILTER NOT EXISTS {{
-                      ?entity prov:qualifiedRevision / prov:entity ?x .
-                    }}
+            query.Bind("@file", fileUri);
 
-                    {0}
-                }}
-                GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
-
-            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, PlatformProvider.GetFilesQueryModifier);
-
-            ISparqlQuery query = new SparqlQuery(queryString);
-
-            var bindings = ModelProvider.GetAll().GetBindings(query);
+            List<BindingSet> bindings = model.GetBindings(query).ToList();
 
             return Response.AsJsonSync(bindings);
         }
@@ -276,9 +273,11 @@ namespace Artivity.Api.Modules
         /// </summary>
         /// <param name="fileUri"></param>
         /// <returns></returns>
-        private Response PublishLatestDerivedEntityFromFile(Uri fileUri)
+        private Response PublishLatestRevision(Uri fileUri)
         {
             IModel Model = ModelProvider.GetActivities();
+            if (Model == null)
+                return HttpStatusCode.BadRequest;
 
             SparqlQuery q = new SparqlQuery(@"
                 DESCRIBE ?entity 
@@ -288,7 +287,7 @@ namespace Artivity.Api.Modules
 
                     FILTER NOT EXISTS 
                     {
-                        ?v prov:qualifiedRevision / prov:entity ?entity
+                        ?entity prov:qualifiedRevision / prov:entity ?newer .
                     }
                 }");
 
@@ -298,16 +297,8 @@ namespace Artivity.Api.Modules
 
             if (entity != null)
             {
-                entity.Publish = true;
+                entity.IsSynchronizable = true;
                 entity.Commit();
-
-                // Now we make sure the file has the synchronization state attached.
-                var file = Model.GetResource<FileDataObject>(fileUri);
-
-                if (file.SynchronizationState == null)
-                {
-                    file.Commit();
-                }
 
                 return Response.AsJsonSync(true);
             }
@@ -319,6 +310,10 @@ namespace Artivity.Api.Modules
 
         private Response GetFileFromUri(Uri fileUri)
         {
+            var model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
+
             string queryString = @"
                 SELECT
                     ?uri ?folder ?label ?created ?lastModified
@@ -336,7 +331,8 @@ namespace Artivity.Api.Modules
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@uri", fileUri);
 
-            BindingSet bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
+            
+            BindingSet bindings = model.GetBindings(query).FirstOrDefault();
 
             return Response.AsJsonSync(bindings);
         }

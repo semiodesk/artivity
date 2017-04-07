@@ -13,9 +13,9 @@
 
     angular.module('app').controller('UserSettingsDirectiveFormController', UserSettingsDirectiveFormController);
 
-    UserSettingsDirectiveFormController.$inject = ['$scope', 'api', 'settingsService'];
+    UserSettingsDirectiveFormController.$inject = ['$scope', 'api', 'agentService', 'settingsService'];
 
-    function UserSettingsDirectiveFormController($scope, api, settingsService) {
+    function UserSettingsDirectiveFormController($scope, api, agentService, settingsService) {
         var t = this;
         var s = $scope;
 
@@ -25,11 +25,13 @@
         }
 
         // Load the user data.
-        api.getAccountOwner().then(function (data) {
-            s.user = data;
+        s.user = null;
+
+        s.setUser = function (user) {
+            s.user = user;
             s.userPhoto = null;
-            s.userPhotoUrl = api.getUserPhotoUrl(s.user.Uri);
-        });
+            s.userPhotoUrl = user.PhotoUrl;
+        };
 
         s.onPhotoChanged = function (file) {
             s.userPhoto = file;
@@ -80,7 +82,11 @@
             console.log("Submitting Profile");
 
             if (s.user) {
-                api.putUser(s.user);
+                api.putUser(s.user).then(function () {
+                    agentService.off('currentUserChanged', s.setUser);
+                    agentService.initialize();
+                    agentService.on('currentUserChanged', s.setUser);
+                });
             }
 
             if (s.userPhoto) {
@@ -94,5 +100,17 @@
         t.reset = function () {
             s.form.reset();
         };
+
+        t.$onInit = function () {
+            if (agentService.currentUser) {
+                s.setUser(agentService.currentUser);
+            }
+
+            agentService.on('currentUserChanged', s.setUser);
+        }
+
+        t.$onDestroy = function () {
+            agentService.off('currentUserChanged', s.setUser);
+        }
     };
 })();

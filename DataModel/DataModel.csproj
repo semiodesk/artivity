@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="IModelSynchronizationState.cs" />
     <Compile Include="IUser.cs" />
+    <Compile Include="IValidatable.cs" />
     <Compile Include="IViewModule.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />
@@ -55,7 +56,9 @@
     <Compile Include="ObjectModel\Agents\Roles\ProjectAdministratorRole.cs" />
     <Compile Include="ObjectModel\Agents\User.cs" />
     <Compile Include="ObjectModel\Communication.cs" />
+    <Compile Include="ObjectModel\Entities\ApprovalRequest.cs" />
     <Compile Include="ObjectModel\Entities\Collection.cs" />
+    <Compile Include="ObjectModel\Entities\Request.cs" />
     <Compile Include="ObjectModel\Entities\Task.cs" />
     <Compile Include="ObjectModel\Entities\TaskPriority.cs" />
     <Compile Include="ObjectModel\Entities\TaskState.cs" />
@@ -120,6 +123,7 @@
     <Compile Include="ModelProviderFactory.cs" />
     <Compile Include="Ontologies\Ontologies.i.cs" />
     <Compile Include="ObjectModel\ModelSynchronizationState.cs" />
+    <Compile Include="ObjectModel\Agents\UserRoles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

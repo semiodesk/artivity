@@ -161,7 +161,7 @@ namespace Artivity.Apid.Modules
         {
             User user = ModelProvider.GetAgents().GetResource<User>(new UriRef(PlatformProvider.Config.Uid));
 
-            return ResponseAsJsonSync(user.Accounts);
+            return Response.AsJsonSync(user.Accounts);
         }
 
         private Response GetAccountsWithFeature(Uri featureUri)
@@ -186,7 +186,7 @@ namespace Artivity.Apid.Modules
                 }
             }
 
-            return ResponseAsJsonSync(accounts);
+            return Response.AsJsonSync(accounts);
         }
 
         private Response GetServiceClients()

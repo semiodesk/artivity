@@ -1,6 +1,6 @@
 {
   "name": "artivity",
-  "version": "1.6.167",
+  "version": "1.6.168",
   "description": "Artivity is a tool to track the creative process.",
   "main": "main.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "electron": "^1.4.7",
+    "electron-settings": "^3.0.6",
     "file-url": "^2.0.0",
     "node-feedparser": "^1.0.1",
     "request": "^2.79.0",

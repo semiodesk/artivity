@@ -42,7 +42,7 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        protected bool IsSynchronizable;
+        public bool IsSynchronizable { get; set; }
 
         [RdfProperty(NIE.created)]
         public DateTime CreationTimeUtc { get; set; }
@@ -60,9 +60,7 @@ namespace Artivity.DataModel
 
         #region Constructors
 
-        public SynchronizableResource(Uri uri) : base(uri)
-        {
-        }
+        public SynchronizableResource(Uri uri) : base(uri) { }
 
         public SynchronizableResource(string uri) : base(uri) { }
 

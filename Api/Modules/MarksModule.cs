@@ -23,6 +23,8 @@ namespace Artivity.Api.Modules
         {
             Get["/"] = parameters =>
             {
+                InitializeRequest();
+
                 string uri = Request.Query.entityUri;
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
@@ -35,6 +37,8 @@ namespace Artivity.Api.Modules
 
             Post["/"] = parameters =>
             {
+                InitializeRequest();
+
                 MarkParameter mark = this.Bind<MarkParameter>();
 
                 return PostMark(mark);
@@ -42,6 +46,8 @@ namespace Artivity.Api.Modules
 
             Put["/"] = parameters =>
             {
+                InitializeRequest();
+
                 MarkParameter mark = this.Bind<MarkParameter>();
 
                 return PutMark(mark);
@@ -49,6 +55,8 @@ namespace Artivity.Api.Modules
 
             Delete["/"] = parameters =>
             {
+                InitializeRequest();
+
                 string uri = Request.Query.uri;
 
                 if (string.IsNullOrEmpty(uri) || !IsUri(uri))
@@ -66,7 +74,9 @@ namespace Artivity.Api.Modules
 
         private Response GetMarksFromEntity(UriRef entityUri)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -98,36 +108,39 @@ namespace Artivity.Api.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@undefined", DateTime.MinValue);
 
-            var result = UserModel.GetBindings(query).ToList();
+            var result = model.GetBindings(query).ToList();
 
             return Response.AsJson(result);
         }
 
         private Response PostMark(MarkParameter parameter)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             Agent agent = new Agent(new UriRef(parameter.agent));
             Entity entity = new Entity(new UriRef(parameter.entity)); // TODO: This influence needs to be an entity which was derived from the original.
 
-            if (UserModel.ContainsResource(entity))
+            if (model.ContainsResource(entity))
             {
                 // TODO: Move the creation of the entity into API for markers.
-                Rectangle rectangle = UserModel.CreateResource<Rectangle>();
+                Rectangle rectangle = model.CreateResource<Rectangle>(ModelProvider.CreateUri<Rectangle>());
                 rectangle.x = parameter.x;
                 rectangle.y = parameter.y;
                 rectangle.Width = parameter.width;
                 rectangle.Height = parameter.height;
                 rectangle.Commit();
 
-                Mark mark = UserModel.CreateResource<Mark>();
+                Mark mark = model.CreateResource<Mark>(ModelProvider.CreateUri<Mark>());
                 mark.CreationTimeUtc = parameter.endTime;
                 mark.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 mark.Region = rectangle;
+                mark.IsSynchronizable = true;
                 mark.Commit();
 
                 // Associate the comment with the activity.
-                CreateEntity activity = UserModel.CreateResource<CreateEntity>();
+                CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = agent;
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
@@ -150,13 +163,15 @@ namespace Artivity.Api.Modules
 
         private Response PutMark(MarkParameter parameter)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             UriRef uri = new UriRef(parameter.uri);
 
-            if (UserModel.ContainsResource(uri))
+            if (model.ContainsResource(uri))
             {
-                Mark mark = UserModel.GetResource<Mark>(uri);
+                Mark mark = model.GetResource<Mark>(uri);
                 mark.Commit();
 
                 Rectangle rectangle = mark.Region;
@@ -166,7 +181,7 @@ namespace Artivity.Api.Modules
                 rectangle.Height = parameter.height;
                 rectangle.Commit();
 
-                EditEntity activity = UserModel.CreateResource<EditEntity>();
+                EditEntity activity = model.CreateResource<EditEntity>(ModelProvider.CreateUri<EditEntity>());
                 activity.StartedBy = new Agent(new UriRef(parameter.agent));
                 activity.StartTime = DateTime.UtcNow;
                 activity.EndTime = DateTime.UtcNow;
@@ -183,15 +198,17 @@ namespace Artivity.Api.Modules
 
         private Response DeleteMark(UriRef uri)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
-            if(UserModel.ContainsResource(uri))
+            if(model.ContainsResource(uri))
             {
-                Mark mark = UserModel.GetResource<Mark>(uri);
+                Mark mark = model.GetResource<Mark>(uri);
                 mark.DeletionTimeUtc = DateTime.UtcNow;
                 mark.Commit();
 
-                DeleteEntity activity = UserModel.CreateResource<DeleteEntity>();
+                DeleteEntity activity = model.CreateResource<DeleteEntity>(ModelProvider.CreateUri<DeleteEntity>());
                 activity.StartTime = DateTime.UtcNow;
                 activity.EndTime = DateTime.UtcNow;
                 activity.InvalidatedEntities.Add(mark);

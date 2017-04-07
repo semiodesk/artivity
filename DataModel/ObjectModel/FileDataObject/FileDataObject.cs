@@ -58,12 +58,10 @@ namespace Artivity.DataModel
 
 		public FileDataObject(Uri uri) : base(uri) 
         {
-            IsSynchronizable = true;
         }
 
         public FileDataObject(string uri) : base(uri)
         {
-            IsSynchronizable = true;
         }
 
 		#endregion

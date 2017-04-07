@@ -23,19 +23,33 @@
 		}
 
 		return {
-			getAccounts: function () {
+
+			get: function(url, config){
+				return $http.get(url, config);
+			},
+			put: function(url, data, config){
+				return $http.put(url, data, config);
+			},
+			post: function(url, data, config){
+				return $http.post(url, data, config);
+			},
+			delete: function(url, config){
+				return $http.delete(url, config);
+			},
+
+			getAccounts: function () { // +publish-file-controller +art-settings-accounts
 				return $http.get(endpoint + '/accounts').then(
 					function (response) {
 						return response.data;
 					});
 			},
-			getAccountsWithFeature: function (featureUri) {
+			getAccountsWithFeature: function (featureUri) { // +publish-file-controller 
 				return $http.get(endpoint + '/accounts?featureUri=' + featureUri).then(
 					function (response) {
 						return response.data;
 					});
 			},
-			getAccountClients: function (featureUri) {
+			getAccountClients: function (featureUri) { // +add-account-dialog +client.service
 				return $http.get(endpoint + '/accounts/clients').then(
 					function (response) {
 						return response.data;
@@ -94,7 +108,7 @@
 						return response.data;
 					});
 			},
-			getAgents: function () {
+			getAgents: function () { // +art-settings-apps 
 				return $http.get(endpoint + '/agents/software').then(
 					function (response) {
 						return response.data;
@@ -109,19 +123,19 @@
 			setAgents: function (agents) {
 				return $http.post(endpoint + '/agents/software', agents);
 			},
-			getAgent: function (entityUri) {
+			getAgent: function (entityUri) { // +file-view-controller +file-preview-controller
 				return $http.get(endpoint + '/agents?entityUri=' + entityUri).then(
 					function (response) {
 						return response.data;
 					});
 			},
-			getAgentIconUrl: function (associationUri) {
+			getAgentIconUrl: function (associationUri) { // +art-settings-apps +file-preview-controller
 				return endpoint + '/agents/software/icon?uri=' + associationUri;
 			},
-			setAgent: function (data) {
+			setAgent: function (data) { // +art-settings-apps
 				return $http.post(endpoint + '/agents', data);
 			},
-			installAgent: function (associationUri) {
+			installAgent: function (associationUri) { // +art-settings-apps
 				return $http.get(endpoint + '/agents/software/install?uri=' + associationUri).then(
 					function (response) {
 						console.log(response);
@@ -139,7 +153,7 @@
 					}
 				);
 			},
-			uninstallAgent: function (associationUri) {
+			uninstallAgent: function (associationUri) { // +art-settings-apps
 				return $http.get(endpoint + '/agents/software/uninstall?uri=' + associationUri).then(
 					function (response) {
 						return {
@@ -156,35 +170,35 @@
 				);
 			},
 			getAccountOwner: function () {
-				return $http.get(endpoint + '/agents/users?role=AccountOwner').then(
+				return $http.get(endpoint + '/agents/users?role=AccountOwnerRole').then(
 					function (response) {
 						if(response.data.length === 1) {
 							return response.data[0];
 						}
 					});
 			},
-			putUser: function (data) {
+			putUser: function (data) { // +art-settings-user
 				return $http.put(endpoint + '/agents/users', data);
 			},
-			getUserPhotoUrl: function (uri) {
+			getUserPhotoUrl: function (uri) { // +art-settings-user +agents.service +file-preview-controller
 				return endpoint + '/agents/users/photo?agentUri=' + uri;
 			},
-			putUserPhoto: function (uri, data) {
+			putUserPhoto: function (uri, data) { // +art-settings-user
 				return $http.put(endpoint + '/agents/users/photo?agentUri=' + uri, data);
 			},
-			backupUserProfile: function (fileName) {
+			backupUserProfile: function (fileName) { // +art-settings-user
 				return $http.get(endpoint + '/export/backup?fileName=' + fileName).then(
 					function (response) {
 						return response.data;
 					});
 			},
-			getUserProfileBackupStatus: function (id) {
+			getUserProfileBackupStatus: function (id) { // +art-settings-user
 				return $http.get(endpoint + '/export/backup/status?taskId=' + id).then(
 					function (response) {
 						return response.data;
 					});
 			},
-			getFile: function (entityUri) {
+			getFile: function (entityUri) { // file-preview-controller
 				return $http.get(endpoint + '/files?uri=' + entityUri).then(
 					function (response) {
 						return response.data;
@@ -196,8 +210,14 @@
 						return response.data;
 					});
 			},
+			getLatestFileRevision: function(fileUri) {
+				return $http.get(endpoint + '/files/revisions/latest?fileUri=' + fileUri).then(
+					function (response) {
+						return response.data;
+					});
+			},
 			getProjectFiles: function (projectUri) {
-				return $http.get(endpoint + '/projects/files?uri=' + projectUri).then(
+				return $http.get(endpoint + '/projects/files?projectUri=' + projectUri).then(
 					function (response) {
 						return response.data;
 					});
@@ -234,7 +254,7 @@
 						});
 				}
 			},
-			getCanvasRenderingsFromEntity: function (entityUri) {
+			getCanvasRenderingsFromEntity: function (entityUri) { // +art-document-history-viewer
 				return $http.get(endpoint + '/renderings/canvases?entity=' + encodeURIComponent(entityUri)).then(
 					function (response) {
 						return response.data;
@@ -268,7 +288,7 @@
 						});
 				}
 			},
-			getRenderingUrl: function (entityUri) {
+			getRenderingUrl: function (entityUri) { // +art-document-history-viewer
 				return endpoint + '/renderings?uri=' + encodeURIComponent(entityUri) + '&file=';
 			},
 			getStats: function (entityUri, time) {
@@ -297,7 +317,7 @@
 						return response.data;
 					});
 			},
-			setRunSetup: function (enabled) {
+			setRunSetup: function (enabled) { // +setup.controller
 				return $http.post(endpoint + '/setup', {
 					runSetup: enabled
 				}).then(
@@ -305,7 +325,7 @@
 						return response.data;
 					});
 			},
-			synchronize: function () {
+			synchronize: function () { // +sync.service
 				return $http.get(endpoint + '/sync').then(
 					function (response) {
 						return response.data;
