@@ -23,9 +23,9 @@
 
     angular.module('app').controller('TopicControlDirectiveController', TopicControlDirectiveController);
 
-    TopicControlDirectiveController.$inject = ['$scope', 'agentService', 'entityService', 'topicService', 'markService', 'viewerService'];
+    TopicControlDirectiveController.$inject = ['$scope', 'agentService', 'entityService', 'topicService', 'viewerService'];
 
-    function TopicControlDirectiveController($scope, agentService, entityService, topicService, markService, viewerService) {
+    function TopicControlDirectiveController($scope, agentService, entityService, topicService, viewerService) {
         var t = this;
 
         // TOPICS
@@ -114,30 +114,8 @@
         }
 
         // MARKS
-        t.marks = [];
-
-        t.createMark = function (topic) {
-            if (topic && topic.uri) {
-                viewerService.executeCommand('createMark', topic.uri);
-            }
-        }
-
-        t.showMarks = function (topic) {
-            if (topic && topic.uri) {
-                markService.getMarksForEntity(topic.uri).then(function (data) {
-                    t.marks = data;
-
-                    viewerService.executeCommand('showMarks', t.marks);
-                });
-            }
-        }
-
-        t.hideMarks = function (topic) {
-            if (topic && topic.uri && t.marks.length > 0) {
-                viewerService.executeCommand('hideMarks', t.marks);
-
-                t.marks = [];
-            }
-        }
+        t.createMark = viewerService.createMark;
+        t.showMarks = viewerService.showMarks;
+        t.hideMarks = viewerService.hideMarks;
     }
 })();

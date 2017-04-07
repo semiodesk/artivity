@@ -667,36 +667,49 @@ art:Comment a rdfs:Class ;
 	dcterms:issued "2017-02-04T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2017-02-04T12:00:00Z"^^xsd:dateTime .
 
-art:Request a rdfs:Class ;
+art:RequestComment a rdfs:Class ;
 	rdfs:subClassOf art:Comment ;
-	rdfs:label "Request" ;
+	rdfs:label "RequestComment" ;
 	rdfs:isDefinedBy art: ;
 	dcterms:issued "2017-04-03T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2017-04-03T12:00:00Z"^^xsd:dateTime .
 
-art:Response a rdfs:Class ;
+art:ResponseComment a rdfs:Class ;
 	rdfs:subClassOf art:Comment ;
-	rdfs:label "Response" ;
+	rdfs:label "ResponseComment" ;
+	rdfs:isDefinedBy art: ;
+	dcterms:issued "2017-04-03T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2017-04-03T12:00:00Z"^^xsd:dateTime .
+
+art:FeedbackRequest a rdfs:Class ;
+	rdfs:subClassOf art:RequestComment ;
+	rdfs:label "FeedbackRequest" ;
+	rdfs:isDefinedBy art: ;
+	dcterms:issued "2017-04-03T12:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2017-04-03T12:00:00Z"^^xsd:dateTime .
+
+art:FeedbackResponse a rdfs:Class ;
+	rdfs:subClassOf art:ResponseComment ;
+	rdfs:label "FeedbackResponse" ;
 	rdfs:isDefinedBy art: ;
 	dcterms:issued "2017-04-03T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2017-04-03T12:00:00Z"^^xsd:dateTime .
 
 art:ApprovalRequest a rdfs:Class ;
-	rdfs:subClassOf art:Request ;
+	rdfs:subClassOf art:RequestComment ;
 	rdfs:label "ApprovalRequest" ;
 	rdfs:isDefinedBy art: ;
 	dcterms:issued "2017-04-03T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2017-04-03T12:00:00Z"^^xsd:dateTime .
 
 art:ApprovalResponse a rdfs:Class ;
-	rdfs:subClassOf art:Response ;
+	rdfs:subClassOf art:ResponseComment ;
 	rdfs:label "ApprovalResponse" ;
 	rdfs:isDefinedBy art: ;
 	dcterms:issued "2017-04-03T12:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2017-04-03T12:00:00Z"^^xsd:dateTime .
 
-art:Mark
-	rdf:type rdfs:Class ;
+art:Mark a rdfs:Class ;
     rdfs:subClassOf prov:Entity ;
     rdfs:label "Mark"@en ;
 	rdfs:comment "A marking which highlights points, regions or entities in a document."@en ;

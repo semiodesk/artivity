@@ -10,32 +10,15 @@
             },
             controller: ChatControlDirectiveController,
             controllerAs: 't',
-            bindToController: true,
-            link: function (scope, element, attr, t) {
-                // Enable ASCII smileys.
-                emojione.ascii = true;
-
-                $("textarea.ui-autosize").on('change keyup keydown paste cut scroll', function () {
-                    $(this).innerHeight(0).scrollTop(0).innerHeight(this.scrollHeight);
-                });
-
-                scope.$watch('t.entityUri', function () {
-                    if (t.entityUri) {
-                        console.log('Entity changed: ', t.entityUri);
-
-                        // Load the comments for the given primary source..
-                        t.loadCommentsForEntity(t.entityUri);
-                    }
-                });
-            }
+            bindToController: true
         }
     }
 
     angular.module('app').controller('ChatControlDirectiveController', ChatControlDirectiveController);
 
-    ChatControlDirectiveController.$inject = ['$scope', 'viewerService', 'agentService', 'entityService', 'commentService', 'markService', 'selectionService', 'formattingService'];
+    ChatControlDirectiveController.$inject = ['$scope', '$element', '$timeout', 'viewerService', 'agentService', 'entityService', 'commentService', 'selectionService', 'formattingService'];
 
-    function ChatControlDirectiveController($scope, viewerService, agentService, entityService, commentService, markService, selectionService, formattingService) {
+    function ChatControlDirectiveController($scope, $element, $timeout, viewerService, agentService, entityService, commentService, selectionService, formattingService) {
         var t = this;
 
         t.getFormattedTime = formattingService.getFormattedTime;
@@ -44,57 +27,67 @@
 
         // COMMENTS
         t.comments = [];
-        t.selectedComment = null;
-
-        t.loadCommentsForEntity = function (entityUri) {
-            console.log('Loading comments: ', entityUri);
-
-            commentService.getCommentsForEntity(t.entityUri).then(function (data) {
-                t.comments = [];
-
-                for (i = 0; i < data.length; i++) {
-                    var c = data[i];
-
-                    // Insert at the beginning of the list.
-                    t.comments.unshift({
-                        uri: c.uri,
-                        agent: c.agent,
-                        time: c.time,
-                        text: c.message
-                    });
-                }
-            });
-        }
 
         t.isUserComment = function (comment) {
             return comment.agent === agentService.currentUser.Uri;
         }
 
+        t.loadCommentsForPrimarySource = function (entityUri) {
+            console.log('Loading comments: ', entityUri);
+
+            commentService.getCommentsForPrimarySource(t.entityUri).then(function (data) {
+                var comments = [];
+
+                for (i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    var comment = new Comment();
+                    comment.type = d.type;
+                    comment.uri = d.uri;
+                    comment.agent = d.agent;
+                    comment.startTime = d.startTime;
+                    comment.endTime = d.endTime;
+                    comment.message = d.message;
+                    comment.associations = d.associations;
+
+                    // Insert at the beginning of the list.
+                    comments.unshift(comment);
+                }
+
+                // Now assign the complete list of comments which triggers ng-repeat.
+                t.comments = comments;
+            });
+        }
+
         // MARKS
-        t.marks = [];
+        t.createMark = viewerService.createMark;
+        t.showMarks = viewerService.showMarks;
+        t.hideMarks = viewerService.hideMarks;
 
-        t.createMark = function (comment) {
-            if (comment && comment.uri) {
-                viewerService.executeCommand('createMark', comment.uri);
-            }
+        // INIT
+        t.$onInit = function () {
+            // Enable ASCII smileys.
+            emojione.ascii = true;
         }
 
-        t.showMarks = function (comment) {
-            if (comment && comment.uri) {
-                markService.getMarksForEntity(comment.uri).then(function (data) {
-                    t.marks = data;
+        t.$postLink = function () {
+            $("textarea.ui-autosize").on('change keyup keydown paste cut scroll', function () {
+                $(this).innerHeight(0).scrollTop(0).innerHeight(this.scrollHeight);
+            });
 
-                    viewerService.executeCommand('showMarks', t.marks);
-                });
-            }
-        }
+            $scope.$watch('t.entityUri', function () {
+                if (t.entityUri) {
+                    // Load the comments for the given primary source..
+                    t.loadCommentsForPrimarySource(t.entityUri);
+                }
+            });
 
-        t.hideMarks = function (comment) {
-            if (comment && comment.uri && t.marks.length > 0) {
-                viewerService.executeCommand('hideMarks', t.marks);
+            // Keep the list scrolled to the bottom when ng-repeat is done.
+            $timeout(function () {
+                var container = $($element).find('.scroll-container');
 
-                t.marks = [];
-            }
+                container.scrollTop(50);
+            }, 0);
         }
     }
 })();

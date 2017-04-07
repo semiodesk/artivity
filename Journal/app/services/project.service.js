@@ -6,34 +6,37 @@
     function projectService(api) {
         var endpoint = apid.endpointUrl + "projects";
 
-        var service = {};
-        service.currentProject = null;
-        service.projects = null;
-        service.create = create;
-        service.update = update;
-        service.remove = remove;
-        service.get = get;
-        service.getAll = getAll;
-        service.getFiles = getFiles;
-        service.getFolders = getFolders;
-        service.getMembers = getMembers;
-        service.addFile = addFile;
-        service.addFolder = addFolder;
-        service.addMember = addMember;
-        service.removeFile = removeFile;
-        service.removeFolder = removeFolder;
-        service.removeMember = removeMember;
+        var t = {
+            projects: null,
+            currentProject: null,
+            create: create,
+            update: update,
+            remove: remove,
+            get: get,
+            getAll: getAll,
+            getFiles: getFiles,
+            getFolders: getFolders,
+            getMembers: getMembers,
+            findMembers: findMembers,
+            addFile: addFile,
+            addFolder: addFolder,
+            addMember: addMember,
+            removeFile: removeFile,
+            removeFolder: removeFolder,
+            removeMember: removeMember,
+        };
 
-        return service;
+        return t;
 
+        // PROJECTS
         function get(projectUri) {
             return api.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting projects by id.'));
         }
 
         function getAll() {
-            if (service.projects != null) {
+            if (t.projects != null) {
                 return new Promise(function (resolve, reject) {
-                    resolve(service.projects);
+                    resolve(t.projects);
                 });
             }
 
@@ -42,9 +45,9 @@
                         var response = result.data;
 
                         if (response && response.success) {
-                            service.projects = response.data;
+                            t.projects = response.data;
 
-                            resolve(service.projects);
+                            resolve(t.projects);
                         }
                     },
                     handleError(getAll));
@@ -61,14 +64,14 @@
 
         function update(project) {
             return api.put(endpoint + '?uri=' + project.Uri, project).then(function (response) {
-                service.projects = null;
+                t.projects = null;
                 return response.data;
             }, handleError(update));
         }
 
         function remove(projectUri) {
             return api.delete(endpoint + '?uri=' + projectUri).then(function (response) {
-                service.projects = null;
+                t.projects = null;
                 return response.data;
             }, handleError(remove));
         }
@@ -77,6 +80,7 @@
             return api.get(endpoint + '/files/?projectUri=' + projectUri).then(handleSuccess, handleError(getFiles));
         }
 
+        // FILES
         function addFile(projectUri, fileUri) {
             var uri = encodeURIComponent(projectUri);
 
@@ -89,6 +93,7 @@
             return api.delete(endpoint + '/files/?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError(removeFile));
         }
 
+        // FOLDERS
         function getFolders(projectUri) {
             var uri = encodeURIComponent(projectUri);
 
@@ -107,6 +112,7 @@
             return api.delete(endpoint + '/folders/?projectUri=' + uri + "&folderUrl=" + encodeURIComponent(folderUrl)).then(handleSuccess, handleError(removeFolder));
         }
 
+        // MEMBERS
         function getMembers(projectUri) {
             return api.get(endpoint + '/agents?projectUri=' + projectUri).then(handleSuccess, handleError(getMembers));
         }
@@ -119,7 +125,11 @@
             return api.delete(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri).then(handleSuccess, handleError(removeMember));
         }
 
-        // private functions
+        function findMembers(projectUri, query) {
+            return api.get(endpoint + '/agents?projectUri=' + projectUri + '&q=' + query).then(handleSuccess, handleError(findMembers));
+        }
+
+        // RESULT HANDLERS
         function handleSuccess(response) {
             return response.data;
         }

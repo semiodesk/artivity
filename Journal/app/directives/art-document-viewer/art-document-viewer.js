@@ -61,7 +61,7 @@
 
                 $scope.$broadcast('viewerInitialized', t.viewer);
 
-                viewerService.setViewer(t.viewer);
+                viewerService.viewer(t.viewer);
 
                 // Handle the resize of UI panes.
                 $scope.$on('resize', function () {
@@ -109,7 +109,7 @@
 
         t.setViewer = function () {
             if (t.viewer) {
-                viewerService.setViewer(t.viewer);
+                viewerService.viewer(t.viewer);
             }
         }
 
