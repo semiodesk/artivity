@@ -40,8 +40,8 @@ namespace Artivity.Api.Modules
 {
     public class ProjectsModule : ModuleBase
     {
-        public ProjectsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider) : 
-            base("/artivity/api/1.0/projects", modelProvider, platformProvider, userProvider)
+        public ProjectsModule(IModelProvider modelProvider, IPlatformProvider platformProvider) : 
+            base("/artivity/api/1.0/projects", modelProvider, platformProvider)
         {
                 Get["/"] = parameters =>
                 {

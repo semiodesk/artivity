@@ -45,8 +45,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public TasksModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
-            : base("/artivity/api/1.0/tasks", modelProvider, platformProvider, userProvider)
+        public TasksModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/tasks", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>
             {

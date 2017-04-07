@@ -40,7 +40,7 @@ using System.Linq;
 
 namespace Artivity.Api.Modules
 {
-	public class ModuleBase : NancyModule
+	public abstract class ModuleBase : NancyModule
     {
         #region Members
 
@@ -48,19 +48,16 @@ namespace Artivity.Api.Modules
 
         public IPlatformProvider PlatformProvider { get; set; }
 
-        public IUserProvider UserProvider {get; private set;}
-
         protected string ArtivityModulePath { get; set; }
 
         #endregion
 
         #region Constructors
 
-        public ModuleBase(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider) 
+        public ModuleBase(IModelProvider modelProvider, IPlatformProvider platformProvider) 
         {
             ModelProvider = modelProvider;
             PlatformProvider = platformProvider;
-            UserProvider = userProvider;
 
             After.AddItemToEndOfPipeline((ctx) =>
             {
@@ -75,13 +72,12 @@ namespace Artivity.Api.Modules
             });
         }
 
-        public ModuleBase(string modulePath, IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
+        public ModuleBase(string modulePath, IModelProvider modelProvider, IPlatformProvider platformProvider)
             : base(modulePath)
         {
             ModelProvider = modelProvider;
             PlatformProvider = platformProvider;
             ArtivityModulePath = modulePath;
-            UserProvider = userProvider;
 
             After.AddItemToEndOfPipeline((ctx) =>
             {
@@ -107,31 +103,7 @@ namespace Artivity.Api.Modules
                 this.RequiresAuthentication();
             }
 
-            string project = Request.Query.project;
-
-            if (project != null)
-            {
-                ModelProvider.SetProject(project);
-            }
-
-            string user = Request.Query.user;
-
-            if (user != null)
-            {
-                ModelProvider.SetOwner(user);
-            }
-
-            if (UserProvider != null)
-            {
-                LoadCurrentUser();
-            }
-
             return null;
-        }
-
-        public virtual void LoadCurrentUser()
-        {
-            UserProvider.LoadCurrentUser(Context.CurrentUser);
         }
 
         public T Bind<T>(IStore store, RequestStream stream) where T : Resource
@@ -156,23 +128,6 @@ namespace Artivity.Api.Modules
             return (!string.IsNullOrEmpty(url)) && IsUri(Uri.EscapeUriString(url));
         }
 
-        protected Response ResponseAsJsonSync(object o)
-        {
-            string result = JsonConvert.SerializeObject(o);
-
-            // Manually convert the result because the default serializer crashes with an exception when
-            // trying to serialize the nested data object HttpAuthenticationProtocol. The exception occurs
-            // because the connection is already closed when the serializer tries to load the object from the db.
-            MemoryStream stream = new MemoryStream();
-
-            StreamWriter writer = new StreamWriter(stream);
-            writer.Write(result);
-            writer.Flush();
-
-            stream.Position = 0;
-
-            return Response.FromStream(stream, "application/json");
-        }
 
         /// <summary>
         /// Processes the regular get function for this endpoint.

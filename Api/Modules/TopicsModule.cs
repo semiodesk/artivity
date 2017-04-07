@@ -45,8 +45,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public TopicsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
-            : base("/artivity/api/1.0/topics", modelProvider, platformProvider, userProvider)
+        public TopicsModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/topics", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>
             {

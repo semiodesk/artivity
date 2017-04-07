@@ -103,7 +103,6 @@
     <Compile Include="Infrastructure\ILogger.cs" />
     <Compile Include="Modules\ModuleBase.cs" />
     <Compile Include="Infrastructure\NancyExtensions.cs" />
-    <Compile Include="Platform\IUserProvider.cs" />
     <Compile Include="Platform\UserConfig.cs" />
     <Compile Include="Modules\ActivitiesModule.cs" />
     <Compile Include="Modules\ApiModule.cs" />

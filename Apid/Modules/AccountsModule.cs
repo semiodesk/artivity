@@ -61,8 +61,8 @@ namespace Artivity.Apid.Modules
 
         #region Constructors
 
-        public AccountsModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform, IUserProvider userProvider)
-            : base("/artivity/api/1.0/accounts", modelProvider, platform, userProvider)
+        public AccountsModule(PluginChecker checker, IModelProvider modelProvider, IPlatformProvider platform)
+            : base("/artivity/api/1.0/accounts", modelProvider, platform)
         {
             // Get a list of all installed online accounts.
             Get["/"] = parameters =>
@@ -161,7 +161,7 @@ namespace Artivity.Apid.Modules
         {
             User user = ModelProvider.GetAgents().GetResource<User>(new UriRef(PlatformProvider.Config.Uid));
 
-            return ResponseAsJsonSync(user.Accounts);
+            return Response.AsJsonSync(user.Accounts);
         }
 
         private Response GetAccountsWithFeature(Uri featureUri)
@@ -186,7 +186,7 @@ namespace Artivity.Apid.Modules
                 }
             }
 
-            return ResponseAsJsonSync(accounts);
+            return Response.AsJsonSync(accounts);
         }
 
         private Response GetServiceClients()

@@ -47,8 +47,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public CommentsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
-            : base("/artivity/api/1.0/comments", modelProvider, platformProvider, userProvider)
+        public CommentsModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/comments", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>
             {

@@ -81,10 +81,6 @@ namespace Artivity.DataModel
 
         IModelSynchronizationState GetModelSynchronizationState(IPerson user);
 
-        void SetProject(string project);
-
-        void SetOwner(string username);
-
         Uri CreateUri<T>(string guid);
         Uri CreateUri<T>();
 

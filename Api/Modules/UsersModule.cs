@@ -51,8 +51,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public UsersModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
-            : base("/artivity/api/1.0/agents/users", modelProvider, platformProvider, userProvider)
+        public UsersModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/agents/users", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>
             {
