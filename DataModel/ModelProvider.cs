@@ -298,11 +298,6 @@ namespace Artivity.DataModel
             return id;
         }
 
-        public void SetProject(string x) { }
-
-        public void SetOwner(string x) { }
-
-
         private static string GetTypename<T>()
         {
             return typeof(T).Name.ToLowerInvariant();

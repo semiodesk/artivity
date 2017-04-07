@@ -51,8 +51,8 @@ namespace Artivity.Apid.Modules
 	{
 		#region Constructors
 
-        public UriModule(IModelProvider model, IPlatformProvider platform, IUserProvider userProvider)
-            : base("/artivity/1.0/uri", model, platform, userProvider)
+        public UriModule(IModelProvider model, IPlatformProvider platform)
+            : base("/artivity/1.0/uri", model, platform)
 		{
             Get[""] = parameters => { return GetUri(); };
 		}

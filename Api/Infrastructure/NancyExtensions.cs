@@ -50,7 +50,7 @@ namespace Artivity.Api
 
         public static Response AsJsonSync<TModel>(this IResponseFormatter formatter, TModel model, HttpStatusCode statusCode = HttpStatusCode.OK)
         {
-            var settings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+            var settings = new JsonSerializerSettings { }; //ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
             string result = JsonConvert.SerializeObject(model, settings);
 

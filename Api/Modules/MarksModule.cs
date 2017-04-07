@@ -18,8 +18,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public MarksModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
-            : base("/artivity/api/1.0/marks", modelProvider, platformProvider, userProvider)
+        public MarksModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/marks", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>
             {

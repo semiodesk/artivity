@@ -46,8 +46,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public ActivitiesModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
-            : base("/artivity/api/1.0/activities", modelProvider, platformProvider, userProvider)
+        public ActivitiesModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/activities", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>
             {
