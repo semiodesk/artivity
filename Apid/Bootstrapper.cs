@@ -44,6 +44,7 @@ using Nancy.Serialization.JsonNet;
 using Nancy.TinyIoc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Artivity.Apid.Platform;
 
 namespace Artivity.Apid
 {
@@ -99,6 +100,7 @@ namespace Artivity.Apid
                 _container.Register(SynchronizationProvider);
                 _container.Register<IArtivityServiceSynchronizationProvider>(SynchronizationProvider);
             }
+
         }
             
         protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container, IPipelines pipelines, NancyContext context)

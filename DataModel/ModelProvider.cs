@@ -30,6 +30,7 @@ using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace Artivity.DataModel
 {
@@ -83,6 +84,10 @@ namespace Artivity.DataModel
 
         public UriRef WebActivities { get; set; }
 
+        public string RenderingQueryModifier { get; set; }
+
+        public string GetFilesQueryModifier { get; set; }
+
         #endregion
 
         #region Constructor
@@ -109,6 +114,9 @@ namespace Artivity.DataModel
                 Activities = new UriRef(baseUrl + "/activities");
                 WebActivities = new UriRef(baseUrl + "/activities/web");
 
+                RenderingQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings?uri=', ?entityStub, '&file=', STR(?f) ) as ?file ).";
+                GetFilesQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings/thumbnails?entityUri=', ?entityUri) as ?p).";
+
                 IModel model = GetDefault();
 
                 _synchronizationStateUrl = new UriRef(baseUrl + "#sync");
@@ -128,8 +136,6 @@ namespace Artivity.DataModel
         public void InitializeAgents()
         {
             IModel model = GetAgents();
-
-            model.Clear();
 
             // Create a default user..
             User user = model.CreateResource<User>(new UriRef("urn:art:uid:" + Uid));
@@ -195,7 +201,26 @@ namespace Artivity.DataModel
         {
             IModel model = GetAgents();
 
-            return !model.IsEmpty;
+            Uri userUri = new UriRef("urn:art:uid:" + Uid);
+
+            if ( !model.ContainsResource(userUri))
+                return false;
+
+            User user = model.GetResource<User>(userUri);
+
+            ResourceQuery q = new ResourceQuery(prov.Association);
+            q.Where(prov.agent, user);
+            q.Where(prov.hadRole, art.AccountOwnerRole);
+
+            var res = model.ExecuteQuery(q).GetResources<Association>();
+            if (!res.Any())
+            {
+                Association association = model.CreateResource<Association>();
+                association.Agent = user;
+                association.Role = new Role(art.AccountOwnerRole);
+                association.Commit();
+            }
+            return true;
         }
 
         public IModelGroup CreateModelGroup(params Uri[] models)
@@ -271,6 +296,26 @@ namespace Artivity.DataModel
             }
 
             return id;
+        }
+
+        private static string GetTypename<T>()
+        {
+            return typeof(T).Name.ToLowerInvariant();
+        }
+
+        private static Uri CreateDefaultUri<T>(string guid)
+        {
+            return new Uri(string.Format("http://artivity.io/{0}/{1}", GetTypename<T>(), guid));
+        }
+
+        public Uri CreateUri<T>(string guid)
+        {
+            return CreateDefaultUri<T>(guid);
+        }
+
+        public Uri CreateUri<T>()
+        {
+            return CreateDefaultUri<T>(Guid.NewGuid().ToString());
         }
 
         #endregion

@@ -182,7 +182,11 @@ namespace Artivity.Apid.Synchronization
                     item.ResourceType = resourceType;
                     item.Revision = revision;
 
-                    result.Add(item);
+                    // Make sure projects are handled first
+                    if (resourceType == art.Project.Uri)
+                        result.AddFront(item);
+                    else
+                        result.Add(item);
                 }
                 else
                 {

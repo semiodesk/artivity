@@ -36,24 +36,19 @@ using System.Threading.Tasks;
 namespace Artivity.DataModel
 {
     [RdfClass(ART.ProjectMembership)]
-    public class ProjectMembership : SynchronizableResource
+    public class ProjectMembership : Resource
     {
         #region Members
 
-        [RdfProperty(ART.agent), JsonIgnore]
-        public Agent Agent { get; set; }
-
-        public Uri AgentUri
-        {
-            get { return Agent.Uri ?? null; }
-        }
+        [RdfProperty(ART.agent)]
+        public Person Agent { get; set; }
 
         [RdfProperty(ART.hasRole), JsonIgnore]
         public Role Role { get; set; }
 
         public Uri RoleUri
         {
-            get { return Role.Uri ?? null; }
+            get { return Role != null ? Role.Uri : null; }
         }
 
         #endregion
@@ -63,7 +58,6 @@ namespace Artivity.DataModel
         public ProjectMembership(Uri uri)
             : base(uri)
         {
-            IsSynchronizable = true;
         }
 
         #endregion

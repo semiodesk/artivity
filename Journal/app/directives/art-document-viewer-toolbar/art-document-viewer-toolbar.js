@@ -13,9 +13,9 @@
 
     angular.module('app').controller('DocumentViewerToolbarDirectiveController', DocumentViewerToolbarDirectiveController);
 
-    DocumentViewerToolbarDirectiveController.$inject = ['$scope', '$parse', 'api', 'selectionService'];
+    DocumentViewerToolbarDirectiveController.$inject = ['$scope', '$parse', 'selectionService'];
 
-    function DocumentViewerToolbarDirectiveController($scope, $parse, api, selectionService) {
+    function DocumentViewerToolbarDirectiveController($scope, $parse, selectionService) {
         var t = this;
 
         t.viewer = null;

@@ -1,30 +1,32 @@
 (function () {
     angular.module('app').controller('CloseProjectDialogController', CloseProjectDialogController);
 
-    CloseProjectDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'api', 'projectService'];
+    CloseProjectDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'projectService'];
 
-    function CloseProjectDialogController($scope, $filter, $uibModalInstance, $sce, api, projectService) {
+    function CloseProjectDialogController($scope, $filter, $uibModalInstance, $sce, projectService) {
         var t = this;
 
         t.project = null;
-        
-        t.commit = commit;
-        t.cancel = cancel;
 
-        initialize();
-
-        function initialize() {
-            t.project = projectService.selectedProject;
+        t.commit = function () {
+            if (t.project) {
+                projectService.remove(t.project.Uri).then(function () {
+                    $uibModalInstance.close();
+                });
+            }
+            else {
+                $uibModalInstance.close();
+            }
         }
 
-        function commit() {
-            projectService.remove(t.project.Uri);
-
-            $uibModalInstance.close();
-        }
-
-        function cancel() {
+        t.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         }
+
+        function init() {
+            t.project = projectService.currentProject;
+        }
+
+        init();
     };
 })();

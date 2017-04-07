@@ -1,90 +1,144 @@
 ﻿(function () {
     angular.module('app').factory('projectService', projectService);
 
-    projectService.$inject = ['$http'];
+    projectService.$inject = ['api'];
 
-    function projectService($http) {
+    function projectService(api) {
         var endpoint = apid.endpointUrl + "projects";
 
-        var service = {};
-        service.getAll = getAll;
-        service.getById = getById;
-        service.create = create;
-        service.update = update;
-        service.remove = remove;
-        service.addFile = addFile;
-        service.selectedProject = null;
-        service.projects = null;
+        var t = {
+            projects: null,
+            currentProject: null,
+            create: create,
+            update: update,
+            remove: remove,
+            get: get,
+            getAll: getAll,
+            getFiles: getFiles,
+            getFolders: getFolders,
+            getMembers: getMembers,
+            findMembers: findMembers,
+            addFile: addFile,
+            addFolder: addFolder,
+            addMember: addMember,
+            removeFile: removeFile,
+            removeFolder: removeFolder,
+            removeMember: removeMember,
+        };
 
-        return service;
+        return t;
+
+        // PROJECTS
+        function get(projectUri) {
+            return api.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting projects by id.'));
+        }
 
         function getAll() {
-            if (service.projects != null) {
+            if (t.projects != null) {
                 return new Promise(function (resolve, reject) {
-                    resolve(service.projects);
+                    resolve(t.projects);
                 });
             }
 
             return new Promise(function (resolve, reject) {
-                $http.get(endpoint).then(function (result) {
+                api.get(endpoint).then(function (result) {
                         var response = result.data;
 
                         if (response && response.success) {
-                            service.projects = response.data;
+                            t.projects = response.data;
 
-                            resolve(service.projects);
+                            resolve(t.projects);
                         }
                     },
-                    handleError('Error when getting all projects.'));
+                    handleError(getAll));
             });
-        }
-
-        function getById(uri) {
-            return $http.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting projects by id.'));
         }
 
         function create() {
             return new Promise(function (resolve, reject) {
-                $http.get(endpoint + '/new').then(function (result) {
+                api.get(endpoint + '/new').then(function (result) {
                     resolve(result.data);
-                }, handleError('Error when creating new project.'));
+                }, handleError(create));
             });
         }
 
         function update(project) {
-            var uri = encodeURIComponent(project.Uri);
-
-            return $http.put(endpoint + '?uri=' + uri, project).then(function (response) {
-                service.projects = null;
+            return api.put(endpoint + '?uri=' + project.Uri, project).then(function (response) {
+                t.projects = null;
                 return response.data;
-            }, handleError('Error when updating project.'));
+            }, handleError(update));
         }
 
         function remove(projectUri) {
-            var uri = encodeURIComponent(projectUri);
-
-            return $http.delete(endpoint + '?uri=' + uri).then(function (response) {
-                service.projects = null;
+            return api.delete(endpoint + '?uri=' + projectUri).then(function (response) {
+                t.projects = null;
                 return response.data;
-            }, handleError('Error when deleting project.'));
+            }, handleError(remove));
         }
 
+        function getFiles(projectUri) {
+            return api.get(endpoint + '/files/?projectUri=' + projectUri).then(handleSuccess, handleError(getFiles));
+        }
+
+        // FILES
         function addFile(projectUri, fileUri) {
             var uri = encodeURIComponent(projectUri);
 
-            return $http.post(endpoint + '/files/?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError('Error when adding file to project.'));
+            return api.post(endpoint + '/files/?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError(addFile));
         }
 
-        // private functions
-        function handleSuccess(res) {
-            return res.data;
+        function removeFile(projectUri, fileUri) {
+            var uri = encodeURIComponent(projectUri);
+
+            return api.delete(endpoint + '/files/?projectUri=' + uri + "&fileUri=" + encodeURIComponent(fileUri)).then(handleSuccess, handleError(removeFile));
         }
 
-        function handleError(error) {
+        // FOLDERS
+        function getFolders(projectUri) {
+            var uri = encodeURIComponent(projectUri);
+
+            return api.get(endpoint + '/folders/?projectUri=' + uri).then(handleSuccess, handleError(getFolders));
+        }
+
+        function addFolder(projectUri, folderUrl) {
+            var uri = encodeURIComponent(projectUri);
+
+            return api.post(endpoint + '/folders/?projectUri=' + uri + "&folderUrl=" + encodeURIComponent(folderUrl)).then(handleSuccess, handleError(addFolder));
+        }
+
+        function removeFolder(projectUri, folderUrl) {
+            var uri = encodeURIComponent(projectUri);
+
+            return api.delete(endpoint + '/folders/?projectUri=' + uri + "&folderUrl=" + encodeURIComponent(folderUrl)).then(handleSuccess, handleError(removeFolder));
+        }
+
+        // MEMBERS
+        function getMembers(projectUri) {
+            return api.get(endpoint + '/agents?projectUri=' + projectUri).then(handleSuccess, handleError(getMembers));
+        }
+
+        function addMember(projectUri, agentUri) {
+            return api.post(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri + '&role=ProjectMemberRole').then(handleSuccess, handleError(addMember));
+        }
+
+        function removeMember(projectUri, agentUri) {
+            return api.delete(endpoint + '/agents?projectUri=' + projectUri + '&agentUri=' + agentUri).then(handleSuccess, handleError(removeMember));
+        }
+
+        function findMembers(projectUri, query) {
+            return api.get(endpoint + '/agents?projectUri=' + projectUri + '&q=' + query).then(handleSuccess, handleError(findMembers));
+        }
+
+        // RESULT HANDLERS
+        function handleSuccess(response) {
+            return response.data;
+        }
+
+        function handleError(context) {
             return function () {
                 return {
                     success: false,
-                    message: error
+                    message: context.toString()
                 };
             };
         }

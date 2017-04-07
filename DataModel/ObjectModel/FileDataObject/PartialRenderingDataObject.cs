@@ -18,9 +18,9 @@ namespace Artivity.DataModel
 
         #region Constructors
 
-        public PartialRenderingDataObject(Uri uri) : base(uri) { IsSynchronizable = false; }
+        public PartialRenderingDataObject(Uri uri) : base(uri) {  }
 
-        public PartialRenderingDataObject(string uri) : base(uri) { IsSynchronizable = false; }
+        public PartialRenderingDataObject(string uri) : base(uri) {  }
 
         #endregion
     }

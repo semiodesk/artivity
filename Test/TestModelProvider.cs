@@ -125,5 +125,39 @@ namespace ArtivityTest
         {
             throw new NotImplementedException();
         }
+
+
+        public string RenderingQueryModifier
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public string GetFilesQueryModifier
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+
+        public void SetProject(string project)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public void SetOwner(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public Uri CreateUri<T>(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Uri CreateUri<T>()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

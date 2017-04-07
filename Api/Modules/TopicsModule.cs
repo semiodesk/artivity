@@ -50,26 +50,50 @@ namespace Artivity.Api.Modules
         {
             Get["/"] = parameters =>
             {
-                string uri = Request.Query.entityUri;
+                InitializeRequest();
 
-                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                if(IsUri(Request.Query.entityUri))
+                {
+                    UriRef entityUri = new UriRef(Request.Query.entityUri);
+
+                    return GetTopicsFromEntity(entityUri);
+                }
+                else
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
-
-                return GetTopicsFromEntity(new UriRef(uri));
             };
 
             Post["/"] = parameters =>
             {
+                InitializeRequest();
+
                 TopicParameter topic = this.Bind<TopicParameter>();
 
                 if (!string.IsNullOrEmpty(topic.title))
                 {
                     return PostTopic(topic);
                 }
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+            };
 
-                return HttpStatusCode.BadRequest;
+            Delete["/"] = parameters =>
+            {
+                InitializeRequest();
+
+                if (IsUri(Request.Query.topicUri))
+                {
+                    UriRef topicUri = new UriRef(Request.Query.topicUri);
+
+                    return DeleteTopic(topicUri);
+                }
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
             };
         }
 
@@ -79,7 +103,9 @@ namespace Artivity.Api.Modules
 
         private Response GetTopicsFromEntity(UriRef entityUri)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -103,14 +129,16 @@ namespace Artivity.Api.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@undefined", DateTime.MinValue);
 
-            var bindings = UserModel.GetBindings(query, true).ToList();
+            var bindings = model.GetBindings(query, true).ToList();
 
             return Response.AsJson(bindings);
         }
 
         private Response PostTopic(TopicParameter parameter)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
             {
@@ -122,15 +150,16 @@ namespace Artivity.Api.Modules
             Agent agent = new Agent(new UriRef(parameter.agent));
             Entity entity = new Entity(new UriRef(parameter.entity));
 
-            if (UserModel.ContainsResource(entity))
+            if (model.ContainsResource(entity))
             {
-                Topic topic = UserModel.CreateResource<Topic>();
+                Topic topic = model.CreateResource<Topic>(ModelProvider.CreateUri<Topic>());
                 topic.CreationTimeUtc = parameter.endTime;
                 topic.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 topic.Title = parameter.title;
+                topic.IsSynchronizable = true;
                 topic.Commit();
 
-                CreateEntity activity = UserModel.CreateResource<CreateEntity>();
+                CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = agent;
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
@@ -148,7 +177,44 @@ namespace Artivity.Api.Modules
             {
                 PlatformProvider.Logger.LogError("Model does not contain entity {0}", entity);
 
+                return HttpStatusCode.NotFound;
+            }
+        }
+
+        private Response DeleteTopic(UriRef topicUri)
+        {
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
                 return HttpStatusCode.BadRequest;
+
+            if(model.ContainsResource(topicUri))
+            {
+                Topic topic = model.GetResource<Topic>(topicUri);
+                topic.DeletionTimeUtc = DateTime.UtcNow;
+                topic.Commit();
+
+                DeleteEntity activity = model.CreateResource<DeleteEntity>(ModelProvider.CreateUri<DeleteEntity>());
+                //activity.StartedBy = agent;
+                activity.StartTime = DateTime.UtcNow;
+                activity.EndTime = DateTime.UtcNow.AddSeconds(1);
+                activity.InvalidatedEntities.Add(topic);
+
+                if (topic.PrimarySource != null)
+                {
+                    activity.UsedEntities.Add(topic.PrimarySource);
+                }
+
+                activity.Commit();
+
+                var data = new { success = true };
+
+                return Response.AsJsonSync(data, HttpStatusCode.OK);
+            }
+            else
+            {
+                PlatformProvider.Logger.LogError("Model does not contain entity {0}", topicUri);
+
+                return HttpStatusCode.NotFound;
             }
         }
 

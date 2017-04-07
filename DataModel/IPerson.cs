@@ -11,6 +11,8 @@ namespace Artivity.DataModel
     {
         #region Members
 
+        Guid? Guid { get; }
+
         string Name { get; }
 
         string EmailAddress { get; }
