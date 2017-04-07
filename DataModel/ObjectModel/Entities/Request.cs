@@ -34,12 +34,12 @@ using System.Threading.Tasks;
 
 namespace Artivity.DataModel.Comments
 {
-    [RdfClass(ART.Request)]
-    public class Request : Comment
+    [RdfClass(ART.FeedbackRequest)]
+    public class FeedbackRequest : Comment
     {
         #region Constructors
 
-        public Request(Uri uri) : base(uri) {}
+        public FeedbackRequest(Uri uri) : base(uri) {}
 
         #endregion
     }

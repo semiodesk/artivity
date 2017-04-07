@@ -1,20 +1,26 @@
 <div class="ctl-comment padding-x-xs padding-y-xs" ng-blur="t.onBlurred()">
-    <textarea class="ui-autosize" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}"
-        ng-model="t.comment.text"
-        ng-enter="t.postComment($event, t.comment)"
-        ng-change="t.updateComment(t.comment)"
-        ng-focus="t.onFocused()"
-        ng-esc="t.resetComment()">
+    <div ng-show="t.showMembers">
+        <ul class="list-view">
+            <li class="list-item list-item-link" ng-repeat="member in t.members" ng-show="member.visible">
+                <div class="layout-container padding-x-xs padding-y-xs">
+                    <div class="col">
+                        <art-user-photo-img width="40" height="40" src="member.Agent.PhotoUrl"></art-user-photo-img>
+                    </div>
+                    <div class="col expand" ng-click="t.selectMember(t.comment.message, member)">
+                        <div class="padding-x-md">
+                            <h5 ng-bind="member.Agent.Name"></h5>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <textarea class="ui-autosize" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-model="t.comment.message" ng-enter="t.postComment($event, t.comment)"
+        ng-change="t.onCommentChanged(t.comment)" ng-focus="t.onFocused()" ng-esc="t.resetComment()">
     </textarea>
-    <div class="toolbar toolbar-viewer" ng-show="t.focused">
-        <a class="btn" ng-click="t.createMark($event)"><i class="zmdi zmdi-photo-size-select-small"></i></a>
-        <a class="btn" ng-click="t.selectEmoticon($event)"><i class="zmdi zmdi-mood"></i></a>
-        <a class="btn pull-right" ng-click="t.createRequest($event)"><i class="zmdi zmdi-refresh"></i><span class="btn-label">Feedback anfragen</span></a>
-    </div>
-    <div ng-show="t.selectedTool === 'emoticon'">
-        :-)
-    </div>
-    <div ng-show="t.selectedTool === 'request'">
-        Yes / No
+    <div class="toolbar" ng-show="t.focused && !t.selectedPanel">
+        <a class="btn btn-chromeless" ng-click="t.createMark($event)"><i class="zmdi zmdi-photo-size-select-small"></i></a>
+        <a class="btn btn-chromeless" ng-click="t.selectEmoticon($event)"><i class="zmdi zmdi-mood"></i></a>
+        <a class="btn btn-chromeless pull-right" ng-click="t.postRequest($event, t.comment)"><i class="zmdi zmdi-refresh"></i><span class="btn-label">Feedback anfragen</span></a>
     </div>
 </div>

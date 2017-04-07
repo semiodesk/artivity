@@ -25,9 +25,9 @@
 
     angular.module('app').controller('TaskControlDirectiveController', TaskControlDirectiveController);
 
-    TaskControlDirectiveController.$inject = ['$scope', 'agentService', 'entityService', 'taskService', 'markService', 'viewerService'];
+    TaskControlDirectiveController.$inject = ['$scope', 'agentService', 'entityService', 'taskService', 'viewerService'];
 
-    function TaskControlDirectiveController($scope, agentService, entityService, taskService, markService, viewerService) {
+    function TaskControlDirectiveController($scope, agentService, entityService, taskService, viewerService) {
         var t = this;
 
         // TASKS
@@ -118,30 +118,8 @@
         }
 
         // MARKS
-        t.marks = [];
-
-        t.createMark = function (task) {
-            if (task && task.uri) {
-                viewerService.executeCommand('createMark', task.uri);
-            }
-        }
-
-        t.showMarks = function (task) {
-            if (task && task.uri) {
-                markService.getMarksForEntity(task.uri).then(function (data) {
-                    t.marks = data;
-
-                    viewerService.executeCommand('showMarks', t.marks);
-                });
-            }
-        }
-
-        t.hideMarks = function (task) {
-            if (task && task.uri && t.marks.length > 0) {
-                viewerService.executeCommand('hideMarks', t.marks);
-
-                t.marks = [];
-            }
-        }
+        t.createMark = viewerService.createMark;
+        t.showMarks = viewerService.showMarks;
+        t.hideMarks = viewerService.hideMarks;
     }
 })();

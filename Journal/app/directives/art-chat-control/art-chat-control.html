@@ -2,22 +2,22 @@
     <div class="row expand">
         <div class="layout-container">
             <div class="ctl-protocol">
-                <div class="scroll-container scroll-y layout-fix">
+                <div class="scroll-container scroll-y layout-fix" scroll-glue>
                     <ul class="comment-list list-unstyled">
-                        <li class="comment-item list-item list-item-unstyled" ng-repeat="comment in t.comments" ng-class="{selected: t.selectedComment === comment}"
+                        <li class="comment-item list-item list-item-unstyled" ng-repeat="comment in t.comments" ng-class="{'request-item': comment.type !== 'Comment'}"
                             ng-mouseenter="t.showMarks(comment)" ng-mouseleave="t.hideMarks(comment)">
-                            <div class="comment-container" ng-click="t.selectComment(comment)">
+                            <div class="comment-container">
                                 <div class="comment" ng-class="{'comment-user': t.isUserComment(comment)}">
                                     <div class="comment-avatar">
                                         <img src="app/resources/user.svg" width="28" height="28" class="img img-circular">
                                     </div>
                                     <div class="comment-bubble">
-                                        <div class="bubble-text" emojione="{{comment.text}}"></div>
+                                        <div class="bubble-text" emojione="{{comment.message}}"></div>
                                         <div class="bubble-tip"></div>
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="comment-time">
-                                        <label class="time pull-right small">{{t.getFormattedTime(comment.time, 'hh:mm')}}</label>
+                                        <label class="time pull-right small">{{t.getFormattedTime(comment.endTime, 'hh:mm')}}</label>
                                     </div>
 
                                     <a class="btn" ng-show="false" ng-click="t.createMark(comment)" style="position: absolute; bottom: 0; right: 0;">
