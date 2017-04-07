@@ -11,5 +11,6 @@ angular.module('app', [
     'pascalprecht.translate',
     'cfp.hotkeys',
     'ngDragDrop',
-    'angular-emojione'
+    'angular-emojione',
+    'luegg.directives'
 ]);

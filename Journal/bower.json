@@ -42,7 +42,8 @@
     "EaselJS": "^0.8.2",
     "yasgui": "^2.4.1",
     "jquery-appear": "^0.2.6",
-    "angular-emojione": "*"
+    "angular-emojione": "*",
+    "angular-scroll-glue": "^2.2.0"
   },
   "resolutions": {
     "angular": "1.5.8",

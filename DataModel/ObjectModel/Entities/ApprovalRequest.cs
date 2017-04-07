@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 namespace Artivity.DataModel.Comments
 {
     [RdfClass(ART.ApprovalRequest)]
-    public class ApprovalRequest : Request
+    public class ApprovalRequest : FeedbackRequest
     {
         #region Constructors
 

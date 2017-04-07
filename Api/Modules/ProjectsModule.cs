@@ -49,7 +49,14 @@ namespace Artivity.Api.Modules
                 {
                     UriRef projectUri = new UriRef(Request.Query.projectUri);
 
-                    return GetProjectMembers(projectUri);
+                    if (string.IsNullOrEmpty(Request.Query.q))
+                    {
+                        return GetProjectMembers(projectUri);
+                    }
+                    else
+                    {
+                        return GetProjectMembersFromQuery(projectUri, Request.Query.q);
+                    }
                 }
                 else
                 {
@@ -212,6 +219,38 @@ namespace Artivity.Api.Modules
                     }");
 
                 query.Bind("@project", projectUri);
+
+                List<ProjectMembership> members = all.GetResources<ProjectMembership>(query).ToList();
+
+                return Response.AsJsonSync(members);
+            }
+            else
+            {
+                return HttpStatusCode.NoContent;
+            }
+        }
+
+        protected Response GetProjectMembersFromQuery(UriRef projectUri, string q)
+        {
+            IModel all = ModelProvider.GetAll();
+
+            if (all.ContainsResource(projectUri))
+            {
+                ISparqlQuery query = new SparqlQuery(@"
+                    SELECT ?s ?p ?o
+                    WHERE
+                    {
+                        @project art:qualifiedMembership ?s .
+
+                        ?s a art:ProjectMembership ; ?p ?o .
+
+                        ?s art:agent / foaf:name ?name .
+
+                        FILTER(STRSTARTS(LCASE(?name), @q))
+                    }");
+
+                query.Bind("@project", projectUri);
+                query.Bind("@q", q.ToLowerInvariant());
 
                 List<ProjectMembership> members = all.GetResources<ProjectMembership>(query).ToList();
 

@@ -11,48 +11,47 @@
             },
             controller: ChatInputDirectiveController,
             controllerAs: 't',
-            bindToController: true,
-            link: function (scope, element, attr, t) {
-                t.element = element;
-
-                scope.$watch('t.entityUri', function () {
-                    // Reset the primary source on the new comment.
-                    t.resetComment();
-                });
-            }
+            bindToController: true
         }
     }
 
     angular.module('app').controller('ChatInputDirectiveController', ChatInputDirectiveController);
 
-    ChatInputDirectiveController.$inject = ['$scope', 'agentService', 'entityService', 'commentService', 'markService', 'projectService', 'viewerService'];
+    ChatInputDirectiveController.$inject = ['$scope', '$element', 'agentService', 'commentService', 'projectService', 'viewerService'];
 
-    function ChatInputDirectiveController($scope, agentService, entityService, commentService, markService, projectService, viewerService) {
+    function ChatInputDirectiveController($scope, $element, agentService, commentService, projectService, viewerService) {
         var t = this;
 
-        // COMMENT
-        t.comment = null;
+        // FOCUS
+        t.focused = false;
 
-        t.validateComment = function (comment) {
-            return comment.agent && comment.entity && comment.startTime && comment.text.length > 0;
+        t.onFocused = function () {
+            t.focused = true;
         }
 
-        t.updateComment = function (comment) {
+        t.onBlurred = function () {
+            t.focused = false;
+        }
+
+        // COMMENT
+        t.comment = new Comment();
+
+        t.onCommentChanged = function (comment) {
             if (!comment.startTime) {
                 comment.startTime = new Date();
+            }
 
-                console.log("Started comment: ", comment);
+            if (comment.message && projectService.currentProject) {
+                t.handleMemberSelection(comment.message, projectService.currentProject);
             }
         }
 
         t.postComment = function (e, comment) {
-            if (t.validateComment(comment)) {
+            if(!comment.endTime) {
                 comment.endTime = new Date();
+            }
 
-                if (e && e.ctrlKey) {
-                    comment.agent = 'http://artivity.online/test';
-                }
-
+            if (comment.validate()) {
                 commentService.postComment(comment).then(function (data) {
                     comment.uri = data.uri;
 
@@ -70,71 +69,123 @@
             }
         }
 
+        t.postRequest = function (e, request) {
+            if(!request.endTime) {
+                request.endTime = new Date();
+            }
+
+            if (request.validate()) {
+                request.type = 'ApprovalRequest';
+
+                for(i = 0; i < t.members.length; i++) {
+                    var association = {
+                        agent: t.members[i].Agent.Uri,
+                        role: t.members[i].RoleUri
+                    }
+
+                    request.associations.push(association);
+                }
+
+                console.log('Requesting approval from: ', request.associations);
+
+                commentService.postRequest(request).then(function (data) {
+                    request.uri = data.uri;
+
+                    // Show the comment in the list of comments.
+                    t.comments.push(request);
+
+                    console.log("Posted request: ", request);
+
+                    t.resetComment();
+                }, function (response) {
+                    console.error(response);
+                });
+            } else {
+                console.log("Invalid request: ", request);
+            }
+        }
+
         t.resetComment = function (clearText) {
-            t.comment = {
-                agent: agentService.currentUser.Uri,
-                entity: t.entityUri,
-                startTime: null,
-                endTime: null,
-                text: '',
-                markers: [],
-                requestType: undefined
-            };
+            t.comment = new Comment();
+            t.comment.agent = agentService.currentUser.Uri;
+            t.comment.primarySource = t.entityUri;
 
             console.log("Reset comment: ", t.comment);
         }
 
-        // TOOLS
+        // FEEDBACK
+        t.atExpression = new RegExp('@(.*)');
+        t.members = [];
+        t.showMembers = false;
 
-        t.selectedTool = null;
+        t.handleMemberSelection = function (input, project) {
+            var match = input.match(t.atExpression);
 
-        t.createMark = function (e) {
-            t.selectedTool = 'mark';
+            t.showMembers = match ? true : false;
 
-            if (comment && comment.uri) {
-                viewerService.executeCommand('createMark', comment.uri);
+            if (match) {
+                var q = match[1];
+
+                if (q.length > 0) {
+                    for (i = 0; i < t.members.length; i++) {
+                        var m = t.members[i];
+
+                        m.visible = m.Agent.Name.toLowerCase().startsWith(q);
+                    }
+                } else {
+                    for (i = 0; i < t.members.length; i++) {
+                        var m = t.members[i];
+
+                        m.visible = true;
+                    }
+                }
             }
         }
 
-        t.createRequest = function (e) {
-            if (projectService.currentProject) {
-                t.selectedTool = 'request';
+        t.selectMember = function (input, member) {
+            var match = input.match(t.atExpression);
 
-                t.comment.requestType = 'Request';
-                t.comment.associations = [];
+            if (match) {
+                var q = match[1];
 
-                projectService.getMembers(projectService.currentProject.Uri).then(function (result) {
-                    if (result.length > 0) {
-                        for (i = 0; i < result.length; i++) {
-                            var member = result[i];
+                input = input.substring(0, input.indexOf(q));
+                input += '@' + member.Agent.Name;
 
-                            var association = {
-                                agent: member.Agent.Uri,
-                                role: member.RoleUri
-                            };
+                t.comment.message = input;
 
-                            t.comment.associations.push(association);
-                        }
+                t.showMembers = false;
+            }
+        }
 
-                        console.log('Requesting feedback from: ', t.comment.associations);
-                    }
-                });
+        // TOOLS
+        t.createMark = function (e) {
+            if (comment) {
+                viewerService.createMark(comment);
             }
         }
 
         t.selectEmoticon = function (e) {
-            t.selectedTool = 'emoticon';
         }
 
-        // FOCUS
-        t.focused = false;
+        // INIT
+        t.$onInit = function () {
+            if (projectService.currentProject) {
+                var project = projectService.currentProject;
 
-        t.onFocused = function () {
-            t.focused = true;
+                projectService.getMembers(project.Uri).then(function (members) {
+                    members.sort(function (a, b) {
+                        return a.Agent.Name.localeCompare(b.Agent.Name);
+                    });
+
+                    t.members = members;
+                });
+            }
         }
 
-        t.onBlurred = function () {
-            t.focused = false;
+        t.$postLink = function () {
+            $scope.$watch('t.entityUri', function () {
+                t.resetComment();
+            });
         }
     }
 })();
