@@ -35,6 +35,8 @@ using Nancy;
 using Nancy.IO;
 using Newtonsoft.Json;
 using Nancy.Security;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Artivity.Api.Modules
 {
@@ -45,8 +47,6 @@ namespace Artivity.Api.Modules
         public IModelProvider ModelProvider { get; set; }
 
         public IPlatformProvider PlatformProvider { get; set; }
-
-        public IModel UserModel { get; private set; }
 
         public IUserProvider UserProvider {get; private set;}
 
@@ -118,17 +118,12 @@ namespace Artivity.Api.Modules
 
             if (user != null)
             {
-                ModelProvider.SetUsername(user);
+                ModelProvider.SetOwner(user);
             }
 
             if (UserProvider != null)
             {
                 LoadCurrentUser();
-            }
-
-            if (UserModel == null)
-            {
-                return HttpStatusCode.InternalServerError;
             }
 
             return null;
@@ -137,7 +132,6 @@ namespace Artivity.Api.Modules
         public virtual void LoadCurrentUser()
         {
             UserProvider.LoadCurrentUser(Context.CurrentUser);
-            UserModel = ModelProvider.GetActivities();
         }
 
         public T Bind<T>(IStore store, RequestStream stream) where T : Resource
@@ -178,6 +172,103 @@ namespace Artivity.Api.Modules
             stream.Position = 0;
 
             return Response.FromStream(stream, "application/json");
+        }
+
+        /// <summary>
+        /// Processes the regular get function for this endpoint.
+        /// Takes an 'uri' parameter if you want a specific entity.
+        /// Returns a list of entities if no parameter was specified.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Response GetEntities<T>(IModel model, Uri entityTypeUri) where T : Resource
+        {
+            int offset = -1;
+            int limit = -1;
+
+            GetOffsetLimit(out offset, out limit);
+
+            if (Request.Query["uri"] != null && !string.IsNullOrEmpty(Request.Query["uri"]))
+            {
+                Uri uri = new Uri(Request.Query["uri"]);
+
+                T entity = model.GetResource<T>(uri);
+
+                return Response.AsJsonSync(entity);
+            }
+            else
+            {
+                int count = 0;
+
+                SparqlQuery countQuery = new SparqlQuery(@"
+                    SELECT COUNT(?s) AS ?count WHERE
+                    {
+	                    ?s a @type .
+	
+	                    OPTIONAL { ?s art:deleted ?deletionTime . }
+	
+	                    FILTER(!BOUND(?deletionTime) || ?deletionTime = @minDate)
+                    }");
+
+                countQuery.Bind("@type", entityTypeUri);
+                countQuery.Bind("@minDate", DateTime.MinValue);
+
+                BindingSet b = model.ExecuteQuery(countQuery).GetBindings().FirstOrDefault();
+
+                if (b != null)
+                {
+                    count = (int)b["count"];
+                }
+                else
+                {
+                    return Response.AsJsonSync(new Dictionary<string, object>
+                    {
+                        {"success", false},
+                        {"count", 0},
+                        {"offset", 0},
+                        {"limit", 0},
+                        {"data", ""}
+                    });
+                }
+
+                SparqlQuery query = new SparqlQuery(@"
+                    SELECT ?s ?p ?o WHERE
+                    {
+                        ?s ?p ?o
+                        {
+                            SELECT ?s WHERE
+                            {
+	                            ?s a @type .
+	
+	                            OPTIONAL { ?s art:deleted ?deletionTime . }
+	
+	                            FILTER(!BOUND(?deletionTime) || ?deletionTime = @minDate)
+                            }
+                            OFFSET @offset LIMIT @limit
+                        }
+                    }");
+
+                query.Bind("@type", entityTypeUri);
+                query.Bind("@minDate", DateTime.MinValue);
+                query.Bind("@offset", offset);
+                query.Bind("@limit", limit);
+
+                List<T> data = model.GetResources<T>(query).ToList();
+
+                return Response.AsJsonSync(new Dictionary<string, object>
+                {
+                    {"success", true},
+                    {"count", count},
+                    {"offset", offset},
+                    {"limit", limit},
+                    {"data", data}
+                });
+            }
+        }
+
+        protected void GetOffsetLimit(out int offset, out int limit)
+        {
+            offset = Request.Query["offset"] ? (int)Request.Query["offset"] : 0;
+            limit = Request.Query["limit"] ? (int)Request.Query["limit"] : 10;
         }
 
         #endregion

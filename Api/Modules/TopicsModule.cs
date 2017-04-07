@@ -103,7 +103,9 @@ namespace Artivity.Api.Modules
 
         private Response GetTopicsFromEntity(UriRef entityUri)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -127,14 +129,16 @@ namespace Artivity.Api.Modules
             query.Bind("@entity", entityUri);
             query.Bind("@undefined", DateTime.MinValue);
 
-            var bindings = UserModel.GetBindings(query, true).ToList();
+            var bindings = model.GetBindings(query, true).ToList();
 
             return Response.AsJson(bindings);
         }
 
         private Response PostTopic(TopicParameter parameter)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
             if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
             {
@@ -146,16 +150,16 @@ namespace Artivity.Api.Modules
             Agent agent = new Agent(new UriRef(parameter.agent));
             Entity entity = new Entity(new UriRef(parameter.entity));
 
-            if (UserModel.ContainsResource(entity))
+            if (model.ContainsResource(entity))
             {
-                Topic topic = UserModel.CreateResource<Topic>();
+                Topic topic = model.CreateResource<Topic>(ModelProvider.CreateUri<Topic>());
                 topic.CreationTimeUtc = parameter.endTime;
                 topic.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 topic.Title = parameter.title;
                 topic.IsSynchronizable = true;
                 topic.Commit();
 
-                CreateEntity activity = UserModel.CreateResource<CreateEntity>();
+                CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = agent;
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
@@ -179,15 +183,17 @@ namespace Artivity.Api.Modules
 
         private Response DeleteTopic(UriRef topicUri)
         {
-            LoadCurrentUser();
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
 
-            if(UserModel.ContainsResource(topicUri))
+            if(model.ContainsResource(topicUri))
             {
-                Topic topic = UserModel.GetResource<Topic>(topicUri);
+                Topic topic = model.GetResource<Topic>(topicUri);
                 topic.DeletionTimeUtc = DateTime.UtcNow;
                 topic.Commit();
 
-                DeleteEntity activity = UserModel.CreateResource<DeleteEntity>();
+                DeleteEntity activity = model.CreateResource<DeleteEntity>(ModelProvider.CreateUri<DeleteEntity>());
                 //activity.StartedBy = agent;
                 activity.StartTime = DateTime.UtcNow;
                 activity.EndTime = DateTime.UtcNow.AddSeconds(1);

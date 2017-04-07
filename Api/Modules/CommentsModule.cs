@@ -30,6 +30,7 @@ using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Artivity.DataModel.Comments;
 using Nancy;
+using Nancy.Security;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
@@ -152,24 +153,21 @@ namespace Artivity.Api.Modules
         private Response PostComment(CommentParameter parameter)
         {
             IModel model = ModelProvider.GetActivities();
-
             if (model == null)
-            {
                 return HttpStatusCode.InternalServerError;
-            }
 
             Entity entity = new Entity(new UriRef(parameter.entity));
 
             if (model.ContainsResource(entity))
             {
-                Comment comment = model.CreateResource<Comment>();
+                Comment comment = model.CreateResource<Comment>(ModelProvider.CreateUri<Comment>());
                 comment.CreationTimeUtc = parameter.endTime;
                 comment.PrimarySource = entity;
                 comment.Message = parameter.text;
                 comment.IsSynchronizable = true;
                 comment.Commit();
 
-                CreateEntity activity = model.CreateResource<CreateEntity>();
+                CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = new Agent(new UriRef(parameter.agent));
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
@@ -213,7 +211,7 @@ namespace Artivity.Api.Modules
 
             if (model.ContainsResource(entity))
             {
-                var request = model.CreateResource<T>();
+                var request = model.CreateResource<T>(ModelProvider.CreateUri<T>());
 
                 request.CreationTimeUtc = parameter.endTime;
                 request.PrimarySource = entity;
@@ -221,7 +219,7 @@ namespace Artivity.Api.Modules
                 request.IsSynchronizable = true;
                 request.Commit();
 
-                CreateEntity activity = model.CreateResource<CreateEntity>();
+                CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = new Agent(new UriRef(parameter.agent));
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
@@ -240,7 +238,7 @@ namespace Artivity.Api.Modules
                 {
                     foreach (AssociationParameter a in parameter.associations)
                     {
-                        Association association = model.CreateResource<Association>();
+                        Association association = model.CreateResource<Association>(ModelProvider.CreateUri<Association>());
                         association.Agent = new Agent(new UriRef(a.agent));
                         association.Role = new Role(new UriRef(a.role));
                         association.Commit();

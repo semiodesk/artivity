@@ -144,7 +144,18 @@ namespace ArtivityTest
         }
 
 
-        public void SetUsername(string username)
+        public void SetOwner(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public Uri CreateUri<T>(string guid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Uri CreateUri<T>()
         {
             throw new NotImplementedException();
         }
