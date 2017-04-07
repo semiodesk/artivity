@@ -56,8 +56,8 @@ namespace Artivity.Apid.Modules
 
         #region Constructors
 
-        public PluginModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
-            : base("/artivity/api/1.0/plugin", modelProvider, platformProvider, userProvider)
+        public PluginModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/plugin", modelProvider, platformProvider)
         {
             Post["/file/activities"] = parameters =>
             {

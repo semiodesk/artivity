@@ -89,6 +89,7 @@
     <Compile Include="Modules\TasksModule.cs" />
     <Compile Include="Modules\UsersModule.cs" />
     <Compile Include="Parameters\MarkParameter.cs" />
+    <Compile Include="Parameters\ProjectParameter.cs" />
     <Compile Include="Parameters\TaskParameter.cs" />
     <Compile Include="Parameters\TopicParameter.cs" />
     <Compile Include="Platform\IThumbnailProvider.cs" />
@@ -97,13 +98,11 @@
     <Compile Include="IO\ArchiveReader.cs" />
     <Compile Include="IO\ArchiveWriterBase.cs" />
     <Compile Include="IO\BackupWriter.cs" />
-    <Compile Include="Modules\EntityModuleBase.cs" />
     <Compile Include="IO\FileNameEncoder.cs" />
     <Compile Include="Platform\IPlatformProvider.cs" />
     <Compile Include="Infrastructure\ILogger.cs" />
     <Compile Include="Modules\ModuleBase.cs" />
     <Compile Include="Infrastructure\NancyExtensions.cs" />
-    <Compile Include="Platform\IUserProvider.cs" />
     <Compile Include="Platform\UserConfig.cs" />
     <Compile Include="Modules\ActivitiesModule.cs" />
     <Compile Include="Modules\ApiModule.cs" />

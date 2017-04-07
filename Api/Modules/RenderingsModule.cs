@@ -47,8 +47,8 @@ namespace Artivity.Api.Modules
     {
         #region Constructors
 
-        public RenderingsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider)
-            : base("/artivity/api/1.0/renderings", modelProvider, platformProvider, userProvider)
+        public RenderingsModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+            : base("/artivity/api/1.0/renderings", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>
             {
