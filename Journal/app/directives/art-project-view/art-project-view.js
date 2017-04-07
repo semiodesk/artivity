@@ -23,15 +23,13 @@
 		var t = this;
 
 		if (t.new) {
-			t.collapsed = false;
-
 			projectService.create().then(function (result) {
 				t.project = result;
 				t.project.folder = null;
 				t.project.members = [];
+
+				t.togglePropertyPane();
 			});
-		} else {
-			t.collapsed = true;
 		}
 
 		t.file = null;
@@ -132,9 +130,11 @@
 		t.getPhotoUrl = agentService.getPhotoUrl;
 
 		t.togglePropertyPane = function () {
-			if (!t.new) {
+			var panel = $($element).find('.view-secondary-content');
+
+			if (!t.new || t.new && !panel.hasClass('panel-visible')) {
 				// Note: This also works when invoked from keyboard shortcuts.
-				$($element).find('.view-secondary-content').toggleClass('panel-visible');
+				panel.toggleClass('panel-visible');
 
 				t.collapsed = !t.collapsed;
 
