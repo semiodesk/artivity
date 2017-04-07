@@ -150,7 +150,7 @@ namespace Artivity.Api.Modules
 
             if (model.ContainsResource(entity))
             {
-                Task task = model.CreateResource<Task>();
+                Task task = model.CreateResource<Task>(ModelProvider.CreateUri<Task>());
                 task.CreationTimeUtc = parameter.endTime;
                 task.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 task.Name = parameter.name;
@@ -158,7 +158,7 @@ namespace Artivity.Api.Modules
                 task.IsSynchronizable = true;
                 task.Commit();
 
-                CreateEntity activity = model.CreateResource<CreateEntity>();
+                CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = agent;
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
@@ -195,7 +195,7 @@ namespace Artivity.Api.Modules
                 task.Name = parameter.name;
                 task.Commit();
 
-                EditEntity activity = model.CreateResource<EditEntity>();
+                EditEntity activity = model.CreateResource<EditEntity>(ModelProvider.CreateUri<EditEntity>());
                 activity.StartedBy = new Agent(new UriRef(parameter.agent));
                 activity.StartTime = DateTime.UtcNow;
                 activity.EndTime = DateTime.UtcNow;

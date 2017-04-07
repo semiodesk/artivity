@@ -83,7 +83,10 @@ namespace Artivity.DataModel
 
         void SetProject(string project);
 
-        void SetUsername(string username);
+        void SetOwner(string username);
+
+        Uri CreateUri<T>(string guid);
+        Uri CreateUri<T>();
 
         #endregion
     }

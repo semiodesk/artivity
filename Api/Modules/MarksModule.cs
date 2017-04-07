@@ -125,14 +125,14 @@ namespace Artivity.Api.Modules
             if (model.ContainsResource(entity))
             {
                 // TODO: Move the creation of the entity into API for markers.
-                Rectangle rectangle = model.CreateResource<Rectangle>();
+                Rectangle rectangle = model.CreateResource<Rectangle>(ModelProvider.CreateUri<Rectangle>());
                 rectangle.x = parameter.x;
                 rectangle.y = parameter.y;
                 rectangle.Width = parameter.width;
                 rectangle.Height = parameter.height;
                 rectangle.Commit();
 
-                Mark mark = model.CreateResource<Mark>();
+                Mark mark = model.CreateResource<Mark>(ModelProvider.CreateUri<Mark>());
                 mark.CreationTimeUtc = parameter.endTime;
                 mark.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 mark.Region = rectangle;
@@ -140,7 +140,7 @@ namespace Artivity.Api.Modules
                 mark.Commit();
 
                 // Associate the comment with the activity.
-                CreateEntity activity = model.CreateResource<CreateEntity>();
+                CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = agent;
                 activity.StartTime = parameter.startTime;
                 activity.EndTime = parameter.endTime;
@@ -181,7 +181,7 @@ namespace Artivity.Api.Modules
                 rectangle.Height = parameter.height;
                 rectangle.Commit();
 
-                EditEntity activity = model.CreateResource<EditEntity>();
+                EditEntity activity = model.CreateResource<EditEntity>(ModelProvider.CreateUri<EditEntity>());
                 activity.StartedBy = new Agent(new UriRef(parameter.agent));
                 activity.StartTime = DateTime.UtcNow;
                 activity.EndTime = DateTime.UtcNow;
@@ -208,7 +208,7 @@ namespace Artivity.Api.Modules
                 mark.DeletionTimeUtc = DateTime.UtcNow;
                 mark.Commit();
 
-                DeleteEntity activity = model.CreateResource<DeleteEntity>();
+                DeleteEntity activity = model.CreateResource<DeleteEntity>(ModelProvider.CreateUri<DeleteEntity>());
                 activity.StartTime = DateTime.UtcNow;
                 activity.EndTime = DateTime.UtcNow;
                 activity.InvalidatedEntities.Add(mark);

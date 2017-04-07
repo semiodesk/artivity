@@ -244,7 +244,7 @@ namespace Artivity.Api.Modules
 
         private Response CreatePerson()
         {
-            Person person = ModelProvider.GetAgents().CreateResource<Person>();
+            Person person = ModelProvider.GetAgents().CreateResource<Person>(ModelProvider.CreateUri<Person>());
 
             return Response.AsJsonSync(person);
         }

@@ -26,9 +26,11 @@
 // Copyright (c) Semiodesk GmbH 2017
 
 using Artivity.Api;
+using Artivity.Api.Parameters;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
 using Nancy;
+using Nancy.ModelBinding;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -36,11 +38,80 @@ using System.Linq;
 
 namespace Artivity.Api.Modules
 {
-    public class ProjectsModule : EntityModuleBase<Project>
+    public class ProjectsModule : ModuleBase
     {
         public ProjectsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, IUserProvider userProvider) : 
             base("/artivity/api/1.0/projects", modelProvider, platformProvider, userProvider)
         {
+                Get["/"] = parameters =>
+                {
+                    var response = InitializeRequest();
+                    if (response != null)
+                        return response;
+
+                    IModel model = ModelProvider.GetActivities();
+                    if (model == null)
+                        return HttpStatusCode.BadRequest;
+
+                    return GetEntities<Project>(model, art.Project.Uri);
+                };
+            
+
+                // Create a new resource
+                Get["/new"] = parameters =>
+                {
+                    var response = InitializeRequest();
+                    if (response != null)
+                        return response;
+
+                    IModel model = ModelProvider.GetActivities();
+                    if (model == null)
+                        return HttpStatusCode.BadRequest;
+
+                    Uri uri = modelProvider.CreateUri<Project>();
+
+                    Project entity = model.CreateResource<Project>(uri);
+
+                    return Response.AsJsonSync(entity);
+                };
+            
+
+                Put["/"] = parameters =>
+                {
+                    var response = InitializeRequest();
+                    if (response != null)
+                    {
+                        return response;
+                    }
+
+                    IModel model = ModelProvider.GetActivities();
+                    if (model == null)
+                        return HttpStatusCode.BadRequest;
+
+                    Uri uri = new Uri(Request.Query["uri"]);
+
+                    ProjectParameter param = this.Bind<ProjectParameter>();
+
+                    PutProject(uri, param);
+
+                    return Response.AsJsonSync(new { success = true });
+                };
+            
+
+        
+                Delete["/"] = parameters =>
+                {
+                    var response = InitializeRequest();
+                    if (response != null)
+                        return response;
+
+                    Uri uri = new Uri(Request.Query["uri"]);
+
+                    return DeleteProject(uri);
+                };
+            
+
+
             Get["/agents"] = parameters =>
             {
                 InitializeRequest();
@@ -196,6 +267,31 @@ namespace Artivity.Api.Modules
 
         #region Methods
 
+
+        private Response PutProject(Uri uri, ProjectParameter parameter)
+        {
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
+
+            if( uri.AbsoluteUri != parameter.uri)
+                return HttpStatusCode.BadRequest;
+
+            Project project;
+
+            if (model.ContainsResource(uri))
+                project = model.GetResource<Project>(uri);
+            else
+                project = model.CreateResource<Project>(uri);
+
+            project.Title = parameter.title;
+            project.ColorCode = parameter.colorCode;
+            project.Description = parameter.description;
+            project.Commit();
+
+            return HttpStatusCode.OK;
+        }
+
         protected Response GetProjectMembers(UriRef projectUri)
         {
             IModel all = ModelProvider.GetAll();
@@ -244,7 +340,7 @@ namespace Artivity.Api.Modules
                     default: throw new ArgumentException("userRole");
                 }
 
-                ProjectMembership membership = activities.CreateResource<ProjectMembership>();
+                ProjectMembership membership = activities.CreateResource<ProjectMembership>(ModelProvider.CreateUri<ProjectMembership>());
                 membership.Agent = new Person(agentUri);
                 membership.Role = new Role(role);
                 membership.Commit();
@@ -349,7 +445,7 @@ namespace Artivity.Api.Modules
 
             if(!result.GetAnwser())
             {
-                Usage usage = activities.CreateResource<Usage>();
+                Usage usage = activities.CreateResource<Usage>(ModelProvider.CreateUri<Usage>());
                 usage.Entity = new Entity(fileUri);
                 usage.Time = DateTime.UtcNow;
                 usage.Commit();
@@ -427,12 +523,12 @@ namespace Artivity.Api.Modules
             }
             else
             {
-                folder = activities.CreateResource<Folder>();
+                folder = activities.CreateResource<Folder>(ModelProvider.CreateUri<Folder>());
                 folder.Url = new Resource(folderUrl);
                 folder.Commit();
             }
 
-            Usage usage = activities.CreateResource<Usage>();
+            Usage usage = activities.CreateResource<Usage>(ModelProvider.CreateUri<Usage>());
             usage.Entity = folder;
             usage.Time = DateTime.UtcNow;
             usage.Commit();
@@ -468,6 +564,40 @@ namespace Artivity.Api.Modules
             }
         }
 
+        private Response DeleteProject(Uri uri)
+        {
+            IModel model = ModelProvider.GetActivities();
+            if (model == null)
+                return HttpStatusCode.BadRequest;
+
+            SparqlUpdate update = new SparqlUpdate(@"
+                        WITH @model
+                        DELETE { @subject art:deleted ?deletionTime . }
+                        WHERE 
+                        {
+                            @subject art:deleted ?deletionTime . 
+                            @subject a art:Project .
+                        }
+                        INSERT { @subject art:deleted @deletionTime . }
+                        DELETE { ?state arts:lastRemoteRevision ?revision . }
+                        INSERT { ?state arts:lastRemoteRevision @undefined . }
+                        WHERE
+                        {
+                            @subject arts:synchronizationState ?state .
+                            ?state arts:lastRemoteRevision ?revision .
+                            @subject a art:Project .
+                        }
+                    ");
+
+            update.Bind("@model", model.Uri);
+            update.Bind("@subject", uri);
+            update.Bind("@deletionTime", DateTime.UtcNow);
+            update.Bind("@undefined", -1);
+
+            model.ExecuteUpdate(update);
+
+            return Response.AsJsonSync(new { success = true });
+        }
         #endregion
     }
 }

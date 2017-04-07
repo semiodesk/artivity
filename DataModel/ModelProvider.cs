@@ -30,6 +30,7 @@ using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace Artivity.DataModel
 {
@@ -136,8 +137,6 @@ namespace Artivity.DataModel
         {
             IModel model = GetAgents();
 
-            model.Clear();
-
             // Create a default user..
             User user = model.CreateResource<User>(new UriRef("urn:art:uid:" + Uid));
             user.Commit();
@@ -202,7 +201,26 @@ namespace Artivity.DataModel
         {
             IModel model = GetAgents();
 
-            return !model.IsEmpty;
+            Uri userUri = new UriRef("urn:art:uid:" + Uid);
+
+            if ( !model.ContainsResource(userUri))
+                return false;
+
+            User user = model.GetResource<User>(userUri);
+
+            ResourceQuery q = new ResourceQuery(prov.Association);
+            q.Where(prov.agent, user);
+            q.Where(prov.hadRole, art.AccountOwnerRole);
+
+            var res = model.ExecuteQuery(q).GetResources<Association>();
+            if (!res.Any())
+            {
+                Association association = model.CreateResource<Association>();
+                association.Agent = user;
+                association.Role = new Role(art.AccountOwnerRole);
+                association.Commit();
+            }
+            return true;
         }
 
         public IModelGroup CreateModelGroup(params Uri[] models)
@@ -282,7 +300,28 @@ namespace Artivity.DataModel
 
         public void SetProject(string x) { }
 
-        public void SetUsername(string x) { }
+        public void SetOwner(string x) { }
+
+
+        private static string GetTypename<T>()
+        {
+            return typeof(T).Name.ToLowerInvariant();
+        }
+
+        private static Uri CreateDefaultUri<T>(string guid)
+        {
+            return new Uri(string.Format("http://artivity.io/{0}/{1}", GetTypename<T>(), guid));
+        }
+
+        public Uri CreateUri<T>(string guid)
+        {
+            return CreateDefaultUri<T>(guid);
+        }
+
+        public Uri CreateUri<T>()
+        {
+            return CreateDefaultUri<T>(Guid.NewGuid().ToString());
+        }
 
         #endregion
     }

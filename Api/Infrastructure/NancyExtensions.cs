@@ -28,6 +28,7 @@
 using Nancy;
 using Nancy.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -49,7 +50,9 @@ namespace Artivity.Api
 
         public static Response AsJsonSync<TModel>(this IResponseFormatter formatter, TModel model, HttpStatusCode statusCode = HttpStatusCode.OK)
         {
-            string result = JsonConvert.SerializeObject(model);
+            var settings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+
+            string result = JsonConvert.SerializeObject(model, settings);
 
             // Manually convert the result because the default serializer crashes with an exception when
             // trying to serialize the nested data object HttpAuthenticationProtocol. The exception occurs
