@@ -160,8 +160,8 @@ namespace Artivity.Api.Modules
 
                 CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = agent;
-                activity.StartTime = parameter.startTime;
-                activity.EndTime = parameter.endTime;
+                activity.StartTimeUtc = parameter.startTime;
+                activity.EndTimeUtc = parameter.endTime;
                 activity.GeneratedEntities.Add(task); // Associate the comment with the activity.
                 activity.UsedEntities.Add(entity); // TODO: Correct this in the data provided by the plugins.
 
@@ -197,8 +197,8 @@ namespace Artivity.Api.Modules
 
                 EditEntity activity = model.CreateResource<EditEntity>(ModelProvider.CreateUri<EditEntity>());
                 activity.StartedBy = new Agent(new UriRef(parameter.agent));
-                activity.StartTime = DateTime.UtcNow;
-                activity.EndTime = DateTime.UtcNow;
+                activity.StartTimeUtc = DateTime.UtcNow;
+                activity.EndTimeUtc = DateTime.UtcNow;
                 activity.UsedEntities.Add(task);
                 activity.Commit();
 

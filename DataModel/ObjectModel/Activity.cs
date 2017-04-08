@@ -57,10 +57,10 @@ namespace Artivity.DataModel
         public List<Entity> UsedEntities { get; set; }
 
 		[RdfProperty(PROV.startedAtTime)]
-		public DateTime StartTime { get; set; }
+		public DateTime StartTimeUtc { get; set; }
 
 		[RdfProperty(PROV.endedAtTime)]
-		public DateTime EndTime { get; set; }
+		public DateTime EndTimeUtc { get; set; }
 
         [RdfProperty(PROV.wasStartedBy)]
         public Agent StartedBy { get; set; }
@@ -90,9 +90,9 @@ namespace Artivity.DataModel
             }
             */
 
-            if (EndTime > DateTime.MinValue)
+            if (EndTimeUtc > DateTime.MinValue)
             {
-                return EndTime > StartTime;
+                return EndTimeUtc > StartTimeUtc;
             }
             else
             {

@@ -197,8 +197,8 @@ namespace Artivity.Api.Modules
 
                 CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = new Agent(new UriRef(parameter.agent));
-                activity.StartTime = parameter.startTime;
-                activity.EndTime = parameter.endTime;
+                activity.StartTimeUtc = parameter.startTime;
+                activity.EndTimeUtc = parameter.endTime;
                 activity.GeneratedEntities.Add(comment);
                 activity.UsedEntities.Add(primarySource);
 
@@ -249,8 +249,8 @@ namespace Artivity.Api.Modules
 
                 CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = new Agent(new UriRef(parameter.agent));
-                activity.StartTime = parameter.startTime;
-                activity.EndTime = parameter.endTime;
+                activity.StartTimeUtc = parameter.startTime;
+                activity.EndTimeUtc = parameter.endTime;
                 activity.GeneratedEntities.Add(request);
                 activity.UsedEntities.Add(primarySource);
 
