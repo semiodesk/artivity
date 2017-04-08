@@ -2255,7 +2255,7 @@ button[disabled]:hover {
 	padding: 0;
 }
 
-.comment-list .comment .bubble-text {
+.comment-list .comment .bubble-content {
 	float: left;
 	min-height: 2em;
 	max-width: 100%;
@@ -2266,6 +2266,12 @@ button[disabled]:hover {
 	word-wrap: break-word;
 	text-overflow: ellipsis;
 	border-radius: 3px 0 3px 3px;
+}
+
+.comment-list .comment .bubble-content .icon {
+	display: none;
+	margin-left: 7px;
+	margin-right: 0;
 }
 
 .comment-list .comment .bubble-tip {
@@ -2281,10 +2287,10 @@ button[disabled]:hover {
 	border-bottom-color: transparent;
 }
 
-.comment-list .comment:hover .bubble-text,
-.comment-list .comment.selected .bubble-text {
+.comment-list .comment:hover .bubble-content,
+.comment-list .comment.selected .bubble-content {
 	background: $accentColor;
-	color: black;
+	color: $accentTextColor;
 }
 
 .comment-list .comment:hover .bubble-tip,
@@ -2304,8 +2310,13 @@ button[disabled]:hover {
 	margin-right: 50px;
 }
 
-.comment-list .comment.comment-user .bubble-text {
+.comment-list .comment.comment-user .bubble-content {
 	float: right;
+}
+
+.comment-list .comment .bubble-content .icon {
+	margin-right: 7px;
+	margin-left: 0;
 }
 
 .comment-list .comment.comment-user .bubble-tip {
@@ -2323,6 +2334,35 @@ button[disabled]:hover {
 	border-right-color: transparent;
 	border-bottom-color: transparent;
 	border-left-color: $accentColor;
+}
+
+.comment-list .request-item .comment .bubble-content {
+	background: $infoColor;
+}
+
+.comment-list .request-item .comment .bubble-content .icon {
+	display: inline;
+}
+
+.comment-list .request-item .comment .bubble-tip {
+	border: 6px solid $infoColor;
+	border-left-color: transparent;
+	border-bottom-color: transparent;
+}
+
+.comment-list .request-item .comment.comment-user .bubble-content {
+	width: 100%;
+}
+
+.comment-list .request-item .comment.comment-user .bubble-tip {
+	border: 6px solid $infoColor;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
+}
+
+.comment-list .request-item .comment.comment-user .comment-bubble {
+	margin-left: 0px;
+	margin-right: 50px;
 }
 
 .ctl-comment {
@@ -2351,10 +2391,6 @@ button[disabled]:hover {
 .ctl-comment .btn-post {
 	float: right;
 	margin: 5px 0;
-}
-
-.comment-list .request-item {
-	background: $infoColor;
 }
 
 /* SEARCH */
