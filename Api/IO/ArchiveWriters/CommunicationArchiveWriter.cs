@@ -49,34 +49,48 @@ namespace Artivity.Api.IO
         #endregion
 
         #region Methods
+
         public string GetProjectId(Uri entityUri, IModel model=null)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?project
+                  ?project
                 WHERE
                 {
-                  ?project prov:qualifiedUsage / prov:entity ?file .
-                  ?entity nie:isStoredAs ?file .
-                  @entityUri prov:hadPrimarySource* ?entity .
+                    {
+                        ?project prov:qualifiedUsage / prov:entity @entityUri .
+                    }
+                    UNION
+                    {
+                        ?project prov:qualifiedUsage / prov:entity ?file .
+
+                        @entityUri prov:hadPrimarySource+ / nie:isStoredAs ?file .
+                    }
                 }");
 
             query.Bind("@entityUri", entityUri);
 
             if (model == null)
+            {
                 model = DefaultModel;
+            }
+
             IEnumerable<BindingSet> bindings = model.GetBindings(query);
+
             if (bindings.Any())
             {
                 BindingSet binding = bindings.First();
+
                 string uri = binding["project"].ToString();
 
                 if (!string.IsNullOrEmpty(uri))
                 {
-                    string p = new Uri(uri).AbsolutePath;
-                    return Path.GetFileName(p);
+                    string path = new Uri(uri).AbsolutePath;
+
+                    return Path.GetFileName(path);
                 }
             }
+
             return null;
         }
 
@@ -111,7 +125,6 @@ namespace Artivity.Api.IO
                     ?activity
                     ?entity
                     ?bounds
-
                 WHERE
                 {
                   BIND( @entity as ?entity ).
@@ -120,8 +133,6 @@ namespace Artivity.Api.IO
 
                   FILTER(@minTime <= ?startTime) .
                   OPTIONAL { ?entity art:region ?bounds. }
-
-
                 }");
 
             query.Bind("@entity", entityUri);
