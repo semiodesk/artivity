@@ -57,6 +57,7 @@ namespace Artivity.Api.IO
                   ?project
                 WHERE
                 {
+                    ?project a art:Project .
                     {
                         ?project prov:qualifiedUsage / prov:entity @entityUri .
                     }
@@ -121,18 +122,20 @@ namespace Artivity.Api.IO
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
-                    ?entity
+                    @entity
                     ?activity
-                    ?entity
                     ?bounds
                 WHERE
                 {
-                  BIND( @entity as ?entity ).
-                  ?activity prov:generated ?entity .
-                  ?activity prov:startedAtTime ?startTime .
+                    ?activity prov:generated | prov:used @entity .
+                    ?activity prov:startedAtTime ?startTime .
 
-                  FILTER(@minTime <= ?startTime) .
-                  OPTIONAL { ?entity art:region ?bounds. }
+                    FILTER(@minTime <= ?startTime) .
+
+                    OPTIONAL
+                    {
+                        @entity art:region ?bounds.
+                    }
                 }");
 
             query.Bind("@entity", entityUri);

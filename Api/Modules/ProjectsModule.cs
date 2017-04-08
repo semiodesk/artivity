@@ -43,75 +43,90 @@ namespace Artivity.Api.Modules
         public ProjectsModule(IModelProvider modelProvider, IPlatformProvider platformProvider) : 
             base("/artivity/api/1.0/projects", modelProvider, platformProvider)
         {
-                Get["/"] = parameters =>
+            Get["/"] = parameters =>
+            {
+                Response response = InitializeRequest();
+
+                if (response != null)
                 {
-                    var response = InitializeRequest();
-                    if (response != null)
-                        return response;
+                    return response;
+                }
 
-                    IModel model = ModelProvider.GetActivities();
-                    if (model == null)
-                        return HttpStatusCode.BadRequest;
+                IModel model = ModelProvider.GetActivities();
 
-                    return GetEntities<Project>(model, art.Project.Uri);
-                };
+                if (model == null)
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
+                return GetEntities<Project>(model, art.Project.Uri);
+            };
             
 
-                // Create a new resource
-                Get["/new"] = parameters =>
+            // Create a new resource
+            Get["/new"] = parameters =>
+            {
+                Response response = InitializeRequest();
+
+                if (response != null)
                 {
-                    var response = InitializeRequest();
-                    if (response != null)
-                        return response;
+                    return response;
+                }
 
-                    IModel model = ModelProvider.GetActivities();
-                    if (model == null)
-                        return HttpStatusCode.BadRequest;
+                IModel model = ModelProvider.GetActivities();
 
-                    Uri uri = modelProvider.CreateUri<Project>();
+                if (model == null)
+                {
+                    return HttpStatusCode.BadRequest;
+                }
 
-                    Project entity = model.CreateResource<Project>(uri);
+                Uri uri = modelProvider.CreateUri<Project>();
 
-                    return Response.AsJsonSync(entity);
-                };
+                Project entity = model.CreateResource<Project>(uri);
+
+                return Response.AsJsonSync(entity);
+            };
             
 
-                Put["/"] = parameters =>
+            Put["/"] = parameters =>
+            {
+                Response response = InitializeRequest();
+
+                if (response != null)
                 {
-                    var response = InitializeRequest();
-                    if (response != null)
-                    {
-                        return response;
-                    }
+                    return response;
+                }
 
-                    IModel model = ModelProvider.GetActivities();
-                    if (model == null)
-                        return HttpStatusCode.BadRequest;
+                IModel model = ModelProvider.GetActivities();
 
-                    Uri uri = new Uri(Request.Query["uri"]);
-
-                    ProjectParameter param = this.Bind<ProjectParameter>();
-
-                    PutProject(uri, param);
-
-                    return Response.AsJsonSync(new { success = true });
-                };
-            
-
-        
-                Delete["/"] = parameters =>
+                if (model == null)
                 {
-                    var response = InitializeRequest();
-                    if (response != null)
-                        return response;
+                    return HttpStatusCode.BadRequest;
+                }
 
-                    Uri uri = new Uri(Request.Query["uri"]);
+                Uri uri = new Uri(Request.Query["uri"]);
 
-                    return DeleteProject(uri);
-                };
+                ProjectParameter param = this.Bind<ProjectParameter>();
+
+                PutProject(uri, param);
+
+                return Response.AsJsonSync(new { success = true });
+            };
             
+            Delete["/"] = parameters =>
+            {
+                Response response = InitializeRequest();
 
+                if (response != null)
+                {
+                    return response;
+                }
 
+                Uri uri = new Uri(Request.Query["uri"]);
+
+                return DeleteProject(uri);
+            };
+            
             Get["/agents"] = parameters =>
             {
                 InitializeRequest();
@@ -278,22 +293,32 @@ namespace Artivity.Api.Modules
         private Response PutProject(Uri uri, ProjectParameter parameter)
         {
             IModel model = ModelProvider.GetActivities();
-            if (model == null)
-                return HttpStatusCode.BadRequest;
 
-            if( uri.AbsoluteUri != parameter.uri)
+            if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
+
+            if (uri.AbsoluteUri != parameter.uri)
+            {
+                return HttpStatusCode.BadRequest;
+            }
 
             Project project;
 
             if (model.ContainsResource(uri))
+            {
                 project = model.GetResource<Project>(uri);
+            }
             else
+            {
                 project = model.CreateResource<Project>(uri);
+            }
 
             project.Title = parameter.title;
             project.ColorCode = parameter.colorCode;
             project.Description = parameter.description;
+            project.StartTimeUtc = DateTime.UtcNow;
             project.Commit();
 
             return HttpStatusCode.OK;

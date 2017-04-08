@@ -201,7 +201,7 @@ namespace Artivity.Apid.Modules
 
                     activity = model.CreateResource<Browse>();
                     activity.Associations.Add(association);
-                    activity.StartTime = p.startTime != null ? (DateTime)p.startTime : DateTime.Now;
+                    activity.StartTimeUtc = p.startTime != null ? (DateTime)p.startTime : DateTime.Now;
                     activity.Commit();
 
                     _activities[p.tab] = activity;
@@ -243,7 +243,7 @@ namespace Artivity.Apid.Modules
 
                 if (p.endTime != null)
                 {
-                    activity.EndTime = (DateTime)p.endTime;
+                    activity.EndTimeUtc = (DateTime)p.endTime;
                     activity.Commit();
 
                     _activities.Remove(p.tab);

@@ -143,16 +143,24 @@ namespace Artivity.Api.IO
         private void ExportAgents(Uri uri, Stream stream, DateTime minTime)
         {
             ISparqlQuery query = GetAgentsQuery(uri, minTime);
+
             if (DefaultModel != null)
+            {
                 query.Model = DefaultModel;
+            }
+
             WriteTurtle(query, stream);
         }
 
         private void ExportActivities(Uri uri, Stream stream, DateTime minTime)
         {
             ISparqlQuery query = GetActivitiesQuery(uri, minTime);
+
             if (DefaultModel != null)
+            {
                 query.Model = DefaultModel;
+            }
+
             WriteTurtle(query, stream);
         }
 

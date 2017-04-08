@@ -9,6 +9,7 @@ namespace Artivity.Api.Parameters
     public class ProjectParameter
     {
         #region Members
+
         public string uri { get; set; }
 
         public string title { get; set; }

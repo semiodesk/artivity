@@ -161,8 +161,8 @@ namespace Artivity.Api.Modules
 
                 CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
                 activity.StartedBy = agent;
-                activity.StartTime = parameter.startTime;
-                activity.EndTime = parameter.endTime;
+                activity.StartTimeUtc = parameter.startTime;
+                activity.EndTimeUtc = parameter.endTime;
                 activity.GeneratedEntities.Add(topic); // Associate the comment with the activity.
                 activity.UsedEntities.Add(entity); // TODO: Correct this in the data provided by the plugins.
 
@@ -195,8 +195,8 @@ namespace Artivity.Api.Modules
 
                 DeleteEntity activity = model.CreateResource<DeleteEntity>(ModelProvider.CreateUri<DeleteEntity>());
                 //activity.StartedBy = agent;
-                activity.StartTime = DateTime.UtcNow;
-                activity.EndTime = DateTime.UtcNow.AddSeconds(1);
+                activity.StartTimeUtc = DateTime.UtcNow;
+                activity.EndTimeUtc = DateTime.UtcNow.AddSeconds(1);
                 activity.InvalidatedEntities.Add(topic);
 
                 if (topic.PrimarySource != null)
