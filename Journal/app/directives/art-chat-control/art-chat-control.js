@@ -16,9 +16,9 @@
 
     angular.module('app').controller('ChatControlDirectiveController', ChatControlDirectiveController);
 
-    ChatControlDirectiveController.$inject = ['$scope', '$element', '$timeout', 'viewerService', 'agentService', 'entityService', 'commentService', 'selectionService', 'formattingService'];
+    ChatControlDirectiveController.$inject = ['$scope', '$element', 'viewerService', 'agentService', 'entityService', 'commentService', 'selectionService', 'formattingService'];
 
-    function ChatControlDirectiveController($scope, $element, $timeout, viewerService, agentService, entityService, commentService, selectionService, formattingService) {
+    function ChatControlDirectiveController($scope, $element, viewerService, agentService, entityService, commentService, selectionService, formattingService) {
         var t = this;
 
         t.getFormattedTime = formattingService.getFormattedTime;
@@ -81,13 +81,6 @@
                     t.loadCommentsForPrimarySource(t.entityUri);
                 }
             });
-
-            // Keep the list scrolled to the bottom when ng-repeat is done.
-            $timeout(function () {
-                var container = $($element).find('.scroll-container');
-
-                container.scrollTop(50);
-            }, 0);
         }
     }
 })();

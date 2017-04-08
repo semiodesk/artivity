@@ -1,11 +1,11 @@
 (function () {
-    angular.module('app').directive('artUserPhotoImg', AvatarImageDirective);
+    angular.module('app').directive('artUserPhotoImg', UserPhotoImageDirective);
 
-    function AvatarImageDirective() {
+    function UserPhotoImageDirective() {
         return {
             restrict: 'E',
             templateUrl: 'app/directives/art-user-photo-img/art-user-photo-img.html',
-            controller: AvatarImageDirectiveController,
+            controller: UserPhotoImageDirectiveController,
             controllerAs: 't',
             bindToController: true,
             scope: {
@@ -13,73 +13,71 @@
                 width: "=width",
                 height: "=height",
                 changed: "&?"
-            },
-            link: function (scope, element, attributes, t) {
-                var img = $(element).find('img');
-
-                if (img) {
-                    img.error(function () {
-                        $(this).hide();
-                    });
-                }
-
-                scope.$watch('src', function () {
-                    t.hasPhoto = t.src && t.src.length > 0;
-                });
-
-                scope.$watch(['height', 'width'], function () {
-                    if (t.height > 0 && t.width > 0) {
-                        t.style = {
-                            height: t.height + 'px',
-                            width: t.width + 'px'
-                        };
-                    } else {
-                        t.style = {
-                            height: '100%',
-                            width: '100%'
-                        };
-                    }
-                });
             }
         }
     }
 
-    AvatarImageDirectiveController.$inject = ['$rootScope', '$scope', '$sce'];
+    UserPhotoImageDirectiveController.$inject = ['$scope', '$element', '$timeout', '$sce'];
 
-    function AvatarImageDirectiveController($rootScope, $scope, $sce) {
+    function UserPhotoImageDirectiveController($scope, $element, $timeout, $sce) {
         var t = this;
 
-        t.selectFile = function (e) {
-            e.preventDefault();
+        t.img = null;
+        t.input = null;
 
-            var input = $(e.currentTarget).find('input[type="file"]');
+        t.onFileSelected = function (args) {
+            var data = args.target.files[0];
 
-            if (input) {
-                $scope.$evalAsync(function () {
-                    var handler = function (args) {
-                        var reader = new FileReader();
+            if (t.changed) {
+                t.changed()(data);
+            }
 
-                        reader.onload = function () {
-                            if (reader.result) {
-                                $scope.$apply(function () {
-                                    t.src = reader.result;
-                                });
+            var reader = new FileReader();
 
-                                if (t.changed) {
-                                    t.changed()(args.target.files[0]);
-                                }
-                            }
-                        }
+            reader.onload = function () {
+                if (reader.result) {
+                    $scope.$apply(function () {
+                        t.src = reader.result;
+                    });
+                }
+            }
 
-                        reader.readAsDataURL(args.target.files[0]);
+            reader.readAsDataURL(data);
+        }
 
-                        input.unbind('change', handler);
-                    };
+        t.$onInit = function () {
+            t.img = $element.find('img');
 
-                    input.bind('change', handler);
-                    input[0].click();
+            if (t.img) {
+                t.img.onerror = function () {
+                    $(this).hide();
+                };
+            }
+
+            t.input = $element.find('input[type="file"]');
+
+            if (t.input) {
+                t.input.bind('change', t.onFileSelected);
+
+                // Triggering the click in the template via ng-click prevents digest exceptions.
+                $element.click(function () {
+                    t.input[0].click();
                 });
             }
+
+            $scope.$watch(['height', 'width'], function () {
+                if (t.height > 0 && t.width > 0) {
+                    t.style = {
+                        height: t.height + 'px',
+                        width: t.width + 'px'
+                    };
+                } else {
+                    t.style = {
+                        height: '100%',
+                        width: '100%'
+                    };
+                }
+            });
         }
     };
 })();
