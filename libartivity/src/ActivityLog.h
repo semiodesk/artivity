@@ -97,7 +97,7 @@ namespace artivity
 
 		std::string getTime();
 
-        bool fetchInitialData(std::string fileUrl, std::string* latestEntityUri, std::string* fileDataObjectUri, std::string* renderOutputPath, std::string* userAssociationUri);
+		bool fetchInitialData(std::string entityUri, std::string fileUrl, std::string* latestEntityUri, std::string* fileDataObjectUri, std::string* renderOutputPath, std::string* userAssociationUri, bool* createRendering);
 
 		void dump(boost::property_tree::ptree const& pt);
 
@@ -106,6 +106,8 @@ namespace artivity
 		bool _hasDataObject;
 
         std::string _renderOutputPath;
+
+		bool _createActivityRenderings;
 
     public:
         bool debug;
@@ -161,6 +163,8 @@ namespace artivity
         void removeInfluence(InfluenceRef influence);
 
 		std::string getRenderOutputPath();
+
+		bool getCreateActivityRenderings() { return _createActivityRenderings; }
 
 #ifdef _DEBUG
 		void logError(std::string msg);

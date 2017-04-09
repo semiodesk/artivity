@@ -62,6 +62,7 @@ namespace Artivity.Apid
 
         public IArtivityServiceSynchronizationProvider SynchronizationProvider { get; set; }
 
+        public OwnerProvider OwnerProvider { get; set; }
         #endregion
 
         #region Methods
@@ -101,6 +102,10 @@ namespace Artivity.Apid
                 _container.Register<IArtivityServiceSynchronizationProvider>(SynchronizationProvider);
             }
 
+            if( OwnerProvider != null)
+            {
+                _container.Register(OwnerProvider);
+            }
         }
             
         protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container, IPipelines pipelines, NancyContext context)

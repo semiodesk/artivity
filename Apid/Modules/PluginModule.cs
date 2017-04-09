@@ -41,6 +41,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using VDS.RDF;
+using Artivity.Apid.Platform;
 
 namespace Artivity.Apid.Modules
 {
@@ -52,13 +53,16 @@ namespace Artivity.Apid.Modules
 
         private static readonly Dictionary<string, Browse> _activities = new Dictionary<string, Browse>();
 
+        OwnerProvider _ownerProvider;
         #endregion
 
         #region Constructors
 
-        public PluginModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+        public PluginModule(IModelProvider modelProvider, IPlatformProvider platformProvider, OwnerProvider ownerProvider)
             : base("/artivity/api/1.0/plugin", modelProvider, platformProvider)
         {
+            _ownerProvider  = ownerProvider;
+
             Post["/file/activities"] = parameters =>
             {
                 using (var reader = new StreamReader(Request.Body))
@@ -75,13 +79,14 @@ namespace Artivity.Apid.Modules
             Get["/file/open"] = parameters =>
             {
                 string fileUrl = Request.Query["fileUrl"];
+                string entityUri = Request.Query["entityUri"];
 
                 if (!IsFileUrl(fileUrl))
                 {
                     return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return GetUri(new UriRef(fileUrl));
+                return FileOpen(new UriRef(entityUri), new UriRef(fileUrl));
 
 
             };
@@ -369,57 +374,73 @@ namespace Artivity.Apid.Modules
             }
         }
 
-        private Response FileOpen(Uri fileUrl)
+        private Response FileOpen(UriRef entityUri, UriRef fileUrl)
         {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            result["userAssociationUri"] = _ownerProvider.UserAssociation.Uri.AbsoluteUri;
+            result["createActivityStepsRenderings"] = PlatformProvider.Config.CreateActivityStepsRenderings.ToString();
+            result["fileDataObjectUri"] = "";
+            result["latestEntityUri"] = "";
+
+            string path = PlatformProvider.GetRenderOutputPath(entityUri);
+            result["renderOutputPath"] = path;
+
             string file = Path.GetFileName(fileUrl.LocalPath);
             string folder = Path.GetDirectoryName(fileUrl.LocalPath);
 
-            if (string.IsNullOrEmpty(file) || string.IsNullOrEmpty(folder))
+            if (!string.IsNullOrEmpty(file) && !string.IsNullOrEmpty(folder))
             {
-                PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
 
-                return Response.AsJsonSync(new { });
-            }
+                ISparqlQuery query = new SparqlQuery(@"
 
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT 
-                    ?uri ?file ?association
-                WHERE
-                {
-                    {
-                        SELECT
-                            ?uri ?file
-                        WHERE
-                        {
-                            ?uri nie:isStoredAs ?file .
-
-                            ?file rdfs:label @fileName .
-                            ?file nie:lastModified ?time .
-                            ?file nfo:belongsToContainer ?folder .
-
-                            ?folder nie:url @folderUrl .
-                    
-                            FILTER NOT EXISTS { ?var prov:invalidated ?uri }
-                   
-                        }
-                        ORDER BY DESC(?time) LIMIT 1
-                        }UNION
-                        {
                             SELECT
-                            ?association
+                                ?uri ?entityStub ?file
                             WHERE
                             {
-                                ?association prov:hadRole art:AccountOwnerRole .
+                                ?uri nie:isStoredAs ?file .
+
+                                ?file rdfs:label @fileName .
+                                ?file nie:lastModified ?time .
+                                ?file nfo:belongsToContainer ?folder .
+                                
+                                BIND( STRBEFORE( STR(?uri), '#' ) as ?strippedEntity ).
+                                BIND( if(?strippedEntity != '', ?strippedEntity, str(?uri)) as ?entityStub).
+
+
+                                ?folder nie:url @folderUrl .
+                    
+                                FILTER NOT EXISTS { ?var prov:invalidated ?uri }
+                   
                             }
-                    }
+                            ORDER BY DESC(?time) LIMIT 1
+                            }
+                    ");
+
+                query.Bind("@fileName", file);
+                query.Bind("@folderUrl", new Uri(folder));
+                var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
+
+                object value;
+                if (bindings.TryGetValue("uri", out value) && value is string)
+                {
+                    result["latestEntityUri"] = value as string;
+                    var uri = new UriRef(bindings["entityStub"] as string);
+                    path = PlatformProvider.GetRenderOutputPath(uri);
+                    result["renderOutputPath"] = path;
                 }
-                ");
 
-            query.Bind("@fileName", file);
-            query.Bind("@folderUrl", new Uri(folder));
-            var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
+                if (bindings.TryGetValue("file", out value) && value is string)
+                {
+                    result["fileDataObjectUri"] = value as string;
+                }
+            }
 
-            return Response.AsJsonSync(bindings);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            return Response.AsJson(result);
         }
 
         private string GetEntityUri(string path)

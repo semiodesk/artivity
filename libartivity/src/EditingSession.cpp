@@ -47,6 +47,7 @@ namespace artivity
         _endTime = false;
         _initial = true;
         _initialized = false;
+		_connected = false;
     }
 
     void EditingSession::initialize(string server, bool newDocument)
@@ -69,6 +70,7 @@ namespace artivity
 
         if (_log->connect(server + "/artivity/api/1.0"))
         {
+			_connected = true;
             _fileUri = document->uri;
             _imagePath = _log->getRenderOutputPath();
             _initialized = true;
