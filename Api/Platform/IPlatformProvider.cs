@@ -103,6 +103,9 @@ namespace Artivity.Api.Platform
         string EncodeFileName(string str);
 
         string GetRenderOutputPath(UriRef entityUri);
+
         #endregion
+
+
     }
 }
