@@ -631,9 +631,9 @@ namespace Artivity.Apid.Accounts
             {
                 return await TryPushPersonAsync(account, uri, revision);
             }
-            else if(IsInstanceOf(uri, nfo.FileDataObject))
+            else if(IsInstanceOf(uri, nfo.Image))
             {
-                return await TryPushFileAsync(account, uri, revision);
+                return await TryPushImageAsync(account, uri, revision);
             }
             else if (IsInstanceOf(uri, prov.Entity))
             {
@@ -723,58 +723,7 @@ namespace Artivity.Apid.Accounts
             return false;
         }
 
-        private async Task<bool> TryPushEntityAsync(OnlineAccount account, Uri uri, int revision)
-        {
-            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
-
-            using (HttpClient client = GetHttpClient(account))
-            {
-                string archiveName = FileNameEncoder.Encode(uri.AbsoluteUri) + ".arta";
-                string archivePath = Path.Combine(PlatformProvider.TempFolder, archiveName);
-
-                FileInfo archive = new FileInfo(archivePath);
-
-                try
-                {
-                    if (archive.Exists)
-                    {
-                        File.Delete(archive.FullName);
-                    }
-
-                    EntityArchiveWriter writer = new EntityArchiveWriter(PlatformProvider, ModelProvider);
-
-                    string id = writer.GetProjectId(uri, _modelProvider.GetActivities());
-
-                    if (string.IsNullOrEmpty(id))
-                    {
-                        return false;
-                    }
-
-                    Uri url = new Uri(baseUrl + "/api/1.0/sync/project/" + id + "/entity/");
-
-                    Uri userUri = new UriRef(PlatformProvider.Config.Uid);
-
-                    await writer.WriteAsync(userUri, uri, archive.FullName, DateTime.MinValue);
-
-                    return await HandleArchiveUploadAsync(client, url, uri, archive);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex);
-
-                    return false;
-                }
-                finally
-                {
-                    if (archive.Exists)
-                    {
-                        File.Delete(archive.FullName);
-                    }
-                }
-            }
-        }
-
-        private async Task<bool> TryPushFileAsync(OnlineAccount account, Uri uri, int revision)
+        private async Task<bool> TryPushImageAsync(OnlineAccount account, Uri uri, int revision)
         {
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
@@ -794,7 +743,7 @@ namespace Artivity.Apid.Accounts
 
                     Uri userUri = new UriRef(PlatformProvider.Config.Uid);
 
-                    FileSyncArchiveWriter writer = new FileSyncArchiveWriter(PlatformProvider, ModelProvider);
+                    ImageSyncArchiveWriter writer = new ImageSyncArchiveWriter(PlatformProvider, ModelProvider);
 
                     string id = writer.GetProjectId(uri, _modelProvider.GetActivities());
 
@@ -895,6 +844,57 @@ namespace Artivity.Apid.Accounts
                 }
 
                 return response.IsSuccessStatusCode;
+            }
+        }
+
+        private async Task<bool> TryPushEntityAsync(OnlineAccount account, Uri uri, int revision)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            using (HttpClient client = GetHttpClient(account))
+            {
+                string archiveName = FileNameEncoder.Encode(uri.AbsoluteUri) + ".arta";
+                string archivePath = Path.Combine(PlatformProvider.TempFolder, archiveName);
+
+                FileInfo archive = new FileInfo(archivePath);
+
+                try
+                {
+                    if (archive.Exists)
+                    {
+                        File.Delete(archive.FullName);
+                    }
+
+                    EntityArchiveWriter writer = new EntityArchiveWriter(PlatformProvider, ModelProvider);
+
+                    string id = writer.GetProjectId(uri, _modelProvider.GetActivities());
+
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        return false;
+                    }
+
+                    Uri url = new Uri(baseUrl + "/api/1.0/sync/project/" + id + "/entity/");
+
+                    Uri userUri = new UriRef(PlatformProvider.Config.Uid);
+
+                    await writer.WriteAsync(userUri, uri, archive.FullName, DateTime.MinValue);
+
+                    return await HandleArchiveUploadAsync(client, url, uri, archive);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+
+                    return false;
+                }
+                finally
+                {
+                    if (archive.Exists)
+                    {
+                        File.Delete(archive.FullName);
+                    }
+                }
             }
         }
 

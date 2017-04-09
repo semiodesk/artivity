@@ -35,11 +35,11 @@ using System.Linq;
 
 namespace Artivity.Api.IO
 {
-    public class FileExportArchiveWriter : ArchiveWriterBase
+    public class ImageExportArchiveWriter : ArchiveWriterBase
     {
         #region Constructors
 
-        public FileExportArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
+        public ImageExportArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
             : base(platformProvider, modelProvider)
         {
         }
@@ -48,33 +48,37 @@ namespace Artivity.Api.IO
 
         #region Methods
 
-        public string GetProjectId(Uri entityUri, IModel model = null)
+        public string GetProjectId(Uri revisionUri, IModel model = null)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
                     ?project
                 WHERE
                 {
-                  ?project prov:qualifiedUsage / prov:entity ?file .
-                  @entityUri nie:isStoredAs ?file .
+                    ?project a art:Project ; prov:qualifiedUsage / prov:entity ?file .
+
+                    @revision nie:isStoredAs ?file .
                 }");
 
-            query.Bind("@entityUri", entityUri);
+            query.Bind("@revision", revisionUri);
 
             if (model == null)
+            {
                 model = DefaultModel;
+            }
+
             IEnumerable<BindingSet> bindings = model.GetBindings(query);
+
             if (bindings.Any())
             {
-                BindingSet binding = bindings.First();
-                string uri = binding["project"].ToString();
+                string uri = bindings.First()["project"].ToString();
 
                 if (!string.IsNullOrEmpty(uri))
                 {
-                    string p = new Uri(uri).AbsolutePath;
-                    return Path.GetFileName(p);
+                    return Path.GetFileName(uri);
                 }
             }
+
             return null;
         }
 
