@@ -102,7 +102,7 @@ namespace Artivity.Api.IO
 
             FileInfo archiveFile = CompressExportFolder(uri, exportFolder);
 
-            DeleteExportFolder(exportFolder);
+            //DeleteExportFolder(exportFolder);
 
             File.Move(archiveFile.FullName, targetFile.FullName);
         }

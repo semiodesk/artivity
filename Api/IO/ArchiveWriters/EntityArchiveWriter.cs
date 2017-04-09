@@ -95,16 +95,17 @@ namespace Artivity.Api.IO
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
-                    ?agent
                     ?association
+                    ?agent
                 WHERE
                 {
+                  ?activity prov:generated | prov:used @entity .
                   ?activity prov:qualifiedAssociation ?association .
-                  ?activity prov:generated @entityUri .
-                  ?association prov:agent ?agent .
+
+                  ?association prov:agent | art:agent ?agent .
                 }");
 
-            query.Bind("@entityUri", entityUri);
+            query.Bind("@entity", entityUri);
 
             return query;
         }
@@ -113,21 +114,16 @@ namespace Artivity.Api.IO
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
-                    @entity
-                    ?entity
                     ?activity
-                    ?bounds
+                    ?entity
                 WHERE
                 {
-                    ?activity prov:generated | prov:used @entity .
+                    BIND(@entity AS ?entity)
+
+                    ?activity prov:generated | prov:used ?entity .
                     ?activity prov:startedAtTime ?startTime .
 
                     FILTER(@minTime <= ?startTime) .
-
-                    OPTIONAL
-                    {
-                        @entity art:region ?bounds.
-                    }
                 }");
 
             query.Bind("@entity", entityUri);

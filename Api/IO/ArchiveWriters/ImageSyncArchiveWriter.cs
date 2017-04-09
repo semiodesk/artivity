@@ -35,11 +35,11 @@ using System.Linq;
 
 namespace Artivity.Api.IO
 {
-    public class FileSyncArchiveWriter : ArchiveWriterBase
+    public class ImageSyncArchiveWriter : ArchiveWriterBase
     {
         #region Constructors
 
-        public FileSyncArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
+        public ImageSyncArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
             : base(platformProvider, modelProvider)
         {
         }
@@ -55,7 +55,9 @@ namespace Artivity.Api.IO
                     ?project
                 WHERE
                 {
-                    ?project prov:qualifiedUsage / prov:entity @revision .
+                    ?project a art:Project ; prov:qualifiedUsage / prov:entity ?file .
+
+                    @revision nie:isStoredAs ?file .
                 }");
 
             query.Bind("@revision", revisionUri);
@@ -149,12 +151,12 @@ namespace Artivity.Api.IO
             return query;
         }
 
-        protected override ISparqlQuery GetActivitiesQuery(Uri fileUri, DateTime minTime)
+        protected override ISparqlQuery GetActivitiesQuery(Uri revisionUri, DateTime minTime)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
                     ?activity
-                    @file
+                    ?file
                     ?influence
                     ?entity
                     ?revision
@@ -164,11 +166,13 @@ namespace Artivity.Api.IO
                     ?renderRegion
                 WHERE
                 {
+                    BIND(@revision AS ?revision)
+
                     ?activity prov:generated | prov:used ?revision .
                     ?activity prov:startedAtTime ?startTime .
 
                     ?revision a ?entityType .
-                    ?revision nie:isStoredAs @file .
+                    ?revision nie:isStoredAs ?file .
 
                     ?influence prov:activity | prov:hadActivity ?activity .
                     ?influence prov:entity ?entity .
@@ -193,7 +197,7 @@ namespace Artivity.Api.IO
                     }
                 }");
 
-            query.Bind("@file", fileUri);
+            query.Bind("@revision", revisionUri);
 
             return query;
         }
