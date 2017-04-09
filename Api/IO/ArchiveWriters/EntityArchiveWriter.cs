@@ -32,8 +32,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Artivity.Api.IO
 {
@@ -49,79 +47,51 @@ namespace Artivity.Api.IO
         #endregion
 
         #region Methods
-        public string GetProjectId(Uri entityUri, IModel model = null)
+
+        public string GetProjectId(Uri entityUri, IModel model=null)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
-                    ?project
+                  ?project
                 WHERE
                 {
-                  ?project prov:qualifiedUsage / prov:entity ?file .
-                  @entityUri nie:isStoredAs ?file .
+                    ?project prov:qualifiedUsage / prov:entity ?file .
+
+                    @entityUri prov:hadPrimarySource+ / nie:isStoredAs ?file .
                 }");
 
             query.Bind("@entityUri", entityUri);
 
             if (model == null)
+            {
                 model = DefaultModel;
+            }
+
             IEnumerable<BindingSet> bindings = model.GetBindings(query);
+
             if (bindings.Any())
             {
                 BindingSet binding = bindings.First();
+
                 string uri = binding["project"].ToString();
 
                 if (!string.IsNullOrEmpty(uri))
                 {
-                    string p = new Uri(uri).AbsolutePath;
-                    return Path.GetFileName(p);
+                    string path = new Uri(uri).AbsolutePath;
+
+                    return Path.GetFileName(path);
                 }
             }
+
             return null;
         }
 
-
         protected override IEnumerable<EntityRenderingInfo> GetRenderings(Uri uri, DateTime minTime)
         {
-            IModel model = ModelProvider.GetActivities();
-
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT ?entityStub as ?entity ?file WHERE
-                {
-                    ?activity prov:generated | prov:used ?entity .
-                    ?entity nie:isStoredAs @fdo .
-
-                    BIND( STRBEFORE( STR(?entity), '#' ) as ?e ).
-                    BIND( if(?e != '', ?e, str(?entity)) as ?entityStub).
-
-                    {
-                        ?influence
-                            prov:activity | prov:hadActivity ?activity ;
-                            prov:atTime ?time ;
-                            art:renderedAs / rdfs:label ?file .
-                    }UNION
-                    {
-                        ?entity art:renderedAs / rdfs:label ?file .
-                        ?entity prov:qualifiedInfluence / prov:atTime ?time .
-                    }
-                    FILTER(@minTime <= ?time) .
-
-                }");
-
-            query.Bind("@fdo", uri);
-            query.Bind("@minTime", minTime);
-
-            IEnumerable<BindingSet> bindings = model.GetBindings(query, true);
-
-            foreach (BindingSet b in bindings)
-            {
-                string entity = b["entity"].ToString();
-                string file = b["file"].ToString();
-
-                yield return new EntityRenderingInfo(entity, file);
-            }
+            return new EntityRenderingInfo[] {};
         }
 
-        protected override ISparqlQuery GetAgentsQuery(Uri uri, DateTime minTime)
+        protected override ISparqlQuery GetAgentsQuery(Uri entityUri, DateTime minTime)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
@@ -129,75 +99,38 @@ namespace Artivity.Api.IO
                     ?association
                 WHERE
                 {
-                  ?activity prov:generated | prov:used ?entity .
-                  ?entity nie:isStoredAs @file .
                   ?activity prov:qualifiedAssociation ?association .
-
+                  ?activity prov:generated @entityUri .
                   ?association prov:agent ?agent .
                 }");
 
-            query.Bind("@file", uri);
+            query.Bind("@entityUri", entityUri);
 
             return query;
         }
 
-        protected override ISparqlQuery GetActivitiesQuery(Uri uri, DateTime minTime)
+        protected override ISparqlQuery GetActivitiesQuery(Uri entityUri, DateTime minTime)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
+                    @entity
                     ?entity
-                    ?file
                     ?activity
-                    ?influence
-                    ?fileEntity
-                    ?undo
-                    ?redo
                     ?bounds
-                    ?change
-                    ?render
-                    ?renderRegion
                 WHERE
                 {
-                  ?activity prov:generated | prov:used ?entity .
-                  ?activity prov:generated | prov:used ?fileEntity .
-                  ?activity prov:startedAtTime ?startTime .
+                    ?activity prov:generated | prov:used @entity .
+                    ?activity prov:startedAtTime ?startTime .
 
-                  FILTER(@minTime <= ?startTime) .
+                    FILTER(@minTime <= ?startTime) .
 
-                  ?fileEntity nie:isStoredAs @file .
-
-                  BIND( @file as ?file ) .
-
-                  ?influence prov:activity | prov:hadActivity ?activity .
-
-                  OPTIONAL
-                  {
-                     ?entity art:renderedAs ?render .
-
-                     OPTIONAL { ?render art:region ?renderRegion . }
-                  }
-
-                  OPTIONAL
-                  {
-                     ?influence art:renderedAs ?render .
-
-                     OPTIONAL { ?render art:region ?renderRegion . }
-                  }
-
-                  OPTIONAL { ?influence art:hadViewport ?viewport . }
-                  OPTIONAL { ?influence art:hadBoundaries ?bounds . }
-                  OPTIONAL
-                  {
-                     ?influence art:hadChange ?change .
-
-                     OPTIONAL { ?change art:entity ?entity . }
-                  }
-
-                  OPTIONAL { ?undo art:reverted ?influence . }
-                  OPTIONAL { ?redo art:restored ?influence . }
+                    OPTIONAL
+                    {
+                        @entity art:region ?bounds.
+                    }
                 }");
 
-            query.Bind("@file", uri);
+            query.Bind("@entity", entityUri);
             query.Bind("@minTime", minTime);
 
             return query;
