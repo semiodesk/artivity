@@ -236,6 +236,7 @@ namespace Artivity.Apid.Platform
                 config.IsNew = true;
                 config.RunSetup = true;
                 config.Uid = "urn:art:uid:" + Guid.NewGuid();
+                config.CreateActivityStepsRenderings = false;
 
                 string json = JsonConvert.SerializeObject(config, Formatting.Indented);
 

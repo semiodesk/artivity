@@ -100,7 +100,7 @@ namespace artivity
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 15L);
 
 		if (postFields.length() > 0)
 		{
@@ -141,14 +141,16 @@ namespace artivity
 		return responseCode;
 	}
 
-    bool ActivityLog::fetchInitialData(string fileUrl, string* latestEntityUri, string* fileDataObjectUri, string* renderOutputPath, string* userAssociationUri)
+    bool ActivityLog::fetchInitialData(string entityUri, string fileUrl, string* latestEntityUri, string* fileDataObjectUri, string* renderOutputPath, string* userAssociationUri, bool* createRendering)
     {
         try
         {
+			*createRendering = false;
+
             CURL* curl = initializeRequest();
 
             stringstream url;
-            url << _endpointUrl << "/plugin/file/open?fileUrl=" << fileUrl;
+            url << _endpointUrl << "/plugin/file/open?entityUri="<< entityUri << "&" << "fileUrl=" << fileUrl;
 
             string response;
 
@@ -180,11 +182,18 @@ namespace artivity
             if ( renderOutputPath != NULL)
                 renderOutputPath->assign(tree.get_child("renderOutputPath").get_value<string>()); 
             
-            
             // Create user association
             if ( userAssociationUri != NULL )
                 userAssociationUri->assign(tree.get_child("userAssociationUri").get_value<string>());
             
+			auto child = tree.get_child_optional("createActivityStepsRenderings");
+			if (child)
+			{
+				auto val = child.get().get_value("false");
+				if (val != "false")
+					*createRendering = true;
+			}
+
             return true;
 
         }
@@ -207,14 +216,17 @@ namespace artivity
         string fileDataObjectUri = "";
         string renderOutputPath = "";
         string userAssociationUri = "";
-        fetchInitialData(_fileUrl, &latestEntityUri, &fileDataObjectUri, &renderOutputPath, &userAssociationUri);
+		bool createRenders = false;
+		bool success = fetchInitialData(_entity->uri, _fileUrl, &latestEntityUri, &fileDataObjectUri, &renderOutputPath, &userAssociationUri, &createRenders);
+
+		if (!success)
+			return false;
 
         if (!latestEntityUri.empty())
         {
             _prevEntity = ImageRef(new Image(latestEntityUri.c_str()));
             _entity->uri = UriGenerator::removeTimeFragment(latestEntityUri);
         }
-
 
         if (!fileDataObjectUri.empty())
         {
@@ -378,7 +390,8 @@ namespace artivity
         string fileDataObjectUri = "";
         string renderOutputPath = "";
         string userAssociationUri = "";
-        fetchInitialData(targetPath, &latestEntityUri, &fileDataObjectUri, &renderOutputPath, &userAssociationUri);
+		bool createRenders = false;
+		fetchInitialData(targetImage->uri, targetPath, &latestEntityUri, &fileDataObjectUri, &renderOutputPath, &userAssociationUri, &createRenders);
 
         if (!latestEntityUri.empty())
         {
@@ -662,7 +675,7 @@ namespace artivity
         CURL* curl = initializeRequest();
 
         stringstream url;
-        url << _endpointUrl << "/activities";
+        url << _endpointUrl << "/plugin/file/activities";
 
         if (!debug)
         {
