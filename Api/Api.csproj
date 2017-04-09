@@ -74,13 +74,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IO\ArchiveWriters\CommunicationArchiveWriter.cs" />
-    <Compile Include="IO\ArchiveWriters\RevisionArchiveWriter.cs" />
+    <Compile Include="IO\ArchiveWriters\EntityArchiveWriter.cs" />
+    <Compile Include="IO\ArchiveWriters\FileSyncArchiveWriter.cs" />
     <Compile Include="IO\S3Uploader.cs" />
     <Compile Include="Modules\CommentsModule.cs" />
     <Compile Include="Infrastructure\StreamExtensions.cs" />
     <Compile Include="IO\ArchiveWriters\ActivityArchiveWriter.cs" />
-    <Compile Include="IO\ArchiveWriters\EntityArchiveWriter.cs" />
+    <Compile Include="IO\ArchiveWriters\FileExportArchiveWriter.cs" />
     <Compile Include="Modules\FilesModule.cs" />
     <Compile Include="Modules\InfluencesModule.cs" />
     <Compile Include="Modules\MarksModule.cs" />

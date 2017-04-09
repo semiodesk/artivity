@@ -500,7 +500,7 @@ namespace Artivity.Apid.Modules
 
                 if(publishingClient != null)
                 {
-                    ArchiveWriterBase archiveWriter = new EntityArchiveWriter(PlatformProvider, ModelProvider);
+                    ArchiveWriterBase archiveWriter = new FileExportArchiveWriter(PlatformProvider, ModelProvider);
 
                     OnlineServiceClientSession session = GetSessionHandle(publishingClient);
 

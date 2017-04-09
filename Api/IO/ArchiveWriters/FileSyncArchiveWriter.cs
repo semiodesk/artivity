@@ -32,16 +32,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Artivity.Api.IO
 {
-    public class RevisionArchiveWriter : ArchiveWriterBase
+    public class FileSyncArchiveWriter : ArchiveWriterBase
     {
         #region Constructors
 
-        public RevisionArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
+        public FileSyncArchiveWriter(IPlatformProvider platformProvider, IModelProvider modelProvider)
             : base(platformProvider, modelProvider)
         {
         }
@@ -50,36 +48,39 @@ namespace Artivity.Api.IO
 
         #region Methods
 
-        public string GetProjectId(Uri revisionUri,IModel model= null)
+        public string GetProjectId(Uri revisionUri, IModel model= null)
         {
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
                     ?project
                 WHERE
                 {
-                  ?project prov:qualifiedUsage / prov:entity ?file .
-                  @revision nie:isStoredAs ?file .
+                    ?project prov:qualifiedUsage / prov:entity @revision .
                 }");
 
             query.Bind("@revision", revisionUri);
+
             if (model == null)
+            {
                 model = DefaultModel;
+            }
+
             IEnumerable<BindingSet> bindings =  model.GetBindings(query);
+
             if (bindings.Any())
             {
-                BindingSet binding = bindings.First();
-                string uri = binding["project"].ToString();
+                string uri = bindings.First()["project"].ToString();
 
                 if (!string.IsNullOrEmpty(uri))
                 {
-                    string a = Path.GetFileName(uri);
-                    return Path.GetFileName(a);
+                    return Path.GetFileName(uri);
                 }
             }
+
             return null;
         }
 
-        protected override IEnumerable<ArchiveWriterBase.EntityRenderingInfo> GetRenderings(Uri uri, DateTime minTime)
+        protected override IEnumerable<EntityRenderingInfo> GetRenderings(Uri uri, DateTime minTime)
         {
             return new EntityRenderingInfo[]{};
         }
@@ -91,11 +92,11 @@ namespace Artivity.Api.IO
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT ?entityStub ?file WHERE
                 {
-                    BIND( @revision as ?entity) .
-                    ?entity art:publish ""true""^^xsd:boolean_ . 
-                    ?entity art:renderedAs / rdfs:label ?file .
-                    BIND( STRBEFORE( STR(?entity), '#' ) as ?strippedEntity ).
-                    BIND( if(?strippedEntity != '', ?strippedEntity, str(?entity)) as ?entityStub).
+                    @revision art:renderedAs / rdfs:label ?file .
+                    @revision art:publish ""true""^^xsd:boolean_ . 
+
+                    BIND(STRBEFORE(STR(@revision), '#') as ?strippedEntity).
+                    BIND(IF(?strippedEntity != '', ?strippedEntity, STR(@revision)) AS ?entityStub).
                 }");
 
             query.Bind("@revision", revisionUri);
@@ -107,18 +108,24 @@ namespace Artivity.Api.IO
             foreach (BindingSet b in bindings)
             {
                 string entity = b["entityStub"].ToString();
+                string folder = FileNameEncoder.Encode(entity);
+
                 string file = b["file"].ToString();
-                string entityFolder = FileNameEncoder.Encode(entity);
-                string filePath = Path.Combine(PlatformProvider.RenderingsFolder, entityFolder, file);
-                string thumbnail = Path.Combine(PlatformProvider.RenderingsFolder, entityFolder, "thumbnail.png");
-                if (!thumbnails.Contains(thumbnail))
-                    thumbnails.Add(thumbnail);
+                string filePath = Path.Combine(PlatformProvider.RenderingsFolder, folder, file);
+                string thumbnailPath = Path.Combine(PlatformProvider.RenderingsFolder, folder, "thumbnail.png");
+
+                if (!thumbnails.Contains(thumbnailPath))
+                {
+                    thumbnails.Add(thumbnailPath);
+                }
 
                 yield return new FileInfo(filePath);
             }
 
-            foreach (var x in thumbnails)
-                yield return new FileInfo(x);
+            foreach (string thumbnail in thumbnails)
+            {
+                yield return new FileInfo(thumbnail);
+            }
         }
 
         protected override ISparqlQuery GetAgentsQuery(Uri revisionUri, DateTime minTime)
@@ -129,67 +136,64 @@ namespace Artivity.Api.IO
                     ?association
                 WHERE
                 {
-                  ?activity prov:generated | prov:used ?entity .
-                  BIND( @revisionUri as ?entity) .
-                  ?entity art:publish ""true""^^xsd:boolean_ . 
-                  ?activity prov:qualifiedAssociation ?association .
-                  ?association prov:agent ?agent .
+                    ?activity prov:generated | prov:used @revision .
+                    ?activity prov:qualifiedAssociation ?association .
+
+                    ?association prov:agent ?agent .
+
+                    @revision art:publish ""true""^^xsd:boolean_ .
                 }");
 
-            query.Bind("@revisionUri", revisionUri);
+            query.Bind("@revision", revisionUri);
 
             return query;
         }
 
-        protected override ISparqlQuery GetActivitiesQuery(Uri revisionUri, DateTime minTime)
+        protected override ISparqlQuery GetActivitiesQuery(Uri fileUri, DateTime minTime)
         {
-
-
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
                     ?activity
-                    ?file
+                    @file
                     ?influence
                     ?entity
-                    ?fileEntity
+                    ?revision
                     ?bounds
                     ?change
                     ?render
                     ?renderRegion
                 WHERE
                 {
-                  BIND( @entity as ?fileEntity ).
-                  ?fileEntity nie:isStoredAs ?file .
+                    ?activity prov:generated | prov:used ?revision .
+                    ?activity prov:startedAtTime ?startTime .
 
-                  ?activity prov:generated | prov:used ?entity .
-                  ?activity prov:generated | prov:used ?fileEntity .
-                  ?activity prov:startedAtTime ?startTime .
+                    ?revision a ?entityType .
+                    ?revision nie:isStoredAs @file .
 
-                  ?influence prov:activity | prov:hadActivity ?activity .
-                  ?influence prov:entity ?entity .
-                  ?entity rdf:type ?entityType .
-                  FILTER ( ?entityType = nfo:VectorImage || ?entityType = nfo:RasterImage || ?entityType = art:Canvas )
+                    ?influence prov:activity | prov:hadActivity ?activity .
+                    ?influence prov:entity ?entity .
 
-                  OPTIONAL
-                  {
-                     ?fileEntity art:renderedAs ?render .
+                    FILTER (?entityType = nfo:VectorImage || ?entityType = nfo:RasterImage || ?entityType = art:Canvas)
 
-                     OPTIONAL { ?render art:region ?renderRegion . }
-                     OPTIONAL { ?render art:renderedLayer ?layer . }
-                  }
+                    OPTIONAL
+                    {
+                        ?revision art:renderedAs ?render .
 
-                  OPTIONAL { ?influence art:hadViewport ?viewport . }
-                  OPTIONAL { ?influence art:hadBoundaries ?bounds . }
-                  OPTIONAL
-                  {
-                     ?influence art:hadChange ?change .
+                        OPTIONAL { ?render art:region ?renderRegion . }
+                        OPTIONAL { ?render art:renderedLayer ?layer . }
+                    }
 
-                     OPTIONAL { ?change art:entity ?entity . }
-                  }
+                    OPTIONAL { ?influence art:hadViewport ?viewport . }
+                    OPTIONAL { ?influence art:hadBoundaries ?bounds . }
+                    OPTIONAL
+                    {
+                        ?influence art:hadChange ?change .
+
+                        OPTIONAL { ?change art:entity ?entity . }
+                    }
                 }");
 
-
-            query.Bind("@entity", revisionUri);
+            query.Bind("@file", fileUri);
 
             return query;
         }
