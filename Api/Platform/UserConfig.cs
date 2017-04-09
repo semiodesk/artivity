@@ -44,6 +44,8 @@ namespace Artivity.Api.Platform
 
         public bool RunSetup { get; set; }
 
+        public bool CreateActivityStepsRenderings { get; set; }
+
         #endregion
 
         #region Methods

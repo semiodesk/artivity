@@ -54,6 +54,8 @@ namespace artivity
 
         void createActivity();
 
+		bool _connected;
+
     protected:
         ProducerConsumerRef consumer;
 
@@ -94,6 +96,8 @@ namespace artivity
         virtual RevisionRef onEventSave();
         virtual DerivationRef onEventSaveAs();
 
+		bool getCreateActivityRenderings(){ return _log->getCreateActivityRenderings(); }
+
     public:
         EditingSession();
         virtual ~EditingSession();
@@ -118,6 +122,8 @@ namespace artivity
         void eventSaveAs(std::string targetPath);
 
         bool fileExists(const std::string& name);
+
+		bool isConnected() { return _connected; }
     };
 }
 
