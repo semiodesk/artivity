@@ -28,7 +28,6 @@
 using Artivity.Api.Parameters;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
-using Artivity.DataModel.Comments;
 using Nancy;
 using Nancy.Security;
 using Newtonsoft.Json;
@@ -92,11 +91,34 @@ namespace Artivity.Api.Modules
                 {
                     if (request.type == CommentTypes.ApprovalRequest)
                     {
-                        return PostRequest<DataModel.Comments.ApprovalRequest>(request);
+                        return PostRequest<ApprovalRequest>(request);
                     }
                     else
                     {
-                        return PostRequest<DataModel.Comments.FeedbackRequest>(request);
+                        return PostRequest<FeedbackRequest>(request);
+                    }
+                }
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+            };
+
+            Post["/responses"] = parameters =>
+            {
+                InitializeRequest();
+
+                CommentParameter response = this.Bind<CommentParameter>();
+
+                if (response.Validate() && IsUri(response.primarySource))
+                {
+                    if (response.type == CommentTypes.ApprovalResponse)
+                    {
+                        return PostResponse<ApprovalResponse>(response);
+                    }
+                    else
+                    {
+                        return PostResponse<FeedbackResponse>(response);
                     }
                 }
                 else
@@ -106,10 +128,12 @@ namespace Artivity.Api.Modules
             };
 
             #if DEBUG
+
             Get["/clean"] = parameters =>
             {
                 return CleanComments();
             };
+
             #endif
         }
 
@@ -181,8 +205,11 @@ namespace Artivity.Api.Modules
         private Response PostComment(CommentParameter parameter)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.InternalServerError;
+            }
 
             Entity primarySource = new Entity(new UriRef(parameter.primarySource));
 
@@ -290,6 +317,88 @@ namespace Artivity.Api.Modules
             }
         }
 
+        private Response PostResponse<T>(CommentParameter parameter) where T : FeedbackResponse
+        {
+            IModel model = ModelProvider.GetActivities();
+
+            if (model == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            var agent = new Agent(new UriRef(parameter.agent));
+            var primarySource = new Entity(new UriRef(parameter.primarySource));
+
+            if (model.ContainsResource(primarySource))
+            {
+                // Check if there is already a response from the agent.
+                ISparqlQuery query = new SparqlQuery(@"
+                    ASK WHERE { ?activity prov:hadAgent @agent ; prov:generated / prov:hadPrimarySource @request . }
+                ");
+
+                query.Bind("@agent", agent);
+                query.Bind("@request", primarySource);
+
+                ISparqlQueryResult result = model.ExecuteQuery(query);
+
+                if (!result.GetAnwser())
+                {
+                    var request = model.CreateResource<T>(ModelProvider.CreateUri<T>());
+
+                    request.CreationTimeUtc = parameter.endTime;
+                    request.PrimarySource = primarySource;
+                    request.Message = parameter.message;
+                    request.IsSynchronizable = true;
+                    request.Commit();
+
+                    CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
+                    activity.StartedBy = new Agent(new UriRef(parameter.agent));
+                    activity.StartTimeUtc = parameter.startTime;
+                    activity.EndTimeUtc = parameter.endTime;
+                    activity.GeneratedEntities.Add(request);
+                    activity.UsedEntities.Add(primarySource);
+
+                    if (parameter.marks != null)
+                    {
+                        foreach (var mark in parameter.marks)
+                        {
+                            activity.UsedEntities.Add(new Mark(new UriRef(mark)));
+                        }
+                    }
+
+                    if (parameter.associations != null)
+                    {
+                        foreach (AssociationParameter a in parameter.associations)
+                        {
+                            Association association = model.CreateResource<Association>(ModelProvider.CreateUri<Association>());
+                            association.Agent = new Agent(new UriRef(a.agent));
+                            association.Role = new Role(new UriRef(a.role));
+                            association.Commit();
+
+                            activity.Associations.Add(association);
+                        }
+                    }
+
+                    activity.Commit();
+
+                    // Return the URI to the frontend.
+                    var data = new { uri = request.Uri };
+
+                    return Response.AsJsonSync(data, HttpStatusCode.OK);
+                }
+                else
+                {
+                    return HttpStatusCode.NotModified;
+                }
+            }
+            else
+            {
+                PlatformProvider.Logger.LogError("Model does not contain entity {0}", primarySource);
+
+                return HttpStatusCode.BadRequest;
+            }
+        }
+
         private Response CleanComments()
         {
             ISparqlQuery query = new SparqlQuery(@"
@@ -364,7 +473,7 @@ namespace Artivity.Api.Modules
                     && !string.IsNullOrEmpty(agent)
                     && !string.IsNullOrEmpty(primarySource)
                     && DateTime.MinValue < startTime
-                    && startTime < endTime;
+                    && startTime <= endTime;
             }
 
             #endregion
@@ -381,7 +490,14 @@ namespace Artivity.Api.Modules
             #endregion
         }
 
-        private enum CommentTypes { Comment, FeedbackRequest, ApprovalRequest };
+        private enum CommentTypes
+        {
+            Comment,
+            FeedbackRequest,
+            FeedbackResponse,
+            ApprovalRequest,
+            ApprovalResponse
+        };
 
         #endregion
     }

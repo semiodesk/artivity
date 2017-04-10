@@ -28,9 +28,12 @@ Comment.prototype.validate = function () {
     var t = this;
 
     var result = t.agent
+        && typeof(t.agent) === 'string' // Needs to be URI
         && t.primarySource
+        && typeof(t.primarySource) === 'string' // Needs to be URI
         && t.startTime
-        && t.startTime < t.endTime
+        && t.startTime <= t.endTime
+        && typeof(t.message) === 'string'
         && t.message.length > 0;
 
     return result;

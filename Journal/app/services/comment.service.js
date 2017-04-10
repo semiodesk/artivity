@@ -9,27 +9,34 @@
         return {
             getCommentsForPrimarySource: getCommentsForPrimarySource,
             postComment: postComment,
-            postRequest: postRequest
+            postRequest: postRequest,
+            postResponse: postResponse
         };
 
         function getCommentsForPrimarySource(entityUri) {
             var uri = encodeURIComponent(entityUri);
 
-            return api.get(endpoint + '?entityUri=' + uri).then(function (response) {
-                return response.data;
+            return api.get(endpoint + '?entityUri=' + uri).then(function (r) {
+                return r.data;
             }, handleError('Error while retrieving comments.'));
         }
 
         function postComment(comment) {
-            return api.post(endpoint, comment).then(function (response) {
-                return response.data;
+            return api.post(endpoint, comment).then(function (r) {
+                return r.data;
             }, handleError('Error when pushing comment.'));
         }
 
         function postRequest(request) {
-            return api.post(endpoint + '/requests', request).then(function (response) {
-                return response.data;
+            return api.post(endpoint + '/requests', request).then(function (r) {
+                return r.data;
             }, handleError('Error when pushing request.'));
+        }
+
+        function postResponse(response) {
+            return api.post(endpoint + '/responses', response).then(function (r) {
+                return r.data;
+            }, handleError('Error when pushing response.'));         
         }
 
         function handleError(error) {
