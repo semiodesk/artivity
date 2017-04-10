@@ -16,21 +16,13 @@
 
     angular.module('app').controller('ChatControlDirectiveController', ChatControlDirectiveController);
 
-    ChatControlDirectiveController.$inject = ['$scope', '$element', 'viewerService', 'agentService', 'entityService', 'commentService', 'selectionService', 'formattingService'];
+    ChatControlDirectiveController.$inject = ['$scope', '$element', 'agentService', 'entityService', 'commentService', 'selectionService', 'formattingService'];
 
-    function ChatControlDirectiveController($scope, $element, viewerService, agentService, entityService, commentService, selectionService, formattingService) {
+    function ChatControlDirectiveController($scope, $element, agentService, entityService, commentService, selectionService) {
         var t = this;
-
-        t.getFormattedTime = formattingService.getFormattedTime;
-        t.getFormattedDate = formattingService.getFormattedDate;
-        t.getFormattedTimeFromNow = formattingService.getFormattedTimeFromNow;
 
         // COMMENTS
         t.comments = [];
-
-        t.isUserComment = function (comment) {
-            return comment.agent === agentService.currentUser.Uri;
-        }
 
         t.loadCommentsForPrimarySource = function (entityUri) {
             console.log('Loading comments: ', entityUri);
@@ -58,11 +50,6 @@
                 t.comments = comments;
             });
         }
-
-        // MARKS
-        t.createMark = viewerService.createMark;
-        t.showMarks = viewerService.showMarks;
-        t.hideMarks = viewerService.hideMarks;
 
         // INIT
         t.$onInit = function () {

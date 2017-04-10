@@ -2301,6 +2301,11 @@ button[disabled]:hover {
 	border-left-color: transparent;
 }
 
+.comment-list .comment .bubble-content .icon {
+	margin-right: 7px;
+	margin-left: 0;
+}
+
 .comment-list .comment.comment-user .comment-avatar {
 	display: none;
 }
@@ -2312,11 +2317,6 @@ button[disabled]:hover {
 
 .comment-list .comment.comment-user .bubble-content {
 	float: right;
-}
-
-.comment-list .comment .bubble-content .icon {
-	margin-right: 7px;
-	margin-left: 0;
 }
 
 .comment-list .comment.comment-user .bubble-tip {
@@ -2336,31 +2336,31 @@ button[disabled]:hover {
 	border-left-color: $accentColor;
 }
 
-.comment-list .request-item .comment .bubble-content {
+.comment-list .comment.comment-request .bubble-content {
 	background: $infoColor;
 }
 
-.comment-list .request-item .comment .bubble-content .icon {
+.comment-list .comment.comment-request .bubble-content .icon {
 	display: inline;
 }
 
-.comment-list .request-item .comment .bubble-tip {
+.comment-list .comment.comment-request .bubble-tip {
 	border: 6px solid $infoColor;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
 }
 
-.comment-list .request-item .comment.comment-user .bubble-content {
+.comment-list .comment.comment-request.comment-user .bubble-content {
 	width: 100%;
 }
 
-.comment-list .request-item .comment.comment-user .bubble-tip {
+.comment-list .comment.comment-request.comment-user .bubble-tip {
 	border: 6px solid $infoColor;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
 }
 
-.comment-list .request-item .comment.comment-user .comment-bubble {
+.comment-list .comment.comment-request.comment-user .comment-bubble {
 	margin-left: 0px;
 	margin-right: 50px;
 }

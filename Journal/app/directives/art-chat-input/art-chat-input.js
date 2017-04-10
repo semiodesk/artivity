@@ -47,7 +47,7 @@
         }
 
         t.postComment = function (e, comment) {
-            if(!comment.endTime) {
+            if (!comment.endTime) {
                 comment.endTime = new Date();
             }
 
@@ -70,14 +70,14 @@
         }
 
         t.postRequest = function (e, request) {
-            if(!request.endTime) {
+            if (!request.endTime) {
                 request.endTime = new Date();
             }
 
             if (request.validate()) {
                 request.type = 'ApprovalRequest';
 
-                for(i = 0; i < t.members.length; i++) {
+                for (i = 0; i < t.members.length; i++) {
                     var association = {
                         agent: t.members[i].Agent.Uri,
                         role: t.members[i].RoleUri
@@ -164,8 +164,7 @@
             }
         }
 
-        t.selectEmoticon = function (e) {
-        }
+        t.selectEmoticon = function (e) {}
 
         // INIT
         t.$onInit = function () {
@@ -173,9 +172,11 @@
                 var project = projectService.currentProject;
 
                 projectService.getMembers(project.Uri).then(function (members) {
-                    members.sort(function (a, b) {
-                        return a.Agent.Name.localeCompare(b.Agent.Name);
-                    });
+                    if (members && members.length > 0) {
+                        members.sort(function (a, b) {
+                            return a.Agent.Name.localeCompare(b.Agent.Name);
+                        });
+                    }
 
                     t.members = members;
                 });

@@ -32,14 +32,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artivity.DataModel.Comments
+namespace Artivity.DataModel
 {
-    [RdfClass(ART.ApprovalRequest)]
-    public class ApprovalRequest : FeedbackRequest
+    [RdfClass(ART.FeedbackRequest)]
+    public class FeedbackRequest : Comment
     {
         #region Constructors
 
-        public ApprovalRequest(Uri uri) : base(uri) { }
+        public FeedbackRequest(Uri uri) : base(uri) {}
 
         #endregion
     }
