@@ -420,18 +420,22 @@ namespace Artivity.Apid.Modules
                 query.Bind("@folderUrl", new Uri(folder));
                 var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
+                var x = bindings.Keys;
+
                 object value;
-                if (bindings.TryGetValue("uri", out value) && value is string)
+                if (bindings.TryGetValue("uri", out value) && value is UriRef)
                 {
-                    result["latestEntityUri"] = value as string;
+                    var latest = value as UriRef;
+                    result["latestEntityUri"] = latest.AbsoluteUri;
                     var uri = new UriRef(bindings["entityStub"] as string);
                     path = PlatformProvider.GetRenderOutputPath(uri);
                     result["renderOutputPath"] = path;
                 }
 
-                if (bindings.TryGetValue("file", out value) && value is string)
+                if (bindings.TryGetValue("file", out value) && value is UriRef)
                 {
-                    result["fileDataObjectUri"] = value as string;
+                    var fileUri = value as UriRef;
+                    result["fileDataObjectUri"] = fileUri.AbsoluteUri;
                 }
             }
 
