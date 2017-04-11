@@ -34,13 +34,13 @@
         // REQUESTS
         t.enableResponse = false;
 
-        t.hasResponded = function() {
+        t.hasResponded = function () {
             var agent = agentService.currentUser.Uri;
 
-            for(i = 0; i < t.responses.length; i++) {
+            for (i = 0; i < t.responses.length; i++) {
                 var response = t.responses[i];
 
-                if(response.agent === agent) {
+                if (response.agent === agent) {
                     return true;
                 }
             }
@@ -84,13 +84,15 @@
 
                 t.responses = [];
 
+                console.log(t.comment.message);
+
                 if (t.isRequest) {
-                    commentService.getCommentsForPrimarySource(t.comment.uri).then(function(data) {
+                    commentService.getCommentsForPrimarySource(t.comment.uri).then(function (data) {
                         t.responses = data;
+
+                        t.enableResponse = !t.hasResponded();
                     });
                 }
-
-                t.enableResponse = t.hasResponded();
             }
         }
     }

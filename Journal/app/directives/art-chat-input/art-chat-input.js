@@ -17,12 +17,15 @@
 
     angular.module('app').controller('ChatInputDirectiveController', ChatInputDirectiveController);
 
-    ChatInputDirectiveController.$inject = ['$scope', '$element', 'agentService', 'commentService', 'projectService', 'viewerService'];
+    ChatInputDirectiveController.$inject = ['$scope', '$element', '$sce', 'agentService', 'commentService', 'projectService', 'viewerService'];
 
-    function ChatInputDirectiveController($scope, $element, agentService, commentService, projectService, viewerService) {
+    function ChatInputDirectiveController($scope, $element, $sce, agentService, commentService, projectService, viewerService) {
         var t = this;
 
         // FOCUS
+        t.input = '';
+        t.inputElement = null;
+        t.hasInput = false;
         t.focused = false;
 
         t.onFocused = function () {
@@ -33,18 +36,14 @@
             t.focused = false;
         }
 
-        // COMMENT
-        t.comment = new Comment();
-
-        t.onCommentChanged = function (comment) {
-            if (!comment.startTime) {
-                comment.startTime = new Date();
-            }
-
-            if (comment.message && projectService.currentProject) {
-                t.handleMemberSelection(comment.message, projectService.currentProject);
+        t.onEscape = function () {
+            if (t.showEmoticonPanel) {
+                t.showEmoticonPanel = false;
             }
         }
+
+        // COMMENT
+        t.comment = new Comment();
 
         t.postComment = function (e, comment) {
             if (!comment.endTime) {
@@ -61,6 +60,10 @@
                     console.log("Posted comment: ", comment);
 
                     t.resetComment();
+
+                    if(t.showEmoticonPanel) {
+                        t.toggleEmoticonPanel();
+                    }
                 }, function (response) {
                     console.error(response);
                 });
@@ -151,10 +154,21 @@
                 input = input.substring(0, input.indexOf(q));
                 input += '@' + member.Agent.Name;
 
-                t.comment.message = input;
+                t.input = input;
 
                 t.showMembers = false;
             }
+        }
+
+        // EMOTICONS
+        t.showEmoticonPanel = false;
+
+        t.toggleEmoticonPanel = function () {
+            if (!t.focused) {
+                t.inputElement.focus();
+            }
+
+            t.showEmoticonPanel = !t.showEmoticonPanel;
         }
 
         // TOOLS
@@ -164,7 +178,52 @@
             }
         }
 
-        t.selectEmoticon = function (e) {}
+        // PARSING
+        var toUnicode = function (html) {
+            var result = '';
+            var input = $.parseHTML(html);
+
+            $.each(input, function (i, element) {
+                if (element.nodeType === 3) {
+                    result += element.textContent;
+                } else if (element.localName === 'img' && element.className === 'emojione') {
+                    // We *should* be storing the emoticons in unicode. However, there seems 
+                    // to be a problem when loading the comments from the db.
+                    //result += emojione.shortnameToUnicode(element.title);
+                    result += element.title;
+                }
+            });
+
+            return result;
+        }
+
+        var toHtml = function (unicode) {
+            return emojione.toImage(unicode);
+        }
+
+        var sanitizeHtml = function (html) {
+            return toHtml(toUnicode(html));
+        }
+
+        var resetCursor = function (element) {
+            var range, selection;
+
+            if (document.createRange) //Firefox, Chrome, Opera, Safari, IE 9+
+            {
+                range = document.createRange(); //Create a range (a range is a like the selection but invisible)
+                range.selectNodeContents(element); //Select the entire contents of the element with the range
+                range.collapse(false); //collapse the range to the end point. false means collapse to end rather than the start
+                selection = window.getSelection(); //get the selection object (allows you to change selection)
+                selection.removeAllRanges(); //remove any selections already made
+                selection.addRange(range); //make the range you have just created the visible selection
+            } else if (document.selection) //IE 8 and lower
+            {
+                range = document.body.createTextRange(); //Create a range (a range is a like the selection but invisible)
+                range.moveToElementText(element); //Select the entire contents of the element with the range
+                range.collapse(false); //collapse the range to the end point. false means collapse to end rather than the start
+                range.select(); //Select the range (make it the visible selection
+            }
+        }
 
         // INIT
         t.$onInit = function () {
@@ -187,6 +246,56 @@
             $scope.$watch('t.entityUri', function () {
                 t.resetComment();
             });
+
+            $scope.$watch('t.comment', function (e) {
+                t.input = t.comment.message;
+            });
+
+            t.inputElement = $('.textarea.textarea-editable');
+
+            if (t.inputElement) {
+                $scope.$watch('t.input', function () {
+                    // Set the comment start time.
+                    if (!t.comment.startTime) {
+                        t.comment.startTime = new Date();
+                    }
+
+                    t.comment.message = toUnicode(t.inputElement.html());
+
+                    t.hasInput = t.comment.message.length;
+                });
+
+                t.inputElement.on('keydown', function (e) {
+                    var keyCode = e.keyCode || e.which;
+
+                    if (keyCode == 9) {
+                        e.preventDefault();
+
+                        $scope.$apply(function () {
+                            t.toggleEmoticonPanel();
+                        });
+                    }
+                });
+
+                t.inputElement.on('input', function () {
+                    var html = sanitizeHtml(t.inputElement.html());
+
+                    if (html != t.inputElement.html()) {
+                        $scope.$apply(function () {
+                            t.input = $sce.trustAsHtml(html);
+
+                            resetCursor(t.inputElement[0]);
+                        });
+                    }
+                });
+
+                $scope.$on('emoticonSelected', function (e, unicode) {
+                    var html = sanitizeHtml(t.inputElement.html() + emojione.toImage(unicode));
+
+                    // Sanitize the input and replace ASCII smileys.
+                    t.input = $sce.trustAsHtml(html);
+                });
+            }
         }
     }
 })();

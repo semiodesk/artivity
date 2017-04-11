@@ -19,7 +19,7 @@ $textColor: #404040;
 $labelTextColor: #606060;
 $labelBackgroundColor: transparent;
 $itemTextColor: $textColor;
-$itemBackgroundColor: rgba($textColor, .05);
+$itemBackgroundColor: rgba($textColor, .085);
 $highlightTextColor: $textColor;
 $highlightBackgroundColor: rgba($textColor, .075);
 $selectionTextColor: $textColor;
@@ -49,7 +49,6 @@ $editorContentColor: white;
 $editorTextColor: #202020;
 $editorLabelColor: lighten($editorTextColor, 25%);
 $editorBorderColor: darken($editorBackgroundColor, 25%);
-
 @mixin transitionEaseInOutCubic ($property, $duration) {
 	-webkit-transition: $property $duration cubic-bezier(0.215, 0.610, 0.355, 1.000);
 	-webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
@@ -58,6 +57,7 @@ $editorBorderColor: darken($editorBackgroundColor, 25%);
 	transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
 	transition: $property $duration cubic-bezier(0.215, 0.610, 0.355, 1.000);
 }
+
 
 /* GENERAL STYLES */
 
@@ -339,6 +339,12 @@ button:focus,
 	background: rgba($labelTextColor, .05);
 }
 
+.btn-inline {
+	display: inline;
+	padding: 5px;
+	margin: 0;
+}
+
 .btn-sm {
 	width: 30px;
 	height: 30px;
@@ -364,10 +370,13 @@ button:focus,
 }
 
 .circular,
-.btn-circular {
+.round,
+.btn-circular,
+.btn-round {
 	border-radius: 50%;
 }
 
+.btn-round,
 .btn-circular {
 	width: $toolbarHeight;
 	height: $toolbarHeight;
@@ -401,6 +410,7 @@ button:focus,
 
 .nav-tabs {
 	border: none;
+	border-bottom: 1px solid $itemBackgroundColor;
 	margin: 0;
 }
 
@@ -428,6 +438,21 @@ button:focus,
 	border: none;
 	border-top: 2px solid $textColor;
 	color: $textColor;
+}
+
+.tabs-centered>.nav-tabs>li,
+.nav-tabs.tabs-centered>li {
+	float: none;
+	display: inline-block;
+	/* ie7 fix */
+	*display: inline;
+	/* hasLayout ie7 trigger */
+	zoom: 1;
+}
+
+.tabs-centered>.nav-tabs,
+.nav-tabs.tabs-centered {
+	text-align: center !important;
 }
 
 .nav-tabs li a:hover {
@@ -950,9 +975,10 @@ h4 {
 	top: 0;
 	bottom: 0;
 	z-index: 1;
-	width: 350px;
-	min-width: 250px;
-	background: #f1f1f1;
+	width: 33%;
+	min-width: 400px;
+	max-width: 575px;
+	background: #fcfcfc;
 }
 
 .ui-sidebar-right {
@@ -1187,6 +1213,7 @@ h4 {
 	width: 100%;
 	height: 100%;
 }
+
 
 /* TOOLBARS */
 
@@ -2199,6 +2226,12 @@ button[disabled]:hover {
 
 /* COMMENTS */
 
+$commentTextColor: $textColor;
+$commentBackgroundColor: rgba($textColor,
+.2);
+$userCommentTextColor: $textColor;
+$userCommentBackgroundColor: rgba($textColor,
+.1);
 .ctl-protocol {
 	height: 100%;
 }
@@ -2209,21 +2242,38 @@ button[disabled]:hover {
 	left: 0;
 	right: 0;
 	padding: 0;
-	margin: 0 10px;
+	margin: 0 0 0 10px;
 	max-height: 100%;
 }
 
-.comment-list .comment-item {
+.comment-list .list-item {
 	position: relative;
 	display: block;
 	box-sizing: content-box;
 	width: 100%;
-	margin: 10px 0;
-	padding: 0;
+	margin: 5px 0;
+	padding: 5px 0;
+	border: none;
 }
 
-.comment-list .comment-item:hover {
+.comment-list .list-item:hover {
 	background: transparent;
+}
+
+.comment-list .list-item .hidden-mouseover {
+	visibility: visible;
+}
+
+.comment-list .list-item:hover .hidden-mouseover {
+	visibility: hidden;
+}
+
+.comment-list .list-item .visible-mouseover {
+	visibility: hidden;
+}
+
+.comment-list .list-item:hover .visible-mouseover {
+	visibility: visible;
 }
 
 .comment-list .comment .comment-avatar {
@@ -2244,15 +2294,32 @@ button[disabled]:hover {
 .comment-list .comment .comment-bubble {
 	display: block;
 	position: relative;
+}
+
+.comment-list .comment .comment-bubble,
+.comment-list .comment .comment-bubble-context {
 	margin-left: 35px;
-	margin-right: 70px;
+	margin-right: 75px;
 }
 
 .comment-list .comment .comment-time {
 	position: absolute;
-	top: -3px;
-	right: 0;
+	top: 15px;
+	right: 2px;
 	padding: 0;
+}
+
+.comment-list .comment .comment-more {
+	position: absolute;
+	top: 5px;
+	right: 0;
+}
+
+.comment-list .comment .comment-more .btn {
+	display: block;
+	width: 35px;
+	height: 35px;
+	padding: 5px;
 }
 
 .comment-list .comment .bubble-content {
@@ -2261,11 +2328,11 @@ button[disabled]:hover {
 	max-width: 100%;
 	padding: 10px;
 	margin-left: 12px;
-	color: white;
-	background: $headerBackgroundColor;
+	color: $commentTextColor;
+	background: $commentBackgroundColor;
 	word-wrap: break-word;
 	text-overflow: ellipsis;
-	border-radius: 3px 0 3px 3px;
+	border-radius: 5px 0 5px 5px;
 }
 
 .comment-list .comment .bubble-content .icon {
@@ -2282,23 +2349,9 @@ button[disabled]:hover {
 	width: 0;
 	height: 0;
 	background: transparent;
-	border: 6px solid $headerBackgroundColor;
+	border: 6px solid $commentBackgroundColor;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
-}
-
-.comment-list .comment:hover .bubble-content,
-.comment-list .comment.selected .bubble-content {
-	background: $accentColor;
-	color: $accentTextColor;
-}
-
-.comment-list .comment:hover .bubble-tip,
-.comment-list .comment.selected .bubble-tip {
-	border-top-color: $accentColor;
-	border-right-color: $accentColor;
-	border-bottom-color: transparent;
-	border-left-color: transparent;
 }
 
 .comment-list .comment .bubble-content .icon {
@@ -2310,34 +2363,35 @@ button[disabled]:hover {
 	display: none;
 }
 
-.comment-list .comment.comment-user .comment-bubble {
+.comment-list .comment.comment-user .bubble-content {
+	float: right;
+	color: $userCommentTextColor;
+	background: $userCommentBackgroundColor;
+	border-radius: 5px 0 5px 5px;
+}
+
+.comment-list .comment.comment-user .comment-bubble,
+.comment-list .comment.comment-user .comment-bubble-context {
 	margin-left: 60px;
 	margin-right: 50px;
 }
 
-.comment-list .comment.comment-user .bubble-content {
-	float: right;
+.comment-list .comment.comment-user .comment-bubble-context {
+	text-align: right;
 }
 
 .comment-list .comment.comment-user .bubble-tip {
 	top: 0px;
 	left: auto;
 	right: -12px;
-	border: 6px solid $headerBackgroundColor;
+	border: 6px solid $userCommentBackgroundColor;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
-}
-
-.comment-list .comment.comment-user:hover .bubble-tip,
-.comment-list .comment.comment-user.selected .bubble-tip {
-	border-top-color: $accentColor;
-	border-right-color: transparent;
-	border-bottom-color: transparent;
-	border-left-color: $accentColor;
 }
 
 .comment-list .comment.comment-request .bubble-content {
 	background: $infoColor;
+	color: $infoTextColor;
 }
 
 .comment-list .comment.comment-request .bubble-content .icon {
@@ -2369,28 +2423,58 @@ button[disabled]:hover {
 	padding: 0 5px;
 }
 
-.ctl-comment textarea,
-.ctl-comment input {
+.ctl-comment .textarea,
+.ctl-comment .input {
 	display: block;
 }
 
-.ctl-comment textarea {
-	height: 38px;
+.ctl-comment .textarea {
+	min-height: 38px;
 	width: 100%;
 	line-height: 1.3em;
 	border: none;
+	outline: none;
 	padding: 10px;
 	color: $inputTextColor;
-	resize: none;
-	overflow: hidden;
-	overflow-x: hidden;
-	overflow-y: hidden;
-	transition: none;
+	background: transparent;
+	@include transitionEaseInOutCubic(height, 200ms);
+}
+
+.ctl-comment .textarea:focus {
+	outline: none;
+}
+
+.ctl-comment .textarea-container {
+	position: relative;
+	border-top: 1px solid $itemBackgroundColor;
+	border-bottom: 1px solid $itemBackgroundColor;
 }
 
 .ctl-comment .btn-post {
 	float: right;
 	margin: 5px 0;
+}
+
+.ctl-emoticon-panel {
+	@include transitionEaseInOutCubic(height, 500ms);
+	height: 0;
+	border: none;
+}
+
+.ctl-emoticon-panel.panel-visible {
+	height: 250px;
+	border-top: 1px solid $itemBackgroundColor;
+}
+
+.ctl-emoticon-picker {
+	max-height: 250px;
+	transform: height ease-out 1s;
+}
+
+.ctl-emoticon-picker .btn-emoticon {
+	float: left;
+	direction: rtl;
+	padding: 5px;
 }
 
 /* SEARCH */
@@ -2412,7 +2496,8 @@ button[disabled]:hover {
 	padding-left: $toolbarIconHeight + 2px;
 	height: 100%;
 	width: 200px;
-	@include transitionEaseInOutCubic(all, 500ms);
+	@include transitionEaseInOutCubic(all,
+	500ms);
 }
 
 .ctl-search input[type="text"]:focus {
@@ -2421,20 +2506,24 @@ button[disabled]:hover {
 	width: 300px;
 }
 
+.label-placeholder,
 .ctl-search input[type="text"]::-webkit-input-placeholder {
 	font-style: italic;
 }
 
+.label-placeholder,
 .ctl-search input[type="text"]:-moz-placeholder {
 	font-style: italic;
 	opacity: 1;
 }
 
+.label-placeholder,
 .ctl-search input[type="text"]::-moz-placeholder {
 	font-style: italic;
 	opacity: 1;
 }
 
+.label-placeholder,
 .ctl-search input[type="text"]:-ms-input-placeholder {
 	font-style: italic;
 }
@@ -2450,6 +2539,7 @@ button[disabled]:hover {
 	border: none;
 	outline: none;
 }
+
 
 /* YASGUI */
 
