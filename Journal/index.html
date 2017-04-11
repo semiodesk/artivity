@@ -5,17 +5,18 @@
 	<title>Artivity</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<!-- bower:css -->
+	<link rel="stylesheet" href="bower_components/font-roboto/dist/styles/roboto.css" />
+	<link rel="stylesheet" href="bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
 	<link rel="stylesheet" href="bower_components/jquery-editable-select/dist/jquery-editable-select.min.css" />
-	<link rel="stylesheet" href="bower_components/angular-hotkeys/build/hotkeys.css" />
-	<link rel="stylesheet" href="bower_components/angular-ui-layout/src/ui-layout.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" />
-	<link rel="stylesheet" href="bower_components/font-roboto/dist/styles/roboto.css" />
-	<link rel="stylesheet" href="bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
+	<link rel="stylesheet" href="bower_components/angular-hotkeys/build/hotkeys.css" />
+	<link rel="stylesheet" href="bower_components/angular-ui-layout/src/ui-layout.css" />
 	<link rel="stylesheet" href="bower_components/emojione/assets/css/emojione.css" />
 	<!-- endbower -->
+	<link rel="stylesheet" href="bower_components/emojionearea/dist/emojionearea.css" />
 	<link rel="stylesheet" href="bower_components/yasgui/dist/yasgui.min.css" />
 	<link rel="stylesheet" href="app/style.css">
 	<!-- comments:comment-block html -->
@@ -30,6 +31,12 @@
 	<script src="bower_components/jquery/dist/jquery.js"></script>
 	<script src="bower_components/jquery-editable-select/dist/jquery-editable-select.min.js"></script>
 	<script src="bower_components/jquery-ui/jquery-ui.js"></script>
+	<script src="bower_components/jquery-appear/src/jquery.appear.js"></script>
+	<script src="bower_components/base64/base64.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script>
+	<script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
+	<script src="bower_components/d3/d3.js"></script>
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 	<script src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
@@ -40,19 +47,15 @@
 	<script src="bower_components/angular-route/angular-route.js"></script>
 	<script src="bower_components/angular-translate/angular-translate.js"></script>
 	<script src="bower_components/angular-ui-layout/src/ui-layout.js"></script>
+	<script src="bower_components/angular-scroll-glue/src/scrollglue.js"></script>
 	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
-	<script src="bower_components/base64/base64.js"></script>
-	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-	<script src="bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script>
-	<script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
-	<script src="bower_components/d3/d3.js"></script>
+	<script src="bower_components/emojione/lib/js/emojione.js"></script>
+	<script src="bower_components/angular-emojione/angular-emojione.js"></script>
+	<script src="bower_components/jquery-textcomplete/dist/jquery.textcomplete.js"></script>
+	<script src="bower_components/emojionearea/dist/emojionearea.js"></script>
 	<script src="bower_components/moment-duration-format/lib/moment-duration-format.js"></script>
 	<script src="bower_components/EaselJS/lib/easeljs-0.8.2.combined.js"></script>
 	<script src="bower_components/yasgui/dist/yasgui.bundled.min.js"></script>
-	<script src="bower_components/jquery-appear/src/jquery.appear.js"></script>
-	<script src="bower_components/emojione/lib/js/emojione.js"></script>
-	<script src="bower_components/angular-emojione/angular-emojione.js"></script>
-	<script src="bower_components/angular-scroll-glue/src/scrollglue.js"></script>
 	<!-- endbower -->
 	<!-- start auto template tags -->
 	<script type="text/javascript" src="app/conf.js"></script>
@@ -117,6 +120,7 @@
 	<script type="text/javascript" src="app/filters/reverse.js"></script>
 	<script type="text/javascript" src="app/directives/art-chat-comment/art-chat-comment.js"></script>
 	<script type="text/javascript" src="app/directives/art-chat-control/art-chat-control.js"></script>
+	<script type="text/javascript" src="app/directives/art-chat-emoticon-picker/art-chat-emoticon-picker.js"></script>
 	<script type="text/javascript" src="app/directives/art-chat-input/art-chat-input.js"></script>
 	<script type="text/javascript" src="app/directives/art-client-state-info/art-client-state-info.js"></script>
 	<script type="text/javascript" src="app/directives/art-color-picker/art-color-picker.js"></script>
