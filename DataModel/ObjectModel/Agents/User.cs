@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 namespace Artivity.DataModel
 {
     [RdfClass(ART.User)]
-    public class User : Person, IUser
+    public class User : Person, IAccoutOwner
     {
         #region Members
 

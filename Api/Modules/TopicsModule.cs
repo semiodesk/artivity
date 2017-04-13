@@ -104,8 +104,11 @@ namespace Artivity.Api.Modules
         private Response GetTopicsFromEntity(UriRef entityUri)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -137,8 +140,11 @@ namespace Artivity.Api.Modules
         private Response PostTopic(TopicParameter parameter)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
             {
@@ -184,8 +190,11 @@ namespace Artivity.Api.Modules
         private Response DeleteTopic(UriRef topicUri)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             if(model.ContainsResource(topicUri))
             {

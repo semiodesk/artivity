@@ -1,7 +1,7 @@
 function Comment(uri) {
     var t = this;
 
-    t.agent = null;
+    t.agentId = null;
     t.primarySource = null;
 
     t.reset();
@@ -27,8 +27,8 @@ Comment.prototype.reset = function () {
 Comment.prototype.validate = function () {
     var t = this;
 
-    var result = t.agent
-        && typeof(t.agent) === 'string' // Needs to be URI
+    var result = t.agentId
+        && typeof(t.agentId) === 'string' // Needs to be URI
         && t.primarySource
         && typeof(t.primarySource) === 'string' // Needs to be URI
         && t.startTime

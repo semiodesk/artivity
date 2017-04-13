@@ -57,10 +57,10 @@ namespace Artivity.Api.IO
                 {
                     ?project prov:qualifiedUsage / prov:entity ?file .
 
-                    @entityUri prov:hadPrimarySource+ / nie:isStoredAs ?file .
+                    @entity prov:hadPrimarySource+ / nie:isStoredAs ?file .
                 }");
 
-            query.Bind("@entityUri", entityUri);
+            query.Bind("@entity", entityUri);
 
             if (model == null)
             {
@@ -93,16 +93,14 @@ namespace Artivity.Api.IO
 
         protected override ISparqlQuery GetAgentsQuery(Uri entityUri, DateTime minTime)
         {
+            // Note: We do not describe the agents because they are synced separately.
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
                     ?association
-                    ?agent
                 WHERE
                 {
                   ?activity prov:generated | prov:used @entity .
                   ?activity prov:qualifiedAssociation ?association .
-
-                  ?association prov:agent | art:agent ?agent .
                 }");
 
             query.Bind("@entity", entityUri);

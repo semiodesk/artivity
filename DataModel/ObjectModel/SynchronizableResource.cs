@@ -68,32 +68,15 @@ namespace Artivity.DataModel
 
         #region Methods
 
-        public void Sanitize()
+        public static T FromJson<T>(string json) where T : SynchronizableResource
         {
-            List<object> values = ListValues(arts.synchronizationState).ToList();
+            ResourceResolver resolver = new ResourceResolver();
+            resolver.IngoreTypes = new Type[] { typeof(Activity) };
 
-            if(values.Count > 1)
-            {
-                for(int i = 1; i < values.Count; i++)
-                {
-                    Resource r = values[i] as Resource;
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ContractResolver = resolver;
 
-                    if(r != null)
-                    {
-                        ResourceSynchronizationState s = new ResourceSynchronizationState(r.Uri);
-
-                        RemoveProperty(arts.synchronizationState, s);
-
-                        if (Model.ContainsResource(r.Uri))
-                        {
-                            Model.DeleteResource(r.Uri);
-                        }
-                    }
-                }
-
-                base.Commit();
-                base.Rollback();
-            }
+            return JsonConvert.DeserializeObject<T>(json, settings);
         }
 
         public override void Commit()
@@ -111,32 +94,70 @@ namespace Artivity.DataModel
 
             ModificationTimeUtc = DateTime.UtcNow;
 
+            bool error = false;
+
             if (IsSynchronizable)
             {
+                ResourceSynchronizationState state = null;
+
                 try
                 {
-                    if (SynchronizationState == null)
-                    {
-                        SynchronizationState = Model.CreateResource<ResourceSynchronizationState>();
-                    }
+                    // This will get the sync state from the resource. If there exists more than one, which 
+                    // may occasionally happen when syncing with Artivity Online. This will throw an exception.
+                    state = SynchronizationState;
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Caught exception when trying to access sync state of resource {0}", Uri);
+                    Console.WriteLine("Exception when trying to access sync state of: {0}", Uri);
 
-                    Sanitize();
+                    error = true;
+
+                    // 1. Delete all resource synchronization states.
+                    DeleteSynchronizationStates();
+
+                    // 2. Create a clean synchronization state and set it.
+                    state = Model.CreateResource<ResourceSynchronizationState>();
+
+                    SynchronizationState = state;
                 }
 
-                if (SynchronizationState != null)
+                if (state != null)
                 {
                     // The resource is flagged as modified. The account synchronizer will update 
                     // the last update counter and the flag when the resource was successfully uploaded.
-                    SynchronizationState.LastRemoteRevision = revision;
-                    SynchronizationState.Commit();
+                    state.LastRemoteRevision = revision;
+                    state.Commit();
                 }
             }
 
             base.Commit();
+
+            if(error)
+            {
+                // After commit, reload the ResourceCache for the mapped properties and fill it with the sanitized values.
+                base.Rollback();
+            }
+        }
+
+        private void DeleteSynchronizationStates()
+        {
+            SparqlUpdate update = new SparqlUpdate(@"
+                WITH @model
+                DELETE { ?s ?p ?o . }
+                WHERE
+                {
+                    @resource arts:synchronizationState ?s .
+
+                    ?s a arts:ResourceSynchronizationState ; ?p ?o .
+                }
+                DELETE
+                WHERE { @resource arts:synchronizationState ?s . }
+            ");
+
+            update.Bind("@model", this.Model);
+            update.Bind("@resource", this);
+
+            Model.ExecuteUpdate(update);
         }
 
         #endregion

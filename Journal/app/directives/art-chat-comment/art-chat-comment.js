@@ -35,12 +35,12 @@
         t.enableResponse = false;
 
         t.hasResponded = function () {
-            var agent = agentService.currentUser.Uri;
+            var agentId = agentService.currentUser.Id;
 
             for (i = 0; i < t.responses.length; i++) {
                 var response = t.responses[i];
 
-                if (response.agent === agent) {
+                if (response.agentId === agentId) {
                     return true;
                 }
             }
@@ -51,7 +51,7 @@
         t.postYes = function (request) {
             var response = new Comment();
             response.type = 'ApprovalResponse';
-            response.agent = agentService.currentUser.Uri;
+            response.agentId = agentService.currentUser.Id;
             response.primarySource = request.uri;
             response.startTime = new Date();
             response.endTime = new Date();
@@ -65,7 +65,7 @@
         t.postNo = function () {
             var response = new Comment();
             response.type = 'ApprovalResponse';
-            response.agent = agentService.currentUser.Uri;
+            response.agentId = agentService.currentUser.Id;
             response.primarySource = request.uri;
             response.startTime = new Date();
             response.endTime = new Date();
@@ -78,7 +78,7 @@
 
         t.$onInit = function () {
             if (t.comment) {
-                t.isUser = t.comment.agent === agentService.currentUser.Uri;
+                t.isUser = t.comment.agentId === agentService.currentUser.Id;
                 t.isRequest = t.comment.type.endsWith('Request');
                 t.isResponse = t.comment.type.endsWith('Response');
 
