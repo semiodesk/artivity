@@ -54,6 +54,9 @@ namespace Artivity.Api.IO
         public TaskProgressInfo Progress { get; private set; }
 
         public IModel DefaultModel { get; set; }
+
+        public long BytesWritten { get; private set; }
+
         #endregion
 
         #region Constructors
@@ -102,7 +105,7 @@ namespace Artivity.Api.IO
 
             FileInfo archiveFile = CompressExportFolder(uri, exportFolder);
 
-            //DeleteExportFolder(exportFolder);
+            DeleteExportFolder(exportFolder);
 
             File.Move(archiveFile.FullName, targetFile.FullName);
         }
@@ -112,6 +115,11 @@ namespace Artivity.Api.IO
         protected abstract ISparqlQuery GetActivitiesQuery(Uri uri, DateTime minTime);
 
         protected abstract IEnumerable<EntityRenderingInfo> GetRenderings(Uri uri, DateTime minTime);
+
+        protected virtual IEnumerable<ArchiveManifestRemoteFileInfo> GetRemoteFiles(Uri uri)
+        {
+            return Enumerable.Empty<ArchiveManifestRemoteFileInfo>();
+        }
 
         private void ExportData(Uri uri, DirectoryInfo appFolder, DirectoryInfo exportFolder, DateTime minTime)
         {
@@ -124,18 +132,33 @@ namespace Artivity.Api.IO
                 Directory.CreateDirectory(dataExport);
             }
 
-            using(FileStream fs = new FileStream(Path.Combine(dataExport, "agents.ttl"), FileMode.CreateNew))
+            string file = Path.Combine(dataExport, "agents.ttl");
+
+            using(FileStream fs = new FileStream(file, FileMode.CreateNew))
             {
                 ExportAgents(uri, fs, minTime);
+
+                if (File.Exists(file))
+                {
+                    BytesWritten += new FileInfo(file).Length;
+                }
             }
+
             Progress.Completed++;
             RaiseProgressChanged();
 
-            using (FileStream fs = new FileStream(Path.Combine(dataExport, "activities.ttl"), FileMode.CreateNew))
+            file = Path.Combine(dataExport, "activities.ttl");
+
+            using (FileStream fs = new FileStream(file, FileMode.CreateNew))
             {
                 ExportActivities(uri, fs, minTime);
+
+                if (File.Exists(file))
+                {
+                    BytesWritten += new FileInfo(file).Length;
+                }
             }
-            
+
             Progress.Completed++;
             RaiseProgressChanged();
         }
@@ -288,9 +311,14 @@ namespace Artivity.Api.IO
         private void WriteManifest(Uri entityUri, DirectoryInfo exportFolder)
         {
             ArchiveManifest manifest = new ArchiveManifest();
-            manifest.FileFormat = "1.1";
+            manifest.FileFormat = "1.2";
             manifest.ExportDate = DateTime.UtcNow;
             manifest.ExportedEntites.Add(entityUri);
+
+            foreach(ArchiveManifestRemoteFileInfo info in GetRemoteFiles(entityUri))
+            {
+                manifest.RemoteFiles.Add(info);
+            }
 
             string manifestFile = Path.Combine(exportFolder.FullName, "Manifest.json");
             string json = JsonConvert.SerializeObject(manifest, Formatting.Indented);

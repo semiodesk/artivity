@@ -25,13 +25,15 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Platform;
+using Artivity.DataModel;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Artivity.Api.Platform;
-using Artivity.DataModel;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Net.Http;
 using Semiodesk.Trinity;
 
 namespace Artivity.Api.IO
@@ -83,6 +85,48 @@ namespace Artivity.Api.IO
             DeleteImportFolder(importFolder);
         }
 
+        public async Task<int> DownloadRemoteFiles(string fileName, HttpClient client)
+        {
+            DirectoryInfo appFolder = new DirectoryInfo(PlatformProvider.ArtivityDataFolder);
+
+            ArchiveManifest manifest = GetManifest(fileName);
+
+            int n = 0;
+
+            foreach(ArchiveManifestRemoteFileInfo info in manifest.RemoteFiles)
+            {
+                HttpResponseMessage response =  await client.GetAsync(info.RemoteUrl);
+
+                if(response.IsSuccessStatusCode)
+                {
+                    Stream httpStream = await response.Content.ReadAsStreamAsync();
+
+                    using (StreamReader reader = new StreamReader(httpStream))
+                    {
+                        string folder = Path.Combine(appFolder.FullName, Path.GetDirectoryName(info.LocalName));
+
+                        if(!Directory.Exists(folder))
+                        {
+                            Directory.CreateDirectory(folder);
+                        }
+
+                        string file = Path.Combine(folder, Path.GetFileName(info.LocalName));
+
+                        using (FileStream fileStream = File.Create(file))
+                        {
+                            httpStream.CopyTo(fileStream);
+
+                            fileStream.Flush();
+
+                            n++;
+                        }
+                    }
+                }
+            }
+
+            return n;
+        }
+
         public ArchiveManifest GetManifest(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -128,9 +172,11 @@ namespace Artivity.Api.IO
         protected virtual void ImportData(DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
         {
             var agentModel = ModelProvider.GetAgents();
+
             ImportAgents(agentModel, appFolder, importFolder, entityUri);
 
             var activitiesModel = ModelProvider.GetActivities();
+
             ImportActivities(activitiesModel, appFolder, importFolder, entityUri);
         }
 

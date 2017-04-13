@@ -10,7 +10,7 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        List<OnlineAccount> Accounts { get; }
+        Guid? Guid { get; }
 
         #endregion
     }

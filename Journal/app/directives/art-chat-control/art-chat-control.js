@@ -36,7 +36,7 @@
                     var comment = new Comment();
                     comment.type = d.type;
                     comment.uri = d.uri;
-                    comment.agent = d.agent;
+                    comment.agentId = d.agentId;
                     comment.startTime = d.startTime;
                     comment.endTime = d.endTime;
                     comment.message = d.message;

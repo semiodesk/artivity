@@ -143,7 +143,7 @@ namespace Artivity.Api.Modules
 
         private Response GetCommentsFromPrimarySource(UriRef entityUri)
         {
-            IModel model = ModelProvider.GetActivities();
+            IModel model = ModelProvider.GetAll();
 
             if (model == null)
             {
@@ -154,7 +154,7 @@ namespace Artivity.Api.Modules
                 SELECT
 	                ?type
 	                ?uri
-	                ?agent
+                    ?agentId
 	                ?message
 	                ?primarySource
 	                ?startTime
@@ -166,7 +166,9 @@ namespace Artivity.Api.Modules
 		                prov:wasStartedBy ?agent ;
 		                prov:startedAtTime ?startTime ;
 		                prov:endedAtTime ?endTime .
-		
+
+                    ?agent dces:identifier ?agentId .
+
 	                ?uri a ?t ;
 		                prov:hadPrimarySource @entity;
 		                nie:created ?time ;
@@ -183,7 +185,7 @@ namespace Artivity.Api.Modules
 		                BIND(CONCAT('{{agent: \'', STR(?a),'\', role: \'', STR(?r), '\'}}') AS ?association_)
 	                }
                 }
-                GROUP BY ?type ?uri ?agent ?message ?primarySource ?startTime ?endTime
+                GROUP BY ?type ?uri ?agentId ?message ?primarySource ?startTime ?endTime
                 ORDER BY DESC (?endTime)
             ");
 
