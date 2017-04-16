@@ -1,9 +1,12 @@
-<div class="text-left pull-center" style="width: 250px; margin-top: 30px; padding-left: 30px;">
-    <ul class="list-unstyled">
+<div class="text-left pull-center" style="width: 250px; margin-top: 30px; padding-left: 30px;" ng-show="!t.loading">
+    <ul class="list-unstyled" ng-show="t.apps.length > 0">
         <li ng-repeat="app in t.apps">
             <div style="height: 40px;">
                 <img ng-src="{{app.iconSrc}}" width="30" height="30" style="margin: 0 10px"> {{app.name}}
             </div>
         </li>
     </ul>
+    <div ng-show="t.apps.length === 0">
+        Es sind keine Software-Plugins aktiviert.
+    </div>
 </div>
