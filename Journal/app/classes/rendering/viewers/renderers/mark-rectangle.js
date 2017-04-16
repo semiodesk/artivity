@@ -24,7 +24,7 @@ MarkRectangle.prototype.initializeGeometry = function () {
     var p2 = t.container.localToGlobal(t.mark.p2.x, t.mark.p2.y);
 
     t.resize(p1, p2);
-}
+};
 
 MarkRectangle.prototype.initializeContainer = function () {
     var t = this;
@@ -50,7 +50,7 @@ MarkRectangle.prototype.initializeContainer = function () {
     t.resizeHandles = [];
     t.resizeHandles = t.resizeHandles.concat(t.createResizeBars());
     t.resizeHandles = t.resizeHandles.concat(t.createResizeGrips());
-}
+};
 
 MarkRectangle.prototype.hitTestPoint = function (x, y) {
     var t = this;
@@ -73,10 +73,10 @@ MarkRectangle.prototype.hitTestPoint = function (x, y) {
     }
 
     // Only show the resize handles when the marker is selected.
-    for (i = 0; i < t.resizeHandles.length; i++) {
+    for (var i = 0; i < t.resizeHandles.length; i++) {
         t.resizeHandles[i].visible = t.selected;
     }
-}
+};
 
 MarkRectangle.prototype.hitTestObject = function (object, x, y) {
     var hit = object.hitTest(x, y);
@@ -92,7 +92,7 @@ MarkRectangle.prototype.hitTestObject = function (object, x, y) {
     }
 
     return hit;
-}
+};
 
 MarkRectangle.prototype.createFillRectangle = function () {
     var t = this;
@@ -128,7 +128,7 @@ MarkRectangle.prototype.createFillRectangle = function () {
     t.addChild(s);
 
     return s;
-}
+};
 
 MarkRectangle.prototype.createBorderRectangle = function () {
     var t = this;
@@ -151,7 +151,7 @@ MarkRectangle.prototype.createBorderRectangle = function () {
     t.addChild(s);
 
     return s;
-}
+};
 
 MarkRectangle.prototype.createResizeBars = function () {
     var t = this;
@@ -164,7 +164,7 @@ MarkRectangle.prototype.createResizeBars = function () {
     result.push(t.createResizeBar('w-resize'));
 
     return result;
-}
+};
 
 MarkRectangle.prototype.createResizeBar = function (cursor) {
     var t = this;
@@ -233,7 +233,7 @@ MarkRectangle.prototype.createResizeBar = function (cursor) {
     t.addChild(s);
 
     return s;
-}
+};
 
 MarkRectangle.prototype.createResizeGrips = function () {
     var t = this;
@@ -246,7 +246,7 @@ MarkRectangle.prototype.createResizeGrips = function () {
     result.push(t.createResizeGrip('sw-resize'));
 
     return result;
-}
+};
 
 MarkRectangle.prototype.createResizeGrip = function (cursor) {
     var t = this;
@@ -317,7 +317,7 @@ MarkRectangle.prototype.createResizeGrip = function (cursor) {
     t.addChild(s);
 
     return s;
-}
+};
 
 MarkRectangle.prototype.enableDragMove = function (s) {
     var t = this;
@@ -348,7 +348,7 @@ MarkRectangle.prototype.enableDragMove = function (s) {
             t.viewer.raise('markModified', t.mark);
         }
     });
-}
+};
 
 MarkRectangle.prototype.enableDragResize = function (s) {
     var t = this;
@@ -383,7 +383,7 @@ MarkRectangle.prototype.enableDragResize = function (s) {
             t.viewer.raise('markModified', t.mark);
         }
     });
-}
+};
 
 MarkRectangle.prototype.onResize = function (src, dx, dy) {
     var t = this;
@@ -417,7 +417,7 @@ MarkRectangle.prototype.onResize = function (src, dx, dy) {
     t.redraw(src);
 
     t.container.stage.update();
-}
+};
 
 MarkRectangle.prototype.resize = function (p1, p2) {
     var t = this;
@@ -430,7 +430,7 @@ MarkRectangle.prototype.resize = function (p1, p2) {
 
     t.w = t.x2 - t.x1;
     t.h = t.y2 - t.y1;
-}
+};
 
 MarkRectangle.prototype.redraw = function (src) {
     var t = this;
@@ -449,7 +449,7 @@ MarkRectangle.prototype.redraw = function (src) {
             handle.normal();
         }
     }
-}
+};
 
 MarkRectangle.prototype.select = function () {
     var t = this;
@@ -463,7 +463,7 @@ MarkRectangle.prototype.select = function () {
     t.hitTestPoint(stage.mouseX, stage.mouseY);
 
     stage.update();
-}
+};
 
 MarkRectangle.prototype.deselect = function () {
     var t = this;
@@ -477,4 +477,4 @@ MarkRectangle.prototype.deselect = function () {
     t.hitTestPoint(stage.mouseX, stage.mouseY);
 
     stage.update();
-}
+};
