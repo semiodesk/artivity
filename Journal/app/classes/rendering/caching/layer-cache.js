@@ -5,7 +5,7 @@ function LayerCache() {
     var t = this;
 
     EntityCache.call(t);
-};
+}
 
 LayerCache.prototype = Object.create(EntityCache.prototype);
 
@@ -65,4 +65,4 @@ LayerCache.prototype.getAll = function (time, fn) {
             fn(node.layer, d);
         });
     }
-}
+};

@@ -114,8 +114,13 @@ namespace Artivity.DataModel
                 Activities = new UriRef(baseUrl + "/activities");
                 WebActivities = new UriRef(baseUrl + "/activities/web");
 
+#if DEBUG
                 RenderingQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings?uri=', ?entityStub, '&file=', STR(?f) ) as ?file ).";
                 GetFilesQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings/thumbnails?entityUri=', ?entityUri) as ?p).";
+#else
+                RenderingQueryModifier = "BIND( CONCAT('http://localhost:8272/artivity/api/1.0/renderings?uri=', ?entityStub, '&file=', STR(?f) ) as ?file ).";
+                GetFilesQueryModifier = "BIND( CONCAT('http://localhost:8272/artivity/api/1.0/renderings/thumbnails?entityUri=', ?entityUri) as ?p).";
+#endif
 
                 IModel model = GetDefault();
 

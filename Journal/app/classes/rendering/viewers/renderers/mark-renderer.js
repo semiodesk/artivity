@@ -51,7 +51,7 @@ MarkRenderer.prototype.initialize = function (viewer, service) {
     t.viewer.on('zoom', function () {
         t.render();
     });
-}
+};
 
 MarkRenderer.prototype.setEntity = function (entity) {
     var t = this;
@@ -63,24 +63,24 @@ MarkRenderer.prototype.setEntity = function (entity) {
     t.service.getMarksForEntity(entity).then(function (data) {
         t.addMarks(data);
     });
-}
+};
 
 MarkRenderer.prototype.addMarks = function (marks) {
     var t = this;
 
-    for (i = 0; i < marks.length; i++) {
+    for (var i = 0; i < marks.length; i++) {
         t.onMarkAdded(marks[i]);
     }
 
     t.render();
-}
+};
 
 MarkRenderer.prototype.removeMarks = function (marks) {
     var t = this;
 
     var M = {};
 
-    for (i = 0; i < marks.length; i++) {
+    for (var i = 0; i < marks.length; i++) {
         var m = marks[i];
 
         if (m.uri) {
@@ -93,14 +93,14 @@ MarkRenderer.prototype.removeMarks = function (marks) {
     });
 
     t.render();
-}
+};
 
 MarkRenderer.prototype.render = function () {
     var t = this;
 
     t.viewer.marks.removeAllChildren();
 
-    for (i = 0; i < t.marks.length; i++) {
+    for (var i = 0; i < t.marks.length; i++) {
         var m = t.marks[i];
         var r = new MarkRectangle(t.viewer, t.viewer.scene, m);
 
@@ -108,7 +108,7 @@ MarkRenderer.prototype.render = function () {
     }
 
     t.viewer.stage.update();
-}
+};
 
 MarkRenderer.prototype.onMarkAdded = function (mark) {
     var t = this;
@@ -146,12 +146,12 @@ MarkRenderer.prototype.onMarkAdded = function (mark) {
     t.viewer.marks.addChild(new MarkRectangle(t.viewer, t.viewer.scene, m));
 
     return true;
-}
+};
 
 MarkRenderer.prototype.onMarkRemoved = function (mark) {
     var t = this;
 
-    for (i = 0; i < t.marks.length; i++) {
+    for (var i = 0; i < t.marks.length; i++) {
         if (t.marks[i] === mark) {
             t.marks.splice(i, 1);
 
@@ -160,12 +160,12 @@ MarkRenderer.prototype.onMarkRemoved = function (mark) {
     }
 
     return false;
-}
+};
 
 MarkRenderer.prototype.onMarkInvalidated = function (mark) {
     var t = this;
 
-    for (i = 0; i < t.viewer.marks.children.length; i++) {
+    for (var i = 0; i < t.viewer.marks.children.length; i++) {
         var m = t.viewer.marks.getChildAt(i);
 
         if (m.mark === mark) {
@@ -178,4 +178,4 @@ MarkRenderer.prototype.onMarkInvalidated = function (mark) {
     }
 
     return false;
-}
+};

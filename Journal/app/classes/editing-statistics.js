@@ -4,7 +4,7 @@ function EditingStatistics() {
     t.stepCount = 0;
     t.undoCount = 0;
     t.redoCount = 0;
-};
+}
 
 EditingStatistics.prototype.confidence = function () {
     var t = this;
@@ -14,4 +14,4 @@ EditingStatistics.prototype.confidence = function () {
     } else {
         return 100;
     }
-}
+};

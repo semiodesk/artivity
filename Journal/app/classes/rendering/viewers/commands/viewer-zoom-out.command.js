@@ -16,4 +16,4 @@ ZoomOutCommand.prototype.execute = function (e) {
     var t = ViewerCommand.prototype.execute.call(this, e);
 
     t.viewer.zoomOut();
-}
+};

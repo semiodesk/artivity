@@ -27,7 +27,7 @@ UpdateMarkCommand.prototype.canExecute = function (e) {
     }
 
     return false;
-}
+};
 
 UpdateMarkCommand.prototype.execute = function (mark) {
     var t = this;
@@ -55,4 +55,4 @@ UpdateMarkCommand.prototype.execute = function (mark) {
 
         return true;
     }
-}
+};

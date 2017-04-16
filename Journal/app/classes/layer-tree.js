@@ -9,7 +9,7 @@ function LayerTree() {
 
     // Maps layer URIs to tree nodes for fast lookup.
     t.nodes = new Map();
-};
+}
 
 /**
  * Traverses the layers in rendering order: from bottom to top.
@@ -62,7 +62,7 @@ LayerTree.prototype.insertLayer = function (layer, parentLayer) {
     }
 
     return node;
-}
+};
 
 /**
  * Insert a layer on top of another layer.
@@ -98,4 +98,4 @@ LayerTree.prototype.insertLayerAbove = function (layer, lowerLayer) {
     }
 
     return node;
-}
+};

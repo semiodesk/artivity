@@ -52,7 +52,7 @@ PanCommand.prototype.execute = function (e) {
         t.viewer.selectCommand(t);
         t.stage.cursor = 'move';
     }
-}
+};
 
 PanCommand.prototype.onMouseDown = function (e) {
     var t = this;
@@ -78,7 +78,7 @@ PanCommand.prototype.onMouseDown = function (e) {
             t.execute();
         }
     }
-}
+};
 
 PanCommand.prototype.onMouseDrag = function (e) {
     var t = this;
@@ -90,7 +90,7 @@ PanCommand.prototype.onMouseDrag = function (e) {
         t.stage.y = t.stageY + (e.stageY - t.downY);
         t.stage.update();
     }
-}
+};
 
 PanCommand.prototype.onMouseUp = function (e) {
     var t = this;
@@ -103,4 +103,4 @@ PanCommand.prototype.onMouseUp = function (e) {
     if (t.resetCommand) {
         t.viewer.resetCommand();
     }
-}
+};
