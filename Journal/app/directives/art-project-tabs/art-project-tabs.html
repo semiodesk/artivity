@@ -11,7 +11,13 @@
         <art-file-list onload="t.getRecentlyUsedFiles">
             <empty>
                 <div class="text-center">
-                    <h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+                    <div style="opacity: .25; margin: 75px 0 50px 0;"><i class="zmdi zmdi-time-restore" style="font-size: 75px !important"></i></div>
+
+                    <!--<h3 style="margin-top: 5em;">Your recent files will appear here.</h3>-->
+                    <h3>Zuletzt verwendete Dateien</h3>
+
+                    Dateien die in folgeneden Programmen bearbeitet wurden erscheinen hier:
+                    <art-app-list class="pull-center"></art-app-list>
                 </div>
             </empty>
         </art-file-list>
