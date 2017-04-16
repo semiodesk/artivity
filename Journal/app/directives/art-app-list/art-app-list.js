@@ -22,6 +22,8 @@
         t.apps = [];
 
         t.$onInit = function () {
+            t.loading = true;
+
             api.getAgents().then(function (data) {
                 var agents = [];
 
@@ -49,6 +51,7 @@
                 });
 
                 t.apps = agents;
+                t.loading = false;
             });
         }
     }
