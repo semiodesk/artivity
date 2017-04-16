@@ -114,8 +114,8 @@ namespace Artivity.DataModel
                 Activities = new UriRef(baseUrl + "/activities");
                 WebActivities = new UriRef(baseUrl + "/activities/web");
 
-                RenderingQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings?uri=', ?entityStub, '&file=', STR(?f) ) as ?file ).";
-                GetFilesQueryModifier = "BIND( CONCAT('http://localhost:8262/artivity/api/1.0/renderings/thumbnails?entityUri=', ?entityUri) as ?p).";
+                RenderingQueryModifier = "BIND(CONCAT('http://localhost:8262/artivity/api/1.0/renderings?uri=', ?entityStub, '&file=', STR(?f)) as ?file).";
+                GetFilesQueryModifier = "BIND(CONCAT('http://localhost:8262/artivity/api/1.0/renderings/thumbnails?entityUri=', ?entityUri) as ?p).";
 
                 IModel model = GetDefault();
 
@@ -143,7 +143,7 @@ namespace Artivity.DataModel
 
             Association association = model.CreateResource<Association>();
             association.Agent = user;
-            association.Role = new Role(art.AccountOwnerRole);
+            association.Role = new Role(art.AccountOwnerRole.Uri);
             association.Commit();
         }
 
@@ -217,7 +217,7 @@ namespace Artivity.DataModel
             {
                 Association association = model.CreateResource<Association>();
                 association.Agent = user;
-                association.Role = new Role(art.AccountOwnerRole);
+                association.Role = new Role(art.AccountOwnerRole.Uri);
                 association.Commit();
             }
             return true;

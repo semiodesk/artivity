@@ -123,16 +123,19 @@ namespace Artivity.Apid.Accounts
 
             string url = request.Query.url;
 
-            // Save the service endpoint address.
-            ServiceUrl = new Uri(url);
-
-            // Issue the request against the Artivity specific /api/1.0/login path.
-            if (!url.EndsWith(_path, StringComparison.InvariantCulture))
+            if (!string.IsNullOrEmpty(url))
             {
-                url.TrimEnd('/');
-                url += _path;
+                // Save the service endpoint address.
+                ServiceUrl = new Uri(url);
 
-                request.Query.url = url;
+                // Issue the request against the Artivity specific /api/1.0/login path.
+                if (!url.EndsWith(_path, StringComparison.InvariantCulture))
+                {
+                    url.TrimEnd('/');
+                    url += _path;
+
+                    request.Query.url = url;
+                }
             }
         }
 
@@ -397,7 +400,7 @@ namespace Artivity.Apid.Accounts
 
                             // Do not commit again *after* setting the revision because this 
                             // will mark the resource as modified.
-                            project.Commit(revision);
+                            project.Commit(revision, revision);
 
                             // Also commit any qualified relations.
                             foreach(Usage usage in project.Usages)
@@ -445,6 +448,7 @@ namespace Artivity.Apid.Accounts
                     {
                         IModel model = ModelProvider.GetAgents();
 
+                        // Commit the person into the agents model.
                         Person person = SynchronizableResource.FromJson<Person>(json);
                         person.Model = model;
 
@@ -453,7 +457,7 @@ namespace Artivity.Apid.Accounts
 
                         // Do not commit again *after* setting the revision because this 
                         // will mark the resource as modified.
-                        person.Commit(revision);
+                        person.Commit(revision, revision);
                     }
                     catch(Exception ex)
                     {
@@ -479,7 +483,7 @@ namespace Artivity.Apid.Accounts
 
                 Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + id + "/images?uri=" + escapedUri);
 
-                return await HandleArchiveDownloadAsync(account, url, uri);
+                return await HandleArchiveDownloadAsync(account, url, uri, revision);
             }
             else
             {
@@ -501,7 +505,7 @@ namespace Artivity.Apid.Accounts
 
                 Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + id + "/entities?uri=" + escapedUri);
 
-                return await HandleArchiveDownloadAsync(account, url, uri);
+                return await HandleArchiveDownloadAsync(account, url, uri, revision);
             }
             else
             {
@@ -509,8 +513,15 @@ namespace Artivity.Apid.Accounts
             }
         }
 
-        private async Task<bool> HandleArchiveDownloadAsync(OnlineAccount account, Uri url, Uri uri)
+        private async Task<bool> HandleArchiveDownloadAsync(OnlineAccount account, Uri url, Uri uri, int revision)
         {
+            if(revision < 0)
+            {
+                PlatformProvider.Logger.LogError("Trying to download a sync archive with an invalid revision number: {0}", revision);
+
+                return false;
+            }
+
             using (HttpClient client = GetHttpClient(account))
             {
                 HttpResponseMessage response = await client.GetAsync(url);
@@ -560,30 +571,9 @@ namespace Artivity.Apid.Accounts
                         {
                             IModel model = ModelProvider.GetActivities();
 
-                            // Swap the 'local' for 'remote' in the revision property.
-                            // Delete any exisiting remote revision triples.
-                            SparqlUpdate update = new SparqlUpdate(@"
-                                WITH @model
-                                DELETE
-                                {
-                                    ?state arts:lastRemoteRevision ?remote .
-                                    ?state arts:lastLocalRevision ?local .
-                                }
-                                INSERT
-                                {
-                                    ?state arts:lastRemoteRevision ?local .
-                                }
-                                WHERE
-                                {
-                                    @activity arts:synchronizationState ?state .
-                                    ?state arts:lastLocalRevision ?local .
-                                }
-                            ");
-
-                            update.Bind("@model", model);
-                            update.Bind("@activity", uri);
-
-                            model.ExecuteUpdate(update);
+                            // Set the remote and local revision number to be equivalent and
+                            // delete any exisiting revision triples.
+                            UpdateResourceSynchronizationState(model, uri, revision);
                         }
 
                         return true;
@@ -653,14 +643,14 @@ namespace Artivity.Apid.Accounts
 
                         if (response.IsSuccessStatusCode)
                         {
-                            int r = await GetLastRemoteRevision(response);
+                            int remote = await GetLastRemoteRevision(response);
 
                             model = ModelProvider.GetActivities();
 
                             if (model.ContainsResource(uri))
                             {
                                 project = model.GetResource<Project>(uri);
-                                project.Commit(r);
+                                project.Commit(remote, remote);
 
                                 return true;
                             }
@@ -694,14 +684,24 @@ namespace Artivity.Apid.Accounts
 
                     if (response.IsSuccessStatusCode)
                     {
-                        int r = await GetLastRemoteRevision(response);
+                        int remote = await GetLastRemoteRevision(response);
 
                         model = ModelProvider.GetAgents();
 
                         if (model.ContainsResource(uri))
                         {
                             person = model.GetResource<Person>(uri);
-                            person.Commit(r);
+                            person.Commit(remote, remote);
+
+                            string personUri = FileNameEncoder.Encode(person.Uri.AbsoluteUri);
+                            string file = Path.Combine(PlatformProvider.AvatarsFolder, personUri + ".jpg");
+
+                            if (File.Exists(file))
+                            {
+                                S3Uploader.Policy policy = await GetUploadPolicy(account);
+
+                                await S3Uploader.Upload(policy, new FileInfo(file), "avatars");
+                            }
 
                             return true;
                         }
@@ -846,7 +846,7 @@ namespace Artivity.Apid.Accounts
             }
         }
 
-        private async Task<bool> HandleArchiveUploadAsync(HttpClient client, Uri url, Uri resourceUri, FileInfo archive)
+        private async Task<bool> HandleArchiveUploadAsync(HttpClient client, Uri endpoint, Uri uri, FileInfo archive)
         {
             using (FileStream stream = File.Open(archive.FullName, FileMode.Open))
             {
@@ -856,15 +856,27 @@ namespace Artivity.Apid.Accounts
                 MultipartFormDataContent form = new MultipartFormDataContent();
                 form.Add(content, "file", archive.Name + archive.Extension);
 
-                HttpResponseMessage response = await client.PostAsync(url, form);
+                HttpResponseMessage response = await client.PostAsync(endpoint, form);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    int r = await GetLastRemoteRevision(response);
+                    int revision = await GetLastRemoteRevision(response);
 
                     IModel model = ModelProvider.GetActivities();
 
-                    SparqlUpdate update = new SparqlUpdate(@"
+                    UpdateResourceSynchronizationState(model, uri, revision);
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+        }
+
+        private void UpdateResourceSynchronizationState(IModel model, Uri uri, int revision)
+        {
+            // Synchronizable resources on the server always have the synchronization state:
+            //  - Remote revision: n
+            //  - Local revision: n | -1
+            SparqlUpdate update = new SparqlUpdate(@"
 			            WITH @model
 			            DELETE { ?state arts:lastRemoteRevision ?revision . }
 			            INSERT { ?state arts:lastRemoteRevision @revision . }
@@ -872,19 +884,25 @@ namespace Artivity.Apid.Accounts
 			            { 
 				            @resource arts:synchronizationState ?state .
 
+                            ?state a arts:ResourceSynchronizationState .
 				            ?state arts:lastRemoteRevision ?revision .
+			            }
+			            DELETE { ?state arts:lastLocalRevision ?revision . }
+			            INSERT { ?state arts:lastLocalRevision @revision . }
+			            WHERE
+			            { 
+				            @resource arts:synchronizationState ?state .
+
+                            ?state a arts:ResourceSynchronizationState .
+				            ?state arts:lastLocalRevision ?revision .
 			            }
 		            ");
 
-                    update.Bind("@model", model);
-                    update.Bind("@resource", resourceUri);
-                    update.Bind("@revision", r);
+            update.Bind("@model", model);
+            update.Bind("@resource", uri);
+            update.Bind("@revision", revision);
 
-                    model.ExecuteUpdate(update);
-                }
-
-                return response.IsSuccessStatusCode;
-            }
+            model.ExecuteUpdate(update);
         }
 
         private async Task<int> GetLastRemoteRevision(HttpResponseMessage response)

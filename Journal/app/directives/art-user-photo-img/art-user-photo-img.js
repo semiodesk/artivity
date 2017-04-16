@@ -9,9 +9,10 @@
             controllerAs: 't',
             bindToController: true,
             scope: {
-                src: "=src",
+                src: "=?src",
                 width: "=width",
                 height: "=height",
+                canChange: "=?",
                 changed: "&?"
             }
         }
@@ -24,6 +25,10 @@
 
         t.img = null;
         t.input = null;
+
+        if(!t.src) {
+            t.src = 'app/resources/img/placeholder-avatar.png';
+        }
 
         t.onFileSelected = function (args) {
             var data = args.target.files[0];
@@ -47,22 +52,17 @@
 
         t.$onInit = function () {
             t.img = $element.find('img');
-
-            if (t.img) {
-                t.img.onerror = function () {
-                    $(this).hide();
-                };
-            }
-
             t.input = $element.find('input[type="file"]');
 
-            if (t.input) {
+            if (t.canChange && t.input) {
                 t.input.bind('change', t.onFileSelected);
 
-                // Triggering the click in the template via ng-click prevents digest exceptions.
-                $element.click(function () {
-                    t.input[0].click();
-                });
+                if (typeof ($element.click) === 'function') {
+                    // Triggering the click in the template via ng-click prevents digest exceptions.
+                    $element.click(function () {
+                        t.input[0].click();
+                    });
+                }
             }
 
             $scope.$watch(['height', 'width'], function () {
@@ -77,6 +77,8 @@
                         width: '100%'
                     };
                 }
+
+                t.style.cursor = t.canChange ? 'pointer' : 'inherit';
             });
         }
     };

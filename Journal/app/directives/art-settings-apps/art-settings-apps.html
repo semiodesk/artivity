@@ -1,59 +1,73 @@
-<form name="form">
+<form name="appsForm">
     <div class="form-header">
-        <button class="btn btn-chromeless pull-right" style="position: relative; right -10px; top: -10px;" ng-click="reload()"><i class="zmdi zmdi-lg zmdi-refresh-sync"></i> <span class="btn-label">Refresh</span></button>
+        <button class="btn btn-chromeless pull-right" style="position: relative; right -10px; top: -10px;" ng-click="t.reload()">
+            <i class="zmdi zmdi-lg zmdi-refresh-sync"></i> <span class="btn-label">Refresh</span>
+        </button>
 
         <p class="description">{{ 'SETTINGS.APPS.DESCRIPTION' | translate }}</p>
     </div>
 
     <div class="clearfix"></div>
 
-    <ul class="list-view">
-        <li class="list-item" ng-repeat="agent in agents">
-            <div class="col col-icn col-icn-lg" ng-class="{disabled: !agent.pluginInstalled}">
-                <img ng-src="{{agent.iconSrc}}" width="40" height="40" style="margin: 10px;" />
-            </div>
-            <div class="col expand" style="vertical-align: middle" ng-class="{disabled: !agent.pluginInstalled}">
-                <h5>{{agent.name}}</h5>
-            </div>
-            <div class="col" style="vertical-align: middle">
-                <div style="padding-right: 12px; margin-top: 4px;">
-                    <a class="btn btn-chromeless" uib-tooltip-template="'app-info-template.html'" tooltip-placement="left"><i class="zmdi zmdi-info" style="font-size: 23px;"></i></a>
-                </div>
-            </div>
-            <div class="col" style="vertical-align: middle" ng-class="{disabled: !agent.pluginInstalled}">
-                <div style="padding-right: 12px;">
-                    <art-color-picker selected-color="agent.color"></art-color-picker>
-                </div>
-            </div>
-            <div class="col" style="vertical-align: middle">
-                <div style="padding-right: 12px;">
-                    <input type="checkbox" ng-model="agent.pluginInstalled" ng-change="toggleInstall(agent)" data-size="small" bs-switch/>
-                </div>
-            </div>
-        </li>
-    </ul>
+    <div ng-show="t.loading || t.agents.length > 0">
+        <uib-accordion class="panel-accordion" close-others="oneAtATime" style="max-width: 500px;">
+            <div uib-accordion-group ng-repeat="agent in t.agents">
+                <uib-accordion-heading>
+                    <div class="pull-right" style="margin-top: 3px">
+                        <label class="label-default" ng-show="!agent.hasError && agent.pluginInstalled">Plugin installed</label>
+                        <label class="label-default" ng-show="!agent.hasError && !agent.pluginInstalled">Plugin not installed</label>
+                        <label class="label-default" ng-show="agent.hasError">Error <span ng-show="agent.errotType != undefined">: {{agent.errorType}}</span></label>
+                        <toggle style="padding: 0 10px; font-size: 14px;" ng-model="agent.pluginInstalled" ng-click="t.toggleInstall(agent, $event)"
+                            on="<i class='zmdi zmdi-check'></i>" off="<i class='zmdi zmdi-close'></i>"></toggle>
+                    </div>
 
-    <div class="statusbar text-center">
-        <div class="msg-error animate-show" ng-show="hasError">
-            <h5>{{errorType}}</h5>
-            <label>{{errorMessage}}</label>
+                    <img class="pull-left" ng-src="{{agent.iconSrc}}" ng-class="{grayscale: !agent.pluginInstalled}" width="40" height="40" style="margin: 0 10px">
+
+                    <h5 style="line-height: 40px; vertical-align: middle">{{agent.name}}</h5>
+
+                    <div class="clearfix"></div>
+                </uib-accordion-heading>
+
+                <table style="margin-left: 45px; margin-right: 45px; min-width: 100px;" class="pull-left">
+                    <tr>
+                        <td class="text-left">
+                            <art-color-picker selected-color="agent.color"></art-color-picker> Color</td>
+                    </tr>
+                </table>
+
+                <table style="margin-left: 45px; min-width: 250px;">
+                    <tr>
+                        <td class="text-left">Software version:</td>
+                        <td class="text-right">{{agent.softwareVersion}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Plugin version:</td>
+                        <td class="text-right">{{agent.pluginVersion}}</td>
+                    </tr>
+                </table>
+            </div>
+        </uib-accordion>
+    </div>
+
+    <div ng-show="!t.loading && t.agents.length === 0" class="text-center">
+        <div style="padding: 25px 0;">
+            <img src="app/resources/img/info.svg" width="100" height="100" style="opacity: .25">
         </div>
 
+        <h3>Es wurde keine passende Software gefunden.</h3>
+        <a href="https://artivity.online/system-requirements.html" target="_blank">Welche Software wird unterstützt?</a>
+    </div>
+
+    <div ng-show="!t.loading && !t.ready" class="container" style="position: absolute; bottom: 0;">
+        <div style="margin-left: 100px; display:inline-block; line-height: 40px; vertical-align: middle;">
+            <img src="app/resources/img/info.svg" width="30" height="30" style="float: left; opacity: .75; margin: 5px 7px 0 0;">
+            <b>Keine Plugins installiert:</b> Bearbeitete Dateien erscheinen nicht in Artivity.</p>
+        </div>
+    </div>
+
+    <div class="statusbar text-center">
         <div class="msg-info" ng-show="false">
             <label style="padding: 10px 30px;"><i class="zmdi zmdi-info"></i> You can drag undetected applications into this window.</label>
         </div>
     </div>
 </form>
-
-<script type="text/ng-template" id="app-info-template.html">
-    <table style="min-width: 175px;">
-        <tr>
-            <td class="text-left">Software version:</td>
-            <td class="text-right">{{agent.softwareVersion}}</td>
-        </tr>
-        <tr>
-            <td class="text-left">Plugin version:</td>
-            <td class="text-right">{{agent.pluginVersion}}</td>
-        </tr>
-    </table>
-</script>

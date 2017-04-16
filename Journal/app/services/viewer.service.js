@@ -6,7 +6,7 @@
     function viewerService(markService) {
         var currentViewer = null;
 
-        return {
+        var t = {
             viewer: viewer,
             hasCommand: hasCommand,
             executeCommand: executeCommand,
@@ -15,10 +15,21 @@
             hideMarks: hideMarks
         };
 
+        var dispatcher = new EventDispatcher(t);
+
+        return t;
+
         // CONTEXT
         function viewer(viewer) {
             if (viewer) {
+                var e = {
+                    oldViewer: currentViewer,
+                    newViewer: viewer
+                }
+
                 currentViewer = viewer;
+
+                t.raise('viewerChanged', e);
             }
 
             return currentViewer;

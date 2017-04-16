@@ -5,10 +5,12 @@
         const remote = require('electron').remote;
         const window = require('electron').remote.getCurrentWindow();
         const dialog = require('electron').remote.dialog;
+        const shell = require('electron').shell;
 
         return {
             currentWindow: currentWindow,
             openWindow: openWindow,
+            openExternalLink: openExternalLink,
             close: close,
             reload: reload,
             setClosable: setClosable,
@@ -120,6 +122,10 @@
             if(result && result.length > 0) {
                 return result[0];
             }
+        }
+
+        function openExternalLink(href) {
+            shell.openExternal(href);
         }
     }
 })();

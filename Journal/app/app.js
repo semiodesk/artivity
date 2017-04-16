@@ -8,6 +8,7 @@ angular.module('app', [
     'ui.bootstrap.modal',
     'ui.bootstrap.progressbar',
     'ui.bootstrap.tabs',
+    'ui.toggle',
     'pascalprecht.translate',
     'cfp.hotkeys',
     'ngDragDrop',

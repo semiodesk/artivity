@@ -1,6 +1,7 @@
 function Comment(uri) {
     var t = this;
 
+    t.agent = null;
     t.agentId = null;
     t.primarySource = null;
 
@@ -27,14 +28,12 @@ Comment.prototype.reset = function () {
 Comment.prototype.validate = function () {
     var t = this;
 
-    var result = t.agentId
-        && typeof(t.agentId) === 'string' // Needs to be URI
-        && t.primarySource
-        && typeof(t.primarySource) === 'string' // Needs to be URI
-        && t.startTime
-        && t.startTime <= t.endTime
-        && typeof(t.message) === 'string'
-        && t.message.length > 0;
+    var result = true;
+    result = result && (typeof(t.agent) === 'string') && (t.agent.length > 0); // Needs to be URI
+    result = result && (typeof(t.agentId) === 'string') && (t.agentId.length > 0); // Needs to be URI
+    result = result && (typeof(t.primarySource) === 'string') && (t.primarySource.length > 0); // Needs to be URI
+    result = result && (typeof(t.message) === 'string') && (t.message.length > 0);
+    result = result && t.startTime && (t.startTime <= t.endTime);
 
     return result;
 };

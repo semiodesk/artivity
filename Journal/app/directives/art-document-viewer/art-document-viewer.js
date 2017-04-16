@@ -59,8 +59,6 @@
                 t.viewer.addCommand(new HideMarksCommand(t.viewer, markService));
                 t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
 
-                $scope.$broadcast('viewerInitialized', t.viewer);
-
                 viewerService.viewer(t.viewer);
 
                 // Handle the resize of UI panes.

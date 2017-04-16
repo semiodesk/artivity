@@ -13,47 +13,30 @@
 
     angular.module('app').controller('DocumentViewerToolbarDirectiveController', DocumentViewerToolbarDirectiveController);
 
-    DocumentViewerToolbarDirectiveController.$inject = ['$scope', '$parse', 'selectionService'];
+    DocumentViewerToolbarDirectiveController.$inject = ['$scope', '$element', '$parse', 'viewerService', 'selectionService'];
 
-    function DocumentViewerToolbarDirectiveController($scope, $parse, selectionService) {
+    function DocumentViewerToolbarDirectiveController($scope, $element, $parse, viewerService, selectionService) {
         var t = this;
 
         t.viewer = null;
         t.commands = {};
-
         t.canExecuteCommand = canExecuteCommand;
         t.executeCommand = executeCommand;
 
-        initialize();
-
-        function initialize() {
-            $scope.$on('viewerInitialized', function (e, viewer) {
-                t.viewer = viewer;
-
-                $('.btn[data-command]').each(function (i, btn) {
-                    $(btn).click(t.executeCommand);
-                });
-
-                t.viewer.on('commandSelected', function (e) {
-                    updateButtonStates(e);
-                });
-
-                updateButtonStates(e);
-            });
-        }
-
         function updateButtonStates(e) {
-            var selected = t.viewer.selectedCommand;
+            if (t.viewer) {
+                var selected = t.viewer.selectedCommand;
 
-            $('.btn[data-command]').each(function (i, btn) {
-                var b = $(btn);
+                $element.find('.btn[data-command]').each(function (i, btn) {
+                    var b = $(btn);
 
-                if (b.data('command') === selected.id) {
-                    b.addClass('btn-active');
-                } else {
-                    b.removeClass('btn-active');
-                }
-            });
+                    if (b.data('command') === selected.id) {
+                        b.addClass('btn-active');
+                    } else {
+                        b.removeClass('btn-active');
+                    }
+                });
+            }
         }
 
         function canExecuteCommand(e) {
@@ -89,6 +72,34 @@
                         t.viewer.executeCommand(command);
                     }
                 }
+            }
+        }
+
+        t.$postLink = function () {
+            $element.find('.btn[data-command]').each(function (i, btn) {
+                $(btn).click(t.executeCommand);
+            });
+
+            viewerService.on('viewerChanged', function(e) {
+                if(e.oldViewer) {
+                    e.oldViewer.off('commandSelected', updateButtonStates);
+                }
+
+                if(e.newViewer) {
+                    e.newViewer.on('commandSelected', updateButtonStates);
+                }
+
+                t.viewer = e.newViewer;
+
+                updateButtonStates();
+            });
+
+            t.viewer = viewerService.viewer();
+
+            if(t.viewer) {
+                updateButtonStates();
+
+                t.viewer.on('commandSelected', updateButtonStates);
             }
         }
     }

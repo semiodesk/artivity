@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Nancy;
 using Semiodesk.Trinity;
 using System;
 
@@ -104,8 +105,8 @@ namespace Artivity.Api.Platform
 
         string GetRenderOutputPath(UriRef entityUri);
 
+        Response GetPersonPhoto(UriRef agentUri, string owner);
+
         #endregion
-
-
     }
 }

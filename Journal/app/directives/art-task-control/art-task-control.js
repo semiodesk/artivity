@@ -68,6 +68,10 @@
             // Set the start time and entity.
             t.updateTask(task);
 
+            if (!task.endTime) {
+                task.endTime = new Date();
+            }
+            
             if (t.validateTask(task)) {
                 taskService.put(task).then(function (data) {
                     console.log("Updated task: ", task);
@@ -82,6 +86,10 @@
         t.postTask = function (task) {
             // Set the start time and entity.
             t.updateTask(task);
+
+            if (!task.endTime) {
+                task.endTime = new Date();
+            }
 
             if (t.validateTask(task)) {
                 task.endTime = new Date();

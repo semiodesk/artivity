@@ -10,6 +10,7 @@
         windowService.setMinimizable(false);
         windowService.setMaximizable(false);
 
+        t.initialized = false;
         t.showSpinner = true;
         t.showError = false;
         t.retry = retry;
@@ -26,7 +27,7 @@
 
                     agentService.initialize(function () {
                         showStartView(response);
-                    }, function() {
+                    }, function () {
                         console.warn('Failed to initialize agent service.');
                     });
                 },
@@ -73,11 +74,27 @@
             t.showError = true;
         }
 
+        function setupLinkHandler() {
+            if (!t.initialized) {
+                // Open external links with the system default browser.
+                $(document).on('click', 'a[target="_blank"]', function (event) {
+                    event.preventDefault();
+                    windowService.openExternalLink(this.href);
+                });
+
+                t.initialized = true;
+            }
+        }
+
         function retry() {
-            init();
+            showLoadingSpinner();
+
+            tryConnect();
         }
 
         function init() {
+            setupLinkHandler();
+            
             showLoadingSpinner();
 
             tryConnect();

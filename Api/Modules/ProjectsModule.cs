@@ -406,7 +406,7 @@ namespace Artivity.Api.Modules
 
                 ProjectMembership membership = activities.CreateResource<ProjectMembership>(ModelProvider.CreateUri<ProjectMembership>());
                 membership.Agent = new Person(agentUri);
-                membership.Role = new Role(role);
+                membership.Role = new Role(role.Uri);
                 membership.Commit();
 
                 Project project = activities.GetResource<Project>(projectUri);
