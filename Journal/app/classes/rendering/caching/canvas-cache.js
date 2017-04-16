@@ -7,7 +7,7 @@ function CanvasCache() {
     EntityCache.call(t);
 
     t.canvases = [];
-};
+}
 
 CanvasCache.prototype = new EntityCache();
 

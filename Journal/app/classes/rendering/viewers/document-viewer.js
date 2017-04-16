@@ -37,13 +37,13 @@ DocumentViewer.prototype.onItemSelected = function (item) {
     t.selection.selectedItem(item);
 
     console.log("Selected:", item);
-}
+};
 
 DocumentViewer.prototype.onItemModified = function (item) {
     var t = this;
 
     console.log("Modified:", item);
-}
+};
 
 DocumentViewer.prototype.render = function () {
     var t = this;
@@ -97,4 +97,4 @@ DocumentViewer.prototype.render = function () {
     });
 
     t.stage.update();
-}
+};

@@ -22,7 +22,7 @@ ShowMarksCommand.prototype.canExecute = function (param) {
     }
 
     return false;
-}
+};
 
 ShowMarksCommand.prototype.execute = function (param) {
     var t = ViewerCommand.prototype.execute.call(this, param);
@@ -30,4 +30,4 @@ ShowMarksCommand.prototype.execute = function (param) {
     var renderer = t.viewer.getRenderer('marksRenderer');
 
     renderer.addMarks(param);
-}
+};

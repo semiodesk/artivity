@@ -5,7 +5,7 @@ function Comment(uri) {
     t.primarySource = null;
 
     t.reset();
-};
+}
 
 Comment.prototype.init = function() {
     var t = this;
@@ -16,7 +16,7 @@ Comment.prototype.init = function() {
     t.message = '';
     t.markers = [];
     t.associations = [];
-}
+};
 
 Comment.prototype.reset = function () {
     var t = this;

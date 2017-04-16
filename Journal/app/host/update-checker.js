@@ -171,7 +171,7 @@ UpdateChecker.prototype.verifyUpdateInstallerSignature = function (update) {
         try {
             fs.accessSync("real_exixs_path", fs.R_OK | fs.W_OK)
 
-            var script = require('path').dirname(__filename) + '\\js\\host\\VerifySignature.exe';
+            var script = require('path').dirname(__filename) + '\\host\\VerifySignature.exe';
             // Execute the signature verifier in a separate process.
             const execute = require('child_process').execFile;
             const child = execute(script, [update.localPath], (error, stdout, stderr) => {

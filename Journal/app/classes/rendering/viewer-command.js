@@ -12,7 +12,7 @@ function ViewerCommand(viewer, id) {
 
 ViewerCommand.prototype.canExecute = function (param) {
     return this.viewer;
-}
+};
 
 ViewerCommand.prototype.execute = function (param) {
     var e = {
@@ -25,4 +25,4 @@ ViewerCommand.prototype.execute = function (param) {
     console.log('Executing command:', e);
 
     return this;
-}
+};
