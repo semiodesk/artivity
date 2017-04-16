@@ -11,6 +11,11 @@ namespace Artivity.Apid.Synchronization
         #region Members
 
         /// <summary>
+        /// Identifier which can be used for determining the context the resource was used.
+        /// </summary>
+        public Uri Context { get; set; }
+
+        /// <summary>
         /// The pull- or push counter of the item in the synchronization target system.
         /// </summary>
         public int Revision { get; set; }
@@ -38,8 +43,9 @@ namespace Artivity.Apid.Synchronization
         {
         }
 
-        public SynchronizationChangesetItem(int revision, Uri uri, Uri type, SynchronizationActionType actionType)
+        public SynchronizationChangesetItem(int revision, Uri uri, Uri type, SynchronizationActionType actionType, Uri context)
         {
+            Context = context;
             Revision = revision;
             ResourceUri = uri;
             ResourceType = type;

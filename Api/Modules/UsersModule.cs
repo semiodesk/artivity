@@ -177,8 +177,12 @@ namespace Artivity.Api.Modules
         private Response GetPersonsFromRole(UserRoles userRole)
         {
             IModel Model = ModelProvider.GetAgents();
-            if( Model == null )
+
+            if (Model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
+
             Resource role;
 
             switch(userRole)

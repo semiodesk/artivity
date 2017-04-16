@@ -44,9 +44,14 @@ namespace Artivity.Api.IO
 
         public string FileFormat { get; set; }
 
+        /// <remarks>
+        /// This should be namend 'ExportedResources'.
+        /// </remarks>
         public List<Uri> ExportedEntites { get; set; }
 
         public DateTime ExportDate { get; set; }
+
+        public List<ArchiveManifestRemoteFileInfo> RemoteFiles { get; set; }
 
         #endregion
 
@@ -56,6 +61,7 @@ namespace Artivity.Api.IO
         {
             Creators = new List<ArchiveManifestCreator>();
             ExportedEntites = new List<Uri>();
+            RemoteFiles = new List<ArchiveManifestRemoteFileInfo>();
         }
 
         #endregion

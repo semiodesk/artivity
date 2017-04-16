@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Artivity.DataModel.Comments
+namespace Artivity.DataModel
 {
     [RdfClass(ART.Comment)]
     public class Comment : Entity
