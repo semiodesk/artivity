@@ -3,7 +3,7 @@ function EventDispatcher() {
 
     t.muted = false;
     t.listeners = {};
-};
+}
 
 function EventDispatcher(parent) {
     var t = this;
@@ -28,7 +28,7 @@ function EventDispatcher(parent) {
             t.unmute();
         };
     }
-}
+};
 
 EventDispatcher.prototype.on = function (events, callback) {
     var t = this;
@@ -56,7 +56,7 @@ EventDispatcher.prototype.on = function (events, callback) {
 
         t.listeners[event].push(callback);
     }
-}
+};
 
 EventDispatcher.prototype.off = function (events, callback) {
     var t = this;
@@ -86,7 +86,7 @@ EventDispatcher.prototype.off = function (events, callback) {
             }
         }
     }
-}
+};
 
 EventDispatcher.prototype.raise = function (event, params) {
     var t = this;
@@ -108,10 +108,10 @@ EventDispatcher.prototype.mute = function () {
     var t = this;
 
     t.muted = true;
-}
+};
 
 EventDispatcher.prototype.unmute = function () {
     var t = this;
 
     t.muted = false;
-}
+};

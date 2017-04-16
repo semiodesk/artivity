@@ -22,7 +22,7 @@ HideMarksCommand.prototype.canExecute = function (param) {
     }
 
     return false;
-}
+};
 
 HideMarksCommand.prototype.execute = function (param) {
     var t = ViewerCommand.prototype.execute.call(this, param);
@@ -30,4 +30,4 @@ HideMarksCommand.prototype.execute = function (param) {
     var renderer = t.viewer.getRenderer('marksRenderer');
 
     renderer.removeMarks(param);
-}
+};

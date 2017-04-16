@@ -29,7 +29,7 @@ DeleteMarkCommand.prototype.canExecute = function (e) {
     }
 
     return false;
-}
+};
 
 DeleteMarkCommand.prototype.execute = function (e) {
     var t = this;
@@ -47,4 +47,4 @@ DeleteMarkCommand.prototype.execute = function (e) {
         // The 'markRemoved' event will trigger the re-rendering of the marks.
         t.viewer.raise('markRemoved', mark);
     }
-}
+};
