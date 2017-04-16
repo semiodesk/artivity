@@ -26,32 +26,35 @@
 // Copyright (c) Semiodesk GmbH 2017
 
 using Artivity.DataModel.ObjectModel;
+using Artivity.DataModel.Extensions;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Artivity.DataModel
 {
     [RdfClass(PROV.Person)]
-    public class Person : Agent, IPerson
+    public class Person : Agent, IUser
     {
 		#region Members
 
         [RdfProperty(ART.guid), JsonIgnore]
-        public string __guid { get; set; }
+        private string _guid { get; set; }
 
         [JsonIgnore]
         public Guid? Guid
         {
             get
             {
-                if (!string.IsNullOrEmpty(__guid))
+                if (!string.IsNullOrEmpty(_guid))
                 {
-                    return new Guid(__guid);
+                    return new Guid(_guid);
                 }
                 else
                 {
@@ -62,20 +65,25 @@ namespace Artivity.DataModel
             {
                 if (value.HasValue)
                 {
-                    __guid = value.Value.ToString();
+                    _guid = value.Value.ToString();
                 }
                 else
                 {
-                    __guid = null;
+                    _guid = null;
                 }
             }
         }
 
-        [RdfProperty(FOAF.mbox)]
-        public string EmailAddress { get; set; }
+        [RdfProperty(DCES.identifier), JsonIgnore]
+        private string _id { get; set; }
 
-        [RdfProperty(FOAF.img)]
-        public string Photo { get; set; }
+        public string Id
+        {
+            get { return _id; }
+        }
+
+        [RdfProperty(FOAF.mbox), NotifyPropertyChanged]
+        public string EmailAddress { get; set; }
 
 		#endregion
 
@@ -115,6 +123,16 @@ namespace Artivity.DataModel
         public override bool Validate()
         {
             return base.Validate() && !string.IsNullOrEmpty(EmailAddress);
+        }
+
+        public override void Commit()
+        {
+            if(string.IsNullOrEmpty(_id) && !string.IsNullOrEmpty(EmailAddress))
+            {
+                _id = EmailAddress.GetHashString();
+            }
+
+            base.Commit();
         }
 
         #endregion

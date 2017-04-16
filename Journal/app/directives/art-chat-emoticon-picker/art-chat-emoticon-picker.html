@@ -1,0 +1,13 @@
+<div class="ctl-emoticon-picker scroll-container scroll-y layout-fix" scroll-glue>
+    <ul class="list-unstyled">
+        <li ng-repeat="section in t.sections | reverse">
+            <h5 class="text-center">{{section.title}}</h5>
+            <ul class="list-unstyled">
+                <li ng-repeat="emoticon in section.emoticons | reverse">
+                    <a class="btn btn-chromeless btn-emoticon" ng-click="t.select(emoticon)" emojione="{{emoticon}}"></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </li>
+    </ul>
+</div>

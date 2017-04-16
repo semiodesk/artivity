@@ -1,0 +1,35 @@
+<div class="comment-container" ng-mouseenter="t.showMarks(t.comment)" ng-mouseleave="t.hideMarks(t.comment)" ng>
+    <div class="comment comment-item" ng-class="{'comment-user': t.isUser, 'comment-request': t.isRequest}">
+        <div class="comment-avatar">
+            <img src="app/resources/user.svg" width="28" height="28" class="img img-circular">
+        </div>
+        <div class="comment-bubble">
+            <div class="bubble-content"><span class="text" emojione="{{t.comment.message}}"></span></div>
+            <div class="bubble-tip"></div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="comment-bubble-context">
+            <div ng-if="t.enableResponse" ng-switch="t.comment.type">
+                <div ng-switch-when="ApprovalRequest">
+                    <a class="btn btn-chromeless" ng-click="t.postYes(t.comment)"><i class="zmdi zmdi-thumb-up"></i> <span class="btn-label">Ja</span></a>
+                    <a class="btn btn-chromeless" ng-click="t.postNo(t.comment)"><i class="zmdi zmdi-thumb-down"></i> <span class="btn-label">Nein</span></a>
+                </div>
+            </div>
+            <div ng-if="t.isRequest">
+                <div ng-repeat="response in t.responses">
+                    {{response.message}}
+                </div>
+            </div>
+        </div>
+        <div class="comment-time hidden-mouseover">
+            <div class="">
+                <label class="time pull-right small">{{t.getFormattedTime(t.comment.endTime, 'hh:mm')}}</label>
+            </div>
+        </div>
+        <div class="comment-more visible-mouseover">
+            <a class="btn btn-chromeless btn-circular">
+                <i class="zmdi zmdi-more"></i>
+            </a>
+        </div>
+    </div>
+</div>

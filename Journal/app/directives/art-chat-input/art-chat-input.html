@@ -1,4 +1,7 @@
 <div class="ctl-comment padding-x-xs padding-y-xs" ng-blur="t.onBlurred()">
+    <div class="ctl-emoticon-panel" ng-class="{'panel-visible': t.showEmoticonPanel && t.focused}">
+        <art-chat-emoticon-picker></art-chat-emoticon-picker>
+    </div>
     <div ng-show="t.showMembers">
         <ul class="list-view">
             <li class="list-item list-item-link" ng-repeat="member in t.members" ng-show="member.visible">
@@ -6,7 +9,7 @@
                     <div class="col">
                         <art-user-photo-img width="40" height="40" src="member.Agent.PhotoUrl"></art-user-photo-img>
                     </div>
-                    <div class="col expand" ng-click="t.selectMember(t.comment.message, member)">
+                    <div class="col expand" ng-click="t.selectMember(t.input, member)">
                         <div class="padding-x-md">
                             <h5 ng-bind="member.Agent.Name"></h5>
                         </div>
@@ -15,12 +18,14 @@
             </li>
         </ul>
     </div>
-    <textarea class="ui-autosize" placeholder="{{ 'FILEVIEW.WRITE_MSG' | translate }}" ng-model="t.comment.message" ng-enter="t.postComment($event, t.comment)"
-        ng-change="t.onCommentChanged(t.comment)" ng-focus="t.onFocused()" ng-esc="t.resetComment()">
-    </textarea>
+    <div class="textarea-container">
+        <a class="btn btn-chromeless pull-right" ng-click="t.createMark($event)"><i class="zmdi zmdi-photo-size-select-small"></i></a>
+        <a class="btn btn-chromeless pull-right" ng-click="t.toggleEmoticonPanel()"><i class="zmdi zmdi-mood" ng-show="!t.showEmoticonPanel"></i><i class="zmdi zmdi-chevron-down" ng-show="t.showEmoticonPanel"></i></a>
+        <div class="textarea textarea-editable" ng-bind-html="t.input" ng-enter="t.postComment($event, t.comment)" ng-focus="t.onFocused()"
+            ng-esc="t.onEscape()" contenteditable>
+        </div>
+    </div>
     <div class="toolbar" ng-show="t.focused && !t.selectedPanel">
-        <a class="btn btn-chromeless" ng-click="t.createMark($event)"><i class="zmdi zmdi-photo-size-select-small"></i></a>
-        <a class="btn btn-chromeless" ng-click="t.selectEmoticon($event)"><i class="zmdi zmdi-mood"></i></a>
-        <a class="btn btn-chromeless pull-right" ng-click="t.postRequest($event, t.comment)"><i class="zmdi zmdi-refresh"></i><span class="btn-label">Feedback anfragen</span></a>
+        <a class="btn btn-chromeless pull-right" ng-click="t.postRequest($event, t.comment)"><i class="zmdi zmdi-refresh"></i><span class="btn-label">Feedback anfordern</span></a>
     </div>
 </div>

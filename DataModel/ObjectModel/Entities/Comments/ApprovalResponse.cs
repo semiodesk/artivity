@@ -25,7 +25,6 @@
 //
 // Copyright (c) Semiodesk GmbH 2017
 
-using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
@@ -35,19 +34,12 @@ using System.Threading.Tasks;
 
 namespace Artivity.DataModel
 {
-    [RdfClass(ART.User)]
-    public class User : Person, IAccoutOwner
+    [RdfClass(ART.ApprovalResponse)]
+    public class ApprovalResponse : FeedbackResponse
     {
-        #region Members
-
-        [RdfProperty(FOAF.account), JsonIgnore] // TODO: Implement support for serializing lists to JSON in Trinity.
-        public List<OnlineAccount> Accounts { get; set; }
-
-        #endregion
-
         #region Constructors
 
-        public User(Uri uri) : base(uri) { }
+        public ApprovalResponse(Uri uri) : base(uri) {}
 
         #endregion
     }

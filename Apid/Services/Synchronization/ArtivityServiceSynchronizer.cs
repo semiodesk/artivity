@@ -90,7 +90,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="account">An authorized online account.</param>
         /// <returns><c>true</c> on success, <c>false</c> otherwise.</returns>
-        public IModelSynchronizationState TrySynchronize(Person user, OnlineAccount account)
+        public IModelSynchronizationState TrySynchronize(IAccoutOwner user, OnlineAccount account)
         {
             IArtivityServiceSynchronizationClient client = TryGetSynchronizationClient(account);
 
@@ -142,7 +142,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="account">An authorized online account.</param>
         /// <returns>A synchronization changeset on success.</returns>
-        private SynchronizationChangeset GetChangesetClient(Person user, OnlineAccount account, int remoteRevision)
+        private SynchronizationChangeset GetChangesetClient(IAccoutOwner user, OnlineAccount account, int remoteRevision)
         {
             // Get the current model synchronization state for the current user.
             IModelSynchronizationState state = _modelProvider.GetModelSynchronizationState(user);
@@ -182,11 +182,7 @@ namespace Artivity.Apid.Synchronization
                     item.ResourceType = resourceType;
                     item.Revision = revision;
 
-                    // Make sure projects are handled first
-                    if (resourceType == art.Project.Uri)
-                        result.AddFront(item);
-                    else
-                        result.Add(item);
+                    result.Add(item);
                 }
                 else
                 {
@@ -202,7 +198,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="account">An authorized online account.</param>
         /// <returns>A synchronization changeset on success.</returns>
-        private SynchronizationChangeset TryGetChangesetServer(Person user, OnlineAccount account, IArtivityServiceSynchronizationClient client)
+        private SynchronizationChangeset TryGetChangesetServer(IAccoutOwner user, OnlineAccount account, IArtivityServiceSynchronizationClient client)
         {
             Task<SynchronizationChangeset> changesetTask = client.TryGetChangesetAsync(user, account);
 
@@ -216,7 +212,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="changeset">A synchronization changeset.</param>
         /// <returns>The number of successfully executed actions. Equals the number of items in the changeset if all actions were successfully executed.</returns>
-        private bool TryExecuteChangeset(Person user, OnlineAccount account, SynchronizationChangeset changeset, IArtivityServiceSynchronizationClient client)
+        private bool TryExecuteChangeset(IAccoutOwner user, OnlineAccount account, SynchronizationChangeset changeset, IArtivityServiceSynchronizationClient client)
         {
             bool success = false;
 
@@ -234,7 +230,7 @@ namespace Artivity.Apid.Synchronization
                     {
                         case SynchronizationActionType.Pull:
                         {
-                            Task<bool> pullTask = client.TryPullAsync(account, item.ResourceUri, item.ResourceType, revision);
+                            Task<bool> pullTask = client.TryPullAsync(account, item.ResourceUri, item.ResourceType, revision, item.Context);
 
                             pullTask.Wait();
 
@@ -249,7 +245,7 @@ namespace Artivity.Apid.Synchronization
                         }
                         case SynchronizationActionType.Push:
                         {
-                            Task<bool> pushTask = client.TryPushAsync(account, item.ResourceUri, item.ResourceType, revision);
+                            Task<bool> pushTask = client.TryPushAsync(account, item.ResourceUri, item.ResourceType, revision, item.Context);
 
                             pushTask.Wait();
 

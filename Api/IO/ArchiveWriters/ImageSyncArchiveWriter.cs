@@ -87,7 +87,7 @@ namespace Artivity.Api.IO
             return new EntityRenderingInfo[]{};
         }
 
-        public IEnumerable<FileInfo> ListRenderings(Uri revisionUri)
+        public IEnumerable<FileInfo> GetLocalRenderings(Uri revisionUri)
         {
             IModel model = ModelProvider.GetActivities();
 
@@ -132,16 +132,14 @@ namespace Artivity.Api.IO
 
         protected override ISparqlQuery GetAgentsQuery(Uri revisionUri, DateTime minTime)
         {
+            // Note: We do not describe the agents because they are synced separately.
             ISparqlQuery query = new SparqlQuery(@"
                 DESCRIBE
-                    ?agent
                     ?association
                 WHERE
                 {
                     ?activity prov:generated | prov:used @revision .
                     ?activity prov:qualifiedAssociation ?association .
-
-                    ?association prov:agent ?agent .
 
                     @revision art:publish ""true""^^xsd:boolean_ .
                 }");
