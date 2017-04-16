@@ -12,26 +12,51 @@
 
     angular.module('app').controller('ProjectTabsDirectiveController', ProjectTabsDirectiveController);
 
-    ProjectTabsDirectiveController.$inject = ['$scope', '$uibModal', 'api', 'agentService', 'cookieService', 'selectionService', 'projectService'];
+    ProjectTabsDirectiveController.$inject = ['$scope', '$uibModal', '$timeout', 'api', 'agentService', 'cookieService', 'selectionService', 'projectService'];
 
-    function ProjectTabsDirectiveController($scope, $uibModal, api, agentService, cookieService, selectionService, projectService) {
+    function ProjectTabsDirectiveController($scope, $uibModal, $timeout, api, agentService, cookieService, selectionService, projectService) {
         var t = this;
 
         // PROJECTS
         t.projects = [];
         t.activeTab = cookieService.get('tabs.activeTab', 0);
 
+        t.addProject = function (e) {
+            if(e) {
+                e.preventDefault();
+            }
+            
+            projectService.create().then(function (result) {
+                var project = result;
+                project.new = true;
+                project.folder = null;
+                project.members = [];
+
+                $scope.$apply(function () {
+                    t.projects.push(project);
+                });
+
+                $timeout(function () {
+                    t.activeTab = t.projects.indexOf(project) + 2;
+                }, 0);
+            });
+        }
+
         t.closeProject = function (project) {
             projectService.currentProject = project;
 
-            var modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/dialogs/close-project-dialog/close-project-dialog.html',
-                controller: 'CloseProjectDialogController',
-                controllerAs: 't'
-            }).closed.then(function (account) {
-                t.refresh();
-            });
+            if (!project.new) {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/dialogs/close-project-dialog/close-project-dialog.html',
+                    controller: 'CloseProjectDialogController',
+                    controllerAs: 't'
+                }).closed.then(function (account) {
+                    t.projects.splice(t.projects.indexOf(project), 1);
+                });
+            } else {
+                t.projects.splice(t.projects.indexOf(project), 1);
+            }
         }
 
         t.getRecentlyUsedFiles = function (callback) {
@@ -102,8 +127,24 @@
                 $('.project-item').removeClass('drop-target');
             });
 
-            $scope.$on('projectAdded', function (project) {
-                t.refresh();
+            $scope.$on('selectProject', function (project) {
+                $timeout(function () {
+                    t.activeTab = 1 + t.projects.indexOf(project);
+                });
+            });
+
+            $scope.$on('addProject', function (project) {
+                t.projects.push(project);
+                t.activeTab = 1 + t.projects.indexOf(project);
+            });
+
+            $scope.$on('removeProject', function (project) {
+                var i = t.projects.indexOf(project);
+
+                if (i >= 0) {
+                    t.projects.splice(i, 1);
+                    t.activeTab = t.projects.indexOf(project) - 1;
+                }
             });
 
             t.refresh();

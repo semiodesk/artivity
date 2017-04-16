@@ -10,7 +10,13 @@
             <art-file-list onload="t.getFiles" clicked="t.viewFile" more-clicked="t.togglePropertyPane">
                 <empty>
                     <div class="text-center">
-                        <h3 style="margin-top: 5em;">Your recent files will appear here.</h3>
+                        <div style="opacity: .25; margin: 75px 0 50px 0;"><i class="zmdi zmdi-time-restore" style="font-size: 75px !important"></i></div>
+
+                        <!--<h3 style="margin-top: 5em;">Your recent files will appear here.</h3>-->
+                        <h3>Zuletzt verwendete Dateien</h3>
+
+                        Dateien die in folgeneden Programmen bearbeitet wurden erscheinen hier:
+                        <art-app-list class="pull-center"></art-app-list>
                     </div>
                 </empty>
             </art-file-list>
@@ -38,16 +44,13 @@
                     <label for="folder">Ordner</label>
                     <art-folder-picker folder="t.project.folder" changed="t.setFolder"></art-folder-picker>
                 </div>
-
+                <label for="members">Teilnehmer</label>
                 <div class="form-group">
-                    <label for="members">Teilnehmer</label>
-
                     <div>
                         <a class="btn btn-chromeless" ng-click="t.addMember()">
                             <i class="zmdi zmdi-lg zmdi-account-add"></i> <span class="btn-label">Teilnehmer hinzufügen</span>
                         </a>
                     </div>
-
                     <ul class="list-unstyled list-view">
                         <li class="list-item list-item-link" ng-repeat="member in t.project.members">
                             <div class="layout-container padding-x-xs padding-y-xs">
