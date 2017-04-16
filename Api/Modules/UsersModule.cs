@@ -123,13 +123,11 @@ namespace Artivity.Api.Modules
 
             Get["/photo"] = parameters =>
             {
-                InitializeRequest();
-
                 if (IsUri(Request.Query.agentUri))
                 {
                     UriRef agentUri = new UriRef(Request.Query.agentUri);
 
-                    return GetPersonPhoto(agentUri);
+                    return GetPersonPhoto(agentUri, Request.Query.user);
                 }
                 else
                 {
@@ -279,34 +277,12 @@ namespace Artivity.Api.Modules
             }
         }
 
-        private Response GetPersonPhoto(Uri agentUri)
+        private Response GetPersonPhoto(UriRef agentUri, string owner)
         {
-            try
-            {
-                string uri = FileNameEncoder.Encode(agentUri.AbsoluteUri);
-                string file = Path.Combine(PlatformProvider.AvatarsFolder, uri + ".jpg");
-
-                if (!File.Exists(file))
-                {
-                    return HttpStatusCode.NoContent;
-                }
-
-                FileStream fileStream = new FileStream(file, FileMode.Open);
-
-                StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
-                response.Headers["Allow-Control-Allow-Origin"] = "127.0.0.1";
-
-                return response.AsAttachment(file);
-            }
-            catch (IOException ex)
-            {
-                PlatformProvider.Logger.LogError(ex);
-
-                return HttpStatusCode.InternalServerError;
-            }
+            return PlatformProvider.GetPersonPhoto(agentUri, owner);
         }
 
-        private Response PutPersonPhoto(Uri agentUri, RequestStream stream)
+        private Response PutPersonPhoto(UriRef agentUri, RequestStream stream)
         {
             try
             {

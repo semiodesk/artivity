@@ -3,98 +3,168 @@
 
     function AppsSettingsDirective() {
         return {
-            scope: {},
+            restrict: 'E',
             templateUrl: 'app/directives/art-settings-apps/art-settings-apps.html',
-            controller: AppsSettingsDirectiveFormController
+            controller: AppsSettingsDirectiveFormController,
+            controllerAs: 't',
+            bindToController: true,
+            scope: {
+                'setup': '=?setup'
+            }
         }
     };
 
     angular.module('app').controller('AppsSettingsDirectiveFormController', AppsSettingsDirectiveFormController);
 
-    AppsSettingsDirectiveFormController.$inject = ['$scope', 'api', 'settingsService'];
+    AppsSettingsDirectiveFormController.$inject = ['$scope', '$element', '$timeout', 'api', 'settingsService'];
 
-    function AppsSettingsDirectiveFormController($scope, api, settingsService) {
+    function AppsSettingsDirectiveFormController($scope, $element, $timeout, api, settingsService) {
         var t = this;
-        var s = $scope;
 
-        if (settingsService) {
-            // Register the controller with its parent for global apply/cancel.
-            settingsService.registerController(t);
-        }
+        t.initalized = false;
+        t.ready = false;
+        t.loading = false;
 
-        s.agents = [];
+        // APPS
+        t.agents = [];
 
-        s.hasError = false;
-        s.errorType = '';
-        s.errorMessage = '';
+        t.toggleInstall = function (agent, e) {
+            if (e) {
+                // Do not trigger collapsing the accordion panel body.
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
 
-        s.toggleInstall = function (agent) {
             if (agent.pluginInstalled) {
-                api.installAgent(agent.uri).then(function (response) {
-                    agent.pluginInstalled = response.success;
-
-                    s.hasError = !response.success;
-                    s.errorType = response.error.data.type;
-                    s.errorMessage = response.error.data.message;
-                });
+                t.installAgent(agent);
             } else {
-                api.uninstallAgent(agent.uri).then(function (response) {
-                    agent.pluginInstalled = !response.success;
-
-                    s.hasError = !response.success;
-                    s.errorType = response.error.data.type;
-                    s.errorMessage = response.error.data.message;
-                });
+                t.uninstallAgent(agent);
             }
         };
 
-        s.reload = function () {
-            s.hasError = false;
+        t.loadAgents = function () {
+            t.loading = true;
 
             api.getAgents().then(function (data) {
-                s.agents = [];
+                var agents = [];
 
                 for (var i = 0; i < data.length; i++) {
-                    var agent = data[i];
+                    var plugin = data[i];
 
-                    if (agent.IsSoftwareInstalled) {
-                        s.agents.push({
-                            uri: agent.Manifest.AgentUri,
-                            name: agent.Manifest.DisplayName,
-                            color: agent.Manifest.DefaultColor,
-                            associationUri: agent.AssociationUri,
-                            iconSrc: api.getAgentIconUrl(agent.Manifest.AgentUri),
-                            softwareInstalled: agent.IsSoftwareInstalled,
-                            softwareVersion: agent.DetectedVersions.join(),
-                            pluginInstalled: agent.IsPluginInstalled,
-                            pluginVersion: agent.Manifest.PluginVersion,
-                            pluginEnabled: agent.IsPluginEnabled
-                        });
+                    var agent = {
+                        uri: plugin.Manifest.AgentUri,
+                        name: plugin.Manifest.DisplayName,
+                        color: plugin.Manifest.DefaultColor,
+                        associationUri: plugin.AssociationUri,
+                        iconSrc: api.getAgentIconUrl(plugin.Manifest.AgentUri),
+                        softwareInstalled: plugin.IsSoftwareInstalled,
+                        softwareVersion: plugin.DetectedVersions.join(),
+                        pluginInstalled: plugin.IsPluginInstalled,
+                        pluginVersion: plugin.Manifest.PluginVersion,
+                        pluginEnabled: plugin.IsPluginEnabled,
+                        autoInstall: plugin.Manifest.AutoInstall,
+                        hasError: false
+                    };
+
+                    if (t.setup && agent.softwareInstalled && !agent.pluginInstalled && agent.autoInstall) {
+                        t.installAgent(agent);
+                    }
+
+                    if (agent.softwareInstalled) {
+                        agents.push(agent);
                     }
                 }
 
-                s.agents.sort(function (a, b) {
+                agents.sort(function (a, b) {
                     return a.name.localeCompare(b.name);
                 });
 
+                t.agents = agents;
+
                 // This somehow started throwing errors after i added the project list ~ Mo
-                if (s.form != undefined)
-                    s.form.$setPristine();
+                if ($scope.appsForm.form != undefined) {
+                    $scope.appsForm.$setPristine();
+                }
+
+                t.ready = t.hasInstalledAgents();
+                t.loading = false;
+            });
+
+            if (!t.initalized) {
+                t.initalized = true;
+            }
+        };
+
+        t.hasInstalledAgents = function () {
+            for (i = 0; i < t.agents.length; i++) {
+                var agent = t.agents[i];
+
+                // Editing software is installed automatically.
+                if (agent.autoInstall && agent.pluginInstalled) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        t.installAgent = function (agent) {
+            api.installAgent(agent.uri).then(function (response) {
+                agent.pluginInstalled = response.success;
+
+                agent.hasError = !response.success;
+
+                if (agent.hasError) {
+                    agent.errorType = response.error.data.type;
+                    agent.errorMessage = response.error.data.message;
+                }
+
+                t.ready = t.hasInstalledAgents();
             });
         }
 
-        s.reload();
+        t.uninstallAgent = function (agent) {
+            api.uninstallAgent(agent.uri).then(function (response) {
+                agent.pluginInstalled = !response.success;
+
+                agent.hasError = !response.success;
+
+                if (agent.hasError) {
+                    agent.errorType = response.error.data.type;
+                    agent.errorMessage = response.error.data.message;
+                }
+
+                t.ready = t.hasInstalledAgents();
+            });
+        }
+
+        t.reload = function () {
+            t.loadAgents();
+        }
 
         t.submit = function () {
-            if (s.agents.length > 0) {
+            if (t.agents.length > 0) {
                 console.log("Submitting Apps");
 
-                api.setAgents(s.agents);
+                api.setAgents(t.agents);
             }
         };
 
         t.reset = function () {
-            s.form.reset();
+            $scope.appsForm.reset();
         };
+
+        t.$onInit = function () {
+            // Register the controller with its parent for global apply/cancel.
+            settingsService.registerController(t);
+        }
+
+        t.$postLink = function () {
+            $element.on('appear', function () {
+                if (!t.initalized) {
+                    t.loadAgents();
+                }
+            });
+        }
     };
 })();

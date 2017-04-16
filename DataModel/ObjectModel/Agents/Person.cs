@@ -74,13 +74,8 @@ namespace Artivity.DataModel
             }
         }
 
-        [RdfProperty(DCES.identifier), JsonIgnore]
-        private string _id { get; set; }
-
-        public string Id
-        {
-            get { return _id; }
-        }
+        [RdfProperty(DCES.identifier)]
+        public string Id { get; set; }
 
         [RdfProperty(FOAF.mbox), NotifyPropertyChanged]
         public string EmailAddress { get; set; }
@@ -127,9 +122,9 @@ namespace Artivity.DataModel
 
         public override void Commit()
         {
-            if(string.IsNullOrEmpty(_id) && !string.IsNullOrEmpty(EmailAddress))
+            if(string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(EmailAddress))
             {
-                _id = EmailAddress.GetHashString();
+                Id = EmailAddress.GetHashString();
             }
 
             base.Commit();

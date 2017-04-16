@@ -23,7 +23,6 @@
 		}
 
 		return {
-
 			get: function(url, config){
 				return $http.get(url, config);
 			},
@@ -36,7 +35,6 @@
 			delete: function(url, config){
 				return $http.delete(url, config);
 			},
-
 			getAccounts: function () { // +publish-file-controller +art-settings-accounts
 				return $http.get(endpoint + '/accounts').then(
 					function (response) {

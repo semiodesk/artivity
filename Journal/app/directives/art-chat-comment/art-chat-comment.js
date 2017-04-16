@@ -21,6 +21,9 @@
     function ChatCommentDirectiveController($scope, $element, agentService, commentService, formattingService, viewerService) {
         var t = this;
 
+        // AGENTS
+        t.getPhotoUrl = agentService.getPhotoUrl;
+
         // FORMATTING
         t.getFormattedTime = formattingService.getFormattedTime;
         t.getFormattedDate = formattingService.getFormattedDate;
@@ -84,13 +87,11 @@
 
                 t.responses = [];
 
-                console.log(t.comment.message);
-
                 if (t.isRequest) {
                     commentService.getCommentsForPrimarySource(t.comment.uri).then(function (data) {
                         t.responses = data;
 
-                        t.enableResponse = !t.hasResponded();
+                        t.enableResponse = !t.isUser && !t.hasResponded();
                     });
                 }
             }

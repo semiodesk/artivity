@@ -155,7 +155,7 @@ namespace Artivity.Apid.Synchronization
                 SELECT DISTINCT ?resource ?resourceType ?revision WHERE
                 {
                     ?resource a ?resourceType ; arts:synchronizationState [
-                        arts:lastRemoteRevision ?revision
+                        arts:lastLocalRevision ?revision
                     ] .
 
                     FILTER(?revision = @undefined || ?revision > @revision)

@@ -97,8 +97,13 @@
 
         function getPhotoUrl(agentUri) {
             var uri = encodeURIComponent(agentUri);
+            var url = endpoint + '/users/photo?agentUri=' + uri;
 
-            return endpoint + '/users/photo?agentUri=' + uri;
+            if(t.currentUser && t.currentUser.UserName) {
+                url += '&user=' + t.currentUser.UserName;
+            }
+
+            return  url;
         }
 
         function findPersons(query) {

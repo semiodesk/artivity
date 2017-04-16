@@ -49,6 +49,7 @@ namespace Artivity.DataModel
         public Comment(Uri uri)
             : base(uri)
         {
+            IsSynchronizable = true;
         }
 
         #endregion

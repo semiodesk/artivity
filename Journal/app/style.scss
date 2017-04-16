@@ -63,6 +63,7 @@ $editorBorderColor: darken($editorBackgroundColor, 25%);
 
 html,
 body {
+	font-size: 14px;
 	height: 100%; // Make the body fill the browser window.
 	width: 100%;
 	/*
@@ -72,7 +73,8 @@ body {
 }
 
 h1 {
-	font-size: 2em;
+	font-size: 3em;
+	font-weight: 200;
 	margin-bottom: .5em;
 }
 
@@ -125,6 +127,11 @@ a.link {
 	cursor: pointer;
 }
 
+a[target="_blank"],
+a.link-external {
+	text-decoration: underline;
+}
+
 a.title {
 	font-weight: 500;
 }
@@ -152,6 +159,12 @@ iframe {
 .pull-center {
 	margin-left: auto;
 	margin-right: auto;
+}
+
+.position-center {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
 }
 
 .accent-fill {
@@ -242,6 +255,12 @@ iframe {
 	border-bottom-color: $tooltipBackgroundColor;
 }
 
+.grayscale {
+	-webkit-filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	filter: grayscale(100%);
+}
+
 textarea.disabled,
 input.disabled,
 .btn.disabled {
@@ -261,7 +280,7 @@ input[type="text"][readonly]:focus {
 
 .btn-default {
 	border: none !important;
-	border-radius: 1px;
+	border-radius: 3px;
 	background: $buttonBackgroundColor;
 	color: $labelTextColor;
 	padding: 7px 10px;
@@ -279,13 +298,13 @@ input[type="text"][readonly]:focus {
 
 .btn {
 	border: none;
-	border-radius: 1px;
+	border-radius: 3px;
 	background: $buttonBackgroundColor;
 	color: $labelTextColor;
 	margin: 0;
-	border-radius: 0;
 	-webkit-box-shadow: none;
 	box-shadow: none;
+	@include transitionEaseInOutCubic(background, 300ms);
 }
 
 .btn.padding-sm {
@@ -317,11 +336,12 @@ button:focus,
 }
 
 .btn-success {
-	color: $accentTextColor !important;
-	background: $accentColor !important;
+	color: $headerTextColor !important;
+	background: $headerBackgroundColor !important;
 	border: none;
 	transition: all linear .2s;
 	text-shadow: none;
+	padding: 10px 15px;
 }
 
 .btn-success:hover {
@@ -607,6 +627,80 @@ button:focus,
 	text-align: center;
 }
 
+/* ACCODRION */
+.panel-accordion > .panel-group > .panel {
+	background: transparent;
+	border-radius: 0;
+	box-shadow: none;
+	padding: 0;
+}
+
+.panel-accordion > .panel-group > .panel > .panel-title a {
+	margin: 0;
+	padding: 10px;
+}
+
+.panel-accordion > .panel-group a:focus {
+	text-decoration: none !important;
+}
+
+.panel-accordion > .panel-group > .panel > .panel-heading {
+	background: transparent;
+	border: none;
+	border-top: 1px solid $itemBackgroundColor;
+	padding: 0;
+}
+
+.panel-accordion > .panel-group > .panel > .panel-heading:hover {
+	background: $itemBackgroundColor;
+}
+
+.panel-accordion > .panel-group .panel-heading + .panel-collapse > .panel-body {
+	border: none !important;
+	border-top: none !important;
+	padding: 5px 15px;
+	@include transitionEaseInOutCubic(all, 400ms);
+}
+
+.panel-accordion > .panel-group .panel + .panel {
+	margin-top: 0;
+}
+
+.toggle-group .zmdi {
+	font-size: 20px !important;
+}
+
+.toggle-group .btn {
+	border-radius: 0;
+}
+
+.toggle-group .btn.toggle-handle {
+	background: darken($windowBackgroundColor, 10%);
+	padding: 7px 5px;
+	border-radius: 0;
+}
+
+.toggle-group .btn.toggle-on {
+	color: $headerTextColor !important;
+	background: $headerBackgroundColor;
+	text-shadow: none;
+}
+
+.toggle-group .btn.toggle-off {
+	color: $labelTextColor !important;
+	box-shadow: none;
+	text-shadow: none;
+	-webkit-box-shadow: none;
+}
+
+/* BOXES */
+.box-default {
+	background: $itemBackgroundColor;
+	padding: 10px;
+}
+
+/* LIST VIEW */
+
 .list-view {
 	list-style: none;
 	padding: 0;
@@ -682,12 +776,6 @@ button:focus,
 	width: 100%;
 }
 
-.list-item .col.disabled {
-	-webkit-filter: grayscale(100%);
-	-moz-filter: grayscale(100%);
-	filter: grayscale(100%);
-}
-
 .list-item .col-icn {
 	vertical-align: middle;
 	text-align: center;
@@ -713,10 +801,17 @@ button:focus,
 }
 
 .label,
-.text-label {
-	font-size: 1.1em;
+.label-default,
+.text-label,
+.icn-label {
+	font-size: 14px;
 	font-weight: normal;
 	color: $labelTextColor;
+	background: transparent;
+}
+
+.icn-label {
+	margin-left: 7px;
 }
 
 .icn {
@@ -791,7 +886,7 @@ h4 {
 
 .header {
 	background: $toolbarBackgroundColor;
-	color: lighten($labelTextColor, 10%) !important;
+	color: $headerTextColor !important;
 	padding: 3em 0;
 }
 
@@ -824,7 +919,6 @@ h4 {
 	height: $toolbarHeight;
 	line-height: $toolbarHeight;
 }
-
 
 /* BODY */
 
@@ -1062,6 +1156,14 @@ h4 {
 	width: 100%;
 }
 
+.table-cell {
+	display: table-cell;
+}
+
+.table-cell.expand {
+	width: 100%;
+}
+
 .scroll-container {
 	position: relative;
 	display: block;
@@ -1094,13 +1196,11 @@ h4 {
 }
 
 ::-webkit-scrollbar-thumb {
-	background: $headerBackgroundColor;
-	border: 2px solid $windowBackgroundColor;
-	border-radius: 3px;
+	background: darken($itemBackgroundColor, 10%);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: lighten($headerBackgroundColor, 10%);
+	background: lighten($itemBackgroundColor, 10%);
 }
 
 .padding-x-none {
@@ -1270,7 +1370,8 @@ h4 {
 }
 
 .toolbar .txt-title {
-	font-weight: 500;
+	font-weight: 400;
+	color: rgba($headerTextColor, .7);
 }
 
 .toolbar-header .btn {
@@ -1548,6 +1649,8 @@ svg {
 	overflow: hidden;
 	padding: 0;
 	margin: 0;
+	width: 30px;
+	height: 30px;
 }
 
 .btn-avatar .placeholder {
@@ -1792,6 +1895,14 @@ select.form-control:focus {
 	outline: none;
 }
 
+div[contenteditable] {
+	white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+}
+
 .modal-dialog {
 	width: 700px;
 	margin-top: $windowTitlebarHeight;
@@ -1890,7 +2001,7 @@ button[disabled],
 button[disabled]:hover {
 	opacity: 1 !important;
 	background: $buttonBackgroundColor !important;
-	color: $windowBackgroundColor !important;
+	color: $textColor !important;
 	cursor: default;
 }
 
@@ -2242,7 +2353,7 @@ $userCommentBackgroundColor: rgba($textColor,
 	left: 0;
 	right: 0;
 	padding: 0;
-	margin: 0 0 0 10px;
+	margin: 0 2px 0 10px;
 	max-height: 100%;
 }
 
@@ -2279,16 +2390,16 @@ $userCommentBackgroundColor: rgba($textColor,
 .comment-list .comment .comment-avatar {
 	position: absolute;
 	left: 0;
-	top: -1px;
+	top: 5px;
 	border-radius: 50%;
-	width: 28px;
-	height: 28px;
+	width: 32px;
+	height: 32px;
 	overflow: hidden;
 }
 
 .comment-list .comment .comment-avatar img {
-	width: 28px;
-	height: 28px;
+	width: 32px;
+	height: 32px;
 }
 
 .comment-list .comment .comment-bubble {
@@ -2304,7 +2415,7 @@ $userCommentBackgroundColor: rgba($textColor,
 
 .comment-list .comment .comment-time {
 	position: absolute;
-	top: 15px;
+	top: 18px;
 	right: 2px;
 	padding: 0;
 }
@@ -2332,7 +2443,7 @@ $userCommentBackgroundColor: rgba($textColor,
 	background: $commentBackgroundColor;
 	word-wrap: break-word;
 	text-overflow: ellipsis;
-	border-radius: 5px 0 5px 5px;
+	border-radius: 0 5px 5px 5px;
 }
 
 .comment-list .comment .bubble-content .icon {
@@ -2440,6 +2551,12 @@ $userCommentBackgroundColor: rgba($textColor,
 	@include transitionEaseInOutCubic(height, 200ms);
 }
 
+.ctl-comment .textarea-placeholder {
+	float: left;
+	padding: 10px;
+	line-height: 1.3em;
+}
+
 .ctl-comment .textarea:focus {
 	outline: none;
 }
@@ -2506,24 +2623,27 @@ $userCommentBackgroundColor: rgba($textColor,
 	width: 300px;
 }
 
+.textarea-placeholder,
+.label-placeholder {
+	color: $labelTextColor;
+}
+
+.textarea-placeholder,
 .label-placeholder,
 .ctl-search input[type="text"]::-webkit-input-placeholder {
 	font-style: italic;
 }
 
-.label-placeholder,
 .ctl-search input[type="text"]:-moz-placeholder {
 	font-style: italic;
 	opacity: 1;
 }
 
-.label-placeholder,
 .ctl-search input[type="text"]::-moz-placeholder {
 	font-style: italic;
 	opacity: 1;
 }
 
-.label-placeholder,
 .ctl-search input[type="text"]:-ms-input-placeholder {
 	font-style: italic;
 }
@@ -2822,12 +2942,16 @@ $userCommentBackgroundColor: rgba($textColor,
 }
 
 .spinner.connecting>div {
-	background-color: white;
+	background-color: $textColor;
 	height: 100%;
 	width: 4px;
 	display: inline-block;
 	-webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
 	animation: sk-stretchdelay 1.2s infinite ease-in-out;
+}
+
+.modal-dialog .spinner.connecting>div {
+	background-color: white;
 }
 
 .spinner.connecting .rect2 {
@@ -3090,6 +3214,7 @@ iframe {
 
 .window-title-btns {
 	-webkit-app-region: no-drag;
+	color: $headerTextColor;
 }
 
 .window-title-btns .btn-title {
@@ -3212,6 +3337,13 @@ iframe {
 .window-title-btns #btn-update.disabled {
 	opacity: 0 !important;
 	cursor: default;
+}
+
+.window-title-container .loader.loader-xs {
+	border-top: 2px solid rgba($headerTextColor, 0.2);
+	border-right: 2px solid rgba($headerTextColor, 0.2);
+	border-bottom: 2px solid rgba($headerTextColor, 0.2);
+	border-left: 2px solid $headerTextColor;
 }
 
 #window-view-container {

@@ -45,9 +45,30 @@
         // COMMENT
         t.comment = new Comment();
 
+        t.postChanged = function (e) {
+            // Set the comment start time.
+            if (!t.comment.startTime) {
+                t.comment.startTime = new Date();
+            }
+
+            if (t.inputElement) {
+                t.comment.message = toUnicode(t.inputElement.html());
+
+                t.hasInput = t.comment.message.length;
+            }
+        }
+
         t.postComment = function (e, comment) {
+            if (!comment.startTime) {
+                comment.startTime = new Date();
+            }
+
             if (!comment.endTime) {
                 comment.endTime = new Date();
+            }
+
+            if (comment.message.length === 0 && t.input) {
+                comment.message = toUnicode(t.inputElement.html());
             }
 
             if (comment.validate()) {
@@ -61,7 +82,7 @@
 
                     t.resetComment();
 
-                    if(t.showEmoticonPanel) {
+                    if (t.showEmoticonPanel) {
                         t.toggleEmoticonPanel();
                     }
                 }, function (response) {
@@ -73,8 +94,16 @@
         }
 
         t.postRequest = function (e, request) {
+            if (!request.startTime) {
+                request.startTime = new Date();
+            }
+
             if (!request.endTime) {
                 request.endTime = new Date();
+            }
+
+            if (request.message.length === 0 && t.input) {
+                request.message = toUnicode(t.inputElement.html());
             }
 
             if (request.validate()) {
@@ -83,7 +112,7 @@
                 for (i = 0; i < t.members.length; i++) {
                     var association = {
                         agent: t.members[i].Agent.Uri,
-                        role: t.members[i].RoleUri
+                        role: t.members[i].Role.Uri
                     }
 
                     request.associations.push(association);
@@ -111,7 +140,10 @@
         t.resetComment = function (clearText) {
             t.comment = new Comment();
             t.comment.agent = agentService.currentUser.Uri;
+            t.comment.agentId = agentService.currentUser.Id;
             t.comment.primarySource = t.entityUri;
+
+            t.input = '';
 
             console.log("Reset comment: ", t.comment);
         }
@@ -173,8 +205,8 @@
 
         // TOOLS
         t.createMark = function (e) {
-            if (comment) {
-                viewerService.createMark(comment);
+            if (t.comment) {
+                viewerService.createMark(t.comment);
             }
         }
 
@@ -239,6 +271,8 @@
 
                     t.members = members;
                 });
+            } else {
+                console.warn('Current project undefined: requests disabled.');
             }
         }
 
@@ -247,24 +281,9 @@
                 t.resetComment();
             });
 
-            $scope.$watch('t.comment', function (e) {
-                t.input = t.comment.message;
-            });
-
-            t.inputElement = $('.textarea.textarea-editable');
+            t.inputElement = $element.find('.textarea.textarea-editable');
 
             if (t.inputElement) {
-                $scope.$watch('t.input', function () {
-                    // Set the comment start time.
-                    if (!t.comment.startTime) {
-                        t.comment.startTime = new Date();
-                    }
-
-                    t.comment.message = toUnicode(t.inputElement.html());
-
-                    t.hasInput = t.comment.message.length;
-                });
-
                 t.inputElement.on('keydown', function (e) {
                     var keyCode = e.keyCode || e.which;
 
@@ -292,8 +311,10 @@
                 $scope.$on('emoticonSelected', function (e, unicode) {
                     var html = sanitizeHtml(t.inputElement.html() + emojione.toImage(unicode));
 
-                    // Sanitize the input and replace ASCII smileys.
-                    t.input = $sce.trustAsHtml(html);
+                    if (html != t.inputElement.html()) {
+                        // Sanitize the input and replace ASCII smileys.
+                        t.input = $sce.trustAsHtml(html);
+                    }
                 });
             }
         }

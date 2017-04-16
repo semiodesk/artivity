@@ -154,6 +154,7 @@ namespace Artivity.Api.Modules
                 SELECT
 	                ?type
 	                ?uri
+                    ?agent
                     ?agentId
 	                ?message
 	                ?primarySource
@@ -169,14 +170,14 @@ namespace Artivity.Api.Modules
 
                     ?agent dces:identifier ?agentId .
 
-	                ?uri a ?t ;
+	                ?uri a ?type_ ;
 		                prov:hadPrimarySource @entity;
 		                nie:created ?time ;
 		                art:deleted @undefined;
 		                sioc:content ?message .
 	
 	                BIND(@entity AS ?primarySource)
-	                BIND(STRAFTER(STR(?t) , STR(art:)) AS ?type)
+	                BIND(STRAFTER(STR(?type_) , STR(art:)) AS ?type)
 	
 	                OPTIONAL
 	                {
@@ -185,7 +186,7 @@ namespace Artivity.Api.Modules
 		                BIND(CONCAT('{{agent: \'', STR(?a),'\', role: \'', STR(?r), '\'}}') AS ?association_)
 	                }
                 }
-                GROUP BY ?type ?uri ?agentId ?message ?primarySource ?startTime ?endTime
+                GROUP BY ?type ?uri ?agent ?agentId ?message ?primarySource ?startTime ?endTime
                 ORDER BY DESC (?endTime)
             ");
 
@@ -221,7 +222,6 @@ namespace Artivity.Api.Modules
                 comment.CreationTimeUtc = parameter.endTime;
                 comment.PrimarySource = primarySource;
                 comment.Message = parameter.message;
-                comment.IsSynchronizable = true;
                 comment.Commit();
 
                 CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());

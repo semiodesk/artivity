@@ -43,9 +43,10 @@ namespace Artivity.DataModel
         [RdfProperty(ART.agent)]
         public Person Agent { get; set; }
 
-        [RdfProperty(ART.hasRole), JsonIgnore]
+        [RdfProperty(ART.hasRole)]
         public Role Role { get; set; }
 
+        [JsonIgnore]
         public Uri RoleUri
         {
             get { return Role != null ? Role.Uri : null; }

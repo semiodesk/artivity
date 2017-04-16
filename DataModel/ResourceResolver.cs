@@ -18,23 +18,37 @@ namespace Artivity.DataModel
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);
 
-            if (property.DeclaringType == typeof(Artivity.DataModel.Entity) && property.PropertyName == "RevisionUris")
+            switch (property.PropertyName)
             {
-                property.Ignored = true;
-            }
+                case "RevisionUris":
+                {
+                    if(property.DeclaringType == typeof(Entity))
+                    {
+                        property.Ignored = true;
+                    }
+                    break;
+                }
+                case "Uri":
+                {
+                    if (property.DeclaringType == typeof(IModel))
+                    {
+                        property.Ignored = true;
+                        property.Readable = false;
+                        property.ShouldDeserialize = instanceOfProblematic => false;
+                    }
+                    break;
+                }
+                case "Model":
+                {
+                    if(property.DeclaringType == typeof(Resource))
+                    {
+                        property.Ignored = true;
+                        property.Readable = false;
+                        property.ShouldDeserialize = instanceOfProblematic => false;
+                    }
 
-            if (property.DeclaringType == typeof(Resource) && property.PropertyName == "Model")
-            {
-                property.Ignored = true;
-                property.Readable = false;
-                property.ShouldDeserialize = instanceOfProblematic => false;
-            }
-
-            if (property.DeclaringType == typeof(IModel) && property.PropertyName == "Uri")
-            {
-                property.Ignored = true;
-                property.Readable = false;
-                property.ShouldDeserialize = instanceOfProblematic => false;
+                    break;
+                }
             }
 
             return property;

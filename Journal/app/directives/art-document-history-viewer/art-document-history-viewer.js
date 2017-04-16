@@ -57,8 +57,6 @@
             t.viewer = new DocumentHistoryViewer(agentService.currentUser, canvas, api.getRenderingUrl(revisionUri));
             t.viewer.addCommand(new PanCommand(t.viewer));
 
-            $scope.$broadcast('viewerInitialized', t.viewer);
-
             viewerService.viewer(t.viewer);
 
             // Handle the resize of UI panes.

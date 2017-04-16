@@ -42,8 +42,6 @@ namespace Artivity.DataModel
     {
         #region Members
 
-        public bool IsSynchronizable { get; set; }
-
         [RdfProperty(NIE.created)]
         public DateTime CreationTimeUtc { get; set; }
 
@@ -52,6 +50,8 @@ namespace Artivity.DataModel
 
         [RdfProperty(ART.deleted)]
         public DateTime DeletionTimeUtc { get; set; }
+
+        public bool IsSynchronizable { get; set; }
 
         [RdfProperty(ARTS.synchronizationState), JsonIgnore]
         public ResourceSynchronizationState SynchronizationState { get; set; }
@@ -73,6 +73,9 @@ namespace Artivity.DataModel
             ResourceResolver resolver = new ResourceResolver();
             resolver.IngoreTypes = new Type[] { typeof(Activity) };
 
+            // Note: If you are having issues where JSON.NET cannot find a public default 
+            // constructor or one parameterized constructor, then you are probably having 
+            // more than one parameterized constructor.
             JsonSerializerSettings settings = new JsonSerializerSettings();
             settings.ContractResolver = resolver;
 
@@ -84,58 +87,69 @@ namespace Artivity.DataModel
             Commit(-1);
         }
 
-        public void Commit(int revision)
+        public void Commit(int localRevision, int remoteRevision = -1)
         {
-            if (IsNew || CreationTimeUtc == DateTime.MinValue)
+            if (this.Model != null)
             {
-                CreationTimeUtc = DateTime.UtcNow;
-                DeletionTimeUtc = DateTime.MinValue;
-            }
-
-            ModificationTimeUtc = DateTime.UtcNow;
-
-            bool error = false;
-
-            if (IsSynchronizable)
-            {
-                ResourceSynchronizationState state = null;
-
-                try
+                if (IsNew || CreationTimeUtc == DateTime.MinValue)
                 {
-                    // This will get the sync state from the resource. If there exists more than one, which 
-                    // may occasionally happen when syncing with Artivity Online. This will throw an exception.
-                    state = SynchronizationState;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Exception when trying to access sync state of: {0}", Uri);
-
-                    error = true;
-
-                    // 1. Delete all resource synchronization states.
-                    DeleteSynchronizationStates();
-
-                    // 2. Create a clean synchronization state and set it.
-                    state = Model.CreateResource<ResourceSynchronizationState>();
-
-                    SynchronizationState = state;
+                    CreationTimeUtc = DateTime.UtcNow;
+                    DeletionTimeUtc = DateTime.MinValue;
                 }
 
-                if (state != null)
+                ModificationTimeUtc = DateTime.UtcNow;
+
+                bool error = false;
+
+                if (IsSynchronizable)
                 {
-                    // The resource is flagged as modified. The account synchronizer will update 
-                    // the last update counter and the flag when the resource was successfully uploaded.
-                    state.LastRemoteRevision = revision;
-                    state.Commit();
+                    ResourceSynchronizationState state = null;
+
+                    try
+                    {
+                        // This will get the sync state from the resource. If there exists more than one, which 
+                        // may occasionally happen when syncing with Artivity Online. This will throw an exception.
+                        state = SynchronizationState;
+
+                        if (state == null)
+                        {
+                            state = Model.CreateResource<ResourceSynchronizationState>();
+
+                            SynchronizationState = state;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Exception when trying to access sync state of: {0}", Uri);
+
+                        error = true;
+
+                        // 1. Delete all resource synchronization states.
+                        DeleteSynchronizationStates();
+
+                        // 2. Create a clean synchronization state and set it.
+                        state = Model.CreateResource<ResourceSynchronizationState>();
+
+                        SynchronizationState = state;
+                    }
+
+                    if (state != null)
+                    {
+                        // The resource is flagged as modified. The account synchronizer will update 
+                        // the last update counter and the flag when the resource was successfully uploaded.
+                        state.LastRemoteRevision = remoteRevision;
+                        state.LastLocalRevision = localRevision;
+                        state.Commit();
+                    }
                 }
-            }
 
-            base.Commit();
+                base.Commit();
 
-            if(error)
-            {
-                // After commit, reload the ResourceCache for the mapped properties and fill it with the sanitized values.
-                base.Rollback();
+                if (error)
+                {
+                    // After commit, reload the ResourceCache for the mapped properties and fill it with the sanitized values.
+                    base.Rollback();
+                }
             }
         }
 

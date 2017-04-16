@@ -3,7 +3,9 @@
 
 <head>
 	<title>Artivity</title>
+
 	<meta name="viewport" content="width=device-width,initial-scale=1">
+
 	<!-- bower:css -->
 	<link rel="stylesheet" href="bower_components/font-roboto/dist/styles/roboto.css" />
 	<link rel="stylesheet" href="bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" />
@@ -11,7 +13,7 @@
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css" />
-	<link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" />
+	<link rel="stylesheet" href="bower_components/angular-bootstrap-toggle/dist/angular-bootstrap-toggle.min.css" />
 	<link rel="stylesheet" href="bower_components/angular-hotkeys/build/hotkeys.css" />
 	<link rel="stylesheet" href="bower_components/angular-ui-layout/src/ui-layout.css" />
 	<link rel="stylesheet" href="bower_components/emojione/assets/css/emojione.css" />
@@ -35,10 +37,10 @@
 	<script src="bower_components/base64/base64.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 	<script src="bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script>
-	<script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
 	<script src="bower_components/d3/d3.js"></script>
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+	<script src="bower_components/angular-bootstrap-toggle/dist/angular-bootstrap-toggle.min.js"></script>
 	<script src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
 	<script src="bower_components/angular-hotkeys/build/hotkeys.js"></script>
 	<script src="bower_components/angular-input-modified/dist/angular-input-modified.js"></script>
@@ -51,8 +53,6 @@
 	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
 	<script src="bower_components/emojione/lib/js/emojione.js"></script>
 	<script src="bower_components/angular-emojione/angular-emojione.js"></script>
-	<script src="bower_components/jquery-textcomplete/dist/jquery.textcomplete.js"></script>
-	<script src="bower_components/emojionearea/dist/emojionearea.js"></script>
 	<script src="bower_components/moment-duration-format/lib/moment-duration-format.js"></script>
 	<script src="bower_components/EaselJS/lib/easeljs-0.8.2.combined.js"></script>
 	<script src="bower_components/yasgui/dist/yasgui.bundled.min.js"></script>
@@ -152,9 +152,12 @@
 	<script type="text/javascript" src="app/directives/art-user-menu/art-user-menu.js"></script>
 	<script type="text/javascript" src="app/directives/art-user-photo-img/art-user-photo-img.js"></script>
 	<script type="text/javascript" src="app/directives/art-window-controls/art-window-controls.js"></script>
+	<script type="text/javascript" src="app/directives/arto-settings-user/arto-settings-user.js"></script>
 	<script type="text/javascript" src="app/directives/bs-switch/bs-switch.js"></script>
+	<script type="text/javascript" src="app/directives/contenteditable/contenteditable.js"></script>
 	<script type="text/javascript" src="app/directives/ng-dropzone/ng-dropzone.js"></script>
 	<script type="text/javascript" src="app/directives/ng-enter/ng-enter.js"></script>
+	<script type="text/javascript" src="app/directives/ng-error-src/ng-error-src.js"></script>
 	<script type="text/javascript" src="app/directives/ng-esc/ng-esc.js"></script>
 	<script type="text/javascript" src="app/dialogs/add-account-dialog/add-account-dialog.controller.js"></script>
 	<script type="text/javascript" src="app/dialogs/close-project-dialog/close-project-dialog.controller.js"></script>
@@ -179,19 +182,19 @@
 <body id="window">
 	<div art-keyboard-input-handler></div>
 	<div class="layout-root">
-		<div id="window-title">
+		<div class="window-title-container" id="window-title">
+			<div class="window-title-btns pull-left">
+				<button class="btn-title btn-info" id="btn-sync"><art-sync-indicator></art-sync-indicator></button>
+			</div>
 			<div art-window-controls></div>
 			<div class="window-title-btns pull-right">
 				<button class="btn-title btn-info" id="btn-update"><art-update-indicator></art-update-indicator></button>
-			</div>
-			<div class="window-title-btns pull-right">
-				<button class="btn-title btn-info" id="btn-sync"><art-sync-indicator></art-sync-indicator></button>
 			</div>
 			<div id="window-title-text">
 				<span><img src="app/resources/img/artivity-66x20.png" width="66" height="20" alt="artivity"/></span>
 			</div>
 		</div>
-		<div id="window-view-container">
+		<div class="window-view-container" id="window-view-container">
 			<div ng-view></div>
 		</div>
 		<div class="overlay collapse" id="overlay">

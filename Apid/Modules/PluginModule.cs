@@ -201,7 +201,7 @@ namespace Artivity.Apid.Modules
                 {
                     Association association = model.CreateResource<Association>();
                     association.Agent = new SoftwareAgent(new UriRef(p.agent));
-                    association.Role = new Role(art.EditingSoftwareRole);
+                    association.Role = new Role(art.EditingSoftwareRole.Uri);
                     association.Commit();
 
                     activity = model.CreateResource<Browse>();
