@@ -14,4 +14,4 @@ function LayerTreeNode(tree, parent, layer) {
     if (layer != null && layer.uri !== undefined && tree !== undefined) {
         tree.nodes.set(layer.uri, t);
     }
-};
+}

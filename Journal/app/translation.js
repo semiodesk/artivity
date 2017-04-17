@@ -1,8 +1,18 @@
-(function () {
+﻿(function () {
 	angular.module('app').config(function ($translateProvider) {
 		$translateProvider.useSanitizeValueStrategy('escape');
 
 		$translateProvider.translations('en', {
+			SETUP:{
+				GREETING: 'Welcome!',
+				INTRO: 'Thank you for downloading Artivity. Before you can begin using the app we need to setup your user account:',
+			
+			},
+			START:{
+		NO_CONNECTION: 'No database connection',
+		DESCRIPTION: 'Artivity was unable to connect to the local database. Please try to log out of your current desktop session to restart the service.',
+		RETRY: 'Retry'
+	},
 			FILELIST: {
 				NOFILES: 'Your recent files will appear here.',
 
@@ -69,6 +79,7 @@
 			},
 			SETTINGS: {
 				TITLE: 'Preferences',
+				CANCEL: 'Cancel',
 				PROFILE: {
 					LABEL: 'Profile',
 					TITLE: 'User Profile',
@@ -95,6 +106,9 @@
 				APPS: {
 					LABEL: 'Apps',
 					TITLE: 'Applications',
+					REFRESH: 'Refresh',
+					NOT_INSTALLED: 'Plugin not installed',
+					INSTALLED: 'Plugin installed',
 					DESCRIPTION: 'Enable or disable the applications which will log data into Artivity:'
 				}
 			},
@@ -113,6 +127,19 @@
 		});
 
 		$translateProvider.translations('de', {
+			SETUP:{
+				GREETING: 'Willkommen!',
+				INTRO: 'Vielen Dank, dass du Artivity verwendest. Bevor du starten kannst müssen wir noch ein paar Dinge einrichten.',
+				ACCOUNTTYPE: 'Bitte wähle welchen Kontotyp du verwenden möchtest:',
+				TYPE_ONLINE: 'Online',
+				TYPE_LOCAL: 'Lokal'
+	},
+	START:{
+		NO_CONNECTION: 'Keine Verbindung zur Datenbank!',
+		DESCRIPTION: 'Artivity konnte sich nicht mit der lokalen Datenbank verbinden. Bitte übeprüfen Sie ob der Artivity Dienst läuft.',
+		RETRY: 'Retry'
+	},
+			
 			FILELIST: {
 				NOFILES: 'Die zuletzt verwendeten Dateien erscheinen hier.',
 
@@ -152,19 +179,68 @@
 				'http://w3id.org/art/terms/1.0/Undo': 'Rückgängig',
 				'http://w3id.org/art/terms/1.0/Redo': 'Wiederhergestellt',
 			},
+			UPDATE: {
+				'TITLE': 'Neue Version',
+				'DESCRIPTION': 'Es kann eine neue Version von Artivity heruntergeladen werden:'
+			},
 			SETTINGS: {
 				TITLE: 'Einstellungen',
-				PROFILE: 'Profil',
-				APPS: 'Apps',
-				ACCOUNTS: 'Konten',
-				PROFILE_PICTURE: 'Klicken Sie hier um Ihr Profilbild auszuwählen.',
-				NAME: 'Name',
-				EMAIL: 'E-Mail Adresse',
-				ORGANIZATION: 'Organisation',
+				CANCEL: 'Abbrechen',
+				PROFILE: {
+					LABEL: 'Profil',
+					TITLE: 'Benutzerprofil',
+					DESCRIPTION: 'Profilinformationen bearbeiten:',
+					LABEL_PICTURE: 'Profilbild auswählen',
+					LABEL_NAME: 'Name',
+					LABEL_EMAIL: 'E-Mail',
+					LABEL_ORGANIZATION: 'Organisation',
+					LABEL_BACKUP_CREATE: 'Profil sichern',
+					LABEL_BACKUP_RESTORE: 'Profil wiederherstellen',
+					LABEL_BACKUP_CREATING: 'Erstelle sicherung',
+					LABEL_BACKUP_SUCCESS: 'Sicherung erfolgreich erstellt.',
+					LABEL_BACKUP_ERROR: 'Beim erstellen der Sicherung ist ein Fehler aufgetreten.',
+				},
+				ACCOUNTS: {
+					LABEL: 'Konten',
+					TITLE: 'Konten',
+					DESCRIPTION: 'Mit einem Online Konto verbinden:',
+					CONNECT_DIALOG: {
+						TITLE: 'Verbinde Konto',
+						TITLE_X: 'Verbinde {0}-Konto'
+					}
+				},
+				APPS: {
+					LABEL: 'Apps',
+					TITLE: 'Anwendungen',
+					REFRESH: 'Neu laden',
+					NOT_INSTALLED: 'Plugin nicht installiert',
+					INSTALLED: 'Plugin installiert',
+					DESCRIPTION: 'Aktiviere oder Deaktivere Anwendungen die Daten mit Artivity protokollieren:'
+				}
 			},
+			'http://artivity.online': {
+				'title': 'Artivity',
+				'description': 'Veröffentliche deine Dateien mit einem Artivity Online account.'
+			},
+			'http://eprints.org': {
+				'title': 'EPrints',
+				'description': 'Veröffentliche Dateien in einem EPrints repository.'
+			},
+			'http://orcid.org': {
+				'title': 'ORCiD',
+				'description': 'Weise deinen Dateien eine ORCiD zu.'
+			},
+			ART_APP_LIST: {
+				NO_PLUGINS: 'Es sind keine Software-Plugins aktiviert.'
+			},
+			ART_DOCUMENT_VIEWER: {
+				//CANVAS_WARNING: 'HTML canvas is not supported by your browser.'
+				CANVAS_WARNING: 'Dieser Browser unterstüzt HTML Canvas Elemente nicht.'
+			}
 		});
 
 		//$translateProvider.determinePreferredLanguage();
-		$translateProvider.preferredLanguage('en');
+		$translateProvider.preferredLanguage('de');
+		  $translateProvider.useSanitizeValueStrategy('escape');
 	});
 })();

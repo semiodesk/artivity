@@ -68,7 +68,7 @@ namespace artivity
 	{
 		CURL* curl = curl_easy_init();
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
 		if (!curl)
 		{
 			logError("Failed to initialize CURL.");
@@ -82,7 +82,7 @@ namespace artivity
 	{
 		if (!curl)
 		{
-#ifdef _DEBUG
+#ifdef ART_DEBUG
 			logError("CURL not initialized.");
 #endif
 
@@ -107,13 +107,13 @@ namespace artivity
 			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
 		}
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
 #endif
 
 		CURLcode responseCode = curl_easy_perform(curl);
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
 #endif
 
@@ -124,7 +124,7 @@ namespace artivity
 
 		curl_easy_cleanup(curl);
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
 		if (responseCode == CURLE_OK)
 		{
             stringstream time;
@@ -449,17 +449,17 @@ namespace artivity
 
     void ActivityLog::populateRevision(RevisionRef revision)
     {
-
-        if (_prevEntity != NULL)
-        {
-            _activity->addInvalidated(_prevEntity);
-            revision->addEntity(_prevEntity);
-            _entity->addInfluence(revision);
-        }
-        _activity->addGenerated(_entity);
-        revision->setActivity(_activity);
-        if ( _prevEntity != NULL )
-        revision->addEntity(_prevEntity);
+        
+		if (_prevEntity != NULL)
+		{
+			_activity->addInvalidated(_prevEntity);
+			revision->addEntity(_prevEntity);
+			_entity->addInfluence(revision);
+		}
+		_activity->addGenerated(_entity);
+		revision->setActivity(_activity);
+		if (_prevEntity != NULL)
+			revision->addEntity(_prevEntity);
 
     }
 
@@ -490,7 +490,7 @@ namespace artivity
         {
             for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
             {
-                EntityRef entity = *it;
+				EntityRef entity = *it;
                 if (entity == NULL)
                     continue;
 
@@ -532,26 +532,26 @@ namespace artivity
                         _activity->addInvalidated(entity);
                     }
                 }
-                else if (influence->is(prov::Derivation))
-                {
-                    EntityRef r = _activity->getEntity(entity->uri);
+				else if (influence->is(prov::Derivation))
+				{
+					EntityRef r = _activity->getEntity(entity->uri);
 
-                    DerivationRef derivation = dynamic_pointer_cast<Derivation>(influence);
-                    
-                    if (r)
-                    {
-                        r->addInfluence(derivation);
-                        
-                        _activity->addUsed(r);
-                    }
-                    else
-                    {
-                        entity->addInfluence(derivation);
-                        
-                        _activity->addUsed(entity);
-                    }
-                }
-                else if (influence->is(prov::Revision))
+					DerivationRef derivation = dynamic_pointer_cast<Derivation>(influence);
+
+					if (r)
+					{
+						r->addInfluence(derivation);
+
+						_activity->addUsed(r);
+					}
+					else
+					{
+						entity->addInfluence(derivation);
+
+						_activity->addUsed(entity);
+					}
+				}
+                else if (influence->is(prov::Revision) || influence->is(art::Save) || influence->is(art::SaveAs))
                 {
                     EntityRef r = _activity->getEntity(entity->uri);
                     
@@ -641,11 +641,10 @@ namespace artivity
             }
         }
 	}
-
     string ActivityLog::getRenderOutputPath()
     {
         return _renderOutputPath;
-    }
+	}
 
     void ActivityLog::transmit()
     {
@@ -674,7 +673,7 @@ namespace artivity
 
         CURL* curl = initializeRequest();
 
-        stringstream url;
+		stringstream url;
         url << _endpointUrl << "/plugin/file/activities";
 
         if (!debug)
@@ -688,7 +687,7 @@ namespace artivity
         }
         else
         {
-#ifdef _DEBUG
+#ifdef ART_DEBUG
             logRequest(url.str(), "0ms", requestData);
 
             _transmitCount++;
@@ -698,7 +697,7 @@ namespace artivity
 		clear();
 	}
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
 	void ActivityLog::logError(string msg)
 	{
 		cout << getTime() << " [ERROR] " << msg << endl << flush;
@@ -748,11 +747,10 @@ namespace artivity
 			dump(it->second);
 		}
 	}
-
     bool ActivityLog::fetchNewDataObject(std::string path)
     {
-        std::string fileUri = UriGenerator::getUri();
 
+        std::string fileUri = UriGenerator::getUri();
         std::string fileUrl = UriGenerator::getUrl(path);
 
         CURL* curl = initializeRequest();

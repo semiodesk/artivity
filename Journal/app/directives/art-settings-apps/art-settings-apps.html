@@ -1,7 +1,7 @@
 <form name="appsForm">
     <div class="form-header">
         <button class="btn btn-chromeless pull-right" style="position: relative; right -10px; top: -10px;" ng-click="t.reload()">
-            <i class="zmdi zmdi-lg zmdi-refresh-sync"></i> <span class="btn-label">Refresh</span>
+            <i class="zmdi zmdi-lg zmdi-refresh-sync"></i> <span class="btn-label">{{ 'SETTINGS.APPS.REFRESH' | translate }}</span>
         </button>
 
         <p class="description">{{ 'SETTINGS.APPS.DESCRIPTION' | translate }}</p>
@@ -14,8 +14,8 @@
             <div uib-accordion-group ng-repeat="agent in t.agents">
                 <uib-accordion-heading>
                     <div class="pull-right" style="margin-top: 3px">
-                        <label class="label-default" ng-show="!agent.hasError && agent.pluginInstalled">Plugin installed</label>
-                        <label class="label-default" ng-show="!agent.hasError && !agent.pluginInstalled">Plugin not installed</label>
+                        <label class="label-default" ng-show="!agent.hasError && agent.pluginInstalled">{{ 'SETTINGS.APPS.INSTALLED' | translate }}</label>
+                        <label class="label-default" ng-show="!agent.hasError && !agent.pluginInstalled">{{ 'SETTINGS.APPS.NOT_INSTALLED' | translate }}</label>
                         <label class="label-default" ng-show="agent.hasError">Error <span ng-show="agent.errotType != undefined">: {{agent.errorType}}</span></label>
                         <toggle style="padding: 0 10px; font-size: 14px;" ng-model="agent.pluginInstalled" ng-click="t.toggleInstall(agent, $event)"
                             on="<i class='zmdi zmdi-check'></i>" off="<i class='zmdi zmdi-close'></i>"></toggle>

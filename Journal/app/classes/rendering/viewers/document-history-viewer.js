@@ -187,7 +187,7 @@ DocumentHistoryViewer.prototype.render = function (influence) {
     }
 
     t.stage.update();
-}
+};
 
 DocumentHistoryViewer.prototype.getPalette = function () {
     var t = this;
@@ -222,4 +222,4 @@ DocumentHistoryViewer.prototype.getPalette = function () {
     }
 
     return palette;
-}
+};
