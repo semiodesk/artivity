@@ -3,64 +3,47 @@
 
     function UserSettingsDirective() {
         return {
-            scope: {
-                backupEnabled: '@backupEnabled'
-            },
+            restrict: 'E',
             templateUrl: 'app/directives/art-settings-user/art-settings-user.html',
-            controller: UserSettingsDirectiveFormController
+            controller: UserSettingsDirectiveFormController,
+            controllerAs: 't',
+            bindToController: true,
+            scope: {
+                setup: '=?setup'
+            }
         }
     };
 
     angular.module('app').controller('UserSettingsDirectiveFormController', UserSettingsDirectiveFormController);
 
-    UserSettingsDirectiveFormController.$inject = ['$scope', 'api', 'settingsService'];
+    UserSettingsDirectiveFormController.$inject = ['$rootScope', '$scope', 'api', 'agentService', 'settingsService'];
 
-    function UserSettingsDirectiveFormController($scope, api, settingsService) {
+    function UserSettingsDirectiveFormController($rootScope, $scope, api, agentService, settingsService) {
         var t = this;
-        var s = $scope;
-
-        if (settingsService) {
-            // Register the controller with its parent for global apply/cancel.
-            settingsService.registerController(t);
-        }
 
         // Load the user data.
-        api.getUser().then(function (data) {
-            s.user = data;
-        });
+        t.user = null;
+        t.userPhotoUrl = null;
 
-        // Set the user photo URL.
-        s.userPhotoUrl = api.getUserPhotoUrl();
-
-        s.onPhotoChanged = function (e) {
-            // Update the preview image..
-            var files = window.event.srcElement.files;
-
-            if (FileReader && files.length) {
-                var reader = new FileReader();
-
-                reader.onload = function () {
-                    document.getElementById('photo-img').src = reader.result;
-                }
-
-                reader.readAsDataURL(files[0]);
-
-                s.form.$pristine = false;
-            }
+        t.setUser = function (user) {
+            t.user = user;
+            t.userPhoto = null;
+            t.userPhotoUrl = user.PhotoUrl;
         };
 
-        // Set attribute default values.
-        if (s.backupEnabled === undefined) {
-            s.backupEnabled = true;
-        }
+        t.onPhotoChanged = function (file) {
+            t.userPhoto = file;
+            $scope.userForm.$pristine = false;
+        };
 
-        s.backupStatus = null;
+        // BACKUP
+        t.backupStatus = null;
 
-        s.createBackup = function () {
+        t.createBackup = function () {
             var fileName = 'Unknown';
 
-            if (s.user.Name) {
-                fileName = s.user.Name;
+            if (t.user.Name) {
+                fileName = t.user.Name;
             }
 
             fileName += '-' + moment().format('DDMMYYYY') + '.artb';
@@ -68,19 +51,19 @@
             console.log("Creating backup to file:", fileName);
 
             api.backupUserProfile(fileName).then(function (data) {
-                s.backupStatus = data;
+                t.backupStatus = data;
 
-                if (s.backupStatus.Id && s.backupStatus.Error === null) {
+                if (t.backupStatus.Id && t.backupStatus.Error === null) {
                     var interval = setInterval(function () {
-                        api.getUserProfileBackupStatus(s.backupStatus.Id).then(function (data) {
-                            s.backupStatus.PercentComplete = data.PercentComplete;
-                            s.backupStatus.Error = data.Error;
+                        api.getUserProfileBackupStatus(t.backupStatus.Id).then(function (data) {
+                            t.backupStatus.PercentComplete = data.PercentComplete;
+                            t.backupStatus.Error = data.Error;
 
-                            if (s.backupStatus.PercentComplete === 100 || s.backupStatus.Error) {
+                            if (t.backupStatus.PercentComplete === 100 || t.backupStatus.Error) {
                                 clearInterval(interval);
 
-                                if (s.backupStatus.Error) {
-                                    console.log(s.backupStatus.Error);
+                                if (t.backupStatus.Error) {
+                                    console.log(t.backupStatus.Error);
                                 }
                             }
                         });
@@ -90,22 +73,47 @@
         };
 
         t.submit = function () {
-            console.log("Submitting Profile");
+            if ($scope.userForm.$valid) {
+                console.log("Submitting Profile");
 
-            if (s.user) {
-                api.setUser(s.user);
-            }
+                if (t.user) {
+                    api.putUser(t.user).then(function () {
+                        agentService.off('currentUserChanged', t.setUser);
+                        agentService.initialize();
+                        agentService.on('currentUserChanged', t.setUser);
+                    });
+                }
 
-            if (s.userPhoto) {
-                api.setUserPhoto(s.userPhoto).then(function () {
-                    s.userPhotoUrl = '';
-                    s.userPhotoUrl = api.getUserPhotoUrl();
-                });
+                if (t.userPhoto) {
+                    api.putUserPhoto(t.user.Uri, t.userPhoto).then(function () {
+                        t.userPhotoUrl = '';
+                        t.userPhotoUrl = api.getUserPhotoUrl(t.user.Uri);
+                    });
+                }
+
+                if (t.setup) {
+                    $rootScope.$emit('navigateNext');
+                }
             }
         };
 
         t.reset = function () {
-            s.form.reset();
+            $scope.userForm.reset();
         };
+
+        t.$onInit = function () {
+            // Register the controller with its parent for global apply/cancel.
+            settingsService.registerController(t);
+
+            if (agentService.currentUser) {
+                t.setUser(agentService.currentUser);
+            }
+
+            agentService.on('currentUserChanged', t.setUser);
+        }
+
+        t.$onDestroy = function () {
+            agentService.off('currentUserChanged', t.setUser);
+        }
     };
 })();

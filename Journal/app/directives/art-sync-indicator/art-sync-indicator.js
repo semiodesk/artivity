@@ -4,7 +4,7 @@
     function SyncIndicatorDirective() {
         return {
             restrict: 'E',
-            template: '<i ng-show="synchronizing" class="loader loader-xs"></i>',
+            template: '<span ng-show="synchronizing"><i class="loader loader-xs"></i> Synchronizing..</span>',
             controller: SyncIndicatorDirectiveController,
             controllerAs: 't',
             link: function (scope, element, attributes, ctrl) {
@@ -17,22 +17,27 @@
 
     angular.module('app').controller('SyncIndicatorDirectiveController', SyncIndicatorDirectiveController);
 
-    SyncIndicatorDirectiveController.$inject = ['$scope', '$uibModal', 'api', 'settingsService', 'syncService'];
+    SyncIndicatorDirectiveController.$inject = ['$scope', '$uibModal', 'settingsService', 'syncService'];
 
-    function SyncIndicatorDirectiveController($scope, $uibModal, api, settingsService, syncService) {
+    function SyncIndicatorDirectiveController($scope, $uibModal, settingsService, syncService) {
         var t = this;
 
         $scope.synchronizing = false;
 
-        syncService.on('syncBegin', function() {
+        syncService.on('syncBegin', function () {
             $scope.synchronizing = true;
         });
 
-        syncService.on('syncEnd', function() {
-            $scope.synchronizing = false;
+        syncService.on('syncEnd', function () {
+            // Let people see when a sync is executed very quickly.
+            setTimeout(function () {
+                $scope.$apply(function () {
+                    $scope.synchronizing = false;
+                });
+            }, 500);
         });
 
-        t.synchronize = function() {
+        t.synchronize = function () {
             syncService.synchronize();
         }
     }

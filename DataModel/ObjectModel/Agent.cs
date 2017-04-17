@@ -35,12 +35,11 @@ using System.Text;
 namespace Artivity.DataModel
 {
     [RdfClass(PROV.Agent)]
-    public class Agent : SynchronizableResource
+    public class Agent : SynchronizableResource, IValidatable
     {
 		#region Members
 
-        [DefaultValue("")]
-        [RdfProperty(FOAF.name)]
+        [RdfProperty(FOAF.name), DefaultValue("")]
         public string Name { get; set; }
 
 		#endregion
@@ -56,6 +55,11 @@ namespace Artivity.DataModel
         public override int GetHashCode()
         {
             return Uri.GetHashCode();
+        }
+
+        public virtual bool Validate()
+        {
+            return !string.IsNullOrEmpty(Name);
         }
 
         #endregion

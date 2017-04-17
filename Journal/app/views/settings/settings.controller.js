@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('SettingsController', SettingsController);
 
-    SettingsController.$inject = ['$location', 'api', 'settingsService'];
+    SettingsController.$inject = ['$location', 'settingsService', 'navigationService'];
 
-    function SettingsController($location, api, settingsService) {
+    function SettingsController($location, settingsService, navigationService) {
         var t = this;
 
         t.submit = function () {
@@ -19,11 +19,14 @@
             settingsService.clear();
 
             // Navigate to dashboard and refresh the page.
-            $location.path('/');
+            navigationService.navigateBack();
         };
 
         t.reset = function () {
             settingsService.resetAll();
+
+            // Navigate to dashboard and refresh the page.
+            navigationService.navigateBack();
         };
     };
 })();

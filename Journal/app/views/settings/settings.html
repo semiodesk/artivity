@@ -1,17 +1,13 @@
 <div class="layout-root table-layout">
-    <div class="row header">
-		<div class="toolbar">
-			<div class="col">
-				<a class="btn btn-header" ng-click="t.submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
-			</div>
-			<div class="col expand">
-				<h5 class="title" translate="SETTINGS.TITLE"></h5>
-			</div>
-			<div class="col" style="width: 90px; text-align: right;">
-				<a class="btn btn-header btn-text" onclick="history.back()">Cancel</a>
-			</div>
+	<div class="row header">
+		<div class="toolbar toolbar-header">
+			<a class="btn btn-header" ng-click="t.submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
+
+			<span class="txt txt-title" translate="SETTINGS.TITLE"></span>
+
+			<a class="btn btn-header btn-text pull-right" onclick="history.back()">{{'SETTINGS.CANCEL' | translate}}</a>
 		</div>
-    </div>
+	</div>
 	<div class="row expand">
 		<div class="layout-container padding-y-xl">
 			<div class="container">
@@ -23,13 +19,13 @@
 
 				<div class="tab-content padding-x-xl padding-y-xl">
 					<div role="tabpanel" class="tab-pane fade active in" id="panel-user">
-						<div art-settings-user></div>
+						<art-settings-user></art-settings-user>
 					</div>
 					<div role="tabpanel" class="tab-pane fade" id="panel-accounts">
 						<div art-settings-accounts></div>
 					</div>
 					<div role="tabpanel" class="tab-pane fade" id="panel-apps">
-						<div art-settings-apps></div>
+						<art-settings-apps></art-settings-apps>
 					</div>
 				</div>
 			</div>

@@ -1,0 +1,1343 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Artivity Core API",
+        "description": "The core API of Artivity",
+        "version": "1.0.1"
+    },
+    "host": "localhost:8262",
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/artivity/api/1.0",
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/accounts": {
+            "get": {
+                "summary": "Lists user accounts",
+                "description": "Lists locally stored user accounts.\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/authorize": {
+            "get": {
+                "summary": "Authorizes account installation",
+                "description": "Authorizes the installation of a new user account.\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/authorize/oauth2/token": {
+            "get": {
+                "summary": "OAuth2 authorization",
+                "description": "Executes OAuth2 authorizes the installation of a new user account.\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/clients": {
+            "get": {
+                "summary": "Authorizes account installation",
+                "description": "Authorizes the installation of a new user account.\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/clients/status": {
+            "get": {
+                "summary": "Authorizes account installation",
+                "description": "Authorizes the installation of a new user account.\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/install": {
+            "get": {
+                "summary": "Authorizes account installation",
+                "description": "Authorizes the installation of a new user account.\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/uninstall": {
+            "get": {
+                "summary": "Authorizes account installation",
+                "description": "Authorizes the installation of a new user account.\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/upload": {
+            "get": {
+                "summary": "Authorizes account installation",
+                "description": "Authorizes the installation of a new user account.\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/activities": {
+            "get": {
+                "summary": "Lists activities",
+                "description": "Lists all activities belonging to a certain file or all depending on whether a uri parameter is provided.\n",
+                "parameters": [
+                    {
+                        "name": "uri",
+                        "in": "query",
+                        "description": "Uri of the fileDataObject",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Activity data",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Activity"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/activities/clear": {
+            "get": {
+                "summary": "Authorizes account installation",
+                "description": "Authorizes the installation of a new user account.\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/agents/software": {
+            "get": {
+                "summary": "Lists all software agents",
+                "description": "Lists agents depending on the provided parameters. \n\n* **No parameters:** Lists all \n* **uri:** Only the software agent with this uri\n* **fileUri:** All software agents that were involved with the given file data object.\n",
+                "parameters": [
+                    {
+                        "name": "uri",
+                        "in": "query",
+                        "description": "Uri identifying an agent (OPTIONAL)",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    },
+                    {
+                        "name": "fileUri",
+                        "in": "query",
+                        "description": "Uri identifying a fileDataObject (OPTIONAL)",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "SoftwareAgent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SoftwareAgent data",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/SoftwareAgent"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Install a new or update an existing agent.",
+                "description": "Install a new or update an existing agent. \n",
+                "tags": [
+                    "SoftwareAgent"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SoftwareAgent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SoftwareAgent data",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/SoftwareAgent"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/agents/software/icon": {
+            "get": {
+                "summary": "Returns icon of software agents",
+                "description": "Retuns icon\n",
+                "parameters": [
+                    {
+                        "name": "uri",
+                        "in": "query",
+                        "description": "Uri identifying an agent",
+                        "required": true,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "SoftwareAgent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Icon",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/agents/software/install": {
+            "get": {
+                "summary": "Installs a plugin",
+                "description": "Installs a plugin\n",
+                "parameters": [
+                    {
+                        "name": "uri",
+                        "in": "query",
+                        "description": "Uri identifying an agent",
+                        "required": true,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "SoftwareAgent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Icon"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/agents/software/paths": {
+            "get": {
+                "summary": "Lists searchpaths",
+                "description": "Lists all searchpaths stored in the configuration\n",
+                "parameters": [
+                    {
+                        "name": "uri",
+                        "in": "query",
+                        "description": "Uri identifying an agent",
+                        "required": true,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "SoftwareAgent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of search paths",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Adds a path to the searchpath list",
+                "description": "Installs a plugin\n",
+                "parameters": [
+                    {
+                        "name": "uri",
+                        "in": "query",
+                        "description": "Url of a path",
+                        "required": true,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "SoftwareAgent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Removes a path from the search path list",
+                "description": "Removes a path from the search path list\n",
+                "parameters": [
+                    {
+                        "name": "uri",
+                        "in": "query",
+                        "description": "Url of a path",
+                        "required": true,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "SoftwareAgent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/agents/software/uninstall": {
+            "get": {
+                "summary": "Uninstalls a plugin",
+                "description": "Uninstalls a plugin\n",
+                "parameters": [
+                    {
+                        "name": "uri",
+                        "in": "query",
+                        "description": "Uri identifying an agent",
+                        "required": true,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "SoftwareAgent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Icon"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/files": {
+            "get": {
+                "summary": "Retrieves all files (?)",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/files/derivations": {
+            "get": {
+                "summary": "Retrieves all files (?)",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/files/derivations/latest": {
+            "get": {
+                "summary": "Retrieves all files (?)",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/files/derivations/latest/publish": {
+            "put": {
+                "summary": "Retrieves all files (?)",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/import": {
+            "get": {
+                "summary": "imports (?)",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Import"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/export": {
+            "get": {
+                "summary": "Exports data",
+                "description": "This endpoint exports data ...\n",
+                "parameters": [
+                    {
+                        "name": "f",
+                        "in": "query",
+                        "description": "f",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/export/backup": {
+            "get": {
+                "summary": "Exports data",
+                "description": "This endpoint exports data ...\n",
+                "parameters": [
+                    {
+                        "name": "f",
+                        "in": "query",
+                        "description": "f",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/export/backup/status": {
+            "get": {
+                "summary": "Exports data",
+                "description": "This endpoint exports data ...\n",
+                "parameters": [
+                    {
+                        "name": "f",
+                        "in": "query",
+                        "description": "f",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "File"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/influences": {
+            "get": {
+                "summary": "Lists all influences (?)",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Import"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/influences/canvas": {
+            "get": {
+                "summary": "Lists all influences (?)",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Import"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/influences/layers": {
+            "get": {
+                "summary": "Lists all influences (?)",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Import"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/influences/stats": {
+            "get": {
+                "summary": "Lists all influences (?)",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Import"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/entity/marks": {
+            "get": {
+                "summary": "listing of marks",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Mark"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "creation of marks",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Mark"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "updating of marks",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Mark"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "deletion of marks",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Mark"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/entity/comment": {
+            "get": {
+                "summary": "listing of marks",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Comment"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "creation of marks",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Comment"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "updating of marks",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Comment"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "deletion of marks",
+                "description": "This endpoint retrieves files ...\n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": false,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Comment"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File information"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/plugin/file/open": {
+            "get": {
+                "summary": "Retrieves inital plugin information",
+                "description": "This endpoint retrieves information necessary for plugins to \n",
+                "parameters": [
+                    {
+                        "name": "fileUrl",
+                        "in": "query",
+                        "description": "Url of the file with file:// schema",
+                        "required": true,
+                        "type": "string",
+                        "format": "URI"
+                    }
+                ],
+                "tags": [
+                    "Plugin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Intial information",
+                        "schema": {
+                            "$ref": "#/definitions/InitialData"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "InitialData": {
+            "type": "object",
+            "properties": {
+                "userAssociationUri": {
+                    "type": "string",
+                    "description": "URI which references the association of the user creating or editing the current document.",
+                    "format": "URI"
+                },
+                "latestEntityUri": {
+                    "type": "string",
+                    "description": "URI of the most recent revision of this document.",
+                    "format": "URI"
+                },
+                "fileDataObjectUri": {
+                    "type": "string",
+                    "description": "URI of the file data object for this document.",
+                    "format": "URI"
+                },
+                "renderOutputPath": {
+                    "type": "string",
+                    "description": "Path where to store renderings on this system."
+                }
+            }
+        },
+        "Activity": {
+            "type": "object",
+            "properties": {
+                "uri": {
+                    "type": "string",
+                    "format": "URI",
+                    "description": "URI which references the activity."
+                },
+                "startTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Time when the activity started."
+                },
+                "endTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Time when the activity ended."
+                },
+                "maxTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Time when the latest infulence happened."
+                },
+                "agent": {
+                    "type": "string",
+                    "format": "URI",
+                    "description": "Uri of the used software agent."
+                },
+                "agentColor": {
+                    "type": "string",
+                    "format": "RGBA",
+                    "description": "Colorcode of the used agent."
+                }
+            }
+        },
+        "SoftwareAgent": {
+            "type": "object",
+            "properties": {
+                "Manifest": {
+                    "$ref": "#/definitions/Manifest"
+                },
+                "IsSoftwareInstalled": {
+                    "type": "boolean",
+                    "description": "Is the software currently installed."
+                },
+                "IsPluginInstalled": {
+                    "type": "boolean"
+                },
+                "IsPluginEnabled": {
+                    "type": "boolean"
+                },
+                "DetectedVersions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "A list containing installed versions."
+                },
+                "AssociationUris": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "A list containing the association uri's."
+                }
+            }
+        },
+        "Manifest": {
+            "type": "object",
+            "properties": {
+                "AgentUri": {
+                    "type": "string",
+                    "format": "URI",
+                    "description": "Example http://adobe.com/products/illustrator"
+                },
+                "DefaultColor": {
+                    "type": "string",
+                    "format": "RGBA",
+                    "description": "Example \"#F27200\""
+                },
+                "DisplayName": {
+                    "type": "string",
+                    "description": "Example \"Adobe Illustrator CC 2015\""
+                },
+                "PluginArch": {
+                    "type": "integer",
+                    "description": "Architecture of the plugin. Can be 32 or 64"
+                },
+                "PluginVersion": {
+                    "type": "string",
+                    "description": "Version of the plugin Example \"0.8.1\""
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

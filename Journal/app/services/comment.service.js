@@ -1,28 +1,42 @@
 ﻿(function () {
     angular.module('app').factory('commentService', commentService);
 
-    commentService.$inject = ['$http'];
+    commentService.$inject = ['api'];
 
-    function commentService($http) {
+    function commentService(api) {
         var endpoint = apid.endpointUrl + "comments";
 
         return {
-            get: get,
-            post: post
+            getCommentsForPrimarySource: getCommentsForPrimarySource,
+            postComment: postComment,
+            postRequest: postRequest,
+            postResponse: postResponse
         };
 
-        function get(entityUri) {
+        function getCommentsForPrimarySource(entityUri) {
             var uri = encodeURIComponent(entityUri);
 
-            return $http.get(endpoint + '?entityUri=' + uri).then(function (response) {
-                return response.data;
+            return api.get(endpoint + '?entityUri=' + uri).then(function (r) {
+                return r.data;
             }, handleError('Error while retrieving comments.'));
         }
 
-        function post(comment) {
-            return $http.post(endpoint, comment).then(function (response) {
-                return response.data;
-            }, handleError('Error when pushing comments.'));
+        function postComment(comment) {
+            return api.post(endpoint, comment).then(function (r) {
+                return r.data;
+            }, handleError('Error when pushing comment.'));
+        }
+
+        function postRequest(request) {
+            return api.post(endpoint + '/requests', request).then(function (r) {
+                return r.data;
+            }, handleError('Error when pushing request.'));
+        }
+
+        function postResponse(response) {
+            return api.post(endpoint + '/responses', response).then(function (r) {
+                return r.data;
+            }, handleError('Error when pushing response.'));         
         }
 
         function handleError(error) {

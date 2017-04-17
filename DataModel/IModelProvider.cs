@@ -50,6 +50,10 @@ namespace Artivity.DataModel
         UriRef Default { get; set; }
 
         string Uid { get; set; }
+   
+        string RenderingQueryModifier { get; }
+
+        string GetFilesQueryModifier { get; }
 
         #endregion
 
@@ -75,7 +79,10 @@ namespace Artivity.DataModel
 
         IModelGroup CreateModelGroup(params Uri[] models);
 
-        IModelSynchronizationState GetModelSynchronizationState(IUserAgent user);
+        IModelSynchronizationState GetModelSynchronizationState(IPerson user);
+
+        Uri CreateUri<T>(string guid);
+        Uri CreateUri<T>();
 
         #endregion
     }

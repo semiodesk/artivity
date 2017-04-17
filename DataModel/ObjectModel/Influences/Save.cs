@@ -38,14 +38,9 @@ namespace Artivity.DataModel
 	{
         #region Members
 
-        [RdfProperty(ART.renderedAs)]
-        public List<PartialRenderingDataObject> RenderedAs { get; set; }
-        //public IEnumerable<string> RenderedAs { get { return from a in RenderedAs_ select a.Uri.AbsoluteUri; } }
-
         [RdfProperty(PROV.atTime)]
         public DateTime AtTime { get; set; }
         #endregion
-
 
 		#region Constructors
 

@@ -67,8 +67,9 @@ namespace artivity
         Resource::clear();
         
         _influences.clear();
+        // Note: The association can be cleared here because it only needs to be transmitted once.
 		_associations.clear();
-        _usedEntites.clear();
+        _usedEntities.clear();
         _generatedEntities.clear();
         _invalidatedEntities.clear();
     }
@@ -136,22 +137,30 @@ namespace artivity
     
     list<EntityRef> Activity::getUsedEntities()
     {
-        return _usedEntites;
+        return _usedEntities;
     }
 
     void Activity::clearUsedEntities()
     {
-        for(auto entity = _usedEntites.begin(); entity != _usedEntites.end(); entity++)
+        for (auto entity : _usedEntities)
         {
-            removeUsed(*entity);
+            removeProperty(prov::used, entity);
+
+            list<InfluenceRef> influences = entity->getInfluences();
+
+            for (auto influence = influences.begin(); influence != influences.end(); influence++)
+            {
+                _influences.remove(*influence);
+            }
         }
+        _usedEntities.clear();
     }
     
     void Activity::addUsed(EntityRef entity)
     {
         if (hasProperty(prov::used, entity)) return;
         
-		_usedEntites.push_back(entity);
+        _usedEntities.push_back(entity);
         
         addProperty(prov::used, entity);
         
@@ -162,7 +171,7 @@ namespace artivity
     
     void Activity::removeUsed(EntityRef entity)
     {
-        _usedEntites.remove(entity);
+        _usedEntities.remove(entity);
         
         removeProperty(prov::used, entity);
         
@@ -268,9 +277,9 @@ namespace artivity
 
     EntityRef Activity::getEntity(std::string uri)
     {
-        std::list<EntityRef>::iterator e = std::find_if(_usedEntites.begin(), _usedEntites.end(), by_Uri(uri));
+        std::list<EntityRef>::iterator e = std::find_if(_usedEntities.begin(), _usedEntities.end(), by_Uri(uri));
         
-        if (e != _usedEntites.end())
+        if (e != _usedEntities.end())
         {
             return *e;
         }

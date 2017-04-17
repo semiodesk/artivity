@@ -118,7 +118,7 @@ module.exports = function (grunt) {
                 dest: 'index.html'
             },
             release: {
-                src: ['app/conf.release.js', appJsFile],
+                src: ['app/bower.js', 'app/conf.release.js', appJsFile],
                 dest: 'index.html'
             }
         },
@@ -156,6 +156,30 @@ module.exports = function (grunt) {
                 dest: appJsFile
             }
         },
+        strip_code: {
+            options: {
+                blocks: [{
+                    start_block: "<!-- REMOVE:JS -->",
+                    end_block: "<!-- /REMOVE:JS -->"
+                },
+                // 
+                ]
+            },
+            your_target: {
+                src: ['build/index.html']
+            }
+        },
+        bower_concat: {
+            all: {
+                dest: {
+                    'js': 'build/app/bower.js',
+                    //'css': 'build/app/bower.css'
+                },
+                bowerOptions: {
+                    relative: false
+                }
+            }
+        },
         clean: {
             options: {
                 'force': true
@@ -168,10 +192,10 @@ module.exports = function (grunt) {
             windowsBuild: {
                 options: {
                     name: 'Artivity',
-                    dir: '.',
+                    dir: 'build',
                     out: buildDistDir,
                     platform: 'win32',
-                    icon: 'app/resources/images/icon.ico',
+                    icon: 'app/resources/img/icon.ico',
                     arch: 'x64',
                     'app-copyright': 'Copyright © 2016 Semiodesk GmbH',
                     win32metadata: {
@@ -189,10 +213,10 @@ module.exports = function (grunt) {
             macosBuild: {
                 options: {
                     name: 'Artivity',
-                    dir: '.',
+                    dir: 'build',
                     out: buildDistDir,
                     platform: 'darwin',
-                    icon: 'app/resources/images/Icons.icns',
+                    icon: 'app/resources/img/Icons.icns',
                     arch: 'x64'
                 }
             }
@@ -273,6 +297,46 @@ module.exports = function (grunt) {
             }
         },
         copy: {
+            release: {
+                files: [{
+                    expand: true,
+                    cwd: './app',
+                    src: ['style.css', 'src.js', 'conf.js', 'conf.release.js'],
+                    dest: 'build/app/'
+                }, 
+                {
+                    expand: true,
+                    cwd: './',
+                    src: ['index.html', 'main.js', 'package.json'],
+                    dest: 'build/'
+                },
+                {
+                    expand: true,
+                    cwd: './',
+                    src: ['bower_components/**/*.css'],
+                    dest: 'build/'
+                },
+                {
+                    expand: true,
+                    cwd: './app',
+                    src: ['resources/**/*', 'views/**/*.html', 'directives/**/*.html', 'host/*.exe'],
+                    dest: 'build/app'
+                },
+                {
+                    expand: true,
+                    cwd: './',
+                    src: [
+                        'bower_components/**/*.ttf',
+                        'bower_components/**/*.eot',
+                        'bower_components/**/*.woff',
+                        'bower_components/**/*.woff2',
+                        '!bower_components/**/*-android.ttf',
+                        '!bower_components/**/*-apple.ttf',
+                    ],
+                    dest: 'build/'
+                }
+                ],
+            },
             mainMac: {
                 files: [{
                         expand: true, // need expand: true with cwd
@@ -327,6 +391,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-bower-concat');
+    grunt.loadNpmTasks('grunt-strip-code');
     grunt.loadNpmTasks("grunt-bower-install-simple");
 
     grunt.registerTask('concat:js:clear', 'Empties the concatenated app source files.', function () {
@@ -355,6 +421,11 @@ module.exports = function (grunt) {
             grunt.file.delete('app/src.app.js');
             grunt.file.delete('app/src.app.js.map');
         }
+    });
+
+    grunt.registerTask('npm-deploy', function () {
+        var exec = require('child_process').execSync;
+        exec('npm --prefix ./build install ./build --production');
     });
 
     // Task to restore nuget package
@@ -435,8 +506,11 @@ module.exports = function (grunt) {
         'concat:app',
         'concat:src',
         'concat:js:clean',
+        'sass:dist',
+        'copy:release',   
+        'bower_concat',
         'tags:release',
-        'sass:dist'
+        'strip_code'
     ]);
 
     if (process.platform === "win32") {
@@ -444,6 +518,7 @@ module.exports = function (grunt) {
             'clean',
             'bower-install',
             'release',
+            'npm-deploy',
             'electron:windowsBuild',
             'nugetRestore',
             'assemblyVersion',
@@ -455,6 +530,7 @@ module.exports = function (grunt) {
             'clean',
             'bower-install',
             'release',
+            'npm-deploy',
             'electron:macosBuild',
             'nugetRestore',
             'assemblyVersion',

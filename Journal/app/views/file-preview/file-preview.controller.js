@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('FilePreviewController', FilePreviewController);
 
-    FilePreviewController.$inject = ['$rootScope', '$scope', '$location', '$routeParams', '$uibModal', 'api', 'selectionService', 'hotkeys'];
+    FilePreviewController.$inject = ['$rootScope', '$scope', '$location', '$routeParams', '$uibModal', 'api', 'agentService', 'selectionService', 'hotkeys'];
 
-    function FilePreviewController($rootScope, $scope, $location, $routeParams, $uibModal, api, selectionService, hotkeys) {
+    function FilePreviewController($rootScope, $scope, $location, $routeParams, $uibModal, api, agentService, selectionService, hotkeys) {
         var t = this;
         var fileUri = $location.search().uri;
 
@@ -11,10 +11,9 @@
         t.agent = {
             iconUrl: ''
         };
-        t.entity = {
-            uri: fileUri
-        };
+        t.entity = {};
         t.file = {};
+        t.fileUri = fileUri;
 
         initialize();
 
@@ -34,21 +33,26 @@
                 console.log("Loaded software agent: ", t.agent);
             });
 
-            // Load the user data.
-            api.getUser().then(function (data) {
-                t.user = data;
-                t.user.photoUrl = api.getUserPhotoUrl();
-
-                console.log("Loaded user agent: ", t.user);
-            });
-
             // Make the left and right panes resizable.
-            $(".ui-pane-left").resizable({
-                handles: "e"
+            var content = $('.ui-content');
+            var sidebar = $('.ui-sidebar-right');
+
+            sidebar.resizable({
+                handles: 'w'
             });
-            $(".ui-pane-left").resize(function() {
+
+            sidebar.resize(function(event, ui) {
+                var width = ui.size.width + 'px';
+
+                sidebar.css('left', 'auto');
+                sidebar.css('right', 0);
+                sidebar.css('width', width);
+                content.css('right', width);
+
                 $rootScope.$broadcast('resize');
             });
+
+            content.css('right', sidebar.outerWidth() + 'px');
         }
     }
 })();

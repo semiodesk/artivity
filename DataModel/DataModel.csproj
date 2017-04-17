@@ -10,7 +10,7 @@
     <RootNamespace>Artivity.DataModel</RootNamespace>
     <AssemblyName>Artivity.DataModel</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>d3ac82ba</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>2c937aa6</NuGetPackageImportStamp>
     <TargetFrameworkProfile />
     <ReleaseVersion>1.6</ReleaseVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -20,6 +20,7 @@
     <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -38,7 +39,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="IModelSynchronizationState.cs" />
+    <Compile Include="IAccountOwner.cs" />
+    <Compile Include="IUser.cs" />
+    <Compile Include="IValidatable.cs" />
     <Compile Include="IViewModule.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="IModelProvider.cs" />
@@ -46,8 +51,19 @@
     <Compile Include="ObjectModel\Activities\DeleteEntity.cs" />
     <Compile Include="ObjectModel\Activities\EditEntity.cs" />
     <Compile Include="ObjectModel\Activities\Publish.cs" />
+    <Compile Include="ObjectModel\Agents\Contact.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\AccountOwnerRole.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\EditingSoftwareRole.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\EditorRole.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\ProjectMemberRole.cs" />
+    <Compile Include="ObjectModel\Agents\Roles\ProjectAdministratorRole.cs" />
+    <Compile Include="ObjectModel\Agents\User.cs" />
     <Compile Include="ObjectModel\Communication.cs" />
+    <Compile Include="ObjectModel\Entities\Comments\ApprovalRequest.cs" />
+    <Compile Include="ObjectModel\Entities\Comments\ApprovalResponse.cs" />
     <Compile Include="ObjectModel\Entities\Collection.cs" />
+    <Compile Include="ObjectModel\Entities\Comments\FeedbackResponse.cs" />
+    <Compile Include="ObjectModel\Entities\Comments\FeedbackRequest.cs" />
     <Compile Include="ObjectModel\Entities\Task.cs" />
     <Compile Include="ObjectModel\Entities\TaskPriority.cs" />
     <Compile Include="ObjectModel\Entities\TaskState.cs" />
@@ -58,7 +74,7 @@
     <Compile Include="ObjectModel\Entities\InformationElement.cs" />
     <Compile Include="ObjectModel\Entities\Mark.cs" />
     <Compile Include="ObjectModel\Entities\Post.cs" />
-    <Compile Include="ObjectModel\Entities\Project.cs" />
+    <Compile Include="ObjectModel\Activities\Project.cs" />
     <Compile Include="ObjectModel\Entities\RasterImage.cs" />
     <Compile Include="ObjectModel\Entities\VectorImage.cs" />
     <Compile Include="ObjectModel\Entities\Website.cs" />
@@ -66,21 +82,23 @@
     <Compile Include="ObjectModel\FileDataObject\RenderingDataObject.cs" />
     <Compile Include="ObjectModel\HttpAuthenticationProtocol.cs" />
     <Compile Include="ObjectModel\Influences\Derivation.cs" />
-    <Compile Include="IUserAgent.cs" />
+    <Compile Include="IPerson.cs" />
     <Compile Include="ObjectModel\Influences\Revision.cs" />
     <Compile Include="ObjectModel\Influences\Save.cs" />
     <Compile Include="ObjectModel\OnlineAccount.cs" />
     <Compile Include="ObjectModel\HttpAuthenticationParameter.cs" />
-    <Compile Include="ObjectModel\Person.cs" />
+    <Compile Include="ObjectModel\Agents\Person.cs" />
     <Compile Include="ObjectModel\Activity.cs" />
-    <Compile Include="ObjectModel\SoftwareAssociation.cs" />
+    <Compile Include="ObjectModel\Agents\SoftwareAssociation.cs" />
+    <Compile Include="ObjectModel\Activities\ProjectMembership.cs" />
     <Compile Include="ObjectModel\SynchronizableResource.cs" />
     <Compile Include="ObjectModel\ResourceSynchronizationState.cs" />
     <Compile Include="Ontologies\Ontologies.g.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Ontologies\Ontologies.i.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ObjectModel\SoftwareAgent.cs" />
+    <Compile Include="ObjectModel\Agents\SoftwareAgent.cs" />
     <Compile Include="ObjectModel\Agent.cs" />
     <Compile Include="ObjectModel\Association.cs" />
     <Compile Include="ObjectModel\Entities\XmlAttribute.cs" />
@@ -109,8 +127,9 @@
     <Compile Include="ObjectModel\Influences\Undo.cs" />
     <Compile Include="ObjectModel\Influences\View.cs" />
     <Compile Include="ModelProviderFactory.cs" />
-    <Compile Include="Ontologies\Ontologies.i.cs" />
     <Compile Include="ObjectModel\ModelSynchronizationState.cs" />
+    <Compile Include="ObjectModel\Agents\UserRoles.cs" />
+    <Compile Include="ResourceResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -128,8 +147,17 @@
     <None Include="Ontologies\nfo.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Ontologies\owl.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Ontologies\prov.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ontologies\rdf.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Ontologies\rdfs.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Ontologies\sioc.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -149,40 +177,38 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="Ontologies\rdfs.n3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Ontologies\rdf.rdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Ontologies\owl.n3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="dotNetRDF, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.159-rc\lib\Net40\dotNetRDF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dotNetRDF.Data.Virtuoso, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.159-rc\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.159-rc\lib\Net40\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OpenLink.Data.Virtuoso, Version=7.2.3215.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.159-rc\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Semiodesk.Trinity, Version=0.9.159.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.159-rc\lib\Net40\Semiodesk.Trinity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="dotNetRDF.Data.Virtuoso">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="dotNetRDF">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\dotNetRDF.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenLink.Data.Virtuoso">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\OpenLink.Data.Virtuoso.dll</HintPath>
-    </Reference>
-    <Reference Include="Semiodesk.Trinity">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\Semiodesk.Trinity.dll</HintPath>
-    </Reference>
-    <Reference Include="VDS.Common">
-      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.152\lib\Net40\VDS.Common.dll</HintPath>
+    <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semiodesk.Trinity.Core.0.9.159-rc\lib\Net40\VDS.Common.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -198,5 +224,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="..\packages\Semiodesk.Trinity.Modelling.0.9.152\build\net40\Semiodesk.Trinity.Modelling.targets" Condition="Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.152\build\net40\Semiodesk.Trinity.Modelling.targets')" />
+  <Import Project="..\packages\Semiodesk.Trinity.Modelling.0.9.159-rc\build\net40\Semiodesk.Trinity.Modelling.targets" Condition="Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.159-rc\build\net40\Semiodesk.Trinity.Modelling.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Semiodesk.Trinity.Modelling.0.9.159-rc\build\net40\Semiodesk.Trinity.Modelling.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Semiodesk.Trinity.Modelling.0.9.159-rc\build\net40\Semiodesk.Trinity.Modelling.targets'))" />
+  </Target>
 </Project>

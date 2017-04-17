@@ -49,6 +49,36 @@ namespace Artivity.Api.IO
         #endregion
 
         #region Methods
+        public string GetProjectId(Uri activityUri, IModel model=null)
+        {
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?project
+                WHERE
+                {
+                  ?project prov:qualifiedUsage / prov:entity ?file .
+                  ?entity nie:isStoredAs ?file .
+                  @activityUri prov:used ?entity .
+                }");
+
+            query.Bind("@activityUri", activityUri);
+
+            if (model == null)
+                model = DefaultModel;
+            IEnumerable<BindingSet> bindings = model.GetBindings(query);
+            if (bindings.Any())
+            {
+                BindingSet binding = bindings.First();
+                string uri = binding["project"].ToString();
+
+                if (!string.IsNullOrEmpty(uri))
+                {
+                    string p = new Uri(uri).AbsolutePath;
+                    return Path.GetFileName(p);
+                }
+            }
+            return null;
+        }
 
         protected override IEnumerable<EntityRenderingInfo> GetRenderings(Uri uri, DateTime minTime)
         {

@@ -49,6 +49,16 @@ namespace Artivity.DataModel
         public Comment(Uri uri)
             : base(uri)
         {
+            IsSynchronizable = true;
+        }
+
+        #endregion
+
+        #region Methods
+
+        public override bool Validate()
+        {
+            return !string.IsNullOrEmpty(Message);
         }
 
         #endregion

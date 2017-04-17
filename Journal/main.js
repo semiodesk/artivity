@@ -31,7 +31,7 @@ if (process.platform === "darwin") {
 }
 
 app.on('ready', () => {
-    // NOTE: Setting the background color prevents flickering on resize:
+    // NOTE: Setting the background color minimizes flickering on resize:
     // http://www.christianengvall.se/electron-white-screen-app-startup/
     var options = {
         frame: false,
@@ -40,7 +40,7 @@ app.on('ready', () => {
         minWidth: 800,
         height: 800,
         minHeight: 600,
-        icon: __dirname + '/app/resources/images/icon.ico',
+        icon: __dirname + '/app/resources/img/icon.ico',
         backgroundColor: '#1D1D1D'
     };
 

@@ -159,9 +159,9 @@ namespace Artivity.Apid.Modules
 
         private Response GetAccounts()
         {
-            Person user = ModelProvider.GetAgents().GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
+            User user = ModelProvider.GetAgents().GetResource<User>(new UriRef(PlatformProvider.Config.Uid));
 
-            return ResponseAsJsonSync(user.Accounts);
+            return Response.AsJsonSync(user.Accounts);
         }
 
         private Response GetAccountsWithFeature(Uri featureUri)
@@ -186,7 +186,7 @@ namespace Artivity.Apid.Modules
                 }
             }
 
-            return ResponseAsJsonSync(accounts);
+            return Response.AsJsonSync(accounts);
         }
 
         private Response GetServiceClients()
@@ -324,7 +324,7 @@ namespace Artivity.Apid.Modules
             IModel model = ModelProvider.GetAgents();
 
             // Associate the account with the user.
-            Person user = model.GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
+            User user = model.GetResource<User>(new UriRef(PlatformProvider.Config.Uid));
 
             if (user == null)
             {
@@ -353,7 +353,7 @@ namespace Artivity.Apid.Modules
 
             IModel model = ModelProvider.GetAgents();
 
-            Person user = model.GetResource<Person>(new UriRef(PlatformProvider.Config.Uid));
+            User user = model.GetResource<User>(new UriRef(PlatformProvider.Config.Uid));
 
             if (user == null)
             {
@@ -500,7 +500,7 @@ namespace Artivity.Apid.Modules
 
                 if(publishingClient != null)
                 {
-                    ArchiveWriterBase archiveWriter = new EntityArchiveWriter(PlatformProvider, ModelProvider);
+                    ArchiveWriterBase archiveWriter = new ImageExportArchiveWriter(PlatformProvider, ModelProvider);
 
                     OnlineServiceClientSession session = GetSessionHandle(publishingClient);
 

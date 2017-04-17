@@ -53,6 +53,10 @@ namespace Artivity.Api.IO
 
         public TaskProgressInfo Progress { get; private set; }
 
+        public IModel DefaultModel { get; set; }
+
+        public long BytesWritten { get; private set; }
+
         #endregion
 
         #region Constructors
@@ -112,6 +116,11 @@ namespace Artivity.Api.IO
 
         protected abstract IEnumerable<EntityRenderingInfo> GetRenderings(Uri uri, DateTime minTime);
 
+        protected virtual IEnumerable<ArchiveManifestRemoteFileInfo> GetRemoteFiles(Uri uri)
+        {
+            return Enumerable.Empty<ArchiveManifestRemoteFileInfo>();
+        }
+
         private void ExportData(Uri uri, DirectoryInfo appFolder, DirectoryInfo exportFolder, DateTime minTime)
         {
             string dataExport = PlatformProvider.DatabaseFolder;
@@ -123,33 +132,62 @@ namespace Artivity.Api.IO
                 Directory.CreateDirectory(dataExport);
             }
 
-            ExportAgents(uri, dataExport, minTime);
-            ExportActivities(uri, dataExport, minTime);
+            string file = Path.Combine(dataExport, "agents.ttl");
+
+            using(FileStream fs = new FileStream(file, FileMode.CreateNew))
+            {
+                ExportAgents(uri, fs, minTime);
+
+                if (File.Exists(file))
+                {
+                    BytesWritten += new FileInfo(file).Length;
+                }
+            }
+
+            Progress.Completed++;
+            RaiseProgressChanged();
+
+            file = Path.Combine(dataExport, "activities.ttl");
+
+            using (FileStream fs = new FileStream(file, FileMode.CreateNew))
+            {
+                ExportActivities(uri, fs, minTime);
+
+                if (File.Exists(file))
+                {
+                    BytesWritten += new FileInfo(file).Length;
+                }
+            }
+
+            Progress.Completed++;
+            RaiseProgressChanged();
         }
 
-        private void ExportAgents(Uri uri, string targetDir, DateTime minTime)
+        private void ExportAgents(Uri uri, Stream stream, DateTime minTime)
         {
             ISparqlQuery query = GetAgentsQuery(uri, minTime);
 
-            WriteTurtle(query, targetDir, "agents.ttl");
+            if (DefaultModel != null)
+            {
+                query.Model = DefaultModel;
+            }
 
-            Progress.Completed++;
-
-            RaiseProgressChanged();
+            WriteTurtle(query, stream);
         }
 
-        private void ExportActivities(Uri uri, string targetDir, DateTime minTime)
+        private void ExportActivities(Uri uri, Stream stream, DateTime minTime)
         {
             ISparqlQuery query = GetActivitiesQuery(uri, minTime);
 
-            WriteTurtle(query, targetDir, "activities.ttl");
+            if (DefaultModel != null)
+            {
+                query.Model = DefaultModel;
+            }
 
-            Progress.Completed++;
-
-            RaiseProgressChanged();
+            WriteTurtle(query, stream);
         }
 
-        private void ExportRenderings(Uri uri, DirectoryInfo appFolder, DirectoryInfo exportFolder, DateTime minTime)
+        protected virtual void ExportRenderings(Uri uri, DirectoryInfo appFolder, DirectoryInfo exportFolder, DateTime minTime)
         {
             foreach(EntityRenderingInfo info in GetRenderings(uri, minTime))
             {
@@ -219,6 +257,32 @@ namespace Artivity.Api.IO
             RaiseProgressChanged();
         }
 
+        private void WriteTurtle(ISparqlQuery query, Stream output)
+        {
+            IGraph graph = VirtuosoManager.Query(query.ToString()) as IGraph;
+
+            if (graph != null && !graph.IsEmpty)
+            {
+                var syntax = VDS.RDF.Parsing.TurtleSyntax.W3C;
+
+                var writer = new VDS.RDF.Writing.CompressingTurtleWriter(syntax);
+                writer.DefaultNamespaces.AddNamespace("art", ART.Namespace);
+                writer.DefaultNamespaces.AddNamespace("dc", DCES.Namespace);
+                writer.DefaultNamespaces.AddNamespace("nie", NIE.Namespace);
+                writer.DefaultNamespaces.AddNamespace("nfo", NFO.Namespace);
+                writer.DefaultNamespaces.AddNamespace("prov", PROV.Namespace);
+
+                using (StreamWriter wr = new StreamWriter(output) )
+                {
+                    graph.SaveToStream(wr, writer);
+                }
+            }
+
+            Progress.Completed++;
+
+            RaiseProgressChanged();
+        }
+
         private void WriteTurtle(ISparqlQuery query, string targetDir, string fileName)
         {
             IGraph graph = VirtuosoManager.Query(query.ToString()) as IGraph;
@@ -247,9 +311,14 @@ namespace Artivity.Api.IO
         private void WriteManifest(Uri entityUri, DirectoryInfo exportFolder)
         {
             ArchiveManifest manifest = new ArchiveManifest();
-            manifest.FileFormat = "1.1";
+            manifest.FileFormat = "1.2";
             manifest.ExportDate = DateTime.UtcNow;
             manifest.ExportedEntites.Add(entityUri);
+
+            foreach(ArchiveManifestRemoteFileInfo info in GetRemoteFiles(entityUri))
+            {
+                manifest.RemoteFiles.Add(info);
+            }
 
             string manifestFile = Path.Combine(exportFolder.FullName, "Manifest.json");
             string json = JsonConvert.SerializeObject(manifest, Formatting.Indented);

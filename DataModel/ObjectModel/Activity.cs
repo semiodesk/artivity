@@ -34,7 +34,7 @@ using System.Text;
 namespace Artivity.DataModel
 {
     [RdfClass(PROV.Activity)]
-    public class Activity : Resource
+    public class Activity : SynchronizableResource, IValidatable
     {
 		#region Members
 
@@ -57,10 +57,10 @@ namespace Artivity.DataModel
         public List<Entity> UsedEntities { get; set; }
 
 		[RdfProperty(PROV.startedAtTime)]
-		public DateTime StartTime { get; set; }
+		public DateTime StartTimeUtc { get; set; }
 
 		[RdfProperty(PROV.endedAtTime)]
-		public DateTime EndTime { get; set; }
+		public DateTime EndTimeUtc { get; set; }
 
         [RdfProperty(PROV.wasStartedBy)]
         public Agent StartedBy { get; set; }
@@ -70,6 +70,35 @@ namespace Artivity.DataModel
         #region Constructors
 
         public Activity(Uri uri) : base(uri) {}
+
+        #endregion
+
+        #region Methods
+
+        public virtual bool Validate()
+        {
+            /*
+            bool result = Associations.Count > 0 && StartTime > DateTime.MinValue;
+            
+            if(EndTime > DateTime.MinValue)
+            {
+                return result & EndTime > StartTime;
+            }
+            else
+            {
+                return result;
+            }
+            */
+
+            if (EndTimeUtc > DateTime.MinValue)
+            {
+                return EndTimeUtc > StartTimeUtc;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         #endregion
     }
