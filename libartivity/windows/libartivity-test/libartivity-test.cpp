@@ -19,7 +19,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// We pass the server URL to the log upon creation.
 	ActivityLog* log = new ActivityLog();
 
-#if DEBUG
+#if ART_DEBUG
     log->debug = true;
 #endif
 
@@ -45,7 +45,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     string renderPath = log->getRenderOutputPath();
 
-#if _DEBUG
+#if ART_DEBUG
     log->logInfo("Render output: " + renderPath);
 #endif
 
