@@ -22,16 +22,6 @@
 	function ProjectViewDirectiveController($scope, $element, $sce, $uibModal, agentService, navigationService, projectService, hotkeys) {
 		var t = this;
 
-		if (t.new) {
-			projectService.create().then(function (result) {
-				t.project = result;
-				t.project.folder = null;
-				t.project.members = [];
-
-				t.togglePropertyPane();
-			});
-		}
-
 		t.file = null;
 
 		t.viewFile = function (e, file) {
@@ -133,25 +123,21 @@
 			if (t.project) {
 				var panel = $($element).find('.view-secondary-content');
 
-				var visible = panel.hasClass('panel-visible');
+				panel.toggleClass('panel-visible');
 
-				if (!t.new || t.new && !visible) {
-					panel.toggleClass('panel-visible');
+				if (!t.project.new) {
+					// Load the folders and members when the panel is being made visible.
+					projectService.getFolders(t.project.Uri).then(function (result) {
+						if (result.length > 0) {
+							t.project.folder = result[0].Url.Uri;
+						}
+					});
 
-					if (!t.new && !visible) {
-						// Load the folders and members when the panel is being made visible.
-						projectService.getFolders(t.project.Uri).then(function (result) {
-							if (result.length > 0) {
-								t.project.folder = result[0].Url.Uri;
-							}
-						});
-
-						projectService.getMembers(t.project.Uri).then(function (result) {
-							if (result.length > 0) {
-								t.project.members = result;
-							}
-						});
-					}
+					projectService.getMembers(t.project.Uri).then(function (result) {
+						if (result.length > 0) {
+							t.project.members = result;
+						}
+					});
 				}
 			}
 		}
@@ -159,6 +145,8 @@
 		t.commit = function () {
 			if ($scope.projectForm.$valid) {
 				projectService.update(t.project);
+
+				t.project.new = false;
 
 				t.togglePropertyPane();
 			}
@@ -182,7 +170,9 @@
 
 		t.$postLink = function () {
 			$scope.$watch('t.project', function (newValue, oldValue) {
-				$scope.$broadcast('refresh');
+				if (t.project && t.project.new) {
+					t.togglePropertyPane();
+				}
 			});
 
 			$element.on('appear', function () {

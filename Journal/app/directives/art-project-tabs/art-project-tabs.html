@@ -22,7 +22,7 @@
             </empty>
         </art-file-list>
     </uib-tab>
-    <uib-tab ng-repeat="project in t.projects">
+    <uib-tab ng-repeat="project in t.projects track by $index">
         <uib-tab-heading>
             <div class="nav-link-container" ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
                 jqyoui-droppable="{onDrop: 't.onFileDropped'}">
@@ -36,13 +36,11 @@
 
         <art-project-view project="project"></art-project-view>
     </uib-tab>
-    <uib-tab>
+    <uib-tab ng-click="t.addProject($event)">
         <uib-tab-heading>
             <div class="nav-link-container">
                 <i class="zmdi zmdi-lg zmdi-plus"></i>
             </div>
         </uib-tab-heading>
-
-        <art-project-view new="true"></art-project-view>
     </uib-tab>
 </uib-tabset>
