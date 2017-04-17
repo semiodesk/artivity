@@ -68,7 +68,7 @@ namespace artivity
 	{
 		CURL* curl = curl_easy_init();
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
 		if (!curl)
 		{
 			logError("Failed to initialize CURL.");
@@ -82,7 +82,7 @@ namespace artivity
 	{
 		if (!curl)
 		{
-#ifdef _DEBUG
+#ifdef ART_DEBUG
 			logError("CURL not initialized.");
 #endif
 
@@ -100,20 +100,20 @@ namespace artivity
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
 
 		if (postFields.length() > 0)
 		{
 			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postFields.c_str());
 		}
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
 #endif
 
 		CURLcode responseCode = curl_easy_perform(curl);
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
 #endif
 
@@ -124,7 +124,7 @@ namespace artivity
 
 		curl_easy_cleanup(curl);
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
 		if (responseCode == CURLE_OK)
 		{
             stringstream time;
@@ -682,7 +682,7 @@ namespace artivity
         }
         else
         {
-#ifdef _DEBUG
+#ifdef ART_DEBUG
             logRequest(url.str(), "0ms", requestData);
 
             _transmitCount++;
@@ -692,7 +692,7 @@ namespace artivity
 		clear();
 	}
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
 	void ActivityLog::logError(string msg)
 	{
 		cout << getTime() << " [ERROR] " << msg << endl << flush;

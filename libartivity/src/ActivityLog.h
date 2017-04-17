@@ -157,7 +157,7 @@ namespace artivity
 
 		std::string getRenderOutputPath();
 
-#ifdef _DEBUG
+#ifdef ART_DEBUG
 		void logError(std::string msg);
 		void logInfo(std::string msg);
         void logRequest(std::string url, std::string time, std::string data);
