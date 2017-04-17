@@ -2,7 +2,7 @@
     <div class="row">
         <div class="toolbar toolbar-view">
             <a class="btn btn-chromeless" ng-click="t.navigateBack()"><i class="zmdi zmdi-chevron-left"></i></a>
-            <div class="txt txt-title" ng-bind="t.file.label"></div>
+            <div class="txt txt-title">{{t.file.label}}</div>
             <a class="btn btn-primary pull-right" ng-click="t.publishLatestRevision(t.file)"><i class="zmdi zmdi-share"></i><span class="btn-label">Teilen</span></a>
         </div>
     </div>

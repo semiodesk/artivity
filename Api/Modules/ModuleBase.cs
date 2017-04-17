@@ -155,7 +155,7 @@ namespace Artivity.Api.Modules
                 int count = 0;
 
                 SparqlQuery countQuery = new SparqlQuery(@"
-                    SELECT COUNT(?s) AS ?count WHERE
+                    SELECT COUNT(DISTINCT ?s) AS ?count WHERE
                     {
 	                    ?s a @type .
 	
@@ -172,50 +172,51 @@ namespace Artivity.Api.Modules
                 if (b != null)
                 {
                     count = (int)b["count"];
-                }
-                else
-                {
-                    return Response.AsJsonSync(new Dictionary<string, object>
-                    {
-                        {"success", false},
-                        {"count", 0},
-                        {"offset", 0},
-                        {"limit", 0},
-                        {"data", ""}
-                    });
-                }
 
-                SparqlQuery query = new SparqlQuery(@"
-                    SELECT ?s ?p ?o WHERE
+                    if (count > 0)
                     {
-                        ?s ?p ?o
+                        SparqlQuery query = new SparqlQuery(@"
+                        SELECT ?s ?p ?o WHERE
                         {
-                            SELECT ?s WHERE
+                            ?s ?p ?o
                             {
-	                            ?s a @type .
+                                SELECT ?s WHERE
+                                {
+	                                ?s a @type .
 	
-	                            OPTIONAL { ?s art:deleted ?deletionTime . }
+	                                OPTIONAL { ?s art:deleted ?deletionTime . }
 	
-	                            FILTER(!BOUND(?deletionTime) || ?deletionTime = @minDate)
+	                                FILTER(!BOUND(?deletionTime) || ?deletionTime = @minDate)
+                                }
+                                OFFSET @offset LIMIT @limit
                             }
-                            OFFSET @offset LIMIT @limit
-                        }
-                    }");
+                        }");
 
-                query.Bind("@type", entityTypeUri);
-                query.Bind("@minDate", DateTime.MinValue);
-                query.Bind("@offset", offset);
-                query.Bind("@limit", limit);
+                        query.Bind("@type", entityTypeUri);
+                        query.Bind("@minDate", DateTime.MinValue);
+                        query.Bind("@offset", offset);
+                        query.Bind("@limit", limit);
 
-                List<T> data = model.GetResources<T>(query).ToList();
+                        List<T> data = model.GetResources<T>(query).ToList();
+
+                        return Response.AsJsonSync(new Dictionary<string, object>
+                        {
+                            {"success", true},
+                            {"count", count},
+                            {"offset", offset},
+                            {"limit", limit},
+                            {"data", data}
+                        });
+                    }
+                }
 
                 return Response.AsJsonSync(new Dictionary<string, object>
                 {
-                    {"success", true},
+                    {"success", false},
                     {"count", count},
                     {"offset", offset},
                     {"limit", limit},
-                    {"data", data}
+                    {"data", new List<T>()}
                 });
             }
         }

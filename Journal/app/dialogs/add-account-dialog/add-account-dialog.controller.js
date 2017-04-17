@@ -11,7 +11,18 @@
         t.clients = [];
 
         api.getAccountClients().then(function (data) {
-            t.clients = data;
+            var clients = [];
+
+            for(var i = 0; i < data.length; i++) {
+                var client = data[i];
+
+                // Do not allow to add Artivity Online accounts via the accounts tab.
+                if(!client.Uri.startsWith('http://artivity.online')) {
+                    clients.push(client);
+                }
+            }
+
+            t.clients = clients;
 
             console.log("Available clients:", t.clients);
         });

@@ -1,4 +1,5 @@
-<div class="comment-container" ng-mouseenter="t.showMarks(t.comment)" ng-mouseleave="t.hideMarks(t.comment)">
+<!--<div class="comment-container" ng-mouseenter="t.showMarks(t.comment)" ng-mouseleave="t.hideMarks(t.comment)">-->
+<div class="comment-container">
     <div class="comment comment-item" ng-class="{'comment-user': t.isUser, 'comment-request': t.isRequest}">
         <div class="comment-avatar">
             <art-user-photo-img src="t.getPhotoUrl(t.comment.agent)" width="32" height="32"></art-user-photo-img>
@@ -15,14 +16,17 @@
                 </div>
             </div>
         </div>
-        <div class="comment-time hidden-mouseover">
+        <!--<div class="comment-time hidden-mouseover">-->
+        <div class="comment-time">
             <label class="time pull-right small">{{t.getFormattedTime(t.comment.endTime, 'hh:mm')}}</label>
         </div>
+        <!--
         <div class="comment-more visible-mouseover">
             <a class="btn btn-chromeless btn-circular">
                 <i class="zmdi zmdi-more"></i>
             </a>
         </div>
+        -->
     </div>
 </div>
 <div ng-if="t.enableResponse">

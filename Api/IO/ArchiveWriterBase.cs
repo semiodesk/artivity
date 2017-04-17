@@ -107,6 +107,11 @@ namespace Artivity.Api.IO
 
             DeleteExportFolder(exportFolder);
 
+            if(File.Exists(targetFile.FullName))
+            {
+                File.Delete(targetFile.FullName);
+            }
+
             File.Move(archiveFile.FullName, targetFile.FullName);
         }
 

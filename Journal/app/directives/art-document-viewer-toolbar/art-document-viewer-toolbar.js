@@ -27,7 +27,7 @@
             if (t.viewer) {
                 var selected = t.viewer.selectedCommand;
 
-                $element.find('.btn[data-command]').each(function (i, btn) {
+                $('.btn[data-command]').each(function (i, btn) {
                     var b = $(btn);
 
                     if (b.data('command') === selected.id) {
@@ -76,7 +76,7 @@
         }
 
         t.$postLink = function () {
-            $element.find('.btn[data-command]').each(function (i, btn) {
+            $('.btn[data-command]').each(function (i, btn) {
                 $(btn).click(t.executeCommand);
             });
 

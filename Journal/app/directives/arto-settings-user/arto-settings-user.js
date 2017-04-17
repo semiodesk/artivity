@@ -88,7 +88,7 @@
         t.$onInit = function () {
             // Register the controller with its parent for global apply/cancel.
             settingsService.registerController(t);
-            
+
             api.getAccounts().then(function (accounts) {
                 if (accounts) {
                     for (i = 0; i < accounts.length; i++) {

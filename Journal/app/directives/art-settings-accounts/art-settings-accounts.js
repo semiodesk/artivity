@@ -28,7 +28,17 @@
         s.accounts = [];
 
         api.getAccounts().then(function (data) {
-            s.accounts = data;
+            var accounts = [];
+
+            for(var i = 0; i < data.length; i++) {
+                var account = data[i];
+
+                if(account && !account.ServiceClient.Uri.startsWith('http://artivity.online')) {
+                    accounts.push(account);
+                }
+            }
+
+            s.accounts = accounts;
         });
 
         s.addAccount = function () {

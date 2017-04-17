@@ -36,9 +36,9 @@
 
     angular.module('app').controller('DocumentViewDirectiveController', DocumentViewDirectiveController);
 
-    DocumentViewDirectiveController.$inject = ['$rootScope', '$scope', 'entityService', 'navigationService'];
+    DocumentViewDirectiveController.$inject = ['$rootScope', '$scope', 'entityService', 'navigationService', 'syncService'];
 
-    function DocumentViewDirectiveController($rootScope, $scope, entityService, navigationService) {
+    function DocumentViewDirectiveController($rootScope, $scope, entityService, navigationService, syncService) {
         var t = this;
 
         t.latestRevisionUri = null;
@@ -56,7 +56,7 @@
         t.publishLatestRevision = function (file) {
             if (file && file.uri) {
                 entityService.publishLatestRevisionFromFileUri(file.uri).then(function (data) {
-                    console.log(data);
+                    syncService.synchronize();
                 });
             }
         }
