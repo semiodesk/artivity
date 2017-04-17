@@ -1,32 +1,3 @@
-<div class="layout-root table-layout">
-	<div class="row header">
-		<div class="toolbar">
-			<div class="col" style="width: 50px;">
-				<img class="icn icn-circle" id="userPhoto" style="margin: 0 8px 0 12px;"/>
-			</div>
-			<div class="col expand" style="padding: 0;">
-				<label class="title pull-left" id="userName" style="margin: 0; padding: 0; position: relative; top: 7px;"></label>
-			</div>
-			<div class="col" ng-show="false">
-				<a class="btn btn-header" id="calendar-btn" ng-click="t.toggleCalendar()"><i class="zmdi zmdi-hc-fw zmdi-calendar"></i></a>
-			</div>
-			<div class="col">
-				<a class="btn btn-header" href="#/settings"><i class="zmdi zmdi-hc-fw"></i></a>
-			</div>
-		</div>
-	</div>
-	<div class="row expand" id="content">
-		<div class="layout-container ui-pane-container">
-			<div class="ui-resizable ui-pane ui-pane-left" style="width: 250px;">
-				<div class="pane-content">
-					<art-project-list></art-project-list>
-				</div>
-			</div>
-			<div class="ui-resizable ui-pane ui-pane-center">
-				<div class="pane-content">
-					<art-file-list files="{{t.files}}"></art-file-list>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="layout-root" id="content">
+	<art-project-tabs></art-project-tabs>
 </div>

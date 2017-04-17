@@ -1,15 +1,16 @@
 (function () {
     angular.module('app').controller('StartController', StartController);
 
-    StartController.$inject = ['$location', '$http', 'api', 'windowService', 'appService'];
+    StartController.$inject = ['$scope', '$location', '$http', 'appService', 'agentService', 'windowService'];
 
-    function StartController($location, $http, api, windowService, appService) {
+    function StartController($scope, $location, $http, appService, agentService, windowService) {
         var t = this;
 
         windowService.setClosable(true);
         windowService.setMinimizable(false);
         windowService.setMaximizable(false);
 
+        t.initialized = false;
         t.showSpinner = true;
         t.showError = false;
         t.retry = retry;
@@ -19,17 +20,16 @@
         t.connectInterval = null;
         t.connectIntervalMs = appService.connectionInterval();
 
-        function init() {
-            showLoadingSpinner();
-
-            tryConnect();
-        }
-
         function tryConnect() {
             $http.get(apid.endpointUrl + '/setup').then(
                 function (response) {
                     stopConnect();
-                    showStartView(response);
+
+                    agentService.initialize(function () {
+                        showStartView(response);
+                    }, function () {
+                        console.warn('Failed to initialize agent service.');
+                    });
                 },
                 function () {
                     if (t.connectInterval === null) {
@@ -74,8 +74,30 @@
             t.showError = true;
         }
 
+        function setupLinkHandler() {
+            if (!t.initialized) {
+                // Open external links with the system default browser.
+                $(document).on('click', 'a[target="_blank"]', function (event) {
+                    event.preventDefault();
+                    windowService.openExternalLink(this.href);
+                });
+
+                t.initialized = true;
+            }
+        }
+
         function retry() {
-            init();
+            showLoadingSpinner();
+
+            tryConnect();
+        }
+
+        function init() {
+            setupLinkHandler();
+            
+            showLoadingSpinner();
+
+            tryConnect();
         }
 
         init();

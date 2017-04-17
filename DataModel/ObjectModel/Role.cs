@@ -25,6 +25,7 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Text;
@@ -32,14 +33,22 @@ using System.Text;
 namespace Artivity.DataModel
 {
 	[RdfClass(PROV.Role)]
-	public class Role : Agent
+	public class Role : Resource
 	{
 		#region Constructors
 
+        /// <summary>
+        /// Create a new instance of the class from a given URI.
+        /// </summary>
+        /// <param name="uri">A uniform resource identifier.</param>
+        /// <remarks>
+        /// We're not providing a constructor with parameter type Resource here, because this
+        /// causes problems when deserializing: "..JSON.NET throws where there are more then 
+        /// one parameterized public constructors and none public default constructor."
+        /// </remarks>
+        /// <see href="http://blog.halan.se/post/Deserializing-objects-with-non-default-constructors-in-JSONNET.aspx"/>
 		public Role(Uri uri) : base(uri) {}
 
-        public Role(Resource resource) : base(resource.Uri) { }
-
 		#endregion
-	}
+    }
 }

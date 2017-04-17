@@ -4,62 +4,45 @@
     function FileCardDirective() {
         return {
             restrict: 'E',
-            scope: {},
+            scope: {
+                'file': '=',
+                'clicked': '=?'
+            },
             templateUrl: 'app/directives/art-file-card/art-file-card.html',
             controller: FileCardDirectiveController,
             controllerAs: 't',
-            link: function (scope, element, attr, ctrl) {
-                ctrl.setFile(element, JSON.parse(attr.file), attr.enableLink);
+            bindToController: true,
+            link: function (scope, element, attr, t) {
+                t.setFile(element);
             }
         }
     }
 
     angular.module('app').controller('FileCardDirectiveController', FileCardDirectiveController);
 
-    FileCardDirectiveController.$inject = ['$scope', 'api', 'filesystemService'];
+    FileCardDirectiveController.$inject = ['$scope', '$location', 'selectionService', 'filesystemService'];
 
-    function FileCardDirectiveController($scope, api, filesystemService) {
+    function FileCardDirectiveController($scope, $location, selectionService, filesystemService) {
         var t = this;
 
-        t.setFile = function (element, file, enableLink) {
-            t.file = file;
-            t.fileName = filesystemService.getFileNameWithoutExtension(file.label);
-            t.fileExtension = filesystemService.getFileExtension(file.label);
-            t.thumbnail = api.hasThumbnail(file.uri);
-            t.thumbnailUrl = api.getThumbnailUrl(file.uri);
-            t.link = enableLink === undefined || enableLink === true;
+        t.thumbnailStyle = {};
 
-            $(element).find('.file-thumbnail').css('background-image', 'url(' + t.thumbnailUrl + ')');
-        };
+        t.setFile = function (element) {
+            t.fileName = filesystemService.getFileNameWithoutExtension(t.file.label);
+            t.fileExtension = filesystemService.getFileExtension(t.file.label);
 
-        t.onClick = function (e) {
+            if(t.file.thumbnail) {
+                t.thumbnailStyle = {
+                    'background-image': 'url(' + t.file.thumbnail + ')'
+                }
+            }
+        }
+
+        t.onClicked = function (e) {
             e.preventDefault();
 
-            if (event.ctrlKey) {
-                t.navigateToFragment("/files/preview?uri=" + t.file.uri);
-            } else {
-                t.navigateToFragment("/files/view?uri=" + t.file.uri);
-            }
-        };
-
-        t.navigateToFragment = function (fragment) {
-            var url = t.getUrlWithFragment(fragment);
-
-            if (url !== '') {
-                window.location.href = url;
-            }
-        };
-
-        // TODO: Taken from art-keyboard-input-handler directive. Move into window service.
-        t.getUrlWithFragment = function (fragment) {
-            var url = window.location.href.split('#');
-
-            if (url.length < 2) {
-                console.log('Unable to parse fragment from url:' + window.location.href);
-
-                return '';
-            } else {
-                return url[0] + '#' + fragment;
+            if (t.clicked) {
+                t.clicked(e, t.file);
             }
         }
     }

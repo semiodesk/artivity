@@ -11,7 +11,7 @@ function EntityCache() {
 
     // The list of entities in the order they were modified, from newest to oldest.
     t.entityHistory = [];
-};
+}
 
 EntityCache.prototype.length = function () {
     var t = this;

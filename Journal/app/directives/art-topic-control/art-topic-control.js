@@ -5,155 +5,117 @@
         return {
             restrict: 'E',
             templateUrl: 'app/directives/art-topic-control/art-topic-control.html',
-            bindToController: true,
             scope: {
-                entity: '@'
+                entityUri: '='
             },
             controller: TopicControlDirectiveController,
-            controllerAs: 't'
+            controllerAs: 't',
+            bindToController: true,
+            link: function (scope, element, attr, t) {
+                scope.$watch('t.entityUri', function () {
+                    if (t.entityUri) {
+                        t.loadTopcisForEntity(t.entityUri);
+                    }
+                });
+            }
         }
     }
 
     angular.module('app').controller('TopicControlDirectiveController', TopicControlDirectiveController);
 
-    TopicControlDirectiveController.$inject = ['$scope', 'agentService', 'entityService', 'topicService', 'markService', 'viewerService'];
+    TopicControlDirectiveController.$inject = ['$scope', 'agentService', 'entityService', 'topicService', 'viewerService'];
 
-    function TopicControlDirectiveController($scope, agentService, entityService, topicService, markService, viewerService) {
+    function TopicControlDirectiveController($scope, agentService, entityService, topicService, viewerService) {
         var t = this;
 
+        // TOPICS
         t.topics = [];
-        t.topic = {
-            title: ''
-        }
+        t.newTopic = null;
+        t.selectedTopic = null;
 
-        t.updateTopic = updateTopic;
-        t.postTopic = postTopic;
-        t.resetTopic = resetTopic;
+        t.loadTopcisForEntity = function (entityUri) {
+            console.log("Loading topics:", entityUri);
 
-        t.marks = [];
+            topicService.getTopicsForEntity(entityUri).then(function (data) {
+                t.topics = [];
 
-        t.createMark = createMark;
-        t.showMarks = showMarks;
-        t.hideMarks = hideMarks;
+                for (i = 0; i < data.length; i++) {
+                    var d = data[i];
 
-        initialize();
-
-        function initialize() {
-            initializeData();
-        }
-
-        function initializeData() {
-            agentService.getUser().then(function (data) {
-                t.user = data;
-
-                // Set the user URI for the new comments.
-                t.topic.agent = t.user.Uri;
-
-                if (t.entity) {
-                    // Make sure the user is properly initialized before retrieving the entity derivations.
-                    entityService.getById(t.entity).then(function (response) {
-                        var entity = response;
-
-                        if (entity.RevisionUris && entity.RevisionUris.length > 0) {
-                            t.derivation = entity.RevisionUris[0];
-
-                            // Set the entity URI as primary source for the comments.
-                            t.topic.entity = t.derivation;
-
-                            topicService.get(t.derivation).then(function (data) {
-                                t.topics = [];
-
-                                for (i = 0; i < data.length; i++) {
-                                    var d = data[i];
-
-                                    // Insert at the beginning of the list.
-                                    t.topics.unshift({
-                                        uri: d.uri,
-                                        agent: d.agent,
-                                        time: d.time,
-                                        title: d.title,
-                                        completed: d.completed
-                                    });
-                                }
-                            });
-                        }
+                    // Insert at the beginning of the list.
+                    t.topics.unshift({
+                        uri: d.uri,
+                        agent: d.agent,
+                        time: d.time,
+                        title: d.title,
+                        completed: d.completed
                     });
                 }
             });
         }
 
-        function validateTopic() {
-            return t.topic.agent && t.topic.entity && t.topic.startTime && t.topic.title.length > 0;
+        t.validateTopic = function (topic) {
+            return topic.agent && topic.entity && topic.startTime && topic.title.length > 0;
         }
 
-        function updateTopic() {
-            if (!t.topic.startTime) {
-                t.topic.entity = t.derivation;
-                t.topic.startTime = new Date();
+        t.updateTopic = function (topic) {
+            if (!topic.startTime) {
+                topic.startTime = new Date();
 
-                console.log("Start topic: ", t.topic);
+                console.log("Started topic: ", t.newTopic);
             }
         };
 
-        function postTopic() {
-            if (!validateTopic()) {
-                console.log("Invalid topic: ", t.topic);
+        t.postTopic = function (topic) {
+            if (t.validateTopic(topic)) {
+                topic.endTime = new Date();
 
-                return;
+                topicService.postTopic(topic).then(function (data) {
+                    topic.uri = data.uri;
+
+                    // Show the topic in the list of topics.
+                    t.topics.push(topic);
+
+                    console.log("Posted topic: ", topic);
+
+                    // Clear the text and create a new topic.
+                    t.resetTopic();
+                }, function (response) {
+                    console.error(response);
+                });
+            } else {
+                console.log("Invalid topic: ", topic);
             }
-
-            t.topic.endTime = new Date();
-
-            topicService.post(t.topic).then(function (data) {
-                t.topic.uri = data.uri;
-
-                // Show the topic in the list of topics.
-                t.topics.push(t.topic);
-
-                // Clear the text and create a new topic.
-                resetTopic();
-
-                console.log("Posted topic: ", t.topic);
-            }, function (response) {
-                console.error(response);
-            });
         }
 
-        function resetTopic() {
-            t.topic = {
-                agent: null,
-                entity: t.derivation,
+        t.resetTopic = function () {
+            t.newTopic = {
+                agent: agentService.currentUser.Uri,
+                entity: t.entityUri,
                 startTime: null,
                 endTime: null,
                 title: '',
                 markers: []
             };
 
-            console.log("Reset topic: ", t.topic);
+            console.log("Reset topic: ", t.newTopic);
         }
 
-        function createMark(topic) {
+        t.deleteTopic = function (topic) {
             if (topic && topic.uri) {
-                viewerService.executeCommand('createMark', topic.uri);
+                topicService.deleteTopic(topic.uri);
+
+                console.log("Deleted topic: ", topic);
             }
         }
 
-        function showMarks(topic) {
-            if (topic && topic.uri) {
-                markService.getMarksForEntity(topic.uri).then(function (data) {
-                    t.marks = data;
-
-                    viewerService.executeCommand('showMarks', t.marks);
-                });
-            }
+        t.selectTopic = function (topic) {
+            t.selectedTopic = topic;
         }
 
-        function hideMarks(topic) {
-            if (topic && topic.uri && t.marks.length > 0) {
-                viewerService.executeCommand('hideMarks', t.marks);
-
-                t.marks = [];
-            }
-        }
+        // MARKS
+        t.createMark = viewerService.createMark;
+        t.showMarks = viewerService.showMarks;
+        t.hideMarks = viewerService.hideMarks;
     }
 })();

@@ -25,13 +25,15 @@
 //
 // Copyright (c) Semiodesk GmbH 2015
 
+using Artivity.Api.Platform;
+using Artivity.DataModel;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Artivity.Api.Platform;
-using Artivity.DataModel;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Net.Http;
 using Semiodesk.Trinity;
 
 namespace Artivity.Api.IO
@@ -40,9 +42,9 @@ namespace Artivity.Api.IO
     {
         #region Members
 
-        private readonly IPlatformProvider _platformProvider;
+        protected readonly IPlatformProvider PlatformProvider;
 
-        private readonly IModelProvider _modelProvider;
+        protected readonly IModelProvider ModelProvider;
 
         #endregion
 
@@ -50,8 +52,8 @@ namespace Artivity.Api.IO
 
         public ArchiveReader(IPlatformProvider platformProvider, IModelProvider modelProvider)
         {
-            _platformProvider = platformProvider;
-            _modelProvider = modelProvider;
+            PlatformProvider = platformProvider;
+            ModelProvider = modelProvider;
         }
 
         #endregion
@@ -65,7 +67,7 @@ namespace Artivity.Api.IO
 
         public void Read(Uri fileUrl)
         {
-            DirectoryInfo appFolder = new DirectoryInfo(_platformProvider.ArtivityDataFolder);
+            DirectoryInfo appFolder = new DirectoryInfo(PlatformProvider.ArtivityDataFolder);
             DirectoryInfo importFolder = CreateImportFolder(fileUrl);
 
             Decompress(importFolder, fileUrl);
@@ -81,6 +83,48 @@ namespace Artivity.Api.IO
             ImportAvatars(appFolder, importFolder);
 
             DeleteImportFolder(importFolder);
+        }
+
+        public async Task<int> DownloadRemoteFiles(string fileName, HttpClient client)
+        {
+            DirectoryInfo appFolder = new DirectoryInfo(PlatformProvider.ArtivityDataFolder);
+
+            ArchiveManifest manifest = GetManifest(fileName);
+
+            int n = 0;
+
+            foreach(ArchiveManifestRemoteFileInfo info in manifest.RemoteFiles)
+            {
+                HttpResponseMessage response =  await client.GetAsync(info.RemoteUrl);
+
+                if(response.IsSuccessStatusCode)
+                {
+                    Stream httpStream = await response.Content.ReadAsStreamAsync();
+
+                    using (StreamReader reader = new StreamReader(httpStream))
+                    {
+                        string folder = Path.Combine(appFolder.FullName, Path.GetDirectoryName(info.LocalName));
+
+                        if(!Directory.Exists(folder))
+                        {
+                            Directory.CreateDirectory(folder);
+                        }
+
+                        string file = Path.Combine(folder, Path.GetFileName(info.LocalName));
+
+                        using (FileStream fileStream = File.Create(file))
+                        {
+                            httpStream.CopyTo(fileStream);
+
+                            fileStream.Flush();
+
+                            n++;
+                        }
+                    }
+                }
+            }
+
+            return n;
         }
 
         public ArchiveManifest GetManifest(string fileName)
@@ -125,16 +169,21 @@ namespace Artivity.Api.IO
             }
         }
 
-        private void ImportData(DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
+        protected virtual void ImportData(DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
         {
-            ImportAgents(appFolder, importFolder, entityUri);
-            ImportActivities(appFolder, importFolder, entityUri);
+            var agentModel = ModelProvider.GetAgents();
+
+            ImportAgents(agentModel, appFolder, importFolder, entityUri);
+
+            var activitiesModel = ModelProvider.GetActivities();
+
+            ImportActivities(activitiesModel, appFolder, importFolder, entityUri);
         }
 
-        private void ImportAgents(DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
+        protected void ImportAgents(IModel targetModel, DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
         {
-            string dataApp = _platformProvider.DatabaseFolder;
-            string dataImport = _platformProvider.DatabaseFolder;
+            string dataApp = PlatformProvider.DatabaseFolder;
+            string dataImport = PlatformProvider.DatabaseFolder;
 
             dataImport = dataImport.Replace(appFolder.FullName, importFolder.FullName);
 
@@ -142,7 +191,7 @@ namespace Artivity.Api.IO
 
             if (file.Exists)
             {
-                _modelProvider.GetAgents().Read(file.ToUriRef(), RdfSerializationFormat.Turtle, true);
+                targetModel.Read(file.ToUriRef(), RdfSerializationFormat.Turtle, true);
             }
             else
             {
@@ -150,10 +199,10 @@ namespace Artivity.Api.IO
             }
         }
 
-        private void ImportActivities(DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
+        protected void ImportActivities(IModel targetModel, DirectoryInfo appFolder, DirectoryInfo importFolder, Uri entityUri)
         {
-            string dataApp = _platformProvider.DatabaseFolder;
-            string dataImport = _platformProvider.DatabaseFolder;
+            string dataApp = PlatformProvider.DatabaseFolder;
+            string dataImport = PlatformProvider.DatabaseFolder;
 
             dataImport = dataImport.Replace(appFolder.FullName, importFolder.FullName);
 
@@ -161,7 +210,7 @@ namespace Artivity.Api.IO
 
             if (file.Exists)
             {
-                _modelProvider.GetActivities().Read(file.ToUriRef(), RdfSerializationFormat.Turtle, true);
+                targetModel.Read(file.ToUriRef(), RdfSerializationFormat.Turtle, true);
             }
             else
             {
@@ -171,8 +220,8 @@ namespace Artivity.Api.IO
 
         private void ImportAvatars(DirectoryInfo appFolder, DirectoryInfo importFolder)
         {
-            string avatarsApp = _platformProvider.AvatarsFolder;
-            string avatarsImport = _platformProvider.AvatarsFolder;
+            string avatarsApp = PlatformProvider.AvatarsFolder;
+            string avatarsImport = PlatformProvider.AvatarsFolder;
 
             avatarsImport = avatarsImport.Replace(appFolder.FullName, importFolder.FullName);
 
@@ -196,7 +245,7 @@ namespace Artivity.Api.IO
 
         private void ImportRenderings(DirectoryInfo appFolder, DirectoryInfo importFolder, ArchiveManifest manifest)
         {
-            string renderingsFolder = _platformProvider.RenderingsFolder.Replace(appFolder.FullName, importFolder.FullName);
+            string renderingsFolder = PlatformProvider.RenderingsFolder.Replace(appFolder.FullName, importFolder.FullName);
 
             if (!Directory.Exists(renderingsFolder))
             {
@@ -213,7 +262,7 @@ namespace Artivity.Api.IO
 
                 Uri entityUri = manifest.ExportedEntites.First();
 
-                string targetFolder = Path.Combine(_platformProvider.RenderingsFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri));
+                string targetFolder = Path.Combine(PlatformProvider.RenderingsFolder, FileNameEncoder.Encode(entityUri.AbsoluteUri));
 
                 if (!Directory.Exists(targetFolder))
                 {
@@ -229,7 +278,7 @@ namespace Artivity.Api.IO
                 // which is named after the entity the renderings belong to.
                 foreach (string sourceDirectory in Directory.GetDirectories(renderingsFolder))
                 {
-                    string renderingsTarget = Path.Combine(_platformProvider.RenderingsFolder, Path.GetFileName(sourceDirectory));
+                    string renderingsTarget = Path.Combine(PlatformProvider.RenderingsFolder, Path.GetFileName(sourceDirectory));
 
                     if (!Directory.Exists(renderingsTarget))
                     {
@@ -262,7 +311,7 @@ namespace Artivity.Api.IO
         {
             string fileName = FileNameEncoder.Encode(Path.GetFileNameWithoutExtension(fileUrl.LocalPath));
 
-            string import = Path.Combine(_platformProvider.ImportFolder, fileName);
+            string import = Path.Combine(PlatformProvider.ImportFolder, fileName);
 
             // Empty any existing import directories..
             if (Directory.Exists(import))

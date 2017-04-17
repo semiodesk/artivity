@@ -44,6 +44,7 @@ using Nancy.Serialization.JsonNet;
 using Nancy.TinyIoc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Artivity.Apid.Platform;
 
 namespace Artivity.Apid
 {
@@ -61,6 +62,7 @@ namespace Artivity.Apid
 
         public IArtivityServiceSynchronizationProvider SynchronizationProvider { get; set; }
 
+        public OwnerProvider OwnerProvider { get; set; }
         #endregion
 
         #region Methods
@@ -98,6 +100,11 @@ namespace Artivity.Apid
             {
                 _container.Register(SynchronizationProvider);
                 _container.Register<IArtivityServiceSynchronizationProvider>(SynchronizationProvider);
+            }
+
+            if( OwnerProvider != null)
+            {
+                _container.Register(OwnerProvider);
             }
         }
             

@@ -54,6 +54,8 @@ namespace artivity
 
         void createActivity();
 
+		bool _connected;
+
     protected:
         ProducerConsumerRef consumer;
 
@@ -83,8 +85,6 @@ namespace artivity
         DerivationRef createDerivation() { return DerivationRef(new Derivation()); }
         RevisionRef createRevision() { return RevisionRef(new Revision()); }
         ChangeRef createChange() { return ChangeRef(new Change()); }
-        SaveRef createSave() { return SaveRef(new Save()); }
-        SaveAsRef createSaveAs() { return SaveAsRef(new SaveAs()); }
 
         virtual StartRef onEventStart() = 0;
         virtual EndRef onEventEnd() = 0;
@@ -93,8 +93,10 @@ namespace artivity
         virtual RevisionRef onEventEdit() = 0;
         virtual UndoRef onEventUndo() = 0;
         virtual RedoRef onEventRedo() = 0;
-        virtual SaveRef onEventSave();
-        virtual SaveAsRef onEventSaveAs();
+        virtual RevisionRef onEventSave();
+        virtual DerivationRef onEventSaveAs();
+
+		bool getCreateActivityRenderings(){ return _log->getCreateActivityRenderings(); }
 
     public:
         EditingSession();
@@ -120,6 +122,8 @@ namespace artivity
         void eventSaveAs(std::string targetPath);
 
         bool fileExists(const std::string& name);
+
+		bool isConnected() { return _connected; }
     };
 }
 

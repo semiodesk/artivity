@@ -123,16 +123,19 @@ namespace Artivity.Apid.Accounts
 
             string url = request.Query.url;
 
-            // Save the service endpoint address.
-            ServiceUrl = new Uri(url);
-
-            // Issue the request against the Artivity specific /api/1.0/login path.
-            if (!url.EndsWith(_path, StringComparison.InvariantCulture))
+            if (!string.IsNullOrEmpty(url))
             {
-                url.TrimEnd('/');
-                url += _path;
+                // Save the service endpoint address.
+                ServiceUrl = new Uri(url);
 
-                request.Query.url = url;
+                // Issue the request against the Artivity specific /api/1.0/login path.
+                if (!url.EndsWith(_path, StringComparison.InvariantCulture))
+                {
+                    url.TrimEnd('/');
+                    url += _path;
+
+                    request.Query.url = url;
+                }
             }
         }
 
@@ -210,15 +213,13 @@ namespace Artivity.Apid.Accounts
             }
         }
 
-        public bool BeginSynchronization(IUserAgent user, OnlineAccount account)
+        public bool BeginSynchronization(IAccoutOwner user, OnlineAccount account)
         {
             if (!_isSynchronizing)
             {
                 _isSynchronizing = true;
 
                 PlatformProvider.Logger.LogInfo("Starting synchronization..");
-
-                InitializeActivitySynchronizationState();
 
                 // TODO: Here we can query the server here to see if another client is currently syncing.
                 return true;
@@ -227,7 +228,7 @@ namespace Artivity.Apid.Accounts
             return false;
         }
 
-        public IModelSynchronizationState EndSynchronization(IUserAgent user, OnlineAccount account)
+        public IModelSynchronizationState EndSynchronization(IAccoutOwner user, OnlineAccount account)
         {
             IModelSynchronizationState state = ModelProvider.GetModelSynchronizationState(user);
 
@@ -251,37 +252,7 @@ namespace Artivity.Apid.Accounts
             return state;
         }
 
-        private void InitializeActivitySynchronizationState()
-        {
-            PlatformProvider.Logger.LogInfo("Initializing activity synchronization states..");
-
-            IModel model = ModelProvider.GetActivities();
-
-            SparqlUpdate update = new SparqlUpdate(@"
-                WITH @model
-                INSERT
-                {
-                    ?activity arts:synchronizationState ?state .
-
-                    ?state a arts:ResourceSynchronizationState ; arts:lastRemoteRevision @undefined .
-                }
-                WHERE
-                {
-                    ?influence prov:activity | prov:hadActivity ?activity .
-
-                    FILTER NOT EXISTS { ?activity arts:synchronizationState ?s . }
-
-                    BIND(URI(CONCAT(STR(?activity), '#sync')) AS ?state) .
-                }
-            ");
-
-            update.Bind("@model", model);
-            update.Bind("@undefined", -1);
-
-            model.ExecuteUpdate(update);
-        }
-
-        public async Task<int> TryGetSynchronizationState(IUserAgent user, OnlineAccount account)
+        public async Task<int> TryGetSynchronizationState(IAccoutOwner user, OnlineAccount account)
         {
             if (account != null && account.ServiceUrl != null)
             {
@@ -313,7 +284,7 @@ namespace Artivity.Apid.Accounts
             return -1;
         }
 
-        public async Task<SynchronizationChangeset> TryGetChangesetAsync(IUserAgent user, OnlineAccount account)
+        public async Task<SynchronizationChangeset> TryGetChangesetAsync(IAccoutOwner user, OnlineAccount account)
         {
             if(account.ServiceUrl != null)
             {
@@ -352,6 +323,11 @@ namespace Artivity.Apid.Accounts
                                     item.ResourceType = new UriRef(row.resourceType.ToString());
                                     item.Revision = (int)row.revision;
 
+                                    if(row.context != null)
+                                    {
+                                        item.Context = new UriRef(row.context.ToString());
+                                    }
+
                                     result.Add(item);
                                 }
 
@@ -371,27 +347,94 @@ namespace Artivity.Apid.Accounts
             return null;
         }
 
-        public async Task<bool> TryPullAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision)
+        public async Task<bool> TryPullAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision, Uri context)
         {
-            if (IsInstanceOf(uri, art.Project))
+            if (IsSubClassOf(typeUri, art.Project))
             {
-                return await TryPullProjectAsync(account, uri, revision);
+                return await TryPullProjectAsync(account, uri, revision, context);
             }
-            else if (IsInstanceOf(uri, prov.Activity))
+            else if (IsSubClassOf(typeUri, prov.Person))
             {
-                return await TryPullActivityAsync(account, uri, revision);
+                return await TryPullPersonAsync(account, uri, revision, context);
             }
-            else
+            else if (IsSubClassOf(typeUri, nfo.Image))
             {
-                return false;
+                return await TryPullImageAsync(account, uri, revision, context);
             }
+            else if (IsSubClassOf(typeUri, prov.Entity))
+            {
+                return await TryPullEntityAsync(account, uri, revision, context);
+            }
+
+            return false;
         }
 
-        private async Task<bool> TryPullProjectAsync(OnlineAccount account, Uri uri, int revision)
+        private async Task<bool> TryPullProjectAsync(OnlineAccount account, Uri uri, int revision, Uri context)
         {
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
-            Uri url = new Uri(baseUrl + "/api/1.0/sync/project/" + Path.GetFileName(uri.AbsolutePath));
+            string id = Path.GetFileName(uri.AbsolutePath);
+
+            if(!string.IsNullOrEmpty(id))
+            {
+                Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + id);
+
+                using (HttpClient client = GetHttpClient(account))
+                {
+                    HttpResponseMessage response = await client.GetAsync(url);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string json = await response.Content.ReadAsStringAsync();
+
+                        try
+                        {
+                            IModel model = ModelProvider.GetActivities();
+
+                            // Commit the project into the activities model.
+                            Project project = SynchronizableResource.FromJson<Project>(json);
+                            project.Model = model;
+
+                            // Deletes the properties of any existing resources in the model.
+                            project.IsNew = model.ContainsResource(uri);
+
+                            // Do not commit again *after* setting the revision because this 
+                            // will mark the resource as modified.
+                            project.Commit(revision, revision);
+
+                            // Also commit any qualified relations.
+                            foreach(Usage usage in project.Usages)
+                            {
+                                usage.Model = model;
+                                usage.Commit();
+                            }
+
+                            foreach (ProjectMembership member in project.Memberships)
+                            {
+                                member.Model = model;
+                                member.Commit();
+                            }
+
+                            return true;
+                        }
+                        catch(Exception ex)
+                        {
+                            PlatformProvider.Logger.LogError(ex);
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private async Task<bool> TryPullPersonAsync(OnlineAccount account, Uri uri, int revision, Uri context)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            string escapedUri = System.Uri.EscapeDataString(uri.AbsoluteUri);
+
+            Uri url = new Uri(baseUrl + "/api/1.0/sync/agents/persons?agentUri=" + escapedUri);
 
             using (HttpClient client = GetHttpClient(account))
             {
@@ -401,47 +444,24 @@ namespace Artivity.Apid.Accounts
                 {
                     string json = await response.Content.ReadAsStringAsync();
 
-                    dynamic data = JsonConvert.DeserializeObject(json);
-
-                    if(data != null)
+                    try
                     {
-                        IModel model = ModelProvider.GetActivities();
+                        IModel model = ModelProvider.GetAgents();
 
-                        Project project;
+                        // Commit the person into the agents model.
+                        Person person = SynchronizableResource.FromJson<Person>(json);
+                        person.Model = model;
 
-                        if (model.ContainsResource(uri))
-                        {
-                            project = model.GetResource<Project>(uri);
-                        }
-                        else
-                        {
-                            project = model.CreateResource<Project>(uri);
-                        }
+                        // Deletes the properties of any existing resources in the model.
+                        person.IsNew = !model.ContainsResource(uri);
 
-                        if (data.Name != null)
-                        {
-                            project.Name = data.Name;
-                        }
-
-                        if(data.CreationDate != null)
-                        {
-                            project.CreationTimeUtc = data.CreationDate;
-                        }
-
-                        if(data.ModificationDate != null)
-                        {
-                            project.ModificationTimeUtc = data.ModificationDate;
-                        }
-
-                        if (data.DeletionDate != null)
-                        {
-                            project.DeletionTimeUtc = data.DeletionDate;
-                        }
-
-                        // Do not commit _after_ setting the revision.
-                        project.Commit(revision);
-
-                        return true;
+                        // Do not commit again *after* setting the revision because this 
+                        // will mark the resource as modified.
+                        person.Commit(revision, revision);
+                    }
+                    catch(Exception ex)
+                    {
+                        PlatformProvider.Logger.LogError(ex);
                     }
                 }
             }
@@ -449,12 +469,58 @@ namespace Artivity.Apid.Accounts
             return false;
         }
 
-        private async Task<bool> TryPullActivityAsync(OnlineAccount account, Uri uri, int revision)
+        private async Task<bool> TryPullImageAsync(OnlineAccount account, Uri uri, int revision, Uri context)
         {
-            // TODO: Copied in large parts from ArtivityCloud server. Share the code.
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
-            Uri url = new Uri(baseUrl + "/api/1.0/sync/activity?uri=" + uri);
+            ImageSyncArchiveWriter writer = new ImageSyncArchiveWriter(PlatformProvider, ModelProvider);
+
+            string id = Path.GetFileName(context.AbsolutePath);
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                string escapedUri = System.Uri.EscapeDataString(uri.AbsoluteUri);
+
+                Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + id + "/images?uri=" + escapedUri);
+
+                return await HandleArchiveDownloadAsync(account, url, uri, revision);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private async Task<bool> TryPullEntityAsync(OnlineAccount account, Uri uri, int revision, Uri context)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            EntityArchiveWriter writer = new EntityArchiveWriter(PlatformProvider, ModelProvider);
+
+            string id = Path.GetFileName(context.AbsolutePath);
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                string escapedUri = System.Uri.EscapeDataString(uri.AbsoluteUri);
+
+                Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + id + "/entities?uri=" + escapedUri);
+
+                return await HandleArchiveDownloadAsync(account, url, uri, revision);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private async Task<bool> HandleArchiveDownloadAsync(OnlineAccount account, Uri url, Uri uri, int revision)
+        {
+            if(revision < 0)
+            {
+                PlatformProvider.Logger.LogError("Trying to download a sync archive with an invalid revision number: {0}", revision);
+
+                return false;
+            }
 
             using (HttpClient client = GetHttpClient(account))
             {
@@ -496,36 +562,18 @@ namespace Artivity.Apid.Accounts
                         ArchiveReader archiveReader = new ArchiveReader(PlatformProvider, ModelProvider);
                         archiveReader.Read(archive.FullName);
 
+                        // 5. Download any remote resources from the archive.
+                        await archiveReader.DownloadRemoteFiles(archive.FullName, new HttpClient());
+
                         ArchiveManifest manifest = archiveReader.GetManifest(archive.FullName);
 
                         foreach (Uri entityUri in manifest.ExportedEntites)
                         {
                             IModel model = ModelProvider.GetActivities();
 
-                            // Swap the 'local' for 'remote' in the revision property.
-                            // Delete any exisiting remote revision triples.
-                            SparqlUpdate update = new SparqlUpdate(@"
-                                WITH @model
-                                DELETE
-                                {
-                                    ?state arts:lastRemoteRevision ?remote .
-                                    ?state arts:lastLocalRevision ?local .
-                                }
-                                INSERT
-                                {
-                                    ?state arts:lastRemoteRevision ?local .
-                                }
-                                WHERE
-                                {
-                                    @activity arts:synchronizationState ?state .
-                                    ?state arts:lastLocalRevision ?local .
-                                }
-                            ");
-
-                            update.Bind("@model", model);
-                            update.Bind("@activity", uri);
-
-                            model.ExecuteUpdate(update);
+                            // Set the remote and local revision number to be equivalent and
+                            // delete any exisiting revision triples.
+                            UpdateResourceSynchronizationState(model, uri, revision);
                         }
 
                         return true;
@@ -542,52 +590,71 @@ namespace Artivity.Apid.Accounts
                         }
                     }
                 }
-
-                return false;
             }
+
+            return false;
         }
 
-        public async Task<bool> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision)
+        public async Task<bool> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision, Uri context)
         {
             if(IsInstanceOf(uri, art.Project))
             {
                 return await TryPushProjectAsync(account, uri, revision);
             }
-            else if (IsInstanceOf(uri, prov.Activity))
+            else if(IsInstanceOf(uri, prov.Person))
             {
-                return await TryPushActivityAsync(account, uri, revision);
+                return await TryPushPersonAsync(account, uri, revision);
             }
-            else
+            else if(IsInstanceOf(uri, nfo.Image))
             {
-                return false;
+                return await TryPushImageAsync(account, uri, revision);
             }
+            else if (IsInstanceOf(uri, prov.Entity))
+            {
+                return await TryPushEntityAsync(account, uri, revision);
+            }
+
+            return false; 
         }
 
         private async Task<bool> TryPushProjectAsync(OnlineAccount account, Uri uri, int revision)
         {
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
-            Uri url = new Uri(baseUrl + "/api/1.0/sync/project/" + Path.GetFileName(uri.AbsolutePath));
+            string id = Path.GetFileName(uri.AbsolutePath);
 
-            using (HttpClient client = GetHttpClient(account))
+            if (!string.IsNullOrEmpty(id))
             {
-                IModel model = ModelProvider.GetActivities();
+                Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + id);
 
-                if (model.ContainsResource(uri))
+                using (HttpClient client = GetHttpClient(account))
                 {
-                    Project project = model.GetResource<Project>(uri);
+                    IModel model = ModelProvider.GetAll();
 
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(project), Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = await client.PostAsync(url, content);
-
-                    if (response.IsSuccessStatusCode)
+                    if (model.ContainsResource(uri))
                     {
-                        int r = await GetLastRemoteRevision(response);
+                        Project project = model.GetResource<Project>(uri);
 
-                        project.Commit(r);
+                        string json = JsonConvert.SerializeObject(project);
 
-                        return true;
+                        StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                        HttpResponseMessage response = await client.PostAsync(url, content);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            int remote = await GetLastRemoteRevision(response);
+
+                            model = ModelProvider.GetActivities();
+
+                            if (model.ContainsResource(uri))
+                            {
+                                project = model.GetResource<Project>(uri);
+                                project.Commit(remote, remote);
+
+                                return true;
+                            }
+                        }
                     }
                 }
             }
@@ -595,11 +662,59 @@ namespace Artivity.Apid.Accounts
             return false;
         }
 
-        private async Task<bool> TryPushActivityAsync(OnlineAccount account, Uri uri, int revision)
+        private async Task<bool> TryPushPersonAsync(OnlineAccount account, Uri uri, int revision)
         {
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
-            Uri url = new Uri(baseUrl + "/api/1.0/sync/activity/");
+            Uri url = new Uri(baseUrl + "/api/1.0/sync/agents/persons");
+
+            using (HttpClient client = GetHttpClient(account))
+            {
+                IModel model = ModelProvider.GetAll();
+
+                if (model.ContainsResource(uri))
+                {
+                    Person person = model.GetResource<Person>(uri);
+
+                    string json = JsonConvert.SerializeObject(person);
+
+                    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(url, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        int remote = await GetLastRemoteRevision(response);
+
+                        model = ModelProvider.GetAgents();
+
+                        if (model.ContainsResource(uri))
+                        {
+                            person = model.GetResource<Person>(uri);
+                            person.Commit(remote, remote);
+
+                            string personUri = FileNameEncoder.Encode(person.Uri.AbsoluteUri);
+                            string file = Path.Combine(PlatformProvider.AvatarsFolder, personUri + ".jpg");
+
+                            if (File.Exists(file))
+                            {
+                                S3Uploader.Policy policy = await GetUploadPolicy(account);
+
+                                await S3Uploader.Upload(policy, new FileInfo(file), "avatars");
+                            }
+
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private async Task<bool> TryPushImageAsync(OnlineAccount account, Uri uri, int revision)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
             using (HttpClient client = GetHttpClient(account))
             {
@@ -610,56 +725,33 @@ namespace Artivity.Apid.Accounts
 
                 try
                 {
-                    if(archive.Exists)
+                    if (archive.Exists)
                     {
                         File.Delete(archive.FullName);
                     }
 
                     Uri userUri = new UriRef(PlatformProvider.Config.Uid);
 
-                    ActivityArchiveWriter writer = new ActivityArchiveWriter(PlatformProvider, ModelProvider);
+                    ImageSyncArchiveWriter writer = new ImageSyncArchiveWriter(PlatformProvider, ModelProvider);
+
+                    string id = writer.GetProjectId(uri, _modelProvider.GetActivities());
+
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        return false;
+                    }
+
+                    Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + id + "/images/");
+
+                    List<FileInfo> renderings = writer.GetLocalRenderings(uri).ToList();
+
+                    await TryPushRenderingsAsync(account, renderings);
 
                     await writer.WriteAsync(userUri, uri, archive.FullName, DateTime.MinValue);
 
-                    using (FileStream stream = File.Open(archive.FullName, FileMode.Open))
-                    {
-                        HttpContent content = new StreamContent(stream);
-                        content.Headers.ContentType = new MediaTypeHeaderValue("application/artivity+zip");
-
-                        MultipartFormDataContent form = new MultipartFormDataContent();
-                        form.Add(content, "file", archive.Name + archive.Extension);
-
-                        HttpResponseMessage response = await client.PostAsync(url, form);
-
-                        if(response.IsSuccessStatusCode)
-                        {
-                            int r = await GetLastRemoteRevision(response);
-
-                            IModel model = ModelProvider.GetActivities();
-
-                            SparqlUpdate update = new SparqlUpdate(@"
-                                WITH @model
-                                DELETE { ?state arts:lastRemoteRevision ?revision . }
-                                INSERT { ?state arts:lastRemoteRevision @revision . }
-                                WHERE
-                                { 
-                                    @activity arts:synchronizationState ?state .
-
-                                    ?state arts:lastRemoteRevision ?revision .
-                                }
-                            ");
-
-                            update.Bind("@model", model);
-                            update.Bind("@activity", uri);
-                            update.Bind("@revision", r);
-
-                            model.ExecuteUpdate(update);
-                        }
-
-                        return response.IsSuccessStatusCode;
-                    }
+                    return await HandleArchiveUploadAsync(client, url, uri, archive);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Logger.LogError(ex);
 
@@ -673,6 +765,144 @@ namespace Artivity.Apid.Accounts
                     }
                 }
             }
+        }
+
+        private async Task<bool> TryPushRenderingsAsync(OnlineAccount account, IEnumerable<FileInfo> renderings)
+        {
+            S3Uploader.Policy policy = null;
+
+            foreach(var rendering in renderings)
+            {
+                if (policy == null) // We could reuse a policy here if we test for expiration. Caveat: How long should the grace period be?
+                {
+                    policy = await GetUploadPolicy(account);
+                }
+
+                var parts = rendering.FullName.Split(Path.DirectorySeparatorChar);
+
+                if (parts.Count() > 2)
+                { 
+                    string folder = parts[parts.Count() - 2];
+
+                    await S3Uploader.Upload(policy, rendering, folder);
+                }
+                else
+                {
+                    throw new Exception(string.Format("Got unexpected file path {0}", rendering.FullName));
+                }
+            }
+
+            return false;
+        }
+
+        private async Task<bool> TryPushEntityAsync(OnlineAccount account, Uri uri, int revision)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            using (HttpClient client = GetHttpClient(account))
+            {
+                string archiveName = FileNameEncoder.Encode(uri.AbsoluteUri) + ".arta";
+                string archivePath = Path.Combine(PlatformProvider.TempFolder, archiveName);
+
+                FileInfo archive = new FileInfo(archivePath);
+
+                try
+                {
+                    if (archive.Exists)
+                    {
+                        File.Delete(archive.FullName);
+                    }
+
+                    EntityArchiveWriter writer = new EntityArchiveWriter(PlatformProvider, ModelProvider);
+
+                    string id = writer.GetProjectId(uri, _modelProvider.GetActivities());
+
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        return false;
+                    }
+
+                    Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + id + "/entities/");
+
+                    Uri userUri = new UriRef(PlatformProvider.Config.Uid);
+
+                    await writer.WriteAsync(userUri, uri, archive.FullName, DateTime.MinValue);
+
+                    return await HandleArchiveUploadAsync(client, url, uri, archive);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+
+                    return false;
+                }
+                finally
+                {
+                    if (archive.Exists)
+                    {
+                        File.Delete(archive.FullName);
+                    }
+                }
+            }
+        }
+
+        private async Task<bool> HandleArchiveUploadAsync(HttpClient client, Uri endpoint, Uri uri, FileInfo archive)
+        {
+            using (FileStream stream = File.Open(archive.FullName, FileMode.Open))
+            {
+                HttpContent content = new StreamContent(stream);
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/artivity+zip");
+
+                MultipartFormDataContent form = new MultipartFormDataContent();
+                form.Add(content, "file", archive.Name + archive.Extension);
+
+                HttpResponseMessage response = await client.PostAsync(endpoint, form);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    int revision = await GetLastRemoteRevision(response);
+
+                    IModel model = ModelProvider.GetActivities();
+
+                    UpdateResourceSynchronizationState(model, uri, revision);
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+        }
+
+        private void UpdateResourceSynchronizationState(IModel model, Uri uri, int revision)
+        {
+            // Synchronizable resources on the server always have the synchronization state:
+            //  - Remote revision: n
+            //  - Local revision: n | -1
+            SparqlUpdate update = new SparqlUpdate(@"
+			            WITH @model
+			            DELETE { ?state arts:lastRemoteRevision ?revision . }
+			            INSERT { ?state arts:lastRemoteRevision @revision . }
+			            WHERE
+			            { 
+				            @resource arts:synchronizationState ?state .
+
+                            ?state a arts:ResourceSynchronizationState .
+				            ?state arts:lastRemoteRevision ?revision .
+			            }
+			            DELETE { ?state arts:lastLocalRevision ?revision . }
+			            INSERT { ?state arts:lastLocalRevision @revision . }
+			            WHERE
+			            { 
+				            @resource arts:synchronizationState ?state .
+
+                            ?state a arts:ResourceSynchronizationState .
+				            ?state arts:lastLocalRevision ?revision .
+			            }
+		            ");
+
+            update.Bind("@model", model);
+            update.Bind("@resource", uri);
+            update.Bind("@revision", revision);
+
+            model.ExecuteUpdate(update);
         }
 
         private async Task<int> GetLastRemoteRevision(HttpResponseMessage response)
@@ -690,7 +920,7 @@ namespace Artivity.Apid.Accounts
         {
             HttpAuthenticationParameter token = account.AuthenticationParameters.FirstOrDefault(p => p.Name == "token");
 
-            if(token != null)
+            if(token != null && !string.IsNullOrEmpty(token.Value))
             {
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
@@ -704,6 +934,25 @@ namespace Artivity.Apid.Accounts
             }
         }
 
+        protected async Task<S3Uploader.Policy> GetUploadPolicy(OnlineAccount account)
+        {
+            if (account != null && account.ServiceUrl != null)
+            {
+                string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+                Uri url = new Uri(baseUrl + "/api/1.0/asset/policy");
+
+                using (var c = GetHttpClient(account))
+                {
+                    var response = await c.GetStringAsync(url);
+
+                    return JsonConvert.DeserializeObject<S3Uploader.Policy>(response);
+                }
+            }
+
+            return null;
+        }
+
         private bool IsInstanceOf(Uri resource, Class type)
         {
             ISparqlQuery query = new SparqlQuery(@"
@@ -715,7 +964,28 @@ namespace Artivity.Apid.Accounts
 
             // NOTE: Execute the query with inferencing enabled so that the 
             // query evaluates the class inheritance in the ontology.
-            return _modelProvider.GetActivities().ExecuteQuery(query, true).GetAnwser();
+            return _modelProvider.GetAll().ExecuteQuery(query, true).GetAnwser();
+        }
+
+        private bool IsSubClassOf(Uri subType, Class superType)
+        {
+            if (subType == superType.Uri)
+            {
+                return true;
+            }
+            else
+            {
+                ISparqlQuery query = new SparqlQuery(@"
+                    ASK FROM art: FROM nfo: WHERE { @subType rdfs:subClassOf+ @superType . }
+                ");
+
+                query.Bind("@subType", subType);
+                query.Bind("@superType", superType);
+
+                // NOTE: Execute the query with inferencing enabled so that the 
+                // query evaluates the class inheritance in the ontology.
+                return _modelProvider.GetAll().ExecuteQuery(query, true).GetAnwser();
+            }
         }
 
         #endregion

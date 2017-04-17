@@ -1,15 +1,67 @@
 (function () {
     angular.module('app').controller('SetupController', SetupController);
 
-    SetupController.$inject = ['$scope', '$location', 'api', 'settingsService', 'windowService'];
+    SetupController.$inject = ['$rootScope', '$scope', '$location', 'api', 'settingsService', 'windowService'];
 
-    function SetupController($scope, $location, api, settingsService, windowService) {
+    function SetupController($rootScope, $scope, $location, api, settingsService, windowService) {
         var t = this;
 
         windowService.setMinimizable(false);
         windowService.setMaximizable(false);
 
-        t.init = function () {
+        t.onActiveTabChanged = function () {
+            var n = t.tabs.indexOf(t.activeTab);
+
+            t.hasPreviousButton = n > 0;
+            t.navigatePreviousDisable = false;
+
+            t.hasNextButton = n < t.tabs.length - 1;
+            t.navigateNextDisabled = true;
+
+            t.setupComplete = t.setupComplete | !t.hasNextButton;
+        }
+
+        t.showTab = function (target) {
+            var a = $('a[data-target="' + target + '"]');
+
+            if (a) {
+                t.activeTab = target;
+
+                t.onActiveTabChanged();
+
+                a.tab('show');
+            }
+        }
+
+        t.navigateNext = function () {
+            var n = t.tabs.indexOf(t.activeTab);
+
+            if (n < t.tabs.length - 1) {
+                t.showTab(t.tabs[n + 1]);
+            }
+        }
+
+        t.navigatePrevious = function () {
+            var n = t.tabs.indexOf(t.activeTab);
+
+            if (n > 0) {
+                t.showTab(t.tabs[n - 1]);
+            }
+        }
+
+        t.submitAndReturn = function () {
+            // Submit all setup pages.
+            settingsService.submitAll();
+
+            api.setRunSetup(false).then(function () {
+                windowService.setWidth(992);
+
+                // After the setup has been disabled, go to the homepage.
+                $location.path("/");
+            });
+        }
+
+        t.onInit = function () {
             t.tabs = [];
 
             each($('.tab-pane'), function (n, tab) {
@@ -39,56 +91,16 @@
                     } catch (error) {}
                 });
             }
-        }
 
-        t.onActiveTabChanged = function () {
-            var n = t.tabs.indexOf(t.activeTab);
+            $rootScope.$on('navigateNext', function () {
+                t.navigateNext();
+            });
 
-            t.canShowPrev = n > 0;
-            t.canShowNext = n < t.tabs.length - 1;
-            t.setupComplete = t.setupComplete | !t.canShowNext;
-        }
-
-        t.showTab = function (target) {
-            var a = $('a[data-target="' + target + '"]');
-
-            if (a !== undefined) {
-                t.activeTab = target;
-
-                t.onActiveTabChanged();
-
-                a.tab('show');
-            }
-        }
-
-        t.showNext = function () {
-            var n = t.tabs.indexOf(t.activeTab);
-
-            if (n < t.tabs.length - 1) {
-                t.showTab(t.tabs[n + 1]);
-            }
-        }
-
-        t.showPrev = function () {
-            var n = t.tabs.indexOf(t.activeTab);
-
-            if (n > 0) {
-                t.showTab(t.tabs[n - 1]);
-            }
-        }
-
-        t.submitAndReturn = function () {
-            // Submit all setup pages.
-            settingsService.submitAll();
-
-            api.setRunSetup(false).then(function () {
-                windowService.setWidth(992);
-
-                // After the setup has been disabled, go to the homepage.
-                $location.path("/");
+            $rootScope.$on('navigateNextEnabled', function () {
+                t.navigateNextDisabled = false;
             });
         }
 
-        t.init();
+        t.onInit();
     }
 })();

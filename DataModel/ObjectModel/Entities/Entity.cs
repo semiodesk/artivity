@@ -34,7 +34,7 @@ using System.Collections.Generic;
 namespace Artivity.DataModel
 {
 	[RdfClass(PROV.Entity)]
-    public class Entity : SynchronizableResource
+    public class Entity : SynchronizableResource, IValidatable
 	{
 		#region Members
 
@@ -48,7 +48,10 @@ namespace Artivity.DataModel
         public Entity PrimarySource { get; set; }
 
         [RdfProperty(PROV.qualifiedRevision), JsonIgnore]
-        public List<Save> Revisions { get; set; }
+        public List<Revision> Revisions { get; set; }
+
+        [RdfProperty(ART.publish), JsonIgnore]
+        public bool Publish { get; set; }
 
         public IEnumerable<string> RevisionUris
         {
@@ -62,6 +65,15 @@ namespace Artivity.DataModel
         public Entity(Uri uri) : base(uri) {}
 
 		#endregion
+
+        #region Methods
+
+        public virtual bool Validate()
+        {
+            return true;
+        }
+
+        #endregion
     }
 }
 

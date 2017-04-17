@@ -10,7 +10,7 @@
         };
 
         var service = {
-            endpoint: api.endpointUrl + 'sync',
+            endpoint: apid.endpointUrl + 'sync',
             mute: mute,
             unmute: unmute,
             on: on,

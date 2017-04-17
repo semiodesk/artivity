@@ -42,6 +42,9 @@ namespace Artivity.DataModel
         [RdfProperty(ARTS.lastRemoteRevision)]
         public int LastRemoteRevision { get; set; }
 
+        [RdfProperty(ARTS.lastLocalRevision)]
+        public int LastLocalRevision { get; set; }
+
         #endregion
 
         #region Constructors

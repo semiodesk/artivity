@@ -80,12 +80,31 @@ namespace Artivity.Apid.Synchronization
         /// <param name="item">A synchronization item.</param>
         public void Add(SynchronizationChangesetItem item)
         {
+            // Make sure projects are handled first because other resource may depend on them.
+            // TODO: Improve as soon as we have a more reliable way for determining the sub types.
+            if (item.ResourceType == art.Project.Uri)
+            {
+                AddFront(item);
+            }
+            else
+            {
+                if (item.ResourceUri != null && !_resources.ContainsKey(item.ResourceUri))
+                {
+                    _resources.Add(item.ResourceUri, item);
+                }
+
+                _items.Add(item);
+            }
+        }
+
+        public void AddFront(SynchronizationChangesetItem item)
+        {
             if (item.ResourceUri != null && !_resources.ContainsKey(item.ResourceUri))
             {
                 _resources.Add(item.ResourceUri, item);
             }
 
-            _items.Add(item);
+            _items.Insert(0, item);
         }
 
         #endregion

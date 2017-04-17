@@ -5,175 +5,129 @@
         return {
             restrict: 'E',
             templateUrl: 'app/directives/art-task-control/art-task-control.html',
-            bindToController: true,
             scope: {
-                entity: '@'
+                entityUri: '='
             },
             controller: TaskControlDirectiveController,
-            controllerAs: 't'
+            controllerAs: 't',
+            bindToController: true,
+            link: function (scope, element, attr, t) {
+                scope.$watch('t.entityUri', function () {
+                    if (t.entityUri) {
+                        t.loadTasksForEntity(t.entityUri);
+
+                        t.resetTask();
+                    }
+                });
+            }
         }
     }
 
     angular.module('app').controller('TaskControlDirectiveController', TaskControlDirectiveController);
 
-    TaskControlDirectiveController.$inject = ['$scope', 'agentService', 'entityService', 'taskService', 'markService', 'viewerService'];
+    TaskControlDirectiveController.$inject = ['$scope', 'agentService', 'entityService', 'taskService', 'viewerService'];
 
-    function TaskControlDirectiveController($scope, agentService, entityService, taskService, markService, viewerService) {
+    function TaskControlDirectiveController($scope, agentService, entityService, taskService, viewerService) {
         var t = this;
 
+        // TASKS
         t.tasks = [];
-        t.task = {
-            name: ''
-        }
+        t.newTask = null;
 
-        t.updateTask = updateTask;
-        t.postTask = postTask;
-        t.putTask = putTask;
-        t.resetTask = resetTask;
+        t.loadTasksForEntity = function (entityUri) {
+            taskService.get(entityUri).then(function (data) {
+                t.tasks = [];
 
-        t.marks = [];
+                for (i = 0; i < data.length; i++) {
+                    var d = data[i];
 
-        t.createMark = createMark;
-        t.showMarks = showMarks;
-        t.hideMarks = hideMarks;
-
-        initialize();
-
-        function initialize() {
-            initializeData();
-        }
-
-        function initializeData() {
-            agentService.getUser().then(function (data) {
-                t.user = data;
-
-                // Set the user URI for the new comments.
-                t.task.agent = t.user.Uri;
-
-                if (t.entity) {
-                    // Make sure the user is properly initialized before retrieving the entity derivations.
-                    entityService.getById(t.entity).then(function (response) {
-                        var entity = response;
-
-                        if (entity.RevisionUris && entity.RevisionUris.length > 0) {
-                            t.derivation = entity.RevisionUris[0];
-
-                            // Set the entity URI as primary source for the comments.
-                            t.task.entity = t.derivation;
-
-                            taskService.get(t.derivation).then(function (data) {
-                                t.tasks = [];
-
-                                for (i = 0; i < data.length; i++) {
-                                    var d = data[i];
-
-                                    // Insert at the beginning of the list.
-                                    t.tasks.unshift({
-                                        uri: d.uri,
-                                        agent: d.agent,
-                                        time: d.time,
-                                        name: d.name
-                                    });
-                                }
-                            });
-                        }
+                    // Insert at the beginning of the list.
+                    t.tasks.unshift({
+                        uri: d.uri,
+                        agent: d.agent,
+                        time: d.time,
+                        name: d.name
                     });
                 }
             });
         }
 
-        function validateTask(task) {
+        t.validateTask = function (task) {
             return task.agent && task.entity && task.startTime && task.name.length > 0;
         }
 
-        function updateTask(task) {
+        t.updateTask = function (task) {
             if (!task.startTime) {
-                task.entity = t.derivation;
                 task.startTime = new Date();
 
-                console.log("Start task: ", t.task);
+                console.log("Started task: ", task);
             }
         };
 
-        function putTask(task) {
+        t.putTask = function (task) {
             // Set the start time and entity.
             t.updateTask(task);
 
-            if (!validateTask(task)) {
-                console.log("Invalid task: ", t.task);
-
-                return;
+            if (!task.endTime) {
+                task.endTime = new Date();
             }
-
-            taskService.put(task).then(function (data) {
-                console.log("Updated task: ", t.task);
-            }, function (response) {
-                console.error(response);
-            });
+            
+            if (t.validateTask(task)) {
+                taskService.put(task).then(function (data) {
+                    console.log("Updated task: ", task);
+                }, function (response) {
+                    console.error(response);
+                });
+            } else {
+                console.log("Invalid task: ", task);
+            }
         }
 
-        function postTask() {
+        t.postTask = function (task) {
             // Set the start time and entity.
-            t.updateTask(t.task);
+            t.updateTask(task);
 
-            if (!validateTask(t.task)) {
-                console.log("Invalid task: ", t.task);
-
-                return;
+            if (!task.endTime) {
+                task.endTime = new Date();
             }
 
-            t.task.endTime = new Date();
+            if (t.validateTask(task)) {
+                task.endTime = new Date();
 
-            taskService.post(t.task).then(function (data) {
-                t.task.uri = data.uri;
+                taskService.post(task).then(function (data) {
+                    task.uri = data.uri;
 
-                // Show the task in the list of tasks.
-                t.tasks.push(t.task);
+                    // Show the task in the list of tasks.
+                    t.tasks.push(task);
 
-                // Clear the text and create a new task.
-                resetTask();
+                    console.log("Posted task: ", task);
 
-                console.log("Posted task: ", t.task);
-            }, function (response) {
-                console.error(response);
-            });
+                    // Clear the text and create a new task.
+                    t.resetTask();
+                }, function (response) {
+                    console.error(response);
+                });
+            } else {
+                console.log("Invalid task: ", task);
+            }
         }
 
-        function resetTask() {
-            t.task = {
-                agent: null,
-                entity: t.derivation,
+        t.resetTask = function () {
+            t.newTask = {
+                agent: agentService.currentUser.Uri,
+                entity: t.entityUri,
                 startTime: null,
                 endTime: null,
                 name: '',
                 markers: []
             };
 
-            console.log("Reset task: ", t.task);
+            console.log("Reset task: ", t.newTask);
         }
 
-        function createMark(task) {
-            if (task && task.uri) {
-                viewerService.executeCommand('createMark', task.uri);
-            }
-        }
-
-        function showMarks(task) {
-            if (task && task.uri) {
-                markService.getMarksForEntity(task.uri).then(function (data) {
-                    t.marks = data;
-
-                    viewerService.executeCommand('showMarks', t.marks);
-                });
-            }
-        }
-
-        function hideMarks(task) {
-            if (task && task.uri && t.marks.length > 0) {
-                viewerService.executeCommand('hideMarks', t.marks);
-
-                t.marks = [];
-            }
-        }
+        // MARKS
+        t.createMark = viewerService.createMark;
+        t.showMarks = viewerService.showMarks;
+        t.hideMarks = viewerService.hideMarks;
     }
 })();

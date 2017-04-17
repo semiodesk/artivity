@@ -11,7 +11,7 @@ namespace Artivity.DataModel
     {
         #region Constructors
 
-        public RenderingDataObject(Uri uri) : base(uri) { }
+        public RenderingDataObject(Uri uri) : base(uri) {  }
 
         public RenderingDataObject(string uri) : base(uri) { }
 

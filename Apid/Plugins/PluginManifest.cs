@@ -106,6 +106,8 @@ namespace Artivity.Apid.Plugins
         [XmlElement("Registry")]
         public PluginManifestRegistryInfo RegistryInfo { get; set; }
 
+        public bool AutoInstall { get; set; }
+
         #endregion
 
         #region Methods

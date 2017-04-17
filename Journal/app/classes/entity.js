@@ -10,7 +10,7 @@ function Entity(uri) {
     t.properties = {};
     t.creationTime = null;
     t.deletionTime = new Date(8640000000000000); // The deletion time is far in the future until explicitly specified.
-};
+}
 
 Entity.prototype.pushValue = function (time, property, value) {
     var t = this;

@@ -33,7 +33,7 @@ using Newtonsoft.Json;
 namespace Artivity.DataModel
 {
 	[RdfClass(NFO.FileDataObject)]
-	public class FileDataObject : Resource
+	public class FileDataObject : SynchronizableResource
 	{
 		#region Members
 
@@ -43,17 +43,11 @@ namespace Artivity.DataModel
 		[RdfProperty(NFO.fileSize), JsonIgnore]
 		public long ByteSize { get; set; }
 
-		[RdfProperty(NIE.created), JsonIgnore]
-		public DateTime CreationTimeUtc { get; set; }
-
 		[RdfProperty(NFO.fileLastAccessed), JsonIgnore]
 		public DateTime LastAccessTimeUtc { get; set; }
 
-		[RdfProperty(NIE.lastModified), JsonIgnore]
-		public DateTime ModificationTimeUtc { get; set; }
-
         [RdfProperty(NFO.deletionDate), JsonIgnore]
-        public DateTime? DeletionTimeUtc { get; set; }
+        public DateTime? FileDeletionTimeUtc { get; set; }
 
         [RdfProperty(NFO.belongsToContainer), JsonIgnore]
         public Folder Folder { get; set; }
@@ -62,9 +56,13 @@ namespace Artivity.DataModel
 
 		#region Constructors
 
-		public FileDataObject(Uri uri) : base(uri) {}
+		public FileDataObject(Uri uri) : base(uri) 
+        {
+        }
 
-        public FileDataObject(string uri) : base(uri) {}
+        public FileDataObject(string uri) : base(uri)
+        {
+        }
 
 		#endregion
 	}

@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('PublishFileDialogController', PublishFileDialogController);
 
-    PublishFileDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'api', 'selectionService', 'filesystemService', 'clientService'];
+    PublishFileDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'api', 'agentService', 'selectionService', 'filesystemService', 'clientService'];
 
-    function PublishFileDialogController($scope, $filter, $uibModalInstance, $sce, api, selectionService, filesystemService, clientService) {
+    function PublishFileDialogController($scope, $filter, $uibModalInstance, $sce, api, agentService, selectionService, filesystemService, clientService) {
         var t = this;
 
         t.dialog = {
@@ -102,7 +102,7 @@
         // Load author information.
         t.userPhotoUrl = api.getUserPhotoUrl();
 
-        api.getUser().then(function (data) {
+        agentService.getAccountOwner().then(function (data) {
             t.user = data;
 
             t.archive.creators = [{

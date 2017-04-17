@@ -44,6 +44,7 @@ namespace artivity
     void Influence::addEntity(EntityRef entity)
     {
         entities.push_back(entity);
+        addProperty(prov::entity, entity);
     }
 
     ActivityRef Influence::getActivity()
@@ -54,6 +55,7 @@ namespace artivity
     void Influence::removeEntity(EntityRef entity)
     {
         entities.remove(entity);
+        removeProperty(prov::entity, entity);
     }
 
     void Influence::addChange(ChangeRef change)

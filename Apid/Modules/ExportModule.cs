@@ -127,7 +127,7 @@ namespace Artivity.Apid.Modules
                 string targetFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 string targetPath = Path.Combine(targetFolder, targetFile);
 
-                EntityArchiveWriter writer = new EntityArchiveWriter(PlatformProvider, ModelProvider);
+                ImageExportArchiveWriter writer = new ImageExportArchiveWriter(PlatformProvider, ModelProvider);
                 writer.Write(userUri, entityUri, targetPath, minTime);
             }
             catch (Exception ex)

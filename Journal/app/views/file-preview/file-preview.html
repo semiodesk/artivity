@@ -15,33 +15,10 @@
 		</div>
 	</div>
 	<div class="row expand" id="content">
-		<div class="layout-container ui-pane-container">
-			<div class="ui-resizable ui-pane ui-pane-left">
-				<div class="pane-content">
-					<art-tab-control>
-						<art-tab heading="Comments">
-							<div class="layout-container">
-								<art-chat-control id="ctl-chat" entity="{{t.entity.uri}}"></art-chat-control>
-							</div>
-						</art-tab>
-						<art-tab heading="Topics">
-							<div class="layout-container">
-								<art-topic-control id="ctl-topic" entity="{{t.entity.uri}}"></art-topic-control>
-							</div>
-						</art-tab>
-						<art-tab heading="Todo">
-							<div class="layout-container padding-x-xl padding-y-xl text-center">
-								<art-task-control id="ctl-topic" entity="{{t.entity.uri}}"></art-task-control>
-							</div>
-						</art-tab>
-					</art-tab-control>
-				</div>
-			</div>
-			<div class="ui-resizable ui-pane ui-pane-center">
-				<div class="pane-content">
-					<art-document-viewer id="ctl-viewer" file="{{t.entity.uri}}"></art-document-viewer>
-				</div>
-			</div>
+		<div class="layout-container">
+			<art-document-viewer id="ctl-viewer" class="ui-content" file="{{t.fileUri}}"></art-document-viewer>
+
+
 		</div>
 	</div>
 </div>

@@ -29,6 +29,8 @@ using Artivity.Api;
 using Artivity.Api.IO;
 using Artivity.Api.Platform;
 using Artivity.Apid.IO;
+using Nancy;
+using Nancy.Responses;
 using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
@@ -232,6 +234,7 @@ namespace Artivity.Apid.Platform
                 config.IsNew = true;
                 config.RunSetup = true;
                 config.Uid = "urn:art:uid:" + Guid.NewGuid();
+                config.CreateActivityStepsRenderings = false;
 
                 string json = JsonConvert.SerializeObject(config, Formatting.Indented);
 
@@ -267,6 +270,25 @@ namespace Artivity.Apid.Platform
 
             return Path.Combine(RenderingsFolder, entityName);
         }
+
+        public Response GetPersonPhoto(UriRef agentUri, string owner)
+        {
+            string uri = FileNameEncoder.Encode(agentUri.AbsoluteUri);
+            string file = Path.Combine(AvatarsFolder, uri + ".jpg");
+
+            if (!File.Exists(file))
+            {
+                return HttpStatusCode.NoContent;
+            }
+
+            FileStream fileStream = new FileStream(file, FileMode.Open);
+
+            StreamResponse response = new StreamResponse(() => fileStream, MimeTypes.GetMimeType(file));
+            response.Headers["Allow-Control-Allow-Origin"] = "127.0.0.1";
+
+            return response.AsAttachment(file);
+        }
+
         #endregion
     }
 }

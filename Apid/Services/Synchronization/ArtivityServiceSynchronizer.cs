@@ -61,7 +61,7 @@ namespace Artivity.Apid.Synchronization
 
             IModel model = _modelProvider.GetAgents();
 
-            Person user = model.GetResource<Person>(new UriRef(_platformProvider.Config.Uid));
+            User user = model.GetResource<User>(new UriRef(_platformProvider.Config.Uid));
 
             IEnumerable<OnlineAccount> accounts = user.Accounts.Where(a => _clients.ContainsKey(a.ServiceClient.Uri));
 
@@ -90,7 +90,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="account">An authorized online account.</param>
         /// <returns><c>true</c> on success, <c>false</c> otherwise.</returns>
-        public IModelSynchronizationState TrySynchronize(Person user, OnlineAccount account)
+        public IModelSynchronizationState TrySynchronize(IAccoutOwner user, OnlineAccount account)
         {
             IArtivityServiceSynchronizationClient client = TryGetSynchronizationClient(account);
 
@@ -142,7 +142,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="account">An authorized online account.</param>
         /// <returns>A synchronization changeset on success.</returns>
-        private SynchronizationChangeset GetChangesetClient(Person user, OnlineAccount account, int remoteRevision)
+        private SynchronizationChangeset GetChangesetClient(IAccoutOwner user, OnlineAccount account, int remoteRevision)
         {
             // Get the current model synchronization state for the current user.
             IModelSynchronizationState state = _modelProvider.GetModelSynchronizationState(user);
@@ -155,7 +155,7 @@ namespace Artivity.Apid.Synchronization
                 SELECT DISTINCT ?resource ?resourceType ?revision WHERE
                 {
                     ?resource a ?resourceType ; arts:synchronizationState [
-                        arts:lastRemoteRevision ?revision
+                        arts:lastLocalRevision ?revision
                     ] .
 
                     FILTER(?revision = @undefined || ?revision > @revision)
@@ -198,7 +198,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="account">An authorized online account.</param>
         /// <returns>A synchronization changeset on success.</returns>
-        private SynchronizationChangeset TryGetChangesetServer(Person user, OnlineAccount account, IArtivityServiceSynchronizationClient client)
+        private SynchronizationChangeset TryGetChangesetServer(IAccoutOwner user, OnlineAccount account, IArtivityServiceSynchronizationClient client)
         {
             Task<SynchronizationChangeset> changesetTask = client.TryGetChangesetAsync(user, account);
 
@@ -212,7 +212,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="changeset">A synchronization changeset.</param>
         /// <returns>The number of successfully executed actions. Equals the number of items in the changeset if all actions were successfully executed.</returns>
-        private bool TryExecuteChangeset(Person user, OnlineAccount account, SynchronizationChangeset changeset, IArtivityServiceSynchronizationClient client)
+        private bool TryExecuteChangeset(IAccoutOwner user, OnlineAccount account, SynchronizationChangeset changeset, IArtivityServiceSynchronizationClient client)
         {
             bool success = false;
 
@@ -230,7 +230,7 @@ namespace Artivity.Apid.Synchronization
                     {
                         case SynchronizationActionType.Pull:
                         {
-                            Task<bool> pullTask = client.TryPullAsync(account, item.ResourceUri, item.ResourceType, revision);
+                            Task<bool> pullTask = client.TryPullAsync(account, item.ResourceUri, item.ResourceType, revision, item.Context);
 
                             pullTask.Wait();
 
@@ -245,7 +245,7 @@ namespace Artivity.Apid.Synchronization
                         }
                         case SynchronizationActionType.Push:
                         {
-                            Task<bool> pushTask = client.TryPushAsync(account, item.ResourceUri, item.ResourceType, revision);
+                            Task<bool> pushTask = client.TryPushAsync(account, item.ResourceUri, item.ResourceType, revision, item.Context);
 
                             pushTask.Wait();
 

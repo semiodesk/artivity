@@ -31,7 +31,7 @@ using Semiodesk.Trinity;
 namespace Artivity.DataModel
 {
     [RdfClass(NFO.VectorImage)]
-    public class VectorImage : Entity
+    public class VectorImage : Image
     {
         #region Constructors
 

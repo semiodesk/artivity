@@ -100,7 +100,7 @@ namespace artivity
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 15L);
 
 		if (postFields.length() > 0)
 		{
@@ -141,38 +141,122 @@ namespace artivity
 		return responseCode;
 	}
 
+    bool ActivityLog::fetchInitialData(string entityUri, string fileUrl, string* latestEntityUri, string* fileDataObjectUri, string* renderOutputPath, string* userAssociationUri, bool* createRendering)
+    {
+        try
+        {
+			*createRendering = false;
+
+            CURL* curl = initializeRequest();
+
+            stringstream url;
+            url << _endpointUrl << "/plugin/file/open?entityUri="<< entityUri << "&" << "fileUrl=" << fileUrl;
+
+            string response;
+
+            executeRequest(curl, url.str(), "", response);
+
+            stringstream stream;
+            stream << response;
+
+            if (response.empty())
+            {
+                return false;
+            }
+
+            ptree tree;
+
+            read_json(stream, tree);
+
+
+
+            // storing latest entity
+            if (latestEntityUri != NULL)
+                latestEntityUri->assign(tree.get_child("latestEntityUri").get_value<string>());
+
+            // connecting file data object
+            if ( fileDataObjectUri != NULL)
+                fileDataObjectUri->assign(tree.get_child("fileDataObjectUri").get_value<string>());
+
+            // store render output path
+            if ( renderOutputPath != NULL)
+                renderOutputPath->assign(tree.get_child("renderOutputPath").get_value<string>()); 
+            
+            // Create user association
+            if ( userAssociationUri != NULL )
+                userAssociationUri->assign(tree.get_child("userAssociationUri").get_value<string>());
+            
+			auto child = tree.get_child_optional("createActivityStepsRenderings");
+			if (child)
+			{
+				auto val = child.get().get_value("false");
+				if (val != "false")
+					*createRendering = true;
+			}
+
+            return true;
+
+        }
+        catch (...)
+        {
+            return false;
+        }
+
+
+    }
+
 	bool ActivityLog::connect(string endpointUrl)
 	{
+        time_t now;
+        time(&now);
+
 		_endpointUrl = endpointUrl;
 
-		// Initialize the entity.
-		string uri = getEntityUri(_fileUrl);
+        string latestEntityUri = "";
+        string fileDataObjectUri = "";
+        string renderOutputPath = "";
+        string userAssociationUri = "";
+		bool createRenders = false;
+		bool success = fetchInitialData(_entity->uri, _fileUrl, &latestEntityUri, &fileDataObjectUri, &renderOutputPath, &userAssociationUri, &createRenders);
 
-		if(!uri.empty())
-		{
-        	_entity->uri = uri;
-		}
+		if (!success)
+			return false;
 
-		// Remember that we need to add the file to the index.
-		_hasDataObject = !uri.empty();
+        if (!latestEntityUri.empty())
+        {
+            _prevEntity = ImageRef(new Image(latestEntityUri.c_str()));
+            _entity->uri = UriGenerator::removeTimeFragment(latestEntityUri);
+        }
 
-		time_t now;
-		time(&now);
+        if (!fileDataObjectUri.empty())
+        {
+            _entity->setDataObject(FileDataObjectRef(new FileDataObject(fileDataObjectUri.c_str())));
+            _hasDataObject = true;
+        }
+        else
+        {
+            _hasDataObject = false;
+        }
+
+        if (!renderOutputPath.empty())
+            _renderOutputPath = renderOutputPath;
+
+        if (!userAssociationUri.empty())
+        {
+            AssociationRef a = AssociationRef(new Association(userAssociationUri));
+            a->setRole(RoleRef(new Role(art::USER)));
+
+            _associations.push_back(a);
+        }
 
 		_activity->setStartTime(now);
 
 		// Initialize the associations.
-		vector<AssociationRef>::iterator it = _associations.begin();
+		auto it = _associations.begin();
 
 		while (it != _associations.end())
 		{
-			AssociationRef association = *it;
-
-            if (!association->uri.empty() || fetchAssociationUri(association))
-			{
-                _activity->addAssociation(association);
-            }
-
+            _activity->addAssociation(*it);
             it++;
 		}
 
@@ -202,18 +286,11 @@ namespace artivity
 		if(_transmitCount > 0 || !_activity->empty())
 		{
 			_activity->setEndTime(time);
-
+            _activity->clearUsedEntities();
 			transmit();
 		}
 	}
 
-	void ActivityLog::addAssociation(const char* roleUri)
-	{
-		AssociationRef a = AssociationRef(new Association(""));
-		a->setRole(RoleRef(new Role(roleUri)));
-
-		_associations.push_back(a);
-	}
 
 	void ActivityLog::addAssociation(const char* roleUri, const char* agentUri, const char* version)
 	{
@@ -230,67 +307,9 @@ namespace artivity
 		_associations.push_back(a);
 	}
 
-	void ActivityLog::addAssociation(const char* roleUri, string agentUri, string version)
+	void ActivityLog::addAssociation(string roleUri, string agentUri, string version)
 	{
-        if (strcmp(roleUri, art::SOFTWARE) != 0 || version.empty()) return;
-
-        stringstream str;
-        str << agentUri << "/" << version;
-
-        SoftwareAssociationRef a = SoftwareAssociationRef(new SoftwareAssociation(str.str()));
-        a->setAgent(AgentRef(new Agent(agentUri)));
-        a->setRole(RoleRef(new Role(roleUri)));
-        a->setVersion(version);
-
-        _associations.push_back(a);
-	}
-
-	bool ActivityLog::fetchAssociationUri(AssociationRef association)
-	{
-		CURL* curl = initializeRequest();
-
-		stringstream url;
-
-		url << _endpointUrl << "/agents/associations";
-
-		if (strcmp(association->getType(), art::SoftwareAssociation) == 0)
-		{
-			SoftwareAssociationRef software = boost::dynamic_pointer_cast<SoftwareAssociation>(association);
-			url << "?role=" << software->getRole()->uri;
-			url << "&agent=" << software->getAgent()->uri;
-			url << "&version=" << software->getVersion();
-		}
-		else
-		{
-			url << "?role=" << association->getRole()->uri;
-		}
-
-		string response;
-
-		executeRequest(curl, url.str(), "", response);
-
-		stringstream stream;
-		stream << response;
-
-		if (response.empty())
-		{
-			return false;
-		}
-
-		ptree tree;
-
-		read_json(stream, tree);
-
-		string uri = tree.get_child("association").get_value<string>();
-
-		if (uri.empty())
-		{
-			return false;
-		}
-
-		association->uri = uri;
-
-		return true;
+        addAssociation(roleUri.c_str(), agentUri.c_str(), version.c_str());
 	}
 
     void ActivityLog::setDocument(ImageRef image, std::string path, bool create)
@@ -315,8 +334,24 @@ namespace artivity
             _activity->addUsed(_entity);
         }
 	}
-    
-    void ActivityLog::createDerivation(SaveAsRef saveAs, ImageRef targetImage, std::string targetPath)
+
+    void ActivityLog::save()
+    {
+        time_t now;
+        time(&now);
+
+        auto uri = _entity->uri;
+        _entity->uri = UriGenerator::appendTimeFragment(uri, now);
+        if ( _prevEntity != NULL )
+            _prevEntity->serialize = false;
+        transmit();
+
+        _prevEntity = ImageRef(new Image(_entity->uri.c_str()));
+        _entity->uri = uri;
+        _entity->clearRenderings();
+    }
+
+    void ActivityLog::createDerivation(DerivationRef saveAs, ImageRef targetImage, std::string targetPath)
     {
         // We cannot create derivations of newly created files or overwritten files.
         if (_fileUrl.empty() || _fileUrl == UriGenerator::getUrl(targetPath))
@@ -328,55 +363,66 @@ namespace artivity
 
         // Temporarily store a copy of all untransmitted influences.
         std::list<InfluenceRef> influences = _activity->getInfluences();
-        
+
         // NOTE: These are only influences which are not directly associated with
         // an Entity such as undos and redos.
         influences.insert(influences.end(), _influences.begin(), _influences.end());
-        
+
         for (auto it = influences.begin(); it != influences.end(); it++)
         {
             removeInfluence(*it);
         }
 
-        // Add the SaveAs event to the old activity.
-        addInfluence(saveAs);
-        
-        // Close and transmit the current activity.
         time_t now;
         time(&now);
-        
-        _activity->setEndTime(now);
 
-        transmit();
+        // Close and transmit the current activity, but only if it changes to the original have been made
+        if (_transmitCount > 0)
+        {
+            _activity->clearUsedEntities();
+            _activity->setEndTime(now);
 
-        // Assert a qualified derivation of the new file from the old one.
-        DerivationRef derivation = DerivationRef(new Derivation());
-        derivation->addEntity(_entity);
-        derivation->setActivity(_activity);
-        derivation->setTime(now);
-
-        // Get document creates a new instance of the plugin's entity type.
-        targetImage->addInfluence(derivation);
+            transmit();
+        }
 
         // Check if there is already a file at the given location.
-        string uri = getEntityUri(targetPath);
+        string latestEntityUri = "";
+        string fileDataObjectUri = "";
+        string renderOutputPath = "";
+        string userAssociationUri = "";
+		bool createRenders = false;
+		fetchInitialData(targetImage->uri, targetPath, &latestEntityUri, &fileDataObjectUri, &renderOutputPath, &userAssociationUri, &createRenders);
 
-        if (!uri.empty())
+        if (!latestEntityUri.empty())
         {
-            targetImage->uri = uri;
+            targetImage->uri = latestEntityUri;
+            targetImage->setDataObject(FileDataObjectRef(new FileDataObject(fileDataObjectUri.c_str())));
         }
 
         // Create a new activity for the new image.
         setDocument(targetImage, targetPath, true);
+        
+
+        if (_prevEntity != NULL)
+        {
+            // Assert a qualified derivation of the new file from the old one.
+            DerivationRef derivation = DerivationRef(new Derivation());
+            derivation->addEntity(_prevEntity);
+            derivation->setActivity(_activity);
+            derivation->setTime(now);
+
+            // Get document creates a new instance of the plugin's entity type.
+            targetImage->addInfluence(derivation);
+        }
 
         _activity->setStartTime(now);
-        _activity->addUsed(sourceImage);
+        _activity->addUsed(_prevEntity);
 
         // Do not serialize the old image as it should already be stored in the database.
         sourceImage->serialize = false;
 
         // NOTE: This assumes that the file system monitor will update any existing file data objects.
-        createDataObject(targetPath);
+        fetchNewDataObject(targetPath);
 
         // Transfer the current associations to the new activity.
         for (auto it = _associations.begin(); it != _associations.end(); it++)
@@ -391,49 +437,35 @@ namespace artivity
             addInfluence(*it);
         }
 
+        latestEntityUri = _entity->uri;
+        _entity->uri = UriGenerator::appendTimeFragment(latestEntityUri, now);
+        if (_prevEntity != NULL)
+            _prevEntity->serialize = false;
+        transmit();
+
+        _prevEntity = ImageRef(new Image(_entity->uri.c_str()));
+        _entity->uri = latestEntityUri;
+    }
+    void ActivityLog::populateRevision(RevisionRef revision)
+    {
+        }
+        if (_prevEntity != NULL)
+        for (auto it = _associations.begin(); it != _associations.end(); it++)
+            _activity->addInvalidated(_prevEntity);
+            revision->addEntity(_prevEntity);
+            _entity->addInfluence(revision);
+            _activity->addAssociation(*it);
+        _activity->addGenerated(_entity);
+        revision->setActivity(_activity);
+        if ( _prevEntity != NULL )
+        revision->addEntity(_prevEntity);
+        }
         transmit();
     }
 
 	ImageRef ActivityLog::getDocument()
 	{
 		return _entity;
-	}
-
-	string ActivityLog::getEntityUri(string fileUrl)
-	{
-        string uri = "";
-
-        try
-        {
-            CURL* curl = initializeRequest();
-
-            stringstream url;
-            url << _endpointUrl << "/uris?fileUrl=" << fileUrl;
-
-            string response;
-
-            executeRequest(curl, url.str(), "", response);
-
-            stringstream stream;
-            stream << response;
-
-            if (response.empty())
-            {
-                return uri;
-            }
-
-            ptree tree;
-
-            read_json(stream, tree);
-
-            uri = tree.get_child("uri").get_value<string>();
-        }
-        catch (...)
-        {
-			uri = "";
-        }
-
-		return uri;
 	}
 
     void ActivityLog::addInfluence(InfluenceRef influence)
@@ -458,6 +490,8 @@ namespace artivity
         {
             for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
             {
+                if (entity == NULL)
+                    continue;
                 EntityRef entity = *it;
 
                 if (influence->is(prov::Generation))
@@ -516,7 +550,7 @@ namespace artivity
                         
                         _activity->addUsed(entity);
                     }
-                }
+                else if (influence->is(prov::Revision))
                 else if (influence->is(prov::Revision) || influence->is(art::Save) || influence->is(art::SaveAs))
                 {
                     EntityRef r = _activity->getEntity(entity->uri);
@@ -607,39 +641,11 @@ namespace artivity
             }
         }
 	}
-
-	string ActivityLog::getRenderOutputPath()
-	{
-		if (_entity->uri.empty())
-		{
-			return "";
+    string ActivityLog::getRenderOutputPath()
+    {
+        return _renderOutputPath;
+    }
 		}
-
-		CURL* curl = initializeRequest();
-
-		stringstream url;
-        url << _endpointUrl << "/renderings/path?uri=" << UriGenerator::escapePath(_entity->uri) << "&create";
-
-		string response;
-
-		executeRequest(curl, url.str(), "", response);
-
-		stringstream stream;
-		stream << response;
-
-		if (response.empty())
-		{
-			return "";
-		}
-
-		ptree tree;
-
-		read_json(stream, tree);
-
-		string path = tree.front().second.get_value<string>();
-
-		return path;
-	}
 
     void ActivityLog::transmit()
     {
@@ -668,7 +674,7 @@ namespace artivity
 
         CURL* curl = initializeRequest();
 
-        stringstream url;
+        url << _endpointUrl << "/plugin/file/activities";
         url << _endpointUrl << "/activities";
 
         if (!debug)
@@ -742,9 +748,10 @@ namespace artivity
 			dump(it->second);
 		}
 	}
-
+    bool ActivityLog::fetchNewDataObject(std::string path)
     bool ActivityLog::createDataObject(std::string path)
     {
+
         std::string fileUri = UriGenerator::getUri();
         std::string fileUrl = UriGenerator::getUrl(path);
 

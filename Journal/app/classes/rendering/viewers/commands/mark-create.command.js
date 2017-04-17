@@ -42,7 +42,7 @@ CreateMarkCommand.prototype.canExecute = function(param) {
     var t = this;
 
     return t.viewer && param && param.length > 0;
-}
+};
 
 CreateMarkCommand.prototype.execute = function (param) {
     var t = ViewerCommand.prototype.execute.call(this, param);
@@ -52,7 +52,7 @@ CreateMarkCommand.prototype.execute = function (param) {
     t.stage.cursor = 'crosshair';
 
     t.param = param;
-}
+};
 
 CreateMarkCommand.prototype.onMouseDown = function (e) {
     var t = this;
@@ -65,7 +65,7 @@ CreateMarkCommand.prototype.onMouseDown = function (e) {
         t.stage.on("pressmove", t.mouseDragHandler);
         $(window).on("mouseup", t.mouseUpHandler);
     }
-}
+};
 
 CreateMarkCommand.prototype.onMouseUp = function (e) {
     var t = this;
@@ -79,7 +79,7 @@ CreateMarkCommand.prototype.onMouseUp = function (e) {
 
     t.stage.off("pressmove", t.mouseDragHandler);
     $(window).off("mouseup", t.mouseUpHandler);
-}
+};
 
 CreateMarkCommand.prototype.onMouseDrag = function (e) {
     var t = this;
@@ -105,7 +105,7 @@ CreateMarkCommand.prototype.onMouseDrag = function (e) {
             t.viewer.raise('markInvalidated', t.mark);
         }
     }
-}
+};
 
 CreateMarkCommand.prototype.createMark = function (mark) {
     var t = this;
@@ -133,4 +133,4 @@ CreateMarkCommand.prototype.createMark = function (mark) {
     });
 
     return true;
-}
+};
