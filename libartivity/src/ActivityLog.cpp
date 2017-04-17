@@ -446,21 +446,21 @@ namespace artivity
         _prevEntity = ImageRef(new Image(_entity->uri.c_str()));
         _entity->uri = latestEntityUri;
     }
+
     void ActivityLog::populateRevision(RevisionRef revision)
     {
-        }
-        if (_prevEntity != NULL)
-        for (auto it = _associations.begin(); it != _associations.end(); it++)
-            _activity->addInvalidated(_prevEntity);
-            revision->addEntity(_prevEntity);
-            _entity->addInfluence(revision);
-            _activity->addAssociation(*it);
-        _activity->addGenerated(_entity);
-        revision->setActivity(_activity);
-        if ( _prevEntity != NULL )
-        revision->addEntity(_prevEntity);
-        }
-        transmit();
+        
+		if (_prevEntity != NULL)
+		{
+			_activity->addInvalidated(_prevEntity);
+			revision->addEntity(_prevEntity);
+			_entity->addInfluence(revision);
+		}
+		_activity->addGenerated(_entity);
+		revision->setActivity(_activity);
+		if (_prevEntity != NULL)
+			revision->addEntity(_prevEntity);
+
     }
 
 	ImageRef ActivityLog::getDocument()
@@ -490,9 +490,9 @@ namespace artivity
         {
             for (list<EntityRef>::iterator it = entities.begin(); it != entities.end(); ++it)
             {
+				EntityRef entity = *it;
                 if (entity == NULL)
                     continue;
-                EntityRef entity = *it;
 
                 if (influence->is(prov::Generation))
                 {
@@ -532,25 +532,25 @@ namespace artivity
                         _activity->addInvalidated(entity);
                     }
                 }
-                else if (influence->is(prov::Derivation))
-                {
-                    EntityRef r = _activity->getEntity(entity->uri);
+				else if (influence->is(prov::Derivation))
+				{
+					EntityRef r = _activity->getEntity(entity->uri);
 
-                    DerivationRef derivation = dynamic_pointer_cast<Derivation>(influence);
-                    
-                    if (r)
-                    {
-                        r->addInfluence(derivation);
-                        
-                        _activity->addUsed(r);
-                    }
-                    else
-                    {
-                        entity->addInfluence(derivation);
-                        
-                        _activity->addUsed(entity);
-                    }
-                else if (influence->is(prov::Revision))
+					DerivationRef derivation = dynamic_pointer_cast<Derivation>(influence);
+
+					if (r)
+					{
+						r->addInfluence(derivation);
+
+						_activity->addUsed(r);
+					}
+					else
+					{
+						entity->addInfluence(derivation);
+
+						_activity->addUsed(entity);
+					}
+				}
                 else if (influence->is(prov::Revision) || influence->is(art::Save) || influence->is(art::SaveAs))
                 {
                     EntityRef r = _activity->getEntity(entity->uri);
@@ -644,8 +644,7 @@ namespace artivity
     string ActivityLog::getRenderOutputPath()
     {
         return _renderOutputPath;
-    }
-		}
+	}
 
     void ActivityLog::transmit()
     {
@@ -674,8 +673,8 @@ namespace artivity
 
         CURL* curl = initializeRequest();
 
+		stringstream url;
         url << _endpointUrl << "/plugin/file/activities";
-        url << _endpointUrl << "/activities";
 
         if (!debug)
         {
@@ -749,7 +748,6 @@ namespace artivity
 		}
 	}
     bool ActivityLog::fetchNewDataObject(std::string path)
-    bool ActivityLog::createDataObject(std::string path)
     {
 
         std::string fileUri = UriGenerator::getUri();
