@@ -19,7 +19,27 @@
             "console": "integratedTerminal",
             "sourceMaps": false,
             "outDir": null
+        },
+        {
+            "name": "Launch Release Electron",
+            "type": "chrome",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/main.js",
+            "stopOnEntry": false,
+            "args": [],
+            "cwd": "${workspaceRoot}/build",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
+             "runtimeArgs": [
+        "${workspaceRoot}",
+        "--enable-logging",
+        "--remote-debugging-port=9222"
+     ],
+            "env": {},
+            "console": "integratedTerminal",
+            "sourceMaps": false,
+            "outDir": null
         }
+
 
     ]
 }

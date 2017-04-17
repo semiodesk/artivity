@@ -12,7 +12,7 @@ SelectCommand.prototype.canExecute = function (e) {
     var t = this;
 
     return t.viewer && t.viewer.selection;
-}
+};
 
 SelectCommand.prototype.execute = function (e) {
     var t = ViewerCommand.prototype.execute.call(this, e);
@@ -20,4 +20,4 @@ SelectCommand.prototype.execute = function (e) {
     t.viewer.selectCommand(t);
 
     t.stage.cursor = 'default';
-}
+};
