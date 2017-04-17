@@ -170,8 +170,12 @@
 
 		t.$postLink = function () {
 			$scope.$watch('t.project', function (newValue, oldValue) {
-				if (t.project && t.project.new) {
-					t.togglePropertyPane();
+				if (t.project) {
+					if(t.project.new) {
+						t.togglePropertyPane();
+					}
+
+					$scope.$broadcast('refresh');
 				}
 			});
 

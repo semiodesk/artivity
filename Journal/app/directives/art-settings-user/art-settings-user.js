@@ -21,20 +21,51 @@
     function UserSettingsDirectiveFormController($rootScope, $scope, api, agentService, settingsService) {
         var t = this;
 
-        // Load the user data.
+        // USER
         t.user = null;
+        t.username = null;
         t.userPhotoUrl = null;
 
         t.setUser = function (user) {
             t.user = user;
             t.userPhoto = null;
-            t.userPhotoUrl = user.PhotoUrl;
+            t.userPhotoUrl = user ? user.PhotoUrl : '';
         };
 
         t.onPhotoChanged = function (file) {
             t.userPhoto = file;
             $scope.userForm.$pristine = false;
         };
+
+        // ACCOUNT
+        t.readonly = true;
+
+        t.initializeAccountReadOnlyState = function () {
+            api.getAccounts().then(function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var account = data[i];
+
+                    if (account && account.ServiceClient.Uri.startsWith('http://artivity.online')) {
+                        t.readonly = true;
+                        
+                        for(var j = 0; i < account.AuthenticationParameters.length; j++) {
+                            var p = account.AuthenticationParameters[j];
+
+                            if(p.Name === 'username') {
+                                t.username = p.Value;
+
+                                return;
+                            }
+                        }
+
+                        return;
+                    }
+                }
+
+                t.readonly = false;
+                t.username = null;
+            });
+        }
 
         // BACKUP
         t.backupStatus = null;
@@ -72,6 +103,7 @@
             });
         };
 
+        // FORM
         t.submit = function () {
             if ($scope.userForm.$valid) {
                 console.log("Submitting Profile");
@@ -110,6 +142,8 @@
             }
 
             agentService.on('currentUserChanged', t.setUser);
+
+            t.initializeAccountReadOnlyState();
         }
 
         t.$onDestroy = function () {

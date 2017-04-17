@@ -191,7 +191,9 @@ namespace Artivity.Apid.Modules
 
         private Response GetServiceClients()
         {
-            return Response.AsJsonSync(OnlineServiceClientFactory.GetRegisteredClients());
+            List<IOnlineServiceClient> clients = OnlineServiceClientFactory.GetRegisteredClients().ToList();
+
+            return Response.AsJsonSync(clients);
         }
 
         private Response GetServiceClientsWithFeature(Uri featureUri)
@@ -323,6 +325,9 @@ namespace Artivity.Apid.Modules
 
             IModel model = ModelProvider.GetAgents();
 
+            // Run any client specific install tasks.
+            OnlineAccount account = session.Client.InstallAccount(model);
+
             // Associate the account with the user.
             User user = model.GetResource<User>(new UriRef(PlatformProvider.Config.Uid));
 
@@ -330,9 +335,6 @@ namespace Artivity.Apid.Modules
             {
                 return PlatformProvider.Logger.LogError(HttpStatusCode.InternalServerError, "Unable to retrieve user agent.");
             }
-
-            // Run any client specific install tasks.
-            OnlineAccount account = session.Client.InstallAccount(model);
 
             // Add the account to the user.
             if(!user.Accounts.Any(a => a.Id == account.Id))

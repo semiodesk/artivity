@@ -353,6 +353,10 @@ namespace Artivity.Apid.Accounts
             {
                 return await TryPullProjectAsync(account, uri, revision, context);
             }
+            else if(IsSubClassOf(typeUri, art.User))
+            {
+                // TODO
+            }
             else if (IsSubClassOf(typeUri, prov.Person))
             {
                 return await TryPullPersonAsync(account, uri, revision, context);
@@ -458,6 +462,8 @@ namespace Artivity.Apid.Accounts
                         // Do not commit again *after* setting the revision because this 
                         // will mark the resource as modified.
                         person.Commit(revision, revision);
+
+                        return true;
                     }
                     catch(Exception ex)
                     {
@@ -635,24 +641,27 @@ namespace Artivity.Apid.Accounts
                     {
                         Project project = model.GetResource<Project>(uri);
 
-                        string json = JsonConvert.SerializeObject(project);
-
-                        StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                        HttpResponseMessage response = await client.PostAsync(url, content);
-
-                        if (response.IsSuccessStatusCode)
+                        if (project.Validate())
                         {
-                            int remote = await GetLastRemoteRevision(response);
+                            string json = JsonConvert.SerializeObject(project);
 
-                            model = ModelProvider.GetActivities();
+                            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                            if (model.ContainsResource(uri))
+                            HttpResponseMessage response = await client.PostAsync(url, content);
+
+                            if (response.IsSuccessStatusCode)
                             {
-                                project = model.GetResource<Project>(uri);
-                                project.Commit(remote, remote);
+                                int remote = await GetLastRemoteRevision(response);
 
-                                return true;
+                                model = ModelProvider.GetActivities();
+
+                                if (model.ContainsResource(uri))
+                                {
+                                    project = model.GetResource<Project>(uri);
+                                    project.Commit(remote, remote);
+
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -676,34 +685,37 @@ namespace Artivity.Apid.Accounts
                 {
                     Person person = model.GetResource<Person>(uri);
 
-                    string json = JsonConvert.SerializeObject(person);
-
-                    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = await client.PostAsync(url, content);
-
-                    if (response.IsSuccessStatusCode)
+                    if (person.Validate())
                     {
-                        int remote = await GetLastRemoteRevision(response);
+                        string json = JsonConvert.SerializeObject(person);
 
-                        model = ModelProvider.GetAgents();
+                        StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        if (model.ContainsResource(uri))
+                        HttpResponseMessage response = await client.PostAsync(url, content);
+
+                        if (response.IsSuccessStatusCode)
                         {
-                            person = model.GetResource<Person>(uri);
-                            person.Commit(remote, remote);
+                            int remote = await GetLastRemoteRevision(response);
 
-                            string personUri = FileNameEncoder.Encode(person.Uri.AbsoluteUri);
-                            string file = Path.Combine(PlatformProvider.AvatarsFolder, personUri + ".jpg");
+                            model = ModelProvider.GetAgents();
 
-                            if (File.Exists(file))
+                            if (model.ContainsResource(uri))
                             {
-                                S3Uploader.Policy policy = await GetUploadPolicy(account);
+                                person = model.GetResource<Person>(uri);
+                                person.Commit(remote, remote);
 
-                                await S3Uploader.Upload(policy, new FileInfo(file), "avatars");
+                                string personUri = FileNameEncoder.Encode(person.Uri.AbsoluteUri);
+                                string file = Path.Combine(PlatformProvider.AvatarsFolder, personUri + ".jpg");
+
+                                if (File.Exists(file))
+                                {
+                                    S3Uploader.Policy policy = await GetUploadPolicy(account);
+
+                                    await S3Uploader.Upload(policy, new FileInfo(file), "avatars");
+                                }
+
+                                return true;
                             }
-
-                            return true;
                         }
                     }
                 }
@@ -986,6 +998,60 @@ namespace Artivity.Apid.Accounts
                 // query evaluates the class inheritance in the ontology.
                 return _modelProvider.GetAll().ExecuteQuery(query, true).GetAnwser();
             }
+        }
+
+        protected override void OnAccountInstalled(Person user, OnlineAccount account)
+        {
+            base.OnAccountInstalled(user, account);
+
+            InitializeUserAsync(user, account).GetAwaiter().GetResult();
+        }
+
+        private async Task<bool> InitializeUserAsync(Person user, OnlineAccount account)
+        {
+            using (HttpClient client = GetHttpClient(account))
+            {
+                string username = account.GetParameter("username");
+
+                if (!string.IsNullOrEmpty(username))
+                {
+                    string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+                    Uri url = new Uri(baseUrl + "/api/1.0/users/" + username);
+
+                    HttpResponseMessage response = await client.GetAsync(url);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string json = await response.Content.ReadAsStringAsync();
+
+                        try
+                        {
+                            Person u = SynchronizableResource.FromJson<Person>(json);
+
+                            // Initially set the id, name and email address.
+                            user.Id = u.Id;
+                            user.Name = u.Name;
+                            user.EmailAddress = u.EmailAddress;
+
+                            if (user.Validate())
+                            {
+                                // Do not commit again *after* setting the revision because this 
+                                // will mark the resource as modified.
+                                user.Commit();
+                            }
+
+                            return true;
+                        }
+                        catch (Exception ex)
+                        {
+                            PlatformProvider.Logger.LogError(ex);
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         #endregion

@@ -1,30 +1,6 @@
 <form name="userForm">
     <div class="form-header">
-        <p class="description" ng-show="!t.setup">{{ 'SETTINGS.PROFILE.DESCRIPTION' | translate }}</p>
-    </div>
-
-    <div class="clearfix"></div>
-
-    <div class="form-group pull-left">
-        <art-user-photo-img src="t.userPhotoUrl" width="100" height="100" can-change="true" changed="t.onPhotoChanged"></art-user-photo-img>
-    </div>
-
-    <div class="table-cell padding-x-xl" style="padding-top: 10px; width: 450px">
-        <div class="form-group">
-            <label for="name">{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}</label>
-            <input type="text" class="form-control" id="name" name="name" size="30" ng-model="t.user.Name" required>
-        </div>
-
-        <div class="form-group">
-            <label for="email">{{'SETTINGS.PROFILE.LABEL_EMAIL' | translate}}</label>
-            <input type="text" class="form-control" id="email" name="email" length="25" ng-model="t.user.EmailAddress" ng-minlength="5" required>
-        </div>
-
-        <div class="form-group" ng-show="t.setup">
-            <button class="btn btn-success" ng-click="t.submit()" ng-disabled="userForm.$invalid">Erstellen</button>
-        </div>
-
-        <div class="form-group" style="margin-top: 3em;" class="label ng-hide" ng-show="{{!t.setup}}">
+        <div class="form-group pull-right" class="label ng-hide" ng-show="{{!t.setup}}" style="position: relative; right -10px; top: -10px;">
             <div ng-switch="t.backupStatus">
                 <div ng-switch-default>
                     <div ng-switch="t.backupStatus.Error">
@@ -47,6 +23,36 @@
                     <a class="btn btn-chromeless" ng-click="t.createBackup()"><i class="zmdi zmdi-account-box-o"></i> <span class="btn-label">{{'SETTINGS.PROFILE.LABEL_BACKUP_CREATE' | translate}}</span></a>
                 </div>
             </div>
+        </div>
+
+        <p class="description" ng-show="!t.setup">{{ 'SETTINGS.PROFILE.DESCRIPTION' | translate }}</p>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="form-group pull-left">
+        <art-user-photo-img src="t.userPhotoUrl" width="100" height="100" can-change="!t.readonly" changed="t.onPhotoChanged"></art-user-photo-img>
+    </div>
+
+    <div class="table-cell padding-x-xl" style="padding-top: 10px; width: 450px">
+        <div class="form-group">
+            <label for="name">{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}</label>
+            <input type="text" class="form-control" id="name" name="name" size="30" ng-model="t.user.Name" ng-readonly="t.readonly" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">{{'SETTINGS.PROFILE.LABEL_EMAIL' | translate}}</label>
+            <input type="text" class="form-control" id="email" name="email" length="25" ng-model="t.user.EmailAddress" ng-readonly="t.readonly"
+                ng-minlength="5" required>
+        </div>
+
+        <div class="form-group" ng-show="t.username">
+            <label for="username">Benutzername</label>
+            <input type="text" class="form-control" id="username" name="username" length="25" ng-model="t.username" ng-readonly="t.readonly">
+        </div>
+
+        <div class="form-group" ng-show="t.setup">
+            <button class="btn btn-success" ng-click="t.submit()" ng-disabled="userForm.$invalid">Erstellen</button>
         </div>
     </div>
 </form>

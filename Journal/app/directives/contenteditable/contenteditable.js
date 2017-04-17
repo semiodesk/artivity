@@ -1,5 +1,5 @@
 (function () {
-    angular.module('app').directive('contenteditable', ContentEditableDirective);
+    angular.module('app').directive('ngContenteditable', ContentEditableDirective);
 
     function ContentEditableDirective() {
         return {

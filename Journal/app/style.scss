@@ -1374,6 +1374,11 @@ h4 {
 	color: rgba($headerTextColor, .7);
 }
 
+.toolbar.toolbar-view .txt-title {
+	color: $textColor;
+	font-weight: 600;
+}
+
 .toolbar-header .btn {
 	padding: 0;
 	margin: 0 !important;
@@ -1409,6 +1414,10 @@ h4 {
 	display: none;
 	margin-left: 0;
 	margin-right: 15px;
+}
+
+.toolbar-header .btn.btn-user-menu .btn-avatar:hover {
+	background: transparent;
 }
 
 @media (min-width: 992px) {
@@ -2547,7 +2556,7 @@ $userCommentBackgroundColor: rgba($textColor,
 	outline: none;
 	padding: 10px;
 	color: $inputTextColor;
-	background: transparent;
+	background: rgba(255,255,255,.1);
 	@include transitionEaseInOutCubic(height, 200ms);
 }
 
@@ -2555,6 +2564,11 @@ $userCommentBackgroundColor: rgba($textColor,
 	float: left;
 	padding: 10px;
 	line-height: 1.3em;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .ctl-comment .textarea:focus {
