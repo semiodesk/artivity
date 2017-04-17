@@ -1,14 +1,13 @@
 <div class="layout-root table-layout">
     <div class="row header">
         <div class="container padding-y-xl">
-            <h1>Willkommen!</h1>
+            <h1>{{'SETUP.GREETING' | translate}}</h1>
 
-            <p>Vielen Dank, dass du Artivity verwendest. Bevor du starten kannst müssen wir noch ein paar Dinge einrichten.</p>
+            <p>{{'SETUP.INTRO' | translate}}</p>
             <!--
             <h1>Welcome!</h1>
 
-            <p>Thank you for downloading Artivity. Before you can begin using the app we need to setup your user account:</p>
-            -->
+            <p>-->
         </div>
     </div>
     <div class="row expand">
@@ -21,12 +20,12 @@
                 <div class="container">
                     <div class="tab-content padding-y-xl">
                         <div role="tabpanel" class="tab-pane fade active in" id="panel-user">
-                            <p style="margin-bottom: 1.5em">Bitte wähle welchen Kontotyp du verwenden möchtest:</p>
+                            <p style="margin-bottom: 1.5em">{{'SETUP.ACCOUNTTYPE' |translate}}</p>
                             <uib-tabset>
                                 <uib-tab>
                                     <uib-tab-heading>
                                         <div style="padding: 0 15px">
-                                            <i class="zmdi zmdi-cloud-outline-alt"></i><label class="icn-label">Online</label>
+                                            <i class="zmdi zmdi-cloud-outline-alt"></i><label class="icn-label">{{'SETUP.TYPE_ONLINE | translate}}</label>
                                         </div>
                                     </uib-tab-heading>
                                     <arto-settings-user></arto-settings-user>
@@ -34,7 +33,7 @@
                                 <uib-tab>
                                     <uib-tab-heading>
                                         <div style="padding: 0 15px">
-                                            <i class="zmdi zmdi-desktop-windows"></i><label class="icn-label">Lokal</label>
+                                            <i class="zmdi zmdi-desktop-windows"></i><label class="icn-label">{{'SETUP.TYPE_LOCAL | translate}}</label>
                                         </div>
                                     </uib-tab-heading>
                                     <art-settings-user setup="true"></art-settings-user>
