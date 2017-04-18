@@ -107,7 +107,7 @@
                     api.getAccountClient('http://artivity.online').then(function (client) {
                         if (client) {
                             t.client = client;
-                            t.parameter.url = 'http://localhost:8080';
+                            t.parameter.url = 'https://api.artivity.online';
                             t.parameter.clientUri = client.Uri;
                             t.parameter.authType = client.SupportedAuthenticationClients[0].Uri;
                             t.parameter.username = '';
