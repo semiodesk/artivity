@@ -92,11 +92,19 @@ UpdateChecker.prototype.isUpdateAvailable = function () {
 UpdateChecker.prototype.isUpdateDownloaded = function (update) {
     var t = this;
 
-    // Note: This is platform dependent and should be moved into a factory.
-    update.localPath = t.appService.configPath('temp') + "\\artivity-update-" + update.version + ".msi";
+    const path = require('path');
+    var remote = require('electron').remote;
+    var app = remote.app;
 
+    var ext = "";
+    if (process.platform === "win32") {
+        ext = ".msi";
+    } else if (process.platform === "darwin") {
+        ext = ".pkg";
+    }
+    update.localPath = path.join(app.getPath('temp'), "artivity-update-" + update.version + ext);
     return t.verifyUpdateInstallerSignature(update);
-}
+};
 
 UpdateChecker.prototype.downloadUpdate = function (update) {
     var t = this;
@@ -105,7 +113,8 @@ UpdateChecker.prototype.downloadUpdate = function (update) {
         t.isUpdateDownloaded(update).then(function () {
             resolve(update);
         }).catch(function () {
-            var https = require('https');
+            //var https = require('https');
+            var https = require('http');
 
             var request = https.get(update.url, function (response) {
                 var totalBytes = parseInt(response.headers['content-length']);
@@ -139,63 +148,106 @@ UpdateChecker.prototype.downloadUpdate = function (update) {
             });
         });
     });
-}
+};
 
 UpdateChecker.prototype.installUpdate = function (update) {
     var t = this;
 
-    return new Promise(function (resolve, reject) {
-        try {
-            // Execute the installer as seperate process.
-            const spawn = require('child_process').spawn;
-            const child = spawn("Msiexec", ["/i", update.localPath], {
-                detached: true,
-                stdio: ['ignore', 'ignore', 'ignore']
-            });
+    if (process.platform === "win32") {
+        return new Promise(function (resolve, reject) {
+            try {
+                // Execute the installer as seperate process.
+                const spawn = require('child_process').spawn;
+                const child = spawn("Msiexec", ["/i", update.localPath], {
+                    detached: true,
+                    stdio: ['ignore', 'ignore', 'ignore']
+                });
 
-            // Do not wait for the child process to return.
-            child.unref();
+                // Do not wait for the child process to return.
+                child.unref();
 
-            // Close the Artivity app window and process.
-            t.appService.exit();
-        } catch (err) {
-            console.error(err);
+                // Close the Artivity app window and process.
+                const remote = require('electron').remote;
+                remote.app.exit();
+            } catch (err) {
+                console.error(err);
 
-            reject(update);
+                return reject(update);
+            }
+        });
+    } else if (process.platform === 'darwin') {
+        return new Promise(function (resolve, reject) {
+            try {
+                // Execute the installer as seperate process.
+                const opn = require('opn');
+                opn(update.localPath);
+
+                // Close the Artivity app window and process.
+                const remote = require('electron').remote;
+                remote.app.exit();
+            } catch (err) {
+                console.error(err);
+
+                return reject(update);
+            }
+        });
+    }
+};
+
+UpdateChecker.prototype.updateFileExists = function (update) {
+    var fs = require('fs');
+    return fs.existsSync(update.localPath);
+};
+
+// This method is synchronous
+UpdateChecker.prototype.verifyUpdateInstallerSignatureOSX = function (resolve, reject, update) {
+    // Execute the signature verifier in a separate process.
+    const exec = require('child_process').execSync;
+    var res = exec('pkgutil --check-signature ' + update.localPath, { encoding: 'utf8' });
+    if (res.includes("Semiodesk GmbH (3F9DU688H9)")) {
+        return resolve(update);
+    }
+};
+
+// This method is synchronous
+UpdateChecker.prototype.verifyUpdateInstallerSignatureWIN = function (resolve, reject, update) {
+    var script = require('path').dirname(__filename) + '\\app\\host\\VerifySignature.exe';
+
+    // Execute the signature verifier in a separate process.
+    const execute = require('child_process').execFile;
+    const child = execute(script, [update.localPath], (error, stdout, stderr) => {
+        if (error) {
+            console.error('Error validating signature:', stderr);
+
+            return reject(update);
+        }
+
+        var result = JSON.parse(stdout);
+
+        if ("error" in result) {
+            return reject(update);
+        } else {
+            update.signature = result;
+
+            return resolve(update);
         }
     });
-}
+};
+
 
 UpdateChecker.prototype.verifyUpdateInstallerSignature = function (update) {
+    var t = this;
     return new Promise(function (resolve, reject) {
-        try {
-            fs.accessSync("real_exixs_path", fs.R_OK | fs.W_OK)
-
-            var script = require('path').dirname(__filename) + '\\host\\VerifySignature.exe';
-            // Execute the signature verifier in a separate process.
-            const execute = require('child_process').execFile;
-            const child = execute(script, [update.localPath], (error, stdout, stderr) => {
-                if (error) {
-                    console.error('Error validating signature:', stderr);
-
-                    reject(update);
-                }
-
-                var result = JSON.parse(stdout);
-
-                if ("error" in result) {
-                    reject(update);
-                } else {
-                    update.signature = result;
-
-                    resolve(update);
-                }
-            });
-        } catch (e) {
+        if (!t.updateFileExists(update))
             reject(update);
+
+        if (process.platform === "win32") {
+            t.verifyUpdateInstallerSignatureWIN(resolve, reject, update);
+        } else if (process.platform === 'darwin') {
+            t.verifyUpdateInstallerSignatureOSX(resolve, reject, update);
         }
     });
-}
+};
 
 UpdateChecker.prototype.on = function (event, callback) {
     var t = this;
@@ -207,7 +259,7 @@ UpdateChecker.prototype.on = function (event, callback) {
 
         t.eventListeners[event].push(callback);
     }
-}
+};
 
 UpdateChecker.prototype.off = function (event, callback) {
     var t = this;
@@ -219,7 +271,7 @@ UpdateChecker.prototype.off = function (event, callback) {
             t.eventListeners[event].splice(i, 1);
         }
     }
-}
+};
 
 UpdateChecker.prototype.raiseEvent = function (event, params) {
     var t = this;
@@ -231,4 +283,4 @@ UpdateChecker.prototype.raiseEvent = function (event, params) {
             listeners[i](params);
         }
     }
-}
+};

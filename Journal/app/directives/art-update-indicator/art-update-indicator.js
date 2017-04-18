@@ -28,7 +28,7 @@
 
             updateService.isUpdateDownloaded().then(function () {
                 t.setProgressValue(100);
-            }).catch(function () {});
+            }, function() {}).catch(function () {});
         });
 
         updateService.on('progress', function (progress) {
