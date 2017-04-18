@@ -12,9 +12,9 @@
 
     angular.module('app').controller('ProjectTabsDirectiveController', ProjectTabsDirectiveController);
 
-    ProjectTabsDirectiveController.$inject = ['$scope', '$uibModal', '$timeout', 'api', 'agentService', 'cookieService', 'selectionService', 'projectService'];
+    ProjectTabsDirectiveController.$inject = ['$scope', '$uibModal', '$timeout', 'api', 'agentService', 'cookieService', 'selectionService', 'projectService', 'syncService'];
 
-    function ProjectTabsDirectiveController($scope, $uibModal, $timeout, api, agentService, cookieService, selectionService, projectService) {
+    function ProjectTabsDirectiveController($scope, $uibModal, $timeout, api, agentService, cookieService, selectionService, projectService, syncService) {
         var t = this;
 
         // PROJECTS
@@ -53,6 +53,8 @@
                     controllerAs: 't'
                 }).closed.then(function (account) {
                     t.projects.splice(t.projects.indexOf(project), 1);
+
+                    syncService.synchronize();
                 });
             } else {
                 t.projects.splice(t.projects.indexOf(project), 1);

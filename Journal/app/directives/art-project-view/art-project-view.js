@@ -17,9 +17,9 @@
 		}
 	});
 
-	ProjectViewDirectiveController.$inject = ['$scope', '$element', '$sce', '$uibModal', 'agentService', 'navigationService', 'projectService', 'hotkeys'];
+	ProjectViewDirectiveController.$inject = ['$scope', '$element', '$sce', '$uibModal', 'agentService', 'navigationService', 'projectService', 'syncService', 'hotkeys'];
 
-	function ProjectViewDirectiveController($scope, $element, $sce, $uibModal, agentService, navigationService, projectService, hotkeys) {
+	function ProjectViewDirectiveController($scope, $element, $sce, $uibModal, agentService, navigationService, projectService, syncService, hotkeys) {
 		var t = this;
 
 		t.file = null;
@@ -102,6 +102,8 @@
 				projectService.getMembers(t.project.Uri).then(function (result) {
 					if (result.length > 0) {
 						t.project.members = result;
+
+						syncService.synchronize();
 					}
 				});
 			});
@@ -113,6 +115,8 @@
 
 				if (i > -1) {
 					t.project.members.splice(i, 1);
+
+					syncService.synchronize();
 				}
 			});
 		}
@@ -149,6 +153,8 @@
 				t.project.new = false;
 
 				t.togglePropertyPane();
+
+				syncService.synchronize();
 			}
 		}
 
