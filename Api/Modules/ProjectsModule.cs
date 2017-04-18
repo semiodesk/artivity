@@ -478,6 +478,10 @@ namespace Artivity.Api.Modules
 		
 		                FILTER(?t1 > ?t2)
 	                }
+                    FILTER NOT EXISTS
+                    {
+						?older prov:qualifiedRevision / prov:entity ?entity.
+                    }
 
 	                FILTER(!BOUND(?t2))
 
