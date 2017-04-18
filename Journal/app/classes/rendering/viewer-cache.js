@@ -8,7 +8,7 @@ function ViewerCache() {
     t.renders = {};
     t.loading = false;
     t.loaded = false;
-};
+}
 
 ViewerCache.prototype.load = function (data, complete) {
     var t = this;

@@ -53,7 +53,7 @@ ViewerBase.prototype.initializeEventDispatcher = function () {
 
     // Adds the event handling methods 'on', 'off', 'raise', etc to this class.
     t.dispatcher = new EventDispatcher(t);
-}
+};
 
 ViewerBase.prototype.initializeScene = function () {
     var t = this;
@@ -97,7 +97,7 @@ ViewerBase.prototype.initializeScene = function () {
     t.stage.addChild(t.background);
     t.stage.addChild(t.scene);
     t.stage.addChild(t.overlay);
-}
+};
 
 ViewerBase.prototype.initializeCanvasZoom = function () {
     var t = this;
@@ -137,7 +137,7 @@ ViewerBase.prototype.initializeCanvasZoom = function () {
             t.resetSelection();
         }
     });
-}
+};
 
 ViewerBase.prototype.clearStage = function () {
     var t = this;
@@ -151,7 +151,7 @@ ViewerBase.prototype.clearStage = function () {
         // Clear the overlay container.
         t.overlay.removeAllChildren();
     }
-}
+};
 
 ViewerBase.prototype.setEntity = function (entity) {
     var t = this;
@@ -163,7 +163,7 @@ ViewerBase.prototype.setEntity = function (entity) {
 
     // Raise the entity changed event.
     t.raise('entityChanged', entity);
-}
+};
 
 ViewerBase.prototype.addRenderer = function (renderer) {
     var t = this;
@@ -175,7 +175,7 @@ ViewerBase.prototype.addRenderer = function (renderer) {
     } else {
         console.error("Invalid renderer:", renderer);
     }
-}
+};
 
 ViewerBase.prototype.getRenderer = function (r) {
     var t = this;
@@ -196,7 +196,7 @@ ViewerBase.prototype.getRenderer = function (r) {
             }
         }
     }
-}
+};
 
 ViewerBase.prototype.addCommand = function (command, defaultCommand) {
     var t = this;
@@ -215,7 +215,7 @@ ViewerBase.prototype.addCommand = function (command, defaultCommand) {
     } else {
         console.error("Invalid command:", command);
     }
-}
+};
 
 ViewerBase.prototype.getCommand = function (c) {
     var t = this;
@@ -236,7 +236,7 @@ ViewerBase.prototype.getCommand = function (c) {
             }
         }
     }
-}
+};
 
 ViewerBase.prototype.canExecuteCommand = function (id, param) {
     var t = this;
@@ -247,7 +247,7 @@ ViewerBase.prototype.canExecuteCommand = function (id, param) {
     }
 
     return false;
-}
+};
 
 ViewerBase.prototype.executeCommand = function (id, param) {
     var t = this;
@@ -258,7 +258,7 @@ ViewerBase.prototype.executeCommand = function (id, param) {
     }
 
     return false;
-}
+};
 
 ViewerBase.prototype.selectCommand = function (id, param) {
     var t = this;
@@ -278,7 +278,7 @@ ViewerBase.prototype.selectCommand = function (id, param) {
 
         t.raise('commandSelected', e);
     }
-}
+};
 
 ViewerBase.prototype.resetCommand = function (resetDefault) {
     var t = this;
@@ -288,7 +288,7 @@ ViewerBase.prototype.resetCommand = function (resetDefault) {
     } else if (t.defaultCommand) {
         t.executeCommand(t.defaultCommand.id);
     }
-}
+};
 
 ViewerBase.prototype.resetSelection = function () {
     var t = this;
@@ -302,7 +302,7 @@ ViewerBase.prototype.resetSelection = function () {
 
         t.stage.update();
     }
-}
+};
 
 ViewerBase.prototype.initializeCanvasResize = function () {
     var t = this;
@@ -313,7 +313,7 @@ ViewerBase.prototype.initializeCanvasResize = function () {
     window.addEventListener("resize", function (e) {
         t.onResize();
     });
-}
+};
 
 ViewerBase.prototype.onResize = function () {
     var t = this;
@@ -362,7 +362,7 @@ ViewerBase.prototype.onResize = function () {
 
     // Update the buffer.
     t.stage.update();
-}
+};
 
 ViewerBase.prototype.onDrawStart = function (t, e) {
     t.scene.debug.removeAllChildren();
@@ -386,7 +386,7 @@ ViewerBase.prototype.onDrawStart = function (t, e) {
         // Uncomment this when debugging:
         t.drawSceneMarkers(extents, cc, ce);
     }
-}
+};
 
 ViewerBase.prototype.zoom = function (dY) {
     var t = this;
@@ -402,15 +402,15 @@ ViewerBase.prototype.zoom = function (dY) {
 
         t.raise('zoom');
     }
-}
+};
 
 ViewerBase.prototype.zoomIn = function () {
     this.zoom(-1);
-}
+};
 
 ViewerBase.prototype.zoomOut = function () {
     this.zoom(1);
-}
+};
 
 ViewerBase.prototype.zoomToFit = function () {
     var t = this;
@@ -461,7 +461,7 @@ ViewerBase.prototype.zoomToFit = function () {
     t.stage.update();
 
     t.raise('zoom');
-}
+};
 
 ViewerBase.prototype.measureExtents = function (x, y, w, h) {
     var t = this;
@@ -477,7 +477,7 @@ ViewerBase.prototype.measureExtents = function (x, y, w, h) {
         extents.width = extents.r - extents.l;
         extents.height = extents.b - extents.t;
     }
-}
+};
 
 ViewerBase.prototype.drawSceneMarkers = function (extents, canvasCenter, extentsCenter) {
     var t = this;
@@ -557,13 +557,13 @@ ViewerBase.prototype.drawSceneMarkers = function (extents, canvasCenter, extents
             t.stage.debug.addChild(s);
         }
     }
-}
+};
 
 ViewerBase.prototype.render = function (cursor) {
     var t = this;
 
     t.clearStage();
-}
+};
 
 ViewerBase.prototype.cursor = function (target, cursor) {
     var t = this;
@@ -573,4 +573,4 @@ ViewerBase.prototype.cursor = function (target, cursor) {
     t.stage.update();
 
     $(window).css('cursor', cursor);
-}
+};
