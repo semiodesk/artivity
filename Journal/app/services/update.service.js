@@ -4,9 +4,7 @@
 	updateService.$inject = ['appService'];
 
 	function updateService(appService) {
-		//var appcastUrl = "https://static.semiodesk.com/artivity/win/appcast.xml";
-		var appcastUrl = "http://localhost:10001/update/appcast.xml";
-		var checker = new UpdateChecker(appcastUrl, undefined, appService);
+		var checker = new UpdateChecker(undefined, appService);
 
 		var downloading = false;
 		var currentDownload;
