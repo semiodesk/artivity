@@ -11,7 +11,7 @@ function Activity(activity, timeOffset) {
 	t.timeRange.start = timeOffset;
 	t.timeRange.length = t.endTime - t.startTime;
 	t.timeRange.end = t.timeRange.start + t.timeRange.length;
-};
+}
 
 Activity.prototype.getOffset = function (timestamp) {
 	var t = this;

@@ -9,7 +9,7 @@ function HeatmapRenderer(canvas) {
         x2: 0,
         y2: 0
     };
-};
+}
 
 HeatmapRenderer.prototype.sample = function (bounds) {
     var t = this;
