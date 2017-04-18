@@ -25,7 +25,7 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DefineConstants>WIN</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug OSX|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug-OSX|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Debug_OSX</OutputPath>
     <WarningLevel>4</WarningLevel>
@@ -35,7 +35,7 @@
     <DefineConstants>OSX, DEBUG</DefineConstants>
     <Externalconsole>true</Externalconsole>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release OSX|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-OSX|AnyCPU' ">
     <Optimize>false</Optimize>
     <OutputPath>bin\Release OSX</OutputPath>
     <WarningLevel>4</WarningLevel>

@@ -177,6 +177,9 @@ module.exports = function (grunt) {
                 },
                 bowerOptions: {
                     relative: false
+                },
+                mainFiles: {
+                'angular-ui': ['build/angular-ui.min.js']
                 }
             }
         },
@@ -251,7 +254,7 @@ module.exports = function (grunt) {
             cleanMac: {
                 src: [solutionFile],
                 options: {
-                    projectConfiguration: "Release OSX",
+                    projectConfiguration: "Release-OSX",
                     targets: ['Clean'],
                     version: 4.0,
                     maxCpuCount: 4,
@@ -265,7 +268,7 @@ module.exports = function (grunt) {
             releaseMac: {
                 src: [solutionFile],
                 options: {
-                    projectConfiguration: "Release OSX",
+                    projectConfiguration: "Release-OSX",
                     targets: ['Rebuild'],
                     version: 4.0,
                     maxCpuCount: 4,
@@ -319,7 +322,7 @@ module.exports = function (grunt) {
                 {
                     expand: true,
                     cwd: './app',
-                    src: ['resources/**/*', 'views/**/*.html', 'directives/**/*.html', 'host/*.exe'],
+                    src: ['resources/**/*', 'views/**/*.html', 'directives/**/*.html', 'host/*.exe', 'platform/agentLauncher.js'],
                     dest: 'build/app'
                 },
                 {

@@ -255,7 +255,7 @@ namespace Artivity.Api.Modules
 
                     FILTER NOT EXISTS
                     {
-                        ?revision prov:qualifiedRevision / prov:entity ?newer .
+                        ?older prov:qualifiedRevision / prov:entity ?revision .
                     }
                 }
                 LIMIT 1
