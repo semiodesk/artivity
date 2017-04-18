@@ -55,7 +55,7 @@
         };
 
         t.$onInit = function() {
-            if (t.person.Uri && !t.person.IsNew) {
+            if (t.person.Uri && t.person.EmailAddress) {
                 agentService.getPerson(t.person.Uri).then(function (data) {
                     t.person = data;
                 });
