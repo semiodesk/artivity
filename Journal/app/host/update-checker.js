@@ -1,14 +1,23 @@
-function UpdateChecker(appcastUrl, currentVersion, appService) {
+function UpdateChecker(currentVersion, appService) {
     var t = this;
 
-    t.init(appcastUrl, currentVersion, appService);
+    t.init(currentVersion, appService);
 }
 
-UpdateChecker.prototype.init = function (appcastUrl, currentVersion, appService) {
+UpdateChecker.prototype.init = function (currentVersion, appService) {
     var t = this;
 
+    if( process.platform === "darwin" )
+    {
+        t.appcastUrl = appcastUrl_osx;
+    }else if( process.platform === "win32")
+    {
+        t.appcastUrl = appcastUrl_win;
+    }
+
+
     t.appService = appService;
-    t.appcastUrl = appcastUrl;
+    
 
     console.log('Appcast URL:', t.appcastUrl);
 
