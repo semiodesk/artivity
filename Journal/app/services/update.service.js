@@ -4,7 +4,8 @@
 	updateService.$inject = ['appService'];
 
 	function updateService(appService) {
-		var appcastUrl = "https://static.semiodesk.com/artivity/win/appcast.xml";
+		//var appcastUrl = "https://static.semiodesk.com/artivity/win/appcast.xml";
+		var appcastUrl = "http://localhost:10001/update/appcast.xml";
 		var checker = new UpdateChecker(appcastUrl, undefined, appService);
 
 		var downloading = false;
@@ -48,7 +49,7 @@
 				if (service.update != null) {
 					checker.isUpdateDownloaded(service.update).then(function () {
 						resolve(service.update);
-					}).catch(function () {
+					}, function(){ reject(); }).catch(function () {
 						reject();
 					});
 				}
