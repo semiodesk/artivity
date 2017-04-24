@@ -9,9 +9,9 @@ angular.module('app', [
     'ui.bootstrap.progressbar',
     'ui.bootstrap.tabs',
     'ui.toggle',
-    'pascalprecht.translate',
     'cfp.hotkeys',
     'ngDragDrop',
     'angular-emojione',
-    'luegg.directives'
+    'luegg.directives',
+    'gettext'
 ]);

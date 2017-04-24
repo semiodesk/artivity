@@ -1,10 +1,10 @@
 <form name="appsForm">
     <div class="form-header">
         <button class="btn btn-chromeless pull-right" style="position: relative; right -10px; top: -10px;" ng-click="t.reload()">
-            <i class="zmdi zmdi-lg zmdi-refresh-sync"></i> <span class="btn-label">{{ 'SETTINGS.APPS.REFRESH' | translate }}</span>
+            <i class="zmdi zmdi-lg zmdi-refresh-sync"></i> <span class="btn-label" translate>Refresh</span>
         </button>
 
-        <p class="description">{{ 'SETTINGS.APPS.DESCRIPTION' | translate }}</p>
+        <p class="description" translate>Enable or disable the Artivity for the following applications:</p>
     </div>
 
     <div class="clearfix"></div>
@@ -14,11 +14,20 @@
             <div uib-accordion-group ng-repeat="agent in t.agents">
                 <uib-accordion-heading>
                     <div class="pull-right" style="margin-top: 3px">
-                        <label class="label-default" ng-show="!agent.hasError && agent.pluginInstalled">{{ 'SETTINGS.APPS.INSTALLED' | translate }}</label>
-                        <label class="label-default" ng-show="!agent.hasError && !agent.pluginInstalled">{{ 'SETTINGS.APPS.NOT_INSTALLED' | translate }}</label>
-                        <label class="label-default" ng-show="agent.hasError">Error <span ng-show="agent.errotType != undefined">: {{agent.errorType}}</span></label>
-                        <toggle style="padding: 0 10px; font-size: 14px;" ng-model="agent.pluginInstalled" ng-click="t.toggleInstall(agent, $event)"
-                            on="<i class='zmdi zmdi-check'></i>" off="<i class='zmdi zmdi-close'></i>"></toggle>
+                        <label class="label-default" ng-show="!agent.hasError && agent.pluginInstalled" translate>
+                            Plugin installed
+                        </label>
+                        <label class="label-default" ng-show="!agent.hasError && !agent.pluginInstalled" translate>
+                            Plugin not installed
+                        </label>
+                        <label class="label-default" ng-show="agent.hasError">
+                            <span translate>Error:</span>
+                            <span ng-show="agent.errotType != undefined">{{agent.errorType}}</span>
+                        </label>
+                        <toggle style="padding: 0 10px; font-size: 14px;" on="<i class='zmdi zmdi-check'></i>" off="<i class='zmdi zmdi-close'></i>"
+                            ng-model="agent.pluginInstalled"
+                            ng-click="t.toggleInstall(agent, $event)">
+                        </toggle>
                     </div>
 
                     <img class="pull-left" ng-src="{{agent.iconSrc}}" ng-class="{grayscale: !agent.pluginInstalled}" width="40" height="40" style="margin: 0 10px">
@@ -31,17 +40,17 @@
                 <table style="margin-left: 45px; margin-right: 45px; min-width: 100px;" class="pull-left">
                     <tr>
                         <td class="text-left">
-                            <art-color-picker selected-color="agent.color"></art-color-picker> Color</td>
+                            <art-color-picker selected-color="agent.color"></art-color-picker> <span translate>Colour</span></td>
                     </tr>
                 </table>
 
                 <table style="margin-left: 45px; min-width: 250px;">
                     <tr>
-                        <td class="text-left">Software version:</td>
+                        <td class="text-left" translate>Software version:</td>
                         <td class="text-right">{{agent.softwareVersion}}</td>
                     </tr>
                     <tr>
-                        <td class="text-left">Plugin version:</td>
+                        <td class="text-left" translate>Plugin version:</td>
                         <td class="text-right">{{agent.pluginVersion}}</td>
                     </tr>
                 </table>

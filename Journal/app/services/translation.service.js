@@ -1,10 +1,23 @@
 (function () {
-    angular.module('app').factory('translationService', ['$translate', translationService]);
+    var app = angular.module('app');
 
-    function translationService(translate) {
+    app.factory('translationService', [translationService]);
+
+    translationService.$inject = [];
+
+    function translationService() {
         return {
-            getInfluenceLabel: getInfluenceLabel,
-            getInfluenceIcon: getInfluenceIcon
+            getUserInterfaceLocale: getUserInterfaceLocale
+            //getInfluenceLabel: getInfluenceLabel,
+            //getInfluenceIcon: getInfluenceIcon
+        }
+
+        function getUserInterfaceLocale() {
+            const electron = require('electron');
+
+            var app = electron.app ? electron.app : electron.remote.app;
+
+            return app.getLocale();
         }
 
         function getInfluenceLabel(influence) {

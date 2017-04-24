@@ -4,7 +4,7 @@
     function UpdateIndicatorDirective() {
         return {
             restrict: 'E',
-            template: '<i class="zmdi zmdi-cast" uib-tooltip="Update available." tooltip-placement="bottom"></i><span class="btn-label"></span>',
+            templateUrl: 'app/directives/art-update-indicator/art-update-indicator.html',
             controller: UpdateIndicatorDirectiveController,
             controllerAs: 't',
             link: function (scope, element, attributes, ctrl) {

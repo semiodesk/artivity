@@ -12,10 +12,9 @@
                     <div class="text-center">
                         <div style="opacity: .25; margin: 75px 0 50px 0;"><i class="zmdi zmdi-time-restore" style="font-size: 75px !important"></i></div>
 
-                        <!--<h3 style="margin-top: 5em;">Your recent files will appear here.</h3>-->
-                        <h3>Zuletzt verwendete Dateien</h3>
+                        <h3 translate>Recently used files</h3>
 
-                        Dateien die in folgeneden Programmen bearbeitet wurden erscheinen hier:
+                        <span translate>The files you edit in the following programs will appear here:</span>
                         <art-app-list class="pull-center"></art-app-list>
                     </div>
                 </empty>
@@ -24,31 +23,31 @@
     </div>
     <div class="view-secondary-content">
         <div class="toolbar">
-            <a class="btn btn-chromeless" ng-click="t.commit()" ng-disabled="projectForm.title.$invalid"><i class="zmdi zmdi-check"></i> <span class="btn-label">Speichern</span></a>
-            <a class="btn btn-chromeless pull-right" ng-click="t.cancel()">Cancel</a>
+            <a class="btn btn-chromeless" ng-click="t.commit()" ng-disabled="projectForm.title.$invalid"><i class="zmdi zmdi-check"></i> <span class="btn-label" translate>Save</span></a>
+            <a class="btn btn-chromeless pull-right" ng-click="t.cancel()" translate>Cancel</a>
         </div>
 
         <div class="container-fluid padding-y-md">
             <form id="project-form" name="projectForm" ng-submit="t.save()">
                 <div class="form-group">
-                    <label for="title">Name</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="Projektname" ng-model="t.project.Title" required>
+                    <label for="title" translate>Name</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="{{'Example Project' | translate}}" ng-model="t.project.Title" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Beschreibung</label>
-                    <input type="text" class="form-control" id="description" name="description" placeholder="Beschreibung des Projekts" ng-model="t.project.Description">
+                    <label for="description" translate>Description</label>
+                    <input type="text" class="form-control" id="description" name="description" placeholder="{{'A project with exemplary character.' | translate}}" ng-model="t.project.Description">
                 </div>
 
                 <div class="form-group">
-                    <label for="folder">Ordner</label>
+                    <label for="folder" translate>Folder</label>
                     <art-folder-picker folder="t.project.folder" changed="t.setFolder"></art-folder-picker>
                 </div>
-                <label for="members">Teilnehmer</label>
+                <label for="members" translate>Members</label>
                 <div class="form-group">
                     <div>
                         <a class="btn btn-chromeless" ng-click="t.addMember()">
-                            <i class="zmdi zmdi-lg zmdi-account-add"></i> <span class="btn-label">Teilnehmer hinzufügen</span>
+                            <i class="zmdi zmdi-lg zmdi-account-add"></i> <span class="btn-label" translate>Add member</span>
                         </a>
                     </div>
                     <ul class="list-unstyled list-view">

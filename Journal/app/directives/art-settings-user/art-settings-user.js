@@ -16,9 +16,9 @@
 
     angular.module('app').controller('UserSettingsDirectiveFormController', UserSettingsDirectiveFormController);
 
-    UserSettingsDirectiveFormController.$inject = ['$rootScope', '$scope', 'api', 'agentService', 'settingsService'];
+    UserSettingsDirectiveFormController.$inject = ['$rootScope', '$scope', 'api', 'agentService', 'settingsService', 'cookieService', 'translationService', 'gettextCatalog'];
 
-    function UserSettingsDirectiveFormController($rootScope, $scope, api, agentService, settingsService) {
+    function UserSettingsDirectiveFormController($rootScope, $scope, api, agentService, settingsService, cookieService, translationService, gettextCatalog) {
         var t = this;
 
         // USER
@@ -47,11 +47,11 @@
 
                     if (account && account.ServiceClient.Uri.startsWith('http://artivity.online')) {
                         t.readonly = true;
-                        
-                        for(var j = 0; i < account.AuthenticationParameters.length; j++) {
+
+                        for (var j = 0; i < account.AuthenticationParameters.length; j++) {
                             var p = account.AuthenticationParameters[j];
 
-                            if(p.Name === 'username') {
+                            if (p.Name === 'username') {
                                 t.username = p.Value;
 
                                 return;
@@ -65,6 +65,39 @@
                 t.readonly = false;
                 t.username = null;
             });
+        }
+
+        // LANGUAGES
+        t.locales = ['en-GB', 'de-DE'];
+
+        t.selectedLocale = t.locales[0];
+
+        t.initializeLocales = function () {
+            if (t.setLocale(cookieService.get('settings.locale')) === false) {
+                t.setLocale(translationService.getUserInterfaceLocale());
+            }
+        }
+
+        t.setLocale = function (locale, apply) {
+            var i = t.locales.indexOf(locale);
+
+            if (i > -1) {
+                t.selectedLocale = locale;
+
+                if (cookieService.get('settings.locale') !== locale) {
+                    cookieService.set('settings.locale', locale);
+                }
+
+                if (apply) {
+                    var l = locale.split('-')[0];
+
+                    gettextCatalog.setCurrentLanguage(l);
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         // BACKUP
@@ -144,6 +177,7 @@
             agentService.on('currentUserChanged', t.setUser);
 
             t.initializeAccountReadOnlyState();
+            t.initializeLocales();
         }
 
         t.$onDestroy = function () {

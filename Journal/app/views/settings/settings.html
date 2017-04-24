@@ -3,20 +3,34 @@
 		<div class="toolbar toolbar-header">
 			<a class="btn btn-header" ng-click="t.submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
 
-			<span class="txt txt-title" translate="SETTINGS.TITLE"></span>
+			<span class="txt txt-title" translate>Settings</span>
 
-			<a class="btn btn-header btn-text pull-right" onclick="history.back()">{{'SETTINGS.CANCEL' | translate}}</a>
+			<a class="btn btn-header btn-text pull-right" onclick="history.back()">Cancel</a>
 		</div>
 	</div>
 	<div class="row expand">
 		<div class="layout-container padding-y-xl">
 			<div class="container">
 				<ul class="nav nav-pills border-bottom" role="tablist" id="tabs">
-					<li role="presentation" class="active"><a data-target="#panel-user" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-account zmdi-lg"></i></span> {{ 'SETTINGS.PROFILE.LABEL' | translate }}</a></li>
-					<li role="presentation"><a data-target="#panel-apps" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-apps zmdi-lg"></i></span> {{ 'SETTINGS.APPS.LABEL' | translate }}</a></li>
-					<li role="presentation"><a data-target="#panel-accounts" role="tab" data-toggle="tab"><span class="icn-container-lg"><i class="zmdi zmdi-globe-alt zmdi-lg"></i></span> {{ 'SETTINGS.ACCOUNTS.LABEL' | translate }}</a></li>
+					<li role="presentation" class="active">
+						<a data-target="#panel-user" role="tab" data-toggle="tab">
+							<span class="icn-container-lg"><i class="zmdi zmdi-account zmdi-lg"></i></span>
+							<span translate>Profile</span>
+						</a>
+					</li>
+					<li role="presentation">
+						<a data-target="#panel-apps" role="tab" data-toggle="tab">
+							<span class="icn-container-lg"><i class="zmdi zmdi-apps zmdi-lg"></i></span>
+							<span translate>Apps</span>
+						</a>
+					</li>
+					<li role="presentation">
+						<a data-target="#panel-accounts" role="tab" data-toggle="tab">
+							<span class="icn-container-lg"><i class="zmdi zmdi-globe-alt zmdi-lg"></i></span>
+							<span translate>Accounts</span>
+						</a>
+					</li>
 				</ul>
-
 				<div class="tab-content padding-x-xl padding-y-xl">
 					<div role="tabpanel" class="tab-pane fade active in" id="panel-user">
 						<art-settings-user></art-settings-user>
@@ -32,7 +46,6 @@
 		</div>
 	</div>
 </div>
-
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('#tabs a').click(function (e) {
