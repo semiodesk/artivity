@@ -28,7 +28,7 @@ module.exports = function (grunt) {
             'app/directives/**/*.js',
             'app/dialogs/**/*.js',
             'app/views/**/*.js',
-            'app/translation.js',
+            'app/i18n.js',
             'app/route.js'
         ]
     }
@@ -159,10 +159,10 @@ module.exports = function (grunt) {
         strip_code: {
             options: {
                 blocks: [{
-                    start_block: "<!-- REMOVE:JS -->",
-                    end_block: "<!-- /REMOVE:JS -->"
-                },
-                // 
+                        start_block: "<!-- REMOVE:JS -->",
+                        end_block: "<!-- /REMOVE:JS -->"
+                    },
+                    // 
                 ]
             },
             your_target: {
@@ -179,7 +179,7 @@ module.exports = function (grunt) {
                     relative: false
                 },
                 mainFiles: {
-                'angular-ui': ['build/angular-ui.min.js']
+                    'angular-ui': ['build/angular-ui.min.js']
                 }
             }
         },
@@ -302,42 +302,42 @@ module.exports = function (grunt) {
         copy: {
             release: {
                 files: [{
-                    expand: true,
-                    cwd: './app',
-                    src: ['style.css', 'src.js', 'conf.js', 'conf.release.js'],
-                    dest: 'build/app/'
-                }, 
-                {
-                    expand: true,
-                    cwd: './',
-                    src: ['index.html', 'main.js', 'package.json'],
-                    dest: 'build/'
-                },
-                {
-                    expand: true,
-                    cwd: './',
-                    src: ['bower_components/**/*.css'],
-                    dest: 'build/'
-                },
-                {
-                    expand: true,
-                    cwd: './app',
-                    src: ['resources/**/*', 'views/**/*.html', 'directives/**/*.html', 'host/*.exe', 'platform/agentLauncher.js'],
-                    dest: 'build/app'
-                },
-                {
-                    expand: true,
-                    cwd: './',
-                    src: [
-                        'bower_components/**/*.ttf',
-                        'bower_components/**/*.eot',
-                        'bower_components/**/*.woff',
-                        'bower_components/**/*.woff2',
-                        '!bower_components/**/*-android.ttf',
-                        '!bower_components/**/*-apple.ttf',
-                    ],
-                    dest: 'build/'
-                }
+                        expand: true,
+                        cwd: './app',
+                        src: ['style.css', 'src.js', 'conf.js', 'conf.release.js'],
+                        dest: 'build/app/'
+                    },
+                    {
+                        expand: true,
+                        cwd: './',
+                        src: ['index.html', 'main.js', 'package.json'],
+                        dest: 'build/'
+                    },
+                    {
+                        expand: true,
+                        cwd: './',
+                        src: ['bower_components/**/*.css'],
+                        dest: 'build/'
+                    },
+                    {
+                        expand: true,
+                        cwd: './app',
+                        src: ['resources/**/*', 'views/**/*.html', 'directives/**/*.html', 'host/*.exe', 'platform/agentLauncher.js'],
+                        dest: 'build/app'
+                    },
+                    {
+                        expand: true,
+                        cwd: './',
+                        src: [
+                            'bower_components/**/*.ttf',
+                            'bower_components/**/*.eot',
+                            'bower_components/**/*.woff',
+                            'bower_components/**/*.woff2',
+                            '!bower_components/**/*-android.ttf',
+                            '!bower_components/**/*-apple.ttf',
+                        ],
+                        dest: 'build/'
+                    }
                 ],
             },
             mainMac: {
@@ -380,7 +380,30 @@ module.exports = function (grunt) {
                     buildDistDir + '/Artivity-darwin-x64/Artivity.app/Contents/Applications/artivity-apid.app/Contents/Resources/TinyVirtuoso/virtuoso/osx/isql'
                 ]
             }
-        }
+        },
+        nggettext_extract: {
+            pot: {
+                files: {
+                    'app/i18n/template.pot': [
+                        'app/dialogs/*/*.html',
+                        'app/directives/*/*.html',
+                        'app/views/*/*.html'
+                    ]
+                }
+            }
+        },
+        nggettext_compile: {
+            options: {
+                module: 'app'
+            },
+            all: {
+                files: {
+                    'app/i18n.js': [
+                        'app/i18n/*.po'
+                    ]
+                }
+            },
+        },
     });
 
     grunt.loadNpmTasks('grunt-wiredep');
@@ -395,8 +418,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-bower-concat');
+    grunt.loadNpmTasks('grunt-bower-install-simple');
     grunt.loadNpmTasks('grunt-strip-code');
-    grunt.loadNpmTasks("grunt-bower-install-simple");
+    grunt.loadNpmTasks('grunt-angular-gettext');
 
     grunt.registerTask('concat:js:clear', 'Empties the concatenated app source files.', function () {
         // TODO: Read dest file from config 'concat:js:dest'.
@@ -490,10 +514,23 @@ module.exports = function (grunt) {
         });
     });
 
-    grunt.registerTask("bower-install", ["bower-install-simple"]);
+    grunt.registerTask('translate-extract', [
+        'nggettext_extract'
+    ]);
+
+    grunt.registerTask('translate-compile', [
+        'nggettext_compile'
+    ]);
+
+    grunt.registerTask("bower-install", [
+        'bower-install-simple'
+    ]);
 
     // Create a new task to wrap the two targets for macOS
-    grunt.registerTask("xbuild", ["msbuild:cleanMac", "msbuild:releaseMac"]);
+    grunt.registerTask("xbuild", [
+        'msbuild:cleanMac',
+        'msbuild:releaseMac'
+    ]);
 
     grunt.registerTask('default', [
         'wiredep',
@@ -510,7 +547,7 @@ module.exports = function (grunt) {
         'concat:src',
         'concat:js:clean',
         'sass:dist',
-        'copy:release',   
+        'copy:release',
         'bower_concat',
         'tags:release',
         'strip_code'
@@ -542,5 +579,4 @@ module.exports = function (grunt) {
             'chmod:mainMac'
         ]);
     }
-
 };

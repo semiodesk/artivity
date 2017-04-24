@@ -4,7 +4,7 @@
     function SyncIndicatorDirective() {
         return {
             restrict: 'E',
-            template: '<span ng-show="synchronizing"><i class="loader loader-xs"></i> Synchronizing..</span>',
+            template: '<span ng-show="synchronizing"><i class="loader loader-xs"></i> <span translate>Synchronizing..</span></span>',
             controller: SyncIndicatorDirectiveController,
             controllerAs: 't',
             link: function (scope, element, attributes, ctrl) {

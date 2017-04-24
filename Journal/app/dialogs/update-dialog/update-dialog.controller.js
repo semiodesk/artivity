@@ -6,7 +6,6 @@
     function UpdateDialogController($scope, $filter, $uibModalInstance, $sce, updateService) {
         var t = this;
 
-        t.title = $filter('translate')('UPDATE.TITLE');
         t.update = {};
         t.progress = null;
         t.progressAnimate = false;

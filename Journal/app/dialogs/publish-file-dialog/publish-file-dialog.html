@@ -1,9 +1,9 @@
 <div class="row">
 	<div class="col-xs-12">
 		<div class="container padding-x-xl padding-y-xl">
-			<h2 class="modal-title">{{t.dialog.title}}</h2>
+			<h2 class="modal-title">{{t.dialog.title | translate}}</h2>
 
-			<p class="subtitle">{{t.dialog.subtitle}}</p>
+			<p class="subtitle">{{t.dialog.subtitle | translate}}</p>
 		</div>
 	</div>
 </div>
@@ -12,7 +12,7 @@
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="layout-container padding-x-xl padding-y-xl">
-					<label>Go to <a href="#/settings">Preferences</a> <i class="zmdi zmdi-arrow-right"></i> Accounts to add one.</label>
+					<label translate>Go to <a href="#/settings">Preferences</a> 🡒 Accounts to add one.</label>
 				</div>
 			</div>
 		</div>
@@ -33,7 +33,7 @@
 					</div>
 					<div class="form-group" ng-switch="t.authentication.protocol">
 						<div ng-switch-when="http://localhost:8272/artivity/api/1.0/auth/basic">
-							<label class="form-label-top">Login</label>
+							<label class="form-label-top" translate>Login</label>
 
 							<div class="form-group">
 								<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20" maxlength="20" ng-model="t.authentication.parameter.username" required>
@@ -59,7 +59,7 @@
 				<div class="layout-container padding-x-xl">
 					<uib-progressbar value="t.progress.PercentComplete" max="100" style="height: 5px"></uib-progressbar>
 
-					<label>{{t.selectedAccount.Description}}</label>
+					<label>{{t.selectedAccount.Description | translate}}</label>
 					<label class="pull-right">{{t.progress.PercentComplete}}%</label>
 				</div>
 			</div>
@@ -90,32 +90,32 @@
 						<div class="col expand">
 							<div class="padding-x-xl">
 								<div class="form-group">
-									<label class="form-label-top" for="title">Title</label>
+									<label class="form-label-top" for="title" translate>Title</label>
 									<input class="form-control stretch-horizontal" type="text" name="title" id="title" ng-model="t.archive.title">
 								</div>
 								<div class="form-group">
-									<label class="form-label-top" for="abstract">Abstract</label>
+									<label class="form-label-top" for="abstract" translate>Abstract</label>
 									<textarea class="form-control stretch-horizontal" type="text" rows="7" name="abstract" id="abstract" ng-model="t.archive.description"></textarea>
 								</div>
 								<div class="form-group">
-									<label class="form-label-top" for="license">License</label>
+									<label class="form-label-top" for="license" translate>License</label>
 									<select class="form-control" name="license" id="license" ng-options="license.uri as license.label for license in t.archive.licenseOptions" ng-model="t.archive.license">
 									</select>
 								</div>
-								<label>Additional Contents</label>
+								<label translate>Additional Contents</label>
 								<div class="form-group">
 									<ul class="list-unstyled">
 										<li>
 											<input class="form-control" type="checkbox" ng-model="t.archive.contentOptions.includeFile">
-											<label>File</label>
+											<label translate>File</label>
 										</li>
 										<li>
 											<input class="form-control" type="checkbox" ng-model="t.archive.contentOptions.includeBrowsingHistory">
-											<label>Browsing History</label>
+											<label translate>Browsing History</label>
 										</li>
 										<li>
 											<input class="form-control" type="checkbox" ng-model="t.archive.contentOptions.includeComments">
-											<label>Comments</label>
+											<label translate>Comments</label>
 										</li>
 									</ul>
 								</div>

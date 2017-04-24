@@ -1,0 +1,417 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: app/directives/art-project-view/art-project-view.html:39
+msgid "A project with exemplary character."
+msgstr "Ein beispielhaftes Projekt."
+
+#: app/dialogs/publish-file-dialog/publish-file-dialog.html:97
+msgid "Abstract"
+msgstr "Kurzdarstellung"
+
+#: app/views/settings/settings.html:30
+msgid "Accounts"
+msgstr "Konten"
+
+#: app/directives/art-settings-accounts/art-settings-accounts.html:5
+msgid "Add account"
+msgstr "Konto hinzufügen"
+
+#: app/directives/art-project-view/art-project-view.html:50
+msgid "Add member"
+msgstr "Teilnehmer hinzufügen"
+
+#: app/dialogs/publish-file-dialog/publish-file-dialog.html:105
+msgid "Additional Contents"
+msgstr "Weitere Inhalte"
+
+#: app/views/settings/settings.html:24
+msgid "Apps"
+msgstr "Apps"
+
+#: app/dialogs/close-project-dialog/close-project-dialog.html:5
+msgid "Archive '{{t.project.Title}}'?"
+msgstr "'{{t.project.Title}}' archivieren?"
+
+#: app/views/start/start.html:13
+msgid ""
+"Artivity was unable to connect to the local database. Please try to log out "
+"of your current desktop session to restart the service."
+msgstr ""
+"Artivity konnte nicht zur lokalen Datenbank verbinden. Bitte melde dich "
+"erneut an deinem Computer an um den Dienst neu zu starten."
+
+#: app/directives/art-client-state-info/art-client-state-info.html:11
+msgid "Authorization successful."
+msgstr "Autorisierung erfolgreich."
+
+#: app/directives/art-settings-user/art-settings-user.html:28
+msgid "Backup profile"
+msgstr "Profil sichern"
+
+#: app/dialogs/publish-file-dialog/publish-file-dialog.html:114
+msgid "Browsing History"
+msgstr "Browser-Verlauf"
+
+#: app/directives/art-project-view/art-project-view.html:27
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: app/directives/art-editing-stats/art-editing-stats.html:57
+msgid "Clipped"
+msgstr "Beschnitten"
+
+#: app/directives/art-settings-apps/art-settings-apps.html:43
+msgid "Colour"
+msgstr "Farbe"
+
+#: app/directives/art-editing-stats/art-editing-stats.html:64
+msgid "Colours"
+msgstr "Farben"
+
+#: app/dialogs/publish-file-dialog/publish-file-dialog.html:118
+msgid "Comments"
+msgstr "Kommentare"
+
+#: app/directives/art-editing-stats/art-editing-stats.html:32
+msgid "Composition"
+msgstr "Komposition"
+
+#: app/directives/art-editing-stats/art-editing-stats.html:5
+msgid "Confidence"
+msgstr "Konfidenz"
+
+#: app/directives/arto-settings-user/arto-settings-user.html:23
+msgid "Connect"
+msgstr "Verbinden"
+
+#: app/directives/art-settings-accounts/art-settings-accounts.html:8
+msgid "Connect your online accounts to benefit from additional features:"
+msgstr "Verbinde weitere Online Dienste:"
+
+#: app/directives/art-client-state-info/art-client-state-info.html:8
+msgid "Connecting.."
+msgstr "Verbinde.."
+
+#: app/directives/art-client-state-info/art-client-state-info.html:17
+msgid "Connection error."
+msgstr "Verbindungsfehler."
+
+#: app/directives/art-settings-user/art-settings-user.html:61
+msgid "Create"
+msgstr "Erstelle"
+
+#: app/directives/art-settings-user/art-settings-user.html:10
+msgid "Creating backup.."
+msgstr "Erstelle Sicherung.."
+
+#: app/directives/art-project-view/art-project-view.html:38
+msgid "Description"
+msgstr "Beschreibung"
+
+#: app/dialogs/update-dialog/update-dialog.html:51
+msgid "Download"
+msgstr "Download"
+
+#: app/dialogs/update-dialog/update-dialog.html:26
+msgid "Download complete."
+msgstr "Download fertig."
+
+#: app/dialogs/update-dialog/update-dialog.html:23
+msgid "Downloading.."
+msgstr "Download wird ausgeführt.."
+
+#: app/dialogs/edit-person-dialog/edit-person-dialog.html:11
+#: app/directives/art-settings-user/art-settings-user.html:50
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: app/directives/art-settings-user/art-settings-user.html:34
+#: app/directives/arto-settings-user/arto-settings-user.html:3
+msgid ""
+"Edit the profile information that is published when you share files with "
+"others:"
+msgstr "Bearbeite deine persönlichen Informationen:"
+
+#: app/directives/art-editing-history/art-editing-history.html:42
+msgid "Edited File"
+msgstr "Bearbeitete Datei"
+
+#: app/directives/art-settings-apps/art-settings-apps.html:7
+msgid "Enable or disable the Artivity for the following applications:"
+msgstr "Aktiviere oder deaktiviere Artivity für die folgenden Anwendungen:"
+
+#: app/directives/art-settings-user/art-settings-user.html:20
+msgid "Error when creating backup:"
+msgstr "Fehler beim Erstellen der Sicherung:"
+
+#: app/directives/art-settings-apps/art-settings-apps.html:24
+msgid "Error:"
+msgstr "Fehler:"
+
+#: app/directives/art-project-view/art-project-view.html:34
+msgid "Example Project"
+msgstr "Beispielprojekt"
+
+#: app/dialogs/publish-file-dialog/publish-file-dialog.html:110
+msgid "File"
+msgstr "Datei"
+
+#: app/directives/art-project-view/art-project-view.html:43
+msgid "Folder"
+msgstr "Ordner"
+
+#: app/dialogs/publish-file-dialog/publish-file-dialog.html:15
+msgid "Go to <a href=\"#/settings\">Preferences</a> 🡒 Accounts to add one."
+msgstr ""
+"Gehe zu <a href=\"#/settings\">Einstellungen</a> 🡒 Accounts um ein Konto "
+"hinzuzufügen."
+
+#: app/directives/art-editing-stats/art-editing-stats.html:43
+msgid "Groups"
+msgstr "Gruppen"
+
+#: app/directives/art-document-history-viewer/art-document-history-viewer.html:2
+#: app/directives/art-document-viewer/art-document-viewer.html:2
+msgid "HTML canvas is not supported by your browser."
+msgstr "HTML Canvas wird von deinem  Browser nicht unterstützt."
+
+#: app/dialogs/update-dialog/update-dialog.html:36
+msgid "Install"
+msgstr "Installieren"
+
+#: app/directives/art-settings-user/art-settings-user.html:65
+msgid "Language"
+msgstr "Sprache"
+
+#: app/directives/art-editing-stats/art-editing-stats.html:36
+#: app/directives/art-layer-control/art-layer-control.html:1
+msgid "Layers"
+msgstr "Ebenen"
+
+#: app/dialogs/publish-file-dialog/publish-file-dialog.html:101
+msgid "License"
+msgstr "Lizenz"
+
+#: app/views/setup/setup.html:32
+msgid "Local"
+msgstr "Lokal"
+
+#: app/dialogs/add-account-dialog/add-account-dialog.html:16
+#: app/dialogs/add-account-dialog/add-account-dialog.html:42
+#: app/dialogs/publish-file-dialog/publish-file-dialog.html:36
+msgid "Login"
+msgstr "Anmelden"
+
+#: app/directives/art-editing-stats/art-editing-stats.html:50
+msgid "Masked"
+msgstr "Maskiert"
+
+#: app/directives/art-project-view/art-project-view.html:46
+msgid "Members"
+msgstr "Teilnehmer"
+
+#: app/dialogs/edit-person-dialog/edit-person-dialog.html:6
+#: app/directives/art-project-view/art-project-view.html:33
+#: app/directives/art-settings-user/art-settings-user.html:45
+msgid "Name"
+msgstr "Name"
+
+#: app/views/start/start.html:11
+msgid "No database connection"
+msgstr "Keine Verbindung zur Datenbank"
+
+#: app/directives/art-app-list/art-app-list.html:9
+msgid "No software plugins are installed."
+msgstr "Es sind keine Software-Plugins installiert."
+
+#: app/views/setup/setup.html:24
+msgid "Online"
+msgstr "Online"
+
+#: app/directives/arto-settings-user/arto-settings-user.html:18
+msgid "Password"
+msgstr "Passwort"
+
+#: app/views/setup/setup.html:19
+msgid "Please choose the account type you want to use:"
+msgstr "Bitte wähle den Kontotyp den tu verwenden möchtest:"
+
+#: app/dialogs/add-account-dialog/add-account-dialog.html:14
+#: app/dialogs/add-account-dialog/add-account-dialog.html:40
+msgid "Please enter the server address, username and password"
+msgstr "Bitte gib die Server-Adresse, Benutzernamen und Passwort"
+
+#: app/dialogs/add-account-dialog/add-account-dialog.html:68
+msgid "Please log into your ORCiD account and allow Artivity to be connected:"
+msgstr ""
+"Bitte melde dich bei deinem ORCiD Konto an und erteile die Freigabe für die "
+"Verbindung mit Artivity:"
+
+#: app/dialogs/add-account-dialog/add-account-dialog.html:88
+msgid "Please select the account type to connect with:"
+msgstr ""
+"Bitte wähle den Kontotyp aus mit dem eine Verbindung hergestellt werden soll:"
+
+#: app/directives/art-settings-apps/art-settings-apps.html:17
+msgid "Plugin installed"
+msgstr "Plugin installiert"
+
+#: app/directives/art-settings-apps/art-settings-apps.html:20
+msgid "Plugin not installed"
+msgstr "Plugin nicht installiert"
+
+#: app/directives/art-settings-apps/art-settings-apps.html:53
+msgid "Plugin version:"
+msgstr "Plugin Version:"
+
+#: app/views/settings/settings.html:18
+msgid "Profile"
+msgstr "Profil"
+
+#: app/directives/art-project-tabs/art-project-tabs.html:17
+#: app/directives/art-project-view/art-project-view.html:15
+msgid "Recently used files"
+msgstr "Zuletzt verwendete Dateien"
+
+#: app/directives/art-editing-stats/art-editing-stats.html:26
+msgid "Redos"
+msgstr "Wiederhergestellt"
+
+#: app/directives/art-settings-apps/art-settings-apps.html:4
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#: app/directives/arto-settings-user/arto-settings-user.html:30
+msgid "Register"
+msgstr "Registrieren"
+
+#: app/directives/art-chat-input/art-chat-input.html:30
+msgid "Request feedback"
+msgstr "Feedback anfordern"
+
+#: app/views/start/start.html:19
+msgid "Retry"
+msgstr "Erneut versuchen"
+
+#: app/directives/art-project-view/art-project-view.html:26
+msgid "Save"
+msgstr "Speichern"
+
+#: app/directives/art-search-input/art-search-input.html:3
+msgid "Search"
+msgstr "Suchen"
+
+#: app/directives/art-folder-picker/art-folder-picker.html:5
+msgid "Select folder"
+msgstr "Ordner auswählen"
+
+#: app/views/settings/settings.html:6
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: app/directives/art-document-view/art-document-view.html:6
+msgid "Share"
+msgstr "Teilen"
+
+#: app/directives/art-settings-apps/art-settings-apps.html:49
+msgid "Software version:"
+msgstr "Software Version:"
+
+#: app/views/file-view/file-view.html:46
+msgid "Statistics"
+msgstr "Statistiken"
+
+#: app/directives/art-editing-stats/art-editing-stats.html:12
+msgid "Steps"
+msgstr "Bearbeitungsschritte"
+
+#: app/directives/art-settings-user/art-settings-user.html:15
+msgid "Successfully created backup."
+msgstr "Sicherung erfolgreich erstellt."
+
+#: app/views/setup/setup.html:6
+msgid ""
+"Thank you for downloading Artivity. Before you can begin using the app we "
+"need to setup your user account:"
+msgstr ""
+"Vielen Dank, dass du Artivity verwendest. Bevor du starten kannst müssen wir "
+"noch ein paar Dinge einrichten:"
+
+#: app/directives/art-project-tabs/art-project-tabs.html:19
+#: app/directives/art-project-view/art-project-view.html:17
+msgid "The files you edit in the following programs will appear here:"
+msgstr "Dateien die du mit folgenden Programmen bearbeitest erscheinen hier:"
+
+#: app/dialogs/close-project-dialog/close-project-dialog.html:12
+msgid ""
+"The project will be marked as archived and no content will be deleted.<br> "
+"You can restore the project at any time in the future."
+msgstr ""
+"Das Projekt wird archiviert und es werden keine Inhalte gelöscht.<br> Du "
+"kannst das Projekt zu einem späteren Zeitpunkt wieder herstellen."
+
+#: app/dialogs/publish-file-dialog/publish-file-dialog.html:93
+msgid "Title"
+msgstr "Titel"
+
+#: app/directives/art-editing-stats/art-editing-stats.html:19
+msgid "Undos"
+msgstr "Zurückgenommen"
+
+#: app/dialogs/update-dialog/update-dialog.html:6
+msgid "Update"
+msgstr "Aktualisierung"
+
+#: app/directives/art-update-indicator/art-update-indicator.html:1
+msgid "Update available."
+msgstr "Aktualisierung verfügbar."
+
+#: app/directives/art-settings-user/art-settings-user.html:56
+#: app/directives/arto-settings-user/arto-settings-user.html:14
+msgid "Username"
+msgstr "Benutzername"
+
+#: app/views/setup/setup.html:4
+msgid "Welcome!"
+msgstr "Willkommen!"
+
+#: app/directives/art-chat-input/art-chat-input.html:22
+msgid "Write a message"
+msgstr "Schreibe eine Nachricht"
+
+#: app/directives/art-client-state-info/art-client-state-info.html:14
+msgid "Wrong username or password."
+msgstr "Falscher Benutzername oder Passwort."
+
+#: app/directives/arto-settings-user/arto-settings-user.html:29
+msgid "You don't have an Artivity Online account?"
+msgstr "Du hast noch kein Artivity Online Konto?"
+
+#: app/dialogs/add-account-dialog/add-account-dialog.html:14
+msgid "of the Artivity service:"
+msgstr "des Artivity Dienstes ein:"
+
+#: app/dialogs/add-account-dialog/add-account-dialog.html:40
+msgid "of the repository:"
+msgstr "des Archivs ein:"
+
+#~ msgid "Deutsch"
+#~ msgstr "Deutsch"
+
+#~ msgid "English (UK)"
+#~ msgstr "English (UK)"
+
+#~ msgid "Teilen"
+#~ msgstr "Teilen"

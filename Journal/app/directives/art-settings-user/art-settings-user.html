@@ -6,26 +6,32 @@
                     <div ng-switch="t.backupStatus.Error">
                         <div ng-switch-when="null">
                             <div ng-if="t.backupStatus.PercentComplete < 100">
-                                <i class="loader loader-xs"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_CREATING' | translate}}:
+                                <i class="loader loader-xs"></i>
+                                <span translate>Creating backup..</span>
                                 <span ng-bind="backupStatus.PercentComplete"></span>%
                             </div>
                             <div ng-if="t.backupStatus.PercentComplete >= 100">
-                                <i class="zmdi zmdi-check-circle"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_SUCCESS' | translate}}
+                                <i class="zmdi zmdi-check-circle"></i>
+                                <span translate>Successfully created backup.</span>
                             </div>
                         </div>
                         <div ng-switch-default>
-                            <i class="zmdi zmdi-alert-circle"></i> {{'SETTINGS.PROFILE.LABEL_BACKUP_ERROR' | translate}}:
+                            <i class="zmdi zmdi-alert-circle"></i>
+                            <span translate>Error when creating backup:</span>
                             <span ng-bind="t.backupStatus.Error"></span>
                         </div>
                     </div>
                 </div>
                 <div ng-switch-when="null">
-                    <a class="btn btn-chromeless" ng-click="t.createBackup()"><i class="zmdi zmdi-account-box-o"></i> <span class="btn-label">{{'SETTINGS.PROFILE.LABEL_BACKUP_CREATE' | translate}}</span></a>
+                    <a class="btn btn-chromeless" ng-click="t.createBackup()">
+                        <i class="zmdi zmdi-account-box-o"></i>
+                        <span class="btn-label" translate>Backup profile</span>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <p class="description" ng-show="!t.setup">{{ 'SETTINGS.PROFILE.DESCRIPTION' | translate }}</p>
+        <p class="description" ng-show="!t.setup" translate>Edit the profile information that is published when you share files with others:</p>
     </div>
 
     <div class="clearfix"></div>
@@ -36,23 +42,31 @@
 
     <div class="table-cell padding-x-xl" style="padding-top: 10px; width: 450px">
         <div class="form-group">
-            <label for="name">{{ 'SETTINGS.PROFILE.LABEL_NAME' | translate }}</label>
+            <label for="name" translate>Name</label>
             <input type="text" class="form-control" id="name" name="name" size="30" ng-model="t.user.Name" ng-readonly="t.readonly" required>
         </div>
 
         <div class="form-group">
-            <label for="email">{{'SETTINGS.PROFILE.LABEL_EMAIL' | translate}}</label>
+            <label for="email" translate>E-Mail</label>
             <input type="text" class="form-control" id="email" name="email" length="25" ng-model="t.user.EmailAddress" ng-readonly="t.readonly"
                 ng-minlength="5" required>
         </div>
 
         <div class="form-group" ng-show="t.username">
-            <label for="username">Benutzername</label>
+            <label for="username" translate>Username</label>
             <input type="text" class="form-control" id="username" name="username" length="25" ng-model="t.username" ng-readonly="t.readonly">
         </div>
 
         <div class="form-group" ng-show="t.setup">
-            <button class="btn btn-success" ng-click="t.submit()" ng-disabled="userForm.$invalid">Erstellen</button>
+            <button class="btn btn-success" ng-click="t.submit()" ng-disabled="userForm.$invalid" translate>Create</button>
+        </div>
+
+        <div class="form-group">
+            <label for="locale" translate>Language</label>
+            <select class="form-control" ng-model="t.selectedLocale" ng-change="t.setLocale(t.selectedLocale, true)">
+                <option value="en-GB" ng-selected="t.selectedLocale === 'en-GB'">English (UK)</option>
+                <option value="de-DE" ng-selected="t.selectedLocale === 'de-DE'">Deutsch</option>
+            </select>
         </div>
     </div>
 </form>

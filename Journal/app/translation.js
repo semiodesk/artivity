@@ -1,18 +1,19 @@
-﻿(function () {
+﻿/*
+(function () {
 	angular.module('app').config(function ($translateProvider) {
 		$translateProvider.useSanitizeValueStrategy('escape');
 
 		$translateProvider.translations('en', {
-			SETUP:{
+			SETUP: {
 				GREETING: 'Welcome!',
 				INTRO: 'Thank you for downloading Artivity. Before you can begin using the app we need to setup your user account:',
-			
+
 			},
-			START:{
-		NO_CONNECTION: 'No database connection',
-		DESCRIPTION: 'Artivity was unable to connect to the local database. Please try to log out of your current desktop session to restart the service.',
-		RETRY: 'Retry'
-	},
+			START: {
+				NO_CONNECTION: 'No database connection',
+				DESCRIPTION: 'Artivity was unable to connect to the local database. Please try to log out of your current desktop session to restart the service.',
+				RETRY: 'Retry'
+			},
 			FILELIST: {
 				NOFILES: 'Your recent files will appear here.',
 
@@ -127,19 +128,19 @@
 		});
 
 		$translateProvider.translations('de', {
-			SETUP:{
+			SETUP: {
 				GREETING: 'Willkommen!',
 				INTRO: 'Vielen Dank, dass du Artivity verwendest. Bevor du starten kannst müssen wir noch ein paar Dinge einrichten.',
 				ACCOUNTTYPE: 'Bitte wähle welchen Kontotyp du verwenden möchtest:',
 				TYPE_ONLINE: 'Online',
 				TYPE_LOCAL: 'Lokal'
-	},
-	START:{
-		NO_CONNECTION: 'Keine Verbindung zur Datenbank!',
-		DESCRIPTION: 'Artivity konnte sich nicht mit der lokalen Datenbank verbinden. Bitte übeprüfen Sie ob der Artivity Dienst läuft.',
-		RETRY: 'Retry'
-	},
-			
+			},
+			START: {
+				NO_CONNECTION: 'Keine Verbindung zur Datenbank!',
+				DESCRIPTION: 'Artivity konnte sich nicht mit der lokalen Datenbank verbinden. Bitte übeprüfen Sie ob der Artivity Dienst läuft.',
+				RETRY: 'Retry'
+			},
+
 			FILELIST: {
 				NOFILES: 'Die zuletzt verwendeten Dateien erscheinen hier.',
 
@@ -241,6 +242,7 @@
 
 		//$translateProvider.determinePreferredLanguage();
 		$translateProvider.preferredLanguage('de');
-		  $translateProvider.useSanitizeValueStrategy('escape');
+		$translateProvider.useSanitizeValueStrategy('escape');
 	});
 })();
+*/

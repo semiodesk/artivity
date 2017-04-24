@@ -3,6 +3,7 @@
 
     function KeyboardInputHandlerDirective() {
         return {
+            restrict: 'A',
             scope: true,
             template: '',
             controller: KeyboardInputHandlerDirectiveController
