@@ -81,7 +81,7 @@ namespace Artivity.Apid.Modules
                 string fileUrl = Request.Query["fileUrl"];
                 string entityUri = Request.Query["entityUri"];
 
-                if (!IsFileUrl(fileUrl))
+                if (!IsFileUrl(fileUrl) || string.IsNullOrEmpty(entityUri))
                 {
                     return platformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
