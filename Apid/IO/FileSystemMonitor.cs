@@ -30,8 +30,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Timers;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Semiodesk.Trinity;
@@ -91,13 +89,6 @@ namespace Artivity.Apid.IO
         public bool IsDisposed { get; private set; }
 
         /// <summary>
-        /// The common application data folders are ignored in file system events.
-        /// </summary>
-        private string _appFolder;
-        private string _appDataRoaming;
-        private string _appDataLocal;
-
-        /// <summary>
         /// Maps root directories of ready drives to file system watchers.
         /// </summary>
         /// <remarks>
@@ -109,6 +100,11 @@ namespace Artivity.Apid.IO
         /// A timer used for executing tasks in a regular interval.
         /// </summary>
         private Task _periodicTask;
+
+        /// <summary>
+        /// These directories are ignored when file system events are handled.
+        /// </summary>
+        private readonly HashSet<string> _maskedDirectories = new HashSet<string>();
 
         /// <summary>
         /// Drive types which should be monitored by the drive watchers.
@@ -182,7 +178,6 @@ namespace Artivity.Apid.IO
             _modelProvider = modelProvider;
             _platformProvider = platformProvider;
 
-
             try
             {
                 IsInitialized = true;
@@ -190,9 +185,7 @@ namespace Artivity.Apid.IO
                 _platformProvider.Logger.LogInfo("Starting file system monitor..");
 
                 // These folders are ignored when handling file system events.
-                _appFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                _appDataRoaming = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                _appDataLocal = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                InitializeMaskedDirectories();
 
                 // Load the list of actively indexed files from the database.
                 InitializeMonitoredFiles();
@@ -207,6 +200,20 @@ namespace Artivity.Apid.IO
                 _platformProvider.Logger.LogError(ex);
                 _platformProvider.Logger.LogDebug("\n{0}\n", new StackTrace());
             }
+        }
+
+        private void InitializeMaskedDirectories()
+        {
+            AddMaskedDirectory(Environment.GetFolderPath(Environment.SpecialFolder.Windows));
+            AddMaskedDirectory(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+            AddMaskedDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            AddMaskedDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+            AddMaskedDirectory(Environment.GetFolderPath(Environment.SpecialFolder.System));
+            AddMaskedDirectory(Environment.GetFolderPath(Environment.SpecialFolder.SystemX86));
+            AddMaskedDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
+            AddMaskedDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86));
+            AddMaskedDirectory(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles));
+            AddMaskedDirectory(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86));
         }
 
         /// <summary>
@@ -321,6 +328,42 @@ namespace Artivity.Apid.IO
         }
 
         /// <summary>
+        /// Adds a new path to the list of ignored directories.
+        /// </summary>
+        /// <param name="path">A valid file systme path.</param>
+        private void AddMaskedDirectory(string path)
+        {
+            if(string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            // The path must end with a directory seperator for URI compare to work properly.
+            path = path.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+
+            var p1 = new Uri(path);
+
+            foreach (string p in _maskedDirectories)
+            {
+                var p2 = new Uri(p);
+
+                if(p1 == p2 || p2.IsBaseOf(p1))
+                {
+                    return;
+                }
+                else if(p1.IsBaseOf(p2))
+                {
+                    _maskedDirectories.Remove(p);
+                    _maskedDirectories.Add(path);
+
+                    return;
+                }
+            }
+
+            _maskedDirectories.Add(path);
+        }
+
+        /// <summary>
         /// Enable raising events for a give file system watcher.
         /// </summary>
         public bool TryEnable(IFileSystemWatcher watcher)
@@ -415,102 +458,112 @@ namespace Artivity.Apid.IO
         /// <param name="e">Timer event arguments.</param>
         private async Task ExecutePeriodicTasks()
         {
-            while (IsEnabled)
+            try
             {
-                // The period in ms the task is being executed.
-                int taskIntervalMs = 500;
-
-                // We cap the number of processed events to a maximum in order to keep the system responsive.
-                int maxEvents = 50;
-
-                // NOTE: When moving small files the create and delete events appear
-                // simultanously and not always in the expected order:
-                //
-                //  1. Created
-                //  2. Deleted
-                //  3. Renamed
-                //
-                // To solve this we queue the events and process them in a prioritized order.
-                int m = Math.Min(_deletedEventsQueue.Count, maxEvents);
-                int n = Math.Min(_createdEventsQueue.Count, maxEvents);
-
-                for (int i = 0; i < n; i++)
+                while (IsEnabled)
                 {
-                    FileEventRecord record = _createdEventsQueue.Dequeue();
+                    // The period in ms the task is being executed.
+                    int taskIntervalMs = 500;
 
-                    HandleFileSystemObjectCreated(record);
-                }
+                    // We cap the number of processed events to a maximum in order to keep the system responsive.
+                    int maxEvents = 500;
 
-                // Handle rename events _after_ the created and deleted events
-                // which may render them obsolete.
-                while(_renamedEventsQueue.Count > 0)
-                {
-                    FileEventRecord record = _renamedEventsQueue.Dequeue();
+                    // NOTE: When moving small files the create and delete events appear
+                    // simultanously and not always in the expected order:
+                    //
+                    //  1. Created
+                    //  2. Deleted
+                    //  3. Renamed
+                    //
+                    // To solve this we queue the events and process them in a prioritized order.
+                    int m = Math.Min(_deletedEventsQueue.Count, maxEvents);
+                    int n = Math.Min(_createdEventsQueue.Count, maxEvents);
 
-                    HandleFileSystemObjectRenamed(record);
-                }
-
-                DateTime time = DateTime.UtcNow;
-
-                // NOTE: We do not access the queue count directly because it may 
-                // have changed during execution.
-                while (m > 0)
-                {
-                    FileEventRecord record = _deletedEventsQueue.Peek();
-
-                    int timespan = (time - record.EventTimeUtc).Milliseconds;
-
-                    // To prevent possible race conditions, deleted events are processed
-                    // with a delay of one timer cycle.
-                    if (timespan <= taskIntervalMs)
+                    for (int i = 0; i < n; i++)
                     {
-                        break;
+                        FileEventRecord record = _createdEventsQueue.Dequeue();
+
+                        HandleFileSystemObjectCreated(record);
                     }
 
-                    HandleFileSystemObjectDeleted(record);
-
-                    _deletedEventsQueue.Dequeue();
-
-                    m--;
-                }
-
-                // Install or uninstall drive watchers.
-                foreach (DriveInfo drive in DriveInfo.GetDrives())
-                {
-                    if (!_driveTypes.Contains(drive.DriveType))
+                    // Handle rename events _after_ the created and deleted events
+                    // which may render them obsolete.
+                    while (_renamedEventsQueue.Count > 0)
                     {
-                        continue;
+                        FileEventRecord record = _renamedEventsQueue.Dequeue();
+
+                        HandleFileSystemObjectRenamed(record);
                     }
 
-                    string root = drive.RootDirectory.FullName;
-
-                    if (drive.IsReady && !_watchers.ContainsKey(root))
+                    if (m > 0)
                     {
-                        InstallMonitoring(drive.RootDirectory.FullName);
+                        DateTime time = DateTime.UtcNow;
+
+                        // NOTE: We do not access the queue count directly because it may 
+                        // have changed during execution.
+                        while (m > 0)
+                        {
+                            FileEventRecord record = _deletedEventsQueue.Peek();
+
+                            int timespan = (time - record.EventTimeUtc).Milliseconds;
+
+                            // To prevent possible race conditions, deleted events are processed
+                            // with a delay of one timer cycle.
+                            if (timespan <= taskIntervalMs)
+                            {
+                                break;
+                            }
+
+                            HandleFileSystemObjectDeleted(record);
+
+                            _deletedEventsQueue.Dequeue();
+
+                            m--;
+                        }
                     }
-                    else if (!drive.IsReady && _watchers.ContainsKey(root))
+
+                    // Install or uninstall drive watchers.
+                    foreach (DriveInfo drive in DriveInfo.GetDrives())
                     {
-                        InstallMonitoring(drive.RootDirectory.FullName);
+                        if (!_driveTypes.Contains(drive.DriveType))
+                        {
+                            continue;
+                        }
+
+                        string root = drive.RootDirectory.FullName;
+
+                        if (drive.IsReady && !_watchers.ContainsKey(root))
+                        {
+                            InstallMonitoring(drive.RootDirectory.FullName);
+                        }
+                        else if (!drive.IsReady && _watchers.ContainsKey(root))
+                        {
+                            InstallMonitoring(drive.RootDirectory.FullName);
+                        }
                     }
+
+                    // Update deleted, but still indexed files in the database.
+                    while (_deletedFiles.Count > 0)
+                    {
+                        FileInfoCache file = _deletedFiles.First();
+
+                        DeleteFileDataObject(file);
+
+                        _deletedFiles.Remove(file);
+                    }
+
+                    // Clean the index of created files.
+                    if (_createdFilesIndex.Count > 0)
+                    {
+                        CleanCreatedFilesIndex(taskIntervalMs);
+                    }
+
+                    await Task.Delay(taskIntervalMs);
                 }
-
-                // Update deleted, but still indexed files in the database.
-                while (_deletedFiles.Count > 0)
-                {
-                    FileInfoCache file = _deletedFiles.First();
-
-                    DeleteFileDataObject(file);
-
-                    _deletedFiles.Remove(file);
-                }
-
-                // Clean the index of created files.
-                if (_createdFilesIndex.Count > 0)
-                {
-                    CleanCreatedFilesIndex(taskIntervalMs);
-                }
-
-                await Task.Delay(taskIntervalMs);
+            }
+            catch(Exception ex)
+            {
+                _platformProvider.Logger.LogError(ex);
             }
         }
 
@@ -626,9 +679,27 @@ namespace Artivity.Apid.IO
             }
         }
 
+        /// <summary>
+        /// Indicates if the given path should be ignored for file system events.
+        /// </summary>
+        /// <param name="path">A valid file system path.</param>
+        /// <returns><c>true</c> if the path is masked, <c>false</c> otherwhise.</returns>
+        private bool IsMaskedDirectory(string path)
+        {
+            foreach (string p in _maskedDirectories)
+            {
+                if (path.StartsWith(p))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private bool IsMaskedFileEvent(string path)
         {
-            if (IsPathTooLong(path))
+            if (IsPathTooLong(path) || path.Contains('{'))
             {
                 return true;
             }
@@ -636,7 +707,7 @@ namespace Artivity.Apid.IO
             {
                 string p = Path.GetDirectoryName(path);
 
-                return p.StartsWith(_appDataRoaming) || p.StartsWith(_appDataLocal) || p.StartsWith(_appFolder);
+                return IsMaskedDirectory(p);
             }
         }
 
