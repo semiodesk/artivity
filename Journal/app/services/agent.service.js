@@ -15,7 +15,10 @@
             putPhoto: putPhoto,
             getPhotoUrl: getPhotoUrl,
             getAccountOwner: getAccountOwner,
-            findPersons: findPersons
+            findPersons: findPersons,
+            software: [],
+            getSoftwareAgents: getSoftwareAgents,
+            getActiveSoftwareAgents: getActiveSoftwareAgents
         };
 
         var dispatcher = new EventDispatcher(t);
@@ -25,6 +28,8 @@
 
             dispatcher.raise('currentUserChanged', user);
         });
+
+        t.getSoftwareAgents();
 
         return t;
 
@@ -99,11 +104,11 @@
             var uri = encodeURIComponent(agentUri);
             var url = endpoint + '/users/photo?agentUri=' + uri;
 
-            if(t.currentUser && t.currentUser.UserName) {
+            if (t.currentUser && t.currentUser.UserName) {
                 url += '&user=' + t.currentUser.UserName;
             }
 
-            return  url;
+            return url;
         }
 
         function findPersons(query) {
@@ -120,6 +125,49 @@
                     message: error
                 };
             };
+        }
+
+        function getSoftwareAgents() {
+            api.getAgents().then(function (data) {
+                var software = [];
+
+                for (var i = 0; i < data.length; i++) {
+                    var plugin = data[i];
+
+                    var agent = {
+                        uri: plugin.Manifest.AgentUri,
+                        name: plugin.Manifest.DisplayName,
+                        iconSrc: api.getAgentIconUrl(plugin.Manifest.AgentUri),
+                        softwareInstalled: plugin.IsSoftwareInstalled,
+                        pluginInstalled: plugin.IsPluginInstalled,
+                        pluginEnabled: plugin.IsPluginEnabled,
+                        autoInstall: plugin.Manifest.AutoInstall,
+                        hasError: false
+                    };
+
+                    software.push(agent);
+                }
+
+                software.sort(function (a, b) {
+                    return a.name.localeCompare(b.name);
+                });
+
+                t.software = software;
+            });
+        }
+
+        function getActiveSoftwareAgents() {
+            var result = [];
+
+            for (var i = 0; i < t.software.length; i++) {
+                var software = t.software[i];
+
+                if (software.softwareInstalled && software.autoInstall) {
+                    result.push(software);
+                }
+            }
+
+            return result;
         }
     }
 })();

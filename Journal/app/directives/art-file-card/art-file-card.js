@@ -5,45 +5,60 @@
         return {
             restrict: 'E',
             scope: {
-                'file': '=',
-                'clicked': '=?'
+                'file': '='
             },
             templateUrl: 'app/directives/art-file-card/art-file-card.html',
             controller: FileCardDirectiveController,
             controllerAs: 't',
-            bindToController: true,
-            link: function (scope, element, attr, t) {
-                t.setFile(element);
-            }
+            bindToController: true
         }
     }
 
     angular.module('app').controller('FileCardDirectiveController', FileCardDirectiveController);
 
-    FileCardDirectiveController.$inject = ['$scope', '$location', 'selectionService', 'filesystemService'];
+    FileCardDirectiveController.$inject = ['$scope', '$element', '$location', 'selectionService', 'filesystemService'];
 
-    function FileCardDirectiveController($scope, $location, selectionService, filesystemService) {
+    function FileCardDirectiveController($scope, $element, $location, selectionService, filesystemService) {
         var t = this;
 
         t.thumbnailStyle = {};
 
-        t.setFile = function (element) {
-            t.fileName = filesystemService.getFileNameWithoutExtension(t.file.label);
-            t.fileExtension = filesystemService.getFileExtension(t.file.label);
-
-            if(t.file.thumbnail) {
-                t.thumbnailStyle = {
-                    'background-image': 'url(' + t.file.thumbnail + ')'
-                }
-            }
-        }
-
-        t.onClicked = function (e) {
+        t.onLeftClick = function (e) {
             e.preventDefault();
 
-            if (t.clicked) {
-                t.clicked(e, t.file);
-            }
+            $scope.$emit('leftClick', { 
+                sourceEvent: e,
+                sourceScope: t.file
+            });
+        }
+
+        t.onRightClick = function (e) {
+            e.preventDefault();
+
+            $scope.$emit('rightClick', { 
+                sourceEvent: e,
+                sourceScope: t.file
+            });
+        }
+
+        t.$postLink = function () {
+            $scope.$watch('t.file', function () {
+                if (t.file) {
+                    var label = t.file.label;
+
+                    t.fileName = filesystemService.getFileNameWithoutExtension(label);
+                    t.fileExtension = filesystemService.getFileExtension(label);
+
+                    if (t.file.thumbnail) {
+                        t.thumbnailStyle = {
+                            'background-image': 'url(' + t.file.thumbnail + ')'
+                        }
+                    }
+                }
+            });
+
+            $element.click(t.onLeftClick);
+            $element.contextmenu(t.onRightClick);
         }
     }
 })();

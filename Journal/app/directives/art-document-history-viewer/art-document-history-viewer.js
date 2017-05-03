@@ -4,80 +4,105 @@
     function DocumentHistoryViewerDirective() {
         return {
             restrict: 'E',
-            scope: {
-                'file': '=file'
-            },
+            scope: {},
             templateUrl: 'app/directives/art-document-history-viewer/art-document-history-viewer.html',
             controller: DocumentHistoryViewerDirectiveController,
             controllerAs: 't',
-            link: function (scope, element, attr, t) {
-                t.element = element;
-            }
+            bindToController: true
         }
     }
 
     angular.module('app').controller('DocumentHistoryViewerDirectiveController', DocumentHistoryViewerDirectiveController);
 
-    DocumentHistoryViewerDirectiveController.$inject = ['$rootScope', '$scope', 'api', 'viewerService', 'agentService', 'entityService'];
+    DocumentHistoryViewerDirectiveController.$inject = ['$rootScope', '$scope', '$element', 'api', 'hotkeys', 'viewerService', 'agentService'];
 
-    function DocumentHistoryViewerDirectiveController($rootScope, $scope, api, viewerService, agentService, entityService) {
+    function DocumentHistoryViewerDirectiveController($rootScope, $scope, $element, api, hotkeys, viewerService, agentService) {
         var t = this;
 
         t.viewer = null;
-        t.update = update;
-        t.initialize = initialize;
 
-        function initialize() {
-            if (t.file) {
-                var fileUri = t.file;
+        t.$postLink = function () {
+            var canvas = $element.find('canvas')[0];
 
-                console.log('Loading file:', fileUri);
+            if (canvas) {
+                // EaselJS addresses the canvas by its id.
+                canvas.id = 'canvas-' + $scope.$id;
 
-                entityService.getLatestRevisionFromFileUri(fileUri).then(function (data) {
-                    if (data.revision) {
-                        var revisionUri = data.revision;
+                t.viewer = new DocumentHistoryViewer(agentService.currentUser, canvas);
+                t.viewer.addCommand(new PanCommand(t.viewer));
 
-                        console.log('Loading revision:', revisionUri);
+                viewerService.viewer(t.viewer);
 
-                        var canvas = $(t.element).find('canvas');
+                $element.on('appear', function (event) {
+                    viewerService.viewer(t.viewer);
+                });
 
-                        if (canvas) {
-                            initializeViewer(canvas, revisionUri);
-                        } else {
-                            console.warn('Unable to find canvas for viewer element:', canvas);
-                        }
-                    }
+                // Handle the resize of UI panes.
+                $scope.$on('resize', function () {
+                    t.viewer.onResize();
+                });
+
+                $scope.$on('fileLoaded', function (e, data) {
+                    t.onFileLoaded(data.file, data.influences);
+                });
+
+                $scope.$on('influenceSelected', function(e, influence) {
+                    t.viewer.render(influence);
                 });
             } else {
-                console.warn('Invalid file:', t.file);
+                console.warn('Unable to find canvas for viewer element:', canvas);
             }
         }
 
-        function initializeViewer(canvas, revisionUri) {
-            t.viewer = new DocumentHistoryViewer(agentService.currentUser, canvas, api.getRenderingUrl(revisionUri));
-            t.viewer.addCommand(new PanCommand(t.viewer));
+        t.onFileLoaded = function (file, influences) {
+            var fileUri = file.uri;
 
-            viewerService.viewer(t.viewer);
+            console.log('Loading file:', fileUri);
 
-            // Handle the resize of UI panes.
-            $scope.$on('resize', function () {
-                t.viewer.onResize();
-            });
+            t.viewer.influences = influences;
 
-            api.getCanvasRenderingsFromEntity(revisionUri).then(function (data) {
-                t.viewer.pageCache.load(data, function () {
-                    console.log('Loaded pages:', data);
+            // Canvases in the file.
+            api.getCanvases(fileUri).then(function (data) {
+                t.viewer.canvasCache.load(data, function () {
+                    console.log("Loaded canvases: ", t.viewer.canvasCache);
 
-                    t.viewer.setEntity(revisionUri);
-                    t.viewer.zoomToFit();
+                    api.getLayers(fileUri).then(function (data) {
+                        t.viewer.layerCache.load(data, function (layers) {
+                            console.log("Loaded layers: ", t.viewer.layerCache);
+
+                            values(layers, function (uri, layer) {
+                                // TODO: The layer state should be recorded and returned by the API.
+                                layer.visible = true;
+
+                                console.log(layer);
+                            });
+
+                            t.viewer.renderCache.endpointUrl = api.getRenderingUrl(fileUri);
+
+                            // Trigger loading the bitmaps.
+                            api.getRenderings(fileUri).then(function (data) {
+                                t.viewer.renderCache.load(data, function () {
+                                    console.log("Loaded renderings: ", t.viewer.renderCache);
+
+                                    t.viewer.setFile(fileUri);
+                                    t.viewer.render(influences[0]);
+                                    t.viewer.zoomToFit();
+                                });
+                            });
+                        });
+                    });
                 });
             });
         }
 
-        function update() {
-            if (t.viewer) {
-                t.viewer.stage.update();
+        hotkeys.add({
+            combo: 'f5',
+            description: 'Reload the document view.',
+            callback: function () {
+                if (t.viewer) {
+                    t.viewer.stage.update();
+                }
             }
-        }
+        });
     }
 })();
