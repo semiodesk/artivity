@@ -26,21 +26,21 @@
 					}
 				})
 				.state('main.view.document', {
-					url: '/document',
+					url: '/document/{fileUri:string}',
 					templateUrl: 'app/states/main/views/document.html',
 					controller: 'DocumentViewController as t',
 					params: {
 						project: null,
-						file: null
+						fileUri: null
 					}
 				})
 				.state('main.view.document-history', {
-					url: '/document-history',
+					url: '/document-history/{fileUri:string}',
 					templateUrl: 'app/states/main/views/document-history.html',
 					controller: 'DocumentHistoryViewController as t',
 					params: {
 						project: null,
-						file: null
+						fileUri: null
 					}
 				})
 				.state('settings', {
@@ -82,7 +82,7 @@
 					controller: 'QueryStateController as t'
 				})
 				.state('setup', {
-					url: '/',
+					url: '/setup',
 					templateUrl: 'app/states/setup/setup.html',
 					controller: 'SetupStateController as t'
 				})

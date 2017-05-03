@@ -10,6 +10,8 @@
         <div class="layout-container">
             <art-document-viewer file="t.file"></art-document-viewer>
 
+            <art-document-viewer-toolbar style="position: absolute; top: 10px; left: 10px;"></art-document-viewer-toolbar>
+
             <div class="ui-sidebar ui-sidebar-right">
                 <uib-tabset class="tabs-centered">
                     <uib-tab heading="{{'Chat' | translate}}">
@@ -17,13 +19,11 @@
                             <art-chat-control entity-uri="t.latestRevisionUri"></art-chat-control>
                         </div>
                     </uib-tab>
-                    <!--
                     <uib-tab heading="Themen">
                         <div class="layout-container">
                             <art-topic-control entity-uri="t.latestRevisionUri"></art-topic-control>
                         </div>
                     </uib-tab>
-                    -->
                     <uib-tab heading="{{'Todo' | translate}}">
                         <div class="layout-container padding-x-xl padding-y-xl text-center">
                             <art-task-control entity-uri="t.latestRevisionUri"></art-task-control>

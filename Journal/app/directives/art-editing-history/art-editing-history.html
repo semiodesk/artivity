@@ -1,36 +1,5 @@
-<style type="text/css" art-style-binder art-accent-color="agent.color">
-    .lst-activities li a.default:hover,
-    .lst-activities li.selected a.default {
-        background: $accentColor;
-    }
-
-    .lst-activities li a.default:hover label,
-    .lst-activities li a.default:hover i,
-    .lst-activities li.selected a.default label,
-    .lst-activities li.selected a.default i {
-        color: white;
-    }
-
-    .lst-activities li a.comment:hover .txt,
-    .lst-activities li.selected a.comment .txt {
-        background: $accentColor;
-        color: white;
-    }
-
-    .lst-activities li a.comment:hover .tip.tip-left,
-    .lst-activities li.selected a.comment .tip.tip-left {
-        border-top-color: $accentColor;
-        border-right-color: $accentColor;
-    }
-
-    .lst-activities li a.comment:hover .tip.tip-right,
-    .lst-activities li.selected a.comment .tip.tip-right {
-        border-top-color: $accentColor;
-        border-left-color: $accentColor;
-    }
-</style>
 <!-- Note: The tabindex is required for the div to be focusable. -->
-<div class="scroll-container scroll-y">
+<div class="scroll-container scroll-y" style="margin-top: 3px;">
     <div class="ctl-history" tabindex="0">
         <ul class="lst-activities list-unstyled">
             <li ng-repeat="activity in t.activities">

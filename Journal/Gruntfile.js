@@ -388,7 +388,7 @@ module.exports = function (grunt) {
                     'app/i18n/template.pot': [
                         'app/dialogs/*/*.html',
                         'app/directives/*/*.html',
-                        'app/views/*/*.html'
+                        'app/states/**/*.html'
                     ]
                 }
             }

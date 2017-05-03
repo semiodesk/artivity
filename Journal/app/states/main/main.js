@@ -96,6 +96,7 @@
                 if (t.selectedTab === n && state.name.startsWith('main')) {
                     var context = tabService.getTabContext(n);
                     context.state = state;
+                    context.stateParams = stateParams;
 
                     tabService.setSelectedTab(n);
                     tabService.setTabContext(n, context);

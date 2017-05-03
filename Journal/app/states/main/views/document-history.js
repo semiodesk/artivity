@@ -118,9 +118,12 @@
         }
 
         t.$onInit = function () {
-            t.file = $stateParams.file;
-
-            t.loadFile(t.file);
+            if ($stateParams.fileUri) {
+                entityService.get($stateParams.fileUri).then(function (data) {
+                    t.file = data;
+                    t.loadFile(t.file);
+                });
+            }
         }
     }
 })();

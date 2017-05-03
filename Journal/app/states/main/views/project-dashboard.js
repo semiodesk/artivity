@@ -1,21 +1,24 @@
 (function () {
 	angular.module('app').controller("ProjectDashboardViewController", ProjectDashboardViewController);
 
-	ProjectDashboardViewController.$inject = ['$scope', '$state', '$stateParams', '$element', 'hotkeys', 'projectService'];
+	ProjectDashboardViewController.$inject = ['$scope', '$state', '$stateParams', '$element', 'hotkeys', 'tabService', 'projectService'];
 
-	function ProjectDashboardViewController($scope, $state, $stateParams, $element, hotkeys, projectService) {
+	function ProjectDashboardViewController($scope, $state, $stateParams, $element, hotkeys, tabService, projectService) {
 		var t = this;
 
 		t.project = null;
+		t.initialized = null;
 
 		t.getFiles = function (callback) {
-			console.log("Loading files:", callback);
+			t.initialized.then(function () {
+				console.log("Loading files:", callback);
 
-			if (t.project) {
-				return projectService.getFiles(t.project.Uri).then(callback);
-			} else {
-				return callback();
-			}
+				if (t.project) {
+					return projectService.getFiles(t.project.Uri).then(callback);
+				} else {
+					return callback();
+				}
+			});
 		}
 
 		t.toggleProjectSettings = function () {
@@ -50,19 +53,22 @@
 				}
 			});
 
-			t.project = $stateParams.project;
+			t.initialized = projectService.getAll().then(function (projects) {
+				// We load the project from the given tab index with project starting from index 1.
+				t.project = projects[$stateParams.index - 1];
 
-			if (t.project && t.project.new) {
-				t.toggleProjectSettings();
-			}
+				if (t.project && t.project.new) {
+					t.toggleProjectSettings();
+				}
+			});
 
 			$scope.$on('viewFile', function (e, file) {
-				$stateParams.file = file;
+				$stateParams.fileUri = file.uri;
 				$state.go('main.view.document', $stateParams);
 			});
 
 			$scope.$on('viewFileHistory', function (e, file) {
-				$stateParams.file = file;
+				$stateParams.fileUri = file.uri;
 				$state.go('main.view.document-history', $stateParams);
 			});
 
