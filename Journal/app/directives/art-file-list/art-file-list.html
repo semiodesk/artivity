@@ -5,15 +5,32 @@
 
 <div class="layout-container">
     <div ng-show="t.files.length > 0" class="scroll-container scroll-y">
+        <div class="dropdown clearfix">
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                <li><a tabindex="-1" href="#" ng-click="t.viewFile($event)" translate>View</a></li>
+                <!--<li><a tabindex="-1" href="#" ng-click="t.editFile($event)" translate>Edit</a></li>-->
+                <li class="divider"></li>
+                <li><a tabindex="-1" href="#" ng-click="t.viewFileHistory($event)" translate>Editing History</a></li>
+            </ul>
+        </div>
         <ul class="cards">
             <li ng-repeat="file in t.files">
-                <art-file-card file="file " ng-model="file " ng-hide="file.visible === false" jqyoui-draggable="{onStart: 't.onDragStart', onStop:
-                        't.onDragStop'} " data-drag="true " data-jqyoui-options="{opacity:0.7, helper: 'clone', appendTo: 'body', placeholder: 'keep', cursorAt:
-                        {top: 5, left: 5}} " clicked="t.onClick "></art-file-card>
+                <art-file-card file="file" ng-model="file" ng-hide="file.visible === false" jqyoui-draggable="{onStart: 't.onDragStart', onStop:
+                        't.onDragStop'}" data-drag="true " data-jqyoui-options="{opacity:0.7, helper: 'clone', appendTo: 'body', placeholder: 'keep', cursorAt:
+                        {top: 5, left: 5}}"></art-file-card>
             </li>
         </ul>
     </div>
     <div ng-show="t.files.length === 0">
-        <div ng-transclude="emptySlot"></div>
+        <div ng-transclude="emptySlot">
+            <div class="text-center">
+                <div style="opacity: .25; margin: 75px 0 50px 0;"><i class="zmdi zmdi-time-restore" style="font-size: 75px !important"></i></div>
+
+                <h3 translate>Recently used files</h3>
+
+                <span translate>The files you edit in the following programs will appear here:</span>
+                <art-app-list class="pull-center"></art-app-list>
+            </div>
+        </div>
     </div>
 </div>

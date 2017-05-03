@@ -18,7 +18,7 @@
             }
 
             api.get(endpoint + '/users?role=AccountOwnerRole').then(function (response) {
-                if (response && response.data.length === 1) {
+                if (response && response.data.length > 0) {
                     var user = response.data[0];
 
                     if (user && user.Uri) {

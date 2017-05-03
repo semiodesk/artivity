@@ -1,0 +1,29 @@
+<div class="table-layout">
+    <div class="row">
+        <div class="toolbar toolbar-view">
+            <a class="btn btn-chromeless" ng-click="t.navigateBack()"><i class="zmdi zmdi-chevron-left"></i></a>
+            <div class="txt txt-title">{{t.file.label}}</div>
+            <a class="btn btn-primary pull-right" ng-click="t.publishLatestRevision(t.file)"><i class="zmdi zmdi-share"></i><span class="btn-label" translate>Share</span></a>
+        </div>
+    </div>
+    <div class="row expand">
+        <div class="layout-container">
+            <art-document-history-viewer></art-document-history-viewer>
+
+            <div class="ui-sidebar ui-sidebar-right">
+                <uib-tabset class="tabs-centered">
+                    <uib-tab heading="History">
+                        <div class="layout-container">
+                            <art-editing-history></art-editing-history>
+                        </div>
+                    </uib-tab>
+                    <uib-tab heading="Statistics">
+                        <div class="layout-container padding-x-xl padding-y-xl">
+                            <art-editing-stats entity-uri="t.latestRevisionUri"></art-editing-stats>
+                        </div>
+                    </uib-tab>
+                </uib-tabset>
+            </div>
+        </div>
+    </div>
+</div>

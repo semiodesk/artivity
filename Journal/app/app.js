@@ -9,6 +9,7 @@ angular.module('app', [
     'ui.bootstrap.progressbar',
     'ui.bootstrap.tabs',
     'ui.toggle',
+    'ui.router',
     'cfp.hotkeys',
     'ngDragDrop',
     'angular-emojione',

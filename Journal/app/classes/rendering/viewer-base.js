@@ -1,7 +1,7 @@
 /**
  * Renders a document onto a canvas.
  */
-function ViewerBase(user, canvas, endpointUrl) {
+function ViewerBase(user, canvas) {
     var t = this;
 
     // Indicates if debug information like scene extents and center points should be rendered.
@@ -153,16 +153,16 @@ ViewerBase.prototype.clearStage = function () {
     }
 };
 
-ViewerBase.prototype.setEntity = function (entity) {
+ViewerBase.prototype.setFile = function (file) {
     var t = this;
 
-    t.entity = entity;
+    t.file = file;
 
     // Rebuild the scene.
     t.render();
 
     // Raise the entity changed event.
-    t.raise('entityChanged', entity);
+    t.raise('fileChanged', file);
 };
 
 ViewerBase.prototype.addRenderer = function (renderer) {

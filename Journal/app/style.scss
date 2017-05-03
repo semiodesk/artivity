@@ -425,6 +425,17 @@ button:focus,
 	text-align: left;
 }
 
+/* DROPDOWN */
+
+.dropdown {
+	position: relative;
+}
+
+.dropdown-menu {
+	display: none;
+	position: absolute;
+	margin-bottom: 5px;
+}
 
 /* TABS */
 
@@ -516,7 +527,7 @@ button:focus,
 .header-tabs>.nav-tabs li a.nav-link .zmdi,
 .header-tabs>.nav-tabs img {
 	position: relative;
-	top: -3px;
+	top: -1px;
 }
 
 .header-tabs>.nav-tabs li a.nav-link .zmdi {
@@ -536,13 +547,23 @@ button:focus,
 	margin: 0;
 }
 
+.header-tabs>.nav-tabs li a:hover {
+	text-decoration: none;
+	border: none;
+}
+
 .header-tabs>.nav-tabs li a.nav-link {
 	padding: 0;
 	border-right: 1px solid rgba(255, 255, 255, .05);
 	background: transparent;
-	color: $headerTextColor;
 	height: $toolbarHeight;
+}
+
+.header-tabs>.nav-tabs li a.nav-link,
+.header-tabs>.nav-tabs li a.nav-link a {
+	color: $headerTextColor;
 	text-transform: none;
+	padding: 0;
 }
 
 .header-tabs>.nav-tabs li a.nav-link .nav-link-container {
@@ -571,22 +592,23 @@ button:focus,
 }
 
 .header-tabs>.nav-tabs li.active a.nav-link,
-.header-tabs>.nav-tabs li.active a.nav-link a.btn {
+.header-tabs>.nav-tabs li.active a.nav-link a {
 	color: $textColor !important;
+	text-transform: none;
 }
 
 .header-tabs>.nav-tabs li.active a.nav-link:hover,
-.header-tabs>.nav-tabs li.active a.nav-link:hover a.btn {
+.header-tabs>.nav-tabs li.active a.nav-link:hover a {
 	color: $highlightTextColor;
 }
 
 .header-tabs>.nav-tabs li a.btn-close {
 	position: relative;
-	top: -2px;
+	top: 0px;
 	right: -5px;
 	width: 24px;
 	height: 24px;
-	padding: 3px;
+	padding: 5px 3px;
 	border: none;
 	border-radius: 2px;
 	color: darken($headerTextColor, 10%);
@@ -607,7 +629,7 @@ button:focus,
 	background: lighten($windowBackgroundColor, 3%);
 }
 
-.header-tabs .tab-content {
+#tab-content {
 	position: absolute;
 	top: $toolbarHeight;
 	left: 0;
@@ -1436,7 +1458,6 @@ h4 {
 	border-bottom: 1px solid darken($windowBackgroundColor, 3%);
 }
 
-
 /* ACTIVITIES CHART */
 
 svg {
@@ -1702,6 +1723,7 @@ svg {
 	border-radius: 0;
 	background: transparent;
 	transition: all ease-in .1s;
+	cursor: pointer;
 }
 
 .card a {
@@ -3069,8 +3091,8 @@ $userCommentBackgroundColor: rgba($textColor,
 }
 
 .cfp-hotkeys-container {
-	background: rgba($windowBackgroundColor, .9);
-	margin-top: 47px;
+	background: rgba($windowBackgroundColor, .75);
+	margin-top: $headerHeight + $toolbarHeight;
 }
 
 .cfp-hotkeys-key {

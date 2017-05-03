@@ -25,8 +25,8 @@ MarkRenderer.prototype.initialize = function (viewer, service) {
     t.viewer.stage.addChildAt(t.viewer.marks, i);
 
     // Set the new entity if the entity of the viewer changes.
-    t.viewer.on("entityChanged", function (entity) {
-        t.setEntity(entity);
+    t.viewer.on("revisionChanged", function (revision) {
+        t.setEntity(revision);
     });
 
     // Listen to viewer events for re-rendering the marks.
