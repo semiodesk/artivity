@@ -57,6 +57,16 @@ namespace Artivity.Apid.IO
         public readonly string OldFilePath;
 
         /// <summary>
+        /// The size of the file in bytes.
+        /// </summary>
+        public long Length;
+
+        /// <summary>
+        /// A counter to measure how many times the record was evaluated.
+        /// </summary>
+        public bool IsNew;
+
+        /// <summary>
         /// The URI of the file data object in case of a file create event.
         /// </summary>
         /// <value>The URI.</value>
@@ -68,6 +78,7 @@ namespace Artivity.Apid.IO
 
         public FileEventRecord(DateTime eventTimeUtc, string filePath, string oldFilePath = null)
         {
+            IsNew = true;
             EventTimeUtc = eventTimeUtc;
             FilePath = filePath;
             OldFilePath = oldFilePath;
@@ -75,6 +86,7 @@ namespace Artivity.Apid.IO
 
         public FileEventRecord(DateTime eventTimeUtc, string filePath, UriRef uri)
         {
+            IsNew = true;
             EventTimeUtc = eventTimeUtc;
             FilePath = filePath;
             Uri = uri;
