@@ -1,0 +1,21 @@
+<art-user-menu></art-user-menu>
+
+<uib-tabset class="header-tabs" active="t.selectedTab">
+    <uib-tab ng-repeat="tab in t.tabs track by $index">
+        <uib-tab-heading>
+            <div class="nav-link-container" ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
+                jqyoui-droppable="{onDrop: 't.onFileDropped'}">
+                <a ng-click="t.closeTab($event, $index)" ng-if="tab.closable" class="btn btn-close pull-right">
+                    <i class="zmdi zmdi-xs zmdi-close"></i>
+                </a>
+                <a ng-click="t.activateTab($event, $index)" style="padding: 0;">
+                    <i ng-if="tab.icon" class="{{tab.icon.class}}"></i>
+
+                    <div ng-if="tab.title" style="min-width: 125px; margin-top: 1px;">{{tab.title}}</div>
+                </a>
+            </div>
+        </uib-tab-heading>
+    </uib-tab>
+</uib-tabset>
+
+<div ui-view id="tab-content"></div>

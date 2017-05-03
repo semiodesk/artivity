@@ -3,6 +3,7 @@
 
     function AccountsSettingsDirective() {
         return {
+            restrict: 'E',
             scope: {},
             templateUrl: 'app/directives/art-settings-accounts/art-settings-accounts.html',
             controller: AccountsSettingsDirectiveFormController

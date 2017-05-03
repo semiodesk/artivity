@@ -9,9 +9,8 @@
             </div>
         </li>
     </ul>
-
     <div class="ctl-task padding-x-xs padding-y-xs" style="position: absolute; bottom: 1px; left: 0; right: 0;">
-        <input type="text" class="form-control stretch-horizontal no-margin" style="margin-bottom: 5px;" placeholder="{{Create a new task | translate}}"
+        <input type="text" class="form-control stretch-horizontal no-margin" style="margin-bottom: 5px;" placeholder="{{'Create a new task' | translate}}"
             ng-model="t.newTask.name"
             ng-change="t.updateTask(t.newTask)"
             ng-enter="t.postTask(t.newTask)"

@@ -27,7 +27,8 @@ module.exports = function (grunt) {
             'app/filters/*.js',
             'app/directives/**/*.js',
             'app/dialogs/**/*.js',
-            'app/views/**/*.js',
+            'app/states/**/*.js',
+            '!app/views/**/*.js',
             'app/i18n.js',
             'app/route.js'
         ]

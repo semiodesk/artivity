@@ -12,14 +12,6 @@
             controllerAs: 't',
             bindToController: true,
             link: function (scope, element, attr, t) {
-                $(document).ready(function () {
-                    t.initialize(element);
-                });
-
-                $(element).on('appear', function (event) {
-                    t.setViewer();
-                });
-
                 scope.$watch('t.file', function () {
                     if (t.file) {
                         t.load(t.file);
@@ -31,17 +23,15 @@
 
     angular.module('app').controller('DocumentViewerDirectiveController', DocumentViewerDirectiveController);
 
-    DocumentViewerDirectiveController.$inject = ['$rootScope', '$scope', 'api', 'viewerService', 'agentService', 'entityService', 'selectionService', 'commentService', 'markService', 'hotkeys'];
+    DocumentViewerDirectiveController.$inject = ['$scope', '$element', 'api', 'hotkeys', 'viewerService', 'agentService', 'entityService', 'selectionService', 'markService'];
 
-    function DocumentViewerDirectiveController($rootScope, $scope, api, viewerService, agentService, entityService, selectionService, commentService, markService, hotkeys) {
+    function DocumentViewerDirectiveController($scope, $element, api, hotkeys, viewerService, agentService, entityService, selectionService, markService) {
         var t = this;
 
         t.viewer = null;
-        t.update = update;
-        t.initialize = initialize;
 
-        function initialize(element) {
-            var canvas = $(element).find('canvas')[0];
+        t.$postLink = function () {
+            var canvas = $element.find('canvas')[0];
 
             if (canvas) {
                 // EaselJS addresses the canvas by its id.
@@ -60,6 +50,10 @@
                 t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
 
                 viewerService.viewer(t.viewer);
+
+                $element.on('appear', function (event) {
+                    viewerService.viewer(t.viewer);
+                });
 
                 // Handle the resize of UI panes.
                 $scope.$on('resize', function () {
@@ -93,7 +87,8 @@
                                 t.viewer.pageCache.load(data, function () {
                                     console.log('Loaded pages:', data);
 
-                                    t.viewer.setEntity(revisionUri);
+                                    t.viewer.setFile(fileUri);
+                                    t.viewer.setRevision(revisionUri);
                                     t.viewer.zoomToFit();
                                 });
                             });
@@ -105,23 +100,13 @@
             }
         }
 
-        t.setViewer = function () {
-            if (t.viewer) {
-                viewerService.viewer(t.viewer);
-            }
-        }
-
-        function update() {
-            if (t.viewer) {
-                t.viewer.stage.update();
-            }
-        }
-
         hotkeys.add({
             combo: 'f5',
             description: 'Reload the document view.',
             callback: function () {
-                update();
+                if (t.viewer) {
+                    t.viewer.stage.update();
+                }
             }
         });
     }

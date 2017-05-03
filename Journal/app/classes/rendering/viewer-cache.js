@@ -90,23 +90,26 @@ ViewerCache.prototype.loadRender = function (data, i, complete) {
 
 ViewerCache.prototype.get = function (time, layer, fn) {
     var t = this;
-    var uri = layer;
 
-    if (layer.uri) {
-        uri = layer.uri;
-    }
+    if (layer) {
+        var uri = layer;
 
-    if (uri !== undefined && uri in t.renders) {
-        var R = t.renders[uri];
+        if (layer.uri) {
+            uri = layer.uri;
+        }
 
-        for (var i = 0; i < R.length; i++) {
-            var r = R[i];
+        if (uri !== undefined && uri in t.renders) {
+            var R = t.renders[uri];
 
-            if (r.time <= time) {
-                if (fn) {
-                    fn(r);
-                } else {
-                    return r;
+            for (var i = 0; i < R.length; i++) {
+                var r = R[i];
+
+                if (r.time <= time) {
+                    if (fn) {
+                        fn(r);
+                    } else {
+                        return r;
+                    }
                 }
             }
         }

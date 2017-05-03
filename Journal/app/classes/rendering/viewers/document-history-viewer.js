@@ -5,7 +5,7 @@ function DocumentHistoryViewer(user, canvas, endpointUrl) {
     var t = this;
 
     // Call the base constructor.
-    ViewerBase.call(t, user, canvas, endpointUrl);
+    ViewerBase.call(t, user, canvas);
 
     t.canvasCache = new CanvasCache();
 
@@ -19,6 +19,18 @@ function DocumentHistoryViewer(user, canvas, endpointUrl) {
 }
 
 DocumentHistoryViewer.prototype = Object.create(ViewerBase.prototype);
+
+DocumentHistoryViewer.prototype.setInfluence= function (influence) {
+    var t = this;
+
+    t.influence = influence;
+
+    // Rebuild the scene.
+    t.render(influence);
+
+    // Raise the entity changed event.
+    t.raise('influenceChanged', influence);
+};
 
 DocumentHistoryViewer.prototype.render = function (influence) {
     var t = this;

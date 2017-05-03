@@ -247,8 +247,6 @@
             if (html !== input) {
                 t.inputElement.html(html);
 
-                t.comment.message = html;
-
                 resetCursor(t.inputElement[0]);
             }
         }
@@ -324,6 +322,8 @@
 
                     var html = sanitizeHtml(input);
 
+                    t.comment.message = html;
+
                     $scope.$apply(function () {
                         updateInputElement(input, html);
                     });
@@ -344,6 +344,8 @@
                         t.showPlaceholder = true;
                     }
 
+                    t.comment.message = html;
+                    
                     updateInputElement(input, html);
                 });
             }
