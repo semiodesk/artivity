@@ -1,7 +1,7 @@
 (function () {
     angular.module('app').controller('StartStateController', StartStateController);
 
-    StartStateController.$inject = ['$scope', '$state', '$http', 'appService', 'agentService', 'windowService'];
+    StartStateController.$inject = ['$scope', '$state', '$http', 'appService', 'agentService', 'windowService', 'cookieService'];
 
     function StartStateController($scope, $state, $http, appService, agentService, windowService, cookieService) {
         var t = this;

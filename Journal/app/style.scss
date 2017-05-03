@@ -425,6 +425,7 @@ button:focus,
 	text-align: left;
 }
 
+
 /* DROPDOWN */
 
 .dropdown {
@@ -436,6 +437,7 @@ button:focus,
 	position: absolute;
 	margin-bottom: 5px;
 }
+
 
 /* TABS */
 
@@ -568,6 +570,7 @@ button:focus,
 
 .header-tabs>.nav-tabs li a.nav-link .nav-link-container {
 	padding: 10px 11px;
+	cursor: pointer;
 }
 
 .header-tabs>.nav-tabs li:last-child a.nav-link {
@@ -649,42 +652,44 @@ button:focus,
 	text-align: center;
 }
 
+
 /* ACCODRION */
-.panel-accordion > .panel-group > .panel {
+
+.panel-accordion>.panel-group>.panel {
 	background: transparent;
 	border-radius: 0;
 	box-shadow: none;
 	padding: 0;
 }
 
-.panel-accordion > .panel-group > .panel > .panel-title a {
+.panel-accordion>.panel-group>.panel>.panel-title a {
 	margin: 0;
 	padding: 10px;
 }
 
-.panel-accordion > .panel-group a:focus {
+.panel-accordion>.panel-group a:focus {
 	text-decoration: none !important;
 }
 
-.panel-accordion > .panel-group > .panel > .panel-heading {
+.panel-accordion>.panel-group>.panel>.panel-heading {
 	background: transparent;
 	border: none;
 	border-top: 1px solid $itemBackgroundColor;
 	padding: 0;
 }
 
-.panel-accordion > .panel-group > .panel > .panel-heading:hover {
+.panel-accordion>.panel-group>.panel>.panel-heading:hover {
 	background: $itemBackgroundColor;
 }
 
-.panel-accordion > .panel-group .panel-heading + .panel-collapse > .panel-body {
+.panel-accordion>.panel-group .panel-heading+.panel-collapse>.panel-body {
 	border: none !important;
 	border-top: none !important;
 	padding: 5px 15px;
 	@include transitionEaseInOutCubic(all, 400ms);
 }
 
-.panel-accordion > .panel-group .panel + .panel {
+.panel-accordion>.panel-group .panel+.panel {
 	margin-top: 0;
 }
 
@@ -715,11 +720,14 @@ button:focus,
 	-webkit-box-shadow: none;
 }
 
+
 /* BOXES */
+
 .box-default {
 	background: $itemBackgroundColor;
 	padding: 10px;
 }
+
 
 /* LIST VIEW */
 
@@ -942,6 +950,7 @@ h4 {
 	line-height: $toolbarHeight;
 }
 
+
 /* BODY */
 
 .ui-resizable {
@@ -1088,17 +1097,18 @@ h4 {
 
 .ui-sidebar {
 	position: absolute;
-	top: 0;
-	bottom: 0;
+	top: 10px;
+	bottom: 10px;
 	z-index: 1;
 	width: 33%;
 	min-width: 400px;
 	max-width: 575px;
 	background: #fcfcfc;
+	box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, .05);
 }
 
 .ui-sidebar-right {
-	right: 0;
+	right: 10px;
 	border-left: 1px solid $itemBackgroundColor;
 }
 
@@ -1338,9 +1348,12 @@ h4 {
 
 
 /* TOOLBARS */
-
 .toolbar {
 	height: $toolbarHeight;
+}
+
+.toolbar .col {
+	width: $toolbarHeight;
 }
 
 .toolbar .btn {
@@ -1383,6 +1396,12 @@ h4 {
 .toolbar.toolbar-floating .btn.active {
 	background-color: darken(#f1f1f1, 5%);
 	color: $textColor;
+}
+
+.toolbar.toolbar-fixed {
+	height: $toolbarHeight + 2px;
+	border: 1px solid #dedede;
+	box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, .05);
 }
 
 .toolbar .txt {
@@ -1457,6 +1476,7 @@ h4 {
 .toolbar-view {
 	border-bottom: 1px solid darken($windowBackgroundColor, 3%);
 }
+
 
 /* ACTIVITIES CHART */
 
@@ -1928,10 +1948,10 @@ select.form-control:focus {
 
 div[contenteditable] {
 	white-space: pre-wrap;
-    white-space: -moz-pre-wrap;
-    white-space: -pre-wrap;
-    white-space: -o-pre-wrap;
-    word-wrap: break-word;
+	white-space: -moz-pre-wrap;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	word-wrap: break-word;
 }
 
 .modal-dialog {
@@ -2272,6 +2292,10 @@ button[disabled]:hover {
 	margin: 0;
 }
 
+.lst-activities {
+	margin-top: 3px;
+}
+
 .lst-activities .activity-header {
 	position: relative;
 	padding: 10px 0 0 0;
@@ -2287,7 +2311,7 @@ button[disabled]:hover {
 
 .lst-activities .activity-header .session {
 	margin-left: 30px;
-	background: $headerBackgroundColor;
+	border-top: 1px solid $itemBackgroundColor;
 	padding: 0 10px;
 	margin-bottom: 1px;
 	margin-right: 15px;
@@ -2310,12 +2334,11 @@ button[disabled]:hover {
 .lst-activities li a {
 	cursor: pointer;
 	display: block;
-	margin-bottom: 1px !important;
 }
 
 .lst-activities li a.default {
 	margin-left: 60px;
-	background: $headerBackgroundColor;
+	border-top: 1px solid $itemBackgroundColor;
 	padding: 5px;
 	margin-right: 15px;
 }
@@ -2326,14 +2349,8 @@ button[disabled]:hover {
 
 .lst-activities li a.default:hover,
 .lst-activities li.selected a.default {
-	background: $accentShadeColor;
-}
-
-.lst-activities li a.default:hover label,
-.lst-activities li a.default:hover i,
-.lst-activities li.selected a.default label,
-.lst-activities li.selected a.default i {
-	color: $windowBackgroundColor;
+	background: $itemBackgroundColor;
+	color: $labelTextColor !important;
 }
 
 .lst-influences {
@@ -2347,17 +2364,16 @@ button[disabled]:hover {
 	margin-bottom: 0 !important;
 }
 
+.lst-influences a:hover {
+	color: $labelTextColor;
+}
+
 .lst-influences a i.zmdi {
 	display: inline-block;
 	text-align: center;
 	width: 26px;
 	font-size: 16px;
-	color: white;
 	margin: 0;
-}
-
-.lst-influences .type {
-	color: white;
 }
 
 .no-outline:focus,
@@ -2578,8 +2594,9 @@ $userCommentBackgroundColor: rgba($textColor,
 	outline: none;
 	padding: 10px;
 	color: $inputTextColor;
-	background: rgba(255,255,255,.1);
-	@include transitionEaseInOutCubic(height, 200ms);
+	background: rgba(255, 255, 255, .1);
+	@include transitionEaseInOutCubic(height,
+	200ms);
 }
 
 .ctl-comment .textarea-placeholder {
@@ -2587,10 +2604,10 @@ $userCommentBackgroundColor: rgba($textColor,
 	padding: 10px;
 	line-height: 1.3em;
 	-webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .ctl-comment .textarea:focus {
@@ -2609,7 +2626,8 @@ $userCommentBackgroundColor: rgba($textColor,
 }
 
 .ctl-emoticon-panel {
-	@include transitionEaseInOutCubic(height, 500ms);
+	@include transitionEaseInOutCubic(height,
+	500ms);
 	height: 0;
 	border: none;
 }
@@ -2629,6 +2647,7 @@ $userCommentBackgroundColor: rgba($textColor,
 	direction: rtl;
 	padding: 5px;
 }
+
 
 /* SEARCH */
 

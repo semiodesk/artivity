@@ -13,9 +13,7 @@
                 'emptySlot': '?empty'
             },
             scope: {
-                'onload': '=',
-                'clicked': '=?',
-                'moreClicked': '=?'
+                'onload': '='
             }
         }
     }
@@ -85,7 +83,7 @@
             if (e) {
                 e.preventDefault();
             }
-            
+
             var context = $element.find('.dropdown-menu').data('context');
 
             if (context) {
@@ -148,10 +146,14 @@
                 }
             });
 
-            $scope.$on('refresh', function () {
+            $scope.$on('appear', function () {
                 t.loadFiles();
             });
 
+            $scope.$on('refresh', function () {
+                t.loadFiles();
+            });
+            
             $element.click(function (e) {
                 // Hide the context menu when clicking into the control area.
                 t.hideContextMenu(e);
@@ -171,7 +173,7 @@
             });
         }
 
-        t.$postLink = function() {
+        t.$postLink = function () {
             t.loadFiles();
         }
     }

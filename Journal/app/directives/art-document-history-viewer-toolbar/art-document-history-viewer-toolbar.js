@@ -64,7 +64,7 @@
 
             t.selectionService.selectNext();
 
-            t.rootScope.$broadcast('redraw');
+            $rootScope.$broadcast('redraw');
 
             if (t.playloop) {
                 var i = t.selectionService.selectedIndex();
@@ -78,7 +78,7 @@
         t.skipNext = function () {
             t.selectionService.selectPrev();
 
-            t.rootScope.$broadcast('redraw');
+            $rootScope.$broadcast('redraw');
 
             if (t.playloop) {
                 var i = t.selectionService.selectedIndex();

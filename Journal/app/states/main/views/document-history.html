@@ -10,14 +10,16 @@
         <div class="layout-container">
             <art-document-history-viewer></art-document-history-viewer>
 
+            <art-document-history-viewer-toolbar style="position: absolute; bottom: 10px; left: 10px; right: 570px;"></art-document-history-viewer-toolbar>
+
             <div class="ui-sidebar ui-sidebar-right">
                 <uib-tabset class="tabs-centered">
-                    <uib-tab heading="History">
+                    <uib-tab heading="{{'History' | translate}}">
                         <div class="layout-container">
                             <art-editing-history></art-editing-history>
                         </div>
                     </uib-tab>
-                    <uib-tab heading="Statistics">
+                    <uib-tab heading="{{'Statistics' | translate}}">
                         <div class="layout-container padding-x-xl padding-y-xl">
                             <art-editing-stats entity-uri="t.latestRevisionUri"></art-editing-stats>
                         </div>

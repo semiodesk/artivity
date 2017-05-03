@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Poedit 2.0.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: app/directives/art-project-view/art-project-view.html:39
+#: app/directives/art-project-settings/art-project-settings.html:16
 msgid "A project with exemplary character."
 msgstr "Ein beispielhaftes Projekt."
 
@@ -20,7 +20,7 @@ msgstr "Ein beispielhaftes Projekt."
 msgid "Abstract"
 msgstr "Kurzdarstellung"
 
-#: app/views/settings/settings.html:30
+#: app/states/settings/settings.html:41
 msgid "Accounts"
 msgstr "Konten"
 
@@ -28,7 +28,7 @@ msgstr "Konten"
 msgid "Add account"
 msgstr "Konto hinzufügen"
 
-#: app/directives/art-project-view/art-project-view.html:50
+#: app/directives/art-project-settings/art-project-settings.html:28
 msgid "Add member"
 msgstr "Teilnehmer hinzufügen"
 
@@ -36,7 +36,7 @@ msgstr "Teilnehmer hinzufügen"
 msgid "Additional Contents"
 msgstr "Weitere Inhalte"
 
-#: app/views/settings/settings.html:24
+#: app/states/settings/settings.html:30
 msgid "Apps"
 msgstr "Apps"
 
@@ -44,7 +44,7 @@ msgstr "Apps"
 msgid "Archive '{{t.project.Title}}'?"
 msgstr "'{{t.project.Title}}' archivieren?"
 
-#: app/views/start/start.html:13
+#: app/states/start/start.html:13
 msgid ""
 "Artivity was unable to connect to the local database. Please try to log out "
 "of your current desktop session to restart the service."
@@ -64,9 +64,13 @@ msgstr "Profil sichern"
 msgid "Browsing History"
 msgstr "Browser-Verlauf"
 
-#: app/directives/art-project-view/art-project-view.html:27
+#: app/directives/art-project-settings/art-project-settings.html:3
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: app/states/main/views/document.html:17
+msgid "Chat"
+msgstr "Chat"
 
 #: app/directives/art-editing-stats/art-editing-stats.html:57
 msgid "Clipped"
@@ -112,11 +116,15 @@ msgstr "Verbindungsfehler."
 msgid "Create"
 msgstr "Erstelle"
 
+#: app/directives/art-task-control/art-task-control.html:13
+msgid "Create a new task"
+msgstr "Neue Aufgabe erstellen.."
+
 #: app/directives/art-settings-user/art-settings-user.html:10
 msgid "Creating backup.."
 msgstr "Erstelle Sicherung.."
 
-#: app/directives/art-project-view/art-project-view.html:38
+#: app/directives/art-project-settings/art-project-settings.html:15
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -144,9 +152,17 @@ msgid ""
 "others:"
 msgstr "Bearbeite deine persönlichen Informationen:"
 
-#: app/directives/art-editing-history/art-editing-history.html:42
+#: app/directives/art-editing-history/art-editing-history.html:12
 msgid "Edited File"
-msgstr "Bearbeitete Datei"
+msgstr "Datei bearbeitet"
+
+#: app/directives/art-editing-stats/art-editing-stats.html:1
+msgid "Editing"
+msgstr "Bearbeitung"
+
+#: app/directives/art-file-list/art-file-list.html:13
+msgid "Editing History"
+msgstr "Bearbeitungsschritte"
 
 #: app/directives/art-settings-apps/art-settings-apps.html:7
 msgid "Enable or disable the Artivity for the following applications:"
@@ -160,7 +176,7 @@ msgstr "Fehler beim Erstellen der Sicherung:"
 msgid "Error:"
 msgstr "Fehler:"
 
-#: app/directives/art-project-view/art-project-view.html:34
+#: app/directives/art-project-settings/art-project-settings.html:10
 msgid "Example Project"
 msgstr "Beispielprojekt"
 
@@ -168,7 +184,7 @@ msgstr "Beispielprojekt"
 msgid "File"
 msgstr "Datei"
 
-#: app/directives/art-project-view/art-project-view.html:43
+#: app/directives/art-project-settings/art-project-settings.html:21
 msgid "Folder"
 msgstr "Ordner"
 
@@ -187,6 +203,12 @@ msgstr "Gruppen"
 msgid "HTML canvas is not supported by your browser."
 msgstr "HTML Canvas wird von deinem  Browser nicht unterstützt."
 
+#: app/states/main/views/document-history.html:17
+#, fuzzy
+#| msgid "Editing History"
+msgid "History"
+msgstr "Bearbeitungsschritte"
+
 #: app/dialogs/update-dialog/update-dialog.html:36
 msgid "Install"
 msgstr "Installieren"
@@ -204,7 +226,7 @@ msgstr "Ebenen"
 msgid "License"
 msgstr "Lizenz"
 
-#: app/views/setup/setup.html:32
+#: app/states/setup/setup.html:32
 msgid "Local"
 msgstr "Lokal"
 
@@ -218,17 +240,17 @@ msgstr "Anmelden"
 msgid "Masked"
 msgstr "Maskiert"
 
-#: app/directives/art-project-view/art-project-view.html:46
+#: app/directives/art-project-settings/art-project-settings.html:24
 msgid "Members"
 msgstr "Teilnehmer"
 
 #: app/dialogs/edit-person-dialog/edit-person-dialog.html:6
-#: app/directives/art-project-view/art-project-view.html:33
+#: app/directives/art-project-settings/art-project-settings.html:9
 #: app/directives/art-settings-user/art-settings-user.html:45
 msgid "Name"
 msgstr "Name"
 
-#: app/views/start/start.html:11
+#: app/states/start/start.html:11
 msgid "No database connection"
 msgstr "Keine Verbindung zur Datenbank"
 
@@ -236,7 +258,7 @@ msgstr "Keine Verbindung zur Datenbank"
 msgid "No software plugins are installed."
 msgstr "Es sind keine Software-Plugins installiert."
 
-#: app/views/setup/setup.html:24
+#: app/states/setup/setup.html:24
 msgid "Online"
 msgstr "Online"
 
@@ -244,7 +266,7 @@ msgstr "Online"
 msgid "Password"
 msgstr "Passwort"
 
-#: app/views/setup/setup.html:19
+#: app/states/setup/setup.html:19
 msgid "Please choose the account type you want to use:"
 msgstr "Bitte wähle den Kontotyp den tu verwenden möchtest:"
 
@@ -276,12 +298,11 @@ msgstr "Plugin nicht installiert"
 msgid "Plugin version:"
 msgstr "Plugin Version:"
 
-#: app/views/settings/settings.html:18
+#: app/states/settings/settings.html:19
 msgid "Profile"
 msgstr "Profil"
 
-#: app/directives/art-project-tabs/art-project-tabs.html:17
-#: app/directives/art-project-view/art-project-view.html:15
+#: app/directives/art-file-list/art-file-list.html:29
 msgid "Recently used files"
 msgstr "Zuletzt verwendete Dateien"
 
@@ -301,11 +322,11 @@ msgstr "Registrieren"
 msgid "Request feedback"
 msgstr "Feedback anfordern"
 
-#: app/views/start/start.html:19
+#: app/states/start/start.html:19
 msgid "Retry"
 msgstr "Erneut versuchen"
 
-#: app/directives/art-project-view/art-project-view.html:26
+#: app/directives/art-project-settings/art-project-settings.html:2
 msgid "Save"
 msgstr "Speichern"
 
@@ -317,11 +338,12 @@ msgstr "Suchen"
 msgid "Select folder"
 msgstr "Ordner auswählen"
 
-#: app/views/settings/settings.html:6
+#: app/states/settings/settings.html:6
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: app/directives/art-document-view/art-document-view.html:6
+#: app/states/main/views/document-history.html:6
+#: app/states/main/views/document.html:6
 msgid "Share"
 msgstr "Teilen"
 
@@ -329,7 +351,7 @@ msgstr "Teilen"
 msgid "Software version:"
 msgstr "Software Version:"
 
-#: app/views/file-view/file-view.html:46
+#: app/states/main/views/document-history.html:22
 msgid "Statistics"
 msgstr "Statistiken"
 
@@ -341,7 +363,7 @@ msgstr "Bearbeitungsschritte"
 msgid "Successfully created backup."
 msgstr "Sicherung erfolgreich erstellt."
 
-#: app/views/setup/setup.html:6
+#: app/states/setup/setup.html:6
 msgid ""
 "Thank you for downloading Artivity. Before you can begin using the app we "
 "need to setup your user account:"
@@ -349,8 +371,7 @@ msgstr ""
 "Vielen Dank, dass du Artivity verwendest. Bevor du starten kannst müssen wir "
 "noch ein paar Dinge einrichten:"
 
-#: app/directives/art-project-tabs/art-project-tabs.html:19
-#: app/directives/art-project-view/art-project-view.html:17
+#: app/directives/art-file-list/art-file-list.html:31
 msgid "The files you edit in the following programs will appear here:"
 msgstr "Dateien die du mit folgenden Programmen bearbeitest erscheinen hier:"
 
@@ -365,6 +386,10 @@ msgstr ""
 #: app/dialogs/publish-file-dialog/publish-file-dialog.html:93
 msgid "Title"
 msgstr "Titel"
+
+#: app/states/main/views/document.html:27
+msgid "Todo"
+msgstr "Todo"
 
 #: app/directives/art-editing-stats/art-editing-stats.html:19
 msgid "Undos"
@@ -383,7 +408,11 @@ msgstr "Aktualisierung verfügbar."
 msgid "Username"
 msgstr "Benutzername"
 
-#: app/views/setup/setup.html:4
+#: app/directives/art-file-list/art-file-list.html:10
+msgid "View"
+msgstr "Ansehen"
+
+#: app/states/setup/setup.html:4
 msgid "Welcome!"
 msgstr "Willkommen!"
 

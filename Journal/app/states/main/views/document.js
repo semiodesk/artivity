@@ -30,10 +30,14 @@
             $state.go('main.view.project-dashboard', $stateParams);
         }
 
-        t.onInit = function() {
-            t.file = $stateParams.file;
-            
-            t.loadLatestRevision(t.file);
+        t.onInit = function () {
+            if ($stateParams.fileUri) {
+                entityService.get($stateParams.fileUri).then(function (data) {
+                    t.file = data;
+
+                    t.loadLatestRevision(t.file);
+                });
+            }
         }
 
         t.onInit();

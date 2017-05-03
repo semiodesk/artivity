@@ -47,6 +47,12 @@
                         if (response && response.success) {
                             t.projects = response.data;
 
+                            t.projects.sort(function compare(a, b) {
+                                if (a.Title < b.Title) return -1;
+                                if (a.Title > b.Title) return 1;
+                                return 0;
+                            });
+
                             resolve(t.projects);
                         }
                     },
