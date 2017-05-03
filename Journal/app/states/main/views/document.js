@@ -1,0 +1,41 @@
+(function () {
+    angular.module('app').controller("DocumentViewController", DocumentViewController);
+
+    DocumentViewController.$inject = ['$scope', '$state', '$stateParams', 'entityService', 'syncService'];
+
+    function DocumentViewController($scope, $state, $stateParams, entityService, syncService) {
+        var t = this;
+
+        t.latestRevisionUri = null;
+
+        t.loadLatestRevision = function (file) {
+            if (file && file.uri) {
+                entityService.getLatestRevisionFromFileUri(file.uri).then(function (data) {
+                    if (data.revision) {
+                        t.latestRevisionUri = data.revision;
+                    }
+                });
+            }
+        }
+
+        t.publishLatestRevision = function (file) {
+            if (file && file.uri) {
+                entityService.publishLatestRevisionFromFileUri(file.uri).then(function (data) {
+                    syncService.synchronize();
+                });
+            }
+        }
+
+        t.navigateBack = function () {
+            $state.go('main.view.project-dashboard', $stateParams);
+        }
+
+        t.onInit = function() {
+            t.file = $stateParams.file;
+            
+            t.loadLatestRevision(t.file);
+        }
+
+        t.onInit();
+    }
+})();

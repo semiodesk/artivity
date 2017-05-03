@@ -10,7 +10,7 @@
             controllerAs: 't',
             bindToController: true,
             transclude: {
-                'emptySlot': 'empty'
+                'emptySlot': '?empty'
             },
             scope: {
                 'onload': '=',
@@ -45,16 +45,8 @@
             }
         }
 
-        t.onClick = function (e, data) {
-            if (t.clicked) {
-                t.clicked(e, data);
-            }
-        }
-
         t.onMoreClicked = function (e) {
-            if (t.moreClicked && typeof (t.moreClicked) === 'function') {
-                t.moreClicked();
-            }
+            $scope.$emit('showMore');
         }
 
         t.onDragStart = function () {
@@ -65,6 +57,70 @@
             $scope.$emit('dragStopped');
         }
 
+        t.viewFile = function (e) {
+            if (e) {
+                e.preventDefault();
+            }
+
+            var context = $element.find('.dropdown-menu').data('context');
+
+            if (context) {
+                $scope.$emit('viewFile', context);
+            }
+        }
+
+        t.viewFileHistory = function (e) {
+            if (e) {
+                e.preventDefault();
+            }
+
+            var context = $element.find('.dropdown-menu').data('context');
+
+            if (context) {
+                $scope.$emit('viewFileHistory', context);
+            }
+        }
+
+        t.editFile = function (e) {
+            if (e) {
+                e.preventDefault();
+            }
+            
+            var context = $element.find('.dropdown-menu').data('context');
+
+            if (context) {
+                $scope.$emit('editFile', context);
+            }
+        }
+
+        t.showContextMenu = function (e, data) {
+            // Only show the context menu for file cards which have their own scope.
+            var menu = $element.find('.dropdown-menu');
+
+            // Substract the menu container offset from the event position.
+            var p = $element.find('.dropdown').offset();
+
+            // Show the menu at the relative mouse cursor position.
+            menu.css({
+                display: "block",
+                left: e.clientX - p.left,
+                top: e.clientY - p.top
+            });
+
+            // Remember the original event target when handling clicks in the menu.
+            menu.data('context', data);
+        }
+
+        t.hideContextMenu = function (e) {
+            var menu = $element.find('.dropdown-menu');
+
+            menu.css({
+                display: "none"
+            });
+
+            menu.data('context', null);
+        }
+
         t.$onInit = function () {
             hotkeys.add({
                 combo: 'f5',
@@ -73,8 +129,6 @@
                     t.loadFiles();
                 }
             });
-
-            t.loadFiles();
 
             $scope.$watch('t.query', function () {
                 if (t.files) {
@@ -97,6 +151,28 @@
             $scope.$on('refresh', function () {
                 t.loadFiles();
             });
+
+            $element.click(function (e) {
+                // Hide the context menu when clicking into the control area.
+                t.hideContextMenu(e);
+            });
+
+            $scope.$on('leftClick', function (e, args) {
+                e.preventDefault();
+
+                $scope.$emit('viewFile', args.sourceScope);
+            });
+
+            $scope.$on('rightClick', function (e, args) {
+                e.preventDefault();
+
+                // Show the context menu when clicking onto a list item.
+                t.showContextMenu(args.sourceEvent, args.sourceScope);
+            });
+        }
+
+        t.$postLink = function() {
+            t.loadFiles();
         }
     }
 })();

@@ -45,19 +45,31 @@ DocumentViewer.prototype.onItemModified = function (item) {
     console.log("Modified:", item);
 };
 
+DocumentViewer.prototype.setRevision = function (revision) {
+    var t = this;
+
+    t.revision = revision;
+
+    // Rebuild the scene.
+    t.render();
+
+    // Raise the entity changed event.
+    t.raise('revisionChanged', revision);
+};
+
 DocumentViewer.prototype.render = function () {
     var t = this;
 
     t.clearStage();
 
     // Return if there's nothing to render.
-    if (t.entity === undefined || t.pageCache === undefined) {
+    if (!t.revision || !t.pageCache) {
         t.stage.update();
 
         return;
     }
 
-    t.pageCache.get(new Date(), t.entity, function (p) {
+    t.pageCache.get(new Date(), t.revision, function (p) {
         // Render the page sheets with a drop shadow.
         var s = new createjs.Shape();
         s.shadow = t.pageShadow;

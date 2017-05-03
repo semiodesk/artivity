@@ -242,7 +242,7 @@ namespace Artivity.Api.Modules
             query.Bind("@fileUri", fileUri);
             query.Bind("@time", time);
 
-            var bindings = ModelProvider.GetActivities().GetBindings(query);
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query).ToList();
 
             return Response.AsJsonSync(bindings);
         }
@@ -315,11 +315,10 @@ namespace Artivity.Api.Modules
                 }
                 ORDER BY DESC(?time)";
 
-            //queryString = String.Format(queryString, );
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@entity", entityUri);
 
-            var bindings = ModelProvider.GetActivities().GetBindings(query, true);
+            List<BindingSet> bindings = ModelProvider.GetActivities().GetBindings(query, true).ToList();
 
             return Response.AsJsonSync(bindings);
         }
