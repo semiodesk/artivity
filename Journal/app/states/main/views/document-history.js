@@ -45,24 +45,6 @@
                         for (var j = 0; j < influences.length; j++) {
                             var influence = influences[j];
 
-                            // Compute the statistics.
-                            e.statistics.stepCount++;
-
-                            switch (influence.type) {
-                                case 'http://w3id.org/art/terms/1.0/Undo':
-                                    e.statistics.undoCount++;
-                                    break;
-                                case 'http://w3id.org/art/terms/1.0/Redo':
-                                    e.statistics.redoCount++;
-                                    break;
-                            }
-
-                            influence.stats = new EditingStatistics();
-                            influence.stats.stepCount = e.statistics.stepCount;
-                            influence.stats.undoCount = e.statistics.undoCount;
-                            influence.stats.redoCount = e.statistics.redoCount;
-                            influence.stats.layers = [];
-
                             // TODO: Move into control.
                             // renderer.layerCache.getAll(influence.time, function (layer, depth) {
                             //     influence.stats.layers.push(layer);
