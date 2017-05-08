@@ -46,8 +46,12 @@
                     t.onFileLoaded(data.file, data.influences);
                 });
 
-                $scope.$on('influenceSelected', function(e, influence) {
-                    t.viewer.render(influence);
+                $scope.$on('influenceSelected', function (e, args) {
+                    var influence = args.data;
+
+                    if (influence && args.sourceScope !== t) {
+                        t.viewer.render(influence);
+                    }
                 });
             } else {
                 console.warn('Unable to find canvas for viewer element:', canvas);

@@ -1,7 +1,7 @@
 angular.module('app', [
     'ngInputModified',
-    'ngRoute',
     'ngCookies',
+    'ngMaterial',
     'angularMoment',
     'ui.layout',
     'ui.bootstrap',
@@ -15,4 +15,8 @@ angular.module('app', [
     'angular-emojione',
     'luegg.directives',
     'gettext'
-]);
+]).config(function ($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('grey')
+        .accentPalette('deep-orange');
+});

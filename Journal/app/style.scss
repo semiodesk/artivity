@@ -152,6 +152,10 @@ iframe {
 	display: none;
 }
 
+.bg-transparent {
+	background-color: rgba(0, 0, 0, 0) !important;
+}
+
 .text-center {
 	text-align: center;
 }
@@ -290,6 +294,10 @@ input[type="text"][readonly]:focus {
 	box-shadow: none;
 	-webkit-box-shadow: none;
 	transition: all linear .2s;
+}
+
+.md-icon-button {
+	color: $labelTextColor;
 }
 
 .btn-default .zmdi {
@@ -1348,6 +1356,7 @@ h4 {
 
 
 /* TOOLBARS */
+
 .toolbar {
 	height: $toolbarHeight;
 }
@@ -2288,99 +2297,44 @@ button[disabled]:hover {
 	transform: translate(-50%, -100%);
 }
 
-.lst-activities label {
+.ctl-history label {
 	margin: 0;
 }
 
-.lst-activities {
-	margin-top: 3px;
+.ctl-history .item-header {
+	background: transparent;
+	margin: 0 5px;
+	padding: 15px 10px 10px 15px;
 }
 
-.lst-activities .activity-header {
-	position: relative;
-	padding: 10px 0 0 0;
-	line-height: 28px;
+.ctl-history .item-header label  {
+	font-weight: 500;
 }
 
-.lst-activities .activity-header .time {
-	clear: both;
-	vertical-align: middle;
-	text-align: center;
-	font-weight: bold;
-}
-
-.lst-activities .activity-header .session {
-	margin-left: 30px;
-	border-top: 1px solid $itemBackgroundColor;
-	padding: 0 10px;
-	margin-bottom: 1px;
-	margin-right: 15px;
-}
-
-.lst-activities .activity-header .session .icn {
-	float: left;
-	height: 26px;
-	width: 26px;
-}
-
-.lst-activities {
-	margin-right: 1px;
-}
-
-.lst-activities li {
-	color: $labelTextColor;
-}
-
-.lst-activities li a {
+.ctl-history .item {
 	cursor: pointer;
 	display: block;
-}
-
-.lst-activities li a.default {
-	margin-left: 60px;
-	border-top: 1px solid $itemBackgroundColor;
+	margin: 0 10px 0 20px;
 	padding: 5px;
-	margin-right: 15px;
+	border-top: 1px solid $itemBackgroundColor;
 }
 
-.lst-activities li a.default .time {
-	padding-right: 5px;
+.ctl-history .item:hover,
+.ctl-history .item.selected {
+	background-color: $itemBackgroundColor;
 }
 
-.lst-activities li a.default:hover,
-.lst-activities li.selected a.default {
-	background: $itemBackgroundColor;
-	color: $labelTextColor !important;
-}
-
-.lst-influences {
-	display: block;
-	position: relative;
-}
-
-.lst-influences a {
-	display: block;
-	line-height: 22px;
-	margin-bottom: 0 !important;
-}
-
-.lst-influences a:hover {
-	color: $labelTextColor;
-}
-
-.lst-influences a i.zmdi {
+.ctl-history .item .zmdi {
 	display: inline-block;
 	text-align: center;
 	width: 26px;
-	font-size: 16px;
+	font-size: 21px !important;
 	margin: 0;
 }
 
-.no-outline:focus,
-.ctl-history:focus {
-	outline: none;
+.ctl-history .item .time {
+	padding-right: 5px;
 }
-
 
 /* COMMENTS */
 

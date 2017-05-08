@@ -1,5 +1,5 @@
 <div class="ctl-comment padding-x-xs padding-y-xs" ng-blur="t.onBlurred()">
-    <art-chat-emoticon-picker show="t.showEmoticonPanel && t.focused"></art-chat-emoticon-picker>
+    <art-chat-emoticon-picker ng-show="t.showEmoticonPanel && t.focused"></art-chat-emoticon-picker>
     <div ng-show="t.showMembers">
         <ul class="list-view">
             <li class="list-item list-item-link" ng-repeat="member in t.members" ng-show="member.visible">
