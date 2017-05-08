@@ -1,21 +1,20 @@
-<div class="table-layout toolbar">
-    <div class="row">
-        <div class="col">
-            <a class="btn" ng-click="t.skipPrev()"><i class="zmdi zmdi-skip-previous"></i></a>
-        </div>
-        <div class="col">
-            <a class="btn" ng-click="t.togglePlay()">
-                <span ng-switch="t.playing">
+<md-toolbar class="bg-transparent">
+    <div class="md-toolbar-tools">
+        <md-button class="md-icon-button" ng-disabled="t.selectedInfluence === t.minIndex" ng-click="t.skipPrev()">
+            <i class="zmdi zmdi-skip-previous"></i>
+        </md-button>
+        <md-button class="md-icon-button" ng-disabled="t.selectedInfluence === t.maxIndex" ng-click="t.togglePlay()">
+            <span ng-switch="t.playing">
                     <i ng-switch-when="false" class="zmdi zmdi-play"></i>
                     <i ng-switch-when="true" class="zmdi zmdi-pause"></i>
                 </span>
-            </a>
-        </div>
-        <div class="col">
-            <a class="btn" ng-click="t.skipNext()"><i class="zmdi zmdi-skip-next"></i></a>
-        </div>
-        <div class="col expand">
-            <art-playback-slider></art-playback-slider>
-        </div>
+        </md-button>
+        <md-button class="md-icon-button" ng-disabled="t.selectedInfluence === t.maxIndex" ng-click="t.skipNext()">
+            <i class="zmdi zmdi-skip-next"></i>
+        </md-button>
+        <md-slider-container flex ng-if="t.influences.length > 0">
+            <md-slider min="{{t.minIndex}}" max="{{t.maxIndex}}" ng-model="t.selectedIndex" ng-change="t.onSliderChanged()"></md-slider>
+        </md-slider-container>
+        <span class="label padding-x-xl">{{t.getFormattedDuration(t.selectedIndex)}}</span>
     </div>
-</div>
+</md-toolbar>

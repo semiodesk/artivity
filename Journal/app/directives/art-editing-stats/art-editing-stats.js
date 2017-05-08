@@ -42,10 +42,12 @@
                 }
             });
 
-            $scope.$on('influenceSelected', function (e, influence) {
-                $scope.$apply(function () {
+            $scope.$on('influenceSelected', function (e, args) {
+                var influence = args.data;
+
+                if (influence && args.sourceScope !== t) {
                     t.stats = influence.stats;
-                });
+                }
             });
         }
     };

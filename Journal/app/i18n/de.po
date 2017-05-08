@@ -68,6 +68,14 @@ msgstr "Browser-Verlauf"
 msgid "Cancel"
 msgstr "Abbrechen"
 
+#: app/directives/art-editing-history/art-editing-history.html:68
+msgid "Changed stroke"
+msgstr "Linienstil geändert"
+
+#: app/directives/art-editing-history/art-editing-history.html:72
+msgid "Changed unit"
+msgstr "Maßeinheit geändert"
+
 #: app/states/main/views/document.html:17
 msgid "Chat"
 msgstr "Chat"
@@ -120,6 +128,10 @@ msgstr "Erstelle"
 msgid "Create a new task"
 msgstr "Neue Aufgabe erstellen.."
 
+#: app/directives/art-editing-history/art-editing-history.html:40
+msgid "Created element"
+msgstr "Element erstellt"
+
 #: app/directives/art-settings-user/art-settings-user.html:10
 msgid "Creating backup.."
 msgstr "Erstelle Sicherung.."
@@ -152,8 +164,14 @@ msgid ""
 "others:"
 msgstr "Bearbeite deine persönlichen Informationen:"
 
-#: app/directives/art-editing-history/art-editing-history.html:12
+#: app/directives/art-editing-history/art-editing-history.html:11
 msgid "Edited File"
+msgstr "Datei bearbeitet"
+
+#: app/directives/art-editing-history/art-editing-history.html:60
+#, fuzzy
+#| msgid "Edited File"
+msgid "Edited text"
 msgstr "Datei bearbeitet"
 
 #: app/directives/art-editing-stats/art-editing-stats.html:1
@@ -162,7 +180,7 @@ msgstr "Bearbeitung"
 
 #: app/directives/art-file-list/art-file-list.html:13
 msgid "Editing History"
-msgstr "Bearbeitungsschritte"
+msgstr "Historie"
 
 #: app/directives/art-settings-apps/art-settings-apps.html:7
 msgid "Enable or disable the Artivity for the following applications:"
@@ -204,10 +222,8 @@ msgid "HTML canvas is not supported by your browser."
 msgstr "HTML Canvas wird von deinem  Browser nicht unterstützt."
 
 #: app/states/main/views/document-history.html:17
-#, fuzzy
-#| msgid "Editing History"
 msgid "History"
-msgstr "Bearbeitungsschritte"
+msgstr "Historie"
 
 #: app/dialogs/update-dialog/update-dialog.html:36
 msgid "Install"
@@ -243,6 +259,14 @@ msgstr "Maskiert"
 #: app/directives/art-project-settings/art-project-settings.html:24
 msgid "Members"
 msgstr "Teilnehmer"
+
+#: app/directives/art-editing-history/art-editing-history.html:48
+msgid "Moved element"
+msgstr "Element verschoben"
+
+#: app/directives/art-editing-history/art-editing-history.html:64
+msgid "Moved layer"
+msgstr "Ebene verschoben"
 
 #: app/dialogs/edit-person-dialog/edit-person-dialog.html:6
 #: app/directives/art-project-settings/art-project-settings.html:9
@@ -306,6 +330,12 @@ msgstr "Profil"
 msgid "Recently used files"
 msgstr "Zuletzt verwendete Dateien"
 
+#: app/directives/art-editing-history/art-editing-history.html:36
+#, fuzzy
+#| msgid "Redos"
+msgid "Redo"
+msgstr "Wiederhergestellt"
+
 #: app/directives/art-editing-stats/art-editing-stats.html:26
 msgid "Redos"
 msgstr "Wiederhergestellt"
@@ -318,6 +348,14 @@ msgstr "Aktualisieren"
 msgid "Register"
 msgstr "Registrieren"
 
+#: app/directives/art-editing-history/art-editing-history.html:44
+msgid "Removed element"
+msgstr "Element entfernt"
+
+#: app/directives/art-editing-history/art-editing-history.html:56
+msgid "Renamed layer"
+msgstr "Ebene umbenannt"
+
 #: app/directives/art-chat-input/art-chat-input.html:30
 msgid "Request feedback"
 msgstr "Feedback anfordern"
@@ -329,6 +367,19 @@ msgstr "Erneut versuchen"
 #: app/directives/art-project-settings/art-project-settings.html:2
 msgid "Save"
 msgstr "Speichern"
+
+#: app/directives/art-editing-history/art-editing-history.html:24
+#: app/directives/art-editing-history/art-editing-history.html:28
+msgid "Saved copy of document"
+msgstr "Kopie von Dokument gespeichert"
+
+#: app/directives/art-editing-history/art-editing-history.html:20
+msgid "Saved document"
+msgstr "Dokument gespeichert"
+
+#: app/directives/art-editing-history/art-editing-history.html:52
+msgid "Scaled element"
+msgstr "Element skaliert"
 
 #: app/directives/art-search-input/art-search-input.html:3
 msgid "Search"
@@ -353,7 +404,7 @@ msgstr "Software Version:"
 
 #: app/states/main/views/document-history.html:22
 msgid "Statistics"
-msgstr "Statistiken"
+msgstr "Statistik"
 
 #: app/directives/art-editing-stats/art-editing-stats.html:12
 msgid "Steps"
@@ -391,9 +442,19 @@ msgstr "Titel"
 msgid "Todo"
 msgstr "Todo"
 
+#: app/directives/art-editing-history/art-editing-history.html:32
+#, fuzzy
+#| msgid "Undos"
+msgid "Undo"
+msgstr "Zurückgenommen"
+
 #: app/directives/art-editing-stats/art-editing-stats.html:19
 msgid "Undos"
 msgstr "Zurückgenommen"
+
+#: app/directives/art-editing-history/art-editing-history.html:76
+msgid "Unknown action"
+msgstr "Unbekannte Aktion"
 
 #: app/dialogs/update-dialog/update-dialog.html:6
 msgid "Update"

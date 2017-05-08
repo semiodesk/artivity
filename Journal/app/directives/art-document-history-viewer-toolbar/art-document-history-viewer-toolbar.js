@@ -24,11 +24,18 @@
 
         t.play = function () {
             var t = this;
-            var end = t.influences.indexOf(t.selectionService.selectedItem()) === 0;
 
-            if (!t.playloop && !end) {
+            if (!t.playloop && t.selectedIndex < t.maxIndex) {
                 t.playloop = setInterval(function () {
-                    t.skipNext();
+                    if (t.selectedIndex < t.maxIndex) {
+                        $scope.$apply(function () {
+                            t.skipNext();
+                        });
+                    } else {
+                        $scope.$apply(function () {
+                            t.pause();
+                        });
+                    }
                 }, 500);
                 t.playing = true;
             }
@@ -40,12 +47,6 @@
 
                 t.playloop = undefined;
                 t.playing = false;
-
-                try {
-                    if (!$scope.$$phase) {
-                        $scope.$digest();
-                    }
-                } catch (error) {}
             }
         };
 
@@ -58,35 +59,104 @@
         };
 
         t.skipPrev = function () {
-            if (t.influences === undefined) {
-                return;
-            }
-
-            t.selectionService.selectNext();
-
-            $rootScope.$broadcast('redraw');
-
-            if (t.playloop) {
-                var i = t.selectionService.selectedIndex();
-
-                if (i === t.influences.length - 1) {
-                    t.pause();
-                }
+            if (t.selectedIndex > t.minIndex) {
+                t.selectedIndex--;
             }
         };
 
         t.skipNext = function () {
-            t.selectionService.selectPrev();
-
-            $rootScope.$broadcast('redraw');
-
-            if (t.playloop) {
-                var i = t.selectionService.selectedIndex();
-
-                if (i === 0) {
-                    t.pause();
-                }
+            if (t.selectedIndex < t.maxIndex) {
+                t.selectedIndex++;
             }
         };
+
+        t.getFormattedDuration = function (index) {
+            var result = undefined;
+
+            // The index is inverted because the latest / right most influence is the one with index 0.
+            var influence = t.influences[t.maxIndex - index];
+
+            for (var i = 0; i < t.activities.length; i++) {
+                var activity = t.activities[i];
+
+                if (activity.uri === influence.activity) {
+                    result = new Date(influence.time) - new Date(activity.startTime);
+                } else if (result !== undefined) {
+                    result += new Date(activity.maxTime) - new Date(activity.startTime);
+                }
+            }
+
+            if (result === undefined) {
+                result = 0;
+            }
+
+            return moment.duration(result, "milliseconds").format("hh:mm:ss", {
+                trim: false
+            });
+        }
+
+        t.$onInit = function () {
+            t.activities = [];
+            t.influences = [];
+            t.minIndex = 0;
+            t.maxIndex = 0;
+            t.selectedIndex = -1;
+
+            t.fileLoadedListener = $scope.$on('fileLoaded', function (e, data) {
+                t.activities = [];
+                t.influences = data.influences;
+                t.minIndex = 0;
+                t.maxIndex = data.influences.length - 1;
+                t.selectedIndex = t.maxIndex;
+
+                for (var uri in data.activities) {
+                    var activity = data.activities[uri];
+
+                    t.activities.push(activity);
+                }
+
+                t.activities.sort(function (a, b) {
+                    return b.StartTime < a.StartTime;
+                });
+            });
+
+            t.influenceSelectedListener = $scope.$on('influenceSelected', function (e, args) {
+                var influence = args.data;
+
+                if (influence && args.sourceScope !== t) {
+                    var i = t.influences.indexOf(influence);
+
+                    if (i >= 0) {
+                        // The index is inverted because the latest / right most influence is the one with index 0.
+                        t.selectedIndex = t.maxIndex - i;
+                    }
+                }
+            });
+
+            $scope.$watch('t.selectedIndex', function (index) {
+                var i = t.selectedIndex;
+                var n = t.influences.length - 1;
+
+                if (0 <= i && i < t.influences.length) {
+                    // The index is inverted because the latest / right most influence is the one with index 0.
+                    var influence = t.influences[n - i];
+
+                    $rootScope.$broadcast('influenceSelected', {
+                        sourceScope: t,
+                        data: influence
+                    });
+                }
+            });
+        }
+
+        t.$onDestroy = function () {
+            if (t.fileLoadedListener) {
+                t.fileLoadedListener();
+            }
+
+            if (t.influenceSelectedListener) {
+                t.influenceSelectedListener();
+            }
+        }
     };
 })();
