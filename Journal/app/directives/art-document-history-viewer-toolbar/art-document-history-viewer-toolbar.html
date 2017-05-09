@@ -5,9 +5,9 @@
         </md-button>
         <md-button class="md-icon-button" ng-disabled="t.selectedInfluence === t.maxIndex" ng-click="t.togglePlay()">
             <span ng-switch="t.playing">
-                    <i ng-switch-when="false" class="zmdi zmdi-play"></i>
-                    <i ng-switch-when="true" class="zmdi zmdi-pause"></i>
-                </span>
+                <i ng-switch-when="false" class="zmdi zmdi-play"></i>
+                <i ng-switch-when="true" class="zmdi zmdi-pause"></i>
+            </span>
         </md-button>
         <md-button class="md-icon-button" ng-disabled="t.selectedInfluence === t.maxIndex" ng-click="t.skipNext()">
             <i class="zmdi zmdi-skip-next"></i>

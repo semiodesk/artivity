@@ -1,9 +1,13 @@
 <div class="table-layout">
     <div class="row">
-        <div class="toolbar toolbar-view">
-            <a class="btn btn-chromeless" ng-click="t.navigateBack()"><i class="zmdi zmdi-chevron-left"></i></a>
-            <div class="txt txt-title">{{t.file.label}}</div>
-            <a class="btn btn-primary pull-right" ng-click="t.publishLatestRevision(t.file)"><i class="zmdi zmdi-share"></i><span class="btn-label" translate>Share</span></a>
+        <div class="md-toolbar" layout="row">
+            <md-button class="md-icon-button" ng-click="t.navigateBack()">
+                <i class="zmdi zmdi-chevron-left"></i>
+            </md-button>
+            <span class="title" flex>{{t.file.label}}</span>
+            <md-button class="md-button" ng-click="t.publishLatestRevision(t.file)">
+                <i class="zmdi zmdi-share"></i><span class="btn-label" translate>Share</span>
+            </md-button>
         </div>
     </div>
     <div class="row expand">
@@ -15,13 +19,14 @@
             <div class="ui-sidebar ui-sidebar-right">
                 <md-tabs class="layout-root">
                     <md-tab label="{{'History' | translate}}">
-                        <md-content>
+                        <md-content style="width: 100%; height: 100%;">
                             <art-editing-history></art-editing-history>
                         </md-content>
                     </md-tab>
                     <md-tab label="{{'Statistics' | translate}}">
                         <md-content class="padding-x-xl">
-                            <art-editing-stats entity-uri="t.latestRevisionUri"></art-editing-stats>
+                            <art-editing-stats></art-editing-stats>
+                            <art-layer-control></art-layer-control>
                         </md-content>
                     </md-tab>
                 </md-tabs>

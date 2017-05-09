@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('DocumentHistoryViewController', DocumentHistoryViewController);
 
-    DocumentHistoryViewController.$inject = ['$scope', '$state', '$stateParams', 'api', 'entityService', 'navigationService'];
+    DocumentHistoryViewController.$inject = ['$scope', '$state', '$stateParams', '$element', '$timeout', 'api', 'entityService', 'navigationService'];
 
-    function DocumentHistoryViewController($scope, $state, $stateParams, api, entityService, navigationService) {
+    function DocumentHistoryViewController($scope, $state, $stateParams, $element, $timeout, api, entityService, navigationService) {
         var t = this;
 
         t.loadFile = function (file) {
@@ -44,11 +44,6 @@
                         // NOTE: We assume that the influences and activities are ordered by descending time.
                         for (var j = 0; j < influences.length; j++) {
                             var influence = influences[j];
-
-                            // TODO: Move into control.
-                            // renderer.layerCache.getAll(influence.time, function (layer, depth) {
-                            //     influence.stats.layers.push(layer);
-                            // });
 
                             // Add an identifier to the influence.
                             influence.id = j;
@@ -95,6 +90,12 @@
             }
         }
 
+        t.setVirtualRepeaterHeight = function () {
+            var height = $('#ctl-history').height();
+
+            $('#ctl-history-container').height(height);
+        }
+
         t.navigateBack = function () {
             $state.go('main.view.project-dashboard', $stateParams);
         }
@@ -106,6 +107,12 @@
                     t.loadFile(t.file);
                 });
             }
+
+            // Set the height of the virtual repeater so it can render it's children.
+            $timeout(t.setVirtualRepeaterHeight, 0);
+
+            // The height also must be adjusted when the window size changes.
+            $(window).resize(t.setVirtualRepeaterHeight);
         }
     }
 })();

@@ -11,23 +11,54 @@
         }
     });
 
-    LayerControlDirectiveController.$inject = ['$rootScope', '$scope', 'selectionService'];
+    LayerControlDirectiveController.$inject = ['$scope', '$timeout', 'viewerService'];
 
-    function LayerControlDirectiveController($rootScope, $scope, selectionService) {
+    function LayerControlDirectiveController($scope, $timeout, viewerService) {
         var t = this;
 
-        selectionService.on('selectedItemChanged', function (influence) {
-            if (!$rootScope.$$phase) {
-                $rootScope.$digest();
-            }
-        });
-
-        t.toggleVisibility = function (layer) {
+        t.toggleLayerVisibility = function (layer) {
             console.log("Toggle visibility: ", layer);
 
             layer.visible = !layer.visible;
 
-            $rootScope.$broadcast('redraw');
+            $scope.$emit('redraw');
+        }
+
+        t.getLayersFromViewer = function (viewer, influence) {
+            if (viewer && viewer.layerCache && influence) {
+                var time = new Date(influence.time);
+                var layers = [];
+
+                viewer.layerCache.getAll(time, function (layer, depth) {
+                    layer.label = layer.getValue(time, 'http://www.w3.org/2000/01/rdf-schema#label');
+
+                    layers.push(layer);
+                });
+
+                return layers;
+            } else {
+                return [];
+            }
+        }
+
+        t.$onInit = function () {
+            t.viewer = viewerService.viewer();
+
+            viewerService.on('viewerChanged', function (e) {
+                t.viewer = e.newViewer;
+
+                t.layers = t.getLayersFromViewer(t.viewer, t.influence);
+            });
+
+            $scope.$on('layersLoaded', function (e, args) {
+                t.layers = t.getLayersFromViewer(t.viewer, t.influence);
+            });
+
+            $scope.$on('influenceSelected', function (e, args) {
+                t.influence = args.data;
+
+                t.layers = t.getLayersFromViewer(t.viewer, t.influence);
+            });
         }
     };
 })();

@@ -39,11 +39,11 @@
         // the last element scrolls to bottom.
         t.scrollIntoView = function (influence) {
             if (t.influences) {
-                var scrollViewer = $element.closest('.md-active');
+                var scrollViewer = $element.find('.md-virtual-repeat-scroller');
 
                 if (scrollViewer.length) {
                     var n = influence.id;
-                    var N = t.influences.length - 1;
+                    var N = t.items.length - 1;
 
                     if (N > 0 && n <= N) {
                         var h = scrollViewer[0].scrollHeight;
@@ -85,6 +85,7 @@
                 }
 
                 t.items = items;
+                t.activities = data.activities;
                 t.influences = data.influences;
             });
 
