@@ -74,6 +74,8 @@
                         t.viewer.layerCache.load(data, function (layers) {
                             console.log("Loaded layers: ", t.viewer.layerCache);
 
+                            $rootScope.$broadcast('layersLoaded', { sourceScope: $scope, data: layers });
+
                             values(layers, function (uri, layer) {
                                 // TODO: The layer state should be recorded and returned by the API.
                                 layer.visible = true;

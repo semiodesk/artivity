@@ -140,12 +140,16 @@ iframe {
 	border: none;
 }
 
+.no-padding {
+	padding: 0 !important;
+}
+
 .no-margin {
-	margin: 0;
+	margin: 0 !important;
 }
 
 .no-margin-top {
-	margin-top: 0;
+	margin-top: 0 !important;
 }
 
 .collapsed {
@@ -876,7 +880,6 @@ button:focus,
 
 .zmdi {
 	font-size: 24px !important;
-	line-height: 24px;
 	vertical-align: middle;
 }
 
@@ -1486,145 +1489,19 @@ h4 {
 	border-bottom: 1px solid darken($windowBackgroundColor, 3%);
 }
 
-
-/* ACTIVITIES CHART */
-
-svg {
-	padding: 0;
-	margin: 0;
+.md-toolbar {
+	border-bottom: 1px solid $itemBackgroundColor;
 }
 
-.timeline {
-	/* The 1px margin enables the mouseleave events if the 
-	   control is positioned at the edges of the window. */
-	position: absolute;
-	top: 1px;
-	left: 1px;
-	right: 1px;
-	bottom: 1px;
+.md-toolbar .title {
+	font-weight: 500;
+	height: $toolbarHeight;
+	line-height: $toolbarHeight;
 }
 
-.timeline .track-col {
-	position: absolute;
-	left: 100px;
-	right: 100px;
-	top: 0;
-	bottom: 0;
-	background: transparent;
+.md-button .zmdi {
+	margin-right: 6px !important;
 }
-
-.timeline .track-container {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-}
-
-.timeline .track,
-.timeline .track-preview,
-.timeline .track-indicator {
-	width: 100%;
-	height: 2px;
-	position: absolute;
-	top: 50%;
-}
-
-.timeline .track {
-	background: $windowBackgroundColor;
-	z-index: 0;
-}
-
-.timeline .track-preview {
-	width: 0px;
-	height: 4px;
-	background: $labelTextColor;
-	z-index: 5;
-	transform: translateY(-1px);
-}
-
-.timeline .track-indicator {
-	width: 50%;
-	background: $accentColor;
-	z-index: 10;
-}
-
-.timeline .track-indicator,
-.timeline .thumb {
-	transition: all .2s ease-out;
-}
-
-.timeline .thumb-container {
-	/*
-	The thumb container is larger than the actual track column because of the
-	invisible thumb area which allows for easier handling on touch screens.
-	Moving the thumb is constrained to be within the thumb-container.
-	*/
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: -10px;
-	right: -20px;
-}
-
-.timeline .thumb {
-	width: 20px;
-	height: 45px;
-	position: absolute;
-	top: -23px;
-	left: 50%;
-	z-index: 10;
-	background: transparent;
-}
-
-.timeline .thumb .thumb-knob {
-	background: $accentColor;
-	border-radius: 50%;
-	width: 10px;
-	height: 10px;
-	position: absolute;
-	top: 4px;
-	right: 0;
-	left: 0;
-	bottom: 0;
-	margin: auto;
-	text-align: center;
-}
-
-.timeline .thumb:hover {
-	cursor: pointer;
-	transform-origin: center;
-	/*transform: scale(1.25, 1.25);*/
-}
-
-.timeline .position,
-.timeline .duration {
-	display: block;
-	width: 100px;
-	height: 100%;
-	position: absolute;
-}
-
-.timeline .position {
-	left: 0;
-}
-
-.timeline .duration {
-	right: 0;
-}
-
-.timeline .position label,
-.timeline .duration label {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
-
-.no-transition {
-	transition: none !important;
-}
-
 
 /* DIRECTIVES */
 
@@ -2297,34 +2174,45 @@ button[disabled]:hover {
 	transform: translate(-50%, -100%);
 }
 
-.ctl-history label {
+#ctl-history label {
 	margin: 0;
 }
 
-.ctl-history .item-header {
+#ctl-history .item-header {
 	background: transparent;
-	margin: 0 5px;
-	padding: 15px 10px 10px 15px;
-}
-
-.ctl-history .item-header label  {
-	font-weight: 500;
-}
-
-.ctl-history .item {
-	cursor: pointer;
-	display: block;
-	margin: 0 10px 0 20px;
-	padding: 5px;
+	margin: 10px 0 0 0;
+	padding: 15px 15px 10px 25px;
 	border-top: 1px solid $itemBackgroundColor;
 }
 
-.ctl-history .item:hover,
-.ctl-history .item.selected {
+#ctl-history:first-child .item-header {
+	margin-top: 0;
+}
+
+#ctl-history .repeated-item {
+	/* The min-height is important for the virtualized list to 
+	* determine how many items fit into the visible area. */
+	min-height: 30px;
+}
+
+#ctl-history .item-header label {
+	font-weight: 500;
+	color: $labelTextColor;
+}
+
+#ctl-history .item {
+	cursor: pointer;
+	display: block;
+	margin: 0;
+	padding: 10px 20px;
+}
+
+#ctl-history .item:hover,
+#ctl-history .item.selected {
 	background-color: $itemBackgroundColor;
 }
 
-.ctl-history .item .zmdi {
+#ctl-history .item .zmdi {
 	display: inline-block;
 	text-align: center;
 	width: 26px;
@@ -2332,9 +2220,10 @@ button[disabled]:hover {
 	margin: 0;
 }
 
-.ctl-history .item .time {
+#ctl-history .item .time {
 	padding-right: 5px;
 }
+
 
 /* COMMENTS */
 
@@ -3106,7 +2995,7 @@ $userCommentBackgroundColor: rgba($textColor,
 		left: 0;
 		right: 0;
 	}
-	.ctl-history {
+	#ctl-history {
 		bottom: 0;
 	}
 	.ctl-comment {
