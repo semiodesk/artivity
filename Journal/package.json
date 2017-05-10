@@ -1,6 +1,6 @@
 {
   "name": "artivity",
-  "version": "1.6.168",
+  "version": "1.7.0",
   "description": "Artivity is a tool to track the creative process.",
   "repository": "bitbucket.org/semiodesk/artivity",
   "main": "main.js",
@@ -32,11 +32,17 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-electron": "^5.0.0",
+    "grunt-karma": "^2.0.0",
     "grunt-msbuild": "^0.3.7",
     "grunt-sass": "^1.2.1",
     "grunt-script-link-tags": "^1.0.2",
     "grunt-strip-code": "^1.0.4",
     "grunt-wiredep": "^3.0.1",
+    "jasmine-core": "^2.6.1",
+    "karma": "^1.7.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-spec-reporter": "0.0.31",
     "livereload": "^0.6.0"
   }
 }

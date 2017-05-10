@@ -17,7 +17,8 @@ module.exports = function (grunt) {
             'app/classes/rendering/caching/*.js',
             'app/classes/rendering/viewers/commands/*.js',
             'app/classes/rendering/viewers/renderers/*.js',
-            'app/classes/rendering/viewers/*.js'
+            'app/classes/rendering/viewers/*.js',
+            '!**/*.test.js',
         ],
         app: [
             'app/app.js',
@@ -29,7 +30,8 @@ module.exports = function (grunt) {
             'app/dialogs/**/*.js',
             'app/views/**/*.js',
             'app/i18n.js',
-            'app/route.js'
+            'app/route.js',
+            '!**/*.test.js',
         ]
     }
 
@@ -404,6 +406,12 @@ module.exports = function (grunt) {
                 }
             },
         },
+
+        karma: {
+            unit: {
+                configFile: 'karma.conf.js'
+            }
+        }
     });
 
     grunt.loadNpmTasks('grunt-wiredep');
@@ -421,6 +429,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-bower-install-simple');
     grunt.loadNpmTasks('grunt-strip-code');
     grunt.loadNpmTasks('grunt-angular-gettext');
+    grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerTask('concat:js:clear', 'Empties the concatenated app source files.', function () {
         // TODO: Read dest file from config 'concat:js:dest'.
@@ -513,6 +522,10 @@ module.exports = function (grunt) {
             done();
         });
     });
+
+        grunt.registerTask('test', [
+        'karma'
+    ]);
 
     grunt.registerTask('translate-extract', [
         'nggettext_extract'
