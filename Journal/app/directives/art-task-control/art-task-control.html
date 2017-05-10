@@ -1,20 +1,14 @@
-<div class="layout-root">
-    <ul class="list-view">
-        <li class="list-item" role="presentation" ng-repeat="task in t.tasks" ng-mouseenter="t.showMarks(task)" ng-mouseleave="t.hideMarks(task)">
-            <div class="col expand padding-x-md padding-y-md text-left">
-                <input class="css-checkbox" type="checkbox" ng-model="task.completed" ng-change="t.putTask(task)"><label class="css-label">{{task.name}}</label></input>
-            </div>
-            <div class="col">
-                <a class="btn" ng-click="t.createMark(task)"><i class="zmdi zmdi-photo-size-select-small"></i></a>
-            </div>
-        </li>
-    </ul>
+<md-content class="layout-root" layout="column">
+    <md-list flex>
+        <md-list-item ng-repeat="task in t.tasks" ng-mouseenter="t.showMarks(task)" ng-mouseleave="t.hideMarks(task)">
+            <md-checkbox ng-model="task.completed" ng-change="t.putTask(task)" flex>
+                {{task.name}}
+            </md-checkbox>
+        </md-list-item>
+    </md-list>
     <div class="ctl-task padding-x-xs padding-y-xs" style="position: absolute; bottom: 1px; left: 0; right: 0;">
         <input type="text" class="form-control stretch-horizontal no-margin" style="margin-bottom: 5px;" placeholder="{{'Create a new task' | translate}}"
-            ng-model="t.newTask.name"
-            ng-change="t.updateTask(t.newTask)"
-            ng-enter="t.postTask(t.newTask)"
-            ng-esc="t.resetTask()">
+            ng-model="t.newTask.name" ng-change="t.updateTask(t.newTask)" ng-enter="t.postTask(t.newTask)" ng-esc="t.resetTask()">
         </input>
     </div>
-</div>
+</md-content>

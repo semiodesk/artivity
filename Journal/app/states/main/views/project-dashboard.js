@@ -1,18 +1,15 @@
 (function () {
 	angular.module('app').controller("ProjectDashboardViewController", ProjectDashboardViewController);
 
-	ProjectDashboardViewController.$inject = ['$scope', '$state', '$stateParams', '$element', 'hotkeys', 'tabService', 'projectService'];
+	ProjectDashboardViewController.$inject = ['$scope', '$state', '$stateParams', '$element', '$mdSidenav', 'hotkeys', 'tabService', 'projectService'];
 
-	function ProjectDashboardViewController($scope, $state, $stateParams, $element, hotkeys, tabService, projectService) {
+	function ProjectDashboardViewController($scope, $state, $stateParams, $element, $mdSidenav, hotkeys, tabService, projectService) {
 		var t = this;
 
 		t.project = null;
-		t.initialized = null;
 
 		t.getFiles = function (callback) {
 			t.initialized.then(function () {
-				console.log("Loading files:", callback);
-
 				if (t.project) {
 					return projectService.getFiles(t.project.Uri).then(callback);
 				} else {
@@ -21,13 +18,9 @@
 			});
 		}
 
-		t.toggleProjectSettings = function () {
-			if (t.project) {
-				var panel = $($element).find('.view-secondary-content');
-
-				panel.toggleClass('panel-visible');
-
-				if (panel.hasClass('panel-visible') && !t.project.new) {
+		t.toggleSettings = function () {
+			$mdSidenav('right').toggle().then(function () {
+				if (!t.project.new && t.isSettingsOpen()) {
 					// Load the folders and members when the panel is being made visible.
 					projectService.getFolders(t.project.Uri).then(function (result) {
 						if (result.length > 0) {
@@ -41,7 +34,11 @@
 						}
 					});
 				}
-			}
+			});
+		}
+
+		t.isSettingsOpen = function () {
+			return $mdSidenav('right').isOpen();
 		}
 
 		t.onInit = function () {
@@ -49,7 +46,7 @@
 				combo: 'alt+enter',
 				description: 'Toggle the project properties panel.',
 				callback: function () {
-					t.togglePropertyPane();
+					t.toggleSettings();
 				}
 			});
 
@@ -58,7 +55,7 @@
 				t.project = projects[$stateParams.index - 1];
 
 				if (t.project && t.project.new) {
-					t.toggleProjectSettings();
+					t.toggleSettings();
 				}
 			});
 
@@ -73,15 +70,15 @@
 			});
 
 			$scope.$on('showMore', function () {
-				t.toggleProjectSettings();
+				t.toggleSettings();
 			});
 
 			$scope.$on('commit', function () {
-				t.toggleProjectSettings();
+				t.toggleSettings();
 			});
 
 			$scope.$on('cancel', function () {
-				t.toggleProjectSettings();
+				t.toggleSettings();
 			});
 		}
 

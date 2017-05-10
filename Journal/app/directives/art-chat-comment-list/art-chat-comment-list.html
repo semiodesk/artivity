@@ -1,0 +1,10 @@
+<md-content class="layout-root" layout="column">
+    <div class="scroll-container scroll-y layout-fix" scroll-glue flex>
+        <md-list style="position: absolute; bottom: 0; left: 0; right: 0; max-height: 100%;">
+            <md-list-item ng-repeat="comment in t.comments">
+                <art-chat-comment comment="comment" flex></art-chat-comment>
+            </md-list-item>
+        </md-list>
+    </div>
+    <art-chat-comment-input entity-uri="t.entityUri" comments="t.comments"></art-chat-comment-input>
+</md-content>

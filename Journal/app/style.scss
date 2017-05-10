@@ -63,13 +63,11 @@ $editorBorderColor: darken($editorBackgroundColor, 25%);
 
 html,
 body {
-	font-size: 14px;
-	height: 100%; // Make the body fill the browser window.
-	width: 100%;
-	/*
-	-webkit-user-select: none; // Disable text selection.
-	user-select: none;
-	*/
+	font-size: 14px; // Make the body fill the browser window.
+	height: 100%;
+	width: 100%; // Do not show scrollbars on the window itself.
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 h1 {
@@ -138,6 +136,10 @@ a.title {
 
 iframe {
 	border: none;
+}
+
+*:focus {
+    outline: none;
 }
 
 .no-padding {
@@ -1304,53 +1306,6 @@ h4 {
 
 /* VIEWS */
 
-.view-container {
-	//position: relative;
-	display: block;
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
-}
-
-.view-primary-content,
-.view-secondary-content {
-	transition: width ease-out .2s;
-}
-
-.view-primary-content {
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	z-index: 1;
-}
-
-.view-secondary-content {
-	border-left: 1px solid darken($windowBackgroundColor, 3%);
-	background: lighten($windowBackgroundColor, 4%);
-	z-index: 2;
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	width: 500px;
-	transform: translateX(500px);
-	@include transitionEaseInOutCubic(all, 400ms);
-}
-
-.view-secondary-content.panel-visible {
-	transform: translateX(0);
-}
-
-.layout-container>.ng-scope,
-.view-primary-content>.ng-scope,
-.view-secondary-content>.ng-scope {
-	display: block;
-	width: 100%;
-	height: 100%;
-}
-
 .viewer-canvas {
 	padding: 0;
 	width: 100%;
@@ -1494,14 +1449,30 @@ h4 {
 }
 
 .md-toolbar .title {
+	display: block;
 	font-weight: 500;
 	height: $toolbarHeight;
 	line-height: $toolbarHeight;
 }
 
+.md-toolbar .title,
+.md-toolbar md-autocomplete {
+	margin: 6px 8px;
+}
+
 .md-button .zmdi {
 	margin-right: 6px !important;
 }
+
+.md-button.md-button-icon {
+	min-width: 40px;
+}
+
+md-list-item .md-list-item-inner>md-checkbox .md-label {
+	// Show the labels inside a checkbox.
+	display: inline !important;
+}
+
 
 /* DIRECTIVES */
 
@@ -1610,101 +1581,11 @@ h4 {
 	z-index: 2;
 }
 
-
-/* CARDS */
-
-.cards {
-	list-style: none;
-	padding: 5px;
+.card-title {
+	font-size: 1.2em;
+	font-weight: 500;
+	padding: 30px 10px 0 10px;
 	margin: 0;
-}
-
-.card {
-	position: relative;
-	float: left;
-	width: 201px;
-	height: 235px;
-	margin: 0 5px 5px 0;
-	padding: 5px;
-	border-radius: 0;
-	background: transparent;
-	transition: all ease-in .1s;
-	cursor: pointer;
-}
-
-.card a {
-	z-index: 0;
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	display: block;
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 100;
-	background: transparent;
-}
-
-.card:hover {
-	background: darken($windowBackgroundColor, 5%);
-}
-
-.card .file-thumbnail-container {
-	position: relative;
-	border: 1px solid rgba(0, 0, 0, .15);
-	border-radius: 1;
-	box-shadow: none;
-	width: 100%;
-	height: 201px;
-	background: #ffffff url('resources/img/placeholder-img.png') center center no-repeat;
-	background-size: 125px auto;
-}
-
-.card .file-thumbnail {
-	border-radius: 0;
-	width: 100%;
-	height: 100%;
-	background: transparent no-repeat;
-	background-size: cover;
-}
-
-.card .file-thumbnail-overlay {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: linear-gradient(rgba($windowBackgroundColor, .1), transparent, transparent, rgba($windowBackgroundColor, .3));
-}
-
-.card .file-name {
-	position: absolute;
-	bottom: 0;
-	left: 5px;
-	right: 5px;
-	padding: 5px 5px 5px 5px;
-	width: 200px;
-	display: block;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-	color: $textColor;
-}
-
-.card .file-extension {
-	z-index: 100;
-	position: absolute;
-	top: 6px;
-	right: 6px;
-	font-size: 11px;
-	text-transform: uppercase;
-	padding: 2px;
-	min-width: 30px;
-	text-align: center;
-	border-radius: 0;
-	color: $windowBackgroundColor;
 }
 
 
@@ -2233,51 +2114,7 @@ $commentBackgroundColor: rgba($textColor,
 $userCommentTextColor: $textColor;
 $userCommentBackgroundColor: rgba($textColor,
 .1);
-.ctl-protocol {
-	height: 100%;
-}
-
-.comment-list {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	padding: 0;
-	margin: 0 2px 0 10px;
-	max-height: 100%;
-}
-
-.comment-list .list-item {
-	position: relative;
-	display: block;
-	box-sizing: content-box;
-	width: 100%;
-	margin: 5px 0;
-	padding: 5px 0;
-	border: none;
-}
-
-.comment-list .list-item:hover {
-	background: transparent;
-}
-
-.comment-list .list-item .hidden-mouseover {
-	visibility: visible;
-}
-
-.comment-list .list-item:hover .hidden-mouseover {
-	visibility: hidden;
-}
-
-.comment-list .list-item .visible-mouseover {
-	visibility: hidden;
-}
-
-.comment-list .list-item:hover .visible-mouseover {
-	visibility: visible;
-}
-
-.comment-list .comment .comment-avatar {
+.comment-item .comment-avatar {
 	position: absolute;
 	left: 0;
 	top: 5px;
@@ -2287,43 +2124,43 @@ $userCommentBackgroundColor: rgba($textColor,
 	overflow: hidden;
 }
 
-.comment-list .comment .comment-avatar img {
+.comment-item .comment-avatar img {
 	width: 32px;
 	height: 32px;
 }
 
-.comment-list .comment .comment-bubble {
+.comment-item .comment-bubble {
 	display: block;
 	position: relative;
 }
 
-.comment-list .comment .comment-bubble,
-.comment-list .comment .comment-bubble-context {
+.comment-item .comment-bubble,
+.comment-item .comment-bubble-context {
 	margin-left: 35px;
 	margin-right: 75px;
 }
 
-.comment-list .comment .comment-time {
+.comment-item .comment-time {
 	position: absolute;
 	top: 18px;
 	right: 2px;
 	padding: 0;
 }
 
-.comment-list .comment .comment-more {
+.comment-item .comment-more {
 	position: absolute;
 	top: 5px;
 	right: 0;
 }
 
-.comment-list .comment .comment-more .btn {
+.comment-item .comment-more .btn {
 	display: block;
 	width: 35px;
 	height: 35px;
 	padding: 5px;
 }
 
-.comment-list .comment .bubble-content {
+.comment-item .bubble-content {
 	float: left;
 	min-height: 2em;
 	max-width: 100%;
@@ -2336,13 +2173,13 @@ $userCommentBackgroundColor: rgba($textColor,
 	border-radius: 0 5px 5px 5px;
 }
 
-.comment-list .comment .bubble-content .icon {
+.comment-item .bubble-content .icon {
 	display: none;
 	margin-left: 7px;
 	margin-right: 0;
 }
 
-.comment-list .comment .bubble-tip {
+.comment-item .bubble-tip {
 	position: absolute;
 	top: 0;
 	right: auto;
@@ -2355,33 +2192,33 @@ $userCommentBackgroundColor: rgba($textColor,
 	border-bottom-color: transparent;
 }
 
-.comment-list .comment .bubble-content .icon {
+.comment-item .bubble-content .icon {
 	margin-right: 7px;
 	margin-left: 0;
 }
 
-.comment-list .comment.comment-user .comment-avatar {
+.comment-item.comment-user .comment-avatar {
 	display: none;
 }
 
-.comment-list .comment.comment-user .bubble-content {
+.comment-item.comment-user .bubble-content {
 	float: right;
 	color: $userCommentTextColor;
 	background: $userCommentBackgroundColor;
 	border-radius: 5px 0 5px 5px;
 }
 
-.comment-list .comment.comment-user .comment-bubble,
-.comment-list .comment.comment-user .comment-bubble-context {
+.comment-item.comment-user .comment-bubble,
+.comment-item.comment-user .comment-bubble-context {
 	margin-left: 60px;
 	margin-right: 50px;
 }
 
-.comment-list .comment.comment-user .comment-bubble-context {
+.comment-item.comment-user .comment-bubble-context {
 	text-align: right;
 }
 
-.comment-list .comment.comment-user .bubble-tip {
+.comment-item.comment-user .bubble-tip {
 	top: 0px;
 	left: auto;
 	right: -12px;
@@ -2390,46 +2227,46 @@ $userCommentBackgroundColor: rgba($textColor,
 	border-bottom-color: transparent;
 }
 
-.comment-list .comment.comment-request .bubble-content {
+.comment-item.comment-request .bubble-content {
 	background: $infoColor;
 	color: $infoTextColor;
 }
 
-.comment-list .comment.comment-request .bubble-content .icon {
+.comment-item.comment-request .bubble-content .icon {
 	display: inline;
 }
 
-.comment-list .comment.comment-request .bubble-tip {
+.comment-item.comment-request .bubble-tip {
 	border: 6px solid $infoColor;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
 }
 
-.comment-list .comment.comment-request.comment-user .bubble-content {
+.comment-item.comment-request.comment-user .bubble-content {
 	width: 100%;
 }
 
-.comment-list .comment.comment-request.comment-user .bubble-tip {
+.comment-item.comment-request.comment-user .bubble-tip {
 	border: 6px solid $infoColor;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
 }
 
-.comment-list .comment.comment-request.comment-user .comment-bubble {
+.comment-item.comment-request.comment-user .comment-bubble {
 	margin-left: 0px;
 	margin-right: 50px;
 }
 
-.ctl-comment {
+.comment-input {
 	padding: 0 5px;
 }
 
-.ctl-comment .textarea,
-.ctl-comment .input {
+.comment-input .textarea,
+.comment-input .input {
 	display: block;
 }
 
-.ctl-comment .textarea {
+.comment-input .textarea {
 	min-height: 38px;
 	width: 100%;
 	line-height: 1.3em;
@@ -2442,7 +2279,7 @@ $userCommentBackgroundColor: rgba($textColor,
 	200ms);
 }
 
-.ctl-comment .textarea-placeholder {
+.comment-input .textarea-placeholder {
 	float: left;
 	padding: 10px;
 	line-height: 1.3em;
@@ -2453,17 +2290,17 @@ $userCommentBackgroundColor: rgba($textColor,
 	user-select: none;
 }
 
-.ctl-comment .textarea:focus {
+.comment-input .textarea:focus {
 	outline: none;
 }
 
-.ctl-comment .textarea-container {
+.comment-input .textarea-container {
 	position: relative;
 	border-top: 1px solid $itemBackgroundColor;
 	border-bottom: 1px solid $itemBackgroundColor;
 }
 
-.ctl-comment .btn-post {
+.comment-input .btn-post {
 	float: right;
 	margin: 5px 0;
 }
@@ -2491,73 +2328,37 @@ $userCommentBackgroundColor: rgba($textColor,
 	padding: 5px;
 }
 
-
 /* SEARCH */
 
-.ctl-search {
-	display: inline-block;
-	position: relative;
-	margin: 2px;
-	height: $toolbarHeight - 4px;
-}
-
-.ctl-search .btn {
-	position: absolute;
-	top: -2px;
-}
-
-.ctl-search input[type="text"] {
-	vertical-align: middle;
-	padding-left: $toolbarIconHeight + 2px;
-	height: 100%;
+md-autocomplete.search-input {
+	background: transparent;
+	@include transitionEaseInOutCubic(all, 500ms);
 	width: 200px;
-	@include transitionEaseInOutCubic(all,
-	500ms);
 }
 
-.ctl-search input[type="text"]:focus {
-	vertical-align: middle;
-	height: 100%;
+md-autocomplete.search-input.focused {
+	background: $inputBackgroundColor;
 	width: 300px;
 }
 
-.textarea-placeholder,
-.label-placeholder {
-	color: $labelTextColor;
-}
-
-.textarea-placeholder,
-.label-placeholder,
-.ctl-search input[type="text"]::-webkit-input-placeholder {
-	font-style: italic;
-}
-
-.ctl-search input[type="text"]:-moz-placeholder {
-	font-style: italic;
-	opacity: 1;
-}
-
-.ctl-search input[type="text"]::-moz-placeholder {
-	font-style: italic;
-	opacity: 1;
-}
-
-.ctl-search input[type="text"]:-ms-input-placeholder {
-	font-style: italic;
-}
-
-.ctl-search.ctl-chromeless input {
-	background: transparent;
+md-autocomplete.search-input md-autocomplete-wrap {
 	border: none;
-	outline: none;
+	box-shadow: none;
 }
 
-.ctl-search.ctl-chromeless input:focus {
-	background: $inputBackgroundColor;
-	border: none;
-	outline: none;
+md-autocomplete.search-input md-autocomplete-wrap:before {
+	font-size: $iconFontSize;
+	font-family: $iconFont;
+	content: "\f1c3";
+	line-height: 1;
+	padding: 8px 0px 0px 8px;
+	font-weight: normal;
+	font-size: 24px;
 }
 
+md-virtual-repeat-container.search-input-menu-container {
+	display: none !important;
+}
 
 /* YASGUI */
 
@@ -2824,7 +2625,6 @@ $userCommentBackgroundColor: rgba($textColor,
 	background: lighten($editorLabelColor, 10%);
 }
 
-
 /* CONNECTION SPINNER */
 
 .spinner.connecting {
@@ -2998,7 +2798,7 @@ $userCommentBackgroundColor: rgba($textColor,
 	#ctl-history {
 		bottom: 0;
 	}
-	.ctl-comment {
+	.comment-input {
 		display: none;
 	}
 	.footer .toolbar {

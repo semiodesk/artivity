@@ -1,25 +1,25 @@
 (function () {
-    angular.module('app').directive('artChatInput', artChatInputDirective);
+    angular.module('app').directive('artChatCommentInput', artChatCommentInputDirective);
 
-    function artChatInputDirective() {
+    function artChatCommentInputDirective() {
         return {
             restrict: 'E',
-            templateUrl: 'app/directives/art-chat-input/art-chat-input.html',
+            templateUrl: 'app/directives/art-chat-comment-input/art-chat-comment-input.html',
             scope: {
                 entityUri: '=',
                 comments: '='
             },
-            controller: ChatInputDirectiveController,
+            controller: ChatCommentInputDirectiveController,
             controllerAs: 't',
             bindToController: true
         }
     }
 
-    angular.module('app').controller('ChatInputDirectiveController', ChatInputDirectiveController);
+    angular.module('app').controller('ChatCommentInputDirectiveController', ChatCommentInputDirectiveController);
 
-    ChatInputDirectiveController.$inject = ['$scope', '$element', '$sce', 'agentService', 'commentService', 'projectService', 'viewerService', 'syncService'];
+    ChatCommentInputDirectiveController.$inject = ['$scope', '$element', '$sce', 'agentService', 'commentService', 'projectService', 'viewerService', 'syncService'];
 
-    function ChatInputDirectiveController($scope, $element, $sce, agentService, commentService, projectService, viewerService, syncService) {
+    function ChatCommentInputDirectiveController($scope, $element, $sce, agentService, commentService, projectService, viewerService, syncService) {
         var t = this;
 
         t.inputElement = null;

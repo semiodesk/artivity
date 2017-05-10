@@ -1,28 +1,21 @@
-<div class="toolbar toolbar-view">
-    <art-search-input query="t.query"></art-search-input>
-    <a class="btn btn-chromeless pull-right" ng-click="t.onMoreClicked()"><i class="zmdi zmdi-more-vert"></i></a>
+<div class="md-toolbar" layout="row">
+    <md-autocomplete art-search-input md-search-text="t.query" md-no-cache="true" md-search-text-change="t.filterFiles(t.query)" md-items="item in []" md-item-text="item.label"
+        md-menu-container-class="search-input-menu-container" placeholder="{{'Search' | translate}}">
+        <md-item-template>
+            <span md-highlight-text="ctrl.searchText">{{item.display}}</span>
+        </md-item-template>
+        <md-not-found>
+        </md-not-found>
+    </md-autocomplete>
+    <span flex></span>
+    <mb-button class="md-button md-button-icon" ng-click="t.onMoreClicked()">
+        <i class="zmdi zmdi-more-vert"></i>
+    </mb-button>
 </div>
 
 <div class="layout-container">
-    <div ng-show="t.files.length > 0" class="scroll-container scroll-y">
-        <div class="dropdown clearfix">
-            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                <li><a tabindex="-1" href="#" ng-click="t.viewFile($event)" translate>View</a></li>
-                <!--<li><a tabindex="-1" href="#" ng-click="t.editFile($event)" translate>Edit</a></li>-->
-                <li class="divider"></li>
-                <li><a tabindex="-1" href="#" ng-click="t.viewFileHistory($event)" translate>Editing History</a></li>
-            </ul>
-        </div>
-        <ul class="cards">
-            <li ng-repeat="file in t.files">
-                <art-file-card file="file" ng-model="file" ng-hide="file.visible === false" jqyoui-draggable="{onStart: 't.onDragStart', onStop:
-                        't.onDragStop'}" data-drag="true " data-jqyoui-options="{opacity:0.7, helper: 'clone', appendTo: 'body', placeholder: 'keep', cursorAt:
-                        {top: 5, left: 5}}"></art-file-card>
-            </li>
-        </ul>
-    </div>
     <div ng-show="t.files.length === 0">
-        <div ng-transclude="emptySlot">
+        <div ng-transclude="emptySlot" ng-cloak>
             <div class="text-center">
                 <div style="opacity: .25; margin: 75px 0 50px 0;"><i class="zmdi zmdi-time-restore" style="font-size: 75px !important"></i></div>
 
@@ -31,6 +24,11 @@
                 <span translate>The files you edit in the following programs will appear here:</span>
                 <art-app-list class="pull-center"></art-app-list>
             </div>
+        </div>
+    </div>
+    <div ng-show="t.files.length > 0" class="scroll-container scroll-y">
+        <div layout="row" layout-xs="column" class="md-padding" ng-cloak>
+            <art-file-card ng-hide="file.visible === false" file="file" highlight-text="t.query" ng-repeat="file in t.files" flex-xs flex-gt-xs="25"></art-file-card>
         </div>
     </div>
 </div>
