@@ -22,6 +22,8 @@
 	function ProjectViewDirectiveController($scope, $element, $sce, $uibModal, agentService, navigationService, projectService, syncService, hotkeys) {
 		var t = this;
 
+		t.helpEntry = new HelpEntry("Projects", "help/projects");
+
 		t.file = null;
 
 		t.viewFile = function (e, file) {

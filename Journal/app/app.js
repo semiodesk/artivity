@@ -13,5 +13,8 @@ angular.module('app', [
     'ngDragDrop',
     'angular-emojione',
     'luegg.directives',
-    'gettext'
+    'gettext',
+    'ngSanitize',
+    'btford.markdown'
 ]);
+
