@@ -59,6 +59,9 @@
     <script src="bower_components/moment-duration-format/lib/moment-duration-format.js"></script>
     <script src="bower_components/EaselJS/lib/easeljs-0.8.2.combined.js"></script>
     <script src="bower_components/yasgui/dist/yasgui.bundled.min.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/showdown/src/showdown.js"></script>
+    <script src="bower_components/angular-markdown-directive/markdown.js"></script>
     <!-- endbower -->
 	<!-- /REMOVE:JS -->
 	
@@ -70,6 +73,7 @@
 		<script type="text/javascript" src="app/classes/entity-cache.js"></script>
 		<script type="text/javascript" src="app/classes/entity.js"></script>
 		<script type="text/javascript" src="app/classes/event-dispatcher.js"></script>
+		<script type="text/javascript" src="app/classes/help-entry.js"></script>
 		<script type="text/javascript" src="app/classes/layer-tree-node.js"></script>
 		<script type="text/javascript" src="app/classes/layer-tree.js"></script>
 		<script type="text/javascript" src="app/classes/layer.js"></script>
@@ -140,6 +144,7 @@
 		<script type="text/javascript" src="app/directives/art-file-card/art-file-card.js"></script>
 		<script type="text/javascript" src="app/directives/art-file-list/art-file-list.js"></script>
 		<script type="text/javascript" src="app/directives/art-folder-picker/art-folder-picker.js"></script>
+		<script type="text/javascript" src="app/directives/art-help/art-help.js"></script>
 		<script type="text/javascript" src="app/directives/art-keyboard-input-handler/art-keyboard-input-handler.js"></script>
 		<script type="text/javascript" src="app/directives/art-layer-control/art-layer-control.js"></script>
 		<script type="text/javascript" src="app/directives/art-localization-handler/art-localization-handler.js"></script>
@@ -202,7 +207,11 @@
 		<div class="window-view-container" id="window-view-container">
 			<div ng-view></div>
 		</div>
+		
 		<div class="overlay collapse" id="overlay">
+			<div class"msg center-xy invisible" id="msg-help">
+				<!--<art-help></art-help>-->
+			</div>
 			<div class="msg center-xy invisible" id="msg-add-app">
 				<div class="row">
 					<div class="col-xs-2">

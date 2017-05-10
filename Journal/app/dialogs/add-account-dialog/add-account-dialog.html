@@ -42,10 +42,10 @@
 						<label style="margin-top: .5em;" translate>Login</label>
 						<div class="form-group">
 							<input class="form-control form-control-login" type="text" id="username" name="username" size="20" maxlength="20"
-								placeholder="{{Username | translate}}" ng-model="t.parameter.username" required>
+								placeholder="{{'Username' | translate}}" ng-model="t.parameter.username" required>
 
 							<input class="form-control form-control-login" type="password" id="password" name="password" size="20" maxlength="20"
-								placeholder="{{Password | translate}}" ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
+								placeholder="{{'Password' | translate}}" ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
 						</div>
 					</form>
 					<div art-client-state-info state="{{t.clientState}}"></div>
