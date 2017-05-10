@@ -1,24 +1,24 @@
 (function () {
-    angular.module('app').directive('artChatControl', artChatControlDirective);
+    angular.module('app').directive('artChatCommentList', artChatCommentListDirective);
 
-    function artChatControlDirective() {
+    function artChatCommentListDirective() {
         return {
             restrict: 'E',
-            templateUrl: 'app/directives/art-chat-control/art-chat-control.html',
+            templateUrl: 'app/directives/art-chat-comment-list/art-chat-comment-list.html',
             scope: {
                 entityUri: '=?'
             },
-            controller: ChatControlDirectiveController,
+            controller: ChatCommentListDirectiveController,
             controllerAs: 't',
             bindToController: true
         }
     }
 
-    angular.module('app').controller('ChatControlDirectiveController', ChatControlDirectiveController);
+    angular.module('app').controller('ChatCommentListDirectiveController', ChatCommentListDirectiveController);
 
-    ChatControlDirectiveController.$inject = ['$scope', '$element', 'agentService', 'entityService', 'commentService', 'selectionService', 'formattingService'];
+    ChatCommentListDirectiveController.$inject = ['$scope', '$element', 'agentService', 'entityService', 'commentService', 'selectionService', 'formattingService'];
 
-    function ChatControlDirectiveController($scope, $element, agentService, entityService, commentService, selectionService) {
+    function ChatCommentListDirectiveController($scope, $element, agentService, entityService, commentService, selectionService) {
         var t = this;
 
         // COMMENTS

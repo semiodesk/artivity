@@ -1,8 +1,17 @@
-<div class="card">
-    <div class="file-thumbnail-container">
-        <div ng-show="t.file.thumbnail" class="file-thumbnail" ng-style="t.thumbnailStyle"></div>
-    </div>
+<div layout="column" jqyoui-draggable="{onStart: 't.onDragStart', onStop: 't.onDragStop'}" data-drag="true" data-jqyoui-options="{opacity:0.7, helper: 'clone', appendTo: 'body', placeholder: 'keep', cursorAt: {top: 5, left: 5}}">
+    <md-card class="card" style="position: relative; overflow: hidden">
+        <img ng-src="{{t.file.thumbnail}}" class="md-card-image" alt="{{t.file.label}}" ng-click="t.viewFile($event)" ng-right-click="t.showSheet($event)">
 
-    <div class="file-name">{{t.fileName}}</div>
-    <div class="file-extension" style="background-color: {{t.file.agentColor}}">{{t.fileExtension}}</div>
+        <span class="card-title" md-highlight-text="t.highlightText">{{t.file.label}}</span>
+
+        <md-button ng-click="t.showSheet($event)">
+            <md-icon md-font-icon="zmdi zmdi-more"></md-icon>
+        </md-button>
+
+        <div ng-if="t.alert">
+            <div layout="row" layout-align="center center" class="md-padding">
+                {{t.alert}}
+            </div>
+        </div>
+    </md-card>
 </div>

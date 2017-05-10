@@ -4,32 +4,11 @@
     tabService.$inject = ['projectService'];
 
     function tabService(projectService) {
-        var initialized = false;
-
         var defaultContext = new TabContext({
             name: 'main.view.project-dashboard'
         }, {
             index: 0
         });
-        
-        if (!initialized) {
-            projectService.getAll().then(function (projects) {
-                var result = [];
-
-                for (var i = 0; i < projects.length; i++) {
-                    var project = projects[i];
-
-                    var context = new TabContext(defaultContext.state, {
-                        index: i + 1,
-                        project: project
-                    });
-
-                    result.push(new Tab(project.Title, context, true))
-                }
-
-                tabs.splice.apply(tabs, [1, tabs.length - 2].concat(result));
-            });
-        }
 
         var tabs = [
             new Tab(null, new TabContext({
@@ -47,6 +26,22 @@
         ];
 
         var t = {
+            initialized: projectService.getAll().then(function (projects) {
+                var result = [];
+
+                for (var i = 0; i < projects.length; i++) {
+                    var project = projects[i];
+
+                    var context = new TabContext(defaultContext.state, {
+                        index: i + 1,
+                        project: project
+                    });
+
+                    result.push(new Tab(project.Title, context, true))
+                }
+
+                tabs.splice.apply(tabs, [1, tabs.length - 2].concat(result));
+            }),
             addTab: function (project) {
                 if (project) {
                     var i = tabs.length - 1;
@@ -134,10 +129,10 @@
              * Saves the tab state params.
              * @param {object} UI-Router state parameters.
              */
-            saveTabState: function(index, state, stateParams) {
+            saveTabState: function (index, state, stateParams) {
                 var context = t.getTabContext(index);
 
-                if(context) {
+                if (context) {
                     context.state = state;
                     context.stateParams = stateParams;
                 }

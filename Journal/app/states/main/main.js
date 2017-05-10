@@ -140,13 +140,21 @@
             windowService.setMinimizable();
             windowService.setMaximizable();
 
-            t.tabs = tabService.getTabs();
+            // Initialize the tabs when all tabs and states are loaded.
+            tabService.initialized.then(function () {
+                t.tabs = tabService.getTabs();
 
-            if ($stateParams && $stateParams.index < t.tabs.length) {
-                t.selectedTab = parseInt($stateParams.index);
-            } else {
-                t.selectedTab = cookieService.get('tabs.selectedTab', 0);
-            }
+                // Reset the last selected tab.
+                var n = 0;
+
+                if ($stateParams && $stateParams.index < t.tabs.length) {
+                    n = parseInt($stateParams.index);
+                } else {
+                    n = cookieService.get('tabs.selectedTab', 0);
+                }
+
+                t.selectTab(null, n);
+            });
 
             // Listen to state changes.
             t.unregisterStateChangeSuccess = $rootScope.$on('$stateChangeSuccess', t.onStateChangeSuccess);

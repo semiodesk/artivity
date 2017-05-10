@@ -1,9 +1,15 @@
 <div class="table-layout">
     <div class="row">
-        <div class="toolbar toolbar-view">
-            <a class="btn btn-chromeless" ng-click="t.navigateBack()"><i class="zmdi zmdi-chevron-left"></i></a>
-            <div class="txt txt-title">{{t.file.label}}</div>
-            <a class="btn btn-primary pull-right" ng-click="t.publishLatestRevision(t.file)"><i class="zmdi zmdi-share"></i><span class="btn-label" translate>Share</span></a>
+        <div class="md-toolbar" layout="row">
+            <md-button class="md-button md-button-icon" ng-click="t.navigateBack()">
+                <i class="zmdi zmdi-chevron-left"></i>
+            </md-button>
+            <div class="title" flex>
+                {{t.file.label}}
+            </div>
+            <md-button class="md-button" ng-click="t.publishLatestRevision(t.file)">
+                <i class="zmdi zmdi-share"></i><span class="btn-label" translate>Share</span>
+            </md-button>
         </div>
     </div>
     <div class="row expand">
@@ -13,23 +19,23 @@
             <art-document-viewer-toolbar style="position: absolute; top: 10px; left: 10px;"></art-document-viewer-toolbar>
 
             <div class="ui-sidebar ui-sidebar-right">
-                <uib-tabset class="tabs-centered">
-                    <uib-tab heading="{{'Chat' | translate}}">
-                        <div class="layout-container">
-                            <art-chat-control entity-uri="t.latestRevisionUri"></art-chat-control>
-                        </div>
-                    </uib-tab>
-                    <uib-tab heading="Themen">
-                        <div class="layout-container">
+                <md-tabs class="layout-root">
+                    <md-tab label="{{'Chat' | translate}}">
+                        <md-content style="width: 100%; height: 100%;">
+                            <art-chat-comment-list entity-uri="t.latestRevisionUri"></art-chat-comment-list>
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="{{'Topics' | translate}}">
+                        <md-content style="width: 100%; height: 100%;">
                             <art-topic-control entity-uri="t.latestRevisionUri"></art-topic-control>
-                        </div>
-                    </uib-tab>
-                    <uib-tab heading="{{'Todo' | translate}}">
-                        <div class="layout-container padding-x-xl padding-y-xl text-center">
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="{{'Todo' | translate}}">
+                        <md-content style="width: 100%; height: 100%;">
                             <art-task-control entity-uri="t.latestRevisionUri"></art-task-control>
-                        </div>
-                    </uib-tab>
-                </uib-tabset>
+                        </md-content>
+                    </md-tab>
+                </md-tabs>
             </div>
         </div>
     </div>
