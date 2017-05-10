@@ -1,0 +1,11 @@
+<H1>{{'Help' | translate}}</H1>
+
+<a ng-click="t.getAllHelpTopics()" >Test</a>
+
+<div ng-repeat="topic in t.topics">
+    <a ng-click="t.selectTopic(topic)" >{{topic.title}}</a>
+</div>
+
+
+<div btf-markdown ng-if="t.currentTopic" ng-include="t.currentTopic.getMarkdown(t.getLanguage())">
+</div>

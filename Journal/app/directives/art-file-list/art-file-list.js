@@ -27,6 +27,8 @@
     function FileListDirectiveController($scope, $element, hotkeys) {
         var t = this;
 
+        t.helpEntry = new HelpEntry("File List", "help/files");
+
         t.loading = false;
         t.files = undefined;
         t.query = '';

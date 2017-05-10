@@ -2210,6 +2210,7 @@ button[disabled]:hover {
 	bottom: 0;
 	color: $overlayTextColor;
 	background: $overlayBackgroundColor;
+	z-index: 100;
 }
 
 .overlay.invisible,

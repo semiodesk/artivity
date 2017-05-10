@@ -13,6 +13,9 @@
     KeyboardInputHandlerDirectiveController.$inject = ['$scope', 'hotkeys', 'windowService', 'navigationService', 'syncService'];
 
     function KeyboardInputHandlerDirectiveController($scope, hotkeys, windowService, navigationService, syncService) {
+
+        var helpToggled = false;
+
         $scope.getUrlWithFile = function (file) {
             var url = window.location.href.split('#');
 
@@ -59,9 +62,19 @@
             combo: 'f1',
             description: 'Show / hide this help menu.',
             callback: function() {
-                hotkeys.toggleCheatSheet();
+                if( !helpToggled ){
+                    showOverlay('msg-help');
+                    helpToggled = true;
+                    
+                    }
+                else{
+                    hideOverlays('msg-help');
+                    helpToggled = false;
+                    }
             }
-        })
+        });
+
+        
 
         hotkeys.add({
             combo: 'backspace',
