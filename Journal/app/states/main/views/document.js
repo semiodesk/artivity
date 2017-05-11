@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller("DocumentViewController", DocumentViewController);
 
-    DocumentViewController.$inject = ['$scope', '$state', '$stateParams', 'entityService', 'syncService'];
+    DocumentViewController.$inject = ['$scope', '$state', '$stateParams', 'entityService', 'viewerService', 'syncService'];
 
-    function DocumentViewController($scope, $state, $stateParams, entityService, syncService) {
+    function DocumentViewController($scope, $state, $stateParams, entityService, viewerService, syncService) {
         var t = this;
 
         t.latestRevisionUri = null;

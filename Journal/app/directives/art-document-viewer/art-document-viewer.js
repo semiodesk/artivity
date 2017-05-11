@@ -30,6 +30,25 @@
 
         t.viewer = null;
 
+        t.setViewerVisibleRegion = function () {
+            if (t.viewer) {
+                var sidebar = $(document).find('.ui-sidebar-right');
+                var canvas = $(document).find('.viewer-canvas');
+
+                if (sidebar.length && canvas.length) {
+                    // TODO: This is ignoring the margin and possible offset of the sidebar.
+                    var x = 0;
+                    var y = 0;
+                    var w = canvas.width() - sidebar.width();
+                    var h = canvas.height();
+
+                    if (w > 0 && h > 0) {
+                        t.viewer.setViewport(x, y, w, h);
+                    }
+                }
+            }
+        }
+
         t.$postLink = function () {
             var canvas = $element.find('canvas')[0];
 
@@ -49,6 +68,8 @@
                 t.viewer.addCommand(new HideMarksCommand(t.viewer, markService));
                 t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
 
+                t.setViewerVisibleRegion();
+
                 viewerService.viewer(t.viewer);
 
                 $element.on('appear', function (event) {
@@ -57,6 +78,8 @@
 
                 // Handle the resize of UI panes.
                 $scope.$on('resize', function () {
+                    t.setViewerVisibleRegion();
+
                     t.viewer.onResize();
                 });
             } else {

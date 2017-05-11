@@ -34,6 +34,10 @@ function ViewerBase(user, canvas) {
     // Indicates if the pan command is being executed.
     t.isPanning = false;
 
+    // The visible region of the renderer on screen. Can be initialized with 
+    // a rectangle which is being used when zooming instead of the scene extents.
+    t.viewport = null;
+
     // Shadow that is drawn below the canvases / artboards / pages.
     t.pageShadow = new createjs.Shadow('rgba(0,0,0,.2)', 3, 3, 6);
 
@@ -163,6 +167,40 @@ ViewerBase.prototype.setFile = function (file) {
 
     // Raise the entity changed event.
     t.raise('fileChanged', file);
+};
+
+ViewerBase.prototype.setViewport = function (x, y, w, h) {
+    var t = this;
+
+    function isNumber(n) {
+        return !isNaN(n - 0) && n !== null && n !== '' && n !== false;
+    }
+
+    if (isNumber(x) && isNumber(y) && isNumber(w) && isNumber(h)) {
+        t.viewport = {
+            x: x,
+            y: y,
+            width: w,
+            height: h,
+            t: x,
+            l: y,
+            b: y + h,
+            r: x + w
+        };
+    } else {
+        t.viewport = null;
+    }
+};
+
+ViewerBase.prototype.getViewport = function () {
+    var t = this;
+
+    var viewport = {
+        width: t.viewport !== null ? t.viewport.width : $(t.canvas).innerWidth(),
+        height: t.viewport !== null ? t.viewport.height : $(t.canvas).innerHeight()
+    };
+
+    return viewport;
 };
 
 ViewerBase.prototype.addRenderer = function (renderer) {
@@ -368,19 +406,21 @@ ViewerBase.prototype.onDrawStart = function (t, e) {
     t.scene.debug.removeAllChildren();
     t.stage.debug.removeAllChildren();
 
-    if (t.enableDebug && t.scene.extents != null) {
-        var extents = t.scene.extents;
+    var extents = t.scene.extents;
 
+    if (t.enableDebug && extents != null) {
         // Draw extents position marker.
         var ce = {
             x: extents.x + extents.width / 2,
             y: -extents.y + extents.height / 2
         };
 
+        var viewport = t.getViewport();
+
         // Draw center position marker.
         var cc = {
-            x: $(t.canvas).innerWidth() / 2,
-            y: $(t.canvas).innerHeight() / 2
+            x: viewport.width / 2,
+            y: viewport.height / 2
         };
 
         // Uncomment this when debugging:
@@ -417,50 +457,55 @@ ViewerBase.prototype.zoomToFit = function () {
 
     var extents = t.scene.extents;
 
-    // Draw extents position marker.
-    var ce = {
-        x: extents.x + extents.width / 2,
-        y: -extents.y + extents.height / 2
-    };
+    if (extents.width > 0 && extents.height > 0) {
+        // Draw extents position marker.
+        var ce = {
+            x: extents.x + extents.width / 2,
+            y: -extents.y + extents.height / 2
+        };
 
-    // Draw center position marker.
-    var cc = {
-        x: $(t.canvas).innerWidth() / 2,
-        y: $(t.canvas).innerHeight() / 2
-    };
+        // Get the viewport from the canvas or from the extern override value.
+        var viewport = t.getViewport();
 
-    // Set the registration point of the scene to the center of the extents (currently the canvas center).
-    t.scene.regX = ce.x;
-    t.scene.regY = ce.y;
+        // Draw center position marker.
+        var cc = {
+            x: viewport.width / 2,
+            y: viewport.height / 2
+        };
 
-    // Move the scene into the center of the stage.
-    t.scene.x = cc.x;
-    t.scene.y = cc.y;
+        // Set the registration point of the scene to the center of the extents (currently the canvas center).
+        t.scene.regX = ce.x;
+        t.scene.regY = ce.y;
 
-    // One zoom factor for scaling both axes.
-    var z = 1.0;
+        // Move the scene into the center of the stage.
+        t.scene.x = cc.x;
+        t.scene.y = cc.y;
 
-    // Padding inside the canvas.
-    var p = 30;
+        // One zoom factor for scaling both axes.
+        var z = 1.0;
 
-    // After measuring, determine the zoom level to contain all the canvases.
-    if (extents.width > t.canvas.width) {
-        z = Math.min(z, (t.canvas.width - p) / extents.width);
+        // Padding inside the canvas.
+        var p = 30;
+
+        // After measuring, determine the zoom level to contain all the canvases.
+        if (extents.width > t.canvas.width) {
+            z = Math.min(z, (t.canvas.width - p) / extents.width);
+        }
+
+        if (extents.height > t.canvas.height) {
+            z = Math.min(z, (t.canvas.height - p) / extents.height);
+        }
+
+        t.scene.scaleX = z;
+        t.scene.scaleY = z;
+
+        t.stage.x = 0;
+        t.stage.y = 0;
+
+        t.stage.update();
+
+        t.raise('zoom');
     }
-
-    if (extents.height > t.canvas.height) {
-        z = Math.min(z, (t.canvas.height - p) / extents.height);
-    }
-
-    t.scene.scaleX = z;
-    t.scene.scaleY = z;
-
-    t.stage.x = 0;
-    t.stage.y = 0;
-
-    t.stage.update();
-
-    t.raise('zoom');
 };
 
 ViewerBase.prototype.measureExtents = function (x, y, w, h) {
