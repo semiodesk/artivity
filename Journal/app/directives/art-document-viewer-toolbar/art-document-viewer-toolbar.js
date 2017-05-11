@@ -85,7 +85,7 @@
         }
 
         t.$postLink = function () {
-            $('.btn[data-command]').each(function (i, btn) {
+            $element.find('[data-command]').each(function (i, btn) {
                 $(btn).click(t.executeCommand);
             });
 
