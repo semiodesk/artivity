@@ -1,54 +1,60 @@
-<div class="layout-root table-layout">
-    <div class="row header">
-        <div class="toolbar toolbar-header">
-            <a class="btn btn-header" ng-click="t.submitAndReturn()"><i class="zmdi zmdi-chevron-left"></i></a>
+<div class="layout-root" layout="column">
+    <div class="md-toolbar md-toolbar-header" layout="row">
+        <md-button class="md-button-icon" ng-click="t.submitAndReturn()">
+            <md-icon md-font-icon="zmdi zmdi-chevron-left"></md-icon>
+        </md-button>
 
-            <span class="txt txt-title" translate>Settings</span>
-
-            <a class="btn btn-header btn-text pull-right" onclick="history.back()">Cancel</a>
+        <div class="title" flex>
+            <span translate>Settings</span>
         </div>
+
+        <md-button onclick="history.back()">
+            <span translate>Cancel</span>
+        </md-button>
     </div>
-    <div class="row expand">
-        <div class="layout-container padding-y-xl">
-            <div class="container">
-                <uib-tabset class="nav-pills">
-                    <uib-tab>
-                        <uib-tab-heading>
-                            <div style="padding: 0 20px;">
-                                <span class="icn-container-lg"><i class="zmdi zmdi-account zmdi-lg"></i></span>
-                                <span translate>Profile</span>
-                            </div>
-                        </uib-tab-heading>
-                        <div class="padding-x-xl padding-y-xl">
-                            <art-settings-user></art-settings-user>
-                        </div>
-                    </uib-tab>
-                    <uib-tab>
-                        <uib-tab-heading>
-                            <div style="padding: 0 20px;">
-                                <span class="icn-container-lg"><i class="zmdi zmdi-apps zmdi-lg"></i></span>
-                                <span translate>Apps</span>
-                            </div>
-                        </uib-tab-heading>
-                        <div class="padding-x-xl padding-y-xl">
-                            <art-settings-apps></art-settings-apps>
-                        </div>
-                    </uib-tab>
-                    <uib-tab>
-                        <uib-tab-heading>
-                            <div style="padding: 0 20px;">
-                                <span class="icn-container-lg"><i class="zmdi zmdi-globe-alt zmdi-lg"></i></span>
-                                <span translate>Accounts</span>
-                            </div>
-                        </uib-tab-heading>
-                        <div class="padding-x-xl padding-y-xl">
-                            <art-settings-accounts></art-settings-accounts>
-                        </div>
-                    </uib-tab>
-                </uib-tabset>
-                <!-- TODO: Implement the tab content as view states so that they can be referenced using links. -->
-                <!--<div ui-view="tab-content"></div>-->
-            </div>
-        </div>
+    <div class="container padding-y-xl" flex>
+        <md-tabs layout="column" layout-fill flex>
+            <md-tab>
+                <md-tab-label>
+                    <div class="padding-x-xl">
+                        <md-icon md-font-icon="zmdi zmdi-account zmdi-lg"></md-icon>
+                        <span translate>Profile</span>
+                    </div>
+                </md-tab-label>
+                <md-tab-body>
+                    <div class="layout-container padding-x-xl padding-y-xl border-top">
+                        <art-settings-user></art-settings-user>
+                    </div>
+                </md-tab-body>
+            </md-tab>
+            <md-tab>
+                <md-tab-label>
+                    <div class="padding-x-xl">
+                        <md-icon md-font-icon="zmdi zmdi-apps zmdi-lg"></md-icon>
+                        <span translate>Apps</span>
+                    </div>
+                </md-tab-label>
+                <md-tab-body>
+                    <div class="layout-container padding-x-xl padding-y-xl border-top">
+                        <art-settings-apps></art-settings-apps>
+                    </div>
+                </md-tab-body>
+            </md-tab>
+            <md-tab>
+                <md-tab-label>
+                    <div class="padding-x-xl">
+                        <md-icon md-font-icon="zmdi zmdi-globe-alt zmdi-lg"></md-icon>
+                        <span translate>Accounts</span>
+                    </div>
+                </md-tab-label>
+                <md-tab-body>
+                    <div class="layout-container padding-x-xl padding-y-xl border-top">
+                        <art-settings-accounts></art-settings-accounts>
+                    </div>
+                </md-tab-body>
+            </md-tab>
+        </md-tabs>
+        <!-- TODO: Implement the tab content as view states so that they can be referenced using links. -->
+        <!--<div ui-view="tab-content"></div>-->
     </div>
 </div>

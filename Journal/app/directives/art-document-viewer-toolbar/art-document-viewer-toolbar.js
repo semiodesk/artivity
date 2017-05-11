@@ -100,10 +100,8 @@
 
                 t.viewer = e.newViewer;
 
-                $scope.$apply(function () {
-                    updatePageInfo();
-                    updateButtonStates();
-                });
+                updatePageInfo();
+                updateButtonStates();
             });
 
             t.viewer = viewerService.viewer();
