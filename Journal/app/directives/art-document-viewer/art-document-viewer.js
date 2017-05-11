@@ -23,9 +23,9 @@
 
     angular.module('app').controller('DocumentViewerDirectiveController', DocumentViewerDirectiveController);
 
-    DocumentViewerDirectiveController.$inject = ['$scope', '$element', 'api', 'hotkeys', 'viewerService', 'agentService', 'entityService', 'selectionService', 'markService'];
+    DocumentViewerDirectiveController.$inject = ['$rootScope', '$scope', '$element', 'api', 'hotkeys', 'viewerService', 'agentService', 'entityService', 'selectionService', 'markService'];
 
-    function DocumentViewerDirectiveController($scope, $element, api, hotkeys, viewerService, agentService, entityService, selectionService, markService) {
+    function DocumentViewerDirectiveController($rootScope, $scope, $element, api, hotkeys, viewerService, agentService, entityService, selectionService, markService) {
         var t = this;
 
         t.viewer = null;
@@ -39,8 +39,8 @@
                     // TODO: This is ignoring the margin and possible offset of the sidebar.
                     var x = 0;
                     var y = 0;
-                    var w = canvas.width() - sidebar.width();
-                    var h = canvas.height();
+                    var w = canvas.width() - sidebar.width() - 25;
+                    var h = canvas.height() - 100;
 
                     if (w > 0 && h > 0) {
                         t.viewer.setViewport(x, y, w, h);
@@ -58,6 +58,9 @@
 
                 t.viewer = new DocumentViewer(agentService.currentUser, canvas, "", selectionService);
                 t.viewer.addCommand(new SelectCommand(t.viewer, selectionService), true);
+                t.viewer.addCommand(new NextPageCommand(t.viewer));
+                t.viewer.addCommand(new PreviousPageCommand(t.viewer));
+                t.viewer.addCommand(new ToggleTwoPageLayoutCommand(t.viewer));
                 t.viewer.addCommand(new PanCommand(t.viewer));
                 t.viewer.addCommand(new ZoomInCommand(t.viewer));
                 t.viewer.addCommand(new ZoomOutCommand(t.viewer));
@@ -113,6 +116,8 @@
                                     t.viewer.setFile(fileUri);
                                     t.viewer.setRevision(revisionUri);
                                     t.viewer.zoomToFit();
+
+                                    $rootScope.$broadcast('fileLoaded');
                                 });
                             });
                         }
@@ -128,6 +133,17 @@
             description: 'Reload the document view.',
             callback: function () {
                 if (t.viewer) {
+                    t.viewer.stage.update();
+                }
+            }
+        });
+
+        hotkeys.add({
+            combo: 'shift+f9',
+            description: 'Toggle debug view',
+            callback: function () {
+                if (t.viewer) {
+                    t.viewer.enableDebug = !t.viewer.enableDebug;
                     t.viewer.stage.update();
                 }
             }

@@ -71,7 +71,7 @@ DocumentHistoryViewer.prototype.render = function (influence) {
     // Only render the newest version of every layer.
     t.layerCache.getAll(time, function (layer) {
         if (layer.visible) {
-            var r = t.renderCache.get(time, layer);
+            var r = t.renderCache.getRenderingsAtTime(time, layer);
 
             if (r !== undefined) {
                 t.renderedLayers.push(r);

@@ -28,10 +28,10 @@
 
                 if (sidebar.length && canvas.length) {
                     // TODO: This is ignoring the margin and possible offset of the sidebar.
-                    var x = 0;
+                    var x = 25;
                     var y = 0;
-                    var w = canvas.width() - sidebar.width();
-                    var h = canvas.height();
+                    var w = canvas.width() - sidebar.width() - 25;
+                    var h = canvas.height() - 25;
 
                     if (w > 0 && h > 0) {
                         t.viewer.setViewport(x, y, w, h);

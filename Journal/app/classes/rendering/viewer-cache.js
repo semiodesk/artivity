@@ -88,7 +88,40 @@ ViewerCache.prototype.loadRender = function (data, i, complete) {
     r.src = t.endpointUrl + d.file;
 };
 
-ViewerCache.prototype.get = function (time, layer, fn) {
+/**
+ * Get the rendering of a layer at a given point in time.
+ */
+ViewerCache.prototype.getRenderingsAtTime = function (time, layer, fn) {
+    var t = this;
+
+    if (layer) {
+        var uri = layer;
+
+        if (layer.uri) {
+            uri = layer.uri;
+        }
+
+        if (uri !== undefined && uri in t.renders) {
+            var R = t.renders[uri].filter(function(r, index) {
+                return r.time <= time;
+            });
+
+            if (fn) {
+                for (var i = 0; i < R.length; i++) {
+                    fn(R[i]);
+                }
+            } else {
+                return R;
+            }
+        }
+    }
+};
+
+/**
+ * Get the rendering of a layer by its position in the cache. 
+ * Useful for getting page renderings if they are stored in the correct order.
+ */
+ViewerCache.prototype.getRenderingsAtIndex = function (index, layer, fn) {
     var t = this;
 
     if (layer) {
@@ -100,16 +133,13 @@ ViewerCache.prototype.get = function (time, layer, fn) {
 
         if (uri !== undefined && uri in t.renders) {
             var R = t.renders[uri];
+            var r = [R[index]];
 
-            for (var i = 0; i < R.length; i++) {
-                var r = R[i];
-
-                if (r.time <= time) {
-                    if (fn) {
-                        fn(r);
-                    } else {
-                        return r;
-                    }
+            if (r) {
+                if (fn) {
+                    fn(r);
+                } else {
+                    return r;
                 }
             }
         }
