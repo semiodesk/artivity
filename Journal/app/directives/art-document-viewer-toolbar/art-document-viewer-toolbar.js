@@ -71,8 +71,17 @@
                     } else {
                         t.viewer.executeCommand(command);
                     }
+
+                    $scope.$apply(function () {
+                        updatePageInfo();
+                    });
                 }
             }
+        }
+
+        function updatePageInfo() {
+            t.currentPage = t.viewer.pageIndex + 1;
+            t.pageCount = t.viewer.pages.length;
         }
 
         t.$postLink = function () {
@@ -80,27 +89,38 @@
                 $(btn).click(t.executeCommand);
             });
 
-            viewerService.on('viewerChanged', function(e) {
-                if(e.oldViewer) {
+            viewerService.on('viewerChanged', function (e) {
+                if (e.oldViewer) {
                     e.oldViewer.off('commandSelected', updateButtonStates);
                 }
 
-                if(e.newViewer) {
+                if (e.newViewer) {
                     e.newViewer.on('commandSelected', updateButtonStates);
                 }
 
                 t.viewer = e.newViewer;
 
-                updateButtonStates();
+                $scope.$apply(function () {
+                    updatePageInfo();
+                    updateButtonStates();
+                });
             });
 
             t.viewer = viewerService.viewer();
 
-            if(t.viewer) {
+            if (t.viewer) {
+                updatePageInfo();
                 updateButtonStates();
 
                 t.viewer.on('commandSelected', updateButtonStates);
             }
+
+            $scope.$on('fileLoaded', function (e) {
+                $scope.$apply(function () {
+                    updatePageInfo();
+                    updateButtonStates();
+                });
+            });
         }
     }
 })();

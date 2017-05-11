@@ -149,11 +149,27 @@ ViewerBase.prototype.clearStage = function () {
     if (t.scene) {
         // Clear the scene container.
         t.scene.removeAllChildren();
+
+        // Reset the scene extents.
+        t.scene.extents = {
+            t: 0,
+            r: 0,
+            b: 0,
+            l: 0
+        }
     }
 
     if (t.overlay) {
         // Clear the overlay container.
         t.overlay.removeAllChildren();
+
+        // Reset the scene extents.
+        t.scene.extents = {
+            t: 0,
+            r: 0,
+            b: 0,
+            l: 0
+        }
     }
 };
 
@@ -598,6 +614,18 @@ ViewerBase.prototype.drawSceneMarkers = function (extents, canvasCenter, extents
             g.moveTo(cc.x + r, cc.y - r);
             g.lineTo(cc.x - r, cc.y + r);
             g.endStroke();
+
+            t.stage.debug.addChild(s);
+        }
+
+        if (t.viewport) {
+            // Draw extents of the scene.
+            var s = new createjs.Shape();
+
+            var g = s.graphics;
+            g.beginStroke('purple');
+            g.setStrokeStyle(1);
+            g.drawRect(t.viewport.l, -t.viewport.t, t.viewport.width, t.viewport.height);
 
             t.stage.debug.addChild(s);
         }

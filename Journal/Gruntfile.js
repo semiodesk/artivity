@@ -15,6 +15,7 @@ module.exports = function (grunt) {
             'app/classes/*.js',
             'app/classes/rendering/*.js',
             'app/classes/rendering/caching/*.js',
+            'app/classes/rendering/viewers/options/*.js',
             'app/classes/rendering/viewers/commands/*.js',
             'app/classes/rendering/viewers/renderers/*.js',
             'app/classes/rendering/viewers/*.js'
