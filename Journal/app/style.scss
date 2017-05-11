@@ -431,14 +431,13 @@ button:focus,
 	left: 0;
 }
 
-.btn .btn-label {
-	margin-left: 5px;
+.btn-label {
+	margin-left: 6px;
 }
 
-.btn .btn-label.left {
+.btn-label.left {
 	text-align: left;
 }
-
 
 /* DROPDOWN */
 
@@ -1455,12 +1454,11 @@ h4 {
 	margin: 6px 8px;
 }
 
-.md-button .zmdi {
-	margin-right: 6px !important;
+.md-button.md-button-icon {
+	min-width: 35px;
 }
 
-.md-button.md-button-icon {
-	min-width: 40px;
+.md-button.md-button-icon md-icon {
 }
 
 md-list-item .md-list-item-inner>md-checkbox .md-label {
