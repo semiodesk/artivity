@@ -1,15 +1,15 @@
 <form name="form">
-    <div class="form-header">
-        <button class="btn btn-chromeless pull-right" style="position: relative; right -10px; top: -10px;" ng-click="addAccount()">
-            <i class="zmdi zmdi-plus zmdi-lg"></i>
-            <span class="btn-label" translate>Add account</span>
-        </button>
+    <div class="padding-y-md" layout="row" layout-align="start center">
+        <div translate flex>
+            Connect your online accounts to benefit from additional features:
+        </div>
 
-        <p class="description" translate>Connect your online accounts to benefit from additional features:</p>
+        <md-button ng-click="addAccount()">
+            <md-icon md-font-icon="zmdi zmdi-plus zmdi-lg"></md-icon>
+            <span translate>Add account</span>
+        </md-button>
     </div>
-
-    <div class="clearfix"></div>
-
+    
     <ul class="list-view">
         <li class="list-item" ng-repeat="a in accounts" ng-click="selectAccount(a)">
             <div class="col col-icn col-icn-lg">

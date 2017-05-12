@@ -6,47 +6,38 @@
     function SetupStateController($rootScope, $scope, $state, api, settingsService, windowService) {
         var t = this;
 
-        t.onActiveTabChanged = function () {
-            var n = t.tabs.indexOf(t.activeTab);
+        $scope.stepCount = 2;
+        $scope.stepIndex = 0;
+        $scope.percentComplete = 50;
 
-            t.hasPreviousButton = n > 0;
-            t.navigatePreviousDisable = false;
+        $scope.navigateNext = function () {
+            if ($scope.stepIndex < $scope.stepCount - 1) {
+                $scope.stepIndex += 1;
 
-            t.hasNextButton = n < t.tabs.length - 1;
-            t.navigateNextDisabled = true;
-
-            t.setupComplete = t.setupComplete | !t.hasNextButton;
-        }
-
-        t.showTab = function (target) {
-            var a = $('a[data-target="' + target + '"]');
-
-            if (a) {
-                t.activeTab = target;
-
-                t.onActiveTabChanged();
-
-                a.tab('show');
+                $scope.onActiveTabChanged();
             }
         }
 
-        t.navigateNext = function () {
-            var n = t.tabs.indexOf(t.activeTab);
-
-            if (n < t.tabs.length - 1) {
-                t.showTab(t.tabs[n + 1]);
+        $scope.navigatePrevious = function () {
+            if ($scope.stepIndex > 0) {
+                $scope.stepIndex -= 1;
+                
+                $scope.onActiveTabChanged();
             }
         }
 
-        t.navigatePrevious = function () {
-            var n = t.tabs.indexOf(t.activeTab);
+        $scope.onActiveTabChanged = function () {
+            $scope.percentComplete = ($scope.stepCount / ($scope.stepIndex + 1)) * 100;
+            $scope.hasPreviousButton = $scope.stepIndex > 0;
+            $scope.navigatePreviousDisable = false;
 
-            if (n > 0) {
-                t.showTab(t.tabs[n - 1]);
-            }
+            $scope.hasNextButton = $scope.stepIndex < $scope.stepCount - 1;
+            $scope.navigateNextDisabled = true;
+
+            $scope.setupComplete = $scope.setupComplete | !$scope.hasNextButton;
         }
 
-        t.submitAndReturn = function () {
+        $scope.submitAndReturn = function () {
             // Submit all setup pages.
             settingsService.submitAll();
 
@@ -64,42 +55,12 @@
             windowService.setMinimizable(false);
             windowService.setMaximizable(false);
 
-            t.tabs = [];
-
-            each($('.tab-pane'), function (n, tab) {
-                var id = $(tab).attr('id');
-
-                if (id !== undefined) {
-                    t.tabs.push('#' + id);
-                }
-            });
-
-            if (t.tabs.length > 0) {
-                t.activeTab = '#' + $('.tab-pane.active').attr('id');
-
-                t.onActiveTabChanged();
-
-                // http://getbootstrap.com/javascript/#tabs
-                $('a[data-toggle="tab"]').bind('shown.bs.tab', function (e) {
-                    t.activeTab = $(e.target).data('target');
-
-                    t.onActiveTabChanged();
-
-                    // The event is triggered from another thread. Trigger the digest manually for the UI to update.
-                    try {
-                        if (!$scope.$$phase) {
-                            $scope.$digest();
-                        }
-                    } catch (error) {}
-                });
-            }
-
             $rootScope.$on('navigateNext', function () {
-                t.navigateNext();
+                $scope.navigateNext();
             });
 
             $rootScope.$on('navigateNextEnabled', function () {
-                t.navigateNextDisabled = false;
+                $scope.navigateNextDisabled = false;
             });
         }
 

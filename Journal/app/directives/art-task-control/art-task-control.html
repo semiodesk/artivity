@@ -1,4 +1,4 @@
-<md-content class="layout-root" layout="column">
+<md-content class="layout-root" layout="column" ng-cloak>
     <md-list flex>
         <md-list-item ng-repeat="task in t.tasks" ng-mouseenter="t.showMarks(task)" ng-mouseleave="t.hideMarks(task)">
             <md-checkbox ng-model="task.completed" ng-change="t.putTask(task)" flex>
@@ -7,7 +7,7 @@
             <md-divider></md-divider>
         </md-list-item>
     </md-list>
-    <div class="ctl-task padding-x-xs padding-y-xs" style="position: absolute; bottom: 1px; left: 0; right: 0;">
+    <div class="ctl-task padding-x-xs padding-y-xs">
         <input type="text" class="form-control stretch-horizontal no-margin" style="margin-bottom: 5px;" placeholder="{{'Create a new task' | translate}}"
             ng-model="t.newTask.name" ng-change="t.updateTask(t.newTask)" ng-enter="t.postTask(t.newTask)" ng-esc="t.resetTask()">
         </input>
