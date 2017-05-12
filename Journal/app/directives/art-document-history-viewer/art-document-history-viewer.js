@@ -59,7 +59,7 @@
                 });
 
                 // Handle the resize of UI panes.
-                $scope.$on('resize', function () {
+                $(window).on('resize', function () {
                     t.setViewerVisibleRegion();
 
                     t.viewer.onResize();
