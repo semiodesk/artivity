@@ -195,12 +195,12 @@ ViewerBase.prototype.setViewport = function (x, y, w, h) {
     if (isNumber(x) && isNumber(y) && isNumber(w) && isNumber(h)) {
         t.viewport = {
             x: x,
-            y: y,
+            y: -y,
             width: w,
             height: h,
-            t: x,
-            l: y,
-            b: y + h,
+            t: -y,
+            b: -y + h,
+            l: x,
             r: x + w
         };
     } else {
@@ -211,12 +211,16 @@ ViewerBase.prototype.setViewport = function (x, y, w, h) {
 ViewerBase.prototype.getViewport = function () {
     var t = this;
 
-    var viewport = {
-        width: t.viewport !== null ? t.viewport.width : $(t.canvas).innerWidth(),
-        height: t.viewport !== null ? t.viewport.height : $(t.canvas).innerHeight()
-    };
-
-    return viewport;
+    if(t.viewport !== null) {
+        return t.viewport;
+    } else {
+        return {
+            x: 0,
+            y: 0,
+            width: $(t.canvas).innerWidth(),
+            height: $(t.canvas).innerHeight()
+        }
+    }
 };
 
 ViewerBase.prototype.addRenderer = function (renderer) {
@@ -373,13 +377,7 @@ ViewerBase.prototype.onResize = function () {
     var t = this;
 
     // This seems to be the only reliable way to compute the correct height of the body area.
-    var bodyHeight = $('#window-view-container').height();
-
-    $('.layout-root > .row').each(function (n, row) {
-        if (!$(row).hasClass('expand')) {
-            bodyHeight -= $(row).height();
-        }
-    });
+    var bodyHeight = $('.viewer-container').height();
 
     var buffer = t.canvas;
 
@@ -504,12 +502,12 @@ ViewerBase.prototype.zoomToFit = function () {
         var p = 30;
 
         // After measuring, determine the zoom level to contain all the canvases.
-        if (extents.width > t.canvas.width) {
-            z = Math.min(z, (t.canvas.width - p) / extents.width);
+        if (extents.width > viewport.width) {
+            z = Math.min(z, (viewport.width - p) / extents.width);
         }
 
-        if (extents.height > t.canvas.height) {
-            z = Math.min(z, (t.canvas.height - p) / extents.height);
+        if (extents.height > viewport.height) {
+            z = Math.min(z, (viewport.height - p) / extents.height);
         }
 
         t.scene.scaleX = z;
