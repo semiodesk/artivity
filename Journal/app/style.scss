@@ -1245,7 +1245,7 @@ h4 {
 .toolbar.toolbar-floating {
 	border: 1px solid #dedede;
 	background: $overlayBackgroundColor;
-	backdrop-filter: blur(5px); //box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, .05);
+	backdrop-filter: blur(3px);
 }
 
 .toolbar.toolbar-floating .btn {
@@ -1379,6 +1379,15 @@ h4 {
 md-list-item .md-list-item-inner>md-checkbox .md-label {
 	// Show the labels inside a checkbox.
 	display: inline !important;
+}
+
+.md-tab-labels-hidden > md-tabs-wrapper {
+	display: none;
+	height: 0;
+}
+
+.md-tab-labels-hidden > md-tabs-content-wrapper {
+	top: 0;
 }
 
 /* DIRECTIVES */

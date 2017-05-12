@@ -12,7 +12,7 @@ namespace Artivity.Api.Parameters
 
         public string agent { get; set; }
 
-        public string entity { get; set; }
+        public string primarySource { get; set; }
 
         public DateTime startTime { get; set; }
 

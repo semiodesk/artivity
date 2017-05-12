@@ -1,19 +1,24 @@
 <form name="appsForm">
-    <div class="form-header">
-        <button class="btn btn-chromeless pull-right" style="position: relative; right -10px; top: -10px;" ng-click="t.reload()">
-            <i class="zmdi zmdi-lg zmdi-refresh-sync"></i> <span class="btn-label" translate>Refresh</span>
-        </button>
+    <div class="padding-y-md" layout="row" layout-align="start center">
+        <div translate flex>
+            Enable or disable the Artivity for the following applications:
+        </div>
 
-        <p class="description" translate>Enable or disable the Artivity for the following applications:</p>
+        <md-button ng-click="t.reload()">
+            <md-icon md-font-icon="zmdi zmdi-lg zmdi-refresh-sync"></md-icon>
+            <span translate>Refresh</span>
+        </md-button>
     </div>
-
-    <div class="clearfix"></div>
 
     <div ng-show="t.loading || t.agents.length > 0">
         <uib-accordion class="panel-accordion" close-others="oneAtATime" style="max-width: 500px;">
             <div uib-accordion-group ng-repeat="agent in t.agents">
                 <uib-accordion-heading>
-                    <div class="pull-right" style="margin-top: 3px">
+                    <div layout="row" layout-align="start center" flex>
+                        <img ng-src="{{agent.iconSrc}}" ng-class="{grayscale: !agent.pluginInstalled}" width="40" height="40" style="margin: 0 10px">
+
+                        <h5 style="line-height: 40px; vertical-align: middle" flex>{{agent.name}}</h5>
+
                         <label class="label-default" ng-show="!agent.hasError && agent.pluginInstalled" translate>
                             Plugin installed
                         </label>
@@ -25,16 +30,9 @@
                             <span ng-show="agent.errotType != undefined">{{agent.errorType}}</span>
                         </label>
                         <toggle style="padding: 0 10px; font-size: 14px;" on="<i class='zmdi zmdi-check'></i>" off="<i class='zmdi zmdi-close'></i>"
-                            ng-model="agent.pluginInstalled"
-                            ng-click="t.toggleInstall(agent, $event)">
+                            ng-model="agent.pluginInstalled" ng-click="t.toggleInstall(agent, $event)">
                         </toggle>
                     </div>
-
-                    <img class="pull-left" ng-src="{{agent.iconSrc}}" ng-class="{grayscale: !agent.pluginInstalled}" width="40" height="40" style="margin: 0 10px">
-
-                    <h5 style="line-height: 40px; vertical-align: middle">{{agent.name}}</h5>
-
-                    <div class="clearfix"></div>
                 </uib-accordion-heading>
 
                 <table style="margin-left: 45px; margin-right: 45px; min-width: 100px;" class="pull-left">
@@ -57,26 +55,18 @@
             </div>
         </uib-accordion>
     </div>
-
     <div ng-show="!t.loading && t.agents.length === 0" class="text-center">
         <div style="padding: 25px 0;">
             <img src="app/resources/img/info.svg" width="100" height="100" style="opacity: .25">
         </div>
 
-        <h3>Es wurde keine passende Software gefunden.</h3>
-        <a href="https://artivity.online/system-requirements.html" target="_blank">Welche Software wird unterstützt?</a>
+        <h3 translate>No compatible software was found on.</h3>
+        <a href="https://artivity.online/system-requirements.html" target="_blank" translate>Which software is supported?</a>
     </div>
-
     <div ng-show="!t.loading && !t.ready" class="container" style="position: absolute; bottom: 0;">
         <div style="margin-left: 100px; display:inline-block; line-height: 40px; vertical-align: middle;">
             <img src="app/resources/img/info.svg" width="30" height="30" style="float: left; opacity: .75; margin: 5px 7px 0 0;">
-            <b>Keine Plugins installiert:</b> Bearbeitete Dateien erscheinen nicht in Artivity.</p>
-        </div>
-    </div>
-
-    <div class="statusbar text-center">
-        <div class="msg-info" ng-show="false">
-            <label style="padding: 10px 30px;"><i class="zmdi zmdi-info"></i> You can drag undetected applications into this window.</label>
+            <p><b><span translate>No plugins are installed:</span></b> <span translate>Your edited files will not appear in Artivity.</span></p>
         </div>
     </div>
 </form>
