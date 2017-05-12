@@ -14,22 +14,22 @@
     <div class="layout-container viewer-container" flex>
         <art-document-viewer file="t.file"></art-document-viewer>
 
-        <art-document-viewer-toolbar style="position: absolute; top: 10px; left: 10px;"></art-document-viewer-toolbar>
+        <art-document-viewer-toolbar></art-document-viewer-toolbar>
 
         <div class="ui-sidebar ui-sidebar-right">
             <md-tabs class="layout-root" md-border-bottom>
                 <md-tab label="{{'Chat' | translate}}">
-                    <md-content style="width: 100%; height: 100%;">
+                    <md-content layout="column" layout-fill>
                         <art-chat-comment-list entity-uri="t.latestRevisionUri"></art-chat-comment-list>
                     </md-content>
                 </md-tab>
                 <md-tab label="{{'Topics' | translate}}">
-                    <md-content style="width: 100%; height: 100%;">
+                    <md-content layout="column" layout-fill>
                         <art-topic-control entity-uri="t.latestRevisionUri"></art-topic-control>
                     </md-content>
                 </md-tab>
                 <md-tab label="{{'Todo' | translate}}">
-                    <md-content style="width: 100%; height: 100%;">
+                    <md-content layout="column" layout-fill>
                         <art-task-control entity-uri="t.latestRevisionUri"></art-task-control>
                     </md-content>
                 </md-tab>
@@ -37,3 +37,14 @@
         </div>
     </div>
 </div>
+<style type="text/css">
+    art-document-viewer-toolbar {
+        position: absolute;
+        top: 10px;
+        bottom: 10px;
+        left: 10px;
+        right: 510px;
+        bottom: 10px;
+        pointer-events: none;
+    }
+</style>

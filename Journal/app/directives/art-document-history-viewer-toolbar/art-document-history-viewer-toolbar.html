@@ -1,20 +1,19 @@
-<md-toolbar class="bg-transparent">
-    <div class="md-toolbar-tools">
-        <md-button class="md-icon-button" ng-disabled="t.selectedInfluence === t.minIndex" ng-click="t.skipPrev()">
-            <i class="zmdi zmdi-skip-previous"></i>
+<div class="layout-root" layout="column">
+    <div flex></div>
+    <div class="toolbar toolbar-floating" layout="row" layout-align="start center">
+        <md-button class="md-button-icon" ng-disabled="t.selectedInfluence === t.minIndex" ng-click="t.skipPrev()">
+            <md-icon md-font-icon="zmdi zmdi-skip-previous"></md-icon>
         </md-button>
-        <md-button class="md-icon-button" ng-disabled="t.selectedInfluence === t.maxIndex" ng-click="t.togglePlay()">
-            <span ng-switch="t.playing">
-                <i ng-switch-when="false" class="zmdi zmdi-play"></i>
-                <i ng-switch-when="true" class="zmdi zmdi-pause"></i>
-            </span>
+        <md-button class="md-button-icon" ng-disabled="t.selectedInfluence === t.maxIndex" ng-click="t.togglePlay()">
+            <md-icon ng-show="t.playing === false" md-font-icon="zmdi zmdi-play"></md-icon>
+            <md-icon ng-show="t.playing === true" md-font-icon="zmdi zmdi-pause"></md-icon>
         </md-button>
-        <md-button class="md-icon-button" ng-disabled="t.selectedInfluence === t.maxIndex" ng-click="t.skipNext()">
-            <i class="zmdi zmdi-skip-next"></i>
+        <md-button class="md-button-icon" ng-disabled="t.selectedInfluence === t.maxIndex" ng-click="t.skipNext()">
+            <md-icon md-font-icon="zmdi zmdi-skip-next"></md-icon>
         </md-button>
-        <md-slider-container flex ng-if="t.influences.length > 0">
+        <md-slider-container ng-if="t.influences.length > 0" flex>
             <md-slider min="{{t.minIndex}}" max="{{t.maxIndex}}" ng-model="t.selectedIndex" ng-change="t.onSliderChanged()"></md-slider>
         </md-slider-container>
         <span class="label padding-x-xl">{{t.getFormattedDuration(t.selectedIndex)}}</span>
     </div>
-</md-toolbar>
+</div>

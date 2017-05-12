@@ -1,41 +1,48 @@
-<div class="toolbar toolbar-floating pull-left" style="margin-right: 5px;" ng-cloak>
-    <md-button class="md-button-icon" data-command="viewerPagePrevious">
-        <md-icon md-font-icon="zmdi zmdi-chevron-left"></md-icon>
-    </md-button>
-    <md-button class="md-button-icon">
-        {{t.currentPage}} / {{t.pageCount}}
-    </md-button>
-    <md-button class="md-button-icon" data-command="viewerPageNext">
-        <md-icon md-font-icon="zmdi zmdi-chevron-right"></md-icon>
-    </md-button>
-</div>
-
-<div class="toolbar toolbar-floating pull-left" style="margin-right: 5px;">
-    <md-button class="md-button-icon" data-command="viewerPan">
-        <md-icon md-font-icon="zmdi zmdi-arrows"></md-icon>
-    </md-button>
-</div>
-
-<div class="toolbar toolbar-floating pull-left">
-    <md-button class="md-button-icon" data-command="viewerSelect" style="transform: scaleX(-1)">
-        <md-icon md-font-icon="zmdi zmdi-arrow-right-top"></md-icon>
-    </md-button>
-    <md-button class="md-button-icon" data-command="createMark" data-param="t.viewer.entity">
-        <md-icon md-font-icon="zmdi zmdi-photo-size-select-small"></md-icon>
-    </md-button>
-</div>
-
-<div class="toolbar toolbar-floating pull-right" style="margin-left: 5px;">
-    <md-button class="md-button-icon" data-command="viewerZoomIn">
-        <md-icon md-font-icon="zmdi zmdi-plus-circle-o"></md-icon>
-    </md-button>
-    <md-button class="md-button-icon" data-command="viewerZoomOut">
-        <md-icon md-font-icon="zmdi zmdi-minus-circle-outline"></md-icon>
-    </md-button>
-</div>
-
-<div class="toolbar toolbar-floating pull-right" style="margin-left: 5px;">
-    <md-button class="md-button-icon" data-command="viewerToggleTwoPageLayout">
-        <md-icon md-font-icon="zmdi zmdi-view-carousel"></md-icon>
-    </md-button>
+<div class="layout-root" layout="column">
+    <div layout="row" layout-align="start start">
+        <div class="toolbar toolbar-floating">
+            <md-button class="md-button-icon" data-command="viewerSelect" style="transform: scaleX(-1)">
+                <md-icon md-svg-src="app/resources/img/icons/pointer.svg"></md-icon>
+                <md-tooltip translate>Select</md-tooltip>
+            </md-button>
+            <md-button class="md-button-icon" data-command="viewerPan">
+                <md-icon md-svg-src="app/resources/img/icons/hand.svg"></md-icon>
+                <md-tooltip translate>Move canvas</md-tooltip>
+            </md-button>
+            <md-button class="md-button-icon" data-command="createMark" data-param="t.viewer.entity">
+                <md-icon md-svg-src="app/resources/img/icons/marker-region.svg"></md-icon>
+                <md-tooltip translate>Rectangle marker</md-tooltip>
+            </md-button>
+        </div>
+        <div flex></div>
+        <div class="toolbar toolbar-floating">
+            <md-button class="md-button-icon" data-command="viewerToggleTwoPageLayout">
+                <md-icon md-font-icon="zmdi zmdi-view-carousel"></md-icon>
+            </md-button>
+            <md-button class="md-button-icon" data-command="viewerZoomIn">
+                <md-icon md-svg-src="app/resources/img/icons/plus-o.svg"></md-icon>
+                <md-tooltip translate>Zoom in</md-tooltip>
+            </md-button>
+            <md-button class="md-button-icon" data-command="viewerZoomOut">
+                <md-icon md-svg-src="app/resources/img/icons/minus-o.svg"></md-icon>
+                <md-tooltip translate>Zoom out</md-tooltip>
+            </md-button>
+        </div>
+    </div>
+    <div flex></div>
+    <div layout="row" layout-align="center center">
+        <div class="toolbar toolbar-floating">
+            <md-button class="md-button-icon" data-command="viewerPagePrevious">
+                <md-icon md-svg-src="app/resources/img/icons/chevron-left-o.svg"></md-icon>
+                <md-tooltip md-direction="top" translate>Previous page</md-tooltip>
+            </md-button>
+            <md-button class="md-button-icon">
+                {{t.currentPage}} / {{t.pageCount}}
+            </md-button>
+            <md-button class="md-button-icon" data-command="viewerPageNext">
+                <md-icon md-svg-src="app/resources/img/icons/chevron-right-o.svg"></md-icon>
+                <md-tooltip md-direction="top" translate>Next page</md-tooltip>
+            </md-button>
+        </div>
+    </div>
 </div>
