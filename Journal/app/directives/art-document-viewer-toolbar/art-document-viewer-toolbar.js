@@ -18,28 +18,11 @@
     function DocumentViewerToolbarDirectiveController($scope, $element, $parse, viewerService, selectionService) {
         var t = this;
 
+        t.layout = 'single';
         t.viewer = null;
         t.commands = {};
-        t.canExecuteCommand = canExecuteCommand;
-        t.executeCommand = executeCommand;
 
-        function updateButtonStates(e) {
-            if (t.viewer) {
-                var selected = t.viewer.selectedCommand;
-
-                $('.btn[data-command]').each(function (i, btn) {
-                    var b = $(btn);
-
-                    if (b.data('command') === selected.id) {
-                        b.addClass('btn-active');
-                    } else {
-                        b.removeClass('btn-active');
-                    }
-                });
-            }
-        }
-
-        function canExecuteCommand(e) {
+        t.canExecuteCommand = function (e) {
             if (t.viewer) {
                 var command = $(e.currentTarget).data('command');
 
@@ -57,7 +40,7 @@
             }
         }
 
-        function executeCommand(e) {
+        t.executeCommand = function (e) {
             if (t.viewer) {
                 var command = $(e.currentTarget).data('command');
 
@@ -76,6 +59,26 @@
                         updatePageInfo();
                     });
                 }
+            }
+        }
+
+        t.onPageLayoutChanged = function () {
+            t.viewer.setPageLayout(t.layout);
+        }
+
+        function updateButtonStates(e) {
+            if (t.viewer) {
+                var selected = t.viewer.selectedCommand;
+
+                $('.btn[data-command]').each(function (i, btn) {
+                    var b = $(btn);
+
+                    if (b.data('command') === selected.id) {
+                        b.addClass('btn-active');
+                    } else {
+                        b.removeClass('btn-active');
+                    }
+                });
             }
         }
 
