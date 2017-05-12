@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('DocumentHistoryViewController', DocumentHistoryViewController);
 
-    DocumentHistoryViewController.$inject = ['$scope', '$state', '$stateParams', '$element', '$timeout', 'api', 'entityService', 'navigationService'];
+    DocumentHistoryViewController.$inject = ['$scope', '$state', '$stateParams', '$element', '$timeout', 'api', 'entityService', 'navigationService', 'syncService'];
 
-    function DocumentHistoryViewController($scope, $state, $stateParams, $element, $timeout, api, entityService, navigationService) {
+    function DocumentHistoryViewController($scope, $state, $stateParams, $element, $timeout, api, entityService, navigationService, syncService) {
         var t = this;
 
         t.loadFile = function (file) {

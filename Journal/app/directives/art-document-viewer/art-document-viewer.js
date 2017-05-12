@@ -36,11 +36,13 @@
                 var canvas = $(document).find('.viewer-canvas');
 
                 if (sidebar.length && canvas.length) {
+                    var padding = 10;
+
                     // TODO: This is ignoring the margin and possible offset of the sidebar.
-                    var x = 0;
-                    var y = 0;
-                    var w = canvas.width() - sidebar.width() - 25;
-                    var h = canvas.height() - 100;
+                    var x = padding;
+                    var y = padding;
+                    var w = canvas.width() - sidebar.width() - 2 * padding;
+                    var h = canvas.height() - 2 * padding;
 
                     if (w > 0 && h > 0) {
                         t.viewer.setViewport(x, y, w, h);
