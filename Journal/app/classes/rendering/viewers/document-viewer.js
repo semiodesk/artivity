@@ -214,15 +214,22 @@ DocumentViewer.prototype.setPageLayout = function (layout) {
     var t = this;
 
     switch (layout) {
-        case 'dual':
-            t.renderOptions.maxPages = 2;
-            t.renderOptions.layout = 'horizontal';
-            break;
-        case 'artboard':
+        case 'all':
+            t.pageIndex = -1;
             t.renderOptions.maxPages = -1;
             t.renderOptions.layout = undefined;
             break;
+        case 'dual':
+            if (t.pageIndex === -1) {
+                t.pageIndex = 0;
+            }
+            t.renderOptions.maxPages = 2;
+            t.renderOptions.layout = 'horizontal';
+            break;
         default:
+            if (t.pageIndex === -1) {
+                t.pageIndex = 0;
+            }
             t.renderOptions.maxPages = 1;
             t.renderOptions.layout = 'vertical';
             break;
