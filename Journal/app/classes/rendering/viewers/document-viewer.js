@@ -210,14 +210,24 @@ DocumentViewer.prototype.previousPage = function (options) {
     }
 }
 
-DocumentViewer.prototype.toggleTwoPageLayout = function() {
+DocumentViewer.prototype.setPageLayout = function (layout) {
     var t = this;
 
-    var n = t.renderOptions.maxPages;
-
-    t.renderOptions.maxPages = (n === 1) ? 2 : 1;
+    switch (layout) {
+        case 'dual':
+            t.renderOptions.maxPages = 2;
+            t.renderOptions.layout = 'horizontal';
+            break;
+        case 'artboard':
+            t.renderOptions.maxPages = -1;
+            t.renderOptions.layout = undefined;
+            break;
+        default:
+            t.renderOptions.maxPages = 1;
+            t.renderOptions.layout = 'vertical';
+            break;
+    }
 
     t.render();
-
     t.zoomToFit();
 }

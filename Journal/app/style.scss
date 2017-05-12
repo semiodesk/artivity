@@ -1280,6 +1280,11 @@ h4 {
 	color: rgba($headerTextColor, .7);
 }
 
+.toolbar md-select {
+	display: inline-block;
+	margin: 9px 8px;
+}
+
 .toolbar.toolbar-view .txt-title {
 	color: $textColor;
 	font-weight: 600;
@@ -1735,7 +1740,8 @@ input[disabled] {
 }
 
 button,
-md-slider {
+md-slider,
+md-select {
 	pointer-events: visiblePainted;
 }
 

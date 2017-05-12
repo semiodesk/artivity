@@ -15,10 +15,25 @@
             </md-button>
         </div>
         <div flex></div>
+        <div class="toolbar toolbar-floating" style="margin-right: 3px;">
+            <md-select ng-model="t.layout" ng-change="t.onPageLayoutChanged()" class="md-no-underline">
+                <md-option value="single" translate>
+                    <md-icon md-svg-src="app/resources/img/icons/layout-single.svg" style="margin-right: 6px;"></md-icon>
+                    <span translate>One Page</span>
+                </md-option>
+                <md-option value="dual">
+                    <md-icon md-svg-src="app/resources/img/icons/layout-dual.svg" style="margin-right: 6px;"></md-icon>
+                    <span translate>Two Pages</span>
+                </md-option>
+                <!--
+                <md-option value="artboard">
+                    <md-icon md-font-icon="zmdi zmdi-n-3-square"></md-icon>
+                    <span translate>All Pages</span>
+                </md-option>
+                -->
+            </md-select>
+        </div>
         <div class="toolbar toolbar-floating">
-            <md-button class="md-button-icon" data-command="viewerToggleTwoPageLayout">
-                <md-icon md-font-icon="zmdi zmdi-view-carousel"></md-icon>
-            </md-button>
             <md-button class="md-button-icon" data-command="viewerZoomIn">
                 <md-icon md-svg-src="app/resources/img/icons/plus-o.svg"></md-icon>
                 <md-tooltip translate>Zoom in</md-tooltip>
