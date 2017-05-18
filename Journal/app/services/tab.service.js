@@ -1,18 +1,20 @@
 (function () {
     angular.module('app').factory('tabService', tabService);
 
-    tabService.$inject = ['projectService'];
+    tabService.$inject = ['projectService', 'cookieService'];
 
-    function tabService(projectService) {
+    function tabService(projectService, cookieService) {
         var defaultContext = new TabContext({
             name: 'main.view.project-dashboard'
         }, {
             index: 0
         });
 
+        var initialized = false;
+
         var tabs = [
             new Tab(null, new TabContext({
-                name: 'main.view.recently-used'
+                name: 'main.view.dashboard'
             }, {
                 index: 0
             }), false, {
@@ -21,29 +23,59 @@
             new Tab(null, new TabContext({
                 name: 'main.view.recently-used'
             }), false, {
-                class: "zmdi zmdi-plus zmdi-lg"
+                class: "zmdi zmdi-plus"
             })
         ];
 
         var t = {
-            initialized: projectService.getAll().then(function (projects) {
-                var result = [];
+            openTabs: function () {
+                return new Promise(function (resolve, reject) {
+                    if (!initialized) {
+                        var projects = cookieService.get('tabs.openedProjects', []);
 
-                for (var i = 0; i < projects.length; i++) {
-                    var project = projects[i];
+                        for (var i = 0; i < projects.length; i++) {
+                            var uri = projects[i];
 
-                    var context = new TabContext(defaultContext.state, {
-                        index: i + 1,
-                        project: project
-                    });
+                            projectService.get(uri).then(function (project) {
+                                t.addTab(project);
+                            }, function () {
+                                console.error('Failed to load project:', project)
+                            });
+                        }
 
-                    result.push(new Tab(project.Title, context, true))
+                        initialized = true;
+                    }
+
+                    resolve(tabs);
+                })
+            },
+            saveTabs: function () {
+                var projects = [];
+
+                for (var i = 0; i < tabs.length; i++) {
+                    var tab = tabs[i];
+                    var stateParams = tab.context.stateParams;
+
+                    if (stateParams && stateParams.project) {
+                        projects.push(stateParams.project.Uri);
+                    }
                 }
 
-                tabs.splice.apply(tabs, [1, tabs.length - 2].concat(result));
-            }),
+                cookieService.set('tabs.openedProjects', projects);
+            },
             addTab: function (project) {
                 if (project) {
+                    // Return the already opened tab if there is one.
+                    for(var i = 0; i < tabs.length; i++) {
+                        var tab = tabs[i];
+                        var stateParams = tab.context.stateParams;
+
+                        if(stateParams && stateParams.project === project) {
+                            return tab;
+                        }
+                    }
+
+                    // Otherwise create a new tab for the project.
                     var i = tabs.length - 1;
 
                     var context = new TabContext(defaultContext.state, {
@@ -55,12 +87,27 @@
 
                     tabs.splice(i, 0, tab);
 
-                    return tab;
+                    t.setSelectedTab(i);
+
+                    return { index: i, tab: tab };
                 }
             },
             removeTab: function (index) {
                 if (0 < index && index < tabs.length - 1) {
                     tabs.splice(index, 1);
+                }
+            },
+            closeTab: function (index) {
+                var tab = tabs[index];
+
+                if (tab && tab.closable) {
+                    t.removeTab(index);
+
+                    if (index > 0) {
+                        t.setSelectedTab(index - 1);
+                    }
+
+                    t.saveTabs();
                 }
             },
             /**

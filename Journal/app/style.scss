@@ -228,43 +228,6 @@ iframe {
 	transition: 1s linear all;
 }
 
-.tooltip>.tooltip-inner {
-	background-color: $tooltipBackgroundColor;
-	color: $tooltipTextColor;
-}
-
-.tooltip.top .tooltip-arrow {
-	border-top-color: $tooltipBackgroundColor;
-}
-
-.tooltip.top-left .tooltip-arrow {
-	border-top-color: $tooltipBackgroundColor;
-}
-
-.tooltip.top-right .tooltip-arrow {
-	border-top-color: $tooltipBackgroundColor;
-}
-
-.tooltip.right .tooltip-arrow {
-	border-right-color: $tooltipBackgroundColor;
-}
-
-.tooltip.left .tooltip-arrow {
-	border-left-color: $tooltipBackgroundColor;
-}
-
-.tooltip.bottom .tooltip-arrow {
-	border-bottom-color: $tooltipBackgroundColor;
-}
-
-.tooltip.bottom-left .tooltip-arrow {
-	border-bottom-color: $tooltipBackgroundColor;
-}
-
-.tooltip.bottom-right .tooltip-arrow {
-	border-bottom-color: $tooltipBackgroundColor;
-}
-
 .grayscale {
 	-webkit-filter: grayscale(100%);
 	-moz-filter: grayscale(100%);
@@ -390,8 +353,7 @@ button:focus,
 	height: 90px;
 }
 
-.btn-md,
-.btn-icn {
+.btn-md {
 	padding: 0;
 	font-size: $iconFontSize;
 	font-weight: 100;
@@ -399,36 +361,17 @@ button:focus,
 	height: 45px;
 }
 
-.btn-icn .zmdi {
-	margin: 0;
-}
-
-.circular,
-.round,
 .btn-circular,
-.btn-round {
+.btn-round,
+.md-button-avatar {
 	border-radius: 50%;
+	overflow: hidden;
 }
 
 .btn-round,
 .btn-circular {
 	width: $toolbarHeight;
 	height: $toolbarHeight;
-}
-
-.btn-paging {
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	font-size: 32px;
-}
-
-.btn-paging.btn-next {
-	right: 0;
-}
-
-.btn-paging.btn-prev {
-	left: 0;
 }
 
 .btn-label {
@@ -439,211 +382,56 @@ button:focus,
 	text-align: left;
 }
 
-
-/* DROPDOWN */
-
-.dropdown {
-	position: relative;
+.md-button-avatar {
+	padding: 0;
 }
-
-.dropdown-menu {
-	display: none;
-	position: absolute;
-	margin-bottom: 5px;
-}
-
 
 /* TABS */
 
-.nav-tabs {
-	border: none;
-	border-bottom: 1px solid $itemBackgroundColor;
-	margin: 0;
-}
-
-.nav-tabs li a {
-	border-radius: 0;
-	border: none;
-	border-bottom: 2px solid transparent;
-	color: $labelTextColor;
-	text-transform: uppercase;
-	transition: all .1s linear;
-	padding: 11px;
-}
-
-.nav-tabs.nav-tabs-top li a {
-	border-bottom: 0;
-	border-top: 2px solid transparent;
-}
-
-.nav-tabs.nav-tabs-top li a:hover {
-	border-top: 2px solid $textColor;
-}
-
-.nav-tabs.nav-tabs-top li.active a,
-.nav-tabs.nav-tabs-top li.active a:hover {
-	border: none;
-	border-top: 2px solid $textColor;
-	color: $textColor;
-}
-
-.tabs-centered>.nav-tabs>li,
-.nav-tabs.tabs-centered>li {
-	float: none;
-	display: inline-block;
-	/* ie7 fix */
-	*display: inline;
-	/* hasLayout ie7 trigger */
-	zoom: 1;
-}
-
-.tabs-centered>.nav-tabs,
-.nav-tabs.tabs-centered {
-	text-align: center !important;
-}
-
-.nav-tabs li a:hover {
-	border-bottom: 2px solid $textColor;
-	background: transparent;
-	color: $textColor;
-	cursor: pointer;
-}
-
-.nav-tabs li.active a,
-.nav-tabs li.active a:hover,
-.nav-tabs li.active a:active,
-.nav-tabs li.active a:focus {
-	border: none;
-	border-bottom: 2px solid $textColor;
-	background: transparent;
-	color: $textColor;
-}
-
-.nav-tabs.nav-stacked li a {
-	border: none;
-	border-left: 2px solid transparent;
-	margin: 0;
-	text-transform: none;
-}
-
-.nav-tabs.nav-stacked li.active a,
-.nav-tabs.nav-stacked li.active a:hover {
-	border: none;
-	border-left: 2px solid $textColor;
-	color: $highlightTextColor;
-}
-
-.header-tabs>.nav-tabs {
-	height: $toolbarHeight;
+.header-tabs {
 	background: $headerBackgroundColor;
-	padding: 0;
-	margin: 0;
+	height: 40px;
 }
 
-.header-tabs>.nav-tabs li a.nav-link .zmdi,
-.header-tabs>.nav-tabs img {
-	position: relative;
-	top: -1px;
-}
-
-.header-tabs>.nav-tabs li a.nav-link .zmdi {
-	color: darken($headerTextColor, 10%);
-}
-
-.header-tabs>.nav-tabs li.active a.nav-link .zmdi {
-	color: $textColor;
-}
-
-.header-tabs>.nav-tabs li a.nav-link:focus {
-	outline: none;
-}
-
-.header-tabs>.nav-tabs li a {
-	border: none;
-	margin: 0;
-}
-
-.header-tabs>.nav-tabs li a:hover {
-	text-decoration: none;
-	border: none;
-}
-
-.header-tabs>.nav-tabs li a.nav-link {
-	padding: 0;
-	border-right: 1px solid rgba(255, 255, 255, .05);
-	background: transparent;
-	height: $toolbarHeight;
-}
-
-.header-tabs>.nav-tabs li a.nav-link,
-.header-tabs>.nav-tabs li a.nav-link a {
+.header-tabs .md-tab {
+	padding: 10px 16px;
+	height: 40px;
 	color: $headerTextColor;
 	text-transform: none;
+	font-weight: normal;
+	border-right: 1px solid rgba(255, 255, 255, .05);
+	transition: none;
+}
+.header-tabs .md-tab .layout-row {
+	height: 23px;
+}
+
+.header-tabs .md-tab .md-button {
 	padding: 0;
+	width: auto;
+	height: auto;
 }
 
-.header-tabs>.nav-tabs li a.nav-link .nav-link-container {
-	padding: 10px 11px;
-	cursor: pointer;
+.header-tabs .md-tab .zmdi{
+	color: $headerTextColor;
+	font-weight: normal;
 }
 
-.header-tabs>.nav-tabs li:last-child a.nav-link {
-	border-right: 1px solid transparent;
+.header-tabs .md-tab .zmdi.zmdi-menu {
+	/* Renders the icon without blurred edges. */
+	font-size: 21px !important;
+	margin-top: 1px;
 }
 
-.header-tabs>.nav-tabs li a.nav-link:hover {
-	border-radius: 1px 1px 0 0;
-	border-right: 1px solid transparent;
-}
-
-.header-tabs>.nav-tabs li a.nav-link:hover,
-.header-tabs>.nav-tabs li a.nav-link .nav-link-container.drop-target-valid {
-	background: lighten($headerBackgroundColor, 5%);
-}
-
-.header-tabs>.nav-tabs li.active a.nav-link {
+.header-tabs .md-tab.md-active {
 	border-bottom: none;
 	border-radius: 1px 1px 0 0;
 	background: $windowBackgroundColor;
-	text-transform: none;
+	color: $textColor;
 }
 
-.header-tabs>.nav-tabs li.active a.nav-link,
-.header-tabs>.nav-tabs li.active a.nav-link a {
-	color: $textColor !important;
-	text-transform: none;
-}
-
-.header-tabs>.nav-tabs li.active a.nav-link:hover,
-.header-tabs>.nav-tabs li.active a.nav-link:hover a {
-	color: $highlightTextColor;
-}
-
-.header-tabs>.nav-tabs li a.btn-close {
-	position: relative;
-	top: 0px;
-	right: -5px;
-	width: 24px;
-	height: 24px;
-	padding: 5px 3px;
-	border: none;
-	border-radius: 2px;
-	color: darken($headerTextColor, 10%);
-}
-
-.header-tabs>.nav-tabs li a.btn-close .zmdi {
-	top: 0;
-	font-size: 18px !important;
-	line-height: 18px;
-	font-weight: 300;
-}
-
-.header-tabs>.nav-tabs li a.btn-close:hover {
-	background: rgba(255, 255, 255, .05);
-}
-
-.header-tabs>.nav-tabs li.active a.btn-close:hover {
-	background: lighten($windowBackgroundColor, 3%);
+.header-tabs .md-tab.md-active .zmdi {
+	color: $textColor;
 }
 
 #tab-content {
@@ -653,19 +441,6 @@ button:focus,
 	right: 0;
 	bottom: 0;
 }
-
-.header-tabs .tab-pane {
-	height: 100%;
-}
-
-.center-parent {
-	position: relative;
-	top: 50%;
-	transform: translateY(-50%);
-	transform-style: preserve-3d;
-	text-align: center;
-}
-
 
 /* ACCODRION */
 
@@ -894,12 +669,6 @@ button:focus,
 	line-height: 20px;
 	text-align: center;
 	vertical-align: middle
-}
-
-.zmdi.zmdi-menu {
-	/* Renders the icon without blurred edges. */
-	font-size: 21px !important;
-	margin-top: 3px;
 }
 
 .account,
@@ -1354,8 +1123,6 @@ h4 {
 .md-toolbar .title {
 	display: block;
 	font-weight: 500;
-	height: $toolbarHeight;
-	line-height: $toolbarHeight;
 }
 
 .md-toolbar .title,
@@ -1671,32 +1438,6 @@ div[contenteditable] {
 	margin-left: 15px;
 	margin-right: -5px;
 	float: left;
-}
-
-.modal-window-lg .modal-dialog {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	width: auto;
-	margin: 0;
-}
-
-.modal-window-lg .modal-content {
-	display: table;
-	width: 100%;
-	height: 100%;
-}
-
-.modal-window-lg .modal-header {
-	display: table-cell;
-	height: 45px;
-}
-
-.modal-window-lg .modal-body {
-	display: table-row;
-	padding: 10px;
 }
 
 .modal-title {
@@ -2160,7 +1901,6 @@ $userCommentBackgroundColor: rgba($textColor,
 	padding: 5px;
 }
 
-
 /* SEARCH */
 
 md-autocomplete.search-input {
@@ -2193,7 +1933,6 @@ md-autocomplete.search-input md-autocomplete-wrap:before {
 md-virtual-repeat-container.search-input-menu-container {
 	display: none !important;
 }
-
 
 /* YASGUI */
 
@@ -2715,7 +2454,6 @@ iframe {
 	height: 100%;
 	z-index: 0;
 }
-
 
 /* WINDOW */
 

@@ -1,21 +1,18 @@
-<art-user-menu class="pull-right"></art-user-menu>
+<md-tabs class="header-tabs" md-selected="t.selectedTab" md-no-ink md-no-ink-bar>
+    <md-tab ng-repeat="tab in t.tabs track by $index">
+        <md-tab-label ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
+            jqyoui-droppable="{onDrop: 't.onFileDropped'}">
+            <div layout="row" layout-align="start center" ng-click="t.activateTab($event, $index)">
+                <md-icon ng-if="tab.icon" md-font-icon="{{tab.icon.class}}"></md-icon>
 
-<uib-tabset class="header-tabs" active="t.selectedTab">
-    <uib-tab ng-repeat="tab in t.tabs track by $index">
-        <uib-tab-heading>
-            <div class="nav-link-container" ng-click="t.activateTab($event, $index)" ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
-                jqyoui-droppable="{onDrop: 't.onFileDropped'}">
-                <a ng-click="t.closeTab($event, $index)" ng-if="tab.closable" class="btn btn-close pull-right">
-                    <i class="zmdi zmdi-xs zmdi-close"></i>
-                </a>
-                <a style="padding: 0;">
-                    <i ng-if="tab.icon" class="{{tab.icon.class}}"></i>
+                <span ng-if="tab.title" style="text-align: left; min-width: 100px;" flex>{{tab.title}}</span>
 
-                    <div ng-if="tab.title" style="min-width: 125px; margin-top: 1px;">{{tab.title}}</div>
-                </a>
+                <md-button md-no-ink ng-if="tab.closable" ng-click="t.removeTab($event, $index)" class="md-icon-button no-margin">
+                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                </md-button>
             </div>
-        </uib-tab-heading>
-    </uib-tab>
-</uib-tabset>
+        </md-tab-label>
+    </md-tab>
+</md-tabs>
 
 <div ui-view id="tab-content"></div>

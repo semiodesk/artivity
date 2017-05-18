@@ -10,12 +10,7 @@
             $http.get(apid.endpointUrl + '/setup').then(
                 function (response) {
                     t.stopConnect();
-
-                    agentService.initialize(function () {
-                        t.showStartView(response);
-                    }, function () {
-                        console.warn('Failed to initialize agent service.');
-                    });
+                    t.showStartView(response);
                 },
                 function () {
                     if (t.connectInterval === null) {

@@ -5,7 +5,7 @@
             <li class="list-item list-item-link" ng-repeat="member in t.members" ng-show="member.visible">
                 <div class="layout-container padding-x-xs padding-y-xs">
                     <div class="col">
-                        <art-user-photo-img width="40" height="40" src="member.Agent.PhotoUrl"></art-user-photo-img>
+                        <art-avatar width="40" height="40" src="member.Agent.PhotoUrl"></art-avatar>
                     </div>
                     <div class="col expand" ng-click="t.selectMember(t.input, member)">
                         <div class="padding-x-md">
