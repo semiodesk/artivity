@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller("MainStateController", MainStateController);
 
-    MainStateController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$uibModal', 'tabService', 'projectService', 'windowService', 'cookieService', 'syncService'];
+    MainStateController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$timeout', 'tabService', 'projectService', 'windowService', 'cookieService', 'syncService'];
 
-    function MainStateController($rootScope, $scope, $state, $stateParams, $uibModal, tabService, projectService, windowService, cookieService, syncService) {
+    function MainStateController($rootScope, $scope, $state, $stateParams, $timeout, tabService, projectService, windowService, cookieService, syncService) {
         var t = this;
 
         // TABS
@@ -32,59 +32,52 @@
                 e.preventDefault();
             }
 
+            // If there is already a new project, select the already opened tab.
+            for (var i = 0; i < t.tabs.length; i++) {
+                var tab = t.tabs[i];
+
+                var stateParams = tab.context.stateParams;
+
+                if (stateParams && stateParams.project) {
+                    var project = stateParams.project;
+
+                    if (project.new) {
+                        t.selectTab(e, i);
+
+                        return;
+                    }
+                }
+            }
+
+            // Otherwise create a new project.
             projectService.create().then(function (result) {
                 var project = result;
                 project.new = true;
                 project.folder = null;
                 project.members = [];
 
-                var tab = tabService.addTab(project);
+                var t = tabService.addTab(project);
 
-                $scope.$apply(function () {
-                    t.selectTab(e, t.tabs.length - 2);
-                });
+                // $scope.$apply(function () {
+                //     t.selectTab(e, t.index);
+                // });
             });
         }
 
         t.removeTab = function (e, index) {
-            var tab = tabService.getTab(index);
-
-            if (tab && tab.closable) {
-                tabService.removeTab(index);
-
-                if (index > 0) {
-                    t.selectTab(e, index - 1);
-                }
+            if (e) {
+                e.preventDefault();
             }
-        }
 
-        t.closeTab = function (e, index) {
-            var context = tabService.getTabContext(index);
+            $timeout(function () {
+                tabService.closeTab(index);
+                
+                t.tabs = tabService.getTabs();
 
-            if (context && context.stateParams && context.stateParams.project) {
-                var project = context.stateParams.project;
-
-                if (!project.new) {
-                    var modalInstance = $uibModal.open({
-                        animation: true,
-                        templateUrl: 'app/dialogs/close-project-dialog/close-project-dialog.html',
-                        controller: 'CloseProjectDialogController',
-                        controllerAs: 't',
-                        bindToController: true,
-                        resolve: {
-                            project: function () {
-                                return project;
-                            }
-                        }
-                    }).result.then(function () {
-                        t.removeTab(e, index);
-
-                        syncService.synchronize();
-                    });
+                if (t.selectedTab > 0) {
+                    t.selectedTab = t.selectedTab - 1;
                 }
-            } else {
-                t.removeTab(e, index);
-            }
+            }, 0);
         }
 
         t.unregisterStateChangeSuccess = null;
@@ -141,7 +134,7 @@
             windowService.setMaximizable();
 
             // Initialize the tabs when all tabs and states are loaded.
-            tabService.initialized.then(function () {
+            tabService.openTabs().then(function () {
                 t.tabs = tabService.getTabs();
 
                 // Reset the last selected tab.
@@ -151,6 +144,12 @@
                     n = parseInt($stateParams.index);
                 } else {
                     n = cookieService.get('tabs.selectedTab', 0);
+
+                    if (n >= t.tabs.length - 1) {
+                        n = 0;
+
+                        cookieService.set('tabs.selectedTab', 0);
+                    }
                 }
 
                 t.selectTab(null, n);
@@ -181,7 +180,10 @@
 
             // Save the last selected tab so that we can restore it after an app restart.
             $scope.$watch('t.selectedTab', function () {
-                cookieService.set('tabs.selectedTab', t.selectedTab);
+                // Do not save the position of the '+' tab.
+                if (t.selectedTab < t.tabs.length - 1) {
+                    cookieService.set('tabs.selectedTab', t.selectedTab);
+                }
             });
         }
 

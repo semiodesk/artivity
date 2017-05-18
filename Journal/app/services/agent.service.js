@@ -5,15 +5,15 @@
 
     function agentService(api, authenticationService) {
         var endpoint = apid.endpointUrl + "agents";
+        var currentUser = null;
 
         var t = {
-            currentUser: null,
-            initialize: initialize,
             newPerson: newPerson,
             getPerson: getPerson,
             putPerson: putPerson,
             putPhoto: putPhoto,
             getPhotoUrl: getPhotoUrl,
+            getCurrentUser: getCurrentUser,
             getAccountOwner: getAccountOwner,
             findPersons: findPersons,
             software: [],
@@ -23,30 +23,24 @@
 
         var dispatcher = new EventDispatcher(t);
 
-        authenticationService.getAuthenticatedUser(function (user) {
-            t.currentUser = user;
-
-            dispatcher.raise('currentUserChanged', user);
-        });
-
-        t.getSoftwareAgents();
-
         return t;
 
-        function initialize(success, error) {
-            authenticationService.getAuthenticatedUser(function (user) {
-                t.currentUser = user;
-
-                dispatcher.raise('currentUserChanged', user);
-
-                if (user) {
-                    if (typeof (success) === 'function') {
-                        success(user);
-                    }
+        function getCurrentUser(reload) {
+            return new Promise(function (resolve, reject) {
+                if (currentUser && !reload) {
+                    resolve(currentUser);
                 } else {
-                    if (typeof (error) === 'function') {
-                        error();
-                    }
+                    authenticationService.getAuthenticatedUser(function (user) {
+                        currentUser = user;
+
+                        dispatcher.raise('currentUserChanged', user);
+
+                        if (user) {
+                            resolve(currentUser);
+                        } else {
+                            reject(null);
+                        }
+                    });
                 }
             });
         }

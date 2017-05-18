@@ -9,7 +9,7 @@
 		t.project = null;
 
 		t.getFiles = function (callback) {
-			t.initialized.then(function () {
+			t.getProject.then(function () {
 				if (t.project) {
 					return projectService.getFiles(t.project.Uri).then(callback);
 				} else {
@@ -50,7 +50,7 @@
 				}
 			});
 
-			t.initialized = projectService.getAll().then(function (projects) {
+			t.getProject = projectService.getAll().then(function (projects) {
 				// We load the project from the given tab index with project starting from index 1.
 				t.project = projects[$stateParams.index - 1];
 

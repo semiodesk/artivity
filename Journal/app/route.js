@@ -12,6 +12,11 @@
 					template: "<ui-view></ui-view>",
 					abstract: true
 				})
+				.state('main.view.dashboard', {
+					url: '/dashboard',
+					templateUrl: 'app/states/main/views/dashboard.html',
+					controller: 'DashboardViewController as t'
+				})
 				.state('main.view.recently-used', {
 					url: '/recently-used',
 					templateUrl: 'app/states/main/views/recently-used.html',
@@ -43,13 +48,13 @@
 						fileUri: null
 					}
 				})
-				.state('settings', {
+				.state('main.view.settings', {
 					url: '/settings',
 					templateUrl: 'app/states/settings/settings.html',
 					controller: 'SettingsStateController as t',
 					abstract: true
 				})
-				.state('settings.profile', {
+				.state('main.view.settings.profile', {
 					url: '/profile',
 					views: {
 						'tab-content': {
@@ -58,7 +63,7 @@
 						}
 					}
 				})
-				.state('settings.apps', {
+				.state('main.view.settings.apps', {
 					url: '/apps',
 					views: {
 						'tab-content': {
@@ -67,7 +72,7 @@
 						}
 					}
 				})
-				.state('settings.accounts', {
+				.state('main.view.settings.accounts', {
 					url: '/accounts',
 					views: {
 						'tab-content': {

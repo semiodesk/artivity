@@ -1,6 +1,6 @@
 <div class="layout-root" layout="column">
-    <div class="md-toolbar md-toolbar-header" layout="row">
-        <md-button class="md-button-icon" ng-click="t.submitAndReturn()">
+    <div class="md-toolbar" layout="row" layout-align="start center">
+        <md-button class="md-button-icon" ng-click="t.submitAndReturn()" ui-sref="main.view.dashboard">
             <md-icon md-font-icon="zmdi zmdi-chevron-left"></md-icon>
         </md-button>
 
@@ -8,7 +8,7 @@
             <span translate>Settings</span>
         </div>
 
-        <md-button onclick="history.back()">
+        <md-button ui-sref="main.view.dashboard">
             <span translate>Cancel</span>
         </md-button>
     </div>

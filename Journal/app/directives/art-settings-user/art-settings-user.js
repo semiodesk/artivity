@@ -144,7 +144,7 @@
                 if (t.user) {
                     api.putUser(t.user).then(function () {
                         agentService.off('currentUserChanged', t.setUser);
-                        agentService.initialize();
+                        agentService.getCurrentUser(true);
                         agentService.on('currentUserChanged', t.setUser);
                     });
                 }
@@ -170,9 +170,9 @@
             // Register the controller with its parent for global apply/cancel.
             settingsService.registerController(t);
 
-            if (agentService.currentUser) {
-                t.setUser(agentService.currentUser);
-            }
+            agentService.getCurrentUser().then(function(user) {
+                t.setUser(user);
+            })
 
             agentService.on('currentUserChanged', t.setUser);
 

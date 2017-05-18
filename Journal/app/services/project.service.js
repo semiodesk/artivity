@@ -29,7 +29,7 @@
         return t;
 
         // PROJECTS
-        function get(projectUri) {
+        function get(uri) {
             return api.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting projects by id.'));
         }
 
