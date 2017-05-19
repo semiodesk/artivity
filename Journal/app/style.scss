@@ -11,10 +11,7 @@ $successColor: #3BC14A;
 $successTextColor: #FFFFFF;
 $iconFont: 'Material-Design-Iconic-Font';
 $iconFontSize: 24px;
-$textFont: 'Roboto',
-'Helvetica',
-'Arial',
-sans-serif;
+$textFont: 'Roboto','Helvetica','Arial',sans-serif;
 $textColor: #404040;
 $labelTextColor: #606060;
 $labelBackgroundColor: transparent;
@@ -63,31 +60,12 @@ $editorBorderColor: darken($editorBackgroundColor, 25%);
 
 html,
 body {
-	font-size: 14px; // Make the body fill the browser window.
+	// Make the body fill the browser window.
 	height: 100%;
-	width: 100%; // Do not show scrollbars on the window itself.
+	width: 100%;
+	// Do not show scrollbars on the window itself.
 	overflow-x: hidden;
 	overflow-y: hidden;
-}
-
-h1 {
-	font-size: 3em;
-	font-weight: 200;
-	margin-bottom: .5em;
-}
-
-h2 {
-	font-size: 1.7em;
-	font-weight: 100;
-}
-
-h3 {
-	font-size: 1.4em;
-}
-
-h3,
-h4 {
-	color: $labelTextColor;
 }
 
 h5.title {
@@ -177,33 +155,8 @@ iframe {
 	transform: translateX(-50%);
 }
 
-.accent-fill {
-	fill: $accentColor;
-}
-
-.accent-background {
-	background: $accentColor;
-}
-
-.accent-color {
-	color: $accentColor;
-}
-
 .translucent {
 	opacity: .5;
-}
-
-.msg-error {
-	display: block;
-	width: 100%;
-	background: #E71D36;
-	color: $errorTextColor;
-	padding: 1em;
-	margin: 0;
-}
-
-.msg-error label {
-	color: rgba($errorTextColor, .7);
 }
 
 .animate-show {
@@ -232,45 +185,6 @@ iframe {
 	-webkit-filter: grayscale(100%);
 	-moz-filter: grayscale(100%);
 	filter: grayscale(100%);
-}
-
-textarea.disabled,
-input.disabled,
-.btn.disabled {
-	opacity: .5;
-	cursor: default;
-}
-
-input[type="text"][readonly] {
-	background: rgba($inputBackgroundColor, .5);
-	border: 1px solid transparent;
-	color: rgba($labelTextColor, .75);
-}
-
-input[type="text"][readonly]:focus {
-	border: 1px solid transparent;
-}
-
-.btn-default {
-	border: none !important;
-	border-radius: 3px;
-	background: $buttonBackgroundColor;
-	color: $labelTextColor;
-	padding: 7px 10px;
-	margin: 0 10px 0 0;
-	outline: none;
-	text-shadow: none;
-	box-shadow: none;
-	-webkit-box-shadow: none;
-	transition: all linear .2s;
-}
-
-.md-icon-button {
-	color: $labelTextColor;
-}
-
-.btn-default .zmdi {
-	padding: 0px 3px;
 }
 
 .btn {
@@ -384,6 +298,10 @@ button:focus,
 
 .md-button-avatar {
 	padding: 0;
+}
+
+.md-icon-button {
+	color: $labelTextColor;
 }
 
 /* TABS */
@@ -532,15 +450,6 @@ button:focus,
 	text-shadow: none;
 	-webkit-box-shadow: none;
 }
-
-
-/* BOXES */
-
-.box-default {
-	background: $itemBackgroundColor;
-	padding: 10px;
-}
-
 
 /* LIST VIEW */
 
@@ -717,7 +626,7 @@ h4 {
 	margin: .5em 0 2em 0;
 }
 
-/* BODY */
+// RESIZABLE CONTENT
 
 .ui-resizable {
 	position: relative;
@@ -831,9 +740,7 @@ h4 {
 	pointer-events: none;
 }
 
-.scroll-vertical {
-	overflow-y: scroll;
-}
+// LAYOUT
 
 .layout-root {
 	position: absolute;
@@ -982,21 +889,7 @@ h4 {
 	padding-bottom: 24px !important;
 }
 
-/* FOOTER */
-
-.statusbar {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
-
-.statusbar {
-	min-height: 1em;
-	background: $windowBackgroundColor;
-}
-
-/* VIEWS */
+// VIEWER
 
 .viewer-canvas {
 	padding: 0;
@@ -1004,7 +897,7 @@ h4 {
 	height: 100%;
 }
 
-/* TOOLBARS */
+// TOOLBARS
 
 .toolbar {
 	min-height: $toolbarHeight;
@@ -1222,80 +1115,7 @@ md-list-item .md-list-item-inner>md-checkbox .md-label {
 	width: 40px;
 }
 
-.img-avatar {
-	padding: 0;
-	margin: 0;
-	overflow: hidden;
-	transition: all linear .2s;
-}
-
-.img-avatar img {
-	border: none;
-}
-
-.img-avatar-md {
-	width: 45px;
-}
-
-.img-avatar-md img {
-	width: 45px;
-	height: 45px;
-	border-radius: 50%;
-}
-
-.img-avatar-lg {
-	margin-right: 14px;
-}
-
-.img-avatar-lg,
-.img-avatar-lg img {
-	width: 110px;
-	height: 110px;
-}
-
-.img-avatar:hover {
-	transform: scale(1.02);
-}
-
-.btn-avatar {
-	display: inline-block;
-	position: relative;
-	overflow: hidden;
-	padding: 0;
-	margin: 0;
-	width: 30px;
-	height: 30px;
-}
-
-.btn-avatar .placeholder {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, .25) url('resources/img/placeholder-avatar-black.svg') top left no-repeat;
-	background-size: cover;
-	opacity: .2;
-	z-index: 1;
-}
-
-.btn-avatar img {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-}
-
-.card-title {
-	font-size: 1.2em;
-	font-weight: 500;
-	padding: 30px 10px 0 10px;
-	margin: 0;
-}
-
-/* FORMS */
+// FORMS
 
 .form-header {
 	margin-bottom: 2em;
