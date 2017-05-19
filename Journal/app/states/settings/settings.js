@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller("SettingsStateController", SettingsStateController);
 
-    SettingsStateController.$inject = ['$scope', '$state', 'settingsService', 'tabService'];
+    SettingsStateController.$inject = ['$scope', '$state', 'settingsService'];
 
-    function SettingsStateController($scope, $state, settingsService, tabService) {
+    function SettingsStateController($scope, $state, settingsService) {
         var t = this;
 
         t.submit = function () {

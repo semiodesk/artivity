@@ -14,9 +14,9 @@
 		}
 	});
 
-	ProjectSettingsDirectiveController.$inject = ['$scope', '$uibModal', 'hotkeys', 'agentService', 'projectService', 'syncService'];
+	ProjectSettingsDirectiveController.$inject = ['$rootScope', '$scope', '$uibModal', 'hotkeys', 'agentService', 'projectService', 'syncService'];
 
-	function ProjectSettingsDirectiveController($scope, $uibModal, hotkeys, agentService, projectService, syncService) {
+	function ProjectSettingsDirectiveController($rootScope, $scope, $uibModal, hotkeys, agentService, projectService, syncService) {
 		var t = this;
 
 		t.setFolder = function (folderUrl) {
@@ -99,9 +99,9 @@
 			if ($scope.projectForm.$valid) {
 				projectService.update(t.project);
 
-				t.project.new = false;
+				t.project.IsNew = false;
 
-				$scope.$emit('commit', t.project);
+				$rootScope.$broadcast('commit', { data: t.project });
 
 				syncService.synchronize();
 			}
