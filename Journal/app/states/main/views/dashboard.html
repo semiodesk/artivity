@@ -37,24 +37,26 @@
         </md-button>
     </div>
 
-    <div class="md-padding" flex>
-        <md-tabs md-border-bottom md-center-tabs>
-            <md-tab label="Projects">
+    <md-tabs class="md-margin" md-border-bottom md-center-tabs flex>
+        <md-tab label="{{'Projects' | translate}}">
+            <div class="scroll-container scroll-y">
                 <md-list>
                     <md-list-item ng-repeat="project in t.projects" ng-click="t.openProject(project)">
                         {{project.Title}}
                         <md-divider></md-divider>
                     </md-list-item>
                 </md-list>
-            </md-tab>
-            <md-tab label="Files">
+            </div>
+        </md-tab>
+        <md-tab label="{{'Files' | translate}}">
+            <div class="scroll-container scroll-y">
                 <md-list>
                     <md-list-item ng-repeat="file in t.files" ng-click="null">
                         {{file.label}}
                         <md-divider></md-divider>
                     </md-list-item>
                 </md-list>
-            </md-tab>
-        </md-tabs>
-    </div>
+            </div>
+        </md-tab>
+    </md-tabs>
 </div>

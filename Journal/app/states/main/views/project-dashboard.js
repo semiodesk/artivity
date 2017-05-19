@@ -1,26 +1,30 @@
 (function () {
 	angular.module('app').controller("ProjectDashboardViewController", ProjectDashboardViewController);
 
-	ProjectDashboardViewController.$inject = ['$scope', '$state', '$stateParams', '$element', '$mdSidenav', 'hotkeys', 'tabService', 'projectService'];
+	ProjectDashboardViewController.$inject = ['$scope', '$state', '$stateParams', '$element', '$timeout', '$mdSidenav', 'hotkeys', 'projectService'];
 
-	function ProjectDashboardViewController($scope, $state, $stateParams, $element, $mdSidenav, hotkeys, tabService, projectService) {
+	function ProjectDashboardViewController($scope, $state, $stateParams, $element, $timeout, $mdSidenav, hotkeys, projectService) {
 		var t = this;
 
 		t.project = null;
 
 		t.getFiles = function (callback) {
-			t.getProject.then(function () {
-				if (t.project) {
-					return projectService.getFiles(t.project.Uri).then(callback);
-				} else {
-					return callback();
-				}
-			});
+			if (t.project) {
+				return projectService.getFiles(t.project.Uri).then(callback);
+			} else {
+				return callback();
+			}
 		}
 
 		t.toggleSettings = function () {
 			$mdSidenav('right').toggle().then(function () {
-				if (!t.project.new && t.isSettingsOpen()) {
+				var sidenav = $mdSidenav('right');
+
+				if(t.project.IsNew) {
+					sidenav.isLockedOpen(true);
+				}
+
+				if (!t.project.IsNew && sidenav.isOpen()) {
 					// Load the folders and members when the panel is being made visible.
 					projectService.getFolders(t.project.Uri).then(function (result) {
 						if (result.length > 0) {
@@ -37,11 +41,7 @@
 			});
 		}
 
-		t.isSettingsOpen = function () {
-			return $mdSidenav('right').isOpen();
-		}
-
-		t.onInit = function () {
+		t.$onInit = function () {
 			hotkeys.add({
 				combo: 'alt+enter',
 				description: 'Toggle the project properties panel.',
@@ -50,14 +50,15 @@
 				}
 			});
 
-			t.getProject = projectService.getAll().then(function (projects) {
-				// We load the project from the given tab index with project starting from index 1.
-				t.project = projects[$stateParams.index - 1];
+			if ($stateParams && $stateParams.project) {
+				t.project = $stateParams.project;
+			}
 
-				if (t.project && t.project.new) {
+			$timeout(function () {
+				if (t.project && t.project.IsNew) {
 					t.toggleSettings();
 				}
-			});
+			}, 0);
 
 			$scope.$on('viewFile', function (e, file) {
 				$stateParams.fileUri = file.uri;
@@ -81,7 +82,5 @@
 				t.toggleSettings();
 			});
 		}
-
-		t.onInit();
 	}
 })();

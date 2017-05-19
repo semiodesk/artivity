@@ -402,6 +402,17 @@ button:focus,
 	border-right: 1px solid rgba(255, 255, 255, .05);
 	transition: none;
 }
+
+.header-tabs .md-tab:last-child {
+	border-right: none;
+}
+
+.header-tabs .md-tab .md-tab-closable {
+	// Extend the content of closable tabs on the right 
+	// to move the close tab closer to the tab border.
+	margin-right: -13px;
+}
+
 .header-tabs .md-tab .layout-row {
 	height: 23px;
 }
@@ -418,7 +429,7 @@ button:focus,
 }
 
 .header-tabs .md-tab .zmdi.zmdi-menu {
-	/* Renders the icon without blurred edges. */
+	// Renders the icon without blurred edges.
 	font-size: 21px !important;
 	margin-top: 1px;
 }
@@ -432,6 +443,19 @@ button:focus,
 
 .header-tabs .md-tab.md-active .zmdi {
 	color: $textColor;
+}
+
+.header-tabs .md-tab .zmdi-close {
+	font-size: 18px !important;
+}
+
+.md-tab-labels-hidden > md-tabs-wrapper {
+	display: none;
+	height: 0;
+}
+
+.md-tab-labels-hidden > md-tabs-content-wrapper {
+	top: 0;
 }
 
 #tab-content {
@@ -1155,15 +1179,6 @@ h4 {
 md-list-item .md-list-item-inner>md-checkbox .md-label {
 	// Show the labels inside a checkbox.
 	display: inline !important;
-}
-
-.md-tab-labels-hidden > md-tabs-wrapper {
-	display: none;
-	height: 0;
-}
-
-.md-tab-labels-hidden > md-tabs-content-wrapper {
-	top: 0;
 }
 
 /* DIRECTIVES */
