@@ -41,44 +41,46 @@
         }
 
         t.$postLink = function () {
-            var canvas = $element.find('canvas')[0];
+            agentService.getCurrentUser().then(function (currentUser) {
+                var canvas = $element.find('canvas')[0];
 
-            if (canvas) {
-                // EaselJS addresses the canvas by its id.
-                canvas.id = 'canvas-' + $scope.$id;
+                if (canvas) {
+                    // EaselJS addresses the canvas by its id.
+                    canvas.id = 'canvas-' + $scope.$id;
 
-                t.viewer = new DocumentHistoryViewer(agentService.currentUser, canvas);
-                t.viewer.addCommand(new PanCommand(t.viewer));
+                    t.viewer = new DocumentHistoryViewer(currentUser, canvas);
+                    t.viewer.addCommand(new PanCommand(t.viewer));
 
-                t.setViewerVisibleRegion();
-
-                viewerService.viewer(t.viewer);
-
-                $element.on('appear', function (event) {
-                    viewerService.viewer(t.viewer);
-                });
-
-                // Handle the resize of UI panes.
-                $(window).on('resize', function () {
                     t.setViewerVisibleRegion();
 
-                    t.viewer.onResize();
-                });
+                    viewerService.viewer(t.viewer);
 
-                $scope.$on('fileLoaded', function (e, data) {
-                    t.onFileLoaded(data.file, data.influences);
-                });
+                    $element.on('appear', function (event) {
+                        viewerService.viewer(t.viewer);
+                    });
 
-                $scope.$on('influenceSelected', function (e, args) {
-                    var influence = args.data;
+                    // Handle the resize of UI panes.
+                    $(window).on('resize', function () {
+                        t.setViewerVisibleRegion();
 
-                    if (influence && args.sourceScope !== t) {
-                        t.viewer.render(influence);
-                    }
-                });
-            } else {
-                console.warn('Unable to find canvas for viewer element:', canvas);
-            }
+                        t.viewer.onResize();
+                    });
+
+                    $scope.$on('fileLoaded', function (e, data) {
+                        t.onFileLoaded(data.file, data.influences);
+                    });
+
+                    $scope.$on('influenceSelected', function (e, args) {
+                        var influence = args.data;
+
+                        if (influence && args.sourceScope !== t) {
+                            t.viewer.render(influence);
+                        }
+                    });
+                } else {
+                    console.warn('Unable to find canvas for viewer element:', canvas);
+                }
+            });
         }
 
         t.onFileLoaded = function (file, influences) {

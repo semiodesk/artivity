@@ -58,18 +58,6 @@
             t.showError = true;
         }
 
-        t.setupLinkHandler = function() {
-            if (!t.initialized) {
-                // Open external links with the system default browser.
-                $(document).on('click', 'a[target="_blank"]', function (event) {
-                    event.preventDefault();
-                    windowService.openExternalLink(this.href);
-                });
-
-                t.initialized = true;
-            }
-        }
-
         t.retry = function() {
             t.showLoadingSpinner();
             t.tryConnect();
@@ -80,7 +68,6 @@
             windowService.setMinimizable(false);
             windowService.setMaximizable(false);
 
-            t.initialized = false;
             t.showSpinner = true;
             t.showError = false;
 
@@ -89,7 +76,6 @@
             t.connectInterval = null;
             t.connectIntervalMs = appService.connectionInterval();
 
-            t.setupLinkHandler();
             t.showLoadingSpinner();
             t.tryConnect();
         }
