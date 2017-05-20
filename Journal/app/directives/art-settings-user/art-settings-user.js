@@ -170,8 +170,8 @@
             // Register the controller with its parent for global apply/cancel.
             settingsService.registerController(t);
 
-            agentService.getCurrentUser().then(function(user) {
-                t.setUser(user);
+            agentService.getCurrentUser().then(function(currentUser) {
+                t.setUser(currentUser);
             })
 
             agentService.on('currentUserChanged', t.setUser);
