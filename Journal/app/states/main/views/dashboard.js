@@ -23,11 +23,11 @@
                 parent: angular.element(document.body),
                 template: template,
                 targetEvent: e,
-                controller: function($scope) {
+                controller: function ($scope) {
                     $scope.project = project;
 
                     $scope.ok = function () {
-                        projectService.remove(project.Uri).then(function() {
+                        projectService.remove(project.Uri).then(function () {
                             t.projects.splice(t.projects.indexOf(project), 1);
                         });
 
@@ -54,7 +54,9 @@
                 t.projects = [];
 
                 projectService.getAll().then(function (data) {
-                    t.projects = data;
+                    $scope.$apply(function () {
+                        t.projects = data;
+                    });
                 });
 
                 resolve(t.projects);
