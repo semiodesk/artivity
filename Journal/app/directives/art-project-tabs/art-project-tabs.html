@@ -1,4 +1,4 @@
-<md-tabs class="header-tabs" md-selected="t.selectedTab" md-no-ink md-no-ink-bar>
+<md-tabs class="header-tabs" md-selected="t.selectedTab" md-no-ink md-no-ink-bar ng-cloak>
     <md-tab ng-repeat="tab in t.tabs track by $index" ng-click="t.selectTab($index)">
         <md-tab-label ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
             jqyoui-droppable="{onDrop: 't.onFileDropped'}">
