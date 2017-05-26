@@ -28,7 +28,18 @@
 
         <div class="md-padding md-2-line" flex>
             <h2>{{t.user.Name}}</h2>
-            <p>{{t.user.EmailAddress}}</p>
+            <div ng-switch="t.userAccountId">
+                <p ng-switch-when="null">
+                    <md-icon md-font-icon="zmdi zmdi-desktop-windows"></md-icon>
+                    <span translate>Local Account</span>
+                </p>
+                <p ng-switch-default>
+                    <a href="https://artivity.online/u/{{t.userAccountId}}" target="_blank">
+                        <md-icon md-font-icon="zmdi zmdi-globe"></md-icon>
+                        <span>{{t.userAccountId}}</span>
+                    </a>
+                </p>
+            </div>
         </div>
 
         <md-button class="md-button-icon" ng-disabled="!t.user.Username" ng-href="https://artivity.online/{{t.user.Username}}">
@@ -56,7 +67,7 @@
                                     </md-button>
                                 </md-menu-item>
                                 <md-menu-item>
-                                    <md-button ng-click="t.addFileToProject(project)">
+                                    <md-button ng-click="t.addFileToProject(project)" ng-disabled="true">
                                         <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
                                         <span translate>Add File</span>
                                     </md-button>
@@ -81,7 +92,7 @@
         <md-tab label="{{'Files' | translate}}">
             <div class="scroll-container scroll-y">
                 <md-list>
-                    <md-list-item ng-repeat="file in t.files" ng-click="null">
+                    <md-list-item ng-repeat="file in t.files" ng-click="t.viewFile($event, file)">
                         {{file.label}}
                         <md-divider></md-divider>
                     </md-list-item>

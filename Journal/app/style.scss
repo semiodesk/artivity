@@ -936,6 +936,7 @@ h4 {
 	border: 1px solid #dedede;
 	background: $overlayBackgroundColor;
 	backdrop-filter: blur(3px);
+	overflow: hidden;
 }
 
 .toolbar.toolbar-floating .btn {
