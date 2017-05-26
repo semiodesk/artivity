@@ -44,7 +44,11 @@
                 // Restore the selected tab after an app restart.
                 var i = cookieService.get('tabs.selectedTab', 0);
 
-                $state.go("main.view.recently-used", {index: i});
+                if(i === 0) {
+                    $state.go("main.view.dashboard", {index: i});
+                } else {
+                    $state.go("main.view.project-dashboard", {index: i});
+                }
             }
         }
 
@@ -58,18 +62,6 @@
             t.showError = true;
         }
 
-        t.setupLinkHandler = function() {
-            if (!t.initialized) {
-                // Open external links with the system default browser.
-                $(document).on('click', 'a[target="_blank"]', function (event) {
-                    event.preventDefault();
-                    windowService.openExternalLink(this.href);
-                });
-
-                t.initialized = true;
-            }
-        }
-
         t.retry = function() {
             t.showLoadingSpinner();
             t.tryConnect();
@@ -80,7 +72,6 @@
             windowService.setMinimizable(false);
             windowService.setMaximizable(false);
 
-            t.initialized = false;
             t.showSpinner = true;
             t.showError = false;
 
@@ -89,7 +80,6 @@
             t.connectInterval = null;
             t.connectIntervalMs = appService.connectionInterval();
 
-            t.setupLinkHandler();
             t.showLoadingSpinner();
             t.tryConnect();
         }
