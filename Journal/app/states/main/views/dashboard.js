@@ -16,6 +16,13 @@
             $mdMenu.open(e);
         };
 
+        t.viewFile = function (e, file) {
+            if (file) {
+                $stateParams.fileUri = file.uri;
+				$state.go('main.view.document-history', $stateParams);
+            }
+        }
+
         t.deleteProject = function (e, project) {
             var template = $templateCache.get('delete-project-dialog.html');
 
@@ -49,6 +56,22 @@
             });
         };
 
+        t.loadUserAccount = function() {
+            return agentService.getArtivityAccount().then(function(account) {
+                t.userAccountId = null;
+                
+                for (var i = 0; i < account.AuthenticationParameters.length; i++) {
+                    var p = account.AuthenticationParameters[i];
+
+                    if (p.Name === 'username') {
+                        t.userAccountId = p.Value;
+
+                        break;
+                    }
+                }
+            });
+        }
+
         t.loadProjects = function () {
             return new Promise(function (resolve, reject) {
                 t.projects = [];
@@ -75,6 +98,7 @@
 
         t.$onInit = function () {
             t.loadUserAgent()
+                .then(t.loadUserAccount)
                 .then(t.loadProjects)
                 .then(t.loadRecentFiles);
         };
