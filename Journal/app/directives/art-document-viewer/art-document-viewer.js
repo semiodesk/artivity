@@ -52,44 +52,46 @@
         }
 
         t.$postLink = function () {
-            var canvas = $element.find('canvas')[0];
+            agentService.getCurrentUser().then(function (currentUser) {
+                var canvas = $element.find('canvas')[0];
 
-            if (canvas) {
-                // EaselJS addresses the canvas by its id.
-                canvas.id = 'canvas-' + $scope.$id;
+                if (canvas) {
+                    // EaselJS addresses the canvas by its id.
+                    canvas.id = 'canvas-' + $scope.$id;
 
-                t.viewer = new DocumentViewer(agentService.currentUser, canvas, "", selectionService);
-                t.viewer.addCommand(new SelectCommand(t.viewer, selectionService), true);
-                t.viewer.addCommand(new NextPageCommand(t.viewer));
-                t.viewer.addCommand(new PreviousPageCommand(t.viewer));
-                t.viewer.addCommand(new ToggleTwoPageLayoutCommand(t.viewer));
-                t.viewer.addCommand(new PanCommand(t.viewer));
-                t.viewer.addCommand(new ZoomInCommand(t.viewer));
-                t.viewer.addCommand(new ZoomOutCommand(t.viewer));
-                t.viewer.addCommand(new CreateMarkCommand(t.viewer, markService));
-                t.viewer.addCommand(new UpdateMarkCommand(t.viewer, markService));
-                t.viewer.addCommand(new DeleteMarkCommand(t.viewer, markService));
-                t.viewer.addCommand(new ShowMarksCommand(t.viewer, markService));
-                t.viewer.addCommand(new HideMarksCommand(t.viewer, markService));
-                t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
+                    t.viewer = new DocumentViewer(currentUser, canvas, "", selectionService);
+                    t.viewer.addCommand(new SelectCommand(t.viewer, selectionService), true);
+                    t.viewer.addCommand(new NextPageCommand(t.viewer));
+                    t.viewer.addCommand(new PreviousPageCommand(t.viewer));
+                    t.viewer.addCommand(new ToggleTwoPageLayoutCommand(t.viewer));
+                    t.viewer.addCommand(new PanCommand(t.viewer));
+                    t.viewer.addCommand(new ZoomInCommand(t.viewer));
+                    t.viewer.addCommand(new ZoomOutCommand(t.viewer));
+                    t.viewer.addCommand(new CreateMarkCommand(t.viewer, markService));
+                    t.viewer.addCommand(new UpdateMarkCommand(t.viewer, markService));
+                    t.viewer.addCommand(new DeleteMarkCommand(t.viewer, markService));
+                    t.viewer.addCommand(new ShowMarksCommand(t.viewer, markService));
+                    t.viewer.addCommand(new HideMarksCommand(t.viewer, markService));
+                    t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
 
-                t.setViewerVisibleRegion();
-
-                viewerService.viewer(t.viewer);
-
-                $element.on('appear', function (event) {
-                    viewerService.viewer(t.viewer);
-                });
-
-                // Handle the resize of UI panes.
-                $(window).on('resize', function () {
                     t.setViewerVisibleRegion();
 
-                    t.viewer.onResize();
-                });
-            } else {
-                console.warn('Unable to find canvas for viewer element:', canvas);
-            }
+                    viewerService.viewer(t.viewer);
+
+                    $element.on('appear', function (event) {
+                        viewerService.viewer(t.viewer);
+                    });
+
+                    // Handle the resize of UI panes.
+                    $(window).on('resize', function () {
+                        t.setViewerVisibleRegion();
+
+                        t.viewer.onResize();
+                    });
+                } else {
+                    console.warn('Unable to find canvas for viewer element:', canvas);
+                }
+            });
         }
 
         t.load = function (file) {

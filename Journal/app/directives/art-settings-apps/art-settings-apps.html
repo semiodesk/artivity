@@ -1,4 +1,4 @@
-<form name="appsForm">
+<form name="appsForm" layout="column">
     <div layout="row" layout-align="start center" style="min-height: 75px">
         <div translate flex>
             Enable or disable the Artivity for the following applications:
@@ -9,8 +9,7 @@
             <span translate>Refresh</span>
         </md-button>
     </div>
-
-    <div ng-show="t.loading || t.agents.length > 0">
+    <div ng-if="t.loading || t.agents.length > 0" flex>
         <uib-accordion class="panel-accordion" close-others="oneAtATime" style="max-width: 500px;">
             <div uib-accordion-group ng-repeat="agent in t.agents">
                 <uib-accordion-heading>
@@ -55,18 +54,15 @@
             </div>
         </uib-accordion>
     </div>
-    <div ng-show="!t.loading && t.agents.length === 0" class="text-center">
+    <div ng-if="!t.loading && t.agents.length === 0" class="text-center" flex>
         <div style="padding: 25px 0;">
             <img src="app/resources/img/info.svg" width="100" height="100" style="opacity: .25">
         </div>
 
-        <h3 translate>No compatible software was found on.</h3>
+        <h3 translate>No compatible software was found.</h3>
         <a href="https://artivity.online/system-requirements.html" target="_blank" translate>Which software is supported?</a>
     </div>
-    <div ng-show="!t.loading && !t.ready" class="container" style="position: absolute; bottom: 0;">
-        <div style="margin-left: 100px; display:inline-block; line-height: 40px; vertical-align: middle;">
-            <img src="app/resources/img/info.svg" width="30" height="30" style="float: left; opacity: .75; margin: 5px 7px 0 0;">
-            <p><b><span translate>No plugins are installed:</span></b> <span translate>Your edited files will not appear in Artivity.</span></p>
-        </div>
+    <div ng-show="!t.loading && !t.ready" layout="row" layout-align="center center" style="margin-top: 50px;">
+        <p><b><span translate>No plugins are installed:</span></b> <span translate>Edited files will not appear in Artivity.</span></p>
     </div>
 </form>

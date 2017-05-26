@@ -23,12 +23,20 @@
 			// Restore the tabs.
 			var n = cookieService.get('tabs.selectedTab', 0);
 
+			// The dashboard will not be selected by the project loading procedure.
+			if(n === 0) {
+				t.selectTab(n);
+			}
+
 			for (var i = 0; i < projects.length; i++) {
 				var uri = projects[i];
 
 				if (uri) {
 					projectService.get(uri).then(function (project) {
-						t.openProject(project, i === n);
+						// The index n denotes the selected tab with 0 being the dashboard and not a project.
+						var select = (0 < n) ? projects[n - 1] === project.Uri : false;
+
+						t.openProject(project, select);						
 					}, function () {
 						console.error('Failed to load project:', project)
 					});
