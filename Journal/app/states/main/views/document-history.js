@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('DocumentHistoryViewController', DocumentHistoryViewController);
 
-    DocumentHistoryViewController.$inject = ['$scope', '$state', '$stateParams', '$element', '$timeout', 'api', 'entityService', 'navigationService', 'syncService'];
+    DocumentHistoryViewController.$inject = ['$scope', '$state', '$stateParams', '$element', '$timeout', 'api', 'entityService', 'syncService'];
 
-    function DocumentHistoryViewController($scope, $state, $stateParams, $element, $timeout, api, entityService, navigationService, syncService) {
+    function DocumentHistoryViewController($scope, $state, $stateParams, $element, $timeout, api, entityService, syncService) {
         var t = this;
 
         t.loadFile = function (file) {
@@ -97,7 +97,11 @@
         }
 
         t.navigateBack = function () {
-            $state.go('main.view.project-dashboard', $stateParams);
+            if ($stateParams.project) {
+                $state.go('main.view.project-dashboard', $stateParams);
+            } else {
+                $state.go('main.view.dashboard', $stateParams);
+            }
         }
 
         t.$onInit = function () {

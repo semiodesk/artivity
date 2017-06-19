@@ -7,9 +7,11 @@
 
                 <span ng-if="tab.title" style="text-align: left; min-width: 100px;" flex>{{tab.title}}</span>
 
-                <md-button md-no-ink ng-if="tab.closable" ng-click="t.removeTab($index, $event)" class="md-button-icon no-margin">
-                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
-                </md-button>
+                <div ng-if="tab.closable">
+                    <md-button md-no-ink ng-click="t.removeTab($index, $event)" class="md-button-icon no-margin">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    </md-button>
+                </div>
             </div>
         </md-tab-label>
     </md-tab>

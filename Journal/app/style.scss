@@ -360,6 +360,7 @@ button:focus,
 .header-tabs {
 	background: $headerBackgroundColor;
 	height: 40px;
+	border-radius: 0;
 }
 
 .header-tabs .md-tab {
@@ -2348,6 +2349,11 @@ iframe {
 	margin: 5px;
 }
 
+.window-title-container {
+	background: $toolbarBackgroundColor;
+	height: $windowTitlebarHeight;
+}
+
 #window-title {
 	-webkit-app-region: drag;
 	position: absolute;
@@ -2357,7 +2363,6 @@ iframe {
 	padding: none;
 	margin: 0px;
 	height: $windowTitlebarHeight;
-	background: $toolbarBackgroundColor;
 	z-index: 99999;
 }
 

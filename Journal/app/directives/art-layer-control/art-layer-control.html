@@ -2,11 +2,9 @@
 <md-list flex>
     <md-list-item ng-repeat="layer in t.layers | reverse" ng-class="{translucent: !layer.visible}" class="no-padding">
         <div layout="row" layout-align="start center">
-            <div>
             <md-button class="md-icon-button" ng-click="t.toggleLayerVisibility(layer)">
-                <i class="zmdi zmdi-eye icn icn-transparent"></i>
+                <md-icon md-font-icon="zmdi zmdi-eye"></md-icon>
             </md-button>
-            </div>
             <div flex>
                 <label>{{layer.label}}</label>
             </div>
