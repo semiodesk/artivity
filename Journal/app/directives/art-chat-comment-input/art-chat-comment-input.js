@@ -34,6 +34,7 @@
 
         t.onBlurred = function () {
             t.focused = false;
+            t.showEmoticonPanel = false;
         }
 
         t.onEscape = function () {
@@ -122,8 +123,8 @@
 
         t.resetComment = function (clearText) {
             t.comment = new Comment();
-            t.comment.agent = agentService.currentUser.Uri;
-            t.comment.agentId = agentService.currentUser.Id;
+            t.comment.agent = t.currentUser.Uri;
+            t.comment.agentId = t.currentUser.Id;
             t.comment.primarySource = t.entityUri;
 
             t.inputElement.html('');
@@ -252,6 +253,10 @@
         }
 
         t.$onInit = function () {
+            agentService.getCurrentUser().then(function(currentUser) {
+                t.currentUser = currentUser;
+            });
+
             if (projectService.currentProject) {
                 var project = projectService.currentProject;
 

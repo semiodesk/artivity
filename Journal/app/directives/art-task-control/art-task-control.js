@@ -106,7 +106,7 @@
 
         t.resetTask = function () {
             t.newTask = {
-                agent: agentService.currentUser.Uri,
+                agent: t.currentUser.Uri,
                 entity: t.entityUri,
                 startTime: null,
                 endTime: null,
@@ -124,12 +124,16 @@
 
         // INIT
         t.$postLink = function () {
-            $scope.$watch('t.entityUri', function () {
-                if (t.entityUri) {
-                    t.loadTasksForEntity(t.entityUri);
+            agentService.getCurrentUser().then(function (currentUser) {
+                t.currentUser = currentUser;
+                
+                $scope.$watch('t.entityUri', function () {
+                    if (t.entityUri) {
+                        t.loadTasksForEntity(t.entityUri);
 
-                    t.resetTask();
-                }
+                        t.resetTask();
+                    }
+                });
             });
         }
     }

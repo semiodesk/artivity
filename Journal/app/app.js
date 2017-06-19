@@ -17,8 +17,8 @@ angular.module('app', [
     'gettext'
 ]).config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('default')
-        .primaryPalette('grey')
-        .accentPalette('deep-orange');
+        .primaryPalette('orange')
+        .accentPalette('orange');
 }).config(function config($provide) {
     // We hide the auto-complete menu for the search input because we're filterting the file list live.
     // See: https://github.com/angular/material/issues/8393

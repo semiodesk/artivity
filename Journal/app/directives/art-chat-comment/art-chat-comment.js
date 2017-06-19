@@ -38,7 +38,7 @@
         t.enableResponse = false;
 
         t.hasResponded = function () {
-            var agentId = agentService.currentUser.Id;
+            var agentId = t.currentUser.Id;
 
             for (i = 0; i < t.responses.length; i++) {
                 var response = t.responses[i];
@@ -54,7 +54,7 @@
         t.postYes = function (request) {
             var response = new Comment();
             response.type = 'ApprovalResponse';
-            response.agentId = agentService.currentUser.Id;
+            response.agentId = t.currentUser.Id;
             response.primarySource = request.uri;
             response.startTime = new Date();
             response.endTime = new Date();
@@ -68,7 +68,7 @@
         t.postNo = function () {
             var response = new Comment();
             response.type = 'ApprovalResponse';
-            response.agentId = agentService.currentUser.Id;
+            response.agentId = t.currentUser.Id;
             response.primarySource = request.uri;
             response.startTime = new Date();
             response.endTime = new Date();
@@ -80,21 +80,27 @@
         }
 
         t.$onInit = function () {
-            if (t.comment) {
-                t.isUser = t.comment.agentId === agentService.currentUser.Id;
-                t.isRequest = t.comment.type.endsWith('Request');
-                t.isResponse = t.comment.type.endsWith('Response');
+            // TODO: Set the current user when loading the comments 
+            // from the db and spare the function call overhead.
+            agentService.getCurrentUser().then(function (currentUser) {
+                t.currentUser = currentUser;
 
-                t.responses = [];
+                if (t.comment) {
+                    t.isUser = t.comment.agentId === t.currentUser.Id;
+                    t.isRequest = t.comment.type.endsWith('Request');
+                    t.isResponse = t.comment.type.endsWith('Response');
 
-                if (t.isRequest) {
-                    commentService.getCommentsForPrimarySource(t.comment.uri).then(function (data) {
-                        t.responses = data;
+                    t.responses = [];
 
-                        t.enableResponse = !t.isUser && !t.hasResponded();
-                    });
+                    if (t.isRequest) {
+                        commentService.getCommentsForPrimarySource(t.comment.uri).then(function (data) {
+                            t.responses = data;
+
+                            t.enableResponse = !t.isUser && !t.hasResponded();
+                        });
+                    }
                 }
-            }
+            });
         }
     }
 })();

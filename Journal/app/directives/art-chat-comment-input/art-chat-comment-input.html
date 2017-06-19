@@ -1,5 +1,5 @@
 <div class="comment-input padding-x-xs padding-y-xs" ng-blur="t.onBlurred()">
-    <art-chat-emoticon-picker ng-show="t.showEmoticonPanel && t.focused"></art-chat-emoticon-picker>
+    <art-chat-emoticon-picker show="t.showEmoticonPanel"></art-chat-emoticon-picker>
     <div ng-show="t.showMembers">
         <ul class="list-view">
             <li class="list-item list-item-link" ng-repeat="member in t.members" ng-show="member.visible">
@@ -25,9 +25,10 @@
         <div class="textarea textarea-editable" ng-enter="t.postComment($event, t.comment)" ng-focus="t.onFocused()" ng-esc="t.onEscape()" contenteditable>
         </div>
     </div>
-    <div class="toolbar" ng-show="t.focused && !t.selectedPanel">
-        <a class="btn btn-chromeless pull-right" ng-click="t.postRequest($event, t.comment)">
-            <i class="zmdi zmdi-refresh"></i><span class="btn-label" translate>Request feedback</span>
-        </a>
+    <div ng-show="t.focused && !t.selectedPanel" layout="row" layout-align="end center">
+        <md-button ng-click="t.postRequest($event, t.comment)">
+            <md-icon md-font-icon="zmdi zmdi-refresh"></md-icon>
+            <span translate>Request feedback</span>
+        </md-button>
     </div>
 </div>
