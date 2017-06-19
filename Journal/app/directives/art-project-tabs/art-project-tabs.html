@@ -1,4 +1,4 @@
-<md-tabs class="header-tabs" md-selected="t.selectedTab" md-no-ink md-no-ink-bar>
+<md-tabs class="header-tabs" md-selected="t.selectedTab" md-no-ink md-no-ink-bar ng-cloak>
     <md-tab ng-repeat="tab in t.tabs track by $index" ng-click="t.selectTab($index)">
         <md-tab-label ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
             jqyoui-droppable="{onDrop: 't.onFileDropped'}">
@@ -7,9 +7,11 @@
 
                 <span ng-if="tab.title" style="text-align: left; min-width: 100px;" flex>{{tab.title}}</span>
 
-                <md-button md-no-ink ng-if="tab.closable" ng-click="t.removeTab($index, $event)" class="md-button-icon no-margin">
-                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
-                </md-button>
+                <div ng-if="tab.closable">
+                    <md-button md-no-ink ng-click="t.removeTab($index, $event)" class="md-button-icon no-margin">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    </md-button>
+                </div>
             </div>
         </md-tab-label>
     </md-tab>

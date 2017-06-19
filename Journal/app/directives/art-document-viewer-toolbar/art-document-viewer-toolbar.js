@@ -84,7 +84,7 @@
 
         function updatePageInfo() {
             t.currentPage = t.viewer.pageIndex + 1;
-            t.pageCount = t.viewer.pages.length;
+            t.pageCount = t.viewer.pages ? t.viewer.pages.length : 1;
         }
 
         t.$postLink = function () {

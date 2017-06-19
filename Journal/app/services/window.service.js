@@ -7,6 +7,8 @@
         const dialog = require('electron').remote.dialog;
         const shell = require('electron').shell;
 
+        initialize();
+
         return {
             currentWindow: currentWindow,
             openWindow: openWindow,
@@ -18,6 +20,14 @@
             setMaximizable: setMaximizable,
             setWidth: setWidth,
             selectFolder: selectFolder
+        }
+
+        function initialize() {
+            // Open external links with the system default browser.
+            $(document).on('click', 'a[target="_blank"]', function (event) {
+                event.preventDefault();
+                openExternalLink(this.href);
+            });
         }
 
         function close() {
@@ -119,7 +129,7 @@
                 properties: ['openDirectory']
             });
 
-            if(result && result.length > 0) {
+            if (result && result.length > 0) {
                 return result[0];
             }
         }

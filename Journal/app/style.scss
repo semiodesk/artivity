@@ -23,7 +23,7 @@ $selectionTextColor: $textColor;
 $selectionBorderColor: transparent;
 $selectionBackgroundColor: rgba($textColor, .1);
 $windowBackgroundColor: #e6e6e6;
-$headerBackgroundColor: #393939;
+$headerBackgroundColor: #2f2f2f;
 $headerTextColor: #ededed;
 $headerHeight: 40px;
 $toolbarHeight: 42px;
@@ -55,6 +55,48 @@ $editorBorderColor: darken($editorBackgroundColor, 25%);
 	transition: $property $duration cubic-bezier(0.215, 0.610, 0.355, 1.000);
 }
 
+// TYPOGRAPHY
+$textScaleFactor: 0.86;
+
+.md-display-4 {
+	font-size: 112px * $textScaleFactor !important;
+}
+
+.md-display-3 {
+	font-size: 56px * $textScaleFactor !important;
+}
+
+.md-display-2 {
+	font-size: 45px * $textScaleFactor !important;
+}
+
+.md-display-1 {
+	font-size: 34px * $textScaleFactor !important;
+}
+
+.md-headline {
+	font-size: 24px * $textScaleFactor !important;
+}
+
+.md-title {
+	font-size: 20px * $textScaleFactor !important;
+}
+
+.md-subhead {
+	font-size: 16px * $textScaleFactor !important;
+}
+
+.md-body-1,
+.md-body-2,
+.md-tab,
+.md-tooltip,
+.md-button {
+	font-size: 14px * $textScaleFactor !important;
+}
+
+.md-caption {
+	font-size: 12px * $textScaleFactor !important;
+}
 
 /* GENERAL STYLES */
 
@@ -66,6 +108,9 @@ body {
 	// Do not show scrollbars on the window itself.
 	overflow-x: hidden;
 	overflow-y: hidden;
+	// Base font settings.
+	font-family: $textFont;
+	font-size: 12px;
 }
 
 h5.title {
@@ -78,7 +123,6 @@ h2 .zmdi {
 }
 
 body {
-	font-family: $textFont;
 	color: $textColor;
 	background: $windowBackgroundColor;
 	overflow: hidden;
@@ -86,8 +130,15 @@ body {
 	margin: 0;
 }
 
-section {
-	margin: 1em 0;
+md-icon {
+	width: 20px;
+	height: 20px;
+	min-width: 20px;
+	min-height: 20px;
+}
+
+md-icon[md-font-icon] {
+    line-height: 20px;
 }
 
 a {
@@ -309,6 +360,7 @@ button:focus,
 .header-tabs {
 	background: $headerBackgroundColor;
 	height: 40px;
+	border-radius: 0;
 }
 
 .header-tabs .md-tab {
@@ -589,7 +641,7 @@ button:focus,
 }
 
 .zmdi {
-	font-size: 24px !important;
+	font-size: 20px !important;
 	vertical-align: middle;
 }
 
@@ -2297,6 +2349,11 @@ iframe {
 	margin: 5px;
 }
 
+.window-title-container {
+	background: $toolbarBackgroundColor;
+	height: $windowTitlebarHeight;
+}
+
 #window-title {
 	-webkit-app-region: drag;
 	position: absolute;
@@ -2306,7 +2363,6 @@ iframe {
 	padding: none;
 	margin: 0px;
 	height: $windowTitlebarHeight;
-	background: $toolbarBackgroundColor;
 	z-index: 99999;
 }
 

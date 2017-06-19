@@ -82,7 +82,7 @@
 
         t.resetTopic = function () {
             var topic = new Topic();
-            topic.agent = agentService.currentUser.Uri;
+            topic.agent = t.currentUser.Uri;
             topic.primarySource = t.entityUri;
 
             t.newTopic = topic;
@@ -109,12 +109,16 @@
 
         // INIT
         t.$postLink = function () {
-            $scope.$watch('t.entityUri', function () {
-                if (t.entityUri) {
-                    t.loadTopcisForEntity(t.entityUri);
+            agentService.getCurrentUser().then(function (currentUser) {
+                t.currentUser = currentUser;
 
-                    t.resetTopic();
-                }
+                $scope.$watch('t.entityUri', function () {
+                    if (t.entityUri) {
+                        t.loadTopcisForEntity(t.entityUri);
+
+                        t.resetTopic();
+                    }
+                });
             });
         }
     }
