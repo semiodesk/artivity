@@ -18,7 +18,9 @@
             findPersons: findPersons,
             software: [],
             getSoftwareAgents: getSoftwareAgents,
-            getActiveSoftwareAgents: getActiveSoftwareAgents
+            getActiveSoftwareAgents: getActiveSoftwareAgents,
+            getAccounts: getAccounts,
+            getArtivityAccount: getArtivityAccount
         };
 
         var dispatcher = new EventDispatcher(t);
@@ -42,6 +44,38 @@
                         }
                     });
                 }
+            });
+        }
+
+        function getAccounts() {
+            return new Promise(function (resolve, reject) {
+                api.getAccounts().then(function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var account = data[i];
+
+                        if (account) {
+                            resolve(account);
+                        }
+                    }
+                });
+            });
+        }
+
+        function getArtivityAccount() {
+            return new Promise(function (resolve, reject) {
+                api.getAccounts().then(function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var account = data[i];
+
+                        if (account && account.ServiceClient.Uri.startsWith('http://artivity.online')) {
+                            resolve(account);
+                        }
+
+                        return;
+                    }
+
+                    reject();
+                });
             });
         }
 

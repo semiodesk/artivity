@@ -41,27 +41,19 @@
         t.readonly = true;
 
         t.initializeAccountReadOnlyState = function () {
-            api.getAccounts().then(function (data) {
-                for (var i = 0; i < data.length; i++) {
-                    var account = data[i];
+            agentService.getArtivityAccount().then(function (account) {
+                t.readonly = true;
 
-                    if (account && account.ServiceClient.Uri.startsWith('http://artivity.online')) {
-                        t.readonly = true;
+                for (var j = 0; i < account.AuthenticationParameters.length; j++) {
+                    var p = account.AuthenticationParameters[j];
 
-                        for (var j = 0; i < account.AuthenticationParameters.length; j++) {
-                            var p = account.AuthenticationParameters[j];
+                    if (p.Name === 'username') {
+                        t.username = p.Value;
 
-                            if (p.Name === 'username') {
-                                t.username = p.Value;
-
-                                return;
-                            }
-                        }
-
-                        return;
+                        break;
                     }
                 }
-
+            }, function () {
                 t.readonly = false;
                 t.username = null;
             });
@@ -170,7 +162,7 @@
             // Register the controller with its parent for global apply/cancel.
             settingsService.registerController(t);
 
-            agentService.getCurrentUser().then(function(user) {
+            agentService.getCurrentUser().then(function (user) {
                 t.setUser(user);
             })
 
