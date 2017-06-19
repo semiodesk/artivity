@@ -34,6 +34,7 @@
 
         t.onBlurred = function () {
             t.focused = false;
+            t.showEmoticonPanel = false;
         }
 
         t.onEscape = function () {
