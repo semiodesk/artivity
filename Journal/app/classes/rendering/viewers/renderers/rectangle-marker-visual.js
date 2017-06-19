@@ -1,4 +1,4 @@
-function MarkRectangle(viewer, container, mark) {
+function RectangleMarkerVisual(viewer, container, mark) {
     createjs.Container.call(this);
 
     var t = this;
@@ -13,9 +13,9 @@ function MarkRectangle(viewer, container, mark) {
     t.initializeContainer();
 }
 
-MarkRectangle.prototype = Object.create(createjs.Container.prototype);
+RectangleMarkerVisual.prototype = Object.create(createjs.Container.prototype);
 
-MarkRectangle.prototype.initializeGeometry = function () {
+RectangleMarkerVisual.prototype.initializeGeometry = function () {
     var t = this;
 
     // The markers are created on a unscaled drawing context.
@@ -26,7 +26,7 @@ MarkRectangle.prototype.initializeGeometry = function () {
     t.resize(p1, p2);
 };
 
-MarkRectangle.prototype.initializeContainer = function () {
+RectangleMarkerVisual.prototype.initializeContainer = function () {
     var t = this;
 
     t.on('mouseover', function (e) {
@@ -52,7 +52,7 @@ MarkRectangle.prototype.initializeContainer = function () {
     t.resizeHandles = t.resizeHandles.concat(t.createResizeGrips());
 };
 
-MarkRectangle.prototype.hitTestPoint = function (x, y) {
+RectangleMarkerVisual.prototype.hitTestPoint = function (x, y) {
     var t = this;
 
     if (!t.mark.new || t.selected) {
@@ -78,7 +78,7 @@ MarkRectangle.prototype.hitTestPoint = function (x, y) {
     }
 };
 
-MarkRectangle.prototype.hitTestObject = function (object, x, y) {
+RectangleMarkerVisual.prototype.hitTestObject = function (object, x, y) {
     var hit = object.hitTest(x, y);
 
     if (hit) {
@@ -94,7 +94,7 @@ MarkRectangle.prototype.hitTestObject = function (object, x, y) {
     return hit;
 };
 
-MarkRectangle.prototype.createFillRectangle = function () {
+RectangleMarkerVisual.prototype.createFillRectangle = function () {
     var t = this;
 
     // Note: We position the marker at a half-pixel position to get a crisp 1px border.
@@ -104,8 +104,8 @@ MarkRectangle.prototype.createFillRectangle = function () {
     s.normal = function (init) {
         s.graphics.clear()
             .setStrokeStyle(2, 'square')
-            .beginStroke('rgba(255,255,255,0.1)')
-            .beginFill('rgba(252,202,0,0.1)')
+            .beginStroke('rgba(255,255,255,.1)')
+            .beginFill('rgba(252,202,0,.15)')
             .drawRect(t.x1, t.y1, t.w, t.h)
             .endFill()
             .endStroke();
@@ -114,8 +114,8 @@ MarkRectangle.prototype.createFillRectangle = function () {
     s.highlight = function () {
         s.graphics.clear()
             .setStrokeStyle(2, 'square')
-            .beginStroke('rgba(255,255,255,0.1)')
-            .beginFill('rgba(252,202,0,0.15)')
+            .beginStroke('rgba(255,255,255,.1)')
+            .beginFill('rgba(252,202,0,.2)')
             .drawRect(t.x1, t.y1, t.w, t.h)
             .endFill()
             .endStroke();
@@ -130,7 +130,7 @@ MarkRectangle.prototype.createFillRectangle = function () {
     return s;
 };
 
-MarkRectangle.prototype.createBorderRectangle = function () {
+RectangleMarkerVisual.prototype.createBorderRectangle = function () {
     var t = this;
 
     // Note: We position the marker at a half-pixel position to get a crisp 1px border.
@@ -141,7 +141,7 @@ MarkRectangle.prototype.createBorderRectangle = function () {
         var g = s.graphics;
         g.clear();
         g.setStrokeStyle(1, 'square');
-        g.beginStroke('rgba(252,202,0,1)');
+        g.beginStroke('rgba(252,202,0,0)');
         g.drawRect(t.x1 + .5, t.y1 + .5, t.w - 1, t.h - 1);
         g.endStroke();
     }
@@ -153,7 +153,7 @@ MarkRectangle.prototype.createBorderRectangle = function () {
     return s;
 };
 
-MarkRectangle.prototype.createResizeBars = function () {
+RectangleMarkerVisual.prototype.createResizeBars = function () {
     var t = this;
 
     var result = [];
@@ -166,7 +166,7 @@ MarkRectangle.prototype.createResizeBars = function () {
     return result;
 };
 
-MarkRectangle.prototype.createResizeBar = function (cursor) {
+RectangleMarkerVisual.prototype.createResizeBar = function (cursor) {
     var t = this;
 
     var s = new createjs.Shape();
@@ -235,7 +235,7 @@ MarkRectangle.prototype.createResizeBar = function (cursor) {
     return s;
 };
 
-MarkRectangle.prototype.createResizeGrips = function () {
+RectangleMarkerVisual.prototype.createResizeGrips = function () {
     var t = this;
 
     var result = [];
@@ -248,7 +248,7 @@ MarkRectangle.prototype.createResizeGrips = function () {
     return result;
 };
 
-MarkRectangle.prototype.createResizeGrip = function (cursor) {
+RectangleMarkerVisual.prototype.createResizeGrip = function (cursor) {
     var t = this;
 
     var s = new createjs.Shape();
@@ -319,7 +319,7 @@ MarkRectangle.prototype.createResizeGrip = function (cursor) {
     return s;
 };
 
-MarkRectangle.prototype.enableDragMove = function (s) {
+RectangleMarkerVisual.prototype.enableDragMove = function (s) {
     var t = this;
 
     s.on('mousedown', function (e) {
@@ -350,7 +350,7 @@ MarkRectangle.prototype.enableDragMove = function (s) {
     });
 };
 
-MarkRectangle.prototype.enableDragResize = function (s) {
+RectangleMarkerVisual.prototype.enableDragResize = function (s) {
     var t = this;
 
     s.on('mousedown', function (e) {
@@ -385,7 +385,7 @@ MarkRectangle.prototype.enableDragResize = function (s) {
     });
 };
 
-MarkRectangle.prototype.onResize = function (src, dx, dy) {
+RectangleMarkerVisual.prototype.onResize = function (src, dx, dy) {
     var t = this;
     var c = src.cursor;
 
@@ -419,7 +419,7 @@ MarkRectangle.prototype.onResize = function (src, dx, dy) {
     t.container.stage.update();
 };
 
-MarkRectangle.prototype.resize = function (p1, p2) {
+RectangleMarkerVisual.prototype.resize = function (p1, p2) {
     var t = this;
 
     // Subtracting the stage's position (p.x - t.container.stage.x) corrects the panning offset.
@@ -432,7 +432,7 @@ MarkRectangle.prototype.resize = function (p1, p2) {
     t.h = t.y2 - t.y1;
 };
 
-MarkRectangle.prototype.redraw = function (src) {
+RectangleMarkerVisual.prototype.redraw = function (src) {
     var t = this;
 
     t.fillRectangle.normal();
@@ -451,7 +451,7 @@ MarkRectangle.prototype.redraw = function (src) {
     }
 };
 
-MarkRectangle.prototype.select = function () {
+RectangleMarkerVisual.prototype.select = function () {
     var t = this;
 
     t.selected = true;
@@ -465,7 +465,7 @@ MarkRectangle.prototype.select = function () {
     stage.update();
 };
 
-MarkRectangle.prototype.deselect = function () {
+RectangleMarkerVisual.prototype.deselect = function () {
     var t = this;
 
     t.selected = false;

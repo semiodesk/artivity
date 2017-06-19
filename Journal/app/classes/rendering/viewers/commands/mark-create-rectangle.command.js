@@ -1,7 +1,7 @@
-function CreateMarkCommand(viewer, service) {
+function CreateRectangleMarkCommand(viewer, service) {
     var t = this;
 
-    ViewerCommand.call(t, viewer, 'createMark');
+    ViewerCommand.call(t, viewer, 'createRectangleMark');
 
     // The entity to be marked.
     t.param = null;
@@ -36,15 +36,15 @@ function CreateMarkCommand(viewer, service) {
     t.stage.on("mousedown", t.mouseDownHandler);
 }
 
-CreateMarkCommand.prototype = Object.create(ViewerCommand.prototype);
+CreateRectangleMarkCommand.prototype = Object.create(ViewerCommand.prototype);
 
-CreateMarkCommand.prototype.canExecute = function(param) {
+CreateRectangleMarkCommand.prototype.canExecute = function(param) {
     var t = this;
 
     return t.viewer && param && param.length > 0;
 };
 
-CreateMarkCommand.prototype.execute = function (param) {
+CreateRectangleMarkCommand.prototype.execute = function (param) {
     var t = ViewerCommand.prototype.execute.call(this, param);
 
     t.viewer.selectCommand(t, param);
@@ -54,7 +54,7 @@ CreateMarkCommand.prototype.execute = function (param) {
     t.param = param;
 };
 
-CreateMarkCommand.prototype.onMouseDown = function (e) {
+CreateRectangleMarkCommand.prototype.onMouseDown = function (e) {
     var t = this;
 
     if (t.viewer.selectedCommand === t) {
@@ -67,7 +67,7 @@ CreateMarkCommand.prototype.onMouseDown = function (e) {
     }
 };
 
-CreateMarkCommand.prototype.onMouseUp = function (e) {
+CreateRectangleMarkCommand.prototype.onMouseUp = function (e) {
     var t = this;
 
     if (t.mark !== null) {
@@ -81,7 +81,7 @@ CreateMarkCommand.prototype.onMouseUp = function (e) {
     $(window).off("mouseup", t.mouseUpHandler);
 };
 
-CreateMarkCommand.prototype.onMouseDrag = function (e) {
+CreateRectangleMarkCommand.prototype.onMouseDrag = function (e) {
     var t = this;
 
     if (t.viewer.selectedCommand === t) {
@@ -91,7 +91,7 @@ CreateMarkCommand.prototype.onMouseDrag = function (e) {
 
         if (t.mark === null) {
             // Create a new mark.
-            t.mark = new Marker();
+            t.mark = new Mark();
 
             // Create a new marker with the geometry set in local (scene) coordinates..
             t.mark.p1 = t.viewer.scene.globalToLocal(t.x1, t.y1);
@@ -107,10 +107,11 @@ CreateMarkCommand.prototype.onMouseDrag = function (e) {
     }
 };
 
-CreateMarkCommand.prototype.createMark = function (mark) {
+CreateRectangleMarkCommand.prototype.createMark = function (mark) {
     var t = this;
 
     var m = {
+        type: 'RectangleMark',
         agent: t.viewer.user.Uri,
         entity: t.param,
         startTime: mark.startTime,
