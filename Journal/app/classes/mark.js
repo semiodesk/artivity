@@ -1,4 +1,4 @@
-function Marker() {
+function Mark() {
     var t = this;
 
     t.startTime = new Date();
@@ -12,25 +12,25 @@ function Marker() {
     };
 }
 
-Marker.prototype.x = function () {
+Mark.prototype.x = function () {
     var t = this;
 
     return t.p1.x;
 };
 
-Marker.prototype.y = function () {
+Mark.prototype.y = function () {
     var t = this;
 
     return t.p1.y;
 };
 
-Marker.prototype.width = function () {
+Mark.prototype.width = function () {
     var t = this;
 
     return t.p2.x - t.p1.x;
 };
 
-Marker.prototype.height = function () {
+Mark.prototype.height = function () {
     var t = this;
 
     return t.p2.y - t.p1.y;

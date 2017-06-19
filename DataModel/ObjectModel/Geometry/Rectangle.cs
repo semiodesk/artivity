@@ -36,10 +36,10 @@ namespace Artivity.DataModel
         #region Members
 
         [RdfProperty(ART.x)]
-        public double x { get; set; }
+        public double X { get; set; }
 
         [RdfProperty(ART.y)]
-        public double y { get; set; }
+        public double Y { get; set; }
 
         [RdfProperty(ART.width)]
         public double Width { get; set; }
@@ -62,10 +62,10 @@ namespace Artivity.DataModel
         #region Members
 
         [RdfProperty(ART.x)]
-        public double x { get; set; }
+        public double X { get; set; }
 
         [RdfProperty(ART.y)]
-        public double y { get; set; }
+        public double Y { get; set; }
 
         [RdfProperty(ART.width)]
         public double Width { get; set; }

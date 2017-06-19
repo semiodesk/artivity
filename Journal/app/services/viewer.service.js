@@ -65,7 +65,7 @@
 
         function createMark(entity) {
             if (entity && entity.uri) {
-                executeCommand('createMark', entity.uri);
+                executeCommand('createRectangleMark', entity.uri);
             }
         }
 

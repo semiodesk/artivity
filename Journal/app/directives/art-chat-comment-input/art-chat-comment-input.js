@@ -253,8 +253,12 @@
         }
 
         t.$onInit = function () {
-            agentService.getCurrentUser().then(function(currentUser) {
+            agentService.getCurrentUser().then(function (currentUser) {
                 t.currentUser = currentUser;
+
+                $scope.$watch('t.entityUri', function () {
+                    t.resetComment();
+                });
             });
 
             if (projectService.currentProject) {
@@ -275,10 +279,6 @@
         }
 
         t.$postLink = function () {
-            $scope.$watch('t.entityUri', function () {
-                t.resetComment();
-            });
-
             t.inputElement = $('.textarea.textarea-editable');
 
             if (t.inputElement) {
@@ -350,7 +350,7 @@
                     }
 
                     t.comment.message = html;
-                    
+
                     updateInputElement(input, html);
                 });
             }

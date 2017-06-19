@@ -71,6 +71,7 @@ DocumentViewer.prototype.setRevision = function (revision) {
     var t = this;
 
     t.revision = revision;
+    t.entity = revision;
 
     // Rebuild the scene.
     t.render();
