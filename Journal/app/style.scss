@@ -91,11 +91,11 @@ $textScaleFactor: 0.86;
 .md-tab,
 .md-tooltip,
 .md-button {
-	font-size: 14px * $textScaleFactor !important;
+	font-size: 14px;
 }
 
 .md-caption {
-	font-size: 12px * $textScaleFactor !important;
+	font-size: 14px;
 }
 
 /* GENERAL STYLES */
@@ -110,7 +110,7 @@ body {
 	overflow-y: hidden;
 	// Base font settings.
 	font-family: $textFont;
-	font-size: 12px;
+	font-size: 14px;
 }
 
 h5.title {
@@ -327,8 +327,7 @@ button:focus,
 }
 
 .btn-circular,
-.btn-round,
-.md-button-avatar {
+.btn-round {
 	border-radius: 50%;
 	overflow: hidden;
 }
@@ -349,6 +348,8 @@ button:focus,
 
 .md-button-avatar {
 	padding: 0;
+	border-radius: 50%;
+	overflow: hidden;
 }
 
 .md-icon-button {

@@ -5,7 +5,10 @@
         return {
             link: function (scope, element, attr) {
                 element.bind('error', function () {
-                    $(element).attr('src', attr.ngErrorSrc);
+                    scope.$apply(function () {
+                        //$(element).attr('src', attr.ngErrorSrc);
+                        scope.$parent.t.src = attr.ngErrorSrc;
+                    });
                 });
             }
         }
