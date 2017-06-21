@@ -6,7 +6,7 @@
     <div class="clearfix"></div>
 
     <div class="form-group pull-left">
-        <art-avatar src="t.photoUrl" width="100" height="100" changed="onPhotoChanged"></art-avatar>
+        <art-avatar width="100" height="100"></art-avatar>
     </div>
 
     <div class="table-cell padding-x-xl" style="padding-top: 10px; width: 450px;">
@@ -16,8 +16,7 @@
         </div>
         <div class="form-group">
             <label for="password" translate>Password</label>
-            <input type="password" class="form-control" id="password" name="password" ng-model="t.parameter.password" ng-enter="t.connect()"
-                required>
+            <input type="password" class="form-control" id="password" name="password" ng-model="t.parameter.password" ng-enter="t.connect()" required>
         </div>
         <div class="form-group">
             <button class="btn btn-success pull-left" style="margin-bottom: 1em" ng-click="t.connect()" ng-disabled="loginForm.$invalid" translate>Connect</button>

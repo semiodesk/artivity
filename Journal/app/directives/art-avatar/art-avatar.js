@@ -26,10 +26,6 @@
         t.img = null;
         t.input = null;
 
-        if (!t.src || t.src === '') {
-            t.src = 'app/resources/img/placeholder-avatar.png';
-        }
-
         t.onFileSelected = function (args) {
             var data = args.target.files[0];
 
@@ -51,6 +47,10 @@
         }
 
         t.$onInit = function () {
+            if (t.canChange === undefined) {
+                t.canChange = false;
+            }
+
             $scope.$watch(['height', 'width'], function () {
                 if (t.height > 0 && t.width > 0) {
                     t.style = {
@@ -72,7 +72,25 @@
             t.img = $element.find('img');
             t.input = $element.find('input[type="file"]');
 
-            if (t.input && (t.canChange || t.canChange === undefined)) {
+            if (t.img) {
+                // We set the placeholder img when a loading error occurs with the current img src.
+                t.img.error(function () {
+                    t.img.attr('src', 'app/resources/img/placeholder-avatar.png');
+                });
+
+                // In order to prevent race conditions when handling errors, we implement the src binding manually.
+                $scope.$watch('src', function () {
+                    var src = t.src;
+
+                    if(src === undefined || src === null) {
+                        src = '';
+                    }
+
+                    t.img.attr('src', src);
+                });
+            }
+
+            if (t.input && t.canChange) {
                 t.input.bind('change', t.onFileSelected);
 
                 if (typeof ($element.click) === 'function') {
