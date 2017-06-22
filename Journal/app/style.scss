@@ -37,7 +37,7 @@ $buttonHoverBackgroundColor: lighten($itemBackgroundColor, 5%);
 $buttonTextColor: $textColor;
 $inputBackgroundColor: #FFFFFF;
 $inputTextColor: #000000;
-$windowTitlebarHeight: 37px;
+$windowTitlebarHeight: 40px;
 $scrollbarSize: 12px;
 $tooltipBackgroundColor: #F1F1F1;
 $tooltipTextColor: black;
@@ -94,12 +94,19 @@ $textScaleFactor: 0.86;
 	font-size: 14px;
 }
 
+.md-button.md-button-icon {
+	min-width: 35px;
+}
+
 .md-caption {
 	font-size: 14px;
 }
 
-/* GENERAL STYLES */
+md-content {
+	background: transparent;
+}
 
+/* GENERAL STYLES */
 html,
 body {
 	// Make the body fill the browser window.
@@ -150,7 +157,7 @@ a:hover {
 	text-decoration: none;
 }
 
-a.link {
+.link {
 	cursor: pointer;
 }
 
@@ -200,36 +207,8 @@ iframe {
 	margin-right: auto;
 }
 
-.position-center {
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-}
-
 .translucent {
 	opacity: .5;
-}
-
-.animate-show {
-	line-height: 1em;
-	opacity: 1;
-	padding: 10px;
-}
-
-.animate-show.ng-hide {
-	line-height: 0;
-	opacity: 0;
-	padding: 0 10px;
-}
-
-.animate-show.ng-hide-add,
-.animate-show.ng-hide-remove {
-	transition: 0s linear all;
-}
-
-.animate-show.ng-hide-add-active,
-.animate-show.ng-hide-remove-active {
-	transition: 1s linear all;
 }
 
 .grayscale {
@@ -237,6 +216,8 @@ iframe {
 	-moz-filter: grayscale(100%);
 	filter: grayscale(100%);
 }
+
+/* BUTTONS */
 
 .btn {
 	border: none;
@@ -356,85 +337,14 @@ button:focus,
 	color: $labelTextColor;
 }
 
-/* TABS */
-
-.header-tabs {
-	background: $headerBackgroundColor;
-	height: 40px;
-	border-radius: 0;
-}
-
-.header-tabs .md-tab {
-	padding: 10px 16px;
-	height: 40px;
-	color: $headerTextColor;
-	text-transform: none;
-	font-weight: normal;
-	border-right: 1px solid rgba(255, 255, 255, .05);
-	transition: none;
-}
-
-.header-tabs .md-tab:last-child {
+#primary-sidenav {
+	background: rgba(255,255,255,.33);
 	border-right: none;
+	border-left: none;
 }
 
-.header-tabs .md-tab .md-tab-closable {
-	// Extend the content of closable tabs on the right 
-	// to move the close tab closer to the tab border.
-	margin-right: -13px;
-}
-
-.header-tabs .md-tab .layout-row {
-	height: 23px;
-}
-
-.header-tabs .md-tab .md-button {
+#primary-sidenav md-list {
 	padding: 0;
-	width: auto;
-	height: auto;
-}
-
-.header-tabs .md-tab .zmdi{
-	color: $headerTextColor;
-	font-weight: normal;
-}
-
-.header-tabs .md-tab .zmdi.zmdi-menu {
-	// Renders the icon without blurred edges.
-	font-size: 21px !important;
-	margin-top: 1px;
-}
-
-.header-tabs .md-tab.md-active {
-	border-bottom: none;
-	border-radius: 1px 1px 0 0;
-	background: $windowBackgroundColor;
-	color: $textColor;
-}
-
-.header-tabs .md-tab.md-active .zmdi {
-	color: $textColor;
-}
-
-.header-tabs .md-tab .zmdi-close {
-	font-size: 18px !important;
-}
-
-.md-tab-labels-hidden > md-tabs-wrapper {
-	display: none;
-	height: 0;
-}
-
-.md-tab-labels-hidden > md-tabs-content-wrapper {
-	top: 0;
-}
-
-#tab-content {
-	position: absolute;
-	top: $toolbarHeight;
-	left: 0;
-	right: 0;
-	bottom: 0;
 }
 
 /* ACCODRION */
@@ -657,6 +567,10 @@ button:focus,
 	vertical-align: middle
 }
 
+.zdmi-xl {
+	font-size: 48px;
+}
+
 .account,
 .ok {
 	font-size: $iconFontSize;
@@ -677,120 +591,6 @@ h4 {
 
 .subline {
 	margin: .5em 0 2em 0;
-}
-
-// RESIZABLE CONTENT
-
-.ui-resizable {
-	position: relative;
-}
-
-.ui-resizable-handle {
-	position: absolute;
-	font-size: 0.1px;
-	display: block;
-}
-
-.ui-resizable-disabled .ui-resizable-handle,
-.ui-resizable-autohide .ui-resizable-handle {
-	display: none;
-}
-
-.ui-resizable-n {
-	cursor: n-resize;
-	height: 7px;
-	width: 100%;
-	top: -5px;
-	left: 0;
-}
-
-.ui-resizable-s {
-	cursor: s-resize;
-	height: 7px;
-	width: 100%;
-	bottom: -5px;
-	left: 0;
-}
-
-.ui-resizable-e {
-	cursor: e-resize;
-	width: 7px;
-	right: -5px;
-	top: 0;
-	height: 100%;
-}
-
-.ui-resizable-w {
-	cursor: w-resize;
-	width: 7px;
-	left: -5px;
-	top: 0;
-	height: 100%;
-}
-
-.ui-resizable-se {
-	cursor: se-resize;
-	width: 12px;
-	height: 12px;
-	right: 1px;
-	bottom: 1px;
-}
-
-.ui-resizable-sw {
-	cursor: sw-resize;
-	width: 9px;
-	height: 9px;
-	left: -5px;
-	bottom: -5px;
-}
-
-.ui-resizable-nw {
-	cursor: nw-resize;
-	width: 9px;
-	height: 9px;
-	left: -5px;
-	top: -5px;
-}
-
-.ui-resizable-ne {
-	cursor: ne-resize;
-	width: 9px;
-	height: 9px;
-	right: -5px;
-	top: -5px;
-}
-
-.ui-sidebar {
-	position: absolute;
-	top: 10px;
-	bottom: 10px;
-	z-index: 1;
-	width: 33%;
-	min-width: 400px;
-	max-width: 575px;
-	background: #fcfcfc;
-	box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, .05);
-}
-
-.ui-sidebar-right {
-	right: 10px;
-	border-left: 1px solid $itemBackgroundColor;
-}
-
-.ui-sidebar .tab-content {
-	position: absolute;
-	top: $toolbarHeight;
-	right: 0;
-	bottom: 0;
-	left: 0;
-}
-
-.ui-sidebar .tab-pane {
-	height: 100%;
-}
-
-.hittest-invisible {
-	pointer-events: none;
 }
 
 // LAYOUT
@@ -1091,10 +891,6 @@ h4 {
 	border-bottom: 1px solid darken($windowBackgroundColor, 3%);
 }
 
-.md-toolbar {
-	border-bottom: 1px solid $itemBackgroundColor;
-}
-
 .md-toolbar .title {
 	display: block;
 	font-weight: 500;
@@ -1121,10 +917,6 @@ h4 {
 
 .md-toolbar.md-toolbar-header button:hover {
 	color: $headerTextColor !important;
-}
-
-.md-button.md-button-icon {
-	min-width: 35px;
 }
 
 md-list-item .md-list-item-inner>md-checkbox .md-label {
@@ -1305,74 +1097,6 @@ div[contenteditable] {
 	word-wrap: break-word;
 }
 
-.modal-dialog {
-	width: 700px;
-	margin-top: $windowTitlebarHeight;
-	color: $headerTextColor;
-}
-
-.modal-dialog label,
-.modal-dialog p.description {
-	color: darken($headerTextColor, 10%);
-}
-
-.modal-dialog .toolbar {
-	margin-top: 10px;
-}
-
-.modal-dialog .toolbar .btn .btn-label {
-	margin: 0;
-	margin-right: 15px;
-	margin-left: -5px;
-	float: right;
-}
-
-.modal-dialog .toolbar .btn .btn-label.left {
-	margin-left: 15px;
-	margin-right: -5px;
-	float: left;
-}
-
-.modal-title {
-	margin-bottom: .25em;
-}
-
-.modal-content {
-	box-shadow: none;
-	box-shadow: 0px 7px 15px 0px rgba(0, 0, 0, .25);
-	border-radius: 0;
-	border: none;
-	border-top: 1px solid darken($toolbarBackgroundColor, 3%);
-	background: $toolbarBackgroundColor;
-	min-width: 700px;
-	transition: width linear .4s;
-	transition: height linear .4s;
-}
-
-.modal-backdrop.in {
-	background: $headerBackgroundColor;
-	opacity: .8 !important;
-	transition: opacity linear .4s;
-}
-
-.modal-status-bar {
-	position: absolute;
-	bottom: -5px;
-	left: 0;
-	right: 0;
-	z-index: 0;
-}
-
-.modal-status-bar .modal-state {
-	padding: 5px;
-	text-align: center;
-	border-radius: 0 0 10px 10px !important;
-}
-
-input[disabled] {
-	opacity: .5;
-}
-
 button,
 md-slider,
 md-select {
@@ -1463,18 +1187,6 @@ button[disabled]:hover {
 
 .border-top {
 	border-top: 1px solid $itemBackgroundColor;
-}
-
-.hint {
-	background: $headerBackgroundColor;
-	border-radius: 3px;
-	padding: 10px;
-	box-sizing: border-box;
-	width: 100%;
-}
-
-.zdmi-xl {
-	font-size: 48px;
 }
 
 .overlay {
@@ -2354,36 +2066,10 @@ iframe {
 	margin: 5px;
 }
 
-.window-title-container {
-	background: $toolbarBackgroundColor;
-	height: $windowTitlebarHeight;
-}
-
-#window-title {
-	-webkit-app-region: drag;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	padding: none;
-	margin: 0px;
-	height: $windowTitlebarHeight;
-	z-index: 99999;
-}
-
-#window-title-text {
-	position: absolute;
-	width: 100%;
-	z-index: -1;
-	text-align: center;
-	color: $labelTextColor;
-	line-height: $windowTitlebarHeight;
-	vertical-align: middle;
-}
-
 .window-title-btns {
 	-webkit-app-region: no-drag;
 	color: $headerTextColor;
+	height: $windowTitlebarHeight;
 }
 
 .window-title-btns .btn-title {
@@ -2517,17 +2203,35 @@ iframe {
 
 #window-view-container {
 	position: absolute;
-	top: $windowTitlebarHeight;
+	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	border-radius: 1px;
+	border-radius: 0;
 }
 
 #window-view-container>.ng-scope {
 	display: block;
 	width: 100%;
 	height: 100%;
+}
+
+.art-window-toolbar {
+	-webkit-app-region: drag;
+	padding: 0;
+	min-height: $windowTitlebarHeight;
+}
+
+.art-window-toolbar .md-button {
+	-webkit-app-region: no-drag;
+	margin: 0;
+	min-height: $windowTitlebarHeight;
+	line-height: $windowTitlebarHeight;
+	vertical-align: middle;
+}
+
+.art-window-toolbar .md-button.md-button-icon {
+	min-width: 45px;
 }
 
 /* ANIMATIONS */

@@ -1,0 +1,36 @@
+<div class="layout-root" layout="column">
+    <div class="md-toolbar" layout="row" layout-align="start center">
+        <div class="title" flex>
+            <span>{{t.file.label}}</span>
+        </div>
+
+        <md-button class="md-button" ng-click="t.publishLatestRevision(t.file)">
+            <md-icon md-font-icon="zmdi zmdi-share"></md-icon>
+            <span translate>Share</span>
+        </md-button>
+    </div>
+
+    <div class="layout-container viewer-container" flex>
+        <div class="layout-root" layout="row">
+            <art-document-history-viewer flex></art-document-history-viewer>
+
+            <md-sidenav flex="400px" class="md-sidenav-right" md-component-id="right" md-is-locked-open="true">
+                <md-tabs class="layout-root" md-border-bottom>
+                    <md-tab label="{{'History' | translate}}">
+                        <md-content layout="column" layout-fill>
+                            <art-editing-history></art-editing-history>
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="{{'Statistics' | translate}}">
+                        <md-content layout="column" layout-fill class="padding-x-xl padding-y-xl">
+                            <art-editing-stats></art-editing-stats>
+                            <art-layer-control></art-layer-control>
+                        </md-content>
+                    </md-tab>
+                </md-tabs>
+            </md-sidenav>
+        </div>
+    </div>
+
+    <art-document-history-viewer-toolbar></art-document-history-viewer-toolbar>
+</div>

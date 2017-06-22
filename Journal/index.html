@@ -169,7 +169,10 @@
 	<script type="text/javascript" src="app/directives/art-topic-control/art-topic-control.js"></script>
 	<script type="text/javascript" src="app/directives/art-update-indicator/art-update-indicator.js"></script>
 	<script type="text/javascript" src="app/directives/art-window-controls/art-window-controls.js"></script>
+	<script type="text/javascript" src="app/directives/art-window-menu/art-window-menu.js"></script>
+	<script type="text/javascript" src="app/directives/art-window-toolbar/art-window-toolbar.js"></script>
 	<script type="text/javascript" src="app/directives/arto-settings-user/arto-settings-user.js"></script>
+	<script type="text/javascript" src="app/directives/md-theme-preview/md-theme-preview.js"></script>
 	<script type="text/javascript" src="app/directives/ng-dropzone/ng-dropzone.js"></script>
 	<script type="text/javascript" src="app/directives/ng-enter/ng-enter.js"></script>
 	<script type="text/javascript" src="app/directives/ng-error-src/ng-error-src.js"></script>
@@ -179,11 +182,10 @@
 	<script type="text/javascript" src="app/dialogs/edit-person-dialog/edit-person-dialog.controller.js"></script>
 	<script type="text/javascript" src="app/dialogs/publish-file-dialog/publish-file-dialog.controller.js"></script>
 	<script type="text/javascript" src="app/dialogs/update-dialog/update-dialog.controller.js"></script>
+	<script type="text/javascript" src="app/states/document-history/document-history.js"></script>
+	<script type="text/javascript" src="app/states/document/document.js"></script>
 	<script type="text/javascript" src="app/states/main/main.js"></script>
-	<script type="text/javascript" src="app/states/main/views/dashboard.js"></script>
-	<script type="text/javascript" src="app/states/main/views/document-history.js"></script>
-	<script type="text/javascript" src="app/states/main/views/document.js"></script>
-	<script type="text/javascript" src="app/states/main/views/project-dashboard.js"></script>
+	<script type="text/javascript" src="app/states/main/views/project.js"></script>
 	<script type="text/javascript" src="app/states/main/views/recently-used.js"></script>
 	<script type="text/javascript" src="app/states/query/query.js"></script>
 	<script type="text/javascript" src="app/states/settings/settings.js"></script>
@@ -201,29 +203,11 @@
 </head>
 
 <body id="window" art-keyboard-input-handler art-localization-handler>
-	<div class="layout-root">
-		<div class="window-title-container">
-			<div id="window-title">
-				<div art-window-controls></div>
-				<div class="window-title-btns pull-left">
-					<button class="btn-title btn-info" id="btn-sync">
-					<art-sync-indicator></art-sync-indicator>
-				</button>
-				</div>
-				<div class="window-title-btns pull-right">
-					<button class="btn-title btn-info" id="btn-update">
-					<art-update-indicator></art-update-indicator>
-				</button>
-				</div>
-				<div id="window-title-text">
-					<span><img src="app/resources/img/artivity.png" width="64" height="20" alt="artivity"/></span>
-					<span style="background: #f87806; border-radius: 2px; font-size: 10px; color: white; padding: 1px 3px; margin-left: 5px; position: relative; top: -2px;">BETA</span>
-				</div>
-			</div>
-		</div>
-		<div class="window-view-container" id="window-view-container">
-			<div ui-view></div>
-		</div>
+	<div class="layout-root" layout="column">
+		<art-window-toolbar></art-window-toolbar>
+
+		<div class="layout-container" ui-view flex></div>
+
 		<div class="overlay collapse" id="overlay">
 			<div class="msg center-xy invisible" id="msg-add-app">
 				<div class="row">

@@ -22,18 +22,6 @@
     function FileCardDirectiveController($rootScope, $scope, $element, $location, $mdBottomSheet, selectionService, filesystemService) {
         var t = this;
 
-        t.viewFile = function (e) {
-            if (t.file) {
-                $scope.$emit('viewFile', t.file);
-            }
-        }
-
-        t.viewFileHistory = function (e) {
-            if (t.file) {
-                $scope.$emit('viewFileHistory', t.file);
-            }
-        }
-
         t.showSheet = function ($event) {
             t.alert = '';
 

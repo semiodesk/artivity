@@ -1,5 +1,47 @@
-<div class="layout-root" layout="column">
-    <art-project-tabs></art-project-tabs>
+<div class="layout-root" layout="row">
+    <md-sidenav id="primary-sidenav" class="md-sidenav-left" md-component-id="left" md-is-locked-open="true">
+        <md-list>
+            <md-list-item ui-sref="main.view.recently-used">
+                <md-icon md-font-icon="zmdi zmdi-time-restore"></md-icon>
+                <div flex translate>Recently Used</div>
+            </md-list-item>
+        </md-list>
 
-    <div ui-view id="tab-content" flex></div>
+        <h4 class="md-padding md-hue-3 text-uppercase" translate>Projects</h4>
+        <md-list flex>
+            <md-list-item ng-repeat="project in t.projects" ui-sref="main.view.project({index: $index + 1, project: project})">
+                <md-icon md-font-icon=""></md-icon>
+                <div flex>{{project.Title}}</div>
+            </md-list-item>
+        </md-list>
+
+        <div layout="row" layout-align="center center">
+            <md-button class="md-fab" aria-label="Add Project">
+                <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
+            </md-button>
+        </div>
+    </md-sidenav>
+
+    <md-content flex>
+        <div ui-view></div>
+    </md-content>
+
+    <!--<md-theme-preview primary="artivityLight" accent="artivityLight"></md-theme-preview>-->
 </div>
+
+<script type="text/ng-template" id="delete-project-dialog.html">
+    <md-dialog aria-label="Project Dialog" ng-cloak>
+        <md-dialog-content>
+            <md-content class="padding-x-xl padding-y-xl">
+                <h3>Delete '{{project.Title}}'?</h3>
+                <p translate>The project will be archived and no content will be deleted. You can restore the project at any time in the
+                    future.
+                </p>
+            </md-content>
+        </md-dialog-content>
+        <md-dialog-actions layout="row" layout-align="end center">
+            <md-button ng-click="ok()" class="md-warn">Delete</md-button>
+            <md-button ng-click="cancel()" translate>Cancel</md-button>
+        </md-dialog-actions>
+    </md-dialog>
+</script>
