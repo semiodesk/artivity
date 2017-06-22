@@ -1,7 +1,7 @@
 <!--<div layout="column" jqyoui-draggable="{onStart: 't.onDragStart', onStop: 't.onDragStop'}" data-drag="true" data-jqyoui-options="{opacity:0.7, helper: 'clone', appendTo: 'body', placeholder: 'keep', cursorAt: {top: 5, left: 5}}">-->
 <div layout="column">
     <md-card class="card" style="position: relative; overflow: hidden">
-        <img ng-src="{{t.file.thumbnail}}" class="md-card-image" alt="{{t.file.label}}" ng-click="t.viewFile($event)" ng-right-click="t.showSheet($event)">
+        <img class="md-card-image link" ng-src="{{t.file.thumbnail}}" alt="{{t.file.label}}" ng-right-click="t.showSheet($event)" ui-sref="document({fileUri: t.file.uri})">
 
         <h4 class="md-padding no-margin" md-highlight-text="t.highlightText">{{t.file.label}}</h4>
 

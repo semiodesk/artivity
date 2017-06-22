@@ -12,49 +12,44 @@
 					template: "<ui-view></ui-view>",
 					abstract: true
 				})
-				.state('main.view.dashboard', {
-					url: '/dashboard',
-					templateUrl: 'app/states/main/views/dashboard.html',
-					controller: 'DashboardViewController as t'
-				})
 				.state('main.view.recently-used', {
 					url: '/recently-used',
 					templateUrl: 'app/states/main/views/recently-used.html',
 					controller: 'RecentlyUsedViewController as t'
 				})
-				.state('main.view.project-dashboard', {
-					url: '/project-dashboard',
-					templateUrl: 'app/states/main/views/project-dashboard.html',
+				.state('main.view.project', {
+					url: '/project',
+					templateUrl: 'app/states/main/views/project.html',
 					controller: 'ProjectDashboardViewController as t',
 					params: {
 						project: null
 					}
 				})
-				.state('main.view.document', {
+				.state('document', {
 					url: '/document/{fileUri:string}',
-					templateUrl: 'app/states/main/views/document.html',
+					templateUrl: 'app/states/document/document.html',
 					controller: 'DocumentViewController as t',
 					params: {
 						project: null,
 						fileUri: null
 					}
 				})
-				.state('main.view.document-history', {
+				.state('document-history', {
 					url: '/document-history/{fileUri:string}',
-					templateUrl: 'app/states/main/views/document-history.html',
+					templateUrl: 'app/states/document-history/document-history.html',
 					controller: 'DocumentHistoryViewController as t',
 					params: {
 						project: null,
 						fileUri: null
 					}
 				})
-				.state('main.view.settings', {
+				.state('settings', {
 					url: '/settings',
 					templateUrl: 'app/states/settings/settings.html',
 					controller: 'SettingsStateController as t',
 					abstract: true
 				})
-				.state('main.view.settings.profile', {
+				.state('settings.profile', {
 					url: '/profile',
 					views: {
 						'tab-content': {
@@ -63,7 +58,7 @@
 						}
 					}
 				})
-				.state('main.view.settings.apps', {
+				.state('settings.apps', {
 					url: '/apps',
 					views: {
 						'tab-content': {
@@ -72,7 +67,7 @@
 						}
 					}
 				})
-				.state('main.view.settings.accounts', {
+				.state('settings.accounts', {
 					url: '/accounts',
 					views: {
 						'tab-content': {

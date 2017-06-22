@@ -1,13 +1,13 @@
 <md-bottom-sheet class="md-list md-has-header">
     <md-list ng-cloak>
         <md-list-item>
-            <md-button ng-click="t.viewFile($event)">
+            <md-button ui-sref="document({fileUri: t.file.uri})">
                 <md-icon md-font-icon="zmdi zmdi-eye" md-menu-align-target></md-icon>
                 <span translate>View</span>
             </md-button>
         </md-list-item>
         <md-list-item>
-            <md-button ng-click="t.viewFileHistory($event)">
+            <md-button ui-sref="document-history({fileUri: t.file.uri})">
                 <md-icon md-font-icon="zmdi zmdi-time-restore" md-menu-align-target></md-icon>
                 <span translate>View History</span>
             </md-button>

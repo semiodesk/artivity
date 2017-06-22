@@ -6,6 +6,7 @@
     function MainStateController($rootScope, $scope, $state, $stateParams, $timeout, projectService, windowService, cookieService, syncService) {
         var t = this;
 
+        // STATE
         t.unregisterStateChangeSuccess = null;
 
         t.onStateChangeSuccess = function (e, state, stateParams) {
@@ -54,6 +55,21 @@
             }
         }
 
+        // PROJECTS
+        t.loadProjects = function () {
+            return new Promise(function (resolve, reject) {
+                t.projects = [];
+
+                projectService.getAll().then(function (data) {
+                    $scope.$apply(function () {
+                        t.projects = data;
+                    });
+                });
+
+                resolve(t.projects);
+            });
+        };
+
         // INIT
         t.onInit = function () {
             windowService.setMinimizable();
@@ -72,6 +88,8 @@
                 t.unregisterStateChangeSuccess();
                 t.unregisterStateChangeError();
             });
+
+            t.loadProjects();
         }
 
         t.onInit();

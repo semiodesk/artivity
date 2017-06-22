@@ -26,10 +26,6 @@
             }
         }
 
-        t.navigateBack = function () {
-            $state.go('main.view.project-dashboard', $stateParams);
-        }
-
         t.$onInit = function () {
             if ($stateParams.fileUri) {
                 entityService.get($stateParams.fileUri).then(function (data) {

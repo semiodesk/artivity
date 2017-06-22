@@ -16,13 +16,29 @@ angular.module('app', [
     'luegg.directives',
     'gettext'
 ]).config(function ($mdThemingProvider) {
+    // Extend the red theme with a different color and make the contrast color black instead of white.
+    // For example: raised button text will be black instead of white.
+    var lightMap = $mdThemingProvider.extendPalette('orange', {
+        '500': '#4f4f4f',
+        '700': '#3f3f3f',
+        '800': '#2f2f2f',
+        'A200': '#2f2f2f',
+        'A700': '#2f2f2f',
+        'contrastDefaultColor': 'light'
+    });
+
+    // Register the new color palette map with the name <code>neonRed</code>
+    $mdThemingProvider.definePalette('artivity-light', lightMap);
+
     $mdThemingProvider.theme('default')
-        .primaryPalette('orange')
-        .accentPalette('orange');
+        .primaryPalette('artivity-light', {
+            'default': '800'
+        })
+        .accentPalette('artivity-light');
 }).config(function config($provide) {
     // We hide the auto-complete menu for the search input because we're filterting the file list live.
     // See: https://github.com/angular/material/issues/8393
-    
+
     // add additional function to md-autocomplete
     $provide.decorator('mdAutocompleteDirective', mdAutoCompleteDirectiveOverride);
 
