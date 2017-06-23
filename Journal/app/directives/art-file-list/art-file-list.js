@@ -71,14 +71,6 @@
             $scope.$emit('showMore');
         }
 
-        t.onDragStart = function () {
-            $scope.$emit('dragStarted');
-        }
-
-        t.onDragStop = function () {
-            $scope.$emit('dragStopped');
-        }
-
         t.$onInit = function () {
             hotkeys.add({
                 combo: 'f5',

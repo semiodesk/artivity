@@ -635,8 +635,11 @@ namespace Artivity.Api.Modules
         private Response DeleteProject(Uri uri)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             SparqlUpdate update = new SparqlUpdate(@"
                         WITH @model

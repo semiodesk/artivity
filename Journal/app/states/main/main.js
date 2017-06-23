@@ -1,10 +1,70 @@
 (function () {
     angular.module('app').controller("MainStateController", MainStateController);
 
-    MainStateController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$timeout', 'projectService', 'windowService', 'cookieService', 'syncService'];
+    MainStateController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$element', '$timeout', '$mdDialog', 'projectService', 'windowService', 'cookieService', 'syncService'];
 
-    function MainStateController($rootScope, $scope, $state, $stateParams, $timeout, projectService, windowService, cookieService, syncService) {
+    function MainStateController($rootScope, $scope, $state, $stateParams, $element, $timeout, $mdDialog, projectService, windowService, cookieService, syncService) {
         var t = this;
+
+        // PROJECTS
+        t.projects = [];
+
+        t.loadProjects = function () {
+            return new Promise(function (resolve, reject) {
+                t.projects = [];
+
+                projectService.getAll().then(function (data) {
+                    $scope.$apply(function () {
+                        t.projects = data;
+                    });
+                });
+
+                resolve(t.projects);
+            });
+        };
+
+        t.addProject = function (e) {
+            projectService.create().then(function (project) {
+                $mdDialog.show({
+                    attachTo: angular.element(document.body),
+                    templateUrl: 'app/dialogs/edit-project/edit-project.html',
+                    controller: 'EditProjectDialogController',
+                    controllerAs: 't',
+                    bindToController: true,
+                    hasBackdrop: true,
+                    trapFocus: true,
+                    zIndex: 150,
+                    targetEvent: e,
+                    disableParentScroll: true,
+                    clickOutsideToClose: false,
+                    escapeToClose: true,
+                    focusOnOpen: true,
+                    locals: {
+                        project: project,
+                        projects: t.projects
+                    }
+                }).then(function () {
+                    projectService.update(project).then(function () {
+                        project.IsNew = false;
+
+                        t.projects.push(project);
+
+                        syncService.synchronize();
+                    }, function () {});
+                }, function () {});
+            });
+        }
+
+        t.selectProject = function (project, i) {
+            // Note: We invoke $state.go manually because we need to pass the project 
+            // variable as a reference. When using ui-sref a copy of the variable is passed
+            // as parameter, hence the project title and properties would not be updated 
+            // when they are being changed in dialogs.
+            $state.go('main.view.project', {
+                index: i,
+                project: project
+            });
+        }
 
         // STATE
         t.unregisterStateChangeSuccess = null;
@@ -13,14 +73,7 @@
             if (stateParams) {
                 var n = parseInt(stateParams.index);
 
-                if (t.selectedTab === n && state.name.startsWith('main')) {
-                    var context = tabService.getTabContext(n);
-                    context.state = state;
-                    context.stateParams = stateParams;
-
-                    tabService.setSelectedTab(n);
-                    tabService.setTabContext(n, context);
-                }
+                t.selectedIndex = n;
             }
         }
 
@@ -40,35 +93,15 @@
                 if (target.length > 0) {
                     var scope = angular.element(target[0]).scope();
 
-                    if (scope && scope.$index) {
-                        var context = tabService.getTabContext(scope.$index);
+                    if (scope.project) {
+                        var project = scope.project;
 
-                        if (context && context.stateParams && context.stateParams.project) {
-                            var project = context.stateParams.project;
-                            var file = t.droppedFile;
-
-                            // Project is mapped automatically, file manually. this is why the caps of the uri property are different
-                            projectService.addFile(project.Uri, file.uri);
-                        }
+                        // Project is mapped automatically, file manually. this is why the caps of the uri property are different
+                        projectService.addFile(project.Uri, t.droppedFile.uri);
                     }
                 }
             }
         }
-
-        // PROJECTS
-        t.loadProjects = function () {
-            return new Promise(function (resolve, reject) {
-                t.projects = [];
-
-                projectService.getAll().then(function (data) {
-                    $scope.$apply(function () {
-                        t.projects = data;
-                    });
-                });
-
-                resolve(t.projects);
-            });
-        };
 
         // INIT
         t.onInit = function () {
