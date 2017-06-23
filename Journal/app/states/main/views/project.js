@@ -1,9 +1,9 @@
 (function () {
 	angular.module('app').controller("ProjectDashboardViewController", ProjectDashboardViewController);
 
-	ProjectDashboardViewController.$inject = ['$scope', '$state', '$stateParams', '$element', '$timeout', '$mdSidenav', 'hotkeys', 'projectService'];
+	ProjectDashboardViewController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$element', '$timeout', '$mdDialog', 'hotkeys', 'projectService', 'syncService'];
 
-	function ProjectDashboardViewController($scope, $state, $stateParams, $element, $timeout, $mdSidenav, hotkeys, projectService) {
+	function ProjectDashboardViewController($rootScope, $scope, $state, $stateParams, $element, $timeout, $mdDialog, hotkeys, projectService, syncService) {
 		var t = this;
 
 		t.project = null;
@@ -16,70 +16,67 @@
 			}
 		}
 
-		t.toggleSettings = function () {
-			$mdSidenav('right').toggle().then(function () {
-				var sidenav = $mdSidenav('right');
-
-				if(t.project.IsNew) {
-					sidenav.isLockedOpen(true);
+		t.editProject = function (e) {
+			$mdDialog.show({
+				attachTo: angular.element(document.body),
+				templateUrl: 'app/dialogs/edit-project/edit-project.html',
+				controller: 'EditProjectDialogController',
+				controllerAs: 't',
+				bindToController: true,
+				hasBackdrop: true,
+				trapFocus: true,
+				zIndex: 150,
+				targetEvent: e,
+				disableParentScroll: true,
+				clickOutsideToClose: false,
+				escapeToClose: true,
+				preserveScope: true,
+				focusOnOpen: true,
+				locals: {
+					project: t.project
 				}
+			}).then(function () {
+				projectService.update(t.project).then(function () {
+					t.project.IsNew = false;
 
-				if (!t.project.IsNew && sidenav.isOpen()) {
-					// Load the folders and members when the panel is being made visible.
-					projectService.getFolders(t.project.Uri).then(function (result) {
-						if (result.length > 0) {
-							t.project.folder = result[0].Url.Uri;
-						}
-					});
-
-					projectService.getMembers(t.project.Uri).then(function (result) {
-						if (result.length > 0) {
-							t.project.members = result;
-						}
-					});
-				}
+					syncService.synchronize();
+				}, function () {});
 			});
 		}
 
-		t.$onInit = function () {
-			hotkeys.add({
-				combo: 'alt+enter',
-				description: 'Toggle the project properties panel.',
-				callback: function () {
-					t.toggleSettings();
-				}
-			});
+		t.deleteProject = function (e) {
+			$mdDialog.show({
+					templateUrl: 'delete-project-dialog.html',
+					parent: angular.element(document.body),
+					targetEvent: e,
+					controller: function ($scope) {
+						$scope.project = t.project;
 
+						$scope.ok = function () {
+							$mdDialog.hide();
+						}
+
+						$scope.cancel = function () {
+							$mdDialog.cancel();
+						}
+					}
+				})
+				.then(function (answer) {
+					projectService.remove(t.project.Uri).then(function () {
+						t.project.IsDeleted = true;
+
+						syncService.synchronize();
+					}, function () {});
+				}, function () {});
+		}
+
+		t.$onInit = function () {
 			if ($stateParams && $stateParams.project) {
 				t.project = $stateParams.project;
 			}
 
-			$timeout(function () {
-				if (t.project && t.project.IsNew) {
-					t.toggleSettings();
-				}
-			}, 0);
-
-			$scope.$on('viewFile', function (e, file) {
-				$stateParams.fileUri = file.uri;
-				$state.go('main.view.document', $stateParams);
-			});
-
-			$scope.$on('viewFileHistory', function (e, file) {
-				$stateParams.fileUri = file.uri;
-				$state.go('main.view.document-history', $stateParams);
-			});
-
-			$scope.$on('showMore', function () {
-				t.toggleSettings();
-			});
-
-			$scope.$on('commit', function () {
-				t.toggleSettings();
-			});
-
-			$scope.$on('cancel', function () {
-				t.toggleSettings();
+			$scope.$on('refresh', function () {
+				console.log(t.project);
 			});
 		}
 	}

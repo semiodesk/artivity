@@ -22,6 +22,14 @@
     function FileCardDirectiveController($rootScope, $scope, $element, $location, $mdBottomSheet, selectionService, filesystemService) {
         var t = this;
 
+        t.onDragStart = function () {
+            $scope.$emit('dragStarted');
+        }
+
+        t.onDragStop = function () {
+            $scope.$emit('dragStopped');
+        }
+        
         t.showSheet = function ($event) {
             t.alert = '';
 

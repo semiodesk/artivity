@@ -148,6 +148,13 @@ md-icon[md-font-icon] {
     line-height: 20px;
 }
 
+// Note: This does not support theming. Apparantly, there is no built-in support for active list items in Angular Material.
+// See: https://github.com/angular/material/issues/3420
+// Todo: Find a way to style list items with theming support.
+md-list-item.md-list-item-active {
+	background: rgba(0,0,0,.06);
+}
+
 a {
 	color: $textColor;
 }
