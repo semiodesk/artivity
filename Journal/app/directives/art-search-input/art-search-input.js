@@ -16,7 +16,7 @@
         var t = this;
 
         t.$onInit = function () {
-            $element.addClass('search-input');
+            $element.addClass('art-search-input');
 
             $timeout(function () {
                 var input = $element.find('input');

@@ -59,6 +59,8 @@
 
                     t.fileName = filesystemService.getFileNameWithoutExtension(label);
                     t.fileExtension = filesystemService.getFileExtension(label);
+
+                    $element.find('.file-extension').addClass(t.fileExtension);
                 }
             });
         }

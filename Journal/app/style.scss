@@ -155,6 +155,11 @@ md-list-item.md-list-item-active {
 	background: rgba(0,0,0,.06);
 }
 
+// Half the size of the icon margin in list items.
+md-list-item .md-list-item-inner > md-icon:first-child:not(.md-avatar-icon) {
+	margin-right: 8px;
+}
+
 a {
 	color: $textColor;
 }
@@ -1513,39 +1518,6 @@ $userCommentBackgroundColor: rgba($textColor,
 	padding: 5px;
 }
 
-/* SEARCH */
-
-md-autocomplete.search-input {
-	background: transparent;
-	@include transitionEaseInOutCubic(all,
-	500ms);
-	width: 200px;
-}
-
-md-autocomplete.search-input.focused {
-	background: $inputBackgroundColor;
-	width: 300px;
-}
-
-md-autocomplete.search-input md-autocomplete-wrap {
-	border: none;
-	box-shadow: none;
-}
-
-md-autocomplete.search-input md-autocomplete-wrap:before {
-	font-size: $iconFontSize;
-	font-family: $iconFont;
-	content: "\f1c3";
-	line-height: 1;
-	padding: 8px 0px 0px 8px;
-	font-weight: normal;
-	font-size: 24px;
-}
-
-md-virtual-repeat-container.search-input-menu-container {
-	display: none !important;
-}
-
 /* YASGUI */
 
 #editor {
@@ -2239,6 +2211,83 @@ iframe {
 
 .art-window-toolbar .md-button.md-button-icon {
 	min-width: 45px;
+}
+
+.art-file-card {
+	max-width: 500px;
+	min-width: 255px;
+	background: white;
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.art-file-card img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.art-file-card .file-extension {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 5px;
+	text-transform: uppercase;
+	border-radius: 0 0 0 5px;
+	text-align: center;
+	font-size: 10px;
+	min-width: 50px;
+	background: transparent;
+	color: transparent;
+}
+
+.art-file-card .file-extension.psd {
+	background: #0EBFF4;
+	color: white;
+}
+
+.art-file-card .file-extension.ai {
+	background: #F67C07;
+	color: white;
+}
+
+.art-file-card .file-extension.pdf {
+	background: #EA2006;
+	color: white;
+}
+
+.art-file-card .file-extension.svg {
+	background: #005A9C;
+	color: white;
+}
+
+.art-search-input {
+	border-radius: 5px;
+	@include transitionEaseInOutCubic(all, 500ms);
+	width: 200px;
+}
+
+.art-search-input.focused {
+	width: 300px;
+}
+
+.art-search-input md-autocomplete-wrap {
+	border: none;
+	box-shadow: none;
+}
+
+.art-search-input md-autocomplete-wrap:before {
+	font-size: $iconFontSize;
+	font-family: $iconFont;
+	content: "\f1c3";
+	line-height: 1;
+	padding: 8px 0px 0px 8px;
+	font-weight: normal;
+	font-size: 24px;
+	color: #777;
+}
+
+.art-search-input-menu-container {
+	display: none !important;
 }
 
 /* ANIMATIONS */

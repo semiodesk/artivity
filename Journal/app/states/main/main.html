@@ -10,10 +10,10 @@
 
         <h5 class="md-padding text-uppercase" style="margin-bottom: 0" translate>Projects</h5>
         <md-list flex ng-cloak>
-            <md-list-item ng-repeat="project in t.projects track by $index"  ui-sref-active="md-list-item-active"
+            <md-list-item ng-repeat="project in t.projects track by $index" ui-sref-active="md-list-item-active"
                 ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
                 jqyoui-droppable="{onDrop: 't.onFileDropped'}" ng-click="t.selectProject(project, $index + 1)" ng-hide="project.IsDeleted">
-                <md-icon md-font-icon=""></md-icon>
+                <md-icon md-font-icon="zmdi"></md-icon>
                 <div flex>{{project.Title}}</div>
             </md-list-item>
         </md-list>

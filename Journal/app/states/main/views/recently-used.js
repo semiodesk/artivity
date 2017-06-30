@@ -7,16 +7,28 @@
         var t = this;
 
         t.findFiles = function (query) {
-            $rootScope.$broadcast('search', query);
+            if (t.files) {
+                if (query) {
+                    var q = query.toLowerCase();
+
+                    for (i = 0; i < t.files.length; i++) {
+                        var f = t.files[i];
+
+                        f.visible = f.label.toLowerCase().includes(q);
+                    }
+                } else {
+                    for (i = 0; i < t.files.length; i++) {
+                        t.files[i].visible = true;
+                    }
+                }
+            }
         }
 
-        t.getRecentlyUsedFiles = function (callback) {
-            return api.getRecentFiles().then(callback);
-        }
+        t.files = [];
 
-        t.getFiles = function() {
-            return api.getRecentFiles().then(function(data) {
-                return data;
+        t.$onInit = function () {
+            api.getRecentFiles().then(function (data) {
+                t.files = data;
             });
         }
     }

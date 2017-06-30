@@ -8,17 +8,23 @@
 
 		t.project = null;
 
-		t.findFiles = function(query) {
-			$rootScope.$broadcast('search', query);
-		}
+        t.findFiles = function (query) {
+            if (t.files) {
+                if (query) {
+                    var q = query.toLowerCase();
 
-		t.getFiles = function (callback) {
-			if (t.project) {
-				return projectService.getFiles(t.project.Uri).then(callback);
-			} else {
-				return callback();
-			}
-		}
+                    for (i = 0; i < t.files.length; i++) {
+                        var f = t.files[i];
+
+                        f.visible = f.label.toLowerCase().includes(q);
+                    }
+                } else {
+                    for (i = 0; i < t.files.length; i++) {
+                        t.files[i].visible = true;
+                    }
+                }
+            }
+        }
 
 		t.editProject = function (e) {
 			$mdDialog.show({
@@ -82,6 +88,14 @@
 			$scope.$on('refresh', function () {
 				console.log(t.project);
 			});
+
+			if (t.project) {
+				projectService.getFiles(t.project.Uri).then(function(data) {
+					t.files = data;
+				})
+			} else {
+				t.files = [];
+			}
 		}
 	}
 })();

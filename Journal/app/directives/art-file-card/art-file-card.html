@@ -1,17 +1,30 @@
-<div layout="column" ng-model="t.file" jqyoui-draggable="{onStart: 't.onDragStart', onStop: 't.onDragStop'}" data-drag="true" data-jqyoui-options="{opacity:0.7, helper: 'clone', appendTo: 'body', placeholder: 'keep', cursorAt: {top: 5, left: 5}}">
-    <md-card class="card" style="position: relative; overflow: hidden">
-        <img class="md-card-image link" ng-src="{{t.file.thumbnail}}" alt="{{t.file.label}}" ng-right-click="t.showSheet($event)" ui-sref="document({fileUri: t.file.uri})">
+<div class="layout-container art-file-card" layout="column" ng-model="t.file" jqyoui-draggable="{onStart: 't.onDragStart', onStop: 't.onDragStop'}"
+    data-drag="true" data-jqyoui-options="{opacity:0.7, helper: 'clone', appendTo: 'body', placeholder: 'keep', cursorAt: {top: 5, left: 5}}"
+    ng-hide="t.file.visible === false" ng-cloak>
+    <img class="link" ng-src="{{t.file.thumbnail}}" alt="{{t.file.label}}" ng-right-click="t.showSheet($event)" ui-sref="document({fileUri: t.file.uri})">
 
-        <h4 class="md-padding no-margin" md-highlight-text="t.highlightText">{{t.file.label}}</h4>
+    <div class="file-extension">
+        {{t.fileExtension}}
+    </div>
 
-        <md-button ng-click="t.showSheet($event)">
-            <md-icon md-font-icon="zmdi zmdi-more"></md-icon>
+    <h4 class="md-padding no-margin" md-highlight-text="t.highlightText">{{t.fileName}}</h4>
+
+    <div layout="row" layout-align="start center">
+        <md-button class="md-button-icon" flex>
+            <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
         </md-button>
+        <div flex></div>
+        <md-button class="md-button-icon">
+            <md-icon md-font-icon="zmdi zmdi-star-outline"></md-icon>
+        </md-button>
+        <md-button class="md-button-icon" ui-sref="document-history({fileUri: t.file.uri})">
+            <md-icon md-font-icon="zmdi zmdi-time-restore"></md-icon>
+        </md-button>
+    </div>
 
-        <div ng-if="t.alert">
-            <div layout="row" layout-align="center center" class="md-padding">
-                {{t.alert}}
-            </div>
+    <div ng-if="t.alert">
+        <div layout="row" layout-align="center center" class="md-padding">
+            {{t.alert}}
         </div>
-    </md-card>
+    </div>
 </div>
