@@ -1,7 +1,7 @@
 <div class="layout-root" layout="column">
-    <div layout="row" layout-align="start center">
-        <md-autocomplete md-search-text="t.query" md-no-cache="true" md-search-text-change="t.findFiles(t.query)" md-items="item in []"
-            md-item-text="item.label" md-menu-container-class="search-input-menu-container" placeholder="{{'Search' | translate}}"
+    <div layout="row" layout-align="start center" class="md-padding">
+        <md-autocomplete art-search-input md-search-text="t.query" md-no-cache="true" md-search-text-change="t.findFiles(t.query)" md-items="item in []"
+            md-item-text="item.label" md-menu-container-class="art-search-input-menu-container" placeholder="{{'Search' | translate}}"
             style="margin-left: 5px;">
             <md-item-template>
                 <span md-highlight-text="ctrl.searchText">{{item.display}}</span>
@@ -10,8 +10,8 @@
             </md-not-found>
         </md-autocomplete>
         <div flex></div>
-<md-menu md-offset="0 42">
-            <md-button class="md-button-icon" ng-click="toggleMenu($event, $mdMenu)">
+        <md-menu md-offset="0 42">
+            <md-button class="md-icon-button" ng-click="toggleMenu($event, $mdMenu)">
                 <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
             </md-button>
             <md-menu-content width="4">
@@ -30,7 +30,11 @@
     </div>
 
     <div class="layout-container" flex>
-        <art-file-list onload="t.getFiles"></art-file-list>
+        <masonry class="md-padding" masonry-options="{ transitionDuration: 0 }">
+            <div class="masonry-brick" ng-repeat="file in t.files">
+                <art-file-card file="file"></art-file-card>
+            </div>
+        </masonry>
     </div>
 </div>
 
