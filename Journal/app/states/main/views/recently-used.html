@@ -1,3 +1,32 @@
-<div class="layout-root">
-    <art-file-list onload="t.getRecentlyUsedFiles"></art-file-list>
+<div class="layout-root" layout="column">
+    <div layout="row" layout-align="start center">
+        <md-autocomplete md-search-text="t.query" md-no-cache="true" md-search-text-change="t.findFiles(t.query)" md-items="item in []"
+            md-item-text="item.label" md-menu-container-class="search-input-menu-container" placeholder="{{'Search' | translate}}"
+            style="margin-left: 5px;">
+            <md-item-template>
+                <span md-highlight-text="ctrl.searchText">{{item.display}}</span>
+            </md-item-template>
+            <md-not-found>
+            </md-not-found>
+        </md-autocomplete>
+        <div flex></div>
+        <md-menu md-offset="0 42">
+            <md-button class="md-button-icon" ng-click="toggleMenu($event, $mdMenu)" ng-disabled="true">
+                <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
+            </md-button>
+            <md-menu-content width="4">
+            </md-menu-content>
+        </md-menu>
+    </div>
+
+    <div class="layout-container" flex>
+        <art-file-list onload="t.getRecentlyUsedFiles"></art-file-list>
+        <!--
+        <div masonry>
+            <div class="masonry-brick" ng-repeat="file in t.getRecentlyUsedFiles()">
+                <img src="file.thumbnail">
+            </div>
+        </div>
+        -->
+    </div>
 </div>

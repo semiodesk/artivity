@@ -1,5 +1,6 @@
 <div class="layout-root" layout="row">
     <md-sidenav id="primary-sidenav" class="md-sidenav-left" md-component-id="left" md-is-locked-open="true">
+        <h5 class="md-padding text-uppercase" style="margin-bottom: 0" translate>Files</h5>
         <md-list>
             <md-list-item ui-sref="main.view.recently-used({index: 0})" ui-sref-active="md-list-item-active">
                 <md-icon md-font-icon="zmdi zmdi-time-restore"></md-icon>
@@ -7,7 +8,7 @@
             </md-list-item>
         </md-list>
 
-        <h4 class="md-padding md-hue-3 text-uppercase" translate>Projects</h4>
+        <h5 class="md-padding text-uppercase" style="margin-bottom: 0" translate>Projects</h5>
         <md-list flex ng-cloak>
             <md-list-item ng-repeat="project in t.projects track by $index"  ui-sref-active="md-list-item-active"
                 ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
