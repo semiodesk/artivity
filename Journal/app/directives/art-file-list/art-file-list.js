@@ -83,6 +83,10 @@
             $scope.$on('refresh', function () {
                 t.loadFiles();
             });
+
+            $scope.$on('search', function(e, query) {
+                t.filterFiles(query);
+            });
         }
 
         t.$postLink = function () {

@@ -1,13 +1,33 @@
 <div class="layout-root" layout="column">
-    <md-toolbar layout="row">
+    <div layout="row" layout-align="start center">
+        <md-autocomplete md-search-text="t.query" md-no-cache="true" md-search-text-change="t.findFiles(t.query)" md-items="item in []"
+            md-item-text="item.label" md-menu-container-class="search-input-menu-container" placeholder="{{'Search' | translate}}"
+            style="margin-left: 5px;">
+            <md-item-template>
+                <span md-highlight-text="ctrl.searchText">{{item.display}}</span>
+            </md-item-template>
+            <md-not-found>
+            </md-not-found>
+        </md-autocomplete>
         <div flex></div>
-        <md-button aria-label="Edit Project" ng-click="t.editProject($event)">
-            <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
-        </md-button>
-        <md-button aria-label="Archive Project" ng-click="t.deleteProject($event)">
-            <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
-        </md-button>
-    </md-toolbar>
+<md-menu md-offset="0 42">
+            <md-button class="md-button-icon" ng-click="toggleMenu($event, $mdMenu)">
+                <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
+            </md-button>
+            <md-menu-content width="4">
+                <md-menu-item class="md-indent">
+                    <md-button aria-label="Archive Project" ng-click="t.deleteProject($event)">
+                        <span translate>Delete</span>
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item class="md-indent">
+                    <md-button aria-label="Edit Project" ng-click="t.editProject($event)">
+                        <span translate>Edit</span>
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+    </div>
 
     <div class="layout-container" flex>
         <art-file-list onload="t.getFiles"></art-file-list>

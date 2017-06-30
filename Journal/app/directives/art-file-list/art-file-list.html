@@ -1,20 +1,4 @@
 <div class="layout-root" layout="column">
-    <div class="md-toolbar" layout="row">
-        <md-autocomplete art-search-input md-search-text="t.query" md-no-cache="true" md-search-text-change="t.filterFiles(t.query)"
-            md-items="item in []" md-item-text="item.label" md-menu-container-class="search-input-menu-container" placeholder="{{'Search' | translate}}">
-            <md-item-template>
-                <span md-highlight-text="ctrl.searchText">{{item.display}}</span>
-            </md-item-template>
-            <md-not-found>
-            </md-not-found>
-        </md-autocomplete>
-        <span flex></span>
-        <mb-button class="md-button md-button-icon" ng-click="t.onMoreClicked()">
-            <i class="zmdi zmdi-more"></i>
-        </mb-button>
-        <md-divider></md-divider>
-    </div>
-
     <div ng-show="t.files.length === 0" flex>
         <div ng-transclude="emptySlot" ng-cloak>
             <div class="text-center">
@@ -30,8 +14,7 @@
 
     <div ng-show="t.files.length > 0" class="scroll-container scroll-y" flex>
         <div layout="row" layout-xs="column" class="md-padding" ng-cloak>
-            <art-file-card ng-hide="file.visible === false" file="file" highlight-text="t.query" ng-repeat="file in t.files" flex-xs
-                flex-gt-xs="25"></art-file-card>
+            <art-file-card ng-hide="file.visible === false" file="file" highlight-text="t.query" ng-repeat="file in t.files" flex-xs flex-gt-xs="25"></art-file-card>
         </div>
     </div>
 </div>

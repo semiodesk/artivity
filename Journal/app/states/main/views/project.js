@@ -8,6 +8,10 @@
 
 		t.project = null;
 
+		t.findFiles = function(query) {
+			$rootScope.$broadcast('search', query);
+		}
+
 		t.getFiles = function (callback) {
 			if (t.project) {
 				return projectService.getFiles(t.project.Uri).then(callback);
