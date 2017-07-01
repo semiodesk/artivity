@@ -20,10 +20,10 @@
     </div>
 
     <div class="layout-container" flex>
-        <masonry class="md-padding" masonry-options="{ transitionDuration: 0 }">
-            <div class="masonry-brick" ng-repeat="file in t.files">
+        <div class="md-padding" masonry load-images="true" masonry-options="{ gutter: 15, transitionDuration: 0 }" column-width="255">
+            <div class="masonry-brick" ng-repeat="file in t.files" style="width: 255px">
                 <art-file-card file="file"></art-file-card>
             </div>
-        </masonry>
+        </div>
     </div>
 </div>
