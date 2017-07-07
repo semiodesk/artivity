@@ -5,9 +5,7 @@
         return {
             restrict: 'E',
             templateUrl: 'app/directives/art-window-toolbar/art-window-toolbar.html',
-            controller: WindowToolbarDirectiveController,
-            controllerAs: 't',
-            bindToController: true
+            controller: WindowToolbarDirectiveController
         }
     }
 
@@ -16,9 +14,11 @@
     WindowToolbarDirectiveController.$inject = ['$scope', 'windowService', 'navigationService'];
 
     function WindowToolbarDirectiveController($scope, windowService, navigationService) {
-        var t = this;
-
-        t.navigateBack = function() {
+        $scope.canNavigateBack = function() {
+            return navigationService.canNavigateBack();
+        }
+        
+        $scope.navigateBack = function() {
             navigationService.navigateBack();
         };
     }

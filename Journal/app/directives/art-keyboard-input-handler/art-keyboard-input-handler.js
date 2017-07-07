@@ -67,8 +67,8 @@
         hotkeys.add({
             combo: 'backspace',
             description: 'Go back to the previous view.',
-            callback: function () {
-                navigationService.navigateBack();
+            callback: function (e) {
+                navigationService.navigateBack(e);
             }
         });
 
