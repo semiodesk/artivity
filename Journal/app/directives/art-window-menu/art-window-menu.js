@@ -17,18 +17,6 @@
     function WindowMenuDirectiveController($scope, $mdMenu, agentService) {
         var t = this;
 
-        $scope.isOpen = false;
-
-        $scope.toggleMenu = function (e, $mdMenu) {
-            if ($scope.isOpen) {
-                $mdMenu.close(e);
-            } else {
-                $mdMenu.open(e);
-            }
-
-            $scope.isOpen = !$scope.isOpen;
-        }
-
         t.$onInit = function () {
             agentService.getCurrentUser().then(function (user) {
                 if (user.Name) {

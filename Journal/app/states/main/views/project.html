@@ -11,7 +11,7 @@
         </md-autocomplete>
         <div flex></div>
         <md-menu md-offset="0 42">
-            <md-button class="md-icon-button" ng-click="toggleMenu($event, $mdMenu)">
+            <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
                 <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
             </md-button>
             <md-menu-content width="4">
@@ -30,7 +30,7 @@
     </div>
 
     <div class="layout-container" flex>
-        <div class="md-padding" masonry load-images="true" masonry-options="{ gutter: 15, transitionDuration: 0 }" column-width="255">
+        <div class="md-padding" masonry load-images="true" masonry-options="{ gutter: 15, transitionDuration: 0 }" column-width="255" ng-cloak>
             <div class="masonry-brick" ng-repeat="file in t.files" style="width: 255px">
                 <art-file-card file="file"></art-file-card>
             </div>
