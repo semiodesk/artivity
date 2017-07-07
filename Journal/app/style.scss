@@ -2202,7 +2202,7 @@ iframe {
 }
 
 .art-window-toolbar .md-button {
-	-webkit-app-region: no-drag;
+	-webkit-app-region: no-drag !important;
 	margin: 0;
 	min-height: $windowTitlebarHeight;
 	line-height: $windowTitlebarHeight;

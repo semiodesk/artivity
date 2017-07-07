@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller("MainStateController", MainStateController);
 
-    MainStateController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$element', '$timeout', '$mdDialog', 'projectService', 'windowService', 'cookieService', 'syncService'];
+    MainStateController.$inject = ['$rootScope', '$scope', '$state', '$mdDialog', 'windowService', 'navigationService', 'projectService', 'cookieService', 'syncService'];
 
-    function MainStateController($rootScope, $scope, $state, $stateParams, $element, $timeout, $mdDialog, projectService, windowService, cookieService, syncService) {
+    function MainStateController($rootScope, $scope, $state, $mdDialog, windowService, navigationService, projectService, cookieService, syncService) {
         var t = this;
 
         // PROJECTS
@@ -66,23 +66,6 @@
             });
         }
 
-        // STATE
-        t.unregisterStateChangeSuccess = null;
-
-        t.onStateChangeSuccess = function (e, state, stateParams) {
-            if (stateParams) {
-                var n = parseInt(stateParams.index);
-
-                t.selectedIndex = n;
-            }
-        }
-
-        t.unregisterStateChangeError = null;
-
-        t.onStateChangeError = function (e, state, stateParams) {
-            console.error(state, stateParams);
-        }
-
         // DRAG & DROP
         t.droppedFile = null;
 
@@ -108,19 +91,7 @@
             windowService.setMinimizable();
             windowService.setMaximizable();
 
-            // Listen to state changes.
-            t.unregisterStateChangeSuccess = $rootScope.$on('$stateChangeSuccess', t.onStateChangeSuccess);
-            t.unregisterStateChangeError = $rootScope.$on('$stateChangeError', t.onStateChangeError);
-
-            $rootScope.$on('$stateNotFound', function (e, state, $stateParams) {
-                console.error(state, $stateParams);
-            });
-
-            // Unregister the state change listeners when the controller is being destroyed.
-            $scope.$on('$destroy', function () {
-                t.unregisterStateChangeSuccess();
-                t.unregisterStateChangeError();
-            });
+            navigationService.initialize($rootScope, $state.current, $state.params);
 
             t.loadProjects();
         }
