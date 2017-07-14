@@ -1,50 +1,52 @@
-<div class="layout-root" layout="column">
-    <div class="container padding-y-xl">
-        <h1 translate>Welcome!</h1>
+<art-view>
+    <div class="layout-root" layout="column">
+        <div class="container padding-y-xl">
+            <h1 translate>Welcome!</h1>
 
-        <p translate>Thank you for downloading Artivity. Before you can begin using the app we need to setup your user account.</p>
+            <p translate>Thank you for downloading Artivity. Before you can begin using the app we need to setup your user account.</p>
+        </div>
+        <div class="container" flex>
+            <md-tabs md-selected="stepIndex" class="md-tab-labels-hidden" md-no-pagination md-dynamic-height>
+                <md-tab>
+                    <md-tab-body>
+                        <div class="padding-y-md" translate>
+                            Please choose the account type you want to use:
+                        </div>
+                        <md-tabs md-dynamic-height md-border-bottom>
+                            <md-tab>
+                                <md-tab-label>
+                                    <div class="padding-x-xl">
+                                        <md-icon md-font-icon="zmdi zmdi-cloud-outline-alt"></md-icon>
+                                        <span translate>Online</span>
+                                    </div>
+                                </md-tab-label>
+                                <md-tab-body>
+                                    <arto-settings-user></arto-settings-user>
+                                </md-tab-body>
+                            </md-tab>
+                            <md-tab>
+                                <md-tab-label>
+                                    <div class="padding-x-xl">
+                                        <md-icon md-font-icon="zmdi zmdi-desktop-windows"></md-icon>
+                                        <span translate>Local</span>
+                                    </div>
+                                </md-tab-label>
+                                <md-tab-body>
+                                    <art-settings-user setup="true"></art-settings-user>
+                                </md-tab-body>
+                            </md-tab>
+                        </md-tabs>
+                    </md-tab-body>
+                </md-tab>
+                <md-tab>
+                    <md-tab-body>
+                        <art-settings-apps setup="true"></art-settings-apps>
+                    </md-tab-body>
+                </md-tab>
+            </md-tabs>
+        </div>
+        <div class="container text-center padding-x-xl padding-y-xl">
+            <md-button class="md-raised md-primary" ng-show="setupComplete" ng-click="submitAndReturn()" translate>OK</md-button>
+        </div>
     </div>
-    <div class="container" flex>
-        <md-tabs md-selected="stepIndex" class="md-tab-labels-hidden" md-no-pagination md-dynamic-height>
-            <md-tab>
-                <md-tab-body>
-                    <div class="padding-y-md" translate>
-                        Please choose the account type you want to use:
-                    </div>
-                    <md-tabs md-dynamic-height md-border-bottom>
-                        <md-tab>
-                            <md-tab-label>
-                                <div class="padding-x-xl">
-                                    <md-icon md-font-icon="zmdi zmdi-cloud-outline-alt"></md-icon>
-                                    <span translate>Online</span>
-                                </div>
-                            </md-tab-label>
-                            <md-tab-body>
-                                <arto-settings-user></arto-settings-user>
-                            </md-tab-body>
-                        </md-tab>
-                        <md-tab>
-                            <md-tab-label>
-                                <div class="padding-x-xl">
-                                    <md-icon md-font-icon="zmdi zmdi-desktop-windows"></md-icon>
-                                    <span translate>Local</span>
-                                </div>
-                            </md-tab-label>
-                            <md-tab-body>
-                                <art-settings-user setup="true"></art-settings-user>
-                            </md-tab-body>
-                        </md-tab>
-                    </md-tabs>
-                </md-tab-body>
-            </md-tab>
-            <md-tab>
-                <md-tab-body>
-                    <art-settings-apps setup="true"></art-settings-apps>
-                </md-tab-body>
-            </md-tab>
-        </md-tabs>
-    </div>
-    <div class="container text-center padding-x-xl padding-y-xl">
-        <md-button class="md-raised md-primary" ng-show="setupComplete" ng-click="submitAndReturn()" translate>OK</md-button>
-    </div>
-</div>
+</art-view>

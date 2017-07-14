@@ -178,9 +178,11 @@
 	<script type="text/javascript" src="app/directives/art-task-control/art-task-control.js"></script>
 	<script type="text/javascript" src="app/directives/art-topic-control/art-topic-control.js"></script>
 	<script type="text/javascript" src="app/directives/art-update-indicator/art-update-indicator.js"></script>
+	<script type="text/javascript" src="app/directives/art-view/art-view.js"></script>
 	<script type="text/javascript" src="app/directives/art-window-controls/art-window-controls.js"></script>
 	<script type="text/javascript" src="app/directives/art-window-menu/art-window-menu.js"></script>
-	<script type="text/javascript" src="app/directives/art-window-toolbar/art-window-toolbar.js"></script>
+	<script type="text/javascript" src="app/directives/art-window-title/art-window-title.js"></script>
+	<script type="text/javascript" src="app/directives/art-window-titlebar/art-window-titlebar.js"></script>
 	<script type="text/javascript" src="app/directives/arto-settings-user/arto-settings-user.js"></script>
 	<script type="text/javascript" src="app/directives/md-theme-preview/md-theme-preview.js"></script>
 	<script type="text/javascript" src="app/directives/ng-dropzone/ng-dropzone.js"></script>
@@ -215,7 +217,7 @@
 
 <body id="window" art-keyboard-input-handler art-localization-handler>
 	<div class="layout-root" layout="column">
-		<art-window-toolbar></art-window-toolbar>
+		<art-window-titlebar></art-window-titlebar>
 
 		<div class="layout-container" ui-view flex></div>
 
