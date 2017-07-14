@@ -2195,13 +2195,13 @@ iframe {
 	height: 100%;
 }
 
-.art-window-toolbar {
+.art-window-titlebar {
 	-webkit-app-region: drag;
 	padding: 0;
 	min-height: $windowTitlebarHeight;
 }
 
-.art-window-toolbar .md-button {
+.art-window-titlebar .md-button {
 	-webkit-app-region: no-drag !important;
 	margin: 0;
 	min-height: $windowTitlebarHeight;
@@ -2209,7 +2209,7 @@ iframe {
 	vertical-align: middle;
 }
 
-.art-window-toolbar .md-button.md-button-icon {
+.art-window-titlebar .md-button.md-button-icon {
 	min-width: 45px;
 }
 
@@ -2323,4 +2323,8 @@ svg .theme-fill {
 
 svg .theme-stroke {
 	stroke: #686868 !important;
+}
+
+.masonry-brick {
+	margin-bottom: 15px;
 }

@@ -15,6 +15,7 @@
             openExternalLink: openExternalLink,
             close: close,
             reload: reload,
+            setTitle: setTitle,
             setClosable: setClosable,
             setMinimizable: setMinimizable,
             setMaximizable: setMaximizable,
@@ -32,6 +33,14 @@
 
         function close() {
             remote.getCurrentWindow().close();
+        }
+
+        function setTitle(value) {
+            var title = $(document).find('.art-window-titlebar .window-title');
+
+            if (title && title.length) {
+                title.text(value);
+            }
         }
 
         function setClosable(value) {

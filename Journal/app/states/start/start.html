@@ -1,23 +1,35 @@
-<div ng-show="t.showSpinner" id="spinner-container" class="fullscreen spinner-container">
-	<div class="spinner">
-		<div class="bounce">
-			<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="60px" height="60px" viewBox="0 0 214.03124 230.40625" id="svg3389" version="1.1" inkscape:version="0.91 r13725" sodipodi:docname="artivity.svg"> <defs id="defs3391" /> <g inkscape:label="Ebene 1" inkscape:groupmode="layer" id="layer1" transform="translate(716.70401,-417.41802)"> <path style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5512591px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" clip-path="none" d="m 109.65039,0.27539062 c -78.074399,0 -108.3124994,76.60930038 -108.3124994,94.62500038 0,22.908199 38.0625004,12.572349 38.0625004,37.031249 0,22.0735 -39.12500038,33.82865 -39.12500038,53.03125 0,6.1123 11.89430038,45.71875 80.31250038,45.71875 78.346699,0 133.718749,-55.897 133.718749,-125.5625 0,-32.646499 -19.14475,-104.84374938 -104.65625,-104.84374938 z M 137.13672,44.146484 c 27.375,0 41.4375,10.5 41.4375,31.125 l 0,56.249996 c 0,5.25 1.3125,8.0625 6,12.375 l 0,3.1875 -28.5,0 c -2.4375,-3 -3,-7.5 -3,-12.75 -9.1875,9.5625 -19.5,14.4375 -30.75,14.4375 -16.875,0 -30.750001,-9.375 -30.750001,-29.0625 0,-18.375 9.750001,-26.999996 29.812501,-30.562496 l 10.5,-1.875 c 13.125,-2.25 21,-1.125 21,-11.8125 0,-6.75 -5.0625,-10.125 -15.1875,-10.125 -12.9375,0 -17.25,3.375 -18.5625,13.875 l -25.312501,0 c 1.6875,-23.4375 15.937501,-35.0625 43.312501,-35.0625 z m 15.75,55.125 c -3,1.499996 -4.125,1.874996 -11.0625,3.187496 l -9,1.6875 c -10.875,2.0625 -15,4.875 -15,12.5625 0,7.5 5.4375,10.875 14.25,10.875 13.3125,0 20.8125,-8.625 20.8125,-23.8125 l 0,-4.499996 z" transform="translate(-716.9794,417.14263)" id="path3045" inkscape:connector-curvature="0" /> </g></svg> 
+<art-view>
+	<div ng-show="t.showSpinner" id="spinner-container" class="fullscreen spinner-container">
+		<div class="spinner">
+			<div class="bounce">
+				<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+				 xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+				 xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="60px" height="60px" viewBox="0 0 214.03124 230.40625"
+				 id="svg3389" version="1.1" inkscape:version="0.91 r13725" sodipodi:docname="artivity.svg">
+					<defs id="defs3391" />
+					<g inkscape:label="Ebene 1" inkscape:groupmode="layer" id="layer1" transform="translate(716.70401,-417.41802)">
+						<path style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5512591px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+						 clip-path="none" d="m 109.65039,0.27539062 c -78.074399,0 -108.3124994,76.60930038 -108.3124994,94.62500038 0,22.908199 38.0625004,12.572349 38.0625004,37.031249 0,22.0735 -39.12500038,33.82865 -39.12500038,53.03125 0,6.1123 11.89430038,45.71875 80.31250038,45.71875 78.346699,0 133.718749,-55.897 133.718749,-125.5625 0,-32.646499 -19.14475,-104.84374938 -104.65625,-104.84374938 z M 137.13672,44.146484 c 27.375,0 41.4375,10.5 41.4375,31.125 l 0,56.249996 c 0,5.25 1.3125,8.0625 6,12.375 l 0,3.1875 -28.5,0 c -2.4375,-3 -3,-7.5 -3,-12.75 -9.1875,9.5625 -19.5,14.4375 -30.75,14.4375 -16.875,0 -30.750001,-9.375 -30.750001,-29.0625 0,-18.375 9.750001,-26.999996 29.812501,-30.562496 l 10.5,-1.875 c 13.125,-2.25 21,-1.125 21,-11.8125 0,-6.75 -5.0625,-10.125 -15.1875,-10.125 -12.9375,0 -17.25,3.375 -18.5625,13.875 l -25.312501,0 c 1.6875,-23.4375 15.937501,-35.0625 43.312501,-35.0625 z m 15.75,55.125 c -3,1.499996 -4.125,1.874996 -11.0625,3.187496 l -9,1.6875 c -10.875,2.0625 -15,4.875 -15,12.5625 0,7.5 5.4375,10.875 14.25,10.875 13.3125,0 20.8125,-8.625 20.8125,-23.8125 l 0,-4.499996 z"
+						 transform="translate(-716.9794,417.14263)" id="path3045" inkscape:connector-curvature="0" /> </g>
+				</svg>
+			</div>
 		</div>
 	</div>
-</div>
-<div id="error-container" ng-show="t.showError" class="fullscreen error-container">
-	<div style="padding: 2em 4em; color: #eee;">
-		<div style="max-width: 500px; margin: 0 auto;">
-			<h2 translate>No database connection</h2>
+	<div id="error-container" ng-show="t.showError" class="fullscreen error-container">
+		<div style="padding: 2em 4em; color: #eee;">
+			<div style="max-width: 500px; margin: 0 auto;">
+				<h2 translate>No database connection</h2>
 
-			<p class="description" translate>Artivity was unable to connect to the local database. Please try to log out of your current desktop session to restart the service.</p>
+				<p class="description" translate>Artivity was unable to connect to the local database. Please try to log out of your current desktop session to restart
+					the service.</p>
 
-			<p><small><label class="text-label">ERR_NO_APID_CONNECTION</label></small></p>
+				<p><small><label class="text-label">ERR_NO_APID_CONNECTION</label></small></p>
 
-			<md-button ng-click="t.retry()">
-				<md-icon md-font-icon="zmdi zmdi-refresh-sync"></md-icon>
-				<span translate>Retry</span>
-			</md-button>
+				<md-button ng-click="t.retry()">
+					<md-icon md-font-icon="zmdi zmdi-refresh-sync"></md-icon>
+					<span translate>Retry</span>
+				</md-button>
+			</div>
 		</div>
 	</div>
-</div>
+</art-view>
