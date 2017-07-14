@@ -14,6 +14,12 @@
             <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
         </md-button>
         <div flex></div>
+        <md-button class="md-icon-button" ng-if="!t.file.synchronizationEnabled" ng-click="t.publishFile()">
+            <md-icon md-font-icon="zmdi zmdi-cloud-upload"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button" ng-if="t.file.synchronizationEnabled">
+            <md-icon md-font-icon="zmdi zmdi-cloud-done"></md-icon>
+        </md-button>
         <md-button class="md-button-icon">
             <md-icon md-font-icon="zmdi zmdi-star-outline"></md-icon>
         </md-button>
@@ -28,3 +34,17 @@
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="share-file-dialog.html">
+    <md-dialog aria-label="Share File Dialog">
+        <md-dialog-content>
+            <md-content class="padding-x-xl padding-y-xl">
+                <h3>Share '{{file.label}}'?</h3>
+                <p translate>This will allow other people to view and comment on the file.</p>
+        </md-dialog-content>
+        <md-dialog-actions layout="row" layout-align="end center">
+            <md-button ng-click="ok()" class="md-primary">Share</md-button>
+            <md-button ng-click="cancel()" translate>Cancel</md-button>
+        </md-dialog-actions>
+    </md-dialog>
+</script>

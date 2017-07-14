@@ -8,23 +8,23 @@
 
 		t.project = null;
 
-        t.findFiles = function (query) {
-            if (t.files) {
-                if (query) {
-                    var q = query.toLowerCase();
+		t.findFiles = function (query) {
+			if (t.files) {
+				if (query) {
+					var q = query.toLowerCase();
 
-                    for (i = 0; i < t.files.length; i++) {
-                        var f = t.files[i];
+					for (i = 0; i < t.files.length; i++) {
+						var f = t.files[i];
 
-                        f.visible = f.label.toLowerCase().includes(q);
-                    }
-                } else {
-                    for (i = 0; i < t.files.length; i++) {
-                        t.files[i].visible = true;
-                    }
-                }
-            }
-        }
+						f.visible = f.label.toLowerCase().includes(q);
+					}
+				} else {
+					for (i = 0; i < t.files.length; i++) {
+						t.files[i].visible = true;
+					}
+				}
+			}
+		}
 
 		t.editProject = function (e) {
 			$mdDialog.show({
@@ -80,6 +80,32 @@
 				}, function () {});
 		}
 
+		t.publishProject = function (e) {
+			$mdDialog.show({
+					templateUrl: 'share-project-dialog.html',
+					parent: angular.element(document.body),
+					targetEvent: e,
+					controller: function ($scope) {
+						$scope.project = t.project;
+
+						$scope.ok = function () {
+							$mdDialog.hide();
+						}
+
+						$scope.cancel = function () {
+							$mdDialog.cancel();
+						}
+					}
+				})
+				.then(function (answer) {
+					projectService.publish(t.project.Uri).then(function () {
+						t.project.IsSynchronizationEnabled = true;
+
+						syncService.synchronize();
+					}, function () {});
+				}, function () {});
+		}
+
 		t.$onInit = function () {
 			if ($stateParams && $stateParams.project) {
 				t.project = $stateParams.project;
@@ -90,7 +116,7 @@
 			});
 
 			if (t.project) {
-				projectService.getFiles(t.project.Uri).then(function(data) {
+				projectService.getFiles(t.project.Uri).then(function (data) {
 					t.files = data;
 				})
 			} else {

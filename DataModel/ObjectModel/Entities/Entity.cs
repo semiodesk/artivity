@@ -50,9 +50,6 @@ namespace Artivity.DataModel
         [RdfProperty(PROV.qualifiedRevision), JsonIgnore]
         public List<Revision> Revisions { get; set; }
 
-        [RdfProperty(ART.publish), JsonIgnore]
-        public bool Publish { get; set; }
-
         public IEnumerable<string> RevisionUris
         {
             get { return from a in Revisions select a.Uri.AbsoluteUri; }

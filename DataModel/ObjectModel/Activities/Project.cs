@@ -78,10 +78,7 @@ namespace Artivity.DataModel
 
         #region Constructors
 
-        public Project(Uri uri) : base(uri)
-        {
-            IsSynchronizable = true;
-        }
+        public Project(Uri uri) : base(uri) {}
 
         #endregion
 

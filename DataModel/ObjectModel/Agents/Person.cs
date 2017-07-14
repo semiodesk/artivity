@@ -86,7 +86,7 @@ namespace Artivity.DataModel
 
         public Person(Uri uri) : base(uri)
         {
-            IsSynchronizable = true;
+            IsSynchronizationEnabled = true;
         }
 
         #endregion

@@ -142,7 +142,7 @@ namespace Artivity.Api.Modules
                 if(region != null)
                 {
                     Mark mark = model.CreateResource<Mark>(ModelProvider.CreateUri<Mark>());
-                    mark.IsSynchronizable = true;
+                    mark.IsSynchronizationEnabled = true;
                     mark.CreationTimeUtc = parameter.endTime;
                     mark.PrimarySource = entity;
                     mark.Region = region;

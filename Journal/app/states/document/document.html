@@ -1,6 +1,8 @@
 <art-view title="{{t.file.label}}">
     <div class="layout-root" layout="column">
-        <div class="md-toolbar" layout="row" layout-align="start center">
+        <div class="md-toolbar md-border-bottom" layout="row" layout-align="start center">
+            <art-document-viewer-toolbar></art-document-viewer-toolbar>
+
             <div flex></div>
 
             <md-button class="md-button" ng-click="t.publishLatestRevision(t.file)">
@@ -10,8 +12,6 @@
 
         <div class="layout-container viewer-container" flex>
             <art-document-viewer file="t.file"></art-document-viewer>
-
-            <art-document-viewer-toolbar></art-document-viewer-toolbar>
 
             <div class="layout-root" layout="row">
                 <div flex></div>

@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller('AddAccountDialogController', AddAccountDialogController);
 
-    AddAccountDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'api', 'clientService'];
+    AddAccountDialogController.$inject = ['$scope', '$mdDialog', '$filter', '$sce', 'api', 'clientService'];
 
-    function AddAccountDialogController($scope, $filter, $uibModalInstance, $sce, api, clientService) {
+    function AddAccountDialogController($scope, $mdDialog, $filter, $sce, api, clientService) {
         var t = this;
         var interval = undefined;
 
@@ -13,11 +13,11 @@
         api.getAccountClients().then(function (data) {
             var clients = [];
 
-            for(var i = 0; i < data.length; i++) {
+            for (var i = 0; i < data.length; i++) {
                 var client = data[i];
 
                 // Do not allow to add Artivity Online accounts via the accounts tab.
-                if(!client.Uri.startsWith('http://artivity.online')) {
+                if (!client.Uri.startsWith('http://artivity.online')) {
                     clients.push(client);
                 }
             }
@@ -45,6 +45,10 @@
             // TODO: Remove hard-wiring. Receive presets and target sites from client.
             if (client.Uri.startsWith('http://orcid.org')) {
                 t.parameter.presetId = 'orcid.org';
+
+                // Open the ORCiD website in the systems default browser.
+                var shell = require('electron').shell;
+                shell.openExternal(client.SupportedAuthenticationClients[0].AuthorizeUrl);
 
                 t.connectAccount(t.selectedClient);
             } else if (client.Uri === 'http://eprints.org') {
@@ -105,11 +109,12 @@
         };
 
         t.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-
             if (interval) {
+                // Stop polling for changes in the installation progress..
                 window.clearInterval(interval);
             }
+
+            $mdDialog.cancel();
         };
     };
 })();

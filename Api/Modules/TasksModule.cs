@@ -155,7 +155,7 @@ namespace Artivity.Api.Modules
                 task.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
                 task.Name = parameter.name;
                 task.IsCompleted = parameter.completed;
-                task.IsSynchronizable = true;
+                task.IsSynchronizationEnabled = true;
                 task.Commit();
 
                 CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());

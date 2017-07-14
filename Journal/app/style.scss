@@ -936,6 +936,14 @@ md-list-item .md-list-item-inner>md-checkbox .md-label {
 	display: inline !important;
 }
 
+.md-toolbar .toolbar {
+	border-right: 1px solid rgba(0,0,0,.05);
+}
+
+.md-toolbar.md-border-bottom {
+	border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
 /* DIRECTIVES */
 
 .btn-colorpicker {
@@ -2207,6 +2215,11 @@ iframe {
 	min-height: $windowTitlebarHeight;
 	line-height: $windowTitlebarHeight;
 	vertical-align: middle;
+}
+
+.art-window-titlebar .window-title {
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 .art-window-titlebar .md-button.md-button-icon {

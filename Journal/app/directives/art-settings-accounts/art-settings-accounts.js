@@ -12,9 +12,9 @@
 
     angular.module('app').controller('AccountsSettingsDirectiveFormController', AccountsSettingsDirectiveFormController);
 
-    AccountsSettingsDirectiveFormController.$inject = ['$scope', '$uibModal', 'api', 'settingsService'];
+    AccountsSettingsDirectiveFormController.$inject = ['$scope', '$mdDialog', 'api', 'settingsService'];
 
-    function AccountsSettingsDirectiveFormController($scope, $uibModal, api, settingsService) {
+    function AccountsSettingsDirectiveFormController($scope, $mdDialog, api, settingsService) {
         var t = this;
         var s = $scope;
 
@@ -31,10 +31,10 @@
         api.getAccounts().then(function (data) {
             var accounts = [];
 
-            for(var i = 0; i < data.length; i++) {
+            for (var i = 0; i < data.length; i++) {
                 var account = data[i];
 
-                if(account && !account.ServiceClient.Uri.startsWith('http://artivity.online')) {
+                if (account && !account.ServiceClient.Uri.startsWith('http://artivity.online')) {
                     accounts.push(account);
                 }
             }
@@ -42,22 +42,32 @@
             s.accounts = accounts;
         });
 
-        s.addAccount = function () {
-            var modalInstance = $uibModal.open({
-                animation: true,
+        s.addAccount = function (e) {
+            $mdDialog.show({
+                attachTo: angular.element(document.body),
                 templateUrl: 'app/dialogs/add-account-dialog/add-account-dialog.html',
                 controller: 'AddAccountDialogController',
-                controllerAs: 't'
-            });
-
-            modalInstance.result.then(function (account) {
-                console.log("Reloading Accounts");
+                controllerAs: 't',
+                bindToController: true,
+                hasBackdrop: true,
+                trapFocus: true,
+                zIndex: 150,
+                targetEvent: e,
+                disableParentScroll: true,
+                clickOutsideToClose: false,
+                escapeToClose: true,
+                focusOnOpen: true,
+                locals: {
+                    accounts: s.accounts
+                }
+            }).then(function () {
+                console.log("Reloading Accounts..");
 
                 // Reload the user accounts.
                 api.getAccounts().then(function (data) {
                     s.accounts = data;
                 });
-            });
+            }, function () {});
         };
 
         s.selectAccount = function (account) {

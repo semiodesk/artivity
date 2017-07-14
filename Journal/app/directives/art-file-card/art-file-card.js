@@ -17,9 +17,9 @@
 
     angular.module('app').controller('FileCardDirectiveController', FileCardDirectiveController);
 
-    FileCardDirectiveController.$inject = ['$rootScope', '$scope', '$element', '$location', '$mdBottomSheet', 'selectionService', 'filesystemService'];
+    FileCardDirectiveController.$inject = ['$rootScope', '$scope', '$element', '$mdDialog', 'filesystemService', 'entityService'];
 
-    function FileCardDirectiveController($rootScope, $scope, $element, $location, $mdBottomSheet, selectionService, filesystemService) {
+    function FileCardDirectiveController($rootScope, $scope, $element, $mdDialog, filesystemService, entityService) {
         var t = this;
 
         t.onDragStart = function () {
@@ -29,28 +29,32 @@
         t.onDragStop = function () {
             $scope.$emit('dragStopped');
         }
-        
-        t.showSheet = function ($event) {
-            t.alert = '';
 
-            // The container needs to be relative positioned and with hidden overflow.
-            var card = angular.element($element.find('.card'));
+        t.publishFile = function (e) {
+            $mdDialog.show({
+                    templateUrl: 'share-file-dialog.html',
+                    parent: angular.element(document.body),
+                    targetEvent: e,
+                    controller: function ($scope) {
+                        $scope.file = t.file;
 
-            $mdBottomSheet.show({
-                parent: card,
-                templateUrl: 'app/directives/art-file-card/art-file-card.sheet.html',
-                controller: 'FileCardDirectiveSheetController',
-                controllerAs: "t",
-                bindToController: true,
-                disableParentScroll: true,
-                targetEvent: $event,
-                locals: {
-                    file: t.file
-                }
-            }).then(function (clickedItem) {}).catch(function (error) {
-                // User clicked outside or hit escape
-            });
-        };
+                        $scope.ok = function () {
+                            $mdDialog.hide();
+                        }
+
+                        $scope.cancel = function () {
+                            $mdDialog.cancel();
+                        }
+                    }
+                })
+                .then(function (answer) {
+                    entityService.publishLatestRevisionFromFileUri(t.file.uri).then(function () {
+                        t.file.synchronizationEnabled = true;
+
+                        syncService.synchronize();
+                    }, function () {});
+                }, function () {});
+        }
 
         t.$postLink = function () {
             $scope.$watch('t.file', function () {
