@@ -285,11 +285,26 @@ namespace Artivity.Api.Modules
                     return HttpStatusCode.BadRequest;
                 }
             };
+
+            Put["/publish"] = parameters =>
+            {
+                InitializeRequest();
+
+                if(IsUri(Request.Query.projectUri))
+                {
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+
+                    return PublishProject(projectUri);
+                }
+                else
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+            };
         }
 
         #region Methods
-
-
+        
         private Response PutProject(Uri uri, ProjectParameter parameter)
         {
             IModel model = ModelProvider.GetActivities();
@@ -328,6 +343,11 @@ namespace Artivity.Api.Modules
         {
             IModel all = ModelProvider.GetAll();
 
+            if (all == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
             if(all.ContainsResource(projectUri))
             {
                 ISparqlQuery query = new SparqlQuery(@"
@@ -354,6 +374,11 @@ namespace Artivity.Api.Modules
         protected Response GetProjectMembersFromQuery(UriRef projectUri, string q)
         {
             IModel all = ModelProvider.GetAll();
+
+            if (all == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
 
             if (all.ContainsResource(projectUri))
             {
@@ -386,6 +411,11 @@ namespace Artivity.Api.Modules
         protected Response PostProjectMemberWithRole(UriRef projectUri, UriRef agentUri, UserRoles userRole)
         {
             IModel activities = ModelProvider.GetActivities();
+
+            if (activities == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
 
             ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @project art:qualifiedMembership / art:agent @agent }");
             query.Bind("@project", projectUri);
@@ -425,6 +455,11 @@ namespace Artivity.Api.Modules
         {
             IModel activities = ModelProvider.GetActivities();
 
+            if (activities == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
             if (activities.ContainsResource(projectUri))
             {
                 Project project = activities.GetResource<Project>(projectUri);
@@ -455,6 +490,7 @@ namespace Artivity.Api.Modules
 	                ?label
                     SAMPLE(?p) AS ?thumbnail 
                     COALESCE(?agentColor, '#cecece') AS ?agentColor
+                    COALESCE(?synchronizationEnabled, 'false') AS ?synchronizationEnabled
                 WHERE
                 {
                     ?a1 prov:generated | prov:used ?entity ;
@@ -478,6 +514,7 @@ namespace Artivity.Api.Modules
 		
 		                FILTER(?t1 > ?t2)
 	                }
+
                     FILTER NOT EXISTS
                     {
 						?older prov:qualifiedRevision / prov:entity ?entity.
@@ -490,6 +527,10 @@ namespace Artivity.Api.Modules
 
                         ?agent a prov:SoftwareAgent.
                         ?agent art:hasColourCode ?agentColor .
+                    }
+
+                    OPTIONAL {
+                        ?entity arts:synchronizationEnabled ?synchronizationEnabled .
                     }
                 }
                 ORDER BY DESC(?t1) LIMIT 100");
@@ -504,6 +545,11 @@ namespace Artivity.Api.Modules
         protected Response PostProjectFile(UriRef projectUri, UriRef fileUri)
         {
             IModel activities = ModelProvider.GetActivities();
+
+            if (activities == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
 
             ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @project prov:qualifiedUsage / prov:entity @file }");
             query.Bind("@project", projectUri);
@@ -534,6 +580,11 @@ namespace Artivity.Api.Modules
         {
             IModel activities = ModelProvider.GetActivities();
 
+            if (activities == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
             ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @project prov:qualifiedUsage / prov:entity @file }");
             query.Bind("@project", projectUri);
             query.Bind("@file", fileUri);
@@ -558,6 +609,11 @@ namespace Artivity.Api.Modules
         {
             IModel activities = ModelProvider.GetActivities();
 
+            if (activities == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT DISTINCT ?s ?p ?o
                 WHERE
@@ -577,6 +633,11 @@ namespace Artivity.Api.Modules
         protected Response PostProjectFolder(UriRef projectUri, UriRef folderUrl)
         {
             IModel activities = ModelProvider.GetActivities();
+
+            if (activities == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
 
             ISparqlQuery query = new SparqlQuery(@"SELECT ?folder WHERE { ?folder a nfo:Folder ; nie:url @url . }");
             query.Bind("@url", folderUrl);
@@ -612,6 +673,11 @@ namespace Artivity.Api.Modules
         {
             IModel activities = ModelProvider.GetActivities();
 
+            if (activities == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
             ISparqlQuery query = new SparqlQuery(@"ASK WHERE { @project prov:qualifiedUsage / prov:entity [ nie:url @url ] }");
             query.Bind("@project", projectUri);
             query.Bind("@url", folderUrl);
@@ -638,7 +704,7 @@ namespace Artivity.Api.Modules
 
             if (model == null)
             {
-                return HttpStatusCode.BadRequest;
+                return HttpStatusCode.InternalServerError;
             }
 
             SparqlUpdate update = new SparqlUpdate(@"
@@ -669,6 +735,23 @@ namespace Artivity.Api.Modules
 
             return Response.AsJsonSync(new { success = true });
         }
+
+        private Response PublishProject(Uri uri)
+        {
+            IModel model = ModelProvider.GetActivities();
+
+            if (model == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            Project project = model.GetResource<Project>(uri);
+            project.IsSynchronizationEnabled = true;
+            project.Commit();
+
+            return HttpStatusCode.OK;
+        }
+
         #endregion
     }
 }

@@ -12,6 +12,7 @@
             create: create,
             update: update,
             remove: remove,
+            publish: publish,
             get: get,
             getAll: getAll,
             getFiles: getFiles,
@@ -80,6 +81,13 @@
                 t.projects = null;
                 return response.data;
             }, handleError(remove));
+        }
+
+        function publish(projectUri) {
+            return api.put(endpoint + '/publish?projectUri=' + projectUri).then(function (response) {
+                t.projects = null;
+                return response.data;
+            }, handleError(remove));     
         }
 
         function getFiles(projectUri) {

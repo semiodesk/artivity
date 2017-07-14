@@ -23,7 +23,9 @@
         var t = this;
 
         t.$postLink = function () {
-            windowService.setTitle(t.title);
+            if (!t.title) {
+                windowService.setTitle('');
+            }
 
             $scope.$watch('t.title', function () {
                 if (t.title && t.title.length) {

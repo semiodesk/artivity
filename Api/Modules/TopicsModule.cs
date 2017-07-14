@@ -162,7 +162,7 @@ namespace Artivity.Api.Modules
                 topic.CreationTimeUtc = parameter.endTime;
                 topic.PrimarySource = primarySource; // TODO: Correct this in the data provided by the plugins.
                 topic.Title = parameter.title;
-                topic.IsSynchronizable = true;
+                topic.IsSynchronizationEnabled = true;
                 topic.Commit();
 
                 CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());

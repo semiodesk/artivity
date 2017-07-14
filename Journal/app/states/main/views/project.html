@@ -1,7 +1,7 @@
 <div class="layout-root" layout="column">
     <div layout="row" layout-align="start center" class="md-padding">
-        <md-autocomplete art-search-input md-search-text="t.query" md-no-cache="true" md-search-text-change="t.findFiles(t.query)" md-items="item in []"
-            md-item-text="item.label" md-menu-container-class="art-search-input-menu-container" placeholder="{{'Search' | translate}}"
+        <md-autocomplete art-search-input md-search-text="t.query" md-no-cache="true" md-search-text-change="t.findFiles(t.query)"
+            md-items="item in []" md-item-text="item.label" md-menu-container-class="art-search-input-menu-container" placeholder="{{'Search' | translate}}"
             style="margin-left: 5px;">
             <md-item-template>
                 <span md-highlight-text="ctrl.searchText">{{item.display}}</span>
@@ -10,19 +10,25 @@
             </md-not-found>
         </md-autocomplete>
         <div flex></div>
+        <md-button class="md-icon-button" ng-if="!t.project.IsSynchronizationEnabled" ng-click="t.publishProject()">
+            <md-icon md-font-icon="zmdi zmdi-cloud-upload"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button" ng-if="t.project.IsSynchronizationEnabled">
+            <md-icon md-font-icon="zmdi zmdi-cloud-done"></md-icon>
+        </md-button>
         <md-menu md-offset="0 42">
             <md-button class="md-icon-button" ng-click="$mdMenu.open($event)">
                 <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
             </md-button>
             <md-menu-content width="4">
                 <md-menu-item class="md-indent">
-                    <md-button aria-label="Archive Project" ng-click="t.deleteProject($event)">
-                        <span translate>Delete</span>
+                    <md-button aria-label="Edit Project" ng-click="t.editProject($event)">
+                        <span translate>Edit</span>
                     </md-button>
                 </md-menu-item>
                 <md-menu-item class="md-indent">
-                    <md-button aria-label="Edit Project" ng-click="t.editProject($event)">
-                        <span translate>Edit</span>
+                    <md-button aria-label="Archive Project" ng-click="t.deleteProject($event)">
+                        <span translate>Archive</span>
                     </md-button>
                 </md-menu-item>
             </md-menu-content>
@@ -30,7 +36,8 @@
     </div>
 
     <div class="layout-container" flex>
-        <div class="md-padding" masonry load-images="true" masonry-options="{ gutter: 15, transitionDuration: 0 }" column-width="255" ng-cloak>
+        <div class="md-padding" masonry load-images="true" masonry-options="{ gutter: 15, transitionDuration: 0 }" column-width="255"
+            ng-cloak>
             <div class="masonry-brick" ng-repeat="file in t.files" style="width: 255px">
                 <art-file-card file="file"></art-file-card>
             </div>
@@ -38,16 +45,34 @@
     </div>
 </div>
 
-<script type="text/ng-template" id="delete-project-dialog.html">
-    <md-dialog aria-label="Project Dialog">
+<script type="text/ng-template" id="share-project-dialog.html">
+    <md-dialog aria-label="Share Project Dialog">
         <md-dialog-content>
             <md-content class="padding-x-xl padding-y-xl">
-                <h3>Delete '{{project.Title}}'?</h3>
+                <h3>Share '{{project.Title}}'?</h3>
+                <p translate>This will allow other people to view and comment on the files that you publish in this project.</p>
+
+                <md-input-container class="md-block">
+                    <input placeholder="Endpoint URL" disabled>
+                </md-input-container>
+        </md-dialog-content>
+        <md-dialog-actions layout="row" layout-align="end center">
+            <md-button ng-click="ok()" class="md-primary">Share</md-button>
+            <md-button ng-click="cancel()" translate>Cancel</md-button>
+        </md-dialog-actions>
+    </md-dialog>
+</script>
+
+<script type="text/ng-template" id="delete-project-dialog.html">
+    <md-dialog aria-label="Archive Project Dialog">
+        <md-dialog-content>
+            <md-content class="padding-x-xl padding-y-xl">
+                <h3>Archive '{{project.Title}}'?</h3>
                 <p translate>The project will be archived and no content will be deleted. You can restore the project at any time.</p>
             </md-content>
         </md-dialog-content>
         <md-dialog-actions layout="row" layout-align="end center">
-            <md-button ng-click="ok()" class="md-warn">Delete</md-button>
+            <md-button ng-click="ok()" class="md-warn">Archive</md-button>
             <md-button ng-click="cancel()" translate>Cancel</md-button>
         </md-dialog-actions>
     </md-dialog>
