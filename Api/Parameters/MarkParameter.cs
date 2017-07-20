@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Artivity.Api.Parameters
 {
-    public class MarkParameter
+    public class MarkParameter : Parameter
     {
         #region Members
 
@@ -28,6 +28,12 @@ namespace Artivity.Api.Parameters
         public double width { get; set; }
 
         public double height { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        public override bool Validate() { return true; }
 
         #endregion
     }

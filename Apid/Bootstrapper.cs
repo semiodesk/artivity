@@ -63,6 +63,8 @@ namespace Artivity.Apid
         public IArtivityServiceSynchronizationProvider SynchronizationProvider { get; set; }
 
         public OwnerProvider OwnerProvider { get; set; }
+
+        public INotifier Notifier { get; set; }
         #endregion
 
         #region Methods
@@ -89,6 +91,13 @@ namespace Artivity.Apid
                 _container.Register(PlatformProvider);
                 _container.Register<IPlatformProvider>(PlatformProvider);
             }
+
+            if (Notifier != null)
+            {
+                _container.Register(Notifier);
+                _container.Register<INotifier>(Notifier);
+            }
+
 
             if (PluginChecker != null)
             {

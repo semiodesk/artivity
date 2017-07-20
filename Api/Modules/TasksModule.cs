@@ -43,9 +43,15 @@ namespace Artivity.Api.Modules
 {
     public class TasksModule : ModuleBase
     {
+        #region Members
+
+        private INotifier _notifier;
+
+        #endregion
+
         #region Constructors
 
-        public TasksModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+        public TasksModule(IModelProvider modelProvider, IPlatformProvider platformProvider, INotifier notifier)
             : base("/artivity/api/1.0/tasks", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>

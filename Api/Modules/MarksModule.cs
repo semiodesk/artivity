@@ -16,9 +16,15 @@ namespace Artivity.Api.Modules
 {
     public class MarksModule : ModuleBase
     {
+        #region Members
+
+        private INotifier _notifier;
+
+        #endregion
+
         #region Constructors
 
-        public MarksModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+        public MarksModule(IModelProvider modelProvider, IPlatformProvider platformProvider, INotifier notifier)
             : base("/artivity/api/1.0/marks", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>

@@ -141,6 +141,7 @@ namespace Artivity.Apid.Platform
             IsLinux = TestLinux();
 
             SetDeploymentDir(Environment.CurrentDirectory);
+
         }
 
         #endregion
