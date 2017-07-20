@@ -5,3 +5,5 @@ var apid = {
 
 var appcastUrl_win = "http://localhost:10001/update/win/appcast.xml";
 var appcastUrl_osx = "http://localhost:10001/update/osx/appcast.xml";
+
+var artoEndpoint = "http://localhost:8080";

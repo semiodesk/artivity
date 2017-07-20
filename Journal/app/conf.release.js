@@ -5,3 +5,5 @@ var apid = {
 
 var appcastUrl_win = "https://artivity.online/update/win/appcast.xml";
 var appcastUrl_osx = "http://artivity.online/update/osx/appcast.xml";
+
+var artoEndpoint = "https://api.artivity.online";

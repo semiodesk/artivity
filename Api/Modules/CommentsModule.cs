@@ -44,11 +44,19 @@ namespace Artivity.Api.Modules
 {
     public class CommentsModule : ModuleBase
     {
+        #region Members
+
+        private INotifier _notifier;
+
+        #endregion
+
         #region Constructors
 
-        public CommentsModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+        public CommentsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, INotifier notifier)
             : base("/artivity/api/1.0/comments", modelProvider, platformProvider)
         {
+            _notifier = notifier;
+
             Get["/"] = parameters =>
             {
                 InitializeRequest();
@@ -245,6 +253,8 @@ namespace Artivity.Api.Modules
                 // Return the URI to the frontend.
                 var data = new { uri = comment.Uri };
 
+                _notifier.PublishEntityAdded(parameter);
+
                 return Response.AsJsonSync(data, HttpStatusCode.OK);
             }
             else
@@ -308,6 +318,8 @@ namespace Artivity.Api.Modules
 
                 // Return the URI to the frontend.
                 var data = new { uri = request.Uri };
+
+                _notifier.PublishEntityAdded(parameter);
 
                 return Response.AsJsonSync(data, HttpStatusCode.OK);
             }
@@ -386,6 +398,8 @@ namespace Artivity.Api.Modules
                     // Return the URI to the frontend.
                     var data = new { uri = request.Uri };
 
+                    _notifier.PublishEntityAdded(parameter);
+
                     return Response.AsJsonSync(data, HttpStatusCode.OK);
                 }
                 else
@@ -432,74 +446,6 @@ namespace Artivity.Api.Modules
 
             return HttpStatusCode.OK;
         }
-
-        #endregion
-
-        #region Types
-
-        private class CommentParameter : IValidatable
-        {
-            #region Members
-
-            public CommentTypes type { get; set; }
-
-            public string agent { get; set; }
-
-            public string primarySource { get; set; }
-
-            public DateTime startTime { get; set; }
-
-            public DateTime endTime { get; set; }
-
-            public string message { get; set; }
-
-            public string[] marks { get; set; }
-
-            public List<AssociationParameter> associations { get; set; }
-
-            #endregion
-
-            #region Constructors
-
-            public CommentParameter()
-            {
-                associations = new List<AssociationParameter>();
-            }
-
-            #endregion
-
-            #region Methods
-
-            public bool Validate() {
-                return !string.IsNullOrEmpty(message)
-                    && !string.IsNullOrEmpty(agent)
-                    && !string.IsNullOrEmpty(primarySource)
-                    && DateTime.MinValue < startTime
-                    && startTime <= endTime;
-            }
-
-            #endregion
-        }
-
-        private class AssociationParameter
-        {
-            #region Members
-
-            public string agent { get; set; }
-
-            public string role { get; set; }
-
-            #endregion
-        }
-
-        private enum CommentTypes
-        {
-            Comment,
-            FeedbackRequest,
-            FeedbackResponse,
-            ApprovalRequest,
-            ApprovalResponse
-        };
 
         #endregion
     }

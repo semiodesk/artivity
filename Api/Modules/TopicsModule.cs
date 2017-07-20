@@ -43,9 +43,15 @@ namespace Artivity.Api.Modules
 {
     public class TopicsModule : ModuleBase
     {
+        #region Members
+
+        private INotifier _notifier;
+
+        #endregion
+
         #region Constructors
 
-        public TopicsModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
+        public TopicsModule(IModelProvider modelProvider, IPlatformProvider platformProvider, INotifier notifier)
             : base("/artivity/api/1.0/topics", modelProvider, platformProvider)
         {
             Get["/"] = parameters =>

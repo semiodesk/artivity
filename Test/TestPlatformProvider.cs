@@ -150,6 +150,8 @@ namespace ArtivityTest
             set;
         }
 
+        public INotifier Notifier { get; private set; }
+
         public void WriteConfig(UserConfig config)
         {
 

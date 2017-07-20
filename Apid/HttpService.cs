@@ -303,6 +303,7 @@ namespace Artivity.Apid
             customBootstrapper.PluginChecker = _pluginChecker;
             customBootstrapper.OwnerProvider = op;
             customBootstrapper.SynchronizationProvider = _synchronizationProvider;
+            customBootstrapper.Notifier = new DummyNotifier();
 
             HostConfiguration hostConfig = new HostConfiguration();
             hostConfig.RewriteLocalhost = true;

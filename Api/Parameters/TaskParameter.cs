@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Artivity.Api.Parameters
 {
-    public class TaskParameter
+    public class TaskParameter : Parameter
     {
         #region Members
 
@@ -25,6 +25,12 @@ namespace Artivity.Api.Parameters
         public bool completed { get; set; }
 
         public string[] marks { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        public override bool Validate() { return true; }
 
         #endregion
     }
