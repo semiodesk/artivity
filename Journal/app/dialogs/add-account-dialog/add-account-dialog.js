@@ -11,18 +11,7 @@
         t.clients = [];
 
         api.getAccountClients().then(function (data) {
-            var clients = [];
-
-            for (var i = 0; i < data.length; i++) {
-                var client = data[i];
-
-                // Do not allow to add Artivity Online accounts via the accounts tab.
-                if (!client.Uri.startsWith('http://artivity.online')) {
-                    clients.push(client);
-                }
-            }
-
-            t.clients = clients;
+            t.clients = data;
 
             console.log("Available clients:", t.clients);
         });
@@ -96,7 +85,7 @@
 
                                     // Close the dialog after the account was successfully connected.
                                     setTimeout(function () {
-                                        $uibModalInstance.close();
+                                        $mdDialog.hide();
                                     }, 1000);
                                 });
                             }

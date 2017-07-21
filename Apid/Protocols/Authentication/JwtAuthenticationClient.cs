@@ -17,7 +17,9 @@ namespace Artivity.Apid.Protocols.Authentication
         {
             get
             {
-                dynamic data = JObject.Parse(Encoding.UTF8.GetString(ResponseData));
+                string response = Encoding.UTF8.GetString(ResponseData);
+
+                dynamic data = JObject.Parse(response);
 
                 return data != null ? data.token : null;
             }
