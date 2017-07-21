@@ -26,19 +26,13 @@
 //
 // Copyright (c) Semiodesk GmbH 2017
 
-using Artivity.Api.Parameters;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
-using Artivity.DataModel.Tasks;
 using Nancy;
-using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using Nancy.ModelBinding;
 
 namespace Artivity.Api.Modules
 {
