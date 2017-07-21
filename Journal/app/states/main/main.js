@@ -27,7 +27,7 @@
             projectService.create().then(function (project) {
                 $mdDialog.show({
                     attachTo: angular.element(document.body),
-                    templateUrl: 'app/dialogs/edit-project/edit-project.html',
+                    templateUrl: 'app/dialogs/edit-project-dialog/edit-project-dialog.html',
                     controller: 'EditProjectDialogController',
                     controllerAs: 't',
                     bindToController: true,

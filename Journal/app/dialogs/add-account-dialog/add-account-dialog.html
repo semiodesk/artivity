@@ -16,7 +16,7 @@
 					<md-list>
 						<md-list-item ng-repeat="client in t.clients" ng-click="t.selectClient(client)">
 							<div layout="row">
-								<md-icon class="md-avatar-icon" md-font-icon="zmdi zmdi-account"></md-icon>
+								<md-icon md-font-icon="zmdi zmdi-account-add" style="font-size: 48px !important; margin-right: 15px;"></md-icon>
 								<div class="md-list-item-text md-offset" layout="column">
 									<h4>{{client.Title}}</h4>
 									<p>{{client.Uri + '.description' | translate}}</p>
@@ -33,13 +33,13 @@
 							<form name="connectForm" ng-submit="t.connectAccount(selectedClient)">
 								<p class="description"><span translate>Please enter the server address, username and password</span> <span translate>of the Artivity service:</span></p>
 								<input type="text" class="form-control" id="url" name="url" placeholder="https://artivity.online" ng-model="t.parameter.url"
-								    required>
+								 required>
 								<label style="margin-top: .5em;" translate>Login</label>
 								<div class="form-group">
 									<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20"
-									    maxlength="20" ng-model="t.parameter.username" required>
+									 maxlength="20" ng-model="t.parameter.username" required>
 									<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20"
-									    maxlength="20" ng-model="t.parameter.password" ng-enter="t.connectAccount(selectedClient)" required>
+									 maxlength="20" ng-model="t.parameter.password" ng-enter="t.connectAccount(selectedClient)" required>
 								</div>
 							</form>
 							<art-client-state-info state="t.clientState"></art-client-state-info>
@@ -61,15 +61,18 @@
 						<div class="md-padding" layout="column">
 							<p class="description"><span translate>Please enter the server address, username and password</span> <span translate>of the repository:</span></p>
 
-							<input type="text" class="form-control" id="url" name="url" placeholder="http://example.org" ng-model="t.parameter.url" required>
+							<md-input-container md-no-float class="md-block">
+								<md-icon md-font-icon="zmdi zmdi-globe"></md-icon>
+								<input type="text" id="url" name="url" placeholder="http://example.org" ng-model="t.parameter.url" required>
+							</md-input-container>
 
 							<label style="margin-top: .5em;" translate>Login</label>
 							<div class="form-group">
 								<input class="form-control form-control-login" type="text" id="username" name="username" size="20" maxlength="20" placeholder="{{Username | translate}}"
-								    ng-model="t.parameter.username" required>
+								 ng-model="t.parameter.username" required>
 
 								<input class="form-control form-control-login" type="password" id="password" name="password" size="20" maxlength="20" placeholder="{{Password | translate}}"
-								    ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
+								 ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
 							</div>
 
 							<md-button ng-click="t.connectAccount(selectedClient)" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < t.clientState && t.clientState < 3)">

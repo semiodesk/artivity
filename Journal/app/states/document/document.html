@@ -13,10 +13,10 @@
         <div class="layout-container viewer-container" flex>
             <art-document-viewer file="t.file"></art-document-viewer>
 
-            <div class="layout-root" layout="row">
+            <div class="layout-root" layout="row" style="pointer-events: none;">
                 <div flex></div>
 
-                <md-sidenav flex="400px" class="md-sidenav-right" md-component-id="right" md-is-locked-open="true">
+                <md-sidenav flex="400px" class="md-sidenav-right" md-component-id="right" md-is-locked-open="true" style="pointer-events: auto;">
                     <md-tabs class="layout-root" md-border-bottom>
                         <md-tab label="{{'Chat' | translate}}">
                             <md-content layout="column" layout-fill>
