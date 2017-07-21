@@ -14,7 +14,7 @@
                 },
                 function () {
                     if (t.connectInterval === null) {
-                        t.connectInterval = setInterval(tryConnect, t.connectIntervalMs);
+                        t.connectInterval = setInterval(t.tryConnect, t.connectIntervalMs);
                     } else if (t.connectTime < t.connectTimeout) {
                         t.connectTime += t.connectIntervalMs;
                     } else {
