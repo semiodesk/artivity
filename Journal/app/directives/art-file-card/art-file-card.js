@@ -22,6 +22,10 @@
     function FileCardDirectiveController($rootScope, $scope, $element, $mdDialog, filesystemService, entityService) {
         var t = this;
 
+        t.onTouchStart = function(e) {
+            e.preventDefault();
+        }
+
         t.onDragStart = function () {
             $scope.$emit('dragStarted');
         }
@@ -57,6 +61,8 @@
         }
 
         t.$postLink = function () {
+            $element.on('touchstart', t.onTouchStart);
+
             $scope.$watch('t.file', function () {
                 if (t.file) {
                     var label = t.file.label;
