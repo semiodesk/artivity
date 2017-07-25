@@ -27,32 +27,22 @@
 				</div>
 			</div>
 			<div ng-switch-when="http://artivity.online">
-				<div layout="column">
-					<div flex>
-						<div class="layout-container padding-x-xl">
-							<form name="connectForm" ng-submit="t.connectAccount(selectedClient)">
-								<p class="description"><span translate>Please enter the server address, username and password</span> <span translate>of the Artivity service:</span></p>
-								<input type="text" class="form-control" id="url" name="url" placeholder="https://artivity.online" ng-model="t.parameter.url"
-								 required>
-								<label style="margin-top: .5em;" translate>Login</label>
-								<div class="form-group">
-									<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20"
-									 maxlength="20" ng-model="t.parameter.username" required>
-									<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20"
-									 maxlength="20" ng-model="t.parameter.password" ng-enter="t.connectAccount(selectedClient)" required>
-								</div>
-							</form>
-							<art-client-state-info state="t.clientState"></art-client-state-info>
+				<div layout="column" class="md-padding">
+					<form name="connectForm" ng-submit="t.connectAccount(selectedClient)" flex>
+						<p class="description"><span translate>Please enter the username and password or your Artivity Online user account:</span></p>
+						<input type="hidden" id="url" name="url" ng-init="t.parameter.url = 'https://api.artivity.online'">
+						<label style="margin-top: .5em;" translate>Login</label>
+						<div class="form-group">
+							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20"
+								maxlength="20" ng-model="t.parameter.username" required>
+							<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20"
+								maxlength="20" ng-model="t.parameter.password" ng-enter="t.connectAccount(selectedClient)" required>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12">
-							<div class="toolbar pull-right">
-								<button class="btn btn-success" type="submit" ng-click="t.connectAccount(selectedClient)" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < t.clientState && t.clientState < 3)"><i class="zmdi zmdi-check"></i></button>
-								<button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
-							</div>
-						</div>
-					</div>
+					</form>
+					<art-client-state-info state="t.clientState"></art-client-state-info>
+					<md-button ng-click="t.connectAccount(selectedClient)" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < t.clientState && t.clientState < 3)">
+						<span translate>Connect</span>
+					</md-button>
 				</div>
 			</div>
 			<div ng-switch-when="http://eprints.org">
@@ -67,28 +57,28 @@
 							</md-input-container>
 
 							<label style="margin-top: .5em;" translate>Login</label>
-							<div class="form-group">
-								<input class="form-control form-control-login" type="text" id="username" name="username" size="20" maxlength="20" placeholder="{{Username | translate}}"
-								 ng-model="t.parameter.username" required>
+						<div class="form-group">
+							<input class="form-control form-control-login" type="text" id="username" name="username" size="20" maxlength="20" placeholder="{{Username | translate}}"
+							    ng-model="t.parameter.username" required>
 
-								<input class="form-control form-control-login" type="password" id="password" name="password" size="20" maxlength="20" placeholder="{{Password | translate}}"
-								 ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
-							</div>
-
-							<md-button ng-click="t.connectAccount(selectedClient)" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < t.clientState && t.clientState < 3)">
-								<span translate>Connect</span>
-							</md-button>
+							<input class="form-control form-control-login" type="password" id="password" name="password" size="20" maxlength="20" placeholder="{{Password | translate}}"
+							    ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
 						</div>
-					</form>
-					<div art-client-state-info state="{{t.clientState}}"></div>
+
+						<md-button ng-click="t.connectAccount(selectedClient)" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < t.clientState && t.clientState < 3)">
+							<span translate>Connect</span>
+						</md-button>
 				</div>
+				</form>
+				<div art-client-state-info state="{{t.clientState}}"></div>
 			</div>
-			<div ng-switch-when="http://orcid.org">
-				<div layout="column" class="md-padding">
-					<div flex></div>
-					<div art-client-state-info state="{{t.clientState}}"></div>
-				</div>
+		</div>
+		<div ng-switch-when="http://orcid.org">
+			<div layout="column" class="md-padding">
+				<div flex></div>
+				<div art-client-state-info state="{{t.clientState}}"></div>
 			</div>
+		</div>
 		</div>
 	</md-dialog-content>
 </md-dialog>
