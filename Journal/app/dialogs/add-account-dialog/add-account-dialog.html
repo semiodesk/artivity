@@ -1,115 +1,84 @@
-<div class="row">
-	<div class="col-xs-12">
-		<div class="container padding-x-xl padding-y-xl">
-			<h2 class="modal-title">{{t.title | translate}}</h2>
+<md-dialog flex="50">
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<h2 translate>Add Account</h2>
+			<span flex></span>
+			<md-button class="md-icon-button" ng-click="t.cancel()">
+				<md-icon md-font-icon="zmdi zmdi-close" aria-label="Close dialog"></md-icon>
+			</md-button>
 		</div>
-	</div>
-</div>
-<div ng-switch="t.selectedClient.Uri">
-	<div ng-switch-when="http://artivity.online">
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="layout-container padding-x-xl">
-					<form name="connectForm" ng-submit="t.connectAccount(selectedClient)">
-						<p class="description"><span translate>Please enter the server address, username and password</span> <span translate>of the Artivity service:</span></p>
-						<input type="text" class="form-control" id="url" name="url" placeholder="https://artivity.online" ng-model="t.parameter.url" required>
+	</md-toolbar>
+	<md-dialog-content>
+		<div ng-switch="t.selectedClient.Uri">
+			<div ng-switch-default>
+				<div layout="column" class="md-padding">
+					<p class="description" translate>Please select the account type to connect with:</p>
+					<md-list>
+						<md-list-item ng-repeat="client in t.clients" ng-click="t.selectClient(client)">
+							<div layout="row">
+								<md-icon md-font-icon="zmdi zmdi-account-add" style="font-size: 48px !important; margin-right: 15px;"></md-icon>
+								<div class="md-list-item-text md-offset" layout="column">
+									<h4>{{client.Title}}</h4>
+									<p>{{client.Uri + '.description' | translate}}</p>
+								</div>
+							</div>
+						</md-list-item>
+					</md-list>
+				</div>
+			</div>
+			<div ng-switch-when="http://artivity.online">
+				<div layout="column" class="md-padding">
+					<form name="connectForm" ng-submit="t.connectAccount(selectedClient)" flex>
+						<p class="description"><span translate>Please enter the username and password or your Artivity Online user account:</span></p>
+						<input type="hidden" id="url" name="url" ng-init="t.parameter.url = 'https://api.artivity.online'">
 						<label style="margin-top: .5em;" translate>Login</label>
 						<div class="form-group">
-							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20" maxlength="20" ng-model="t.parameter.username" required>
-							<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20" maxlength="20" ng-model="t.parameter.password" ng-enter="t.connectAccount(selectedClient)" required>
+							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20"
+								maxlength="20" ng-model="t.parameter.username" required>
+							<input class="form-control form-control-login" type="password" placeholder="Password" id="password" name="password" size="20"
+								maxlength="20" ng-model="t.parameter.password" ng-enter="t.connectAccount(selectedClient)" required>
 						</div>
 					</form>
 					<art-client-state-info state="t.clientState"></art-client-state-info>
+					<md-button ng-click="t.connectAccount(selectedClient)" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < t.clientState && t.clientState < 3)">
+						<span translate>Connect</span>
+					</md-button>
 				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="toolbar pull-right">
-					<button class="btn btn-success" type="submit" ng-click="t.connectAccount(selectedClient)" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < t.clientState && t.clientState < 3)"><i class="zmdi zmdi-check"></i></button>
-					<button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div ng-switch-when="http://eprints.org">
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="layout-container padding-x-xl">
-					<form name="connectForm" ng-submit="t.connectAccount(selectedClient)">
-						<p class="description"><span translate>Please enter the server address, username and password</span> <span translate>of the repository:</span></p>
-						<input type="text" class="form-control" id="url" name="url" placeholder="http://example.org" ng-model="t.parameter.url" required>
-						<label style="margin-top: .5em;" translate>Login</label>
-						<div class="form-group">
-							<input class="form-control form-control-login" type="text" id="username" name="username" size="20" maxlength="20"
-								placeholder="{{'Username' | translate}}" ng-model="t.parameter.username" required>
+			<div ng-switch-when="http://eprints.org">
+				<div layout="column" class="md-padding">
+					<form name="connectForm" ng-submit="t.connectAccount(selectedClient)" flex>
+						<div class="md-padding" layout="column">
+							<p class="description"><span translate>Please enter the server address, username and password</span> <span translate>of the repository:</span></p>
 
-							<input class="form-control form-control-login" type="password" id="password" name="password" size="20" maxlength="20"
-								placeholder="{{'Password' | translate}}" ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
+							<md-input-container md-no-float class="md-block">
+								<md-icon md-font-icon="zmdi zmdi-globe"></md-icon>
+								<input type="text" id="url" name="url" placeholder="http://example.org" ng-model="t.parameter.url" required>
+							</md-input-container>
+
+							<label style="margin-top: .5em;" translate>Login</label>
+						<div class="form-group">
+							<input class="form-control form-control-login" type="text" id="username" name="username" size="20" maxlength="20" placeholder="{{Username | translate}}"
+							    ng-model="t.parameter.username" required>
+
+							<input class="form-control form-control-login" type="password" id="password" name="password" size="20" maxlength="20" placeholder="{{Password | translate}}"
+							    ng-model="t.parameter.password" ui-keypress="{13:'t.connectAccount(selectedClient)'}" required>
 						</div>
-					</form>
-					<div art-client-state-info state="{{t.clientState}}"></div>
+
+						<md-button ng-click="t.connectAccount(selectedClient)" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < t.clientState && t.clientState < 3)">
+							<span translate>Connect</span>
+						</md-button>
 				</div>
+				</form>
+				<div art-client-state-info state="{{t.clientState}}"></div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="toolbar pull-right">
-					<button class="btn btn-success" type="submit" ng-click="t.connectAccount(selectedClient)" ng-disabled="connectForm.url.$invalid || connectForm.username.$invalid || connectForm.password.$invalid || (0 < t.clientState && t.clientState < 3)"><i class="zmdi zmdi-check"></i></button>
-					<button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
-				</div>
+		<div ng-switch-when="http://orcid.org">
+			<div layout="column" class="md-padding">
+				<div flex></div>
+				<div art-client-state-info state="{{t.clientState}}"></div>
 			</div>
 		</div>
-	</div>
-	<div ng-switch-when="http://orcid.org">
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="container padding-x-xl">
-					<p class="description" translate>Please log into your ORCiD account and allow Artivity to be connected:</p>
-				</div>
-				<iframe ng-src="{{t.clientUrl}}" style="background: white; min-height: 400px; width: 100%;"></iframe>
-				<div class="container padding-x-xl">
-					<div art-client-state-info state="{{t.clientState}}"></div>
-				</div>
-			</div>
 		</div>
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="toolbar pull-right">
-					<button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div ng-switch-default>
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="layout-container padding-x-xl">
-					<p class="description" translate>Please select the account type to connect with:</p>
-					<ul class="list-view">
-						<li class="list-item" ng-repeat="client in t.clients">
-							<a ng-click="t.selectClient(client)" style="cursor: pointer;">
-								<div class="col col-icn col-icn-lg">
-									<i class="zmdi zmdi-account"></i>
-								</div>
-								<div class="col expand">
-									<div style="padding: 9px">
-										<h5>{{client.Title}}</h5>
-										<label>{{client.Uri + '.description' | translate}}</label>
-									</div>
-								</div>
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="toolbar pull-right">
-					<button class="btn" ng-click="t.cancel()"><i class="zmdi zmdi-close"></i></button>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+	</md-dialog-content>
+</md-dialog>

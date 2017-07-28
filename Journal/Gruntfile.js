@@ -15,6 +15,7 @@ module.exports = function (grunt) {
             'app/classes/*.js',
             'app/classes/rendering/*.js',
             'app/classes/rendering/caching/*.js',
+            'app/classes/rendering/viewers/options/*.js',
             'app/classes/rendering/viewers/commands/*.js',
             'app/classes/rendering/viewers/renderers/*.js',
             'app/classes/rendering/viewers/*.js',
@@ -28,7 +29,8 @@ module.exports = function (grunt) {
             'app/filters/*.js',
             'app/directives/**/*.js',
             'app/dialogs/**/*.js',
-            'app/views/**/*.js',
+            'app/states/**/*.js',
+            '!app/views/**/*.js',
             'app/i18n.js',
             'app/route.js',
             '!**/*.test.js',
@@ -389,7 +391,7 @@ module.exports = function (grunt) {
                     'app/i18n/template.pot': [
                         'app/dialogs/*/*.html',
                         'app/directives/*/*.html',
-                        'app/views/*/*.html'
+                        'app/states/**/*.html'
                     ]
                 }
             }

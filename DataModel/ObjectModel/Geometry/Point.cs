@@ -52,10 +52,6 @@ namespace Artivity.DataModel
         public Point(Uri uri) : base(uri) {}
 
         #endregion
-
-        #region Methods
-
-        #endregion
     }
 }
 

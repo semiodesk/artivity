@@ -12,6 +12,7 @@
             create: create,
             update: update,
             remove: remove,
+            publish: publish,
             get: get,
             getAll: getAll,
             getFiles: getFiles,
@@ -29,7 +30,7 @@
         return t;
 
         // PROJECTS
-        function get(projectUri) {
+        function get(uri) {
             return api.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting projects by id.'));
         }
 
@@ -46,6 +47,12 @@
 
                         if (response && response.success) {
                             t.projects = response.data;
+
+                            t.projects.sort(function compare(a, b) {
+                                if (a.Title < b.Title) return -1;
+                                if (a.Title > b.Title) return 1;
+                                return 0;
+                            });
 
                             resolve(t.projects);
                         }
@@ -74,6 +81,13 @@
                 t.projects = null;
                 return response.data;
             }, handleError(remove));
+        }
+
+        function publish(projectUri) {
+            return api.put(endpoint + '/publish?projectUri=' + projectUri).then(function (response) {
+                t.projects = null;
+                return response.data;
+            }, handleError(remove));     
         }
 
         function getFiles(projectUri) {

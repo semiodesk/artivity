@@ -1,0 +1,34 @@
+<div class="comment-input padding-x-xs padding-y-xs" ng-blur="t.onBlurred()">
+    <art-chat-emoticon-picker show="t.showEmoticonPanel"></art-chat-emoticon-picker>
+    <div ng-show="t.showMembers">
+        <ul class="list-view">
+            <li class="list-item list-item-link" ng-repeat="member in t.members" ng-show="member.visible">
+                <div class="layout-container padding-x-xs padding-y-xs">
+                    <div class="col">
+                        <art-avatar width="40" height="40" src="member.Agent.PhotoUrl"></art-avatar>
+                    </div>
+                    <div class="col expand" ng-click="t.selectMember(t.input, member)">
+                        <div class="padding-x-md">
+                            <h5 ng-bind="member.Agent.Name"></h5>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="textarea-container">
+        <a class="btn btn-chromeless pull-right" ng-click="t.createMark($event)" ng-show="false"><i class="zmdi zmdi-photo-size-select-small"></i></a>
+        <a class="btn btn-chromeless pull-right" ng-click="t.toggleEmoticonPanel()"><i class="zmdi zmdi-mood" ng-show="!t.showEmoticonPanel"></i><i class="zmdi zmdi-chevron-down" ng-show="t.showEmoticonPanel"></i></a>
+        <div class="textarea-placeholder" ng-show="t.showPlaceholder" translate>
+            Write a message
+        </div>
+        <div class="textarea textarea-editable" ng-enter="t.postComment($event, t.comment)" ng-focus="t.onFocused()" ng-esc="t.onEscape()" contenteditable>
+        </div>
+    </div>
+    <div ng-show="t.focused && !t.selectedPanel" layout="row" layout-align="end center">
+        <md-button ng-click="t.postRequest($event, t.comment)">
+            <md-icon md-font-icon="zmdi zmdi-refresh"></md-icon>
+            <span translate>Request feedback</span>
+        </md-button>
+    </div>
+</div>

@@ -4,80 +4,139 @@
     function DocumentHistoryViewerDirective() {
         return {
             restrict: 'E',
-            scope: {
-                'file': '=file'
-            },
+            scope: {},
             templateUrl: 'app/directives/art-document-history-viewer/art-document-history-viewer.html',
             controller: DocumentHistoryViewerDirectiveController,
             controllerAs: 't',
-            link: function (scope, element, attr, t) {
-                t.element = element;
-            }
+            bindToController: true
         }
     }
 
     angular.module('app').controller('DocumentHistoryViewerDirectiveController', DocumentHistoryViewerDirectiveController);
 
-    DocumentHistoryViewerDirectiveController.$inject = ['$rootScope', '$scope', 'api', 'viewerService', 'agentService', 'entityService'];
+    DocumentHistoryViewerDirectiveController.$inject = ['$rootScope', '$scope', '$element', 'api', 'hotkeys', 'viewerService', 'agentService'];
 
-    function DocumentHistoryViewerDirectiveController($rootScope, $scope, api, viewerService, agentService, entityService) {
+    function DocumentHistoryViewerDirectiveController($rootScope, $scope, $element, api, hotkeys, viewerService, agentService) {
         var t = this;
 
         t.viewer = null;
-        t.update = update;
-        t.initialize = initialize;
 
-        function initialize() {
-            if (t.file) {
-                var fileUri = t.file;
-
-                console.log('Loading file:', fileUri);
-
-                entityService.getLatestRevisionFromFileUri(fileUri).then(function (data) {
-                    if (data.revision) {
-                        var revisionUri = data.revision;
-
-                        console.log('Loading revision:', revisionUri);
-
-                        var canvas = $(t.element).find('canvas');
-
-                        if (canvas) {
-                            initializeViewer(canvas, revisionUri);
-                        } else {
-                            console.warn('Unable to find canvas for viewer element:', canvas);
-                        }
-                    }
-                });
-            } else {
-                console.warn('Invalid file:', t.file);
-            }
-        }
-
-        function initializeViewer(canvas, revisionUri) {
-            t.viewer = new DocumentHistoryViewer(agentService.currentUser, canvas, api.getRenderingUrl(revisionUri));
-            t.viewer.addCommand(new PanCommand(t.viewer));
-
-            viewerService.viewer(t.viewer);
-
-            // Handle the resize of UI panes.
-            $scope.$on('resize', function () {
-                t.viewer.onResize();
-            });
-
-            api.getCanvasRenderingsFromEntity(revisionUri).then(function (data) {
-                t.viewer.pageCache.load(data, function () {
-                    console.log('Loaded pages:', data);
-
-                    t.viewer.setEntity(revisionUri);
-                    t.viewer.zoomToFit();
-                });
-            });
-        }
-
-        function update() {
+        t.setViewerVisibleRegion = function () {
             if (t.viewer) {
-                t.viewer.stage.update();
+                var sidebar = $(document).find('.ui-sidebar-right');
+                var canvas = $(document).find('.viewer-canvas');
+
+                if (sidebar.length && canvas.length) {
+                    // TODO: This is ignoring the margin and possible offset of the sidebar.
+                    var x = 25;
+                    var y = 0;
+                    var w = canvas.width() - sidebar.width() - 25;
+                    var h = canvas.height() - 25;
+
+                    if (w > 0 && h > 0) {
+                        t.viewer.setViewport(x, y, w, h);
+                    }
+                }
             }
         }
+
+        t.$postLink = function () {
+            agentService.getCurrentUser().then(function (currentUser) {
+                var canvas = $element.find('canvas')[0];
+
+                if (canvas) {
+                    // EaselJS addresses the canvas by its id.
+                    canvas.id = 'canvas-' + $scope.$id;
+
+                    t.viewer = new DocumentHistoryViewer(currentUser, canvas);
+                    t.viewer.addCommand(new PanCommand(t.viewer));
+
+                    t.setViewerVisibleRegion();
+
+                    viewerService.viewer(t.viewer);
+
+                    $element.on('appear', function (event) {
+                        viewerService.viewer(t.viewer);
+                    });
+
+                    // Handle the resize of UI panes.
+                    $(window).on('resize', function () {
+                        t.setViewerVisibleRegion();
+
+                        t.viewer.onResize();
+                    });
+
+                    $scope.$on('fileLoaded', function (e, data) {
+                        t.onFileLoaded(data.file, data.influences);
+                    });
+
+                    $scope.$on('influenceSelected', function (e, args) {
+                        var influence = args.data;
+
+                        if (influence && args.sourceScope !== t) {
+                            t.viewer.render(influence);
+                        }
+                    });
+                } else {
+                    console.warn('Unable to find canvas for viewer element:', canvas);
+                }
+            });
+        }
+
+        t.onFileLoaded = function (file, influences) {
+            var fileUri = file.uri;
+
+            console.log('Loading file:', fileUri);
+
+            t.viewer.influences = influences;
+
+            // Canvases in the file.
+            api.getCanvases(fileUri).then(function (data) {
+                t.viewer.canvasCache.load(data, function () {
+                    console.log("Loaded canvases: ", t.viewer.canvasCache);
+
+                    api.getLayers(fileUri).then(function (data) {
+                        t.viewer.layerCache.load(data, function (layers) {
+                            console.log("Loaded layers: ", t.viewer.layerCache);
+
+                            $rootScope.$broadcast('layersLoaded', {
+                                sourceScope: $scope,
+                                data: layers
+                            });
+
+                            values(layers, function (uri, layer) {
+                                // TODO: The layer state should be recorded and returned by the API.
+                                layer.visible = true;
+
+                                console.log(layer);
+                            });
+
+                            t.viewer.renderCache.endpointUrl = api.getRenderingUrl(fileUri);
+
+                            // Trigger loading the bitmaps.
+                            api.getRenderings(fileUri).then(function (data) {
+                                t.viewer.renderCache.load(data, function () {
+                                    console.log("Loaded renderings: ", t.viewer.renderCache);
+
+                                    t.viewer.setFile(fileUri);
+                                    t.viewer.render(influences[0]);
+                                    t.viewer.zoomToFit();
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        }
+
+        hotkeys.add({
+            combo: 'f5',
+            description: 'Reload the document view.',
+            callback: function () {
+                if (t.viewer) {
+                    t.viewer.stage.update();
+                }
+            }
+        });
     }
 })();

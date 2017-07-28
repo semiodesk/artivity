@@ -7,100 +7,119 @@
             templateUrl: 'app/directives/art-editing-history/art-editing-history.html',
             controller: EditingHistoryDirectiveController,
             controllerAs: 't',
-            scope: {
-                agent: '=agent',
-                influences: '=influences',
-                activities: '=activities'
-            },
-            link: function (scope, element, attr, ctrl) {
-                ctrl.init(element);
-            }
+            bindToController: true,
+            scope: {}
         }
     }
 
     angular.module('app').controller('EditingHistoryDirectiveController', EditingHistoryDirectiveController);
 
-    EditingHistoryDirectiveController.$inject = ['$rootScope', '$scope', 'selectionService', 'formattingService', 'translationService'];
+    EditingHistoryDirectiveController.$inject = ['$rootScope', '$scope', '$element', 'formattingService'];
 
-    function EditingHistoryDirectiveController($rootScope, $scope, selectionService, formattingService, translationService) {
+    function EditingHistoryDirectiveController($rootScope, $scope, $element, formattingService) {
         var t = this;
 
         t.autoScroll = true;
 
-        selectionService.on('selectedItemChanged', function (influence) {
-            // Highlight the currently selected item.
-            updateSelection(influence);
-
-            if (t.autoScroll) {
-                scrollIntoView(influence);
-            }
-
-            // Re-enable auto scroll if it was deactivated.
-            t.autoScroll = true;
-        });
-
-        t.selectInfluence = function (influence, scroll = true) {
-            t.autoScroll = scroll;
-
-            selectionService.selectedItem(influence);
-
-            $rootScope.$broadcast('redraw');
-        }
-
-        t.getInfluenceLabel = translationService.getInfluenceLabel;
-        t.getInfluenceIcon = translationService.getInfluenceIcon;
         t.getFormattedTime = formattingService.getFormattedTime;
         t.getFormattedDate = formattingService.getFormattedDate;
         t.getFormattedTimeFromNow = formattingService.getFormattedTimeFromNow;
 
-        t.init = function (element) {
-            // Update the scrollviewer to the controller everytime the directive is re-used.
-            t.scrollViewer = $(element).closest('.scroll-container.scroll-y');
+        t.selectInfluence = function (influence, scroll = true) {
+            t.autoScroll = scroll;
 
-            $(t.scrollViewer.keydown(function (e) {
-                if (e.which == 40) { // Arrow key down
-                    selectionService.selectNext();
+            $rootScope.$broadcast('influenceSelected', {
+                sourceScope: t,
+                data: influence
+            });
+        }
 
-                    $rootScope.$broadcast('redraw');
+        // We scroll in percent of the entire scrollable surface to have the scrollbar 
+        // in sync with the timeline bar. The first selected element scrolls to top and
+        // the last element scrolls to bottom.
+        t.scrollIntoView = function (influence) {
+            if (t.influences) {
+                var scrollViewer = $element.find('.md-virtual-repeat-scroller');
 
-                    e.preventDefault();
-                } else if (e.which === 38) { // Arrow up
-                    selectionService.selectPrev();
+                if (scrollViewer.length) {
+                    var n = influence.id;
+                    var N = t.items.length - 1;
 
-                    $rootScope.$broadcast('redraw');
-                    
-                    e.preventDefault();
+                    if (N > 0 && n <= N) {
+                        var h = scrollViewer[0].scrollHeight;
+                        var top = (n / N) * h;
+
+                        if (top >= 0) {
+                            scrollViewer.scrollTop(top);
+                        }
+                    }
                 }
-            }));
-        }
-
-        /* We scroll in percent of the entire scrollable surface to have the scrollbar 
-           in sync with the timeline bar. The first selected element scrolls to top and
-           the last element scrolls to bottom. */
-        function scrollIntoView(influence) {
-            if ($scope.influences === undefined) {
-                return;
-            }
-
-            var n = influence.id;
-            var N = $scope.influences.length - 1;
-
-            if (N > 0 && n <= N) {
-                var h = t.scrollViewer[0].scrollHeight;
-                var top = (n / N) * h;
-
-                t.scrollViewer.scrollTop(top);
             }
         }
 
-        function updateSelection(influence) {
-            $('li.selected').each(function (i, element) {
-                $(element).removeClass('selected');
+        t.$onInit = function () {
+            t.fileLoadedListener = $scope.$on('fileLoaded', function (e, data) {
+                var items = [];
+
+                var activity = null;
+
+                for (var i = 0; i < data.influences.length; i++) {
+                    var influence = data.influences[i];
+
+                    if (!activity || influence.activity !== activity.uri) {
+                        activity = data.activities[influence.activity];
+
+                        items.push({
+                            data: activity,
+                            selected: false,
+                            header: true
+                        });
+                    }
+
+                    items.push({
+                        id: i,
+                        data: influence,
+                        selected: false,
+                        header: false
+                    });
+                }
+
+                t.items = items;
+                t.activities = data.activities;
+                t.influences = data.influences;
             });
 
-            $('li[data-id="' + influence.id + '"]').each(function (i, element) {
-                $(element).addClass('selected');
+            t.influenceSelectedListener = $scope.$on('influenceSelected', function (e, args) {
+                var influence = args.data;
+
+                if (influence && args.sourceScope !== t) {
+                    // Highlight the currently selected item.
+                    $('.item.selected').each(function (i, element) {
+                        $(element).removeClass('selected');
+                    });
+
+                    var id = t.influences.indexOf(influence);
+
+                    if (id >= 0) {
+                        $('.item[data-id="' + influence.id + '"]').each(function (i, element) {
+                            $(element).addClass('selected');
+                        });
+
+                        // Scroll into view.
+                        if (t.autoScroll) {
+                            t.scrollIntoView(influence);
+                        }
+                    }
+
+                    // Re-enable auto scroll if it was deactivated.
+                    t.autoScroll = true;
+                }
             });
+        }
+
+        t.$onDestroy = function () {
+            t.fileLoadedListener();
+            t.influenceSelectedListener();
         }
     }
 })();

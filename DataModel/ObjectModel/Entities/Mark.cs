@@ -40,7 +40,7 @@ namespace Artivity.DataModel
         #region Members
 
         [RdfProperty(ART.region)]
-        public Rectangle Region { get; set; }
+        public Geometry Region { get; set; }
 
         #endregion
 

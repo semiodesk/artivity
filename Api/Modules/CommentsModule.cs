@@ -283,7 +283,7 @@ namespace Artivity.Api.Modules
                 request.CreationTimeUtc = parameter.endTime;
                 request.PrimarySource = primarySource;
                 request.Message = parameter.message;
-                request.IsSynchronizable = true;
+                request.IsSynchronizationEnabled = true;
                 request.Commit();
 
                 CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
@@ -362,7 +362,7 @@ namespace Artivity.Api.Modules
                     request.CreationTimeUtc = parameter.endTime;
                     request.PrimarySource = primarySource;
                     request.Message = parameter.message;
-                    request.IsSynchronizable = true;
+                    request.IsSynchronizationEnabled = true;
                     request.Commit();
 
                     CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());

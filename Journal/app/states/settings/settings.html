@@ -1,0 +1,43 @@
+<art-view title="{{'Settings' | translate}}">
+    <div class="layout-root" layout="column">
+        <div class="container padding-y-xl" flex>
+            <md-tabs layout="column" md-border-bottom layout-fill flex>
+                <md-tab>
+                    <md-tab-label>
+                        <div class="padding-x-xl">
+                            <md-icon md-font-icon="zmdi zmdi-account zmdi-lg"></md-icon>
+                            <span translate>Profile</span>
+                        </div>
+                    </md-tab-label>
+                    <md-tab-body>
+                        <art-settings-user></art-settings-user>
+                    </md-tab-body>
+                </md-tab>
+                <md-tab>
+                    <md-tab-label>
+                        <div class="padding-x-xl">
+                            <md-icon md-font-icon="zmdi zmdi-apps zmdi-lg"></md-icon>
+                            <span translate>Apps</span>
+                        </div>
+                    </md-tab-label>
+                    <md-tab-body>
+                        <art-settings-apps></art-settings-apps>
+                    </md-tab-body>
+                </md-tab>
+                <md-tab>
+                    <md-tab-label>
+                        <div class="padding-x-xl">
+                            <md-icon md-font-icon="zmdi zmdi-globe-alt zmdi-lg"></md-icon>
+                            <span translate>Accounts</span>
+                        </div>
+                    </md-tab-label>
+                    <md-tab-body>
+                        <art-settings-accounts></art-settings-accounts>
+                    </md-tab-body>
+                </md-tab>
+            </md-tabs>
+            <!-- TODO: Implement the tab content as view states so that they can be referenced using links. -->
+            <!--<div ui-view="tab-content"></div>-->
+        </div>
+    </div>
+</art-view>

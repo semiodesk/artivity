@@ -81,14 +81,18 @@ namespace Artivity.Api.Modules
         private Response GetMarksFromEntity(UriRef entityUri)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
                     ?uri
                     ?agent
                     ?time
+                    ?geometryType
                     ?x
                     ?y
                     ?w
@@ -102,12 +106,18 @@ namespace Artivity.Api.Modules
                     prov:hadPrimarySource @entity ;
                     nie:created ?time ;
                     art:deleted @undefined ;
-                    art:region [
-                        art:x ?x;
-                        art:y ?y;
-                        art:width ?w;
-                        art:height ?h
-                    ].
+                    art:region ?region .
+
+                    ?region a ?geometryType ;
+                        art:x ?x ;
+                        art:y ?y .
+
+                    OPTIONAL
+                    {
+                        ?region a art:Rectangle ;
+                            art:width ?w ;
+                            art:height ?h .
+                    }
                 }
                 ORDER BY DESC(?time)");
 
@@ -122,42 +132,46 @@ namespace Artivity.Api.Modules
         private Response PostMark(MarkParameter parameter)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             Agent agent = new Agent(new UriRef(parameter.agent));
             Entity entity = new Entity(new UriRef(parameter.entity)); // TODO: This influence needs to be an entity which was derived from the original.
 
             if (model.ContainsResource(entity))
             {
-                // TODO: Move the creation of the entity into API for markers.
-                Rectangle rectangle = model.CreateResource<Rectangle>(ModelProvider.CreateUri<Rectangle>());
-                rectangle.x = parameter.x;
-                rectangle.y = parameter.y;
-                rectangle.Width = parameter.width;
-                rectangle.Height = parameter.height;
-                rectangle.Commit();
+                Geometry region = TryCreateMarkGeometry(model, parameter);
 
-                Mark mark = model.CreateResource<Mark>(ModelProvider.CreateUri<Mark>());
-                mark.CreationTimeUtc = parameter.endTime;
-                mark.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
-                mark.Region = rectangle;
-                mark.IsSynchronizable = true;
-                mark.Commit();
+                if(region != null)
+                {
+                    Mark mark = model.CreateResource<Mark>(ModelProvider.CreateUri<Mark>());
+                    mark.IsSynchronizationEnabled = true;
+                    mark.CreationTimeUtc = parameter.endTime;
+                    mark.PrimarySource = entity;
+                    mark.Region = region;
+                    mark.Commit();
 
-                // Associate the comment with the activity.
-                CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
-                activity.StartedBy = agent;
-                activity.StartTimeUtc = parameter.startTime;
-                activity.EndTimeUtc = parameter.endTime;
-                activity.GeneratedEntities.Add(mark);
-                activity.UsedEntities.Add(entity); // TODO: Correct this in the data provided by the plugins.
-                activity.Commit();
+                    // Associate the comment with the activity.
+                    CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
+                    activity.StartedBy = agent;
+                    activity.StartTimeUtc = parameter.startTime;
+                    activity.EndTimeUtc = parameter.endTime;
+                    activity.GeneratedEntities.Add(mark);
+                    activity.UsedEntities.Add(entity); // TODO: Correct this in the data provided by the plugins.
+                    activity.Commit();
 
-                // Return the URI to the frontend.
-                var data = new { uri = mark.Uri };
+                    // Return the URI to the frontend.
+                    var data = new { uri = mark.Uri };
 
-                return Response.AsJsonSync(data, HttpStatusCode.OK);
+                    return Response.AsJsonSync(data, HttpStatusCode.OK);
+                }
+                else
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
             }
             else
             {
@@ -167,46 +181,106 @@ namespace Artivity.Api.Modules
             }
         }
 
+        private Geometry TryCreateMarkGeometry(IModel model, MarkParameter parameter)
+        {
+            switch(parameter.geometryType)
+            {
+                case ART.Point:
+                {
+                    Point point = model.CreateResource<Point>(ModelProvider.CreateUri<Point>());
+                    point.X = parameter.geometry.x;
+                    point.Y = parameter.geometry.y;
+                    point.Commit();
+
+                    return point;
+                }
+                case ART.Rectangle:
+                {
+                    Rectangle rectangle = model.CreateResource<Rectangle>(ModelProvider.CreateUri<Rectangle>());
+                    rectangle.X = parameter.geometry.x;
+                    rectangle.Y = parameter.geometry.y;
+                    rectangle.Width = parameter.geometry.width;
+                    rectangle.Height = parameter.geometry.height;
+                    rectangle.Commit();
+
+                    return rectangle;
+                }
+            }
+
+            return null;
+        }
+
         private Response PutMark(MarkParameter parameter)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             UriRef uri = new UriRef(parameter.uri);
 
             if (model.ContainsResource(uri))
             {
                 Mark mark = model.GetResource<Mark>(uri);
-                mark.Commit();
 
-                Rectangle rectangle = mark.Region;
-                rectangle.x = parameter.x;
-                rectangle.y = parameter.y;
-                rectangle.Width = parameter.width;
-                rectangle.Height = parameter.height;
-                rectangle.Commit();
+                if(TryUpdateMarkGeometry(model, parameter, mark.Region.Uri))
+                {
+                    // Update the mark timestamps.
+                    mark.Commit();
 
-                EditEntity activity = model.CreateResource<EditEntity>(ModelProvider.CreateUri<EditEntity>());
-                activity.StartedBy = new Agent(new UriRef(parameter.agent));
-                activity.StartTimeUtc = DateTime.UtcNow;
-                activity.EndTimeUtc = DateTime.UtcNow;
-                activity.UsedEntities.Add(mark);
-                activity.Commit();
+                    EditEntity activity = model.CreateResource<EditEntity>(ModelProvider.CreateUri<EditEntity>());
+                    activity.StartedBy = new Agent(new UriRef(parameter.agent));
+                    activity.StartTimeUtc = DateTime.UtcNow;
+                    activity.EndTimeUtc = DateTime.UtcNow;
+                    activity.UsedEntities.Add(mark);
+                    activity.Commit();
 
-                return HttpStatusCode.OK;
+                    return HttpStatusCode.OK;
+                }
             }
-            else
+
+            return HttpStatusCode.NotModified;
+        }
+
+        private bool TryUpdateMarkGeometry(IModel model, MarkParameter parameter, UriRef uri)
+        {
+            switch (parameter.geometryType)
             {
-                return HttpStatusCode.NotModified;
+                case ART.Point:
+                {
+                    Point point = model.GetResource<Point>(uri);
+                    point.X = parameter.geometry.x;
+                    point.Y = parameter.geometry.y;
+                    point.Commit();
+
+                    return true;
+                }
+                case ART.Rectangle:
+                {
+                    Rectangle rectangle = model.GetResource<Rectangle>(uri);
+                    rectangle.X = parameter.geometry.x;
+                    rectangle.Y = parameter.geometry.y;
+                    rectangle.Width = parameter.geometry.width;
+                    rectangle.Height = parameter.geometry.height;
+                    rectangle.Commit();
+
+                    return true;
+                }
             }
+
+            return false;
         }
 
         private Response DeleteMark(UriRef uri)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             if(model.ContainsResource(uri))
             {

@@ -26,19 +26,13 @@
 //
 // Copyright (c) Semiodesk GmbH 2017
 
-using Artivity.Api.Parameters;
 using Artivity.Api.Platform;
 using Artivity.DataModel;
-using Artivity.DataModel.Tasks;
 using Nancy;
-using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using Nancy.ModelBinding;
 
 namespace Artivity.Api.Modules
 {
@@ -49,8 +43,6 @@ namespace Artivity.Api.Modules
         public FilesModule(IModelProvider modelProvider, IPlatformProvider platformProvider)
             : base("/artivity/api/1.0/files", modelProvider, platformProvider)
         {
-            
-
             Get["/"] = parameters =>
             {
                 InitializeRequest();
@@ -140,9 +132,12 @@ namespace Artivity.Api.Modules
 
         private Response GetRecentFiles(GetFilesSettings settings)
         {
-            var model = ModelProvider.GetAll();
+            IModel model = ModelProvider.GetAll();
+
             if (model == null)
-                return HttpStatusCode.BadRequest;
+            {
+                return HttpStatusCode.InternalServerError;
+            }
 
             string OrderClause = settings.GetOrderClause();
             string FilterClause = settings.GetFilterClause();
@@ -157,6 +152,7 @@ namespace Artivity.Api.Modules
                     ?label 
                     SAMPLE(?p) AS ?thumbnail 
                     COALESCE(?agentColor, '#cecece') AS ?agentColor
+                    COALESCE(?synchronizationEnabled, 'false') AS ?synchronizationEnabled
                 WHERE
                 {{
                     ?activity prov:generated | prov:used ?entity ;
@@ -178,6 +174,10 @@ namespace Artivity.Api.Modules
                         ?agent art:hasColourCode ?agentColor .
                     }}
 
+                    OPTIONAL {{
+                        ?entity arts:synchronizationEnabled ?synchronizationEnabled .
+                    }}
+
                     FILTER NOT EXISTS {{
                       ?entity prov:qualifiedRevision / prov:entity ?x .
                     }}
@@ -190,7 +190,7 @@ namespace Artivity.Api.Modules
 
                     {0}
                 }}
-                GROUP BY ?label ?file ?entityUri ?agentColor ?time {1} {2} {3}";
+                GROUP BY ?label ?file ?entityUri ?agentColor ?synchronizationEnabled ?time {1} {2} {3}";
 
             queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, ModelProvider.GetFilesQueryModifier);
 
@@ -203,9 +203,12 @@ namespace Artivity.Api.Modules
 
         private Response GetRevisionsFromFile(UriRef fileUri)
         {
-            var model = ModelProvider.GetActivities();
+            IModel model = ModelProvider.GetActivities();
+
             if (model == null)
-                return HttpStatusCode.BadRequest;
+            {
+                return HttpStatusCode.InternalServerError;
+            }
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -233,9 +236,12 @@ namespace Artivity.Api.Modules
 
         private Response GetLatestRevisionFromFile(UriRef fileUri)
         {
-            var model = ModelProvider.GetActivities();
+            IModel model = ModelProvider.GetActivities();
+
             if (model == null)
-                return HttpStatusCode.BadRequest;
+            {
+                return HttpStatusCode.InternalServerError;
+            }
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -275,9 +281,12 @@ namespace Artivity.Api.Modules
         /// <returns></returns>
         private Response PublishLatestRevision(Uri fileUri)
         {
-            IModel Model = ModelProvider.GetActivities();
-            if (Model == null)
-                return HttpStatusCode.BadRequest;
+            IModel model = ModelProvider.GetActivities();
+
+            if (model == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
 
             SparqlQuery q = new SparqlQuery(@"
                 DESCRIBE ?entity 
@@ -293,11 +302,11 @@ namespace Artivity.Api.Modules
 
             q.Bind("@fileUri", fileUri);
 
-            var entity = Model.ExecuteQuery(q).GetResources<Entity>().First();
+            var entity = model.ExecuteQuery(q).GetResources<Entity>().First();
 
             if (entity != null)
             {
-                entity.IsSynchronizable = true;
+                entity.IsSynchronizationEnabled = true;
                 entity.Commit();
 
                 return Response.AsJsonSync(true);
@@ -310,9 +319,12 @@ namespace Artivity.Api.Modules
 
         private Response GetFileFromUri(Uri fileUri)
         {
-            var model = ModelProvider.GetActivities();
+            IModel model = ModelProvider.GetActivities();
+
             if (model == null)
-                return HttpStatusCode.BadRequest;
+            {
+                return HttpStatusCode.InternalServerError;
+            }
 
             string queryString = @"
                 SELECT
@@ -331,7 +343,6 @@ namespace Artivity.Api.Modules
             ISparqlQuery query = new SparqlQuery(queryString);
             query.Bind("@uri", fileUri);
 
-            
             BindingSet bindings = model.GetBindings(query).FirstOrDefault();
 
             return Response.AsJsonSync(bindings);

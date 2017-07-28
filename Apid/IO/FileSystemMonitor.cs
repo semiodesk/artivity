@@ -125,7 +125,7 @@ namespace Artivity.Apid.IO
 
         private readonly Queue<FileEventRecord> _createdEventsQueue = new Queue<FileEventRecord>();
 
-        private readonly Queue<FileEventRecord> _deletedEventsQueue = new Queue<FileEventRecord>();
+        private readonly List<FileEventRecord> _deletedEventsQueue = new List<FileEventRecord>();
 
         private readonly Queue<FileEventRecord> _renamedEventsQueue = new Queue<FileEventRecord>();
 
@@ -495,30 +495,25 @@ namespace Artivity.Apid.IO
                         HandleFileSystemObjectRenamed(record);
                     }
 
-                    if (m > 0)
+                    int j = 0;
+
+                    while (j < m && _deletedEventsQueue.Count > 0)
                     {
-                        DateTime time = DateTime.UtcNow;
+                        FileEventRecord record = _deletedEventsQueue[j];
 
-                        // NOTE: We do not access the queue count directly because it may 
-                        // have changed during execution.
-                        while (m > 0)
+                        if (record.IsNew)
                         {
-                            FileEventRecord record = _deletedEventsQueue.Peek();
+                            record.IsNew = false;
 
-                            int timespan = (time - record.EventTimeUtc).Milliseconds;
-
+                            j++;
+                        }
+                        else
+                        {
                             // To prevent possible race conditions, deleted events are processed
                             // with a delay of one timer cycle.
-                            if (timespan <= taskIntervalMs)
-                            {
-                                break;
-                            }
-
                             HandleFileSystemObjectDeleted(record);
 
-                            _deletedEventsQueue.Dequeue();
-
-                            m--;
+                            _deletedEventsQueue.RemoveAt(j);
                         }
                     }
 
@@ -636,8 +631,6 @@ namespace Artivity.Apid.IO
         /// </remarks>
         private void CleanCreatedFilesIndex(int taskIntervalMs)
         {
-            DateTime now = DateTime.UtcNow;
-
             IList<string> keys = _createdFilesIndex.Keys.ToList();
 
             foreach (string key in keys)
@@ -654,20 +647,25 @@ namespace Artivity.Apid.IO
 
                     FileInfo fileInfo = new FileInfo(record.FilePath);
 
-                    if (!fileInfo.Exists)
+                    if (fileInfo.Exists)
                     {
-                        // We remove events for created files which do not exist anymore.
-                        records.Remove(record.EventTimeUtc);
-                    }
-                    else if (((now - record.EventTimeUtc).Milliseconds - taskIntervalMs) > (fileInfo.Length * 1000))
-                    {
-                        // We remove events for created files which would have been moved at
-                        // a transfer speed of 1 byte per second, and are still present.
-                        records.Remove(record.EventTimeUtc);
+                        if (record.IsNew || record.Length != fileInfo.Length)
+                        {
+                            record.IsNew = false;
+                            record.Length = fileInfo.Length;
+
+                            i++;
+                        }
+                        else
+                        {
+                            // We remove events for files which are not chaning in size anymore.
+                            records.Remove(record.EventTimeUtc);
+                        }
                     }
                     else
                     {
-                        i++;
+                        // We remove events for created files which do not exist anymore.
+                        records.Remove(record.EventTimeUtc);
                     }
                 }
 
@@ -949,7 +947,10 @@ namespace Artivity.Apid.IO
 
                 FileEventRecord r = new FileEventRecord(DateTime.UtcNow, e.FullPath);
 
-                _deletedEventsQueue.Enqueue(r);
+                if (_monitoredFiles.ContainsKey(e.FullPath))
+                {
+                    _deletedEventsQueue.Add(r);
+                }
             }
             catch (Exception ex)
             {

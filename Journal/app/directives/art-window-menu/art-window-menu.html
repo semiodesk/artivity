@@ -1,0 +1,14 @@
+<md-menu md-offset="-150 42">
+    <md-button class="md-button-icon" ng-click="$mdMenu.open($event)">
+        <md-icon md-font-icon="zmdi zmdi-account-circle"></md-icon>
+        <span>{{userName}}</span>
+    </md-button>
+    <md-menu-content width="4">
+        <md-menu-item class="md-indent">
+            <md-button ui-sref="settings.profile">
+                <md-icon md-font-icon="zmdi zmdi-settings"></md-icon>
+                <span translate>Settings</span>
+            </md-button>
+        </md-menu-item>
+    </md-menu-content>
+</md-menu>

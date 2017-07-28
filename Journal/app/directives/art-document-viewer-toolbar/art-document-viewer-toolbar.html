@@ -1,13 +1,59 @@
-<div class="toolbar toolbar-dark toolbar-floating pull-left" style="margin-right: 5px;">
-    <a class="btn" data-command="viewerZoomIn"><i class="zmdi zmdi-plus-circle-o"></i></a>
-    <a class="btn" data-command="viewerZoomOut"><i class="zmdi zmdi-minus-circle-outline"></i></a>
-</div>
-
-<div class="toolbar toolbar-dark toolbar-floating pull-left" style="margin-right: 5px;">
-    <a class="btn" data-command="viewerPan"><i class="zmdi zmdi-arrows"></i></a>
-</div>
-
-<div class="toolbar toolbar-dark toolbar-floating pull-left">
-    <a class="btn" data-command="viewerSelect" style="transform: scaleX(-1)"><i class="zmdi zmdi-arrow-right-top"></i></a>
-    <a class="btn" data-command="createMark" data-param="t.viewer.entity"><i class="zmdi zmdi-photo-size-select-small"></i></a>
+<div layout="row" layout-align="start center">
+    <div class="toolbar" style="margin-right: 3px;">
+        <md-button class="md-button-icon" data-command="viewerSelect" style="transform: scaleX(-1)">
+            <md-icon md-svg-src="app/resources/img/icons/pointer.svg"></md-icon>
+            <md-tooltip translate>Select</md-tooltip>
+        </md-button>
+        <md-button class="md-button-icon" data-command="viewerPan">
+            <md-icon md-svg-src="app/resources/img/icons/hand.svg"></md-icon>
+            <md-tooltip translate>Move canvas</md-tooltip>
+        </md-button>
+        <md-button class="md-button-icon" data-command="viewerZoomIn">
+            <md-icon md-svg-src="app/resources/img/icons/plus-o.svg"></md-icon>
+            <md-tooltip translate>Zoom in</md-tooltip>
+        </md-button>
+        <md-button class="md-button-icon" data-command="viewerZoomOut">
+            <md-icon md-svg-src="app/resources/img/icons/minus-o.svg"></md-icon>
+            <md-tooltip translate>Zoom out</md-tooltip>
+        </md-button>
+    </div>
+    <div class="toolbar" style="margin-right: 3px;">
+        <md-select ng-model="t.layout" ng-change="t.onPageLayoutChanged()" class="md-no-underline">
+            <md-option value="single" translate>
+                <md-icon md-svg-src="app/resources/img/icons/layout-single.svg" style="margin-right: 6px;"></md-icon>
+                <span translate>One Page</span>
+            </md-option>
+            <md-option value="dual">
+                <md-icon md-svg-src="app/resources/img/icons/layout-dual.svg" style="margin-right: 6px;"></md-icon>
+                <span translate>Two Pages</span>
+            </md-option>
+            <md-option value="all">
+                <md-icon md-svg-src="app/resources/img/icons/layout-all.svg" style="margin-right: 6px;"></md-icon>
+                <span translate>All Pages</span>
+            </md-option>
+        </md-select>
+    </div>
+    <div class="toolbar" style="margin-right: 3px;">
+        <md-button class="md-button-icon" data-command="viewerPagePrevious">
+            <md-icon md-svg-src="app/resources/img/icons/chevron-left-o.svg"></md-icon>
+            <md-tooltip translate>Previous page</md-tooltip>
+        </md-button>
+        <md-button class="md-button-icon">
+            {{t.currentPage}} / {{t.pageCount}}
+        </md-button>
+        <md-button class="md-button-icon" data-command="viewerPageNext">
+            <md-icon md-svg-src="app/resources/img/icons/chevron-right-o.svg"></md-icon>
+            <md-tooltip translate>Next page</md-tooltip>
+        </md-button>
+    </div>
+    <div class="toolbar" style="margin-right: 3px;">
+        <md-button class="md-button-icon" data-command="createPointMark" data-param="t.viewer.entity">
+            <md-icon md-font-icon="zmdi zmdi-pin"></md-icon>
+            <md-tooltip translate>Mark spot</md-tooltip>
+        </md-button>
+        <md-button class="md-button-icon" data-command="createRectangleMark" data-param="t.viewer.entity">
+            <md-icon md-svg-src="app/resources/img/icons/marker-region.svg"></md-icon>
+            <md-tooltip translate>Highlight region</md-tooltip>
+        </md-button>
+    </div>
 </div>

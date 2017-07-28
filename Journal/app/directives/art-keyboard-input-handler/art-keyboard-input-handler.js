@@ -29,14 +29,15 @@
         }
 
         $scope.getUrlWithFragment = function (fragment) {
-            var url = window.location.href.split('#');
+            var location = window.location.href;
+            var url = location.split('#');
 
             if (url.length < 2) {
                 console.log('Unable to parse fragment from url:' + window.location.href);
 
                 return '';
             } else {
-                return url[0] + '#' + fragment;
+                return url[0] + '#!' + fragment;
             }
         }
 
@@ -79,8 +80,8 @@
         hotkeys.add({
             combo: 'backspace',
             description: 'Go back to the previous view.',
-            callback: function () {
-                navigationService.navigateBack();
+            callback: function (e) {
+                navigationService.navigateBack(e);
             }
         });
 

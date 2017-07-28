@@ -16,6 +16,10 @@
         // Apply the saved locale when (re)loading the application.
         var locale = cookieService.get('settings.locale');
 
+        if(!locale) {
+            locale = navigator.language || navigator.userLanguage;
+        }
+
         if (locale) {
             var l = locale.split('-')[0];
 

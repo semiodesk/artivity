@@ -10,12 +10,10 @@
             controllerAs: 't',
             bindToController: true,
             transclude: {
-                'emptySlot': 'empty'
+                'emptySlot': '?empty'
             },
             scope: {
-                'onload': '=',
-                'clicked': '=?',
-                'moreClicked': '=?'
+                'onload': '='
             }
         }
     }
@@ -29,8 +27,8 @@
 
         t.helpEntry = new HelpEntry("File List", "help/files");
 
-        t.loading = false;
         t.files = undefined;
+        t.loading = false;
         t.query = '';
 
         t.loadFiles = function () {
@@ -40,6 +38,8 @@
                 t.onload(function (data) {
                     t.loading = false;
                     t.files = data;
+
+                    console.log("Loaded files:", data);
                 });
             } else {
                 t.loading = false;
@@ -47,24 +47,30 @@
             }
         }
 
-        t.onClick = function (e, data) {
-            if (t.clicked) {
-                t.clicked(e, data);
+        t.getFiles = function (query) {
+            return [];
+        }
+
+        t.filterFiles = function (query) {
+            if (t.files) {
+                if (query) {
+                    var q = query.toLowerCase();
+
+                    for (i = 0; i < t.files.length; i++) {
+                        var f = t.files[i];
+
+                        f.visible = f.label.toLowerCase().includes(q);
+                    }
+                } else {
+                    for (i = 0; i < t.files.length; i++) {
+                        t.files[i].visible = true;
+                    }
+                }
             }
         }
 
         t.onMoreClicked = function (e) {
-            if (t.moreClicked && typeof (t.moreClicked) === 'function') {
-                t.moreClicked();
-            }
-        }
-
-        t.onDragStart = function () {
-            $scope.$emit('dragStarted');
-        }
-
-        t.onDragStop = function () {
-            $scope.$emit('dragStopped');
+            $scope.$emit('showMore');
         }
 
         t.$onInit = function () {
@@ -76,29 +82,17 @@
                 }
             });
 
-            t.loadFiles();
-
-            $scope.$watch('t.query', function () {
-                if (t.files) {
-                    if (t.query) {
-                        var q = t.query.toLowerCase();
-
-                        for (i = 0; i < t.files.length; i++) {
-                            var f = t.files[i];
-
-                            f.visible = f.label.toLowerCase().includes(q);
-                        }
-                    } else {
-                        for (i = 0; i < t.files.length; i++) {
-                            t.files[i].visible = true;
-                        }
-                    }
-                }
-            });
-
             $scope.$on('refresh', function () {
                 t.loadFiles();
             });
+
+            $scope.$on('search', function(e, query) {
+                t.filterFiles(query);
+            });
+        }
+
+        t.$postLink = function () {
+            t.loadFiles();
         }
     }
 })();

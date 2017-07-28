@@ -6,44 +6,90 @@
             restrict: 'E',
             scope: {
                 'file': '=',
-                'clicked': '=?'
+                'highlightText': '=?'
             },
             templateUrl: 'app/directives/art-file-card/art-file-card.html',
             controller: FileCardDirectiveController,
             controllerAs: 't',
-            bindToController: true,
-            link: function (scope, element, attr, t) {
-                t.setFile(element);
-            }
+            bindToController: true
         }
     }
 
     angular.module('app').controller('FileCardDirectiveController', FileCardDirectiveController);
 
-    FileCardDirectiveController.$inject = ['$scope', '$location', 'selectionService', 'filesystemService'];
+    FileCardDirectiveController.$inject = ['$rootScope', '$scope', '$element', '$mdDialog', 'filesystemService', 'entityService'];
 
-    function FileCardDirectiveController($scope, $location, selectionService, filesystemService) {
+    function FileCardDirectiveController($rootScope, $scope, $element, $mdDialog, filesystemService, entityService) {
         var t = this;
 
-        t.thumbnailStyle = {};
-
-        t.setFile = function (element) {
-            t.fileName = filesystemService.getFileNameWithoutExtension(t.file.label);
-            t.fileExtension = filesystemService.getFileExtension(t.file.label);
-
-            if(t.file.thumbnail) {
-                t.thumbnailStyle = {
-                    'background-image': 'url(' + t.file.thumbnail + ')'
-                }
+        t.onTouchStart = function (e) {
+            if (e) {
+                e.preventDefault();
             }
+
+            // Remove any existing selections.
+            $(document).find('.art-file-card.selected').removeClass('selected');
+
+            // Mark the card as selected.
+            $element.find('.art-file-card').addClass('selected');
         }
 
-        t.onClicked = function (e) {
-            e.preventDefault();
+        t.onMouseEnter = function (e) {
+            // Remove any existing selections.
+            $(document).find('.art-file-card.selected').removeClass('selected');
+        }
 
-            if (t.clicked) {
-                t.clicked(e, t.file);
-            }
+        t.onDragStart = function () {
+            $scope.$emit('dragStarted');
+        }
+
+        t.onDragStop = function () {
+            $scope.$emit('dragStopped');
+        }
+
+        t.publishFile = function (e) {
+            $mdDialog.show({
+                templateUrl: 'share-file-dialog.html',
+                parent: angular.element(document.body),
+                targetEvent: e,
+                controller: function ($scope) {
+                    $scope.file = t.file;
+
+                    $scope.ok = function () {
+                        $mdDialog.hide();
+                    }
+
+                    $scope.cancel = function () {
+                        $mdDialog.cancel();
+                    }
+                }
+            })
+                .then(function (answer) {
+                    entityService.publishLatestRevisionFromFileUri(t.file.uri).then(function () {
+                        t.file.synchronizationEnabled = true;
+
+                        syncService.synchronize();
+                    }, function () { });
+                }, function () { });
+        }
+
+        t.$postLink = function () {
+            $element.on('touchstart', t.onTouchStart);
+
+            $scope.$watch('t.file', function () {
+                if (t.file) {
+                    var label = t.file.label;
+
+                    t.fileName = filesystemService.getFileNameWithoutExtension(label);
+                    t.fileExtension = filesystemService.getFileExtension(label);
+
+                    $element.find('.file-extension').addClass(t.fileExtension);
+                }
+            });
+        }
+
+        t.$onDestroy = function () {
+            $element.off('touchstart', t.onTouchStart);
         }
     }
 })();

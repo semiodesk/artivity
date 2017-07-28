@@ -1,45 +1,98 @@
 (function () {
-	angular.module('app').config(['$locationProvider', '$routeProvider',
-		function ($locationProvider, $routeProvider) {
-			$routeProvider.
-			when('/files', {
-				templateUrl: 'app/views/file-list/file-list.html',
-				controller: 'FileListController',
-				controllerAs: 't'
-			}).
-			when('/files/view', {
-				templateUrl: 'app/views/file-view/file-view.html',
-				controller: 'FileViewController',
-				controllerAs: 't'
-			}).
-			when('/files/preview', {
-				templateUrl: 'app/views/file-preview/file-preview.html',
-				controller: 'FilePreviewController',
-				controllerAs: 't'
-			}).
-			when('/settings', {
-				templateUrl: 'app/views/settings/settings.html',
-				controller: 'SettingsController',
-				controllerAs: 't'
-			}).
-			when('/setup', {
-				templateUrl: 'app/views/setup/setup.html',
-				controller: 'SetupController',
-				controllerAs: 't'
-			}).
-			when('/start', {
-				templateUrl: 'app/views/start/start.html',
-				controller: 'StartController',
-				controllerAs: 't'
-			}).
-			when('/query', {
-				templateUrl: 'app/views/query/query.html',
-				controller: 'QueryController',
-				controllerAs: 't'
-			}).
-			otherwise({
-				redirectTo: '/start'
-			});
+	angular.module('app').config(['$stateProvider', '$urlRouterProvider',
+		function ($stateProvider, $urlRouterProvider) {
+			$stateProvider
+				.state('main', {
+					url: '/main',
+					templateUrl: 'app/states/main/main.html',
+					controller: 'MainStateController as t'
+				})
+				.state('main.view', {
+					url: '/{index:int}',
+					template: "<ui-view></ui-view>",
+					abstract: true
+				})
+				.state('main.view.recently-used', {
+					url: '/recently-used',
+					templateUrl: 'app/states/main/views/recently-used.html',
+					controller: 'RecentlyUsedViewController as t'
+				})
+				.state('main.view.project', {
+					url: '/project',
+					templateUrl: 'app/states/main/views/project.html',
+					controller: 'ProjectDashboardViewController as t',
+					params: {
+						project: null
+					}
+				})
+				.state('document', {
+					url: '/document/{fileUri:string}',
+					templateUrl: 'app/states/document/document.html',
+					controller: 'DocumentViewController as t',
+					params: {
+						project: null,
+						fileUri: null
+					}
+				})
+				.state('document-history', {
+					url: '/document-history/{fileUri:string}',
+					templateUrl: 'app/states/document-history/document-history.html',
+					controller: 'DocumentHistoryViewController as t',
+					params: {
+						project: null,
+						fileUri: null
+					}
+				})
+				.state('settings', {
+					url: '/settings',
+					templateUrl: 'app/states/settings/settings.html',
+					controller: 'SettingsStateController as t',
+					abstract: true
+				})
+				.state('settings.profile', {
+					url: '/profile',
+					views: {
+						'tab-content': {
+							templateUrl: 'app/states/settings/views/profile.html',
+							controller: 'ProfileSettingsViewController as t'
+						}
+					}
+				})
+				.state('settings.apps', {
+					url: '/apps',
+					views: {
+						'tab-content': {
+							templateUrl: 'app/states/settings/views/apps.html',
+							controller: 'AppsSettingsViewController as t'
+						}
+					}
+				})
+				.state('settings.accounts', {
+					url: '/accounts',
+					views: {
+						'tab-content': {
+							templateUrl: 'app/states/settings/views/accounts.html',
+							controller: 'AccountsSettingsViewController as t'
+						}
+					}
+				})
+				.state('query', {
+					url: '/query',
+					templateUrl: 'app/states/query/query.html',
+					controller: 'QueryStateController as t'
+				})
+				.state('setup', {
+					url: '/setup',
+					templateUrl: 'app/states/setup/setup.html',
+					controller: 'SetupStateController as t'
+				})
+				.state('start', {
+					url: '/',
+					templateUrl: 'app/states/start/start.html',
+					controller: 'StartStateController as t'
+				});
+
+			$urlRouterProvider.otherwise('/');
 		}
 	]);
     

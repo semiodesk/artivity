@@ -12,14 +12,6 @@
             controllerAs: 't',
             bindToController: true,
             link: function (scope, element, attr, t) {
-                $(document).ready(function () {
-                    t.initialize(element);
-                });
-
-                $(element).on('appear', function (event) {
-                    t.setViewer();
-                });
-
                 scope.$watch('t.file', function () {
                     if (t.file) {
                         t.load(t.file);
@@ -31,43 +23,76 @@
 
     angular.module('app').controller('DocumentViewerDirectiveController', DocumentViewerDirectiveController);
 
-    DocumentViewerDirectiveController.$inject = ['$rootScope', '$scope', 'api', 'viewerService', 'agentService', 'entityService', 'selectionService', 'commentService', 'markService', 'hotkeys'];
+    DocumentViewerDirectiveController.$inject = ['$rootScope', '$scope', '$element', 'api', 'hotkeys', 'viewerService', 'agentService', 'entityService', 'selectionService', 'markService'];
 
-    function DocumentViewerDirectiveController($rootScope, $scope, api, viewerService, agentService, entityService, selectionService, commentService, markService, hotkeys) {
+    function DocumentViewerDirectiveController($rootScope, $scope, $element, api, hotkeys, viewerService, agentService, entityService, selectionService, markService) {
         var t = this;
 
         t.viewer = null;
-        t.update = update;
-        t.initialize = initialize;
 
-        function initialize(element) {
-            var canvas = $(element).find('canvas')[0];
+        t.setViewerVisibleRegion = function () {
+            if (t.viewer) {
+                var sidebar = $(document).find('.ui-sidebar-right');
+                var canvas = $(document).find('.viewer-canvas');
 
-            if (canvas) {
-                // EaselJS addresses the canvas by its id.
-                canvas.id = 'canvas-' + $scope.$id;
+                if (sidebar.length && canvas.length) {
+                    var padding = 10;
 
-                t.viewer = new DocumentViewer(agentService.currentUser, canvas, "", selectionService);
-                t.viewer.addCommand(new SelectCommand(t.viewer, selectionService), true);
-                t.viewer.addCommand(new PanCommand(t.viewer));
-                t.viewer.addCommand(new ZoomInCommand(t.viewer));
-                t.viewer.addCommand(new ZoomOutCommand(t.viewer));
-                t.viewer.addCommand(new CreateMarkCommand(t.viewer, markService));
-                t.viewer.addCommand(new UpdateMarkCommand(t.viewer, markService));
-                t.viewer.addCommand(new DeleteMarkCommand(t.viewer, markService));
-                t.viewer.addCommand(new ShowMarksCommand(t.viewer, markService));
-                t.viewer.addCommand(new HideMarksCommand(t.viewer, markService));
-                t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
+                    // TODO: This is ignoring the margin and possible offset of the sidebar.
+                    var x = padding;
+                    var y = padding;
+                    var w = canvas.width() - sidebar.width() - 2 * padding;
+                    var h = canvas.height() - 2 * padding;
 
-                viewerService.viewer(t.viewer);
-
-                // Handle the resize of UI panes.
-                $scope.$on('resize', function () {
-                    t.viewer.onResize();
-                });
-            } else {
-                console.warn('Unable to find canvas for viewer element:', canvas);
+                    if (w > 0 && h > 0) {
+                        t.viewer.setViewport(x, y, w, h);
+                    }
+                }
             }
+        }
+
+        t.$postLink = function () {
+            agentService.getCurrentUser().then(function (currentUser) {
+                var canvas = $element.find('canvas')[0];
+
+                if (canvas) {
+                    // EaselJS addresses the canvas by its id.
+                    canvas.id = 'canvas-' + $scope.$id;
+
+                    t.viewer = new DocumentViewer(currentUser, canvas, "", selectionService);
+                    t.viewer.addCommand(new SelectCommand(t.viewer, selectionService), true);
+                    t.viewer.addCommand(new NextPageCommand(t.viewer));
+                    t.viewer.addCommand(new PreviousPageCommand(t.viewer));
+                    t.viewer.addCommand(new ToggleTwoPageLayoutCommand(t.viewer));
+                    t.viewer.addCommand(new PanCommand(t.viewer));
+                    t.viewer.addCommand(new ZoomInCommand(t.viewer));
+                    t.viewer.addCommand(new ZoomOutCommand(t.viewer));
+                    t.viewer.addCommand(new CreatePointMarkCommand(t.viewer, markService));
+                    t.viewer.addCommand(new CreateRectangleMarkCommand(t.viewer, markService));
+                    t.viewer.addCommand(new UpdateMarkCommand(t.viewer, markService));
+                    t.viewer.addCommand(new DeleteMarkCommand(t.viewer, markService));
+                    t.viewer.addCommand(new ShowMarksCommand(t.viewer, markService));
+                    t.viewer.addCommand(new HideMarksCommand(t.viewer, markService));
+                    t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
+
+                    t.setViewerVisibleRegion();
+
+                    viewerService.viewer(t.viewer);
+
+                    $element.on('appear', function (event) {
+                        viewerService.viewer(t.viewer);
+                    });
+
+                    // Handle the resize of UI panes.
+                    $(window).on('resize', function () {
+                        t.setViewerVisibleRegion();
+
+                        t.viewer.onResize();
+                    });
+                } else {
+                    console.warn('Unable to find canvas for viewer element:', canvas);
+                }
+            });
         }
 
         t.load = function (file) {
@@ -93,8 +118,11 @@
                                 t.viewer.pageCache.load(data, function () {
                                     console.log('Loaded pages:', data);
 
-                                    t.viewer.setEntity(revisionUri);
+                                    t.viewer.setFile(fileUri);
+                                    t.viewer.setRevision(revisionUri);
                                     t.viewer.zoomToFit();
+
+                                    $rootScope.$broadcast('fileLoaded');
                                 });
                             });
                         }
@@ -105,23 +133,24 @@
             }
         }
 
-        t.setViewer = function () {
-            if (t.viewer) {
-                viewerService.viewer(t.viewer);
-            }
-        }
-
-        function update() {
-            if (t.viewer) {
-                t.viewer.stage.update();
-            }
-        }
-
         hotkeys.add({
             combo: 'f5',
             description: 'Reload the document view.',
             callback: function () {
-                update();
+                if (t.viewer) {
+                    t.viewer.stage.update();
+                }
+            }
+        });
+
+        hotkeys.add({
+            combo: 'shift+f9',
+            description: 'Toggle debug view',
+            callback: function () {
+                if (t.viewer) {
+                    t.viewer.enableDebug = !t.viewer.enableDebug;
+                    t.viewer.stage.update();
+                }
             }
         });
     }

@@ -7,12 +7,15 @@
         const dialog = require('electron').remote.dialog;
         const shell = require('electron').shell;
 
+        initialize();
+
         return {
             currentWindow: currentWindow,
             openWindow: openWindow,
             openExternalLink: openExternalLink,
             close: close,
             reload: reload,
+            setTitle: setTitle,
             setClosable: setClosable,
             setMinimizable: setMinimizable,
             setMaximizable: setMaximizable,
@@ -20,8 +23,24 @@
             selectFolder: selectFolder
         }
 
+        function initialize() {
+            // Open external links with the system default browser.
+            $(document).on('click', 'a[target="_blank"]', function (event) {
+                event.preventDefault();
+                openExternalLink(this.href);
+            });
+        }
+
         function close() {
             remote.getCurrentWindow().close();
+        }
+
+        function setTitle(value) {
+            var title = $(document).find('.art-window-titlebar .window-title');
+
+            if (title && title.length) {
+                title.text(value);
+            }
         }
 
         function setClosable(value) {
@@ -119,7 +138,7 @@
                 properties: ['openDirectory']
             });
 
-            if(result && result.length > 0) {
+            if (result && result.length > 0) {
                 return result[0];
             }
         }
