@@ -56,34 +56,42 @@ $editorBorderColor: darken($editorBackgroundColor, 25%);
 }
 
 // TYPOGRAPHY
-$textScaleFactor: 0.86;
+$textScaleFactor: 0.85;
 
+h1,
 .md-display-4 {
 	font-size: 112px * $textScaleFactor !important;
 }
 
+h2,
 .md-display-3 {
 	font-size: 56px * $textScaleFactor !important;
 }
 
+h3,
 .md-display-2 {
 	font-size: 45px * $textScaleFactor !important;
 }
 
+h4,
 .md-display-1 {
 	font-size: 34px * $textScaleFactor !important;
 }
 
+h5,
 .md-headline {
 	font-size: 24px * $textScaleFactor !important;
 }
 
-.md-title {
+.md-title,
+.dialog-title {
 	font-size: 20px * $textScaleFactor !important;
 }
 
+.window-title,
 .md-subhead {
-	font-size: 16px * $textScaleFactor !important;
+	font-size: 14px * $textScaleFactor !important;
+	font-weight: 600 !important;
 }
 
 .md-body-1,
@@ -91,15 +99,15 @@ $textScaleFactor: 0.86;
 .md-tab,
 .md-tooltip,
 .md-button {
-	font-size: 14px;
+	font-size: 14px * $textScaleFactor !important;
 }
 
 .md-button.md-button-icon {
-	min-width: 35px;
+	min-width: 35px * $textScaleFactor !important;
 }
 
 .md-caption {
-	font-size: 14px;
+	font-size: 14px * $textScaleFactor !important;
 }
 
 md-content {
@@ -2156,7 +2164,8 @@ $userCommentBackgroundColor: rgba($textColor,
 	@include transitionEaseInOutCubic(opacity, 400ms);
 }
 
-.art-file-card:hover .overlay {
+.art-file-card:hover .overlay,
+.art-file-card.selected .overlay {
 	opacity: 1;
 }
 
