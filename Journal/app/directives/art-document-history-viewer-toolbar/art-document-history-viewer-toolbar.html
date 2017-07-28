@@ -1,0 +1,16 @@
+<div layout="row" layout-align="start center">
+    <md-button class="md-button-icon" ng-disabled="t.selectedInfluence === t.minIndex" ng-click="t.skipPrev()">
+        <md-icon md-font-icon="zmdi zmdi-skip-previous"></md-icon>
+    </md-button>
+    <md-button class="md-button-icon" ng-disabled="t.selectedInfluence === t.maxIndex" ng-click="t.togglePlay()">
+        <md-icon ng-show="t.playing === false" md-font-icon="zmdi zmdi-play"></md-icon>
+        <md-icon ng-show="t.playing === true" md-font-icon="zmdi zmdi-pause"></md-icon>
+    </md-button>
+    <md-button class="md-button-icon" ng-disabled="t.selectedInfluence === t.maxIndex" ng-click="t.skipNext()">
+        <md-icon md-font-icon="zmdi zmdi-skip-next"></md-icon>
+    </md-button>
+    <md-slider-container ng-if="t.influences.length > 0" flex>
+        <md-slider min="{{t.minIndex}}" max="{{t.maxIndex}}" ng-model="t.selectedIndex" ng-change="t.onSliderChanged()"></md-slider>
+    </md-slider-container>
+    <span class="label padding-x-xl">{{t.getFormattedDuration(t.selectedIndex)}}</span>
+</div>

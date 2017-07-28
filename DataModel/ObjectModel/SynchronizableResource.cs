@@ -51,7 +51,8 @@ namespace Artivity.DataModel
         [RdfProperty(ART.deleted)]
         public DateTime DeletionTimeUtc { get; set; }
 
-        public bool IsSynchronizable { get; set; }
+        [RdfProperty(ARTS.synchronizationEnabled)]
+        public bool IsSynchronizationEnabled { get; set; }
 
         [RdfProperty(ARTS.synchronizationState), JsonIgnore]
         public ResourceSynchronizationState SynchronizationState { get; set; }
@@ -101,7 +102,7 @@ namespace Artivity.DataModel
 
                 bool error = false;
 
-                if (IsSynchronizable)
+                if (IsSynchronizationEnabled)
                 {
                     ResourceSynchronizationState state = null;
 

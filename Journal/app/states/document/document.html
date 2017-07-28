@@ -1,0 +1,41 @@
+<art-view title="{{t.file.label}}">
+    <div class="layout-root" layout="column">
+        <div class="md-toolbar md-border-bottom" layout="row" layout-align="start center">
+            <art-document-viewer-toolbar></art-document-viewer-toolbar>
+
+            <div flex></div>
+
+            <md-button class="md-button" ng-click="t.publishLatestRevision(t.file)">
+                <i class="zmdi zmdi-share"></i><span class="btn-label" translate>Share</span>
+            </md-button>
+        </div>
+
+        <div class="layout-container viewer-container" flex>
+            <art-document-viewer file="t.file"></art-document-viewer>
+
+            <div class="layout-root" layout="row" style="pointer-events: none;">
+                <div flex></div>
+
+                <md-sidenav flex="400px" class="md-sidenav-right" md-component-id="right" md-is-locked-open="true" style="pointer-events: auto;">
+                    <md-tabs class="layout-root" md-border-bottom>
+                        <md-tab label="{{'Chat' | translate}}">
+                            <md-content layout="column" layout-fill>
+                                <art-chat-comment-list entity-uri="t.latestRevisionUri"></art-chat-comment-list>
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="{{'Topics' | translate}}">
+                            <md-content layout="column" layout-fill>
+                                <art-topic-control entity-uri="t.latestRevisionUri"></art-topic-control>
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="{{'Todo' | translate}}">
+                            <md-content layout="column" layout-fill>
+                                <art-task-control entity-uri="t.latestRevisionUri"></art-task-control>
+                            </md-content>
+                        </md-tab>
+                    </md-tabs>
+                </md-sidenav>
+            </div>
+        </div>
+    </div>
+</art-view>

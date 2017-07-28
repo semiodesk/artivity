@@ -1,0 +1,13 @@
+<md-toolbar class="art-window-titlebar" layout="row" layout-align="start center">
+    <md-button class="md-button-icon" ng-click="navigateBack()" ng-if="canNavigateBack()">
+        <md-icon md-font-icon="zmdi zmdi-arrow-left"></md-icon>
+    </md-button>
+
+    <md-title class="window-title"></md-title>
+
+    <div flex></div>
+
+    <art-window-menu></art-window-menu>
+
+    <art-window-controls></art-window-controls>
+</md-toolbar>

@@ -160,11 +160,9 @@
         }
 
         t.$postLink = function () {
-            $element.on('appear', function () {
-                if (!t.initalized) {
-                    t.loadAgents();
-                }
-            });
+            if (!t.initalized) {
+                t.loadAgents();
+            }
         }
     };
 })();

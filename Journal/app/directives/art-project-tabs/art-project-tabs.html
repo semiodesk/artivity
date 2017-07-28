@@ -1,46 +1,18 @@
-<art-user-menu></art-user-menu>
+<md-tabs class="header-tabs" md-selected="t.selectedTab" md-no-ink md-no-ink-bar ng-cloak>
+    <md-tab ng-repeat="tab in t.tabs track by $index" ng-click="t.selectTab($index)">
+        <md-tab-label ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
+            jqyoui-droppable="{onDrop: 't.onFileDropped'}">
+            <div layout="row" layout-align="start center" ng-class="{'md-tab-closable': tab.closable}">
+                <md-icon ng-if="tab.icon" md-font-icon="{{tab.icon.class}}"></md-icon>
 
-<uib-tabset class="header-tabs" active="t.activeTab">
-    <uib-tab>
-        <uib-tab-heading>
-            <div class="nav-link-container">
-                <i class="zmdi zmdi-menu"></i>
-            </div>
-        </uib-tab-heading>
+                <span ng-if="tab.title" style="text-align: left; min-width: 100px;" flex>{{tab.title}}</span>
 
-        <art-file-list onload="t.getRecentlyUsedFiles">
-            <empty>
-                <div class="text-center">
-                    <div style="opacity: .25; margin: 75px 0 50px 0;"><i class="zmdi zmdi-time-restore" style="font-size: 75px !important"></i></div>
-
-                    <!--<h3 style="margin-top: 5em;">Your recent files will appear here.</h3>-->
-                    <h3 translate>Recently used files</h3>
-
-                    <span translate>The files you edit in the following programs will appear here:</span>
-                    <art-app-list class="pull-center"></art-app-list>
+                <div ng-if="tab.closable">
+                    <md-button md-no-ink ng-click="t.removeTab($index, $event)" class="md-button-icon no-margin">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    </md-button>
                 </div>
-            </empty>
-        </art-file-list>
-    </uib-tab>
-    <uib-tab ng-repeat="project in t.projects track by $index">
-        <uib-tab-heading>
-            <div class="nav-link-container" ng-model="t.droppedFile" data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}"
-                jqyoui-droppable="{onDrop: 't.onFileDropped'}">
-                <a class="btn btn-close pull-right" ng-click="t.closeProject(project)">
-                    <i class="zmdi zmdi-xs zmdi-close"></i>
-                </a>
-
-                <div ng-bind="project.Title" style="min-width: 130px;"></div>
             </div>
-        </uib-tab-heading>
-
-        <art-project-view project="project"></art-project-view>
-    </uib-tab>
-    <uib-tab ng-click="t.addProject($event)">
-        <uib-tab-heading>
-            <div class="nav-link-container">
-                <i class="zmdi zmdi-lg zmdi-plus"></i>
-            </div>
-        </uib-tab-heading>
-    </uib-tab>
-</uib-tabset>
+        </md-tab-label>
+    </md-tab>
+</md-tabs>

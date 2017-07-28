@@ -18,6 +18,9 @@
     function ArtivityOnlineUserSettingsDirectiveFormController($rootScope, $scope, api, agentService, settingsService, syncService, clientService) {
         var t = this;
 
+        // URL of the user avatar picture.
+        t.photoUrl = null;
+
         // The Artivity Online account client.
         t.client = null;
 

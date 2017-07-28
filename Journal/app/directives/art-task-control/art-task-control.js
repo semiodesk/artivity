@@ -10,16 +10,7 @@
             },
             controller: TaskControlDirectiveController,
             controllerAs: 't',
-            bindToController: true,
-            link: function (scope, element, attr, t) {
-                scope.$watch('t.entityUri', function () {
-                    if (t.entityUri) {
-                        t.loadTasksForEntity(t.entityUri);
-
-                        t.resetTask();
-                    }
-                });
-            }
+            bindToController: true
         }
     }
 
@@ -31,24 +22,25 @@
         var t = this;
 
         // TASKS
-        t.tasks = [];
         t.newTask = null;
 
         t.loadTasksForEntity = function (entityUri) {
             taskService.get(entityUri).then(function (data) {
-                t.tasks = [];
+                var tasks = [];
 
                 for (i = 0; i < data.length; i++) {
                     var d = data[i];
 
                     // Insert at the beginning of the list.
-                    t.tasks.unshift({
+                    tasks.unshift({
                         uri: d.uri,
                         agent: d.agent,
                         time: d.time,
                         name: d.name
                     });
                 }
+
+                t.tasks = tasks;
             });
         }
 
@@ -71,7 +63,7 @@
             if (!task.endTime) {
                 task.endTime = new Date();
             }
-            
+
             if (t.validateTask(task)) {
                 taskService.put(task).then(function (data) {
                     console.log("Updated task: ", task);
@@ -114,7 +106,7 @@
 
         t.resetTask = function () {
             t.newTask = {
-                agent: agentService.currentUser.Uri,
+                agent: t.currentUser.Uri,
                 entity: t.entityUri,
                 startTime: null,
                 endTime: null,
@@ -129,5 +121,20 @@
         t.createMark = viewerService.createMark;
         t.showMarks = viewerService.showMarks;
         t.hideMarks = viewerService.hideMarks;
+
+        // INIT
+        t.$postLink = function () {
+            agentService.getCurrentUser().then(function (currentUser) {
+                t.currentUser = currentUser;
+                
+                $scope.$watch('t.entityUri', function () {
+                    if (t.entityUri) {
+                        t.loadTasksForEntity(t.entityUri);
+
+                        t.resetTask();
+                    }
+                });
+            });
+        }
     }
 })();

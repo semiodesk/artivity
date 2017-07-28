@@ -1,155 +1,262 @@
 (function () {
-    angular.module('app').directive('artProjectTabs', ProjectTabsDirective);
+	angular.module('app').directive('artProjectTabs', function () {
+		return {
+			restrict: 'E',
+			templateUrl: 'app/directives/art-project-tabs/art-project-tabs.html',
+			controller: ProjectTabsDirectiveController,
+			controllerAs: 't',
+			bindToController: true,
+			scope: {
+				project: "=?",
+			}
+		}
+	});
 
-    function ProjectTabsDirective() {
-        return {
-            restrict: 'E',
-            templateUrl: 'app/directives/art-project-tabs/art-project-tabs.html',
-            controller: ProjectTabsDirectiveController,
-            controllerAs: 't'
-        }
-    }
+	ProjectTabsDirectiveController.$inject = ['$scope', '$state', 'hotkeys', 'cookieService', 'projectService'];
 
-    angular.module('app').controller('ProjectTabsDirectiveController', ProjectTabsDirectiveController);
+	function ProjectTabsDirectiveController($scope, $state, hotkeys, cookieService, projectService) {
+		var t = this;
 
-    ProjectTabsDirectiveController.$inject = ['$scope', '$uibModal', '$timeout', 'api', 'agentService', 'cookieService', 'selectionService', 'projectService', 'syncService'];
+		t.loadProjects = function () {
+			var projects = cookieService.get('tabs.openedProjects', []);
 
-    function ProjectTabsDirectiveController($scope, $uibModal, $timeout, api, agentService, cookieService, selectionService, projectService, syncService) {
-        var t = this;
+			// Restore the tabs.
+			var n = cookieService.get('tabs.selectedTab', 0);
 
-        // PROJECTS
-        t.projects = [];
-        t.activeTab = cookieService.get('tabs.activeTab', 0);
+			// The dashboard will not be selected by the project loading procedure.
+			if(n === 0) {
+				t.selectTab(n);
+			}
 
-        t.addProject = function (e) {
-            if(e) {
-                e.preventDefault();
-            }
-            
-            projectService.create().then(function (result) {
-                var project = result;
-                project.new = true;
-                project.folder = null;
-                project.members = [];
+			for (var i = 0; i < projects.length; i++) {
+				var uri = projects[i];
 
-                $scope.$apply(function () {
-                    t.projects.push(project);
-                });
+				if (uri) {
+					projectService.get(uri).then(function (project) {
+						// The index n denotes the selected tab with 0 being the dashboard and not a project.
+						var select = (0 < n) ? projects[n - 1] === project.Uri : false;
 
-                $timeout(function () {
-                    t.activeTab = t.projects.indexOf(project) + 2;
-                }, 0);
-            });
-        }
+						t.openProject(project, select);						
+					}, function () {
+						console.error('Failed to load project:', project)
+					});
+				}
+			}
+		}
 
-        t.closeProject = function (project) {
-            projectService.currentProject = project;
+		t.saveProjects = function () {
+			var projects = [];
 
-            if (!project.new) {
-                var modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'app/dialogs/close-project-dialog/close-project-dialog.html',
-                    controller: 'CloseProjectDialogController',
-                    controllerAs: 't'
-                }).closed.then(function (account) {
-                    t.projects.splice(t.projects.indexOf(project), 1);
+			for (var i = 0; i < t.tabs.length; i++) {
+				var tab = t.tabs[i];
+				var stateParams = tab.context.stateParams;
 
-                    syncService.synchronize();
-                });
-            } else {
-                t.projects.splice(t.projects.indexOf(project), 1);
-            }
-        }
+				if (stateParams && stateParams.project) {
+					var project = stateParams.project;
 
-        t.getRecentlyUsedFiles = function (callback) {
-            return api.getRecentFiles().then(callback);
-        }
+					if (project && project.Uri && !project.IsNew) {
+						projects.push(stateParams.project.Uri);
+					}
+				}
+			}
 
-        // DRAG & DROP
-        t.droppedFile = null;
+			cookieService.set('tabs.openedProjects', projects);
+		}
 
-        t.onFileDropped = function (event) {
-            if (event.target && t.droppedFile) {
-                var target = $(event.target);
+		t.getProject = function (project) {
+			if (project && project.Uri) {
+				for (var i = 0; i < t.tabs.length; i++) {
+					var tab = t.tabs[i];
+					var stateParams = tab.context.stateParams;
 
-                if (target.length > 0) {
-                    var scope = angular.element(target[0]).scope();
+					if (stateParams && stateParams.project) {
+						var p = stateParams.project;
 
-                    if (scope && scope.project) {
-                        var project = scope.project;
-                        var file = t.droppedFile;
+						if (p.Uri && p.Uri === project.Uri) {
+							return {
+								index: i,
+								tab: tab
+							};
+						}
+					}
+				}
+			}
 
-                        // Project is mapped automatically, file manually. this is why the caps of the uri property are different
-                        projectService.addFile(project.Uri, file.uri);
-                    }
-                }
-            }
-        }
+			return null;
+		}
 
-        t.refresh = function () {
-            api.getRecentFiles().then(function (result) {
-                t.files = result;
-            });
+		t.openProject = function (project, select = true) {
+			if (project) {
+				var p = t.getProject(project);
 
-            projectService.getAll().then(function (data) {
-                var list = data;
+				if (p && select) {
+					t.selectTab(p.index);
+				} else if (!p) {
+					// Otherwise create a new tab for the project.
+					var i = t.tabs.length - 1;
 
-                if (list && list.length > 0) {
-                    list.sort(function compare(a, b) {
-                        if (a.Title < b.Title) return -1;
-                        if (a.Title > b.Title) return 1;
-                        return 0;
-                    });
+					var context = new TabContext({
+						name: 'main.view.project-dashboard'
+					}, {
+						index: i,
+						project: project
+					});
 
-                    t.projects = list;
+					var tab = new Tab(project.Title, context, true);
 
-                    // Set the currently active tab.
-                    var i = t.projects.indexOf(projectService.currentProject);
+					t.addTab(i, tab, select);
+				}
+			}
+		}
 
-                    if (i !== -1) {
-                        t.activeTabIndex = i + 1;
-                    }
-                }
+		t.closeProject = function (project) {
+			var p = t.getProject(project);
 
-                $scope.$apply();
-            });
-        }
+			if (p) {
+				t.removeTab(p.index);
+			}
+		}
 
-        t.$onInit = function () {
-            $scope.$watch('t.activeTab', function () {
-                cookieService.set('tabs.activeTab', t.activeTab);
-            });
+		t.selectTab = function (index) {
+			if (index === t.tabs.length - 1) {
+				projectService.create().then(function (project) {
+					project.IsNew = true;
 
-            // Make the left and right panes resizable.
-            $scope.$on('dragStarted', function () {
-                $('.project-item').addClass('drop-target');
-            });
+					var context = new TabContext({
+						name: 'main.view.project-dashboard'
+					}, {
+						index: index,
+						project: project
+					});
 
-            $scope.$on('dragStopped', function () {
-                $('.project-item').removeClass('drop-target');
-            });
+					var tab = new Tab('', context, true);
 
-            $scope.$on('selectProject', function (project) {
-                $timeout(function () {
-                    t.activeTab = 1 + t.projects.indexOf(project);
-                });
-            });
+					t.addTab(index, tab, true, false);
+				});
+			} else {
+				t.selectedTab = index;
 
-            $scope.$on('addProject', function (project) {
-                t.projects.push(project);
-                t.activeTab = 1 + t.projects.indexOf(project);
-            });
+				// Save the last selected tab so that we can restore it after an app restart.
+				// Note: Do not save the position of the last '+' tab.
+				if (t.selectedTab < t.tabs.length - 1) {
+					cookieService.set('tabs.selectedTab', t.selectedTab);
+				}
 
-            $scope.$on('removeProject', function (project) {
-                var i = t.projects.indexOf(project);
+				var tab = t.tabs[index];
 
-                if (i >= 0) {
-                    t.projects.splice(i, 1);
-                    t.activeTab = t.projects.indexOf(project) - 1;
-                }
-            });
+				if (tab && tab.context) {
+					var context = tab.context;
 
-            t.refresh();
-        }
-    }
+					if (context && context.state) {
+						$state.go(context.state.name, context.stateParams);
+					}
+				}
+			}
+		}
+
+		t.addTab = function (index, tab, select, save) {
+			if (0 < index && index < t.tabs.length) {
+				t.tabs.splice(index, 0, tab);
+
+				if (select) {
+					t.selectTab(index);
+				}
+
+				if (save || save === undefined) {
+					t.saveProjects();
+				}
+
+				return {
+					index: index,
+					tab: tab
+				};
+			}
+		}
+
+		t.removeTab = function (index, e) {
+			if (e && typeof (e.stopPropagation) === 'function') {
+				e.stopPropagation();
+			}
+
+			if (0 < index && index < t.tabs.length - 1) {
+				var tab = t.tabs[index];
+
+				if (tab && tab.closable) {
+					t.tabs.splice(index, 1);
+
+					if (index < t.tabs.length - 1) {
+						t.selectTab(index);
+					} else if (index > 0) {
+						t.selectTab(index - 1);
+					}
+
+					t.saveProjects();
+				}
+			}
+		}
+
+		t.$onInit = function () {
+			t.tabs = [
+				new Tab(null, new TabContext({
+					name: 'main.view.dashboard'
+				}, {
+					index: 0
+				}), false, {
+					class: "zmdi zmdi-menu"
+				}),
+				new Tab(null, new TabContext({
+					name: 'main.view.recently-used'
+				}), false, {
+					class: "zmdi zmdi-plus"
+				})
+			];
+
+			$scope.$on('openProject', function (e, args) {
+				if (args && args.data) {
+					t.openProject(args.data);
+				}
+			});
+
+			$scope.$on('closeProject', function (e, args) {
+				if (args && args.data) {
+					t.closeProject(args.data);
+				}
+			});
+
+			$scope.$on('commit', function (e, args) {
+				var project = args.data;
+
+				if (project) {
+					var p = t.getProject(project);
+
+					if (p) {
+						p.tab.title = project.Title;
+
+						t.saveTabs();
+					}
+				}
+			});
+		}
+
+		t.$postLink = function () {
+			t.loadProjects();
+		}
+	}
+
+	function Tab(title, context, closable = false, icon = null, selected = false) {
+		var t = this;
+
+		t.icon = icon ? icon : null;
+		t.title = title;
+		t.closable = closable;
+		t.selected = selected;
+		t.context = context;
+	}
+
+	function TabContext(state, stateParams) {
+		var t = this;
+
+		t.state = state;
+		t.stateParams = stateParams;
+	}
 })();

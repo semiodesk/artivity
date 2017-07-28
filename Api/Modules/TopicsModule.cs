@@ -152,23 +152,23 @@ namespace Artivity.Api.Modules
                 return HttpStatusCode.BadRequest;
             }
 
-            if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(parameter.primarySource, UriKind.Absolute))
             {
-                PlatformProvider.Logger.LogError("Invalid URI for parameter 'entity': {0}", parameter.entity);
+                PlatformProvider.Logger.LogError("Invalid URI for parameter 'entity': {0}", parameter.primarySource);
 
                 return HttpStatusCode.BadRequest;
             }
 
             Agent agent = new Agent(new UriRef(parameter.agent));
-            Entity entity = new Entity(new UriRef(parameter.entity));
+            Entity primarySource = new Entity(new UriRef(parameter.primarySource));
 
-            if (model.ContainsResource(entity))
+            if (model.ContainsResource(primarySource))
             {
                 Topic topic = model.CreateResource<Topic>(ModelProvider.CreateUri<Topic>());
                 topic.CreationTimeUtc = parameter.endTime;
-                topic.PrimarySource = entity; // TODO: Correct this in the data provided by the plugins.
+                topic.PrimarySource = primarySource; // TODO: Correct this in the data provided by the plugins.
                 topic.Title = parameter.title;
-                topic.IsSynchronizable = true;
+                topic.IsSynchronizationEnabled = true;
                 topic.Commit();
 
                 CreateEntity activity = model.CreateResource<CreateEntity>(ModelProvider.CreateUri<CreateEntity>());
@@ -176,7 +176,7 @@ namespace Artivity.Api.Modules
                 activity.StartTimeUtc = parameter.startTime;
                 activity.EndTimeUtc = parameter.endTime;
                 activity.GeneratedEntities.Add(topic); // Associate the comment with the activity.
-                activity.UsedEntities.Add(entity); // TODO: Correct this in the data provided by the plugins.
+                activity.UsedEntities.Add(primarySource); // TODO: Correct this in the data provided by the plugins.
 
                 activity.Commit();
 
@@ -187,7 +187,7 @@ namespace Artivity.Api.Modules
             }
             else
             {
-                PlatformProvider.Logger.LogError("Model does not contain entity {0}", entity);
+                PlatformProvider.Logger.LogError("Model does not contain entity {0}", primarySource);
 
                 return HttpStatusCode.NotFound;
             }

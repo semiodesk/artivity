@@ -7,8 +7,8 @@
         var endpoint = apid.endpointUrl + "files";
 
         var service = {};
+        service.get = get;
         service.getAll = getAll;
-        service.getById = getById;
         service.getRevisions = getRevisions;
         service.getLatestRevisionFromFileUri = getLatestRevisionFromFileUri;
         service.publishLatestRevisionFromFileUri = publishLatestRevisionFromFileUri;
@@ -25,8 +25,8 @@
             });
         }
 
-        function getById(uri) {
-            return api.get(endpoint + '?uri=' + encodeURIComponent(uri)).then(handleSuccess, handleError('Error when getting entity from id.'));
+        function get(fileUri) {
+            return api.get(endpoint + '?uri=' + encodeURIComponent(fileUri)).then(handleSuccess, handleError('Error when getting entity from URI.'));
         }
 
         function getByFile(uri, offset, limit, sort) {

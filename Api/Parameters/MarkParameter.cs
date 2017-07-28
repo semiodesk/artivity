@@ -10,25 +10,23 @@ namespace Artivity.Api.Parameters
     {
         #region Members
 
+        // URI of the mark.
         public string uri { get; set; }
 
+        // Agent that created the mark.
         public string agent { get; set; }
 
+        // Entity the mark is associated with.
         public string entity { get; set; }
 
         public DateTime startTime { get; set; }
 
         public DateTime endTime { get; set; }
 
-        // TODO: Encapsulate the following properties into a geometry parameter.
-        public double x { get; set; }
+        public string geometryType { get; set; }
 
-        public double y { get; set; }
-
-        public double width { get; set; }
-
-        public double height { get; set; }
-
+        // Indicates how the mark geometry should be rendered.
+        public dynamic geometry { get; set; }
         #endregion
 
         #region Methods

@@ -782,9 +782,6 @@ art:guid a rdf:Property ;
     rdfs:domain prov:Person ;
     rdfs:range xsd:string .
 
-
-#--
-
 # --- BEGIN: TODO: Move into Artivity Service Integration (arts) ontology. ---
 
 art:accountFeature a rdf:Property ;

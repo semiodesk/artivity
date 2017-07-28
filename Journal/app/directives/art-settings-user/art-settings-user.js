@@ -41,27 +41,19 @@
         t.readonly = true;
 
         t.initializeAccountReadOnlyState = function () {
-            api.getAccounts().then(function (data) {
-                for (var i = 0; i < data.length; i++) {
-                    var account = data[i];
+            agentService.getArtivityAccount().then(function (account) {
+                t.readonly = true;
 
-                    if (account && account.ServiceClient.Uri.startsWith('http://artivity.online')) {
-                        t.readonly = true;
+                for (var j = 0; i < account.AuthenticationParameters.length; j++) {
+                    var p = account.AuthenticationParameters[j];
 
-                        for (var j = 0; i < account.AuthenticationParameters.length; j++) {
-                            var p = account.AuthenticationParameters[j];
+                    if (p.Name === 'username') {
+                        t.username = p.Value;
 
-                            if (p.Name === 'username') {
-                                t.username = p.Value;
-
-                                return;
-                            }
-                        }
-
-                        return;
+                        break;
                     }
                 }
-
+            }, function () {
                 t.readonly = false;
                 t.username = null;
             });
@@ -144,7 +136,7 @@
                 if (t.user) {
                     api.putUser(t.user).then(function () {
                         agentService.off('currentUserChanged', t.setUser);
-                        agentService.initialize();
+                        agentService.getCurrentUser(true);
                         agentService.on('currentUserChanged', t.setUser);
                     });
                 }
@@ -170,9 +162,9 @@
             // Register the controller with its parent for global apply/cancel.
             settingsService.registerController(t);
 
-            if (agentService.currentUser) {
-                t.setUser(agentService.currentUser);
-            }
+            agentService.getCurrentUser().then(function(currentUser) {
+                t.setUser(currentUser);
+            })
 
             agentService.on('currentUserChanged', t.setUser);
 

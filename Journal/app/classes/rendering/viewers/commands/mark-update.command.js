@@ -39,14 +39,20 @@ UpdateMarkCommand.prototype.execute = function (mark) {
             entity: t.viewer.entity,
             startTime: mark.startTime,
             endTime: new Date(),
-            x: mark.p1.x,
-            y: mark.p1.y,
-            width: mark.p2.x - mark.p1.x,
-            height: mark.p2.y - mark.p1.y
+            geometryType: mark.geometryType,
+            geometry: {
+                x: mark.p1.x,
+                y: mark.p1.y
+            }
         }
 
-        if (m.width === 0 || m.height === 0) {
-            return false;
+        if (m.geometryType.endsWith('Rectangle')) {
+            m.geometry.width = mark.p2.x - mark.p1.x;
+            m.geometry.height = mark.p2.y - mark.p1.y;
+
+            if (m.width === 0 || m.height === 0) {
+                return false;
+            }
         }
 
         t.service.updateMark(m).then(function () {

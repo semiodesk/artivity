@@ -1,6 +1,6 @@
 <div class="padding-x-xl padding-y-xl">
 	<form id="form" name="personForm">
-		<art-user-photo-img width="100" height="100" src="t.photoUrl" can-change="true" changed="t.onPhotoChanged"></art-user-photo-img>
+		<art-avatar width="100" height="100" src="t.photoUrl" can-change="true" changed="t.onPhotoChanged"></art-avatar>
 
 		<div class="form-group">
 			<label translate>Name</label><br>
@@ -16,7 +16,7 @@
 			<li class="list-item list-item-link" ng-repeat="person in t.persons">
 				<div class="layout-container padding-x-xs padding-y-xs" ng-click="t.selectPerson(person)">
 					<div class="col">
-						<art-user-photo-img width="40" height="40" src="t.getPhotoUrl(person.Uri)"></art-user-photo-img>
+						<art-avatar width="40" height="40" src="t.getPhotoUrl(person.Uri)"></art-avatar>
 					</div>
 					<div class="col expand" ng-click="t.editMember(person)">
 						<div class="padding-x-md">

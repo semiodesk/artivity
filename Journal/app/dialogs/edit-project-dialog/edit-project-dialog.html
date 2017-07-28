@@ -1,0 +1,69 @@
+<md-dialog>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <md-title class="dialog-title" translate>New project</md-title>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="t.cancel()">
+                <md-icon md-font-icon="zmdi zmdi-close" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div class="md-padding" style="width: 600px; height: 400px;">
+            <form name="projectForm" novalidate>
+                <md-input-container md-no-float class="md-block">
+                    <input name="title" ng-model="t.project.Title" placeholder="{{'Title' | translate}}" required>
+                    <div ng-messages="projectForm.title.$error">
+                        <div ng-message="required">
+                            <span translate>Please enter a project title.</span>
+                        </div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block">
+                    <input name="description" ng-model="t.project.Description" placeholder="{{'Description' | translate}}">
+                </md-input-container>
+
+                <art-folder-picker folder="t.project.folder" changed="t.setFolder" flex></art-folder-picker>
+
+                <!--
+                <md-subheader class="md-no-sticky" translate>Sharing</md-subheader>
+
+                <md-switch ng-model="t.project.shared" aria-label="Online state" flex>
+                    <span translate>Share project on Artivity.Online</span>
+                </md-switch>
+
+                <md-switch ng-model="t.project.autoShare" aria-label="Online state" flex>
+                    <span translate>Automatically publish new file versions</span>
+                </md-switch>
+                -->
+                
+                <md-subheader class="md-no-sticky" translate>Members</md-subheader>
+
+                <md-button ng-click="t.addMember()">
+                    <md-icon md-font-icon="zmdi zmdi-account-add"></md-icon>
+                    <span translate>Add member</span>
+                </md-button>
+
+                <md-list flex>
+                    <md-list-item class="md-2-line" ng-repeat="member in t.project.members">
+                        <img ng-src="{{t.getPhotoUrl(member.Agent.Uri)}}" class="md-avatar" alt="{{member.Agent.Name}}" />
+                        <div ng-click="t.editMember(member)" class="md-list-item-text" layout="column" flex>
+                            <h5>{{member.Agent.Name}}</h5>
+                            <label>{{member.Agent.EmailAddress}}</label>
+                        </div>
+                        <md-button class="md-button-icon" ng-click="t.removeMember(member);">
+                            <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        </md-button>
+                    </md-list-item>
+                </md-list>
+            </form>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <div class="md-toolbar" layout="row">
+            <md-button ng-click="t.commit()" class="md-primary" ng-disabled="projectForm.$invalid" translate>Save</md-button>
+            <md-button ng-click="t.cancel()" translate>Cancel</md-button>
+        </div>
+    </md-dialog-actions>
+</md-dialog>

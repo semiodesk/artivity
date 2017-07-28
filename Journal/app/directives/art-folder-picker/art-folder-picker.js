@@ -12,7 +12,7 @@
                 changed: '=?'
             },
             link: function (scope, element, attributes) {
-                var button = $(element).find('.btn-select-folder');
+                var button = $(element).find('.md-button');
 
                 if (button) {
                     button.click(function () {

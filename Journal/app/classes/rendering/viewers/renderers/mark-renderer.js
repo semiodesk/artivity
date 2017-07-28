@@ -25,8 +25,8 @@ MarkRenderer.prototype.initialize = function (viewer, service) {
     t.viewer.stage.addChildAt(t.viewer.marks, i);
 
     // Set the new entity if the entity of the viewer changes.
-    t.viewer.on("entityChanged", function (entity) {
-        t.setEntity(entity);
+    t.viewer.on("revisionChanged", function (revision) {
+        t.setEntity(revision);
     });
 
     // Listen to viewer events for re-rendering the marks.
@@ -102,9 +102,17 @@ MarkRenderer.prototype.render = function () {
 
     for (var i = 0; i < t.marks.length; i++) {
         var m = t.marks[i];
-        var r = new MarkRectangle(t.viewer, t.viewer.scene, m);
+        var r = null;
 
-        t.viewer.marks.addChild(r);
+        if(m.geometryType.endsWith('Point')) {
+            r = new PointMarkerVisual(t.viewer, t.viewer.scene, m);
+        } else if(m.geometryType.endsWith('Rectangle')) {
+            r = new RectangleMarkerVisual(t.viewer, t.viewer.scene, m);
+        }
+
+        if(r) {
+            t.viewer.marks.addChild(r);
+        }
     }
 
     t.viewer.stage.update();
@@ -128,6 +136,7 @@ MarkRenderer.prototype.onMarkAdded = function (mark) {
     if (mark.uri) {
         m = {
             uri: mark.uri,
+            geometryType: mark.geometryType,
             p1: {
                 x: mark.x,
                 y: mark.y
@@ -143,7 +152,7 @@ MarkRenderer.prototype.onMarkAdded = function (mark) {
 
     t.marks.push(m);
 
-    t.viewer.marks.addChild(new MarkRectangle(t.viewer, t.viewer.scene, m));
+    t.viewer.marks.addChild(new RectangleMarkerVisual(t.viewer, t.viewer.scene, m));
 
     return true;
 };

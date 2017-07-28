@@ -14,21 +14,23 @@ app.setPath('userData', path.join(userData, 'App'));
 var appPath = path.resolve(path.join(app.getAppPath(), "../../"));
 
 if (process.platform === "darwin") {
-    if( !isDebug )
-    {
+    if (!isDebug) {
         var AgentLauncher = require('./app/platform/agentLauncher');
 
-        var ag = new AgentLauncher("com.semiodesk.artivity", process.env.HOME+"/Library/LaunchAgents", appPath);
-            
-        if( ag.getStatus() == -1 || !ag.plistExists) {
+        var ag = new AgentLauncher("com.semiodesk.artivity", process.env.HOME + "/Library/LaunchAgents", appPath);
+
+        if (ag.getStatus() == -1 || !ag.plistExists) {
             console.log("Installing Agent");
             ag.installAgent();
-        }else
-        {
+        } else {
             console.log("Agent already installed.")
         }
     }
 }
+
+// Enable backdrop-filder using CSS:
+// https://github.com/electron/electron/issues/3002
+app.commandLine.appendSwitch('--enable-experimental-web-platform-features');
 
 app.on('ready', () => {
     // NOTE: Setting the background color minimizes flickering on resize:

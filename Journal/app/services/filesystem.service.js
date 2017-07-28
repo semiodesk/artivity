@@ -24,22 +24,30 @@
 		}
 
 		function getFileNameWithoutExtension(fileName) {
-			var components = fileName.split('.');
+			if (fileName) {
+				var components = fileName.split('.');
 
-			// Return the file name which does not contain any dot.
-			return components[0];
+				// Return the file name which does not contain any dot.
+				return components[0];
+			}
+
+			return fileName;
 		}
 
 		function getFileExtension(fileName) {
-			var components = fileName.split('.');
+			if (fileName) {
+				var components = fileName.split('.');
 
-			if (components.length == 1) {
-				// Return the file name which does not contain any dot.
-				return components[0];
-			} else {
-				// Return all components which are seperated by a dot. i.e. 'tar.gz'
-				return components.slice(1).join('.');
+				if (components.length == 1) {
+					// Return the file name which does not contain any dot.
+					return components[0];
+				} else {
+					// Return all components which are seperated by a dot. i.e. 'tar.gz'
+					return components.slice(1).join('.');
+				}
 			}
+			
+			return fileName;
 		}
 	}
 })();
