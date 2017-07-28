@@ -41,11 +41,11 @@
     "angular-emojione": "*",
     "angular-gettext": "^2.3.9",
     "angular-material": "^1.1.4",
+    "angular-masonry": "^0.17.0",
     "moment": "~2.15.1",
     "moment-duration-format": "^1.3.0",
     "EaselJS": "^0.8.2",
-    "yasgui": "^2.4.1",
-    "angular-masonry": "^0.17.0"
+    "yasgui": "^2.4.1"
   },
   "resolutions": {
     "angular": "1.6.4",

@@ -1,19 +1,23 @@
 <art-view>
     <div class="layout-root" layout="row">
-        <md-sidenav id="primary-sidenav" class="md-sidenav-left" md-component-id="left" md-is-locked-open="true">
-            <h5 class="md-padding text-uppercase" style="margin-bottom: 0" translate>Files</h5>
+        <md-sidenav id="primary-sidenav" class="md-sidenav-left" md-component-id="left" md-is-locked-open="true" style="max-width: 275px;">
+            <md-subhead class="md-padding text-uppercase" style="margin-bottom: 0" translate>Files</md-subhead>
             <md-list>
                 <md-list-item ui-sref="main.view.recently-used({index: 0})" ui-sref-active="md-list-item-active">
                     <md-icon md-font-icon="zmdi zmdi-time-restore"></md-icon>
                     <div flex translate>Recently Used</div>
                 </md-list-item>
+                <md-list-item ui-sref="main.view.recently-used({index: 1})" ui-sref-active="md-list-item-active">
+                    <md-icon md-font-icon="zmdi zmdi-star-outline"></md-icon>
+                    <div flex translate>Starred</div>
+                </md-list-item>
             </md-list>
 
-            <h5 class="md-padding text-uppercase" style="margin-bottom: 0" translate>Projects</h5>
+            <md-subhead class="md-padding text-uppercase" style="margin-bottom: 0" translate>Projects</md-subhead>
             <md-list flex ng-cloak>
                 <md-list-item ng-repeat="project in t.projects track by $index" ui-sref-active="md-list-item-active" ng-model="t.droppedFile"
                     data-drop="true" data-jqyoui-options="{hoverClass: 'drop-target-valid', tolerance: 'pointer'}" jqyoui-droppable="{onDrop: 't.onFileDropped'}"
-                    ng-click="t.selectProject(project, $index + 1)" ng-hide="project.IsDeleted">
+                    ng-click="t.selectProject(project, $index + 2)" ng-hide="project.IsDeleted">
                     <md-icon md-font-icon="zmdi"></md-icon>
                     <div flex>{{project.Title}}</div>
                 </md-list-item>

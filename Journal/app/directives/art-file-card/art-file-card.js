@@ -22,8 +22,21 @@
     function FileCardDirectiveController($rootScope, $scope, $element, $mdDialog, filesystemService, entityService) {
         var t = this;
 
-        t.onTouchStart = function(e) {
-            e.preventDefault();
+        t.onTouchStart = function (e) {
+            if (e) {
+                e.preventDefault();
+            }
+
+            // Remove any existing selections.
+            $(document).find('.art-file-card.selected').removeClass('selected');
+
+            // Mark the card as selected.
+            $element.find('.art-file-card').addClass('selected');
+        }
+
+        t.onMouseEnter = function (e) {
+            // Remove any existing selections.
+            $(document).find('.art-file-card.selected').removeClass('selected');
         }
 
         t.onDragStart = function () {
@@ -36,28 +49,28 @@
 
         t.publishFile = function (e) {
             $mdDialog.show({
-                    templateUrl: 'share-file-dialog.html',
-                    parent: angular.element(document.body),
-                    targetEvent: e,
-                    controller: function ($scope) {
-                        $scope.file = t.file;
+                templateUrl: 'share-file-dialog.html',
+                parent: angular.element(document.body),
+                targetEvent: e,
+                controller: function ($scope) {
+                    $scope.file = t.file;
 
-                        $scope.ok = function () {
-                            $mdDialog.hide();
-                        }
-
-                        $scope.cancel = function () {
-                            $mdDialog.cancel();
-                        }
+                    $scope.ok = function () {
+                        $mdDialog.hide();
                     }
-                })
+
+                    $scope.cancel = function () {
+                        $mdDialog.cancel();
+                    }
+                }
+            })
                 .then(function (answer) {
                     entityService.publishLatestRevisionFromFileUri(t.file.uri).then(function () {
                         t.file.synchronizationEnabled = true;
 
                         syncService.synchronize();
-                    }, function () {});
-                }, function () {});
+                    }, function () { });
+                }, function () { });
         }
 
         t.$postLink = function () {
@@ -73,6 +86,10 @@
                     $element.find('.file-extension').addClass(t.fileExtension);
                 }
             });
+        }
+
+        t.$onDestroy = function () {
+            $element.off('touchstart', t.onTouchStart);
         }
     }
 })();
