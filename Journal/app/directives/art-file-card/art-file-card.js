@@ -47,17 +47,13 @@
             $scope.$emit('dragStopped');
         }
 
-        t.toggleImportant = function(e, file) {
-            if(file) {
-                if(file.important === true) {
-                    api.setFileIsImportant(file.uri, false).then(function() {
-                        file.important = false;
-                    });
-                } else {
-                    api.setFileIsImportant(file.uri, true).then(function() {
-                        file.important = true;
-                    })
-                }
+        t.toggleImportant = function (e, file) {
+            if (file) {
+                var value = !file.important;
+
+                api.setFileIsImportant(file.uri, value).then(function () {
+                    file.important = value;
+                });
             }
         }
 

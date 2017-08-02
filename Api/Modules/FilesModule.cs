@@ -81,6 +81,30 @@ namespace Artivity.Api.Modules
                 return GetRecentFiles(settings);
             };
 
+            Get["/important"] = parameters =>
+            {
+                InitializeRequest();
+
+                GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
+
+                return GetImportantFiles(settings);
+            };
+
+            Put["/important"] = parameters =>
+            {
+                InitializeRequest();
+
+                string fileUri = Request.Query.fileUri;
+                bool important = Request.Query.value;
+
+                if (string.IsNullOrEmpty(fileUri) || !IsUri(fileUri))
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return SetImportant(new UriRef(fileUri), important);
+            };
+
             Get["/revisions"] = parameters =>
             {
                 InitializeRequest();
@@ -140,21 +164,6 @@ namespace Artivity.Api.Modules
 
                 return EditFile(new UriRef(fileUrl));
             };
-
-            Put["/tags/important"] = parameters =>
-            {
-                InitializeRequest();
-
-                string fileUri = Request.Query.fileUri;
-                bool important = Request.Query.value;
-
-                if (string.IsNullOrEmpty(fileUri) || !IsUri(fileUri))
-                {
-                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
-                }
-
-                return SetImportant(new UriRef(fileUri), important);
-            };
         }
 
         #endregion
@@ -177,11 +186,12 @@ namespace Artivity.Api.Modules
 
             string queryString = @"
                 SELECT DISTINCT
-                    MAX(?t) AS ?time 
+                    MAX(?t) AS ?time
                     ?entityUri
                     ?file AS ?uri
                     ?label
                     ?folder
+                    ?important
                     SAMPLE(?p) AS ?thumbnail 
                     COALESCE(?agentColor, '#cecece') AS ?agentColor
                     COALESCE(?synchronizationEnabled, 'false') AS ?synchronizationEnabled
@@ -195,6 +205,8 @@ namespace Artivity.Api.Modules
                     ?file rdfs:label ?label .
 
                     OPTIONAL {{ ?file nfo:belongsToContainer / nie:url ?folder . }}
+                    
+                    BIND(EXISTS {{ ?file nao:hasTag art:important . }} AS ?important)
 
                     BIND(STRBEFORE(STR(?entity), '#') AS ?e).
                     BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
@@ -224,7 +236,86 @@ namespace Artivity.Api.Modules
 
                     {0}
                 }}
-                GROUP BY ?label ?folder ?file ?entityUri ?agentColor ?synchronizationEnabled ?time {1} {2} {3}";
+                GROUP BY ?t ?entityUri ?file ?label ?folder ?important ?agentColor ?synchronizationEnabled {1} {2} {3}";
+
+            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, ModelProvider.GetFilesQueryModifier);
+
+            ISparqlQuery query = new SparqlQuery(queryString);
+
+            var bindings = model.GetBindings(query);
+
+            return Response.AsJsonSync(bindings);
+        }
+
+        private Response GetImportantFiles(GetFilesSettings settings)
+        {
+            IModel model = ModelProvider.GetAll();
+
+            if (model == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            string OrderClause = settings.GetOrderClause();
+            string FilterClause = settings.GetFilterClause();
+            string LimitClause = settings.GetLimitClause();
+            string OffsetClause = settings.GetOffsetClause();
+
+            string queryString = @"
+                SELECT DISTINCT
+                    MAX(?t) AS ?time 
+                    ?entityUri
+                    ?file AS ?uri
+                    ?label
+                    ?folder
+                    ?important
+                    SAMPLE(?p) AS ?thumbnail 
+                    COALESCE(?agentColor, '#cecece') AS ?agentColor
+                    COALESCE(?synchronizationEnabled, 'false') AS ?synchronizationEnabled
+                WHERE
+                {{
+                    ?activity prov:generated | prov:used ?entity ;
+                        prov:startedAtTime ?startTime ;
+                        prov:endedAtTime ?endTime .
+  
+                    ?entity nie:isStoredAs ?file.
+                    ?file rdfs:label ?label .
+
+                    OPTIONAL {{ ?file nfo:belongsToContainer / nie:url ?folder . }}
+                    
+                    ?file nao:hasTag art:important .
+
+                    BIND(EXISTS {{ ?file nao:hasTag art:important . }} AS ?important)
+
+                    BIND(STRBEFORE(STR(?entity), '#') AS ?e).
+                    BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
+                    {4}
+                    BIND(IF(BOUND(?endTime), ?endTime, ?startTime) AS ?t).
+
+                    OPTIONAL {{
+                        ?activity prov:qualifiedAssociation / prov:agent ?agent .
+
+                        ?agent a prov:SoftwareAgent.
+                        ?agent art:hasColourCode ?agentColor .
+                    }}
+
+                    OPTIONAL {{
+                        ?entity arts:synchronizationEnabled ?synchronizationEnabled .
+                    }}
+
+                    FILTER NOT EXISTS {{
+                      ?entity prov:qualifiedRevision / prov:entity ?x .
+                    }}
+
+                    FILTER NOT EXISTS
+                    {{
+                        ?activity a art:Project .
+                        ?activity prov:qualifiedUsage / prov:entity ?file .
+                    }}
+
+                    {0}
+                }}
+                GROUP BY ?label ?folder ?file ?entityUri ?important ?agentColor ?synchronizationEnabled ?time {1} {2} {3}";
 
             queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, ModelProvider.GetFilesQueryModifier);
 

@@ -45,7 +45,7 @@
                 windowService.setWidth(992);
 
                 // After the setup has been disabled, go to the homepage.
-                $state.go('main.view.recently-used', {
+                $state.go('main.view.recent-files', {
                     index: 0
                 });
             });
