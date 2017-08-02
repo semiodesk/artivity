@@ -64,6 +64,7 @@
     <Compile Include="ObjectModel\Entities\Collection.cs" />
     <Compile Include="ObjectModel\Entities\Comments\FeedbackResponse.cs" />
     <Compile Include="ObjectModel\Entities\Comments\FeedbackRequest.cs" />
+    <Compile Include="ObjectModel\Entities\Tag.cs" />
     <Compile Include="ObjectModel\Entities\Task.cs" />
     <Compile Include="ObjectModel\Entities\TaskPriority.cs" />
     <Compile Include="ObjectModel\Entities\TaskState.cs" />

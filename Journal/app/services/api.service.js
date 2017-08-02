@@ -196,6 +196,12 @@
 						return response.data;
 					});
 			},
+			setFileIsImportant: function(fileUri, value) {
+				return $http.put(endpoint + '/files/tags/important?fileUri=' + fileUri + '&value=' + value).then(
+					function (response) {
+						return response.data;
+					});
+			},
 			editFile: function (fileUrl) {
 				return $http.get(endpoint + '/files/edit?fileUrl=' + fileUrl).then(
 					function (response) {

@@ -47,7 +47,23 @@
             $scope.$emit('dragStopped');
         }
 
-        t.editFile = function (file) {
+        t.toggleImportant = function(e, file) {
+            if(file) {
+                if(file.important === true) {
+                    api.setFileIsImportant(file.uri, false).then(function() {
+                        file.important = false;
+                    });
+                } else {
+                    api.setFileIsImportant(file.uri, true).then(function() {
+                        file.important = true;
+                    })
+                }
+            }
+        }
+
+        t.editFile = function (e, file) {
+            e.stopPropagation();
+
             if (file && file.folder && file.label) {
                 api.editFile(file.folder + '/' + file.label);
             }
