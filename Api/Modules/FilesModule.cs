@@ -140,6 +140,21 @@ namespace Artivity.Api.Modules
 
                 return EditFile(new UriRef(fileUrl));
             };
+
+            Put["/tags/important"] = parameters =>
+            {
+                InitializeRequest();
+
+                string fileUri = Request.Query.fileUri;
+                bool important = Request.Query.value;
+
+                if (string.IsNullOrEmpty(fileUri) || !IsUri(fileUri))
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return SetImportant(new UriRef(fileUri), important);
+            };
         }
 
         #endregion
@@ -392,6 +407,38 @@ namespace Artivity.Api.Modules
                 {
                     return HttpStatusCode.MethodNotAllowed;
                 }
+            }
+            else
+            {
+                return HttpStatusCode.NotFound;
+            }
+        }
+
+        private Response SetImportant(UriRef fileUri, bool imporant)
+        {
+            IModel model = ModelProvider.GetActivities();
+
+            if (model == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            Entity entity = model.GetResource<Entity>(fileUri);
+
+            if (entity != null)
+            {
+                if(imporant)
+                {
+                    entity.AddTag(art.important.Uri);
+                }
+                else
+                {
+                    entity.RemoveTag(art.important.Uri);
+                }
+
+                entity.Commit();
+
+                return HttpStatusCode.OK;
             }
             else
             {
