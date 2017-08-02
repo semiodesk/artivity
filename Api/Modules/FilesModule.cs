@@ -131,14 +131,14 @@ namespace Artivity.Api.Modules
             {
                 InitializeRequest();
 
-                string fileUri = Request.Query.fileUri;
+                string fileUrl = Request.Query.fileUrl;
 
-                if (string.IsNullOrEmpty(fileUri) || !IsUri(fileUri))
+                if (string.IsNullOrEmpty(fileUrl) || !IsFileUrl(fileUrl))
                 {
                     return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
                 }
 
-                return EditFile(new UriRef(fileUri));
+                return EditFile(new UriRef(fileUrl));
             };
         }
 
@@ -374,37 +374,9 @@ namespace Artivity.Api.Modules
             return HttpStatusCode.OK;
         }
 
-        private Response EditFile(UriRef fileUri)
+        private Response EditFile(UriRef fileUrl)
         {
-            IModel model = ModelProvider.GetActivities();
-
-            if (model == null)
-            {
-                return HttpStatusCode.InternalServerError;
-            }
-
-            ISparqlQuery query = new SparqlQuery(@"
-                SELECT
-                    ?folder ?label
-                WHERE
-                {
-                    @file rdfs:label ?label .
-                    @file nfo:belongsToContainer / nie:url ?folder .
-                }
-            ");
-
-            query.Bind("@file", fileUri);
-
-            BindingSet bindings = model.GetBindings(query).FirstOrDefault();
-
-            if(bindings == null)
-            {
-                return HttpStatusCode.NotFound;
-            }
-
-            string filePath = Path.Combine(bindings["?folder"].ToString(), bindings["?label"].ToString());
-
-            FileInfo file = new FileInfo(filePath);
+            FileInfo file = new FileInfo(fileUrl.LocalPath);
 
             if(file.Exists)
             {
@@ -412,7 +384,7 @@ namespace Artivity.Api.Modules
 
                 if (supportedExtensions.Contains(file.Extension))
                 {
-                    Process.Start(fileUri.AbsolutePath);
+                    Process.Start(fileUrl.LocalPath);
 
                     return HttpStatusCode.OK;
                 }

@@ -488,6 +488,7 @@ namespace Artivity.Api.Modules
                     ?entityUri
 	                ?file AS ?uri
 	                ?label
+                    ?folder
                     SAMPLE(?p) AS ?thumbnail 
                     COALESCE(?agentColor, '#cecece') AS ?agentColor
                     COALESCE(?synchronizationEnabled, 'false') AS ?synchronizationEnabled
@@ -502,6 +503,8 @@ namespace Artivity.Api.Modules
 
                     ?file a nfo:FileDataObject .
                     ?file rdfs:label ?label .
+
+                    OPTIONAL { ?file nfo:belongsToContainer / nie:url ?folder . }
 
                     BIND(STRBEFORE(STR(?entity), '#') AS ?e).
                     BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
