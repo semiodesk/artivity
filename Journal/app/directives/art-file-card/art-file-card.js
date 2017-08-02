@@ -17,9 +17,9 @@
 
     angular.module('app').controller('FileCardDirectiveController', FileCardDirectiveController);
 
-    FileCardDirectiveController.$inject = ['$rootScope', '$scope', '$element', '$mdDialog', 'filesystemService', 'entityService'];
+    FileCardDirectiveController.$inject = ['$rootScope', '$scope', '$element', '$mdDialog', 'api', 'filesystemService', 'entityService'];
 
-    function FileCardDirectiveController($rootScope, $scope, $element, $mdDialog, filesystemService, entityService) {
+    function FileCardDirectiveController($rootScope, $scope, $element, $mdDialog, api, filesystemService, entityService) {
         var t = this;
 
         t.onTouchStart = function (e) {
@@ -45,6 +45,12 @@
 
         t.onDragStop = function () {
             $scope.$emit('dragStopped');
+        }
+
+        t.editFile = function (file) {
+            if (file && file.uri) {
+                api.editFile(file.uri);
+            }
         }
 
         t.publishFile = function (e) {

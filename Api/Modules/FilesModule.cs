@@ -32,6 +32,8 @@ using Nancy;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace Artivity.Api.Modules
@@ -124,6 +126,20 @@ namespace Artivity.Api.Modules
 
                 return PublishLatestRevision(new UriRef(fileUri));
             };
+
+            Get["/edit"] = parameters =>
+            {
+                InitializeRequest();
+
+                string fileUri = Request.Query.fileUri;
+
+                if (string.IsNullOrEmpty(fileUri) || !IsUri(fileUri))
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return EditFile(new UriRef(fileUri));
+            };
         }
 
         #endregion
@@ -149,7 +165,8 @@ namespace Artivity.Api.Modules
                     MAX(?t) AS ?time 
                     ?entityUri
                     ?file AS ?uri
-                    ?label 
+                    ?label
+                    ?folder
                     SAMPLE(?p) AS ?thumbnail 
                     COALESCE(?agentColor, '#cecece') AS ?agentColor
                     COALESCE(?synchronizationEnabled, 'false') AS ?synchronizationEnabled
@@ -161,6 +178,8 @@ namespace Artivity.Api.Modules
   
                     ?entity nie:isStoredAs ?file.
                     ?file rdfs:label ?label .
+
+                    OPTIONAL {{ ?file nfo:belongsToContainer / nie:url ?folder . }}
 
                     BIND(STRBEFORE(STR(?entity), '#') AS ?e).
                     BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
@@ -190,7 +209,7 @@ namespace Artivity.Api.Modules
 
                     {0}
                 }}
-                GROUP BY ?label ?file ?entityUri ?agentColor ?synchronizationEnabled ?time {1} {2} {3}";
+                GROUP BY ?label ?folder ?file ?entityUri ?agentColor ?synchronizationEnabled ?time {1} {2} {3}";
 
             queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, ModelProvider.GetFilesQueryModifier);
 
@@ -353,6 +372,59 @@ namespace Artivity.Api.Modules
             PlatformProvider.AddFile(uri, url);
 
             return HttpStatusCode.OK;
+        }
+
+        private Response EditFile(UriRef fileUri)
+        {
+            IModel model = ModelProvider.GetActivities();
+
+            if (model == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    ?folder ?label
+                WHERE
+                {
+                    @file rdfs:label ?label .
+                    @file nfo:belongsToContainer / nie:url ?folder .
+                }
+            ");
+
+            query.Bind("@file", fileUri);
+
+            BindingSet bindings = model.GetBindings(query).FirstOrDefault();
+
+            if(bindings == null)
+            {
+                return HttpStatusCode.NotFound;
+            }
+
+            string filePath = Path.Combine(bindings["?folder"].ToString(), bindings["?label"].ToString());
+
+            FileInfo file = new FileInfo(filePath);
+
+            if(file.Exists)
+            {
+                string[] supportedExtensions = { ".psd", ".ai", ".svg" };
+
+                if (supportedExtensions.Contains(file.Extension))
+                {
+                    Process.Start(fileUri.AbsolutePath);
+
+                    return HttpStatusCode.OK;
+                }
+                else
+                {
+                    return HttpStatusCode.MethodNotAllowed;
+                }
+            }
+            else
+            {
+                return HttpStatusCode.NotFound;
+            }
         }
 
         #endregion
