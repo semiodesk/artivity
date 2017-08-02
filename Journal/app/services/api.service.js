@@ -196,8 +196,8 @@
 						return response.data;
 					});
 			},
-			editFile: function (fileUri) {
-				return $http.get(endpoint + '/files/edit?fileUri=' + fileUri).then(
+			editFile: function (fileUrl) {
+				return $http.get(endpoint + '/files/edit?fileUrl=' + fileUrl).then(
 					function (response) {
 						return response.data;
 					});

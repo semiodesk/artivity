@@ -7,7 +7,7 @@
         <div class="overlay" layout="column">
             <div ui-sref="document({fileUri: t.file.uri})" flex></div>
             <div layout="row">
-                <md-button class="md-button" ng-click="t.editFile(t.file)" flex>
+                <md-button class="md-button" ng-if="t.file.folder" ng-click="t.editFile(t.file)" flex>
                     <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
                     Edit
                 </md-button>

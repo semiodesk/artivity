@@ -48,8 +48,8 @@
         }
 
         t.editFile = function (file) {
-            if (file && file.uri) {
-                api.editFile(file.uri);
+            if (file && file.folder && file.label) {
+                api.editFile(file.folder + '/' + file.label);
             }
         }
 
