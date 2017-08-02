@@ -94,6 +94,7 @@ h5,
 	font-weight: 600 !important;
 }
 
+.md-text,
 .md-body-1,
 .md-body-2,
 .md-tab,
@@ -2139,7 +2140,7 @@ $userCommentBackgroundColor: rgba($textColor,
 	max-width: 450px;
 	min-width: 225px;
 	background: white;
-	border-radius: 5px;
+	border-radius: 4px;
 	overflow: hidden;
 }
 

@@ -196,8 +196,14 @@
 						return response.data;
 					});
 			},
-			setFileIsImportant: function(fileUri, value) {
-				return $http.put(endpoint + '/files/tags/important?fileUri=' + fileUri + '&value=' + value).then(
+			getImportantFiles: function (fileUri, value) {
+				return $http.get(endpoint + '/files/important').then(
+					function (response) {
+						return response.data;
+					});
+			},
+			setFileIsImportant: function (fileUri, value) {
+				return $http.put(endpoint + '/files/important?fileUri=' + fileUri + '&value=' + value).then(
 					function (response) {
 						return response.data;
 					});

@@ -12,10 +12,15 @@
 					template: "<ui-view></ui-view>",
 					abstract: true
 				})
-				.state('main.view.recently-used', {
-					url: '/recently-used',
-					templateUrl: 'app/states/main/views/recently-used.html',
-					controller: 'RecentlyUsedViewController as t'
+				.state('main.view.recent-files', {
+					url: '/recent-files',
+					templateUrl: 'app/states/main/views/recent-files.html',
+					controller: 'RecentFilesViewController as t'
+				})
+				.state('main.view.important-files', {
+					url: '/important-files',
+					templateUrl: 'app/states/main/views/important-files.html',
+					controller: 'ImportantFilesViewController as t'
 				})
 				.state('main.view.project', {
 					url: '/project',

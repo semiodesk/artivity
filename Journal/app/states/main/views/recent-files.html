@@ -1,0 +1,29 @@
+<div class="layout-root" layout="column">
+    <div layout="row" layout-align="start center" class="md-padding">
+        <md-autocomplete art-search-input md-search-text="t.query" md-no-cache="true" md-search-text-change="t.findFiles(t.query)" md-items="item in []"
+            md-item-text="item.label" md-menu-container-class="art-search-input-menu-container" placeholder="{{'Search' | translate}}"
+            style="margin-left: 5px;">
+            <md-item-template>
+                <span md-highlight-text="ctrl.searchText">{{item.display}}</span>
+            </md-item-template>
+            <md-not-found>
+            </md-not-found>
+        </md-autocomplete>
+        <div flex></div>
+        <md-menu md-offset="0 42">
+            <md-button class="md-icon-button" ng-click="$mdMenu.open($event)">
+                <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
+            </md-button>
+            <md-menu-content width="4">
+            </md-menu-content>
+        </md-menu>
+    </div>
+
+    <div class="layout-container" flex>
+        <div class="md-padding" masonry load-images="true" masonry-options="{ gutter: 15, transitionDuration: 0 }" column-width="255">
+            <div class="masonry-brick" ng-repeat="file in t.files" style="width: 255px" ng-cloak>
+                <art-file-card file="file"></art-file-card>
+            </div>
+        </div>
+    </div>
+</div>

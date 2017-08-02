@@ -45,7 +45,7 @@
                 var i = cookieService.get('tabs.selectedTab', 0);
 
                 if(i === 0) {
-                    $state.go("main.view.recently-used", {index: i});
+                    $state.go("main.view.recent-files", {index: i});
                 } else {
                     $state.go("main.view.project", {index: i});
                 }

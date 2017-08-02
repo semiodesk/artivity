@@ -22,8 +22,11 @@
     </div>
 
     <div layout="row" layout-align="start center" style="margin-top: 5px;">
-        <md-button class="md-icon-button no-margin" style="margin-right: 5px;" ng-click="t.toggleImportant($event, t.file)">
+        <md-button class="md-icon-button no-margin" ng-if="!t.file.important" style="margin-right: 5px;" ng-click="t.toggleImportant($event, t.file)">
             <md-icon md-font-icon="zmdi zmdi-star-outline"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button no-margin" ng-if="t.file.important" style="margin-right: 5px;" ng-click="t.toggleImportant($event, t.file)">
+            <md-icon md-font-icon="zmdi zmdi-star"></md-icon>
         </md-button>
         <md-button class="md-icon-button no-margin" ng-if="!t.file.synchronizationEnabled" ng-click="t.publishFile()">
             <md-icon md-font-icon="zmdi zmdi-share"></md-icon>
