@@ -23,20 +23,21 @@
         var t = this;
 
         t.onTouchStart = function (e) {
-            if (e) {
+            // On touch, select the element first to reveal any context relevant controls.
+            if (e && !$element.find('.art-file-card-container').hasClass('selected')) {
                 e.preventDefault();
+
+                // Remove any existing selections.
+                $(document).find('.art-file-card-container.selected').removeClass('selected');
+
+                // Mark the card as selected.
+                $element.find('.art-file-card-container').addClass('selected');
             }
-
-            // Remove any existing selections.
-            $(document).find('.art-file-card.selected').removeClass('selected');
-
-            // Mark the card as selected.
-            $element.find('.art-file-card').addClass('selected');
         }
 
         t.onMouseEnter = function (e) {
             // Remove any existing selections.
-            $(document).find('.art-file-card.selected').removeClass('selected');
+            $(document).find('.art-file-card-container.selected').removeClass('selected');
         }
 
         t.onDragStart = function () {
@@ -92,7 +93,7 @@
         }
 
         t.$postLink = function () {
-            $element.on('touchstart', t.onTouchStart);
+            $element.find('.art-file-card').on('touchstart', t.onTouchStart);
 
             $scope.$watch('t.file', function () {
                 if (t.file) {
@@ -107,7 +108,7 @@
         }
 
         t.$onDestroy = function () {
-            $element.off('touchstart', t.onTouchStart);
+            $element.find('.art-file-card').off('touchstart', t.onTouchStart);
         }
     }
 })();

@@ -33,7 +33,9 @@
 
                     // Insert at the beginning of the list.
                     tasks.unshift({
+                        completed: d.completed === 1 ? true : false,
                         uri: d.uri,
+                        entity: entityUri,
                         agent: d.agent,
                         time: d.time,
                         name: d.name
@@ -118,9 +120,19 @@
         }
 
         // MARKS
-        t.createMark = viewerService.createMark;
-        t.showMarks = viewerService.showMarks;
-        t.hideMarks = viewerService.hideMarks;
+        t.createMark = function() {
+            viewerService.createMark;
+        }
+
+        t.showMarks = function() {
+            // TODO: Add delay or cache the marks to reduce load on the db.
+            //viewerService.showMarks;
+        }
+
+        t.hideMarks = function() {
+            // TODO: Add delay or cache the marks to reduce load on the db.
+            //viewerService.hideMarks;
+        }
 
         // INIT
         t.$postLink = function () {

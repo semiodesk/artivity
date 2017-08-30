@@ -185,7 +185,7 @@ namespace Artivity.Api.Modules
             string OffsetClause = settings.GetOffsetClause();
 
             string queryString = @"
-                SELECT DISTINCT
+                SELECT
                     MAX(?t) AS ?time
                     ?entityUri
                     ?file AS ?uri
@@ -236,7 +236,7 @@ namespace Artivity.Api.Modules
 
                     {0}
                 }}
-                GROUP BY ?t ?entityUri ?file ?label ?folder ?important ?agentColor ?synchronizationEnabled {1} {2} {3}";
+                GROUP BY ?time ?entityUri ?file ?label ?folder ?important ?agentColor ?synchronizationEnabled {1} {2} {3}";
 
             queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, ModelProvider.GetFilesQueryModifier);
 

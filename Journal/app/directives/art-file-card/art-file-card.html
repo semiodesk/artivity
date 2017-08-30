@@ -5,18 +5,12 @@
         <img class="link" ng-src="{{t.file.thumbnail}}" alt="{{t.file.label}}">
 
         <div class="layout-root overlay link" ui-sref="document({fileUri: t.file.uri})">
-            <div layout="row" layout-align="center center" flex>
+            <div flex>
             </div>
             <div layout="row" layout-align="end center">
                 <md-button class="md-fab md-mini md-button-edit {{t.fileExtension}}" ng-if="t.file.folder" ng-click="t.editFile($event, t.file)">
                     <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
                 </md-button>
-                <!--
-                <md-button class="md-button-icon" ui-sref="document-history({fileUri: t.file.uri})">
-                    <md-icon md-font-icon="zmdi zmdi-time-restore"></md-icon>
-                    Show History
-                </md-button>
-                -->
             </div>
         </div>
     </div>

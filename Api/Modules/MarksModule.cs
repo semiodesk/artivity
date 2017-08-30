@@ -66,6 +66,20 @@ namespace Artivity.Api.Modules
 
                 return DeleteMark(new UriRef(uri));
             };
+
+            Get["/count"] = parameters =>
+            {
+                InitializeRequest();
+
+                string uri = Request.Query.entityUri;
+
+                if (string.IsNullOrEmpty(uri) || !IsUri(uri))
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return GetMarksCountFromEntity(new UriRef(uri));
+            };
         }
 
         #endregion
@@ -86,6 +100,7 @@ namespace Artivity.Api.Modules
                     ?uri
                     ?agent
                     ?time
+                    ?label
                     ?geometryType
                     ?x
                     ?y
@@ -93,14 +108,19 @@ namespace Artivity.Api.Modules
                     ?h
                 WHERE
                 {
-                  ?activity prov:generated ?uri ;
+                    ?activity prov:generated ?uri ;
                         prov:wasStartedBy ?agent .
 
-                  ?uri a art:Mark ;
-                    prov:hadPrimarySource @entity ;
-                    nie:created ?time ;
-                    art:deleted @undefined ;
-                    art:region ?region .
+                    ?uri a art:Mark ;
+                        prov:hadPrimarySource @entity ;
+                        nie:created ?time ;
+                        art:deleted @undefined ;
+                        art:region ?region .
+
+                    OPTIONAL
+                    {
+                        ?uri rdfs:label ?label .
+                    }
 
                     ?region a ?geometryType ;
                         art:x ?x ;
@@ -117,6 +137,34 @@ namespace Artivity.Api.Modules
 
             query.Bind("@entity", entityUri);
             query.Bind("@undefined", DateTime.MinValue);
+
+            var result = model.GetBindings(query).ToList();
+
+            return Response.AsJson(result);
+        }
+
+        private Response GetMarksCountFromEntity(UriRef entityUri)
+        {
+            IModel model = ModelProvider.GetActivities();
+
+            if (model == null)
+            {
+                return HttpStatusCode.BadRequest;
+            }
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                    COUNT(DISTINCT ?uri) AS ?count
+                WHERE
+                {
+                    ?activity prov:generated ?uri ;
+                        prov:wasStartedBy ?agent .
+
+                    ?uri a art:Mark ;
+                        prov:hadPrimarySource @entity .
+                }");
+
+            query.Bind("@entity", entityUri);
 
             var result = model.GetBindings(query).ToList();
 
@@ -146,6 +194,7 @@ namespace Artivity.Api.Modules
                     mark.CreationTimeUtc = parameter.endTime;
                     mark.PrimarySource = entity;
                     mark.Region = region;
+                    mark.Label = parameter.label;
                     mark.Commit();
 
                     // Associate the comment with the activity.
@@ -221,6 +270,8 @@ namespace Artivity.Api.Modules
 
                 if(TryUpdateMarkGeometry(model, parameter, mark.Region.Uri))
                 {
+                    mark.Label = parameter.label;
+
                     // Update the mark timestamps.
                     mark.Commit();
 

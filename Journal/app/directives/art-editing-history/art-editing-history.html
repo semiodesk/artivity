@@ -3,9 +3,7 @@
     <md-virtual-repeat-container id="ctl-history-container">
         <div md-virtual-repeat="item in t.items" ng-switch="item.header" class="repeated-item">
             <div ng-switch-when="true">
-                <div class="item-header">
-                    <label>{{t.getFormattedDate(item.data.startTime)}}</label>
-                </div>
+                <md-subheader>{{t.getFormattedDate(item.data.startTime)}}</md-subheader>
             </div>
             <div ng-switch-when="false">
                 <div class="item" data-id="{{item.id}}" ng-click="t.selectInfluence(item.data, false)" ng-class="{selected: item.selected}"

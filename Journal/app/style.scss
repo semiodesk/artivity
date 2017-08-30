@@ -2132,8 +2132,26 @@ $userCommentBackgroundColor: rgba($textColor,
 	@include transitionEaseInOutCubic(background-color, 300ms);
 }
 
+.art-file-card-container.selected,
 .art-file-card-container:hover {
 	background-color: rgba(0,0,0,.05);
+}
+
+.art-file-card-container .overlay {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	opacity: 0;
+	background: transparent;
+	//background: rgba(255,255,255,.25);
+	@include transitionEaseInOutCubic(opacity, 300ms);
+}
+
+.art-file-card-container:hover .overlay,
+.art-file-card-container.selected .overlay {
+	opacity: 1;
 }
 
 .art-file-card {
@@ -2185,23 +2203,6 @@ $userCommentBackgroundColor: rgba($textColor,
 .art-file-card .file-extension.svg {
 	background: #005A9C;
 	color: white;
-}
-
-.art-file-card .overlay {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	opacity: 0;
-	background: transparent;
-	//background: rgba(255,255,255,.25);
-	@include transitionEaseInOutCubic(opacity, 300ms);
-}
-
-.art-file-card:hover .overlay,
-.art-file-card.selected .overlay {
-	opacity: 1;
 }
 
 // art-search-input

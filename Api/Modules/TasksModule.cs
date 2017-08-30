@@ -98,8 +98,11 @@ namespace Artivity.Api.Modules
         private Response GetTasksFromEntity(UriRef entityUri)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT
@@ -135,8 +138,11 @@ namespace Artivity.Api.Modules
         private Response PostTask(TaskParameter parameter)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             if (!Uri.IsWellFormedUriString(parameter.entity, UriKind.Absolute))
             {
@@ -183,8 +189,11 @@ namespace Artivity.Api.Modules
         private Response PutTask(TaskParameter parameter)
         {
             IModel model = ModelProvider.GetActivities();
+
             if (model == null)
+            {
                 return HttpStatusCode.BadRequest;
+            }
 
             UriRef uri = new UriRef(parameter.uri);
 

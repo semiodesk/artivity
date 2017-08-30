@@ -25,12 +25,8 @@
 //
 // Copyright (c) Semiodesk GmbH 2017
 
-using Newtonsoft.Json;
 using Semiodesk.Trinity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Artivity.DataModel
 {
@@ -38,6 +34,9 @@ namespace Artivity.DataModel
     public class Mark : Entity
     {
         #region Members
+
+        [RdfProperty(RDFS.label)]
+        public string Label { get; set; }
 
         [RdfProperty(ART.region)]
         public Geometry Region { get; set; }
