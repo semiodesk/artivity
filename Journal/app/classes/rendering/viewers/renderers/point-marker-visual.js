@@ -43,8 +43,8 @@ PointMarkerVisual.prototype.initializeContainer = function () {
     });
 
     t.on('mousedown', function (e) {
-        t.viewer.raise('itemSelected', this);
-        t.viewer.raise('markSelected', this.mark);
+        t.viewer.raise('itemSelected', {event: e, target: this});
+        t.viewer.raise('markSelected', {event: e, target: this});
     });
 
     t.fillShape = t.createFillShape();
@@ -171,8 +171,8 @@ PointMarkerVisual.prototype.enableDragMove = function (s) {
         t.modified = dx != 0 || dy != 0;
 
         if (t.modified) {
-            t.viewer.raise('itemModified', t);
-            t.viewer.raise('markModified', t.mark);
+            t.viewer.raise('itemModified', {event: e, target: t});
+            t.viewer.raise('markModified', {event: e, target: t});
         }
     });
 };
