@@ -32,16 +32,19 @@ RectangleMarkerVisual.prototype.initializeContainer = function () {
     t.on('mouseover', function (e) {
         t.hitTestPoint(e.stageX, e.stageY);
         t.container.stage.update();
+
+        t.viewer.raise('itemMouseOver', {event: e, target: this});
     });
 
     t.on('mouseout', function (e) {
         t.hitTestPoint(e.stageX, e.stageY);
         t.container.stage.update();
+
+        t.viewer.raise('itemMouseOut', {event: e, target: this});
     });
 
     t.on('mousedown', function (e) {
-        t.viewer.raise('itemSelected', {event: e, target: this});
-        t.viewer.raise('markSelected', {event: e, target: this});
+        t.viewer.raise('itemMouseDown', {event: e, target: this});
     });
 
     t.fillRectangle = t.createFillRectangle();
