@@ -5,6 +5,7 @@ function PointMarkerVisual(viewer, container, mark) {
 
     t.cursor = 'default';
     t.modified = false;
+    t.mouseover = false;
     t.viewer = viewer;
     t.container = container;
     t.mark = mark;
@@ -33,18 +34,38 @@ PointMarkerVisual.prototype.initializeContainer = function () {
     var t = this;
 
     t.on('mouseover', function (e) {
-        t.hitTestPoint(e.stageX, e.stageY);
-        t.container.stage.update();
+        if (!t.mouseover && t.hitTestPoint(e.stageX, e.stageY)) {
+            t.mouseover = true;
+            t.container.stage.update();
+
+            console.log('itemMouseOver', t);
+            
+            t.viewer.raise('itemMouseOver', {
+                event: e,
+                target: this
+            });
+        }
     });
 
     t.on('mouseout', function (e) {
-        t.hitTestPoint(e.stageX, e.stageY);
-        t.container.stage.update();
+        if (t.mouseover && !t.hitTestPoint(e.stageX, e.stageY)) {
+            t.mouseover = false;
+            t.container.stage.update();
+
+            console.log('itemMouseOut', t);
+
+            t.viewer.raise('itemMouseOut', {
+                event: e,
+                target: this
+            });
+        }
     });
 
     t.on('mousedown', function (e) {
-        t.viewer.raise('itemSelected', {event: e, target: this});
-        t.viewer.raise('markSelected', {event: e, target: this});
+        t.viewer.raise('itemMouseDown', {
+            event: e,
+            target: this
+        });
     });
 
     t.fillShape = t.createFillShape();
@@ -60,8 +81,10 @@ PointMarkerVisual.prototype.hitTestPoint = function (x, y) {
         };
 
         // Highlight the marker if it's not being created and when the mouse hovers it.
-        var mouseover = t.hitTestObject(t.fillShape, p.x, p.y);
+        return t.hitTestObject(t.fillShape, p.x, p.y);
     }
+
+    return false;
 };
 
 PointMarkerVisual.prototype.hitTestObject = function (object, x, y) {
@@ -144,7 +167,7 @@ PointMarkerVisual.prototype.createFillShape = function () {
         t.addChild(t0);
     }
 
-    return s0;
+    return s1;
 };
 
 PointMarkerVisual.prototype.enableDragMove = function (s) {
@@ -171,8 +194,14 @@ PointMarkerVisual.prototype.enableDragMove = function (s) {
         t.modified = dx != 0 || dy != 0;
 
         if (t.modified) {
-            t.viewer.raise('itemModified', {event: e, target: t});
-            t.viewer.raise('markModified', {event: e, target: t});
+            t.viewer.raise('itemModified', {
+                event: e,
+                target: t
+            });
+            t.viewer.raise('markModified', {
+                event: e,
+                target: t
+            });
         }
     });
 };

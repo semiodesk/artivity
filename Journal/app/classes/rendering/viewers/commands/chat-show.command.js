@@ -9,9 +9,15 @@ function ShowChatCommand(viewer, service) {
     // The mark service instance.
     t.service = service;
 
-    viewer.on('markSelected', function(e) {
-        if(e.target && t.canExecute(e.target)) {
+    viewer.on('itemMouseOver', function(e) {
+        if(t.canExecute(e.target)) {
             $(document).trigger('showChatPanel', e);
+        }
+    });
+
+    viewer.on('itemMouseOut', function(e) {
+        if(t.canExecute(e.target)) {
+            $(document).trigger('hideChatPanel', e);
         }
     });
 }
@@ -21,7 +27,7 @@ ShowChatCommand.prototype = Object.create(ViewerCommand.prototype);
 ShowChatCommand.prototype.canExecute = function (param) {
     var t = this;
 
-    return param && param.downX && param.downY;
+    return param && param.mark;
 };
 
 ShowChatCommand.prototype.execute = function (param) {

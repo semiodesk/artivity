@@ -1,9 +1,9 @@
 (function () {
     angular.module('app').controller("DocumentViewController", DocumentViewController);
 
-    DocumentViewController.$inject = ['$scope', '$state', '$stateParams', '$mdPanel', 'entityService', 'viewerService', 'syncService'];
+    DocumentViewController.$inject = ['$scope', '$state', '$stateParams', '$element', '$mdPanel', 'entityService', 'viewerService', 'syncService'];
 
-    function DocumentViewController($scope, $state, $stateParams, $mdPanel, entityService, viewerService, syncService) {
+    function DocumentViewController($scope, $state, $stateParams, $element, $mdPanel, entityService, viewerService, syncService) {
         var t = this;
 
         t.latestRevisionUri = null;
@@ -35,6 +35,8 @@
                 });
             }
 
+            var panel = null;
+
             $(document).on('showChatPanel', function(e, params) {
                 var container = angular.element($('.viewer-container'));
 
@@ -56,17 +58,27 @@
                     templateUrl: 'app/directives/art-chat-panel/art-chat-panel.html',
                     panelClass: 'art-chat-panel',
                     position: position,
-                    trapFocus: true,
+                    trapFocus: false,
+                    focusOnOpen: true,
                     zIndex: 150,
                     clickOutsideToClose: true,
                     clickEscapeToClose: true,
+                    propagateContainerEvents: true,
                     hasBackdrop: false,
                     locals: {
                         entityUri: params.target.mark.uri
                     }
                 };
 
-                $mdPanel.open(config);
+                $mdPanel.open(config).then(function(p) {
+                    panel = p;
+                });
+            });
+
+            $(document).on('hideChatPanel', function(e, params) {
+                if(panel) {
+                    panel.close();
+                }
             });
         }
     }
