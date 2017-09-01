@@ -42,10 +42,10 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Artivity.DataModel.Extensions;
 
 namespace Artivity.Apid.Accounts
 {
@@ -66,11 +66,9 @@ namespace Artivity.Apid.Accounts
 
         private const string _path = "/api/1.0/auth/login";
 
-        private Uri _socketUrl = new Uri("ws://192.168.0.109:8082/");
-
-        private ClientWebSocket _socket;
-
         private UTF8Encoding _encoder = new UTF8Encoding();
+
+        //https://stackoverflow.com/questions/43055998/c-sharp-m2mqtt-to-connect-to-aws-broker-using-root-ca-key-and-certificate
 
         #endregion
 
@@ -92,7 +90,6 @@ namespace Artivity.Apid.Accounts
                 _synchronizer = synchronizer;
                 _synchronizer.RegisterClient(this);
 
-                TryConnectClientAsync();
             }
 
             SupportedAuthenticationClients.Add(new JwtAuthenticationClient());
@@ -170,47 +167,6 @@ namespace Artivity.Apid.Accounts
         protected override string GetAccountTitle()
         {
             return "Artivity";
-        }
-
-        public async Task TryConnectClientAsync()
-        {
-            _socket = new ClientWebSocket();
-            _socket.Options.AddSubProtocol("sync");
-            _socket.Options.KeepAliveInterval = TimeSpan.FromDays(1);
-
-            await _socket.ConnectAsync(_socketUrl, CancellationToken.None);
-
-            await Task.WhenAll(ReceiveMessage());
-        }
-
-        private async Task ReceiveMessage()
-        {
-            byte[] buffer = new byte[1024];
-
-            while (_socket.State == WebSocketState.Open)
-            {
-                var result = await _socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
-                if (result.MessageType == WebSocketMessageType.Close)
-                {
-                    await _socket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-
-                    Logger.LogInfo("Closed socket connection to {0}", _socketUrl);
-                }
-                else if(!_isSynchronizing)
-                {
-                    string json = _encoder.GetString(buffer);
-
-                    dynamic data = JObject.Parse(json);
-
-                    int revision = data.revision;
-
-                    Logger.LogInfo("Server at revision #{0}", revision);
-
-                    // TODO: Check if client sync is necessary.
-                    _synchronizer.TrySynchronize();
-                }
-            }
         }
 
         public bool BeginSynchronization(IAccoutOwner user, OnlineAccount account)
@@ -349,23 +305,24 @@ namespace Artivity.Apid.Accounts
 
         public async Task<bool> TryPullAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision, Uri context)
         {
-            if (IsSubClassOf(typeUri, art.Project))
+            IModel m = _modelProvider.GetAll();
+            if (art.Project.IsSuperClassOf(m, typeUri))
             {
                 return await TryPullProjectAsync(account, uri, revision, context);
             }
-            else if(IsSubClassOf(typeUri, art.User))
+            else if (art.User.IsSuperClassOf(m, typeUri))
             {
                 // TODO
             }
-            else if (IsSubClassOf(typeUri, prov.Person))
+            else if (prov.Person.IsSuperClassOf(m, typeUri))
             {
                 return await TryPullPersonAsync(account, uri, revision, context);
             }
-            else if (IsSubClassOf(typeUri, nfo.Image))
+            else if (nfo.Image.IsSuperClassOf(m, typeUri))
             {
                 return await TryPullImageAsync(account, uri, revision, context);
             }
-            else if (IsSubClassOf(typeUri, prov.Entity))
+            else if (prov.Entity.IsSuperClassOf(m, typeUri))
             {
                 return await TryPullEntityAsync(account, uri, revision, context);
             }
@@ -603,19 +560,20 @@ namespace Artivity.Apid.Accounts
 
         public async Task<bool> TryPushAsync(OnlineAccount account, Uri uri, Uri typeUri, int revision, Uri context)
         {
-            if(IsInstanceOf(uri, art.Project))
+            IModel m = _modelProvider.GetAll();
+            if( uri.IsInstanceOf(m, art.Project))
             {
                 return await TryPushProjectAsync(account, uri, revision);
             }
-            else if(IsInstanceOf(uri, prov.Person))
+            else if( uri.IsInstanceOf(m, prov.Person))
             {
                 return await TryPushPersonAsync(account, uri, revision);
             }
-            else if(IsInstanceOf(uri, nfo.Image))
+            else if(uri.IsInstanceOf(m, nfo.Image))
             {
                 return await TryPushImageAsync(account, uri, revision);
             }
-            else if (IsInstanceOf(uri, prov.Entity))
+            else if (uri.IsInstanceOf(m, prov.Entity))
             {
                 return await TryPushEntityAsync(account, uri, revision);
             }
@@ -963,41 +921,6 @@ namespace Artivity.Apid.Accounts
             }
 
             return null;
-        }
-
-        private bool IsInstanceOf(Uri resource, Class type)
-        {
-            ISparqlQuery query = new SparqlQuery(@"
-                ASK FROM art: WHERE { @resource a @type . }
-            ");
-
-            query.Bind("@type", type);
-            query.Bind("@resource", resource);
-
-            // NOTE: Execute the query with inferencing enabled so that the 
-            // query evaluates the class inheritance in the ontology.
-            return _modelProvider.GetAll().ExecuteQuery(query, true).GetAnwser();
-        }
-
-        private bool IsSubClassOf(Uri subType, Class superType)
-        {
-            if (subType == superType.Uri)
-            {
-                return true;
-            }
-            else
-            {
-                ISparqlQuery query = new SparqlQuery(@"
-                    ASK FROM art: FROM nfo: WHERE { @subType rdfs:subClassOf+ @superType . }
-                ");
-
-                query.Bind("@subType", subType);
-                query.Bind("@superType", superType);
-
-                // NOTE: Execute the query with inferencing enabled so that the 
-                // query evaluates the class inheritance in the ontology.
-                return _modelProvider.GetAll().ExecuteQuery(query, true).GetAnwser();
-            }
         }
 
         protected override void OnAccountInstalled(Person user, OnlineAccount account)
