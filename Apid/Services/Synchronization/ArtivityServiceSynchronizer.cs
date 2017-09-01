@@ -154,7 +154,9 @@ namespace Artivity.Apid.Synchronization
             ISparqlQuery query = new SparqlQuery(@"
                 SELECT DISTINCT ?resource ?resourceType ?revision WHERE
                 {
-                    ?resource a ?resourceType ; arts:synchronizationState [
+                    ?resource a ?resourceType ;
+                        arts:synchronizationEnabled 'true'^^xsd:boolean_ ;
+                        arts:synchronizationState [
                         arts:lastLocalRevision ?revision
                     ] .
 
