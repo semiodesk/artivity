@@ -35,6 +35,10 @@
             }
         }
 
+        t.onClick = function(e) {
+            $scope.$emit('itemClick', this);
+        }
+
         t.onMouseEnter = function (e) {
             // Remove any existing selections.
             $(document).find('.art-file-card-container.selected').removeClass('selected');
@@ -68,28 +72,28 @@
 
         t.publishFile = function (e) {
             $mdDialog.show({
-                templateUrl: 'share-file-dialog.html',
-                parent: angular.element(document.body),
-                targetEvent: e,
-                controller: function ($scope) {
-                    $scope.file = t.file;
+                    templateUrl: 'share-file-dialog.html',
+                    parent: angular.element(document.body),
+                    targetEvent: e,
+                    controller: function ($scope) {
+                        $scope.file = t.file;
 
-                    $scope.ok = function () {
-                        $mdDialog.hide();
-                    }
+                        $scope.ok = function () {
+                            $mdDialog.hide();
+                        }
 
-                    $scope.cancel = function () {
-                        $mdDialog.cancel();
+                        $scope.cancel = function () {
+                            $mdDialog.cancel();
+                        }
                     }
-                }
-            })
+                })
                 .then(function (answer) {
                     entityService.publishLatestRevisionFromFileUri(t.file.uri).then(function () {
                         t.file.synchronizationEnabled = true;
 
                         syncService.synchronize();
-                    }, function () { });
-                }, function () { });
+                    }, function () {});
+                }, function () {});
         }
 
         t.$postLink = function () {

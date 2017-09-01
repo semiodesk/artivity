@@ -4,7 +4,7 @@
     <div class="layout-container art-file-card" layout="column">
         <img class="link" ng-src="{{t.file.thumbnail}}" alt="{{t.file.label}}">
 
-        <div class="layout-root overlay link" ui-sref="document({fileUri: t.file.uri})">
+        <div class="layout-root overlay link" ng-click="t.onClick($event)" ui-sref="document({fileUri: t.file.uri})">
             <div flex>
             </div>
             <div layout="row" layout-align="end center">
