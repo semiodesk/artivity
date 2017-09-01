@@ -26,7 +26,7 @@ namespace Artivity.DataModel
         /// A marker class for Things that are used to categorize documents (or other things).
         /// </summary>
         /// <param name="uri">A Uniform Resource Identifier.</param>
-        public Tag(UriRef uri) : base(uri)
+        public Tag(Uri uri) : base(uri)
         {
         }
 

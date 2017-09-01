@@ -67,7 +67,7 @@ namespace Artivity.Api.IO
                 model = DefaultModel;
             }
 
-            IEnumerable<BindingSet> bindings =  model.GetBindings(query);
+            IEnumerable<BindingSet> bindings =  model.GetBindings(query, true);
 
             if (bindings.Any())
             {
@@ -95,7 +95,7 @@ namespace Artivity.Api.IO
                 SELECT ?entityStub ?file WHERE
                 {
                     @revision art:renderedAs / rdfs:label ?file .
-                    @revision art:publish ""true""^^xsd:boolean_ . 
+                    @revision arts:synchronizationEnabled 'true'^^xsd:boolean_ . 
 
                     BIND(STRBEFORE(STR(@revision), '#') as ?strippedEntity).
                     BIND(IF(?strippedEntity != '', ?strippedEntity, STR(@revision)) AS ?entityStub).
@@ -141,7 +141,7 @@ namespace Artivity.Api.IO
                     ?activity prov:generated | prov:used @revision .
                     ?activity prov:qualifiedAssociation ?association .
 
-                    @revision art:publish ""true""^^xsd:boolean_ .
+                    @revision arts:synchronizationEnabled 'true'^^xsd:boolean_ .
                 }");
 
             query.Bind("@revision", revisionUri);
