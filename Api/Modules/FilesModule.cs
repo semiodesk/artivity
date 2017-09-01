@@ -1,5 +1,4 @@
 ﻿// LICENSE:
-// LICENSE:
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +31,8 @@ using Nancy;
 using Semiodesk.Trinity;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace Artivity.Api.Modules
@@ -79,6 +80,30 @@ namespace Artivity.Api.Modules
                 return GetRecentFiles(settings);
             };
 
+            Get["/important"] = parameters =>
+            {
+                InitializeRequest();
+
+                GetFilesSettings settings = new GetFilesSettings() { OrderBy = OrderBy.Time, Offset = 0, Limit = 100 };
+
+                return GetImportantFiles(settings);
+            };
+
+            Put["/important"] = parameters =>
+            {
+                InitializeRequest();
+
+                string fileUri = Request.Query.fileUri;
+                bool important = Request.Query.value;
+
+                if (string.IsNullOrEmpty(fileUri) || !IsUri(fileUri))
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return SetImportant(new UriRef(fileUri), important);
+            };
+
             Get["/revisions"] = parameters =>
             {
                 InitializeRequest();
@@ -124,6 +149,20 @@ namespace Artivity.Api.Modules
 
                 return PublishLatestRevision(new UriRef(fileUri));
             };
+
+            Get["/edit"] = parameters =>
+            {
+                InitializeRequest();
+
+                string fileUrl = Request.Query.fileUrl;
+
+                if (string.IsNullOrEmpty(fileUrl) || !IsFileUrl(fileUrl))
+                {
+                    return PlatformProvider.Logger.LogRequest(HttpStatusCode.BadRequest, Request);
+                }
+
+                return EditFile(new UriRef(fileUrl));
+            };
         }
 
         #endregion
@@ -145,11 +184,13 @@ namespace Artivity.Api.Modules
             string OffsetClause = settings.GetOffsetClause();
 
             string queryString = @"
-                SELECT DISTINCT
-                    MAX(?t) AS ?time 
+                SELECT
+                    MAX(?t) AS ?time
                     ?entityUri
                     ?file AS ?uri
-                    ?label 
+                    ?label
+                    ?folder
+                    ?important
                     SAMPLE(?p) AS ?thumbnail 
                     COALESCE(?agentColor, '#cecece') AS ?agentColor
                     COALESCE(?synchronizationEnabled, 'false') AS ?synchronizationEnabled
@@ -161,6 +202,10 @@ namespace Artivity.Api.Modules
   
                     ?entity nie:isStoredAs ?file.
                     ?file rdfs:label ?label .
+
+                    OPTIONAL {{ ?file nfo:belongsToContainer / nie:url ?folder . }}
+                    
+                    BIND(EXISTS {{ ?file nao:hasTag art:important . }} AS ?important)
 
                     BIND(STRBEFORE(STR(?entity), '#') AS ?e).
                     BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
@@ -190,7 +235,86 @@ namespace Artivity.Api.Modules
 
                     {0}
                 }}
-                GROUP BY ?label ?file ?entityUri ?agentColor ?synchronizationEnabled ?time {1} {2} {3}";
+                GROUP BY ?time ?entityUri ?file ?label ?folder ?important ?agentColor ?synchronizationEnabled {1} {2} {3}";
+
+            queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, ModelProvider.GetFilesQueryModifier);
+
+            ISparqlQuery query = new SparqlQuery(queryString);
+
+            var bindings = model.GetBindings(query);
+
+            return Response.AsJsonSync(bindings);
+        }
+
+        private Response GetImportantFiles(GetFilesSettings settings)
+        {
+            IModel model = ModelProvider.GetAll();
+
+            if (model == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            string OrderClause = settings.GetOrderClause();
+            string FilterClause = settings.GetFilterClause();
+            string LimitClause = settings.GetLimitClause();
+            string OffsetClause = settings.GetOffsetClause();
+
+            string queryString = @"
+                SELECT DISTINCT
+                    MAX(?t) AS ?time 
+                    ?entityUri
+                    ?file AS ?uri
+                    ?label
+                    ?folder
+                    ?important
+                    SAMPLE(?p) AS ?thumbnail 
+                    COALESCE(?agentColor, '#cecece') AS ?agentColor
+                    COALESCE(?synchronizationEnabled, 'false') AS ?synchronizationEnabled
+                WHERE
+                {{
+                    ?activity prov:generated | prov:used ?entity ;
+                        prov:startedAtTime ?startTime ;
+                        prov:endedAtTime ?endTime .
+  
+                    ?entity nie:isStoredAs ?file.
+                    ?file rdfs:label ?label .
+
+                    OPTIONAL {{ ?file nfo:belongsToContainer / nie:url ?folder . }}
+                    
+                    ?file nao:hasTag art:important .
+
+                    BIND(EXISTS {{ ?file nao:hasTag art:important . }} AS ?important)
+
+                    BIND(STRBEFORE(STR(?entity), '#') AS ?e).
+                    BIND(IF(?e != '', ?e, STR(?entity)) AS ?entityUri).
+                    {4}
+                    BIND(IF(BOUND(?endTime), ?endTime, ?startTime) AS ?t).
+
+                    OPTIONAL {{
+                        ?activity prov:qualifiedAssociation / prov:agent ?agent .
+
+                        ?agent a prov:SoftwareAgent.
+                        ?agent art:hasColourCode ?agentColor .
+                    }}
+
+                    OPTIONAL {{
+                        ?entity arts:synchronizationEnabled ?synchronizationEnabled .
+                    }}
+
+                    FILTER NOT EXISTS {{
+                      ?entity prov:qualifiedRevision / prov:entity ?x .
+                    }}
+
+                    FILTER NOT EXISTS
+                    {{
+                        ?activity a art:Project .
+                        ?activity prov:qualifiedUsage / prov:entity ?file .
+                    }}
+
+                    {0}
+                }}
+                GROUP BY ?label ?folder ?file ?entityUri ?important ?agentColor ?synchronizationEnabled ?time {1} {2} {3}";
 
             queryString = string.Format(queryString, FilterClause, OrderClause, LimitClause, OffsetClause, ModelProvider.GetFilesQueryModifier);
 
@@ -353,6 +477,63 @@ namespace Artivity.Api.Modules
             PlatformProvider.AddFile(uri, url);
 
             return HttpStatusCode.OK;
+        }
+
+        private Response EditFile(UriRef fileUrl)
+        {
+            FileInfo file = new FileInfo(fileUrl.LocalPath);
+
+            if(file.Exists)
+            {
+                string[] supportedExtensions = { ".psd", ".ai", ".svg" };
+
+                if (supportedExtensions.Contains(file.Extension))
+                {
+                    Process.Start(fileUrl.LocalPath);
+
+                    return HttpStatusCode.OK;
+                }
+                else
+                {
+                    return HttpStatusCode.MethodNotAllowed;
+                }
+            }
+            else
+            {
+                return HttpStatusCode.NotFound;
+            }
+        }
+
+        private Response SetImportant(UriRef fileUri, bool imporant)
+        {
+            IModel model = ModelProvider.GetActivities();
+
+            if (model == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            Entity entity = model.GetResource<Entity>(fileUri);
+
+            if (entity != null)
+            {
+                if(imporant)
+                {
+                    entity.AddTag(art.important.Uri);
+                }
+                else
+                {
+                    entity.RemoveTag(art.important.Uri);
+                }
+
+                entity.Commit();
+
+                return HttpStatusCode.OK;
+            }
+            else
+            {
+                return HttpStatusCode.NotFound;
+            }
         }
 
         #endregion

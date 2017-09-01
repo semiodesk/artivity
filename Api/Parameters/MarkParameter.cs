@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Artivity.Api.Parameters
 {
@@ -23,6 +19,10 @@ namespace Artivity.Api.Parameters
 
         public DateTime endTime { get; set; }
 
+        // Text associated with the mark.
+        public string label { get; set; }
+
+        // Type of the geometry (i.e. rectangle, point)
         public string geometryType { get; set; }
 
         // Indicates how the mark geometry should be rendered.

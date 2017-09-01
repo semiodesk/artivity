@@ -18,6 +18,19 @@
         </md-button>
     </div>
     <div class="toolbar" style="margin-right: 3px;">
+        <md-button class="md-button-icon" data-command="viewerPagePrevious">
+            <md-icon md-svg-src="app/resources/img/icons/chevron-left-o.svg"></md-icon>
+            <md-tooltip translate>Previous page</md-tooltip>
+        </md-button>
+        <md-button class="md-button-icon">
+            {{t.currentPage}} / {{t.pageCount}}
+        </md-button>
+        <md-button class="md-button-icon" data-command="viewerPageNext">
+            <md-icon md-svg-src="app/resources/img/icons/chevron-right-o.svg"></md-icon>
+            <md-tooltip translate>Next page</md-tooltip>
+        </md-button>
+    </div>
+    <div class="toolbar" style="margin-right: 3px;">
         <md-select ng-model="t.layout" ng-change="t.onPageLayoutChanged()" class="md-no-underline">
             <md-option value="single" translate>
                 <md-icon md-svg-src="app/resources/img/icons/layout-single.svg" style="margin-right: 6px;"></md-icon>
@@ -32,19 +45,6 @@
                 <span translate>All Pages</span>
             </md-option>
         </md-select>
-    </div>
-    <div class="toolbar" style="margin-right: 3px;">
-        <md-button class="md-button-icon" data-command="viewerPagePrevious">
-            <md-icon md-svg-src="app/resources/img/icons/chevron-left-o.svg"></md-icon>
-            <md-tooltip translate>Previous page</md-tooltip>
-        </md-button>
-        <md-button class="md-button-icon">
-            {{t.currentPage}} / {{t.pageCount}}
-        </md-button>
-        <md-button class="md-button-icon" data-command="viewerPageNext">
-            <md-icon md-svg-src="app/resources/img/icons/chevron-right-o.svg"></md-icon>
-            <md-tooltip translate>Next page</md-tooltip>
-        </md-button>
     </div>
     <div class="toolbar" style="margin-right: 3px;">
         <md-button class="md-button-icon" data-command="createPointMark" data-param="t.viewer.entity">

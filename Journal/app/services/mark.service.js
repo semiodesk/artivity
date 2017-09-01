@@ -8,6 +8,7 @@
 
         return {
             getMarksForEntity: getMarksForEntity,
+            getMarksCountForEntity: getMarksCountForEntity,
             createMark: createMark,
             updateMark: updateMark,
             deleteMark: deleteMark
@@ -20,6 +21,16 @@
                 return response.data;
             }, function () {
                 console.error('Error while retrieving marks for entity: ' + uri)
+            });
+        }
+
+        function getMarksCountForEntity(entityUri) {
+            var uri = encodeURIComponent(entityUri);
+
+            return api.get(endpoint + '/count?entityUri=' + uri).then(function (response) {
+                return response.data;
+            }, function () {
+                console.error('Error while retrieving marks count for entity: ' + uri)
             });
         }
 

@@ -73,6 +73,7 @@
                     t.viewer.addCommand(new DeleteMarkCommand(t.viewer, markService));
                     t.viewer.addCommand(new ShowMarksCommand(t.viewer, markService));
                     t.viewer.addCommand(new HideMarksCommand(t.viewer, markService));
+                    t.viewer.addCommand(new ShowChatCommand(t.viewer));
                     t.viewer.addRenderer(new MarkRenderer(t.viewer, markService));
 
                     t.setViewerVisibleRegion();

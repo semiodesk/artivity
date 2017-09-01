@@ -47,6 +47,7 @@ function ViewerBase(user, canvas) {
         t.initializeScene();
         t.initializeCanvasResize();
         t.initializeCanvasZoom();
+        //t.initializeCanvasDPI(); // TODO: Does not work properly.
 
         t.raise('initialized', t);
     }
@@ -143,6 +144,29 @@ ViewerBase.prototype.initializeCanvasZoom = function () {
     });
 };
 
+ViewerBase.prototype.initializeCanvasDPI = function () {
+    var t = this;
+
+    // Source: http://www.unfocus.com/2014/03/03/hidpiretina-for-createjs-flash-pro-html5-canvas/
+    if (window.devicePixelRatio) {
+        // Grab the width and height from canvas
+        var height = t.canvas.getAttribute('height');
+        var width = t.canvas.getAttribute('width');
+
+        // Reset the canvas width and height with window.devicePixelRatio applied
+        t.canvas.setAttribute('width', Math.round(width * window.devicePixelRatio));
+        t.canvas.setAttribute('height', Math.round(height * window.devicePixelRatio));
+
+        // Force the canvas back to the original size using css
+        t.canvas.style.width = width + "px";
+        t.canvas.style.height = height + "px";
+
+        // Set CreateJS to render scaled
+        t.stage.scaleX = window.devicePixelRatio;
+        t.stage.scaleY = window.devicePixelRatio;
+    }
+}
+
 ViewerBase.prototype.clearStage = function () {
     var t = this;
 
@@ -211,7 +235,7 @@ ViewerBase.prototype.setViewport = function (x, y, w, h) {
 ViewerBase.prototype.getViewport = function () {
     var t = this;
 
-    if(t.viewport !== null) {
+    if (t.viewport !== null) {
         return t.viewport;
     } else {
         return {

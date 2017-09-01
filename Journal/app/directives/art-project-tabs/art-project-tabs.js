@@ -205,7 +205,7 @@
 					class: "zmdi zmdi-menu"
 				}),
 				new Tab(null, new TabContext({
-					name: 'main.view.recently-used'
+					name: 'main.view.recent-files'
 				}), false, {
 					class: "zmdi zmdi-plus"
 				})

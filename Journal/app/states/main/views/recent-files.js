@@ -1,9 +1,9 @@
 (function () {
-    angular.module('app').controller("RecentlyUsedViewController", RecentlyUsedViewController);
+    angular.module('app').controller("RecentFilesViewController", RecentFilesViewController);
 
-    RecentlyUsedViewController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', 'api'];
+    RecentFilesViewController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', 'api'];
 
-    function RecentlyUsedViewController($rootScope, $scope, $state, $stateParams, api) {
+    function RecentFilesViewController($rootScope, $scope, $state, $stateParams, api) {
         var t = this;
 
         t.findFiles = function (query) {

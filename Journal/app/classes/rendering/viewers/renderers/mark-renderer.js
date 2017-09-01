@@ -69,7 +69,13 @@ MarkRenderer.prototype.addMarks = function (marks) {
     var t = this;
 
     for (var i = 0; i < marks.length; i++) {
-        t.onMarkAdded(marks[i]);
+        var m = marks[i];
+
+        if(!m.label) {
+            m.label = i + 1;
+        }
+
+        t.onMarkAdded(m);
     }
 
     t.render();
@@ -104,13 +110,15 @@ MarkRenderer.prototype.render = function () {
         var m = t.marks[i];
         var r = null;
 
-        if(m.geometryType.endsWith('Point')) {
-            r = new PointMarkerVisual(t.viewer, t.viewer.scene, m);
-        } else if(m.geometryType.endsWith('Rectangle')) {
-            r = new RectangleMarkerVisual(t.viewer, t.viewer.scene, m);
+        if (m.geometryType) {
+            if (m.geometryType.endsWith('Point')) {
+                r = new PointMarkerVisual(t.viewer, t.viewer.scene, m);
+            } else if (m.geometryType.endsWith('Rectangle')) {
+                r = new RectangleMarkerVisual(t.viewer, t.viewer.scene, m);
+            }
         }
 
-        if(r) {
+        if (r) {
             t.viewer.marks.addChild(r);
         }
     }
@@ -137,6 +145,7 @@ MarkRenderer.prototype.onMarkAdded = function (mark) {
         m = {
             uri: mark.uri,
             geometryType: mark.geometryType,
+            label: mark.label,
             p1: {
                 x: mark.x,
                 y: mark.y

@@ -11,8 +11,8 @@ function UpdateMarkCommand(viewer, service) {
 
     // Persist a mark everything the selection is changing.
     t.viewer.on('markModified', function (e) {
-        if (t.canExecute(e)) {
-            t.execute(e);
+        if (e.target && t.canExecute(e.target.mark)) {
+            t.execute(e.target.mark);
         }
     });
 }

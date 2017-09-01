@@ -376,66 +376,68 @@ namespace Artivity.Apid.Modules
 
         private Response FileOpen(UriRef entityUri, UriRef fileUrl)
         {
+            string path = PlatformProvider.GetRenderOutputPath(entityUri);
+            string file = Path.GetFileName(fileUrl.LocalPath);
+            string folder = Path.GetDirectoryName(fileUrl.LocalPath);
+
             Dictionary<string, string> result = new Dictionary<string, string>();
             result["userAssociationUri"] = _ownerProvider.UserAssociation.Uri.AbsoluteUri;
             result["createActivityStepsRenderings"] = PlatformProvider.Config.CreateActivityStepsRenderings.ToString();
             result["fileDataObjectUri"] = "";
             result["latestEntityUri"] = "";
-
-            string path = PlatformProvider.GetRenderOutputPath(entityUri);
             result["renderOutputPath"] = path;
-
-            string file = Path.GetFileName(fileUrl.LocalPath);
-            string folder = Path.GetDirectoryName(fileUrl.LocalPath);
 
             if (!string.IsNullOrEmpty(file) && !string.IsNullOrEmpty(folder))
             {
-
                 ISparqlQuery query = new SparqlQuery(@"
+                    SELECT
+                        ?uri ?entityStub ?file
+                    WHERE
+                    {
+                        ?uri nie:isStoredAs ?file .
 
-                            SELECT
-                                ?uri ?entityStub ?file
-                            WHERE
-                            {
-                                ?uri nie:isStoredAs ?file .
-
-                                ?file rdfs:label @fileName .
-                                ?file nie:lastModified ?time .
-                                ?file nfo:belongsToContainer ?folder .
+                        ?file rdfs:label @fileName .
+                        ?file nie:lastModified ?time .
+                        ?file nfo:belongsToContainer ?folder .
                                 
-                                BIND( STRBEFORE( STR(?uri), '#' ) as ?strippedEntity ).
-                                BIND( if(?strippedEntity != '', ?strippedEntity, str(?uri)) as ?entityStub).
+                        BIND(STRBEFORE( STR(?uri), '#') AS ?strippedEntity ).
+                        BIND(IF(?strippedEntity != '', ?strippedEntity, STR(?uri)) AS ?entityStub).
 
-
-                                ?folder nie:url @folderUrl .
+                        ?folder nie:url @folderUrl .
                     
-                                FILTER NOT EXISTS { ?var prov:invalidated ?uri }
-                   
-                            }
-                            ORDER BY DESC(?time) LIMIT 1
-                            }
-                    ");
+                        FILTER NOT EXISTS { ?var prov:invalidated ?uri }
+                    }
+                    ORDER BY DESC(?time) LIMIT 1
+                ");
 
                 query.Bind("@fileName", file);
                 query.Bind("@folderUrl", new Uri(folder));
-                var bindings = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
-                var x = bindings.Keys;
+                BindingSet b = ModelProvider.GetActivities().GetBindings(query).FirstOrDefault();
 
-                object value;
-                if (bindings.TryGetValue("uri", out value) && value is UriRef)
+                if(b != null)
                 {
-                    var latest = value as UriRef;
-                    result["latestEntityUri"] = latest.AbsoluteUri;
-                    var uri = new UriRef(bindings["entityStub"] as string);
-                    path = PlatformProvider.GetRenderOutputPath(uri);
-                    result["renderOutputPath"] = path;
-                }
+                    var keys = b.Keys;
 
-                if (bindings.TryGetValue("file", out value) && value is UriRef)
-                {
-                    var fileUri = value as UriRef;
-                    result["fileDataObjectUri"] = fileUri.AbsoluteUri;
+                    object value;
+
+                    if (b.TryGetValue("uri", out value) && value is UriRef)
+                    {
+                        var latest = value as UriRef;
+                        var uri = new UriRef(b["entityStub"] as string);
+
+                        path = PlatformProvider.GetRenderOutputPath(uri);
+
+                        result["latestEntityUri"] = latest.AbsoluteUri;
+                        result["renderOutputPath"] = path;
+                    }
+
+                    if (b.TryGetValue("file", out value) && value is UriRef)
+                    {
+                        var fileUri = value as UriRef;
+
+                        result["fileDataObjectUri"] = fileUri.AbsoluteUri;
+                    }
                 }
             }
 

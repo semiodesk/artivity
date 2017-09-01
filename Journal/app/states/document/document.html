@@ -5,8 +5,14 @@
 
             <div flex></div>
 
+            <md-button class="md-button" ng-click="t.editFile(t.file)">
+                <i class="zmdi zmdi-edit"></i><span class="btn-label" hide-sm translate>Edit</span>
+            </md-button>
             <md-button class="md-button" ng-click="t.publishLatestRevision(t.file)">
-                <i class="zmdi zmdi-share"></i><span class="btn-label" translate>Share</span>
+                <i class="zmdi zmdi-share"></i><span class="btn-label" hide-sm translate>Share</span>
+            </md-button>
+            <md-button class="md-button" ui-sref="document-history({fileUri: t.file.uri})">
+                <i class="zmdi zmdi-time-restore"></i><span class="btn-label" hide-sm translate>Show History</span>
             </md-button>
         </div>
 

@@ -23,16 +23,16 @@
 		}
 
 		return {
-			get: function(url, config){
+			get: function (url, config) {
 				return $http.get(url, config);
 			},
-			put: function(url, data, config){
+			put: function (url, data, config) {
 				return $http.put(url, data, config);
 			},
-			post: function(url, data, config){
+			post: function (url, data, config) {
 				return $http.post(url, data, config);
 			},
-			delete: function(url, config){
+			delete: function (url, config) {
 				return $http.delete(url, config);
 			},
 			getAccounts: function () { // +publish-file-controller +art-settings-accounts
@@ -170,7 +170,7 @@
 			getAccountOwner: function () {
 				return $http.get(endpoint + '/agents/users?role=AccountOwnerRole').then(
 					function (response) {
-						if(response.data.length === 1) {
+						if (response.data.length === 1) {
 							return response.data[0];
 						}
 					});
@@ -196,6 +196,24 @@
 						return response.data;
 					});
 			},
+			getImportantFiles: function (fileUri, value) {
+				return $http.get(endpoint + '/files/important').then(
+					function (response) {
+						return response.data;
+					});
+			},
+			setFileIsImportant: function (fileUri, value) {
+				return $http.put(endpoint + '/files/important?fileUri=' + fileUri + '&value=' + value).then(
+					function (response) {
+						return response.data;
+					});
+			},
+			editFile: function (fileUrl) {
+				return $http.get(endpoint + '/files/edit?fileUrl=' + fileUrl).then(
+					function (response) {
+						return response.data;
+					});
+			},
 			getFile: function (entityUri) { // file-preview-controller
 				return $http.get(endpoint + '/files?uri=' + entityUri).then(
 					function (response) {
@@ -208,7 +226,7 @@
 						return response.data;
 					});
 			},
-			getLatestFileRevision: function(fileUri) {
+			getLatestFileRevision: function (fileUri) {
 				return $http.get(endpoint + '/files/revisions/latest?fileUri=' + fileUri).then(
 					function (response) {
 						return response.data;
