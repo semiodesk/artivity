@@ -17,26 +17,27 @@
 
     angular.module('app').controller('FileCardDirectiveController', FileCardDirectiveController);
 
-    FileCardDirectiveController.$inject = ['$rootScope', '$scope', '$element', '$mdDialog', 'filesystemService', 'entityService'];
+    FileCardDirectiveController.$inject = ['$rootScope', '$scope', '$element', '$mdDialog', 'api', 'filesystemService', 'entityService'];
 
-    function FileCardDirectiveController($rootScope, $scope, $element, $mdDialog, filesystemService, entityService) {
+    function FileCardDirectiveController($rootScope, $scope, $element, $mdDialog, api, filesystemService, entityService) {
         var t = this;
 
         t.onTouchStart = function (e) {
-            if (e) {
+            // On touch, select the element first to reveal any context relevant controls.
+            if (e && !$element.find('.art-file-card-container').hasClass('selected')) {
                 e.preventDefault();
+
+                // Remove any existing selections.
+                $(document).find('.art-file-card-container.selected').removeClass('selected');
+
+                // Mark the card as selected.
+                $element.find('.art-file-card-container').addClass('selected');
             }
-
-            // Remove any existing selections.
-            $(document).find('.art-file-card.selected').removeClass('selected');
-
-            // Mark the card as selected.
-            $element.find('.art-file-card').addClass('selected');
         }
 
         t.onMouseEnter = function (e) {
             // Remove any existing selections.
-            $(document).find('.art-file-card.selected').removeClass('selected');
+            $(document).find('.art-file-card-container.selected').removeClass('selected');
         }
 
         t.onDragStart = function () {
@@ -45,6 +46,24 @@
 
         t.onDragStop = function () {
             $scope.$emit('dragStopped');
+        }
+
+        t.toggleImportant = function (e, file) {
+            if (file) {
+                var value = !file.important;
+
+                api.setFileIsImportant(file.uri, value).then(function () {
+                    file.important = value;
+                });
+            }
+        }
+
+        t.editFile = function (e, file) {
+            e.stopPropagation();
+
+            if (file && file.folder && file.label) {
+                api.editFile(file.folder + '/' + file.label);
+            }
         }
 
         t.publishFile = function (e) {
@@ -74,7 +93,7 @@
         }
 
         t.$postLink = function () {
-            $element.on('touchstart', t.onTouchStart);
+            $element.find('.art-file-card').on('touchstart', t.onTouchStart);
 
             $scope.$watch('t.file', function () {
                 if (t.file) {
@@ -89,7 +108,7 @@
         }
 
         t.$onDestroy = function () {
-            $element.off('touchstart', t.onTouchStart);
+            $element.find('.art-file-card').off('touchstart', t.onTouchStart);
         }
     }
 })();

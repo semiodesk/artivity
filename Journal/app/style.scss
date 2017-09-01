@@ -56,54 +56,77 @@ $editorBorderColor: darken($editorBackgroundColor, 25%);
 }
 
 // TYPOGRAPHY
-$textScaleFactor: 0.85;
+$textScaleFactor: 0.9;
 
 h1,
 .md-display-4 {
-	font-size: 112px * $textScaleFactor !important;
+	font-size: round(112px * $textScaleFactor) !important;
 }
 
 h2,
 .md-display-3 {
-	font-size: 56px * $textScaleFactor !important;
+	font-size: round(56px * $textScaleFactor) !important;
 }
 
 h3,
 .md-display-2 {
-	font-size: 45px * $textScaleFactor !important;
+	font-size: round(45px * $textScaleFactor) !important;
 }
 
 h4,
 .md-display-1 {
-	font-size: 34px * $textScaleFactor !important;
+	font-size: round(34px * $textScaleFactor) !important;
 }
 
 h5,
 .md-headline {
-	font-size: 24px * $textScaleFactor !important;
+	font-size: round(24px * $textScaleFactor) !important;
 }
 
 .md-title,
 .dialog-title {
-	font-size: 20px * $textScaleFactor !important;
+	font-size: round(20px * $textScaleFactor) !important;
 }
 
 .window-title,
 .md-subhead {
-	font-size: 14px * $textScaleFactor !important;
+	font-size: round(14px * $textScaleFactor) !important;
 	font-weight: 600 !important;
 }
 
+.md-text,
 .md-body-1,
 .md-body-2,
 .md-tab,
 .md-tooltip,
 .md-button {
-	font-size: 14px * $textScaleFactor !important;
+	font-size: round(14px * $textScaleFactor) !important;
 }
 
 .md-button.md-button-icon {
-	min-width: 35px * $textScaleFactor !important;
+	min-width: round(35px * $textScaleFactor) !important;
+}
+
+.md-button-edit .zmdi {
+	color: white;
+}
+
+.md-button-edit.psd {
+	background: #0EBFF4 !important;
+	color: white;
+}
+
+.md-button-edit.psd:hover {
+	background: lighten(#0EBFF4, 10%) !important;
+}
+
+.md-button-edit.ai {
+	background: #F67C07 !important;
+	color: white;
+}
+
+.md-button-edit.ai:hover {
+	background: lighten(#F67C07, 10%) !important;
 }
 
 .md-caption {
@@ -2103,11 +2126,40 @@ $userCommentBackgroundColor: rgba($textColor,
 }
 
 // art-file-card
+.art-file-card-container {
+	padding: 5px;
+	border-radius: 5px;
+	background-color: transparent;
+	@include transitionEaseInOutCubic(background-color, 300ms);
+}
+
+.art-file-card-container.selected,
+.art-file-card-container:hover {
+	background-color: rgba(0,0,0,.05);
+}
+
+.art-file-card-container .overlay {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	opacity: 0;
+	background: transparent;
+	//background: rgba(255,255,255,.25);
+	@include transitionEaseInOutCubic(opacity, 300ms);
+}
+
+.art-file-card-container:hover .overlay,
+.art-file-card-container.selected .overlay {
+	opacity: 1;
+}
+
 .art-file-card {
 	max-width: 450px;
 	min-width: 225px;
 	background: white;
-	border-radius: 5px;
+	border-radius: 4px;
 	overflow: hidden;
 }
 
@@ -2152,22 +2204,6 @@ $userCommentBackgroundColor: rgba($textColor,
 .art-file-card .file-extension.svg {
 	background: #005A9C;
 	color: white;
-}
-
-.art-file-card .overlay {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	opacity: 0;
-	background: rgba(255,255,255,.25);
-	@include transitionEaseInOutCubic(opacity, 400ms);
-}
-
-.art-file-card:hover .overlay,
-.art-file-card.selected .overlay {
-	opacity: 1;
 }
 
 // art-search-input

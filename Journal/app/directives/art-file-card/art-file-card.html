@@ -1,37 +1,34 @@
-<div class="layout-container" layout="column" ng-model="t.file" jqyoui-draggable="{onStart: 't.onDragStart', onStop: 't.onDragStop'}"
+<div class="layout-container art-file-card-container" layout="column" ng-model="t.file" jqyoui-draggable="{onStart: 't.onDragStart', onStop: 't.onDragStop'}"
     data-drag="true" data-jqyoui-options="{opacity:0.7, helper: 'clone', appendTo: 'body', placeholder: 'keep', cursorAt: {top: 5, left: 5}}"
     ng-hide="t.file.visible === false" ng-mouseenter="t.onMouseEnter($event)" ng-cloak>
     <div class="layout-container art-file-card" layout="column">
         <img class="link" ng-src="{{t.file.thumbnail}}" alt="{{t.file.label}}">
 
-        <div class="overlay" layout="column">
-            <div ui-sref="document({fileUri: t.file.uri})" flex></div>
-            <div layout="row">
-                <md-button class="md-button" flex>
+        <div class="layout-root overlay link" ui-sref="document({fileUri: t.file.uri})">
+            <div flex>
+            </div>
+            <div layout="row" layout-align="end center">
+                <md-button class="md-fab md-mini md-button-edit {{t.fileExtension}}" ng-if="t.file.folder" ng-click="t.editFile($event, t.file)">
                     <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
-                    Edit
                 </md-button>
-                <!--
-                <md-button class="md-button-icon" ui-sref="document-history({fileUri: t.file.uri})">
-                    <md-icon md-font-icon="zmdi zmdi-time-restore"></md-icon>
-                    Show History
-                </md-button>
-                -->
             </div>
         </div>
     </div>
 
-    <div layout="row" layout-align="start center">
-        <md-subhead class="md-padding no-margin" md-highlight-text="t.highlightText" flex>{{t.file.label}}</md-subhead>
-        <md-button class="md-icon-button" ng-if="!t.file.synchronizationEnabled" ng-click="t.publishFile()">
-            <md-icon md-font-icon="zmdi zmdi-share"></md-icon>
-        </md-button>
-        <md-button class="md-icon-button" ng-if="t.file.synchronizationEnabled">
-            <md-icon md-font-icon="zmdi zmdi-cloud-done"></md-icon>
-        </md-button>
-        <md-button class="md-button-icon">
+    <div layout="row" layout-align="start center" style="margin-top: 5px;">
+        <md-button class="md-icon-button no-margin" ng-if="!t.file.important" style="margin-right: 5px;" ng-click="t.toggleImportant($event, t.file)">
             <md-icon md-font-icon="zmdi zmdi-star-outline"></md-icon>
         </md-button>
+        <md-button class="md-icon-button no-margin" ng-if="t.file.important" style="margin-right: 5px;" ng-click="t.toggleImportant($event, t.file)">
+            <md-icon md-font-icon="zmdi zmdi-star"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button no-margin" ng-if="!t.file.synchronizationEnabled" ng-click="t.publishFile()">
+            <md-icon md-font-icon="zmdi zmdi-share"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button no-margin" ng-if="t.file.synchronizationEnabled">
+            <md-icon md-font-icon="zmdi zmdi-cloud-done"></md-icon>
+        </md-button>
+        <md-subhead class="no-padding no-margin" md-highlight-text="t.highlightText" flex>{{t.file.label}}</md-subhead>
     </div>
 
     <div ng-if="t.alert">

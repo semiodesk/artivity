@@ -5,9 +5,14 @@ function PointMarkerVisual(viewer, container, mark) {
 
     t.cursor = 'default';
     t.modified = false;
+    t.mouseover = false;
     t.viewer = viewer;
     t.container = container;
     t.mark = mark;
+
+    // Geometry parameters
+    t.diameter = 15;
+    t.radius = t.diameter / 2;
 
     t.initializeGeometry();
     t.initializeContainer();
@@ -29,18 +34,38 @@ PointMarkerVisual.prototype.initializeContainer = function () {
     var t = this;
 
     t.on('mouseover', function (e) {
-        t.hitTestPoint(e.stageX, e.stageY);
-        t.container.stage.update();
+        if (!t.mouseover && t.hitTestPoint(e.stageX, e.stageY)) {
+            t.mouseover = true;
+            t.container.stage.update();
+
+            console.log('itemMouseOver', t);
+            
+            t.viewer.raise('itemMouseOver', {
+                event: e,
+                target: this
+            });
+        }
     });
 
     t.on('mouseout', function (e) {
-        t.hitTestPoint(e.stageX, e.stageY);
-        t.container.stage.update();
+        if (t.mouseover && !t.hitTestPoint(e.stageX, e.stageY)) {
+            t.mouseover = false;
+            t.container.stage.update();
+
+            console.log('itemMouseOut', t);
+
+            t.viewer.raise('itemMouseOut', {
+                event: e,
+                target: this
+            });
+        }
     });
 
     t.on('mousedown', function (e) {
-        t.viewer.raise('itemSelected', this);
-        t.viewer.raise('markSelected', this.mark);
+        t.viewer.raise('itemMouseDown', {
+            event: e,
+            target: this
+        });
     });
 
     t.fillShape = t.createFillShape();
@@ -56,8 +81,10 @@ PointMarkerVisual.prototype.hitTestPoint = function (x, y) {
         };
 
         // Highlight the marker if it's not being created and when the mouse hovers it.
-        var mouseover = t.hitTestObject(t.fillShape, p.x, p.y);
+        return t.hitTestObject(t.fillShape, p.x, p.y);
     }
+
+    return false;
 };
 
 PointMarkerVisual.prototype.hitTestObject = function (object, x, y) {
@@ -79,45 +106,68 @@ PointMarkerVisual.prototype.hitTestObject = function (object, x, y) {
 PointMarkerVisual.prototype.createFillShape = function () {
     var t = this;
 
+    // Circle parameters
+    var d0 = t.diameter;
+    var r0 = d0 / 2;
+
+    var d1 = t.diameter + 6;
+    var r0 = d1 / 2;
+
     // Note: We position the marker at a half-pixel position to get a crisp 1px border.
     // See: https://groups.google.com/forum/#!msg/createjs-discussion/TQC-jIyZjD4/7lWZg7qFlQ8J
-    var s = new createjs.Shape();
+    var s0 = new createjs.Shape();
+    var s1 = new createjs.Shape();
 
-    s.normal = function (init) {
-        s.graphics.clear()
+    // Label text.
+    var t0 = null;
+
+    if (t.mark.label) {
+        t0 = new createjs.Text(t.mark.label, "16px Roboto", "#ffffff");
+    }
+
+    s0.normal = function (init) {
+        s0.graphics.clear()
             .setStrokeStyle(2, 'square')
             .beginFill('rgba(252,202,0,1)')
-            .drawCircle(t.x1, t.y1 - 20, 10)
-            .endFill()
-            .beginFill('rgba(252,202,0,1)')
-            .moveTo(t.x1, t.y1)
-            .lineTo(t.x1 - 10, t.y1 - 17)
-            .lineTo(t.x1 + 10, t.y1 - 17)
-            .lineTo(t.x1, t.y1)
+            .drawCircle(t.x1, t.y1, d0)
+            .endFill();
+
+        s1.graphics.clear()
+            .beginFill('rgba(252,202,0,.1)')
+            .drawCircle(t.x1, t.y1, d1)
+            .endFill();
+
+        if (t0) {
+            t0.x = Math.floor(t.x1 - t0.getMeasuredWidth() / 2);
+            t0.y = Math.floor(t.y1 - t0.getMeasuredHeight() / 2);
+        }
+    }
+
+    s0.highlight = function () {
+        s0.graphics.clear()
+            .setStrokeStyle(2, 'square')
+            .beginFill('rgba(255,212,10,1)')
+            .drawCircle(t.x1, t.y1, d0)
+            .endFill();
+
+        s1.graphics.clear()
+            .beginFill('rgba(252,202,0,.25)')
+            .drawCircle(t.x1, t.y1, d1)
             .endFill();
     }
 
-    s.highlight = function () {
-        s.graphics.clear()
-            .setStrokeStyle(2, 'square')
-            .beginFill('rgba(255,205,3,1)')
-            .drawCircle(t.x1, t.y1 - 20, 10)
-            .endFill()
-            .beginFill('rgba(255,205,3,1)')
-            .moveTo(t.x1, t.y1)
-            .lineTo(t.x1 - 10, t.y1 - 17)
-            .lineTo(t.x1 + 10, t.y1 - 17)
-            .lineTo(t.x1, t.y1)
-            .endFill();
+    s0.normal();
+
+    t.enableDragMove(s0);
+
+    t.addChild(s1);
+    t.addChild(s0);
+
+    if (t0) {
+        t.addChild(t0);
     }
 
-    s.normal();
-
-    t.enableDragMove(s);
-
-    t.addChild(s);
-
-    return s;
+    return s1;
 };
 
 PointMarkerVisual.prototype.enableDragMove = function (s) {
@@ -144,8 +194,14 @@ PointMarkerVisual.prototype.enableDragMove = function (s) {
         t.modified = dx != 0 || dy != 0;
 
         if (t.modified) {
-            t.viewer.raise('itemModified', t);
-            t.viewer.raise('markModified', t.mark);
+            t.viewer.raise('itemModified', {
+                event: e,
+                target: t
+            });
+            t.viewer.raise('markModified', {
+                event: e,
+                target: t
+            });
         }
     });
 };
@@ -157,8 +213,8 @@ PointMarkerVisual.prototype.resize = function (p1, p2) {
     t.x1 = Math.round(p1.x - t.container.stage.x, 0);
     t.y1 = Math.round(p1.y - t.container.stage.y, 0);
 
-    t.w = 20;
-    t.h = 20;
+    t.w = t.diameter;
+    t.h = t.diameter;
 };
 
 PointMarkerVisual.prototype.redraw = function (src) {

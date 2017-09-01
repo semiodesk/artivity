@@ -24,7 +24,7 @@ function DocumentViewer(user, canvas, endpointUrl, selectionService) {
     t.pageCache.endpointUrl = endpointUrl;
 
     // Handle selection changes.
-    t.on('itemSelected', function (item) {
+    t.on('itemMouseDown', function (item) {
         t.onItemSelected(item);
     });
 
