@@ -193,7 +193,7 @@ namespace Artivity.Api.Modules
                     ?important
                     SAMPLE(?p) AS ?thumbnail 
                     COALESCE(?agentColor, '#cecece') AS ?agentColor
-                    COALESCE(?synchronizationEnabled, 'false') AS ?synchronizationEnabled
+                    COALESCE(?synchronizationEnabled, false) AS ?synchronizationEnabled
                 WHERE
                 {{
                     ?activity prov:generated | prov:used ?entity ;
@@ -270,7 +270,7 @@ namespace Artivity.Api.Modules
                     ?important
                     SAMPLE(?p) AS ?thumbnail 
                     COALESCE(?agentColor, '#cecece') AS ?agentColor
-                    COALESCE(?synchronizationEnabled, 'false') AS ?synchronizationEnabled
+                    COALESCE(?synchronizationEnabled, false) AS ?synchronizationEnabled
                 WHERE
                 {{
                     ?activity prov:generated | prov:used ?entity ;
