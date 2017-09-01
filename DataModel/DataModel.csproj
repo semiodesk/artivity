@@ -39,6 +39,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ClassExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="IModelSynchronizationState.cs" />
     <Compile Include="IAccountOwner.cs" />
