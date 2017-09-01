@@ -17,9 +17,9 @@
 
     angular.module('app').controller('FileCardDirectiveController', FileCardDirectiveController);
 
-    FileCardDirectiveController.$inject = ['$rootScope', '$scope', '$element', '$mdDialog', 'api', 'filesystemService', 'entityService'];
+    FileCardDirectiveController.$inject = ['$rootScope', '$scope', '$element', '$mdDialog', 'api', 'filesystemService', 'entityService', 'syncService'];
 
-    function FileCardDirectiveController($rootScope, $scope, $element, $mdDialog, api, filesystemService, entityService) {
+    function FileCardDirectiveController($rootScope, $scope, $element, $mdDialog, api, filesystemService, entityService, syncService) {
         var t = this;
 
         t.onTouchStart = function (e) {
