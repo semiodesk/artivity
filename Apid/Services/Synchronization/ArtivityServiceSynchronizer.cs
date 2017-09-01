@@ -90,7 +90,7 @@ namespace Artivity.Apid.Synchronization
         /// </summary>
         /// <param name="account">An authorized online account.</param>
         /// <returns><c>true</c> on success, <c>false</c> otherwise.</returns>
-        public IModelSynchronizationState TrySynchronize(IAccoutOwner user, OnlineAccount account)
+        private IModelSynchronizationState TrySynchronize(IAccoutOwner user, OnlineAccount account)
         {
             IArtivityServiceSynchronizationClient client = TryGetSynchronizationClient(account);
 
