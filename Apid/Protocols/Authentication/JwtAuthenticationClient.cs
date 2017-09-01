@@ -44,6 +44,8 @@ namespace Artivity.Apid.Protocols.Authentication
                 yield return parameter;
             }
 
+            yield return new KeyValuePair<string, string>("refresh", Token);
+            yield return new KeyValuePair<string, string>("date", Token);
             yield return new KeyValuePair<string, string>("token", Token);
         }
 
