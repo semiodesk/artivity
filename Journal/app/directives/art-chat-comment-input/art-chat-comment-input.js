@@ -197,16 +197,18 @@
             var result = '';
             var input = $.parseHTML(html);
 
-            $.each(input, function (i, element) {
-                if (element.localName === 'img' && element.className === 'emojione') {
-                    // We *should* be storing the emoticons in unicode. However, there seems 
-                    // to be a problem when loading the comments from the db.
-                    //result += emojione.shortnameToUnicode(element.title);
-                    result += element.title;
-                } else {
-                    result += element.textContent;
-                }
-            });
+            if (input) {
+                $.each(input, function (i, element) {
+                    if (element.localName === 'img' && element.className === 'emojione') {
+                        // We *should* be storing the emoticons in unicode. However, there seems 
+                        // to be a problem when loading the comments from the db.
+                        //result += emojione.shortnameToUnicode(element.title);
+                        result += element.title;
+                    } else {
+                        result += element.textContent;
+                    }
+                });
+            }
 
             return result;
         }
@@ -279,10 +281,10 @@
         }
 
         t.$postLink = function () {
-            t.inputElement = $('.textarea.textarea-editable');
+            t.inputElement = $element.find('.textarea.textarea-editable');
 
             if (t.inputElement) {
-                $('.textarea-placeholder').click(function (e) {
+                $element.find('.textarea-placeholder').click(function (e) {
                     e.preventDefault();
 
                     t.inputElement.focus();
