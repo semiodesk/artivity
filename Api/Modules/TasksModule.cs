@@ -111,7 +111,7 @@ namespace Artivity.Api.Modules
             }
 
             ISparqlQuery query = new SparqlQuery(@"
-                SELECT
+                SELECT DISTINCT
                     ?uri
                     ?agent
                     ?time

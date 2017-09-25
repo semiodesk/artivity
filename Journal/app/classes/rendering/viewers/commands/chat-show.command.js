@@ -11,13 +11,19 @@ function ShowChatCommand(viewer, service) {
 
     viewer.on('itemMouseOver', function(e) {
         if(t.canExecute(e.target)) {
-            $(document).trigger('showChatPanel', e);
+            $(document).trigger('showPanel', e);
         }
     });
 
     viewer.on('itemMouseOut', function(e) {
         if(t.canExecute(e.target)) {
-            $(document).trigger('hideChatPanel', e);
+            $(document).trigger('hidePanel', e);
+        }
+    });
+
+    viewer.on('itemMouseDown', function(e) {
+        if(t.canExecute(e.target)) {
+            $(document).trigger('pinPanel', e);
         }
     });
 }

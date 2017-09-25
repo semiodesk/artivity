@@ -37,7 +37,7 @@
 
             var panel = null;
 
-            $(document).on('showChatPanel', function(e, params) {
+            $(document).on('showPanel', function(e, params) {
                 var container = angular.element($('.viewer-container'));
 
                 var offset = $('.viewer-container').offset();
@@ -58,12 +58,12 @@
                     templateUrl: 'app/directives/art-chat-panel/art-chat-panel.html',
                     panelClass: 'art-chat-panel',
                     position: position,
-                    trapFocus: false,
+                    trapFocus: true,
                     focusOnOpen: true,
                     zIndex: 150,
                     clickOutsideToClose: true,
                     clickEscapeToClose: true,
-                    propagateContainerEvents: true,
+                    propagateContainerEvents: false,
                     hasBackdrop: false,
                     locals: {
                         entityUri: params.target.mark.uri
@@ -75,9 +75,15 @@
                 });
             });
 
-            $(document).on('hideChatPanel', function(e, params) {
+            $(document).on('hidePanel', function(e, params) {
+                if(panel && !panel.pinned) {
+                    //panel.close();
+                }
+            });
+
+            $(document).on('pinPanel', function(e, params) {
                 if(panel) {
-                    panel.close();
+                    panel.pinned = true;
                 }
             });
         }
