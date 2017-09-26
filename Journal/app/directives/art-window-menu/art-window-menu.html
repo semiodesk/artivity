@@ -1,7 +1,6 @@
-<md-menu md-offset="-150 42">
-    <md-button class="md-button-icon" ng-click="$mdMenu.open($event)">
-        <md-icon md-font-icon="zmdi zmdi-account-circle"></md-icon>
-        <span>{{userName}}</span>
+<md-menu md-offset="-150 48">
+    <md-button class="md-button-icon" ng-click="$mdMenu.open($event)" md-padding>
+        <ng-letter-avatar ng-if="userAvatar" data="{{userAvatar}}" shape="round" width="28" height="28"></ng-letter-avatar>
     </md-button>
     <md-menu-content width="4">
         <md-menu-item class="md-indent">

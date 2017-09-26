@@ -16,7 +16,7 @@
                     <div layout="row" layout-align="start center" flex>
                         <img ng-src="{{agent.iconSrc}}" ng-class="{grayscale: !agent.pluginInstalled}" width="40" height="40" style="margin: 0 10px">
 
-                        <h5 style="line-height: 40px; vertical-align: middle" flex>{{agent.name}}</h5>
+                        <h6 style="line-height: 40px; vertical-align: middle" flex>{{agent.name}}</h6>
 
                         <label class="label-default" ng-show="!agent.hasError && agent.pluginInstalled" translate>
                             Plugin installed
@@ -37,7 +37,8 @@
                 <table style="margin-left: 45px; margin-right: 45px; min-width: 100px;" class="pull-left">
                     <tr>
                         <td class="text-left">
-                            <art-color-picker selected-color="agent.color"></art-color-picker> <span translate>Colour</span></td>
+                            <art-color-picker selected-color="agent.color"></art-color-picker> <span translate>Colour</span>
+                        </td>
                     </tr>
                 </table>
 

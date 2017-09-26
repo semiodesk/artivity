@@ -121,8 +121,13 @@
 
         function putPhoto(agentUri, data) {
             var uri = encodeURIComponent(agentUri);
+            var url = endpoint + '/users/photo?agentUri=' + uri;
 
-            return api.put(endpoint + '/users/photo?agentUri=' + uri, data).then(
+            if (t.currentUser && t.currentUser.UserName) {
+                url += '&user=' + t.currentUser.UserName;
+            }
+
+            return api.put(url, data).then(
                 function (response) {
                     return response;
                 });

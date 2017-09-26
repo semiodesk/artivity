@@ -105,6 +105,8 @@ namespace Artivity.Api.Platform
 
         string GetRenderOutputPath(UriRef entityUri);
 
+        Uri GetPersonPhotoUrl(UriRef agentUri, string owner);
+
         Response GetPersonPhoto(UriRef agentUri, string owner);
 
         #endregion

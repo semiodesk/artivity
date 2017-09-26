@@ -53,12 +53,13 @@ namespace Artivity.Apid.Modules
 
         private static readonly Dictionary<string, Browse> _activities = new Dictionary<string, Browse>();
 
-        OwnerProvider _ownerProvider;
+        AccountOwnerProvider _ownerProvider;
+
         #endregion
 
         #region Constructors
 
-        public PluginModule(IModelProvider modelProvider, IPlatformProvider platformProvider, OwnerProvider ownerProvider)
+        public PluginModule(IModelProvider modelProvider, IPlatformProvider platformProvider, AccountOwnerProvider ownerProvider)
             : base("/artivity/api/1.0/plugin", modelProvider, platformProvider)
         {
             _ownerProvider  = ownerProvider;

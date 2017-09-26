@@ -9,41 +9,54 @@ using System.Threading.Tasks;
 
 namespace Artivity.Apid.Platform
 {
-    public class OwnerProvider
+    public class AccountOwnerProvider
     {
         #region Members
-        public Uri UserUri { get; set; }
-        public Association UserAssociation { get; set; }
+
         protected IModelProvider ModelProvider { get; set; }
+
         protected IPlatformProvider PlatformProvider { get; set; }
+
+        public Uri UserUri { get; set; }
+
+        public Association UserAssociation { get; set; }
+
         #endregion
 
         #region Constructor
-        public OwnerProvider(IModelProvider modelProvider, IPlatformProvider platformProvider)
+
+        public AccountOwnerProvider(IModelProvider modelProvider, IPlatformProvider platformProvider)
         {
             ModelProvider = modelProvider;
             PlatformProvider = platformProvider;
+
             UserUri = new Uri(PlatformProvider.Config.Uid);
+
             LoadUserAssociation();
         }
+
         #endregion
 
         #region Methods
-        public void LoadUserAssociation()
+
+        private void LoadUserAssociation()
         {
+             ISparqlQuery query = new SparqlQuery(@"
+                DESCRIBE ?association WHERE
+                {
+                    ?association prov:agent @user .
+                }");
 
-             ISparqlQuery query = new SparqlQuery(@"DESCRIBE
-                            ?association
-                            WHERE
-                            {
-                                ?association prov:agent @user .
-                            }");
-             query.Bind("@user", UserUri);
-            var res = ModelProvider.GetAgents().GetResources<Association>(query);
-            if( res.Any())
-                UserAssociation = res.First();
+            query.Bind("@user", UserUri);
 
+            IEnumerable<Association> result = ModelProvider.GetAgents().GetResources<Association>(query);
+
+            if (result.Any())
+            {
+                UserAssociation = result.First();
+            }
         }
+
         #endregion
     }
 }

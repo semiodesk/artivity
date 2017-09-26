@@ -145,7 +145,7 @@ namespace Artivity.Api.Modules
 
                     RequestStream stream = Request.Body;
 
-                    return PutPersonPhoto(agentUri, stream);
+                    return PutPersonPhoto(agentUri, Request.Query.user, stream);
                 }
                 else
                 {
@@ -282,8 +282,15 @@ namespace Artivity.Api.Modules
             return PlatformProvider.GetPersonPhoto(agentUri, owner);
         }
 
-        private Response PutPersonPhoto(UriRef agentUri, RequestStream stream)
+        private Response PutPersonPhoto(UriRef agentUri, string owner, RequestStream stream)
         {
+            Person person = ModelProvider.GetAgents().GetResource<Person>(agentUri);
+
+            if (person == null)
+            {
+                return HttpStatusCode.NotFound;
+            }
+
             try
             {
                 string uri = FileNameEncoder.Encode(agentUri.AbsoluteUri);
@@ -304,12 +311,18 @@ namespace Artivity.Api.Modules
                     using (FileStream fileStream = File.Create(file))
                     {
                         target.Save(fileStream, ImageFormat.Jpeg);
+
+                        person.PhotoUrl = PlatformProvider.GetPersonPhotoUrl(agentUri, owner).AbsoluteUri;
+                        person.Commit();
                     }
                 }
             }
             catch (Exception ex)
             {
                 PlatformProvider.Logger.LogError(ex.Message);
+
+                person.PhotoUrl = null;
+                person.Commit();
 
                 return HttpStatusCode.InternalServerError;
             }

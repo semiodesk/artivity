@@ -1,0 +1,26 @@
+<div layout="row" layout-align="end center">
+    <md-button ng-click="t.addMember($event)">
+        <md-icon md-font-icon="zmdi zmdi-account-add"></md-icon>
+        <span translate>Add member</span>
+    </md-button>
+</div>
+
+<md-list flex>
+    <md-list-item class="md-2-line" ng-repeat="m in t.project.members">
+        <div style="padding-right: 10px">
+            <ng-letter-avatar data="{{ m.Agent.HasPhoto ? m.Agent.PhotoUrl : m.Agent.Name }}" width="60" height="60" shape="round"></ng-letter-avatar>
+        </div>
+
+        <div ng-click="t.editMember($event, m)" class="md-list-item-text" layout="column" flex>
+            <h6>{{m.Agent.Name}}</h6>
+            <label ng-switch="m.Role.Uri">
+                <span ng-switch-when='http://w3id.org/art/terms/1.0/ProjectAdministratorRole' translate>Administrator</span>
+                <span ng-switch-when='http://w3id.org/art/terms/1.0/ProjectMemberRole'translate>Member</span>
+            </label>
+        </div>
+
+        <md-button class="md-button-icon" ng-click="t.removeMember(m);">
+            <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+        </md-button>
+    </md-list-item>
+</md-list>

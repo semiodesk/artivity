@@ -83,6 +83,10 @@ h5,
 	font-size: round(24px * $textScaleFactor) !important;
 }
 
+h6 {
+	font-size: round(20px * $textScaleFactor) !important;
+}
+
 .md-title,
 .dialog-title {
 	font-size: round(20px * $textScaleFactor) !important;

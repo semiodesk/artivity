@@ -4,5 +4,5 @@ function ProfileSettingsViewController($scope, $stateParams) {
     var t = this;
 
     t.index = $stateParams.index;
-    t.timestamp = new Date()
+    t.timestamp = new Date();
 }

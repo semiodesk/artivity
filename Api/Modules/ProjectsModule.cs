@@ -52,7 +52,7 @@ namespace Artivity.Api.Modules
                     return response;
                 }
 
-                IModel model = ModelProvider.GetActivities();
+                IModel model = ModelProvider.GetAll();
 
                 if (model == null)
                 {
@@ -148,6 +148,23 @@ namespace Artivity.Api.Modules
                 {
                     return HttpStatusCode.BadRequest;
                 }
+            };
+
+            Get["/agents/initialize"] = parameters =>
+            {
+                InitializeRequest();
+
+                if (IsUri(Request.Query.projectUri))
+                {
+                    UriRef projectUri = new UriRef(Request.Query.projectUri);
+
+                    if (string.IsNullOrEmpty(Request.Query.q))
+                    {
+                        return InitializeProjectMembers(projectUri);
+                    }
+                }
+
+                return HttpStatusCode.BadRequest;
             };
 
             Post["/agents"] = parameters =>
@@ -307,11 +324,36 @@ namespace Artivity.Api.Modules
         
         private Response PutProject(Uri uri, ProjectParameter parameter)
         {
+            // TODO: Encapsulate in PlatformProvider.
+            // NOTE: There is an AccountOwnerProvider in Apid.
+            IModel agents = ModelProvider.GetAgents();
+
+            if(agents == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            ISparqlQuery query = new SparqlQuery(@"
+                DESCRIBE ?agent WHERE
+                {
+                    ?association a prov:Association ;
+                        prov:hadRole art:AccountOwnerRole ;
+                        prov:agent ?agent .
+                }
+            ");
+
+            User user = agents.GetResources<User>(query).FirstOrDefault();
+
+            if (user == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
             IModel model = ModelProvider.GetActivities();
 
             if (model == null)
             {
-                return HttpStatusCode.BadRequest;
+                return HttpStatusCode.InternalServerError;
             }
 
             if (uri.AbsoluteUri != parameter.uri)
@@ -330,13 +372,67 @@ namespace Artivity.Api.Modules
                 project = model.CreateResource<Project>(uri);
             }
 
+            if (!project.Memberships.Any(m => m.Agent == user))
+            {
+                ProjectMembership membership = model.CreateResource<ProjectMembership>();
+                membership.Agent = user;
+                membership.Role = new Role(art.ProjectAdministratorRole.Uri);
+                membership.Commit();
+
+                project.Memberships.Add(membership);
+            }
+
             project.Title = parameter.title;
             project.ColorCode = parameter.colorCode;
             project.Description = parameter.description;
             project.StartTimeUtc = DateTime.UtcNow;
+            project.StartedBy = user;
             project.Commit();
 
             return HttpStatusCode.OK;
+        }
+
+        protected Response InitializeProjectMembers(UriRef projectUri)
+        {
+            IModel all = ModelProvider.GetAll();
+
+            if (all == null)
+            {
+                return HttpStatusCode.InternalServerError;
+            }
+
+            if (all.ContainsResource(projectUri))
+            {
+                ISparqlQuery query = new SparqlQuery(@"
+                    ASK WHERE
+                    {
+                        @project art:qualifiedMembership ?membership .
+
+                        ?membership a art:ProjectMembership ;
+                            art:hasRole art:ProjectAdministratorRole ;
+                            art:agent ?agent .
+
+                        ?project a art:Project ;
+                            prov:qualifiedGeneration / prov:agent ?agent .
+                    }");
+
+                query.Bind("@project", projectUri);
+
+                ISparqlQueryResult result = all.ExecuteQuery(query);
+
+                if(!result.GetAnwser())
+                {
+                    return HttpStatusCode.OK;
+                }
+                else
+                {
+                    return HttpStatusCode.NotModified;
+                }
+            }
+            else
+            {
+                return HttpStatusCode.NoContent;
+            }
         }
 
         protected Response GetProjectMembers(UriRef projectUri)

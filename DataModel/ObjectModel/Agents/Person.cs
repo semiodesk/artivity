@@ -77,8 +77,19 @@ namespace Artivity.DataModel
         [RdfProperty(DCES.identifier)]
         public string Id { get; set; }
 
-        [RdfProperty(FOAF.mbox), NotifyPropertyChanged]
+        [RdfProperty(FOAF.mbox)]
         public string EmailAddress { get; set; }
+
+        [RdfProperty(FOAF.img)]
+        public string PhotoUrl { get; set; }
+
+        public bool HasPhoto
+        {
+            get
+            {
+                return !String.IsNullOrEmpty(PhotoUrl);
+            }
+        }
 
 		#endregion
 

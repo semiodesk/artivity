@@ -3,7 +3,9 @@ angular.module('app', [
     'ngCookies',
     'ngMaterial',
     'ngDragDrop',
+    'ngLetterAvatar',
     'angularMoment',
+    'ngSanitize',
     'ui.layout',
     'ui.bootstrap',
     'ui.bootstrap.modal',
@@ -15,7 +17,6 @@ angular.module('app', [
     'angular-emojione',
     'luegg.directives',
     'gettext',
-    'ngSanitize',
     'btford.markdown',
     'wu.masonry'
 ]).config(function ($mdThemingProvider) {

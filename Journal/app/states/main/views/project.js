@@ -1,9 +1,9 @@
 (function () {
 	angular.module('app').controller("ProjectDashboardViewController", ProjectDashboardViewController);
 
-	ProjectDashboardViewController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$element', '$timeout', '$mdDialog', 'hotkeys', 'projectService', 'syncService'];
+	ProjectDashboardViewController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$element', '$timeout', '$mdDialog', '$mdMedia', '$mdSidenav', 'hotkeys', 'projectService', 'syncService'];
 
-	function ProjectDashboardViewController($rootScope, $scope, $state, $stateParams, $element, $timeout, $mdDialog, hotkeys, projectService, syncService) {
+	function ProjectDashboardViewController($rootScope, $scope, $state, $stateParams, $element, $timeout, $mdDialog, $mdMedia, $mdSidenav, hotkeys, projectService, syncService) {
 		var t = this;
 
 		t.project = null;
@@ -24,6 +24,10 @@
 					}
 				}
 			}
+		}
+
+		t.editProjectMembers = function(e) {
+			$mdSidenav('members').toggle();
 		}
 
 		t.editProject = function (e) {
