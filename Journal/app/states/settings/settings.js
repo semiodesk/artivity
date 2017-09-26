@@ -22,5 +22,10 @@
         t.reset = function () {
             settingsService.resetAll();
         };
+
+        $scope.$on('$stateChangeStart',
+            function (event, toState, toParams, fromState, fromParams, options) {
+                t.submitAndReturn();
+            });
     }
 })();

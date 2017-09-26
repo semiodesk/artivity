@@ -172,6 +172,11 @@ namespace ArtivityTest
             return "";
         }
 
+        public Uri GetPersonPhotoUrl(Semiodesk.Trinity.UriRef agentUri, string owner)
+        {
+            throw new NotImplementedException();
+        }
+
         public Nancy.Response GetPersonPhoto(Semiodesk.Trinity.UriRef agentUri, string owner)
         {
             return Nancy.HttpStatusCode.NotImplemented;

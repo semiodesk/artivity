@@ -9,6 +9,7 @@
             <md-not-found>
             </md-not-found>
         </md-autocomplete>
+
         <div flex></div>
         <md-button class="md-icon-button" ng-if="!t.project.IsSynchronizationEnabled" ng-click="t.publishProject()">
             <md-icon md-font-icon="zmdi zmdi-cloud-upload"></md-icon>
@@ -22,13 +23,18 @@
             </md-button>
             <md-menu-content width="4">
                 <md-menu-item class="md-indent">
+                    <md-button aria-label="Edit Members" ng-click="t.editProjectMembers($event)">
+                        <span translate>Members</span>
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item class="md-indent">
                     <md-button aria-label="Edit Project" ng-click="t.editProject($event)">
                         <span translate>Edit</span>
                     </md-button>
                 </md-menu-item>
                 <md-menu-item class="md-indent">
                     <md-button aria-label="Archive Project" ng-click="t.deleteProject($event)">
-                        <span translate>Archive</span>
+                        <span translate>Delete</span>
                     </md-button>
                 </md-menu-item>
             </md-menu-content>
@@ -44,6 +50,15 @@
         </div>
     </div>
 </div>
+
+<md-sidenav class="md-sidenav-right" md-component-id="members" md-is-locked-open="$mdMedia('gt-md')" md-whiteframe="6">
+    <md-toolbar>
+        <h5 class="md-toolbar-tools" translate>Members</h5>
+    </md-toolbar>
+    <md-content layout-padding>
+        <art-project-member-list project="t.project"></art-project-member-list>
+    </md-content>
+</md-sidenav>
 
 <script type="text/ng-template" id="share-project-dialog.html">
     <md-dialog aria-label="Share Project Dialog">
@@ -64,15 +79,15 @@
 </script>
 
 <script type="text/ng-template" id="delete-project-dialog.html">
-    <md-dialog aria-label="Archive Project Dialog">
+    <md-dialog aria-label="Delete Project Dialog">
         <md-dialog-content>
             <md-content class="padding-x-xl padding-y-xl">
-                <h3>Archive '{{project.Title}}'?</h3>
+                <h3>Delete '{{project.Title}}'?</h3>
                 <p translate>The project will be archived and no content will be deleted. You can restore the project at any time.</p>
             </md-content>
         </md-dialog-content>
         <md-dialog-actions layout="row" layout-align="end center">
-            <md-button ng-click="ok()" class="md-warn">Archive</md-button>
+            <md-button ng-click="ok()" class="md-warn">Delete</md-button>
             <md-button ng-click="cancel()" translate>Cancel</md-button>
         </md-dialog-actions>
     </md-dialog>

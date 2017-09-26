@@ -295,13 +295,11 @@ namespace Artivity.Apid
 
             _modelProvider.Uid = userConfig.GetUserId();
 
-            OwnerProvider op = new OwnerProvider(_modelProvider, PlatformProvider);
-
             Bootstrapper customBootstrapper = new Bootstrapper();
             customBootstrapper.PlatformProvider = PlatformProvider;
             customBootstrapper.ModelProvider = _modelProvider;
             customBootstrapper.PluginChecker = _pluginChecker;
-            customBootstrapper.OwnerProvider = op;
+            customBootstrapper.OwnerProvider = new AccountOwnerProvider(_modelProvider, PlatformProvider);
             customBootstrapper.SynchronizationProvider = _synchronizationProvider;
             customBootstrapper.Notifier = new DummyNotifier();
 

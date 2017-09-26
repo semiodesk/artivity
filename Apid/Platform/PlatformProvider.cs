@@ -272,10 +272,17 @@ namespace Artivity.Apid.Platform
             return Path.Combine(RenderingsFolder, entityName);
         }
 
-        public Response GetPersonPhoto(UriRef agentUri, string owner)
+        public Uri GetPersonPhotoUrl(UriRef agentUri, string owner)
         {
             string uri = FileNameEncoder.Encode(agentUri.AbsoluteUri);
             string file = Path.Combine(AvatarsFolder, uri + ".jpg");
+
+            return new FileInfo(file).ToUriRef();
+        }
+
+        public Response GetPersonPhoto(UriRef agentUri, string owner)
+        {
+            string file = GetPersonPhotoUrl(agentUri, owner).LocalPath;
 
             if (!File.Exists(file))
             {

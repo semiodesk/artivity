@@ -24,6 +24,10 @@
                     <input name="description" ng-model="t.project.Description" placeholder="{{'Description' | translate}}">
                 </md-input-container>
 
+                <md-input-container md-no-float class="md-block">
+                    <art-color-picker selected-color="t.project.ColorCode"></art-color-picker>
+                </md-input-container>
+
                 <art-folder-picker folder="t.project.folder" changed="t.setFolder" flex></art-folder-picker>
 
                 <!--
@@ -37,26 +41,6 @@
                     <span translate>Automatically publish new file versions</span>
                 </md-switch>
                 -->
-                
-                <md-subheader class="md-no-sticky" translate>Members</md-subheader>
-
-                <md-button ng-click="t.addMember()">
-                    <md-icon md-font-icon="zmdi zmdi-account-add"></md-icon>
-                    <span translate>Add member</span>
-                </md-button>
-
-                <md-list flex>
-                    <md-list-item class="md-2-line" ng-repeat="member in t.project.members">
-                        <img ng-src="{{t.getPhotoUrl(member.Agent.Uri)}}" class="md-avatar" alt="{{member.Agent.Name}}" />
-                        <div ng-click="t.editMember(member)" class="md-list-item-text" layout="column" flex>
-                            <h5>{{member.Agent.Name}}</h5>
-                            <label>{{member.Agent.EmailAddress}}</label>
-                        </div>
-                        <md-button class="md-button-icon" ng-click="t.removeMember(member);">
-                            <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
-                        </md-button>
-                    </md-list-item>
-                </md-list>
             </form>
         </div>
     </md-dialog-content>

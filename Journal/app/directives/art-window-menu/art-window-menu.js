@@ -19,6 +19,8 @@
 
         t.$onInit = function () {
             agentService.getCurrentUser().then(function (user) {
+                $scope.userAvatar = user.HasPhoto ? user.PhotoUrl : user.Name;
+
                 if (user.Name) {
                     $scope.userName = user.Name.split(' ')[0];
                 } else {

@@ -1,13 +1,12 @@
 (function () {
     angular.module('app').controller('EditPersonDialogController', EditPersonDialogController);
 
-    EditPersonDialogController.$inject = ['$scope', '$filter', '$uibModalInstance', '$sce', 'agentService', 'person'];
+    EditPersonDialogController.$inject = ['$scope', '$filter', '$mdDialog', 'agentService'];
 
-    function EditPersonDialogController($scope, $filter, $uibModalInstance, $sce, agentService, person) {
+    function EditPersonDialogController($scope, $filter, $mdDialog, agentService) {
         var t = this;
 
         t.persons = [];
-        t.person = person;
         t.photo = null;
         t.photoChanged = false;
         t.photoUrl = agentService.getPhotoUrl(t.person.Uri);
@@ -45,13 +44,15 @@
                 if (t.photoChanged) {
                     agentService.putPhoto(t.person.Uri, t.photo);
                 }
+
+                $mdDialog.hide(t.person);
             }
 
-            $uibModalInstance.close(t.person);
+            $mdDialog.hide();
         };
 
         t.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
+            $mdDialog.cancel();
         };
 
         t.$onInit = function() {

@@ -62,7 +62,7 @@ namespace Artivity.Apid
 
         public IArtivityServiceSynchronizationProvider SynchronizationProvider { get; set; }
 
-        public OwnerProvider OwnerProvider { get; set; }
+        public AccountOwnerProvider OwnerProvider { get; set; }
 
         public INotifier Notifier { get; set; }
         #endregion
