@@ -13,17 +13,16 @@ namespace Artivity.Apid.Protocols.Authentication
         #region Members
 
         [JsonIgnore]
-        public string Token
-        {
-            get
-            {
-                string response = Encoding.UTF8.GetString(ResponseData);
+        public string Token  { get; set; }
 
-                dynamic data = JObject.Parse(response);
+        [JsonIgnore]
+        public string TokenExpiration { get; set; }
 
-                return data != null ? data.token : null;
-            }
-        }
+        [JsonIgnore]
+        public string RefreshToken { get; set; }
+
+        [JsonIgnore]
+        public string RefreshTokenExpiration { get; set; }
 
         #endregion
 
@@ -37,6 +36,25 @@ namespace Artivity.Apid.Protocols.Authentication
 
         #region Methods
 
+        protected override void ParseData(byte[] responseData)
+        {
+            base.ParseData(responseData);
+
+            string response = Encoding.UTF8.GetString(ResponseData);
+
+            dynamic data = JObject.Parse(response);
+
+            if( data != null )
+            {
+                Token = data.token;
+                TokenExpiration = data.tokenExpiration.ToString();
+                RefreshToken = data.refreshToken;
+                RefreshTokenExpiration = data.refreshTokenExpiration.ToString();
+
+
+            }
+        }
+
         public override IEnumerable<KeyValuePair<string, string>> GetPersistableAuthenticationParameters()
         {
             foreach (KeyValuePair<string, string> parameter in base.GetPersistableAuthenticationParameters())
@@ -44,9 +62,11 @@ namespace Artivity.Apid.Protocols.Authentication
                 yield return parameter;
             }
 
-            yield return new KeyValuePair<string, string>("refresh", Token);
-            yield return new KeyValuePair<string, string>("date", Token);
+
             yield return new KeyValuePair<string, string>("token", Token);
+            yield return new KeyValuePair<string, string>("tokenExpiration", this.TokenExpiration);
+            yield return new KeyValuePair<string, string>("refreshToken", this.RefreshToken);
+            yield return new KeyValuePair<string, string>("refreshTokenExpiration", this.RefreshTokenExpiration);
         }
 
         #endregion
