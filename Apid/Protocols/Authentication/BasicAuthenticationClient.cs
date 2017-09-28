@@ -66,6 +66,12 @@ namespace Artivity.Apid.Protocols.Authentication
 
         #region Methods
 
+        /// <summary>
+        /// Can be overwritten to parse custom data from the response
+        /// </summary>
+        /// <param name="responseData"></param>
+        protected virtual void ParseData(byte[] responseData) { }
+
         public override async void HandleRequestAsync(Request request, string sessionId)
         {
             SetRequestStatus(HttpStatusCode.Processing);
@@ -105,6 +111,8 @@ namespace Artivity.Apid.Protocols.Authentication
                     }
 
                     ResponseData = await response.Content.ReadAsByteArrayAsync();
+                    
+                    ParseData(ResponseData);
                 }
             }
             catch (Exception ex)
