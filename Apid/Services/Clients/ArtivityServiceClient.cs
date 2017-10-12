@@ -66,7 +66,11 @@ namespace Artivity.Apid.Accounts
 
         private const string _path = "/api/1.0/auth/login";
 
+        private const string _refreshPath = "/api/1.0/auth/refresh";
+
         private UTF8Encoding _encoder = new UTF8Encoding();
+
+        JwtAuthenticationClient _authClient;
 
         //https://stackoverflow.com/questions/43055998/c-sharp-m2mqtt-to-connect-to-aws-broker-using-root-ca-key-and-certificate
 
@@ -92,9 +96,16 @@ namespace Artivity.Apid.Accounts
 
             }
 
-            SupportedAuthenticationClients.Add(new JwtAuthenticationClient());
+            _authClient = new JwtAuthenticationClient();
+            
+            SupportedAuthenticationClients.Add(_authClient);
+            _authClient.RefreshPath = _refreshPath;
+            
 
             #if DEBUG
+
+            ServiceUrl = new Uri("http://localhost:8080");
+
             HttpAuthenticationParameterSet localhost = new HttpAuthenticationParameterSet();
             localhost.Id = "localhost:8080";
             localhost.Parameters["authType"] = "http://localhost:8272/artivity/api/1.0/auth/jwt";
@@ -104,6 +115,8 @@ namespace Artivity.Apid.Accounts
 
             SelectedPreset = localhost;
             #endif
+
+            
         }
 
         #endregion
@@ -216,7 +229,7 @@ namespace Artivity.Apid.Accounts
 
                 Uri url = new Uri(baseUrl + "/api/1.0/sync/");
 
-                using (HttpClient client = GetHttpClient(account))
+                using (HttpClient client = await GetHttpClient(account))
                 {
                     try
                     {
@@ -251,7 +264,7 @@ namespace Artivity.Apid.Accounts
 
                 Uri url = new Uri(baseUrl + "/api/1.0/sync/" + revision);
 
-                using (HttpClient client = GetHttpClient(account))
+                using (HttpClient client = await GetHttpClient(account))
                 {
                     System.Net.HttpStatusCode status = System.Net.HttpStatusCode.ServiceUnavailable;
 
@@ -340,7 +353,7 @@ namespace Artivity.Apid.Accounts
             {
                 Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + id);
 
-                using (HttpClient client = GetHttpClient(account))
+                using (HttpClient client = await GetHttpClient(account))
                 {
                     HttpResponseMessage response = await client.GetAsync(url);
 
@@ -397,7 +410,7 @@ namespace Artivity.Apid.Accounts
 
             Uri url = new Uri(baseUrl + "/api/1.0/sync/agents/persons?agentUri=" + escapedUri);
 
-            using (HttpClient client = GetHttpClient(account))
+            using (HttpClient client = await GetHttpClient(account))
             {
                 HttpResponseMessage response = await client.GetAsync(url);
 
@@ -485,7 +498,7 @@ namespace Artivity.Apid.Accounts
                 return false;
             }
 
-            using (HttpClient client = GetHttpClient(account))
+            using (HttpClient client = await GetHttpClient(account))
             {
                 HttpResponseMessage response = await client.GetAsync(url);
 
@@ -573,10 +586,15 @@ namespace Artivity.Apid.Accounts
             {
                 return await TryPushImageAsync(account, uri, revision);
             }
+            else if (uri.IsInstanceOf(m, art.Comment))
+            {
+                return await TryPushCommentAsync(account, uri, revision);
+            }
             else if (uri.IsInstanceOf(m, prov.Entity))
             {
                 return await TryPushEntityAsync(account, uri, revision);
             }
+            
 
             return false; 
         }
@@ -591,7 +609,7 @@ namespace Artivity.Apid.Accounts
             {
                 Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + id);
 
-                using (HttpClient client = GetHttpClient(account))
+                using (HttpClient client = await GetHttpClient(account))
                 {
                     IModel model = ModelProvider.GetAll();
 
@@ -635,7 +653,7 @@ namespace Artivity.Apid.Accounts
 
             Uri url = new Uri(baseUrl + "/api/1.0/sync/agents/persons");
 
-            using (HttpClient client = GetHttpClient(account))
+            using (HttpClient client = await GetHttpClient(account))
             {
                 IModel model = ModelProvider.GetAll();
 
@@ -686,7 +704,7 @@ namespace Artivity.Apid.Accounts
         {
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
-            using (HttpClient client = GetHttpClient(account))
+            using (HttpClient client = await GetHttpClient(account))
             {
                 string archiveName = FileNameEncoder.Encode(uri.AbsoluteUri) + ".arta";
                 string archivePath = Path.Combine(PlatformProvider.TempFolder, archiveName);
@@ -769,7 +787,7 @@ namespace Artivity.Apid.Accounts
         {
             string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
 
-            using (HttpClient client = GetHttpClient(account))
+            using (HttpClient client = await GetHttpClient(account))
             {
                 string archiveName = FileNameEncoder.Encode(uri.AbsoluteUri) + ".arta";
                 string archivePath = Path.Combine(PlatformProvider.TempFolder, archiveName);
@@ -814,6 +832,65 @@ namespace Artivity.Apid.Accounts
                     }
                 }
             }
+        }
+
+        private async Task<bool> TryPushCommentAsync(OnlineAccount account, Uri uri, int revision)
+        {
+            string baseUrl = account.ServiceUrl.Uri.AbsoluteUri;
+
+            using (HttpClient client = await GetHttpClient(account))
+            {
+                IModel model = ModelProvider.GetActivities();
+
+                if (model.ContainsResource(uri))
+                {
+                    Uri project = null;
+                    Uri activity = null;
+                    GetEntityContext(uri, out project, out activity, model);
+                    string projectId;
+                    if (project != null && activity != null )
+                    {
+                        projectId = Path.GetFileName(project.AbsolutePath);
+                    }else { return false; }
+
+                    Comment comment = model.GetResource<Comment>(uri);
+
+                    if (comment.Validate())
+                    {
+                        Activity act = model.GetResource<Activity>(activity);
+
+                        
+                        MultipartFormDataContent content = new MultipartFormDataContent();
+                        StringContent manifest = new StringContent(JsonConvert.SerializeObject(new String[]{ comment.Uri.AbsoluteUri, act.Uri.AbsoluteUri}));
+                        content.Add(manifest, "manifest");
+
+                        StringContent payload = new StringContent(string.Concat(SparqlSerializer.SerializeResource(comment), SparqlSerializer.SerializeResource(act)));
+                        content.Add(payload, "payload");
+
+                        StringContent subjct = new StringContent(comment.Uri.AbsoluteUri);
+                        content.Add(subjct, "subject");
+
+                        Uri url = new Uri(baseUrl + "/api/1.0/sync/projects/" + projectId + "/comment/");
+
+                        HttpResponseMessage response = await client.PostAsync(url, content);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            int remote = await GetLastRemoteRevision(response);
+
+                            if (model.ContainsResource(uri))
+                            {
+                                
+                                comment.Commit(remote, remote);
+                                act.Commit(remote, remote);
+                                
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         private async Task<bool> HandleArchiveUploadAsync(HttpClient client, Uri endpoint, Uri uri, FileInfo archive)
@@ -886,22 +963,23 @@ namespace Artivity.Apid.Accounts
             return revision;
         }
 
-        protected HttpClient GetHttpClient(OnlineAccount account)
+        protected async Task<HttpClient> GetHttpClient(OnlineAccount account)
         {
-            HttpAuthenticationParameter token = account.AuthenticationParameters.FirstOrDefault(p => p.Name == "token");
+            if( await _authClient.ValidateAccount(account) )
+            { 
 
-            if(token != null && !string.IsNullOrEmpty(token.Value))
-            {
+            
+                HttpAuthenticationParameter token = account.AuthenticationParameters.FirstOrDefault(p => p.Name == "token");
+
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 return client;
+            
             }
-            else
-            {
-                throw new Exception("Could not retrieve JWT token from account authentication parameters.");
-            }
+
+            throw new Exception("Could not retrieve JWT token from account authentication parameters.");
         }
 
         protected async Task<S3Uploader.Policy> GetUploadPolicy(OnlineAccount account)
@@ -912,7 +990,7 @@ namespace Artivity.Apid.Accounts
 
                 Uri url = new Uri(baseUrl + "/api/1.0/asset/policy");
 
-                using (var c = GetHttpClient(account))
+                using (var c = await GetHttpClient(account))
                 {
                     var response = await c.GetStringAsync(url);
 
@@ -932,7 +1010,7 @@ namespace Artivity.Apid.Accounts
 
         private async Task<bool> InitializeUserAsync(Person user, OnlineAccount account)
         {
-            using (HttpClient client = GetHttpClient(account))
+            using (HttpClient client = await GetHttpClient(account))
             {
                 string username = account.GetParameter("username");
 
@@ -975,6 +1053,50 @@ namespace Artivity.Apid.Accounts
             }
 
             return false;
+        }
+
+        private void GetEntityContext(Uri entityUri, out Uri project, out Uri activity, IModel model = null)
+        {
+            
+            if (model == null)
+            {
+                model = _modelProvider.GetActivities();
+            }
+
+            ISparqlQuery query = new SparqlQuery(@"
+                SELECT
+                  ?project
+                  ?activity
+                WHERE
+                {
+                    ?project prov:qualifiedUsage / prov:entity ?file .
+                    @entity prov:hadPrimarySource+ / nie:isStoredAs ?file .
+                    ?activity prov:generated | prov:used  @entity.
+                }");
+
+            query.Bind("@entity", entityUri);
+
+
+            IEnumerable<BindingSet> bindings = model.GetBindings(query);
+
+            if (bindings.Any())
+            {
+                BindingSet binding = bindings.First();
+
+                string proj = binding["project"].ToString();
+                string act = binding["activity"].ToString();
+                if (!string.IsNullOrEmpty(proj) && !string.IsNullOrEmpty(act))
+                {
+                    project = new Uri(proj);
+                    activity = new Uri(act);
+                    return;;
+                }
+            }
+
+            project = null;
+            activity = null;
+            return;
+        
         }
 
         #endregion

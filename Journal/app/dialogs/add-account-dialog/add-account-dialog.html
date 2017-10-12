@@ -30,7 +30,7 @@
 				<div layout="column" class="md-padding">
 					<form name="connectForm" ng-submit="t.connectAccount(selectedClient)" flex>
 						<p class="description"><span translate>Please enter the username and password or your Artivity Online user account:</span></p>
-						<input type="hidden" id="url" name="url" ng-init="t.parameter.url = 'https://api.artivity.online'">
+						<input type="hidden" id="url" name="url" ng-init="t.parameter.url = t.selectedClient.ServiceUrl">
 						<label style="margin-top: .5em;" translate>Login</label>
 						<div class="form-group">
 							<input class="form-control form-control-login" type="text" placeholder="Username" id="username" name="username" size="20"

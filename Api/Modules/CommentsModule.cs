@@ -149,6 +149,11 @@ namespace Artivity.Api.Modules
 
         #region Methods
 
+        /// <summary>
+        /// TODO: Move this to the CommentProvider
+        /// </summary>
+        /// <param name="entityUri"></param>
+        /// <returns></returns>
         private Response GetCommentsFromPrimarySource(UriRef entityUri)
         {
             IModel model = ModelProvider.GetAll();
