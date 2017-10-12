@@ -97,6 +97,26 @@ namespace Artivity.DataModel
             return parameter != null ? parameter.Value : null;
         }
 
+        public void SetParameter(string name, string value)
+        {
+            HttpAuthenticationParameter parameter = AuthenticationParameters.FirstOrDefault(p => p.Name == name);
+
+            if (parameter != null)
+            {
+                parameter.Value = value;
+                parameter.Commit();
+            }
+            else
+            {
+                parameter = this.Model.CreateResource<HttpAuthenticationParameter>();
+                parameter.Name = name;
+                parameter.Value = value;
+                AuthenticationParameters.Add(parameter);
+                Commit();
+            }
+
+        }
+
         public virtual bool Validate()
         {
             return !string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(Title) && ServiceUrl != null && ServiceClient != null;
